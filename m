@@ -1,85 +1,64 @@
-Return-Path: <SRS0=YXm1=OL=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=cvhI=OM=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_ALL,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D58DCC433F5
-	for <ath10k@archiver.kernel.org>; Tue, 21 Sep 2021 09:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA79DC433EF
+	for <ath10k@archiver.kernel.org>; Wed, 22 Sep 2021 15:49:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C56361050
-	for <ath10k@archiver.kernel.org>; Tue, 21 Sep 2021 09:22:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9C56361050
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 714876115A
+	for <ath10k@archiver.kernel.org>; Wed, 22 Sep 2021 15:49:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 714876115A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=narfation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fGrwucWOC2WNQ5qFc7AqrX960JxvUH7fWGn18GvQCAY=; b=T4H4tb0MNyFxgu
-	PiTD8idf6jz+2bn8V9qvKXCSgvMJXdUNOLdTuYnM7sUhkXvBxpUB3rXlx1b8Zw/YB4Rt/KNg1rDh+
-	vGI8fPU6D7KsMZp23mccNjBrDsPQwIVJ/ac0bMKdTsVIiS9p1HqqpBmyV8jMVgPWb9HgP3ls8Cx1D
-	9JMCQC/eb3+tSH+SPXsf0rm9V8hTYFeIhrjTOcEw+/4Rll+5rDcyToHLZUnj0CXj6y7q4Lbs7wgMg
-	1IG/dzm8eD7cyBboJd8yJ3vWFE/dRV/VheLVvrCQyhR10dJPl5TyZEVTjRCQtl6FkvQRtR2lnUYTf
-	kI1xAK054wBtBFLtv2LQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=z+Ktstty9McWTjpGR5lI/bUzaArD08Wlo/+a0g+9l/A=; b=zfKipBca9hv8MErVB++bp6dte8
+	FQ/j0PU72tZVUjXPwueU57LjOuV4sjlqtXTz/bDWgXPAdGk0plbssr8rcKTzBsmnnnrHtB6XGOPvM
+	mEfX7rrAFBuTVMwm+05rhfkv2JaQHE5IVhvglV/tdyRoWsSzWr3FQAoRNvQDbw4apPOmHeMEF7qw/
+	0RMvVSvqPvHkYMAKs0WdBvlPQ5beS0hkzeDP3ytufLYSAAgStbC5TlH/9WSfw6knWXMVHImbvFOd2
+	709TwYL3rmPnd44FIojTxamN1lOl90PMikcPdP5opA030tt4rT1u/tCs16l5VltXsy3haxtRZT5td
+	fNAQqO+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mSbyL-0042Ah-A5; Tue, 21 Sep 2021 09:21:53 +0000
-Received: from so254-9.mailgun.net ([198.61.254.9])
+	id 1mT4U7-0090wh-N0; Wed, 22 Sep 2021 15:48:35 +0000
+Received: from dvalin.narfation.org ([2a00:17d8:100::8b1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSbyF-00429E-7P
- for ath10k@lists.infradead.org; Tue, 21 Sep 2021 09:21:51 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1632216110; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=4+hmr8MTsYxhUBoWgTtkqGJCxvrcnZSiRDUtwqYe5xU=;
- b=OnaFLv9tS9uipO+0x8aKokKXm3FAsoSV71Vuv/8L4fLK7dfVtwOnnN7kt4Ns9lKny9803Hhv
- Xcs2vUWo//9oTqHaZ3p4Ulyc/hF9h2zmPP0/WHEvWeYfqZyNryl8YHMkyIEr6f/+id8EvahC
- q604972EqKlspCjweNc8ZRWYgGU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6149a414b585cc7d24fd8b7c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 09:21:24
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 48BF7C4360C; Tue, 21 Sep 2021 09:21:24 +0000 (UTC)
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: kvalo)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 5083BC4338F;
- Tue, 21 Sep 2021 09:21:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5083BC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-From: Kalle Valo <kvalo@codeaurora.org>
-To: Francesco Magliocca <franciman12@gmail.com>
-Cc: ath10k@lists.infradead.org,
- "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
- "regressions\@lists.linux.dev" <regressions@lists.linux.dev>
-Subject: Re: Bug in Memory Layout of rx_desc for QCA6174
-References: <CAH4F6usFu8-A6k5Z7rU9__iENcSC6Zr-NtRhh_aypR74UvN1uQ@mail.gmail.com>
-Date: Tue, 21 Sep 2021 12:21:20 +0300
-In-Reply-To: <CAH4F6usFu8-A6k5Z7rU9__iENcSC6Zr-NtRhh_aypR74UvN1uQ@mail.gmail.com>
- (Francesco Magliocca's message of "Fri, 18 Jun 2021 09:28:51 +0200")
-Message-ID: <87o88muvvz.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ id 1mT4U5-0090vV-5d
+ for ath10k@lists.infradead.org; Wed, 22 Sep 2021 15:48:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+ s=20121; t=1632325709;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=uLN25ZOcfukmwBOaIV64ZGeQ7sx/aNedlHl7cH/nWT8=;
+ b=DutzWJrLcUCx1YQGFvj76zpUA0GTxjufDNnce4w1GvcxwO6KN7hdrXPW6jY7Ph2UgeFBaB
+ WHzg2GxGDwRq3kFQWHB3LVWeyrtRXG+Ih/7D0noCuHm9yWFgjTayLrJf4nEFZ+Yt6iLpLr
+ gnDfC6NVHQUaYG4WsYX8jeGk0cAsGnQ=
+From: Sven Eckelmann <sven@narfation.org>
+To: ath10k@lists.infradead.org
+Cc: openwrt-devel <openwrt-devel@lists.openwrt.org>,
+ Marek Lindner <marek.lindner@kaiwoo.ai>, Sven Eckelmann <sven@narfation.org>
+Subject: Re: ath10k: qca4019: FW crash on 5GHz when
+ baseEepHeader.nonLinearTxFir == 1
+Date: Wed, 22 Sep 2021 17:48:26 +0200
+Message-ID: <17555113.WnMBOQ43yy@ripper>
+In-Reply-To: <3423718.UToCqzeSYe@ripper>
+References: <3423718.UToCqzeSYe@ripper>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210921_022150_201856_B7759D95 
-X-CRM114-Status: GOOD (  32.59  )
+X-CRM114-CacheID: sfid-20210922_084833_581644_50F8E86A 
+X-CRM114-Status: GOOD (  10.55  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,97 +70,98 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1363321810206339752=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-(adding linux-wireless and regression lists)
+--===============1363321810206339752==
+Content-Type: multipart/signed; boundary="nextPart5730682.S9lqGrx1Bm"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Francesco Magliocca <franciman12@gmail.com> writes:
+--nextPart5730682.S9lqGrx1Bm
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+To: ath10k@lists.infradead.org
+Cc: openwrt-devel <openwrt-devel@lists.openwrt.org>, Marek Lindner <marek.lindner@kaiwoo.ai>, Sven Eckelmann <sven@narfation.org>
+Subject: Re: ath10k: qca4019: FW crash on 5GHz when baseEepHeader.nonLinearTxFir == 1
+Date: Wed, 22 Sep 2021 17:48:26 +0200
+Message-ID: <17555113.WnMBOQ43yy@ripper>
+In-Reply-To: <3423718.UToCqzeSYe@ripper>
+References: <3423718.UToCqzeSYe@ripper>
 
-> Hello everyone,
-> I have a QCA6174 PCIe board, I am using linux kernel 5.12.10.
-> The firmware loaded is:
->> [ 4.483131] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000
->> chip_id 0x00340aff sub 1a56:143a
->> [ 4.483136] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1
->> tracing 0 dfs 0 testmode 0
->> [ 4.483567] ath10k_pci 0000:02:00.0: firmware ver
->> WLAN.RM.4.4.1-00157-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp
->> crc32 90eebefb
->> [    4.572730] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 318825bf
->> [ 4.665592] ath10k_pci 0000:02:00.0: htt-ver 3.60 wmi-op 4 htt-op 3
->> cal otp max-sta 32 raw 0 hwcrypto 1
->
-> around six months ago I reported a bug which is still haunting me:
-> When I am connected to my home's Wi-Fi network and my father's Huawei
-> smartphone is connected too
-> my Wi-Fi card hangs and gets stuck, I have to force restart of the device.
->
-> Note that this problem does not happen if my pc and the smartphone are
-> connected to different networks (for example
-> I tried connecting my pc to the 2.4GHz network and the smartphone to
-> the 5GHz network, and the bug does not appear).
->
-> Now, I tried bisecting driver changes, and I found the faulty one,
-> it is the commit: e3def6f7ddf88636febb12e1e3e86387a4ce5452
+On Friday, 17 September 2021 18:25:35 CEST Sven Eckelmann wrote:
+[...]
+> Interestingly, the crash disappeared when I've changed 
+> baseEepHeader.nonLinearTxFir (offset 0xc2 in the BDF) from 1 to 0.
+> 
+> The device itself was using firmware 10.4-3.6-00140 (the version currently in 
+> linux-firmware) - a working firmware is 10.4-3.5.3-00078. I also wanted to 
+> "bisected" when this problem was introduced but there are only these two 
+> recent firmware version available in Kalle's ath10k-firmware repository.
 
-Ok, so this is the commit:
+In case somebody wants to try it out, here is the config.seed for OpenWrt 
+21.02.0:
 
-commit e3def6f7ddf88636febb12e1e3e86387a4ce5452
-Author:     Govind Singh <govinds@qti.qualcomm.com>
-AuthorDate: Thu Dec 21 14:30:51 2017 +0530
-Commit:     Kalle Valo <kvalo@qca.qualcomm.com>
-CommitDate: Wed Dec 27 12:05:35 2017 +0200
+    CONFIG_TARGET_ipq40xx=y
+    CONFIG_TARGET_ipq40xx_generic=y
+    CONFIG_TARGET_ipq40xx_generic_DEVICE_plasmacloud_pa1200=y
+    CONFIG_ATH10K_LEDS=y
+    CONFIG_PACKAGE_ath10k-firmware-qca4019=y
+    # CONFIG_PACKAGE_ath10k-firmware-qca4019-ct is not set
+    # CONFIG_PACKAGE_firewall is not set
+    CONFIG_PACKAGE_ipq-wifi-plasmacloud_pa1200=y
+    CONFIG_PACKAGE_kmod-ath10k=y
+    # CONFIG_PACKAGE_kmod-ath10k-ct is not set
+    # CONFIG_TARGET_ROOTFS_INITRAMFS is not set
+    CONFIG_PACKAGE_kmod-hwmon-core=y
+    CONFIG_PACKAGE_kmod-ipt-conntrack=y
+    CONFIG_PACKAGE_kmod-ipt-nat=y
+    CONFIG_PACKAGE_kmod-nf-conntrack6=y
+    CONFIG_PACKAGE_kmod-nf-nat=y
 
-    ath10k: Update rx descriptor for WCN3990 target
-    
-    WCN3990 rx descriptor uses different offset of msdu start, msdu end,
-    ppdu end, rx pkt end and rx frag info.
-    To accommodate different offsets, define respective fields in
-    rx descriptor of WCN3990 target.
-    
-    Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
-    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Kind regards,
+	Sven
+--nextPart5730682.S9lqGrx1Bm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-> It adds some fields to structures like rx_msdu_start, rx_frag_info, etc..
-> The changes modify the size of these structures!
->
-> If I revert this commit changes, the bug does not happen
-> (I tested it for two weeks, while the bug happens at least once in 2-3 hours
-> from when the smartphone is connected to the wifi network).
+-----BEGIN PGP SIGNATURE-----
 
-Good, I was just about to ask about that.
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmFLUEoACgkQXYcKB8Em
+e0aqGQ//ZZmb+ivlFNffew4t7CBsW22kkb1OGt83D6nv2scNXagzcuaIgOq2BPun
+HHeKT8dGJfIesVzWCBoTzhe6mD4Sy1JwHku/zrMsEMH/3JLAE1FNz6vHpY4unKnO
+ATMAdv4aJVHe/XwdsVFfwnyJzksADlJSWj/bw5YfabkSCnm7LVqsRTeQO77qKY7/
+8A9ZupSIwO23bNUnPZHRpsMx/gjLaAM0rjUmBOVPOiULVQ/Twpcr6q9u/cC9mSz0
+euY6SDrI7yGYqMYRbxPp8WzSwzoOcNOKyyWXnqNozzkrwYhgROKvSd9Jab8yWbBr
+QbVLUJ0B4viji97VMo2p/qmdtrPqrpgTXSG1TqsrlZN96FoucDCwGejuNj67xLug
+OqxFGkmUYxSG4L8OULj3KC02VYZLB5iFZgkwtB7f3u13unOaz5env23JF6MRInpF
+CjAhJK/mQAmQ/+7G0dZ3FAZP1UK4ef7gXLbE+kiumUuWi7KnIvn5u6mHPEOuaRuf
+e+sFuSTqdpkls789Qfdk7wTxeCDRfnXBi6mar+LYnn/3GiTaqWF5MwZ4B5/kigLX
+qnAp2NrE7U3xK16Cwa+ZBC7E3w0KD9i814xkvKp5feW3I/uTfIQ7o3m+q/Jp0DCc
+BOTdrrxLI5juv+TEfq8QsX6m7P/u29M9+AtAecPN13kERecmZ0Y=
+=4cfS
+-----END PGP SIGNATURE-----
 
-> Also, if I selectively remove some of the changes introduced by the
-> faulty commit, the bug does not go away, so it looks like the problem
-> is in the change of size of the data structures.
+--nextPart5730682.S9lqGrx1Bm--
 
-Heh, I was also about to ask about that as well :) The firmware is
-supposed to handle length differences but clearly it's not.
 
-> Now, I'd like to ask you what we can do to fix this problem... Is
-> there something I am doing wrong? Or is there a bug in the firmware?
->
-> If the firmware can't be easily fixed, I was thinking that we can
-> abstract the htt_rx_desc (in the same way we do with ops in other
-> parts of the driver) to have two versions: one for 32-bit descriptors
-> (like my QCA6174) and one for 64-bit descriptors (i.e. WCN3990, which
-> was the cause of this change).
->
-> I'd be really happy to help, but I am not sure I fully understand what
-> is going on, so what do you think is happening and what should we do?
 
-Getting the firmware fixed is difficult. I would first try abstracting
-the htt_rx_desc, can you send a patch?
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+--===============1363321810206339752==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============1363321810206339752==--
+
+
+
+
