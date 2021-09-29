@@ -1,80 +1,80 @@
-Return-Path: <SRS0=4y1J=OS=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=UCLz=OT=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65A1CC433F5
-	for <ath10k@archiver.kernel.org>; Tue, 28 Sep 2021 14:37:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30FEAC433EF
+	for <ath10k@archiver.kernel.org>; Wed, 29 Sep 2021 09:52:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1ED7460F0F
-	for <ath10k@archiver.kernel.org>; Tue, 28 Sep 2021 14:37:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1ED7460F0F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id E5B4F613A5
+	for <ath10k@archiver.kernel.org>; Wed, 29 Sep 2021 09:52:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E5B4F613A5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:Cc:To:References:
-	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5eI+G6aHCaWKDcaFEBi5dGxct2vgRenCnl4bkeUyRmw=; b=v+SjFvP9RUTK+I
-	me2ZpaOT5pla7xuteyoeZz9Z8NpQCmbEN+aCwDRrkWUKQ3uC+ywX9kLWT+5rLSKfwbXPcJKdMTpJl
-	2qhyggh9iBezw/PVIhVJyy0H6mYX10sjsti36tqQp9gLBRdeiXl4+k2rrXAzflAC00K/il0MxvVwl
-	qpzXTcvQWEzbYm3zsZFytrXPfN7vMj5vHVDNjFuBcE648rQ4nSJAzfan3zLEvup4dTyw06WHYo8y3
-	iC4ArjOZnXhZKXjaTps4nchDsr9kgLbqMB6C8DQ5qy8WEl6lBIp1GgnBoVeZVmYeVQHvgNxLWOa8b
-	6B93LGjhFo0F0H812U4g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=znzTN7UTFMGDilkRfe6yzrcooLAswRckcD+WNN34jMU=; b=eAYG1Yd72InzLu
+	e2L1qx01RF7l6/QVP0/OG7PdUPzue6uiksnaGTTFCcWwTBX3AkLoTqEf6n+H2ltS4F36UWeRInXwL
+	aH9mg/zdLQuZwrnsFEIyM8ytzzmsGAZiz2mxTj7s39uSh9ebYsx26aUeXCTv9GF3EO56QVhKDDsAA
+	tMn2S0xZ9Hy094Eg31AWpnl2FqGm+1Vgolw/oxvO7LGAFglNM3Ujx/ilCdwuZnNRqYms3MTOm8gAZ
+	wFmCucWnLXd79uNFERlj81waPeGChnrTqElnbQrqYT+jTSyy+oBaGjyt7In0I/P8wkNxIr5UM+X5M
+	u2CScxNLQPZ59tL591mA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVEEv-007ct6-HO; Tue, 28 Sep 2021 14:37:49 +0000
-Received: from so254-9.mailgun.net ([198.61.254.9])
+	id 1mVWFE-00AdQe-58; Wed, 29 Sep 2021 09:51:20 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVEEf-007cq6-Cp
- for ath10k@lists.infradead.org; Tue, 28 Sep 2021 14:37:48 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1632839866; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=EDw3PyEIfg3aWiJp4IxUccYqKwjHMVaT8ASH+yp4NG8=;
- b=GWJoWwGI8UhfOK13exeY4ZQqHrdLQRvcgf8jZ/9CP8uqw/u9wtQcoxDA4dsF95DjbRY4gDaz
- q+jkGpSJGh6puJRFa1p9t7pTX4cVlte0ia54q1y98EYu6CiCy1LbpeAmiXo9UcEE7JVbcGr6
- KVkQqbcexnWkpbjptVqv/aG1gq4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6153285c8578ef11edb5b777 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 14:36:12
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 28826C4338F; Tue, 28 Sep 2021 14:36:12 +0000 (UTC)
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: kvalo)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 17DB7C4338F;
- Tue, 28 Sep 2021 14:36:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 17DB7C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
+ id 1mVWFA-00AdP2-O5; Wed, 29 Sep 2021 09:51:18 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B08BC613A5;
+ Wed, 29 Sep 2021 09:51:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1632909075;
+ bh=TQQ+cjIN9++CtK9DgtuA6I+X1WnMjFRfMLxBOvN/9hI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=RDOtNOVfqPdKvpSr/OsPhNB0fjENTcC6due2YIfIDrAMsow0opiYt1QHJew4ql2n1
+ fZH4NruBoG9wJO8wbT0XZJbvOC+xUiY29xWFOTMILMu96eFiy5sv/dZZ7M1arg9kJs
+ 7GltsB1HljAlqeovMRCxLsp8lK6AS/SlkTAt5UjPTSLE3nvQDh8DTRk4hRPx/qY3Wu
+ Ljm7ukEFU/n7DLFsJw3WsBW0ZdKkSNdy4ty2WkKje0ftyfAwYt0JLv6bCNAmbKzOtE
+ 71e19ToUqhiQJknv1dNPYIjXnX1N8db1jYZmFGrSBIsCKGj8DAhwjqiVCn57wl0taE
+ eBXytOfpUPuAw==
+Date: Wed, 29 Sep 2021 10:51:07 +0100
+From: Will Deacon <will@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Arnd Bergmann <arnd@arndb.de>, Rob Clark <robdclark@gmail.com>,
+ Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, Joerg Roedel <joro@8bytes.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Alex Elder <elder@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Kalle Valo <kvalo@codeaurora.org>,
+ Andy Gross <agross@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ netdev@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
+Message-ID: <20210929095107.GA21057@willie-the-truck>
+References: <20210927152412.2900928-1-arnd@kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: sdio: Add missing BH locking around napi_schdule()
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210824144339.2796122-1-festevam@denx.de>
-References: <20210824144339.2796122-1-festevam@denx.de>
-To: Fabio Estevam <festevam@denx.de>
-Cc: kuba@kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, paulmck@kernel.org, marex@denx.de,
- wgong@codeaurora.org, alagusankar@silex-india.com, erik.stromdahl@gmail.com,
- Fabio Estevam <festevam@denx.de>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210928143612.28826C4338F@smtp.codeaurora.org>
-Date: Tue, 28 Sep 2021 14:36:12 +0000 (UTC)
+Content-Disposition: inline
+In-Reply-To: <20210927152412.2900928-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_073746_714736_20D8124B 
-X-CRM114-Status: GOOD (  13.11  )
+X-CRM114-CacheID: sfid-20210929_025116_829087_CE59B121 
+X-CRM114-Status: GOOD (  31.90  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,54 +91,122 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Fabio Estevam <festevam@denx.de> wrote:
+On Mon, Sep 27, 2021 at 05:22:13PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Now that SCM can be a loadable module, we have to add another
+> dependency to avoid link failures when ipa or adreno-gpu are
+> built-in:
+> 
+> aarch64-linux-ld: drivers/net/ipa/ipa_main.o: in function `ipa_probe':
+> ipa_main.c:(.text+0xfc4): undefined reference to `qcom_scm_is_available'
+> 
+> ld.lld: error: undefined symbol: qcom_scm_is_available
+> >>> referenced by adreno_gpu.c
+> >>>               gpu/drm/msm/adreno/adreno_gpu.o:(adreno_zap_shader_load) in archive drivers/built-in.a
+> 
+> This can happen when CONFIG_ARCH_QCOM is disabled and we don't select
+> QCOM_MDT_LOADER, but some other module selects QCOM_SCM. Ideally we'd
+> use a similar dependency here to what we have for QCOM_RPROC_COMMON,
+> but that causes dependency loops from other things selecting QCOM_SCM.
+> 
+> This appears to be an endless problem, so try something different this
+> time:
+> 
+>  - CONFIG_QCOM_SCM becomes a hidden symbol that nothing 'depends on'
+>    but that is simply selected by all of its users
+> 
+>  - All the stubs in include/linux/qcom_scm.h can go away
+> 
+>  - arm-smccc.h needs to provide a stub for __arm_smccc_smc() to
+>    allow compile-testing QCOM_SCM on all architectures.
+> 
+>  - To avoid a circular dependency chain involving RESET_CONTROLLER
+>    and PINCTRL_SUNXI, change the 'depends on RESET_CONTROLLER' in
+>    the latter one to 'select'.
+> 
+> The last bit is rather annoying, as drivers should generally never
+> 'select' another subsystem, and about half the users of the reset
+> controller interface do this anyway.
+> 
+> Nevertheless, this version seems to pass all my randconfig tests
+> and is more robust than any of the prior versions.
+> 
+> Comments?
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/firmware/Kconfig                |  4 +-
+>  drivers/gpu/drm/msm/Kconfig             |  4 +-
+>  drivers/iommu/Kconfig                   |  2 +-
+>  drivers/media/platform/Kconfig          |  2 +-
+>  drivers/mmc/host/Kconfig                |  2 +-
+>  drivers/net/ipa/Kconfig                 |  1 +
+>  drivers/net/wireless/ath/ath10k/Kconfig |  2 +-
+>  drivers/pinctrl/qcom/Kconfig            |  3 +-
+>  drivers/pinctrl/sunxi/Kconfig           |  6 +--
+>  include/linux/arm-smccc.h               | 10 ++++
+>  include/linux/qcom_scm.h                | 71 -------------------------
+>  11 files changed, 23 insertions(+), 84 deletions(-)
+> 
+> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> index 220a58cf0a44..f7dd82ef0b9c 100644
+> --- a/drivers/firmware/Kconfig
+> +++ b/drivers/firmware/Kconfig
+> @@ -203,9 +203,7 @@ config INTEL_STRATIX10_RSU
+>  	  Say Y here if you want Intel RSU support.
+>  
+>  config QCOM_SCM
+> -	tristate "Qcom SCM driver"
+> -	depends on ARM || ARM64
+> -	depends on HAVE_ARM_SMCCC
+> +	tristate
+>  	select RESET_CONTROLLER
+>  
+>  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index e9c6af78b1d7..3ddf739a6f9b 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -17,7 +17,7 @@ config DRM_MSM
+>  	select DRM_SCHED
+>  	select SHMEM
+>  	select TMPFS
+> -	select QCOM_SCM if ARCH_QCOM
+> +	select QCOM_SCM
+>  	select WANT_DEV_COREDUMP
+>  	select SND_SOC_HDMI_CODEC if SND_SOC
+>  	select SYNC_FILE
+> @@ -55,7 +55,7 @@ config DRM_MSM_GPU_SUDO
+>  
+>  config DRM_MSM_HDMI_HDCP
+>  	bool "Enable HDMI HDCP support in MSM DRM driver"
+> -	depends on DRM_MSM && QCOM_SCM
+> +	depends on DRM_MSM
+>  	default y
+>  	help
+>  	  Choose this option to enable HDCP state machine
+> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> index 124c41adeca1..989c83acbfee 100644
+> --- a/drivers/iommu/Kconfig
+> +++ b/drivers/iommu/Kconfig
+> @@ -308,7 +308,7 @@ config APPLE_DART
+>  config ARM_SMMU
+>  	tristate "ARM Ltd. System MMU (SMMU) Support"
+>  	depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
+> -	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
+> +	select QCOM_SCM
+>  	select IOMMU_API
+>  	select IOMMU_IO_PGTABLE_LPAE
+>  	select ARM_DMA_USE_IOMMU if ARM
 
-> On a i.MX-based board with a QCA9377 Wifi chip, the following errors
-> are seen after launching the 'hostapd' application:
-> 
-> hostapd /etc/wifi.conf
-> Configuration file: /etc/wifi.conf
-> wlan0: interface state UNINITIALIZED->COUNTRY_UPDATE
-> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-> Using interface wlan0 with hwaddr 00:1f:7b:31:04:a0 and ssid "thessid"
-> IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-> wlan0: interface state COUNTRY_UPDATE->ENABLED
-> wlan0: AP-ENABLED
-> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-> ...
-> 
-> Fix this problem by adding the BH locking around napi-schedule(),
-> in the same way it was done in commit e63052a5dd3c ("mlx5e: add
-> add missing BH locking around napi_schdule()").
-> 
-> Its commit log provides the following explanation:
-> 
-> "It's not correct to call napi_schedule() in pure process
-> context. Because we use __raise_softirq_irqoff() we require
-> callers to be in a context which will eventually lead to
-> softirq handling (hardirq, bh disabled, etc.).
-> 
-> With code as is users will see:
-> 
-> NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-> "
-> 
-> Fixes: cfee8793a74d ("ath10k: enable napi on RX path for sdio")
-> Signed-off-by: Fabio Estevam <festevam@denx.de>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+I don't want to get in the way of this patch because I'm also tired of the
+randconfig failures caused by QCOM_SCM. However, ARM_SMMU is applicable to
+a wide variety of (non-qcom) SoCs and so it seems a shame to require the
+QCOM_SCM code to be included for all of those when it's not strictly needed
+at all.
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-019edd01d174 ath10k: sdio: Add missing BH locking around napi_schdule()
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210824144339.2796122-1-festevam@denx.de/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Will
 
 _______________________________________________
 ath10k mailing list
