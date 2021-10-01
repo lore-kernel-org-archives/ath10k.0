@@ -1,94 +1,80 @@
-Return-Path: <SRS0=UCLz=OT=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=v3dE=OV=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A725C433EF
-	for <ath10k@archiver.kernel.org>; Wed, 29 Sep 2021 18:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3733CC433EF
+	for <ath10k@archiver.kernel.org>; Fri,  1 Oct 2021 06:38:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1080F61501
-	for <ath10k@archiver.kernel.org>; Wed, 29 Sep 2021 18:31:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1080F61501
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id EF20B61A6F
+	for <ath10k@archiver.kernel.org>; Fri,  1 Oct 2021 06:38:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EF20B61A6F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WsF7OsHJkbq8mfRo/y9fWeKrIKXwZKEL9Q9FSJHbPzM=; b=rrpKrkM312yq3J
-	94v7nHV7MFunEb7Wc5K7L5OtQvuosdItJnZHkZVMSZ3olOpkQ+p2QEcWMOWwemZefDDvhvT50seO6
-	9GM/BvQCNO1NzY+HCWCv9SmPHishyRIfmjeXuWMpGrjun0tVBtFRsVvaGdnoQV88sOX/U9HLC+KYR
-	Xz1pO/kRm+hM1X/BbfRpS3vCjIYVKZUGmYjRW0TfQLmu2GjcnWASCIFg/Ogh8OYro1WevCbQqKK8r
-	d8gK+iUQ2Jm6CSR97EMCg2leFqqXzEUFMr7nevmi/8PCk6LOlPiflhe250Q4WeR7W9icdUYJfeVaH
-	S+/IBNx/RzDLyUhAn4Sw==;
+	List-Owner; bh=Bg45KutdJAGRJq4zew+5IUT/vVMg1O7U2/3SOpRQlp8=; b=xwlk1FJz+HV+vf
+	umYLcZS2WVMf8JFkCKwEsAum1jf40f7W9QjrlM3vKAH9TYbQSXAiH0D36eP9XW2rtLp+FtnHNMj9S
+	qdg1BZVq/gi4SnIpQld2R3EVeU0BrhgbsKRbfYkxVKWisvXeqwmXOb1Pt0hDPbbxNQq3TNhdxiowf
+	aUsijHecsh39Xp1Pt8wrqgKFf3P9DA+0WtXItEfZrXrB43kR10xtn7qKDionnY9315+1OK4ZIME0G
+	ugkvDhlaGYWj07NieX/hDoBKGgFBda/omH9i0YMWxy0sMciFsfRomDW/IfjPDAsOzSUZW6X6m5MGd
+	SXug2ipDZ4UGEJZW7Gtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVeM1-00C4ep-HB; Wed, 29 Sep 2021 18:30:53 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mWCBb-00GocG-HU; Fri, 01 Oct 2021 06:38:23 +0000
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVeLy-00C4dm-F5; Wed, 29 Sep 2021 18:30:51 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DCD761506;
- Wed, 29 Sep 2021 18:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632940249;
- bh=gjF28VMTIug2m1bl/FU/M9snQ4rR61AFv5fVsRKalNI=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=CISl9Rl7R+M6haM6b37hM8Y55j2HAbcMi0eojp8x2X5LO3rMaVS5sudmIbZDpY2Fa
- v3jkZlxqIQsgk7xdc/KNDPDNwnRYggSWDCUgB/s/FiZxlhlKX24dWHVpR7Wt0mlN/7
- mhK6ym9B69BkMQdp4WI4pKJ+rr90hmai+tmZp9rhMJtK7ONWh9AhmLAFD2pHKhaUG3
- HMRbEb2CCpVxIrKjjd6yE6ttU5SikyGGITOLPKJu1L7QFLNrx8p43TXVkgBvbCSBJk
- HoUf+R5uDfbywO7AlRlXS5uX8pbpj5u56JSH5+uMScUwkPlS/zeQ1/1lCIAk541NMv
- d88464bdH/fHQ==
-Received: by mail-wr1-f53.google.com with SMTP id i23so5854042wrb.2;
- Wed, 29 Sep 2021 11:30:49 -0700 (PDT)
-X-Gm-Message-State: AOAM532Lam9t0Vb96UXrKk2fTGLMLc/Cl4PaeiV+eqjCPrwvr6VlRpMj
- jDHkH9werWrAQgg4EiVpoIGAUcrRiiXRrjkOE/M=
-X-Google-Smtp-Source: ABdhPJznh64DeD5YLkqLyCdpGZrw2eJDCFhsGINcOBsXO/6p1u7dAzpxKDez727ElHRBigRMgHpji/X6aGMkMR1n8h4=
-X-Received: by 2002:a05:6000:1561:: with SMTP id
- 1mr1607418wrz.369.1632940247984; 
- Wed, 29 Sep 2021 11:30:47 -0700 (PDT)
+ id 1mWCBY-00Goaj-2p
+ for ath10k@lists.infradead.org; Fri, 01 Oct 2021 06:38:21 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1633070298; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=zwE1UcSRKjH4fdXGIfTb0HNedDc6r4BlZz/g6kDw5TA=;
+ b=gGrqpEa2MgJcnfl8iuZFe2Z88NoBQ6i4cOJfcpp+drdLMk0epyY4oyyQhZ+U8WmxXZEGrfl/
+ lED9PTQl8lSS0CBzOSY7R33Tx7+ImSEXY1qkKAz4acUWCiDKhJqZ4GXowdUrkS79xHfHK4QX
+ 59jZcCcWwldQ2/DJFpf37IGx43w=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6156acd89ffb41314965ce26 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 06:38:16
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id C54F3C43616; Fri,  1 Oct 2021 06:38:15 +0000 (UTC)
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: kvalo)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id DBEA4C4338F;
+ Fri,  1 Oct 2021 06:38:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DBEA4C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+From: Kalle Valo <kvalo@codeaurora.org>
+To: Maurice Smulders <Maurice.Smulders@windtalker.com>
+Cc: "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ ath10k@lists.infradead.org, ath11k@lists.infradead.org
+Subject: Re: Qualcomm Atheros Ath10k and Ath11k CE Buffer DMA alignment issues
+ on Raspberry PI CM4 - Aarch64 architecture
+References: <35F57D80-C7F7-47B2-BEC8-533006C72E2A@windtalker.com>
+Date: Fri, 01 Oct 2021 09:38:11 +0300
+In-Reply-To: <35F57D80-C7F7-47B2-BEC8-533006C72E2A@windtalker.com> (Maurice
+ Smulders's message of "Thu, 16 Sep 2021 14:38:14 +0000")
+Message-ID: <87lf3d5jxo.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210927152412.2900928-1-arnd@kernel.org>
- <20210929095107.GA21057@willie-the-truck>
- <CAK8P3a2QnJkYCoEWhziYYXQusb-25_wUhA5ZTGtBsyfFx3NWzQ@mail.gmail.com>
- <YVR8Q7LO0weiFin+@yoga>
-In-Reply-To: <YVR8Q7LO0weiFin+@yoga>
-From: Arnd Bergmann <arnd@kernel.org>
-Date: Wed, 29 Sep 2021 20:30:30 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2Kk6Y1Hs98z2UFEis8cWekREFt8YKg2Nbu3G5WQJ7Fag@mail.gmail.com>
-Message-ID: <CAK8P3a2Kk6Y1Hs98z2UFEis8cWekREFt8YKg2Nbu3G5WQJ7Fag@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Rob Clark <robdclark@gmail.com>, 
- Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>, 
- Joerg Roedel <joro@8bytes.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Ulf Hansson <ulf.hansson@linaro.org>, Alex Elder <elder@kernel.org>, 
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Kalle Valo <kvalo@codeaurora.org>, 
- Andy Gross <agross@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
- Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
- Jernej Skrabec <jernej.skrabec@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
- Sudeep Holla <sudeep.holla@arm.com>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>, 
- freedreno <freedreno@lists.freedesktop.org>, 
- "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>, 
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, 
- Networking <netdev@vger.kernel.org>, ath10k@lists.infradead.org, 
- linux-wireless <linux-wireless@vger.kernel.org>, 
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, 
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-sunxi@lists.linux.dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210929_113050_584397_F8AD62F1 
-X-CRM114-Status: GOOD (  37.04  )
+X-CRM114-CacheID: sfid-20210930_233820_223240_A4FC2691 
+X-CRM114-Status: GOOD (  17.96  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,114 +86,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 29, 2021 at 4:46 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 29 Sep 05:04 CDT 2021, Arnd Bergmann wrote:
->
-> > On Wed, Sep 29, 2021 at 11:51 AM Will Deacon <will@kernel.org> wrote:
-> > > On Mon, Sep 27, 2021 at 05:22:13PM +0200, Arnd Bergmann wrote:
-> > > >
-> > > > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> > > > index 124c41adeca1..989c83acbfee 100644
-> > > > --- a/drivers/iommu/Kconfig
-> > > > +++ b/drivers/iommu/Kconfig
-> > > > @@ -308,7 +308,7 @@ config APPLE_DART
-> > > >  config ARM_SMMU
-> > > >       tristate "ARM Ltd. System MMU (SMMU) Support"
-> > > >       depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> > > > -     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
-> > > > +     select QCOM_SCM
-> > > >       select IOMMU_API
-> > > >       select IOMMU_IO_PGTABLE_LPAE
-> > > >       select ARM_DMA_USE_IOMMU if ARM
-> > >
-> > > I don't want to get in the way of this patch because I'm also tired of the
-> > > randconfig failures caused by QCOM_SCM. However, ARM_SMMU is applicable to
-> > > a wide variety of (non-qcom) SoCs and so it seems a shame to require the
-> > > QCOM_SCM code to be included for all of those when it's not strictly needed
-> > > at all.
-> >
-> > Good point, I agree that needs to be fixed. I think this additional
-> > change should do the trick:
-> >
->
-> ARM_SMMU and QCOM_IOMMU are two separate implementations and both uses
-> QCOM_SCM. So both of them should select QCOM_SCM.
-
-Right, I figured that out later as well.
-
-> "Unfortunately" the Qualcomm portion of ARM_SMMU is builtin
-> unconditionally, so going with something like select QCOM_SCM if
-> ARCH_QCOM would still require the stubs in qcom_scm.h.
-
-Yes, sounds good. I also noticed that I still need one hack in there
-if I do this:
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 55690af1b25d..36c304a8fc9b 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -427,6 +427,9 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct
-arm_smmu_device *smmu)
- {
-        const struct device_node *np = smmu->dev->of_node;
-
-+       if (!IS_ENABLED(CONFIG_QCOM_SCM))
-+               return ERR_PTR(-ENXIO);
-+
- #ifdef CONFIG_ACPI
-        if (np == NULL) {
-                /* Match platform for ACPI boot */
-
-
-Otherwise it still breaks with ARM_SMMU=y and QCOM_SCM=m.
-
-Splitting out the qualcomm portion of the arm_smmu driver using
-a separate 'bool' symbol should also work, if  you prefer that
-and can suggest a name and help text for that symbol. It would
-look like
-
-diff --git a/drivers/iommu/arm/arm-smmu/Makefile
-b/drivers/iommu/arm/arm-smmu/Makefile
-index e240a7bcf310..b0cc01aa20c9 100644
---- a/drivers/iommu/arm/arm-smmu/Makefile
-+++ b/drivers/iommu/arm/arm-smmu/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_QCOM_IOMMU) += qcom_iommu.o
- obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
--arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o arm-smmu-qcom.o
-+arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o
-+arm_smmu-$(CONFIG_ARM_SMMU_QCOM) += arm-smmu-qcom.o
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-index 9f465e146799..2c25cce38060 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-@@ -215,7 +215,8 @@ struct arm_smmu_device *arm_smmu_impl_init(struct
-arm_smmu_device *smmu)
-            of_device_is_compatible(np, "nvidia,tegra186-smmu"))
-                return nvidia_smmu_impl_init(smmu);
-
--       smmu = qcom_smmu_impl_init(smmu);
-+       if (IS_ENABLED(CONFIG_ARM_SMMU_QCOM))
-+               smmu = qcom_smmu_impl_init(smmu);
-
-        if (of_device_is_compatible(np, "marvell,ap806-smmu-500"))
-                smmu->impl = &mrvl_mmu500_impl;
-
-
-
-       Arnd
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+TWF1cmljZSBTbXVsZGVycyA8TWF1cmljZS5TbXVsZGVyc0B3aW5kdGFsa2VyLmNvbT4gd3JpdGVz
+OgoKPiBJIGFtIHRyeWluZyB0byB1c2UgdGhlIFFDQTYxNzRBIGFuZCB0aGUgUUNBNjM5MCBvbiBh
+IGN1c3RvbSBib2FyZCB1c2luZyBhIFBDSWUgc3dpdGNoIC0gYnV0IHRoYXQgZG9lc24ndCBtYXR0
+ZXIgLSBJdCBzdGlsbCBmYWlscyB3L28gdGhlIHN3aXRjaDoKPgo+IGxzcGNpCj4gMDA6MDAuMCBQ
+Q0kgYnJpZGdlOiBCcm9hZGNvbSBJbmMuIGFuZCBzdWJzaWRpYXJpZXMgQkNNMjcxMSBQQ0llIEJy
+aWRnZSAocmV2IDIwKQo+IDAxOjAwLjAgUENJIGJyaWRnZTogUGVyaWNvbSBTZW1pY29uZHVjdG9y
+IFBJN0M5WDJHNjA4R1AgUENJZTIgNi1Qb3J0LzgtTGFuZSBQYWNrZXQgU3dpdGNoCj4gMDI6MDEu
+MCBQQ0kgYnJpZGdlOiBQZXJpY29tIFNlbWljb25kdWN0b3IgUEk3QzlYMkc2MDhHUCBQQ0llMiA2
+LVBvcnQvOC1MYW5lIFBhY2tldCBTd2l0Y2gKPiAwMjowMi4wIFBDSSBicmlkZ2U6IFBlcmljb20g
+U2VtaWNvbmR1Y3RvciBQSTdDOVgyRzYwOEdQIFBDSWUyIDYtUG9ydC84LUxhbmUgUGFja2V0IFN3
+aXRjaAo+IDAyOjAzLjAgUENJIGJyaWRnZTogUGVyaWNvbSBTZW1pY29uZHVjdG9yIFBJN0M5WDJH
+NjA4R1AgUENJZTIgNi1Qb3J0LzgtTGFuZSBQYWNrZXQgU3dpdGNoCj4gMDI6MDQuMCBQQ0kgYnJp
+ZGdlOiBQZXJpY29tIFNlbWljb25kdWN0b3IgUEk3QzlYMkc2MDhHUCBQQ0llMiA2LVBvcnQvOC1M
+YW5lIFBhY2tldCBTd2l0Y2gKPiAwMjowNS4wIFBDSSBicmlkZ2U6IFBlcmljb20gU2VtaWNvbmR1
+Y3RvciBQSTdDOVgyRzYwOEdQIFBDSWUyIDYtUG9ydC84LUxhbmUgUGFja2V0IFN3aXRjaAo+IDA1
+OjAwLjAgVW5hc3NpZ25lZCBjbGFzcyBbZmYwMF06IFF1YWxjb21tIFFDQTYzOTAgV2lyZWxlc3Mg
+TmV0d29yayBBZGFwdGVyIFtBWDUwMC1EQlMgKDJ4MildCj4gMDY6MDAuMCBOZXR3b3JrIGNvbnRy
+b2xsZXI6IFF1YWxjb21tIEF0aGVyb3MgUUNBNjE3NCA4MDIuMTFhYyBXaXJlbGVzcyBOZXR3b3Jr
+IEFkYXB0ZXIgKHJldiAzMikKPgo+IEJvdGggZGV2aWNlIGRyaXZlcnMgZG8gbm90IHdvcmsuIEkg
+Y2hhbmdlZCB0aGUgQ0UgY29kZSB0byB1c2UgdGhlIEdGUF9ETUEzMiBmbGFnIGFzIGFuIGF0dGVt
+cHQgdG8gYWxsb2NhdGUgdGhlIG1lbW9yeSBjb3JyZWN0bHksIGJ1dCBETUVTRyBzaG93cwo+Cj4g
+W3BpQG5vZGU2NzQ1IH5dJCBkbWVzZyB8IGdyZXAgYXRoCj4gW8KgwqDCoMKgNS44MDE4OTZdIGF0
+aDEwa19wY2kgMDAwMDowNjowMC4wOiBhdGgxMGtfY2VfYWxsb2Nfc3JjX3Jpbmc6IE5vdCB1bmFs
+aWduZWQgPC0tLSBVc2VyIG1lc3NhZ2UgZXhpdCBmcm9tIHRoaXMgZnVuY3Rpb24KPiBbwqDCoMKg
+wqA1LjgwNDI4NF0gYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IGZhaWxlZCB0byBhbGxvYyBDRSBz
+cmMgcmluZyAwOiAtMTIKPiBbwqDCoMKgwqA1LjgxMzEzOF0gYXRoMTBrX3BjaSAwMDAwOjA2OjAw
+LjA6IGZhaWxlZCB0byBhbGxvY2F0ZSBjb3B5IGVuZ2luZSBwaXBlIDA6IC0xMgo+IFvCoMKgwqDC
+oDUuODE1NDE0XSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogZmFpbGVkIHRvIGFsbG9jYXRlIGNv
+cHkgZW5naW5lIHBpcGVzOiAtMTIKPiBbwqDCoMKgwqA1LjgxODAwMl0gYXRoMTBrX3BjaSAwMDAw
+OjA2OjAwLjA6IGZhaWxlZCB0byBzZXR1cCByZXNvdXJjZTogLTEyCj4gW8KgwqDCoMKgNS44MjY5
+NTNdIGF0aDEwa19wY2k6IHByb2JlIG9mIDAwMDA6MDY6MDAuMCBmYWlsZWQgd2l0aCBlcnJvciAt
+MTIKPiBbwqDCoMKgwqA1Ljg1NTk5M10gYXRoMTFrX3BjaSAwMDAwOjA1OjAwLjA6IFdBUk5JTkc6
+IGF0aDExayBQQ0kgc3VwcG9ydCBpcyBleHBlcmltZW50YWwhCj4gW8KgwqDCoMKgNS44OTYxNDhd
+IGF0aDExa19wY2kgMDAwMDowNTowMC4wOiBCQVIgMDogYXNzaWduZWQgW21lbSAweDYwMDAwMDAw
+MC0weDYwMGZmZmZmZiA2NGJpdF0KPiBbwqDCoMKgwqA1LjkwMDIzNl0gYXRoMTFrX3BjaSAwMDAw
+OjA1OjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQo+IFvCoMKgwqDCoDUuOTE0
+MDUwXSBhdGgxMWtfcGNpOiBwcm9iZSBvZiAwMDAwOjA1OjAwLjAgZmFpbGVkIHdpdGggZXJyb3Ig
+LTEyCj4KPiBFcnJvciAtMTIgKEVOT01FTSkgZ2V0cyByZXR1cm5lZCBhbmQgdGhlIGRyaXZlciBk
+b2Vzbid0IHdvcmsuLi4KPgo+IDA1OjAwLjAgVW5hc3NpZ25lZCBjbGFzcyBbZmYwMF06IFF1YWxj
+b21tIFFDQTYzOTAgV2lyZWxlc3MgTmV0d29yayBBZGFwdGVyIFtBWDUwMC1EQlMgKDJ4MildCj4g
+U3Vic3lzdGVtOiBRdWFsY29tbSBEZXZpY2UgMDEwOAo+IENvbnRyb2w6IEkvTy0gTWVtKyBCdXNN
+YXN0ZXItIFNwZWNDeWNsZS0gTWVtV0lOVi0gVkdBU25vb3AtIFBhckVyci0gU3RlcHBpbmctIFNF
+UlItIEZhc3RCMkItIERpc0lOVHgtCj4gU3RhdHVzOiBDYXArIDY2TUh6LSBVREYtIEZhc3RCMkIt
+IFBhckVyci0gREVWU0VMPWZhc3QgPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydC0gPlNFUlItIDxQ
+RVJSLSBJTlR4LQo+IFJlZ2lvbiAwOiBNZW1vcnkgYXQgNjAwMDAwMDAwICg2NC1iaXQsIG5vbi1w
+cmVmZXRjaGFibGUpIFtzaXplPTE2TV0KPiBDYXBhYmlsaXRpZXM6IDxhY2Nlc3MgZGVuaWVkPgo+
+IEtlcm5lbCBtb2R1bGVzOiBhdGgxMWtfcGNpCj4KPiAwNjowMC4wIE5ldHdvcmsgY29udHJvbGxl
+cjogUXVhbGNvbW0gQXRoZXJvcyBRQ0E2MTc0IDgwMi4xMWFjIFdpcmVsZXNzIE5ldHdvcmsgQWRh
+cHRlciAocmV2IDMyKQo+IFN1YnN5c3RlbTogQVNVU1RlSyBDb21wdXRlciBJbmMuIERldmljZSA4
+NmUwCj4gQ29udHJvbDogSS9PLSBNZW0tIEJ1c01hc3Rlci0gU3BlY0N5Y2xlLSBNZW1XSU5WLSBW
+R0FTbm9vcC0gUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0gRmFzdEIyQi0gRGlzSU5UeC0KPiBTdGF0
+dXM6IENhcCsgNjZNSHotIFVERi0gRmFzdEIyQi0gUGFyRXJyLSBERVZTRUw9ZmFzdCA+VEFib3J0
+LSA8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0gPFBFUlItIElOVHgtCj4gSW50ZXJydXB0OiBwaW4g
+QSByb3V0ZWQgdG8gSVJRIDQ4Cj4gUmVnaW9uIDA6IE1lbW9yeSBhdCA2MDEwMDAwMDAgKDY0LWJp
+dCwgbm9uLXByZWZldGNoYWJsZSkgW2Rpc2FibGVkXSBbc2l6ZT0yTV0KPiBDYXBhYmlsaXRpZXM6
+IDxhY2Nlc3MgZGVuaWVkPgo+IEtlcm5lbCBtb2R1bGVzOiBhdGgxMGtfcGNpCj4KPiBJIGFtIGF0
+IGEgbG9zcyB3aGF0IHRvIGRvIGhlcmUuIFRoZSBhdGgxMWsgZHJpdmVyIGhhcyB0aGUgU0lOR0xF
+IE1TSSBmaXggYnVpbHQgaW4uwqAKPgo+IEFueSBpZGVhcycgd2hhdCBJIGNhbiB0cnkgdG8gZml4
+IHRoaXMgcHJvYmxlbSBvbiB0aGUgcmFzcGJlcnJ5IFBpIENNND8KClNvcnJ5LCBubyBpZGVhcy4g
+QnV0IGFkZGluZyBhdGgxMGsgYW5kIGF0aDExayBsaXN0cywgbWF5YmUgcGVvcGxlIHRoZXJlCmNh
+biBwcm9wb3NlIHNvbWV0aGluZy4KCi0tIApodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3By
+b2plY3QvbGludXgtd2lyZWxlc3MvbGlzdC8KCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwu
+b3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
