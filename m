@@ -2,14 +2,14 @@ Return-Path: <SRS0=0INN=O2=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64400C433FE
-	for <ath10k@archiver.kernel.org>; Wed,  6 Oct 2021 03:55:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92168C433EF
+	for <ath10k@archiver.kernel.org>; Wed,  6 Oct 2021 03:56:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 363636120F
-	for <ath10k@archiver.kernel.org>; Wed,  6 Oct 2021 03:55:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 363636120F
+	by mail.kernel.org (Postfix) with ESMTPS id 65A8F6120F
+	for <ath10k@archiver.kernel.org>; Wed,  6 Oct 2021 03:56:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 65A8F6120F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,52 +18,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5R5UbtYgeqrPAvxrP8v0w2s+pp4bdZAOtBQ4HoeoRRo=; b=4QXf+QFjFRsrXD
-	nsDOiNdPy5DIuOh6t0lt1M2PETM3Yraa/+zA9nH1krfQin8bemZiyXFWf/SPjDKyaRbmGl8EPrdju
-	wdMtrRC3oZfeHdJJzBcY2AhpXfljfshNEIlsbYFv9IE0zq3QqaBOIOn2nZm/b1U+6RggIFKYGMv+b
-	P54eixzq2HVtDDFglbu7Hnkf6EFj7VgEL3l6okDXwLPtoaG0hKGL19hj+Tf6zubYstLOs9lH858Rh
-	xksnrzhITXweUaOtHCjWxKKhS+okIGRIgHGpqpsfZynGAIFQjgRoRp+UD21XpYtazjdSNEN7rMnYf
-	YO4e8xveHVescduqxMgQ==;
+	List-Owner; bh=WV5sy41gg06RluN9oEaqUUmqaaAlD3JL291k5zdJ8Qc=; b=AGHvinpvx1SCEx
+	/Yk6O4C13zDB+Z0tPd+8/18/UaijIwmU3SljLNVbqxCJ3LE99eUyC5hrSpItwiqyLagTmFQhDXDUa
+	LafOyMa0NNIjZg97wT3lL8ss6W0RHYTV5pnYk26oEZ4lBXaOlUge237n7tthk4ZkKaH5welr1awdy
+	7Jvx/5+vALpmkU6omsPXOKt60KlHivF0t2p9iWaRZj4zYqS8VeclfR9iHcF9W+pJZTjc73PC3v3AT
+	Fj3U/V220ktOVcy0CFBP8e7Gp+m5aZm8NsuS1dkZzPm3ezj8QIdB1/FyENF0mhjzUkxLx6XGimq3Y
+	MsEF6uKZZiD5k9MAfn/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mXy1V-00CieU-2G; Wed, 06 Oct 2021 03:55:17 +0000
-Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
+	id 1mXy2H-00Cj9x-RH; Wed, 06 Oct 2021 03:56:06 +0000
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mXy0d-00Chyw-Av
- for ath10k@lists.infradead.org; Wed, 06 Oct 2021 03:54:24 +0000
-Received: by mail-lf1-x130.google.com with SMTP id b20so4612965lfv.3
- for <ath10k@lists.infradead.org>; Tue, 05 Oct 2021 20:54:22 -0700 (PDT)
+ id 1mXy0g-00Ci1L-IF
+ for ath10k@lists.infradead.org; Wed, 06 Oct 2021 03:54:27 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id r19so4460075lfe.10
+ for <ath10k@lists.infradead.org>; Tue, 05 Oct 2021 20:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=/yFX2Zi7N+6O7NNekyBMBaaX61kWJ67YZ/rDfO9/pCo=;
- b=wbt/SYeVTpGchHAcroGs65Of1AQiUTTG33akfUx79AzYY7nm6RIYq5RhUXp+c9Jys4
- nXiObPAc9jCzAYIZ1poh6hdKRe+bj0bgMbS88p28gO6wqFmeLTYm4zuoD4+T3MhC6yjW
- ZepDlWf6ARy8vZhxqA1b3B0t0KcRz9417nhNZY94WNepBe4GPa6KVt65f7s9X/t4aZDk
- shoOxtV8sXrBvfORX2E4aaC1h8l1zuhYA8z4UiPS3Eu3WEKvzDt2tSUCWnrG0Jrlo5AG
- Qcx1rElX2rZ8uflS2LqYwzGzlTy4ej8i4J3tGxc/Gc0S07QUgsx8cN9arN3kElLOU6aF
- ypyg==
+ bh=DZOpdA3eYjpudg4OpQFFkH8jLHw3BxsNdxzTMff7kgw=;
+ b=Vqowca4UgiaC+fBXqBcu/uY1PBquzcLUSNLvI4m85X7UrokO3SMSU2VjgjwlLvMQmh
+ qsx0PVYwuS97nctSczbW0/EPVJ0QBpI8npXxHwrFMaNxAVtaIlRSrtfDr/01lMkJFIzk
+ NeLaREUo2x9NAHKctYTeKFJdcbLKG3DGrW4TE6vnxKsvxVRzGpwnzWZPAhbV6qTOP1TZ
+ 8albRcafCq9VIoNGF5i1EtEgCzTR7YeJxiTMPsw8rZxBFCSGpBQwXD+jrBjbyyQnVjnb
+ ujZ8iI+IoHoh/d/5ZhPx+FNiAsGnS4MzGWDOWNQ3qbBfyZhavzipupkGO+MkveylWsCR
+ B8HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=/yFX2Zi7N+6O7NNekyBMBaaX61kWJ67YZ/rDfO9/pCo=;
- b=gwR5oVvRLrWXQU4A6O4WYxEFJgzU82de/9MX2pOjhDaQniBz5lQzcGKdrf+eBJb0Un
- 5V9MBLbbvJjmkEjTEWBH9UAPsBc/M3d2KriLK+8iLxKkmJwHZMCheHiLcuRY3ROxQY0Z
- GTFKWC3T8KSrRgT9MVlkE3wYDAPeW1yFZRg8hwjLzA/czzF7YQSAgK1iO7ZvnndYR3JM
- PRTBQIimBVvJwt15LIStzvDUBZup8YKnddySdO/or4NDv/eI62wWFRjllgtMfbxEzEVC
- NwoKRh41w8xC+X81mld6u2IwRUCjID8aFpcm3jaWzWGZdDK9xJfLFxLrRxa1CqmxE9fy
- cQ8w==
-X-Gm-Message-State: AOAM531s/qZCsNszLYX+Rr9Pb65MHjx3WvUCgqofRsEZMZgl4WhP2L3f
- ajjeK7CMWS5YOjecl5Y/bl4Q8g==
-X-Google-Smtp-Source: ABdhPJwT5ag+B+NF1iSiO5FkQOo/yXhp0aFso0y+wwdL536y1fd1PVtCEaOvxXhyUrfGhnEPv5FIjg==
-X-Received: by 2002:a05:6512:2341:: with SMTP id
- p1mr7186976lfu.204.1633492461726; 
- Tue, 05 Oct 2021 20:54:21 -0700 (PDT)
+ bh=DZOpdA3eYjpudg4OpQFFkH8jLHw3BxsNdxzTMff7kgw=;
+ b=AHf3uJOYGD2/E4DXatqct2RZ0TWt62yUpNtTEriglIn+HkFn1if4utyeXQugKidsrS
+ 7dGwax6rWSfXfaIsXcRZ9ediFpAVddloVimAmIG6qa/fwbC1y194jiB7BLP3Wot3Z+BV
+ Qo6SkI8+L8fxxBamVXdoQ3pJIAJFNKkK8RVhwGb3HtColW6xkEkpzk874fKRNafj5vHT
+ DEzfP4rePTfqbOkTfF1ThY5XJrWuAf1i3yQEqGM9Vm6VB9+jUu/qbly/Ku58SSMWvgrF
+ ZxT2tnxq/dP77KWiiXfzHKVlKxYM4h+z3wrU1eOMggo2INjtEtrrt9uNVbZXALffWB5r
+ lhHA==
+X-Gm-Message-State: AOAM531ZGsjoWVwe0JoGzxnSNOTWZV3sXhPVyX4T6K0TtK9K0A3CZpdT
+ Hg6f53m9cIURdyVomV+yKLRcHQ==
+X-Google-Smtp-Source: ABdhPJzAuciR0Bs89UsVK2ICmqc78PA7gPD8wfVqylDag0DqJdI3Y1HguWHKaOEbTu8SD0HZCDgojQ==
+X-Received: by 2002:a2e:480a:: with SMTP id v10mr25910067lja.268.1633492465108; 
+ Tue, 05 Oct 2021 20:54:25 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
- by smtp.gmail.com with ESMTPSA id s4sm2142967lfd.103.2021.10.05.20.54.20
+ by smtp.gmail.com with ESMTPSA id s4sm2142967lfd.103.2021.10.05.20.54.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 Oct 2021 20:54:21 -0700 (PDT)
+ Tue, 05 Oct 2021 20:54:24 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -77,17 +76,18 @@ Cc: linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [PATCH v1 11/15] arm64: dts: qcom: sdm845-db845c: switch bt+wifi to
- qca power sequencer
-Date: Wed,  6 Oct 2021 06:54:03 +0300
-Message-Id: <20211006035407.1147909-12-dmitry.baryshkov@linaro.org>
+Subject: [PATCH v1 15/15] WIP: arm64: dts: qcom: qrb5165-rb5: add bus-pwrseq
+ property to pcie0
+Date: Wed,  6 Oct 2021 06:54:07 +0300
+Message-Id: <20211006035407.1147909-16-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
 References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211005_205423_401633_A7FF749B 
-X-CRM114-Status: GOOD (  10.37  )
+X-CRM114-CacheID: sfid-20211005_205426_654968_188A9B50 
+X-CRM114-Status: UNSURE (   8.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,78 +104,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Switch sdm845-db845c device tree to use new power sequencer driver
-rather than separate regulators.
-
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 21 ++++++++++++++-------
- arch/arm64/boot/dts/qcom/sdm845.dtsi       |  6 ++++++
- 2 files changed, 20 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index 2d5533dd4ec2..a6a34a959a91 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -629,6 +629,16 @@ &qupv3_id_1 {
+diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+index 326330f528fc..0c347cb6f8e0 100644
+--- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
++++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+@@ -689,6 +689,7 @@ wifi-therm@1 {
+ 
+ &pcie0 {
  	status = "okay";
++	bus-pwrseq = <&qca_pwrseq 0>;
  };
  
-+&qca_pwrseq {
-+	status = "okay";
-+
-+	vddio-supply = <&vreg_s4a_1p8>;
-+
-+	vddxo-supply = <&vreg_l7a_1p8>;
-+	vddrf-supply = <&vreg_l17a_1p3>;
-+	vddch0-supply = <&vreg_l25a_3p3>;
-+};
-+
- &sdhc_2 {
- 	status = "okay";
- 
-@@ -916,10 +926,8 @@ &uart6 {
- 	bluetooth {
- 		compatible = "qcom,wcn3990-bt";
- 
--		vddio-supply = <&vreg_s4a_1p8>;
--		vddxo-supply = <&vreg_l7a_1p8>;
--		vddrf-supply = <&vreg_l17a_1p3>;
--		vddch0-supply = <&vreg_l25a_3p3>;
-+		bt-pwrseq = <&qca_pwrseq 1>;
-+
- 		max-speed = <3200000>;
- 	};
- };
-@@ -1036,9 +1044,8 @@ &wifi {
- 	status = "okay";
- 
- 	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
--	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
--	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
--	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
-+
-+	wifi-pwrseq = <&qca_pwrseq 0>;
- 
- 	qcom,snoc-host-cap-8bit-quirk;
- };
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 6d7172e6f4c3..99117eaf617f 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -1046,6 +1046,12 @@ psci {
- 		method = "smc";
- 	};
- 
-+	qca_pwrseq: qca-pwrseq {
-+		compatible = "qcom,wcn3990-pwrseq";
-+		#pwrseq-cells = <1>;
-+		status = "disabled";
-+	};
-+
- 	soc: soc@0 {
- 		#address-cells = <2>;
- 		#size-cells = <2>;
+ &pcie0_phy {
 -- 
 2.33.0
 
