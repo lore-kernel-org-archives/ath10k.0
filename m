@@ -2,14 +2,14 @@ Return-Path: <SRS0=pCY9=O5=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE98AC433EF
-	for <ath10k@archiver.kernel.org>; Sat,  9 Oct 2021 03:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BDC5C433F5
+	for <ath10k@archiver.kernel.org>; Sat,  9 Oct 2021 03:26:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E08060EBD
-	for <ath10k@archiver.kernel.org>; Sat,  9 Oct 2021 03:23:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7E08060EBD
+	by mail.kernel.org (Postfix) with ESMTPS id D324360EBD
+	for <ath10k@archiver.kernel.org>; Sat,  9 Oct 2021 03:26:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D324360EBD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hOhHs4xinsxzTibcUaZ+mn69lIxF7MJS2wIOf52bkxE=; b=sI98+VPDgn10mN
-	eDiB/XN2LQ6QsK5b/qNIgiYX7u9cY1rcB57SlKB9rDfszql0yubsx+K+k1sIK3Mz9L9ldlkZm6Qpt
-	xbAZBUXYl9lk5Xo1asYrNvCjNr7srSkvXJJMkKPiAH1AESwueTjCcbpkHE0vHRm24Mt7exChm0exB
-	gg8+MPSIWRukuNPMVV24RqpEZz/O7vaqSxn8cdE85t68nnUqSeeZQBlqIkvl9JzTOW/o7sjigXq2d
-	gX3Ia+2JgZm9PFJB4KNqL66ui7JWFZQnUAlGQwBC+2M9CwQ/vCwN02LsM0fZKTpTv35ersJihzYQ5
-	hbWYZWlD0gss8rMkvmYg==;
+	List-Owner; bh=viXQ/5XzXmXX6HRpmBfgA8NDoK1LftMTZKfj1vTJcvA=; b=cmh7fIJt4D4aWU
+	f6alF81TBLbqBjbBz3EyOGO14STCOCkGeUdxT8xnhFNebkdDMTKwSlnmtycrJBPbe8KcWP/R42bhD
+	kypZbnjr7ZecRwQpuH+dOGOJ7h7Jk5Iqnulc5Fr9gBgoDG1Tv/0cI0zIzr7toTNcOLdR45oNcTW0Z
+	3SktyENeMyvo6RlHhaMzNRqrfGIQmwB9m3hBMjlluNZj484EpZzjEleRthMbYuECXKhj2eg7e4whe
+	fZXb485GTJBapC2E8iqBp+rYVoRu2jCiUczBAv3aotf2xL8+S2731m9ZH3JDYB3jqBUuWakJ+t1FF
+	x534bh/RpD3uUaWFxnuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mZ2xB-004woh-53; Sat, 09 Oct 2021 03:23:17 +0000
+	id 1mZ30V-004yEb-Qb; Sat, 09 Oct 2021 03:26:43 +0000
 Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mZ2j0-004qGz-OZ
- for ath10k@lists.infradead.org; Sat, 09 Oct 2021 03:08:40 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="226526361"
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; d="scan'208";a="226526361"
+ id 1mZ30R-004yDA-WD
+ for ath10k@lists.infradead.org; Sat, 09 Oct 2021 03:26:41 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="226527533"
+X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; d="scan'208";a="226527533"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Oct 2021 20:08:38 -0700
+ 08 Oct 2021 20:26:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; d="scan'208";a="440134660"
+X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; d="scan'208";a="440137694"
 Received: from lkp-server02.sh.intel.com (HELO 1950922c5479) ([10.239.97.151])
- by orsmga006.jf.intel.com with ESMTP; 08 Oct 2021 20:08:36 -0700
+ by orsmga006.jf.intel.com with ESMTP; 08 Oct 2021 20:26:38 -0700
 Received: from kbuild by 1950922c5479 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mZ2iy-00013n-43; Sat, 09 Oct 2021 03:08:36 +0000
-Date: Sat, 09 Oct 2021 11:08:09 +0800
+ id 1mZ30P-00014i-Cq; Sat, 09 Oct 2021 03:26:37 +0000
+Date: Sat, 09 Oct 2021 11:25:45 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- f6c22ee96f59d215c4bd269e17e9f8756d8006a3
-Message-ID: <61610799.wmhwIhUP2EH9jRh3%lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ e359a225822109a121efa988b962dfcf20026939
+Message-ID: <61610bb9.SenmpuKpPbSACTJj%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211008_200838_953319_945C565B 
-X-CRM114-Status: UNSURE (   4.77  )
+X-CRM114-CacheID: sfid-20211008_202640_133726_E8B8133E 
+X-CRM114-Status: UNSURE (   4.67  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,12 +72,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: f6c22ee96f59d215c4bd269e17e9f8756d8006a3  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: e359a225822109a121efa988b962dfcf20026939  Revert "bus: mhi: Early MHI resume failure in non M3 state"
 
-elapsed time: 2105m
+elapsed time: 2123m
 
-configs tested: 196
+configs tested: 201
 configs skipped: 4
 
 The following configs have been built successfully.
@@ -167,12 +167,17 @@ arc                        nsim_700_defconfig
 arm                        vexpress_defconfig
 mips                  decstation_64_defconfig
 sh                     sh7710voipgw_defconfig
-powerpc                    socrates_defconfig
-mips                          malta_defconfig
-powerpc                      ppc40x_defconfig
+arm                           u8500_defconfig
+h8300                    h8300h-sim_defconfig
+arm                           viper_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                 mpc837x_rdb_defconfig
 arm                         s3c6400_defconfig
 arm                        realview_defconfig
 powerpc                     tqm8560_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                mpc7448_hpc2_defconfig
+ia64                      gensparse_defconfig
 x86_64               randconfig-c001-20211008
 arm                  randconfig-c002-20211008
 ia64                             allmodconfig
@@ -193,19 +198,19 @@ arc                                 defconfig
 sh                               allmodconfig
 xtensa                           allyesconfig
 parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allmodconfig
 s390                             allyesconfig
+s390                                defconfig
+parisc                           allyesconfig
+s390                             allmodconfig
 sparc                               defconfig
 sparc                            allyesconfig
 i386                                defconfig
 i386                             allyesconfig
 mips                             allyesconfig
 mips                             allmodconfig
+powerpc                          allmodconfig
 powerpc                           allnoconfig
 powerpc                          allyesconfig
-powerpc                          allmodconfig
 x86_64               randconfig-a015-20211008
 x86_64               randconfig-a012-20211008
 x86_64               randconfig-a016-20211008
