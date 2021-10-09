@@ -2,14 +2,14 @@ Return-Path: <SRS0=pCY9=O5=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DA39C433EF
-	for <ath10k@archiver.kernel.org>; Sat,  9 Oct 2021 04:19:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0AC1C433EF
+	for <ath10k@archiver.kernel.org>; Sat,  9 Oct 2021 04:38:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0139460F3A
-	for <ath10k@archiver.kernel.org>; Sat,  9 Oct 2021 04:19:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0139460F3A
+	by mail.kernel.org (Postfix) with ESMTPS id 6794960F6B
+	for <ath10k@archiver.kernel.org>; Sat,  9 Oct 2021 04:38:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6794960F6B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ggYyPPp6pQjwmdkd3v4uFxCLF5tBrsDNNzRVj9pkzLs=; b=OBQDu1c+J2tNGs
-	W9hRyQNrZr6og5Fw5RD/N1ZgKARWqYDjEshbzBcg5kYDlfXILypmYW7Qs1xZxTWmfiGo6t1vOnu1R
-	oJLHnQ9aejZII5t5Tn8ds08q4Kaa8Nq6/vo5PFmU+LzbAis/tEzriNCnOwiV+T7NfUXnN3FCjuk7H
-	f/LXHJFR1AydAudDlfw7jtEOCmch67rmorcDpuYBoX4qZR3pN8mQ4lF9EPOLSA7W63JZOVW792fHx
-	dG90HSk2hyM0ehJAq8oVr/s5pL20hShC6nryTNKLGhu7NpQ8GPyMYZh6hA/8+4zqcZlnSzLQTcc8O
-	TfIERKpFwyZajGGcIRnA==;
+	List-Owner; bh=7ISCig2BeBH6w4yAY5qbs/yVw2BSqI7KdUQ3I/nkhx0=; b=1SFvDVtMq26GSB
+	EYCh8fOAhfVSVPqSqArMvRtLWkVU8xwxBTwkZCtUyAXPk0jE7CbxiNT+hqpEjtge5tQTgk6Zht7bM
+	z7hjc0grfOuxbYaQxSAlezZ20JAcQ/glAJWaX+vb1uqHEcIMx3D2oVCjhaxtUl7R4E7ngDLX82kjV
+	Z/51GOnKsqgD+pI6e1d8CkvvQ2OgBwI1HPm9fjkfI0D6NazVztU+ouMaUhn4L6NRkgNJ/H8HxZiPB
+	r7HhEGaQ2+oLKzCchsreL+LQUqr/lsO/6zzqLdLAxpsULF1Y5u1yxjWyj/qoxaGYTlLgg/Ipab8Iv
+	MDGXTgpgNcZKsUFieMEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mZ3oq-0056hU-AF; Sat, 09 Oct 2021 04:18:44 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1mZ47F-0057bz-MB; Sat, 09 Oct 2021 04:37:45 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mZ3on-0056gl-98
- for ath10k@lists.infradead.org; Sat, 09 Oct 2021 04:18:43 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="226530025"
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; d="scan'208";a="226530025"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Oct 2021 21:18:40 -0700
+ id 1mZ47C-0057bG-H7
+ for ath10k@lists.infradead.org; Sat, 09 Oct 2021 04:37:44 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="225406205"
+X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; d="scan'208";a="225406205"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Oct 2021 21:37:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; d="scan'208";a="590750715"
+X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; d="scan'208";a="489727724"
 Received: from lkp-server02.sh.intel.com (HELO 1950922c5479) ([10.239.97.151])
- by orsmga004.jf.intel.com with ESMTP; 08 Oct 2021 21:18:39 -0700
+ by orsmga008.jf.intel.com with ESMTP; 08 Oct 2021 21:37:39 -0700
 Received: from kbuild by 1950922c5479 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mZ3ok-00019I-Fb; Sat, 09 Oct 2021 04:18:38 +0000
-Date: Sat, 09 Oct 2021 12:18:05 +0800
+ id 1mZ478-0001AF-TG; Sat, 09 Oct 2021 04:37:38 +0000
+Date: Sat, 09 Oct 2021 12:36:48 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 567ec33a76c7d8e7fbd7a73c81dd16b9efc7ae6d
-Message-ID: <616117fd.dfxk65WtB50ZdQw/%lkp@intel.com>
+Subject: [kvalo-ath:pending-deferred] BUILD SUCCESS
+ a48690826c728470cf9af57afc24022b5d7ed448
+Message-ID: <61611c60.BpFL+jrpDNNvb4HB%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211008_211841_407271_0F3DA6C9 
-X-CRM114-Status: UNSURE (   4.96  )
+X-CRM114-CacheID: sfid-20211008_213742_623128_D44FCDD1 
+X-CRM114-Status: UNSURE (   4.48  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,12 +72,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 567ec33a76c7d8e7fbd7a73c81dd16b9efc7ae6d  ath11k: Fix spelling mistake "incompaitiblity" -> "incompatibility"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-deferred
+branch HEAD: a48690826c728470cf9af57afc24022b5d7ed448  ath10k: Fix device boot error
 
-elapsed time: 2177m
+elapsed time: 2193m
 
-configs tested: 209
+configs tested: 221
 configs skipped: 4
 
 The following configs have been built successfully.
@@ -198,13 +198,14 @@ mips                 decstation_r4k_defconfig
 powerpc                 mpc837x_rdb_defconfig
 arm                         s3c6400_defconfig
 powerpc                     tqm8560_defconfig
+arm                     davinci_all_defconfig
 x86_64               randconfig-c001-20211008
 arm                  randconfig-c002-20211008
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
-m68k                                defconfig
 m68k                             allmodconfig
+m68k                                defconfig
 m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
@@ -222,27 +223,27 @@ parisc                           allyesconfig
 s390                                defconfig
 s390                             allyesconfig
 s390                             allmodconfig
-sparc                               defconfig
-sparc                            allyesconfig
-i386                                defconfig
 i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-x86_64               randconfig-a015-20211008
-x86_64               randconfig-a012-20211008
-x86_64               randconfig-a016-20211008
-x86_64               randconfig-a013-20211008
-x86_64               randconfig-a011-20211008
-x86_64               randconfig-a014-20211008
 x86_64               randconfig-a015-20211004
 x86_64               randconfig-a012-20211004
 x86_64               randconfig-a016-20211004
 x86_64               randconfig-a014-20211004
 x86_64               randconfig-a013-20211004
 x86_64               randconfig-a011-20211004
+x86_64               randconfig-a015-20211008
+x86_64               randconfig-a012-20211008
+x86_64               randconfig-a016-20211008
+x86_64               randconfig-a013-20211008
+x86_64               randconfig-a011-20211008
+x86_64               randconfig-a014-20211008
 i386                 randconfig-a013-20211008
 i386                 randconfig-a016-20211008
 i386                 randconfig-a014-20211008
@@ -250,6 +251,11 @@ i386                 randconfig-a011-20211008
 i386                 randconfig-a012-20211008
 i386                 randconfig-a015-20211008
 i386                 randconfig-a013-20211004
+i386                 randconfig-a016-20211004
+i386                 randconfig-a014-20211004
+i386                 randconfig-a011-20211004
+i386                 randconfig-a012-20211004
+i386                 randconfig-a015-20211004
 arc                  randconfig-r043-20211008
 s390                 randconfig-r044-20211008
 riscv                randconfig-r042-20211008
@@ -257,8 +263,8 @@ arc                  randconfig-r043-20211007
 riscv                    nommu_k210_defconfig
 riscv                             allnoconfig
 riscv                          rv32_defconfig
-riscv                            allyesconfig
 riscv                            allmodconfig
+riscv                            allyesconfig
 x86_64                    rhel-8.3-kselftests
 um                           x86_64_defconfig
 um                             i386_defconfig
@@ -293,6 +299,12 @@ i386                 randconfig-a005-20211004
 i386                 randconfig-a002-20211004
 i386                 randconfig-a004-20211004
 i386                 randconfig-a006-20211004
+x86_64               randconfig-a003-20211004
+x86_64               randconfig-a005-20211004
+x86_64               randconfig-a001-20211004
+x86_64               randconfig-a002-20211004
+x86_64               randconfig-a004-20211004
+x86_64               randconfig-a006-20211004
 hexagon              randconfig-r045-20211007
 hexagon              randconfig-r041-20211007
 s390                 randconfig-r044-20211007
