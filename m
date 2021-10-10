@@ -2,61 +2,59 @@ Return-Path: <SRS0=fHIY=O6=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15E73C433EF
-	for <ath10k@archiver.kernel.org>; Sun, 10 Oct 2021 07:17:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75B45C433FE
+	for <ath10k@archiver.kernel.org>; Sun, 10 Oct 2021 20:20:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B624660EFF
-	for <ath10k@archiver.kernel.org>; Sun, 10 Oct 2021 07:17:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B624660EFF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
+	by mail.kernel.org (Postfix) with ESMTPS id 0121D60EB4
+	for <ath10k@archiver.kernel.org>; Sun, 10 Oct 2021 20:20:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0121D60EB4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=oiFp5JCb7kzrR2B/Lcy6BJJgwsRo/2kvuIxFvar1Oj0=; b=h6kA8m2N9SPK5k
-	DBb1c1KUXmYMlweR1LMHwifaTXLDWirjbe+sMzDQR+NCrW2tDu1qKJkYnTHmYnNVtjUg0EauUDbus
-	M8e3W991JFaHVtsSMtogQ+b31VshmqVPI2GgLvb64BIt3WiIrRGrJ00DQrWsz/vi53FgesSX1KZ5l
-	5JqVhoYGNBuRcf1hBs92uVT7ymHAupzgyWmUV9hzRH9qm5C1vYXRfrMjYCGUUWiIpOJ1ilQLdh3ix
-	otZTvkYe/MHC7+7YljlfvT+hPPmSZ6C4S0CGLVJT+rdES46RKH4qRGs6huq6IGKijF05NpzLkYhwh
-	5J8nkqvvbhbhnXpcqEKw==;
+	List-Owner; bh=nbZ2ZzVciWCc2GH+ybkM5kNRsa7uhKJxXmpBjH7b7cc=; b=WqRepTlMcRrwSi
+	bLfBhTBbyh+WUCGxnskL1gJFjk6FijVl3+oC81U60VCiCW2CMCjTEENb2m+gnWZvbunMqD3KcBdxn
+	dm77cyxg1lVNtyDMTzvMesp/wZABL05NtRaEq6P4cIt9lUvKJ1PoVtARmDYeluKA06t82qgNhL392
+	1ymmfRvoenTPS/SfTW0Fki3ORPy9dJpTysWzCmjmqmKp/sZE8sdDXGO1dfVEEOSbtBJESkho5AkQi
+	5oUqB0/YRevD/0US7laXdwWngEIjHphkN31jzAdreX7UwpOCVN2A+FJI4I0wEvokWmyNQ/6pq/3qv
+	LeCQQNwcEZwQZBWoSE4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mZT4t-006ScU-Dk; Sun, 10 Oct 2021 07:16:59 +0000
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mZT4q-006Sbk-5B
- for ath10k@lists.infradead.org; Sun, 10 Oct 2021 07:16:58 +0000
-Received: from pop-os.home ([90.126.248.220]) by mwinf5d27 with ME
- id 479D260074m3Hzu0379DD9; Sun, 10 Oct 2021 09:09:18 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Oct 2021 09:09:18 +0200
-X-ME-IP: 90.126.248.220
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org, stf_xl@wp.pl,
- luciano.coelho@intel.com, amitkarwar@gmail.com, ganapathi017@gmail.com,
- sharvari.harisangam@nxp.com, huxinming820@gmail.com,
- ajay.kathat@microchip.com, claudiu.beznea@microchip.com,
- imitsyanko@quantenna.com, geomatsi@gmail.com, pkshih@realtek.com,
- jussi.kivilinna@iki.fi, pizza@shaftnet.org
-Cc: netdev@vger.kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] wireless: Remove redundant 'flush_workqueue()' calls
-Date: Sun, 10 Oct 2021 09:09:11 +0200
-Message-Id: <0855d51423578ad019c0264dad3fe47a2e8af9c7.1633849511.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+	id 1mZfIT-007LDZ-84; Sun, 10 Oct 2021 20:19:49 +0000
+Received: from mga12.intel.com ([192.55.52.136])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mZfIP-007LCz-UA
+ for ath10k@lists.infradead.org; Sun, 10 Oct 2021 20:19:47 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="206879921"
+X-IronPort-AV: E=Sophos;i="5.85,363,1624345200"; d="scan'208";a="206879921"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Oct 2021 13:19:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,363,1624345200"; d="scan'208";a="440527667"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+ by orsmga006.jf.intel.com with ESMTP; 10 Oct 2021 13:19:42 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1mZfIL-0001V7-L3; Sun, 10 Oct 2021 20:19:41 +0000
+Date: Mon, 11 Oct 2021 04:19:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ 122b99170e38ea045c64ef2a2b8d2e68ac0042be
+Message-ID: <61634ac4.YQciAGS9oxUft08R%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211010_001656_666402_AD995C75 
-X-CRM114-Status: UNSURE (   8.86  )
+X-CRM114-CacheID: sfid-20211010_131946_077133_90E43B42 
+X-CRM114-Status: UNSURE (   4.04  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,236 +72,196 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-'destroy_workqueue()' already drains the queue before destroying it, so
-there is no need to flush it explicitly.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: 122b99170e38ea045c64ef2a2b8d2e68ac0042be  Merge branch 'pending' into master-pending
 
-Remove the redundant 'flush_workqueue()' calls.
+elapsed time: 723m
 
-This was generated with coccinelle:
+configs tested: 170
+configs skipped: 3
 
-@@
-expression E;
-@@
-- 	flush_workqueue(E);
-	destroy_workqueue(E);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211010
+mips                        workpad_defconfig
+openrisc                         alldefconfig
+mips                     decstation_defconfig
+m68k                          amiga_defconfig
+xtensa                    smp_lx200_defconfig
+ia64                            zx1_defconfig
+parisc                           alldefconfig
+sh                   secureedge5410_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                            qcom_defconfig
+powerpc                       ebony_defconfig
+arm                        cerfcube_defconfig
+m68k                        mvme147_defconfig
+powerpc                      chrp32_defconfig
+powerpc                    adder875_defconfig
+arm                        realview_defconfig
+arm                        trizeps4_defconfig
+mips                           ip28_defconfig
+sh                          polaris_defconfig
+mips                            gpr_defconfig
+powerpc                     tqm8560_defconfig
+arm                         at91_dt_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                           stm32_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                         lpc18xx_defconfig
+mips                         tb0219_defconfig
+mips                      fuloong2e_defconfig
+arm                          iop32x_defconfig
+powerpc                    gamecube_defconfig
+mips                        vocore2_defconfig
+m68k                       m5249evb_defconfig
+powerpc                     rainier_defconfig
+x86_64                              defconfig
+microblaze                          defconfig
+sh                        edosk7705_defconfig
+m68k                         amcore_defconfig
+arc                              alldefconfig
+arm                          badge4_defconfig
+arc                    vdk_hs38_smp_defconfig
+parisc                generic-32bit_defconfig
+mips                         mpc30x_defconfig
+arm                           viper_defconfig
+mips                        nlm_xlp_defconfig
+mips                     cu1830-neo_defconfig
+arc                        nsim_700_defconfig
+i386                                defconfig
+alpha                               defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                     akebono_defconfig
+sh                        sh7763rdp_defconfig
+arm                      pxa255-idp_defconfig
+mips                      maltaaprp_defconfig
+mips                         bigsur_defconfig
+mips                     cu1000-neo_defconfig
+mips                            e55_defconfig
+arc                          axs103_defconfig
+powerpc                    sam440ep_defconfig
+mips                         tb0287_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                       holly_defconfig
+arm                       aspeed_g4_defconfig
+arc                            hsdk_defconfig
+csky                                defconfig
+openrisc                    or1ksim_defconfig
+mips                           ip27_defconfig
+x86_64                           allyesconfig
+sh                           se7724_defconfig
+arm                            mmp2_defconfig
+arm                       spear13xx_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                        fsp2_defconfig
+arm                          ep93xx_defconfig
+powerpc                       eiger_defconfig
+h8300                    h8300h-sim_defconfig
+sh                             sh03_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                     mpc512x_defconfig
+powerpc                      makalu_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                       ppc64_defconfig
+h8300                            alldefconfig
+openrisc                            defconfig
+mips                       rbtx49xx_defconfig
+powerpc                      pmac32_defconfig
+arm                  randconfig-c002-20211010
+x86_64               randconfig-c001-20211010
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20211010
+x86_64               randconfig-a006-20211010
+x86_64               randconfig-a001-20211010
+x86_64               randconfig-a005-20211010
+x86_64               randconfig-a002-20211010
+x86_64               randconfig-a003-20211010
+i386                 randconfig-a001-20211010
+i386                 randconfig-a003-20211010
+i386                 randconfig-a004-20211010
+i386                 randconfig-a005-20211010
+i386                 randconfig-a002-20211010
+i386                 randconfig-a006-20211010
+arc                  randconfig-r043-20211010
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+arm                  randconfig-c002-20211010
+mips                 randconfig-c004-20211010
+i386                 randconfig-c001-20211010
+s390                 randconfig-c005-20211010
+x86_64               randconfig-c007-20211010
+powerpc              randconfig-c003-20211010
+riscv                randconfig-c006-20211010
+x86_64               randconfig-a015-20211010
+x86_64               randconfig-a012-20211010
+x86_64               randconfig-a016-20211010
+x86_64               randconfig-a014-20211010
+x86_64               randconfig-a013-20211010
+x86_64               randconfig-a011-20211010
+i386                 randconfig-a016-20211010
+i386                 randconfig-a014-20211010
+i386                 randconfig-a011-20211010
+i386                 randconfig-a015-20211010
+i386                 randconfig-a012-20211010
+i386                 randconfig-a013-20211010
+hexagon              randconfig-r041-20211010
+s390                 randconfig-r044-20211010
+riscv                randconfig-r042-20211010
+hexagon              randconfig-r045-20211010
+
 ---
- drivers/net/wireless/ath/ath10k/core.c             | 3 ---
- drivers/net/wireless/ath/ath10k/sdio.c             | 1 -
- drivers/net/wireless/intel/iwlegacy/3945-mac.c     | 1 -
- drivers/net/wireless/intel/iwlegacy/4965-mac.c     | 1 -
- drivers/net/wireless/intel/iwlwifi/dvm/main.c      | 1 -
- drivers/net/wireless/marvell/mwifiex/cfg80211.c    | 2 --
- drivers/net/wireless/marvell/mwifiex/main.c        | 2 --
- drivers/net/wireless/microchip/wilc1000/netdev.c   | 1 -
- drivers/net/wireless/quantenna/qtnfmac/core.c      | 2 --
- drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c | 2 --
- drivers/net/wireless/realtek/rtlwifi/pci.c         | 1 -
- drivers/net/wireless/rndis_wlan.c                  | 2 --
- drivers/net/wireless/st/cw1200/bh.c                | 2 --
- 13 files changed, 21 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index c21e05549f61..112e04bb0e57 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -3520,13 +3520,10 @@ EXPORT_SYMBOL(ath10k_core_create);
- 
- void ath10k_core_destroy(struct ath10k *ar)
- {
--	flush_workqueue(ar->workqueue);
- 	destroy_workqueue(ar->workqueue);
- 
--	flush_workqueue(ar->workqueue_aux);
- 	destroy_workqueue(ar->workqueue_aux);
- 
--	flush_workqueue(ar->workqueue_tx_complete);
- 	destroy_workqueue(ar->workqueue_tx_complete);
- 
- 	ath10k_debug_destroy(ar);
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index eb705214f3f0..63e1c2d783c5 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2650,7 +2650,6 @@ static void ath10k_sdio_remove(struct sdio_func *func)
- 
- 	ath10k_core_destroy(ar);
- 
--	flush_workqueue(ar_sdio->workqueue);
- 	destroy_workqueue(ar_sdio->workqueue);
- }
- 
-diff --git a/drivers/net/wireless/intel/iwlegacy/3945-mac.c b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-index 45abb25b65a9..bd4e7d752958 100644
---- a/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-+++ b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-@@ -3819,7 +3819,6 @@ il3945_pci_remove(struct pci_dev *pdev)
- 	il3945_unset_hw_params(il);
- 
- 	/*netif_stop_queue(dev); */
--	flush_workqueue(il->workqueue);
- 
- 	/* ieee80211_unregister_hw calls il3945_mac_stop, which flushes
- 	 * il->workqueue... so we can't take down the workqueue
-diff --git a/drivers/net/wireless/intel/iwlegacy/4965-mac.c b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-index 0223532fd56a..d93900e62e3d 100644
---- a/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-+++ b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-@@ -6731,7 +6731,6 @@ il4965_pci_remove(struct pci_dev *pdev)
- 	il_eeprom_free(il);
- 
- 	/*netif_stop_queue(dev); */
--	flush_workqueue(il->workqueue);
- 
- 	/* ieee80211_unregister_hw calls il_mac_stop, which flushes
- 	 * il->workqueue... so we can't take down the workqueue
-diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/main.c b/drivers/net/wireless/intel/iwlwifi/dvm/main.c
-index cc7b69fd14d3..69d1aae96bbb 100644
---- a/drivers/net/wireless/intel/iwlwifi/dvm/main.c
-+++ b/drivers/net/wireless/intel/iwlwifi/dvm/main.c
-@@ -1525,7 +1525,6 @@ static void iwl_op_mode_dvm_stop(struct iwl_op_mode *op_mode)
- 	kfree(priv->nvm_data);
- 
- 	/*netif_stop_queue(dev); */
--	flush_workqueue(priv->workqueue);
- 
- 	/* ieee80211_unregister_hw calls iwlagn_mac_stop, which flushes
- 	 * priv->workqueue... so we can't take down the workqueue
-diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index d62a20de3ada..ef697572a293 100644
---- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-+++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -3218,13 +3218,11 @@ int mwifiex_del_virtual_intf(struct wiphy *wiphy, struct wireless_dev *wdev)
- 		cfg80211_unregister_netdevice(wdev->netdev);
- 
- 	if (priv->dfs_cac_workqueue) {
--		flush_workqueue(priv->dfs_cac_workqueue);
- 		destroy_workqueue(priv->dfs_cac_workqueue);
- 		priv->dfs_cac_workqueue = NULL;
- 	}
- 
- 	if (priv->dfs_chan_sw_workqueue) {
--		flush_workqueue(priv->dfs_chan_sw_workqueue);
- 		destroy_workqueue(priv->dfs_chan_sw_workqueue);
- 		priv->dfs_chan_sw_workqueue = NULL;
- 	}
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-index 17399d4aa129..7943fd3b3058 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.c
-+++ b/drivers/net/wireless/marvell/mwifiex/main.c
-@@ -498,13 +498,11 @@ static void mwifiex_free_adapter(struct mwifiex_adapter *adapter)
- static void mwifiex_terminate_workqueue(struct mwifiex_adapter *adapter)
- {
- 	if (adapter->workqueue) {
--		flush_workqueue(adapter->workqueue);
- 		destroy_workqueue(adapter->workqueue);
- 		adapter->workqueue = NULL;
- 	}
- 
- 	if (adapter->rx_workqueue) {
--		flush_workqueue(adapter->rx_workqueue);
- 		destroy_workqueue(adapter->rx_workqueue);
- 		adapter->rx_workqueue = NULL;
- 	}
-diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
-index 7e4d9235251c..d3b33c6ab93a 100644
---- a/drivers/net/wireless/microchip/wilc1000/netdev.c
-+++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
-@@ -880,7 +880,6 @@ void wilc_netdev_cleanup(struct wilc *wilc)
- 	srcu_read_unlock(&wilc->srcu, srcu_idx);
- 
- 	wilc_wfi_deinit_mon_interface(wilc, false);
--	flush_workqueue(wilc->hif_workqueue);
- 	destroy_workqueue(wilc->hif_workqueue);
- 
- 	while (ifc_cnt < WILC_NUM_CONCURRENT_IFC) {
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/core.c b/drivers/net/wireless/quantenna/qtnfmac/core.c
-index b4dd60b2ebc9..01725237836e 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/core.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/core.c
-@@ -811,13 +811,11 @@ void qtnf_core_detach(struct qtnf_bus *bus)
- 	bus->fw_state = QTNF_FW_STATE_DETACHED;
- 
- 	if (bus->workqueue) {
--		flush_workqueue(bus->workqueue);
- 		destroy_workqueue(bus->workqueue);
- 		bus->workqueue = NULL;
- 	}
- 
- 	if (bus->hprio_workqueue) {
--		flush_workqueue(bus->hprio_workqueue);
- 		destroy_workqueue(bus->hprio_workqueue);
- 		bus->hprio_workqueue = NULL;
- 	}
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-index 5d93c874d666..9ad4c120fa28 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-@@ -387,7 +387,6 @@ static int qtnf_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return 0;
- 
- error:
--	flush_workqueue(pcie_priv->workqueue);
- 	destroy_workqueue(pcie_priv->workqueue);
- 	pci_set_drvdata(pdev, NULL);
- 	return ret;
-@@ -416,7 +415,6 @@ static void qtnf_pcie_remove(struct pci_dev *dev)
- 		qtnf_core_detach(bus);
- 
- 	netif_napi_del(&bus->mux_napi);
--	flush_workqueue(priv->workqueue);
- 	destroy_workqueue(priv->workqueue);
- 	tasklet_kill(&priv->reclaim_tq);
- 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/pci.c b/drivers/net/wireless/realtek/rtlwifi/pci.c
-index 3776495fd9d0..ad327bae754b 100644
---- a/drivers/net/wireless/realtek/rtlwifi/pci.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/pci.c
-@@ -1743,7 +1743,6 @@ static void rtl_pci_deinit(struct ieee80211_hw *hw)
- 	tasklet_kill(&rtlpriv->works.irq_tasklet);
- 	cancel_work_sync(&rtlpriv->works.lps_change_work);
- 
--	flush_workqueue(rtlpriv->works.rtl_wq);
- 	destroy_workqueue(rtlpriv->works.rtl_wq);
- }
- 
-diff --git a/drivers/net/wireless/rndis_wlan.c b/drivers/net/wireless/rndis_wlan.c
-index 63ce2443f136..ff2448394a1e 100644
---- a/drivers/net/wireless/rndis_wlan.c
-+++ b/drivers/net/wireless/rndis_wlan.c
-@@ -3501,7 +3501,6 @@ static int rndis_wlan_bind(struct usbnet *usbdev, struct usb_interface *intf)
- 	cancel_delayed_work_sync(&priv->dev_poller_work);
- 	cancel_delayed_work_sync(&priv->scan_work);
- 	cancel_work_sync(&priv->work);
--	flush_workqueue(priv->workqueue);
- 	destroy_workqueue(priv->workqueue);
- 
- 	wiphy_free(wiphy);
-@@ -3518,7 +3517,6 @@ static void rndis_wlan_unbind(struct usbnet *usbdev, struct usb_interface *intf)
- 	cancel_delayed_work_sync(&priv->dev_poller_work);
- 	cancel_delayed_work_sync(&priv->scan_work);
- 	cancel_work_sync(&priv->work);
--	flush_workqueue(priv->workqueue);
- 	destroy_workqueue(priv->workqueue);
- 
- 	rndis_unbind(usbdev, intf);
-diff --git a/drivers/net/wireless/st/cw1200/bh.c b/drivers/net/wireless/st/cw1200/bh.c
-index 8bade5d89f12..10e019cddcc6 100644
---- a/drivers/net/wireless/st/cw1200/bh.c
-+++ b/drivers/net/wireless/st/cw1200/bh.c
-@@ -85,8 +85,6 @@ void cw1200_unregister_bh(struct cw1200_common *priv)
- 	atomic_inc(&priv->bh_term);
- 	wake_up(&priv->bh_wq);
- 
--	flush_workqueue(priv->bh_workqueue);
--
- 	destroy_workqueue(priv->bh_workqueue);
- 	priv->bh_workqueue = NULL;
- 
--- 
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
