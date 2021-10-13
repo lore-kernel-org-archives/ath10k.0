@@ -2,14 +2,14 @@ Return-Path: <SRS0=ohlR=PB=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AF79C433EF
-	for <ath10k@archiver.kernel.org>; Wed, 13 Oct 2021 19:34:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA90C433EF
+	for <ath10k@archiver.kernel.org>; Wed, 13 Oct 2021 22:21:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A7F461163
-	for <ath10k@archiver.kernel.org>; Wed, 13 Oct 2021 19:34:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0A7F461163
+	by mail.kernel.org (Postfix) with ESMTPS id D2CFD610CB
+	for <ath10k@archiver.kernel.org>; Wed, 13 Oct 2021 22:21:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D2CFD610CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ir0ovpDFGCeD/HjIvKxSEdpU3yedQIYT2u7QObBzLg0=; b=WslDYFTvMMWmUO
-	bXx6CGHa515cXiZGgL5fn0kMM43Eu/a4cRlsomgBi4ESGcJIzQXX2DQSkb/fc5QsGUzAM+uWTXfBp
-	W3vcYVU+nLAhgHg1OrAPkRRWZP2x7xnndhDoBrEpr4o+MSBFCAwAzUSy4VKo9mZH69wDTO8xDWMro
-	BEAWraqvi8aYeQxSVW88sCehPsr0hKJt+hjrqEBtfZ8xeUGzlxbQwMLSXXY8BdBKrJwzeRKAInKTR
-	Km/uaEjdbRNCpvxfFLggDwCcPLYNd/9Rql8grBvEPubT+UHXsic+saKCoO1MQxTqu6dDrIpF9O27g
-	Do30/9YKGLuQVi/yqShA==;
+	List-Owner; bh=YyzwQ/lj8h0/hL7Yz3LjHM39CDtU5JSpNoiYVxofpRc=; b=LAIaIXOmyi4O6j
+	oRk8Q7CqNqmHOl5oTFGCR5XLM7Kpj+YdMx5ee+3WYuwTvhngw/IS8nOso04CEXML421o2SIAx7WdI
+	fqH2bASrcmJdPYqEzi2BZNCfbeTzDOFQ7yEmAmAdVfdv+LA2Fff44OIRW1TASsV6bWSlpOncKk0B/
+	b14l/yI7GonytuIWkK5nUVJuJMbCH3j5Epmj4aXIZYblySZ/R+dveUzn7567iikaz/TLS+CB/P5xG
+	uDcK0sKYNiiJUxj1NJrMvN5/86Y4RL7fm8iSBRyQCR4qDxsRcPnCM3h29uDcIu4RubVlIK5jq4Kjz
+	95ThfT+fGGVYJqP0DyfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mak1U-000RPa-Sx; Wed, 13 Oct 2021 19:34:44 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1mamcD-000olN-GE; Wed, 13 Oct 2021 22:20:49 +0000
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mak1S-000ROk-2k
- for ath10k@lists.infradead.org; Wed, 13 Oct 2021 19:34:43 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="227414186"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="227414186"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Oct 2021 12:34:38 -0700
+ id 1mamcA-000okY-Ax
+ for ath10k@lists.infradead.org; Wed, 13 Oct 2021 22:20:47 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="227837753"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="227837753"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2021 15:20:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="480938971"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="491670147"
 Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
- by orsmga007.jf.intel.com with ESMTP; 13 Oct 2021 12:34:37 -0700
+ by orsmga008.jf.intel.com with ESMTP; 13 Oct 2021 15:20:44 -0700
 Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mak1M-00052A-Eb; Wed, 13 Oct 2021 19:34:36 +0000
-Date: Thu, 14 Oct 2021 03:34:20 +0800
+ id 1mamc7-0005D3-AN; Wed, 13 Oct 2021 22:20:43 +0000
+Date: Thu, 14 Oct 2021 06:20:30 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- daa02797b056e29df7048d1d0671cb72b6617e92
-Message-ID: <616734bc.GC0WzMWTVR7s2v1o%lkp@intel.com>
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ 0a491167fe0cf9f26062462de2a8688b96125d48
+Message-ID: <61675bae./v1h/9XfkR+6cvfq%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211013_123442_214446_4E402D27 
-X-CRM114-Status: UNSURE (   5.15  )
+X-CRM114-CacheID: sfid-20211013_152046_437513_92297F59 
+X-CRM114-Status: UNSURE (   4.79  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,13 +72,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: daa02797b056e29df7048d1d0671cb72b6617e92  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: 0a491167fe0cf9f26062462de2a8688b96125d48  ath10k: fix max antenna gain unit
 
-elapsed time: 804m
+elapsed time: 972m
 
-configs tested: 105
-configs skipped: 3
+configs tested: 148
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -90,44 +90,83 @@ arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 i386                 randconfig-c001-20211013
-powerpc                      chrp32_defconfig
-sh                        sh7763rdp_defconfig
-arm                        mvebu_v7_defconfig
-s390                             alldefconfig
-arm                        neponset_defconfig
-arm                       mainstone_defconfig
-sh                          urquell_defconfig
-arm                        realview_defconfig
-arm                          exynos_defconfig
-m68k                           sun3_defconfig
+powerpc                         ps3_defconfig
+mips                     cu1000-neo_defconfig
+arm                       spear13xx_defconfig
+arm                          pxa168_defconfig
+arc                     nsimosci_hs_defconfig
+arm                            mmp2_defconfig
+powerpc                  storcenter_defconfig
+arm                         lpc32xx_defconfig
+um                               alldefconfig
+um                                  defconfig
+arm                        multi_v7_defconfig
 powerpc                    sam440ep_defconfig
-mips                           ip28_defconfig
+h8300                     edosk2674_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                             ezx_defconfig
+powerpc                      tqm8xx_defconfig
+arm                        clps711x_defconfig
+powerpc                        cell_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                      mgcoge_defconfig
 sh                           se7724_defconfig
-sparc                       sparc64_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                  decstation_64_defconfig
+h8300                            allyesconfig
+sh                             sh03_defconfig
+powerpc                     asp8347_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                      ppc6xx_defconfig
+xtensa                  audio_kc705_defconfig
+m68k                          atari_defconfig
+ia64                        generic_defconfig
+sparc64                          alldefconfig
+mips                        bcm47xx_defconfig
 mips                          ath25_defconfig
-arm                          gemini_defconfig
 powerpc               mpc834x_itxgp_defconfig
-mips                      pic32mzda_defconfig
-mips                        nlm_xlp_defconfig
+m68k                          amiga_defconfig
+mips                           xway_defconfig
+m68k                         amcore_defconfig
+arm                        mini2440_defconfig
+ia64                          tiger_defconfig
+mips                        jmr3927_defconfig
+powerpc                 mpc837x_mds_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                        icon_defconfig
+mips                     cu1830-neo_defconfig
+mips                     loongson1b_defconfig
+mips                           ip32_defconfig
+openrisc                    or1ksim_defconfig
+arm                         lpc18xx_defconfig
+arc                        vdk_hs38_defconfig
+mips                     loongson2k_defconfig
+arm                           u8500_defconfig
+powerpc                       holly_defconfig
+nios2                            alldefconfig
+mips                       bmips_be_defconfig
+mips                        bcm63xx_defconfig
+arm                      jornada720_defconfig
 arm                  randconfig-c002-20211013
 x86_64               randconfig-c001-20211013
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
-m68k                             allmodconfig
 m68k                                defconfig
+m68k                             allmodconfig
 m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
 nds32                             allnoconfig
 nds32                               defconfig
-nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
+nios2                            allyesconfig
 arc                                 defconfig
+xtensa                           allyesconfig
 sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
@@ -143,7 +182,6 @@ mips                             allmodconfig
 powerpc                           allnoconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
-i386                 randconfig-a001-20211012
 x86_64               randconfig-a015-20211013
 x86_64               randconfig-a012-20211013
 x86_64               randconfig-a016-20211013
@@ -159,38 +197,43 @@ i386                 randconfig-a013-20211013
 arc                  randconfig-r043-20211012
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
 um                           x86_64_defconfig
 um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                                  kexec
+x86_64                           allyesconfig
 
 clang tested configs:
-i386                 randconfig-a001-20211013
-i386                 randconfig-a003-20211013
-i386                 randconfig-a004-20211013
-i386                 randconfig-a005-20211013
-i386                 randconfig-a002-20211013
-i386                 randconfig-a006-20211013
 x86_64               randconfig-a004-20211013
 x86_64               randconfig-a006-20211013
 x86_64               randconfig-a001-20211013
 x86_64               randconfig-a005-20211013
 x86_64               randconfig-a002-20211013
 x86_64               randconfig-a003-20211013
+i386                 randconfig-a001-20211013
+i386                 randconfig-a003-20211013
+i386                 randconfig-a004-20211013
+i386                 randconfig-a005-20211013
+i386                 randconfig-a002-20211013
+i386                 randconfig-a006-20211013
+x86_64               randconfig-a015-20211012
+x86_64               randconfig-a012-20211012
+x86_64               randconfig-a016-20211012
+x86_64               randconfig-a014-20211012
+x86_64               randconfig-a013-20211012
+x86_64               randconfig-a011-20211012
+hexagon              randconfig-r041-20211013
+hexagon              randconfig-r045-20211013
 hexagon              randconfig-r041-20211012
 s390                 randconfig-r044-20211012
 riscv                randconfig-r042-20211012
 hexagon              randconfig-r045-20211012
-hexagon              randconfig-r041-20211013
-hexagon              randconfig-r045-20211013
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
