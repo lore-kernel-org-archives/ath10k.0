@@ -1,87 +1,85 @@
-Return-Path: <SRS0=GlEV=PE=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=x2CT=PG=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E82F0C433EF
-	for <ath10k@archiver.kernel.org>; Sat, 16 Oct 2021 23:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BC59C433EF
+	for <ath10k@archiver.kernel.org>; Mon, 18 Oct 2021 13:12:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EF7360FED
-	for <ath10k@archiver.kernel.org>; Sat, 16 Oct 2021 23:46:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9EF7360FED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id F07786103C
+	for <ath10k@archiver.kernel.org>; Mon, 18 Oct 2021 13:12:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F07786103C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=fKouWwWiKCFEM7uLWRBBAunIwXhAVNtVunY/hTQvVI0=; b=NU7ElW2C9yapoS
-	V0awbVWr4eh2Af5cBuvADm4C83eZ/5om+RJbo8z97+x38tV1zaEbZnvUrCgpP+q8C+E/LPEemVqJr
-	/abledeVi0YEBe0eIT74LU5VSSRkipy4l1W57CniGzGP8qSK8AzE+Y2NMVtgtK0CU18nJJXYCupOC
-	hsoYj3Z0MjXyTKTvfPNpT2jTA2jYBmJDWxTjL0p1xyQngCmXStezyGvHit/zrQBo2mQss6hVoz6x8
-	2sv2kJ1AuoeIEBSlfPH1grInin02ZVdAScRpr7xZqOVl+Y31mLN1Eh5JLeJOJeVvZRsEA0JYYTMww
-	ADNw1yFzf7ck2ALdN4ag==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XsDegR6coo++KWEyOdXQtcK83WZ0rqGWoqCTaW8oRjY=; b=4zdn67kyc9amWk
+	21w5AmNb4Ahw9NSIo/hgpjFWohsbNFwEjaQq9sUcZ5jffEFCn8bwGAW1/uZHyNx9uf74IESnNR4Dv
+	kiVAdozxVV3rrcYWQNL0F2XLP8xfCi9qmo3GHykuLaQj0x1RqL7h3TaskdNUlB0BhyPPgSaedZCU6
+	NGpNBmgh74XSUYtHUod1eYnw49BRFFXUkuNsX0fusfp8DMTChKrvgL69KdIdXBoVcFVEVC9j59f/L
+	4h3Cn7ZVlQ08n7usDY7Tb1X9EfS1AYnnC+sOr7PvVeLtOvVLoQXGZOq99Dl1o5b3sXbgCCQPrUuRy
+	ca4GVCcd1L5Z8CC7eDKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbtNX-00BUin-EL; Sat, 16 Oct 2021 23:46:15 +0000
-Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
+	id 1mcSPw-00FkcX-3u; Mon, 18 Oct 2021 13:11:04 +0000
+Received: from so254-9.mailgun.net ([198.61.254.9])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbtNU-00BUiK-BC
- for ath10k@lists.infradead.org; Sat, 16 Oct 2021 23:46:13 +0000
-Received: by mail-wm1-x32d.google.com with SMTP id
- s198-20020a1ca9cf000000b0030d6986ea9fso5144013wme.1
- for <ath10k@lists.infradead.org>; Sat, 16 Oct 2021 16:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=XvNTZLNOzLgLjC4+6eG/G/iNgfR6PdkPdBydtJNakHc=;
- b=eoOlDofeT6p4yzsDtCGTrsyK/n9M/HWVIfQBwNozC1HJwArLuemBuPcTkk4MEimZRr
- D8JOVh5IEtUk9DA+O104H4Lx+ZeswjP+fTSfg7IXk74HJ8AFJgj6A2/dq9HsKBPEKXP1
- 0ZPHkY+bToo4R0us3MafQ2zLzvFgMJKgJA4rpBCodVtjtljG6MJgEuZUXY74OPdgZx6J
- rEZHDDc0Vl6bs71LXv0ZQp/DP+SsG07hlPm2NjLucVlGxOdhtx9XE9cJKpN7M1xkhfVv
- +LqkXcH2d6VKgznXAlX+C1n/yogJBp+JW+C3hOVIxJafTOakW0g5MpqjdW5CTFm3p2eV
- J4gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=XvNTZLNOzLgLjC4+6eG/G/iNgfR6PdkPdBydtJNakHc=;
- b=0rSeh830uWFeQ9m9HmdzaHp90fcDh3PCIkcPDeB1RaqAUeEoWNROP93khysUaaauLc
- pKqlhPdNvYet6OsvEigcNMvYEzyYQuXa46mxiOOMyiRa9IbKbJWuyjNmMaRFk6s7GB86
- FQItCA1UMbWTNRQls9JQKV+VNz5qPp4538+ggEeNMlnRYKBbcLy1BxaM2Rdh6fdiQn/r
- 6HdP2+PcyqhOHjPkmqsl8UCuX2bRnxHQudj2ze+gtVumZYGvuyvnSU3qef06TDWGcWca
- wA5eM3MmvGkHquCRIjzXrss2og9a5UDy7iWRzohDbUcdmvpuCadcRn7MutlhLxIPuriM
- 6wUg==
-X-Gm-Message-State: AOAM532PsaczbLcyTgkc7eTjwaAfNeAx5qxjlTvEcT+wzi+qokQ3ABy1
- xNuDDSE++On2vL5N9q7aOZA=
-X-Google-Smtp-Source: ABdhPJxrz7ieWrNWdOQq8ZgLN4yiznyLSXyALTpQwCNaZ72N07HCZGo2xWUGb4vj067U0TM8Nmsn4A==
-X-Received: by 2002:a05:600c:3223:: with SMTP id
- r35mr21074717wmp.32.1634427970033; 
- Sat, 16 Oct 2021 16:46:10 -0700 (PDT)
-Received: from debian64.daheim
- (p200300d5ff365c00d63d7efffebde96e.dip0.t-ipconnect.de.
- [2003:d5:ff36:5c00:d63d:7eff:febd:e96e])
- by smtp.gmail.com with ESMTPSA id f18sm8385193wrg.3.2021.10.16.16.46.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 16 Oct 2021 16:46:09 -0700 (PDT)
-Received: from chuck by debian64.daheim with local (Exim 4.95)
- (envelope-from <chunkeey@gmail.com>) id 1mbtNR-006ZzY-5d;
- Sun, 17 Oct 2021 01:46:09 +0200
-From: Christian Lamparter <chunkeey@gmail.com>
-To: linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH v2] ath10k: fetch (pre-)calibration data via nvmem subsystem
-Date: Sun, 17 Oct 2021 01:46:09 +0200
-Message-Id: <20211016234609.1568317-1-chunkeey@gmail.com>
-X-Mailer: git-send-email 2.33.0
+ id 1mcSPn-00FkaK-Vh
+ for ath10k@lists.infradead.org; Mon, 18 Oct 2021 13:11:02 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1634562661; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=2iZh5xPrIPUDbVFXGh7W2cb2/hGVEE7gEkCaxI5tQ2Y=;
+ b=c7XSPftTA/ElKDAgIJrY04DoZwEdjx+xCpOe2VxWynXeeRERHQzQe5ghGKUdFHIwYsQd4HQi
+ GaQVCbHSFN6AZqTbDoKuiGsRIbyYXiGNboKcKTXNRFqCs+oXgaTzzMakrlMtMhOBKolOdbIv
+ YjfTKlBdYFk4HYxcneD44Y25DhM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 616d7248ea41a97c24c0ad31 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Oct 2021 13:10:32
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id A2A4CC4361B; Mon, 18 Oct 2021 13:10:32 +0000 (UTC)
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: kvalo)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id D04D4C4338F;
+ Mon, 18 Oct 2021 13:10:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D04D4C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+From: Kalle Valo <kvalo@codeaurora.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Alagu Sankar <alagusankar@silex-india.com>, Arnd Bergmann <arnd@arndb.de>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Brian Norris <briannorris@chromium.org>, Wen Gong <wgong@codeaurora.org>,
+ Tamizh Chelvam <tamizhr@codeaurora.org>, Carl Huang <cjhuang@codeaurora.org>,
+ Miaoqing Pan <miaoqing@codeaurora.org>, Ben Greear <greearb@candelatech.com>,
+ Erik Stromdahl <erik.stromdahl@gmail.com>, Fabio Estevam <festevam@denx.de>,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ath10k: fix invalid dma_addr_t token assignment
+References: <20211014075153.3655910-1-arnd@kernel.org>
+Date: Mon, 18 Oct 2021 16:10:21 +0300
+In-Reply-To: <20211014075153.3655910-1-arnd@kernel.org> (Arnd Bergmann's
+ message of "Thu, 14 Oct 2021 09:51:15 +0200")
+Message-ID: <87fssytr5u.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211016_164612_451972_C04187F3 
-X-CRM114-Status: GOOD (  19.35  )
+X-CRM114-CacheID: sfid-20211018_061101_517176_DEE9B94E 
+X-CRM114-Status: GOOD (  25.20  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,109 +91,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-QVRIMTBLIGNoaXBzIGFyZSB1c2VkIGl0IHdpZGUgcmFuZ2Ugb2Ygcm91dGVycywKYWNjZXNzcG9p
-bnRzLCByYW5nZSBleHRlbmRlcnMsIG5ldHdvcmsgYXBwbGlhbmNlcy4KT24gdGhlc2UgZW1iZWRk
-ZWQgZGV2aWNlcywgY2FsaWJyYXRpb24gZGF0YSBpcyBvZnRlbgpzdG9yZWQgb24gdGhlIG1haW4g
-c3lzdGVtJ3MgZmxhc2ggYW5kIHdhcyBvdXQgb2YgcmVhY2gKZm9yIHRoZSBkcml2ZXIuCgpUbyBi
-cmlkZ2UgdGhpcyBnYXAsIGF0aDEwayBpcyBnZXR0aW5nIGV4dGVuZGVkIHRvIHB1bGwKdGhlIChw
-cmUtKWNhbGlicmF0aW9uIGRhdGEgdGhyb3VnaCBudm1lbSBzdWJzeXN0ZW0uClRvIGRvIHRoaXMs
-IGEgbnZtZW0tY2VsbCBjb250YWluaW5nIHRoZSBpbmZvcm1hdGlvbiBjYW4KZWl0aGVyIGJlIHNw
-ZWNpZmllZCBpbiB0aGUgcGxhdGZvcm0gZGF0YSBvciB2aWEgZGV2aWNlLXRyZWUuCgpUZXN0ZWQg
-d2l0aDoKICAgICAgICBOZXRnZWFyIEVYNjE1MHYyIChJUFE0MDE4IC0gcHJlLWNhbGlicmF0aW9u
-IG1ldGhvZCkKICAgICAgICBUUC1MaW5rIEFyY2hlciBDNyB2MiAoUUNBOTg4MHYyIC0gb2xkIGNh
-bGlicmF0aW9uIG1ldGhvZCkKCkNjOiBSb2JlcnQgTWFya28gPHJvYmltYXJrb0BnbWFpbC5jb20+
-CkNjOiBUaGliYXV0IFZBUsOITkUgPGhhY2tzQHNsYXNoZGlydC5vcmc+ClNpZ25lZC1vZmYtYnk6
-IENocmlzdGlhbiBMYW1wYXJ0ZXIgPGNodW5rZWV5QGdtYWlsLmNvbT4KLS0tCgp2MSAtPiB2MjoK
-CS0gdXNlICV6dSBhbmQgJXUgaW4gdGhlIGZvcm1hdCBzdHJpbmcgZm9yIHNpemVfdAogICAgICAg
-ICAgYW5kIHUzMiB0eXBlcyAoY2F0Y2hlZCBieSB0aGUgImtlcm5lbCB0ZXN0IHJvYm90IikuCgkt
-IHJld29yZGVkIGNvbW1pdCBtZXNzYWdlICsgc3VjY2Vzc2Z1bGx5IHRlc3RlZCBvbiBRQ0E5ODgw
-djIKCkkgcGxhY2VkIHRoZSBudm1lbSBjb2RlIGluIGZyb250IG9mIHRoZSBjdXJyZW50ICJmaWxl
-IiBtZXRob2QKKGZpcm13YXJlX3JlcXVlc3QpLiBSZWFzb24gaXMgdGhhdCB0aGlzIG1ha2VzIGl0
-IGVhc2llciBmb3IgbWUKdG8gdGVzdCBpdC4gSWYgbmVlZGVkIGl0IGNhbiBiZSBtb3ZlZCB0byBh
-IGRpZmZlcmVudCBwbGFjZS4KLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2Nv
-cmUuYyB8IDY0ICsrKysrKysrKysrKysrKysrKysrKysrKystCiBkcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2NvcmUuaCB8ICA2ICsrKwogMiBmaWxlcyBjaGFuZ2VkLCA2OCBpbnNlcnRp
-b25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGgxMGsvY29yZS5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3Jl
-LmMKaW5kZXggYzIxZTA1NTQ5ZjYxLi45ZjBlM2YwMTA2MjAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGgxMGsvY29yZS5jCkBAIC0xMiw2ICsxMiw3IEBACiAjaW5jbHVkZSA8bGludXgvZG1p
-Lmg+CiAjaW5jbHVkZSA8bGludXgvY3R5cGUuaD4KICNpbmNsdWRlIDxsaW51eC9wbV9xb3MuaD4K
-KyNpbmNsdWRlIDxsaW51eC9udm1lbS1jb25zdW1lci5oPgogI2luY2x1ZGUgPGFzbS9ieXRlb3Jk
-ZXIuaD4KIAogI2luY2x1ZGUgImNvcmUuaCIKQEAgLTkzNSw3ICs5MzYsOCBAQCBzdGF0aWMgaW50
-IGF0aDEwa19jb3JlX2dldF9ib2FyZF9pZF9mcm9tX290cChzdHJ1Y3QgYXRoMTBrICphcikKIAl9
-CiAKIAlpZiAoYXItPmNhbF9tb2RlID09IEFUSDEwS19QUkVfQ0FMX01PREVfRFQgfHwKLQkgICAg
-YXItPmNhbF9tb2RlID09IEFUSDEwS19QUkVfQ0FMX01PREVfRklMRSkKKwkgICAgYXItPmNhbF9t
-b2RlID09IEFUSDEwS19QUkVfQ0FMX01PREVfRklMRSB8fAorCSAgICBhci0+Y2FsX21vZGUgPT0g
-QVRIMTBLX1BSRV9DQUxfTU9ERV9OVk1FTSkKIAkJYm1pX2JvYXJkX2lkX3BhcmFtID0gQk1JX1BB
-UkFNX0dFVF9GTEFTSF9CT0FSRF9JRDsKIAllbHNlCiAJCWJtaV9ib2FyZF9pZF9wYXJhbSA9IEJN
-SV9QQVJBTV9HRVRfRUVQUk9NX0JPQVJEX0lEOwpAQCAtMTcyNiw3ICsxNzI4LDggQEAgc3RhdGlj
-IGludCBhdGgxMGtfZG93bmxvYWRfYW5kX3J1bl9vdHAoc3RydWN0IGF0aDEwayAqYXIpCiAKIAkv
-KiBBcyBvZiBub3cgcHJlLWNhbCBpcyB2YWxpZCBmb3IgMTBfNCB2YXJpYW50cyAqLwogCWlmIChh
-ci0+Y2FsX21vZGUgPT0gQVRIMTBLX1BSRV9DQUxfTU9ERV9EVCB8fAotCSAgICBhci0+Y2FsX21v
-ZGUgPT0gQVRIMTBLX1BSRV9DQUxfTU9ERV9GSUxFKQorCSAgICBhci0+Y2FsX21vZGUgPT0gQVRI
-MTBLX1BSRV9DQUxfTU9ERV9GSUxFIHx8CisJICAgIGFyLT5jYWxfbW9kZSA9PSBBVEgxMEtfUFJF
-X0NBTF9NT0RFX05WTUVNKQogCQlibWlfb3RwX2V4ZV9wYXJhbSA9IEJNSV9QQVJBTV9GTEFTSF9T
-RUNUSU9OX0FMTDsKIAogCXJldCA9IGF0aDEwa19ibWlfZXhlY3V0ZShhciwgYWRkcmVzcywgYm1p
-X290cF9leGVfcGFyYW0sICZyZXN1bHQpOwpAQCAtMTg1Myw2ICsxODU2LDM5IEBAIHN0YXRpYyBp
-bnQgYXRoMTBrX2Rvd25sb2FkX2NhbF9lZXByb20oc3RydWN0IGF0aDEwayAqYXIpCiAJcmV0dXJu
-IHJldDsKIH0KIAorc3RhdGljIGludCBhdGgxMGtfZG93bmxvYWRfY2FsX252bWVtKHN0cnVjdCBh
-dGgxMGsgKmFyLCBjb25zdCBjaGFyICpjZWxsX25hbWUpCit7CisJc3RydWN0IG52bWVtX2NlbGwg
-KmNlbGw7CisJdm9pZCAqYnVmOworCXNpemVfdCBsZW47CisJaW50IHJldDsKKworCWNlbGwgPSBk
-ZXZtX252bWVtX2NlbGxfZ2V0KGFyLT5kZXYsIGNlbGxfbmFtZSk7CisJaWYgKElTX0VSUihjZWxs
-KSkgeworCQlyZXQgPSBQVFJfRVJSKGNlbGwpOworCQlyZXR1cm4gcmV0OworCX0KKworCWJ1ZiA9
-IG52bWVtX2NlbGxfcmVhZChjZWxsLCAmbGVuKTsKKwlpZiAoSVNfRVJSKGJ1ZikpCisJCXJldHVy
-biBQVFJfRVJSKGJ1Zik7CisKKwlpZiAoYXItPmh3X3BhcmFtcy5jYWxfZGF0YV9sZW4gIT0gbGVu
-KSB7CisJCWtmcmVlKGJ1Zik7CisJCWF0aDEwa193YXJuKGFyLCAiaW52YWxpZCBjYWxpYnJhdGlv
-biBkYXRhIGxlbmd0aCBpbiBudm1lbS1jZWxsICclcyc6ICV6dSAhPSAldVxuIiwKKwkJCSAgICBj
-ZWxsX25hbWUsIGxlbiwgYXItPmh3X3BhcmFtcy5jYWxfZGF0YV9sZW4pOworCQlyZXR1cm4gLUVN
-U0dTSVpFOworCX0KKworCXJldCA9IGF0aDEwa19kb3dubG9hZF9ib2FyZF9kYXRhKGFyLCBidWYs
-IGxlbik7CisJa2ZyZWUoYnVmKTsKKwlpZiAocmV0KQorCQlhdGgxMGtfd2FybihhciwgImZhaWxl
-ZCB0byBkb3dubG9hZCBjYWxpYnJhdGlvbiBkYXRhIGZyb20gbnZtZW0tY2VsbCAnJXMnOiAlZFxu
-IiwKKwkJCSAgICBjZWxsX25hbWUsIHJldCk7CisKKwlyZXR1cm4gcmV0OworfQorCiBpbnQgYXRo
-MTBrX2NvcmVfZmV0Y2hfZmlybXdhcmVfYXBpX24oc3RydWN0IGF0aDEwayAqYXIsIGNvbnN0IGNo
-YXIgKm5hbWUsCiAJCQkJICAgICBzdHJ1Y3QgYXRoMTBrX2Z3X2ZpbGUgKmZ3X2ZpbGUpCiB7CkBA
-IC0yMDg3LDYgKzIxMjMsMTggQEAgc3RhdGljIGludCBhdGgxMGtfY29yZV9wcmVfY2FsX2Rvd25s
-b2FkKHN0cnVjdCBhdGgxMGsgKmFyKQogewogCWludCByZXQ7CiAKKwlyZXQgPSBhdGgxMGtfZG93
-bmxvYWRfY2FsX252bWVtKGFyLCAicHJlLWNhbGlicmF0aW9uIik7CisJaWYgKHJldCA9PSAwKSB7
-CisJCWFyLT5jYWxfbW9kZSA9IEFUSDEwS19QUkVfQ0FMX01PREVfTlZNRU07CisJCWdvdG8gc3Vj
-Y2VzczsKKwl9IGVsc2UgaWYgKHJldCA9PSAtRVBST0JFX0RFRkVSKSB7CisJCXJldHVybiByZXQ7
-CisJfQorCisJYXRoMTBrX2RiZyhhciwgQVRIMTBLX0RCR19CT09ULAorCQkgICAiYm9vdCBkaWQg
-bm90IGZpbmQgYSBwcmUtY2FsaWJyYXRpb24gbnZtZW0tY2VsbCwgdHJ5IGZpbGUgbmV4dDogJWRc
-biIsCisJCSAgIHJldCk7CisKIAlyZXQgPSBhdGgxMGtfZG93bmxvYWRfY2FsX2ZpbGUoYXIsIGFy
-LT5wcmVfY2FsX2ZpbGUpOwogCWlmIChyZXQgPT0gMCkgewogCQlhci0+Y2FsX21vZGUgPSBBVEgx
-MEtfUFJFX0NBTF9NT0RFX0ZJTEU7CkBAIC0yMTUzLDYgKzIyMDEsMTggQEAgc3RhdGljIGludCBh
-dGgxMGtfZG93bmxvYWRfY2FsX2RhdGEoc3RydWN0IGF0aDEwayAqYXIpCiAJCSAgICJwcmUgY2Fs
-IGRvd25sb2FkIHByb2NlZHVyZSBmYWlsZWQsIHRyeSBjYWwgZmlsZTogJWRcbiIsCiAJCSAgIHJl
-dCk7CiAKKwlyZXQgPSBhdGgxMGtfZG93bmxvYWRfY2FsX252bWVtKGFyLCAiY2FsaWJyYXRpb24i
-KTsKKwlpZiAocmV0ID09IDApIHsKKwkJYXItPmNhbF9tb2RlID0gQVRIMTBLX0NBTF9NT0RFX05W
-TUVNOworCQlnb3RvIGRvbmU7CisJfSBlbHNlIGlmIChyZXQgPT0gLUVQUk9CRV9ERUZFUikgewor
-CQlyZXR1cm4gcmV0OworCX0KKworCWF0aDEwa19kYmcoYXIsIEFUSDEwS19EQkdfQk9PVCwKKwkJ
-ICAgImJvb3QgZGlkIG5vdCBmaW5kIGEgY2FsaWJyYXRpb24gbnZtZW0tY2VsbCwgdHJ5IGZpbGUg
-bmV4dDogJWRcbiIsCisJCSAgIHJldCk7CisKIAlyZXQgPSBhdGgxMGtfZG93bmxvYWRfY2FsX2Zp
-bGUoYXIsIGFyLT5jYWxfZmlsZSk7CiAJaWYgKHJldCA9PSAwKSB7CiAJCWFyLT5jYWxfbW9kZSA9
-IEFUSDEwS19DQUxfTU9ERV9GSUxFOwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9jb3JlLmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUu
-aAppbmRleCA1YWVmZjJkOWY2Y2YuLjlmNjY4MGIzYmUwYSAxMDA2NDQKLS0tIGEvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9jb3JlLmgKQEAgLTg3Nyw4ICs4NzcsMTAgQEAgZW51bSBhdGgxMGtfY2FsX21v
-ZGUgewogCUFUSDEwS19DQUxfTU9ERV9GSUxFLAogCUFUSDEwS19DQUxfTU9ERV9PVFAsCiAJQVRI
-MTBLX0NBTF9NT0RFX0RULAorCUFUSDEwS19DQUxfTU9ERV9OVk1FTSwKIAlBVEgxMEtfUFJFX0NB
-TF9NT0RFX0ZJTEUsCiAJQVRIMTBLX1BSRV9DQUxfTU9ERV9EVCwKKwlBVEgxMEtfUFJFX0NBTF9N
-T0RFX05WTUVNLAogCUFUSDEwS19DQUxfTU9ERV9FRVBST00sCiB9OwogCkBAIC04OTgsMTAgKzkw
-MCwxNCBAQCBzdGF0aWMgaW5saW5lIGNvbnN0IGNoYXIgKmF0aDEwa19jYWxfbW9kZV9zdHIoZW51
-bSBhdGgxMGtfY2FsX21vZGUgbW9kZSkKIAkJcmV0dXJuICJvdHAiOwogCWNhc2UgQVRIMTBLX0NB
-TF9NT0RFX0RUOgogCQlyZXR1cm4gImR0IjsKKwljYXNlIEFUSDEwS19DQUxfTU9ERV9OVk1FTToK
-KwkJcmV0dXJuICJudm1lbSI7CiAJY2FzZSBBVEgxMEtfUFJFX0NBTF9NT0RFX0ZJTEU6CiAJCXJl
-dHVybiAicHJlLWNhbC1maWxlIjsKIAljYXNlIEFUSDEwS19QUkVfQ0FMX01PREVfRFQ6CiAJCXJl
-dHVybiAicHJlLWNhbC1kdCI7CisJY2FzZSBBVEgxMEtfUFJFX0NBTF9NT0RFX05WTUVNOgorCQly
-ZXR1cm4gInByZS1jYWwtbnZtZW0iOwogCWNhc2UgQVRIMTBLX0NBTF9NT0RFX0VFUFJPTToKIAkJ
-cmV0dXJuICJlZXByb20iOwogCX0KLS0gCjIuMzMuMAoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+Arnd Bergmann <arnd@kernel.org> writes:
+
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Using a kernel pointer in place of a dma_addr_t token can
+> lead to undefined behavior if that makes it into cache
+> management functions. The compiler caught one such attempt
+> in a cast:
+>
+> drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_add_interface':
+> drivers/net/wireless/ath/ath10k/mac.c:5586:47: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>  5586 |                         arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
+>       |                                               ^
+>
+> Looking through how this gets used down the way, I'm fairly
+> sure that beacon_paddr is never accessed again for ATH10K_DEV_TYPE_HL
+> devices, and if it was accessed, that would be a bug.
+
+That's my understanding as well. beacon_paddr is only accessed in
+ath10k_wmi_event_host_swba() and only low latency (ATH10K_DEV_TYPE_LL)
+should use that function.
+
+> Change the assignment to use a known-invalid address token
+> instead, which avoids the warning and makes it easier to catch
+> bugs if it does end up getting used.
+>
+> Fixes: e263bdab9c0e ("ath10k: high latency fixes for beacon buffer")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 7ca68c81d9b6..c0e78eaa65f8 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -5583,7 +5583,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+>  		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL) {
+>  			arvif->beacon_buf = kmalloc(IEEE80211_MAX_FRAME_LEN,
+>  						    GFP_KERNEL);
+> -			arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
+> +			arvif->beacon_paddr = DMA_MAPPING_ERROR;
+
+In the pending branch I added a comment here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=02a383c9bf959147a95c4efeaa4edf35c4450fac
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
