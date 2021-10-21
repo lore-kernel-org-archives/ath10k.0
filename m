@@ -1,76 +1,61 @@
-Return-Path: <SRS0=B0Fa=PI=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Qc8+=PJ=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CE11C4321E
-	for <ath10k@archiver.kernel.org>; Wed, 20 Oct 2021 08:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43335C433EF
+	for <ath10k@archiver.kernel.org>; Thu, 21 Oct 2021 04:31:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C133611C7
-	for <ath10k@archiver.kernel.org>; Wed, 20 Oct 2021 08:07:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6C133611C7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id D354C60FE8
+	for <ath10k@archiver.kernel.org>; Thu, 21 Oct 2021 04:31:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D354C60FE8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HasGUuanXif4dzNHsNmmqaaOQKnkkeo++YwD46qi1Hw=; b=mc5DrwuGaZ1prh
-	NjAZaq4i0zyuVCFUxq/odrrkFuP/Kveq9GQR1M9KmHy+25g2vKQ6vNgmaJy5AeM04r6Eo0VBXnIb3
-	BiyhodlEKRSqYrbfAdQpHE+ffdGmGgQS6HuLUAFM6zYZj4LBi4G5b2Rv1Z6tVSOx8zQemPRmWFugu
-	HS9hlMwN9nVJ84B16d02xLo7FuEXg+gOSUUWCmXHBssRsUa/69zU7Li5NLVaVXvjNYt8B4mmuSM2B
-	giw/q+Ku8m82CrstYNNv2O7WgONXfXmTbhQP9q9nZEKvGR1JLlWDAxCAm2PXAyrmpPXo0kfZyRqbT
-	auVRaiYd79cwhU1ZLxZg==;
+	List-Owner; bh=6V0R9eaagjEoBzNPxqh+oPDCkGviTKddMiY/I8PIml4=; b=t3kyde2IyCZB7z
+	fU7oRVCCo7Igxz4eHucU35kQVHA6basDqR4VqhloKkjdNSXChT9ojh4Sumo0Dy62G/GNC03NcSM6e
+	rbYdO2WHFB1MgPLEZSzksRNakzVq13yHip/c5mJAjETjP+1mESx9niOIGnm9b/4oqu9qMnredeeGx
+	IWHDjHyzPd9o4T7OfvfzgJaVo/XRH2QK8h99zg1eEaHxeFHrnZv3mFyjssblSO1thkO7mgPWAVFQM
+	MyZAG2YwKiLaMyKxP2xlihC3DX2cmP23C301V/7f2YxLk25AkHqPxPqeULask08OLxNyl0OTB/ZqT
+	IhhRHi+aR9p8WcnbFzMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1md6Nf-003jWg-TW; Wed, 20 Oct 2021 07:51:23 +0000
-Received: from so254-9.mailgun.net ([198.61.254.9])
+	id 1mdPjd-006Okg-Ij; Thu, 21 Oct 2021 04:31:21 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1md6NK-003jPE-VY
- for ath10k@lists.infradead.org; Wed, 20 Oct 2021 07:51:07 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1634716261; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=jHmDxCUHAXn2EAujtY3UfRkq6zQM7ocK/MuWpF2g3aY=;
- b=dA6IiIzWSXOkPXNL0XdDR+tHYBbnnsPORVI2ZmmCPEUO1zJtyA8nlu1jUAPepPsunNpuqrre
- ybnjotPhU3YA/uXDtl/L5j8L9C6wrMzHEaR9HN7zPiJ5XF204AsdBjcMd4giM/Q+P7WYrL3+
- fjo06+UYLf81T52lL52JTnwJHlI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 616fca64c75c436a30b2eda8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 07:51:00
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 1491BC43460; Wed, 20 Oct 2021 07:51:00 +0000 (UTC)
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: kvalo)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 5D568C4338F;
- Wed, 20 Oct 2021 07:50:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5D568C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-From: Kalle Valo <kvalo@codeaurora.org>
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
-Subject: [PATCH v2] ath10k: fix module load regression with iram-recovery
- feature
-Date: Wed, 20 Oct 2021 10:50:54 +0300
-Message-Id: <20211020075054.23061-1-kvalo@codeaurora.org>
-X-Mailer: git-send-email 2.20.1
+ id 1mdPjZ-006OkP-Nk
+ for ath10k@lists.infradead.org; Thu, 21 Oct 2021 04:31:19 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="227710738"
+X-IronPort-AV: E=Sophos;i="5.87,168,1631602800"; d="scan'208";a="227710738"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Oct 2021 21:31:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,168,1631602800"; d="scan'208";a="494946097"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+ by orsmga008.jf.intel.com with ESMTP; 20 Oct 2021 21:31:15 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1mdPjW-000DyY-Q2; Thu, 21 Oct 2021 04:31:14 +0000
+Date: Thu, 21 Oct 2021 12:31:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ a5b5f2cfe7dafd4f2a2912f23c31575cdcba64b7
+Message-ID: <6170ed0b.r7M9Dt+Veyxs0YyV%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_005103_115184_E4F34E9C 
-X-CRM114-Status: GOOD (  21.56  )
+X-CRM114-CacheID: sfid-20211020_213117_827424_12543579 
+X-CRM114-Status: UNSURE (   4.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,141 +72,171 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Abinaya Kalaiselvan <akalaise@codeaurora.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: a5b5f2cfe7dafd4f2a2912f23c31575cdcba64b7  Merge branch 'pending' into master-pending
 
-Commit 9af7c32ceca8 ("ath10k: add target IRAM recovery feature support")
-introduced a new firmware feature flag ATH10K_FW_FEATURE_IRAM_RECOVERY. But
-this caused ath10k_pci module load to fail if ATH10K_FW_CRASH_DUMP_RAM_DATA bit
-was not enabled in the ath10k coredump_mask module parameter:
+elapsed time: 1100m
 
-[ 2209.328190] ath10k_pci 0000:02:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id 0x00000000 sub 168c:cafe
-[ 2209.434414] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
-[ 2209.547191] ath10k_pci 0000:02:00.0: firmware ver 10.4-3.9.0.2-00099 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps,peer-fixed-rate,iram-recovery crc32 cbade90a
-[ 2210.896485] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id 0:1 crc32 a040efc2
-[ 2213.603339] ath10k_pci 0000:02:00.0: failed to copy target iram contents: -12
-[ 2213.839027] ath10k_pci 0000:02:00.0: could not init core (-12)
-[ 2213.933910] ath10k_pci 0000:02:00.0: could not probe fw (-12)
+configs tested: 147
+configs skipped: 3
 
-And by default coredump_mask does not have ATH10K_FW_CRASH_DUMP_RAM_DATA
-enabled so anyone using a firmware with iram-recovery feature would fail. To my
-knowledge only QCA9984 firmwares starting from release 10.4-3.9.0.2-00099
-enabled the feature.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-The reason for regression was that ath10k_core_copy_target_iram() used
-ath10k_coredump_get_mem_layout() to get the memory layout, but when
-ATH10K_FW_CRASH_DUMP_RAM_DATA was disabled it would get just NULL and bail out
-with an error.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20211019
+powerpc                      tqm8xx_defconfig
+arm                         s5pv210_defconfig
+powerpc                     taishan_defconfig
+powerpc                     kilauea_defconfig
+m68k                          hp300_defconfig
+nios2                         3c120_defconfig
+arm                        mvebu_v5_defconfig
+arm                        vexpress_defconfig
+arm                      integrator_defconfig
+powerpc                    amigaone_defconfig
+mips                        maltaup_defconfig
+arm                      pxa255-idp_defconfig
+arm                            hisi_defconfig
+s390                             alldefconfig
+sh                           se7780_defconfig
+arm                         shannon_defconfig
+csky                             alldefconfig
+m68k                          sun3x_defconfig
+powerpc                      ppc40x_defconfig
+sh                             shx3_defconfig
+sh                          polaris_defconfig
+powerpc                      pcm030_defconfig
+powerpc                      katmai_defconfig
+m68k                       m5275evb_defconfig
+arm                          ixp4xx_defconfig
+powerpc                          g5_defconfig
+sparc                       sparc64_defconfig
+arm                           viper_defconfig
+arm                         bcm2835_defconfig
+arm                             mxs_defconfig
+arm                       cns3420vb_defconfig
+powerpc                      pmac32_defconfig
+sh                 kfr2r09-romimage_defconfig
+sh                          kfr2r09_defconfig
+powerpc                     sequoia_defconfig
+arm                          exynos_defconfig
+arm                         orion5x_defconfig
+mips                         rt305x_defconfig
+mips                        workpad_defconfig
+arm                          gemini_defconfig
+arm                        mini2440_defconfig
+mips                      maltasmvp_defconfig
+mips                             allyesconfig
+sh                           se7712_defconfig
+arm                            mps2_defconfig
+powerpc                     ppa8548_defconfig
+mips                           gcw0_defconfig
+mips                       rbtx49xx_defconfig
+mips                          ath25_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                  randconfig-c002-20211019
+x86_64               randconfig-c001-20211019
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                              allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20211020
+i386                 randconfig-a003-20211020
+i386                 randconfig-a002-20211020
+i386                 randconfig-a005-20211020
+i386                 randconfig-a006-20211020
+i386                 randconfig-a001-20211020
+x86_64               randconfig-a015-20211019
+x86_64               randconfig-a012-20211019
+x86_64               randconfig-a016-20211019
+x86_64               randconfig-a014-20211019
+x86_64               randconfig-a013-20211019
+x86_64               randconfig-a011-20211019
+i386                 randconfig-a014-20211019
+i386                 randconfig-a016-20211019
+i386                 randconfig-a011-20211019
+i386                 randconfig-a015-20211019
+i386                 randconfig-a012-20211019
+i386                 randconfig-a013-20211019
+arc                  randconfig-r043-20211020
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-While looking at all this I noticed another bug: if CONFIG_DEV_COREDUMP is
-disabled but the firmware has iram-recovery enabled the module load fails with
-similar error messages. I fixed that by returning 0 from
-ath10k_core_copy_target_iram() when _ath10k_coredump_get_mem_layout() returns
-NULL.
+clang tested configs:
+x86_64               randconfig-a004-20211019
+x86_64               randconfig-a006-20211019
+x86_64               randconfig-a005-20211019
+x86_64               randconfig-a001-20211019
+x86_64               randconfig-a002-20211019
+x86_64               randconfig-a003-20211019
+i386                 randconfig-a001-20211019
+i386                 randconfig-a003-20211019
+i386                 randconfig-a004-20211019
+i386                 randconfig-a005-20211019
+i386                 randconfig-a002-20211019
+i386                 randconfig-a006-20211019
+x86_64               randconfig-a013-20211020
+x86_64               randconfig-a015-20211020
+x86_64               randconfig-a011-20211020
+x86_64               randconfig-a014-20211020
+x86_64               randconfig-a016-20211020
+x86_64               randconfig-a012-20211020
+hexagon              randconfig-r041-20211019
+hexagon              randconfig-r045-20211019
+riscv                randconfig-r042-20211020
+s390                 randconfig-r044-20211020
+hexagon              randconfig-r045-20211020
+hexagon              randconfig-r041-20211020
 
-Tested-on: QCA9984 hw2.0 PCI 10.4-3.9.0.2-00139
-
-Fixes: 9af7c32ceca8 ("ath10k: add target IRAM recovery feature support")
-Signed-off-by: Abinaya Kalaiselvan <akalaise@codeaurora.org>
-Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 ---
-
-v2:
-
-* rewrite the commit log
-
-* more understandable naming for functions
-
-* fix both the compile and runtime issues when CONFIG_DEV_COREDUMP is disabled
-
- drivers/net/wireless/ath/ath10k/core.c     | 11 +++++++++--
- drivers/net/wireless/ath/ath10k/coredump.c | 11 ++++++++---
- drivers/net/wireless/ath/ath10k/coredump.h |  7 +++++++
- 3 files changed, 24 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index c21e05549f61..d0b37c21d7f8 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2690,9 +2690,16 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
- 	int i, ret;
- 	u32 len, remaining_len;
- 
--	hw_mem = ath10k_coredump_get_mem_layout(ar);
-+	/* copy target iram feature must work also when
-+	 * ATH10K_FW_CRASH_DUMP_RAM_DATA is disabled, so
-+	 * _ath10k_coredump_get_mem_layout() to accomplist that
-+	 */
-+	hw_mem = _ath10k_coredump_get_mem_layout(ar);
- 	if (!hw_mem)
--		return -ENOMEM;
-+		/* if CONFIG_DEV_COREDUMP is disabled we get NULL, then
-+		 * just silently disable the feature by doing nothing
-+		 */
-+		return 0;
- 
- 	for (i = 0; i < hw_mem->region_table.size; i++) {
- 		tmp = &hw_mem->region_table.regions[i];
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
-index 7eb72290a925..55e7e11d06d9 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.c
-+++ b/drivers/net/wireless/ath/ath10k/coredump.c
-@@ -1447,11 +1447,17 @@ static u32 ath10k_coredump_get_ramdump_size(struct ath10k *ar)
- 
- const struct ath10k_hw_mem_layout *ath10k_coredump_get_mem_layout(struct ath10k *ar)
- {
--	int i;
--
- 	if (!test_bit(ATH10K_FW_CRASH_DUMP_RAM_DATA, &ath10k_coredump_mask))
- 		return NULL;
- 
-+	return _ath10k_coredump_get_mem_layout(ar);
-+}
-+EXPORT_SYMBOL(ath10k_coredump_get_mem_layout);
-+
-+const struct ath10k_hw_mem_layout *_ath10k_coredump_get_mem_layout(struct ath10k *ar)
-+{
-+	int i;
-+
- 	if (WARN_ON(ar->target_version == 0))
- 		return NULL;
- 
-@@ -1464,7 +1470,6 @@ const struct ath10k_hw_mem_layout *ath10k_coredump_get_mem_layout(struct ath10k
- 
- 	return NULL;
- }
--EXPORT_SYMBOL(ath10k_coredump_get_mem_layout);
- 
- struct ath10k_fw_crash_data *ath10k_coredump_new(struct ath10k *ar)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
-index 42404e246e0e..240d70515088 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.h
-+++ b/drivers/net/wireless/ath/ath10k/coredump.h
-@@ -176,6 +176,7 @@ int ath10k_coredump_register(struct ath10k *ar);
- void ath10k_coredump_unregister(struct ath10k *ar);
- void ath10k_coredump_destroy(struct ath10k *ar);
- 
-+const struct ath10k_hw_mem_layout *_ath10k_coredump_get_mem_layout(struct ath10k *ar);
- const struct ath10k_hw_mem_layout *ath10k_coredump_get_mem_layout(struct ath10k *ar);
- 
- #else /* CONFIG_DEV_COREDUMP */
-@@ -214,6 +215,12 @@ ath10k_coredump_get_mem_layout(struct ath10k *ar)
- 	return NULL;
- }
- 
-+static inline const struct ath10k_hw_mem_layout *
-+_ath10k_coredump_get_mem_layout(struct ath10k *ar)
-+{
-+	return NULL;
-+}
-+
- #endif /* CONFIG_DEV_COREDUMP */
- 
- #endif /* _COREDUMP_H_ */
--- 
-2.20.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
