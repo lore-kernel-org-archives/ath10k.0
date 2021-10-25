@@ -2,14 +2,14 @@ Return-Path: <SRS0=tAHh=PN=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D797C433EF
-	for <ath10k@archiver.kernel.org>; Mon, 25 Oct 2021 13:05:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC0D3C433F5
+	for <ath10k@archiver.kernel.org>; Mon, 25 Oct 2021 13:06:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D93760F92
-	for <ath10k@archiver.kernel.org>; Mon, 25 Oct 2021 13:05:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6D93760F92
+	by mail.kernel.org (Postfix) with ESMTPS id AD83B60F9D
+	for <ath10k@archiver.kernel.org>; Mon, 25 Oct 2021 13:06:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AD83B60F9D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,68 +18,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
 	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7q4zG38OY51D/drKgZwhZNIhw8ctyxUIR6hDJPksFmc=; b=t3t8de5VtOnBcN
-	wIKyUap/ARsNXJG0Qel7/vf+osN2QQHzQGzn0XRmFQyOfqNi+C9yfo/24+ad9bFFLF61fXPMkX1C6
-	M9VwmGm1AZObZ3f/99Y0EYHFx0qvpQV6mjMNh/QNBNq1niiQBr5EHaCHOA8p2aliGY3E4AyCLxtfo
-	uclM0IJD2sKJl8khLQ5qD5tYudoXm2O0VYmabDTDwxQ0Dhaqn0Mg35I40PeJVTWgu2ra1/lQMdNQJ
-	0DVbjY2NqO+0ixwy0zH6J/Fpuu+cFvAok3tWtz1aHS73VjO/T8brbdQcO+Pkm7Uz/XJxitG2TDgJj
-	iWsPK7yqByXarNj+MUMQ==;
+	List-Owner; bh=T4pec9MEkbptcJMa/1DnsyrwEG6ulPGeJrvD3/+VPLM=; b=WqI5IZzHSiFDyZ
+	Mnpa7JDgog4r9G20Kmxb1Op4GM+prqtu4zJcNId/3rZcfv1ij8gbCXBTyYZkiS00esUS+lE01ZCl8
+	hJvSU3aFfAR12UnFg4JGoqur0WLkvxU5xtdSooXV+M3JITcVThv+nViEKyriZ/uE1xdLB9MCGyxHa
+	ZoTK2SWdCxFR/clCQkXA2jy0VgxqreiXkSti6M+hF0y4P/EqFVma+gHfUPLAOjmoDda4K8uADDKh6
+	G6RNmCnKmXb581dpD1w98YNz7L3e4ORL95JIRtkpEl2/BK+NUFAhfWhG8dA013jA4aJ3x6bxJAmZE
+	q0NB850dE6IV1TMLISvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mezed-00GUC1-SQ; Mon, 25 Oct 2021 13:04:43 +0000
-Received: from m43-7.mailgun.net ([69.72.43.7])
+	id 1mezfj-00GURk-Tm; Mon, 25 Oct 2021 13:05:51 +0000
+Received: from so254-9.mailgun.net ([198.61.254.9])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mezeN-00GTtl-3Z
- for ath10k@lists.infradead.org; Mon, 25 Oct 2021 13:04:30 +0000
+ id 1mezff-00GUQc-7X
+ for ath10k@lists.infradead.org; Mon, 25 Oct 2021 13:05:50 +0000
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1635167069; h=Date: Message-ID: Cc: To: References:
+ s=smtp; t=1635167149; h=Date: Message-ID: Cc: To: References:
  In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=kuLbeuqX9KK+/DlxCOlCZThwrFG8XXXwlh08K36ZZ5s=;
- b=sZjXJ2ChMntkJhmMLjEOebJ3gnPbGbWmUI+IRtZ8D3XiBCC8oeZ2ckljP7YleiSG4nMqd5LU
- LEnyCUMcgCNg1qqzlOQTtbyEsunuwBwjcdWvIgv+syHDSyVcQmZ8YWA/RTo1jFxT6DX07Awp
- Rmj2EjkYyUg5r/6PPs2vasj/J/w=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ Content-Type: Sender; bh=cFrFbEafI5CQo4iomubSKXzrac2Ie+M1Onq1o7cTjkw=;
+ b=qFVhHoY+rM2bdjsRDy/j0nUgUdir91xjOLStdDMdwfrLa9J8vrySOo0wAjrGB/D+wvbjqBXD
+ jXS1/OzFKsU2eflikhHrHKB/lIWr/B2bnT8LpqNEWHDlWGdcGn5w54yqyS6nwp+5ii4+ZiNg
+ 5mKPudhIh4PuWFqRgPfsAEM44JA=
+X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6176ab54b03398c06c78cf54 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Oct 2021 13:04:19
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6176ab915baa84c77b630331 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Oct 2021 13:05:21
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 1DBA3C43460; Mon, 25 Oct 2021 13:04:19 +0000 (UTC)
+ id B796DC43616; Mon, 25 Oct 2021 13:05:20 +0000 (UTC)
 Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: kvalo)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 864E6C4338F;
- Mon, 25 Oct 2021 13:04:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 864E6C4338F
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E2E7C4338F;
+ Mon, 25 Oct 2021 13:05:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5E2E7C4338F
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  spf=fail smtp.mailfrom=codeaurora.org
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix invalid dma_addr_t token assignment
+Subject: Re: [PATCH v2] ath10k: fix module load regression with iram-recovery
+ feature
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211014075153.3655910-1-arnd@kernel.org>
-References: <20211014075153.3655910-1-arnd@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Alagu Sankar <alagusankar@silex-india.com>, Arnd Bergmann <arnd@arndb.de>, 
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
- Brian Norris <briannorris@chromium.org>, Wen Gong <wgong@codeaurora.org>, 
- Tamizh Chelvam <tamizhr@codeaurora.org>,
- Carl Huang <cjhuang@codeaurora.org>, 
- Miaoqing Pan <miaoqing@codeaurora.org>, Ben Greear <greearb@candelatech.com>, 
- Erik Stromdahl <erik.stromdahl@gmail.com>, Fabio Estevam <festevam@denx.de>,
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20211020075054.23061-1-kvalo@codeaurora.org>
+References: <20211020075054.23061-1-kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
 User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163516705229.3976.16508438608512725859.kvalo@codeaurora.org>
-Date: Mon, 25 Oct 2021 13:04:19 +0000 (UTC)
+Message-ID: <163516711712.3976.13862181936420068312.kvalo@codeaurora.org>
+Date: Mon, 25 Oct 2021 13:05:20 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211025_060429_605943_3ABAC147 
-X-CRM114-Status: GOOD (  14.28  )
+X-CRM114-CacheID: sfid-20211025_060549_440756_902076FA 
+X-CRM114-Status: GOOD (  15.58  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,36 +89,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Arnd Bergmann <arnd@kernel.org> wrote:
+Kalle Valo <kvalo@codeaurora.org> wrote:
 
-> Using a kernel pointer in place of a dma_addr_t token can
-> lead to undefined behavior if that makes it into cache
-> management functions. The compiler caught one such attempt
-> in a cast:
+> Commit 9af7c32ceca8 ("ath10k: add target IRAM recovery feature support")
+> introduced a new firmware feature flag ATH10K_FW_FEATURE_IRAM_RECOVERY. But
+> this caused ath10k_pci module load to fail if ATH10K_FW_CRASH_DUMP_RAM_DATA bit
+> was not enabled in the ath10k coredump_mask module parameter:
 > 
-> drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_add_interface':
-> drivers/net/wireless/ath/ath10k/mac.c:5586:47: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
->  5586 |                         arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
->       |                                               ^
+> [ 2209.328190] ath10k_pci 0000:02:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id 0x00000000 sub 168c:cafe
+> [ 2209.434414] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
+> [ 2209.547191] ath10k_pci 0000:02:00.0: firmware ver 10.4-3.9.0.2-00099 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps,peer-fixed-rate,iram-recovery crc32 cbade90a
+> [ 2210.896485] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id 0:1 crc32 a040efc2
+> [ 2213.603339] ath10k_pci 0000:02:00.0: failed to copy target iram contents: -12
+> [ 2213.839027] ath10k_pci 0000:02:00.0: could not init core (-12)
+> [ 2213.933910] ath10k_pci 0000:02:00.0: could not probe fw (-12)
 > 
-> Looking through how this gets used down the way, I'm fairly
-> sure that beacon_paddr is never accessed again for ATH10K_DEV_TYPE_HL
-> devices, and if it was accessed, that would be a bug.
+> And by default coredump_mask does not have ATH10K_FW_CRASH_DUMP_RAM_DATA
+> enabled so anyone using a firmware with iram-recovery feature would fail. To my
+> knowledge only QCA9984 firmwares starting from release 10.4-3.9.0.2-00099
+> enabled the feature.
 > 
-> Change the assignment to use a known-invalid address token
-> instead, which avoids the warning and makes it easier to catch
-> bugs if it does end up getting used.
+> The reason for regression was that ath10k_core_copy_target_iram() used
+> ath10k_coredump_get_mem_layout() to get the memory layout, but when
+> ATH10K_FW_CRASH_DUMP_RAM_DATA was disabled it would get just NULL and bail out
+> with an error.
 > 
-> Fixes: e263bdab9c0e ("ath10k: high latency fixes for beacon buffer")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> While looking at all this I noticed another bug: if CONFIG_DEV_COREDUMP is
+> disabled but the firmware has iram-recovery enabled the module load fails with
+> similar error messages. I fixed that by returning 0 from
+> ath10k_core_copy_target_iram() when _ath10k_coredump_get_mem_layout() returns
+> NULL.
+> 
+> Tested-on: QCA9984 hw2.0 PCI 10.4-3.9.0.2-00139
+> 
+> Fixes: 9af7c32ceca8 ("ath10k: add target IRAM recovery feature support")
+> Signed-off-by: Abinaya Kalaiselvan <akalaise@codeaurora.org>
+> Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-937e79c67740 ath10k: fix invalid dma_addr_t token assignment
+6f8c8bf4c7c9 ath10k: fix module load regression with iram-recovery feature
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211014075153.3655910-1-arnd@kernel.org/
+https://patchwork.kernel.org/project/linux-wireless/patch/20211020075054.23061-1-kvalo@codeaurora.org/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
