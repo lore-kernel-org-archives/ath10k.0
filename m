@@ -2,60 +2,78 @@ Return-Path: <SRS0=1Jc9=PQ=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B34DC433F5
-	for <ath10k@archiver.kernel.org>; Thu, 28 Oct 2021 03:37:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36904C4332F
+	for <ath10k@archiver.kernel.org>; Thu, 28 Oct 2021 08:59:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9F2160E74
-	for <ath10k@archiver.kernel.org>; Thu, 28 Oct 2021 03:37:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C9F2160E74
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id F021C61056
+	for <ath10k@archiver.kernel.org>; Thu, 28 Oct 2021 08:59:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F021C61056
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+imSeJPFp0cAKBg6BibsPWYjwhkJpfLTSwrJPOEVmpo=; b=BkGH8560yhmTHJ
-	4jurW9jVS1FKIhe5hFZrxEm/nzsVcqkPKFwAMgCcYxSBhC8U/mYuov6fru2cQB3ffUyt0fbLB8GxP
-	k5MoWEuAMUIMy/QsCWOzv8ehSnzkmPSgqA61Ny3/qJpwEkjcCm+aPNc+vDt4rbU4R2uzT6nNneM4K
-	SrZzUj4sCHvw1WDkc+lDbXDX1hk1VKH7AeiXntiMDyOX3L9bcBkfnV4+55yFc+JOB8qXayVsIXzix
-	nnT0YPbm7hyMZW4ErLFwhFSlNLYH6ABZoPc6EqYztjLdm0YWxiKzOQlnovwhdbRPliJwlp2+DXRum
-	gfAialNAEkDu5jC08aTQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=N3mnoSnjPWzTvYwDAtXo8Osqq+KXEtuEn5kxlXkw/P4=; b=xsvHDQH8b/BZyV
+	/jAxtzS3sDAM7odJNj9ya4yNwXR2jYmAgd90/H0coRqlcAduH7ZDTKwfiaozEs+jPamCqvNkDmho3
+	eJmWtqaAE4GCLH61f8qBm0nFuHVYJCrbXmCCVRcblRPEHfbyHXtU/tF5Rsyc5o7bl0uunY/uVSixE
+	1tqdqhimXLaakQqrV4MKPvfx9Df4eXpJbxMHi+DwC+BcrWshQTgkQCFc0I7utnud5Is2qyJVV4J7M
+	tpViNwcL5abk6gZ5hdcD0VG7aRnmR8nNgGIJGain/b7RV1rGUpY0/ufWyvyMX2fyvi0c2We49wbhQ
+	bwGZYN+fwKx0S8w7AGLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfwEM-006mY3-81; Thu, 28 Oct 2021 03:37:30 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1mg1FU-007KYB-BS; Thu, 28 Oct 2021 08:59:00 +0000
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfwEJ-006mXE-KZ
- for ath10k@lists.infradead.org; Thu, 28 Oct 2021 03:37:29 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="227771068"
-X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; d="scan'208";a="227771068"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2021 20:37:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; d="scan'208";a="486957916"
-Received: from lkp-server01.sh.intel.com (HELO 3b851179dbd8) ([10.239.97.150])
- by orsmga007.jf.intel.com with ESMTP; 27 Oct 2021 20:37:16 -0700
-Received: from kbuild by 3b851179dbd8 with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1mfwE8-0001Uh-0M; Thu, 28 Oct 2021 03:37:16 +0000
-Date: Thu, 28 Oct 2021 11:36:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 7c27689962a92e297b2b43af67625eb84887ab79
-Message-ID: <617a1abc.9ILF2sgL02HE+InC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1mg1FN-007KWN-M9
+ for ath10k@lists.infradead.org; Thu, 28 Oct 2021 08:58:58 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1635411536; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=4KROLv/TfRY+ImU5mU/rR3OKISGBN52NI3Dxegicnhs=;
+ b=GTxmS/zuhmKc/Nb4/rV9eBJVxCQf/fRDPb5Sxzvk0iyasT3nzVj5kp1OjkpWZMDd1WXJKDVi
+ ZTb0FHCX8UXEk9pupvU6QO2x3te//oKQ3hRhKiE45sa7q/vcGxLAdG9UPnzzwWRg9FUQbaaI
+ 43jf278MmBN7Qe+dCDiXycH7aC8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyJiZDQ3OSIsICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 617a6629ff3eb667a7ccd0fb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 08:58:17
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 86229C43460; Thu, 28 Oct 2021 08:58:17 +0000 (UTC)
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: kvalo)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id E4B59C4338F;
+ Thu, 28 Oct 2021 08:58:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E4B59C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+From: Kalle Valo <kvalo@codeaurora.org>
+To: Christian Lamparter <chunkeey@gmail.com>
+Cc: linux-wireless@vger.kernel.org,  ath10k@lists.infradead.org
+Subject: Re: [PATCH v2] ath10k: fetch (pre-)calibration data via nvmem
+ subsystem
+References: <20211016234609.1568317-1-chunkeey@gmail.com>
+Date: Thu, 28 Oct 2021 11:58:13 +0300
+In-Reply-To: <20211016234609.1568317-1-chunkeey@gmail.com> (Christian
+ Lamparter's message of "Sun, 17 Oct 2021 01:46:09 +0200")
+Message-ID: <87ee855xwa.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211027_203727_723332_108ED009 
-X-CRM114-Status: UNSURE (   5.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211028_015857_064900_DB9C7278 
+X-CRM114-Status: GOOD (  17.71  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,94 +85,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 7c27689962a92e297b2b43af67625eb84887ab79  Merge branch 'ath-next' into ath-qca
-
-elapsed time: 1118m
-
-configs tested: 63
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-arc                  randconfig-r043-20211027
-s390                 randconfig-r044-20211027
-riscv                randconfig-r042-20211027
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20211027
-x86_64               randconfig-a004-20211027
-x86_64               randconfig-a005-20211027
-x86_64               randconfig-a006-20211027
-x86_64               randconfig-a001-20211027
-x86_64               randconfig-a003-20211027
-hexagon              randconfig-r045-20211027
-hexagon              randconfig-r041-20211027
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Q2hyaXN0aWFuIExhbXBhcnRlciA8Y2h1bmtlZXlAZ21haWwuY29tPiB3cml0ZXM6Cgo+IEFUSDEw
+SyBjaGlwcyBhcmUgdXNlZCBpdCB3aWRlIHJhbmdlIG9mIHJvdXRlcnMsCj4gYWNjZXNzcG9pbnRz
+LCByYW5nZSBleHRlbmRlcnMsIG5ldHdvcmsgYXBwbGlhbmNlcy4KPiBPbiB0aGVzZSBlbWJlZGRl
+ZCBkZXZpY2VzLCBjYWxpYnJhdGlvbiBkYXRhIGlzIG9mdGVuCj4gc3RvcmVkIG9uIHRoZSBtYWlu
+IHN5c3RlbSdzIGZsYXNoIGFuZCB3YXMgb3V0IG9mIHJlYWNoCj4gZm9yIHRoZSBkcml2ZXIuCj4K
+PiBUbyBicmlkZ2UgdGhpcyBnYXAsIGF0aDEwayBpcyBnZXR0aW5nIGV4dGVuZGVkIHRvIHB1bGwK
+PiB0aGUgKHByZS0pY2FsaWJyYXRpb24gZGF0YSB0aHJvdWdoIG52bWVtIHN1YnN5c3RlbS4KPiBU
+byBkbyB0aGlzLCBhIG52bWVtLWNlbGwgY29udGFpbmluZyB0aGUgaW5mb3JtYXRpb24gY2FuCj4g
+ZWl0aGVyIGJlIHNwZWNpZmllZCBpbiB0aGUgcGxhdGZvcm0gZGF0YSBvciB2aWEgZGV2aWNlLXRy
+ZWUuCj4KPiBUZXN0ZWQgd2l0aDoKPiAgICAgICAgIE5ldGdlYXIgRVg2MTUwdjIgKElQUTQwMTgg
+LSBwcmUtY2FsaWJyYXRpb24gbWV0aG9kKQo+ICAgICAgICAgVFAtTGluayBBcmNoZXIgQzcgdjIg
+KFFDQTk4ODB2MiAtIG9sZCBjYWxpYnJhdGlvbiBtZXRob2QpCj4KPiBDYzogUm9iZXJ0IE1hcmtv
+IDxyb2JpbWFya29AZ21haWwuY29tPgo+IENjOiBUaGliYXV0IFZBUsOITkUgPGhhY2tzQHNsYXNo
+ZGlydC5vcmc+Cj4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0aWFuIExhbXBhcnRlciA8Y2h1bmtlZXlA
+Z21haWwuY29tPgo+IC0tLQo+Cj4gdjEgLT4gdjI6Cj4gCS0gdXNlICV6dSBhbmQgJXUgaW4gdGhl
+IGZvcm1hdCBzdHJpbmcgZm9yIHNpemVfdAo+ICAgICAgICAgICBhbmQgdTMyIHR5cGVzIChjYXRj
+aGVkIGJ5IHRoZSAia2VybmVsIHRlc3Qgcm9ib3QiKS4KPiAJLSByZXdvcmRlZCBjb21taXQgbWVz
+c2FnZSArIHN1Y2Nlc3NmdWxseSB0ZXN0ZWQgb24gUUNBOTg4MHYyCj4KPiBJIHBsYWNlZCB0aGUg
+bnZtZW0gY29kZSBpbiBmcm9udCBvZiB0aGUgY3VycmVudCAiZmlsZSIgbWV0aG9kCj4gKGZpcm13
+YXJlX3JlcXVlc3QpLiBSZWFzb24gaXMgdGhhdCB0aGlzIG1ha2VzIGl0IGVhc2llciBmb3IgbWUK
+PiB0byB0ZXN0IGl0LiBJZiBuZWVkZWQgaXQgY2FuIGJlIG1vdmVkIHRvIGEgZGlmZmVyZW50IHBs
+YWNlLgoKTG9va3MgZ29vZCB0byBtZS4gQmVmb3JlIEkgYXBwbHkgdGhpcywgSSB3YW50IHRvIG1l
+bnRpb24gdG8gdGhhdCBJIGhhdmUKaGFkIGEgbG9uZyBpbiBteSBkZWZlcnJlZCBxdWV1ZSByZWxh
+dGVkIHR3byBwYXRjaHNldHM6CgpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3Qv
+bGludXgtd2lyZWxlc3MvcGF0Y2gvMjAyMDA5MjcxOTI1MTUuODYtMS1hbnN1ZWxzbXRoQGdtYWls
+LmNvbS8KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNz
+L3BhdGNoLzIwMjAwOTI3MTkyNTE1Ljg2LTItYW5zdWVsc210aEBnbWFpbC5jb20vCgpodHRwczov
+L3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgtd2lyZWxlc3MvcGF0Y2gvMjAyMDA5
+MTgxODExMDQuOTgtMS1hbnN1ZWxzbXRoQGdtYWlsLmNvbS8KaHR0cHM6Ly9wYXRjaHdvcmsua2Vy
+bmVsLm9yZy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNzL3BhdGNoLzIwMjAwOTE4MTgxMTA0Ljk4LTIt
+YW5zdWVsc210aEBnbWFpbC5jb20vCgpDaHJpc3RpYW4sIHdlIGRvbid0IG5lZWQgdGhvc2UgYW55
+bW9yZSwgcmlnaHQ/IEV4cGVjdCB0aGUgZmlyc3QgcGF0Y2gKbWF5YmUuCgotLSAKaHR0cHM6Ly9w
+YXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNzL2xpc3QvCgpodHRwczov
+L3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi9kZXZlbG9wZXJzL2RvY3VtZW50YXRpb24vc3Vi
+bWl0dGluZ3BhdGNoZXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
