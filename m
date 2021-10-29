@@ -2,60 +2,71 @@ Return-Path: <SRS0=agdb=PR=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E41B6C433EF
-	for <ath10k@archiver.kernel.org>; Fri, 29 Oct 2021 09:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0896DC433EF
+	for <ath10k@archiver.kernel.org>; Fri, 29 Oct 2021 14:44:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A551B60F23
-	for <ath10k@archiver.kernel.org>; Fri, 29 Oct 2021 09:18:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A551B60F23
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id CB24F610CB
+	for <ath10k@archiver.kernel.org>; Fri, 29 Oct 2021 14:44:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CB24F610CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XNp60Jde0kteUoxIyXlZYD0VCWnGFB+gRHlM/kc5yiE=; b=jhZPgAHVVbIiHV
-	a0n64Xqzrmdr4Ivm9ldwJu1NQVR3GMl649IlzMbc1SZ9VhhWE76CR3PKSrqWvXpJF/MXbPTcQhsIX
-	yRVSNqdYhiQy4AjSDlrR5JzAgBjyc+7QYM0nAYivRVE9BkUvnChWoV7asYpya6b/5IwAQcdMD0FNa
-	8A6xjfRraRqvg8iLAiheSskgFu567Dug7vqcQleSyylrIWtogx5/zq3rXkIOHmsKOHVbhNrzP+Oep
-	xXVm96AC8QYBQQ8OC7m1tnhe30dJ5cIVwRifvyoh2IHhaaF/LLaV0WS8jiO5EDdgOrnb+44Ey5/yt
-	ma8Q+3hhfQdBt+fzNEeQ==;
+	List-Owner; bh=/BokY6Zw89DKB+xQNmyu9DQ557LS1W5l1p/5r9ELM4I=; b=SLSKp4/JOTlR/J
+	b5zMeczHOPv4sAfTr0jCvYqvdGq4ZoXF36u4MRaVbgIs6ZTQkT882hfyd8dG3XJ+uF+h1kyEESGoP
+	guMu9DWLZ6xUskSyUTh+U+vsrElDzKauB4EmglCFJ9d+GQSdONYPmp1ZfDobCoXdDHyLhWQscZUgj
+	7wwsCzY3ad8IdIW1Hwg3+o4DQ2O65LhqUkpje5pvoOpUBEqj+xOFQBiA8QcwzN6ourIWPy2Gi9rwY
+	BHFcgmCKnRXFZqgYHMSAjf2JkuqrvKpDR6ZVNdxAuZSBxmt3zIwpTsPIHDBmmqx+KJnTBHN1fGA9K
+	rddnstP/DwSePawLUeDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mgO1O-00ATR7-UH; Fri, 29 Oct 2021 09:17:58 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1mgT6S-00BEI7-Tr; Fri, 29 Oct 2021 14:43:32 +0000
+Received: from mail-il1-x132.google.com ([2607:f8b0:4864:20::132])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgO1M-00ATQM-24
- for ath10k@lists.infradead.org; Fri, 29 Oct 2021 09:17:57 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="316826626"
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; d="scan'208";a="316826626"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Oct 2021 02:17:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; d="scan'208";a="598150323"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
- by orsmga004.jf.intel.com with ESMTP; 29 Oct 2021 02:17:53 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1mgO1J-0000BN-7b; Fri, 29 Oct 2021 09:17:53 +0000
-Date: Fri, 29 Oct 2021 17:17:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- f8bc49ccdc7ecf045f167f7164f8b34521ca9f6a
-Message-ID: <617bbc24.Ya7xsnXazWi7zVVD%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1mgT6Q-00BEHT-FS
+ for ath10k@lists.infradead.org; Fri, 29 Oct 2021 14:43:31 +0000
+Received: by mail-il1-x132.google.com with SMTP id y17so10846231ilb.9
+ for <ath10k@lists.infradead.org>; Fri, 29 Oct 2021 07:43:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=4YRex0QMoogQvADu0trGwP2sJZAcpAWADBavkyvc8Cw=;
+ b=HFOmD5Gk7g3DZkauuGxQDngxnGgCsoIIT5DRZzyOEzC46XM5MD99dv9AlbHYiAzHvh
+ rNL4BuWaA6H0FZvbkLGsnoiIgsun+C5xNTlylFbOo1jcKjbQX0z37ksD0ccpbnQY+Eiv
+ gEkwWUni8xyBKFzdJ/RUq/oHmZHbxuaLDh2JDSPqIc1MBoQ0Aetsu9NARfZthZBtw+/D
+ 13O9CqDU1DGczfLFCId8rCKlZZHkhnSVV1hvREtlHdZPjnQUWFpYViOl5mDWiSqyUjKt
+ XmFhEdbriioC/X3b6/yH7BokwH0qD3ooJtwoPXv+X5YNstyzvQhRb2Hc+2IHIrqmLPWp
+ PTLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=4YRex0QMoogQvADu0trGwP2sJZAcpAWADBavkyvc8Cw=;
+ b=p4SfcPOoprSkDbkX4J4N3eY/Iaeh3x+Ne0mc+YADjq7Tx1bnmjAD36abzQtKYxOctT
+ diOp3kJfiSV2pywmr/osxVIzQOfnrXMzxBvp7oQVWnQ6+cIp14D/9FVHEnSA1SvQBWMp
+ dX/4wmHW1nLn0MOM05uIvoaDInBifvk66hyQg7d1oszI3k488SPXwBbevw3W252YcZV3
+ JExVb9bMmW5AyYUsHoRoaZ3KCD37q7mcLQ2rYr6Ee1ziKpO4V1FhqSB7qNQD8Ue0bzHE
+ UAq0/2RVFrGTTZHFg1qzBIEv6pVpIwFjrwmU75EK5ZsW5H1ze3UZy2I3NfcVE1Q+xlKk
+ 9LjA==
+X-Gm-Message-State: AOAM530unxgvReKNa35L0iCAsndPV+f8u3jDZDCoYSMMKYuRB1MHjS2q
+ 3ccDH+wL2ps7Fvz4eW6F9Gb1eyJI9PDsgXvsrLQWW+rwu7s=
+X-Google-Smtp-Source: ABdhPJw4nk2sGbYDOZWEvS/pwvcsfarqPZdTlnhIpeVfXvIkFAaLRYyhOVZWB9rCUJlgoyWnhTBNxzMcn7dJvY+9J6U=
+X-Received: by 2002:a92:c54f:: with SMTP id a15mr8182345ilj.266.1635518603940; 
+ Fri, 29 Oct 2021 07:43:23 -0700 (PDT)
 MIME-Version: 1.0
+From: Francesco Magliocca <franciman12@gmail.com>
+Date: Fri, 29 Oct 2021 16:43:53 +0200
+Message-ID: <CAH4F6uvX=xtTnBDaj1BVHSx_FDSUbpc4TRC2DGTHBmGJSD2oEA@mail.gmail.com>
+Subject: Bug in Memory Layout of rx_desc for QCA6174
+To: kvalo@codeaurora.org
+Cc: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211029_021756_227930_29FE27F9 
-X-CRM114-Status: UNSURE (   4.72  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211029_074330_542052_817EEB27 
+X-CRM114-Status: GOOD (  10.84  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,106 +83,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: f8bc49ccdc7ecf045f167f7164f8b34521ca9f6a  Merge branch 'ath-next' into ath-qca
+Hi, sorry for the late reply, have had rough times.
+Yes I can work on a patch, I'll try to get something working by the
+end of the week.
 
-elapsed time: 1459m
+> Heh, I was also about to ask about that as well :) The firmware is
+> supposed to handle length differences but clearly it's not.
 
-configs tested: 82
-configs skipped: 3
+In fact, I see that the driver notifies the firmware about the offset
+of the various fields of the data structure,
+so this made me think about the firmware. I still can't figure out
+what wifi packet is causing this problem...
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-i386                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20211028
-i386                 randconfig-a003-20211028
-i386                 randconfig-a002-20211028
-i386                 randconfig-a006-20211028
-i386                 randconfig-a001-20211028
-i386                 randconfig-a005-20211028
-arc                  randconfig-r043-20211028
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20211029
-x86_64               randconfig-a004-20211029
-x86_64               randconfig-a005-20211029
-x86_64               randconfig-a001-20211029
-x86_64               randconfig-a006-20211029
-x86_64               randconfig-a003-20211029
-x86_64               randconfig-a015-20211028
-x86_64               randconfig-a013-20211028
-x86_64               randconfig-a011-20211028
-x86_64               randconfig-a014-20211028
-x86_64               randconfig-a012-20211028
-x86_64               randconfig-a016-20211028
-i386                 randconfig-a012-20211028
-i386                 randconfig-a013-20211028
-i386                 randconfig-a011-20211028
-i386                 randconfig-a015-20211028
-i386                 randconfig-a016-20211028
-i386                 randconfig-a014-20211028
-hexagon              randconfig-r045-20211028
-riscv                randconfig-r042-20211028
-s390                 randconfig-r044-20211028
-hexagon              randconfig-r041-20211028
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Anyways I'll work on a patch abstracting the various representations out.
+I just ask that you be a little bit patient with me, because this is
+the first time I contribute to the kernel,
+so I may be making mistakes
 
 _______________________________________________
 ath10k mailing list
