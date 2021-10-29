@@ -1,82 +1,63 @@
-Return-Path: <SRS0=1Jc9=PQ=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=agdb=PR=lists.infradead.org=ath10k-bounces+ath10k=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAC67C433F5
-	for <ath10k@archiver.kernel.org>; Thu, 28 Oct 2021 20:38:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81D12C433FE
+	for <ath10k@archiver.kernel.org>; Fri, 29 Oct 2021 09:08:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DF6C60F92
-	for <ath10k@archiver.kernel.org>; Thu, 28 Oct 2021 20:38:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6DF6C60F92
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 42933610CB
+	for <ath10k@archiver.kernel.org>; Fri, 29 Oct 2021 09:08:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 42933610CB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:Cc:
+	To:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H4qBLHkJacZSd5n9GdhfjbZR7nlX3k3c82PhKGljgKI=; b=J9pc0l0+W1L+fR
-	yJvj+zXWcDQO0l3mFcMEueFXCIV4uiph4rQhuoIEnZz8zTsi4j+VaLSud0HTsRL35bQ9BLSaHtQy4
-	NrGWeiAurXiduiZ0sQRrUWYT7Opd4zWzxqpXddzVo6SozxMavPzV/DDXb50GXvc/Cqkpub+T+pMvw
-	rZA0J8dS7+xeqOvSapDwRjz+rWpSRYYs+rEhIJqh5GPkxZVK8d3CO2IQH31IW51+TqT71oILSRKWP
-	XZsF2yLLcSDviyl5Tobu1kvHs1At1QPtQrRLJCwd92dXNiNJ13sy9j9Os5UaAcSEVLnzItiC7NvFF
-	v6Z0G2h/Py1BKMwYarug==;
+	List-Owner; bh=wx+HSg559HozYt/9/LqgnYqp6hZiQSjS0BmB5Cj1AG0=; b=eWc9joaWBOecE/
+	mDWwEnNyfGfyYyvCwj7U80GfZxy4RJO+C5PZJYS2iZIYyB2PaVMKBrt0Hksq2iaUMGHw4T7XKxBRQ
+	1+p4pweDFiVDnjL0RpDwGPPRZs/Yv/yKJ6UQuQw2GNEsFuaCWbnp53f3hgIYl3T1+7eW/rltm/IpJ
+	8rbxztPjcxnMibIPUDX3yEBjn3dGYXJOLkgEb9HnTM2g8znPc/7yAHsFWcQ+agqG2Lb62FGkeTRdr
+	6hz49+seecHLZRCspnSpTaN7AfoSoJnViuq7YI5OOv5tx7TnSQVH8pAmtJK92+i5RCDVzz+K0XWgA
+	QZVv4Uhtb/5OCdgHd2qw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mgCAG-0093Xo-Tt; Thu, 28 Oct 2021 20:38:20 +0000
-Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
+	id 1mgNrJ-00ARjO-2I; Fri, 29 Oct 2021 09:07:33 +0000
+Received: from wp530.webpack.hosteurope.de ([2a01:488:42:1000:50ed:8234::])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgCAD-0093Wj-VS
- for ath10k@lists.infradead.org; Thu, 28 Oct 2021 20:38:19 +0000
-Received: by mail-lf1-x12c.google.com with SMTP id j9so16172875lfu.7
- for <ath10k@lists.infradead.org>; Thu, 28 Oct 2021 13:38:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=m748Ylk/42jFnseN0nSePnrxsWBhg1Gxw5o64vc/HiQ=;
- b=I8Tjpg0p7tNAGRqmM/T5wuG1h38R4L64v7g8CXycP8m4fhUnMXcgPfJyFiUedEBix+
- MHkp0SOBbN+gV9ZQnWjs0VBMdxLz6E0uuVBxO+FyueD6AFK7aGEsZjOvadVrD0/ncZgs
- Kd8ScIOmQIuNPD71x5DGby3GxOiqJCXOibM+c+By74IMcK3HcVS3SgZT0oJZCeMFFtX2
- CjtIXwEfHh7DQB6gLtypasmsDW7/AqtgTK/Pd2LK6ADkMMvQUdiKmahcS1yKHWPog+Yk
- 4yyccxwKt6qp/0FNEk/M18MpND6NZJ8rJ1JXGgeke3ZBRU4WN9EO444VCXYbiHiGtjmu
- VqmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=m748Ylk/42jFnseN0nSePnrxsWBhg1Gxw5o64vc/HiQ=;
- b=iKUvW31eykusZtcB6mVdzfLlIKFX08FUcfcAR1fG2eT5jlWSOMGp1rpYsit6eZxZIr
- PX7t6NV/qw4r1etbjNedfsTKwlTrc4vPZHq8dGZxzkRLyLtAQ/VRETZi6IbvafIH4P5F
- 1SiaOWiqeo8CGUxvH/6g8rZ9V/nYaOVn6rjhDOQoCK64i/uj1j7aOu+yg9C3xm00trV/
- FPeU4cQ6GhXCJj496uzVwPq+SkliUQFZ0Rq2HMKStmIRtNp+xK1vRQ/db9gcbJGmtNYc
- h0PXUkbK0oPRfBZJ2oAd0Nj5WRzKRZk07eKteEIZpudfQNJNTktvxJdtlWWdqYT9WdSh
- o+wg==
-X-Gm-Message-State: AOAM530sOtOtCGGpoJXgtGCxWewxK7aOkn/w9MyIIVuy1lgCszDPnr1F
- pewe4PGRkhE7zzc78JjRc4zc2xuO1CuoahjSd4k=
-X-Google-Smtp-Source: ABdhPJzzflckRfuz9r9492nVKVHj+QpvesCXckwIrvUCehouHlIU9rApdzCEgqVktJkljAhSMUvprPVEuW7Pi1Hbu5U=
-X-Received: by 2002:ac2:4e09:: with SMTP id e9mr6367525lfr.308.1635453494899; 
- Thu, 28 Oct 2021 13:38:14 -0700 (PDT)
+ id 1mgNrE-00ARg7-59
+ for ath10k@lists.infradead.org; Fri, 29 Oct 2021 09:07:30 +0000
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74]
+ helo=[192.168.66.200]); authenticated
+ by wp530.webpack.hosteurope.de running ExIM with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ id 1mgNr9-00029N-Ei; Fri, 29 Oct 2021 11:07:23 +0200
+Message-ID: <e355589e-3162-76ed-edec-5cffc1f77356@leemhuis.info>
+Date: Fri, 29 Oct 2021 11:07:22 +0200
 MIME-Version: 1.0
-References: <20211016234609.1568317-1-chunkeey@gmail.com>
- <87ee855xwa.fsf@codeaurora.org>
- <3a8840ea-1499-950b-fb44-7546a32c586f@gmail.com>
- <875yth5pt3.fsf@codeaurora.org>
- <3aebb711-dc45-3cbf-43cb-12f59909baf0@gmail.com>
- <CA+_ehUxFDUE6BU3TbngKOA-VKCBkTnpOv7ibTjtpur37KrQ4Jw@mail.gmail.com>
- <e6936f55-6ca7-209c-8c3f-5eeae879c9dc@gmail.com>
-In-Reply-To: <e6936f55-6ca7-209c-8c3f-5eeae879c9dc@gmail.com>
-From: Ansuel Smith <ansuelsmth@gmail.com>
-Date: Thu, 28 Oct 2021 22:38:04 +0200
-Message-ID: <CA+_ehUymo1nQ8bzkBNKQttWgFpWz7vNs8-jj2Wo+3hkEXHYx4w@mail.gmail.com>
-Subject: Re: new "[1/2] ath10k: Try to get mac-address from dts"
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org, 
- ath10k@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-BS
+To: Kalle Valo <kvalo@codeaurora.org>,
+ Francesco Magliocca <franciman12@gmail.com>
+Cc: ath10k@lists.infradead.org,
+ "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+References: <CAH4F6usFu8-A6k5Z7rU9__iENcSC6Zr-NtRhh_aypR74UvN1uQ@mail.gmail.com>
+ <87o88muvvz.fsf@codeaurora.org>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: Bug in Memory Layout of rx_desc for QCA6174
+In-Reply-To: <87o88muvvz.fsf@codeaurora.org>
+X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1635498448;
+ f0cf750a; 
+X-HE-SMSGID: 1mgNr9-00029N-Ei
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211028_133818_061129_E5C10EA0 
-X-CRM114-Status: GOOD (  34.81  )
+X-CRM114-CacheID: sfid-20211029_020728_393286_796FF283 
+X-CRM114-Status: GOOD (  30.53  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,96 +74,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
->
-> On 28/10/2021 20:57, Ansuel Smith wrote:
-> >>
-> >> The "[1/2] ath10k: Try to get mac-address from dts" patch
-> >> will need a respin, so it can apply cleanly.
-> >>
-> >> Is Anyone interested? If not, I can take a shot at it on Saturday.
-> >>
-> >
-> > A refreshed patch is applied to atk10k-ct repo so it would be good to
-> > have the same patch on normal ath10k. Many router would benefit
-> > from that.
->
-> Found it!
->
-> https://github.com/greearb/ath10k-ct/commit/e6a7d5b5b834737cd12e357b5efdc2e42d923bf6.patch
->
-> Hmm, Author is now "Ben" and the whole commit message is gone.
-> Now, adding the commit message back from your original patch
-> is not a problem, but the missing "Signed-off-by" from him and
-> you might be.
-> ...
->
+On 21.09.21 11:21, Kalle Valo wrote:
+> (adding linux-wireless and regression lists)
 
-Let's use the patch in ath10k. Seems cleaner and ready to merge.
-(probe_defer to handle)
-https://github.com/openwrt/openwrt/blob/master/package/kernel/mac80211/patches/ath10k/984-ath10k-Try-to-get-mac-address-from-dts.patch
+thx for that, this made be add the regression to regzbot
+(https://linux-regtracking.leemhuis.info/regzbot/mainline/ ). That's why
+I noticed there hasn't been any recent activity wrt to this regression
+-- at least in this thread. Was progress made somewhere else? If not:
+what can be done to get things moving again? Sure, it's an old
+regression, but nevertheless it would be nice to get it fixed.
 
-> But then, do we need it? Because there might be the option to extend
-> device_get_mac_address() instead?! ...
->
+Ciao, Thorsten
 
-That is also my concern... It would be good to add support for nvmem in
-the device_get_mac_address().
+#regzbot ignore-activity
 
-> >> (There's the tiny question of that device_get_mac_address() which
-> >> ath10k currently uses. It looks a lot like of_get_mac_address() too!
-> >> but with extra ACPI (through FWNODE-which also includes OF), but
-> >> without NVMEM.)
-> >>
-> >> Cheers,
-> >> Christian
-> >
-> > About this I never manage to understand the priority... Should ACPI
-> > variant have priority and fallback to the OF api or the OF api should
-> > overwrite any mac if a nvmem cell is found?
->
-> Hmm, from what I know the device_/fwnode_*() functions are just wrappers
-> for either ACPI (on systems with ACPI - x86 and ARM) or OF (on systems with
-> Device-tree) functions... (There is also "software nodes", I think these are
-> the lookupd stuff that came up recently with APU2 + MX100)
->
-> This confused me too. But I might be able to show this in the context of
-> ath10k-ct's current ath10k_core_probe_fw() and this threads new subject:
->
-> <https://github.com/greearb/ath10k-ct/blob/e6a7d5b5b834737cd12e357b5efdc2e42d923bf6/ath10k-5.15/core.c#L4044>
-> copied in here for a better reading experience:
-> |
-> |device_get_mac_address(ar->dev, ar->mac_addr, sizeof(ar->mac_addr));
-> |
-> |/* Try to get mac address from device node (from nvmem cell) */
-> |of_get_mac_address(ar->dev->of_node, ar->mac_addr);
-> |
->
-> The device_get_mac_address() will on OF platforms essentially check and
-> process the same "mac-address", "local-mac-address" and "address" OF
-> properties of the same device-tree node as the following of_get_mac_address()
-> will do. There's no priority.
->
-
-The question was with the strange case of both device_get_mac_address and
-and of_get_mac_addressproviding a mac what should be taken? In the current
-implementation of_get_mac_address sets the mac and has priority.
-
-> I think now, that instead of adding of_get_mac_address() into ath10k,
-> the time might be better spent asking what's the goal for device_get_mac_address() is.
-> Is device_get_mac_address() poised to usurp of_get_mac_address()? And if it
-> is: Should it be extended to get that "mac-address in nvmem-cell" as well?
-> Because then we don't really need to touch ath10k at all (well, maybe except
-> for -EPROBE_DEFER handling).
->
-
-To me it seems device_get_mac_address is used as it has ACPI support and
-fwnode seems a better implementation of the OF api.
-
-Anyway yes i think the current patch should handle the error as nvmem can
-return probe_defer error.
-
-> Cheers,
-> Christian
+> Francesco Magliocca <franciman12@gmail.com> writes:
+> 
+>> Hello everyone,
+>> I have a QCA6174 PCIe board, I am using linux kernel 5.12.10.
+>> The firmware loaded is:
+>>> [ 4.483131] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000
+>>> chip_id 0x00340aff sub 1a56:143a
+>>> [ 4.483136] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1
+>>> tracing 0 dfs 0 testmode 0
+>>> [ 4.483567] ath10k_pci 0000:02:00.0: firmware ver
+>>> WLAN.RM.4.4.1-00157-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp
+>>> crc32 90eebefb
+>>> [    4.572730] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 318825bf
+>>> [ 4.665592] ath10k_pci 0000:02:00.0: htt-ver 3.60 wmi-op 4 htt-op 3
+>>> cal otp max-sta 32 raw 0 hwcrypto 1
+>>
+>> around six months ago I reported a bug which is still haunting me:
+>> When I am connected to my home's Wi-Fi network and my father's Huawei
+>> smartphone is connected too
+>> my Wi-Fi card hangs and gets stuck, I have to force restart of the device.
+>>
+>> Note that this problem does not happen if my pc and the smartphone are
+>> connected to different networks (for example
+>> I tried connecting my pc to the 2.4GHz network and the smartphone to
+>> the 5GHz network, and the bug does not appear).
+>>
+>> Now, I tried bisecting driver changes, and I found the faulty one,
+>> it is the commit: e3def6f7ddf88636febb12e1e3e86387a4ce5452
+> 
+> Ok, so this is the commit:
+> 
+> commit e3def6f7ddf88636febb12e1e3e86387a4ce5452
+> Author:     Govind Singh <govinds@qti.qualcomm.com>
+> AuthorDate: Thu Dec 21 14:30:51 2017 +0530
+> Commit:     Kalle Valo <kvalo@qca.qualcomm.com>
+> CommitDate: Wed Dec 27 12:05:35 2017 +0200
+> 
+>     ath10k: Update rx descriptor for WCN3990 target
+>     
+>     WCN3990 rx descriptor uses different offset of msdu start, msdu end,
+>     ppdu end, rx pkt end and rx frag info.
+>     To accommodate different offsets, define respective fields in
+>     rx descriptor of WCN3990 target.
+>     
+>     Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
+>     Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> 
+>> It adds some fields to structures like rx_msdu_start, rx_frag_info, etc..
+>> The changes modify the size of these structures!
+>>
+>> If I revert this commit changes, the bug does not happen
+>> (I tested it for two weeks, while the bug happens at least once in 2-3 hours
+>> from when the smartphone is connected to the wifi network).
+> 
+> Good, I was just about to ask about that.
+> 
+>> Also, if I selectively remove some of the changes introduced by the
+>> faulty commit, the bug does not go away, so it looks like the problem
+>> is in the change of size of the data structures.
+> 
+> Heh, I was also about to ask about that as well :) The firmware is
+> supposed to handle length differences but clearly it's not.
+> 
+>> Now, I'd like to ask you what we can do to fix this problem... Is
+>> there something I am doing wrong? Or is there a bug in the firmware?
+>>
+>> If the firmware can't be easily fixed, I was thinking that we can
+>> abstract the htt_rx_desc (in the same way we do with ops in other
+>> parts of the driver) to have two versions: one for 32-bit descriptors
+>> (like my QCA6174) and one for 64-bit descriptors (i.e. WCN3990, which
+>> was the cause of this change).
+>>
+>> I'd be really happy to help, but I am not sure I fully understand what
+>> is going on, so what do you think is happening and what should we do?
+> 
+> Getting the firmware fixed is difficult. I would first try abstracting
+> the htt_rx_desc, can you send a patch?
+> 
 
 _______________________________________________
 ath10k mailing list
