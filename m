@@ -2,69 +2,69 @@ Return-Path: <SRS0=GKjs=PS=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 099C5C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E26C433FE
 	for <ath10k@archiver.kernel.org>; Sat, 30 Oct 2021 17:41:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 915D961040
-	for <ath10k@archiver.kernel.org>; Sat, 30 Oct 2021 17:41:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 915D961040
+	by mail.kernel.org (Postfix) with ESMTPS id 50A4961040
+	for <ath10k@archiver.kernel.org>; Sat, 30 Oct 2021 17:41:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 50A4961040
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aHO5HtnKomqc/8yEdvZrCD6LgtlDu1E2osdDHW/tNTg=; b=c74zatMQ+voodA
-	2MktTDA1C+Esle/KjSVVSMdzyOt+6ycXVX0qbRabFaIvKP86rEUPAfukdno8Mkq7Zfxu5lYJpfADl
-	Mxkx4otnbb3tMnQ6vdez3j30QznEgyTBLomaNonaZ6pXqS0nv8ttSYQknBYSLQYv0NLR9SDefquGY
-	+dYF0nB1eIMafSHoqgM6NLc5FXOkkRMjKCDC28XluNL3ueHfFYtZtneoTP5HGIbSbzuz8JJPe5VRc
-	vT8ePTD7IChQE3RLNkvFhLJVSZB1JiJ4+1viXu9CQsgAYQLCstFO9YNBFX+lUZn4nRqTi3SYFD20A
-	KTnrlOLGUflNiE/uFX1g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=qRGS4lw3edKX/MlwWuECmohOerr4FjTCVLv69akWk3o=; b=MrGoPiA4DDvfPE
+	y3SnG0+WVf1ITG1y5rIjX+6vJQRaP+seFEsOx/6k/BDDXVLdFcETi3k7EiJm6qVuo2wOGYQwAvQYy
+	7m3pWfd+RkzteqP231HcEOFyOFdKgbAtQ/6N4eMinHIhISp7EbkYHJvsFzMeKIIlPYVsTTSnNGCQH
+	nqmojbaU3w602UifO4M+Ou81V5Ea4ifmciF2w1Fa4u2Jv/yiCENoBdXssnDY2w0okTrVFYzepZprX
+	rEpCZCcQrXaRUbVh7lOKJk1qYvhDVggcokY9e5Wi5eFfP0EcHUZBdNu0Yisozsy1STg0fVcOpuQXK
+	v0MF0vvJSHTh2FABIgWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mgsM1-00DJA6-ST; Sat, 30 Oct 2021 17:41:17 +0000
-Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
+	id 1mgsM0-00DJ9u-45; Sat, 30 Oct 2021 17:41:16 +0000
+Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgsLy-00DJ9H-CH
- for ath10k@lists.infradead.org; Sat, 30 Oct 2021 17:41:16 +0000
-Received: by mail-wr1-x429.google.com with SMTP id s13so14549747wrb.3
- for <ath10k@lists.infradead.org>; Sat, 30 Oct 2021 10:41:14 -0700 (PDT)
+ id 1mgsLy-00DJ9G-9E
+ for ath10k@lists.infradead.org; Sat, 30 Oct 2021 17:41:15 +0000
+Received: by mail-wr1-x430.google.com with SMTP id d5so6424174wrc.1
+ for <ath10k@lists.infradead.org>; Sat, 30 Oct 2021 10:41:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=3J5zCyAt6QvIKFNQp8gVh7jk8fLM5Aizo3iPLsFee9o=;
- b=FGsYUfG43J176+Wby1dMTYhS/jOfQLdjlI9Af0UIUdAaLAOwWFL5D3UJiqRlZWil+K
- /bJU/ELJjNaRvP3ZHS1PE+eMLJEvLQ/ZhFYIsm1QjjrHLJtHWEkEWtZXDiqi3l4DCTEo
- 2M4zkExMBDMxNXa61yQqeWeq9xbX4OsNzvUzvFyrHVOxC2EkEkMpHN23n5kUanq+6baQ
- hXe2PVL4AMakPLTXubeycSRi5dVHRKvDYEshr7kQZU6kyxmGQDWnTcRZc1Tnxk3juTkq
- /4UIN+9OPvdWCCATNIBsAA707oVOIYPXJvWraLgS/uwAVePneJKbYyVMN/weYKmiyvPI
- vqxg==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Eu1iSxTwRsLRLsgJoPAuIgttiEmBvdky8CdJQqw7CWM=;
+ b=gdgSK30LOSfVUGzzocLUT7jd+cwOhjqLoxi7H8dpqgaalI+3fw7o4Tn715iyv06FHF
+ /yPDY4seZH/R7cQy5XyyWy2GKwI8ezSJCt+W5nEzVnvOtD3J+6LVKwyNic8zNp3RU8lL
+ f9JFgUEPRGXrjK9YstZqMpcS+DoWZx73q+iCEGXAndZwdcb78QmShPH8lwKt6JV9SX84
+ grFZvV0Di886F9BM5NF0IZoR/wnI/v8LnNf2BKFuCCJOVbm+lIhf7dxvHBNwkEcPmQtj
+ utf+owvMEfXLvHRNWk6oQJ4ABq+opoQjxKL2LJOI702Cj6MfgFBuN+mmP2uLMdnwVJex
+ 7lfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=3J5zCyAt6QvIKFNQp8gVh7jk8fLM5Aizo3iPLsFee9o=;
- b=KaKulb04hvmQlk1q2arAgCZYVTHkcWH+9+JzZQmTDQLJ2QC3NNR49VEocepbIet+DU
- ElINOswJKXqT06Ot69Yp20VNu1xql0I8JKBiJ/3VElhOQ7RpifOyHV0gYJmhJSLHoe53
- du+SDDSqOv4nQ/y9EUsQPrM94WXV7N/mG3dH/oIsyb43WnowfFTQi5MBWobo24W8zuc7
- fKXOeGoYBGz7zlV2jVayQqSFvK/hBzrv2nfzf+SShg+GKZA+yveVnq3p410tDKP+8nXR
- ZzQDoj0J7jE2CST1MpiyaZP3LfP8B7h/y0QVlLPRXVqONuwhTSYtLjRBf02UeZfp0FGW
- KFaQ==
-X-Gm-Message-State: AOAM5331uuwuK3AQ3jCGXp5EVN1axE67TW3fIzYFkdXn1qa/ImjVKiXd
- AXhdRkbZGNYDN++Dghftibs=
-X-Google-Smtp-Source: ABdhPJyrf16dZFwJdNSE5UE59V3nGeGUTMAiYMziacJ6hRNlzUXHlR0Gtz2bgLFgbW8IEn1AEMT4Ag==
-X-Received: by 2002:a5d:5651:: with SMTP id j17mr454977wrw.166.1635615672831; 
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Eu1iSxTwRsLRLsgJoPAuIgttiEmBvdky8CdJQqw7CWM=;
+ b=OsdD6nhRS9LdGavbiB5N0LMb4moT8xR6zs9UWJ/dRHt0nShkLeG9aanVNM2ovQzL8D
+ n+GsUk3McyzpkfBd4S/Xdscd+F7X9AClu/4LjOfAmig2b6nXr1wb/FPMFhJQ9tU2a8ak
+ a7bRj0021nHsDmbtSfDdJQo9VVl8uj4CVeV9rj0eGpD8wFGXqpqfykly8KvOEBYEcu6X
+ FeKG6FWIF3HgV+xeSLccA30vanwfnXhYdDJWPyrfGeWz3lwstp46g+hRhh1XQTKCBslw
+ fDRLqJIjPGB+zzaisBwOhDRsMpWA0slnRT2Ry88OdZbITkn1EqoL50knBQztaj0y76/2
+ y7KA==
+X-Gm-Message-State: AOAM533ipXAyU6ttqmnFFihs6ioezc+bsNtw3k3fwyG/XDkOoHyNv4Ps
+ LuyzGOv4hekYOhYg1KNb56U=
+X-Google-Smtp-Source: ABdhPJwteW9Gltx7viCtDKg6VAfQ/Ssaz6GcgW8wMGZfPvYZySJ6XnzED4rE8e3Zyf1HIBDcpPKHfw==
+X-Received: by 2002:a5d:6843:: with SMTP id o3mr12747163wrw.174.1635615672623; 
  Sat, 30 Oct 2021 10:41:12 -0700 (PDT)
 Received: from debian64.daheim (p5b0d7cd8.dip0.t-ipconnect.de. [91.13.124.216])
- by smtp.gmail.com with ESMTPSA id q14sm8743778wrr.28.2021.10.30.10.41.12
+ by smtp.gmail.com with ESMTPSA id z6sm354992wrm.93.2021.10.30.10.41.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
  Sat, 30 Oct 2021 10:41:12 -0700 (PDT)
 Received: from chuck by debian64.daheim with local (Exim 4.95)
- (envelope-from <chunkeey@gmail.com>) id 1mgsLv-0060hg-SX;
+ (envelope-from <chunkeey@gmail.com>) id 1mgsLv-0060he-Rl;
  Sat, 30 Oct 2021 19:41:11 +0200
 From: Christian Lamparter <chunkeey@gmail.com>
 To: netdev@vger.kernel.org, linux-acpi@vger.kernel.org,
@@ -74,17 +74,15 @@ Cc: Ansuel Smith <ansuelsmth@gmail.com>, Kalle Valo <kvalo@codeaurora.org>,
  "Rafael J . Wysocki" <rafael@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
  Len Brown <lenb@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
  Michael Walle <michael@walle.cc>, Arnd Bergmann <arnd@arndb.de>
-Subject: [RFC net-next/wireless-next v1 2/2] ath10k: move
- device_get_mac_address() and pass errors up the chain
-Date: Sat, 30 Oct 2021 19:41:11 +0200
-Message-Id: <20211030174111.1432663-2-chunkeey@gmail.com>
+Subject: [RFC net-next/wireless-next v1 1/2] ethernet: check nvmem cells for
+ mac-address
+Date: Sat, 30 Oct 2021 19:41:10 +0200
+Message-Id: <20211030174111.1432663-1-chunkeey@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211030174111.1432663-1-chunkeey@gmail.com>
-References: <20211030174111.1432663-1-chunkeey@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211030_104114_446372_0EF13417 
-X-CRM114-Status: GOOD (  20.65  )
+X-CRM114-CacheID: sfid-20211030_104114_352477_927D9439 
+X-CRM114-Status: GOOD (  15.52  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,190 +99,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-device_get_mac_address() can now return -EPROBE_DEFER.
-This has to be passed back to the device subsystem so
-the driver will be probed again at a later time.
+of_get_mac_address() gained this function with
+commit d01f449c008a ("of_net: add NVMEM support to of_get_mac_address")
+with the following justification:
+"Many embedded devices have information such as MAC addresses stored
+inside NVMEMs like EEPROMs and so on. [...]
 
-This was somewhat involved because the best place for this
-seemed in ath10k_core_create() right after allocation.
-Thing is that ath10k_core_create() was setup to either
-return a valid ath10k* instance, or NULL. So each ath10k
-implementation has to be modified to account for ERR_PTR.
+Adding support for NVMEM into every other driver would mean adding a lot
+of repetitive code. This patch allows us to configure MAC addresses in
+various devices like ethernet and wireless adapters directly [...]."
 
-This introduces a new side-effect: the returned error codes
-from ath10k_core_create() will now be passed along. It's no
-longer just -ENOMEM.
-
-Note: If device_get_mac_address() didn't get a valid MAC from
-either the DT/ACPI, nvmem, etc... the driver will just generate
-random MAC (same as it did before).
+the common device_/fwnode_get_mac_address could use the
+same functionality by just a few adjustments.
 
 Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
 ---
-@Kalle from what I can tell, this is how nvmem-mac could be
-done with the existing device_get_mac_address() - at a
-different place. The reason for the move was that -EPROBE_DEFER
-needs to be returned by the pci/usb/snoc/ahb _probe functions().
-This wasn't possible in the old location. As ath10k deferres
-the "bring-up" process into a workqueue task which can't return
-any errors (it just printk/dev_err them at the end).
-Also, When I was asking around about this. The common consensus was
-to just post it and see. This is based on net-next + wireless-testing
+ net/ethernet/eth.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- drivers/net/wireless/ath/ath10k/ahb.c  |  8 +++++---
- drivers/net/wireless/ath/ath10k/core.c | 14 ++++++++------
- drivers/net/wireless/ath/ath10k/pci.c  |  8 +++++---
- drivers/net/wireless/ath/ath10k/sdio.c |  8 +++++---
- drivers/net/wireless/ath/ath10k/snoc.c |  8 +++++---
- drivers/net/wireless/ath/ath10k/usb.c  |  8 +++++---
- 6 files changed, 33 insertions(+), 21 deletions(-)
-
+diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+index c7d9e08107cb..5e55b08577b1 100644
+--- a/net/ethernet/eth.c
++++ b/net/ethernet/eth.c
+@@ -602,7 +602,9 @@ static int fwnode_get_mac_addr(struct fwnode_handle *fwnode,
+  * checked first, because that is supposed to contain to "most recent" MAC
+  * address. If that isn't set, then 'local-mac-address' is checked next,
+  * because that is the default address.  If that isn't set, then the obsolete
+- * 'address' is checked, just in case we're using an old device tree.
++ * 'address' is checked, just in case we're using an old device tree. If any
++ * of the above isn't set, then try to get MAC address from nvmem cell named
++ * 'mac-address'.
+  *
+  * Note that the 'address' property is supposed to contain a virtual address of
+  * the register set, but some DTS files have redefined that property to be the
+@@ -622,7 +624,7 @@ int fwnode_get_mac_address(struct fwnode_handle *fwnode, char *addr)
+ 	    !fwnode_get_mac_addr(fwnode, "address", addr))
+ 		return 0;
  
-
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index ab8f77ae5e66..ad282a06b376 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -745,9 +745,11 @@ static int ath10k_ahb_probe(struct platform_device *pdev)
- 	size = sizeof(*ar_pci) + sizeof(*ar_ahb);
- 	ar = ath10k_core_create(size, &pdev->dev, ATH10K_BUS_AHB,
- 				hw_rev, &ath10k_ahb_hif_ops);
--	if (!ar) {
--		dev_err(&pdev->dev, "failed to allocate core\n");
--		return -ENOMEM;
-+	if (IS_ERR(ar)) {
-+		ret = PTR_ERR(ar);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "failed to allocate core: %d\n", ret);
-+		return ret;
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "ahb probe\n");
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 72a366aa9f60..85d2e8143101 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -3291,8 +3291,6 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 		ath10k_debug_print_board_info(ar);
- 	}
- 
--	device_get_mac_address(ar->dev, ar->mac_addr);
--
- 	ret = ath10k_core_init_firmware_features(ar);
- 	if (ret) {
- 		ath10k_err(ar, "fatal problem with firmware features: %d\n",
-@@ -3451,11 +3449,11 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 				  const struct ath10k_hif_ops *hif_ops)
- {
- 	struct ath10k *ar;
--	int ret;
-+	int ret = -ENOMEM;
- 
- 	ar = ath10k_mac_create(priv_size);
- 	if (!ar)
--		return NULL;
-+		goto err_out;
- 
- 	ar->ath_common.priv = ar;
- 	ar->ath_common.hw = ar->hw;
-@@ -3464,6 +3462,10 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	ar->hif.ops = hif_ops;
- 	ar->hif.bus = bus;
- 
-+	ret = device_get_mac_address(dev, ar->mac_addr);
-+	if (ret == -EPROBE_DEFER)
-+		goto err_free_mac;
-+
- 	switch (hw_rev) {
- 	case ATH10K_HW_QCA988X:
- 	case ATH10K_HW_QCA9887:
-@@ -3580,8 +3582,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	destroy_workqueue(ar->workqueue);
- err_free_mac:
- 	ath10k_mac_destroy(ar);
--
--	return NULL;
-+err_out:
-+	return ERR_PTR(ret);
+-	return -ENOENT;
++	return nvmem_get_mac_address(fwnode->dev, addr);
  }
- EXPORT_SYMBOL(ath10k_core_create);
+ EXPORT_SYMBOL(fwnode_get_mac_address);
  
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 4d4e2f91e15c..f4736148a382 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3602,9 +3602,11 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 
- 	ar = ath10k_core_create(sizeof(*ar_pci), &pdev->dev, ATH10K_BUS_PCI,
- 				hw_rev, &ath10k_pci_hif_ops);
--	if (!ar) {
--		dev_err(&pdev->dev, "failed to allocate core\n");
--		return -ENOMEM;
-+	if (IS_ERR(ar)) {
-+		ret = PTR_ERR(ar);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "failed to allocate core: %d\n", ret);
-+		return ret;
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "pci probe %04x:%04x %04x:%04x\n",
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 63e1c2d783c5..87941e047d07 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2526,9 +2526,11 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 
- 	ar = ath10k_core_create(sizeof(*ar_sdio), &func->dev, ATH10K_BUS_SDIO,
- 				hw_rev, &ath10k_sdio_hif_ops);
--	if (!ar) {
--		dev_err(&func->dev, "failed to allocate core\n");
--		return -ENOMEM;
-+	if (IS_ERR(ar)) {
-+		ret = PTR_ERR(ar);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&func->dev, "failed to allocate core: %d\n", ret);
-+		return ret;
- 	}
- 
- 	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll,
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 9513ab696fff..b9ac89e226a2 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1728,9 +1728,11 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 
- 	ar = ath10k_core_create(sizeof(*ar_snoc), dev, ATH10K_BUS_SNOC,
- 				drv_data->hw_rev, &ath10k_snoc_hif_ops);
--	if (!ar) {
--		dev_err(dev, "failed to allocate core\n");
--		return -ENOMEM;
-+	if (IS_ERR(ar)) {
-+		ret = PTR_ERR(ar);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to allocate core: %d\n", ret);
-+		return ret;
- 	}
- 
- 	ar_snoc = ath10k_snoc_priv(ar);
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index 3d98f19c6ec8..d6dc830a6fa8 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -987,9 +987,11 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 
- 	ar = ath10k_core_create(sizeof(*ar_usb), &dev->dev, ATH10K_BUS_USB,
- 				hw_rev, &ath10k_usb_hif_ops);
--	if (!ar) {
--		dev_err(&dev->dev, "failed to allocate core\n");
--		return -ENOMEM;
-+	if (IS_ERR(ar)) {
-+		ret = PTR_ERR(ar);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&dev->dev, "failed to allocate core: %d\n", ret);
-+		return ret;
- 	}
- 
- 	usb_get_dev(dev);
 -- 
 2.33.1
 
