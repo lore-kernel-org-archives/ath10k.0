@@ -2,14 +2,14 @@ Return-Path: <SRS0=GKjs=PS=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C955CC433EF
-	for <ath10k@archiver.kernel.org>; Sat, 30 Oct 2021 04:37:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B04AFC433F5
+	for <ath10k@archiver.kernel.org>; Sat, 30 Oct 2021 05:36:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B58860FC3
-	for <ath10k@archiver.kernel.org>; Sat, 30 Oct 2021 04:37:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7B58860FC3
+	by mail.kernel.org (Postfix) with ESMTPS id 5CDA460C51
+	for <ath10k@archiver.kernel.org>; Sat, 30 Oct 2021 05:36:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5CDA460C51
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=d6c02X7tMsCSrLZ8WO+D7dqQWZeyWrNa3w0e6D+LobI=; b=hc9eunQWzv1bQ+
-	uE8cSRzNkuyQUf4s1MD2A6dOi3P9UJTITWcImzZKtK4NGFbWwG/yKfTze1Gdh/9YM/HJGCzm/8iBV
-	4Ff3AE5C4fXDUW+eWHeDSh4L/UkFmcyHDlz88496BEmPsQYG6w8zwFLme963ClCJNlAIH+duFP+eE
-	w/PSAou2NnVl/O4tTSfaU5pKFgFrpdqyOB1V23wuFVpd13mzbb3iz6se2Fmmzr3ul7nE+soZWvvyw
-	79Evhzs8SaIPDZ3Z4VlKWBwx6IsIP1fbAcO5rKrOpOXQ9TK54geFl6ctonD+uYjyIaZAgdIz26QfG
-	d89uxe768OayWBAnSDLg==;
+	List-Owner; bh=XKbpw9AdqSblPQF5XNkI9NJe3riSZ01M5y+v641rdHU=; b=BtxJXcDzfd45pi
+	s6tWnnnsJergSXd1F/tza8N4I46m95p5dcdZw3S6DWbHYJGap91j0mHW2CdsBp9zjVKYqJC4MVi/p
+	ppwrSYCQxS5SP9lSM85ktUY6TKmuXeHuCEBrfEQ8wPEAhQLkUhisw6km3hsUFbSbCHsAUGwxEl+ce
+	iypZRxTdIL5LgipBWtoV8KOaN6OWSuIUq3t9xWjuYv4UrgX6vw4hFEu8XGVn2o46B2DLZoqP9EkE7
+	Fh/SlSJmIewaMiPRGaORMrvJ9uTw24hbx8YMZW71cGuux0se36PhYLF6ZHpsbgxSA0sdXPsRrH/CA
+	vTrQIHbdmRItBWV/kDYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mgg6W-00Cjcf-Me; Sat, 30 Oct 2021 04:36:28 +0000
-Received: from mga06.intel.com ([134.134.136.31])
+	id 1mgh1c-00Cm37-SJ; Sat, 30 Oct 2021 05:35:28 +0000
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgg6T-00CjcG-O2
- for ath10k@lists.infradead.org; Sat, 30 Oct 2021 04:36:27 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="291634911"
-X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; d="scan'208";a="291634911"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Oct 2021 21:36:22 -0700
+ id 1mgh1a-00Cm2k-Dm
+ for ath10k@lists.infradead.org; Sat, 30 Oct 2021 05:35:28 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="294260981"
+X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; d="scan'208";a="294260981"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Oct 2021 22:35:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; d="scan'208";a="487812038"
+X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; d="scan'208";a="666052746"
 Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
- by orsmga007.jf.intel.com with ESMTP; 29 Oct 2021 21:36:21 -0700
+ by orsmga005.jf.intel.com with ESMTP; 29 Oct 2021 22:35:22 -0700
 Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mgg6O-000134-U7; Sat, 30 Oct 2021 04:36:20 +0000
-Date: Sat, 30 Oct 2021 12:36:15 +0800
+ id 1mgh1V-00015k-PU; Sat, 30 Oct 2021 05:35:21 +0000
+Date: Sat, 30 Oct 2021 13:34:59 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 4fed011af3771e8dd7cd184099b1189b4741b234
-Message-ID: <617ccbbf.DiRTU6LsIOs3elPc%lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 8422cd7f83bbcb8e2283d8490b96d45b881c0e21
+Message-ID: <617cd983.BJRxcpRrNg9wLI+N%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211029_213625_872473_FCB3960B 
-X-CRM114-Status: UNSURE (   4.72  )
+X-CRM114-CacheID: sfid-20211029_223526_567263_FA675FED 
+X-CRM114-Status: UNSURE (   4.88  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,10 +72,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 4fed011af3771e8dd7cd184099b1189b4741b234  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 8422cd7f83bbcb8e2283d8490b96d45b881c0e21  ath9k: use swap() to make code cleaner
 
-elapsed time: 2544m
+elapsed time: 2602m
 
 configs tested: 173
 configs skipped: 3
@@ -215,13 +215,13 @@ x86_64               randconfig-a005-20211028
 x86_64               randconfig-a001-20211028
 x86_64               randconfig-a006-20211028
 x86_64               randconfig-a003-20211028
+riscv                            allmodconfig
 riscv                    nommu_k210_defconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allyesconfig
-riscv                            allmodconfig
 x86_64                    rhel-8.3-kselftests
 um                             i386_defconfig
 x86_64                              defconfig
