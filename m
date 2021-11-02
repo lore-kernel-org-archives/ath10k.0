@@ -2,14 +2,14 @@ Return-Path: <SRS0=TZpM=PV=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DA4EC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F79AC433F5
 	for <ath10k@archiver.kernel.org>; Tue,  2 Nov 2021 03:07:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1128760041
+	by mail.kernel.org (Postfix) with ESMTPS id 4992C6023B
 	for <ath10k@archiver.kernel.org>; Tue,  2 Nov 2021 03:07:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1128760041
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4992C6023B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=w7H1K9usEjY6VixOqMDONerOSIECHS6LfUtL6gMz4v4=; b=eSSTLNGHQC1Bl8
-	8LK9ti2RJcDK28p3pvDzdw+aKq94RsfjEHfOeoX63PrM3dvf12oZ1x3L4FFg6j09QvxRefwHPCd4E
-	IvK5NBShLd4ToVvN5mEFRNZ9peB/Hi8yIG2KnOu/deJ7MmZegcc0HCTvWh+alDIkg7v/b34mv/Ad4
-	v1U6JpUd7LyQj3S1ojn2MCrXr3OWlWnPdG1p4KkBxrJYidnuj1uPRFZALMuxu7IylNv9NtYlMqehA
-	Zu6RjPF/l2u/P310ilcmyJZrOP/TJEyE5vHSD8K8+xVQEpe3LtuYFY2un8vzc2tCsGgMkg7Z6apr1
-	pcfti8xGgMRS4YzC6BLw==;
+	List-Owner; bh=XnNSC8vvx27/WTwLqz3nZVKPYTlc1Tr+e+cho4byTec=; b=SlbajyakacoVVh
+	BV/qay5GFcrr2xYq9CnSuQuPiHlqOlkEQr3SUy/nMKOT3QZNoYKDg4nDVMw/xPQStVzSeAvzmy5Ws
+	hrZ+Rt5I5AjuA2P+MjqZvq2zj9fEuhf/Z2qIMB53aPr03CNxCYK3JS+GG06w6Qj3XpOq/W3Aja19w
+	wf32i+mitYCMYMJILxC8keCHDtNWC9uzbz25v3ynbqEYBRvA5iqD22LWyLtE0EJywIPrFHuK6j5t9
+	/khgh9k+xScVOcKBJ+98qvpJdjy62pq/wnxgbDYmlFLW5VrQlV3JibmXiIOl9r/QwhEnpZ9Lf7uYW
+	hHhJ1S9LQosbr0y8O8CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mhk86-000PLx-Lm; Tue, 02 Nov 2021 03:06:30 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1mhk84-000PLF-0L; Tue, 02 Nov 2021 03:06:28 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mhk7y-000PIu-5s
- for ath10k@lists.infradead.org; Tue, 02 Nov 2021 03:06:25 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="228626848"
-X-IronPort-AV: E=Sophos;i="5.87,201,1631602800"; d="scan'208";a="228626848"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ id 1mhk7x-000PIT-Eb
+ for ath10k@lists.infradead.org; Tue, 02 Nov 2021 03:06:24 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="218082990"
+X-IronPort-AV: E=Sophos;i="5.87,201,1631602800"; d="scan'208";a="218082990"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  01 Nov 2021 20:06:20 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,201,1631602800"; d="scan'208";a="449198028"
+X-IronPort-AV: E=Sophos;i="5.87,201,1631602800"; d="scan'208";a="531403791"
 Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
- by orsmga006.jf.intel.com with ESMTP; 01 Nov 2021 20:06:18 -0700
+ by orsmga001.jf.intel.com with ESMTP; 01 Nov 2021 20:06:18 -0700
 Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mhk7t-0003wW-TF; Tue, 02 Nov 2021 03:06:17 +0000
-Date: Tue, 02 Nov 2021 11:05:40 +0800
+ id 1mhk7t-0003wZ-Tv; Tue, 02 Nov 2021 03:06:17 +0000
+Date: Tue, 02 Nov 2021 11:05:37 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- 64a8cbb03dd3c35f9d2b975ff2edcb170592ae23
-Message-ID: <6180ab04.ydDAx/ZkoupQcbbv%lkp@intel.com>
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ 22f9ba7fee107903ec9a4f8f150ced196f6a1615
+Message-ID: <6180ab01.EXspn/EknmI6hSky%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211101_200622_346960_00E08A55 
-X-CRM114-Status: UNSURE (   6.14  )
+X-CRM114-CacheID: sfid-20211101_200621_601150_AC160067 
+X-CRM114-Status: UNSURE (   7.56  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,12 +72,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: 64a8cbb03dd3c35f9d2b975ff2edcb170592ae23  Revert "bus: mhi: Early MHI resume failure in non M3 state"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: 22f9ba7fee107903ec9a4f8f150ced196f6a1615  ath9k: use swap() to make code cleaner
 
-elapsed time: 729m
+elapsed time: 730m
 
-configs tested: 167
+configs tested: 170
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -170,6 +170,9 @@ powerpc                   currituck_defconfig
 ia64                            zx1_defconfig
 mips                        vocore2_defconfig
 sh                           se7780_defconfig
+arm                            mmp2_defconfig
+mips                           rs90_defconfig
+m68k                        stmark2_defconfig
 openrisc                         alldefconfig
 arm                         s3c6400_defconfig
 powerpc                     ep8248e_defconfig
