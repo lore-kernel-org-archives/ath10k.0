@@ -2,14 +2,14 @@ Return-Path: <SRS0=svwy=P4=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C40AC4332F
-	for <ath10k@archiver.kernel.org>; Tue,  9 Nov 2021 01:17:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00401C433F5
+	for <ath10k@archiver.kernel.org>; Tue,  9 Nov 2021 01:22:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F7916134F
-	for <ath10k@archiver.kernel.org>; Tue,  9 Nov 2021 01:17:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2F7916134F
+	by mail.kernel.org (Postfix) with ESMTPS id BB59A6052B
+	for <ath10k@archiver.kernel.org>; Tue,  9 Nov 2021 01:22:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BB59A6052B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,31 +18,31 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9OLmItx+Oi6HRVyBlD4IiNNOQe7wd1fc3FxyLZoANOI=; b=FeCxhsNFwPo9+e
-	2snANtjUfnQwV+XZjR/3nZ2wcWvwFYJXxOtBkNCvFFTv6i0XsEwuX3DOMR1gCRrKnp3rOSalUXmQ2
-	tSncuPYqzVJUAcSVXZ4H+WHESRE697AZwLpnwhPxqxxseo7GWD8+O3RQy9TI37N8ohI2+NOa99EyT
-	yFxApn40qK9TMIRDzALvO75SNcK/JJo+0W/RzjXFvxL5V2SEZJEJaBsYPBCyv+xZDLA4JkZGoKCTO
-	+EXBwGWGfiSe6CPOrmLbGgFlCRxop7cz8cSXi9D+d1jyWIK8hmw+n/TByLUMD1U/QZrtI1Nljwrd9
-	1ZPBK8VWwfseKQQoQ37w==;
+	List-Owner; bh=Y4oHHoYuqHb2c8bcKs2vYf/uMb72OQ2b914r7crmOV4=; b=JzqO7nJjO6L2+A
+	YgQtRvsC1q6nRS10CmjH/dXNRV5DDsUOh9VuzNQDJ2UoldWk2lFF1pEG+Ky7QBuVOPMica+iof7Ro
+	tL8W4e+TIyw1eWDx2nLIIp6ZLqH/Tci36PCvBIPwDAGgj6TSUlGQ0iLH3JE0j8ONjaYs9rvGp36r/
+	3CWTCB2x1iw9JkfnoctStwCzkBtbDLdvbGWBaUAIXyoZLRjXH5z4Z7Zg+NgKV45kHIt0H5ZwMJfSj
+	ECLy5jI0XhuSiGvQJpyUWUUfkjmqCOsiP3Dt4MaZIcH0aRxcZ5nFqAT40q8L2iXJwsM2lP7BgnrhR
+	KjzCnJ9+v9dfS1sz4A7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkFla-000HD8-3S; Tue, 09 Nov 2021 01:17:38 +0000
+	id 1mkFq8-000Imj-2I; Tue, 09 Nov 2021 01:22:20 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkFYV-000C9d-Hk
- for ath10k@lists.infradead.org; Tue, 09 Nov 2021 01:04:09 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95FD8619F6;
- Tue,  9 Nov 2021 01:04:05 +0000 (UTC)
+ id 1mkFZM-000Ca3-C5
+ for ath10k@lists.infradead.org; Tue, 09 Nov 2021 01:05:02 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B73096120D;
+ Tue,  9 Nov 2021 01:04:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636419846;
- bh=hmu+N6SDxU2j51vgWSqTSsSPerqeeMoo7dgvOvk2bBM=;
+ s=k20201202; t=1636419899;
+ bh=hHiNAa3I2wCEZ5cOE5Wg+rHBmePlZ+fvG55HTsZLcLg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=XyCmvsLamOHs8rDq2hD1q07Sg+k/9pgKOKWOS3+ADsaMugtK1oo6WaDh+7f06ZpDe
- 3J2KJ+xg2W/ysKXvzTM15tbpG9eOFuE9hb1iuyYT5AFVRdJJdlcTqOdSVfU3u0FYJk
- DhaNiaSbo6y+v2J26WgtjkXO1HIVC5ppJCCfcmXJ7J8DI5xXuXn5j8E43b8fDz0Tme
- tGmQutAtEg1CKhru8HJBDgC+L1+jWj0p0fwxW8iXUsDTn7XIUm+xs6KMnIOH8lB4KZ
- Rl4zq0oqZ1vnH+ZMcWDXi+PbVA7YDBEbrtt5Zega5Z7WkfM0BXI+Uk7Lok7bAm8MlO
- xQoJDulEU5pVg==
+ b=u7M+k8PHQetilxoOHejbjIyNE7UxC9nrwhlf9QjDt0SKNVqMRXuq+hIwPTWD4eqSu
+ yeSDAL1KZ0ioelXH8eC0BcOG7nHmU3Gx93I0+8ZBvZXYt1MZMMSu+BGi01mqFsgoCg
+ NslFRXQUP47DOsoDXdx7hex/OK0RQ2+jLycGYATmn6FBMKoKjw6TgjM/sOSJKOc+4g
+ gWfZ+Bjt+O4HLmxg2MWn9itmfFZzNhX6fP4RR21MAFom5HAeQBmURGdJhpudJB2yFi
+ hrYULbVg00ego3wWDdGfkLw0PxG9/nWu7uhJzLfdcLLNrPSxdWc1ZAzMDbK7lrhNDc
+ x5HIcGrqypfkQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,18 +52,17 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>,
  Sasha Levin <sashal@kernel.org>, davem@davemloft.net, kuba@kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 026/101] ath10k: high latency fixes for beacon
- buffer
-Date: Mon,  8 Nov 2021 12:47:16 -0500
-Message-Id: <20211108174832.1189312-26-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 18/74] ath10k: high latency fixes for beacon buffer
+Date: Mon,  8 Nov 2021 12:48:45 -0500
+Message-Id: <20211108174942.1189927-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211108174832.1189312-1-sashal@kernel.org>
-References: <20211108174832.1189312-1-sashal@kernel.org>
+In-Reply-To: <20211108174942.1189927-1-sashal@kernel.org>
+References: <20211108174942.1189927-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211108_170407_657358_19C2D80C 
+X-CRM114-CacheID: sfid-20211108_170500_498319_74379885 
 X-CRM114-Status: GOOD (  11.21  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -102,10 +101,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 23 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 36183fdfb7f03..90dc48f66fbfe 100644
+index 20e248fd43642..603f817ae3a59 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -982,8 +982,12 @@ static void ath10k_mac_vif_beacon_cleanup(struct ath10k_vif *arvif)
+@@ -985,8 +985,12 @@ static void ath10k_mac_vif_beacon_cleanup(struct ath10k_vif *arvif)
  	ath10k_mac_vif_beacon_free(arvif);
  
  	if (arvif->beacon_buf) {
@@ -120,7 +119,7 @@ index 36183fdfb7f03..90dc48f66fbfe 100644
  		arvif->beacon_buf = NULL;
  	}
  }
-@@ -5466,10 +5470,17 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -5251,10 +5255,17 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  	if (vif->type == NL80211_IFTYPE_ADHOC ||
  	    vif->type == NL80211_IFTYPE_MESH_POINT ||
  	    vif->type == NL80211_IFTYPE_AP) {
@@ -142,7 +141,7 @@ index 36183fdfb7f03..90dc48f66fbfe 100644
  		if (!arvif->beacon_buf) {
  			ret = -ENOMEM;
  			ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
-@@ -5684,8 +5695,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -5469,8 +5480,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  
  err:
  	if (arvif->beacon_buf) {
