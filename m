@@ -2,14 +2,14 @@ Return-Path: <SRS0=svwy=P4=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFE2CC433F5
-	for <ath10k@archiver.kernel.org>; Tue,  9 Nov 2021 01:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A56B1C433EF
+	for <ath10k@archiver.kernel.org>; Tue,  9 Nov 2021 01:12:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4995619F9
-	for <ath10k@archiver.kernel.org>; Tue,  9 Nov 2021 01:06:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C4995619F9
+	by mail.kernel.org (Postfix) with ESMTPS id 778D561A05
+	for <ath10k@archiver.kernel.org>; Tue,  9 Nov 2021 01:12:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 778D561A05
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,31 +18,31 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0VoFYHHUNRR8NjtOtAP7s44MxbTHRCivzXI75LnQELY=; b=fQ6YJpR0QFeu4m
-	bh7FEqIOWetxxsAbsqmLD6TeIquLWh4n+L1yd4gmatZrVvE76MBjdTSZDMjlNfSmsV4fP77y6u7nb
-	JmNIHsIQaY3syawq78YIvjfnFVNKktvXs4Zzfw7MBwrh+qbuHHgaYmhxgFxyyRAMiTpAmt1vGw5tz
-	k1UZF+ve1sVxwnKjhMtjfzRIu31vza9D/+Z4vi48kf0A7T+CiuMaJnu0pZ5VFEFB/nD11V7kPjYza
-	37L9HBl918ATdLj/8F0ItcYrEiBhea5SPmJUpkFy+UMR2nCQq4mu3B293xPxQDhrfMnGhmakmmS83
-	sn9htnOgeS/8O1mJoYjw==;
+	List-Owner; bh=0VoFYHHUNRR8NjtOtAP7s44MxbTHRCivzXI75LnQELY=; b=qLDSI3I7xb+To2
+	DJhhgdYBwWX22zH/4e0KYj9OnteZOl+xZYx9n87Wb8ORXuCz3OtalZPUfdDfrHx4LOqSbOsOdyaYI
+	PXjHUDH4QFX7qNfx2i/GgT2UEGsyEoECkIpSNU5fjO6NKxKIuq9f5GXDQ5FuUbao3q/2EhQT3UDxM
+	yppw41vYgpPZqhy02n0P4t48c0Xb1wrh9hfvUwSMJRy92LD6c7gtcAY4HxaKAvsi5V5xwfBa/Q6ur
+	oXKu2flXFxLfcfbsIWfIFT6WsnRgAYSsTCwif/sH8ozylpvxEaUz/ar9MpDVejmaFgEmTMxlbf31u
+	MOwafdCu1lPj2F20MDxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkFaH-000D1c-0o; Tue, 09 Nov 2021 01:05:57 +0000
+	id 1mkFgG-000F93-QE; Tue, 09 Nov 2021 01:12:09 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkFVW-000Alf-KR
- for ath10k@lists.infradead.org; Tue, 09 Nov 2021 01:01:05 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B92A361390;
- Tue,  9 Nov 2021 01:01:00 +0000 (UTC)
+ id 1mkFXG-000BYE-Of
+ for ath10k@lists.infradead.org; Tue, 09 Nov 2021 01:02:52 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0FA861A10;
+ Tue,  9 Nov 2021 01:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636419661;
+ s=k20201202; t=1636419770;
  bh=XufEztxeItGTehTrSkdJrWqgyzeYZCom6ctehxWgBGg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=lxtjGfXzH2w1ouqVex0+QHG//ESnbZLAer7UrfcDDpvlwg4IaT3BryUwfM9NkzWyd
- zGXpNvpf9vxJjf6hSnQFBLNsoqoeQGM5pbwVR/yBiA9y8rkLpmomR+DMX8w9nEM4Hg
- 1xmU1T0fWuxJWRqLptYtebSR4m31tvMrAz86zGdxx+kIVsxnnu9j49rft7+lXSJuW9
- 4pZ2Wlal3rKq5S7Gd53Bsqd4Lj3nlOtKLKhM4p6sT573zABsshyO3NopDabreMVZdD
- j69NekDlV96f/am7Fvp5M0lNbA69NLilEBTTh0nWbW2G2b0oq5/SVETe7sqAq6878B
- 6dKcmBmegZeAw==
+ b=B7Yl8g5IpLfDz0gqNboDdaCOkrvtyosLRCdTPRLKKzKX9dQsuaSZgpdUc/5qJJwUV
+ 6iJ4U9YZiM63RMjKJrxKcuEG+sho8AZEXYU9zmU5pag84bSJodtsgsqnhPAuhnOwub
+ s+3GoGNTBOksfMDB5ZUTNMNqYzec69vA5+MvKIpSP/hwudZlAJJtC8VXaVcMHX4qRC
+ XcEanSTcmWX7wBKr3mKYt8Vt5L80bAge3ggYgrjBgtxYkHHXaBiQdVN6Qi3WFmksLg
+ Z1UNRVDHwyKB5L2HAVyPXBvYsn1045MS4BBl3o+4K+l/Y+OnKOUErLufTM21EIFhCc
+ FUUAl2RyNZPXg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,18 +52,18 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>,
  Sasha Levin <sashal@kernel.org>, davem@davemloft.net, kuba@kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 036/146] ath10k: high latency fixes for beacon
+Subject: [PATCH AUTOSEL 5.14 033/138] ath10k: high latency fixes for beacon
  buffer
-Date: Mon,  8 Nov 2021 12:43:03 -0500
-Message-Id: <20211108174453.1187052-36-sashal@kernel.org>
+Date: Mon,  8 Nov 2021 12:44:59 -0500
+Message-Id: <20211108174644.1187889-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211108174453.1187052-1-sashal@kernel.org>
-References: <20211108174453.1187052-1-sashal@kernel.org>
+In-Reply-To: <20211108174644.1187889-1-sashal@kernel.org>
+References: <20211108174644.1187889-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211108_170103_739094_5823DC86 
+X-CRM114-CacheID: sfid-20211108_170250_856205_92545A66 
 X-CRM114-Status: GOOD (  11.21  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
