@@ -2,14 +2,14 @@ Return-Path: <SRS0=6yVM=QC=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D400C433EF
-	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 21:50:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF33DC433EF
+	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 21:50:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C2A2619E3
-	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 21:50:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3C2A2619E3
+	by mail.kernel.org (Postfix) with ESMTPS id 7736E61B2C
+	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 21:50:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7736E61B2C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9OB/FLgbObkcsDaMC+IA3r1y15PCSCSmT1I3kAsvZ9Q=; b=f5fA05tEmcYj0I
-	3YzxX+UBDE8JPelYMj91sroOaX0Sb9RiIIx2yhMR+jeFCXVk6QSqh8BlspssTx8yP+pcE6sqRsII2
-	rhC+D6pWRszwroag6Ijt+rx8W7o8A+BWgWaRaQicgWh+s+4ScxFATfPmVcDwJ3TizNOrPRKIOC7RL
-	og1x1K3MmwXkgW6PhOlMcVx6MsRtK5dRZYphJNuPr0mu7CZnxpEpFK7NjgAIDz6PC/hBvYwEw8pIP
-	WWQbKcZ7TQ+1kIuodQJd45E5hs8UkRJeVf6IUkb6hOqCYS8QTjNBNop971cyCOR7FqsyuYrQLjilc
-	IqaWUd2K5gavrN+33hPQ==;
+	List-Owner; bh=J8apGwV6n5V1qCdDcSTCbIKqwzHbQ40DiwAbOuQlLs0=; b=n7Ga4JCHYt1lLr
+	a1f+55pZ5C8n1lnLiLfQfdonDUd9Rt4B29Z6HPn2wrAD3Y9KTN0jY0t3/cQ7U2RiJEvvajOV96PLO
+	zUX7rICCSbAz3tRuWHnGYdOG4IT1JePbuU6YfzzOJrcoe6YCLh63wKSnYDOu9HQ09PC6nQQJTcUzr
+	L7vRXTIXCsIrkRtx710+3goDazPrZUiQ8ylnjHr69a0X8yHd1CDbprzpPuwmAnbHI7av2Mg7NQWBl
+	z+Yky9JF+UF6umwWaWH2/8Fq806PYYMRJbhb9kFBnWm/kC/Fda612AJpk9DE5Du5DUuX/2rnEG9Hi
+	O29kXQ/HMh/zqk4F0mRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmjrU-00H8R2-FD; Mon, 15 Nov 2021 21:50:00 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1mmjrS-00H8Qj-QM; Mon, 15 Nov 2021 21:49:58 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmjrP-00H8Py-Qo
+ id 1mmjrP-00H8Pt-Qv
  for ath10k@lists.infradead.org; Mon, 15 Nov 2021 21:49:57 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="213572554"
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="213572554"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232261892"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="232261892"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  15 Nov 2021 13:49:52 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="535651195"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="454182643"
 Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
- by orsmga001.jf.intel.com with ESMTP; 15 Nov 2021 13:49:51 -0800
+ by orsmga006.jf.intel.com with ESMTP; 15 Nov 2021 13:49:51 -0800
 Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mmjrK-000N3T-Nx; Mon, 15 Nov 2021 21:49:50 +0000
-Date: Tue, 16 Nov 2021 05:49:46 +0800
+ id 1mmjrK-000N3C-Is; Mon, 15 Nov 2021 21:49:50 +0000
+Date: Tue, 16 Nov 2021 05:49:39 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- f83ae23f08fa0f51625effb317b22e5e6a4d9697
-Message-ID: <6192d5fa.LAzcwMVTReNSKV9s%lkp@intel.com>
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ c0b0d2e87d91ce283c8766b4b3c2ec9ac90ebf96
+Message-ID: <6192d5f3.gl7G8jdo4PZCrZMh%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_134955_937971_9FB44207 
-X-CRM114-Status: UNSURE (   5.93  )
+X-CRM114-CacheID: sfid-20211115_134955_931187_E0ABCF67 
+X-CRM114-Status: UNSURE (   5.15  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,10 +72,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: f83ae23f08fa0f51625effb317b22e5e6a4d9697  Revert "bus: mhi: Early MHI resume failure in non M3 state"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: c0b0d2e87d91ce283c8766b4b3c2ec9ac90ebf96  ath11k: Increment pending_mgmt_tx count before tx send invoke
 
-elapsed time: 720m
+elapsed time: 722m
 
 configs tested: 169
 configs skipped: 4
@@ -178,11 +178,11 @@ ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
-m68k                             allyesconfig
 m68k                                defconfig
-nds32                             allnoconfig
+m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
+nds32                             allnoconfig
 nds32                               defconfig
 csky                                defconfig
 alpha                               defconfig
