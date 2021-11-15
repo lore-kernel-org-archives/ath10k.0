@@ -2,77 +2,60 @@ Return-Path: <SRS0=6yVM=QC=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EC1DC433EF
-	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 18:07:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D400C433EF
+	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 21:50:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C095A6338F
-	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 18:07:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C095A6338F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3C2A2619E3
+	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 21:50:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3C2A2619E3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HfJXvcaxRIN71mz0HI6zG5Z4Slr+qyi2OBsu1X8c2Vc=; b=cIplzvWYpATSbL
-	TObqqg5rOHtk0eIH8ffBJxExLjH3+uE5i2UJQyog0zGAQg4h97vfiSZaQCp6118+ClwVkiJOEsZL1
-	rks2oDOdD6ijK9XpP0dTbXGjNnCBv94H9cEV4nqQ3vZPR4MNDsjN16qLBCKy0OnFLlphQgFTyUAT8
-	Bv2z3EC3kcHFq5mPza6+qCrYBtqmqSIDEQdnAsGoy2Im8HvNuwe8lvo7IrtRy9WsrlLk9b7vX0sTN
-	xoDEy8yKOGI9pCcQIh6V43q++wCB/Hy69jwzOEk8cAv13KE/RPrVI79VYILO1wRshOtb5S3St0Q+j
-	GZjDPjt81BUKE8YzsUEA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9OB/FLgbObkcsDaMC+IA3r1y15PCSCSmT1I3kAsvZ9Q=; b=f5fA05tEmcYj0I
+	3YzxX+UBDE8JPelYMj91sroOaX0Sb9RiIIx2yhMR+jeFCXVk6QSqh8BlspssTx8yP+pcE6sqRsII2
+	rhC+D6pWRszwroag6Ijt+rx8W7o8A+BWgWaRaQicgWh+s+4ScxFATfPmVcDwJ3TizNOrPRKIOC7RL
+	og1x1K3MmwXkgW6PhOlMcVx6MsRtK5dRZYphJNuPr0mu7CZnxpEpFK7NjgAIDz6PC/hBvYwEw8pIP
+	WWQbKcZ7TQ+1kIuodQJd45E5hs8UkRJeVf6IUkb6hOqCYS8QTjNBNop971cyCOR7FqsyuYrQLjilc
+	IqaWUd2K5gavrN+33hPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmgNv-00Gd15-2B; Mon, 15 Nov 2021 18:07:15 +0000
-Received: from mail-ua1-x92b.google.com ([2607:f8b0:4864:20::92b])
+	id 1mmjrU-00H8R2-FD; Mon, 15 Nov 2021 21:50:00 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmgNs-00Gczp-LP
- for ath10k@lists.infradead.org; Mon, 15 Nov 2021 18:07:13 +0000
-Received: by mail-ua1-x92b.google.com with SMTP id b17so36839305uas.0
- for <ath10k@lists.infradead.org>; Mon, 15 Nov 2021 10:07:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=/vB+zIqT8j5KAmMYaveBxOOzpPrma7xI98QigkHD3iI=;
- b=gqe8QktpnI8roZW6KYNIJ8/Y3W+h9FdUQFhjv4LLFmF4r7WVG9lQsHrTF7svpN/BhL
- 2Xob79i9j88j+sounItEVWNvwgCaWLLPsSgBmQpNwGiwSD3CMI6G1N+c+SNztt6lRJhq
- RnW1tLqHJB8fk398dIQWe2hWIhhK9+dEU/REir4/MBQ01ZYGmbFOEMhsI7ynzhPeu9sx
- FfTDaMuJIl2td637xy+xG08kPkQkElJdaq3BlghkTYoulKa4zPkkkJfQmR9a+BRNy7yI
- X2wr41kZxvxoqj0xjsGtHKZ59G/oSb1OZFT92U7MPMGvTR+RFzY1dUbte74f3hAG25Ek
- WDaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=/vB+zIqT8j5KAmMYaveBxOOzpPrma7xI98QigkHD3iI=;
- b=mVWmYcCwsacvj1h0Efsg7eN2bHImOVjtRGjcgDwXrMRTdZKYdSfn6FpBxrcpC50kOe
- JltGAxL9wJA0S9sHQilGSUSqChFOddXhoSwqgJI4vni51chL2LDpTvxEFWTSHZgMnQn1
- cr2VAXdzpw0Ehw8tWtCiBJp9XlF+QkIYJ99QJUlMibix4w8bs89mQLEXo2dqILMaYKgh
- 8EifNd0EdjrEudKjUUxAQYLO5BF6oo/1wYaIUn+kED6lJcirVDEI5vhuhNsl0WHKw/tU
- VSufHP7YLoTC274hoZS9gSPnNmp8O5+LMvkOz3Ahv2CNclFWqqc834Fgt/XWXZuEwCNk
- cMxQ==
-X-Gm-Message-State: AOAM530rnRkBy2NwLJC5kPkdO/pUuPOIGOXvcGwURy+iqMBa5I53ZPhe
- soDJQlKCNF+4GkXkrlct45lXkF81mtNS7xCiZxM=
-X-Google-Smtp-Source: ABdhPJxtzClkhrcNVb3o9Us9cwloMc1jwPxkiagE/ZZvAFUP3jjEaER5poFGYF/dubVwUxM6DtNzsmV1eKWoBnKMs1g=
-X-Received: by 2002:ab0:6f47:: with SMTP id r7mr1012299uat.85.1636999629868;
- Mon, 15 Nov 2021 10:07:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20210915160422.2839595-1-festevam@denx.de>
-In-Reply-To: <20210915160422.2839595-1-festevam@denx.de>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 15 Nov 2021 15:06:59 -0300
-Message-ID: <CAOMZO5AYUxJg4bWudT3L1P=qNR2UBcNR1zmjCf5O9_ExyPw4ww@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Clean the HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE flag
+ id 1mmjrP-00H8Py-Qo
+ for ath10k@lists.infradead.org; Mon, 15 Nov 2021 21:49:57 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="213572554"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="213572554"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Nov 2021 13:49:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="535651195"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+ by orsmga001.jf.intel.com with ESMTP; 15 Nov 2021 13:49:51 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1mmjrK-000N3T-Nx; Mon, 15 Nov 2021 21:49:50 +0000
+Date: Tue, 16 Nov 2021 05:49:46 +0800
+From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Fabio Estevam <festevam@denx.de>, wgong@codeaurora.org,
- ath10k@lists.infradead.org, 
- linux-wireless <linux-wireless@vger.kernel.org>, erik.stromdahl@gmail.com, 
- alagusankar@silex-india.com
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ f83ae23f08fa0f51625effb317b22e5e6a4d9697
+Message-ID: <6192d5fa.LAzcwMVTReNSKV9s%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_100712_744324_46D44CE3 
-X-CRM114-Status: GOOD (  17.53  )
+X-CRM114-CacheID: sfid-20211115_134955_937971_9FB44207 
+X-CRM114-Status: UNSURE (   5.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,42 +72,195 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Kalle,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: f83ae23f08fa0f51625effb317b22e5e6a4d9697  Revert "bus: mhi: Early MHI resume failure in non M3 state"
 
-On Wed, Sep 15, 2021 at 1:05 PM Fabio Estevam <festevam@denx.de> wrote:
->
-> On an imx6dl-pico-pi board with a QCA9377 SDIO chip, the following
-> errors are observed when the board works in STA mode:
->
-> Simply running "ssh user@192.168.0.1" causes:
->
-> [   55.824159] ath10k_sdio mmc1:0001:1: failed to transmit packet, dropping: -12
-> [   55.832169] ath10k_sdio mmc1:0001:1: failed to submit frame: -12
-> [   55.838529] ath10k_sdio mmc1:0001:1: failed to push frame: -12
-> [   55.905863] ath10k_sdio mmc1:0001:1: failed to transmit packet, dropping: -12
-> [   55.913650] ath10k_sdio mmc1:0001:1: failed to submit frame: -12
-> [   55.919887] ath10k_sdio mmc1:0001:1: failed to push frame: -12
->
-> and it is not possible to connect via ssh to the other machine.
->
-> One user inspected the size of frames on Wireshark and reported
-> the followig:
->
-> "I was able to narrow the issue down to the mtu. If I set the mtu for
-> the wlan0 device to 1486 instead of 1500, the issue does not happen.
->
-> The size of frames that I see on Wireshark is exactly 1500 after
-> setting it to 1486."
->
-> Clearing the HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE avoids the problem and
-> the ssh command works successfully after that.
->
-> Tested with QCA9377 SDIO with firmware WLAN.TF.1.1.1-00061-QCATFSWPZ-1.
->
-> Fixes: 2f918ea98606 ("ath10k: enable alt data of TX path for sdio")
-> Signed-off-by: Fabio Estevam <festevam@denx.de>
+elapsed time: 720m
 
-A gentle ping on this one.
+configs tested: 169
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211115
+arc                                 defconfig
+sh                           se7751_defconfig
+arm                        mini2440_defconfig
+mips                        bcm63xx_defconfig
+sh                           se7721_defconfig
+s390                          debug_defconfig
+arm64                            alldefconfig
+arc                            hsdk_defconfig
+arm                         lpc32xx_defconfig
+arm                       omap2plus_defconfig
+arm                       cns3420vb_defconfig
+sh                            shmin_defconfig
+powerpc                    ge_imp3a_defconfig
+xtensa                  audio_kc705_defconfig
+arm                          ixp4xx_defconfig
+m68k                          multi_defconfig
+arm                      jornada720_defconfig
+powerpc                   bluestone_defconfig
+mips                     loongson2k_defconfig
+mips                          rb532_defconfig
+mips                          ath79_defconfig
+arc                        nsimosci_defconfig
+sh                          r7780mp_defconfig
+arm                            xcep_defconfig
+sh                        apsh4ad0a_defconfig
+openrisc                 simple_smp_defconfig
+m68k                        m5307c3_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         cm_x300_defconfig
+m68k                          atari_defconfig
+sh                             espt_defconfig
+arm                        vexpress_defconfig
+h8300                    h8300h-sim_defconfig
+openrisc                  or1klitex_defconfig
+mips                     loongson1c_defconfig
+powerpc                        warp_defconfig
+powerpc                        icon_defconfig
+m68k                       m5475evb_defconfig
+mips                          ath25_defconfig
+arm                        spear3xx_defconfig
+sh                          rsk7203_defconfig
+arm                            qcom_defconfig
+arm                        multi_v5_defconfig
+microblaze                      mmu_defconfig
+xtensa                generic_kc705_defconfig
+m68k                        mvme16x_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                     redwood_defconfig
+arc                         haps_hs_defconfig
+powerpc                       holly_defconfig
+powerpc                       ppc64_defconfig
+powerpc                  iss476-smp_defconfig
+arm                     eseries_pxa_defconfig
+powerpc                 xes_mpc85xx_defconfig
+x86_64                           allyesconfig
+powerpc                     taishan_defconfig
+arm                         at91_dt_defconfig
+m68k                         amcore_defconfig
+powerpc                      ppc6xx_defconfig
+sh                   sh7770_generic_defconfig
+arm                          pxa3xx_defconfig
+mips                      malta_kvm_defconfig
+mips                           rs90_defconfig
+arm                      pxa255-idp_defconfig
+powerpc                     pq2fads_defconfig
+arm                         palmz72_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                 linkstation_defconfig
+parisc                generic-32bit_defconfig
+arm                     am200epdkit_defconfig
+arm                           tegra_defconfig
+h8300                               defconfig
+mips                      maltaaprp_defconfig
+xtensa                    xip_kc705_defconfig
+sh                          sdk7786_defconfig
+mips                  decstation_64_defconfig
+um                                  defconfig
+sh                         apsh4a3a_defconfig
+arm                             mxs_defconfig
+parisc                generic-64bit_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                     pseries_defconfig
+arm                  randconfig-c002-20211115
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+m68k                                defconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20211115
+x86_64               randconfig-a003-20211115
+x86_64               randconfig-a002-20211115
+x86_64               randconfig-a001-20211115
+x86_64               randconfig-a006-20211115
+x86_64               randconfig-a004-20211115
+i386                 randconfig-a006-20211115
+i386                 randconfig-a003-20211115
+i386                 randconfig-a005-20211115
+i386                 randconfig-a001-20211115
+i386                 randconfig-a004-20211115
+i386                 randconfig-a002-20211115
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c007-20211115
+i386                 randconfig-c001-20211115
+arm                  randconfig-c002-20211115
+riscv                randconfig-c006-20211115
+powerpc              randconfig-c003-20211115
+s390                 randconfig-c005-20211115
+mips                 randconfig-c004-20211115
+x86_64               randconfig-a015-20211115
+x86_64               randconfig-a013-20211115
+x86_64               randconfig-a011-20211115
+x86_64               randconfig-a012-20211115
+x86_64               randconfig-a014-20211115
+x86_64               randconfig-a016-20211115
+i386                 randconfig-a014-20211115
+i386                 randconfig-a016-20211115
+i386                 randconfig-a012-20211115
+i386                 randconfig-a013-20211115
+i386                 randconfig-a011-20211115
+i386                 randconfig-a015-20211115
+hexagon              randconfig-r045-20211115
+hexagon              randconfig-r041-20211115
+s390                 randconfig-r044-20211115
+riscv                randconfig-r042-20211115
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
