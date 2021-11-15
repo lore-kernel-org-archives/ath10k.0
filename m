@@ -2,14 +2,14 @@ Return-Path: <SRS0=6yVM=QC=lists.infradead.org=ath10k-bounces+ath10k=archiver.ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF33DC433EF
-	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 21:50:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E03FAC433F5
+	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 23:20:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7736E61B2C
-	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 21:50:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7736E61B2C
+	by mail.kernel.org (Postfix) with ESMTPS id 9BEB3611F0
+	for <ath10k@archiver.kernel.org>; Mon, 15 Nov 2021 23:20:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9BEB3611F0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=J8apGwV6n5V1qCdDcSTCbIKqwzHbQ40DiwAbOuQlLs0=; b=n7Ga4JCHYt1lLr
-	a1f+55pZ5C8n1lnLiLfQfdonDUd9Rt4B29Z6HPn2wrAD3Y9KTN0jY0t3/cQ7U2RiJEvvajOV96PLO
-	zUX7rICCSbAz3tRuWHnGYdOG4IT1JePbuU6YfzzOJrcoe6YCLh63wKSnYDOu9HQ09PC6nQQJTcUzr
-	L7vRXTIXCsIrkRtx710+3goDazPrZUiQ8ylnjHr69a0X8yHd1CDbprzpPuwmAnbHI7av2Mg7NQWBl
-	z+Yky9JF+UF6umwWaWH2/8Fq806PYYMRJbhb9kFBnWm/kC/Fda612AJpk9DE5Du5DUuX/2rnEG9Hi
-	O29kXQ/HMh/zqk4F0mRg==;
+	List-Owner; bh=I+rZ3E0zU61Tyg/lctunR3c75bi4xVIlNusKX7njjws=; b=K5nWRestpLDrra
+	RcymS4DnoydfmGpn1FcJSbgUuEFv/ZRpMhgrHhThPQ9bY4qDs+lLEbForsnG5142/rX2TYLmz1rzc
+	HiIId5NLZ3cCqRO8Faax4Y7aPPwOCWrGJgcQqaZeu9H1RNn44uknHVbH4oO6EgTtRNA3BlxVeaU9P
+	/bQSL0Y9YTUIVJ9Yx0Fd1zXOHkf7lZiPyAlp2ePWUi9XfiptFewxK08W3lksRiRSCIIwADltn2GMs
+	a3SLhra/dhY6otQmeHhKxg2ZxveD5qgkn0AfEGvs0+7TI6xUIML0TQgaxF2ceVMgnKnfJ7BOU05Rj
+	Xa/cn/8U/ym+7Y0SuXGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmjrS-00H8Qj-QM; Mon, 15 Nov 2021 21:49:58 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1mmlGK-00HH2g-3f; Mon, 15 Nov 2021 23:19:44 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmjrP-00H8Pt-Qv
- for ath10k@lists.infradead.org; Mon, 15 Nov 2021 21:49:57 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232261892"
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="232261892"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Nov 2021 13:49:52 -0800
+ id 1mmlGH-00HH2P-8w
+ for ath10k@lists.infradead.org; Mon, 15 Nov 2021 23:19:43 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="233392121"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="233392121"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Nov 2021 15:17:55 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="454182643"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; d="scan'208";a="472114724"
 Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
- by orsmga006.jf.intel.com with ESMTP; 15 Nov 2021 13:49:51 -0800
+ by orsmga002.jf.intel.com with ESMTP; 15 Nov 2021 15:17:53 -0800
 Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mmjrK-000N3C-Is; Mon, 15 Nov 2021 21:49:50 +0000
-Date: Tue, 16 Nov 2021 05:49:39 +0800
+ id 1mmlEW-000N8C-EW; Mon, 15 Nov 2021 23:17:52 +0000
+Date: Tue, 16 Nov 2021 07:16:59 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <kvalo@codeaurora.org>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- c0b0d2e87d91ce283c8766b4b3c2ec9ac90ebf96
-Message-ID: <6192d5f3.gl7G8jdo4PZCrZMh%lkp@intel.com>
+Subject: [kvalo-ath:pending-deferred] BUILD SUCCESS
+ 065ce5da4bd09a39e4e5de9e81e5664d443f16e4
+Message-ID: <6192ea6b.QAndePWNglo67JdA%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_134955_931187_E0ABCF67 
-X-CRM114-Status: UNSURE (   5.15  )
+X-CRM114-CacheID: sfid-20211115_151941_398333_3B9211F9 
+X-CRM114-Status: UNSURE (   6.79  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,12 +72,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: c0b0d2e87d91ce283c8766b4b3c2ec9ac90ebf96  ath11k: Increment pending_mgmt_tx count before tx send invoke
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-deferred
+branch HEAD: 065ce5da4bd09a39e4e5de9e81e5664d443f16e4  ath11k: Implement sram dump interface
 
-elapsed time: 722m
+elapsed time: 734m
 
-configs tested: 169
+configs tested: 174
 configs skipped: 4
 
 The following configs have been built successfully.
@@ -102,6 +102,11 @@ arm                         lpc32xx_defconfig
 arm                       omap2plus_defconfig
 arm                       cns3420vb_defconfig
 sh                            shmin_defconfig
+powerpc                    adder875_defconfig
+powerpc                 linkstation_defconfig
+sparc                            alldefconfig
+powerpc                 mpc836x_mds_defconfig
+arm                         nhk8815_defconfig
 powerpc                    ge_imp3a_defconfig
 xtensa                  audio_kc705_defconfig
 arm                          ixp4xx_defconfig
@@ -158,7 +163,6 @@ arm                      pxa255-idp_defconfig
 powerpc                     pq2fads_defconfig
 arm                         palmz72_defconfig
 powerpc                 mpc836x_rdk_defconfig
-powerpc                 linkstation_defconfig
 parisc                generic-32bit_defconfig
 arm                     am200epdkit_defconfig
 arm                           tegra_defconfig
@@ -180,9 +184,9 @@ ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
+nds32                             allnoconfig
 nios2                               defconfig
 arc                              allyesconfig
-nds32                             allnoconfig
 nds32                               defconfig
 csky                                defconfig
 alpha                               defconfig
@@ -218,6 +222,7 @@ i386                 randconfig-a005-20211115
 i386                 randconfig-a001-20211115
 i386                 randconfig-a004-20211115
 i386                 randconfig-a002-20211115
+arc                  randconfig-r043-20211115
 riscv                    nommu_k210_defconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
@@ -225,9 +230,9 @@ riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
 riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
 um                           x86_64_defconfig
 um                             i386_defconfig
-x86_64                    rhel-8.3-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                          rhel-8.3-func
