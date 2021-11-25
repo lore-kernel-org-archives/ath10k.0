@@ -4,56 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFB0FC433F5
-	for <ath10k@archiver.kernel.org>; Thu, 25 Nov 2021 15:50:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA1A5C433F5
+	for <ath10k@archiver.kernel.org>; Thu, 25 Nov 2021 17:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6huLhSmwz25zM5VgZgEwxvudCFFi5saSM1CaxmO0tlw=; b=0PnNrZcned5LSf
-	+Id3WBRG1PuNiM8HXdlR9D5bfzhi+0K7o3gKYyAOWLbeqpsyDg8MeS2S+xcHwUVc4bZg5+f3ZBpjI
-	8WkXfFvcm4azib561LSkxqY/rEZnceZicMc/x30PBZz6DFFkPW5rsPcLo4Q4wmxqHYMDLi/cl3wZt
-	1uqygCCS6AUZRZCgEnm8ow+qv0WiB74hRnPFi9e5pr9yshSQhuAgOoKWg/i9+h7yVeqGdmrf52/Ie
-	YeamLtWnr6GUgs2o5tjiOtzsRWfyz2ZOjALULpuutj04pjQNFPifoFDtYaPWINQggeZlPhMyG5GyV
-	NPesoykRchaLLdgK/Exg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=yTRik/UjtEgqEIxpgAfqNjp6xrjlY12so/F90X3fVqo=; b=o6g89xT7n20J38
+	qzX11R9fwzNXyASngrQT0B66pHbXTInaz+URS5QNkzSMmRpb+ob5QoCeKM0tEhlk2g6pLKzVGt/Y8
+	9+fxgSDCWiUUFBQ9gQGBaKYkzylygKuNKAHeptL2MIZhYAD+5aVRgwEtuQvPXGhlAnPPjGNvM/eh/
+	f/nJII6+timRmro/NISm1oVxe/hi3Nw37JRKLT5c7e5/BJXwa9Zlh919P1CE1n1Cjj7Z92ZEdHNrQ
+	xSkGVkDFh20DZW8srbq/fF6iRgJ/9H5DO35/y4G0kUL6+B8z959GKk6T+sRHVspHNUHJonX0rtOZy
+	ngYysAcqH4Rno5Y21qHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mqH0U-0086NU-Qy; Thu, 25 Nov 2021 15:49:54 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mqItZ-008PmD-Ah; Thu, 25 Nov 2021 17:50:53 +0000
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqH0R-0086MJ-B6
- for ath10k@lists.infradead.org; Thu, 25 Nov 2021 15:49:53 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21B2F610D1;
- Thu, 25 Nov 2021 15:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637855390;
- bh=y+FsVswUfu9wkFmXREI3ZDwQZ72b63X5+FsshXIQ0Hc=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=KCoSRh7faioLazqQGW84xvvL6HItmAwAB6VC0mFy5yoxWbl+gX0Z+vAW/VbLbZ8KB
- ZtTpGOtcnDuf1vmBqjvrGP1H1p1UEfPkKuP0VVQ9Cqq31mbA1YxG6yUpfhJIPF/vQE
- u1r2OhxvgO5eT1M11bJUdBNi1yDs6zZm13LWD805D+NWcNMul0qgMb/EaXURyjPqUD
- Lfvnu+4kQ2py7GAce5A4kazk1rb6yRJjNG1lQoCf1OWho4kHmCgdY08muqXvCwk+wr
- 2E4EBP7xmAz7+OOE5rjJbPhjJnk1J8cOlCnLE/BWVB3MuBjcydtgG/VHuIiU61KoLG
- c1dZX6AJb4xTA==
-Date: Thu, 25 Nov 2021 07:49:49 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>, intel-wired-lan
- <intel-wired-lan@lists.osuosl.org>, netdev@vger.kernel.org,
- ath10k@lists.infradead.org, Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [Bug 215129] New: Linux kernel hangs during power down
-Message-ID: <20211125074949.5f897431@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1849b7a3-cdfe-f9dc-e4d1-172e8b1667d2@gmail.com>
-References: <20211124144505.31e15716@hermes.local>
- <20211124164648.43c354f4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <1849b7a3-cdfe-f9dc-e4d1-172e8b1667d2@gmail.com>
+ id 1mqItX-008Pln-8L
+ for ath10k@lists.infradead.org; Thu, 25 Nov 2021 17:50:52 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222773511"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; d="scan'208";a="222773511"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Nov 2021 09:50:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; d="scan'208";a="592074522"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+ by FMSMGA003.fm.intel.com with ESMTP; 25 Nov 2021 09:50:46 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1mqItR-0006kE-VE; Thu, 25 Nov 2021 17:50:45 +0000
+Date: Fri, 26 Nov 2021 01:50:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 3ba82628f0e3e5ee0616770773ecd7aafc7e6978
+Message-ID: <619fccc9.EIA2d+xZQCO9aCAb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211125_074951_452708_76573A92 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20211125_095051_398809_114243B8 
+X-CRM114-Status: UNSURE (   7.07  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,40 +66,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, 25 Nov 2021 08:32:18 +0100 Heiner Kallweit wrote:
-> I think the reference to ath10k_pci is misleading, Kalle isn't needed here.
-> The actual issue is a RTNL deadlock in igb_resume(). See log snippet:
-> 
-> Nov 24 18:56:19 MartinsPc kernel:  igb_resume+0xff/0x1e0 [igb 21bf6a00cb1f20e9b0e8434f7f8748a0504e93f8]
-> Nov 24 18:56:19 MartinsPc kernel:  pci_pm_runtime_resume+0xa7/0xd0
-> Nov 24 18:56:19 MartinsPc kernel:  ? pci_pm_freeze_noirq+0x110/0x110
-> Nov 24 18:56:19 MartinsPc kernel:  __rpm_callback+0x41/0x120
-> Nov 24 18:56:19 MartinsPc kernel:  ? pci_pm_freeze_noirq+0x110/0x110
-> Nov 24 18:56:19 MartinsPc kernel:  rpm_callback+0x35/0x70
-> Nov 24 18:56:19 MartinsPc kernel:  rpm_resume+0x567/0x810
-> Nov 24 18:56:19 MartinsPc kernel:  __pm_runtime_resume+0x4a/0x80
-> Nov 24 18:56:19 MartinsPc kernel:  dev_ethtool+0xd4/0x2d80
-> 
-> We have at least two places in net core where runtime_resume() is called
-> under RTNL. This conflicts with the current structure in few Intel drivers
-> that have something like the following in their resume path.
-> 
-> 	rtnl_lock();
-> 	if (!err && netif_running(netdev))
-> 		err = __igb_open(netdev, true);
-> 
-> 	if (!err)
-> 		netif_device_attach(netdev);
-> 	rtnl_unlock();
-> 
-> Other drivers don't do this, so it's the question whether it's actually
-> needed here to take RTNL. Some discussion was started [0], but it ended
-> w/o tangible result and since then it has been surprisingly quiet.
-> 
-> [0] https://www.spinics.net/lists/netdev/msg736880.html
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 3ba82628f0e3e5ee0616770773ecd7aafc7e6978  Merge branch 'ath-next' into ath-qca
 
-Ah, that makes perfect sense, I didn't see that stack trace. 
-Dropping Kalle from CC. Let's hear what Intel folks have to say..
+elapsed time: 1430m
+
+configs tested: 62
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+arm64                            allyesconfig
+i386                 randconfig-c001-20211125
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allmodconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a012-20211124
+i386                 randconfig-a013-20211124
+i386                 randconfig-a011-20211124
+i386                 randconfig-a014-20211124
+i386                 randconfig-a015-20211124
+i386                 randconfig-a016-20211124
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+
+clang tested configs:
+hexagon              randconfig-r045-20211124
+hexagon              randconfig-r041-20211124
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
