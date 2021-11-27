@@ -4,55 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2277FC433F5
-	for <ath10k@archiver.kernel.org>; Sat, 27 Nov 2021 13:26:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18139C433F5
+	for <ath10k@archiver.kernel.org>; Sat, 27 Nov 2021 16:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:Subject:References:To:From:MIME-Version:
+	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:To:MIME-Version:
 	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gauZ3UmSTlWArb2I1xlRWba57byUTiWqXQocIviY7LI=; b=3TOIVj1rsqbR4QDTkAtqTZFeZL
-	J+p32QarldozZybqfD77wsarvoSs0ozpfy8anltUS8Twlbl5XyCkUBCrabeZ0vSoTjAaCx1wnX7Rn
-	7fcDYiZDvRPK1KHc+ox2ZPBNsys4MCEqvJ3aJz//6nfNGNpo5nSE2G408XmcbQwaGSxGTSNa+wcJT
-	cT4YwTAgwrxIUoUac8X4qvunzEopYMVxILDGMQJ0Xa0lUL8MG5utv0B5TtIVrTNOnXVUPo1ZTMaDh
-	vhOYTO6UtAfQWATgpcvEBl/7U8Q/I9/W0Fv2YmwLIzZ1D/0ApumUd+pKTCu5bppkQM4H00ve0I0VS
-	X4VorO2w==;
+	bh=0emWu1PLFUEeXIdgzC2JJUsMKoOViRKwG/MQY2Ls8Tg=; b=EYOcemXRKq5wVnRd68rDB4uyXL
+	FDG1PIwo8AFsLgqlxfOQHSFl9BsfwsfW4Q1yqUUWDBQmmXKztX5/dadn8PAX/v6EpU8eWcW+NNjWL
+	9Am6ViT6wl4gQUqn+V5gKwf5yNBn/hrpDPCCxIvGSIeZ5jTc7qpVpkt6xPPjy0fGOkaAXARRQFOZ0
+	9qaR9f2ZM8K8fYjrMtmLSmfkYWhZoYl2WZoQvlwJY746YHH77/Xt9EKtVnkKJrb1gp5QkqPYaS+RB
+	kIJDiHXCJ5mJ/zTK+pXL//DjYJExrZ21hYJNIlAwZ+hRB1qk5YPyr7n1jndoxc5bpqR8KgEDodb8h
+	K3yDG6fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mqxiH-00DiMm-Js; Sat, 27 Nov 2021 13:25:57 +0000
-Received: from midgard.reox.at ([2a01:4f8:151:1288::2])
+	id 1mr0gL-00E10H-8m; Sat, 27 Nov 2021 16:36:09 +0000
+Received: from bda.space ([207.192.72.39])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqxiE-00DiLv-KD
- for ath10k@lists.infradead.org; Sat, 27 Nov 2021 13:25:56 +0000
-Received: from 127.0.0.1 (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by midgard.reox.at (Postfix) with ESMTPSA id 42A181200E8
- for <ath10k@lists.infradead.org>; Sat, 27 Nov 2021 14:25:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=reox.at; s=mail;
- t=1638019549; bh=gdzODIOqpM8kUTJzkhb9XxyN73ECkGIJ+5J3brumWpI=;
- h=Date:From:To:References:Subject:In-Reply-To:From;
- b=mCDeG/gRjixwn27Jr2D6YX3EtEflriUC3tIdcSoZ0UHcmAbcN9i5YHw5tceifvU+e
- jv/pGgFGxJz3dwJZyRGqLrDG8IAsXqylWo+BCYdHri6U8tTFPjM9R4Vss/S1EdFcL7
- Pn2b9WVY/rjbIpnpFsxwy4yl+8L3bZSWwuV4B1M5Ll8fG+H8Ehw6ORLiXB2ij7jT4u
- DSeTeT3LgzZXmyI/cQ0nbmGf2M05+/ZFA3V+EkKzmWpdoL+ziMxr7gbVRsCnc17qch
- q1BC+UMV7J9iAjdV8zPXPjWa9k04N13m9dWE7M7lOVu8B17SzBBmt7l8hKCmuw5Ab0
- Y+4i1jxytRJ/A==
-Message-ID: <9fca928a-522e-8fc7-69c0-454cb434cf13@reox.at>
-Date: Sat, 27 Nov 2021 14:25:48 +0100
+ id 1mr0gG-00E0z9-DR
+ for ath10k@lists.infradead.org; Sat, 27 Nov 2021 16:36:07 +0000
+Message-ID: <7c093622-e798-3887-323e-781e2f70b0b8@bda.space>
+Date: Sat, 27 Nov 2021 11:35:59 -0500
 MIME-Version: 1.0
-From: Sebastian Bachmann <hello@reox.at>
-Content-Language: en-GB
+Content-Language: en-US
 To: ath10k@lists.infradead.org
 References: <1c160dfb-6ccc-b4d6-76f6-4364e0adb6dd@reox.at>
- <YaIix40KaVlxT+XG@eq.uc.pt>
+From: Bryce Allen <bryce@bda.space>
 Subject: Re: Compex WLE200NX: regdomain sanitized regression
-In-Reply-To: <YaIix40KaVlxT+XG@eq.uc.pt>
+In-Reply-To: <1c160dfb-6ccc-b4d6-76f6-4364e0adb6dd@reox.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211127_052555_016791_487F1E43 
-X-CRM114-Status: GOOD (  21.44  )
+X-CRM114-CacheID: sfid-20211127_083604_566392_770382AA 
+X-CRM114-Status: GOOD (  21.37  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,68 +48,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 27.11.2021 13:21, Nuno Oliveira wrote:
-> After June 2020 there were other users also affected by this change (see 
-> e.g., 
-> https://lists.infradead.org/pipermail/ath10k/2021-August/012802.html).
-> Users were complaining that this change was too restrictive since it 
-> meant that the intersection of restrictions for regdomains 0x00, 0x64,
-> US, and their local domain, together with a cumulative mode of applying 
-> these constraints meant that, in practice, they would not be able to use 
-> their world domain cards anymore as APs in the 5GHz band, for certain 
-> regdomains where they were located.
-
-Thanks for hinting me to this thread, I have not seen that before. I 
-read in this thread and the linked ones and understand the issue now a 
-bit better.
-It seems like that basically many (all ?) Compex cards are affected by 
-this, and probably many pcengines users (like me).
-
-Reading also this: 
-https://web.archive.org/web/20150117040022/http://article.gmane.org/gmane.linux.kernel.wireless.general/38410
-gives me the impression that in this case, I would have to ask 
-pcengines/compex for a custom regulatory.bin. Has anyone tried that already?
-It also sounds like that many vendors have used this value completely 
-wrong. Does anyone know if new Compex cards have the same issue?
-Or in other words: what would be the correct value to put there, because 
-it seems there are only two options: ship a custom regulatory.bin or 
-ship the card with the country burned in it, where the card shall be used.
-
-> A more robust option would be to go the OpenWRT way, and use their 
-> patches to make this country selection a parameter for the kernel 
-> module. This way, you would just reload the kernel module to change to a 
-> new regdomain, subject to the restrictions of your hardware / firmware. 
-> I have not looked into that. Please let me know if you isolate these 
-> patches.
-
-There is this patch: 
-https://github.com/openwrt/openwrt/blob/master/package/kernel/mac80211/patches/ath/402-ath_regd_optional.patch
-However, it simply disables it completely.
-I have not found the patch, which would enable a parameter to set it 
-during loading of the module so far though.
-
-> 
-> In any case it seems difficult to escape a kernel recompile, due to this 
-> small, entirely legitimate, yet remarkable decision by the driver 
-> maintainers.
-
-Yes, for me this is sad. My setup worked for over seven years and broke 
-because of an update. Of course I can now start to build kernels every 
-time...
-It sounds like I should throw away the Compex card and buy an 
-off-the-shelf access point... I was thinking about buying a new card, 
-but as there are so many reports regarding Compex cards, I have no hope 
-that it will work then.
-
-Regards,
-Sebastian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBoYXZlIHRoaXMgaXNzdWUgb24gbXkgdHdvIHBjZW5naW5lcyBBUHMsIG9uZSBBTElYIGFuZCBv
+bmUgQVBVMi4gSSAKY3JlYXRlZCBzb21lIGRrbXMgbW9kdWxlcyBmb3IgcGF0Y2hlZCBhdGg5ay8x
+MGssIHNldHRpbmcgdGhlIHJlZ2RvbWFpbiAKdG8gQ1RSWV9ERUZBVUxUIHJhdGhlciB0aGFuIDB4
+NjQuIEZvciBtZSB0aGlzIHJlc3VsdHMgaW4gVVMgcmVnaW9uLCBub3QgCnN1cmUgaWYgaXQgd2ls
+bCBkbyB0aGUgcmlnaHQgdGhpbmcgaW4gb3RoZXIgcmVnaW9ucyBvciBub3QuIEJ1dCB5b3UgCmNv
+dWxkIHVzZSB0aGlzIGFzIGEgc3RhcnRpbmcgcG9pbnQsIGFuZCB3YXkgYmV0dGVyIHRoYW4gcmVi
+dWlsZGluZyAKa2VybmVsIGZyb20gc2NyYXRjaCBlYWNoIHRpbWU6CgpodHRwczovL2dpdGh1Yi5j
+b20vYmQ0L2F0aHJlZ2QtZGttcwoKSSBjcmVhdGVkIHRyZWVzIGZvciA1LjEwIGZyb20gRGViaWFu
+IEJ1bGxzZXllIGFuZCBmb3IgVWJ1bnR1IEhXRSA1LjExIAprZXJuZWwuIFRoaXMgaXMgYmFzZWQg
+b24gdGlwcyBhbmQgREtNUyBjb25maWcgZnJvbSBzcGFya3M3MS4gQXQgb25lIApwb2ludCBJIHRy
+aWVkIGEgcGF0Y2ggdGhhdCBhZGRlZCBhIHJlZ2lvbiBtb2R1bGUgcGFyYW1ldGVyLCBidXQgSSBn
+b3QgCmtlcm5lbCBmYXVsdHMgYW5kIG5ldmVyIGdvdCBpdCB0byB3b3JrIC0gdGhlIENUUllfREVG
+QVVMVCBmaXggd2FzIApzaW1wbGVyIGZvciBtZS4gWW91IGNhbiBzZWUgdGhlIHBhdGNoIGhlcmU6
+CgpodHRwczovL2dpdGh1Yi5jb20vYmQ0L2F0aHJlZ2QtZGttcy9ibG9iL21haW4vcGF0Y2gtYXRo
+LXNhbml0aXplLWRlZmF1bHQuZGlmZgoKLUJyeWNlCgpPbiAxMS8yNy8yMSAwMzoxNywgU2ViYXN0
+aWFuIEJhY2htYW5uIHdyb3RlOgo+IEhlbGxvLAo+Cj4gSSByZWNlbnRseSB1cGdyYWRlZCBteSBE
+ZWJpYW4gYmFzZWQgQVAgZnJvbSBidXN0ZXIgdG8gYnVsbHNleWUsIGp1c3QgCj4gdG8gZmluZCBv
+dXQgdGhhdCBob3N0YXBkIGRvZXMgbm90IHdvcmsgYW55IG1vcmUsIGJlY2F1c2UgYWxsIDVHSHog
+Cj4gY2hhbm5lbHMgYXJlIG1hcmtlZCBhcyBOby1JUi4gVGhpcyByZWdyZXNzaW9uIHdhcyBhbHJl
+YWR5IGRpc2N1c3NlZCBvbiAKPiB0aGlzIE1MIGhlcmU6IAo+IGh0dHBzOi8vd3d3Lm1haWwtYXJj
+aGl2ZS5jb20vYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcvbXNnMTIwMTguaHRtbAo+IGFuZCB0
+aGVyZSBpcyBhbHNvIGFuIGVudHJ5IGluIERlYmlhbidzIGJ1ZyB0cmFja2VyIGZvciB0aGUgc2Ft
+ZSBpc3N1ZTogCj4gaHR0cHM6Ly9idWdzLmRlYmlhbi5vcmcvOTU5ODIxCj4KPiBJIGhhdmUgYSBz
+bGlnaHRseSBkaWZmZXJlbnQgY2FyZCAoYnJhbmRlZCBDb21wZXggV0xFMjAwTlgpOgo+IDA0OjAw
+LjAgTmV0d29yayBjb250cm9sbGVyOiBRdWFsY29tbSBBdGhlcm9zIEFSOTI4WCBXaXJlbGVzcyBO
+ZXR3b3JrIAo+IEFkYXB0ZXIgKFBDSS1FeHByZXNzKSAocmV2IDAxKQo+IMKgwqDCoMKgwqDCoMKg
+IFN1YnN5c3RlbTogUXVhbGNvbW0gQXRoZXJvcyBBUjkyOFggV2lyZWxlc3MgTmV0d29yayBBZGFw
+dGVyIAo+IChQQ0ktRXhwcmVzcykKPiDCoMKgwqDCoMKgwqDCoCBLZXJuZWwgZHJpdmVyIGluIHVz
+ZTogYXRoOWsKPiDCoMKgwqDCoMKgwqDCoCBLZXJuZWwgbW9kdWxlczogYXRoOWsKPgo+IEJ1dCBh
+cyB5b3UgY2FuIHNlZSwgYWxzbyB0aGUgRUVQUk9NIGdldHMgc2FuaXRpemVkOgo+IFvCoMKgIDE1
+LjQ2MTc1NV0gYXRoOWsgMDAwMDowNDowMC4wOiBlbmFibGluZyBkZXZpY2UgKDAwMDAgLT4gMDAw
+MikKPiBbwqDCoCAxNS45MTE2MDBdIGF0aDogRUVQUk9NIHJlZ2RvbWFpbiBzYW5pdGl6ZWQKPiBb
+wqDCoCAxNS45MTE2MTJdIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjogMHg2NAo+IFvCoMKgIDE1Ljkx
+MTYxNV0gYXRoOiBFRVBST00gaW5kaWNhdGVzIHdlIHNob3VsZCBleHBlY3QgYSBkaXJlY3QgcmVn
+cGFpciAKPiBtYXAKPiBbwqDCoCAxNS45MTE2MjVdIGF0aDogQ291bnRyeSBhbHBoYTIgYmVpbmcg
+dXNlZDogMDAKPiBbwqDCoCAxNS45MTE2MjhdIGF0aDogUmVncGFpciB1c2VkOiAweDY0Cj4KPiBJ
+IHJlYWQgaW4gdGhlIG90aGVyIHRocmVhZCwgdGhhdCB0aGlzIGlzIGEgcmVncmVzc2lvbiwgYnV0
+IHRoZSBhY3R1YWwgCj4gY29tbWl0IGNhdXNpbmcgaXQgd2FzIG5ldmVyIHJldmVydGVkLgo+IEkg
+dHJpZWQgdG8gc2VhcmNoIGZvciBuZXdlciBtZXNzYWdlcyBleHBsYWluaW5nIHRoZSBpc3N1ZSwg
+aG93ZXZlciBhcyAKPiBmYXIgYXMgSSBjYW4gdGVsbCwgdGhlIHRocmVhZCBlbmRzIGluIEp1bmUg
+MjAyMCB3aXRoIG5vIHNvbHV0aW9uIAo+IGF2YWlsYWJsZS4KPgo+IFRoZXJlZm9yZSwgSSBraW5k
+bHkgd2FudCB0byBhc2sgaWYgdGhlcmUgaXMgYW55IHdvcmthcm91bmQgYXZhaWxhYmxlIAo+IHRv
+IHJlLWVuYWJsZSA1R0h6IGNoYW5uZWxzIGluIEFQIG1vZGUgZm9yIG15IGNhcmQ/IChleHBlY3Qg
+c3RpY2tpbmcgdG8gCj4gYSBwcmUtNS42IGtlcm5lbCBvciBtYW51YWxseSBwYXRjaGluZyBhbmQg
+cmVjb21waWxpbmcgYXRoKQo+Cj4gQmVzdCwKPiBTZWJhc3RpYW4KPgo+IF9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+
+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cg==
