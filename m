@@ -4,85 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFE56C433FE
-	for <ath10k@archiver.kernel.org>; Wed,  8 Dec 2021 14:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3775C433EF
+	for <ath10k@archiver.kernel.org>; Wed,  8 Dec 2021 22:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7OzkCCKXy8R+E6+toHoKE3bOZQ11Dj4eQb/sCt7qKhw=; b=vOcanH/59UAiWP
-	ieio/23fsWTq/8FQbz9EKukHdfar077YOXm1hHJe54f9iNKO/TUqXu0nziRwRpA48SHBQ9C+g9lc0
-	HwIgryheR9238fDA4GjYE+uQqE+uXc4lJ8H46rGqDAm2FbGwHHlCJWpnrg/xCHP2UxqMahBa6WgTb
-	kQmzOqKTI+S8iLVnUqHSu1wsJ62/YpUFq9/b+rNyTJ+UWQ0Fa1EghFlJFepqmC0+EtIKyDuzWZHpE
-	M/o06A+WnXOr999adVXsYT7YIoTdONkaCE0y8Il1bpUWQt8LTpFjx99mcmIHWqRTeNBLMDlGCMMDj
-	BrfuasHLIlY53ayRglXA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0HcEVRDjD13oMABtgL9jyG7bKedGC7yDCJGi+wxJqEA=; b=oU47Z+QKXJ9Xgo
+	4r1Bih+WM0i55nZ7nbY/730d1A04DG2yL3PtdFSqBwZhA1epXcJrbdpgY1p2uUS4iT+CwdRrCd+Uv
+	/9VWoa8ZHcnUTn7S60g+9tc8ka902mAWQJucMIOjKghE0V7VezH53/j+xFos3gvzLw5eYZkRUrjX6
+	gv5mRCbfkcRn8JquOuVOg0Jzv1oOVAWIkNyesP6zsR7/f0ZL6+dCMCJCPO5CrtSOhxSaL+BK8zIMb
+	1qAbvcqze8NL1sjLnr/uWFUymEAbI4Bn3S33TV7l1/70MsqLPCf2lQhjffjrLvMMSzi1aWJsZPMkl
+	T3/P9MyeWQlS88nPsoEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muxba-00CvTW-Bu; Wed, 08 Dec 2021 14:07:34 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1mv5IG-00EP4k-E5; Wed, 08 Dec 2021 22:20:08 +0000
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muxbX-00CvSY-60
- for ath10k@lists.infradead.org; Wed, 08 Dec 2021 14:07:32 +0000
-Received: by mail-wr1-x432.google.com with SMTP id a9so4272986wrr.8
- for <ath10k@lists.infradead.org>; Wed, 08 Dec 2021 06:07:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=flO2O8RvdMi4zDyJ0phVtOeQZBpULAZ1IhqXyVEqyzA=;
- b=Egk86bCKE8ZJa9Cxbm7c7hc3MxfwwPpQfeTlLF1zqfn9EQxmPANDyOI9rBxigF1gBy
- z0FE1yf7TsZp7sXnDofJIAaW3rKF5aWJTc2kZHUF/+hZGbcz89t52kGQ+4inbIqHUxA9
- clPpkb7qZ3s+Try2LP26Z+XTyvMinh/mBP8uXl4PW56FpmeQJsCaW6UMLdXT2YjiNy7F
- kWjZJyTJ9lLjPyC6KqoZyjfNEZnCLMSfz+diNnPIKVPeSN0AxW7wOc/ca8xCQQZTLAVT
- Sthi0dRPwE9h0DAZ6lxO+R/qjVfz3vrj7Uv77+3ZPG6bRQFgGSjejt76DkRKR0EIjOEL
- MTsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=flO2O8RvdMi4zDyJ0phVtOeQZBpULAZ1IhqXyVEqyzA=;
- b=VM/W9o4+HikaRykLKqK6GHgPONqfEq/TIb2FppuQ/zB/UzE6FU4JsZLMTl9A2KNH1A
- K/Ytfh2RzdygEvq6CGDHcRuLX7FdB+WzEvViO33XJ1Fnl72GO0vZ47yb4/z5zKV8VPyH
- /XwQVq3+NEfJEkMwdUl50UNa/LiQl4vxyiBV76wXuZ9CjD0iTKAN0rW/XxrxRiZ1VO6B
- WhPOBNHhxSAq8JDQWapk2hNEbTJgX4wyOlAn3ZyRYquFK06lYf+B/O95s3vk451Y+e0i
- +Pr1vEIF01Uy+r5dbJx8ZXJ+EARo783Ln2DyJ2UOH5bScMMjHQSPha3i6/8Sko788CBf
- CEaw==
-X-Gm-Message-State: AOAM533vKihe8a0x0jdTpLstIuZ7JqHQVAQomJ6/e9Nks9CPw4KJg0BZ
- hFgfB8QPQHFgUySWgnDiHYhLl3MHvjA=
-X-Google-Smtp-Source: ABdhPJxwrd+qCdOIbLO5MeObmUldpC0bKJPA1DSjSX0ZaTkODCFhRslJ7yErIE3qwCprCkUf/wLWgw==
-X-Received: by 2002:a05:6000:181:: with SMTP id
- p1mr60216470wrx.292.1638972448449; 
- Wed, 08 Dec 2021 06:07:28 -0800 (PST)
-Received: from debian64.daheim (p5b0d797a.dip0.t-ipconnect.de. [91.13.121.122])
- by smtp.gmail.com with ESMTPSA id c10sm3101318wrb.81.2021.12.08.06.07.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 08 Dec 2021 06:07:27 -0800 (PST)
-Received: from localhost.daheim ([127.0.0.1])
- by debian64.daheim with esmtp (Exim 4.95)
- (envelope-from <chunkeey@gmail.com>) id 1muwdv-0008Oc-Ou;
- Wed, 08 Dec 2021 15:07:24 +0100
-Message-ID: <09a27912-9ea4-fe75-df72-41ba0fa5fd4e@gmail.com>
-Date: Wed, 8 Dec 2021 15:07:24 +0100
+ id 1mv5IB-00EP3u-K1
+ for ath10k@lists.infradead.org; Wed, 08 Dec 2021 22:20:05 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10192"; a="324224653"
+X-IronPort-AV: E=Sophos;i="5.88,190,1635231600"; d="scan'208";a="324224653"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Dec 2021 14:20:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,190,1635231600"; d="scan'208";a="564294939"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+ by fmsmga008.fm.intel.com with ESMTP; 08 Dec 2021 14:19:59 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1mv5I6-00017a-GC; Wed, 08 Dec 2021 22:19:58 +0000
+Date: Thu, 09 Dec 2021 06:19:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ fbf03c57fde45ead55652314fa75e43f58555948
+Message-ID: <61b12f81.qMflb+MF2JXkvYan%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH] ath10k: support bus and device specific API 1 BDF
- selection
-Content-Language: de-DE
-To: Robert Marko <robimarko@gmail.com>, Kalle Valo <kvalo@kernel.org>
-Cc: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
-References: <20211009221711.2315352-1-robimarko@gmail.com>
- <163890036783.24891.8718291787865192280.kvalo@kernel.org>
- <CAOX2RU5mqUfPRDsQNSpVPdiz6sE_68KN5Ae+2bC_t1cQzdzgTA@mail.gmail.com>
-From: Christian Lamparter <chunkeey@gmail.com>
-In-Reply-To: <CAOX2RU5mqUfPRDsQNSpVPdiz6sE_68KN5Ae+2bC_t1cQzdzgTA@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211208_060731_259966_8BAAAF3E 
-X-CRM114-Status: GOOD (  19.48  )
+X-CRM114-CacheID: sfid-20211208_142003_742993_75DB3689 
+X-CRM114-Status: UNSURE (   3.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,66 +61,276 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 08/12/2021 13:21, Robert Marko wrote:
-> On Tue, 7 Dec 2021 at 19:06, Kalle Valo <kvalo@kernel.org> wrote:
->>
->> Robert Marko <robimarko@gmail.com> wrote:
->>
->>> Some ath10k IPQ40xx devices like the MikroTik hAP ac2 and ac3 require the
->>> BDF-s to be extracted from the device storage instead of shipping packaged
->>> API 2 BDF-s.
->>>
->>> This is required as MikroTik has started shipping boards that require BDF-s
->>> to be updated, as otherwise their WLAN performance really suffers.
->>> This is however impossible as the devices that require this are release
->>> under the same revision and its not possible to differentiate them from
->>> devices using the older BDF-s.
->>>
->>> In OpenWrt we are extracting the calibration data during runtime and we are
->>> able to extract the BDF-s in the same manner, however we cannot package the
->>> BDF-s to API 2 format on the fly and can only use API 1 to provide BDF-s on
->>> the fly.
->>> This is an issue as the ath10k driver explicitly looks only for the
->>> board.bin file and not for something like board-bus-device.bin like it does
->>> for pre-cal data.
->>> Due to this we have no way of providing correct BDF-s on the fly, so lets
->>> extend the ath10k driver to first look for BDF-s in the
->>> board-bus-device.bin format, for example: board-ahb-a800000.wifi.bin
->>> If that fails, look for the default board file name as defined previously.
->>>
->>> Signed-off-by: Robert Marko <robimarko@gmail.com>
->>
->> Can someone review this, please? I understand the need for this, but the board
->> handling is getting quite complex in ath10k so I'm hesitant.
->>
->> What about QCA6390 and other devices. Will they still work?
-> Hi Kalle,
-> everything else should just continue working as before unless the
-> board-bus-device.bin file
-> exists it will just use the current method to fetch the BDF.
-> 
-> Also, this only applies to API1 BDF-s.
-> 
-> We are really needing this as currently there are devices with the
-> wrong BDF being loaded as
-> we have no way of knowing where MikroTik changed it and dynamic
-> loading would resolve
-> all of that since they are one of the rare vendors that embed the
-> BDF-s next to calibration data.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: fbf03c57fde45ead55652314fa75e43f58555948  Revert "bus: mhi: Early MHI resume failure in non M3 state"
 
-Isn't the only user of this the non-upstreamable rb_hardconfig
-mikrotik platform driver? So, in your case the devices in question
-needs to setup a detour through the userspace firmware (helper+scripts)
-to pull on the sysfs of that mikrotik platform driver? Wouldn't it
-be possible to do this more directly?
+elapsed time: 731m
 
-Cheers,
-Christian
+configs tested: 244
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211207
+m68k                             alldefconfig
+csky                                defconfig
+arc                           tb10x_defconfig
+arm                           tegra_defconfig
+powerpc                 mpc837x_rdb_defconfig
+sh                        edosk7760_defconfig
+riscv                            alldefconfig
+mips                     cu1000-neo_defconfig
+arm                            xcep_defconfig
+xtensa                           allyesconfig
+arm                           stm32_defconfig
+powerpc                  storcenter_defconfig
+arm                          imote2_defconfig
+sh                           se7750_defconfig
+arm                        shmobile_defconfig
+powerpc                 mpc832x_rdb_defconfig
+mips                           xway_defconfig
+mips                        jmr3927_defconfig
+h8300                            allyesconfig
+h8300                     edosk2674_defconfig
+mips                           rs90_defconfig
+mips                      maltasmvp_defconfig
+sh                        sh7763rdp_defconfig
+csky                             alldefconfig
+arc                        nsim_700_defconfig
+sh                           se7705_defconfig
+powerpc                      cm5200_defconfig
+sparc64                             defconfig
+powerpc                         wii_defconfig
+parisc                           alldefconfig
+arm                        spear6xx_defconfig
+arm                           h5000_defconfig
+mips                          ath25_defconfig
+arm                         orion5x_defconfig
+m68k                        stmark2_defconfig
+mips                         tb0287_defconfig
+arm                           corgi_defconfig
+sh                               alldefconfig
+sh                             espt_defconfig
+mips                  decstation_64_defconfig
+powerpc                      pasemi_defconfig
+arm                           sama5_defconfig
+powerpc                     pseries_defconfig
+powerpc                     sequoia_defconfig
+sh                          rsk7201_defconfig
+powerpc                   motionpro_defconfig
+arm                           h3600_defconfig
+mips                      loongson3_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                           ip22_defconfig
+mips                         tb0219_defconfig
+mips                     loongson1c_defconfig
+sparc64                          alldefconfig
+arm                        magician_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                           omap1_defconfig
+powerpc                       holly_defconfig
+arm                      pxa255-idp_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                           se7206_defconfig
+um                           x86_64_defconfig
+arm                         palmz72_defconfig
+arm                       versatile_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                 canyonlands_defconfig
+mips                        workpad_defconfig
+arm                      footbridge_defconfig
+powerpc                      acadia_defconfig
+sh                     sh7710voipgw_defconfig
+sh                           se7721_defconfig
+arm                         lpc18xx_defconfig
+arc                              allyesconfig
+arm                            hisi_defconfig
+powerpc                        icon_defconfig
+arm                        mvebu_v7_defconfig
+riscv             nommu_k210_sdcard_defconfig
+sh                         ecovec24_defconfig
+sh                           se7780_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                            q40_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm64                            alldefconfig
+powerpc                       ppc64_defconfig
+arc                        nsimosci_defconfig
+i386                             allyesconfig
+mips                         db1xxx_defconfig
+sh                          sdk7786_defconfig
+arc                            hsdk_defconfig
+powerpc                      katmai_defconfig
+arm                         shannon_defconfig
+sh                           se7722_defconfig
+arm                         lpc32xx_defconfig
+sh                           se7619_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                   lite5200b_defconfig
+parisc                generic-32bit_defconfig
+arc                              alldefconfig
+openrisc                 simple_smp_defconfig
+powerpc                      tqm8xx_defconfig
+arm                          pcm027_defconfig
+m68k                          sun3x_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                            zeus_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                     powernv_defconfig
+arc                      axs103_smp_defconfig
+arm                        cerfcube_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                     ppa8548_defconfig
+arm                         hackkit_defconfig
+arm                          badge4_defconfig
+mips                       lemote2f_defconfig
+powerpc                  iss476-smp_defconfig
+nios2                            allyesconfig
+powerpc                     tqm8548_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                  maltasmvp_eva_defconfig
+arc                         haps_hs_defconfig
+arm                            pleb_defconfig
+arm                     am200epdkit_defconfig
+sh                     magicpanelr2_defconfig
+arm                       mainstone_defconfig
+powerpc                        cell_defconfig
+arm                       spear13xx_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                 mpc8540_ads_defconfig
+mips                        qi_lb60_defconfig
+sparc                       sparc64_defconfig
+arm                  randconfig-c002-20211207
+arm                  randconfig-c002-20211209
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20211207
+x86_64               randconfig-a005-20211207
+x86_64               randconfig-a001-20211207
+x86_64               randconfig-a002-20211207
+x86_64               randconfig-a004-20211207
+x86_64               randconfig-a003-20211207
+i386                 randconfig-a001-20211209
+i386                 randconfig-a003-20211209
+i386                 randconfig-a002-20211209
+i386                 randconfig-a006-20211209
+i386                 randconfig-a004-20211209
+i386                 randconfig-a001-20211207
+i386                 randconfig-a005-20211207
+i386                 randconfig-a002-20211207
+i386                 randconfig-a003-20211207
+i386                 randconfig-a006-20211207
+i386                 randconfig-a004-20211207
+x86_64               randconfig-a016-20211208
+x86_64               randconfig-a011-20211208
+x86_64               randconfig-a013-20211208
+x86_64               randconfig-a012-20211208
+x86_64               randconfig-a015-20211208
+x86_64               randconfig-a014-20211208
+arc                  randconfig-r043-20211208
+s390                 randconfig-r044-20211208
+riscv                randconfig-r042-20211208
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c007-20211207
+arm                  randconfig-c002-20211207
+riscv                randconfig-c006-20211207
+mips                 randconfig-c004-20211207
+i386                 randconfig-c001-20211207
+powerpc              randconfig-c003-20211207
+s390                 randconfig-c005-20211207
+arm                  randconfig-c002-20211209
+x86_64               randconfig-c007-20211209
+riscv                randconfig-c006-20211209
+i386                 randconfig-c001-20211209
+mips                 randconfig-c004-20211209
+powerpc              randconfig-c003-20211209
+s390                 randconfig-c005-20211209
+x86_64               randconfig-a006-20211208
+x86_64               randconfig-a005-20211208
+x86_64               randconfig-a001-20211208
+x86_64               randconfig-a002-20211208
+x86_64               randconfig-a004-20211208
+x86_64               randconfig-a003-20211208
+x86_64               randconfig-a016-20211207
+x86_64               randconfig-a011-20211207
+x86_64               randconfig-a013-20211207
+x86_64               randconfig-a014-20211207
+x86_64               randconfig-a015-20211207
+x86_64               randconfig-a012-20211207
+i386                 randconfig-a016-20211207
+i386                 randconfig-a013-20211207
+i386                 randconfig-a011-20211207
+i386                 randconfig-a014-20211207
+i386                 randconfig-a012-20211207
+i386                 randconfig-a015-20211207
+hexagon              randconfig-r045-20211208
+hexagon              randconfig-r041-20211208
+hexagon              randconfig-r045-20211207
+s390                 randconfig-r044-20211207
+riscv                randconfig-r042-20211207
+hexagon              randconfig-r041-20211207
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
