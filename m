@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD5ACC433F5
-	for <ath10k@archiver.kernel.org>; Wed,  8 Dec 2021 04:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D306CC433EF
+	for <ath10k@archiver.kernel.org>; Wed,  8 Dec 2021 04:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xUtIuiNApO0Nkd7fVKieTDfrh8eRZDiUIrnpah48HME=; b=mclhj/USPEZBmC
-	REUgCyvyqb01ti7tDy3olDSxtJLUUP1Qa4iyoUbwv+wxRz7md0AKkE/w5K6y2NG7SRLr/EPuaht9R
-	U3XzxfhWvh+PQKOYL5ViDxz10+8KIuKZshNA1GHlCzwrEbXd6M8j0a2clBkU4LgsANNSJ3YEXPBHa
-	+DO16ZEjnQG8IdEki47fIDtxkmJlooUMrNGQPVAF5Cr7AQqL3qSRt0RhEUEiHZ/wR7Kjwyizu4cUU
-	/i2Pb/zDitnEkRgbIe/QlwkSGEiyaRH2ASRoEpDIIm/7TDoKSr6wkBOH4IZWQVbrAOtDOAYAEqtBV
-	XRnD0QWouw8a7UFb+ZAw==;
+	List-Owner; bh=oEVNx7RyTsML4OXDFc4bvyUrRinBaHh0ZvQ961bNRaE=; b=IqkGdbt8VQjwps
+	q8vcbuLfQNh/hUGJEXZrSVn5Ec9fN2DouGmnpLzUHRN0qJignRTZ2zSz6GSHA3GUTjvBYxjPw1bHE
+	T0Y1qWzRR+7x6kzHVw1HEnSUk+luk53JHhLlsyuVj5ySmIPhh4jMkqe6ga52MDERjD9An+ouhe3Vj
+	+UlDP9DGKzKvGw3tKD7PhaEI2GpiuG1rYab4YnJ5Qp2Xq8D0LXguCn+NbqGMkMR0TZUQzzEXs51O6
+	LyK+7K8o6FEn+1dSsgKdjMddqbVkvEoQsKFJY/JWqUQC6jjRH2Be1QARc4PSDkoOaeUWs+dgIijfE
+	YZcPgty798a0OtWpwhtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muoA7-00B8Ah-BC; Wed, 08 Dec 2021 04:02:35 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1muoB4-00B8G6-2M; Wed, 08 Dec 2021 04:03:34 +0000
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muoA3-00B860-No
- for ath10k@lists.infradead.org; Wed, 08 Dec 2021 04:02:33 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="261824804"
-X-IronPort-AV: E=Sophos;i="5.87,296,1631602800"; d="scan'208";a="261824804"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 20:02:29 -0800
+ id 1muoB0-00B8Ek-RT
+ for ath10k@lists.infradead.org; Wed, 08 Dec 2021 04:03:32 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="237693076"
+X-IronPort-AV: E=Sophos;i="5.87,296,1631602800"; d="scan'208";a="237693076"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Dec 2021 20:03:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,296,1631602800"; d="scan'208";a="679733805"
+X-IronPort-AV: E=Sophos;i="5.87,296,1631602800"; d="scan'208";a="543070492"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
- by orsmga005.jf.intel.com with ESMTP; 07 Dec 2021 20:02:24 -0800
+ by orsmga001.jf.intel.com with ESMTP; 07 Dec 2021 20:03:24 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1muo9v-000NNY-SL; Wed, 08 Dec 2021 04:02:23 +0000
-Date: Wed, 08 Dec 2021 12:02:17 +0800
+ id 1muoAt-000NNi-Sk; Wed, 08 Dec 2021 04:03:23 +0000
+Date: Wed, 08 Dec 2021 12:02:26 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- cea7f78d85f3f6ba05f43754600426b0e84abbbd
-Message-ID: <61b02e49.t2RfKWH+moNKvhLS%lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 4f4f8aee394b73abf5e5f98c63187fdbf1d627f0
+Message-ID: <61b02e52.7zy0Uw1+vXTarptm%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211207_200231_863772_9D07A09B 
-X-CRM114-Status: UNSURE (   6.00  )
+X-CRM114-CacheID: sfid-20211207_200330_976620_576E5158 
+X-CRM114-Status: UNSURE (   5.33  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -66,12 +66,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: cea7f78d85f3f6ba05f43754600426b0e84abbbd  ath11k: change to use dynamic memory for channel list of scan
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 4f4f8aee394b73abf5e5f98c63187fdbf1d627f0  Revert "bus: mhi: Early MHI resume failure in non M3 state"
 
-elapsed time: 736m
+elapsed time: 734m
 
-configs tested: 167
+configs tested: 139
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -93,20 +93,11 @@ h8300                            allyesconfig
 h8300                     edosk2674_defconfig
 mips                           rs90_defconfig
 mips                      maltasmvp_defconfig
-mips                         tb0287_defconfig
-sh                                  defconfig
-powerpc                    mvme5100_defconfig
-sh                            shmin_defconfig
-mips                        bcm63xx_defconfig
 sh                           se7705_defconfig
 mips                           xway_defconfig
 powerpc                      cm5200_defconfig
 sparc64                             defconfig
 powerpc                         wii_defconfig
-sh                   sh7724_generic_defconfig
-mips                      pic32mzda_defconfig
-powerpc64                        alldefconfig
-powerpc                     kilauea_defconfig
 powerpc                   motionpro_defconfig
 parisc                           alldefconfig
 arm                           h3600_defconfig
@@ -115,35 +106,18 @@ sh                  sh7785lcr_32bit_defconfig
 mips                           ip22_defconfig
 arm                        shmobile_defconfig
 powerpc                 mpc8313_rdb_defconfig
-arm                           omap1_defconfig
-powerpc                       holly_defconfig
-arm                      pxa255-idp_defconfig
-sh                   rts7751r2dplus_defconfig
 mips                        workpad_defconfig
 sh                             espt_defconfig
 arm                      footbridge_defconfig
 powerpc                      acadia_defconfig
 sh                     sh7710voipgw_defconfig
 sh                           se7721_defconfig
-arm                        mvebu_v7_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                         ecovec24_defconfig
-arm                         orion5x_defconfig
-sh                           se7780_defconfig
 i386                             allyesconfig
 mips                         db1xxx_defconfig
 sh                          sdk7786_defconfig
 arc                            hsdk_defconfig
 powerpc                      katmai_defconfig
 s390                                defconfig
-powerpc                      tqm8xx_defconfig
-parisc                generic-64bit_defconfig
-sparc64                          alldefconfig
-arm                         mv78xx0_defconfig
-mips                          ath79_defconfig
-arm                          pcm027_defconfig
-m68k                          sun3x_defconfig
-m68k                        m5272c3_defconfig
 powerpc                     powernv_defconfig
 arc                      axs103_smp_defconfig
 mips                     cu1000-neo_defconfig
@@ -158,10 +132,8 @@ sh                 kfr2r09-romimage_defconfig
 arm                         at91_dt_defconfig
 sparc                               defconfig
 mips                       rbtx49xx_defconfig
+mips                          ath79_defconfig
 xtensa                  nommu_kc705_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                      walnut_defconfig
-arm                   milbeaut_m10v_defconfig
 arm                  randconfig-c002-20211207
 ia64                             allmodconfig
 ia64                                defconfig
