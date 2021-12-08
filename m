@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3775C433EF
-	for <ath10k@archiver.kernel.org>; Wed,  8 Dec 2021 22:20:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF685C433F5
+	for <ath10k@archiver.kernel.org>; Wed,  8 Dec 2021 22:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=0HcEVRDjD13oMABtgL9jyG7bKedGC7yDCJGi+wxJqEA=; b=oU47Z+QKXJ9Xgo
-	4r1Bih+WM0i55nZ7nbY/730d1A04DG2yL3PtdFSqBwZhA1epXcJrbdpgY1p2uUS4iT+CwdRrCd+Uv
-	/9VWoa8ZHcnUTn7S60g+9tc8ka902mAWQJucMIOjKghE0V7VezH53/j+xFos3gvzLw5eYZkRUrjX6
-	gv5mRCbfkcRn8JquOuVOg0Jzv1oOVAWIkNyesP6zsR7/f0ZL6+dCMCJCPO5CrtSOhxSaL+BK8zIMb
-	1qAbvcqze8NL1sjLnr/uWFUymEAbI4Bn3S33TV7l1/70MsqLPCf2lQhjffjrLvMMSzi1aWJsZPMkl
-	T3/P9MyeWQlS88nPsoEw==;
+	List-Owner; bh=XrRsLSk23niZRuc3LxmVmsDpu9t8Rqy/6ENujOZPei8=; b=pTW5QgnSRoY5Sf
+	FJYX4JeYrhyXwmQ2s/exwLFKuUBmDIjEG3ClGgwLSB31JQZ9ogsgqPtnFfn+PtSRf5G5IHYMtZLh9
+	42Wue+EmhaCIcbQIv7Q9i8QbhUUQQXUF0mggRnb6SpcwmCqM2ohlC3iJzwiExCXGaW2Rxq6DSKryS
+	WQdRRYtKxQyvPaWvwxBqTb6mrZmF9EVo9Kd6aU1neYZaW4ORxL4VEPSWt2AwXaXT55MeGrhJQyd10
+	HzajoIepCDzYgCUKfjL0xaE5vgXDfRX4eVChZtE8pClduRfzY/H/f7EjXWbDzrnGln+UmzlZGwGtw
+	ci5xeL5IijR76GdMuUwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mv5IG-00EP4k-E5; Wed, 08 Dec 2021 22:20:08 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1mv5IE-00EP4c-MI; Wed, 08 Dec 2021 22:20:06 +0000
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mv5IB-00EP3u-K1
+ id 1mv5IB-00EP3v-Ch
  for ath10k@lists.infradead.org; Wed, 08 Dec 2021 22:20:05 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10192"; a="324224653"
-X-IronPort-AV: E=Sophos;i="5.88,190,1635231600"; d="scan'208";a="324224653"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Dec 2021 14:20:00 -0800
+X-IronPort-AV: E=McAfee;i="6200,9189,10192"; a="262054682"
+X-IronPort-AV: E=Sophos;i="5.88,190,1635231600"; d="scan'208";a="262054682"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Dec 2021 14:20:01 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,190,1635231600"; d="scan'208";a="564294939"
+X-IronPort-AV: E=Sophos;i="5.88,190,1635231600"; d="scan'208";a="503243085"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
- by fmsmga008.fm.intel.com with ESMTP; 08 Dec 2021 14:19:59 -0800
+ by orsmga007.jf.intel.com with ESMTP; 08 Dec 2021 14:19:59 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mv5I6-00017a-GC; Wed, 08 Dec 2021 22:19:58 +0000
-Date: Thu, 09 Dec 2021 06:19:45 +0800
+ id 1mv5I6-00017R-DE; Wed, 08 Dec 2021 22:19:58 +0000
+Date: Thu, 09 Dec 2021 06:19:34 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- fbf03c57fde45ead55652314fa75e43f58555948
-Message-ID: <61b12f81.qMflb+MF2JXkvYan%lkp@intel.com>
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ 5a10537cbfc5f1a9b7f0619b37c13de7be8c8f53
+Message-ID: <61b12f76.08dJuUALwqrsoOYS%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211208_142003_742993_75DB3689 
-X-CRM114-Status: UNSURE (   3.36  )
+X-CRM114-CacheID: sfid-20211208_142003_498303_55DE694D 
+X-CRM114-Status: UNSURE (   5.17  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -66,10 +66,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: fbf03c57fde45ead55652314fa75e43f58555948  Revert "bus: mhi: Early MHI resume failure in non M3 state"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: 5a10537cbfc5f1a9b7f0619b37c13de7be8c8f53  ath10k: fix scan abort when duration is set for hw scan
 
-elapsed time: 731m
+elapsed time: 733m
 
 configs tested: 244
 configs skipped: 3
