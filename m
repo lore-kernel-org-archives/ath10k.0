@@ -4,59 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88810C433F5
-	for <ath10k@archiver.kernel.org>; Wed,  8 Dec 2021 09:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D141C433EF
+	for <ath10k@archiver.kernel.org>; Wed,  8 Dec 2021 12:22:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QjGw/O+B0R4swHGeuneGJOHGoOiwjVl/U6vI7R5nn7g=; b=E6ZRTKybxfz6dH
-	sZ0lPqYC28zFhuRK8Tl644ZyB4HkLEfO1socZVPNfR7oz/4l+YleKngIVb7qq4E+aY/BtoDFnfCZ5
-	7kVLgg0zv1OJllrTTDDsn4H99zcH2HELqTXtiPY9wsBEdwuUdnRCzlf6lFAtpSqdinVq+FZDHQOGN
-	RIegqkI8j18P3mR2I1DgTdFNDbI2qCiXA637UvNJDvrKk6cYq18orOm6Yku5KtBs5SAP44VuBSqtg
-	YKtEWEnLr6d+P0lArTiyFWHN/o2Y2PNc7Nx7mgA3YFSTZT+e2r1us2rFfNkjC95F8zoU3EZgyAGu+
-	qJ574UTqLWVLcXt03b+A==;
+	List-Owner; bh=nTg54+Q/0aOwDUx/C1MnIwWuBJc+DYKYHM2hsyslu8M=; b=J6OVBKtiuOCjnR
+	aTv2oykDs9jSK3jW1oIschnEGyPjl3+gkCOhSPQmUCMfY6WNru9456Yaj2MusMse3EgxxsTS68r0t
+	jmcvYfS+4JkdJqHxG9kdvK3YFOq1EwY1r03cwTpJRl6NzaSqeo5lAU6sEyqeREwoNRIf7pfoRh3qX
+	qNYj9fZkSHvX30wXxnRhPQZC+aLW2RgrIrTvaCJAWd3vsby7+3AAba8QaYAWkLmTtfxfaje/8MOax
+	FvarKfdehOYI8e4ueI1AudVQl/O1ovhbaIRB7XVTNPKRrRSCUYLu4e3iJLZ6Inxh2rEitfzGSHtyf
+	eTXUAnlj9W8kzfVWyP8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1musoS-00BoK1-PB; Wed, 08 Dec 2021 09:00:32 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1muvxa-00CT0L-69; Wed, 08 Dec 2021 12:22:10 +0000
+Received: from mail-qv1-xf29.google.com ([2607:f8b0:4864:20::f29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1musoP-00BoJW-QY
- for ath10k@lists.infradead.org; Wed, 08 Dec 2021 09:00:31 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6A538B81FEC;
- Wed,  8 Dec 2021 09:00:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F60AC00446;
- Wed,  8 Dec 2021 09:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638954027;
- bh=krJM6Mq5KiIT+RpKx7SpSZi6opk/kHp4633AN7KqKUA=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=KbbOnivmkx2Cn6riN/3Iy5hogWLewzB44dI7KMH/AVBkj5ewkHpWFfg3BIOyFnBUi
- edCmHxXFGpABzrRJOw9+DpEtNzTw14fzGSg4Gnoz92IvK/4oSPiL6Jnr/iUgSrhOZs
- IgUPqRVdhjfkxHPjLZ0cHih00C1NK65vxMeYbOBsKoYO35NWJeNIyR8nh9suOX1hD/
- g/Y40nb/Les7rhMIlXcWgCxC6O1vfin7IRcy/xRa7YZrV70G3UZDBmX8zofxnKBFK2
- hknQ5x/ZrPGyeXmzmdZQmY1SJJK8bARO1yFMWzFTevew2vUJYytepQotQqYc46Bt9J
- +XRiGrgzjl4DQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Wen Gong <quic_wgong@quicinc.com>
-Cc: <ath10k@lists.infradead.org>,  <linux-wireless@vger.kernel.org>
-Subject: Re: [PATCH v2] ath10k: drop beacon and probe response which leak from
- other channel
-References: <20211208061752.16564-1-quic_wgong@quicinc.com>
-Date: Wed, 08 Dec 2021 11:00:22 +0200
-In-Reply-To: <20211208061752.16564-1-quic_wgong@quicinc.com> (Wen Gong's
- message of "Wed, 8 Dec 2021 01:17:52 -0500")
-Message-ID: <87pmq7fp3t.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ id 1muvxS-00CStJ-NA
+ for ath10k@lists.infradead.org; Wed, 08 Dec 2021 12:22:04 +0000
+Received: by mail-qv1-xf29.google.com with SMTP id b11so2071052qvm.7
+ for <ath10k@lists.infradead.org>; Wed, 08 Dec 2021 04:21:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=8uy0DZF7lXHvcBRiAIjRsLK9cNEa6jf/rNNhdNudo5w=;
+ b=cHX2O0p2l777DDyIx13QKGz8UX24Uk7UaRJHIphrFXhWQpCdBq/STZ3JU+jBVhQXFQ
+ eEK73FHRc8ykrxIkcW7EwsQYpWU6hiH7uV8aTrQq5q6z9MvamNo8ByD3T0Q1O+bwdX9d
+ mrsXJpL6z7KG9Q+Tf/oWyZrkkY+sClbYwIw5oqyQ0fK7+JQrmG45imzLDKke4y2afb2Q
+ fZnfzwPckqBkkd1mqT5N+uYOuijVavructJJmCmCZHWTC9gwdoAAKeI8aKLjO1IBrob+
+ 8x/McZkGWEFExIhOMVDwl+XJQT24Tq3BHUhgUtO0J+N9HOzAtgD0z8aYTJYyWd3YbQxd
+ HpMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=8uy0DZF7lXHvcBRiAIjRsLK9cNEa6jf/rNNhdNudo5w=;
+ b=7ROknBxz7HWvqhLGennh6OpNbYf1bYvnpGEDxs7CR8CDD/BdOKkHFMP7z9IH6JciQe
+ YZRqaaXrYVSetlqbEFjl0FTEGROgXcFFId3hqfu0g8C/eAaE0HZ3nmsc7FCNr0aIlxgu
+ Cy9r3DWMqvrXGfrM9DkcQXzndMBTYsx18ZhqRDFDUf1dpjWNK8WciSMJgWTpYSBKOLMv
+ B2j1QxAcxui/EtJxVZKBv1PBIdkqO+Yi3VnxZzR7RuldKXEPkng/jWrs1xx0VZxZR4f1
+ FrtQcdGzm4v4kFntw4V5DlNUeKdgg/HZUwYYVmQc2tPXY492auJxCXKOZsUtkjky4ZXU
+ 6jZw==
+X-Gm-Message-State: AOAM5334Mdac1bFxkiZsZPuRsHFxS6l123ksUMko8EW0s27O4kVtyTU0
+ b5mR44XzCDqbkFfNZiih78AL3OXllC4m1VW+cg+C9REXPaQkSA==
+X-Google-Smtp-Source: ABdhPJw4YNDPavQA3I/O4k+Cm2sSpqxXToag596Tt+4b8OC+lHeBZ071Vp1j5+4JZaFFBqijN0cyCd68ufQr4+BQKxY=
+X-Received: by 2002:a05:6214:1909:: with SMTP id
+ er9mr6882300qvb.118.1638966118601; 
+ Wed, 08 Dec 2021 04:21:58 -0800 (PST)
 MIME-Version: 1.0
+References: <20211009221711.2315352-1-robimarko@gmail.com>
+ <163890036783.24891.8718291787865192280.kvalo@kernel.org>
+In-Reply-To: <163890036783.24891.8718291787865192280.kvalo@kernel.org>
+From: Robert Marko <robimarko@gmail.com>
+Date: Wed, 8 Dec 2021 13:21:47 +0100
+Message-ID: <CAOX2RU5mqUfPRDsQNSpVPdiz6sE_68KN5Ae+2bC_t1cQzdzgTA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: support bus and device specific API 1 BDF
+ selection
+To: Kalle Valo <kvalo@kernel.org>
+Cc: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org, 
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
+ netdev@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211208_010030_027973_466E7DA1 
-X-CRM114-Status: GOOD (  17.25  )
+X-CRM114-CacheID: sfid-20211208_042202_804915_A9C05F14 
+X-CRM114-Status: GOOD (  21.89  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,45 +85,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Wen Gong <quic_wgong@quicinc.com> writes:
-
-> When scan request on channel 1, it also receive beacon from other
-> channels, and the beacon also indicate to mac80211 and wpa_supplicant,
-> and then the bss info appears in radio measurement report of radio
-> measurement sent from wpa_supplicant, thus lead RRM case fail.
+On Tue, 7 Dec 2021 at 19:06, Kalle Valo <kvalo@kernel.org> wrote:
 >
-> This is to drop the beacon and probe response which is not the same
-> channel of scanning.
+> Robert Marko <robimarko@gmail.com> wrote:
 >
-> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+> > Some ath10k IPQ40xx devices like the MikroTik hAP ac2 and ac3 require the
+> > BDF-s to be extracted from the device storage instead of shipping packaged
+> > API 2 BDF-s.
+> >
+> > This is required as MikroTik has started shipping boards that require BDF-s
+> > to be updated, as otherwise their WLAN performance really suffers.
+> > This is however impossible as the devices that require this are release
+> > under the same revision and its not possible to differentiate them from
+> > devices using the older BDF-s.
+> >
+> > In OpenWrt we are extracting the calibration data during runtime and we are
+> > able to extract the BDF-s in the same manner, however we cannot package the
+> > BDF-s to API 2 format on the fly and can only use API 1 to provide BDF-s on
+> > the fly.
+> > This is an issue as the ath10k driver explicitly looks only for the
+> > board.bin file and not for something like board-bus-device.bin like it does
+> > for pre-cal data.
+> > Due to this we have no way of providing correct BDF-s on the fly, so lets
+> > extend the ath10k driver to first look for BDF-s in the
+> > board-bus-device.bin format, for example: board-ahb-a800000.wifi.bin
+> > If that fails, look for the default board file name as defined previously.
+> >
+> > Signed-off-by: Robert Marko <robimarko@gmail.com>
 >
-> Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
-> ---
-> v2: rebased to ath.git ath-202112071521
+> Can someone review this, please? I understand the need for this, but the board
+> handling is getting quite complex in ath10k so I'm hesitant.
 >
->  drivers/net/wireless/ath/ath10k/wmi.c | 28 ++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
+> What about QCA6390 and other devices. Will they still work?
+Hi Kalle,
+everything else should just continue working as before unless the
+board-bus-device.bin file
+exists it will just use the current method to fetch the BDF.
+
+Also, this only applies to API1 BDF-s.
+
+We are really needing this as currently there are devices with the
+wrong BDF being loaded as
+we have no way of knowing where MikroTik changed it and dynamic
+loading would resolve
+all of that since they are one of the rare vendors that embed the
+BDF-s next to calibration data.
+
+Regards,
+Robert
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index 7c1c2658cb5f..07764ee409fe 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -2610,10 +2610,32 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
->  	if (ieee80211_is_beacon(hdr->frame_control))
->  		ath10k_mac_handle_beacon(ar, skb);
->  
-> +
-
-This caused a new warning:
-
-drivers/net/wireless/ath/ath10k/wmi.c:2613: Please don't use multiple blank lines
-
-Fixed in the pending branch.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> --
+> https://patchwork.kernel.org/project/linux-wireless/patch/20211009221711.2315352-1-robimarko@gmail.com/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>
 
 _______________________________________________
 ath10k mailing list
