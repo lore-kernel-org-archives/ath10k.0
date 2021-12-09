@@ -4,57 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D489C433F5
-	for <ath10k@archiver.kernel.org>; Thu,  9 Dec 2021 09:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CB7CC433FE
+	for <ath10k@archiver.kernel.org>; Thu,  9 Dec 2021 09:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4wzSW93ed4sm+uUyfotO7gRn+v0eucYpL8ozBBLlcBg=; b=cqHo24xQnIzAuV
-	tapkcuwsR3ToriilmWGOaH7LpEIN9Rhais9MvngIbtUf+T83uHq8wzq7fPhFz8QT1qL3HQpygwUCU
-	WTBebfbKWigEt4RSK1BOVXPjchLDc41qUaRkNpUgAji8rtOS2y2c3Q8C6tkr3txe5XR5dL5p2dlo6
-	1dzovhdpKHDp22p60tloHaO07AkrimlM1oZnC7EBJLEOll8lyuRVJqTsNdM4RqjePkXZCpGmxRSvc
-	eycZF5D72mnP5DiL2bmsIZ3h8ZEI0jadoDnl6n/45pr0W2mmC9OdBd0HnG87jtQyzIYrjtCQWbOP7
-	pdKijIlJRoae/SqxKTcQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Lhqos9LGtjS3JZMt6ffSFMJFIUr1oOS09GVp2dfVTAo=; b=uJAW8X6ediZW5H
+	ob6Hcn4Zb7n+orKJGc9HBkpKy2DWTR6LMGKyGl0FR/OikyIsHHNUXztjA1QYcC3/T4WNelAZWHFYI
+	UUO6IFa6oUeh7+B4a4S7MHvYKncieY+1tFPn74czwL2OLQC05NOUrb+9JlkHUgFf2kWXxuRp+H7UW
+	zZNWNAZ7HEMFFORub883YplxFbPwTycjUOKEv+VAwrKaE+SIi6mKR3AQYTk7IYD33tuKCTJ9BOxNa
+	GM6+zG+kj8sBV8Ixr6wQtH5sD6tR5BqB17PHl+/lZEGQMKv7Lj5TQj2WzfjEnXL/eQnIyBG2uM9YV
+	/L3EJ30CkFofywhwijOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mvFbQ-00FOR1-Gy; Thu, 09 Dec 2021 09:20:37 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1mvFbb-00FOVZ-66; Thu, 09 Dec 2021 09:20:47 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mvFWt-00FN38-LL
- for ath10k@lists.infradead.org; Thu, 09 Dec 2021 09:15:57 +0000
+ id 1mvFWu-00FN3N-Lk
+ for ath10k@lists.infradead.org; Thu, 09 Dec 2021 09:15:58 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 56428B8235A
- for <ath10k@lists.infradead.org>; Thu,  9 Dec 2021 09:15:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FFC8C341C8;
- Thu,  9 Dec 2021 09:15:52 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id DDC6ACE241B
+ for <ath10k@lists.infradead.org>; Thu,  9 Dec 2021 09:15:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E374C004DD;
+ Thu,  9 Dec 2021 09:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1639041353;
- bh=xwYdGutxAfsG1PdhuXlI/5zQ4TyEWKUigSAODOE4Hg4=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=k6qQvVvN1Y38C1lSb866t5LRXYjr4DVfie3epTJGfxnHAJhnvROBj09hBggqJwepa
- Hbr2IEST5OFgRPC9pBvKe6dIfvXjKQsBlxs2XA0TJvT5o7oyTg7kFxqmGv/r9LZH7U
- 2mfal2EfUS/gRh9ycjH5LSC3FmgphaL0bUQyn6urnBAm8Ylc849bozOHf9Ylco2ZYi
- dKeP64B3IN7WhfG716J6pgUCfmwSB1d6l0my0Py2TT91woxYkN7newCrwgO4dx3+B4
- /u83p3WktZxcH3wrko9FiHkpKFvlF8uPE+eIaYQePZLuEod3dT5qtfC5qKSL+N4bBB
- BsuvhNG0bJTrA==
+ s=k20201202; t=1639041352;
+ bh=FEimqqnZesa480TVcNbq0cAFDsG+3iH7UdvocRivT3E=;
+ h=From:To:Cc:Subject:Date:From;
+ b=lKL+oGxvd0DhROw0gW94CZtJs4oKkPNyZeEKn25EjiJW1CoLWGHOePQxiQGIZyPI+
+ KpRJbxk3nwH6ijv8ypGxAU8axf/Z+w6lBRVYIgGgn0Af/I89aJyZiD4ckRM6gZvhGi
+ eVc4WOVVW2E/3d6HDgtoftJ3RatgkOYnpOOb5Riux0Rb2mSU+BQVKAGeAidvRlAm2m
+ H67Lkh+abOF/3ReBzrY5nrXHf4msOYvWHtc1Ul4J4CQpPRijgGV7Tq6GcUnd3EPgbR
+ gGIbOz9ZOoL849xFplr7jgeknd6m/DLi76AuZhaGpqhNZJyc2tWB3VGgHvGEsxrj4a
+ G8oSdGUk+Jhvg==
 From: Kalle Valo <kvalo@kernel.org>
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
-Subject: [PATCH 2/2] ath10k: wmi: remove array of flexible structures
-Date: Thu,  9 Dec 2021 11:15:45 +0200
-Message-Id: <20211209091545.6098-2-kvalo@kernel.org>
+Subject: [PATCH 1/2] ath10k: htt: remove array of flexible structures
+Date: Thu,  9 Dec 2021 11:15:44 +0200
+Message-Id: <20211209091545.6098-1-kvalo@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211209091545.6098-1-kvalo@kernel.org>
-References: <20211209091545.6098-1-kvalo@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211209_011555_875370_AEEA345A 
-X-CRM114-Status: GOOD (  11.65  )
+X-CRM114-CacheID: sfid-20211209_011557_156090_B4983C57 
+X-CRM114-Status: GOOD (  16.90  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,34 +73,148 @@ From: Kalle Valo <quic_kvalo@quicinc.com>
 
 I updated to sparse v0.6.4 and it warns:
 
-drivers/net/wireless/ath/ath10k/wmi.c: note: in included file (through drivers/net/wireless/ath/ath10k/core.h):
-drivers/net/wireless/ath/ath10k/wmi.h:3481:34: warning: array of flexible structures
+drivers/net/wireless/ath/ath10k/hw.c: note: in included file (through drivers/net/wireless/ath/ath10k/core.h):
+drivers/net/wireless/ath/ath10k/htt.h:1503:41: warning: array of flexible structures
+drivers/net/wireless/ath/ath10k/htt_rx.c: note: in included file (through drivers/net/wireless/ath/ath10k/core.h):
+drivers/net/wireless/ath/ath10k/htt.h:1503:41: warning: array of flexible structures
 
-Fix it by changing the type to u8 array, in struct wmi_phyerr_hdr_arg it's
-stored as a void pointer anyway.
+The structure is unused in ath10k so let's just remove it.
 
 Compile tested only.
 
 Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt.h | 110 --------------------------
+ 1 file changed, 110 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 01bfd09a9d88..4abd12e78028 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3478,7 +3478,9 @@ struct wmi_phyerr_event {
- 	__le32 num_phyerrs;
- 	__le32 tsf_l32;
- 	__le32 tsf_u32;
--	struct wmi_phyerr phyerrs[];
-+
-+	/* array of struct wmi_phyerr */
-+	u8 phyerrs[];
- } __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index a6de08d3bf4a..9a3a8907389b 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1400,115 +1400,6 @@ enum htt_dbg_stats_status {
+ 	HTT_DBG_STATS_STATUS_SERIES_DONE = 7
+ };
  
- struct wmi_10_4_phyerr_event {
+-/*
+- * target -> host statistics upload
+- *
+- * The following field definitions describe the format of the HTT target
+- * to host stats upload confirmation message.
+- * The message contains a cookie echoed from the HTT host->target stats
+- * upload request, which identifies which request the confirmation is
+- * for, and a series of tag-length-value stats information elements.
+- * The tag-length header for each stats info element also includes a
+- * status field, to indicate whether the request for the stat type in
+- * question was fully met, partially met, unable to be met, or invalid
+- * (if the stat type in question is disabled in the target).
+- * A special value of all 1's in this status field is used to indicate
+- * the end of the series of stats info elements.
+- *
+- *
+- * |31                         16|15           8|7   5|4       0|
+- * |------------------------------------------------------------|
+- * |                  reserved                  |    msg type   |
+- * |------------------------------------------------------------|
+- * |                        cookie LSBs                         |
+- * |------------------------------------------------------------|
+- * |                        cookie MSBs                         |
+- * |------------------------------------------------------------|
+- * |      stats entry length     |   reserved   |  S  |stat type|
+- * |------------------------------------------------------------|
+- * |                                                            |
+- * |                  type-specific stats info                  |
+- * |                                                            |
+- * |------------------------------------------------------------|
+- * |      stats entry length     |   reserved   |  S  |stat type|
+- * |------------------------------------------------------------|
+- * |                                                            |
+- * |                  type-specific stats info                  |
+- * |                                                            |
+- * |------------------------------------------------------------|
+- * |              n/a            |   reserved   | 111 |   n/a   |
+- * |------------------------------------------------------------|
+- * Header fields:
+- *  - MSG_TYPE
+- *    Bits 7:0
+- *    Purpose: identifies this is a statistics upload confirmation message
+- *    Value: 0x9
+- *  - COOKIE_LSBS
+- *    Bits 31:0
+- *    Purpose: Provide a mechanism to match a target->host stats confirmation
+- *        message with its preceding host->target stats request message.
+- *    Value: LSBs of the opaque cookie specified by the host-side requestor
+- *  - COOKIE_MSBS
+- *    Bits 31:0
+- *    Purpose: Provide a mechanism to match a target->host stats confirmation
+- *        message with its preceding host->target stats request message.
+- *    Value: MSBs of the opaque cookie specified by the host-side requestor
+- *
+- * Stats Information Element tag-length header fields:
+- *  - STAT_TYPE
+- *    Bits 4:0
+- *    Purpose: identifies the type of statistics info held in the
+- *        following information element
+- *    Value: htt_dbg_stats_type
+- *  - STATUS
+- *    Bits 7:5
+- *    Purpose: indicate whether the requested stats are present
+- *    Value: htt_dbg_stats_status, including a special value (0x7) to mark
+- *        the completion of the stats entry series
+- *  - LENGTH
+- *    Bits 31:16
+- *    Purpose: indicate the stats information size
+- *    Value: This field specifies the number of bytes of stats information
+- *       that follows the element tag-length header.
+- *       It is expected but not required that this length is a multiple of
+- *       4 bytes.  Even if the length is not an integer multiple of 4, the
+- *       subsequent stats entry header will begin on a 4-byte aligned
+- *       boundary.
+- */
+-
+-#define HTT_STATS_CONF_ITEM_INFO_STAT_TYPE_MASK 0x1F
+-#define HTT_STATS_CONF_ITEM_INFO_STAT_TYPE_LSB  0
+-#define HTT_STATS_CONF_ITEM_INFO_STATUS_MASK    0xE0
+-#define HTT_STATS_CONF_ITEM_INFO_STATUS_LSB     5
+-
+-struct htt_stats_conf_item {
+-	union {
+-		u8 info;
+-		struct {
+-			u8 stat_type:5; /* %HTT_DBG_STATS_ */
+-			u8 status:3; /* %HTT_DBG_STATS_STATUS_ */
+-		} __packed;
+-	} __packed;
+-	u8 pad;
+-	__le16 length;
+-	u8 payload[]; /* roundup(length, 4) long */
+-} __packed;
+-
+-struct htt_stats_conf {
+-	u8 pad[3];
+-	__le32 cookie_lsb;
+-	__le32 cookie_msb;
+-
+-	/* each item has variable length! */
+-	struct htt_stats_conf_item items[];
+-} __packed;
+-
+-static inline struct htt_stats_conf_item *htt_stats_conf_next_item(
+-					const struct htt_stats_conf_item *item)
+-{
+-	return (void *)item + sizeof(*item) + roundup(item->length, 4);
+-}
+-
+ /*
+  * host -> target FRAG DESCRIPTOR/MSDU_EXT DESC bank
+  *
+@@ -1828,7 +1719,6 @@ struct htt_resp {
+ 		struct htt_rc_update rc_update;
+ 		struct htt_rx_test rx_test;
+ 		struct htt_pktlog_msg pktlog_msg;
+-		struct htt_stats_conf stats_conf;
+ 		struct htt_rx_pn_ind rx_pn_ind;
+ 		struct htt_rx_offload_ind rx_offload_ind;
+ 		struct htt_rx_in_ord_ind rx_in_ord_ind;
 -- 
 2.20.1
 
