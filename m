@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B734CC433EF
-	for <ath10k@archiver.kernel.org>; Wed, 15 Dec 2021 05:08:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1C34C433EF
+	for <ath10k@archiver.kernel.org>; Wed, 15 Dec 2021 05:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=S8qU/9qchwYBPm/L3ZNAibHKeamh+L45zROriWZNyMY=; b=bkbJslumg86Z66
-	SPHE9A+NiV9Ny/y3oWq6SW3QEXHDQe1VDFb9TVe+hS7g00n/RS+U+m73AZpEyHDNaOkmicNADcvYa
-	AqhQNqWgo/EOe45dzyyfrxSgKeDPpFN5zZFWhWX/hQhXaUdOs98xCMp4ucs+fnDzdkKIsTIrckUmy
-	6tQbrFHxtjRE0ZHg3Jwtr1GJag3J+ofgW/q/7dpoBubVJr6P7FHneoWvpbMHenPQW2aT7L8MD8PgE
-	IhQMVOtTIw1xj5aeec8kr8XOK9PRha/Ci+kKoKCivbpaXdfF2pPTBNvqMW0imGtUlACMyxz7Zxc0U
-	+HNcWiNica+aTec+YGhw==;
+	List-Owner; bh=tTAP2evAslw9ZskFvSEHE984lWtBe+9HIAJtMRBGrCg=; b=SYylCtq9WqE0EE
+	TrBItuCAkpRCmyA+4XHrwNGWXv8g5kFQmrMZAwOguuaHv3AmgG8Wz514fBFnc0gpj3RSxNuH7LOEX
+	QPlWSVveV3ruSf1mfqzW0/O8JR257tTTBq1UZFY/JiX0Kjc20wdN0yRvegOXMofFtM/NCbg0nmkWj
+	uPtTG+L5qd9f4SqWOmqn/FPUhy34glNe4FRPT5EmBQaCNl7RHoRkEEgnA/2B4Qyt1c5jMjtwfgsdt
+	0Lhpogyz1cMIAoWRCkVckLdj2sKXUhMBYZk/qJsLL6HWctT8GrejGzMTmWzZ3saOBfPJTdPhyI7nY
+	DWgSjYVlm8EQ/nXLQ/og==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxMW5-00GhB9-Jr; Wed, 15 Dec 2021 05:07:49 +0000
-Received: from mga14.intel.com ([192.55.52.115])
+	id 1mxMW7-00GhBP-C0; Wed, 15 Dec 2021 05:07:51 +0000
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxMW3-00GhAJ-4P
- for ath10k@lists.infradead.org; Wed, 15 Dec 2021 05:07:48 +0000
+ id 1mxMW3-00GhAK-Aw
+ for ath10k@lists.infradead.org; Wed, 15 Dec 2021 05:07:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1639544867; x=1671080867;
  h=date:from:to:cc:subject:message-id:mime-version:
  content-transfer-encoding;
- bh=yeZVKBJzgMihpGeKMVNF48dvqlWbrYz3gh7AsZjMCVU=;
- b=QmXWFAhZdq0wSy6deZITtqjnN1IsJSe/KFUCerjkY6BSx1ofhjJLCpwn
- LgN1IyQSYCe8IPj7ahbr6tt1lqTW0/MRKdn6KJ2gXN9aRwbODdODVLrYC
- PakMVcPxjOx87S7KVYzhD9OSASJy/9ME3EmGIuqH5sxPVeP7i22Z270Ub
- S/JdFFIZaKrAAQkhq4hv2/2O8lDJDXo5KxC7Tt3nswwFtyqmYn86yPZ9m
- TtJTw5NygJp0rR5zN03+OY57OrsVMURps5znaaexQKlBL1fO/GkD6Mpqq
- XQMAwhSpeFxgh69YEqoWR5lzuIm6lk0IqRdOSp4YrVYRglpozr1vu30xV w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10198"; a="239370049"
-X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="239370049"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ bh=DoyxzVkoOvc7K5xERnM0m1SsQIQApf6UX3O33cynehM=;
+ b=TRytcz7VTcHV9uE6UIMFVHKtwsENztq0CYFNmKrePGxhpvfjEQJLIlkG
+ j1p1rH8++QEO2kC/O77RJGUKszStGfQd0Hl4YbVhvfiaLzoDRCFfUNWwW
+ CRg5oW6TntHi3MKKs2PXzvy0wOfcgCibO47b0w/TVGlRhHCAs7uWMtSmN
+ PpJOYIyyRN6G3R8IRKdO35f4ih3ej0RBtZ8OKKt9sNqS8BVrKPE+SDBrv
+ 323rAHAhxvydMXgVeP7csJdwSbgJX/3W0VFYJI7F0tGggYlcKU5MjvXE6
+ xh1S5IVgpYviYe/uDssFlD95QfI19Ib46S55sgRY3m6el717ZsbfKP705 A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10198"; a="219833095"
+X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="219833095"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Dec 2021 21:07:46 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="604744074"
+X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="682344554"
 Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
- by FMSMGA003.fm.intel.com with ESMTP; 14 Dec 2021 21:07:45 -0800
+ by orsmga005.jf.intel.com with ESMTP; 14 Dec 2021 21:07:45 -0800
 Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mxMW0-0001IJ-M5; Wed, 15 Dec 2021 05:07:44 +0000
-Date: Wed, 15 Dec 2021 13:07:13 +0800
+ id 1mxMW0-0001I7-KX; Wed, 15 Dec 2021 05:07:44 +0000
+Date: Wed, 15 Dec 2021 13:07:04 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending-deferred] BUILD SUCCESS
- 54d1cb80c2c34235b89eaef96d9460cf3da0a51b
-Message-ID: <61b97801.Dfh3udha1w0IoSRv%lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ f1467ec264815330b18c6db2fb30690c476f48ce
+Message-ID: <61b977f8.hWYkLI6SrAP4M6Nf%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211214_210747_239924_18AC3847 
-X-CRM114-Status: UNSURE (   5.76  )
+X-CRM114-CacheID: sfid-20211214_210747_438551_69D2FC94 
+X-CRM114-Status: UNSURE (   4.30  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,8 +78,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-deferred
-branch HEAD: 54d1cb80c2c34235b89eaef96d9460cf3da0a51b  ath11k: update debugfs support for mupltiple radios in PCI bus
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: f1467ec264815330b18c6db2fb30690c476f48ce  wcn36xx: Implement downstream compliant beacon filtering
 
 elapsed time: 726m
 
