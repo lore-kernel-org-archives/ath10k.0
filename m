@@ -4,64 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B41CCC433EF
-	for <ath10k@archiver.kernel.org>; Fri, 17 Dec 2021 11:31:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85D49C433EF
+	for <ath10k@archiver.kernel.org>; Fri, 17 Dec 2021 12:06:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8ObOj7sjHKMdmpA8cBzAHdND6W1altATYtxwLkCwoBA=; b=upUnzY+s7Mwi8U
-	TX3SMXULMEizW+bIU+j+PFPf+KY4rlEZrnGAeNymf4Wz+iyBFsT999U0pSByIKKCiPggtz5wDrjV5
-	yrz2vj9oxpkfWOcbtEQvFeG/Xb/S8MxSCOQ99koTWgvH1vbb6/eW8gFjSAAhFUiB6DvtE4jKkLGnc
-	BbX6aWDN8ZvOZV+R1oU/apj6NzpOebRMy75+4JFqZJTJl4TQ64Ng5P8TUZMO3dvA8drIF48tVBD58
-	RlOjMFWvLZwRuXXTl3vvoLSlBijP+BpXTvblyLM5cwr7CdPOxw9sM5lFMGe+Ij2szOXe1EWf2514O
-	NYa9pM7EbZP8vpbdM64g==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=DqBTdyVLihOt1d3hsyO5hGktprjAwHrcCRA+abo05D4=; b=IK2NSskdf/79zN
+	EvEj/2Xhc9Jj0ftYVey6h15/JeRgyJy8n+Naw6zH3rbbpcxnAFJWUPq5tCyTRzscgufkPd3tFUikj
+	BVwCsxVHPGtIOWT2HIOSt1Ss1GYRguFvb3tKiDZflDtazIV3xczyOryISqonuUy89twhPRZtcUctc
+	ESpppoVYPmbA0QydTF4ocFQNSL2bZI7T3K4Vo0QJVPXR2ploiBOvOFZqYpmHK2JSxsCt7A6XFvKd1
+	CrI0/g4m85AVIy1F4uGFm+sOa9SRN5C2jRF+HvgKvinhKhwc42qF71ftXy1nsJ1u+mdvUtQND6XlE
+	Qfmy3ypghNqpramJz/RA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myBSN-009pM6-Ng; Fri, 17 Dec 2021 11:31:23 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1myC0Z-00A12N-Ka; Fri, 17 Dec 2021 12:06:43 +0000
+Received: from mail-qv1-xf2c.google.com ([2607:f8b0:4864:20::f2c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myBLR-009miS-G8
- for ath10k@lists.infradead.org; Fri, 17 Dec 2021 11:24:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1639740253; x=1671276253;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=iMENIeXkqkb4V5dnTmM8L8BKtt7Zf+gwpuVV+GEsilM=;
- b=iKgw/0J7Mig5z2plnpQGqV+1bcCoz9C+KI9qffOmXbZkRbK8aukiSqbq
- GGyHFac4zSlFMJnKlORhXu80iJwClYRlBo7PLVbWEu11JVt4wfteqYOgP
- 0Cfg23kGy+MGpkpDcOsmqwFQ8/9L3O6LGMXe8Xi2LqfbhrCWB0cpzMDJi
- KzVrcVD1anXuW1UxNh/MqTarKc3/KuWbiFQJqab+Vg3LIss9IR/tAprcx
- /AbdkFgga3Ci8O2zJF/4HiAD4Fq7lJ/iXT6MlCavdA7DzVv3SWH+jfnzA
- Fz0UzxLprDYHb7DSFb5wFPgklJ9B4z9RW3d7GswyiSBEV11fP87kaI+b1 w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="303111245"
-X-IronPort-AV: E=Sophos;i="5.88,213,1635231600"; d="scan'208";a="303111245"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2021 03:24:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,213,1635231600"; d="scan'208";a="465093757"
-Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
- by orsmga003.jf.intel.com with ESMTP; 17 Dec 2021 03:24:10 -0800
-Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1myBLO-0004eM-3s; Fri, 17 Dec 2021 11:24:10 +0000
-Date: Fri, 17 Dec 2021 19:23:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 51500e39dac4aa737a6cbd517d01ab800ef02c41
-Message-ID: <61bc7333.7EDnzt9eXq9wL55F%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1myC0W-00A10j-4I
+ for ath10k@lists.infradead.org; Fri, 17 Dec 2021 12:06:41 +0000
+Received: by mail-qv1-xf2c.google.com with SMTP id ke6so2121819qvb.1
+ for <ath10k@lists.infradead.org>; Fri, 17 Dec 2021 04:06:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=NwgjbNTF2AWawWSd7aciZMtjNd2TAYgTWjwPPG2Ao+k=;
+ b=WLDcyhSUVMyrmIGZVETG9Wal7qkdSO780y5q60sYc9FufGb/O32XqI9O/lOaVGIyMs
+ 0AIgCVT1OzT4EOv9cczRYi8ZIc0KsygZDCZ5cGVI8Cg6I0KWUJY6zVJ3WFlUr2UM4RrJ
+ IZAyOrqfOaW0rUquoO0ImR9e4xbrqMhWirlRLzn8cqrQIcAEtCCUFv4wXH+h6EehUPBg
+ k7RtjdXFPVcIsEp3z3EmIfu0AYSYxAhGOxyyJZyfE107bHBFSi2S9aGc3YlI42Qn2vnL
+ d2Pbm8O+wZjknX9eqpwlF0itqPEMrYgdmPnKNtSANsnCcxP7Yb0U+e5TunVKf2MdoNs2
+ umqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=NwgjbNTF2AWawWSd7aciZMtjNd2TAYgTWjwPPG2Ao+k=;
+ b=GObhZtXATJZogQl39KpwDti5pA+I2Ff7hrNN2dyuTpdAuYvvsM/aOMk9IRtbgjPUPV
+ ikQii2VXD4cQu8o2Bq1bNtm25dO0tCiTVxlUDapm32DCxH2Vdu/aKMSZtE+ZnvioFIdk
+ sS0NealRn2KGQyo85z3EBUPCqa0kE0v8hKteLGYTdjMbZYHPMka1JV4W/U0DYly0fJ+k
+ YvGJ0vTES8qtzlZ42jUSQRM0nxQhrRXFw5tpAdRLhRb44sRKgSh7/YvkUQAdCDFPCaCO
+ mzBGrs1fyWNd+Yr9C0tvUZD89/DeRBbD1ThNvgCd7JGgTsPHAUZoDv807Pqtwp46tw/5
+ lpQw==
+X-Gm-Message-State: AOAM533t6MJB51MeIKGI29QwfFU+MzC12c2TdQMEwIwdb2vs12ATULg8
+ roLnlFbOLnxpMye/2MccNl73QGaG5qUrVRA6LCs=
+X-Google-Smtp-Source: ABdhPJwe96itCmXKag5ptWEiDyxw39VJXuH5D00/SrEDhhWF8d6dkOji7lVebUQhnuDBQ24ULsyNs3z2PAHJgCRYjoI=
+X-Received: by 2002:a0c:e808:: with SMTP id y8mr2009792qvn.48.1639742798029;
+ Fri, 17 Dec 2021 04:06:38 -0800 (PST)
 MIME-Version: 1.0
+References: <20211009221711.2315352-1-robimarko@gmail.com>
+ <163890036783.24891.8718291787865192280.kvalo@kernel.org>
+ <CAOX2RU5mqUfPRDsQNSpVPdiz6sE_68KN5Ae+2bC_t1cQzdzgTA@mail.gmail.com>
+ <09a27912-9ea4-fe75-df72-41ba0fa5fd4e@gmail.com>
+In-Reply-To: <09a27912-9ea4-fe75-df72-41ba0fa5fd4e@gmail.com>
+From: Robert Marko <robimarko@gmail.com>
+Date: Fri, 17 Dec 2021 13:06:26 +0100
+Message-ID: <CAOX2RU6qaZ7NkeRe1bukgH6OxXOPvJS=z9PRp=UYAxMfzwD2oQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: support bus and device specific API 1 BDF
+ selection
+To: Christian Lamparter <chunkeey@gmail.com>
+Cc: Kalle Valo <kvalo@kernel.org>, kvalo@codeaurora.org, davem@davemloft.net, 
+ kuba@kernel.org, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, open list <linux-kernel@vger.kernel.org>, 
+ Thibaut <hacks@slashdirt.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_032413_679001_7C422D2A 
-X-CRM114-Status: UNSURE (   4.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211217_040640_195656_49616D6D 
+X-CRM114-Status: GOOD (  28.48  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,140 +87,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 51500e39dac4aa737a6cbd517d01ab800ef02c41  Merge branch 'ath-next' into ath-qca
+On Wed, 8 Dec 2021 at 15:07, Christian Lamparter <chunkeey@gmail.com> wrote:
+>
+> On 08/12/2021 13:21, Robert Marko wrote:
+> > On Tue, 7 Dec 2021 at 19:06, Kalle Valo <kvalo@kernel.org> wrote:
+> >>
+> >> Robert Marko <robimarko@gmail.com> wrote:
+> >>
+> >>> Some ath10k IPQ40xx devices like the MikroTik hAP ac2 and ac3 require the
+> >>> BDF-s to be extracted from the device storage instead of shipping packaged
+> >>> API 2 BDF-s.
+> >>>
+> >>> This is required as MikroTik has started shipping boards that require BDF-s
+> >>> to be updated, as otherwise their WLAN performance really suffers.
+> >>> This is however impossible as the devices that require this are release
+> >>> under the same revision and its not possible to differentiate them from
+> >>> devices using the older BDF-s.
+> >>>
+> >>> In OpenWrt we are extracting the calibration data during runtime and we are
+> >>> able to extract the BDF-s in the same manner, however we cannot package the
+> >>> BDF-s to API 2 format on the fly and can only use API 1 to provide BDF-s on
+> >>> the fly.
+> >>> This is an issue as the ath10k driver explicitly looks only for the
+> >>> board.bin file and not for something like board-bus-device.bin like it does
+> >>> for pre-cal data.
+> >>> Due to this we have no way of providing correct BDF-s on the fly, so lets
+> >>> extend the ath10k driver to first look for BDF-s in the
+> >>> board-bus-device.bin format, for example: board-ahb-a800000.wifi.bin
+> >>> If that fails, look for the default board file name as defined previously.
+> >>>
+> >>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> >>
+> >> Can someone review this, please? I understand the need for this, but the board
+> >> handling is getting quite complex in ath10k so I'm hesitant.
+> >>
+> >> What about QCA6390 and other devices. Will they still work?
+> > Hi Kalle,
+> > everything else should just continue working as before unless the
+> > board-bus-device.bin file
+> > exists it will just use the current method to fetch the BDF.
+> >
+> > Also, this only applies to API1 BDF-s.
+> >
+> > We are really needing this as currently there are devices with the
+> > wrong BDF being loaded as
+> > we have no way of knowing where MikroTik changed it and dynamic
+> > loading would resolve
+> > all of that since they are one of the rare vendors that embed the
+> > BDF-s next to calibration data.
+>
+> Isn't the only user of this the non-upstreamable rb_hardconfig
+> mikrotik platform driver? So, in your case the devices in question
+> needs to setup a detour through the userspace firmware (helper+scripts)
+> to pull on the sysfs of that mikrotik platform driver? Wouldn't it
+> be possible to do this more directly?
 
-elapsed time: 1053m
+Yes, its the sole current user as its the only vendor shipping the BDF
+as part of the
+factory data and not like a userspace blob.
 
-configs tested: 116
-configs skipped: 3
+I don't see how can it be more direct, its the same setup as when
+getting pre-cal
+data for most devices currently.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I am adding Thibaut who is the author of the platform driver.
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-arm64                            allyesconfig
-i386                 randconfig-c001-20211216
-arm                          pcm027_defconfig
-sh                   secureedge5410_defconfig
-arm                             rpc_defconfig
-arm                         lpc32xx_defconfig
-powerpc                      makalu_defconfig
-sh                          landisk_defconfig
-nds32                             allnoconfig
-mips                     loongson1b_defconfig
-m68k                          atari_defconfig
-h8300                    h8300h-sim_defconfig
-sh                        dreamcast_defconfig
-arm                           sunxi_defconfig
-arm                         at91_dt_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                      bamboo_defconfig
-powerpc                      ppc64e_defconfig
-xtensa                  audio_kc705_defconfig
-h8300                     edosk2674_defconfig
-arm                       mainstone_defconfig
-arm                          ixp4xx_defconfig
-mips                           ip22_defconfig
-arm                        trizeps4_defconfig
-sh                          lboxre2_defconfig
-ia64                        generic_defconfig
-mips                          malta_defconfig
-mips                    maltaup_xpa_defconfig
-microblaze                      mmu_defconfig
-sh                     magicpanelr2_defconfig
-sparc                            allyesconfig
-h8300                            allyesconfig
-arm                       omap2plus_defconfig
-powerpc                    adder875_defconfig
-parisc                generic-32bit_defconfig
-arm                        magician_defconfig
-arm                  randconfig-c002-20211216
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-i386                             allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20211216
-x86_64               randconfig-a005-20211216
-x86_64               randconfig-a001-20211216
-x86_64               randconfig-a002-20211216
-x86_64               randconfig-a003-20211216
-x86_64               randconfig-a004-20211216
-i386                 randconfig-a001-20211216
-i386                 randconfig-a002-20211216
-i386                 randconfig-a005-20211216
-i386                 randconfig-a003-20211216
-i386                 randconfig-a006-20211216
-i386                 randconfig-a004-20211216
-arc                  randconfig-r043-20211216
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-
-clang tested configs:
-x86_64               randconfig-a011-20211216
-x86_64               randconfig-a014-20211216
-x86_64               randconfig-a012-20211216
-x86_64               randconfig-a013-20211216
-x86_64               randconfig-a015-20211216
-x86_64               randconfig-a016-20211216
-i386                 randconfig-a011-20211216
-i386                 randconfig-a014-20211216
-i386                 randconfig-a015-20211216
-i386                 randconfig-a012-20211216
-i386                 randconfig-a013-20211216
-i386                 randconfig-a016-20211216
-hexagon              randconfig-r045-20211216
-s390                 randconfig-r044-20211216
-riscv                randconfig-r042-20211216
-hexagon              randconfig-r041-20211216
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+Robert
+>
+> Cheers,
+> Christian
 
 _______________________________________________
 ath10k mailing list
