@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CD42C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D443BC433F5
 	for <ath10k@archiver.kernel.org>; Tue, 21 Dec 2021 22:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,55 +12,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=J1gFCUHfDzKUZV9IlJC6XMJcsGIk8v30yUc53/JcxB0=; b=Scz3WAqUXOspRq
-	NHEB9Nm+g9wWvkSaATM90Vsaf4ZRX2iwLTvUBIVWSw2f4jz7safGbr8FGllk8M4af7wstMNjfoPq8
-	ZziJ+NYS10Q95yqvRUbUfj282W3dAvF9EAe2DRh9in0tlr9iNmAjr+ZpXtpsYx3v1Dy7jw0mzg8xn
-	pWEXoHGIQsXMzcaOMGnB2be0RmVOAntYO0eTQfv/twQptA+u5defLeW1e14QhHDwFjc4Cjrl3uOzi
-	sUk1OcLZQnv63mus6Us4AlUGp5tqQuYbIJG+7065I8gS4IZ2KoTPkrx5QkxPdHu17/wutuKtg2/Fs
-	HaBOvJtwVy0Gh6zqXglQ==;
+	List-Owner; bh=VOgDbqILojwxPLi7SF8cXqLnbrAWE6q5Ls1JQDGQId8=; b=geun0t76JTLnoI
+	Qgw27t99JP7bizXrkG8fULkLtEZOL3xOX41t3ZkR4W2ffvX4E0ZMIZzuHhDf7lpNnNwXYljQCMwxr
+	arH2Zk0k3L4gHKKbGCITnji7L38cYyCzIf8J28T+jG+b54NZEsFyf5+SL/HQoVBrgi0MbZcT+pwc7
+	FZTh7WIg+9irokMCMwB0tFp9C68/1JNB5QuF2m44zYyHBLWW1mKLjypJ9tE3mtX14aE8alXTflTyE
+	BUNkn58ozczD7+MxW/oNCUctIX0suIR8VzkQ2T80vKUDRI61JReA/R1Kt/t2FVov75XbsOmuaw+x1
+	a1hbR23K/fbUsWYxcJ/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzo6S-008hhf-2P; Tue, 21 Dec 2021 22:59:28 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1mzo6P-008hhR-BH; Tue, 21 Dec 2021 22:59:25 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzo6O-008hhA-6K
- for ath10k@lists.infradead.org; Tue, 21 Dec 2021 22:59:25 +0000
+ id 1mzo6M-008hgy-Ll
+ for ath10k@lists.infradead.org; Tue, 21 Dec 2021 22:59:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1640127564; x=1671663564;
+ t=1640127562; x=1671663562;
  h=date:from:to:cc:subject:message-id:mime-version:
  content-transfer-encoding;
- bh=vPGvcXR7gEwX6wRmAVZZ8MJMm0YGXCUOumAAoNy+4Dc=;
- b=A+vEAUkCowGWGjUCZxVTWCynsuPCOM7RVfKnzT1dKEa78FkiOujL3NGb
- ruvX+9DGlMa54qWWcCztxhihJIIsafgJLSAnRZVuSBUuycbmLrQbzpI+2
- BmeF6J9yMp+jlJ167MPG7wnA9+7dHFopDa5vc7QTTnTu5Ayy5bLzvEBDI
- 4x+oiKF7h2g4rNimXMWcK6VZOGACgCG9TEJ01TTLlqoSHfkwbdhHphMTJ
- 7E8ukWpot0MbUdMNYXxjtzSbxdHvEnId7ieSWA2B38VTWKLqxiPthhtLz
- WkOJ6WxH3Ab+gAUSPcRELoNi2NGL8/oMqWlnnAZyOl36yOLCQq/vKKTEV w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10205"; a="264699289"
-X-IronPort-AV: E=Sophos;i="5.88,224,1635231600"; d="scan'208";a="264699289"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ bh=p+IdrmdZrBtgX0myRqb3qSX1BGRTgXFWVUmE5a2GQIE=;
+ b=UpuDFsMUcsbEZ+Sopbkn6PLxeL/uAmbiO6SOJ59Sx6BHEb4gmfCmsmG4
+ GCI/R3YBRJ+8GhPTN1pNWv+EJsWebo2Sty55q9rzZshXgjco02Qsl4Tkh
+ fEdOvCyV7x0zygyXTmE55yvGGD9zc8D93FeMUmIsZxld4IzSxUJXgLgUu
+ vbkm0A4h0QJtzTR6el+6R56tPUPj8zCN7uCEttiUt9rOQGsYDnTVliJRZ
+ 3KZSfpgCS/Z0gLj2fqBgI4VRC9p9piMoe34IgLNzWP3xCpXvTk2DiyPlV
+ FvIIpkbTDC4zAjODHf0V4T3A3s9Fs05oUjxNEt+TqV/OcYMHmzEmDbjqr Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10205"; a="240312817"
+X-IronPort-AV: E=Sophos;i="5.88,224,1635231600"; d="scan'208";a="240312817"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  21 Dec 2021 14:59:21 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,224,1635231600"; d="scan'208";a="484568515"
+X-IronPort-AV: E=Sophos;i="5.88,224,1635231600"; d="scan'208";a="467963310"
 Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
- by orsmga002.jf.intel.com with ESMTP; 21 Dec 2021 14:59:20 -0800
+ by orsmga006.jf.intel.com with ESMTP; 21 Dec 2021 14:59:19 -0800
 Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mzo6J-0009dJ-CG; Tue, 21 Dec 2021 22:59:19 +0000
-Date: Wed, 22 Dec 2021 06:59:06 +0800
+ id 1mzo6J-0009dF-B0; Tue, 21 Dec 2021 22:59:19 +0000
+Date: Wed, 22 Dec 2021 06:59:15 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 01417e57939faffebfdeb2aef1f4388e95cf9271
-Message-ID: <61c25c3a.kXMVga99x0XA7KyI%lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 6629123e6a8ba405d270fd9cd70dc1ccb65e25de
+Message-ID: <61c25c43.z1KaUDwuOdGmDmdX%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211221_145924_278362_B371DDD9 
-X-CRM114-Status: UNSURE (   7.32  )
+X-CRM114-CacheID: sfid-20211221_145922_822588_071BA11C 
+X-CRM114-Status: UNSURE (   5.09  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,12 +78,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 01417e57939faffebfdeb2aef1f4388e95cf9271  ath11k: add regdb.bin download for regdb offload
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 6629123e6a8ba405d270fd9cd70dc1ccb65e25de  Add localversion-wireless-testing-ath
 
-elapsed time: 723m
+elapsed time: 721m
 
-configs tested: 113
+configs tested: 121
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -95,6 +95,12 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arm                         bcm2835_defconfig
+arm                             mxs_defconfig
+arc                           tb10x_defconfig
+h8300                    h8300h-sim_defconfig
+sh                           se7206_defconfig
+sparc64                             defconfig
 sh                             espt_defconfig
 mips                     loongson1c_defconfig
 arm                        realview_defconfig
@@ -108,9 +114,11 @@ mips                      maltaaprp_defconfig
 mips                      bmips_stb_defconfig
 um                               alldefconfig
 arm                          ixp4xx_defconfig
-arm                           omap1_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                     tqm5200_defconfig
+mips                           jazz_defconfig
+arc                         haps_hs_defconfig
+powerpc                          g5_defconfig
+arm                            xcep_defconfig
+powerpc                 mpc836x_mds_defconfig
 m68k                            q40_defconfig
 powerpc                   lite5200b_defconfig
 arm                          pcm027_defconfig
@@ -128,44 +136,44 @@ ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
+nds32                             allnoconfig
 nios2                               defconfig
 arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
 parisc                              defconfig
+s390                             allyesconfig
 s390                             allmodconfig
 parisc                           allyesconfig
 s390                                defconfig
-s390                             allyesconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
 i386                   debian-10.3-kselftests
 i386                              debian-10.3
-nds32                             allnoconfig
 mips                             allyesconfig
 mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
 powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
 x86_64               randconfig-a001-20211220
 x86_64               randconfig-a003-20211220
-x86_64               randconfig-a004-20211220
 x86_64               randconfig-a002-20211220
+x86_64               randconfig-a004-20211220
 x86_64               randconfig-a005-20211220
 x86_64               randconfig-a006-20211220
 i386                 randconfig-a002-20211220
 i386                 randconfig-a003-20211220
-i386                 randconfig-a005-20211220
 i386                 randconfig-a001-20211220
+i386                 randconfig-a005-20211220
 i386                 randconfig-a006-20211220
 i386                 randconfig-a004-20211220
 arc                  randconfig-r043-20211220
@@ -179,14 +187,14 @@ riscv                             allnoconfig
 riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
-um                             i386_defconfig
 um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
 x86_64                              defconfig
 x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
 x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
 
 clang tested configs:
 x86_64               randconfig-a013-20211220
