@@ -4,59 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9ECBC433EF
-	for <ath10k@archiver.kernel.org>; Wed, 22 Dec 2021 06:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9944AC433F5
+	for <ath10k@archiver.kernel.org>; Wed, 22 Dec 2021 06:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
-	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CiOpnhXu/hWwJM7mBCB2ThbYDNdYQXvEJ12WCX61c4s=; b=viI/pCNt+1xsuh
-	HNmnf2MWP4TpaJN2YltsP022W0d5NAyuR+7VFuIPSOsQp3jMPS74XPacB8EazmdN83er6ExlMJAkh
-	dTR0TyLz4++dHrnVFep/cberyIAK52SOwqspfrOsxPrPnzNf58A4TN2MhybNmOKoc+EkkxKfBIDDH
-	gQgLskLrT17wwJlhlErCrRdzECx0RqEWPx0Mrgyut9hLsNRTkV8R3zU9Odt0IQN3I7U4vAZy1hpOJ
-	1Hkj5KdTEv3o8msdXNWgbQwtlGRS1NxmcawR8pz+Khn9vN6LAinmZkqNm694CnjA4c3uf8mB8Z5Rz
-	6ETDcVqTVGCz4kzDMysg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fSyvDBviGYDKA/pEgZpDCgeOsmnx75Vo/V2JVYlYwAQ=; b=11DPybIhYRwD0o
+	64x/It8InaorAmAr/OS4Fy869j9ziE/b64pnOWRiZ3vVHzUYM1/Kkn50R9GagZ2XGookYcgtQ4B6C
+	qaXKRIsadzF/4xqmlGz6rjvEnYePxEEzg3AqOA/sMOYnMkApAltdDcjEYOP/9sQnNh8vbnRbi5/QI
+	k6Nwp1hoKYkhrR1XDTrVtYHfsGYT0KUFI5hS8EGZ4svj7OEP/wr7Vez+1LblXdvINyRFy2s/23RuX
+	vGdxSnwxTRac4MAFIv96o4C2AjPZFLajiAtGVvJ5M5Nl5zSUEA2tR0fFKeYTbFRCe6b78U4t/C3ij
+	T/RAT0NK1K6IdePVt3GA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzuhl-009IRV-3q; Wed, 22 Dec 2021 06:02:25 +0000
+	id 1mzvLH-009MRl-67; Wed, 22 Dec 2021 06:43:15 +0000
 Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzuhh-009IQE-Cu
- for ath10k@lists.infradead.org; Wed, 22 Dec 2021 06:02:22 +0000
+ id 1mzvLE-009MRP-0O
+ for ath10k@lists.infradead.org; Wed, 22 Dec 2021 06:43:13 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 1C541B81A7A;
- Wed, 22 Dec 2021 06:02:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 087CDC36AE8;
- Wed, 22 Dec 2021 06:02:15 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9E90DB81B0A;
+ Wed, 22 Dec 2021 06:43:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30216C36AE5;
+ Wed, 22 Dec 2021 06:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640152937;
- bh=qXyUNNLvS7M9znduJ26fMO1HSy/mFrpEP7RsPdj07tI=;
- h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
- b=HCrqFJkbMjlDDzOhgktAVb6qXWZoFcpU/AZnj0Z3/IPuh9ZYhbbfETJ4LaQIx9+Nr
- 3QXrrF/no6Vumzu+uZqEoqHfd+nSzElzxJDLx/pWQeIXqDitpNhtMdjOotl4Dxzsx7
- okrSWBIE0zFgfHxAqIJWFnZvwSqRXGKRxgdoSJk6VQryy4AyzJSBSHm9p09xOR167H
- 5XCCDKh7W0P4GmtggDJwlHey4t2swarmDnxfK5MWDdpQ2A/i6ieWn9OqOBCCe4kT3M
- ltOSNERqRWeMrk/Pz+Mwm9K4RjFpv/yMPTtWpU8Tsz5XsZV16RXoSqrD3+ubBnH6Lw
- xR2AvySpy1c6Q==
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: replace strlcpy with strscpy
+ s=k20201202; t=1640155389;
+ bh=Z6mkk7Vo2fTpBswx9tgs/mZsMrVgsubgbLVn+u4gtlI=;
+ h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+ b=czGnMuR2/N2xlzLIFHtEwYHnrBaJVld0jWlpQREg5k74T6THJ/pKHTFVeq59WR56J
+ m7ehoCep0HjfeCbBs4DKi7Hkmk4QfNHo27SoSRtGozsoTRtF3mkgf2sPATnmpM+ZPr
+ hE/oacS8517AaB1dW8jWcDYhRXUX8JG+eQAmGS9LcQQ4vfeD/d0GwxABORKy6WMUSH
+ I8AfJ7zLwc8QbvDToC4Ptic7/WdPFcvLu/2d0Dm41kCKUPngWPiCl0zDugrHXlcBzm
+ zIzr3nop6iGQQDMIsvfHShdNu8J8FmephObZ3ftUIe5xo+E+/OgLbTqixxQImLV5O/
+ LmCh5781R9Fxg==
 From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20211221070931.725720-1-wangborong@cdjrlc.com>
-References: <20211221070931.725720-1-wangborong@cdjrlc.com>
-To: Jason Wang <wangborong@cdjrlc.com>
-Cc: kuba@kernel.org, davem@davemloft.net, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <164015293355.20356.17369576129448229832.kvalo@kernel.org>
-Date: Wed, 22 Dec 2021 06:02:15 +0000 (UTC)
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: briannorris@chromium.org, linux-kernel@vger.kernel.org,
+ linux-wireless@vger.kernel.org, dianders@chromium.org, pillair@codeaurora.org,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ ath10k@lists.infradead.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] ath10k: enable threaded napi on ath10k driver
+References: <20211214223901.1.I777939e0ef1e89872d4ab65340f3fd756615a047@changeid>
+ <CACTWRwtn+xwVfdFC_1ZAEGC41+gqjDNpTk46vctejnF74Pf+AQ@mail.gmail.com>
+Date: Wed, 22 Dec 2021 08:43:04 +0200
+In-Reply-To: <CACTWRwtn+xwVfdFC_1ZAEGC41+gqjDNpTk46vctejnF74Pf+AQ@mail.gmail.com>
+ (Abhishek Kumar's message of "Tue, 14 Dec 2021 14:48:13 -0800")
+Message-ID: <87k0fx2l8n.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211221_220221_613521_E21938D3 
-X-CRM114-Status: GOOD (  10.02  )
+X-CRM114-CacheID: sfid-20211221_224312_215294_C2DCEB88 
+X-CRM114-Status: GOOD (  12.46  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,31 +76,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Jason Wang <wangborong@cdjrlc.com> wrote:
+Abhishek Kumar <kuabhs@chromium.org> writes:
 
-> The strlcpy should not be used because it doesn't limit the source
-> length. So that it will lead some potential bugs.
-> 
-> But the strscpy doesn't require reading memory from the src string
-> beyond the specified "count" bytes, and since the return value is
-> easier to error-check than strlcpy()'s. In addition, the implementation
-> is robust to the string changing out from underneath it, unlike the
-> current strlcpy() implementation.
-> 
-> Thus, replace strlcpy with strscpy.
-> 
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+> This patch is to trigger a discussion on the best approach to enable
+> threaded NAPI on ath10k. Threaded NAPI feature was added in (net:
+> extract napi poll functionality to __napi_poll() commit
+> 898f8015ffe74118e7b461827451f2cc6e51035b) and showed good results on
+> ath10k snoc based solution.
+>
+> If we come to a consensus with this as the best approach to enable
+> threaded NAPI on ath10k, then we can moved ahead with the
+> implementation and enable across sdio and pci, or if there is any
+> objection then we can discuss it here.
 
-Patch applied to ath-next branch of ath.git, thanks.
+Few tips:
 
-9d364b828ae5 ath10k: replace strlcpy with strscpy
+It's a good idea to mark patches like this with "[PATCH RFC]":
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#use_rfc_or_rft_for_patches_not_ready
+
+And you can add a text like the above after the "---" line in the patch
+itself.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211221070931.725720-1-wangborong@cdjrlc.com/
+https://patchwork.kernel.org/project/linux-wireless/list/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
 
 _______________________________________________
 ath10k mailing list
