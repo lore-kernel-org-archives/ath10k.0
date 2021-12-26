@@ -4,50 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EFFAC433F5
-	for <ath10k@archiver.kernel.org>; Fri, 24 Dec 2021 19:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BC19C433F5
+	for <ath10k@archiver.kernel.org>; Sun, 26 Dec 2021 09:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Wh1RDi1zuI92jkgqNDG6Qin70XNZqeH6VJHBvhJ5JLw=; b=Y2M4i/4kqSzIbZ
-	xueJ6e65V5p7G4EpnOegonrMNUCeZSsQg+FypndWD56+Y3LmyW8vasIW3LKbI9rK8sEg8SgfBJN8U
-	J7KQCQAw23Y+rCR043uMuOVV0lKWidR/oEC6ja4q7ZUYHwG7O+MU0hR7QkNiuYn9wd3InHAnzkFq1
-	nXj2HaZzaBLcNty+LOVBKkXpxs5ib9NZkG8jP86cGeTVaV/3u1EtW9nc5A5UHhoRL8lKVDL7QJJpc
-	9wmiHY1TvMzmZchFCyvOPMs6OrxnTPS2ZW/9/r/v6s/7k78aopa4McMSgoByczEmodFQiFVV9kfKq
-	AlW1HPTEpEMzhTQAtlmg==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:
+	Subject:To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=evSpXr6ezJFNmvafJmteN0jw3ly6hPNrPzVUp4RYEtQ=; b=P2/By0UMOOieLZ
+	v3GyBkYv6wwGbss3O6tuYExsEX7Vbdr4pzRRoXZdFgyTSefLJXAHFnsCugD6q6rkd0+qGLWwfxuvm
+	1xWpWHVA3LQFf8cHkCWWVTbcWrugAGV9QJIgNVYtG0Lcyz+sh0c+mx5gajqtlQxJQD4rTqvVsDfrS
+	BwHPaCHQTUaA+9yOmx1hR9nXKj4b3q2BDv8KHwvd6O7FXyDUYQkCZrwu4KUXz5EMXDPfqafnVdYkP
+	em6yHdpv0CB7qAHkJN2Ax0MR6A0CnMx/6s8mdruCPgbiAE/VVzA4NIj4QZxjn9jJ2HWvpqm2wu0HY
+	bHsLAPSiTrfQfBgDpVyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n0qDV-00EQqM-63; Fri, 24 Dec 2021 19:27:01 +0000
-Received: from relmlor1.renesas.com ([210.160.252.171]
- helo=relmlie5.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n0qDM-00EQmn-64
- for ath10k@lists.infradead.org; Fri, 24 Dec 2021 19:26:53 +0000
-X-IronPort-AV: E=Sophos;i="5.88,233,1635174000"; d="scan'208";a="104635860"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 25 Dec 2021 04:26:51 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7665F40F5214;
- Sat, 25 Dec 2021 04:26:49 +0900 (JST)
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: netdev@vger.kernel.org, Kalle Valo <kvalo@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
- Prabhakar <prabhakar.csengg@gmail.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Subject: [PATCH 7/8] ath10k: Use platform_get_irq() to get the interrupt
-Date: Fri, 24 Dec 2021 19:26:25 +0000
-Message-Id: <20211224192626.15843-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211224192626.15843-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20211224192626.15843-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	id 1n1PrG-00FPlV-Gh; Sun, 26 Dec 2021 09:30:26 +0000
+Received: from slot0.jllresort.com ([62.197.136.5])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1n1Pr0-00FPdl-A7
+ for ath10k@lists.infradead.org; Sun, 26 Dec 2021 09:30:11 +0000
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=jllresort.com;
+ h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+ i=ele.mon@jllresort.com; bh=OCFGoXTJt7JDcArbwxfmx5hhO2w=;
+ b=fziOnG6yCgmGpeaols5zcga2nlCwAFXW3+zN6VAX2XcvdW2ut4IhvXH2vMFH9XZQd+pn0q47Mplb
+ PLAJHDYiz1hirShQY+tFZDCgjvcN6vlbZs1wLb4jpN0ul2r3evsQXArsatvCX056kF3kHFO+yuoh
+ 9/GtCmZrgXPj3lfnyeeAzHMS9MjaLH+IV8Ay6ltjY/6dB8c/Hk7TsbkhNADLId19IEuM4LJe93WL
+ s11VM3GiRIKY5cMaeccPy2ynPTbkXW/sSynxJwwIz9DuzDoTPZMLtW7hL0af+hIHDwhxj2gReRHu
+ 92WYG3D4qQWu/RV9H+/G9+RCYUcxj5oAb+7VEw==
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=jllresort.com;
+ b=e7EzgFDQK69U1c25JrZrLBdIFb3psrlrOUJGWZM9ohU3KrDBviTS9VWc6p5VZuDmdf23nVrR5clc
+ VOV7MkDrNtyEP+Uan1BwwQKb3xqmhKxrm9dtlyh4r2gzPRRdNar+g+MV3joqGucvcyTZjcz7rm3n
+ s+SsmBt1C2d4aV9BnqGNXnPJklReQqMxOrG4W67EBZrS05BA/HAAgeKtAIahM1jWblaBhFxex+cV
+ XfjUypx0wyxZFTg93OqXYb0eOa8vfKoU/UAP8KHLwh32A05EJKgtJZTuztkiW1+96LmMx9lDUX8p
+ LzO8S9dDnsC0eyH92ZHXRIOEMAryCn80yGEQ4w==;
+From: ele.mon@jllresort.com
+To: ath10k@lists.infradead.org
+Subject: Happy Weekend:
+Date: 26 Dec 2021 10:29:35 +0100
+Message-ID: <20211226102855.08327EC761DB30B6@jllresort.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211224_112652_357333_380E5674 
-X-CRM114-Status: GOOD (  10.39  )
+X-CRM114-CacheID: sfid-20211226_013010_522217_38C66FA2 
+X-CRM114-Status: UNSURE (  -1.47  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -59,63 +60,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
+Reply-To: mustafa.ayvaz@ayvazburosu.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-platform_get_resource(pdev, IORESOURCE_IRQ, ..) relies on static
-allocation of IRQ resources in DT core code, this causes an issue
-when using hierarchical interrupt domains using "interrupts" property
-in the node as this bypasses the hierarchical setup and messes up the
-irq chaining.
+Greetings to you ath10k,
 
-In preparation for removal of static setup of IRQ resource from DT core
-code use platform_get_irq().
+I was wondering if you got my previous email? I have been trying 
+to reach you by email ath10k@lists.infradead.org, kindly get back 
+to me swiftly, it is very important and urgent.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 9513ab696fff..681e1abe7440 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1306,13 +1306,10 @@ static int ath10k_snoc_resource_init(struct ath10k *ar)
- 	}
- 
- 	for (i = 0; i < CE_COUNT; i++) {
--		res = platform_get_resource(ar_snoc->dev, IORESOURCE_IRQ, i);
--		if (!res) {
--			ath10k_err(ar, "failed to get IRQ%d\n", i);
--			ret = -ENODEV;
--			goto out;
--		}
--		ar_snoc->ce_irqs[i].irq_line = res->start;
-+		ret = platform_get_irq(ar_snoc->dev, i);
-+		if (ret < 0)
-+			return ret;
-+		ar_snoc->ce_irqs[i].irq_line = ret;
- 	}
- 
- 	ret = device_property_read_u32(&pdev->dev, "qcom,xo-cal-data",
-@@ -1323,10 +1320,8 @@ static int ath10k_snoc_resource_init(struct ath10k *ar)
- 		ath10k_dbg(ar, ATH10K_DBG_SNOC, "xo cal data %x\n",
- 			   ar_snoc->xo_cal_data);
- 	}
--	ret = 0;
- 
--out:
--	return ret;
-+	return 0;
- }
- 
- static void ath10k_snoc_quirks_init(struct ath10k *ar)
--- 
-2.17.1
-
+Thanks
+Mustafa Ayvaz
+Email: mustafa.ayvaz@ayvazburosu.com
 
 _______________________________________________
 ath10k mailing list
