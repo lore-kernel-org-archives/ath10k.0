@@ -4,156 +4,155 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA384C433EF
-	for <ath10k@archiver.kernel.org>; Wed,  5 Jan 2022 12:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A165C433F5
+	for <ath10k@archiver.kernel.org>; Wed,  5 Jan 2022 14:50:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=nnq71UWTA9Yy4PjuFW0AF5KjnsTrmay/xQWbCsV6LPc=; b=DTuCDMFQcQ0kLX
-	h2qPJm8gMyj5srDynC7sOKDOo3DK9UmtfwYuuqAe4pV/hGub6fAwb+insmimWo5VY2nqwVNR3aFtR
-	qKOP15bF2GodGDNqemPwSann4bA+MrUmfmEvu8aSXXfmiUZkIgDvEa40Tw4EAPJTJKmkMJszoyIHD
-	l1oMq32sAxPTeMv34ICqR2lcExCgvAqe6b4XuR9ms4b/h4KojdemmPPE99P1ca4G9TSNXRKREDKFW
-	spZGKuMu9GKGHU4SwyAMGq7bpsVpdduBBIhConweDY2qvTgF1sX/awFTtcMfszbtHIfngc3poCsvN
-	wkviC6v8rRiH8Re5AtNA==;
+	List-Owner; bh=IbYTBFD/tV2R7ELRKuyeTiovWuLbS6nZAF9crzLKcyw=; b=dcOT4jd1mohZHt
+	HglDhcJEJOhDRBGJ3VaVTdLzlj4IHzeMc44pPzeedGGIvJE1X//4mIi4YuDhhjyv6U4Md4G8FIrKC
+	apXYS7lYBCZa0KhLUldlwo17GpIV/TGb/FyTz3WEe2C724k0j1fx0d/Rz5aCckjv7OOQkcoeKPaY7
+	/CRy+topiDqM9VeU+lIdK1walmnik2Pazfk1hGt3/xbi8oZugos92XVojiOj9pdDVr06DZQULelXM
+	XtDHtbELeL+3kd4fXA6Ph7bWSxIRG3te4diKKX5PxEcvVJaplXQJMxug9wzOEE5KSyo4qLKLBCO+M
+	xC+5oN2E/i8+dta+kYCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n55J6-00EkkL-RX; Wed, 05 Jan 2022 12:22:20 +0000
+	id 1n57c4-00F2Ml-6R; Wed, 05 Jan 2022 14:50:04 +0000
 Received: from mx0a-00069f02.pphosted.com ([205.220.165.32])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n55J2-00EkjI-U7
- for ath10k@lists.infradead.org; Wed, 05 Jan 2022 12:22:18 +0000
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 205BOpeJ009000; 
- Wed, 5 Jan 2022 12:22:07 GMT
+ id 1n57c1-00F2Lx-2W
+ for ath10k@lists.infradead.org; Wed, 05 Jan 2022 14:50:03 +0000
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 205D4UB0016995; 
+ Wed, 5 Jan 2022 14:49:58 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
  h=date : from : to : cc
  : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
- bh=rY1HDgFqxKMXgDOdP41+c5+UGsIhRkK3nF0DW9z0OKE=;
- b=OQGxT8FWAtodGDfuBb2Vox73Phb69ae1G4XKWwhSe8BH31hbjQiwH9Fd++roCdp538jm
- wypl2ngrGolsHutWtjkTK1z6q3V1LLC2sLcIis7Mvg9LmAwIPjOi3+fB20pYmOaO7jUk
- n2zEKZitcBSNz3N47ONMFxGsWQ+c/bXmDXtCUZzNWdN6knU8ASAzxSJt7wEpKOYUZbET
- 9mR4ZicNWwYSzOe0tdge9vMT3a64I7hWmsT4yrHBOSbWXJASP/ehJHiIP9bihHIBJ9bJ
- cGQh+2wrPNSIdDsDSqETePFVfj/FwXmADw8vZmd9WUn5Aobe5UROYmFIWtObzVHOuVhK HA== 
+ bh=5ae8k6KtUEsAUo5He/4VgkC6/hLacT5KNvRGtY3kiwk=;
+ b=QuF3F7S0mRxwD/TtCjJ1ea68TngU18abM4Fr+KsrutiggHd/FUdbnti1S5v6EIXpUGrt
+ VgTEeuYT/XpiYpYHHFt4OJp2qZO3ZKzK1r+l2cJPXcCY5Jg4MHULg46u8g2SxdB8v/FT
+ nZRIR1zkwZl2RMQU21LSDe//gaylVDrPQKgQCex6ynGka3gEAWcL+1yZMYR51plVNt5m
+ BpWAHhJKN/vtcx2PRyuQIe7x5IMP0PNtEIXBo415PtnKbB7bSboh5I59usDxPNadrn8O
+ kmbbSvV8NbEkFzyak7ktUlOITMMegUwOtze9zcwGRrBaLGiCQjHLOd16pLf8tH9QzEDH 2w== 
 Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
- by mx0b-00069f02.pphosted.com with ESMTP id 3dc9d93ubc-1
+ by mx0b-00069f02.pphosted.com with ESMTP id 3dc8q7vbpn-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 05 Jan 2022 12:22:07 +0000
+ Wed, 05 Jan 2022 14:49:56 +0000
 Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
- by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 205CBHiK013821;
- Wed, 5 Jan 2022 12:22:06 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com
- (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
- by userp3020.oracle.com with ESMTP id 3dagdqdg65-1
+ by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 205EfHYb096515;
+ Wed, 5 Jan 2022 14:49:55 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com
+ (mail-dm6nam11lp2172.outbound.protection.outlook.com [104.47.57.172])
+ by userp3020.oracle.com with ESMTP id 3dagdqkdxd-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 05 Jan 2022 12:22:06 +0000
+ Wed, 05 Jan 2022 14:49:55 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jX/JfHuhd9NgZXaDb1rwYg+imH5kpFIVMthsVGnIAx1SxxjL2NYjxl/ib0z9lLqyC5IU8al6nxWv6DfkJpy3jMI0F6DDSp8eaQv0YkU5buf4AeOwGKv3r4aAPSzmBxi4WEn7TXhmbYu0BrPK8nUNOO4MnvZE68+4Qn5kQYcjhbeZlgPM9OPZrZey4hMZvac+tNCXfHLPDq8Ju/twNHSjp8cmvDDl4cOKjztMeI/FSpyfnlUOhQ7PQYdE1ZW1KHlewqe3GYAuodEx7t+I2MUwG3tH8X3C3KQzZrf1vZzOMWRuz/Dtrm/zwL7n//36k7rE7AUipBM2YOKrS9ditxRVxA==
+ b=IA09J5w8SJtYjxmHa854nvrPD5De0dCxV7u5fGJVXr0o7PLoDa69SJ0AWj8YsGwLLVkBmMCUWnemZK92uzF9Qy2n+5YA5y8mgO1SVk/npWvQyjeoPQt3SicxV0p3Uf0vB7nZ3p1oz1PDrlS9Ua2O/Yv76FH6sCKpVnPctv+BQ3pyJ2ESBQeIHhY1GhV8rIuIgNWqisIVABdqRTonEKu/vhlEEFKJnNQfuzpNG9U+k0w/bOyeFLFsnWEt9mXILXgoo3ZTcKNEihi2rsqKHNwqOn/nxq7pVb5pRvIPXSNkZQjQlBBtuG2cJAaeO3NbkCeOLrn5zow/J5fqbbgWFk7vXw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rY1HDgFqxKMXgDOdP41+c5+UGsIhRkK3nF0DW9z0OKE=;
- b=hxVUCCRcxJxhZRfD6EqVuq+BPJ1voS2bWRjc7A0FevPw1Y/YE8rLe8S0FHzuE6Gppc5eGdSjVEwpesr5o+mnDcFdZLQ2d9jNIz7hiCcOtuNTUsbLVxzq3KpKOrMshI8wT5s8i44Lb5ZHrxv+ipmNV4HmCh8yL5Ja6bggfwpF7Yczl0cBSeAZ4HQYSAHkRNC4shkkQOiKCTfS10HXFtNwid+nJ44Okn/rEJDY+/lFMvnLQfwK9fKPZG7bdiTtnMq10dJeL4tKMBobOIkTLCquiWPVQd2O4YeMIvW/BCdmfY07d7xbUXY+GQtlnEae3JqN/iuJP8v5GV4gHrFBYLfuJg==
+ bh=5ae8k6KtUEsAUo5He/4VgkC6/hLacT5KNvRGtY3kiwk=;
+ b=lHleGW7YZNECRjW4AapF3WY+m7uHcBBfY6v2gFa8Ipsn9HfBIpUO/3d/NXcPb9Q0Ea1uHRkIWirRffnIftc88WGTW/caBXvRilIi/1oYa4E1EFBNjimOdw0jBk2ISkbc61XZi8Dbdroklx2CEegVCvZCBXVwd8PWzgmTp2FeahaAkGIMD+vgpNNRclVR+U0636x8qya/m3wD6VV/cZKCuzg5b5BybA+PzSF0A1BFCzUDfW4rc5U8r7SIv1Qemx23nqlZJzMUNXNKnSwilhqKCFbtx0VNfef+FZHXCCiwUzafhtE8pV83hSTGj9MlMApMaNlgOTDN1pndEc68DTsQbg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rY1HDgFqxKMXgDOdP41+c5+UGsIhRkK3nF0DW9z0OKE=;
- b=bl29Bd325ihGeGpb93RIHzSGdTLqmw4h16wW+cOX3KdluyvQ9o8DSCsZpMaZP1IHs+UMXKToHdCHIEy/uoMZxK6vSg0nMO9Sl5TkIuHIj+uy8MyTrElf6BtjxxwJlSZ3DgX49Ov6Pjmj/dMHDno0vlWai9XBLLDosv4+T37B2SU=
+ bh=5ae8k6KtUEsAUo5He/4VgkC6/hLacT5KNvRGtY3kiwk=;
+ b=iZ7Vr9ogUPRouR+1CUa5ZH4r8xkhdKGluu+tKWZlt7FX6XfMLchrLblfCfQy6yDKMABpryrTtS/H5OwfBcoUuPYysOdK/WbDHHu5ruQP8PBjU+AgUvyPYrvuqPyTI96us3S83LM16tmOzlcrXtvH3YfzZkm42Yw9eewgaf30uIA=
 Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4499.namprd10.prod.outlook.com
- (2603:10b6:303:6d::12) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10b6:301:2d::28) by CO1PR10MB4705.namprd10.prod.outlook.com
+ (2603:10b6:303:96::11) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.7; Wed, 5 Jan
- 2022 12:22:03 +0000
+ 2022 14:49:53 +0000
 Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
  ([fe80::b889:5c86:23c0:82b8]) by MWHPR1001MB2365.namprd10.prod.outlook.com
  ([fe80::b889:5c86:23c0:82b8%4]) with mapi id 15.20.4844.016; Wed, 5 Jan 2022
- 12:22:03 +0000
-Date: Wed, 5 Jan 2022 15:21:42 +0300
+ 14:49:53 +0000
+Date: Wed, 5 Jan 2022 17:49:29 +0300
 From: Dan Carpenter <dan.carpenter@oracle.com>
 To: kbuild@lists.01.org, Wen Gong <quic_wgong@quicinc.com>
 Cc: lkp@intel.com, kbuild-all@lists.01.org, Kalle Valo <kvalo@codeaurora.org>, 
  ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
  Kalle Valo <quic_kvalo@quicinc.com>
-Subject: [kvalo-ath:pending 52/56] drivers/net/wireless/ath/ath11k/wmi.c:5651
- ath11k_wmi_tlv_fw_stats_data_parse() error: uninitialized symbol
- 'len'.
-Message-ID: <202112110427.o6xDAKfE-lkp@intel.com>
+Subject: [kvalo-ath:pending 8/17] drivers/net/wireless/ath/ath11k/dp_tx.c:511
+ ath11k_dp_tx_update_txcompl() error: uninitialized symbol 'rate_idx'.
+Message-ID: <202112230637.BasxPV7i-lkp@intel.com>
 Content-Disposition: inline
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0020.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::20)
+X-ClientProxiedBy: JN2P275CA0009.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::21)
  To MWHPR1001MB2365.namprd10.prod.outlook.com
  (2603:10b6:301:2d::28)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 73fb420e-6346-40f9-3573-08d9d045fab2
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4499:EE_
-X-Microsoft-Antispam-PRVS: <CO1PR10MB44993C9C0B5F52B0C001B8748E4B9@CO1PR10MB4499.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:181;
+X-MS-Office365-Filtering-Correlation-Id: 451eb2b3-1e6d-4d51-ac84-08d9d05aa1af
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4705:EE_
+X-Microsoft-Antispam-PRVS: <CO1PR10MB4705FDC16B3A08D43128E0698E4B9@CO1PR10MB4705.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:51;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8ZiLiSD9NYTdFoowRpJj3Pb0c3QIZYOoIGDtD/k3VBbWH2VP/xyaEFzGUBAxUBYrIP4UcyHo++MkvLRqYxlw9sYii2e/oSzjwMALwpjAvt5OmvSaQhCyCajYNh//kNPbWQfhyXWmCSmROkofTQUp0K6mUJLhKsfQF3KWTFP4QkS2Ow0E4uVFajPjjIMqner/NWHe/ztdST7GeBuGInpkZ6LVOHh5yH+3RAfIFXjnQvekCAbMC6GgckJmUuZ3+cX5UCduNK1hgrYBrWOIDsbIVv/fzKZyv7vtmc9uz6nX5xessfik/o/NBU5WR5akDKrEPMlWoaabYwBds9lzSUxNimkW8KSg9Ca0TY9XQiypKxrdpCHc4TfDd+JxqXgr9Uj4DG7d+rp8gdrN+q1CE6cdEw3xZrFDDW2r3OkCXlAawCIdcNLBHbjYcKC7YYRD0lNnH0kvTj8c0hmqlj7vhFcov2g+4SZ9LUqXYPcohqXRZIpOz2V0aUn4NL4LsRgazaIKPeZdoZW/cogVKr8bPSeVzczgpPq9Bd13ThgZXFVWTxM4x0R2zmHVQDNUXA6F7QA/JAOxeoVxm1Thc0RsE2QyDVC3oj5txBqWkrO0ZesUVTVAvRwY/fn/aY8XiMxH5U6rM0bY9BgWavi9CjCVp+nTBoAdHjVufvixF5mMlR+NtCPJQXYYgvMBb6yYIIhkZFnJLeQ/YM0iEVbOsAmIz78pCCALBXHvXOVqDnkwNqtSZGhZyKun0AiU3ekq3UlkJVAJDQg87UKZWWlNsJ0pqyrhWujAk05JnREowN3jsoQ/AcBnW5YPAWO1r8PK1K9c1mRUfTCb00UHZzCoq0jiIdtf3g==
+X-Microsoft-Antispam-Message-Info: BfAHqhVXAH2C1Ntm4EiYcMtP1MP2Y0KZEnO7SAOi7B/hhH0sVFnwNMnDSa7aF6TPmy3WFtMS1DOiFShdDwmtEFBvf53mnsyJaVQIbmE3Y/RzhcIfM7dvdGdyg06xtqTxw2+X7I1HvAOP/sa9jfwUknzvpYQTf4GKAl43u803tXt+lek/GSIMn8Ow9TOIlPZfPENk/EbuA8z9RR/E2hFlqWQaWf4kAPPCsfbbGwK8HG8H+xI6MloUcaemTx1DO/GDPpgiMG4jqeyBmlFOl0tURKqmNBBR9f+pZ5OhktPopq1Z7m59ZFmwUXUVvoFS7z9OynhgEUMvjqw4TeeiMjQoBYkTwJLWLkX6qgeSdqzvPGIywCut/iBIRB+NbDi9NZipd/kqFjLFYr1zB6SE6P3ispXlnEkx3ccW8yByCkS6E5KALjZ6nxL1rDsmPK82nEb/KJIH4F13uGRGQfzc2nt6/GLK78mdinzwq8Yd5FhIOOIZCkqE/4VG+19ydjaqwygNUX8sKpDxQONv53ERy7I4gElDVd4uP2kLrWjXaaVbZPvZIoGTwUCFFHjNWs2uzkRY78pr5emZ4400JCbCP9R2ikDC9DCUs5l3YOyDVoRcTlbg5DTLRwvdKqGSYqJfXaQNwR8/vOfk7RSo8jUiKW/McfotjKZTL7WrtIFubT35Y3BgZL0LlVjCJt0NVQWcEcyFbxKQfOVVh25jmfkv4nqBFFHSqbpvkwCofyImzlDiJcnMS5Tw8gXMIxfBvIINPRI5fhudCqlSJRqROre1a/M7tAUcrwDg9TDZd0MyNNim7lMar16+PisLiSKJVUj+59dGNMP/327UI6MNxYfYqoJulA==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:MWHPR1001MB2365.namprd10.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(366004)(4001150100001)(83380400001)(54906003)(86362001)(316002)(38350700002)(38100700002)(36756003)(52116002)(6666004)(26005)(6512007)(8676002)(9686003)(2906002)(1076003)(4326008)(6506007)(66556008)(66476007)(44832011)(66946007)(186003)(508600001)(5660300002)(6486002)(6916009)(8936002)(966005);
+ SFS:(366004)(36756003)(508600001)(38100700002)(38350700002)(83380400001)(44832011)(966005)(6916009)(66946007)(52116002)(6506007)(186003)(1076003)(26005)(4326008)(66556008)(6666004)(54906003)(9686003)(6512007)(2906002)(6486002)(5660300002)(316002)(4001150100001)(66476007)(8936002)(8676002)(86362001);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r+endUKS2tH4qy8mbAy+FOZSm86MzaNNRsqgywnIPaAiR6oACV53kiMrma3o?=
- =?us-ascii?Q?T9NecI4CZ07G7TdH25X9E4kIeqidhXbGLzVsuHcMAjeJ8um08zX6XOxDh4ZB?=
- =?us-ascii?Q?0cRs19BQePDYPFqtXJqsLhFziRfZMUQ8qa2f+bMXix3PQ4NL8wnTvzaTiAyZ?=
- =?us-ascii?Q?MMk72jjtSuVHZ76w4L2D53IxFw/7VQYmYCFLQI7dbufE0Ea/0ids09Ze+Rkh?=
- =?us-ascii?Q?4cNr+OVoalYMMJI1xptDXkXWY3UTtIdRjINAg8JO453hPl9SkHA4s7L8Iks8?=
- =?us-ascii?Q?OrMScSL4ztOHyPGoXgj3OcAbo70i/bnTd3m9cyMvmS5UnYYVPWUmtIqA/fj1?=
- =?us-ascii?Q?HExzYgUCvasOfPOySoEPy1D0ZY/MXuJSAmBfvEhvopvi3tyOp3AmxFeGMTIb?=
- =?us-ascii?Q?huhBy3Z4HUFIBVNwtzf/CmIx+w1PkAm9zILOzYvBjcr1VJt3UVnIP5fMKPCt?=
- =?us-ascii?Q?h1s6pfkZh9ZOKFAaGywRl44KStoR+yAcYgdMPD4YfrrG8Xa/QZkIcZXcyH5u?=
- =?us-ascii?Q?Ezrt5ZCL7+Y1NVc5yR7f7z2LV8B1w+n/a1hpZi+D+p1X2z7nrnhccPxs2z8D?=
- =?us-ascii?Q?DjaTD4Ek4oT9sJj6CTWjMob864z3ifaueWjw8GZgHpoAY1dxEWmdAIJkv80L?=
- =?us-ascii?Q?cZbgmOR54/cokSXgSd29Nc2QJDJDrBzey08oRjIEqftjQGCSWXVNUJ2knAdQ?=
- =?us-ascii?Q?5ZJfxUAcne7wYc2bHWkdeUqA+QD+PNu09TjZAcpNml5HqtgeAjqZzEM1p5xs?=
- =?us-ascii?Q?qQfIld2v9qQe63gaHxh0iFeLXiTeN4tQ6KHqyejSA4wB1QFZBARVS658m3XJ?=
- =?us-ascii?Q?HZ8TDE4nJOmEVYhlVi0MNUNeOdKtpBWHhrk2IZXtZpp6AJbygGUhrCPb8328?=
- =?us-ascii?Q?Ss55RsfkcVhRb4RzR/W+PcdrbAsT5uER3vay6zmEfVpIUpLNBzdD7CI/nBhC?=
- =?us-ascii?Q?ugiAU1xZZPEHrFhpxVXjHoMp47Qkdv0eqOO6kpxsUCUm/qcwR43Ji2vijsr8?=
- =?us-ascii?Q?vf9pMLbK4+LauVZYMhmJo/iQEZFoJ+kPsS195ezhTowtdvtOJe+KrI7YJJza?=
- =?us-ascii?Q?4+nWdcCEyxFRhIWOy5mfDCelbkMP9iCqfIsjrE3ZdUt/Hah84MxfXZgZxyiB?=
- =?us-ascii?Q?nxzTyJ/qkwpnXbZFnU9IJzsHfT2FaUvJ/S9+Hc1Rliq7hinvTjH4LicOCGm0?=
- =?us-ascii?Q?xsNuWrvN6EC6g5t+mUrVCz3lUhJon48CSUEOdCioy5XLCQehs2llU9L4hilf?=
- =?us-ascii?Q?V+dJ5vak0mImaDHUvCzjZ4JJxPioH4kyGR4W/quhr/GtIgX2mcmg9rI3lJfo?=
- =?us-ascii?Q?wn/aNlHWx/9O1WYq+idh0yVUjOSC07NsKmR74NLrhG2j3lMlJNodsiix9umi?=
- =?us-ascii?Q?3NkuuRXYnKyvoWd3NeA2iWFw0KtAxa6iCh9PyYRz5DaoTbwYDsN33Ja91dxK?=
- =?us-ascii?Q?H8xUkP0KClpzak4o6jbh7c8eaz0PvEu3KRO7m8QwuCuA1wNsfu9PD6w9E0fT?=
- =?us-ascii?Q?QPq8b6F7lTZwh3emAtmIvZC6neJZQxJSozqJnofFqwDW3TEciUyG/BItwXKu?=
- =?us-ascii?Q?6j4VJCvE9l0SRSvZMrWopKK2nDuvTStvYF3Y+jRFOEb6HziGI0bQsVoQCqob?=
- =?us-ascii?Q?am09Ye9BtFjB3YwKoJ/s4aorsT+Kqzlew42mczlW5qd2MTi/ERxWlNXse0ZH?=
- =?us-ascii?Q?zFzBSC4oCCb89BGxvGE5D20e/Rw=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?C5tbkIaa3KpMl4J6WW8RazkBMt9moZSOFEpmXXqJpn0HHB8oFkfOqXafbnrK?=
+ =?us-ascii?Q?tWRoiiIFAtkt+ChxQz7T83d3lRcD+e6wdKLq/PWorpWzae6YUSgDQeIvUa7b?=
+ =?us-ascii?Q?+ENZEeQjKKe2mD2ubj2iQibHyr16R7ZeTxUkpiWM+S8AkNUnIJ7LYiEwuJkC?=
+ =?us-ascii?Q?3S+SatMAFQViS5dimTkn3Km4grWavL/wJkNEePwTEzUvL7XtPEQYxcdC/DHQ?=
+ =?us-ascii?Q?M9NdUmLVqmwlZemclLttkl5HNeSfogfAZ6RSprgm3+DJENQMDAGc6C/eOw2r?=
+ =?us-ascii?Q?3/eoXNI4XtM9pPIfW+yZRI9ujHZegN8QpcHpiS4yN/gaJumZ1CggmyAIKAti?=
+ =?us-ascii?Q?Vr5IhqiL/KVsffFA96NSXIXcMvej8yUzOBo2InoASztcEOEXH/Q1H0uE1ryZ?=
+ =?us-ascii?Q?WXjSU6gjyS05canWgMBn6UVdTu57eo/sl+veHHIHe9t5d+DQVIYo617fXsVo?=
+ =?us-ascii?Q?5gKBdtJJAGl5nHPzolGdkGVN/KpyS/nUrc90YKT2vG3X4SrvECDZxBHuv2jP?=
+ =?us-ascii?Q?iyI3Qp0K2yXscQEoGjOxHlo22VqT0ANHn30OXTkbRnIBhISLDXNtTQAz7Rq6?=
+ =?us-ascii?Q?u8iAj9s5kRNzFR6JLH3zZcJNJwdjA0mQ8PFwQxmWqDaRJpKgh8JD28gMzIpc?=
+ =?us-ascii?Q?yP+NZFqLfs+aeeHMHHggeHMIW3yXThr9Lf7ydJ2tsB3X0RWN89cWZ3a6N/k8?=
+ =?us-ascii?Q?CpDgSrQr7uRY1brRQC9fJdKNupuEE23GIqAR5/L0O23KNZXbeZnybnJv4czi?=
+ =?us-ascii?Q?LZ2dA92JN8bQDr7EC+2sIjWVxj/4+mMCFCNDGmMdbZ2P+TTg2bzP4dxGQAoN?=
+ =?us-ascii?Q?Uyr1uHfLh2mONUbNujMEWqSLwyjWuS9yLyRfWK+iCtdr5+QkrBi1z8M+NfT+?=
+ =?us-ascii?Q?QvYlBzQg5g27mj92kYsVHA+6y9oOHAZg8EDWDj/oszurBHBLbrfyELhrgFJN?=
+ =?us-ascii?Q?XcEXlxnOmXL+I8NpcIA1icVSZch4M0iSufwGQbthC6R8CATJS5tAx35oaUvd?=
+ =?us-ascii?Q?TgjaOxcaFn2S4OmnRmzZgaqXr2AB5GhG/RnNR7fZ2Z8v2AmdE94nOY6tsAZp?=
+ =?us-ascii?Q?EJt3OTuxoenm514YVdx3droTP+KC7ic4BX2xzyttaqpOVHyzzPIiUFElZr6R?=
+ =?us-ascii?Q?6LDo6LmoEeFM2BHpqS3Gad9V49OXjwy35lrHmmpsgSrWkkHPy+Gm5yiC7ZhW?=
+ =?us-ascii?Q?W689ue3H2Q0qBXUU17On2/XMzWDaM2XeDl4XNc/IhWLcdRId5ra3x29TDCo1?=
+ =?us-ascii?Q?cqrqLt3GvqIRwE89qo6hYcUe/MkZ0LAPOhEubt7IKh+UaLtJ6hSbLu0WxA+6?=
+ =?us-ascii?Q?SjMAUpSAOVLqWWx/8nLu06zlO2tbe2b5OEabvCJOgxBAPb+6IxszZfS7RWVo?=
+ =?us-ascii?Q?9RtFJnfJuUxx/GkjrtTEA19aMa/158d/udjWpuMpYIrkLZu/ejzcghqrR/cC?=
+ =?us-ascii?Q?K9GIryRWtl2rIi+X17t125vBqP6bpABB6Y3Ha/dZzIrFW0/rVGkXYUEeNcFq?=
+ =?us-ascii?Q?cmI42bDL5/OwhVcD9sLMXpxAKBFYOvaPGvvE8vyGz8SR162QqnFUOqhswrUr?=
+ =?us-ascii?Q?F2Das+A/Qne3vkB8wp6t21bNDi5/QpEDq0HhDIIYiIjaXNdOCQPe9meaza6o?=
+ =?us-ascii?Q?WO1rIWoR7EIQ5GL5uEpA/PqFolppv3JI9zIs169lc4s3QBjRZWxZtZOtmyZr?=
+ =?us-ascii?Q?gUsKPq33gF5l6vQVrINyTiws2OE=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73fb420e-6346-40f9-3573-08d9d045fab2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 451eb2b3-1e6d-4d51-ac84-08d9d05aa1af
 X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2022 12:22:03.1470 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2022 14:49:53.1351 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WmicAlBL7Df/6ojv6x/OAA8HGf9vs3UyM/Gu8ys5Q8FBO2OoPC6+DgLYuj0A6WkA9h4coZtx6N/0ns0TaWvvxyqX+ZS+yTvO8CcVIeLZV24=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4499
+X-MS-Exchange-CrossTenant-UserPrincipalName: IuSQQEJLhfYoVk6VqNo+CNyUjMXN+j83faRGU2bHq1RukR8diNpRBm7mMOEVF8wc0LoSaUNuWPUgFcG5HqRvh+eF8+46VUoA4gNQPtw7kF4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4705
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10217
  signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
  bulkscore=0 spamscore=0
  mlxscore=0 phishscore=0 adultscore=0 suspectscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2201050082
-X-Proofpoint-ORIG-GUID: ARKE3fKLTUsCO3kNaas1KmiLooSmujle
-X-Proofpoint-GUID: ARKE3fKLTUsCO3kNaas1KmiLooSmujle
+ definitions=main-2201050098
+X-Proofpoint-GUID: TZ0KsZxzD4hew_P7vJn3dgTTdfnjTS1h
+X-Proofpoint-ORIG-GUID: TZ0KsZxzD4hew_P7vJn3dgTTdfnjTS1h
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220105_042217_017869_B0575F3E 
-X-CRM114-Status: GOOD (  10.63  )
+X-CRM114-CacheID: sfid-20220105_065001_163457_07AF447B 
+X-CRM114-Status: GOOD (  10.81  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -171,112 +170,125 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-head:   34cbb4043dca455fca888e1ced323e588912b6a2
-commit: bc5c448b70ff141f8a2b5cbbab79fba08d7a1be0 [52/56] ath11k: report rssi of each chain to mac80211 for QCA6390/WCN6855
-config: riscv-randconfig-m031-20211210 (https://download.01.org/0day-ci/archive/20211211/202112110427.o6xDAKfE-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 11.2.0
+head:   c9a516b946c4b3ce25d422890ca78d0ca730b065
+commit: 1b8bb94c0612cf32e418e90ae93cf37214d84669 [8/17] ath11k: report tx bitrate for iw wlan station dump
+config: microblaze-randconfig-m031-20211222 (https://download.01.org/0day-ci/archive/20211223/202112230637.BasxPV7i-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 11.2.0
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-New smatch warnings:
-drivers/net/wireless/ath/ath11k/wmi.c:5651 ath11k_wmi_tlv_fw_stats_data_parse() error: uninitialized symbol 'len'.
+smatch warnings:
+drivers/net/wireless/ath/ath11k/dp_tx.c:511 ath11k_dp_tx_update_txcompl() error: uninitialized symbol 'rate_idx'.
 
-Old smatch warnings:
-arch/riscv/include/asm/atomic.h:317 arch_atomic_sub_if_positive() warn: inconsistent indenting
-drivers/net/wireless/ath/ath11k/wmi.c:5674 ath11k_wmi_tlv_fw_stats_data_parse() error: uninitialized symbol 'len'.
-drivers/net/wireless/ath/ath11k/wmi.c:5695 ath11k_wmi_tlv_fw_stats_data_parse() error: uninitialized symbol 'len'.
+vim +/rate_idx +511 drivers/net/wireless/ath/ath11k/dp_tx.c
 
-vim +/len +5651 drivers/net/wireless/ath/ath11k/wmi.c
+1b8bb94c0612cf Wen Gong   2021-12-20  418  void ath11k_dp_tx_update_txcompl(struct ath11k *ar, struct hal_tx_status *ts)
+1b8bb94c0612cf Wen Gong   2021-12-20  419  {
+1b8bb94c0612cf Wen Gong   2021-12-20  420  	struct ath11k_base *ab = ar->ab;
+1b8bb94c0612cf Wen Gong   2021-12-20  421  	struct ath11k_per_peer_tx_stats *peer_stats = &ar->cached_stats;
+1b8bb94c0612cf Wen Gong   2021-12-20  422  	enum hal_tx_rate_stats_pkt_type pkt_type;
+1b8bb94c0612cf Wen Gong   2021-12-20  423  	enum hal_tx_rate_stats_sgi sgi;
+1b8bb94c0612cf Wen Gong   2021-12-20  424  	enum hal_tx_rate_stats_bw bw;
+1b8bb94c0612cf Wen Gong   2021-12-20  425  	struct ath11k_peer *peer;
+1b8bb94c0612cf Wen Gong   2021-12-20  426  	struct ath11k_sta *arsta;
+1b8bb94c0612cf Wen Gong   2021-12-20  427  	struct ieee80211_sta *sta;
+1b8bb94c0612cf Wen Gong   2021-12-20  428  	u16 rate, ru_tones;
+1b8bb94c0612cf Wen Gong   2021-12-20  429  	u8 mcs, rate_idx, ofdma;
+1b8bb94c0612cf Wen Gong   2021-12-20  430  	int ret;
+1b8bb94c0612cf Wen Gong   2021-12-20  431  
+1b8bb94c0612cf Wen Gong   2021-12-20  432  	spin_lock_bh(&ab->base_lock);
+1b8bb94c0612cf Wen Gong   2021-12-20  433  	peer = ath11k_peer_find_by_id(ab, ts->peer_id);
+1b8bb94c0612cf Wen Gong   2021-12-20  434  	if (!peer || !peer->sta) {
+1b8bb94c0612cf Wen Gong   2021-12-20  435  		ath11k_dbg(ab, ATH11K_DBG_DP_TX,
+1b8bb94c0612cf Wen Gong   2021-12-20  436  			   "failed to find the peer by id %u\n", ts->peer_id);
+1b8bb94c0612cf Wen Gong   2021-12-20  437  		goto err_out;
+1b8bb94c0612cf Wen Gong   2021-12-20  438  	}
+1b8bb94c0612cf Wen Gong   2021-12-20  439  
+1b8bb94c0612cf Wen Gong   2021-12-20  440  	sta = peer->sta;
+1b8bb94c0612cf Wen Gong   2021-12-20  441  	arsta = (struct ath11k_sta *)sta->drv_priv;
+1b8bb94c0612cf Wen Gong   2021-12-20  442  
+1b8bb94c0612cf Wen Gong   2021-12-20  443  	memset(&arsta->txrate, 0, sizeof(arsta->txrate));
+1b8bb94c0612cf Wen Gong   2021-12-20  444  	pkt_type = FIELD_GET(HAL_TX_RATE_STATS_INFO0_PKT_TYPE,
+1b8bb94c0612cf Wen Gong   2021-12-20  445  			     ts->rate_stats);
+1b8bb94c0612cf Wen Gong   2021-12-20  446  	mcs = FIELD_GET(HAL_TX_RATE_STATS_INFO0_MCS,
+1b8bb94c0612cf Wen Gong   2021-12-20  447  			ts->rate_stats);
+1b8bb94c0612cf Wen Gong   2021-12-20  448  	sgi = FIELD_GET(HAL_TX_RATE_STATS_INFO0_SGI,
+1b8bb94c0612cf Wen Gong   2021-12-20  449  			ts->rate_stats);
+1b8bb94c0612cf Wen Gong   2021-12-20  450  	bw = FIELD_GET(HAL_TX_RATE_STATS_INFO0_BW, ts->rate_stats);
+1b8bb94c0612cf Wen Gong   2021-12-20  451  	ru_tones = FIELD_GET(HAL_TX_RATE_STATS_INFO0_TONES_IN_RU, ts->rate_stats);
+1b8bb94c0612cf Wen Gong   2021-12-20  452  	ofdma = FIELD_GET(HAL_TX_RATE_STATS_INFO0_OFDMA_TX, ts->rate_stats);
+1b8bb94c0612cf Wen Gong   2021-12-20  453  
+1b8bb94c0612cf Wen Gong   2021-12-20  454  	/* This is to prefer choose the real NSS value arsta->last_txrate.nss,
+1b8bb94c0612cf Wen Gong   2021-12-20  455  	 * if it is invalid, then choose the NSS value while assoc.
+1b8bb94c0612cf Wen Gong   2021-12-20  456  	 */
+1b8bb94c0612cf Wen Gong   2021-12-20  457  	if (arsta->last_txrate.nss)
+1b8bb94c0612cf Wen Gong   2021-12-20  458  		arsta->txrate.nss = arsta->last_txrate.nss;
+1b8bb94c0612cf Wen Gong   2021-12-20  459  	else
+1b8bb94c0612cf Wen Gong   2021-12-20  460  		arsta->txrate.nss = arsta->peer_nss;
+1b8bb94c0612cf Wen Gong   2021-12-20  461  
+1b8bb94c0612cf Wen Gong   2021-12-20  462  	if (pkt_type == HAL_TX_RATE_STATS_PKT_TYPE_11A ||
+1b8bb94c0612cf Wen Gong   2021-12-20  463  	    pkt_type == HAL_TX_RATE_STATS_PKT_TYPE_11B) {
+1b8bb94c0612cf Wen Gong   2021-12-20  464  		ret = ath11k_mac_hw_ratecode_to_legacy_rate(mcs,
+1b8bb94c0612cf Wen Gong   2021-12-20  465  							    pkt_type,
+1b8bb94c0612cf Wen Gong   2021-12-20  466  							    &rate_idx,
+1b8bb94c0612cf Wen Gong   2021-12-20  467  							    &rate);
+1b8bb94c0612cf Wen Gong   2021-12-20  468  		if (ret < 0)
+1b8bb94c0612cf Wen Gong   2021-12-20  469  			goto err_out;
 
-bc5c448b70ff14 Wen Gong   2021-12-08  5629  static int ath11k_wmi_tlv_fw_stats_data_parse(struct ath11k_base *ab,
-bc5c448b70ff14 Wen Gong   2021-12-08  5630  					      struct wmi_tlv_fw_stats_parse *parse,
-bc5c448b70ff14 Wen Gong   2021-12-08  5631  					      const void *ptr)
-bc5c448b70ff14 Wen Gong   2021-12-08  5632  {
-bc5c448b70ff14 Wen Gong   2021-12-08  5633  	struct ath11k_fw_stats *stats = parse->stats;
-bc5c448b70ff14 Wen Gong   2021-12-08  5634  	const struct wmi_stats_event *ev = parse->ev;
-bc5c448b70ff14 Wen Gong   2021-12-08  5635  	int i;
-bc5c448b70ff14 Wen Gong   2021-12-08  5636  	const void *data = ptr;
-bc5c448b70ff14 Wen Gong   2021-12-08  5637  	u32 len;
-bc5c448b70ff14 Wen Gong   2021-12-08  5638  
-bc5c448b70ff14 Wen Gong   2021-12-08  5639  	if (!ev) {
-bc5c448b70ff14 Wen Gong   2021-12-08  5640  		ath11k_warn(ab, "failed to fetch update stats ev");
-bc5c448b70ff14 Wen Gong   2021-12-08  5641  		return -EPROTO;
-bc5c448b70ff14 Wen Gong   2021-12-08  5642  	}
-d5c65159f28953 Kalle Valo 2019-11-23  5643  
-d5c65159f28953 Kalle Valo 2019-11-23  5644  	stats->stats_id = 0;
-d5c65159f28953 Kalle Valo 2019-11-23  5645  
-d5c65159f28953 Kalle Valo 2019-11-23  5646  	for (i = 0; i < ev->num_pdev_stats; i++) {
-d5c65159f28953 Kalle Valo 2019-11-23  5647  		const struct wmi_pdev_stats *src;
-d5c65159f28953 Kalle Valo 2019-11-23  5648  		struct ath11k_fw_stats_pdev *dst;
-d5c65159f28953 Kalle Valo 2019-11-23  5649  
-d5c65159f28953 Kalle Valo 2019-11-23  5650  		src = data;
-bc5c448b70ff14 Wen Gong   2021-12-08 @5651  		if (len < sizeof(*src))
+"rate_idx" not initialized on other paths.
 
-"len" is never initialized.
+1b8bb94c0612cf Wen Gong   2021-12-20  470  		arsta->txrate.legacy = rate;
+1b8bb94c0612cf Wen Gong   2021-12-20  471  	} else if (pkt_type == HAL_TX_RATE_STATS_PKT_TYPE_11N) {
+1b8bb94c0612cf Wen Gong   2021-12-20  472  		if (mcs > 7) {
+1b8bb94c0612cf Wen Gong   2021-12-20  473  			ath11k_warn(ab, "Invalid HT mcs index %d\n", mcs);
+1b8bb94c0612cf Wen Gong   2021-12-20  474  			goto err_out;
+1b8bb94c0612cf Wen Gong   2021-12-20  475  		}
+1b8bb94c0612cf Wen Gong   2021-12-20  476  
+1b8bb94c0612cf Wen Gong   2021-12-20  477  		if (arsta->txrate.nss != 0)
+1b8bb94c0612cf Wen Gong   2021-12-20  478  			arsta->txrate.mcs = mcs + 8 * (arsta->txrate.nss - 1);
+1b8bb94c0612cf Wen Gong   2021-12-20  479  		arsta->txrate.flags = RATE_INFO_FLAGS_MCS;
+1b8bb94c0612cf Wen Gong   2021-12-20  480  		if (sgi)
+1b8bb94c0612cf Wen Gong   2021-12-20  481  			arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
+1b8bb94c0612cf Wen Gong   2021-12-20  482  	} else if (pkt_type == HAL_TX_RATE_STATS_PKT_TYPE_11AC) {
+1b8bb94c0612cf Wen Gong   2021-12-20  483  		if (mcs > 9) {
+1b8bb94c0612cf Wen Gong   2021-12-20  484  			ath11k_warn(ab, "Invalid VHT mcs index %d\n", mcs);
+1b8bb94c0612cf Wen Gong   2021-12-20  485  			goto err_out;
+1b8bb94c0612cf Wen Gong   2021-12-20  486  		}
+1b8bb94c0612cf Wen Gong   2021-12-20  487  
+1b8bb94c0612cf Wen Gong   2021-12-20  488  		arsta->txrate.mcs = mcs;
+1b8bb94c0612cf Wen Gong   2021-12-20  489  		arsta->txrate.flags = RATE_INFO_FLAGS_VHT_MCS;
+1b8bb94c0612cf Wen Gong   2021-12-20  490  		if (sgi)
+1b8bb94c0612cf Wen Gong   2021-12-20  491  			arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
+1b8bb94c0612cf Wen Gong   2021-12-20  492  	} else if (pkt_type == HAL_TX_RATE_STATS_PKT_TYPE_11AX) {
+1b8bb94c0612cf Wen Gong   2021-12-20  493  		if (mcs > 11) {
+1b8bb94c0612cf Wen Gong   2021-12-20  494  			ath11k_warn(ab, "Invalid HE mcs index %d\n", mcs);
+1b8bb94c0612cf Wen Gong   2021-12-20  495  			goto err_out;
+1b8bb94c0612cf Wen Gong   2021-12-20  496  		}
+1b8bb94c0612cf Wen Gong   2021-12-20  497  
+1b8bb94c0612cf Wen Gong   2021-12-20  498  		arsta->txrate.mcs = mcs;
+1b8bb94c0612cf Wen Gong   2021-12-20  499  		arsta->txrate.flags = RATE_INFO_FLAGS_HE_MCS;
+1b8bb94c0612cf Wen Gong   2021-12-20  500  		arsta->txrate.he_gi = ath11k_mac_he_gi_to_nl80211_he_gi(sgi);
+1b8bb94c0612cf Wen Gong   2021-12-20  501  	}
+1b8bb94c0612cf Wen Gong   2021-12-20  502  
+1b8bb94c0612cf Wen Gong   2021-12-20  503  	arsta->txrate.bw = ath11k_mac_bw_to_mac80211_bw(bw);
+1b8bb94c0612cf Wen Gong   2021-12-20  504  	if (ofdma && pkt_type == HAL_TX_RATE_STATS_PKT_TYPE_11AX) {
+1b8bb94c0612cf Wen Gong   2021-12-20  505  		arsta->txrate.bw = RATE_INFO_BW_HE_RU;
+1b8bb94c0612cf Wen Gong   2021-12-20  506  		arsta->txrate.he_ru_alloc =
+1b8bb94c0612cf Wen Gong   2021-12-20  507  			ath11k_mac_he_ru_tones_to_nl80211_he_ru_alloc(ru_tones);
+1b8bb94c0612cf Wen Gong   2021-12-20  508  	}
+1b8bb94c0612cf Wen Gong   2021-12-20  509  
+1b8bb94c0612cf Wen Gong   2021-12-20  510  	if (ath11k_debugfs_is_extd_tx_stats_enabled(ar))
+1b8bb94c0612cf Wen Gong   2021-12-20 @511  		ath11k_debugfs_sta_add_tx_stats(arsta, peer_stats, rate_idx);
+                                                                                                           ^^^^^^^^
 
-d5c65159f28953 Kalle Valo 2019-11-23  5652  			return -EPROTO;
-d5c65159f28953 Kalle Valo 2019-11-23  5653  
-d5c65159f28953 Kalle Valo 2019-11-23  5654  		stats->stats_id = WMI_REQUEST_PDEV_STAT;
-d5c65159f28953 Kalle Valo 2019-11-23  5655  
-d5c65159f28953 Kalle Valo 2019-11-23  5656  		data += sizeof(*src);
-d5c65159f28953 Kalle Valo 2019-11-23  5657  		len -= sizeof(*src);
-d5c65159f28953 Kalle Valo 2019-11-23  5658  
-d5c65159f28953 Kalle Valo 2019-11-23  5659  		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-d5c65159f28953 Kalle Valo 2019-11-23  5660  		if (!dst)
-d5c65159f28953 Kalle Valo 2019-11-23  5661  			continue;
-d5c65159f28953 Kalle Valo 2019-11-23  5662  
-d5c65159f28953 Kalle Valo 2019-11-23  5663  		ath11k_wmi_pull_pdev_stats_base(&src->base, dst);
-d5c65159f28953 Kalle Valo 2019-11-23  5664  		ath11k_wmi_pull_pdev_stats_tx(&src->tx, dst);
-d5c65159f28953 Kalle Valo 2019-11-23  5665  		ath11k_wmi_pull_pdev_stats_rx(&src->rx, dst);
-d5c65159f28953 Kalle Valo 2019-11-23  5666  		list_add_tail(&dst->list, &stats->pdevs);
-d5c65159f28953 Kalle Valo 2019-11-23  5667  	}
-d5c65159f28953 Kalle Valo 2019-11-23  5668  
-d5c65159f28953 Kalle Valo 2019-11-23  5669  	for (i = 0; i < ev->num_vdev_stats; i++) {
-d5c65159f28953 Kalle Valo 2019-11-23  5670  		const struct wmi_vdev_stats *src;
-d5c65159f28953 Kalle Valo 2019-11-23  5671  		struct ath11k_fw_stats_vdev *dst;
-d5c65159f28953 Kalle Valo 2019-11-23  5672  
-d5c65159f28953 Kalle Valo 2019-11-23  5673  		src = data;
-bc5c448b70ff14 Wen Gong   2021-12-08  5674  		if (len < sizeof(*src))
-d5c65159f28953 Kalle Valo 2019-11-23  5675  			return -EPROTO;
-d5c65159f28953 Kalle Valo 2019-11-23  5676  
-d5c65159f28953 Kalle Valo 2019-11-23  5677  		stats->stats_id = WMI_REQUEST_VDEV_STAT;
-d5c65159f28953 Kalle Valo 2019-11-23  5678  
-d5c65159f28953 Kalle Valo 2019-11-23  5679  		data += sizeof(*src);
-d5c65159f28953 Kalle Valo 2019-11-23  5680  		len -= sizeof(*src);
-d5c65159f28953 Kalle Valo 2019-11-23  5681  
-d5c65159f28953 Kalle Valo 2019-11-23  5682  		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-d5c65159f28953 Kalle Valo 2019-11-23  5683  		if (!dst)
-d5c65159f28953 Kalle Valo 2019-11-23  5684  			continue;
-d5c65159f28953 Kalle Valo 2019-11-23  5685  
-d5c65159f28953 Kalle Valo 2019-11-23  5686  		ath11k_wmi_pull_vdev_stats(src, dst);
-d5c65159f28953 Kalle Valo 2019-11-23  5687  		list_add_tail(&dst->list, &stats->vdevs);
-d5c65159f28953 Kalle Valo 2019-11-23  5688  	}
-d5c65159f28953 Kalle Valo 2019-11-23  5689  
-d5c65159f28953 Kalle Valo 2019-11-23  5690  	for (i = 0; i < ev->num_bcn_stats; i++) {
-d5c65159f28953 Kalle Valo 2019-11-23  5691  		const struct wmi_bcn_stats *src;
-d5c65159f28953 Kalle Valo 2019-11-23  5692  		struct ath11k_fw_stats_bcn *dst;
-d5c65159f28953 Kalle Valo 2019-11-23  5693  
-d5c65159f28953 Kalle Valo 2019-11-23  5694  		src = data;
-bc5c448b70ff14 Wen Gong   2021-12-08  5695  		if (len < sizeof(*src))
-d5c65159f28953 Kalle Valo 2019-11-23  5696  			return -EPROTO;
-d5c65159f28953 Kalle Valo 2019-11-23  5697  
-d5c65159f28953 Kalle Valo 2019-11-23  5698  		stats->stats_id = WMI_REQUEST_BCN_STAT;
-d5c65159f28953 Kalle Valo 2019-11-23  5699  
-d5c65159f28953 Kalle Valo 2019-11-23  5700  		data += sizeof(*src);
-d5c65159f28953 Kalle Valo 2019-11-23  5701  		len -= sizeof(*src);
-d5c65159f28953 Kalle Valo 2019-11-23  5702  
-d5c65159f28953 Kalle Valo 2019-11-23  5703  		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-d5c65159f28953 Kalle Valo 2019-11-23  5704  		if (!dst)
-d5c65159f28953 Kalle Valo 2019-11-23  5705  			continue;
-d5c65159f28953 Kalle Valo 2019-11-23  5706  
-d5c65159f28953 Kalle Valo 2019-11-23  5707  		ath11k_wmi_pull_bcn_stats(src, dst);
-d5c65159f28953 Kalle Valo 2019-11-23  5708  		list_add_tail(&dst->list, &stats->bcn);
-d5c65159f28953 Kalle Valo 2019-11-23  5709  	}
-d5c65159f28953 Kalle Valo 2019-11-23  5710  
-d5c65159f28953 Kalle Valo 2019-11-23  5711  	return 0;
-d5c65159f28953 Kalle Valo 2019-11-23  5712  }
+
+
+1b8bb94c0612cf Wen Gong   2021-12-20  512  
+1b8bb94c0612cf Wen Gong   2021-12-20  513  err_out:
+1b8bb94c0612cf Wen Gong   2021-12-20  514  	spin_unlock_bh(&ab->base_lock);
+1b8bb94c0612cf Wen Gong   2021-12-20  515  }
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
