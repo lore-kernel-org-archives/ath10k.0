@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61668C433FE
-	for <ath10k@archiver.kernel.org>; Thu,  6 Jan 2022 02:00:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AE17C433F5
+	for <ath10k@archiver.kernel.org>; Thu,  6 Jan 2022 02:00:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:From:Date:
 	Subject:To:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
 	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jcI4unO/64Dj7Jku787Df5VUY9texTXTZz5uoOQnHO4=; b=A9mYFKVLIeutNt
-	qO7NIRfWvSQIW1onIPKmYKgWUvp4MS1OYu4rasNre+PMmFiSdSvD3eJQ1ZdMS4s9LCitmRqQtoSy6
-	jrLegUg6mtp6RdinRv5Ce7HnadI9w36WY0o+b1kmHnuMecrudrAp3KzVr5E1wkIEopkCcEPZ55XmQ
-	C/uLfOTIUaNYkCcgxyK3aYxNEtnx6AFxipVwCo6KoKQehjDcjHV0llDfsfr4cjCGiSiPnv59v2tG1
-	QpRzq6KLfmx4S5EjkHpmjcumvH3Qk0mgrhqN7wuAkrcC69ZbqfyjdXysKzaZNW+gekJsK5KoIKr8U
-	ZqtP3TrkkbZbBmuba2fQ==;
+	List-Owner; bh=jcI4unO/64Dj7Jku787Df5VUY9texTXTZz5uoOQnHO4=; b=Ok/Vw2KA19y8AB
+	hdEvVcMDrn4gU6s1JuPa8bXUx2M1ilpAY4NOLn/Y9GjYwNxcnud5RD8Glkn8j/0PSN/SagSjEw6q3
+	H93IW5a06jcwqgc9JTsej1FjKIC/3fg3g89LM9VTP+ortPwjZ556q0aeRvunhL4yhGziw/zA864w/
+	6WDBuKKwPcqpROzbHgCryHzsfmafVStkO5txNMMdldQb49fjATRe0QAseg+dgcu8sG3yXTgmgqpdI
+	POoX2EnUoe5ntLOwoqCCKmacUpr74CITT6nOLu71lEIBnOoCyCWjjsgMHVUHDZ+txjf5YyUTR/Oms
+	wXp4E6I6nnFE9EU5mk4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n5I4Z-00GCXU-Lx; Thu, 06 Jan 2022 02:00:11 +0000
+	id 1n5I4X-00GCXJ-Sd; Thu, 06 Jan 2022 02:00:09 +0000
 Received: from sp-hosting.mailer1.node.surepulse.com ([52.7.83.126]
  helo=sp-hosting.mailer1.e.node.surepulse.com)
  by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n5I4T-00GCVu-T5
- for ath10k@lists.infradead.org; Thu, 06 Jan 2022 02:00:08 +0000
+ id 1n5I4T-00GCVr-T6
+ for ath10k@lists.infradead.org; Thu, 06 Jan 2022 02:00:07 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=surepulse.com;
- s=default; t=1641434038;
+ s=default; t=1641434045;
  bh=L9D+VBMbMr5+NmKvcue7CGAERMAt6Z70kaoUxN4f0nw=;
  h=To:Subject:Date:From:Message-ID:From:Sender:To:CC:Subject:
  Message-Id:Date;
- b=A0isRDb73uzvPObX8TB+TExJoec/5wQb0ITBhfitkukzbvdRy3K4JM+Z509JDGvtu
- acoC6u31+ghPTXMNf87gDyNAC7G8CWtAxk06BdUQfnkIqy+ZmkIgdniZp+ADOOdteJ
- vd08sm4P0B/2HICMPJkRW0MAFpFcecNPp22fUn2Y=
+ b=cesHanLHYWIf2cOTQvObemcQTURw9Z1u+J/IZAxRYdi2mRcLjDsRUvQRArLrvZbGb
+ daBk6mgZuv0Q9b+om67ALJFo1qPwHcV6VLecS/r/iBeKStfzJnu34/+qFx6GO0WtCx
+ rbrFqAg3eW/t/oi0O8mpZ9JJbkVjlMh32BAKdo4E=
 To: ath10k@lists.infradead.org
 Subject: Thanks for Contacting Republic Roof Systems!
 X-PHP-Originating-Script: 48:PHPMailer.php
-Date: Thu, 6 Jan 2022 01:53:58 +0000
+Date: Thu, 6 Jan 2022 01:54:05 +0000
 From: Republic Roof Systems - <noreply@formleads.surepulse.com>
-Message-ID: <sZN9BAivehgFzeGSf71aokAnI3ZKr6rbrzoCRqGDErA@www.republicroofsystems.com>
+Message-ID: <8Ds2IQ4dgi3VsLdd8OWnDgHTSIQYQSefedHPUPfY4@www.republicroofsystems.com>
 X-Mailer: PHPMailer 6.5.0 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220105_180006_034217_5FE71C06 
+X-CRM114-CacheID: sfid-20220105_180006_031165_C7437197 
 X-CRM114-Status: UNSURE (   1.97  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
