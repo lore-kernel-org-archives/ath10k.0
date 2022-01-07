@@ -4,73 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82F52C433F5
-	for <ath10k@archiver.kernel.org>; Fri,  7 Jan 2022 20:06:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDDECC433F5
+	for <ath10k@archiver.kernel.org>; Fri,  7 Jan 2022 21:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IcEyyF0BXjju9UykcM+a29EBVrqJo/mjuXByAyUIcRk=; b=FvfluQSrbFWEyS
-	REc7w9V6GSv5e2gJ1snKcIgRN5zTVDuLL8vmNwkoAwV27eAUAKuu5U+0yuKwUeohrqRt7NlkcRb2c
-	P+07CgkpT4Zq8fiIWsdmi7qox7f1b9abxFBZXwV+798kWnlBNZ/jyan8CcS0aqV+tr1Ivfk5I2Z+W
-	Pz3rQCde3rr7zbnCAvVNfTcpDkM+WvlBLblV8ffWDYbiJiWuVWDxaoeRiQL9IqJdYiiP8tLkTdNdP
-	yHKOghJ0VUjwMb+36c0MaxibR4KKvUjSh34lPMOwI6B+a1cV+HqBRgL0qj4oG3dbiEwZJg1UZUhDG
-	GDfZja2fAdGvTVpXioLQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Wg0gOPqu4OIM5DJ72QV3JxokoeD4DOAK8VbNMXPsJpI=; b=LPs4EsKO9DkaC+
+	ovFWTjYYqSEsas8/9OBV5hL6zm/AQWIkr24OzysG8V6f1Cqhn2tr7mjSuuY4ZAWhVFgOW1+Oot/iL
+	mNbRIQQLCQbLVXj67GTIFuIPHc29/NMoLH3HBECkAXNA2mcxQ2kcwN6bE9XATDTIFF17OgGq8BhQh
+	f9KENQ+g7lEbLZBzdAG4MrmhgT+UoqpuJZk2/pCQtwzetGdBsyKzj0foVqlnp8x4EBcShANnZReUF
+	Us5L3X9NG4r/7He6T5pDr5FPNbXWji8+4iWg+uwQx8bh1QOhq3e2g29er0NUMmdIE3/1yHvMhnpux
+	5m/hf6oVtG9ymuedSSOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n5vUp-005Abn-Dy; Fri, 07 Jan 2022 20:05:55 +0000
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+	id 1n5whV-005HLR-56; Fri, 07 Jan 2022 21:23:05 +0000
+Received: from mail-il1-x12e.google.com ([2607:f8b0:4864:20::12e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n5vUl-005AaU-PO
- for ath10k@lists.infradead.org; Fri, 07 Jan 2022 20:05:53 +0000
-Received: by mail-pg1-x532.google.com with SMTP id g2so6307951pgo.9
- for <ath10k@lists.infradead.org>; Fri, 07 Jan 2022 12:05:50 -0800 (PST)
+ id 1n5whS-005HKV-PJ
+ for ath10k@lists.infradead.org; Fri, 07 Jan 2022 21:23:04 +0000
+Received: by mail-il1-x12e.google.com with SMTP id 9so5591232ill.9
+ for <ath10k@lists.infradead.org>; Fri, 07 Jan 2022 13:22:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Gbu1UV7Je4keqcQjWsILOs+1k4ApZXjllWNZvpUcAyY=;
- b=Ggu+M7GRA58WAOXFL5u2VgLxDJSFBy7yc7+mqNI3FY7rP/LYXpT5BfXZFroBP+Zx9c
- CQ6rTMNdT7youwhkgGq0RHKxHtXIYSYQmpPDBkC4BmkvtYFp8q7BxS8yX1KATD5rPEwa
- zDFN2L+lKdIU9PP2gowGE2NC1Kyr2jBCOcp/s=
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=gLPG68maHzuWQkm+1YT+E6wsnchCrh1nEIPBO2jLick=;
+ b=ZUSjKTHkRHJvy2UfGzJr1qPKAQ9x2xc6LT2yVEJn/JlYNQ43chWeUkOVGmqJA9gSoA
+ qQRsliX1Tz6To1gwCxVfxt3X3xor8NZ0fFGvpqI2zIHPUKCAUOZsdBz2gftGHoTf/CMA
+ 77MEFoTnyeYciVlgnsgmsQ2rQpslfmFAO5mhM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Gbu1UV7Je4keqcQjWsILOs+1k4ApZXjllWNZvpUcAyY=;
- b=e7Kn+ji/WEXacda93y2ah/md75QeD63nRSGEom548yEwu1nXg6WqArouy2pW6ClU2Z
- coOazvEbmJcd/5NUhNjDk3PEG5BV2o1N6eLFzSlz2m9j3rOxEp/ijoHGD6ZOeK0KSYPS
- +S7saDOER1hi3ZQ1UIekrFNC5e92Rt+cBSW+r2lERB6pjIMcfkjo/OcvNe3J04o/5aug
- 6vBNBwWUomZXBZaqbBEdC7K5taA2wUEe18serw3KH8l3KKnDKj2yc96Tj0oTT2k2UpNU
- +fAl7Ru2ME5jko9E5DxThNgamyfysW+LahhiD3QXOz3S/e4Zqe3Mcp1zns+Mrn38nGDq
- w2FA==
-X-Gm-Message-State: AOAM532xdrbkUxrTeGwtr6wZfQdc9mTiyHXaNJcvttLpREsorzsG6cNt
- j1eLL7aYn8v/GB61ZVyLDPJasw==
-X-Google-Smtp-Source: ABdhPJzh4NsZEYJ4W8U++BkJJcARgLs5oZM7+ClhAagD5qU4JTrllIyfj/ssE8KrIKjdLFswYSSuYQ==
-X-Received: by 2002:a05:6a00:1a52:b0:4bb:3ab:88a6 with SMTP id
- h18-20020a056a001a5200b004bb03ab88a6mr66566958pfv.29.1641585949835; 
- Fri, 07 Jan 2022 12:05:49 -0800 (PST)
-Received: from kuabhs-cdev.c.googlers.com.com
- (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
- by smtp.gmail.com with ESMTPSA id y18sm5929492pfn.202.2022.01.07.12.05.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 07 Jan 2022 12:05:49 -0800 (PST)
-From: Abhishek Kumar <kuabhs@chromium.org>
-To: kvalo@codeaurora.org,
-	dianders@chromium.org
-Cc: pillair@codeaurora.org, kuabhs@chromium.org, linux-kernel@vger.kernel.org,
- linux-wireless@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Kalle Valo <kvalo@kernel.org>,
- ath10k@lists.infradead.org, netdev@vger.kernel.org
-Subject: [PATCH 1/2] ath10k: search for default BDF name provided in DT
-Date: Fri,  7 Jan 2022 20:04:30 +0000
-Message-Id: <20220107200417.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
-X-Mailer: git-send-email 2.34.1.575.g55b058a8bb-goog
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=gLPG68maHzuWQkm+1YT+E6wsnchCrh1nEIPBO2jLick=;
+ b=bhUsrH+UVjXcFsRLX89H22s0XiyjTMY36LQzl1BlzXBVeTFq6/sGAS2SoY7JRAbza1
+ Zu/jlkRQS6xYEjh+GnyDPqIAo4fRHz1hxH/jYYO3RWzExgZd2rpsMYPK5hTLzviY5ACw
+ ULTot+c9jPvm1ygwpFp5Ya//DDdcAEIhbZCPNlMG0gDgzqnz7oBcchI7ngpQw5l5s5O5
+ ZcI1/qM5LLWCnlWs5/eQpSg4EzmiFLW83bvsvwnYBv5ucm48q6dg1hP532g0Iiy55Dnv
+ mceV6cRd+t4GS02L395+0Jt9N2Bp0lf6WY8/5Xs/InBu/epKwTmTgvV+cVaVDO/qdIpY
+ 5OaQ==
+X-Gm-Message-State: AOAM531wS33L8iMM47mdmA/GDyVZT1JI6lTw5IiLG+Ryfs0mypfq5qZa
+ myhkWz8KfDOHnT6+kIs26Ht/5OhOZ94ctw==
+X-Google-Smtp-Source: ABdhPJzap0kGu1egGId0OigJHniV/DUqyPJ4lrE42XQrKGczRo2UT52upto39iOtcnOlmYGAuO0SDQ==
+X-Received: by 2002:a05:6e02:1ba6:: with SMTP id
+ n6mr32295674ili.296.1641590578283; 
+ Fri, 07 Jan 2022 13:22:58 -0800 (PST)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com.
+ [209.85.166.48])
+ by smtp.gmail.com with ESMTPSA id l11sm1910300ilq.74.2022.01.07.13.22.57
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 07 Jan 2022 13:22:57 -0800 (PST)
+Received: by mail-io1-f48.google.com with SMTP id e128so8755281iof.1
+ for <ath10k@lists.infradead.org>; Fri, 07 Jan 2022 13:22:57 -0800 (PST)
+X-Received: by 2002:a02:c60e:: with SMTP id i14mr25520700jan.207.1641590577234; 
+ Fri, 07 Jan 2022 13:22:57 -0800 (PST)
 MIME-Version: 1.0
+References: <20220107200417.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
+In-Reply-To: <20220107200417.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 7 Jan 2022 13:22:45 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=W5fHP8K-PcoYWxYHiDWnPUVQQzOzw=REbuJSSqGeVVfg@mail.gmail.com>
+Message-ID: <CAD=FV=W5fHP8K-PcoYWxYHiDWnPUVQQzOzw=REbuJSSqGeVVfg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ath10k: search for default BDF name provided in DT
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>, Rakesh Pillai <pillair@codeaurora.org>, 
+ LKML <linux-kernel@vger.kernel.org>, 
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+ ath10k <ath10k@lists.infradead.org>, netdev <netdev@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220107_120552_102500_93F97196 
-X-CRM114-Status: GOOD (  18.91  )
+X-CRM114-CacheID: sfid-20220107_132302_854276_63F10A29 
+X-CRM114-Status: GOOD (  20.97  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,131 +94,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-There can be cases where the board-2.bin does not contain
-any BDF matching the chip-id+board-id+variant combination.
-This causes the wlan probe to fail and renders wifi unusable.
-For e.g. if the board-2.bin has default BDF as:
-bus=snoc,qmi-board-id=67 but for some reason the board-id
-on the wlan chip is not programmed and read 0xff as the
-default value. In such cases there won't be any matching BDF
-because the board-2.bin will be searched with following:
-bus=snoc,qmi-board-id=ff
-To address these scenarios, there can be an option to provide
-fallback default BDF name in the device tree. If none of the
-BDF names match then the board-2.bin file can be searched with
-default BDF names assigned in the device tree.
+Hi,
 
-The default BDF name can be set as:
-wifi@a000000 {
-	status = "okay";
-	qcom,ath10k-default-bdf = "bus=snoc,qmi-board-id=67";
-};
+On Fri, Jan 7, 2022 at 12:05 PM Abhishek Kumar <kuabhs@chromium.org> wrote:
+>
+> There can be cases where the board-2.bin does not contain
+> any BDF matching the chip-id+board-id+variant combination.
+> This causes the wlan probe to fail and renders wifi unusable.
+> For e.g. if the board-2.bin has default BDF as:
+> bus=snoc,qmi-board-id=67 but for some reason the board-id
+> on the wlan chip is not programmed and read 0xff as the
+> default value. In such cases there won't be any matching BDF
+> because the board-2.bin will be searched with following:
+> bus=snoc,qmi-board-id=ff
+> To address these scenarios, there can be an option to provide
+> fallback default BDF name in the device tree. If none of the
+> BDF names match then the board-2.bin file can be searched with
+> default BDF names assigned in the device tree.
+>
+> The default BDF name can be set as:
+> wifi@a000000 {
+>         status = "okay";
+>         qcom,ath10k-default-bdf = "bus=snoc,qmi-board-id=67";
 
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
----
+Rather than add a new device tree property, wouldn't it be good enough
+to leverage the existing variant? Right now I think that the board
+file contains:
 
- drivers/net/wireless/ath/ath10k/core.c | 30 ++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/core.h |  5 +++++
- drivers/net/wireless/ath/ath10k/qmi.c  |  4 ++++
- 3 files changed, 39 insertions(+)
+'bus=snoc,qmi-board-id=67.bin'
+'bus=snoc,qmi-board-id=67,qmi-chip-id=320,variant=GO_LAZOR.bin'
+'bus=snoc,qmi-board-id=67,qmi-chip-id=320,variant=GO_POMPOM.bin'
+'bus=snoc,qmi-board-id=67,qmi-chip-id=4320,variant=GO_LAZOR.bin'
+'bus=snoc,qmi-board-id=67,qmi-chip-id=4320,variant=GO_POMPOM.bin'
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 8f5b8eb368fa..a7008c853f0f 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1081,6 +1081,32 @@ int ath10k_core_check_dt(struct ath10k *ar)
- }
- EXPORT_SYMBOL(ath10k_core_check_dt);
- 
-+int ath10k_core_parse_default_bdf_dt(struct ath10k *ar)
-+{
-+	struct device_node *node;
-+	const char *board_name = NULL;
-+
-+	ar->id.default_bdf[0] = '\0';
-+
-+	node = ar->dev->of_node;
-+	if (!node)
-+		return -ENOENT;
-+
-+	of_property_read_string(node, "qcom,ath10k-default-bdf",
-+				&board_name);
-+	if (!board_name)
-+		return -ENODATA;
-+
-+	if (strscpy(ar->id.default_bdf,
-+		    board_name, sizeof(ar->id.default_bdf)) < 0)
-+		ath10k_warn(ar,
-+			    "default board name is longer than allocated buffer, board_name: %s; allocated size: %d\n",
-+			    board_name, sizeof(ar->id.default_bdf));
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(ath10k_core_parse_default_bdf_dt);
-+
- static int ath10k_download_fw(struct ath10k *ar)
- {
- 	u32 address, data_len;
-@@ -1441,6 +1467,10 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 	if (ret == -ENOENT && fallback_boardname2)
- 		ret = ath10k_core_search_bd(ar, fallback_boardname2, data, len);
- 
-+	/* check default BDF name if provided in device tree */
-+	if (ret == -ENOENT && ar->id.default_bdf[0] != '\0')
-+		ret = ath10k_core_search_bd(ar, ar->id.default_bdf, data, len);
-+
- 	if (ret == -ENOENT) {
- 		ath10k_err(ar,
- 			   "failed to fetch board data for %s from %s/%s\n",
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 9f6680b3be0a..1201bb7bb8ab 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -79,6 +79,9 @@
- /* The magic used by QCA spec */
- #define ATH10K_SMBIOS_BDF_EXT_MAGIC "BDF_"
- 
-+/* Default BDF board name buffer size */
-+#define ATH10K_DEFAULT_BDF_BUFFER_SIZE 0x40
-+
- /* Default Airtime weight multipler (Tuned for multiclient performance) */
- #define ATH10K_AIRTIME_WEIGHT_MULTIPLIER  4
- 
-@@ -1102,6 +1105,7 @@ struct ath10k {
- 		bool ext_bid_supported;
- 
- 		char bdf_ext[ATH10K_SMBIOS_BDF_EXT_STR_LENGTH];
-+		char default_bdf[ATH10K_DEFAULT_BDF_BUFFER_SIZE];
- 	} id;
- 
- 	int fw_api;
-@@ -1342,6 +1346,7 @@ int ath10k_core_register(struct ath10k *ar,
- void ath10k_core_unregister(struct ath10k *ar);
- int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type);
- int ath10k_core_check_dt(struct ath10k *ar);
-+int ath10k_core_parse_default_bdf_dt(struct ath10k *ar);
- void ath10k_core_free_board_files(struct ath10k *ar);
- 
- #endif /* _CORE_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 80fcb917fe4e..a57675308014 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -831,6 +831,10 @@ static int ath10k_qmi_fetch_board_file(struct ath10k_qmi *qmi)
- 	if (ret)
- 		ath10k_dbg(ar, ATH10K_DBG_QMI, "DT bdf variant name not set.\n");
- 
-+	ret = ath10k_core_parse_default_bdf_dt(ar);
-+	if (ret)
-+		ath10k_dbg(ar, ATH10K_DBG_QMI, "Default BDF name not set in device tree.\n");
-+
- 	return ath10k_core_fetch_board_file(qmi->ar, ATH10K_BD_IE_BOARD);
- }
- 
--- 
-2.34.1.575.g55b058a8bb-goog
+...and, on lazor for instance, we have:
 
+qcom,ath10k-calibration-variant = "GO_LAZOR";
+
+The problem you're trying to solve is that on some early lazor
+prototype hardware we didn't have the "board-id" programmed we could
+get back 0xff from the hardware. As I understand it 0xff always means
+"unprogrammed".
+
+It feels like you could just have a special case such that if the
+hardware reports board ID of 0xff and you don't get a "match" that you
+could just treat 0xff as a wildcard. That means that you'd see the
+"variant" in the device tree and pick one of the "GO_LAZOR" entries.
+
+Anyway, I guess it's up to the people who spend more time in this file
+which they'd prefer, but that seems like it'd be simple and wouldn't
+require a bindings addition...
+
+-Doug
 
 _______________________________________________
 ath10k mailing list
