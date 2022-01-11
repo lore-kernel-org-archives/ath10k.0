@@ -4,64 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9610C433F5
-	for <ath10k@archiver.kernel.org>; Tue, 11 Jan 2022 05:34:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09A35C433EF
+	for <ath10k@archiver.kernel.org>; Tue, 11 Jan 2022 14:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=fXvW8bS/ziT8+FRC0gLo1gHvApl6eANUKjxntWnLcc0=; b=VLMouhhllPWTlU
-	HPDtRQu5NoDubvCnZ40fyTD1dnoDTuNEU3kWx6OEfl+wel9dny3iz6D5krO80XAyUWDVM+l0Yg1Ub
-	RYAZQEsU1Pxm9/d9Y6oIxOfSONq5gF2l1HjMLiWwhT5KcPqgRKQRAWjnlLzaygFI6kcutEECK3h7n
-	6ZBOgAIldXiKUQtD47NWNu2LrQdOEHaw9bung3lvLVxGiQRjZtu0/n1yJNMiCa5CxvvJ37//wYsV/
-	N76cHfWgPG5Aiy4v5MY85bAR9mPBSpCp5Ky6ysc1C74Y9BdoXBj9oHtY8QYFOuhVCwOXpc20KYX1w
-	ciIcD1EkVdMXmuILsQ+w==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=eNYUtTvLcyLvYd7QBvaFjjBWC2cltG+69yZmKsoZO4k=; b=YzQvNiJZExSzoF
+	1GHMFwSL8nlXPSwIkRiVbiy83X85YS/wPYt3reHIKblnwfryMOd+o4vP/M3qevi0v2I/hNOnnUSM5
+	nqf0tMoNpKl9Ebv/4/0RtPkXCyg9EtENd54vkk9kvmg0nIyRdm+wlNx7z+ysQ1yVCKFh6sO6aP2q6
+	qEOx5DW9w61n4yPDWyM0y9rvGRm/AM/zSWJj8vkZOhRSXlTLCDxtYyIOtk7eXPVD0apwBfoQQYj4S
+	7CnegQZ6GoY61J0Ew6kSFM838nZOjOOTjMGgtjz9yjHacLlytjZ4Za2cKcpNckBtkPMlHLGmjhSHW
+	fGB6rx8WdGvpVxX/aZnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n79nm-00EmnL-8J; Tue, 11 Jan 2022 05:34:34 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1n7IAN-00GZVL-Lc; Tue, 11 Jan 2022 14:30:27 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n79ni-00EmmL-EN
- for ath10k@lists.infradead.org; Tue, 11 Jan 2022 05:34:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1641879270; x=1673415270;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=SMxOV77jmhbxaroMM/jsm6f7w/c5wcioF3BFSTvIUm0=;
- b=dsb3OUlW2imRI2kWQVoNW6J96ZeUME+4XITRIRUUtF+9+X1GRZYHO8h3
- 90ut9abU8NEWUCzzVC2a6thi6atVtgxVrTNwHtfmSBD91BYfmQfoDcLEQ
- WOXJ1ZpetnuwbmceN/wFdjWIj3ji/SuBDt+4zAlSHci6K7InZzVD0Omfg
- 0/XQupYghN95CMMsIaUecydAzoAfS0f8Jpc6yVv+P62pg5Ui+QDMgs+pH
- JDsFKz75ek7/K7dAc02vOxXkWcnTrCzGNTNHn7sxyUNlUkcb7UNmok6d1
- CIK59FjwZx7WS8cYDzxUyJU9iRnYqmVc9ogLEJedR3TLNEA7U4ZXvvaRv g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10223"; a="242219228"
-X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="242219228"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jan 2022 21:34:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="592587682"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
- by fmsmga004.fm.intel.com with ESMTP; 10 Jan 2022 21:34:27 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1n79ne-0004Q9-Dp; Tue, 11 Jan 2022 05:34:26 +0000
-Date: Tue, 11 Jan 2022 13:33:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- 7e536b331e85d034819c546d72a70e91d950d754
-Message-ID: <61dd16ac.cFbH1TKZkhKuDQbW%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1n7IAL-00GZUv-0B
+ for ath10k@lists.infradead.org; Tue, 11 Jan 2022 14:30:26 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9E362B81AE7;
+ Tue, 11 Jan 2022 14:30:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F4D8C36AE3;
+ Tue, 11 Jan 2022 14:30:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1641911422;
+ bh=3YbvXQFmoeKr2zfRncYcsBgKf0u9oU4rKKvV8f5NIlc=;
+ h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+ b=OYshFZk95oY2p64CHl23tb8JQMXUmqR8SN8OD5QPbpSMAFcIB28Jfr6hDkfrRe4XM
+ /dP14IcarB12CBlctSPQJPhNgC8vNS1kfM9VfCif9Jh/oGqM7uw4/515lAruEMQ5AE
+ q7/iF2lkIal3Ll43QxmrEzuZTzlOdX3h+lmtRM4u2vnT+Rou3XX1e0Qu9LbEwY6tW5
+ szqYEuYHnHXv9OAzGZQ0fKoVBY18+g32yu1rtxaMcda3J9NvMdd0feE8RldlO6/HbN
+ nYZ6htPbEbKpW8X3oWEQwT7t7ka6PtFQ2zZth+N8prlQ3K3jh5LIghFLgMraCpBDq2
+ Ce6Y5t3Gv9NUQ==
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: fix memory overwrite of the WoWLAN wakeup packet
+ pattern
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20211222031347.25463-1-quic_wgong@quicinc.com>
+References: <20211222031347.25463-1-quic_wgong@quicinc.com>
+To: Wen Gong <quic_wgong@quicinc.com>
+Cc: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+ <quic_wgong@quicinc.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <164191141967.24158.14971399294793691071.kvalo@kernel.org>
+Date: Tue, 11 Jan 2022 14:30:21 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220110_213430_524909_75CA84AC 
-X-CRM114-Status: UNSURE (   6.48  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220111_063025_218358_7DDDA99D 
+X-CRM114-Status: GOOD (  10.58  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,76 +73,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 7e536b331e85d034819c546d72a70e91d950d754  ath11k: Refactor the fallback routine when peer create fails
+Wen Gong <quic_wgong@quicinc.com> wrote:
 
-elapsed time: 734m
+> In function ath10k_wow_convert_8023_to_80211(), it will do memcpy for
+> the new->pattern, and currently the new->pattern and new->mask is same
+> with the old, then the memcpy of new->pattern will also overwrite the
+> old->pattern, because the header format of new->pattern is 802.11,
+> its length is larger than the old->pattern which is 802.3. Then the
+> operation of "Copy frame body" will copy a mistake value because the
+> body memory has been overwrite when memcpy the new->pattern.
+> 
+> Assign another empty value to new_pattern to avoid the overwrite issue.
+> 
+> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+> 
+> Fixes: fa3440fa2fa1 ("ath10k: convert wow pattern from 802.3 to 802.11")
+> Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-configs tested: 54
-configs skipped: 3
+Patch applied to ath-next branch of ath.git, thanks.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+e3fb3d4418fc ath10k: fix memory overwrite of the WoWLAN wakeup packet pattern
 
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20211222031347.25463-1-quic_wgong@quicinc.com/
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
