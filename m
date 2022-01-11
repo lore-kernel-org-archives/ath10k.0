@@ -4,70 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABB00C433EF
-	for <ath10k@archiver.kernel.org>; Tue, 11 Jan 2022 01:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEA11C433FE
+	for <ath10k@archiver.kernel.org>; Tue, 11 Jan 2022 05:34:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ul3vhbsyp2AKbNyZEOta3StjRWtGBsWK0oY0XlRBJSU=; b=tpvrpG16GWrMIh
-	jWE1PDNxpmzRsIhaosJQjCybUeBBdPVbxFc1SSr9Vb6C3iSnhxwYzJhfacPs2tPqSWs80g0oHipPc
-	jdI+vJ+mmkVMWZnEDHzghRkA5lM4KRbeTpdirn6IL1DYlm+M58WV415TKNBS2qGFCcIWvU4Hr/FaK
-	i5Cc8+22dXkj4GjO2q0Ke2zMcPnk+REBzxzzGusduNxKr6MxxGiXEBTg3IKZkCWLZMhqV489o/BxL
-	lrvGCbEnnQXyuBYeoHLF29QemSkuauNLr/LoNcW9I52Wos8RVHGWIAaBy6OpGXEIEoydH3pN6hCX8
-	zagJc+Ji865S7rbdTTkg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2hCL+XhbwRSMzijERR8wugjg6qjF0HT7E/1D4lfMiv0=; b=Twj2p1Gw/l33Qd
+	ai65VR9MV8jjZY0sTsWrxaMd5BaXttDLT10WBTrFxMf7Z5wmZSKKl873qajUw4Q+48i8QxNxlfhyW
+	9rVj1/DEhTY5uVsssfykOavmcGBPv/tPjA/cqOz4r1Gln2zCKBK1hDiGec0fQvr+/RlZS3v2tDv17
+	g2nm2wT/C5evO91av3hnp9mTv7hz7WBtFGBHShU0e3z3t/0Cjz6jX7g3bVJAOnfjxOFEPP1+BOiEv
+	NwOiLQxW3vkUB5R0SjRxVEO1ZzvmsAJrILk0lmrK+bj8+foq2GumzdJ+c71uMKvpABeZOh4bvCWPj
+	Lnhuw+EM14rOPJKPHTRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n75eE-00EB0H-7q; Tue, 11 Jan 2022 01:08:26 +0000
-Received: from mga06.intel.com ([134.134.136.31])
+	id 1n79nk-00Emn8-Fr; Tue, 11 Jan 2022 05:34:32 +0000
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n75eA-00EAzO-QC
- for ath10k@lists.infradead.org; Tue, 11 Jan 2022 01:08:24 +0000
+ id 1n79nh-00Emm6-So
+ for ath10k@lists.infradead.org; Tue, 11 Jan 2022 05:34:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1641863302; x=1673399302;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=TqZR3QdNhx3+jinaxLje5HX8DuGRHTavYxG9F8g5h7E=;
- b=HwQ9zUvsCi7BgSKjSBAsq0Hy0KTI1vXEH9Oy8U66MDUkoTQ2FjfSmSiU
- dQ/l7f/ibpYvElX1RY1hmhkpvJSgOyRWpQo9cxGWNPKNDoL5KiAuZ5x3Z
- lG7GCeWMlGtVJuuWlf24LlKsEyw2ajEc6kl8L1v7h6qYm7GYhJR3cqH/p
- Vy2Ph6F7tcOpYw2UI9tJ8VJ6SBo0Uf0YApW4gZInoDZuYCcTprndKc+4s
- H8YR8y/Q0TBgLTV81nR7uwZHJM0mYpOYGHQ8mcq+uZHKCMbOtXzr/6ekv
- 2my37mwdC761g+LeU+0NAhL66PJuBlajvaXvLKy5sQ5J84I/VqvdFEF8m Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10223"; a="304111775"
-X-IronPort-AV: E=Sophos;i="5.88,278,1635231600"; d="scan'208";a="304111775"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jan 2022 17:08:21 -0800
+ t=1641879269; x=1673415269;
+ h=date:from:to:cc:subject:message-id:mime-version:
+ content-transfer-encoding;
+ bh=T9MrLMmU9CLHGjxjNQWJW9uqnIUpyQju4NikV1bMCSQ=;
+ b=fviOdBy95726+GCCSqavph2FvLsLN7BaC+ajj1p6jP/h5egeTuM4wQjL
+ Fa4Tk75ZnqdcOXe4RixZF/xV8akUrYCV3OPFVfvb5Pp2ItGkrLoo/6JK3
+ XuDBggl5VdZ5pNIEBY66qbsZQCEJM/e8c5tG6JYa3ntK8/pLoDPz7Owzt
+ XK773onpeHZQ2Mon0bItmLP8uf8TggKvEyiLBqKk91+Q7jPKY1dcdiW8R
+ 9CZCsxxfgdgjzwTw7NY8HNPvMy2ErbbvV7EuzhZlV5eaqVCixdsOh+paY
+ Ekt+CUxqi4Lfbt9Kyr3kr7uS08HrEoZorDhz59Otg41bJny9T7u47Ehlv w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10223"; a="306759567"
+X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="306759567"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jan 2022 21:34:28 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,278,1635231600"; d="scan'208";a="490198291"
+X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="619704405"
 Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
- by orsmga002.jf.intel.com with ESMTP; 10 Jan 2022 17:08:18 -0800
+ by fmsmga002.fm.intel.com with ESMTP; 10 Jan 2022 21:34:27 -0800
 Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1n75e5-00049d-Pv; Tue, 11 Jan 2022 01:08:17 +0000
-Date: Tue, 11 Jan 2022 09:07:27 +0800
+ id 1n79ne-0004Q6-DF; Tue, 11 Jan 2022 05:34:26 +0000
+Date: Tue, 11 Jan 2022 13:33:36 +0800
 From: kernel test robot <lkp@intel.com>
-To: Abhishek Kumar <kuabhs@chromium.org>, kvalo@codeaurora.org,
- ath10k@lists.infradead.org
-Cc: kbuild-all@lists.01.org, pillair@codeaurora.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- kuabhs@chromium.org, dianders@chromium.org,
- Jakub Kicinski <kuba@kernel.org>, Kalle Valo <kvalo@kernel.org>,
- netdev@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] ath10k: search for default BDF name provided in DT
-Message-ID: <202201110851.5qAxfQJj-lkp@intel.com>
-References: <20220110231255.v2.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ d331e47d0676e5e371a2a4714acc4faa3b876c29
+Message-ID: <61dd16b0.4hBg4ufxxi1jjSdf%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220110231255.v2.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220110_170822_927280_709C2DC6 
-X-CRM114-Status: GOOD (  14.57  )
+X-CRM114-CacheID: sfid-20220110_213430_015323_F2FEDC97 
+X-CRM114-Status: UNSURE (   6.03  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,78 +78,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Abhishek,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: d331e47d0676e5e371a2a4714acc4faa3b876c29  Merge branch 'pending' into master-pending
 
-Thank you for the patch! Perhaps something to improve:
+elapsed time: 735m
 
-[auto build test WARNING on kvalo-ath/ath-next]
-[also build test WARNING on kvalo-wireless-drivers-next/master kvalo-wireless-drivers/master v5.16 next-20220110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+configs tested: 54
+configs skipped: 3
 
-url:    https://github.com/0day-ci/linux/commits/Abhishek-Kumar/ath10k-search-for-default-BDF-name-provided-in-DT/20220111-071636
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20220111/202201110851.5qAxfQJj-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/50c4c7cb02cc786afcd9aff27616a6e20296c703
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Abhishek-Kumar/ath10k-search-for-default-BDF-name-provided-in-DT/20220111-071636
-        git checkout 50c4c7cb02cc786afcd9aff27616a6e20296c703
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash drivers/net/wireless/ath/ath10k/
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   drivers/net/wireless/ath/ath10k/core.c: In function 'ath10k_core_parse_default_bdf_dt':
->> drivers/net/wireless/ath/ath10k/core.c:1103:116: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'unsigned int' [-Wformat=]
-    1103 |                             "default board name is longer than allocated buffer, board_name: %s; allocated size: %ld\n",
-         |                                                                                                                  ~~^
-         |                                                                                                                    |
-         |                                                                                                                    long int
-         |                                                                                                                  %d
-    1104 |                             board_name, sizeof(ar->id.default_bdf));
-         |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
-         |                                         |
-         |                                         unsigned int
-
-
-vim +1103 drivers/net/wireless/ath/ath10k/core.c
-
-  1083	
-  1084	int ath10k_core_parse_default_bdf_dt(struct ath10k *ar)
-  1085	{
-  1086		struct device_node *node;
-  1087		const char *board_name = NULL;
-  1088	
-  1089		ar->id.default_bdf[0] = '\0';
-  1090	
-  1091		node = ar->dev->of_node;
-  1092		if (!node)
-  1093			return -ENOENT;
-  1094	
-  1095		of_property_read_string(node, "qcom,ath10k-default-bdf",
-  1096					&board_name);
-  1097		if (!board_name)
-  1098			return -ENODATA;
-  1099	
-  1100		if (strscpy(ar->id.default_bdf,
-  1101			    board_name, sizeof(ar->id.default_bdf)) < 0)
-  1102			ath10k_warn(ar,
-> 1103				    "default board name is longer than allocated buffer, board_name: %s; allocated size: %ld\n",
-  1104				    board_name, sizeof(ar->id.default_bdf));
-  1105	
-  1106		return 0;
-  1107	}
-  1108	EXPORT_SYMBOL(ath10k_core_parse_default_bdf_dt);
-  1109	
+gcc tested configs:
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
