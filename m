@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 556E4C433EF
-	for <ath10k@archiver.kernel.org>; Tue, 18 Jan 2022 02:28:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D651CC433EF
+	for <ath10k@archiver.kernel.org>; Tue, 18 Jan 2022 02:57:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YWgOxuXKEdER6Xb+yvc4SAp3U3mTlZyqWybsK76V+Cs=; b=aIQ2vS3/S9O/V7
-	lIuG56VQ/S2pHrzb035mNb8kc03+L7HjpEXOE4yJdnABT6wGbpg4+6fhB4BXBBka/9ZMK9udNZPvG
-	7yk/fRl+UXj0IvOtO13lRC1xeRVJUepSgSDJoPO6tnFda1LdZuv+EcWMwkUgO3kTLGfHl1KnC+r7S
-	jrEavlwq1W6YZeMNREKEJV9H/tIB3VrLuVoq96zpmn1yn3dZDQpHNDmN2Gf3Rc1IYzt3FyySPZM27
-	DMOt3SPIIwHf0hADon4MRhJN+tM9ridz6cNktNs4mwSa1FfD/YoTeQ5Us1kqimzfH0uQrzUGaHKsd
-	PpYvlDrcKjoc3zMSa41Q==;
+	List-Owner; bh=YWgOxuXKEdER6Xb+yvc4SAp3U3mTlZyqWybsK76V+Cs=; b=D8/9G30QCYAnK5
+	apBONPAy6QSdIOAdJ1ddSgtcg8OttUVxycvaQ8AW471sPtYZmH5HdJPa/hEh/ECpsNCsq3Bjelhl/
+	LRe87BJpOX/IqUe4ro33j2MLLlWn00OMCqruht8wpkQiH6+EFdQopTNy2hmK4uuEhsB23DdTXibtu
+	dHModg2RCLXSsljeNMjx63g0qMUwsvyixoAKk34a/TEjuQCODFwiojcTx56BgV/jD5QClMb0UGQ8v
+	PTU8v6MMx8SN25LW17hSZyKs990SPMP8hbPrmbxLfyhGeIrCGm928Fazob3Yb8lB7WVklF078Gkm9
+	KzBZRRgQDbdekVKWY+Sw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n9eEF-00Gwb0-Cu; Tue, 18 Jan 2022 02:28:12 +0000
+	id 1n9egF-00HCDx-Fy; Tue, 18 Jan 2022 02:57:07 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9eBS-00Gut9-Hz
- for ath10k@lists.infradead.org; Tue, 18 Jan 2022 02:25:20 +0000
+ id 1n9eMC-00H0qv-PF
+ for ath10k@lists.infradead.org; Tue, 18 Jan 2022 02:36:28 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 712E6604EF;
- Tue, 18 Jan 2022 02:25:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A644EC36AF4;
- Tue, 18 Jan 2022 02:25:15 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 36D1F6127D;
+ Tue, 18 Jan 2022 02:36:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1C63C36AEB;
+ Tue, 18 Jan 2022 02:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642472716;
+ s=k20201202; t=1642473384;
  bh=dYHVgXTJBZ/3UowgSYH+o0QhZxf6PnFIxrfZXVMuKnM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=m/KOg+juM8y38pEo+UMKjJpUikmy/hjlkakJejKwrdanVzCbbmIMysIzEfAMlq7my
- /cUbW6IpvcIDB1z9m+anyrp60FNRqOPyTCEFinjlRS6qUhhTwUEzWpXBMpDwq6RJqA
- gG1/tDuY5If8c+9LeEIVVmXRPHkjriNig93ID4cQx+XBJaChNHoTOH24S0q0lu7pMC
- khriiisV4+RF4LGfTSivieSNlreJBMQQ78+Z7rAzjoPlmX2m8D/Do1WaYwOKEItdei
- xMO6YCPCnoxXlRLlYhjajUALAFVAdTfxYXtNwxF4s+oiwpt/Qx0ZKATzVDM7YvZbbq
- ygXTAmL2X+pJg==
+ b=ty6M05+tjNefyDSAk7F7mXD29VGoBPNGwwEB7EcHEmGXsdYBGXKNMgGOmTcGczV2d
+ wh+X61VjKwbtthkwC6LhzZFlbvQpXEpjKu9WDHBcVO9SWSbah0ejSkJbdrsLCZiLTr
+ 4121MZGKwdsiWt36e5f66EMUAAlDtjIi1k2fez6Ba0hxZFK3dZboxCsGhv1faQ9unQ
+ sn5UivWXq3Vw+WwE4OClygBSCft5ul+ZeyoPzDu5vTZNxdmVlIWXuc+H7fZkgoimtF
+ sVowDqQv2LO6Qa9NFUnQn2/D+SUDe+PduobkmpO/stRDX9NYw9Yp5PYmRM+koJYoIY
+ BlBZKTCNg0z+g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,17 +50,17 @@ Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>,
  kvalo@kernel.org, davem@davemloft.net, kuba@kernel.org,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 110/217] ath10k: Fix tx hanging
-Date: Mon, 17 Jan 2022 21:17:53 -0500
-Message-Id: <20220118021940.1942199-110-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 095/188] ath10k: Fix tx hanging
+Date: Mon, 17 Jan 2022 21:30:19 -0500
+Message-Id: <20220118023152.1948105-95-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220118021940.1942199-1-sashal@kernel.org>
-References: <20220118021940.1942199-1-sashal@kernel.org>
+In-Reply-To: <20220118023152.1948105-1-sashal@kernel.org>
+References: <20220118023152.1948105-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220117_182518_692453_19B2B993 
+X-CRM114-CacheID: sfid-20220117_183624_915861_ABEF5AAE 
 X-CRM114-Status: GOOD (  11.83  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
