@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0831BC433FE
-	for <ath10k@archiver.kernel.org>; Fri, 21 Jan 2022 13:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E757DC433F5
+	for <ath10k@archiver.kernel.org>; Fri, 21 Jan 2022 13:27:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6ftXom2UnthOvYyk8usbcrcGrWbBH326J2jP7x2jSwk=; b=CYucpXewQKfZdE
-	Nj3aIkcTAK/X95NiuihCAWOLI5ZXEIRU3xaRDeowwSvQYTWNgmdTvmEyIXZeJoAU5vR5udfrrsMDF
-	YH4gMrcWEqAjWyAQkgU9zspQBUVAtmlVFoDQw4yqF3bPf5YFrqcSt0fOm564GBTbsAX7PlW6vIyQJ
-	enn2mCR1/1FcOFOA0eYaFsc+uuauuqRMtxLwR/P/61NMFOCnZ8158+DquEzb+8ZJcHyJYYPs8fMsK
-	Y0Rbzd2O2e5s54hhKU6twfc8ibosayBxJmj+nOoUUD6fLpfqhX6ZK5CoXXVvrIXifVtaTPL2oI9nE
-	y0i0WOzK3M6Eu6Ry9SFw==;
+	List-Owner; bh=IoWXZnU415A+h1u/8+JAPzZrkyA9+GzVGI/TxAeuzUo=; b=FKv+H2Gf1FOTLR
+	9kEbh8KdRc/26lXGMQssYK/3yW52KCoZyZzmgHhMHSl2kTg9R5driYFRrtH+DglEPOHee1950TCee
+	W8IzqM34uSAGK6lkFKfk5fDldZuYMcifa8JyfXq2w98jsdIT2Eg1GWhSJ0qfjRcfLfWq6o48PoOMK
+	ZeyrSRSXPOWI/GG37KYSpdSHwseg+zbeKdF4HdGQmmZPz7wqqdFm1A3AuBBgdl8MwuGvxPpmnsAXk
+	T3xKmwQNPYIuMOek59DsQKs+VuYUaW+x+sS/XM5HWYETaQZKMMYkcpGl3EuIvy9KCeBerZq4/OWdS
+	NnXZ/N1usF3kmtCH3b5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nAtvc-00F91F-4o; Fri, 21 Jan 2022 13:26:08 +0000
+	id 1nAtwY-00F9Sd-Np; Fri, 21 Jan 2022 13:27:06 +0000
 Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAtvU-00F8wS-KM
- for ath10k@lists.infradead.org; Fri, 21 Jan 2022 13:26:05 +0000
+ id 1nAtwT-00F9PG-6S
+ for ath10k@lists.infradead.org; Fri, 21 Jan 2022 13:27:04 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 2FF03B81EAC;
- Fri, 21 Jan 2022 13:25:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50EC5C340E1;
- Fri, 21 Jan 2022 13:25:57 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id CD019B81EAC;
+ Fri, 21 Jan 2022 13:26:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEAF6C340E1;
+ Fri, 21 Jan 2022 13:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642771557;
- bh=dnmqzg0eU6yOJOtoBOcaSVEgNxuj16UCgwnNXP4/3BU=;
+ s=k20201202; t=1642771618;
+ bh=O/vT+VV20MtIhSA6I1YDlX5aMEpzDSssu/IPeMgdOS8=;
  h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=DDDUAiWzkmwTdqI5MfauLe6MfUfM2/wNx9Wc9kbtTpFCgRmeKd51IxxnlVVjCOMgu
- UO6kszSIwbw0sYBUXRUVpr7WdHJHXKU7y3l/p8C63tew2/v7MMfhIhfFFn/3lBSaSz
- F4cFlXJz+GPwCyXcgK+a+qVReEvYWP95t8dKllMvbg3GTLU1eb8StH0/cVvlYluP9X
- vhBb8JGvXFBD/L2ouulHmIQU32j7iQLp3VyPYmeq0+qViGX0QjFmfQDYZO1WBP4nZY
- yJ+IBk8P0TQArRKqxNTvBaUZy35fHLcAnZNKmuHy1BE/r1cjfBurbdL1OpNEIh1cmE
- UzXElcPk7Bzzw==
+ b=Tr4OnNC9whoHHPUk5LIkYiSqgxslBaorI/0yWBPA4Sge3IodamdAH7lWtFabULkoU
+ fvTBuAldzNqy24Z6xPYSznyc2qay8Pa03g00ljCOeJLqxigGCaqkn1xA/7JALmE2qY
+ 4Al2ZGVrG6oY91VfcVprSmXF7Gv6DB4ZoI/UlVlejbzwMz5gSCLNA34PXgU5rhu3ca
+ r7AOyZpeHnPz5nXDU8I/ADuJyJsT9S1tsQvKtSDFpHLfjjuQyjlhNITPyqy26Vq0ca
+ GZ7scYvwkjBTy0X0dH87jl7HTaVgpZLhIGFQ1QXz0Pdlug8uImCKw4nFEfod8quBxO
+ N5lLljLA1eAgA==
 From: Kalle Valo <kvalo@kernel.org>
-To: Robert Marko <robimarko@gmail.com>
-Cc: ath10k@lists.infradead.org
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Update 8devices Habanero specific
- BDFs
-References: <CAOX2RU6wCpdtUMSrnaPK9Bg8hyn-wqnAeZgszYe-T45MH4E+cw@mail.gmail.com>
-Date: Fri, 21 Jan 2022 15:25:55 +0200
-In-Reply-To: <CAOX2RU6wCpdtUMSrnaPK9Bg8hyn-wqnAeZgszYe-T45MH4E+cw@mail.gmail.com>
- (Robert Marko's message of "Mon, 23 Sep 2019 11:43:32 +0200")
-Message-ID: <874k5xfcf0.fsf@kernel.org>
+To: <frank.shen@senao.com>
+Cc: <ath10k@lists.infradead.org>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add EnGenius EMR5000 specific BDFs
+References: <5DD5DD3C954B284B8B00D292B7482C300102DD7B59@snex01.senao.com>
+Date: Fri, 21 Jan 2022 15:26:52 +0200
+In-Reply-To: <5DD5DD3C954B284B8B00D292B7482C300102DD7B59@snex01.senao.com>
+ (frank shen's message of "Tue, 24 Sep 2019 06:48:10 +0000")
+Message-ID: <87zgnpdxsz.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220121_052600_850335_4EB8BCFC 
-X-CRM114-Status: GOOD (  21.19  )
+X-CRM114-CacheID: sfid-20220121_052701_422636_1E88795C 
+X-CRM114-Status: GOOD (  17.32  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,65 +72,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Robert Marko <robimarko@gmail.com> writes:
+<frank.shen@senao.com> writes:
 
-> I am currently working on the 8devices Habanero support for
-> OpenWrt. This
-> AP requires two special BDFs to get the Wi-Fi PHYs working (correctly). The
-> bmi-board-id='s would clash with one of the the IPQ401X AP-DK boards because
-> QCA doesn't provide special IDs for customers and seems to use the AP-DK
-> board-ids in the wifi firmware to change its behavior.
+> Hi,
 >
-> This update improves 5GHz radio.
+> The support for this device was added a while ago to OpenWrt. This AP
+> requires two special BDFs to get the Wi-Fi PHYs working (correctly).
+> The bmi-board-id='s would clash with one of the the IPQ401X AP-DK
+> boards because QCA doesn't provide special IDs for customers and seems
+> to use the AP-DK board-ids in the wifi firmware to change its
+> behavior. This request contains the two files for QCA4019. The QCA9888
+> one will be submitted in a different request.
 >
 > Now to the questions from the wiki page [1]:
 >
-> * description for what hardware this is:
+> l       description for what hardware this is:
+> -       it is a IPQ4019 based board
+> -       one QCA4019 radio is used as 2.4GHz radio
+> -       one QCA4019 radio is used as 5GHz radio
+> -       an additional QCA9888 5GHz radio is attached via PCI
 >
->   - it is a QCA4019 based module
->   - one QCA4019 radio is used as 2.4GHz radio
->   - one QCA4019 radio is used as 5GHz radio
+> l       origin of the board file (did you create it yourself or where you downloaded)
+> -       taken from stock firmware image
 >
-> * origin of the board file (did you create it yourself or where you
->   downloaded)
+> l       ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+> -       QCA4019 hw1.0
 >
->   - it was pulled from the 8devices OpenWrt fork
->   - it is based on latest version
->
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
->
->   - QCA4019 hw1.0
->
->   + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Habanero
->      md5sum:
->      64d0817da715875483d323f2bb0c898c
->
->   + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Habanero
->      md5sum:
->      56202ea33e96f16c65b75d464451c251
->
-> * attach the actual board file (board.bin)
->
->   - The name of the files are equal to the id string in the board-2.bin
->     (minus the ".bin")
-
-Do note that it seems that only one board file contents was actually
-changed, was that on purpose?
+> md5sum of each new board file to add
+> + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=EnGenius-EMR5000
+> md5sum: e4e0c9bc1482b03b8240817b5918666c
+> + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=EnGenius-EMR5000
+> md5sum: a4e9856757014f4591d40ce93bab3e4f
 
 Thanks, added to QCA4019/hw1.0/board-2.bin:
 
 New:
-
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=EnGenius-EMR5000
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=EnGenius-EMR5000
 
 Changed:
-bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Habanero
+
 
 Deleted:
 
-0 board image(s) added, 1 changed, 0 deleted, 60 in total
+2 board image(s) added, 0 changed, 0 deleted, 62 in total
 
-https://github.com/kvalo/ath10k-firmware/commit/1fad4d7a4aab0bb7daaabd5324c2b87e438d9bac
-
+https://github.com/kvalo/ath10k-firmware/commit/8f150f4a3d52415b95fbbfead8dcaff458b80332
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
