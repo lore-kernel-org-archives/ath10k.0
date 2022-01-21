@@ -4,75 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0EACC433FE
-	for <ath10k@archiver.kernel.org>; Fri, 21 Jan 2022 17:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49FE2C433F5
+	for <ath10k@archiver.kernel.org>; Fri, 21 Jan 2022 22:42:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1XjX2i7541dPqACCxOK/kB6rADDKo/t8NOIZWjEqkAw=; b=h6VVJtYzylekRk
-	fKDDnW/5lfM8cdv9IgxB4X6gm+4s+DlgyVW3fiHKb86q52gqSrzPWfqU8A+VYNDd8f36wQ6SjEX5a
-	1tZrXelQG4bo/stk8fCaPcCjbYJGl2WqrrR1cZzxL60++d+9b515jJ9uUwgRxPoEVUpXVrSNGrQXN
-	MhlhlSg308Wk9qXk/eFhseRPJiiNl+z3bWyzN+4QF0mvnmR83eFY20GL3bytb8g2R9nVAtGkLalvN
-	tSO8RsT8Wtb0//WcMfggftYuukGtEEWxdVZZcE0cCY/S7UX6ggCTU27f0TTtYbrunG8s1g7f4NfcH
-	xi1tmf2n6AO6TSdM1LyQ==;
+	List-Owner; bh=t/vD3P19JITgpQr/XoC6Ow2qQBsEbE2a3it07DaFSi0=; b=0lbm5Whnau9/Ly
+	Zha+C7ZtNxjmTOgTfSgFV1Jid9EDgwAusnAvzebTxbL4FGYySMRPTv+0a9t1CiI5pIfiprXDbmOLy
+	l3rHtE5d3SGmzlNDoTku35ZV7FzX/D7g1nhdhjG6ijFKEL4KCHQKdpez9csOYIiOtCEjqru/axK2+
+	OB/Yg4Cst21k0OJEhgOaC0qacPzqLAEPyd6dTz8CWHcfdO8hiMuA7Nj4ERMnGGjNRCx/DZA6ic7ZH
+	36a85I1CV70z2DIPY7mfBHKLdvhAEXpRSThPJqz/HsegQayx5509KzKG0sbULtpsmxajhWtp4WwY4
+	FllsRGffV8GyOMk4uFSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nAy7G-00Fn8K-56; Fri, 21 Jan 2022 17:54:26 +0000
-Received: from mx.kolabnow.com ([212.103.80.154])
+	id 1nB2c3-00GCEC-1Y; Fri, 21 Jan 2022 22:42:31 +0000
+Received: from mail-io1-xd32.google.com ([2607:f8b0:4864:20::d32])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAy5l-00Fmek-EW
- for ath10k@lists.infradead.org; Fri, 21 Jan 2022 17:52:56 +0000
-Received: from localhost (unknown [127.0.0.1])
- by mx.kolabnow.com (Postfix) with ESMTP id 1EB9E420CB;
- Fri, 21 Jan 2022 18:42:37 +0100 (CET)
-Authentication-Results: ext-mx-out003.mykolab.com (amavisd-new);
- dkim=pass (4096-bit key) reason="pass (just generated, assumed good)"
- header.d=kolabnow.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kolabnow.com; h=
- content-transfer-encoding:content-type:content-type:in-reply-to
- :from:from:references:content-language:subject:subject
- :mime-version:date:date:message-id:received:received:received;
- s=dkim20160331; t=1642786956; x=1644601357; bh=MWl/EJSIzEp61Cgc
- KqbwYhpMeh0nGtLm3ox5BjC1n8U=; b=kXdZm0NUl9sYOFZlhSnPJzzJmAZvU30b
- wlnm0nLEXRyn/yMH4JW3aP+DNwSkuAxB2cuSDDv2CJxiFzY8Bt8ZTM6UAErreoJy
- UbTv2ZP0tVm+ns4Z2scd8z/gFXlbj25GCbjM79YwqFl4EKbknInhrTlW4jWCCoFM
- +yxv6oQIegIysDW7SvoRh0oq7PsCbNjy+9B2N8/6xv8GFrkYa7wuzGv0fG/0ky9B
- JLwX/EFs33e/TlAT6UqbFuKFvPjzGMnzbnqsl5LWXoNCUFC7/1RF9ZE2kTAX/3j/
- aUFt6tTpGwtUwWmw+nfxrWjiDWAdrrCwzlnYsUbQ03muhCN8D8UDXVpnWMuuIrL2
- yRquEyTbJaSeUWtxQNR4/WIE/9gAkwBEIMBDGFp7lMoSJzhR3jkk1+faALJsmIzs
- IFZlpJeRe5g1CQVdyeHaIXQ7bBY5yXbh+nNgUeqkjOMmz6VeI8Ub69l2lB2GgB6Z
- XdHdvD9Yk6sRraIYYkvsYLsOuD+YJNp3XhQMYfDdoMrV9os4EFwcH6IhXq2fni/8
- kWO2XMqkEZpQBnUVFjiZfCplzQIu8xs2hFJk6PvJ4dML2j5CZfOM7tAQanhp+t93
- xFACXYJajKkaBIYWb1KBXN7e+SgckvGa2IHzETrImZA5z7ChbbDxKDCFFHsTtCkZ
- bPaL87zKMls=
-X-Virus-Scanned: amavisd-new at mykolab.com
-Received: from mx.kolabnow.com ([127.0.0.1])
- by localhost (ext-mx-out003.mykolab.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id NCWp9lCK9S71; Fri, 21 Jan 2022 18:42:36 +0100 (CET)
-Received: from int-mx001.mykolab.com (unknown [10.9.13.1])
- by mx.kolabnow.com (Postfix) with ESMTPS id 9BB54420CA;
- Fri, 21 Jan 2022 18:42:35 +0100 (CET)
-Received: from ext-subm003.mykolab.com (unknown [10.9.6.3])
- by int-mx001.mykolab.com (Postfix) with ESMTPS id 1254F7A6;
- Fri, 21 Jan 2022 16:13:35 +0100 (CET)
-Message-ID: <4b816e97-d072-8879-edc9-0978028197db@hansg.org>
-Date: Fri, 21 Jan 2022 16:13:33 +0100
+ id 1nB2c0-00GCDK-2C
+ for ath10k@lists.infradead.org; Fri, 21 Jan 2022 22:42:29 +0000
+Received: by mail-io1-xd32.google.com with SMTP id y22so12493429iof.7
+ for <ath10k@lists.infradead.org>; Fri, 21 Jan 2022 14:42:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=kSZGvQ/PhqOAa5UV8ZigO6yQNjGC7UfSjALFxNrTjuA=;
+ b=YzO6G0ZVqVWf3w1A5HcCIlHDpYyK+WH6nCTbJCOQv9NU71+MiUx6wuo4wXdAep8b6Q
+ EhO8NxIMn2z31HKpOqfDBW6NmyfJ8J+7OIYpy8lyAF9wsGREo/3NE40TuO2uhR17jvA4
+ jtYSliwVEhP6HDzXz7YWq/CoI5MYMOzs8fqwg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=kSZGvQ/PhqOAa5UV8ZigO6yQNjGC7UfSjALFxNrTjuA=;
+ b=k6ebhBZqCKQy6mnafKFEOc9m00YpFp+6cUEfQsZ+bytxvGsGdsDqyqo8i44ULzos+b
+ Vk2UZCjJDW28/xklwTIs0QszUWhbRKQDpuey+9C/lIOkdQIwSiwP4b1dBYc0ohu1axuP
+ rgqYBGK9oRvDVFN4xgEyQ02wkHeTB6F9Kdnu5eobSXOjPCCfTDPVItkUZrw/ZuPc3T5r
+ JlxjcoIApM2hWy/9B0S83gqZtftR/PdJKMRsncMgqFxhQTI6Y7WoZO9hbGkY1CI4fdIg
+ iVpZhTBHJcEapGYrQgC7p+6osEHE8+khhimveCptBtkAjCjFz82MxCj4RZ79wDdOvJmL
+ 2b+Q==
+X-Gm-Message-State: AOAM5336ZZpYpqa1UQ4I3bsX05ysVdRH+DDKeU4zc4B56Mp5d/UnjfeE
+ 3cqNovH/EB9caOkKnEHrvRQt2SEeZ2fN5g==
+X-Google-Smtp-Source: ABdhPJxsxDpi9jkd/Xhgs7uT5GiGxErtTlzVPAn+QtSgVkydx/X00ayxxf46c5Ygjjl0knDVnSADKQ==
+X-Received: by 2002:a05:6602:334d:: with SMTP id
+ c13mr3244033ioz.113.1642804944246; 
+ Fri, 21 Jan 2022 14:42:24 -0800 (PST)
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com.
+ [209.85.166.170])
+ by smtp.gmail.com with ESMTPSA id h3sm3686573ild.11.2022.01.21.14.42.23
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 21 Jan 2022 14:42:23 -0800 (PST)
+Received: by mail-il1-f170.google.com with SMTP id d3so8819498ilr.10
+ for <ath10k@lists.infradead.org>; Fri, 21 Jan 2022 14:42:23 -0800 (PST)
+X-Received: by 2002:a05:6e02:180c:: with SMTP id
+ a12mr3372919ilv.142.1642804943188; 
+ Fri, 21 Jan 2022 14:42:23 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: ath10k-firmware: QCA6174 hw3.2 target 0x05030000 chip_id
- 0x00340aff sub 168c:3370 board file
-Content-Language: en-US
-To: Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org
-References: <226790d7-75d8-bac3-9991-d73fa5b7df5b@hansg.org>
- <87ee519nsc.fsf@kernel.org>
-From: Hans de Goede <hans@hansg.org>
-In-Reply-To: <87ee519nsc.fsf@kernel.org>
+References: <20220121064427.32059-1-quic_youghand@quicinc.com>
+In-Reply-To: <20220121064427.32059-1-quic_youghand@quicinc.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 21 Jan 2022 14:42:11 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=X30mRSFcMeOav87g5qzco_J=-rag3rqyCAYOw0D_Ao0A@mail.gmail.com>
+Message-ID: <CAD=FV=X30mRSFcMeOav87g5qzco_J=-rag3rqyCAYOw0D_Ao0A@mail.gmail.com>
+Subject: Re: [RFC 0/2] ath10k:set tx credit to one and delay the unmaping
+To: Youghandhar Chintala <quic_youghand@quicinc.com>
+Cc: ath10k <ath10k@lists.infradead.org>, 
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, 
+ quic_pillair@quicinc.com, Abhishek Kumar <kuabhs@chromium.org>, 
+ Brian Norris <briannorris@chromium.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220121_095253_893557_BD36DC8F 
-X-CRM114-Status: GOOD (  19.59  )
+X-CRM114-CacheID: sfid-20220121_144228_165677_7DE36D9D 
+X-CRM114-Status: GOOD (  18.47  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,91 +90,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 1/21/22 15:16, Kalle Valo wrote:
-> Hans de Goede <hans@hansg.org> writes:
-> 
->> Here is a board-file for the QCA6174 PCI 168c:003e subsys: 168c:3370 wifi
->> card found on Microsoft Surface Go devices.
->>
->> I'm submitting this per the docs in:
->> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
->> I hope those are still up to date.
->>
->> Currently the kernel gives the following message when loading on this card:
->> "failed to fetch board data for
->> bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3370
->> from ath10k/QCA6174/hw3.0/board-2.bin"
->>
->> And then errors out with a bunch of -110 (-ETIMEOUT) errors.
->>
->> Replacing the fallback board.bin file with the attached .bin file fixes
->> these errors and results in working wifi (I tested at both 2.4G and 5G).
->>
->> There are various internet forum posts which point to this board file:
->> https://web.archive.org/web/20201111213909/http://www.killernetworking.com/support/K1535_Debian/board.bin
->>
->> But the killer 1535 wifi card uses completely different subsys-ids
->> of 1a56:1535, so even though that happens to work I do not believe
->> that is the correct file.
->>
->> So instead, inspired by this report:
->> https://bugzilla.redhat.com/show_bug.cgi?id=1651779
->>
->> I started looking at the driverstore directory of the original windows
->> install on the device I found "netathr10x.inf" there which has this line:
->>
->> eDesc.6320_3% = ATHR_DEV_OS63_988x_TX8.ndi,
->> PCI\VEN_168C&DEV_003E&SUBSYS_3370168C&REV_32; WiFi Only SKU
->>
->> Note the "WiFi Only SKU" remark is there to differentiate this from
->> the 168c:3371 subsys one which also has LTE (marked as "WiFi/LTE SKU")
->>
->> This led me to the "ATHR_DEV_OS63_988x_TX8.ndi" section of the .inf file:
->>
->> [ATHR_DEV_OS63_988x_TX8.ndi.NTamd64]
->> ...
->> CopyFiles       = atheros.CopyFiles, atheros_FW_3X.CopyFiles, atheros_BD_TX8.CopyFiles
->> ...
->>
->> And "atheros_BD_TX8.CopyFiles" is:
->>
->> [atheros_BD_TX8.CopyFiles]
->> eeprom_ar6320_3p0_TX8_clpc.bin,,,2
->>
->> The "windows\system32\driverstore\netathr10x" dir has a ton of
->> eeprom files (let me know if you want a copy of the whole dir)
->> including the mentioned one. Where as "windows\system32\drivers"
->> only has the one eeprom_ar6320_3p0_TX8_clpc.bin eeprom... file,
->> further indicating that that is the one actually being used.
->>
->> So this is the file which I've tested with and which is attached to this email as:
->> "bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3370.bin"
->>
->> md5sum:
->> bc52aa5640b27fa50f9d4d144f81e169
->> bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3370.bin
-> 
-> I assume this is the same version as you submitted directly to
-> linux-firmware[1],
-
-Correct, note that my upstream linux-firmware submission contains
-2 new board files. I've also submitted this to the ath10k-firmware repo here:
-
-https://github.com/kvalo/ath10k-firmware/pull/11
-
-Regards,
-
-Hans
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgpPbiBUaHUsIEphbiAyMCwgMjAyMiBhdCAxMDo0NCBQTSBZb3VnaGFuZGhhciBDaGludGFs
+YQo8cXVpY195b3VnaGFuZEBxdWljaW5jLmNvbT4gd3JvdGU6Cj4KPiBDdXJyZW50bHkgZm9yIFdD
+TjM5OTAsIHRoZSBob3N0IGRyaXZlciBjYW4gc2VuZCB0d28gd21pIGNvbW1hbmRzIGF0IG9uY2Us
+Cj4gbm93IGl0IGlzIGxpbWl0aW5nIHRvIG9uZSBiZWNhdXNlIGlmIEhPU1Qgd2FudHMgdG8gaW5p
+dGlhdGUgMiBETUEgdHJhbnNmZXJzLAo+IGl0IGlzIHBvc3NpYmxlIHdoZW4gY29weSBjb21wbGV0
+ZSBpbnRlcnJ1cHQgZm9yIGZpcnN0IERNQSByZWFjaGVzIEhPU1QsCj4gQ0UgaGFzIGFscmVhZHkg
+dXBkYXRlZCBTUlJJIGZvciBib3RoIERNQSB0cmFuc2ZlcnMgYW5kIGlzIGluIHRoZSBtaWRkbGUK
+PiBvZiAybmQgRE1BLiBIT1NUIHVzZXMgU1JSSSB0byBpbnRlcnByZXQgaG93IG1hbnkgRE1B4oCZ
+cyBoYXZlIGJlZW4gY29tcGxldGVkCj4gYW5kIHRyaWVzIHRvIHVubWFwL2ZyZWUgYm90aCB0aGUg
+RE1BIGVudHJpZXMsIGJ1dCBDRSBpcyBzdGlsbCBpbiB0aGUgbWlkZGxlCj4gb2YgMm5kIERNQSB3
+aGljaCBjYW4gY2F1c2UgU01NVSBpc3N1ZXMgb3IgY29ycnVwdGlvbi4KPgo+IFdlIGFyZSBzZWVp
+bmcgYSBjb3JuZXIgY2FzZSBzbW11IGZhdWx0IGlzc3VlIHdoZXJlIGNvcHkgZW5naW5lIGlzIHN0
+aWxsIGFjY2Vzc2luZwo+IHRoZSBtZW1vcnkgdGhvdWdoIGhvc3QgdW5tYXBzIGl0IGhlbmNlIGFz
+IHdvcmsgYXJvdW5kIHdlIGFyZSBkZWxheWluZyB0aGUKPiB1bm1hcHBpbmcgdGhlIG1lbW9yeSBh
+bmQgdHggY3JlZGl0IHRvIG9uZS4KPgo+IFlvdWdoYW5kaGFyIENoaW50YWxhICgyKToKPiAgIGF0
+aDEwazogU2V0IHR4IGNyZWRpdCB0byBvbmUgZm9yIHdjbjM5OTAgc25vYyBiYXNlZCBkZXZpY2Vz
+Cj4gICBhdGgxMGs6IERlbGF5IHRoZSB1bm1hcHBpbmcgb2YgdGhlIGJ1ZmZlcgo+Cj4gIGRyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIHwgMzAgKysrKysrKysrKysrKysrKysr
+KysrKysrKysKPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odGMuYyAgfCAxOCAr
+KysrKysrKysrKysrLS0tCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHRjLmgg
+IHwgIDEgKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmggICB8ICA2ICsr
+KysrKwo+ICA0IGZpbGVzIGNoYW5nZWQsIDUyIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0p
+CgpJIGRvbid0IHVuZGVyc3RhbmQgdGhlIHJvb3QgY2F1c2UgaGVyZSBteXNlbGYuIEkgYWxzbyBk
+b24ndCBoYXZlCmVub3VnaCBza2luIGluIHRoZSBnYW1lIHRvIHNheSB3aGV0aGVyIHRoaXMgaXMg
+dGhlIGJlc3QvY2xlYW5lc3Qgd2F5CnRvIHdvcmsgYXJvdW5kIHRoZSBwcm9ibGVtLiBUaHVzIEkn
+bGwgcmVmcmFpbiBmcm9tIGEgUmV2aWV3ZWQtYnkgdGFnLgpUaGF0IGJlaW5nIHNhaWQsIEkgZGlk
+IGEgYnVuY2ggb2YgdGVzdGluZyBvZiB0aGlzIHNvbHV0aW9uIGFuZCBJIGFsc28KYW0gYXdhcmUg
+b2Ygb3RoZXJzIHRoYXQgaGF2ZSB0ZXN0ZWQgaXQuIFRodXMgSSdtIGNvbnZpbmNlZCB0aGF0IGl0
+IGF0CmxlYXN0IHdvcmtzIGFyb3VuZCB0aGUgcHJvYmxlbSB0aGF0IGhhcyBiZWVuIG9ic2VydmVk
+LiBIZW5jZToKClRlc3RlZC1ieTogRG91Z2xhcyBBbmRlcnNvbiA8ZGlhbmRlcnNAY2hyb21pdW0u
+b3JnPgoKSW4gbXkgY2FzZSBJIHdhcyBvbiB0aGUgc2FtZSAob3IgbmVhcmx5IHRoZSBzYW1lKSBo
+YXJkd2FyZSBhcwpZb3VnaGFuZGhhciwgdGhvdWdoIEkgaGFkIGEgc2xpZ2h0bHkgb2xkZXIgYnVp
+bGQuIEZXSVc6CgpUZXN0ZWQtb246IFdMQU4uSEwuMy4yLjIuYzEwLTAwNzU0LVFDQUhMU1dNVFBM
+LTEKCi1Eb3VnCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
