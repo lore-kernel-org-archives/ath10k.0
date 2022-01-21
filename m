@@ -4,59 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C688CC433EF
-	for <ath10k@archiver.kernel.org>; Fri, 21 Jan 2022 14:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0A95C433F5
+	for <ath10k@archiver.kernel.org>; Fri, 21 Jan 2022 14:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sUFmQFuq2YiSSstk6V6RK9DBk1oSJFhjwhkpBIAens4=; b=h+6Vw63IPrQTZ8
-	TvqNoYM91LcNtHcJjgzXhYB/H9viW86Pp3kUFwAFWZ20b4h4ZAsoY+1Y5sdRHdj9CYbcZOL+KRPR/
-	sCI4uYiRldMp3w6O7A2jsPluZeNchQjv4hbLCwLHJAMrD2qTxlVC/wh8aOR018cTkodfcn5dxSWDt
-	2jAeNSQbyk7Jas0DXeblyHAeG7X3t9GyrblMRVnXbfaJjTsAypQtq0oH+/gXOLXd2WM5ZNeIN9i58
-	OvSgdvyVy0UlzSSH2mWo7v8uKTuu4LfQ+3AXsLCyHBRypPQsaNiJ1Z+M9Z+rWFy5k1rO5kri8aQuV
-	mKOwuADPfzR2zLR2pj/w==;
+	List-Owner; bh=Ak8dQmdXZkE1Wz61kzzzTBU943v/PtHKABjkxose0tU=; b=Klx3NC44hg5q0y
+	IatOYfC2DimwRp0qZ0ahKiqshzpL7xSNLHnuu1lWTRUwT979vlXPWedQsisdaY8i7vXzAvZ5Ep959
+	PCImeo1a82Ymm78zzntS/6pY4UivP2kdOXpfF+21you4LP9WJeHLrw0WxaoOtinYTy9ezLLUoQz14
+	wywEPCKAxU5zlE5Deq7e40wz6lNEuHQLmUneuTMCmIq8Ve4aBuQBY5K2CkatU/7sR8VEss7klFCKN
+	w6bAvkhWrl6TsJ00AhjwvuoouxbEeKqfbStuhoYtMPMpDj4QxDDWDcVgkzpczC8YUSzvVBM9dAccK
+	DhNHY+XIeLQluk+3uZ4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nAuio-00FLml-En; Fri, 21 Jan 2022 14:16:58 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1nAuzK-00FNdF-Qz; Fri, 21 Jan 2022 14:34:02 +0000
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAuil-00FLld-3G
- for ath10k@lists.infradead.org; Fri, 21 Jan 2022 14:16:56 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A17966179A;
- Fri, 21 Jan 2022 14:16:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7899EC340E3;
- Fri, 21 Jan 2022 14:16:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642774614;
- bh=hD2hcxAmpX0THh/s8h/V//J9CPIeekiUajuEJFJaksM=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=PH/3AJxfZOyiPI1OOhmOEhCGFaf4P7W15KHxTVtjILmoEMtcPYVBKAZR5u6H91dLm
- zqLUaTc8W7xEomlcf8PiOI9++hzsTA/lzGlGuOert8pDO5pNJk4NVgL1np0Lwo0jFm
- gp+9/auDWp/6jT6DjoFz4iR7ZdSqbAOYrAw6jXZUQaz5ArX+ZtqJYCks/+nXKEEC52
- QYAlULMGhpzKXskao3EL2dpOYlQQ9I/0JK4juzpZzpk4AFh77rIAWl7Mf7B7RLE6Lx
- jHuV3QHvpGL1NDrSksFeI3pX5HqchY5TkjoEP3dTPRZTTXV3AM0b/lZZ5npIIGH98X
- xOqDgfK+NtYIA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Hans de Goede <hans@hansg.org>
-Cc: ath10k@lists.infradead.org
-Subject: Re: ath10k-firmware: QCA6174 hw3.2 target 0x05030000 chip_id
- 0x00340aff sub 168c:3370 board file
-References: <226790d7-75d8-bac3-9991-d73fa5b7df5b@hansg.org>
-Date: Fri, 21 Jan 2022 16:16:51 +0200
-In-Reply-To: <226790d7-75d8-bac3-9991-d73fa5b7df5b@hansg.org> (Hans de Goede's
- message of "Tue, 24 Aug 2021 18:44:05 +0200")
-Message-ID: <87ee519nsc.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ id 1nAuzH-00FNbz-6g
+ for ath10k@lists.infradead.org; Fri, 21 Jan 2022 14:34:00 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id f17so16840wrx.1
+ for <ath10k@lists.infradead.org>; Fri, 21 Jan 2022 06:33:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=nOo6JnqKgxdyyY6FR3CHB1GeagO4x89vJF9dRTohxbQ=;
+ b=GKKKw2NofTp2lL3VP8CI+r78FyHqfCFECtDkZRU9NuK2p5W7LUL4CWsBsZfvDo5Dub
+ zyMde8SOVWlE8vdqAGvB/8AshLtFWxj9IVoaVoVe8ulmY6x1E3zqfHz4aCJLNm3FPyIj
+ ENE7dXb1qAru3vjeeYXB4QbEP900gXAtwwsztQO6QXgQCytMQLrkjeziMJrBo2yfjEVd
+ pGI7wdWpegnWNJ8cCLx7ZOJagjbPKEOaiNbRVpa2Slq72eGCsbuUKWf0ZfkQdyFH8IUa
+ n4vRI9ejdVKwGyYbnaADGsiW3fqglSUvf2yXOTZAGmgNClWMnOX7Dw86ro4ZSuhZqH6V
+ Cvjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=nOo6JnqKgxdyyY6FR3CHB1GeagO4x89vJF9dRTohxbQ=;
+ b=mLMVa8bmz23R9ApmFFoYQ1FYNVNtAAb6H5MBuUVXP8STzy2FVpy/NyTtktYfSEqmmw
+ 5n79e0DER1JZrPzZgGmswsn7rnKzVOz4wRuL/6QRu4pDVFGkgdZbyV4V6ctYMJsCrCy7
+ uXTlZ1lYlYMUKGUw39ea9WtmBlWBFLGGn6OPTBpiLzA0QbTvmkjMZK2I8j7ATj49RLW2
+ 4EnQGVWmSLcd3a3HzFwMXHI2lJSWbkoKZK+gpsxhRwq2/z0VBgLDFxNWQC8f/Inizt60
+ pP6rJFvbQmJen6tSvtqjswnefhyHIOQ4M1PVE2K21CvfTjSUlSZ2xLWTRLCyp0DB4dcE
+ 1Gjw==
+X-Gm-Message-State: AOAM5306PnvabsNZCizez/gzqW+RT2/1XR+YNaY04iTPpQ8KE4LyFdtU
+ gCnH6GdH4zeuYmCVRNjytjEACu4kN6o=
+X-Google-Smtp-Source: ABdhPJyFI2IQvm433H3CSzy5EGozpzticZcr/lLQcNbgM1puHts479+2RJN399d6Rlp5+s29dO/46Q==
+X-Received: by 2002:a5d:64a6:: with SMTP id m6mr4388051wrp.282.1642775636393; 
+ Fri, 21 Jan 2022 06:33:56 -0800 (PST)
+Received: from debian64.daheim (p5b0d7860.dip0.t-ipconnect.de. [91.13.120.96])
+ by smtp.gmail.com with ESMTPSA id
+ 1sm5030161wmo.37.2022.01.21.06.33.55
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 21 Jan 2022 06:33:55 -0800 (PST)
+Received: from localhost.daheim ([127.0.0.1])
+ by debian64.daheim with esmtp (Exim 4.95)
+ (envelope-from <chunkeey@gmail.com>) id 1nAuzD-0008ei-2r;
+ Fri, 21 Jan 2022 15:33:55 +0100
+Message-ID: <d865d506-f90d-9517-2c1f-26eb8a8ff14b@gmail.com>
+Date: Fri, 21 Jan 2022 15:33:55 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: ath10k-firmware: QCA9980 hw2.0: add ASRock G10 specific BDFs
+Content-Language: en-US
+To: Kalle Valo <kvalo@kernel.org>
+Cc: ath10k@lists.infradead.org
+References: <4031513.NO3PqbrPAa@debian64> <87zgnp9obf.fsf@kernel.org>
+From: Christian Lamparter <chunkeey@gmail.com>
+In-Reply-To: <87zgnp9obf.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220121_061655_252401_BE4E652C 
-X-CRM114-Status: GOOD (  23.42  )
+X-CRM114-CacheID: sfid-20220121_063359_393611_306EEDFD 
+X-CRM114-Status: GOOD (  16.12  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,83 +89,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hans de Goede <hans@hansg.org> writes:
+Hi Kalle,
 
-> Here is a board-file for the QCA6174 PCI 168c:003e subsys: 168c:3370 wifi
-> card found on Microsoft Surface Go devices.
->
-> I'm submitting this per the docs in:
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
-> I hope those are still up to date.
->
-> Currently the kernel gives the following message when loading on this card:
-> "failed to fetch board data for
-> bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3370
-> from ath10k/QCA6174/hw3.0/board-2.bin"
->
-> And then errors out with a bunch of -110 (-ETIMEOUT) errors.
->
-> Replacing the fallback board.bin file with the attached .bin file fixes
-> these errors and results in working wifi (I tested at both 2.4G and 5G).
->
-> There are various internet forum posts which point to this board file:
-> https://web.archive.org/web/20201111213909/http://www.killernetworking.com/support/K1535_Debian/board.bin
->
-> But the killer 1535 wifi card uses completely different subsys-ids
-> of 1a56:1535, so even though that happens to work I do not believe
-> that is the correct file.
->
-> So instead, inspired by this report:
-> https://bugzilla.redhat.com/show_bug.cgi?id=1651779
->
-> I started looking at the driverstore directory of the original windows
-> install on the device I found "netathr10x.inf" there which has this line:
->
-> eDesc.6320_3% = ATHR_DEV_OS63_988x_TX8.ndi,
-> PCI\VEN_168C&DEV_003E&SUBSYS_3370168C&REV_32; WiFi Only SKU
->
-> Note the "WiFi Only SKU" remark is there to differentiate this from
-> the 168c:3371 subsys one which also has LTE (marked as "WiFi/LTE SKU")
->
-> This led me to the "ATHR_DEV_OS63_988x_TX8.ndi" section of the .inf file:
->
-> [ATHR_DEV_OS63_988x_TX8.ndi.NTamd64]
-> ...
-> CopyFiles       = atheros.CopyFiles, atheros_FW_3X.CopyFiles, atheros_BD_TX8.CopyFiles
-> ...
->
-> And "atheros_BD_TX8.CopyFiles" is:
->
-> [atheros_BD_TX8.CopyFiles]
-> eeprom_ar6320_3p0_TX8_clpc.bin,,,2
->
-> The "windows\system32\driverstore\netathr10x" dir has a ton of
-> eeprom files (let me know if you want a copy of the whole dir)
-> including the mentioned one. Where as "windows\system32\drivers"
-> only has the one eeprom_ar6320_3p0_TX8_clpc.bin eeprom... file,
-> further indicating that that is the one actually being used.
->
-> So this is the file which I've tested with and which is attached to this email as:
-> "bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3370.bin"
->
-> md5sum:
-> bc52aa5640b27fa50f9d4d144f81e169
-> bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3370.bin
+On 21/01/2022 15:05, Kalle Valo wrote:
+> Christian Lamparter <chunkeey@gmail.com> writes:
+> 
+>> this is a set of board.bin files for the ASRock G10,
+>> which I wish to be added to the ath10k-firmware repository.
+>>
+>> As per the current "Submitting board files" guidelines [1]:
+>>
+>> * description for what hardware this is:
+>>    - it is a IPQ8064 based board with
+>>      - one QCA9980 radio is used as 2.4 GHz radio
+>>      - one QCA9980 radio is used as 5 GHz radio
+>>
+>> * origin of the board file (did you create it yourself or where you downloaded
+>>    all files were extracted from official vendor firmware which was on the device.
+>>
+>> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+>>    - qca9980 hw2.0
+>>      + bus=pci,bmi-chip-id=1,bmi-board-id=1,variant=ASRock-G10
+>>      + bus=pci,bmi-chip-id=1,bmi-board-id=2,variant=ASRock-G10
+>> * md5sum of each new board file to add
+>>
+>> ae069744baeebfd6861e8080a92439ca  bus=pci,bmi-chip-id=1,bmi-board-id=1,variant=ASRock-G10
+>> 9e196846841a186e61ea208cc873384c  bus=pci,bmi-chip-id=1,bmi-board-id=2,variant=ASRock-G10
+> 
+> There is no QCA9880 directory in ath10k-firmware, do you mean this
+> should be added to QCA988X/hw2.0/board-2.bin?
 
-I assume this is the same version as you submitted directly to
-linux-firmware[1], so I'm dropping this request.
+It's a 9980 chip. This was 9984 predecessor.
+         ^ = Watch out for that 9! <https://www.qualcomm.com/products/qca9980>
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/?id=4d74f4dec175363fa24c95702dd86f477cef232c
+It would belong to the 99X0 directory of your ath10k-firmware repo:
+https://github.com/kvalo/ath10k-firmware/tree/master/QCA99X0/hw2.0
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+But there's one issue: there is no v2 board-2.bin in there yet.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+However the codeaurora's ath10k-firmware repo provides the board-2.bin here:
+https://source.codeaurora.org/quic/qsdk/oss/firmware/ath10k-firmware/plain/ath10k/QCA99X0/hw2.0/board-2.bin
+
+(this also includes the reference bmi-board-id for 2, 4 and 6. I guess this
+would help other people as well):
+https://source.codeaurora.org/quic/qsdk/oss/firmware/ath10k-firmware/plain/ath10k/QCA99X0/hw2.0
+
+So could you please add that board-2.bin from codeaurora and add
+the ASRock G10 specific variant to it? That would be sweet.
+
+Thank you,
+Christian
 
 _______________________________________________
 ath10k mailing list
