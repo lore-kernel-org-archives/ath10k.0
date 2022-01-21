@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7823FC433F5
-	for <ath10k@archiver.kernel.org>; Fri, 21 Jan 2022 06:45:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2DFEC433F5
+	for <ath10k@archiver.kernel.org>; Fri, 21 Jan 2022 13:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=N/66Q+E3ea7bFOuI2FJ+ikghNObanfaLPL39d+fB0Xc=; b=UR45P/NeybRL5X
-	+Kn3i8Zi94L2PE5Sg1eNDhYb/t73BHay7648TCBDb3NYjZlecSJr/5u3IB6zO1nYrdI+2nausAXV0
-	E9g7F+0YNka50Kjaw0AYD9AnJo/V4jpSotiv0zwHzlQ4wSp7YkIFCIV/d5NS+sJMxt9pKS/MvsZFA
-	0OYcGTBuy2yNL1gdurjP1xqtXTAof8kF/0O5SzwCmPtjAF19j5Z2066mDdrNvWKGMMnglJCsI019E
-	A71y2uwe4Yp5QClDeJP2w6eTQ1WT/p+4aFN3kxXRzTXmCvOuOolyv8RjMLuOE7PXW6m1J7YRsn6r3
-	nJTu8hNPEStj8DFYsYcw==;
+	List-Owner; bh=tjjZWS7gJL8oeFp0gEgW2rmXFCny6KhlTpSCo6XxGIs=; b=4hlLXndjdRNvB0
+	Goub4tr+6TKPp6GCu4S22WU8SgCS1u+4yFZKrcPgfi/gxEbhwQJRylCNtQNDLyVYMdh5Ko1gTmqA4
+	n+lihE3D6gziTUtQJ9JqWes12chql9kHQUid/RFVHk7xw33vYpqXKG8eVZ8XHk524FI5VOBTycTWQ
+	9vfOql9HliVNUdAPuAUA27Q95udC5BLZB4chHqzDgvgOBo80TjSDz2n8iGFiqvI1TQYys4q+u32Wy
+	6EUnFvtOruMZtw3EG76Yx0U71sLawrWg5cPUhwPDot54qqeVYb539iGpZp4ZKaUtq1uKZ0pHhFulT
+	+P5OjU13RIzCFF1SJltA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nAnfG-00DzQI-4z; Fri, 21 Jan 2022 06:44:50 +0000
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+	id 1nAtit-00F34L-KH; Fri, 21 Jan 2022 13:12:59 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAnfD-00DzOr-0c
- for ath10k@lists.infradead.org; Fri, 21 Jan 2022 06:44:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1642747487; x=1674283487;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=gnN8J7Hmx0zp2CogqSWzfQlfG3AuVKS1SW9uZDHI86I=;
- b=yJtFaQpF8f5NhnUxmQFboowMP5fr8nwVTSY+L94/cXUy6jFXAdS5LSr/
- xL2iiknIWC1E9UM24OlpczP7RWX5Zj1QvLH7/wNef8oETmJq5y0VeJPuM
- WIlLVw7dQmeWhMrFTZAusUekhbtbLnq2XsGmfDIcfS7w89l0gBKJww+dA E=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
- by alexa-out.qualcomm.com with ESMTP; 20 Jan 2022 22:44:45 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
- by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA;
- 20 Jan 2022 22:44:43 -0800
-X-QCInternal: smtphost
-Received: from unknown (HELO youghand-linux.qualcomm.com) ([10.206.66.115])
- by ironmsg01-blr.qualcomm.com with ESMTP; 21 Jan 2022 12:14:35 +0530
-Received: by youghand-linux.qualcomm.com (Postfix, from userid 2370257)
- id C04EA225AE; Fri, 21 Jan 2022 12:14:34 +0530 (IST)
-From: Youghandhar Chintala <quic_youghand@quicinc.com>
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- quic_pillair@quicinc.com, dianders@chromium.org, kuabhs@chromium.org,
- briannorris@chromium.org, Youghandhar Chintala <quic_youghand@quicinc.com>
-Subject: [RFC 2/2] ath10k: Delay the unmapping of the buffer
-Date: Fri, 21 Jan 2022 12:14:27 +0530
-Message-Id: <20220121064427.32059-3-quic_youghand@quicinc.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20220121064427.32059-1-quic_youghand@quicinc.com>
-References: <20220121064427.32059-1-quic_youghand@quicinc.com>
+ id 1nAtim-00F32W-DT
+ for ath10k@lists.infradead.org; Fri, 21 Jan 2022 13:12:54 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1DE40B81FAC;
+ Fri, 21 Jan 2022 13:12:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22CE3C340E1;
+ Fri, 21 Jan 2022 13:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1642770768;
+ bh=KQ6nEOqeQNxnc3T5WaJedePLeDnGCtb4o7pdreE6XVU=;
+ h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+ b=VlY0U567cQo6gCIFGyo+Fz2YwP6wpGFgnU686Ia+ZqOXq9lpXt99ebX4IrXK5jmbZ
+ 9YA3OCCNyuMPka+P2/RaQNAF9lduobTVBBEjzae2cx3iHTzeouj2kghQ5Kh5r+8jgW
+ UMAdgtoHAF72B1CMy9l38d1wWmY7WaSHxwHkt6WhWxfnKt/7H5NgaA7u5LN/HPWHwj
+ J8SFvc3BQmJRbV+623LgYqtIzL7v+8RPIMLW4QaaMTh/u1UXF6zgOMi20qjvWxz/U1
+ +wRh/LmvcfuqL5QaqXJ8c29EqV86yaiEVlDtIl12XagLGEeJXGI1z+bXVMjFwT9n0B
+ 9a1bxlyad9/4g==
+From: Kalle Valo <kvalo@kernel.org>
+To: Sven Eckelmann <sven@narfation.org>
+Cc: ath10k@lists.infradead.org
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Update OpenMesh A62 specific BDFs
+References: <2312547.eMb23psXx6@bentobox>
+Date: Fri, 21 Jan 2022 15:12:46 +0200
+In-Reply-To: <2312547.eMb23psXx6@bentobox> (Sven Eckelmann's message of "Mon, 
+ 01 Jul 2019 11:42:59 +0200")
+Message-ID: <87y239fd0x.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220120_224447_143222_6F1D6DCB 
-X-CRM114-Status: GOOD (  11.29  )
+X-CRM114-CacheID: sfid-20220121_051252_645854_C0DB47D1 
+X-CRM114-Status: GOOD (  23.38  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,176 +72,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-We are seeing a corner case smmu fault issue where copy engine is still
-accessing the memory though host unmaps it hence as work around
-we are delaying the unmapping the memory.
+Sven Eckelmann <sven@narfation.org> writes:
 
-Tested-on: WLAN.HL.3.2.2.c10-00757-QCAHLSWMTPL-1
+> [resent of mail from 2019-06-11; seems like @datto.com mail server ate the
+>  outgoing mails]
+>
+> Hi,
+>
+> The OpenMesh A62 AP requires three special BDFs to get the Wi-Fi PHYs working 
+> (correctly). The  bmi-board-id='s would clash with one of the the IPQ401X 
+> AP-DK boards because QCA doesn't provide special IDs for customers and seems 
+> to use the AP-DK board-ids in the wifi firmware to change its behavior. This 
+> request contains the two files for QCA4019. The QCA9888 one will be submitted 
+> in a different request.
+>
+> This update contains:
+>
+> * add of the antenna gain
+> * adjustments of the antenna sensitivity (see minCCA power threshold and
+>   configAddr)
+> * CTLs for DFS channels
+>
+> It supersedes https://lkml.kernel.org/r/2795259.fejyDvFH3e@bentobox
+>
+>
+> Now to the questions from the wiki page [1]:
+>
+> * description for what hardware this is:
+>
+>   - it is a QCA4018 based module (based on qcom-ipq4019-ap.dk04.1)
+>   - one QCA4018 radio is used as 2.4GHz radio
+>   - one QCA4018 radio is used as 5GHz radio
+>   - an additional QCA9888 5GHz radio is attached via PCI
+>
+> * origin of the board file (did you create it yourself or where you
+>   downloaded)
+>
+>   - it was created by the ODM and QCA for the OpenMesh A62
+>   - was provided by the ODM to OpenMesh for this product (this includes
+>     distribution)
+>   - it is the latest release from 2018-11-28 (with fix to have
+>     antennagain at correct position)
+>
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+>
+>   - QCA4019 hw1.0
+>
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=OM-A62
+>       md5sum: 7642733bfd0c53927209a25440a484e3
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=OM-A62
+>       md5sum: ef250f4c8ac057e9995b08e28c482423
+>
+> * attach the actual board file (board.bin)
+>
+>   - The name of the files are equal to the id string in the board-2.bin
+>     (minus the ".bin")
 
-Signed-off-by: Youghandhar Chintala <quic_youghand@quicinc.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
- drivers/net/wireless/ath/ath10k/htc.c  |  5 +++++
- drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
- 3 files changed, 23 insertions(+)
+Thanks, added to QCA4019/hw1.0/board-2.bin:
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index fcaed7d176568..65f775fb5ccab 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -93,6 +93,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA988X_HW_2_0_VERSION,
-@@ -130,6 +131,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -168,6 +170,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -200,6 +203,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.bmi_large_size_download = true,
- 		.dynamic_sar_support = true,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -237,6 +241,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -274,6 +279,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -311,6 +317,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -351,6 +358,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = true,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -394,6 +402,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
-@@ -444,6 +453,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
-@@ -491,6 +501,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
-@@ -528,6 +539,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -567,6 +579,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -639,6 +652,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = false,
- 		.dynamic_sar_support = false,
- 		.tx_credit_limit = false,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = WCN3990_HW_1_0_DEV_VERSION,
-@@ -669,6 +683,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_mac_seq_by_fw = true,
- 		.dynamic_sar_support = true,
- 		.tx_credit_limit = true,
-+		.delay_unmap_buffer = true,
- 	},
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 108980476d654..e2640f244918e 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -55,6 +55,11 @@ void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
- 	ath10k_dbg(ar, ATH10K_DBG_HTC, "%s: ep %d skb %pK\n", __func__,
- 		   ep->eid, skb);
- 
-+	/* WAR - Delay the unmapping of the buffer */
-+	if (ar->hw_params.delay_unmap_buffer &&
-+	    ep->ul_pipe_id == 3)
-+		mdelay(2);
-+
- 	ath10k_htc_restore_tx_skb(ep->htc, skb);
- 
- 	if (!ep->ep_ops.ep_tx_complete) {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 0d96df311b026..3f7539e8da0fc 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -628,6 +628,9 @@ struct ath10k_hw_params {
- 
- 	/* limit tx credit */
- 	bool tx_credit_limit;
-+
-+	/* WAR - Delay the unmapping of the buffer */
-+	bool delay_unmap_buffer;
- };
- 
- struct htt_rx_desc;
+New:
+
+
+Changed:
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=OM-A62
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=OM-A62
+
+Deleted:
+
+0 board image(s) added, 2 changed, 0 deleted, 50 in total
+
+https://github.com/kvalo/ath10k-firmware/commit/f305604442001fd45f357fed38a6c4a59868f4ee
+
 -- 
-2.29.0
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
