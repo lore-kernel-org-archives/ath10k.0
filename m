@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46FC8C433EF
-	for <ath10k@archiver.kernel.org>; Thu,  3 Feb 2022 23:26:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8966DC433F5
+	for <ath10k@archiver.kernel.org>; Sun,  6 Feb 2022 10:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=BWQUmLbWKauU6/UY94j/tgAEh7DaYkCchBznFzESr6U=; b=r4/ZVVlry2Ef8Y
-	cwQ+OJiv7I7jn96t3MmMjJkiUGYnhBWOgVgVzSMnlU9E6gPts4PzmV3H5nfmWXs/IiZWgfDfcHvxe
-	b2Dnkpg2NBwJW0G4O0vYAqf+JZes1idsFIcs10BJLzHdc11RwgR99MTZiOy1YSTfsZ6mNJsy18DuU
-	QlieKCqyuzwHXDMMKCxwwROkvxSBB40SRekTZG95X1W1JnVxFP9U7pVI2noW6if8KQ0IcfPgn9aPv
-	1dzRGOpF4aiyp1/NyZj4ZovSC+oHC/FXtgkooii+IZGDa8S1sBBFCh3V7G26/4ANUqq7s90+Sysrx
-	UEIoOfgyMo+OSJhZp3bw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WWJ4Zi9PPTkeGv8/+Ng8AOBFQafe7gJOug4JbNinDkU=; b=mAhLCYV8FVapA9
+	7uGq23RcUe4TaV8TCKSloYZJoFeuO6K9IAgyLuBm4bfDB7zh/CuH8jucPrgRolBroWbNmdzNSR+bH
+	Mlz2fxNWl5K4ZASlxRnwF5Y/omvF6VNHlAWhuH3jwjpK8t9yT0hKiZMWVAr19lwk3tJVWPMphnD8g
+	MmO9pH+zgWw9AzmtzoIN/hiG3M+U/y52GNRO+AbCil5IFSGP25L8JIOz6nyj4pr4Z1PlAjLaZlqwr
+	pMsd3tCcVRC7dLAODzaaaNbi2IEwR+yknhUVtTznhQCygVKgIxXq3CXtJ7jRfjtvPJbK4NUSr2C4l
+	Y9rV14UjX0nkwaPUd6sw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFlUx-00351r-Kw; Thu, 03 Feb 2022 23:26:43 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1nGejy-00860L-D0; Sun, 06 Feb 2022 10:25:54 +0000
+Received: from mail-io1-xd2b.google.com ([2607:f8b0:4864:20::d2b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFlUu-00350L-P5
- for ath10k@lists.infradead.org; Thu, 03 Feb 2022 23:26:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1643930800; x=1675466800;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=LMDeOkIaA1smuAnnRXRmrWyaEpWsOPVkNqeK7JKdnlM=;
- b=Yh9H9fGxbywGmr15K7N13y+2a2ci0rGshhe/DWTpL5iiMypu7ykn6uLI
- 90IjP0JlBWE/pZev2WG8A49zTfKnL7zA5s90e9jM0AN4nNCiZu5AXRbO9
- 4pzAh84w57FdX02HD5I+DwDmcK6bLR6X4eVWVNmFvCDAsNj93gUZzkHIT
- Nab8z5o3GIE531miRUfYMnTbcCBySXnMheFym7oljFwaBpiyn8zksPvIX
- uSC6KVGXzGDEubNkKnT/zuIx+mhy89HibwKxWVlmcLCR7okOD3eThV6qS
- pO0UGqUrRgxwa7YW8s5duhir0IGUY3bYb0vpbHDh9dNOSeEQGQ7N4wcUz A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10247"; a="248225700"
-X-IronPort-AV: E=Sophos;i="5.88,340,1635231600"; d="scan'208";a="248225700"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Feb 2022 15:26:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,340,1635231600"; d="scan'208";a="566581762"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
- by orsmga001.jf.intel.com with ESMTP; 03 Feb 2022 15:26:38 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nFlUs-000WlZ-9U; Thu, 03 Feb 2022 23:26:38 +0000
-Date: Fri, 04 Feb 2022 07:25:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 6ed569155081342d81c847558d22305dd72af08c
-Message-ID: <61fc646f.DErNF+b5XoF2uLkU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nGeju-0085zj-NX
+ for ath10k@lists.infradead.org; Sun, 06 Feb 2022 10:25:52 +0000
+Received: by mail-io1-xd2b.google.com with SMTP id n17so13171021iod.4
+ for <ath10k@lists.infradead.org>; Sun, 06 Feb 2022 02:25:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=yzZm6IWn9SbxjJLqFyjUiXhf5hqI8VOiovfMTemjpIU=;
+ b=mjVDt6Vb9J1V2Xfdtj1UdIq9+L5xXxcbPNgyN/nrJmqERozgeNeElejBvxyjhQrJNV
+ UtFN9s903YSfG+7Cq4x/gR7mjel0WlFuQuCmYr7QPahc/nwVaJJuCb2jK4Wnk7Q+CGSP
+ rNJtuWf1C3BjFpXH98qFhSofOYJJ/0mYk7eLq8P0pYWoA9Rdxf6Mkn2OyvzIyS+bUFI9
+ 4BSWnhMXegvxDK/GIbIFEswQUuGYDePhttWZCCIjs3jTuWtW8ZWxzdzzSG7m1/BE6WSo
+ q/YQdwC4g/X37hPDHPMwSXK2q9ghv16pKa8T/M/5quC847flJJ4Ox9OT/fXsvm3BsIBq
+ ZBWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=yzZm6IWn9SbxjJLqFyjUiXhf5hqI8VOiovfMTemjpIU=;
+ b=rZ3/zNu30JT6wraWbcbGfZGoocP/PrBIUlrdTZxI7dtBbqz7uapnhiQJ+9pN79VEiE
+ 7Cg1z65bjDCVee2YSi23EWRSSSPoWdIyPot/sGKW1G5jlpog0XEOvwjnZ6NFQsHwLlyb
+ dkjW8VcTtHtraNm6q0q0o5jJLsMAZvvyzH2BvWq/CQEJT5TASfKRRDicucTkPGtC+1iZ
+ 4nFGsu/dkrVu23LpyZCnkTyMIvaVkY9OI6bbgf1QtnL6I5kcSldKhakoycpUEt+s7c3U
+ RmxZAd0Jzvnx7ToT0On2NNaEidy57SvjDeRejMh5R8ph0QSh8C0iJ/4jAzym4ZXY0aaD
+ V6SA==
+X-Gm-Message-State: AOAM5317S5MnkGyEKiJj1oToF8RaShTyT959p2jYfCTQ34wqdEACUBjh
+ kz4FNiAak76H+BT0LNBrKAfLuFkddcs6A8RsFl0=
+X-Google-Smtp-Source: ABdhPJxvRWV70WNO7IothVav8+FlR0ubzpJzHnzmxQvAn9oWLGx1qVMY67B7PZYreZk0KK77QqUqlhqgdPLhvhJOEeI=
+X-Received: by 2002:a02:c90a:: with SMTP id t10mr3523841jao.142.1644143149291; 
+ Sun, 06 Feb 2022 02:25:49 -0800 (PST)
 MIME-Version: 1.0
+References: <20220201130900.GD22458@kili>
+In-Reply-To: <20220201130900.GD22458@kili>
+From: Francesco Magliocca <franciman12@gmail.com>
+Date: Sun, 6 Feb 2022 11:25:56 +0100
+Message-ID: <CAH4F6usWj5_a9m4g+v1xxNDGwhiCmkCqphBY9VNsmfwX+NvUyg@mail.gmail.com>
+Subject: Re: [bug report] ath10k: abstract htt_rx_desc structure
+To: Dan Carpenter <dan.carpenter@oracle.com>, Kalle Valo <kvalo@kernel.org>
+Cc: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220203_152640_914024_7C02AC1C 
-X-CRM114-Status: UNSURE (   5.76  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220206_022550_818698_C9D4F699 
+X-CRM114-Status: GOOD (  13.25  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,200 +80,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 6ed569155081342d81c847558d22305dd72af08c  Merge branch 'pending' into master-pending
+Hello Dan Carpenter,
+auch, nice catch, thank you very much.
+Yes, your solution is correct,
+even if I think that we  could avoid skipping the first part of the
+rx_desc altogether,
+because it is just a trace.
 
-elapsed time: 737m
+Kalle, will you amend my commit or do I need to file a new patch?
 
-configs tested: 172
-configs skipped: 4
+Best regards,
+Francesco Magliocca
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20220131
-i386                          randconfig-c001
-m68k                          hp300_defconfig
-sh                   sh7724_generic_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                        clps711x_defconfig
-powerpc                 linkstation_defconfig
-mips                            ar7_defconfig
-powerpc                     rainier_defconfig
-arm                           h5000_defconfig
-arm                           corgi_defconfig
-powerpc                     sequoia_defconfig
-sh                   secureedge5410_defconfig
-arc                        nsim_700_defconfig
-mips                           ci20_defconfig
-parisc                generic-32bit_defconfig
-arc                           tb10x_defconfig
-powerpc                      ppc40x_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arc                        nsimosci_defconfig
-sh                               alldefconfig
-arc                          axs101_defconfig
-arm                            mps2_defconfig
-arm                           sunxi_defconfig
-sparc                            allyesconfig
-powerpc                     mpc83xx_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                      ep88xc_defconfig
-arm                         lubbock_defconfig
-mips                          rb532_defconfig
-parisc                           allyesconfig
-sh                   rts7751r2dplus_defconfig
-microblaze                          defconfig
-s390                          debug_defconfig
-sh                           se7206_defconfig
-arm                            qcom_defconfig
-powerpc                     pq2fads_defconfig
-m68k                            q40_defconfig
-sh                              ul2_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                ecovec24-romimage_defconfig
-m68k                       m5249evb_defconfig
-arm                             rpc_defconfig
-arm                             pxa_defconfig
-sh                             espt_defconfig
-mips                           ip32_defconfig
-microblaze                      mmu_defconfig
-xtensa                           allyesconfig
-mips                    maltaup_xpa_defconfig
-openrisc                 simple_smp_defconfig
-nios2                         10m50_defconfig
-arm                          pxa910_defconfig
-powerpc                    amigaone_defconfig
-h8300                     edosk2674_defconfig
-arm                           viper_defconfig
-arm                          simpad_defconfig
-arm                  randconfig-c002-20220130
-arm                  randconfig-c002-20220131
-arm                  randconfig-c002-20220202
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                   debian-10.3-kselftests
-mips                             allmodconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20220131
-x86_64               randconfig-a003-20220131
-x86_64               randconfig-a001-20220131
-x86_64               randconfig-a006-20220131
-x86_64               randconfig-a005-20220131
-x86_64               randconfig-a002-20220131
-i386                 randconfig-a006-20220131
-i386                 randconfig-a005-20220131
-i386                 randconfig-a003-20220131
-i386                 randconfig-a002-20220131
-i386                 randconfig-a001-20220131
-i386                 randconfig-a004-20220131
-riscv                randconfig-r042-20220130
-arc                  randconfig-r043-20220130
-arc                  randconfig-r043-20220131
-s390                 randconfig-r044-20220130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-riscv                randconfig-c006-20220201
-x86_64                        randconfig-c007
-powerpc              randconfig-c003-20220201
-mips                 randconfig-c004-20220201
-i386                          randconfig-c001
-arm                  randconfig-c002-20220201
-arm                       imx_v4_v5_defconfig
-powerpc                     ppa8548_defconfig
-arm                  colibri_pxa300_defconfig
-i386                             allyesconfig
-riscv                             allnoconfig
-x86_64                           allyesconfig
-mips                          rm200_defconfig
-arm                             mxs_defconfig
-powerpc                   lite5200b_defconfig
-mips                          ath79_defconfig
-mips                  cavium_octeon_defconfig
-arm                      pxa255-idp_defconfig
-arm                         socfpga_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                          pcm027_defconfig
-arm                           spitz_defconfig
-powerpc                       ebony_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                      bmips_stb_defconfig
-arm                         lpc32xx_defconfig
-arm                          pxa168_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64               randconfig-a013-20220131
-x86_64               randconfig-a015-20220131
-x86_64               randconfig-a014-20220131
-x86_64               randconfig-a016-20220131
-x86_64               randconfig-a011-20220131
-x86_64               randconfig-a012-20220131
-i386                 randconfig-a011-20220131
-i386                 randconfig-a013-20220131
-i386                 randconfig-a014-20220131
-i386                 randconfig-a012-20220131
-i386                 randconfig-a015-20220131
-i386                 randconfig-a016-20220131
-riscv                randconfig-r042-20220131
-hexagon              randconfig-r045-20220130
-hexagon              randconfig-r045-20220131
-hexagon              randconfig-r041-20220130
-hexagon              randconfig-r041-20220131
-s390                 randconfig-r044-20220131
-hexagon              randconfig-r045-20220203
-hexagon              randconfig-r041-20220203
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Il giorno mar 1 feb 2022 alle ore 14:09 Dan Carpenter
+<dan.carpenter@oracle.com> ha scritto:
+>
+> Hello Francesco Magliocca,
+>
+> The patch 6bae9de622d3: "ath10k: abstract htt_rx_desc structure" from
+> Jan 12, 2022, leads to the following Smatch static checker warning:
+>
+>         drivers/net/wireless/ath/ath10k/htt_rx.c:432 ath10k_htt_rx_amsdu_pop()
+>         warn: potential pointer math issue ('rx_desc' is a 32 bit pointer)
+>
+> drivers/net/wireless/ath/ath10k/htt_rx.c
+>     346 static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+>     347                                    struct sk_buff_head *amsdu)
+>     348 {
+>     349         struct ath10k *ar = htt->ar;
+>     350         struct ath10k_hw_params *hw = &ar->hw_params;
+>     351         int msdu_len, msdu_chaining = 0;
+>     352         struct sk_buff *msdu;
+>     353         struct htt_rx_desc *rx_desc;
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+>     354         struct rx_attention *rx_desc_attention;
+>     355         struct rx_frag_info_common *rx_desc_frag_info_common;
+>     356         struct rx_msdu_start_common *rx_desc_msdu_start_common;
+>     357         struct rx_msdu_end_common *rx_desc_msdu_end_common;
+>     358
+>
+> [ snip ]
+>
+>     427
+>     428                 last_msdu = __le32_to_cpu(rx_desc_msdu_end_common->info0) &
+>     429                                 RX_MSDU_END_INFO0_LAST_MSDU;
+>     430
+>     431                 /* FIXME: why are we skipping the first part of the rx_desc? */
+> --> 432                 trace_ath10k_htt_rx_desc(ar, rx_desc + sizeof(u32),
+>                                                      ^^^^^^^^^^^^^^^^^^^^^
+> This is a pointer math bug.  It's possible that it should be:
+>
+>         trace_ath10k_htt_rx_desc(ar, (u8 *)rx_desc + sizeof(u32),
+>
+> But as your FIXME notes, it's hard to tell what's going on here...
+>
+>
+>     433                                          hw->rx_desc_ops->rx_desc_size - sizeof(u32));
+>     434
+>     435                 if (last_msdu)
+>     436                         break;
+>     437         }
+>
+> regards,
+> dan carpenter
 
 _______________________________________________
 ath10k mailing list
