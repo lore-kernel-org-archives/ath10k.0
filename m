@@ -4,63 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97E89C433EF
-	for <ath10k@archiver.kernel.org>; Wed, 16 Feb 2022 03:10:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5ABAC433F5
+	for <ath10k@archiver.kernel.org>; Wed, 16 Feb 2022 11:43:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=KpLKFsSzgZ6mgxaIpSzUKuS8+wt5PAs6k+Xdnnn4zkk=; b=Ol6Hy3QnpBWqfj
-	8Rj2+Am58uuuJSA5VDfIE1voPjHRI49KFS2+zbbpQK+MdnLN454m8F6pASZuNNzA0MPMB0eqq6Vj/
-	gmF/L+K7cn1wcFXWmG9SdDIMY2VnpzXsB0dJLlzOjdTiFF/G/W7hq7xUwDQItepbeqAJK1S+/mwV/
-	dbx7A1TMhoj19SNzFuCQVG1aMAkas0WbnWf3nXonpSYW+uogwVJ2LMOIj7h/IEzmTRkrAX9zv6Vke
-	+iBZatOioiTW/vL4awBO5fqxIY8peoyouS19ntvu5ps5OnMbit0nO9yCK3Bh3vomacApSagV+w0W0
-	52teR3I9UlW5mmEMMiQQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CjFKytqWM9b6cmELyMQfH1NSaXc4y1835Agyqx2Fa1I=; b=ezr7aXcQd4Iu7I
+	TTkwIJqnF3YsgbQ1nPWzli+funGmcn7JJVY7R+KHZOUtKzm0AxoJ5ODbCcpHkeCOeC9jmrCan3ThC
+	EXIGDj2z5qCt9YcD1YtLGnl1w/TsrsX/mLu1yz/L65fjoNXMYrNJLxhac9wZ69Lvx7Ke6xI2SU1Q7
+	eapcF3l9pBc4OEr1AyGzSUEVB18xLo8YN3AuLaTydGS38mq11iQuAu8TXpF6BV29MMP2dMrROnPxm
+	+1FMR/F54BZkSKs7DQ8Cq97ZzF187QZPAPA7CJ/al2Wnu/GKRyOD14h2GddrVCHZGQY6eRfTeMjPI
+	cTC7LEcwE4sDHJeuHp8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nKAi5-005NJ6-Ho; Wed, 16 Feb 2022 03:10:29 +0000
-Received: from mga14.intel.com ([192.55.52.115])
+	id 1nKIiG-006mS2-S9; Wed, 16 Feb 2022 11:43:12 +0000
+Received: from mail-qt1-x82c.google.com ([2607:f8b0:4864:20::82c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nKAi2-005NIo-C4
- for ath10k@lists.infradead.org; Wed, 16 Feb 2022 03:10:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644981026; x=1676517026;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=VHXcJOJ1AoLhTx6cbjkJF9Xi2BdRBYNrkeW8V790V9Q=;
- b=HY8s2xZXpSCykSJfztWsLpWO6Sl+1bU7fLGPZ2Ggw7u7hPAR2ltFIuJe
- 0k8Q9DETAHRWs2VzqgIMLGeImusSn4hr0GLHnBmMtIm4DTuHB9tX8ZIGu
- rHIGIT7494CqXc8lEdR2orNJq99JLEtoGVfeJljWtOEa9XDBTuvhAOVzv
- 4XytEzTDnE577qOZtPa5WCRxIMhF0h3SzeQAApsNl1PPQYAqJdvQZPSGq
- LPtdxAg9NKfSpU67d8pDcIZDLSwDPTT71bIX+8aX0krXKQvyzTfJnzgRB
- /mFdAyEYMmQ4vseebkr6rZfttrJJ1KQx7AyABLvMxPhtIjcdsppoRX9MC A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10259"; a="250712611"
-X-IronPort-AV: E=Sophos;i="5.88,371,1635231600"; d="scan'208";a="250712611"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Feb 2022 19:10:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,371,1635231600"; d="scan'208";a="486622689"
-Received: from lkp-server01.sh.intel.com (HELO d95dc2dabeb1) ([10.239.97.150])
- by orsmga003.jf.intel.com with ESMTP; 15 Feb 2022 19:10:22 -0800
-Received: from kbuild by d95dc2dabeb1 with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nKAhx-000AL8-Id; Wed, 16 Feb 2022 03:10:21 +0000
-Date: Wed, 16 Feb 2022 11:10:16 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath12k-bringup] BUILD REGRESSION
- 444199a9f89e574f35972a5e9da21faf65c4ca3a
-Message-ID: <620c6b18.6biYrZ+l41MNqnZT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nKIiE-006mQZ-FU
+ for ath10k@lists.infradead.org; Wed, 16 Feb 2022 11:43:11 +0000
+Received: by mail-qt1-x82c.google.com with SMTP id b5so1740998qtq.11
+ for <ath10k@lists.infradead.org>; Wed, 16 Feb 2022 03:43:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=lgVw/BZZKZ6iKTM0kGdWG1JvqmeOkZaoZVaCvFSRNRM=;
+ b=UrKodOocd9niJKqLM+b94FlT/Z0PQ5qZOBaOEFhlphIn/ivHkr94i/ukLrWr7vnEZp
+ AX1KAX/ohn1oNTJ1qDoCxvjkgV9bJ2ckb1vVuFH8BRCGjo1KsTFPytSo51nGtIHXu2o2
+ oR/efyENJmRMhxRjVjefqKEXmeGbBfmmL0ya91H0PeIApjaWFUdD71QpROTYGxoLyqWV
+ 8T8QSxZpYF5l6yldU6nsi5FYibU5hu2z0Sfn3HQetFCWp4KiguYoZzI2z1nb9M9E097n
+ v5BKa4diHrzPGyGp0843sxjQpMApUeTRknLwYZs7hXVG+P43Tm0032gnruUqCmSBB/bA
+ 6CbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=lgVw/BZZKZ6iKTM0kGdWG1JvqmeOkZaoZVaCvFSRNRM=;
+ b=vTYpPwBLkR8gLahheMRZR1dEmWqe7ksoMp9ljZ230Qy9/rjTcuftZ9ORldoY0EEA+i
+ L9b135mplztrlerXZNwd+Bh+6MQsqMJrNUQePvLuimIMHyILzyzGjR84Mzxl0bux7Mes
+ PDezAPUhx4h0PW23386oUecdeeiLEQBFFlbMTqrbFtESccMcITsygwKfzoDrE6OITPpO
+ yC15TfvdIoXX05P6XdX3moNitbhrIDouxHaLsK7GzcCLG8QlUkBpoGwz57fW6+bVTlZk
+ aQbPPHYNo/7Ce/oCdup47dCaztQJdaWN1V+39oKgE9famVd8OccuV6eZp+G/5ujvYdVL
+ rrfg==
+X-Gm-Message-State: AOAM5324/7FbJ64nxdSS+CRWbYqcoCxQsRZHEPb9bUGiEe/q48GDL/K6
+ xOkqSb/GqI2wI4sK//uq0ae9uzduf9NBqSQSWGJ/285MbFA=
+X-Google-Smtp-Source: ABdhPJxjfEUg+TnIHtRuvhFzj+H9tTUM6CL5m4CcIm7lD/Uzb8XWY+LeHqmxKWiUktQMhUhkDtiIaznjK3Mt2/G70Q4=
+X-Received: by 2002:ac8:5f0c:0:b0:2cd:4ca2:2f73 with SMTP id
+ x12-20020ac85f0c000000b002cd4ca22f73mr1611995qta.600.1645011785947; Wed, 16
+ Feb 2022 03:43:05 -0800 (PST)
 MIME-Version: 1.0
+References: <CAKBt_AeMSV8Z98bZh3saK8G61e9m8JNXZrLmNT2oJsvAHJNTZg@mail.gmail.com>
+ <e2adadf1ff5d26eddd657c3b5e6f5d547bd0270a.camel@freebox.fr>
+ <CAKBt_AdkDqj+wocWM3CSNA7Fh1DRYEHz-vJCGQpR6woY2WAH7w@mail.gmail.com>
+ <5b1bc5867346e67a746d87c099b0826c0169a84f.camel@freebox.fr>
+ <CAKBt_Acz8=UG_4AeoPCQ4ed5fc4JjHfou9RF8MsgSSf1qW0wQA@mail.gmail.com>
+ <0e7682cfd9c1a590e8b2e1bd45c39cf7c6527eb7.camel@freebox.fr>
+In-Reply-To: <0e7682cfd9c1a590e8b2e1bd45c39cf7c6527eb7.camel@freebox.fr>
+From: Guilherme Weidle <guileweidle@gmail.com>
+Date: Wed, 16 Feb 2022 08:42:55 -0300
+Message-ID: <CAKBt_Ae_fy4c6shLB5Ft-dHAtOAJ+9kqQ4iUsf+XravC+kjMdw@mail.gmail.com>
+Subject: Re: push-pull stalls (QCA 9888)
+To: mbizon@freebox.fr
+Cc: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220215_191026_520271_F301EECE 
-X-CRM114-Status: UNSURE (   5.87  )
+X-CRM114-CacheID: sfid-20220216_034310_541954_14F3F67E 
+X-CRM114-Status: UNSURE (   9.88  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,212 +87,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath12k-bringup
-branch HEAD: 444199a9f89e574f35972a5e9da21faf65c4ca3a  ath12k: Fix msdu sg handling in raw mode
+> On Fri, 2022-02-11 at 14:00 -0300, Guilherme Weidle wrote:
+>
+> > BTW: Did you fix your problem by removing that patch?
+>
+> Yes
+>
+> I exchanged a bit with Toke and maybe the ath10k push-pull code is
+> somewhat incompatible with the new scheduler, he gave me some ideas to
+> try but I did not have time to try them yet.
+>
+> Could you share your exact reproducer ?
 
-Error/Warning in current branch:
+Nice to hear that you have some ideas.
 
-drivers/net/wireless/ath/ath12k/dp_mon.c:1902:32: warning: implicit conversion from 'enum hal_rx_mon_status' to 'enum hal_tx_tlv_status' [-Wenum-conversion]
-drivers/net/wireless/ath/ath12k/dp_rx.c:2739:29: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-drivers/net/wireless/ath/ath12k/dp_tx.c:605:35: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-drivers/net/wireless/ath/ath12k/hal_rx.c:406:25: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+Here is what I've done to reproduce the issue:
 
-possible Error/Warning in current branch (please contact us if interested):
+#### Station Script - ath9k device ####
+# Create virtual stations
+SSID="ath10k_test"
+i=1
+while [ $i -le 5 ]; do
+    iw dev wlan0 interface add viface$i type station
+    ip link set viface$i address 70:00:00:00:00:0$i
+    ifconfig viface$i 10.0.0.$i netmask 255.255.255.0 up
+    iw dev viface$i connect $SSID
+    i=$((i+1))
+done
 
-drivers/net/wireless/ath/ath12k/debugfs.c:250:15: error: implicit declaration of function 'vmalloc'; did you mean 'kvmalloc'? [-Werror=implicit-function-declaration]
-drivers/net/wireless/ath/ath12k/debugfs.c:275:9: error: implicit declaration of function 'vfree'; did you mean 'kvfree'? [-Werror=implicit-function-declaration]
-drivers/net/wireless/ath/ath12k/pci.c:667:14: error: implicit declaration of function 'of_property_read_u32' [-Werror=implicit-function-declaration]
+# Sometimes just couple of interfaces connect, so we need to repeat
+i=1
+while [ $i -le 5 ]; do
+    iw dev viface$i connect $SSID
+    i=$((i+1))
+done
 
-Error/Warning ids grouped by kconfigs:
+# Start iperf server
+iperf -s
+###############################
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-net-wireless-ath-ath12k-debugfs.c:error:implicit-declaration-of-function-vfree
-|   `-- drivers-net-wireless-ath-ath12k-debugfs.c:error:implicit-declaration-of-function-vmalloc
-|-- arc-allyesconfig
-|   `-- drivers-net-wireless-ath-ath12k-pci.c:error:implicit-declaration-of-function-of_property_read_u32
-|-- powerpc-allmodconfig
-|   |-- drivers-net-wireless-ath-ath12k-dp_mon.c:warning:implicit-conversion-from-enum-hal_rx_mon_status-to-enum-hal_tx_tlv_status
-|   |-- drivers-net-wireless-ath-ath12k-dp_rx.c:warning:cast-to-pointer-from-integer-of-different-size
-|   |-- drivers-net-wireless-ath-ath12k-dp_tx.c:warning:cast-to-pointer-from-integer-of-different-size
-|   `-- drivers-net-wireless-ath-ath12k-hal_rx.c:warning:cast-to-pointer-from-integer-of-different-size
-`-- powerpc-allyesconfig
-    |-- drivers-net-wireless-ath-ath12k-dp_mon.c:warning:implicit-conversion-from-enum-hal_rx_mon_status-to-enum-hal_tx_tlv_status
-    |-- drivers-net-wireless-ath-ath12k-dp_rx.c:warning:cast-to-pointer-from-integer-of-different-size
-    |-- drivers-net-wireless-ath-ath12k-dp_tx.c:warning:cast-to-pointer-from-integer-of-different-size
-    `-- drivers-net-wireless-ath-ath12k-hal_rx.c:warning:cast-to-pointer-from-integer-of-different-size
 
-elapsed time: 726m
+#### AP Script - ath10k device ####
+IPS="1 2 3 4 5"
+for ip in $IPS; do iperf -c 10.0.0.$ip & done
+###################################
 
-configs tested: 155
-configs skipped: 4
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20220214
-mips                 randconfig-c004-20220214
-mips                      fuloong2e_defconfig
-sh                        sh7763rdp_defconfig
-arm                        realview_defconfig
-arm                          iop32x_defconfig
-arm                          simpad_defconfig
-csky                                defconfig
-mips                         rt305x_defconfig
-sh                           se7206_defconfig
-arm                         axm55xx_defconfig
-powerpc                     pq2fads_defconfig
-mips                         mpc30x_defconfig
-nios2                               defconfig
-arm                        spear6xx_defconfig
-powerpc                     mpc83xx_defconfig
-sh                   sh7724_generic_defconfig
-mips                  maltasmvp_eva_defconfig
-arm                         s3c6400_defconfig
-h8300                    h8300h-sim_defconfig
-mips                        vocore2_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                       imx_v6_v7_defconfig
-sh                            shmin_defconfig
-arm                          gemini_defconfig
-m68k                             allmodconfig
-powerpc                         wii_defconfig
-mips                       bmips_be_defconfig
-powerpc                      arches_defconfig
-arm                          pxa910_defconfig
-arm                            pleb_defconfig
-mips                           xway_defconfig
-mips                          rb532_defconfig
-sh                           se7721_defconfig
-ia64                             allmodconfig
-xtensa                    xip_kc705_defconfig
-mips                         db1xxx_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-arm64                            alldefconfig
-arm                        mvebu_v7_defconfig
-sh                          kfr2r09_defconfig
-arm                            xcep_defconfig
-m68k                        stmark2_defconfig
-s390                                defconfig
-sh                        edosk7705_defconfig
-nds32                               defconfig
-arm                        shmobile_defconfig
-openrisc                 simple_smp_defconfig
-m68k                          atari_defconfig
-sh                        sh7757lcr_defconfig
-sparc                            allyesconfig
-sh                             espt_defconfig
-mips                       capcella_defconfig
-arm                        cerfcube_defconfig
-mips                      loongson3_defconfig
-sh                          rsk7269_defconfig
-powerpc                      ppc6xx_defconfig
-microblaze                          defconfig
-arm                  randconfig-c002-20220214
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                             allmodconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a013-20220214
-x86_64               randconfig-a014-20220214
-x86_64               randconfig-a012-20220214
-x86_64               randconfig-a015-20220214
-x86_64               randconfig-a011-20220214
-x86_64               randconfig-a016-20220214
-i386                 randconfig-a013-20220214
-i386                 randconfig-a016-20220214
-i386                 randconfig-a012-20220214
-i386                 randconfig-a015-20220214
-i386                 randconfig-a011-20220214
-i386                 randconfig-a014-20220214
-riscv                randconfig-r042-20220214
-arc                  randconfig-r043-20220214
-s390                 randconfig-r044-20220214
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-riscv                randconfig-c006-20220214
-i386                 randconfig-c001-20220214
-x86_64               randconfig-c007-20220214
-powerpc              randconfig-c003-20220214
-arm                  randconfig-c002-20220214
-mips                 randconfig-c004-20220214
-arm                        neponset_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                 mpc832x_mds_defconfig
-riscv                             allnoconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                          rm200_defconfig
-arm                         palmz72_defconfig
-arm                         mv78xx0_defconfig
-powerpc                     kmeter1_defconfig
-powerpc                     tqm8560_defconfig
-arm                          ep93xx_defconfig
-arm                        spear3xx_defconfig
-arm                         lpc32xx_defconfig
-mips                     cu1830-neo_defconfig
-x86_64               randconfig-a002-20220214
-x86_64               randconfig-a006-20220214
-x86_64               randconfig-a005-20220214
-x86_64               randconfig-a004-20220214
-x86_64               randconfig-a003-20220214
-x86_64               randconfig-a001-20220214
-i386                 randconfig-a004-20220214
-i386                 randconfig-a005-20220214
-i386                 randconfig-a006-20220214
-i386                 randconfig-a002-20220214
-i386                 randconfig-a003-20220214
-i386                 randconfig-a001-20220214
-hexagon              randconfig-r045-20220214
-hexagon              randconfig-r041-20220214
-hexagon              randconfig-r045-20220216
-hexagon              randconfig-r041-20220216
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+--
+Guilherme Weidle
 
 _______________________________________________
 ath10k mailing list
