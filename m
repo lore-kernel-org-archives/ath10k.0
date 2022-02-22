@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6390C433F5
-	for <ath10k@archiver.kernel.org>; Tue, 22 Feb 2022 02:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3936EC433F5
+	for <ath10k@archiver.kernel.org>; Tue, 22 Feb 2022 02:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JJwYcGY0eyKyADUKV2AozIrLLDd+BjGYeEod/gJz7uQ=; b=AkHNKhNGsz8gnm
-	u0PYGYVsc4ybiH0eOY3kKob6yyCUpqEL2CucNEpsGJj+pEkEYg55/U8sg4mL2xyLBa11dZId5NIxC
-	pYoaayzJmb8pfUeg3WLLcg8EiBz+woNpCtYzWaBeYuF0SHYnN9S6jyVfNPsdLOQjrvM1Fx0TdAfql
-	CzM3T2qb7xeD7WVu0CvjdfALaJckhZufPZsryINeGlIOGxGDdkgmRP27JRTMxEJC7ffvqYVmXnmz9
-	ZUP3xNGPrKLcORK3E8JDknWNDov7n22fVR0LQMdyQEEmLK2dkQh4udqyEEtWxzb1qreqv6fevvsU5
-	vykxYyQAKVJOcTYfFa5Q==;
+	List-Owner; bh=bM0ju/0tGuyaxvr7CgeeH2HL7k2d2jQ5Iv6iCF+rlTU=; b=FftgZ+ysx06jPl
+	1otFudQttk5YBgbv7kNj13Vprx81SEGyrWkNag+63b30zwxOuyHGAsFwVsNk82nIF6bKfPLCmeZJm
+	9aS1Uavrxzo1ilA2LSYB1bap1s1Omcz5gz0s8WpkTgF9g06/7XgdqadhAxsat3f/wt+NFV4mJKi39
+	n3hBzEhRbAP/83yMrsBWOji6eNany/BrzOuciPK/n3Vj9c8BbfUrEyYhhjspPq3qJw+wiqBOS/8bO
+	4I3k7Ete5wX3NFMHosobkKNRUQNDx/V5qK4Oj2zBPUz/8GpDV6J9kSmQB7dm0b87GCE6JcQWvwYgi
+	5g96I1mPYHMwVdlHkHvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nML7h-007lxc-N3; Tue, 22 Feb 2022 02:41:53 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1nML7u-007lzX-QJ; Tue, 22 Feb 2022 02:42:06 +0000
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nML7f-007lxF-5O
- for ath10k@lists.infradead.org; Tue, 22 Feb 2022 02:41:52 +0000
+ id 1nML7s-007lyf-0m
+ for ath10k@lists.infradead.org; Tue, 22 Feb 2022 02:42:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645497711; x=1677033711;
+ t=1645497723; x=1677033723;
  h=date:from:to:cc:subject:message-id:mime-version:
  content-transfer-encoding;
- bh=jema7bABg80Fd2Gt4CH3IkpKEHUjC0Cr7/bBTTqHoyw=;
- b=ViAXrwIHM/z3TFIS1YkbncAbDP6JDNTWW6xHIUPzZPK3gop5ZCoMRtyw
- r5g2sxvgDovhQ6ILhgKJWtx7txIsj+qslmxe1bGGrqWBTOJudy5MAYheT
- 1Rc21VYBig+WUwmDaWPtx8QVFKYoJIAigwgC6QQgwv7Ih0XGFbDgJUn4A
- T10+xNqyCe1w0kJUMzi5OFJ62nydMOGwy77prMDN3MdVyXsA0LVPedG9J
- T21j/ePW6ADXveex4SPUAzNDLyZbtd/9F3XiV2QBMKZhE8d0aDloJztNL
- QLiOz7GsFM6d5X5Dmwa5ivKEkZxQcZZWfrTf4mFMcrCMp90QvrdXFy8BS A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10265"; a="249177876"
-X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="249177876"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Feb 2022 18:41:50 -0800
+ bh=M+tachgNgPUE/J/TK+fkakvJagsOj3VoeuIlkaL4dmM=;
+ b=g+mTyYPdccaHRxLpg9Z/YXlDw1zuVDzZzlTKtpxYuv+AFSmY/UNqMNON
+ j5UFtcP5iKIMufGknZTOw5/BFmGhN8Al5KHP7RlgOWHjpNYU/nwCE02VX
+ UKk6YE26YSquQYL5g9IKETl1Wl8NBqb3zK7eYeb7/H5ynwb2zm7XtQRSx
+ gejfPBKRsfW07TcwBD5RZMPRONPfNPFEN8lNqUXRlMVi+Mzcd1ZOJ74QE
+ qzFO3S95AJdI1u0WenSgT2bSh0ng1d0O63v3qGvAp5VMCKFiW4OOOj1T4
+ Tow0V+KRiGmEzJXt0kha+Q/HdhAMc02/8jdGXBBvZqE0aocknzAsKzFr2 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10265"; a="338030947"
+X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="338030947"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Feb 2022 18:41:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="776150724"
+X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="532046083"
 Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
- by fmsmga006.fm.intel.com with ESMTP; 21 Feb 2022 18:41:49 -0800
+ by orsmga007.jf.intel.com with ESMTP; 21 Feb 2022 18:41:49 -0800
 Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1nML7c-0002Ez-GA; Tue, 22 Feb 2022 02:41:48 +0000
-Date: Tue, 22 Feb 2022 10:41:26 +0800
+ id 1nML7c-0002F5-Hc; Tue, 22 Feb 2022 02:41:48 +0000
+Date: Tue, 22 Feb 2022 10:41:34 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- f46337435631266071958fa8ac36002fc7eb318d
-Message-ID: <62144d56.BolGlT5pGgWRgRJv%lkp@intel.com>
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ cc730db68812bb70580a03c13395ef5fd66ad794
+Message-ID: <62144d5e.dfCm/NJqUxaJHSC/%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220221_184151_261049_7AC6E1C4 
-X-CRM114-Status: UNSURE (   6.23  )
+X-CRM114-CacheID: sfid-20220221_184204_132600_4BBFC1E8 
+X-CRM114-Status: UNSURE (   4.68  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,12 +78,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: f46337435631266071958fa8ac36002fc7eb318d  ath10k: fix pointer arithmetic error in trace call
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: cc730db68812bb70580a03c13395ef5fd66ad794  Merge branch 'pending' into master-pending
 
-elapsed time: 737m
+elapsed time: 738m
 
-configs tested: 143
+configs tested: 136
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -120,15 +120,9 @@ sh                           se7721_defconfig
 m68k                        m5407c3_defconfig
 s390                             allyesconfig
 sh                   rts7751r2dplus_defconfig
-m68k                       m5475evb_defconfig
-arm                         nhk8815_defconfig
 arm                          pxa3xx_defconfig
 powerpc                        warp_defconfig
 sh                           sh2007_defconfig
-arm                          gemini_defconfig
-powerpc                      pasemi_defconfig
-m68k                          sun3x_defconfig
-mips                         cobalt_defconfig
 arm                        clps711x_defconfig
 arm                            pleb_defconfig
 powerpc                       holly_defconfig
@@ -183,18 +177,19 @@ mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-x86_64               randconfig-a002-20220221
-x86_64               randconfig-a001-20220221
 x86_64               randconfig-a003-20220221
-x86_64               randconfig-a004-20220221
+x86_64               randconfig-a002-20220221
 x86_64               randconfig-a005-20220221
 x86_64               randconfig-a006-20220221
+x86_64               randconfig-a001-20220221
+x86_64               randconfig-a004-20220221
 i386                 randconfig-a002-20220221
 i386                 randconfig-a001-20220221
 i386                 randconfig-a005-20220221
 i386                 randconfig-a003-20220221
 i386                 randconfig-a006-20220221
 i386                 randconfig-a004-20220221
+arc                  randconfig-r043-20220221
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
@@ -205,11 +200,11 @@ riscv                            allmodconfig
 x86_64                    rhel-8.3-kselftests
 um                           x86_64_defconfig
 um                             i386_defconfig
-x86_64                           allyesconfig
 x86_64                              defconfig
+x86_64                                  kexec
+x86_64                           allyesconfig
 x86_64                               rhel-8.3
 x86_64                          rhel-8.3-func
-x86_64                                  kexec
 
 clang tested configs:
 powerpc              randconfig-c003-20220221
@@ -219,9 +214,6 @@ mips                 randconfig-c004-20220221
 i386                 randconfig-c001-20220221
 riscv                randconfig-c006-20220221
 arm                          moxart_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                        vexpress_defconfig
-arm                          collie_defconfig
 x86_64               randconfig-a011-20220221
 x86_64               randconfig-a015-20220221
 x86_64               randconfig-a014-20220221
@@ -237,6 +229,7 @@ i386                 randconfig-a013-20220221
 hexagon              randconfig-r045-20220221
 hexagon              randconfig-r041-20220221
 riscv                randconfig-r042-20220221
+s390                 randconfig-r044-20220221
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
