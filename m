@@ -4,69 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7596BC433F5
-	for <ath10k@archiver.kernel.org>; Wed, 23 Feb 2022 12:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 505F2C433F5
+	for <ath10k@archiver.kernel.org>; Wed, 23 Feb 2022 19:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cffwjKOSCqqF3yiYTWfJRKKk1BjeJ3gDd3nilhzqQ+U=; b=A4j8jXmuwQKw22
-	rHFmdYTu2IB7qyH55/z0g2NqMLabfrGDyFaGWv8BiBsJheSoIEk/HmSYgoMdqq3/BCH/GxCLRyTUV
-	oawWiXjmHeNe+AV+fs0ujKqPQDsbPkvfpD4FAMS1CPT4RHPl048yDLwBKhcXTjFmXCzvSNQvYVfIV
-	nu3Q9tFSlrDpREGHIfGvujGNccq0KcjGRxRUL9yNUd5LA6LzZNIPAk96FpZ4cukkQm4mu4172s+h6
-	nLwmpXhog5vdsCdlxbGoygkG25OA9J8NnfKR+tcIhAIKJaYJYf5dIND+ueP/yJrX+I/O67a6Y7tk+
-	u4bNS3OVt93xEUiHLiQw==;
+	List-Owner; bh=F1v2ABxSm4fpN/ei29mQpxMz8jOBndHk0Tc3O9FHwP0=; b=1SVPCFXnSFENrA
+	MR4qkJWqk3oICIvvhwIaSqZSf+waRN9YfZXO7ItmH5DL6kkps7+JDugVLgt75CAtleAcBSSWaJABz
+	BjuaCpbRabu5gk/C4HiDNTOz/e54wQeincUlPzTv9xf9BZ5xPN7DbDiCOJ41bkfNNtCCFgr2innzr
+	bjQZ7RcQy4uGsYpOl0pyr3VVzKkMOG51pqNozEC2dNLOy2GTiNYrK+jcmZb3fF9Zna6ovxWfoAFe0
+	MrlXgMKJU5S6rzrmsWQFe8YVPvJ7itsGzksLTfYWjsqhKIuTKyOA0EBajkrK/CwFYKMQOmauUkyZN
+	fM1o/oX5Gx7k1v8YF8yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMqfA-00E92j-Dk; Wed, 23 Feb 2022 12:22:32 +0000
-Received: from mail-il1-x134.google.com ([2607:f8b0:4864:20::134])
+	id 1nMxhg-00Fvvn-DQ; Wed, 23 Feb 2022 19:53:36 +0000
+Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMq85-00Dyf9-OM
- for ath10k@lists.infradead.org; Wed, 23 Feb 2022 11:48:23 +0000
-Received: by mail-il1-x134.google.com with SMTP id w4so3930753ilj.5
- for <ath10k@lists.infradead.org>; Wed, 23 Feb 2022 03:48:20 -0800 (PST)
+ id 1nMxhZ-00FvsV-VA
+ for ath10k@lists.infradead.org; Wed, 23 Feb 2022 19:53:32 +0000
+Received: by mail-ed1-x533.google.com with SMTP id q17so46166444edd.4
+ for <ath10k@lists.infradead.org>; Wed, 23 Feb 2022 11:53:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=+nTmI/+28E4j0O3bjZQM1rXqMEHAW1ITZXntraScJE0=;
- b=miN/CakF4s7rMN2YWY9w8ZE8n1+0blY6GkSeQZ3lE6eupGx9XJcrlspGMCZZcOCCI4
- th3BijNkmbQUhievYm9Ye+fT1cBQduAToNQrSQyZ51Vm010iz2d1XbsdUzqVQWAb1fS6
- gcTViIElQfxGDXIJLWhxovASQLCAOCnkQaBR5E6kxz16+7/jjG4boOj/SjysaXxr8QxS
- okq7mBIZOx39RicxUPxWrDA+UYcCfs/b486YTBl61+nFiUCKeZc4X1sgYLbrLl4sQ/Il
- E5bVz3ICrHvgT2I7D3a7adVqIB9g1qJvFWxdZyfkmmENoAeYJ+eePfml3unkc7yDPjbm
- Ezuw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=v8xzIGRU7kgoNeqVJnT8FATGaLbwx79ZTsDVZkuP2gs=;
+ b=qdzB9qkHu5Fqj1kx7Uk8iIpRvh9/yilmi3JSZV9pzqOorUhxfYQjlxJ/B5zoZsSJjX
+ i0yzFNHyn2C4m9VdRSgRV4s4L4NvPYYLwZ5Mmyt0GMLi4ddzx2YQjFXaGCP79zH140Ws
+ LwSSQBZi7/hqXrfpCGwGx4bTOqjq/pesoojtEPWZ1IPvVneKRq+QGvLxlYoxsG73fjpM
+ 3AVJngaySr5EKTCOg3AT9Ih67v3/XVOoaA8dcvoaP0sT18Cf/6j3t6OSd/oql4MchLGg
+ 6KPE/J9b5/sOmKZB18qwZqBhv9KRhtI8XsD2AX0kCnSs71OHHjheoXpD9pf6yJgB4CRP
+ 7tSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=+nTmI/+28E4j0O3bjZQM1rXqMEHAW1ITZXntraScJE0=;
- b=7hAcJg3fml0eAA85eL/NR2kYaekBfOzsPoLhB9Iq1tdISd89lIHWaDkGxQqV5C7MKi
- dffYt+aaTBwR9TpclXXklkWgclJlst4evS/26Bmcu0+9T8J2RfhvwN2SgzltF+FXh9fU
- nxkrw2I4ZyB4++gFqdwvYI5V/VVWLOJLFMFmHgIE228B6LKNRO8afzEpeBFNs1aaiRiz
- yM2IMmWu/DJneZuxPnWbLfh1m4Qlr/tVaFs1xRE0/d383O05x6KONgEmaTWOvVPn03JA
- 4QialHu6Z8dEul0+M2hJIulBEoJ+bJOOaIK3odo5BBo3UgTXqRjTEudgSNSo5F8bpXRq
- pZ7w==
-X-Gm-Message-State: AOAM533gcJ3fGE4nqO32ou7ZvpgrB3CHmXEZ3V82F5pA0g4udA2STBlh
- lNBDMOC3Mxccg06PxjeI9aS9dKFN65kbSA+yuXo=
-X-Google-Smtp-Source: ABdhPJyWYThIa2FyL2PoxgRXYQaX16nylwKAWr1cPhhfZCros/JvuNYdTCFtHrpvvwHpdtVpflIJ1QVBp7wu4yBDlBo=
-X-Received: by 2002:a92:c261:0:b0:2c2:70be:efc2 with SMTP id
- h1-20020a92c261000000b002c270beefc2mr4574473ild.46.1645616899849; Wed, 23 Feb
- 2022 03:48:19 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=v8xzIGRU7kgoNeqVJnT8FATGaLbwx79ZTsDVZkuP2gs=;
+ b=Reov8Iq4isEdtIdD9o40zratIzcNih5SnCvKs/8TZTntECm7zOiVp3aw4r/sBkLJ46
+ 5LB22sDL73OmbrLhP+hTAsLfYHSXT7DqX4QcUeM5gLEeYK887RJ7//LdA5Tqvj3q8KJM
+ PyonbscJsQeDKyUO3Y7v2ToQXXACsUbfo3vgGskVGU5h8J/Rx9g1Jab7Kx1bm5nx+i1c
+ w78Q7ruwN+rbmmrCpa9uDY10mds5DVCzwxRN1px5pd28rLCUhP5SWO7smdrJOFkofeZI
+ Mr+NcIDEZQCrgZr47p6AR5iqRNz6Fh3NZr8gzFC/rjWnl/cignzmbThcH8baBQt0V1Sk
+ 3CDA==
+X-Gm-Message-State: AOAM532q2Irk60LxXwPQkiR8juY3fEOQh71V3OmS+TF2RYYDGxRrgXgp
+ dikA5gyAb5owpG8Sj7Cb7xkwmwAul0M=
+X-Google-Smtp-Source: ABdhPJz7kPnqf8g2i/3K+Ps1h79nfwS0NaVYkocDPnQ39mbS2BvHcRXrW3DhroR155FY+0njItw0lg==
+X-Received: by 2002:a05:6402:c90:b0:410:a0a7:ca5b with SMTP id
+ cm16-20020a0564020c9000b00410a0a7ca5bmr926393edb.417.1645646006127; 
+ Wed, 23 Feb 2022 11:53:26 -0800 (PST)
+Received: from debian64.daheim (p5b0d779b.dip0.t-ipconnect.de. [91.13.119.155])
+ by smtp.gmail.com with ESMTPSA id m7sm304676eds.104.2022.02.23.11.53.24
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 23 Feb 2022 11:53:24 -0800 (PST)
+Received: from chuck by debian64.daheim with local (Exim 4.95)
+ (envelope-from <chunkeey@gmail.com>) id 1nMxhT-001RgQ-V8;
+ Wed, 23 Feb 2022 20:53:23 +0100
+From: Christian Lamparter <chunkeey@gmail.com>
+To: linux-firmware@kernel.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: [PATCH v2 2/5] ath10k: QCA9888 hw2.0: update board-2.bin
+Date: Wed, 23 Feb 2022 20:53:20 +0100
+Message-Id: <63972ee8daa620c57eda5eb89221ecfeb55f46af.1645645875.git.chunkeey@gmail.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <2ce6ca92f529aca13984db205ed38fa0fa6d436f.1645645875.git.chunkeey@gmail.com>
+References: <2ce6ca92f529aca13984db205ed38fa0fa6d436f.1645645875.git.chunkeey@gmail.com>
 MIME-Version: 1.0
-References: <20220221122638.7971-1-franciman12@gmail.com>
- <e32de43c-e00a-5766-e988-fe192d36d719@quicinc.com>
-In-Reply-To: <e32de43c-e00a-5766-e988-fe192d36d719@quicinc.com>
-From: Francesco Magliocca <franciman12@gmail.com>
-Date: Wed, 23 Feb 2022 12:48:36 +0100
-Message-ID: <CAH4F6utmtAM3CzX2_Fbn94Sb-X8m0patPh8yWwbuBB0t1VYH=g@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: fix pointer arithmetic error in trace call
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: ath10k@lists.infradead.org, Dan Carpenter <dan.carpenter@oracle.com>, 
- rmanohar@qti.qualcomm.com, linux-wireless@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_034821_839320_7073C839 
-X-CRM114-Status: GOOD (  30.38  )
+X-CRM114-CacheID: sfid-20220223_115330_037595_83F5B1DC 
+X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,75 +92,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi, I picked (void*) to be conformant with the other examples in htt_rx.c
-For example at line 1431:
->    rxd = HTT_RX_BUF_TO_RX_DESC(hw,
->                    (void *)msdu->data - hw->rx_desc_ops->rx_desc_size);
+syncs linux-firmware.git with the latest releases from Kalle Valo (QCA):
+<https://github.com/kvalo/ath10k-firmware/tree/master/QCA9888/hw2.0>
 
-But for me it is ok. Maybe we should fix all the occurrences of this kind.
+Includes the following changes:
+085c231 ath10k-firmware: QCA9888 hw2.0: Add Plasma Cloud PA2200 specific BDFs
+4965bc7 ath10k-firmware: QCA9888 hw2.0: Add EnGenius EMR5000 specific BDFs
+7ac0eb3 ath10k-firmware: QCA9888 hw2.0: Add EnGenius EAP2200 specific BDFs
+75d699b ath10k-firmware: QCA9888 hw2.0: Update OpenMesh A62 specific BDFs
 
-Greetings,
-FM
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+v1->v2: sent to linux-wireless + ath10k mailing list too (Valo)
+---
+ ath10k/QCA9888/hw2.0/board-2.bin | Bin 84928 -> 121384 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
 
-Il giorno mar 22 feb 2022 alle ore 21:52 Jeff Johnson
-<quic_jjohnson@quicinc.com> ha scritto:
->
-> On 2/21/2022 4:26 AM, Francesco Magliocca wrote:
-> > Reading through the commit history, it looks like
-> > there is no special need why we must skip the first 4 bytes
-> > in this trace call:
-> >
-> > trace_ath10k_htt_rx_desc(ar, (void*)rx_desc + sizeof(u32),
-> >                        hw->rx_desc_ops->rx_desc_size - sizeof(u32));
-> >
-> > found in the function ath10k_htt_rx_amsdu_pop in the file htt_rx.c
-> >
-> > i think the original author
-> > (who is also the one who added rx_desc tracing capabilities
-> > in a0883cf7e75a) just wanted to trace the rx_desc contents,
-> > ignoring the fw_rx_desc_base info field
-> > (which is the part being skipped over).
-> > But the trace_ath10k_htt_rx_desc later added
-> > don't care about skipping it, so it may be good
-> > to uniform this call to the others in the file.
-> > But this would change the output of the trace and
-> > thus it may be a problem for tools that rely on it.
-> > Therefore I propose until further discussion
-> > to just keep it as it is and just fix the pointer arithmetic bug.
-> >
-> > Add missing void* cast to rx descriptor pointer in order to
-> > properly skip the initial 4 bytes of the rx descriptor
-> > when passing it to trace_ath10k_htt_rx_desc trace function.
-> >
-> > This fixes the pointer arithmetic error detected
-> > by Dan Carpenter's static analysis tool.
-> >
-> > Fixes: 6bae9de622d3 ("ath10k: abstract htt_rx_desc structure")
-> >
-> > Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> >
-> > Signed-off-by: Francesco Magliocca <franciman12@gmail.com>
-> > Link: https://lore.kernel.org/ath10k/20220201130900.GD22458@kili/
-> > ---
-> >   drivers/net/wireless/ath/ath10k/htt_rx.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> > index 9ad64ca84beb..e01efcd2ce06 100644
-> > --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> > +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> > @@ -429,7 +429,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
-> >                               RX_MSDU_END_INFO0_LAST_MSDU;
-> >
-> >               /* FIXME: why are we skipping the first part of the rx_desc? */
-> > -             trace_ath10k_htt_rx_desc(ar, rx_desc + sizeof(u32),
-> > +             trace_ath10k_htt_rx_desc(ar, (void*)rx_desc + sizeof(u32),
->
-> since void pointer arithmetic is undefined in C99 would it be "better"
-> to cast as u8 *? I realize that gcc has an extension to support this
-> [1], but this usage will cause a warning when -Wpointer-arith is used.
->
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Pointer-Arith.html
+diff --git a/ath10k/QCA9888/hw2.0/board-2.bin b/ath10k/QCA9888/hw2.0/board-2.bin
+index 3038e97b4809cf976644ecd8833d69e865ac0b29..007c82f5ba5b82726e842d0329ffa379711e8014 100644
+GIT binary patch
+delta 4376
+zcmX>wopr?)_J%Et&9aP~(_3U2%NZFaZ(uCko-4-~tUGZ63ul2o0~pv%Pn2Oalyl8<
+zPtD6LE!K5)3@|b>Fv!hi1WGFa6)EV?bJ@N`hB2IR@_NQ1kO6x+C*R|~z_@7hdY%_d
+z+aGH)&gJE1X6NMQ<rfqd6_=dMXfHZBURGiH0ZT>&mIWOJ0h4FQ%1pCj+%)-=oZ03%
+zavm)8N=ga}a&j^<Qc?rLsvjteq4w4fpx;4Gs2|wim#H71c!xzhD>&(GPV|#u+J45F
+zaUP?Uf{Kco0ub1s12ruz9W@|87q^j;lT(lag2{@SF;+lY0t7Hr0gaRc0SpNd5fLE}
+znEXz&uO4K(l9CdpDk@5VJffkYp@QKODLD%{1sNF`Ovi(~h*tvW_nW}D#Nl@;O5h1b
+z3rIL(cncQ5I3=d@doo5k$f&8wz?2}fm2`A;VB%s53Szj}z#s^4K#qE3Hge2^oCz}o
+zojv)DuAP*O3`kl@2}Fv4?Sqk%FUsjDKoS=uC5ecD6d{u~Hq-BUG0IGSCwB^W(e4{$
+zYJgg_JJ_Qa?VIm$?_?&SP;c2BQ1OLnvyS2p#(Fh16%_?wijk5U5EiIZ9}tV7_SO%e
+z-$72Or$g}LtF8ySR2K!8>Iw{kj9Zv<xMYCz9RF%bU@6Z7E#+AjEm^W?a-p0k%ZgR2
+zR)85`5k<`et65M0%2+610TiGJf;h9JAX-2rILiW<$ygamV7r#VEXAs35wIk=TaVKj
+zRFuH&qgfUZYcTx^wH~JgxG=Sww+x{GnZ0BUc5!4i^OgYvAZVH!BMV&Z93X&k76Ac_
+zJq-wOu|Y+tJVX~nJ%o)y0%JpyeHK_~!Sq@$M)B!=UW{zhA9*nfO)l`e053otAZ_D-
+zoW$bXMCY9R(iGhQM^Ni{v~5hg2JC3tcwqWOz#0TxxR17tZ4h9zZ43*GVbL}|1^{vw
+BR%-wN
+
+delta 28
+kcmZ3nh5f*E)`l&N&9c*f`!H58a!%gBShzh`jxksl0H~@8ZU6uP
+
+-- 
+2.35.1
+
 
 _______________________________________________
 ath10k mailing list
