@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A775CC433F5
-	for <ath10k@archiver.kernel.org>; Tue, 22 Feb 2022 20:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9998C433F5
+	for <ath10k@archiver.kernel.org>; Wed, 23 Feb 2022 00:54:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=13DsKkcQw41XRLXzh3p5TxrN8jOGXkezPk13hRMTks0=; b=DM3HUgrvz2yoGx
-	8v/fWBCWpIgK5wdrz6L5wfsnu8RQokjvFuc4lYOUJnXTat1jC83wuIy28PvT0u5PYskjlkaHE6vYR
-	tzAsPZmvSvJCvQ8DURAZBdP6yH+xXuapAcSv/d+bNgwLLyxch1H2+hBKO6SvCkSKwSLbGhdl/OguP
-	hDtb5uPJVKMBwlC0G+4OW//PdpYYQtnkfhXU1QFzfVXorzIQOVSWwuQIPAPcMJzPQ2/QGdlF5pA6V
-	cxiwMrTYgm+tPamFH6mV946jQCgSPf+oyy3V6bG1yMDT0Nn2TUaJzorb8DerFxoPlOIHSFNSV1dwI
-	3w2vr9FJdJnQUAnE/+eA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=k8bH/hMAKnXFhqkYQSk0zSoaQDLcBXJz8PPvhVub2rs=; b=RaCaTl3biIdFJw
+	8LV8UKkI6n4RiLsf3fZ5+ivy2MUAd5Ge+8hQxR4TB2k2GRb6dwvErp7cwxr/LJMfFJotTSndQNIao
+	wrsyMJ7jGEAWWC+rWAObeNv3OEASglujrmxdXA8kovmHt1O+sQkt2CiauRA+/SGbiV9ThgdcKy0mp
+	0zaHk11VEMKYzMbi6IZ+e5eXnYZtLWN/NeORWYfWQVq/DkWxXdEwWpioZT+dFDA844xqV4eqfz3vt
+	bx8hafTcMo4Wko5xqA54R9/Bao0KMoI7q9M1OGGpoKnGHNIDSRVcTPvh0jJnRZqUpz8IwedTCQMZi
+	DgIA60Et2oKwqZi/vYlQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMc9B-00BatE-Kb; Tue, 22 Feb 2022 20:52:33 +0000
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38])
+	id 1nMfu8-00C2Gz-IL; Wed, 23 Feb 2022 00:53:16 +0000
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMc97-00BasM-T9
- for ath10k@lists.infradead.org; Tue, 22 Feb 2022 20:52:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1645563149; x=1677099149;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=RGf7UYwot34BV0nM/N1ZCdlnYIzevn7iRlhfia03PL0=;
- b=EBxfewEzbmI98CI2JhmMqMtMo0dZKReb2emRkjYXv2cZTcBX7H3v+zeZ
- HzVniN+mshAj5gMdWt/1Pi4u7WgcS5z6GQxntQfOvaMym7Qynq7Wdk4gX
- 7twwCRgIlohM0u0V6CMFSYwqwvQXdzEIEDKinYihjGmnxsnMmM8boNUdw c=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 22 Feb 2022 12:52:28 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2022 12:52:28 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Tue, 22 Feb 2022 12:52:28 -0800
-Received: from [10.48.243.226] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15; Tue, 22 Feb
- 2022 12:52:27 -0800
-Message-ID: <e32de43c-e00a-5766-e988-fe192d36d719@quicinc.com>
-Date: Tue, 22 Feb 2022 12:52:27 -0800
+ id 1nMfu5-00C2GE-77
+ for ath10k@lists.infradead.org; Wed, 23 Feb 2022 00:53:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1645577593; x=1677113593;
+ h=date:from:to:cc:subject:message-id:mime-version;
+ bh=1X6EdUwHgSXxs0uDxZpEWCGnTkJHgKcK3hvP+2WiMCY=;
+ b=HOSX1nhH+V1Nay73Gyv0nK9dM694zAvWRCkG9hGnkovCjUTrhHGfM9Up
+ fBtoSqEyeTgfv07mEhqRGAifvFcX4TRgbHJYDRkZqT91dOZZMOyaEmdwr
+ t5eKL+ErhmTYW6gmLnebOe10fetMWSy/Vlf4OiLYLQ9HiRL9xWw3uD64F
+ 4xxSkUWkbspI/XNcA4gdRl1yUycZWADc4MLkZS/EULVzYlbhxyAarXfAP
+ a6/vjw0gAfuhCcvmN3oabvNuLR1pmXZVuQm4wPRb9Svrks5cVdL7slu1M
+ tohGgXn0TRO9mctpIm60IlxnJsMpT9+ks6w0G6IFG/1lQdEcMvW9P0G3B g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10266"; a="338288212"
+X-IronPort-AV: E=Sophos;i="5.88,389,1635231600"; d="scan'208";a="338288212"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Feb 2022 16:53:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,389,1635231600"; d="scan'208";a="683718715"
+Received: from lkp-server01.sh.intel.com (HELO 788b1cd46f0d) ([10.239.97.150])
+ by fmsmga001.fm.intel.com with ESMTP; 22 Feb 2022 16:53:09 -0800
+Received: from kbuild by 788b1cd46f0d with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1nMfu0-0000nd-Oi; Wed, 23 Feb 2022 00:53:08 +0000
+Date: Wed, 23 Feb 2022 08:52:44 +0800
+From: kernel test robot <lkp@intel.com>
+To: Carl Huang <quic_cjhuang@quicinc.com>
+Cc: kbuild-all@lists.01.org, Kalle Valo <kvalo@codeaurora.org>,
+ ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Kalle Valo <quic_kvalo@quicinc.com>,
+ Baochen Qiang <quic_bqiang@quicinc.com>, Wen Gong <quic_wgong@quicinc.com>
+Subject: [kvalo-ath:pending 37/42]
+ drivers/net/wireless/ath/ath11k/wow.c:467:5: error: redefinition of
+ 'ath11k_wow_init'
+Message-ID: <202202230812.uOGgSw5k-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: Re: [PATCH v2] ath10k: fix pointer arithmetic error in trace call
-Content-Language: en-US
-To: Francesco Magliocca <franciman12@gmail.com>, <ath10k@lists.infradead.org>
-CC: <dan.carpenter@oracle.com>, <rmanohar@qti.qualcomm.com>,
- <linux-wireless@vger.kernel.org>
-References: <20220221122638.7971-1-franciman12@gmail.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20220221122638.7971-1-franciman12@gmail.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220222_125230_028467_551ACAA3 
-X-CRM114-Status: GOOD (  23.23  )
+X-CRM114-CacheID: sfid-20220222_165313_305190_9FE1C138 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,67 +76,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 2/21/2022 4:26 AM, Francesco Magliocca wrote:
-> Reading through the commit history, it looks like
-> there is no special need why we must skip the first 4 bytes
-> in this trace call:
-> 
-> trace_ath10k_htt_rx_desc(ar, (void*)rx_desc + sizeof(u32),
-> 			 hw->rx_desc_ops->rx_desc_size - sizeof(u32));
-> 
-> found in the function ath10k_htt_rx_amsdu_pop in the file htt_rx.c
-> 
-> i think the original author
-> (who is also the one who added rx_desc tracing capabilities
-> in a0883cf7e75a) just wanted to trace the rx_desc contents,
-> ignoring the fw_rx_desc_base info field
-> (which is the part being skipped over).
-> But the trace_ath10k_htt_rx_desc later added
-> don't care about skipping it, so it may be good
-> to uniform this call to the others in the file.
-> But this would change the output of the trace and
-> thus it may be a problem for tools that rely on it.
-> Therefore I propose until further discussion
-> to just keep it as it is and just fix the pointer arithmetic bug.
-> 
-> Add missing void* cast to rx descriptor pointer in order to
-> properly skip the initial 4 bytes of the rx descriptor
-> when passing it to trace_ath10k_htt_rx_desc trace function.
-> 
-> This fixes the pointer arithmetic error detected
-> by Dan Carpenter's static analysis tool.
-> 
-> Fixes: 6bae9de622d3 ("ath10k: abstract htt_rx_desc structure")
-> 
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> 
-> Signed-off-by: Francesco Magliocca <franciman12@gmail.com>
-> Link: https://lore.kernel.org/ath10k/20220201130900.GD22458@kili/
-> ---
->   drivers/net/wireless/ath/ath10k/htt_rx.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> index 9ad64ca84beb..e01efcd2ce06 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> @@ -429,7 +429,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
->   				RX_MSDU_END_INFO0_LAST_MSDU;
->   
->   		/* FIXME: why are we skipping the first part of the rx_desc? */
-> -		trace_ath10k_htt_rx_desc(ar, rx_desc + sizeof(u32),
-> +		trace_ath10k_htt_rx_desc(ar, (void*)rx_desc + sizeof(u32),
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+head:   4136ddcfda28450e2d01173e37300b95c8687d9b
+commit: cae84a492cacd9b4eecaafd5dab33f5beba8806e [37/42] ath11k: Add basic WoW functionalities
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20220223/202202230812.uOGgSw5k-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=cae84a492cacd9b4eecaafd5dab33f5beba8806e
+        git remote add kvalo-ath https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+        git fetch --no-tags kvalo-ath pending
+        git checkout cae84a492cacd9b4eecaafd5dab33f5beba8806e
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash
 
-since void pointer arithmetic is undefined in C99 would it be "better" 
-to cast as u8 *? I realize that gcc has an extension to support this 
-[1], but this usage will cause a warning when -Wpointer-arith is used.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Pointer-Arith.html
+All errors (new ones prefixed by >>):
+
+   drivers/net/wireless/ath/ath11k/wow.c:357:5: warning: no previous prototype for 'ath11k_wow_op_suspend' [-Wmissing-prototypes]
+     357 | int ath11k_wow_op_suspend(struct ieee80211_hw *hw,
+         |     ^~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath11k/wow.c:416:6: warning: no previous prototype for 'ath11k_wow_op_set_wakeup' [-Wmissing-prototypes]
+     416 | void ath11k_wow_op_set_wakeup(struct ieee80211_hw *hw, bool enabled)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath11k/wow.c:425:5: warning: no previous prototype for 'ath11k_wow_op_resume' [-Wmissing-prototypes]
+     425 | int ath11k_wow_op_resume(struct ieee80211_hw *hw)
+         |     ^~~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath11k/wow.c:467:5: error: redefinition of 'ath11k_wow_init'
+     467 | int ath11k_wow_init(struct ath11k *ar)
+         |     ^~~~~~~~~~~~~~~
+   In file included from drivers/net/wireless/ath/ath11k/core.h:26,
+                    from drivers/net/wireless/ath/ath11k/wow.c:11:
+   drivers/net/wireless/ath/ath11k/wow.h:40:19: note: previous definition of 'ath11k_wow_init' with type 'int(struct ath11k *)'
+      40 | static inline int ath11k_wow_init(struct ath11k *ar)
+         |                   ^~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath11k/wow.c: In function 'ath11k_wow_init':
+>> drivers/net/wireless/ath/ath11k/wow.c:482:22: error: 'struct wiphy' has no member named 'wowlan'
+     482 |         ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
+         |                      ^~
+
+
+vim +/ath11k_wow_init +467 drivers/net/wireless/ath/ath11k/wow.c
+
+   466	
+ > 467	int ath11k_wow_init(struct ath11k *ar)
+   468	{
+   469		if (WARN_ON(!test_bit(WMI_TLV_SERVICE_WOW, ar->wmi->wmi_ab->svc_map)))
+   470			return -EINVAL;
+   471	
+   472		ar->wow.wowlan_support = ath11k_wowlan_support;
+   473	
+   474		if (ar->wmi->wmi_ab->wlan_resource_config.rx_decap_mode ==
+   475		    ATH11K_HW_TXRX_NATIVE_WIFI) {
+   476			ar->wow.wowlan_support.pattern_max_len -= WOW_MAX_REDUCE;
+   477			ar->wow.wowlan_support.max_pkt_offset -= WOW_MAX_REDUCE;
+   478		}
+   479	
+   480		ar->wow.max_num_patterns = ATH11K_WOW_PATTERNS;
+   481		ar->wow.wowlan_support.n_patterns = ar->wow.max_num_patterns;
+ > 482		ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
