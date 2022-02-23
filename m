@@ -4,64 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A84CC433EF
-	for <ath10k@archiver.kernel.org>; Wed, 23 Feb 2022 04:12:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7596BC433F5
+	for <ath10k@archiver.kernel.org>; Wed, 23 Feb 2022 12:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=LVkEU5/DABBwRo6iR/amlP+ee0+VJChWAlthJa1+D3M=; b=TTZxIZ9eJKsBmd
-	kIEtRsRw98UhZujodz8nQZpgy9GlbOE9+YW+n25rGVEnr7w+GsF8KuJfAreWUL8tXNgKfpPAzaj+b
-	nX1nC9PqF/EgBCpPwtn34Uwjmgsgs6PfGSJRxCeLArnXURnNHeIG1bLSWJsvlYmAZxLN6wVp/shr+
-	473ieJnXEEszpY6GvXE3xrIOrCfBNe49gQDcnI0gtUXUL5/jyoXB/AJbOr6IT8YSKpTSauBkFFo4x
-	bZeWYveH6PUZaBoNFAf7Bp3wWGId4QdjfUYT9BoJO3ZBJXgykZT4PVCmlM/2h30h+eouoJNgzBZd4
-	pv1wHBkfRck6+8HyymWw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cffwjKOSCqqF3yiYTWfJRKKk1BjeJ3gDd3nilhzqQ+U=; b=A4j8jXmuwQKw22
+	rHFmdYTu2IB7qyH55/z0g2NqMLabfrGDyFaGWv8BiBsJheSoIEk/HmSYgoMdqq3/BCH/GxCLRyTUV
+	oawWiXjmHeNe+AV+fs0ujKqPQDsbPkvfpD4FAMS1CPT4RHPl048yDLwBKhcXTjFmXCzvSNQvYVfIV
+	nu3Q9tFSlrDpREGHIfGvujGNccq0KcjGRxRUL9yNUd5LA6LzZNIPAk96FpZ4cukkQm4mu4172s+h6
+	nLwmpXhog5vdsCdlxbGoygkG25OA9J8NnfKR+tcIhAIKJaYJYf5dIND+ueP/yJrX+I/O67a6Y7tk+
+	u4bNS3OVt93xEUiHLiQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMizp-00ClBB-VO; Wed, 23 Feb 2022 04:11:22 +0000
-Received: from mga02.intel.com ([134.134.136.20])
+	id 1nMqfA-00E92j-Dk; Wed, 23 Feb 2022 12:22:32 +0000
+Received: from mail-il1-x134.google.com ([2607:f8b0:4864:20::134])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMizl-00Cl8T-Ip
- for ath10k@lists.infradead.org; Wed, 23 Feb 2022 04:11:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645589477; x=1677125477;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=DukG06Noht+7hiWudWv2al/cCxd32E5TGb/r9VV5nvg=;
- b=PZPle6C8B5ky6DX8XJXs6+TDcz4Od5RrDGYOXYfbsGJAwR7QmrEGs2pW
- 3FUYkVqXK/CI64qEkWyLrt7CaIpFfXT6pxGjnv1k5EbXIKcs9GAmgE6w/
- Z6ioVhpQozRCa0EYNeqYjQGedsLeeWjCvAFBNH4qji1Y3fuW77gJ1ViJF
- evFgoz9fgpntfO32qhnSuB01aCqfYV2BSbvU/ASjudQPYSLs3tYeHW/kC
- a9Rc2iqoWgvXWkuhIpusqiYud0cwNU+UK1g90G6GvukQ0IWHYcogRwkM3
- 0KDWocaILAe3YPKQyzSVVHW/1FLzVl9EFClfgEiZrU9497bM3i8LyIjFi w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10266"; a="239268673"
-X-IronPort-AV: E=Sophos;i="5.88,390,1635231600"; d="scan'208";a="239268673"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2022 20:11:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,390,1635231600"; d="scan'208";a="573683753"
-Received: from lkp-server01.sh.intel.com (HELO 788b1cd46f0d) ([10.239.97.150])
- by orsmga001.jf.intel.com with ESMTP; 22 Feb 2022 20:11:14 -0800
-Received: from kbuild by 788b1cd46f0d with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nMizh-0000xK-Th; Wed, 23 Feb 2022 04:11:13 +0000
-Date: Wed, 23 Feb 2022 12:10:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD REGRESSION
- 4136ddcfda28450e2d01173e37300b95c8687d9b
-Message-ID: <6215b3a1.SUfrIxfsa1oxHsZa%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nMq85-00Dyf9-OM
+ for ath10k@lists.infradead.org; Wed, 23 Feb 2022 11:48:23 +0000
+Received: by mail-il1-x134.google.com with SMTP id w4so3930753ilj.5
+ for <ath10k@lists.infradead.org>; Wed, 23 Feb 2022 03:48:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=+nTmI/+28E4j0O3bjZQM1rXqMEHAW1ITZXntraScJE0=;
+ b=miN/CakF4s7rMN2YWY9w8ZE8n1+0blY6GkSeQZ3lE6eupGx9XJcrlspGMCZZcOCCI4
+ th3BijNkmbQUhievYm9Ye+fT1cBQduAToNQrSQyZ51Vm010iz2d1XbsdUzqVQWAb1fS6
+ gcTViIElQfxGDXIJLWhxovASQLCAOCnkQaBR5E6kxz16+7/jjG4boOj/SjysaXxr8QxS
+ okq7mBIZOx39RicxUPxWrDA+UYcCfs/b486YTBl61+nFiUCKeZc4X1sgYLbrLl4sQ/Il
+ E5bVz3ICrHvgT2I7D3a7adVqIB9g1qJvFWxdZyfkmmENoAeYJ+eePfml3unkc7yDPjbm
+ Ezuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=+nTmI/+28E4j0O3bjZQM1rXqMEHAW1ITZXntraScJE0=;
+ b=7hAcJg3fml0eAA85eL/NR2kYaekBfOzsPoLhB9Iq1tdISd89lIHWaDkGxQqV5C7MKi
+ dffYt+aaTBwR9TpclXXklkWgclJlst4evS/26Bmcu0+9T8J2RfhvwN2SgzltF+FXh9fU
+ nxkrw2I4ZyB4++gFqdwvYI5V/VVWLOJLFMFmHgIE228B6LKNRO8afzEpeBFNs1aaiRiz
+ yM2IMmWu/DJneZuxPnWbLfh1m4Qlr/tVaFs1xRE0/d383O05x6KONgEmaTWOvVPn03JA
+ 4QialHu6Z8dEul0+M2hJIulBEoJ+bJOOaIK3odo5BBo3UgTXqRjTEudgSNSo5F8bpXRq
+ pZ7w==
+X-Gm-Message-State: AOAM533gcJ3fGE4nqO32ou7ZvpgrB3CHmXEZ3V82F5pA0g4udA2STBlh
+ lNBDMOC3Mxccg06PxjeI9aS9dKFN65kbSA+yuXo=
+X-Google-Smtp-Source: ABdhPJyWYThIa2FyL2PoxgRXYQaX16nylwKAWr1cPhhfZCros/JvuNYdTCFtHrpvvwHpdtVpflIJ1QVBp7wu4yBDlBo=
+X-Received: by 2002:a92:c261:0:b0:2c2:70be:efc2 with SMTP id
+ h1-20020a92c261000000b002c270beefc2mr4574473ild.46.1645616899849; Wed, 23 Feb
+ 2022 03:48:19 -0800 (PST)
 MIME-Version: 1.0
+References: <20220221122638.7971-1-franciman12@gmail.com>
+ <e32de43c-e00a-5766-e988-fe192d36d719@quicinc.com>
+In-Reply-To: <e32de43c-e00a-5766-e988-fe192d36d719@quicinc.com>
+From: Francesco Magliocca <franciman12@gmail.com>
+Date: Wed, 23 Feb 2022 12:48:36 +0100
+Message-ID: <CAH4F6utmtAM3CzX2_Fbn94Sb-X8m0patPh8yWwbuBB0t1VYH=g@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: fix pointer arithmetic error in trace call
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: ath10k@lists.infradead.org, Dan Carpenter <dan.carpenter@oracle.com>, 
+ rmanohar@qti.qualcomm.com, linux-wireless@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220222_201117_731527_748B053F 
-X-CRM114-Status: UNSURE (   7.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220223_034821_839320_7073C839 
+X-CRM114-Status: GOOD (  30.38  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,191 +83,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 4136ddcfda28450e2d01173e37300b95c8687d9b  ath11k: support GTK rekey offload
+Hi, I picked (void*) to be conformant with the other examples in htt_rx.c
+For example at line 1431:
+>    rxd = HTT_RX_BUF_TO_RX_DESC(hw,
+>                    (void *)msdu->data - hw->rx_desc_ops->rx_desc_size);
 
-Error/Warning reports:
+But for me it is ok. Maybe we should fix all the occurrences of this kind.
 
-https://lore.kernel.org/lkml/202202230812.uOGgSw5k-lkp@intel.com
+Greetings,
+FM
 
-Error/Warning in current branch:
-
-drivers/net/wireless/ath/ath11k/wow.c:467:5: error: redefinition of 'ath11k_wow_init'
-drivers/net/wireless/ath/ath11k/wow.c:482:22: error: 'struct wiphy' has no member named 'wowlan'
-drivers/net/wireless/ath/ath11k/wow.c:810:5: error: redefinition of 'ath11k_wow_init'
-drivers/net/wireless/ath/ath11k/wow.c:830:22: error: 'struct wiphy' has no member named 'wowlan'
-
-possible Error/Warning in current branch (please contact us if interested):
-
-drivers/net/wireless/ath/ath11k/hal_rx.c:1246:3: warning: Value stored to 'he_stbc' is never read [clang-analyzer-deadcode.DeadStores]
-drivers/net/wireless/ath/ath11k/hal_rx.c:1415:3: warning: Value stored to 'he_dcm' is never read [clang-analyzer-deadcode.DeadStores]
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-wow.c:error:redefinition-of-ath11k_wow_init
-|   `-- drivers-net-wireless-ath-ath11k-wow.c:error:struct-wiphy-has-no-member-named-wowlan
-|-- alpha-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-wow.c:error:redefinition-of-ath11k_wow_init
-|   `-- drivers-net-wireless-ath-ath11k-wow.c:error:struct-wiphy-has-no-member-named-wowlan
-|-- m68k-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-wow.c:error:redefinition-of-ath11k_wow_init
-|   `-- drivers-net-wireless-ath-ath11k-wow.c:error:struct-wiphy-has-no-member-named-wowlan
-|-- m68k-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-wow.c:error:redefinition-of-ath11k_wow_init
-|   `-- drivers-net-wireless-ath-ath11k-wow.c:error:struct-wiphy-has-no-member-named-wowlan
-|-- nios2-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-wow.c:error:redefinition-of-ath11k_wow_init
-|   `-- drivers-net-wireless-ath-ath11k-wow.c:error:struct-wiphy-has-no-member-named-wowlan
-`-- parisc-allyesconfig
-    |-- drivers-net-wireless-ath-ath11k-wow.c:error:redefinition-of-ath11k_wow_init
-    `-- drivers-net-wireless-ath-ath11k-wow.c:error:struct-wiphy-has-no-member-named-wowlan
-
-clang_recent_errors
-`-- x86_64-randconfig-c007
-    |-- drivers-net-wireless-ath-ath11k-hal_rx.c:warning:Value-stored-to-he_dcm-is-never-read-clang-analyzer-deadcode.DeadStores
-    `-- drivers-net-wireless-ath-ath11k-hal_rx.c:warning:Value-stored-to-he_stbc-is-never-read-clang-analyzer-deadcode.DeadStores
-
-elapsed time: 805m
-
-configs tested: 126
-configs skipped: 4
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-powerpc                       maple_defconfig
-arm                       omap2plus_defconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                            q40_defconfig
-powerpc                     pq2fads_defconfig
-ia64                         bigsur_defconfig
-h8300                    h8300h-sim_defconfig
-powerpc                         ps3_defconfig
-m68k                        m5307c3_defconfig
-mips                         db1xxx_defconfig
-sparc                               defconfig
-arm                          pxa910_defconfig
-arm                          gemini_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                       ppc64_defconfig
-ia64                            zx1_defconfig
-arm                        multi_v7_defconfig
-alpha                            alldefconfig
-parisc                              defconfig
-sh                            shmin_defconfig
-mips                            gpr_defconfig
-arc                     haps_hs_smp_defconfig
-arm                           stm32_defconfig
-um                                  defconfig
-arm                           sunxi_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                          rsk7203_defconfig
-mips                         bigsur_defconfig
-arm                          badge4_defconfig
-arm                       multi_v4t_defconfig
-m68k                       bvme6000_defconfig
-powerpc                   currituck_defconfig
-mips                           ci20_defconfig
-microblaze                      mmu_defconfig
-powerpc                    amigaone_defconfig
-arm                  randconfig-c002-20220221
-arm                  randconfig-c002-20220222
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                                defconfig
-parisc64                            defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20220221
-x86_64               randconfig-a002-20220221
-x86_64               randconfig-a005-20220221
-x86_64               randconfig-a006-20220221
-x86_64               randconfig-a001-20220221
-x86_64               randconfig-a004-20220221
-i386                 randconfig-a002-20220221
-i386                 randconfig-a001-20220221
-i386                 randconfig-a005-20220221
-i386                 randconfig-a003-20220221
-i386                 randconfig-a006-20220221
-i386                 randconfig-a004-20220221
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-mips                       lemote2f_defconfig
-mips                          ath79_defconfig
-powerpc                     tqm8540_defconfig
-arm64                            allyesconfig
-x86_64               randconfig-a011-20220221
-x86_64               randconfig-a015-20220221
-x86_64               randconfig-a014-20220221
-x86_64               randconfig-a016-20220221
-x86_64               randconfig-a013-20220221
-x86_64               randconfig-a012-20220221
-i386                 randconfig-a016-20220221
-i386                 randconfig-a012-20220221
-i386                 randconfig-a015-20220221
-i386                 randconfig-a011-20220221
-i386                 randconfig-a014-20220221
-i386                 randconfig-a013-20220221
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-hexagon              randconfig-r045-20220221
-hexagon              randconfig-r041-20220221
-riscv                randconfig-r042-20220221
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Il giorno mar 22 feb 2022 alle ore 21:52 Jeff Johnson
+<quic_jjohnson@quicinc.com> ha scritto:
+>
+> On 2/21/2022 4:26 AM, Francesco Magliocca wrote:
+> > Reading through the commit history, it looks like
+> > there is no special need why we must skip the first 4 bytes
+> > in this trace call:
+> >
+> > trace_ath10k_htt_rx_desc(ar, (void*)rx_desc + sizeof(u32),
+> >                        hw->rx_desc_ops->rx_desc_size - sizeof(u32));
+> >
+> > found in the function ath10k_htt_rx_amsdu_pop in the file htt_rx.c
+> >
+> > i think the original author
+> > (who is also the one who added rx_desc tracing capabilities
+> > in a0883cf7e75a) just wanted to trace the rx_desc contents,
+> > ignoring the fw_rx_desc_base info field
+> > (which is the part being skipped over).
+> > But the trace_ath10k_htt_rx_desc later added
+> > don't care about skipping it, so it may be good
+> > to uniform this call to the others in the file.
+> > But this would change the output of the trace and
+> > thus it may be a problem for tools that rely on it.
+> > Therefore I propose until further discussion
+> > to just keep it as it is and just fix the pointer arithmetic bug.
+> >
+> > Add missing void* cast to rx descriptor pointer in order to
+> > properly skip the initial 4 bytes of the rx descriptor
+> > when passing it to trace_ath10k_htt_rx_desc trace function.
+> >
+> > This fixes the pointer arithmetic error detected
+> > by Dan Carpenter's static analysis tool.
+> >
+> > Fixes: 6bae9de622d3 ("ath10k: abstract htt_rx_desc structure")
+> >
+> > Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+> >
+> > Signed-off-by: Francesco Magliocca <franciman12@gmail.com>
+> > Link: https://lore.kernel.org/ath10k/20220201130900.GD22458@kili/
+> > ---
+> >   drivers/net/wireless/ath/ath10k/htt_rx.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+> > index 9ad64ca84beb..e01efcd2ce06 100644
+> > --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+> > +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+> > @@ -429,7 +429,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+> >                               RX_MSDU_END_INFO0_LAST_MSDU;
+> >
+> >               /* FIXME: why are we skipping the first part of the rx_desc? */
+> > -             trace_ath10k_htt_rx_desc(ar, rx_desc + sizeof(u32),
+> > +             trace_ath10k_htt_rx_desc(ar, (void*)rx_desc + sizeof(u32),
+>
+> since void pointer arithmetic is undefined in C99 would it be "better"
+> to cast as u8 *? I realize that gcc has an extension to support this
+> [1], but this usage will cause a warning when -Wpointer-arith is used.
+>
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Pointer-Arith.html
 
 _______________________________________________
 ath10k mailing list
