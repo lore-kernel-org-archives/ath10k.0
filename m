@@ -4,66 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77758C433F5
-	for <ath10k@archiver.kernel.org>; Thu, 24 Feb 2022 16:47:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A2B5C433EF
+	for <ath10k@archiver.kernel.org>; Thu, 24 Feb 2022 17:45:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4zuvlIAg5PHh8XGtiOdb/CSwZFH1IIDlOsJLKrc/aE8=; b=QduQliFiwHitwW
-	s2/ezRUHFgqGlgx36it8kHv+IExRzmPYIPY0uBTRpCZrGhOus1AsHAtzfPN8SJde7FGcamHJLg9R7
-	xMp4Fj2sr3Heg0DqHBDeJidyDSt6+6aUF7HL6fTMTDBxTdSEAbzsD+w0gvutCQkkbRB2vXF0SYg4B
-	9okUAss1p83/o95ySiaIbWkbSfGmTph+Vp0fo5C+QTp07SiArbB8ljkT94d4DzBBQmZ1QhKRhUADe
-	BU4CDYRSQdihLHcLUenH5lK01uojdjLeSthe8zT9CBTUSCkuXG5DyKy8KRrRAkrDCO8r04ArN2TSv
-	n/0pwMx9V0/ecPmAWapw==;
+	List-Owner; bh=8o3OkfZJnQSgriROh0MP/dqYma/iUq+YARDnVCIS2F0=; b=NUpQxEegZGWccN
+	Do83vLBH3LKM1oZ1aty3Hgnan6hOVhKW7vOH6f1RtZMPX0Tl5C+WonCwEK0j9U7GWhzFkKrD3k3fU
+	H0FwhASxJHuY8x3hWdAWZnY0q9Hg/j4Yr/HYMFYOwQKM8tWISfxQtb+jmBf8+vxXGSnQx929kht/I
+	PwOR5xK8g5wQ90JR+PEJbOCbRaO1SR8u/ezX3AgFQ2NgXF2950d4uU0GPEbRhwzmVRq4hcp/eIUpZ
+	iU5y6HO3WlejQ/zIkZWzGF+lJfkm5ItlascX6dReYzQJ/ItuHCweDedRqiwiFcp8HkYMwHD9at9b5
+	3Dxyh5vrNZSgIcs3ayPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nNHGv-001cBS-Um; Thu, 24 Feb 2022 16:47:17 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1nNIBE-001shn-JU; Thu, 24 Feb 2022 17:45:28 +0000
+Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNHGt-001cAm-6g
- for ath10k@lists.infradead.org; Thu, 24 Feb 2022 16:47:17 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 42104B826B0;
- Thu, 24 Feb 2022 16:47:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9109DC340EC;
- Thu, 24 Feb 2022 16:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645721231;
- bh=Ab1OqpFWZ22F+Co/hGidh+bqVRWoY4xR7TvjsBDMQ+8=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=raD1Vy218Z6fD2byNsIqkjWt4cJ3Agnqna1o8X20KScSmCGAN2Kh//QhSjdKEarhN
- mFJmja3mABLVJCcwLukkGoN3jD8BhZqAeRSu+RP+4cEb0WFhd6+Sjtdkq+TQ7rWmav
- tfZi6ZW1Q9diAGp49N/tl2NO7HN5hmTC1WPtP0jrr4STg0cwycDA2SABJO08A6kB6o
- fNFt0QkANFra051U8qBiKmn0RtN2dx3fi0v3LV1BaJrUEdEkgXhpzH0IRRi857Ujdw
- zGYhxeaL5NRHqrAL5n/9eCiVF7GbDkMA8VRqDJX3b4Sqy9JCksCCrLOAqiQjo3bsaS
- Wr227dQfbt8Yg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Thorsten Leemhuis <regressions@leemhuis.info>
-Cc: Nuno Oliveira <nuno@eq.uc.pt>, Sebastian Bachmann <hello@reox.at>,
- wgong@codeaurora.org, ath10k@lists.infradead.org,
- "regressions\@lists.linux.dev" <regressions@lists.linux.dev>
-Subject: Re: Compex WLE200NX: regdomain sanitized regression
-References: <1c160dfb-6ccc-b4d6-76f6-4364e0adb6dd@reox.at>
- <YaIix40KaVlxT+XG@eq.uc.pt>
- <96b3682d-71b3-ada0-6fc7-686e51609968@leemhuis.info>
- <87v8zja7em.fsf@codeaurora.org> <YcDMGdpvINCX9VlX@eq.uc.pt>
- <625a51ed-8185-6fdb-bd7d-cfb0a913c7a4@leemhuis.info>
- <87v8x4tet6.fsf@kernel.org>
- <cf56111a-e6f6-249b-4953-25159420e99d@leemhuis.info>
-Date: Thu, 24 Feb 2022 18:47:08 +0200
-In-Reply-To: <cf56111a-e6f6-249b-4953-25159420e99d@leemhuis.info> (Thorsten
- Leemhuis's message of "Thu, 24 Feb 2022 17:38:10 +0100")
-Message-ID: <87k0dktdo3.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ id 1nNIBB-001sgf-WA
+ for ath10k@lists.infradead.org; Thu, 24 Feb 2022 17:45:27 +0000
+Received: by mail-lf1-x133.google.com with SMTP id g39so5154129lfv.10
+ for <ath10k@lists.infradead.org>; Thu, 24 Feb 2022 09:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linuxfoundation.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=pOBmVUTfu7dJw7T0At09LeWpqEdb7Gx94oz8UfcdCXs=;
+ b=AILmembZ985YYL0f4wZ5s11RyKgR5u6qiQrV7RZNkT9G5n/SUdL4Vhrq9B5bX8IAIQ
+ Y6nGnLQuOzkqFVDrilbDkVYSx1GL7mMY7i0oqQFQ167eDMte/SkF8KYTQPuW8ZBUYD0I
+ S+wsm+vFqKevBhVyTZaq6iuYgrlCFfQmfxWN4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=pOBmVUTfu7dJw7T0At09LeWpqEdb7Gx94oz8UfcdCXs=;
+ b=lY2RH8XSjqY3NSXZs1oYADIo+1AEOGIFmpRp+G5CI9MT+e0W1jCYA/6BxuGsakWlAR
+ dxVRlvlgxTa/QxH5KG5ye4cFZ44f0XNQctRDi2l6sgrCJgcyreJpIWaioIflkIiQGs32
+ DUtvoRbJtH89PmDl5L1uFk+1/4rY0245XYAxtM5XkP3f3/n3WcBwdFtRj5WAw7V5pmU7
+ PmcbRqzniK94VX7zmDnDb3RBjLw7u9EO4KGaANgzZGRugBZv0iuL+u+C5cHxqvH+K5YE
+ 8PEkZaBm1ttKoOfdf5LYgL04F9lML6mvGG9D2udxtMCzuo5GA/2RH3OM9z3glr/gqfom
+ AjBA==
+X-Gm-Message-State: AOAM531Q2Ziqdee7+QMYPRMmOSroSvWnSwdL3bHe5JofCl28kxkoVq0G
+ lD2ASNPj8auOHOQ9FuZEhRG3YL2Tb7JqX6oywFI=
+X-Google-Smtp-Source: ABdhPJx4xc77diqy+dlLtagSec9FgPgG14uyKZmk9IUwRaC2SxWflY5MWWXWnhISnDKACNJ4+nMiGw==
+X-Received: by 2002:ac2:54b2:0:b0:443:fbec:ef0d with SMTP id
+ w18-20020ac254b2000000b00443fbecef0dmr2440452lfk.343.1645724724070; 
+ Thu, 24 Feb 2022 09:45:24 -0800 (PST)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com.
+ [209.85.208.181])
+ by smtp.gmail.com with ESMTPSA id c12sm256336lfr.234.2022.02.24.09.45.22
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 24 Feb 2022 09:45:23 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id v22so3976836ljh.7
+ for <ath10k@lists.infradead.org>; Thu, 24 Feb 2022 09:45:22 -0800 (PST)
+X-Received: by 2002:a2e:80c6:0:b0:246:3334:9778 with SMTP id
+ r6-20020a2e80c6000000b0024633349778mr2640059ljg.443.1645724721879; Thu, 24
+ Feb 2022 09:45:21 -0800 (PST)
 MIME-Version: 1.0
+References: <20220221122638.7971-1-franciman12@gmail.com>
+ <e32de43c-e00a-5766-e988-fe192d36d719@quicinc.com>
+ <CAH4F6utmtAM3CzX2_Fbn94Sb-X8m0patPh8yWwbuBB0t1VYH=g@mail.gmail.com>
+ <87o82wvhtk.fsf@kernel.org> <20220224075346.GL3943@kadam>
+ <87fso8vb3w.fsf_-_@kernel.org>
+In-Reply-To: <87fso8vb3w.fsf_-_@kernel.org>
+From: Linus Torvalds <torvalds@linuxfoundation.org>
+Date: Thu, 24 Feb 2022 09:45:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whFKYMrF6euVvziW+drw7-yi1pYdf=uccnzJ8k09DoTXA@mail.gmail.com>
+Message-ID: <CAHk-=whFKYMrF6euVvziW+drw7-yi1pYdf=uccnzJ8k09DoTXA@mail.gmail.com>
+Subject: Re: Use of void pointer arithmetic?
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>,
+ Francesco Magliocca <franciman12@gmail.com>, 
+ Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org, 
+ rmanohar@qti.qualcomm.com, linux-wireless <linux-wireless@vger.kernel.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220224_084715_595366_2A99F1A2 
-X-CRM114-Status: GOOD (  17.49  )
+X-CRM114-CacheID: sfid-20220224_094526_059680_D2CE9754 
+X-CRM114-Status: GOOD (  17.89  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,64 +99,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Thorsten Leemhuis <regressions@leemhuis.info> writes:
-
-> On 24.02.22 17:22, Kalle Valo wrote:
->> Thorsten Leemhuis <regressions@leemhuis.info> writes:
->> 
->>> Hi, this is your Linux kernel regression tracker speaking. Top-posting
->>> for once, to make this easy accessible to everyone.
->>>
->>> Kalle, thx for looking into this, I'm well aware this is kinda tricky.
->>> This is a gently reminder about the issue to ensure it doesn't fall
->>> through the cracks. At the same time I know that it's not urgent, that
->>> why I'm not putting it on backburner in regzbot now:
->>>
->>> #regzbot backburner: tricky situation and around for a while, hence not
->>> that urgent
->>> #regzbot poke
->>>
->>> I'll likely sent another gentle reminder after the next merge-window.
->> 
->> I now queued the revert to my pending branch:
->> 
->> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=dfc438d224e4ad756b276d79e5771c45b523156d
+On Thu, Feb 24, 2022 at 1:59 AM Kalle Valo <kvalo@kernel.org> wrote:
 >
-> Ohh, great, many thx!
+> > What does -Wpointer-arith buy us?
 >
->> Thorsten, can you please check that the Link tag is correct so that
->> regzbot can automatically detect the fix?
+> A good question. I have always just thought we should avoid void pointer
+> arithmetic due to the C standard, but now that you mention it void
+> pointers can indeed simplify the code. So I'm not so sure anymore.
 >
-> Yeah, it will, thx to the "Link:
-> https://lore.kernel.org/all/1c160dfb-6ccc-b4d6-76f6-4364e0adb6dd@reox.at/".
+> Any opinions? Is there a kernel wide recommendation for this?
 
-Great, thanks for checking.
+We consciously use arithmetic on 'void *' in some places, although
+it's not exactly _hugely_ common.
 
-> The kernel's docs say the redirector should be used in such cases (so
-> "/r/" instead of "/all/"), but regzbot doesn't care about it -- and I
-> wonder if that detail is actually important anyway now that we have
-> lore.kernel.org/all/.
+It's much more common to turn a pointer into an 'unsigned long' and
+then doing basic operations on that.
 
-Funny that you ask, I was just few minutes ago updating my emacs
-function which creates the lore link and was wondering the same. It
-looks like '/r/' redirects to '/all/', so I guess we should use the
-latter now:
+The advantage of 'void *' is that it does avoid the need to cast the
+pointer back.
 
-$ curl --head https://lore.kernel.org/r/1c160dfb-6ccc-b4d6-76f6-4364e0adb6dd@reox.at/
-HTTP/1.1 302 Found
-Server: nginx
-Date: Thu, 24 Feb 2022 16:43:32 GMT
-Content-Type: text/plain
-Connection: keep-alive
-Location: https://lore.kernel.org/all/1c160dfb-6ccc-b4d6-76f6-4364e0adb6dd@reox.at/
+But at the same time it will never replace the 'cast to an actual
+integer type', because the 'void *' arithmetic only does simple
+addition and subtraction, and many pointer operations need more (ie
+alignment needs to do the bitops).
 
-But yeah, it shouldn't matter as hopefully all sane tools can handle
-both.
+So I think it's mostly a personal preference. I *do* think that doing
+arithmetic on 'void *' is generally superior to doing it the
+old-fashioned C way on 'char *' - unless, of course, 'char *' is
+simply the native type in question.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+So if 'char *' casts (and casting back) is the alternative, then by
+all means use 'void *' as a kind of generic and type-independent "byte
+pointer". That is how it is meant to be used in the gcc extension.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+And no, nobody should ever use -Wpointer-arith on the kernel in
+general. Our use of it is not _hugely_ common, but it's does exist,
+and it's not really frowned upon.
+
+                    Linus
 
 _______________________________________________
 ath10k mailing list
