@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C093BC433F5
-	for <ath10k@archiver.kernel.org>; Thu, 24 Feb 2022 10:31:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 890FEC433FE
+	for <ath10k@archiver.kernel.org>; Thu, 24 Feb 2022 16:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W513E7AL5DAlzhJ6InWwhoaNwLeD9157gue99LX30BQ=; b=iHWHZ8zUpTYXtb
-	NAK4YuTzreRN9C2oJwvqWXI9xTKysHS2mb/tMvUciXc0fZWZMVLtFvVudCzeFvagLDdb/fTVFO+Kh
-	7CyL6A4EqghE7FjzYQwbFVtOZY7Q5HFpChl3aRAU4YNtssvjV55TXqdsI0isa0dsbU+/7+0b+uLFB
-	GO/Y15vraBxYK+GcSElo0XHnyjyuqIAnLpN2JRoSzYXsaVrOxi5Us7W11PgcAqlJjUN48rwTcL8nf
-	bMVk6lPNzBDXPL9l2CHG8Tjz8DqX33WfD/35+2CBNQVMqj6WSa8Nuy/ZcIECUpGqYpbYAIUg9ovyP
-	XUBDAEPFt6lyPeVXA5/Q==;
+	List-Owner; bh=70ZykjPR61+TWWLl45HFNSfGlo8HgJlA7Gta5VvKcYk=; b=yvseC0+lmBhUiu
+	SnKZL8Gj1EKJm1QWHu5m8iZbtTmauN7YxWhai0pficInR/M8OWeeHhQFgMw5Lo6QTQH2/EpNuVpf0
+	D0KpQ60wKKAOWKlpQH7S21Scv2ndr/rewkXKMY/kEDXyH6zZRI9IC2pax90OmVbx4hZ90OvRz7W6z
+	Knz/2L4/k75uaq+eShbjMZAJL5jIc6bn1rLNUmp4bUZNIA/KED6NJOk3rCC2n9xWs9lCkFirs8HAR
+	jhZMVEidOjbdO/hEyIRa0VAD8bNsNdusiyXtwLoZKL9is4f/toGRzDgHZBuKypO0GD4710lM/915c
+	KqZGPl3XOKwyj1UhTh4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nNBPP-000Lkg-Ef; Thu, 24 Feb 2022 10:31:39 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+	id 1nNGez-001TN1-6e; Thu, 24 Feb 2022 16:08:05 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNBPD-000LcL-6A
- for ath10k@lists.infradead.org; Thu, 24 Feb 2022 10:31:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
- Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
- Resent-Cc:Resent-Message-ID; bh=QJ61GVuJyclCnz18nFi5Rw74fGs3hl5irEBRqG/1OMo=; 
- t=1645698683; x=1646908283; b=auImOVcyqLZeeFrXHz9NoqK0AwuS3JKu5p06cBimNRbXnrj
- Gnd8rGaA7FqNaa89FSofucpUil7Lx2nq2tgckGdAA0RVNQIYIxI/0WgLwprJwrzLvZc5KZhEzB85m
- eE1PwNmzfJvlmvDXXsctoEuAn7opfoynVD+ipGDlQuP1cSce3pH5lLn/oih7dFYnkSMs41gtzzvW/
- pQo/DRBZ92z6iwrMzVqTokMHKOBmk5sMm+6COAqzI9MMWl42sjPEj35YGfXUSWmz8ja787ixlYkH9
- GeaOz8PzDskD1YrhtV1Diz/AdGiJ1ONBcyyKfK7DJWdh/F2+waE/o2iiedJHLRTQ==;
-Received: by sipsolutions.net with esmtpsa
- (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
- (Exim 4.95) (envelope-from <johannes@sipsolutions.net>)
- id 1nNBOz-0057ZC-Uj; Thu, 24 Feb 2022 11:31:14 +0100
-Message-ID: <2fd265ec46a8b582b7c5dea9524185b6fe1b0322.camel@sipsolutions.net>
-Subject: Re: Use of void pointer arithmetic?
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Kalle Valo <kvalo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Francesco Magliocca <franciman12@gmail.com>, Jeff Johnson
- <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org, 
- rmanohar@qti.qualcomm.com, linux-wireless@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>
-Date: Thu, 24 Feb 2022 11:31:12 +0100
-In-Reply-To: <87fso8vb3w.fsf_-_@kernel.org>
-References: <20220221122638.7971-1-franciman12@gmail.com>
- <e32de43c-e00a-5766-e988-fe192d36d719@quicinc.com>
- <CAH4F6utmtAM3CzX2_Fbn94Sb-X8m0patPh8yWwbuBB0t1VYH=g@mail.gmail.com>
- <87o82wvhtk.fsf@kernel.org> <20220224075346.GL3943@kadam>
- <87fso8vb3w.fsf_-_@kernel.org>
-User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
+ id 1nNGeO-001T7i-R5; Thu, 24 Feb 2022 16:07:35 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4C1F661784;
+ Thu, 24 Feb 2022 16:07:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA22CC340E9;
+ Thu, 24 Feb 2022 16:07:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1645718847;
+ bh=Z3+x1SIV9VOetp2p+0THAAyY/l8As1yQ1l0nOvyh4Z8=;
+ h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+ b=HTqylMlxNFaTe6EnEmYyjQUVi05GaviKofzAWOsskUtS0bDU6vhKnG1YPX4gV58d8
+ 6tsqZgEDoSELSkQVlI2XCjDJgjbJcSjg9En8hYEDwp1+pgxYWbta+cchr0+DYENBH3
+ zKIUetZPB5kQ/j4CdBHCuZH4wOtU0MAlEDmFd7vwQ6dlrPIqOQBHipsHoExCFOgYi5
+ vE/9zMEsUJuE4oyI/hC6aDuZ0oh/OSOf6cGTJtkRZEsUiwV8fAPUG2GOaxuAXVmVgf
+ QPhUR9qheftZxEE09uINE/qvbLjg9hHpEblFzDwG2nPzwG7ZmX/OBCG1BBfEnapMQd
+ NeyMVRLLfXKeQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: kernel test robot <lkp@intel.com>
+Cc: Carl Huang <quic_cjhuang@quicinc.com>, kbuild-all@lists.01.org,
+ ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Baochen Qiang <quic_bqiang@quicinc.com>, Wen Gong <quic_wgong@quicinc.com>,
+ ath11k@lists.infradead.org
+Subject: Re: [kvalo-ath:pending 37/42]
+ drivers/net/wireless/ath/ath11k/wow.c:467:5: error: redefinition of
+ 'ath11k_wow_init'
+References: <202202230812.uOGgSw5k-lkp@intel.com>
+Date: Thu, 24 Feb 2022 18:07:21 +0200
+In-Reply-To: <202202230812.uOGgSw5k-lkp@intel.com> (kernel test robot's
+ message of "Wed, 23 Feb 2022 08:52:44 +0800")
+Message-ID: <87zgmgtfie.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220224_023127_299380_8753485F 
-X-CRM114-Status: GOOD (  10.04  )
+X-CRM114-CacheID: sfid-20220224_080729_020279_0D3A06CC 
+X-CRM114-Status: GOOD (  15.42  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,36 +76,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2022-02-24 at 11:59 +0200, Kalle Valo wrote:
-> 
-> A good question. I have always just thought we should avoid void pointer
-> arithmetic due to the C standard, but now that you mention it void
-> pointers can indeed simplify the code. So I'm not so sure anymore.
-> 
-> Any opinions? Is there a kernel wide recommendation for this?
++ ath11k
 
-The kernel only enables it with W=3, which I guess nobody uses anyway
-... Originally it came from commit 4a5838ad9d2d ("kbuild: Add extra gcc
-checks") with a pointer to
+kernel test robot <lkp@intel.com> writes:
 
-http://marc.info/?l=kernel-janitors&m=129802065918147&w=2
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+> head:   4136ddcfda28450e2d01173e37300b95c8687d9b
+> commit: cae84a492cacd9b4eecaafd5dab33f5beba8806e [37/42] ath11k: Add basic WoW functionalities
+> config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20220223/202202230812.uOGgSw5k-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=cae84a492cacd9b4eecaafd5dab33f5beba8806e
+>         git remote add kvalo-ath https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+>         git fetch --no-tags kvalo-ath pending
+>         git checkout cae84a492cacd9b4eecaafd5dab33f5beba8806e
+>         # save the config file to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/net/wireless/ath/ath11k/wow.c:357:5: warning: no previous prototype for 'ath11k_wow_op_suspend' [-Wmissing-prototypes]
+>      357 | int ath11k_wow_op_suspend(struct ieee80211_hw *hw,
+>          |     ^~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/wow.c:416:6: warning: no previous
+> prototype for 'ath11k_wow_op_set_wakeup' [-Wmissing-prototypes]
+>      416 | void ath11k_wow_op_set_wakeup(struct ieee80211_hw *hw, bool enabled)
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/wow.c:425:5: warning: no previous
+> prototype for 'ath11k_wow_op_resume' [-Wmissing-prototypes]
+>      425 | int ath11k_wow_op_resume(struct ieee80211_hw *hw)
+>          |     ^~~~~~~~~~~~~~~~~~~~
+>>> drivers/net/wireless/ath/ath11k/wow.c:467:5: error: redefinition of
+>>> 'ath11k_wow_init'
+>      467 | int ath11k_wow_init(struct ath11k *ar)
+>          |     ^~~~~~~~~~~~~~~
+>    In file included from drivers/net/wireless/ath/ath11k/core.h:26,
+>                     from drivers/net/wireless/ath/ath11k/wow.c:11:
+>    drivers/net/wireless/ath/ath11k/wow.h:40:19: note: previous definition of 'ath11k_wow_init' with type 'int(struct ath11k *)'
+>       40 | static inline int ath11k_wow_init(struct ath11k *ar)
+>          |                   ^~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/wow.c: In function 'ath11k_wow_init':
+>>> drivers/net/wireless/ath/ath11k/wow.c:482:22: error: 'struct wiphy'
+>>> has no member named 'wowlan'
+>      482 |         ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
+>          |                      ^~
 
-(which is offline right now due to an expired certificate ...)
+I was able to reproduce the errors by disabling CONFIG_PM. I fixed them
+and pushed the new patch to the pending branch:
 
-but setting back my clock it seems to point to
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=624c999c214f02004c2f996aa6ce3a17dfbebd18
 
-https://lore.kernel.org/all/20110218091716.GA4384@bicker/
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-but the thread kind of revolves around -Wconversion.
-
-
-FreeBSD does enable -Wpointer-arith which is why we've been trying to
-keep iwlwifi clean as a courtesy to them, but for really Linux-only code
-I dunno if there's much point. Although of course that applies also to
-FreeBSD ...
-
-johannes
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
