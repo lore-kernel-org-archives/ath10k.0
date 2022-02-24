@@ -4,59 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EB51C433EF
-	for <ath10k@archiver.kernel.org>; Thu, 24 Feb 2022 09:21:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74A63C433EF
+	for <ath10k@archiver.kernel.org>; Thu, 24 Feb 2022 09:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
-	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CiZU5ZUJ1gW0yButZfDufu9D25mtWPwbNaGwXKM85HA=; b=y1FS43j5jlI2sf
-	ANDTgYGJpmYVFXVr/PMNCNQsHZ9lZyEmqKILIhqxfCZX9YFoHcjZ0X9a00BSceGiLlyyaKUEz0Y23
-	479/fpQxPs/Kin28yGAnl0usa6TUzdJPqZ2wFS4wofGi1MKhIWMS/LAPU4tww1R32QpZg+RUr73ek
-	RjXX6oDc1Qp854Z3KdCVJUAJd+KkkMSN5md9ShMr9j84RovetU0+O7y03UJUYRPG+1oE0acxIQxpf
-	abb3KItVIPu/eO7Ku6jkG+f0WylcGttGgVtih6e1IxRJGkRgBZHSvejgA3C6+6sQMFwdurVeAHlpS
-	cP09mPZRcfPA305CZgBw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Sth+ezKGkXcv3uAjQNaabYJGrMwfuClQUPP2tUxpEWA=; b=uR0TY2V608CJLx
+	EOGgbNByIyULjvrV7IzP57f1EpryfSUGtE1DAJCZlBmejO+EBSZjLv/kNsIt7OBGycnnZHVBrdN8S
+	Vj08YngYZVl5OlTjVFLJNOpgZGG08Hd7ADE0J1weTA93F/v7rdDFBsPbV0tJsEWDV1PMLgG+3p9yD
+	XxOT4Mmtf83994ugABzq7qBlciV1ZoSiLzNLsYuGptQqDZ6+M1YzG0iDoA07Eqz3awCdSV+SoSJlI
+	5kafQ1yzUK+lP4DtK6o0rmJRjfJKcBnLqKe85UFYYdfML8VwpUTivXUNXSOMMEtZoLQ/a6SqFAeu+
+	H3k8/R4hpCaZZzpvoiZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nNAIL-0000JX-9Z; Thu, 24 Feb 2022 09:20:17 +0000
+	id 1nNAuW-000Cqw-Vs; Thu, 24 Feb 2022 09:59:45 +0000
 Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNA4O-00HUPb-EW
- for ath10k@lists.infradead.org; Thu, 24 Feb 2022 09:05:54 +0000
+ id 1nNAuT-000Cpd-Qc
+ for ath10k@lists.infradead.org; Thu, 24 Feb 2022 09:59:43 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E1ACDB82423;
- Thu, 24 Feb 2022 09:05:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2947CC340E9;
- Thu, 24 Feb 2022 09:05:47 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 511CEB8249C;
+ Thu, 24 Feb 2022 09:59:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C47C340E9;
+ Thu, 24 Feb 2022 09:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645693549;
- bh=CC5AEFMLTxhckHWBk6hNVR6HRUe2MZlQmHha6NARgFs=;
- h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
- b=n9q/7wze2pqaRf1hOdY60Lg8OnOyrKuLq5mrIedNfqWb/6u5LwEAkaJAXD69lOQql
- 1tYb9pNAuNMBh1FqdZYbiyLHbdtRRRjECR0Z5v1YvHSLEkoCAK/CzMejUdeVm746Dg
- Ft7WrfvXB8v88kDsCN8pJIXTKt+WDNcq6+X+3tahC/dLXmIT3IjA94O6xOJKZprECY
- NzB1bucdudP44mGrqs51OifgUhfZYU5X6aoWITxpNQOMErzUxVwMd0YUKWRctfwh6W
- qQDCIDOpjnMzQPNXpDQKP9/f4/CytMEdxBIcYu6EhiDmuWH9/f3DjrATXfyGyu9u46
- EAj4GyFnCZK2g==
-MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: fix pointer arithmetic error in trace call
+ s=k20201202; t=1645696778;
+ bh=7eguQjJYyrMKQoojwbWhxFNmQYcJas6sOvBXxv+Jklw=;
+ h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+ b=IEWfxImdwfWYbTxagwFfgsHz0DBVEBVKvth39hjXUrwzMBB3Gt6yPT/liUcTHl4/i
+ BfpyuzPrG+2qBVnMcWSPcpDsKPKYfnE+3/6NhjAIMpKRcFaRHsSQGQHf1OFav/9bRD
+ 8PRGNQOABS1w/lGulhLDct8DR6no5SC8+AjE/y/B+8GAQFSJJtEBtOcJqGPVk/l9Qa
+ +Z0/dxDtuX7RGPMUJfSH/a8P8XacaYsquR6//0AikC9f7YNNVdegSmITqNNcaYi9eF
+ om3hQQa/ItOuuzpxAnHMFq1irbUUPhxbNQqX1Nbc9WgWoLjfauregYUnV16A+3Eduk
+ d63R4yr5wwzXQ==
 From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20220221122638.7971-1-franciman12@gmail.com>
-References: <20220221122638.7971-1-franciman12@gmail.com>
-To: Francesco Magliocca <franciman12@gmail.com>
-Cc: ath10k@lists.infradead.org, dan.carpenter@oracle.com,
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Francesco Magliocca <franciman12@gmail.com>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org,
  rmanohar@qti.qualcomm.com, linux-wireless@vger.kernel.org,
- Francesco Magliocca <franciman12@gmail.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <164569354432.30378.1243222511176407812.kvalo@kernel.org>
-Date: Thu, 24 Feb 2022 09:05:47 +0000 (UTC)
+ linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>
+Subject: Use of void pointer arithmetic?
+References: <20220221122638.7971-1-franciman12@gmail.com>
+ <e32de43c-e00a-5766-e988-fe192d36d719@quicinc.com>
+ <CAH4F6utmtAM3CzX2_Fbn94Sb-X8m0patPh8yWwbuBB0t1VYH=g@mail.gmail.com>
+ <87o82wvhtk.fsf@kernel.org> <20220224075346.GL3943@kadam>
+Date: Thu, 24 Feb 2022 11:59:31 +0200
+In-Reply-To: <20220224075346.GL3943@kadam> (Dan Carpenter's message of "Thu,
+ 24 Feb 2022 10:53:46 +0300")
+Message-ID: <87fso8vb3w.fsf_-_@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+X-Bad-Reply: References and In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220224_010552_727121_2C97FF6E 
-X-CRM114-Status: GOOD (  18.52  )
+X-CRM114-CacheID: sfid-20220224_015942_053836_1045DCE6 
+X-CRM114-Status: GOOD (  17.51  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,54 +79,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Francesco Magliocca <franciman12@gmail.com> wrote:
+(Changing subject, adding Linus and linux-kernel)
 
-> Reading through the commit history, it looks like
-> there is no special need why we must skip the first 4 bytes
-> in this trace call:
-> 
-> trace_ath10k_htt_rx_desc(ar, (void*)rx_desc + sizeof(u32),
->                          hw->rx_desc_ops->rx_desc_size - sizeof(u32));
-> 
-> found in the function ath10k_htt_rx_amsdu_pop in the file htt_rx.c
-> 
-> i think the original author
-> (who is also the one who added rx_desc tracing capabilities
-> in a0883cf7e75a) just wanted to trace the rx_desc contents,
-> ignoring the fw_rx_desc_base info field
-> (which is the part being skipped over).
-> But the trace_ath10k_htt_rx_desc later added
-> don't care about skipping it, so it may be good
-> to uniform this call to the others in the file.
-> But this would change the output of the trace and
-> thus it may be a problem for tools that rely on it.
-> Therefore I propose until further discussion
-> to just keep it as it is and just fix the pointer arithmetic bug.
-> 
-> Add missing void* cast to rx descriptor pointer in order to
-> properly skip the initial 4 bytes of the rx descriptor
-> when passing it to trace_ath10k_htt_rx_desc trace function.
-> 
-> This fixes the pointer arithmetic error detected
-> by Dan Carpenter's static analysis tool.
-> 
-> Fixes: 6bae9de622d3 ("ath10k: abstract htt_rx_desc structure")
-> 
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> 
-> Signed-off-by: Francesco Magliocca <franciman12@gmail.com>
-> Link: https://lore.kernel.org/ath10k/20220201130900.GD22458@kili/
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Dan Carpenter <dan.carpenter@oracle.com> writes:
 
-Patch applied to ath-next branch of ath.git, thanks.
+> On Thu, Feb 24, 2022 at 09:34:31AM +0200, Kalle Valo wrote:
+>> Francesco Magliocca <franciman12@gmail.com> writes:
+>> 
+>> > Hi, I picked (void*) to be conformant with the other examples in htt_rx.c
+>> > For example at line 1431:
+>> >>    rxd = HTT_RX_BUF_TO_RX_DESC(hw,
+>> >>                    (void *)msdu->data - hw->rx_desc_ops->rx_desc_size);
+>> >
+>> > But for me it is ok. Maybe we should fix all the occurrences of this kind.
+>> 
+>> Yeah, it would be good to fix the void pointer arithmetic in a separate
+>> patch. I have planning to enable -Wpointer-arith in my ath10k-check and
+>> ath11k-check scripts, so patches are very welcome.
+>
+> Void * casts simplify a lot of code.  Less noise.  More readable.
+> They're more accurate in a sense because it's not a u8 at all.  The
+> kernel can't compile with other compilers besides GCC and Clang so why
+> care about that the C standard hasn't caught up?
+>
+> What does -Wpointer-arith buy us?
 
-49ffac5907a8 ath10k: fix pointer arithmetic error in trace call
+A good question. I have always just thought we should avoid void pointer
+arithmetic due to the C standard, but now that you mention it void
+pointers can indeed simplify the code. So I'm not so sure anymore.
+
+Any opinions? Is there a kernel wide recommendation for this?
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20220221122638.7971-1-franciman12@gmail.com/
+https://patchwork.kernel.org/project/linux-wireless/list/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
 
 _______________________________________________
 ath10k mailing list
