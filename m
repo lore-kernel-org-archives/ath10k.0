@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 890FEC433FE
-	for <ath10k@archiver.kernel.org>; Thu, 24 Feb 2022 16:08:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 661A2C433EF
+	for <ath10k@archiver.kernel.org>; Thu, 24 Feb 2022 16:22:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=70ZykjPR61+TWWLl45HFNSfGlo8HgJlA7Gta5VvKcYk=; b=yvseC0+lmBhUiu
-	SnKZL8Gj1EKJm1QWHu5m8iZbtTmauN7YxWhai0pficInR/M8OWeeHhQFgMw5Lo6QTQH2/EpNuVpf0
-	D0KpQ60wKKAOWKlpQH7S21Scv2ndr/rewkXKMY/kEDXyH6zZRI9IC2pax90OmVbx4hZ90OvRz7W6z
-	Knz/2L4/k75uaq+eShbjMZAJL5jIc6bn1rLNUmp4bUZNIA/KED6NJOk3rCC2n9xWs9lCkFirs8HAR
-	jhZMVEidOjbdO/hEyIRa0VAD8bNsNdusiyXtwLoZKL9is4f/toGRzDgHZBuKypO0GD4710lM/915c
-	KqZGPl3XOKwyj1UhTh4w==;
+	List-Owner; bh=/yI0y0FrnPOzriM2mSr6O4xXExxA3m8TrDiw2mx2GQU=; b=T5KetbC7t/+xuD
+	uDixoqSfppAeqZcaVIx18jXEM4vwMvGnH9UJuhJyr0PGp2gdm8Fziw21BoF1P31UJwY1TkU+AlCUQ
+	FPUKRgrr8/qX12CuKil0wUQu7dLWXGx/qffCYCzgQGrkiuzRnPn3p7kXk5/n1heMvIi2qxQW2jpT6
+	lpyzmHFbSBEWznRSVvmiZ9IqrGlGUlE4ohh2nNUahhxKV15ydnS5H8aP55qRtL1z8zU0gAw7VO3cw
+	QDiIAVnu2zohg5/5NXz+wGL2vhXomQNAVVmbrtI8d4W+fI+1iY8sWEAopeLRQoQfpYY4VJSfZmVbg
+	r7Fq0ezuCK+SZngDNdzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nNGez-001TN1-6e; Thu, 24 Feb 2022 16:08:05 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1nNGtB-001YeA-Tz; Thu, 24 Feb 2022 16:22:45 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNGeO-001T7i-R5; Thu, 24 Feb 2022 16:07:35 +0000
+ id 1nNGt9-001Yck-Ep
+ for ath10k@lists.infradead.org; Thu, 24 Feb 2022 16:22:45 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4C1F661784;
- Thu, 24 Feb 2022 16:07:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA22CC340E9;
- Thu, 24 Feb 2022 16:07:25 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id B1C64CE1FCC;
+ Thu, 24 Feb 2022 16:22:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E3DC340EC;
+ Thu, 24 Feb 2022 16:22:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645718847;
- bh=Z3+x1SIV9VOetp2p+0THAAyY/l8As1yQ1l0nOvyh4Z8=;
+ s=k20201202; t=1645719758;
+ bh=6AQaEZoBxwC8P5SMcS4qxA+oPXeSFFhe6lK0QQyH+5s=;
  h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=HTqylMlxNFaTe6EnEmYyjQUVi05GaviKofzAWOsskUtS0bDU6vhKnG1YPX4gV58d8
- 6tsqZgEDoSELSkQVlI2XCjDJgjbJcSjg9En8hYEDwp1+pgxYWbta+cchr0+DYENBH3
- zKIUetZPB5kQ/j4CdBHCuZH4wOtU0MAlEDmFd7vwQ6dlrPIqOQBHipsHoExCFOgYi5
- vE/9zMEsUJuE4oyI/hC6aDuZ0oh/OSOf6cGTJtkRZEsUiwV8fAPUG2GOaxuAXVmVgf
- QPhUR9qheftZxEE09uINE/qvbLjg9hHpEblFzDwG2nPzwG7ZmX/OBCG1BBfEnapMQd
- NeyMVRLLfXKeQ==
+ b=jww66/64Qu0L+xMCF6MZCXI8XrWI/fo59hOLHVDpgYQKIBhm2uBNf/bjxkHe3xLAz
+ nA8Cg9z6DylS8z24BojPywd2j88zQeje6hxpBQjFVYSFcUz0ooR4d2aM5vPcvUX/1g
+ K093QGZVPUuJLovwTEZe/e6qdB9bw1F6SC+xlBEGS/1dV2mSQSQea78SL/VewebDz3
+ uz2dyyxvuM0fuiW+dlspweQfCOMr6K59kCRYc073s5x1bRdPB3bMfZYkR9w1CUMg7M
+ YUFIw4ugWuXaVpFHqB+sOptLOsAXvKINvQQksN5jtyUCOquDBKu355w43HRM4Mmp37
+ JXtG27frgSBlw==
 From: Kalle Valo <kvalo@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: Carl Huang <quic_cjhuang@quicinc.com>, kbuild-all@lists.01.org,
- ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
- Baochen Qiang <quic_bqiang@quicinc.com>, Wen Gong <quic_wgong@quicinc.com>,
- ath11k@lists.infradead.org
-Subject: Re: [kvalo-ath:pending 37/42]
- drivers/net/wireless/ath/ath11k/wow.c:467:5: error: redefinition of
- 'ath11k_wow_init'
-References: <202202230812.uOGgSw5k-lkp@intel.com>
-Date: Thu, 24 Feb 2022 18:07:21 +0200
-In-Reply-To: <202202230812.uOGgSw5k-lkp@intel.com> (kernel test robot's
- message of "Wed, 23 Feb 2022 08:52:44 +0800")
-Message-ID: <87zgmgtfie.fsf@kernel.org>
+To: Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: Nuno Oliveira <nuno@eq.uc.pt>, Sebastian Bachmann <hello@reox.at>,
+ wgong@codeaurora.org, ath10k@lists.infradead.org,
+ "regressions\@lists.linux.dev" <regressions@lists.linux.dev>
+Subject: Re: Compex WLE200NX: regdomain sanitized regression
+References: <1c160dfb-6ccc-b4d6-76f6-4364e0adb6dd@reox.at>
+ <YaIix40KaVlxT+XG@eq.uc.pt>
+ <96b3682d-71b3-ada0-6fc7-686e51609968@leemhuis.info>
+ <87v8zja7em.fsf@codeaurora.org> <YcDMGdpvINCX9VlX@eq.uc.pt>
+ <625a51ed-8185-6fdb-bd7d-cfb0a913c7a4@leemhuis.info>
+Date: Thu, 24 Feb 2022 18:22:29 +0200
+In-Reply-To: <625a51ed-8185-6fdb-bd7d-cfb0a913c7a4@leemhuis.info> (Thorsten
+ Leemhuis's message of "Fri, 18 Feb 2022 12:47:27 +0100")
+Message-ID: <87v8x4tet6.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220224_080729_020279_0D3A06CC 
-X-CRM114-Status: GOOD (  15.42  )
+X-CRM114-CacheID: sfid-20220224_082243_710776_1CBFB45E 
+X-CRM114-Status: GOOD (  13.98  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,61 +78,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-+ ath11k
+Thorsten Leemhuis <regressions@leemhuis.info> writes:
 
-kernel test robot <lkp@intel.com> writes:
-
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   4136ddcfda28450e2d01173e37300b95c8687d9b
-> commit: cae84a492cacd9b4eecaafd5dab33f5beba8806e [37/42] ath11k: Add basic WoW functionalities
-> config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20220223/202202230812.uOGgSw5k-lkp@intel.com/config)
-> compiler: m68k-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=cae84a492cacd9b4eecaafd5dab33f5beba8806e
->         git remote add kvalo-ath https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
->         git fetch --no-tags kvalo-ath pending
->         git checkout cae84a492cacd9b4eecaafd5dab33f5beba8806e
->         # save the config file to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash
+> Hi, this is your Linux kernel regression tracker speaking. Top-posting
+> for once, to make this easy accessible to everyone.
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Kalle, thx for looking into this, I'm well aware this is kinda tricky.
+> This is a gently reminder about the issue to ensure it doesn't fall
+> through the cracks. At the same time I know that it's not urgent, that
+> why I'm not putting it on backburner in regzbot now:
 >
-> All errors (new ones prefixed by >>):
+> #regzbot backburner: tricky situation and around for a while, hence not
+> that urgent
+> #regzbot poke
 >
->    drivers/net/wireless/ath/ath11k/wow.c:357:5: warning: no previous prototype for 'ath11k_wow_op_suspend' [-Wmissing-prototypes]
->      357 | int ath11k_wow_op_suspend(struct ieee80211_hw *hw,
->          |     ^~~~~~~~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/wow.c:416:6: warning: no previous
-> prototype for 'ath11k_wow_op_set_wakeup' [-Wmissing-prototypes]
->      416 | void ath11k_wow_op_set_wakeup(struct ieee80211_hw *hw, bool enabled)
->          |      ^~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/wow.c:425:5: warning: no previous
-> prototype for 'ath11k_wow_op_resume' [-Wmissing-prototypes]
->      425 | int ath11k_wow_op_resume(struct ieee80211_hw *hw)
->          |     ^~~~~~~~~~~~~~~~~~~~
->>> drivers/net/wireless/ath/ath11k/wow.c:467:5: error: redefinition of
->>> 'ath11k_wow_init'
->      467 | int ath11k_wow_init(struct ath11k *ar)
->          |     ^~~~~~~~~~~~~~~
->    In file included from drivers/net/wireless/ath/ath11k/core.h:26,
->                     from drivers/net/wireless/ath/ath11k/wow.c:11:
->    drivers/net/wireless/ath/ath11k/wow.h:40:19: note: previous definition of 'ath11k_wow_init' with type 'int(struct ath11k *)'
->       40 | static inline int ath11k_wow_init(struct ath11k *ar)
->          |                   ^~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/wow.c: In function 'ath11k_wow_init':
->>> drivers/net/wireless/ath/ath11k/wow.c:482:22: error: 'struct wiphy'
->>> has no member named 'wowlan'
->      482 |         ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
->          |                      ^~
+> I'll likely sent another gentle reminder after the next merge-window.
 
-I was able to reproduce the errors by disabling CONFIG_PM. I fixed them
-and pushed the new patch to the pending branch:
+I now queued the revert to my pending branch:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=624c999c214f02004c2f996aa6ce3a17dfbebd18
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=dfc438d224e4ad756b276d79e5771c45b523156d
+
+Thorsten, can you please check that the Link tag is correct so that
+regzbot can automatically detect the fix?
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
