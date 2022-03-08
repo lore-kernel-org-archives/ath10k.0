@@ -4,64 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E53DC433F5
-	for <ath10k@archiver.kernel.org>; Tue,  8 Mar 2022 14:33:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B954EC433EF
+	for <ath10k@archiver.kernel.org>; Tue,  8 Mar 2022 18:14:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HjgzAYz8ZPRQMDuEVna9/JEBSte6VojBsUdhmRJNTO0=; b=L0MAfwpIRDz/Hd
-	8tOFm/eTkSX3U3D+UODF4+Q7lLMKvBrNg1tlPvXGuf5qJ6OPx/HyODSZjGILhKbVSBPWyP/k0dfK5
-	cvHV6UzrUDITWwpoORVt7jqFncLvIqqJQfKPRWgnSJODGqN8+rsZ9ZQi0xVPcYoe+dZ1JLlLiQaV/
-	Tsnms1ke4KiZVXDO6NU0zjrsmM+57Y6QlwzTlgZriOt45xsUDgDx8ITj9K2N7vXUK0HpmqQnvC4fT
-	raR+oGaWLWGK/9psxOmC1Uy/qQLLfR//zrGCtR3L9OBCi2Z9TaDD1TZ66LKYva1BGCX8Qrw++QlIr
-	Qes+meW+9J0LyIdtaN+w==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=O/9Ev+KQcsNZoHKNN0NhhdJX/6NZJ6XjNeS/ZXiOPfg=; b=URDT15eoG5zlxU
+	sdGrCJyVmUVN6jSRq0jPXqJJWMzfkM+U+kQ9tJDAiIJb7lW86npINDe7W2fv/6loNHMRg426p2SYx
+	oit0t2nB27BB2I7t+r8qRS8MsfdFJP7tp6BTmpPw2Qb1GPcNMySWCfJL4CcpClwxrjFngKkw9bP0L
+	onGqvih8tjxZRiU+vfJHA8Hairp0O7FZksh1mIB+Pi6biyIl8f3zVg8RaGT4b5kwm6fl+In/wnxne
+	S/LVGocKklqBJ/qu1G7RroGg6fJkCPEN6YNmBaROi9JrG7sIyp847A7SMY4Dw9z/ED3av9048EpTa
+	o0BPI4xbhkAVzQTawYWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nRatB-004mnI-9Q; Tue, 08 Mar 2022 14:32:37 +0000
-Received: from mga14.intel.com ([192.55.52.115])
+	id 1nReL3-005kj4-Mb; Tue, 08 Mar 2022 18:13:37 +0000
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRat7-004mly-IA
- for ath10k@lists.infradead.org; Tue, 08 Mar 2022 14:32:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646749953; x=1678285953;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=1cqa/5QdGguhYZPZXe+PC/UjkOsDzmhs+HNPGrpY9Jo=;
- b=LHCLlIPhPOTRY2P5I135oIcyP6qM3Bh2BY/Z3rDmlmC+bgQMUSBpaUJu
- /nkRvTY4Px5lYMbyKfbQaoh07aiQeH0nml/+jPkXs4a131BHV8da8lC/a
- M59x4jwFhg8QtzgBZeEllmB5pqqAXSdi+szoSJ5e+JcLgKjbojpXUoYEo
- 7cYKcWLauqrHpP+vPeI3O2FA7bOCykjUPd5Bw4uZzlUHxZRh96ix+b/At
- jhSUHDebZ5cX95wftx2VbuUQ9sf4UNEnIBdAnGknznZgFK4IWV48NKUdX
- LKZCqHfSAnZYXHf3AW54hlaISu130jKQymxyBqx1cMoWjzGO/yEpacTdB Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="254885050"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="254885050"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 06:31:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="595898410"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
- by fmsmga008.fm.intel.com with ESMTP; 08 Mar 2022 06:31:26 -0800
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nRas1-0001XQ-QE; Tue, 08 Mar 2022 14:31:25 +0000
-Date: Tue, 08 Mar 2022 22:31:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 2bed7ea34786f7668c97fbed647e6663bdaf420f
-Message-ID: <622768ba.O+y+V4FGNZCE92e5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nReL1-005kiN-0m
+ for ath10k@lists.infradead.org; Tue, 08 Mar 2022 18:13:36 +0000
+Received: by mail-pl1-x631.google.com with SMTP id e13so17821625plh.3
+ for <ath10k@lists.infradead.org>; Tue, 08 Mar 2022 10:13:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=qZoIySMENoA9ziiqo0hyYo14ox8nz/iNMlsEajYbI3I=;
+ b=c0xmYOIdDm9vlz0qMUc/V0ZlfmoCH8U6Qj/f2i+6Bx2tNBVy0JjwHErobuvQb1eqzk
+ yCVl56gnZqJcsYOUlZrA3V0/t1W9nuycz+/Cn9uA36GLmvMHaPHAIfclW4FnEZ8nxbKy
+ cdpBBG1jY5qsliF5gb1aRSgE7HJ5WP2nl/AC4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=qZoIySMENoA9ziiqo0hyYo14ox8nz/iNMlsEajYbI3I=;
+ b=FSxGiy0YI0YzJ8/Uju2P+jYq2PdohG/CGg9Mw4OenH7Y3r1AwCE8JWtAGxTrM5dmps
+ VAjnNW0i/sfa7Fd57Q6Zh0z0ELwFy/N4wCxs05pRYclvktXnKo/YMB41y1FuIJXYbyXJ
+ uFUSqko/kgayMl3a1ll29WK1z8AZAYS80R7yTFbJwviwB5fyXiphR6wJJYCuGfwAGZo+
+ zH/LHpJ9nAR/wNJXnsvAgJTcBg7DIWa7WC32rD2arlpAJy4AgyFlLsBXad1G1ElVl6PI
+ uzQRxiSJfeEIBiIQcfTR/hZiHFQM1eqR2C0Vpe9BJd0LlF6XP+WqDg9AQzzZfOzMH9hg
+ MnjA==
+X-Gm-Message-State: AOAM5327Ky53rLhXc/dEe4oH0W/IGvolEjXdUrxyUiUEjKp+tetHx8OU
+ 2tNGgXx5UOxMc1vaayAYVbsqXw==
+X-Google-Smtp-Source: ABdhPJwilIhINV2C1yNo+ncdU78v1nV0cNUJh9IJkLlXw2PDwEPLXQQndLofRT6SMzd4daBG3RLotA==
+X-Received: by 2002:a17:90b:4b0d:b0:1bc:4cdb:ebe3 with SMTP id
+ lx13-20020a17090b4b0d00b001bc4cdbebe3mr6064371pjb.176.1646763213333; 
+ Tue, 08 Mar 2022 10:13:33 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:b3e3:a188:cbfc:3a0e])
+ by smtp.gmail.com with ESMTPSA id
+ a15-20020a637f0f000000b00372e075b2efsm16003944pgd.30.2022.03.08.10.13.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 08 Mar 2022 10:13:32 -0800 (PST)
+Date: Tue, 8 Mar 2022 10:13:30 -0800
+From: Brian Norris <briannorris@chromium.org>
+To: Youghandhar Chintala <youghand@codeaurora.org>
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ linux-kernel@vger.kernel.org, pillair@codeaurora.org,
+ dianders@chromium.org, kuabhs@chromium.org, mpubbise@codeaurora.org
+Subject: Re: [PATCH v5 0/2] mac80211: Trigger disconnect for STA during
+ target hardware restart
+Message-ID: <Yiecyl7Dd6AXJhN+@google.com>
+References: <20220308115325.5246-1-youghand@codeaurora.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220308115325.5246-1-youghand@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220308_063233_670976_08E0A3A3 
-X-CRM114-Status: UNSURE (   4.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220308_101335_098835_147D036D 
+X-CRM114-Status: GOOD (  16.96  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,178 +88,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 2bed7ea34786f7668c97fbed647e6663bdaf420f  Merge branch 'ath-next' into ath-qca
+On Tue, Mar 08, 2022 at 05:23:23PM +0530, Youghandhar Chintala wrote:
+> Currently in case of target hardware restart ,we just reconfig and
+> re-enable the security keys and enable the network queues to start
+> data traffic back from where it was interrupted.
+> 
+> Many ath10k wifi chipsets have sequence numbers for the data
+> packets assigned by firmware and the mac sequence number will
+> restart from zero after target hardware restart leading to mismatch
+> in the sequence number expected by the remote peer vs the sequence
+> number of the frame sent by the target firmware.
+> 
+> This mismatch in sequence number will cause out-of-order packets
+> on the remote peer and all the frames sent by the device are dropped
+> until we reach the sequence number which was sent before we restarted
+> the target hardware
+> 
+> In order to fix this, we trigger a disconnect in case of hardware
+> restart. After this there will be a fresh connection and thereby
+> avoiding the dropping of frames by remote peer.
+> 
+> The right fix would be to pull the entire data path into the host
+> which is not feasible or would need lots of complex/inefficient
+> datapath changes.
+> 
+> ---
+> Changes from v3:
+> - Fixed commit text errors
+> - Remove excess space in "hardware  restart"
+> - Removed blank line between the function description and the arguments
 
-elapsed time: 1049m
+For whatever it's worth, the series looks good to me:
 
-configs tested: 152
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                               defconfig
-arm64                            allyesconfig
-i386                          randconfig-c001
-i386                 randconfig-c001-20220307
-alpha                            alldefconfig
-arm                      footbridge_defconfig
-m68k                           sun3_defconfig
-arm                        realview_defconfig
-sh                           se7780_defconfig
-powerpc                     asp8347_defconfig
-sh                          landisk_defconfig
-sh                          urquell_defconfig
-mips                           ip32_defconfig
-mips                       bmips_be_defconfig
-m68k                          sun3x_defconfig
-arm                          exynos_defconfig
-arm                       omap2plus_defconfig
-mips                      fuloong2e_defconfig
-m68k                          atari_defconfig
-mips                    maltaup_xpa_defconfig
-openrisc                 simple_smp_defconfig
-sh                        edosk7705_defconfig
-arm                            qcom_defconfig
-powerpc                     mpc83xx_defconfig
-arm                         nhk8815_defconfig
-arm                            xcep_defconfig
-arm                         s3c6400_defconfig
-powerpc                 mpc834x_itx_defconfig
-m68k                       m5249evb_defconfig
-arm                            hisi_defconfig
-riscv                               defconfig
-um                           x86_64_defconfig
-arm                  randconfig-c002-20220308
-arm                  randconfig-c002-20220307
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nds32                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-parisc                              defconfig
-parisc64                            defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20220307
-i386                 randconfig-a004-20220307
-i386                 randconfig-a003-20220307
-i386                 randconfig-a006-20220307
-i386                 randconfig-a002-20220307
-i386                 randconfig-a001-20220307
-i386                          randconfig-a003
-i386                          randconfig-a001
-i386                          randconfig-a005
-x86_64                        randconfig-a015
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-x86_64                        randconfig-a006
-x86_64                        randconfig-a002
-x86_64                        randconfig-a004
-riscv                randconfig-r042-20220308
-arc                  randconfig-r043-20220307
-arc                  randconfig-r043-20220308
-s390                 randconfig-r044-20220308
-x86_64               randconfig-a003-20220307
-x86_64               randconfig-a001-20220307
-x86_64               randconfig-a002-20220307
-x86_64               randconfig-a004-20220307
-x86_64               randconfig-a006-20220307
-x86_64               randconfig-a005-20220307
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                    nommu_virt_defconfig
-riscv                            allyesconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                                  kexec
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-
-clang tested configs:
-powerpc              randconfig-c003-20220308
-riscv                randconfig-c006-20220308
-s390                 randconfig-c005-20220308
-x86_64                        randconfig-c007
-i386                          randconfig-c001
-arm                  randconfig-c002-20220308
-mips                 randconfig-c004-20220308
-powerpc                     kilauea_defconfig
-arm                           sama7_defconfig
-arm                          ep93xx_defconfig
-arm                         s3c2410_defconfig
-arm                        spear3xx_defconfig
-mips                           mtx1_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                     cu1830-neo_defconfig
-mips                           ip22_defconfig
-mips                        workpad_defconfig
-arm                       cns3420vb_defconfig
-powerpc                     skiroot_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a016
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-i386                 randconfig-a013-20220307
-i386                 randconfig-a012-20220307
-i386                 randconfig-a011-20220307
-i386                 randconfig-a014-20220307
-i386                 randconfig-a015-20220307
-i386                 randconfig-a016-20220307
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-hexagon              randconfig-r041-20220307
-riscv                randconfig-r042-20220307
-s390                 randconfig-r044-20220307
-hexagon              randconfig-r045-20220308
-hexagon              randconfig-r041-20220308
-hexagon              randconfig-r045-20220307
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Reviewed-by: Brian Norris <briannorris@chromium.org>
 
 _______________________________________________
 ath10k mailing list
