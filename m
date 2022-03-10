@@ -4,63 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDDC5C433EF
-	for <ath10k@archiver.kernel.org>; Thu, 10 Mar 2022 10:06:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AA78C433F5
+	for <ath10k@archiver.kernel.org>; Thu, 10 Mar 2022 10:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ut7LTM3O1cME2G8W++cTDOiVjU50FEKzO/9+8oIUtL0=; b=KldcJH2ZgwvyhK
-	+MGIJ9H6/ZEFvpNF4gNuVNQrE4pOlB7xYE3XDynyqYrCxd05BJwR3KIgqVW2aWDNZ4kpgR/qRAnRG
-	LFznaZTUF71Mmpq8zLce8Smn1jFH0uQde/g25K6OCDZ467lH4btajy3yV3EiyMjwM09kVHmGACDCy
-	0tPMA0VQNsK9QbaQPZAY73X6PvxJNYz3XRAhyiFwXUWPonPbz5RMwd/QwhKEf3weu7VVR8iNWj75M
-	bk+NWnjE38A1Tx0V502JvNUbt+Vs9Ax9w4iIZ2NtdYxUPllGuYyzT9MPDqo4u95Vd6Pl6f9ObcwUk
-	qE0/XMbF8iE0R80/KJ1Q==;
+	List-Owner; bh=zKEzMWmiT2JghIZ+WTyPA47NOvHSdsr39kHjDaOdadg=; b=rI8YYn402cqyyR
+	9u6u9vxMriFN7UeqEoGqHnlBMr/SWNNaXTFcRBaQ67p/VkbxBvaKucKxTwTucPSh/NRhOEtqYZZXo
+	gwGA+K5REVifEpHLCtz6PIlX74gH7kWOjBgKGWQNPD8i9ykTRzRC9T+8FddBkaKjPgzzp/GoRIwcj
+	0UZ1gL7H5mxXLnGue7N4blSs59mi+W9TGi5K2iMUjW5yVMyHJGTSPCBRlM+4oPyWTxcccdBw08QxI
+	x37sn5uz07OCKa1YlXExmX9jfJOJBTEkcl/D3kKFh8j+fxwupSGdrIQpX65AZqR6bbt45tWS7LKWr
+	Yzs8gwCpFwmt/hcal2rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nSFgv-00CIGT-Gq; Thu, 10 Mar 2022 10:06:41 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1nSFis-00CJCT-RR; Thu, 10 Mar 2022 10:08:42 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSFgF-00CHxX-Uh
- for ath10k@lists.infradead.org; Thu, 10 Mar 2022 10:06:01 +0000
+ id 1nSFi8-00CIrS-Mv
+ for ath10k@lists.infradead.org; Thu, 10 Mar 2022 10:07:59 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7F9FB61D77;
- Thu, 10 Mar 2022 10:05:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5059C340EC;
- Thu, 10 Mar 2022 10:05:56 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 37031B82588;
+ Thu, 10 Mar 2022 10:07:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1A2DC340F3;
+ Thu, 10 Mar 2022 10:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646906758;
- bh=ZB0Y7Z+2Ou6Nqam8tSjvOtOle2fii9Lnw44DFOuOFmI=;
+ s=k20201202; t=1646906873;
+ bh=DAXaxPhIHmB2MF8XpLLIhDWnZYiL+Px39F37xpKSkgA=;
  h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=HnELMryBkJ8+AIisKOhSdaaVLncNsWXxhw3J+DhyTsSNEiQ1yy0/+RpFM5l4+P7/a
- PPiWCiaTwYgpXJx+jmFXCCcVj5oC+G4RjfLYLafQyiQ9+r8abgRodfhPTgrcLj3Ymm
- P/qr/gzGdfDM8aC+kHGBxArHyDQRVQVZ7lL/oXsUEOtZlkeTFyAHxxkJ1YL5nQtZey
- VCas8KDqrCADG/vTYi+IO3pk/7+rOKX6HTPVqf7r2seSeBjixNujpAzEAAJlJpMVUm
- 9wP8ASjId5xU2f059mmUH+iEOw+GJyfFg1611Y29uHgtKHKIdc0IIEWEe4xTi4P1BF
- MC+dY9HYG0ecw==
+ b=e2gkrtlvGZxaRZ7LaGobNndXWLZbv48jZ6KFQEHajqwDhIoBY1Wj8DYgHjzbRRZLs
+ qCzvxa5/5teYQnQmSNwOjIC/3tIQGtIWxJ3RFIcnZc4Y+RJn0kvDLAq2mHnPiM8qMA
+ 6s/afH0bF3XJNqCtnucZSZDOZR8grHZ5yVrOjbkchuC+5J2AaIqPffWiVUb6VNSYxu
+ Rk0n4m3G9SOiyoHmEfQl9PqAG6pSU1WXcYT3SPGyPFLRFUN+6oUCnEm8B6PPXuVHZS
+ d6BbrsCe604OvSj/mfLb6vjy3DnUNOUfVF/BRaZs5jhLt8NiD6tr9HATBikGX0yeMh
+ oULJ4ZtLjDqmg==
 From: Kalle Valo <kvalo@kernel.org>
 To: Doug Anderson <dianders@chromium.org>
-Cc: Abhishek Kumar <kuabhs@chromium.org>,
- Rakesh Pillai <pillair@codeaurora.org>, LKML <linux-kernel@vger.kernel.org>,
+Cc: Abhishek Kumar <kuabhs@chromium.org>, kernel test robot <lkp@intel.com>,
+ ath10k <ath10k@lists.infradead.org>, kbuild-all@lists.01.org,
+ Rakesh Pillai <pillair@codeaurora.org>,
  linux-wireless <linux-wireless@vger.kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- ath10k <ath10k@lists.infradead.org>, netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH 1/2] ath10k: search for default BDF name provided in DT
-References: <20220107200417.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
- <CAD=FV=W5fHP8K-PcoYWxYHiDWnPUVQQzOzw=REbuJSSqGeVVfg@mail.gmail.com>
-Date: Thu, 10 Mar 2022 12:05:53 +0200
-In-Reply-To: <CAD=FV=W5fHP8K-PcoYWxYHiDWnPUVQQzOzw=REbuJSSqGeVVfg@mail.gmail.com>
- (Doug Anderson's message of "Fri, 7 Jan 2022 13:22:45 -0800")
-Message-ID: <87sfrqqfzy.fsf@kernel.org>
+ LKML <linux-kernel@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] ath10k: search for default BDF name provided in DT
+References: <20220110231255.v2.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
+ <202201110851.5qAxfQJj-lkp@intel.com>
+ <CACTWRwtCjXbpxkixAyRrmK5gRjWW7fMv5==9j=YcsdN-mnYhJw@mail.gmail.com>
+ <87y23is7cp.fsf@kernel.org>
+ <CAD=FV=W-kJQwBPStsGpNu09dN+QHTEZOgb5sZwZYzWnn_Zhv4A@mail.gmail.com>
+Date: Thu, 10 Mar 2022 12:07:49 +0200
+In-Reply-To: <CAD=FV=W-kJQwBPStsGpNu09dN+QHTEZOgb5sZwZYzWnn_Zhv4A@mail.gmail.com>
+ (Doug Anderson's message of "Mon, 7 Mar 2022 16:50:05 -0800")
+Message-ID: <87o82eqfwq.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220310_020600_104847_5D6BDC7D 
-X-CRM114-Status: GOOD (  32.03  )
+X-CRM114-CacheID: sfid-20220310_020756_955918_B3954951 
+X-CRM114-Status: GOOD (  16.70  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,82 +83,23 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 Doug Anderson <dianders@chromium.org> writes:
 
-> Hi,
->
-> On Fri, Jan 7, 2022 at 12:05 PM Abhishek Kumar <kuabhs@chromium.org> wrote:
+> On Fri, Jan 14, 2022 at 6:46 AM Kalle Valo <kvalo@kernel.org> wrote:
 >>
->> There can be cases where the board-2.bin does not contain
->> any BDF matching the chip-id+board-id+variant combination.
->> This causes the wlan probe to fail and renders wifi unusable.
->> For e.g. if the board-2.bin has default BDF as:
->> bus=snoc,qmi-board-id=67 but for some reason the board-id
->> on the wlan chip is not programmed and read 0xff as the
->> default value. In such cases there won't be any matching BDF
->> because the board-2.bin will be searched with following:
->> bus=snoc,qmi-board-id=ff
-
-I just checked, in ath10k-firmware WCN3990/hw1.0/board-2.bin we have
-that entry:
-
-BoardNames[1]: 'bus=snoc,qmi-board-id=ff'
-
->> To address these scenarios, there can be an option to provide
->> fallback default BDF name in the device tree. If none of the
->> BDF names match then the board-2.bin file can be searched with
->> default BDF names assigned in the device tree.
+>> Abhishek Kumar <kuabhs@chromium.org> writes:
 >>
->> The default BDF name can be set as:
->> wifi@a000000 {
->>         status = "okay";
->>         qcom,ath10k-default-bdf = "bus=snoc,qmi-board-id=67";
+>> > On this patch I have a kernel bot warning, which I intend to fix along
+>> > with all the comments and discussion and push out V3. So, any
+>> > comments/next steps are appreciated.
+>>
+>> Please wait my comments before sending v3, I think this is something
+>> which is also needed in ath11k and I need to look at it in detail.
 >
-> Rather than add a new device tree property, wouldn't it be good enough
-> to leverage the existing variant?
+> I'm wondering if you have a timeframe for when you might post your
+> comments. We've landed this patch locally in the Chrome OS kernel
+> tree, but we are always also interested in it landing upstream. If you
+> have ideas for a path forward that'd be keen!
 
-I'm not thrilled either adding this to Device Tree, we should keep the
-bindings as simple as possible.
-
-> Right now I think that the board file contains:
->
-> 'bus=snoc,qmi-board-id=67.bin'
-> 'bus=snoc,qmi-board-id=67,qmi-chip-id=320,variant=GO_LAZOR.bin'
-> 'bus=snoc,qmi-board-id=67,qmi-chip-id=320,variant=GO_POMPOM.bin'
-> 'bus=snoc,qmi-board-id=67,qmi-chip-id=4320,variant=GO_LAZOR.bin'
-> 'bus=snoc,qmi-board-id=67,qmi-chip-id=4320,variant=GO_POMPOM.bin'
->
-> ...and, on lazor for instance, we have:
->
-> qcom,ath10k-calibration-variant = "GO_LAZOR";
->
-> The problem you're trying to solve is that on some early lazor
-> prototype hardware we didn't have the "board-id" programmed we could
-> get back 0xff from the hardware. As I understand it 0xff always means
-> "unprogrammed".
->
-> It feels like you could just have a special case such that if the
-> hardware reports board ID of 0xff and you don't get a "match" that you
-> could just treat 0xff as a wildcard. That means that you'd see the
-> "variant" in the device tree and pick one of the "GO_LAZOR" entries.
->
-> Anyway, I guess it's up to the people who spend more time in this file
-> which they'd prefer, but that seems like it'd be simple and wouldn't
-> require a bindings addition...
-
-In ath11k we need something similar for that I have been thinking like
-this:
-
-'bus=snoc,qmi-board-id=67,qmi-chip-id=320,variant=GO_LAZOR'
-
-'bus=snoc,qmi-board-id=67,qmi-chip-id=320'
-
-'bus=snoc,qmi-board-id=67'
-
-'bus=snoc'
-
-Ie. we drop one attribute at a time and try to find a suitable board
-file. Though I'm not sure if it's possible to find a board file which
-works with many different hardware, but the principle would be at least
-that. Would something like that work in your case?
+You had a good comment on v1 so I replied to that one.
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
