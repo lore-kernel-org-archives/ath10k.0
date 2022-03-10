@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B431BC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B86C9C4332F
 	for <ath10k@archiver.kernel.org>; Thu, 10 Mar 2022 05:29:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,55 +12,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IpPPQI+nTq9HYZ75+110bmhHLaQGB1zt8qqhkAA6wcM=; b=SKpsiSRMkYlJfi
-	wB7SNDLS2vEH23KaOoF8ea24g6batseM0pwFqG3N+RMHzCRCfjke4+s/COudGSOvyGgz6zeNPtQ7W
-	6Aa9sCnskLQ9lxA035YWU3RDfp4KjEggMiuzZfMp64Tbz8qUL2GlbXc3w7acZdFxlNtSrDL7H16Cd
-	x6C4N2nH1NeS58ItCqwxkZb8FJ0mpaMYIcMFE1OpIpuNVnw0n1f9M6P8NT4W2DY+pE+LMfhGxVIzq
-	wStNi63TMsAdvbi0W1NvPVSnUpM9kShrn8iI/RY6xcXeTBGPSQvh5LK5lsNiF2+IBqc1fDp5GtdkH
-	bkpK/UnlgmQqjG70vCnA==;
+	List-Owner; bh=ub9HklkgYcrUgGAlvss4uQ24DK5CAetz4X5no1+2qCw=; b=1gLlgdGLXrnPum
+	9EXcw0lI0AolXB8iE1J8cZ2yVZnEGqrQ7O5smriBd4RfE90GO3RfyxQq8DLXdRe4ufVCnGKZ2eWr7
+	ajB060AYJf36oq0yPjomjSwpgg1K4BmQ7Upxv5eC2GepJ8xu5dh9h0hhd+go9zS/V8PLNjUNTSLoc
+	ONGWlbE7DtdHtFUijt9QGeKwWsyNgtN+47eB8vHPrLrW+EkxdsMbogyu2qTkCuXxwT5+4LxWD9emZ
+	cTePai5VmdzOdBbHKJ0Ueh8IntoycbBvCEa5wsM75Qx4N5tMmx9xy6jwyjL61VFyOQpSSKBvt88Nr
+	+43x8DUPizwwdpV2Pnig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nSBMF-00BUl6-5a; Thu, 10 Mar 2022 05:29:03 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1nSBMD-00BUkw-GW; Thu, 10 Mar 2022 05:29:01 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSBMB-00BUkQ-6y
- for ath10k@lists.infradead.org; Thu, 10 Mar 2022 05:29:00 +0000
+ id 1nSBMA-00BUjy-Dx
+ for ath10k@lists.infradead.org; Thu, 10 Mar 2022 05:28:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646890139; x=1678426139;
+ t=1646890138; x=1678426138;
  h=date:from:to:cc:subject:message-id:mime-version:
  content-transfer-encoding;
- bh=2kp1aaxKvd74EGbAhrBXiWfkQYyDXraMafo6urFQ3Vc=;
- b=XK/cb6hHtq5+MZiQ7w1uiW+MrirAqtg9KImxRVrlqOCsmHN6gxWrlgwW
- hGhtCS+Enm8qK3X03AWoZCXPquBlmtvKpSAP2faofwzx0T3XOLLfMYQFm
- e+Ga+b8xUIegtw/pbP0QUGxv0cdYgZYBUbsOLbH9cVxo7svditM1KtKdu
- 5Bh9KCW4sp62OA7bAsoAPry+ACpAjCoY0QoPng6PiIdx4xk8crQJUsSqw
- AFfb53PP3fiB6X8QWjaN08YVzjJnTwnU46s2me4yGC+dGRpR73Mnd5+wE
- Cz5tR1BYuLCNR9V8ZTdEGS6G9Ny3Lj+25Z+bYQpE6qQaK0ccPt8yJcJDd A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="341592506"
-X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; d="scan'208";a="341592506"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 21:28:58 -0800
+ bh=nnYL/HmyLeT4FvkfBSe0Oh4hQU/UqU/MVwwJ8PntG2o=;
+ b=GWNEfwbLsg/yESnYNFcZK5CGfUgsBi0BL9m4QhaYihtwQTBiLr0ByVRs
+ AusIFHI5+OLVyK5OJHaaH7fqCEz096qyW80l++V93rXCHsBOYceo6RVU2
+ MjLzzCSNRFzd8x0MWejOCKIAWgdsiNhEfboD6HXyg1Ko3uJ+6q+UTlDjr
+ 64AOPV0JTbpE3pXDtEVDmZZOtT3dgZ86dW9khkoINs1wdrOIi8qP/PNKB
+ kFOFSDwH5Ny7SzN1k+W/E8UymMoD6kXRwbx2mPf/nhFYkNQqjHwSCsI20
+ AMFB6zSoOinS9LNPsex041pS8FAjMLmBHhKPYkHZKl1XdPRtBmIdrJk3B g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="237332744"
+X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; d="scan'208";a="237332744"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2022 21:28:57 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; d="scan'208";a="781336304"
+X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; d="scan'208";a="538310572"
 Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
- by fmsmga006.fm.intel.com with ESMTP; 09 Mar 2022 21:28:56 -0800
+ by orsmga007.jf.intel.com with ESMTP; 09 Mar 2022 21:28:56 -0800
 Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1nSBM7-0004OR-BA; Thu, 10 Mar 2022 05:28:55 +0000
-Date: Thu, 10 Mar 2022 13:28:11 +0800
+ id 1nSBM7-0004Oa-IP; Thu, 10 Mar 2022 05:28:55 +0000
+Date: Thu, 10 Mar 2022 13:27:46 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 1e50ff27efa2f07ebd61cbfc881c102fed083347
-Message-ID: <62298c6b.m4kzYLsceM0xZ17z%lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ ef9a9431c9c04a2ddd3227db1aa135f850cd9fc0
+Message-ID: <62298c52.GLtGmmdQkterx61+%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220309_212859_313729_80B9A94E 
-X-CRM114-Status: UNSURE (   4.88  )
+X-CRM114-CacheID: sfid-20220309_212858_552243_3FB7DDFB 
+X-CRM114-Status: UNSURE (   6.12  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,8 +78,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 1e50ff27efa2f07ebd61cbfc881c102fed083347  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: ef9a9431c9c04a2ddd3227db1aa135f850cd9fc0  Add localversion-wireless-testing-ath
 
 elapsed time: 777m
 
@@ -113,8 +113,8 @@ powerpc                     sequoia_defconfig
 arm                        mini2440_defconfig
 arm                  randconfig-c002-20220309
 arm                  randconfig-c002-20220310
-ia64                                defconfig
 ia64                             allmodconfig
+ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
@@ -131,17 +131,17 @@ xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
 parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
 parisc64                            defconfig
+s390                             allmodconfig
 parisc                           allyesconfig
 s390                                defconfig
+s390                             allyesconfig
 i386                             allyesconfig
-i386                              debian-10.3
-i386                                defconfig
-sparc                               defconfig
-i386                   debian-10.3-kselftests
 sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
@@ -153,9 +153,9 @@ x86_64                        randconfig-a002
 i386                          randconfig-a003
 i386                          randconfig-a001
 i386                          randconfig-a005
-x86_64                        randconfig-a015
 x86_64                        randconfig-a013
 x86_64                        randconfig-a011
+x86_64                        randconfig-a015
 i386                          randconfig-a012
 i386                          randconfig-a014
 i386                          randconfig-a016
@@ -182,19 +182,19 @@ arm                  colibri_pxa270_defconfig
 powerpc                 mpc832x_rdb_defconfig
 mips                        omega2p_defconfig
 i386                          randconfig-a002
-i386                          randconfig-a004
 i386                          randconfig-a006
-x86_64                        randconfig-a014
+i386                          randconfig-a004
 x86_64                        randconfig-a012
+x86_64                        randconfig-a014
 x86_64                        randconfig-a016
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
 i386                          randconfig-a011
 i386                          randconfig-a013
 i386                          randconfig-a015
-hexagon              randconfig-r041-20220309
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
 hexagon              randconfig-r045-20220309
+hexagon              randconfig-r041-20220309
 riscv                randconfig-r042-20220309
 s390                 randconfig-r044-20220309
 
