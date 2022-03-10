@@ -4,67 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AA78C433F5
-	for <ath10k@archiver.kernel.org>; Thu, 10 Mar 2022 10:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B449C433EF
+	for <ath10k@archiver.kernel.org>; Thu, 10 Mar 2022 15:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zKEzMWmiT2JghIZ+WTyPA47NOvHSdsr39kHjDaOdadg=; b=rI8YYn402cqyyR
-	9u6u9vxMriFN7UeqEoGqHnlBMr/SWNNaXTFcRBaQ67p/VkbxBvaKucKxTwTucPSh/NRhOEtqYZZXo
-	gwGA+K5REVifEpHLCtz6PIlX74gH7kWOjBgKGWQNPD8i9ykTRzRC9T+8FddBkaKjPgzzp/GoRIwcj
-	0UZ1gL7H5mxXLnGue7N4blSs59mi+W9TGi5K2iMUjW5yVMyHJGTSPCBRlM+4oPyWTxcccdBw08QxI
-	x37sn5uz07OCKa1YlXExmX9jfJOJBTEkcl/D3kKFh8j+fxwupSGdrIQpX65AZqR6bbt45tWS7LKWr
-	Yzs8gwCpFwmt/hcal2rw==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=773X/P+q3hqKqmXt5oA7/cqw6F1GgUg3wBiZp1fKICo=; b=KNdD2QkFlXIQkg
+	cvff4NVW2N6NzzWr331OGbVjRFUnGHD/XxbWSZ9Y18kzOb2gysMyqUR3EV9IgTTwI8u62n+dCR8s8
+	HgpIMMXHriSq1HDjPUK3r7rwkREKZdWhkMwJiZI9NbaYK4L9cwXz1Z0AXHJnhFyAtSXFcBrcgTBP+
+	G7vs4/aTwt2Yjh+h3TcqmBzL7vB5Axe002jifMythne6SnGKul4phA1+kpUFe6vGfbZG5I5wYSD0h
+	Ty5PYA+vcFrsUFNNWItXhT9K68cBP+x3mbolHxZ14feHboKugy9s6zh7mT50URnwD+q6m+JR9uLNK
+	azWgzgZO9z026xDUamcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nSFis-00CJCT-RR; Thu, 10 Mar 2022 10:08:42 +0000
+	id 1nSL60-00DQGZ-Be; Thu, 10 Mar 2022 15:52:56 +0000
 Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSFi8-00CIrS-Mv
- for ath10k@lists.infradead.org; Thu, 10 Mar 2022 10:07:59 +0000
+ id 1nSL5x-00DQG0-Co
+ for ath10k@lists.infradead.org; Thu, 10 Mar 2022 15:52:54 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 37031B82588;
- Thu, 10 Mar 2022 10:07:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1A2DC340F3;
- Thu, 10 Mar 2022 10:07:51 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 96A2BB826BA;
+ Thu, 10 Mar 2022 15:52:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4896FC340E8;
+ Thu, 10 Mar 2022 15:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646906873;
- bh=DAXaxPhIHmB2MF8XpLLIhDWnZYiL+Px39F37xpKSkgA=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=e2gkrtlvGZxaRZ7LaGobNndXWLZbv48jZ6KFQEHajqwDhIoBY1Wj8DYgHjzbRRZLs
- qCzvxa5/5teYQnQmSNwOjIC/3tIQGtIWxJ3RFIcnZc4Y+RJn0kvDLAq2mHnPiM8qMA
- 6s/afH0bF3XJNqCtnucZSZDOZR8grHZ5yVrOjbkchuC+5J2AaIqPffWiVUb6VNSYxu
- Rk0n4m3G9SOiyoHmEfQl9PqAG6pSU1WXcYT3SPGyPFLRFUN+6oUCnEm8B6PPXuVHZS
- d6BbrsCe604OvSj/mfLb6vjy3DnUNOUfVF/BRaZs5jhLt8NiD6tr9HATBikGX0yeMh
- oULJ4ZtLjDqmg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Abhishek Kumar <kuabhs@chromium.org>, kernel test robot <lkp@intel.com>,
- ath10k <ath10k@lists.infradead.org>, kbuild-all@lists.01.org,
- Rakesh Pillai <pillair@codeaurora.org>,
- linux-wireless <linux-wireless@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] ath10k: search for default BDF name provided in DT
-References: <20220110231255.v2.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
- <202201110851.5qAxfQJj-lkp@intel.com>
- <CACTWRwtCjXbpxkixAyRrmK5gRjWW7fMv5==9j=YcsdN-mnYhJw@mail.gmail.com>
- <87y23is7cp.fsf@kernel.org>
- <CAD=FV=W-kJQwBPStsGpNu09dN+QHTEZOgb5sZwZYzWnn_Zhv4A@mail.gmail.com>
-Date: Thu, 10 Mar 2022 12:07:49 +0200
-In-Reply-To: <CAD=FV=W-kJQwBPStsGpNu09dN+QHTEZOgb5sZwZYzWnn_Zhv4A@mail.gmail.com>
- (Doug Anderson's message of "Mon, 7 Mar 2022 16:50:05 -0800")
-Message-ID: <87o82eqfwq.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ s=k20201202; t=1646927570;
+ bh=5BSwm39TVBk+/sZEf4qJ0qeckWgsRWt03o2mAj/NKBo=;
+ h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+ b=iztUl96yqpYaN8ldIISRZ4beF2U7oSDfAk4g8B9u/CydhoPrjL4CtyqNp4A6DF9v4
+ TLyHxDJID1gninumbb5OeoQXzsrtSHXrLCPKprwKYaIoVpC1goP0pZERFo9CgxkGl8
+ l5+gAp++knf9OsUKoSBfvWaFbUgCF1m1fpfmiig8C0rufZTfRgmzjyoNcHzbKm60x5
+ 4rdZ6lbHlTqRBx5F6LDK9XzYSYnmMOAsl7aaxH4Mg90p/bJiEaWG/EnDhehg6melWp
+ kjjxiKxqO8Eyowgc/fK3c994z+QIlZKAsM1wrPgSLuXIypBEjd42NGvh7Ps77n/Qcx
+ 1/SazEO7ufhwg==
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: Fix error handling in ath10k_setup_msa_resources
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20220308070238.19295-1-linmq006@gmail.com>
+References: <20220308070238.19295-1-linmq006@gmail.com>
+To: Miaoqian Lin <linmq006@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linmq006@gmail.com
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <164692756657.18489.311627042082408244.kvalo@kernel.org>
+Date: Thu, 10 Mar 2022 15:52:48 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220310_020756_955918_B3954951 
-X-CRM114-Status: GOOD (  16.70  )
+X-CRM114-CacheID: sfid-20220310_075253_611522_9517CDB6 
+X-CRM114-Status: GOOD (  10.45  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,30 +74,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Doug Anderson <dianders@chromium.org> writes:
+Miaoqian Lin <linmq006@gmail.com> wrote:
 
-> On Fri, Jan 14, 2022 at 6:46 AM Kalle Valo <kvalo@kernel.org> wrote:
->>
->> Abhishek Kumar <kuabhs@chromium.org> writes:
->>
->> > On this patch I have a kernel bot warning, which I intend to fix along
->> > with all the comments and discussion and push out V3. So, any
->> > comments/next steps are appreciated.
->>
->> Please wait my comments before sending v3, I think this is something
->> which is also needed in ath11k and I need to look at it in detail.
->
-> I'm wondering if you have a timeframe for when you might post your
-> comments. We've landed this patch locally in the Chrome OS kernel
-> tree, but we are always also interested in it landing upstream. If you
-> have ideas for a path forward that'd be keen!
+> The device_node pointer is returned by of_parse_phandle() with refcount
+> incremented. We should use of_node_put() on it when done.
+> 
+> This function only calls of_node_put() in the regular path.
+> And it will cause refcount leak in error path.
+> 
+> Fixes: 727fec790ead ("ath10k: Setup the msa resources before qmi init")
+> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+> Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-You had a good comment on v1 so I replied to that one.
+Patch applied to ath-next branch of ath.git, thanks.
+
+9747a78d5f75 ath10k: Fix error handling in ath10k_setup_msa_resources
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+https://patchwork.kernel.org/project/linux-wireless/patch/20220308070238.19295-1-linmq006@gmail.com/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
