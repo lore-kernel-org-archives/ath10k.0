@@ -4,63 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80F7AC433F5
-	for <ath10k@archiver.kernel.org>; Wed, 16 Mar 2022 05:20:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DF7CC433EF
+	for <ath10k@archiver.kernel.org>; Wed, 16 Mar 2022 11:36:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=m95SPII/NIiPBhmvOejKVeRfl9MblhZp2//wwrRX8p4=; b=sEd6blfTm8MOmG
-	WqvrO+nUdtvTrAqTnEO72DGZn0Qfq2ualaYcX/FW2b+z1ev/L9UsJg69ZcRqgG/PC3Yyhcgga58Qb
-	H4Yn3e0Pa9WdfcWwrPqWwgf/gXGxX3oybSSRsIFrRjCs7qobKplNWoYbp9vt+k87Z6rUe2lSpkJlF
-	8ogfaqYiPVlr4mTvgVXchiblFuP8SYAdNZwLfx1KS4/yaUEL/+7QbaT2gJ8LykI5k6iPROpJF8/J8
-	Y8yJhoBJJV/tP5AIFr9qg4B2hiRs4Ykc3LRoGS5k1Z/UetxkZILnphh7LfYXDg0gZE/YoZpkYB7Rq
-	eiJDPID7VSSO1Y3pjrqw==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7IaFlDbY17V+8rfJq2M6UgBJrCYCHZhHj0BB4TuhZCc=; b=fXHVcKyUQ5Ywqb
+	ph08Ax7rV/IZqbw+a5N+lAPtQoqs1wx+yu1eMKAnZmxGfneyNFuScNiHd8c2jY8XgV3cxgajdpHqm
+	H3mRHB5pUTUmOfBpePK5+hyBAiJ4po6vuvVlLBCStz6Bzryz09+WUBRiQujcBKjsYk4QfeZbCqRhJ
+	5neJPq05E0wOfLOLNvge855LOUIGJwWI5gQ3zOt1GqivZLodmSoDYL3E30xomkVaD2MUC1bqICZ+3
+	ErG9DL0P0NhzA7oM/yp8V5hqw6QmFk0cBUvfgvD56jEGFdP33Pk4fhBjk13kWYl7GhFY7my4uAX3y
+	j8VKUD7s9+KmCUfqvAGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nUM4J-00BTba-Kl; Wed, 16 Mar 2022 05:19:31 +0000
-Received: from mga18.intel.com ([134.134.136.126])
+	id 1nURwV-00CdNX-Ec; Wed, 16 Mar 2022 11:35:51 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUM4H-00BTao-3D
- for ath10k@lists.infradead.org; Wed, 16 Mar 2022 05:19:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647407969; x=1678943969;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=ZTrnrd5YGty5c0b6+TMdKIkjF3hI8/ZHfui4zlp+BOI=;
- b=I3O5EYCmx9nhds7w0ie/yykht/6fuhIYzW4UoI6ybplNO4zvHZ/pujTf
- okp0JfbcniCs6cdZyjGCTwBReELs33kmtLRco+0KvKIC8hE+LcbwUMzTb
- 5T6zGJD4FhhYKsEFjOsYSRxLc992ruYO3isfkg7gm4QOlv+mm1vZ3WC5j
- HdYq0d6ryJ4+7DuoQMAKSpKFM+iwVbUUhTFjqV9w/OSisKWyHh/uNOdSO
- vGAdDVGpkc+0D3y0jtfhpDatY9HGSdPCTske/Wldlo+fnX/zx+mqN7iI1
- g8sPiyMocpjIlCpkqWV9vjvGJhToZOv5udpdkYgnHmqfi5ORBn+ecCF6Z A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="238662053"
-X-IronPort-AV: E=Sophos;i="5.90,185,1643702400"; d="scan'208";a="238662053"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Mar 2022 22:19:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,185,1643702400"; d="scan'208";a="540758605"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
- by orsmga007.jf.intel.com with ESMTP; 15 Mar 2022 22:19:26 -0700
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nUM4D-000C1Y-FS; Wed, 16 Mar 2022 05:19:25 +0000
-Date: Wed, 16 Mar 2022 13:19:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- 5f0b8ad18e605cbd5ed6c12dc1f3c973463b1a78
-Message-ID: <6231734c.6jdrDmcU1WqCylEr%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nURwS-00CdNA-GY
+ for ath10k@lists.infradead.org; Wed, 16 Mar 2022 11:35:49 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2B959B81883
+ for <ath10k@lists.infradead.org>; Wed, 16 Mar 2022 11:35:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CEFC340EC;
+ Wed, 16 Mar 2022 11:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1647430546;
+ bh=R26zP40G4bx4aXQtrRtqCtRbPpetQ1qRyleLrW/uvrM=;
+ h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+ b=Tqd8Deszp7XPWTUnYnECJD9HbiYs9uJB/pp0Ns5El9oEG84MioDt+m+vRvVX9pX7T
+ EXX5Kd0WwsA4HW9rF01nzrU7Yocu+DzTarS9bIprAaKYklMhnkjTtmwbA4fKgRzafy
+ sKghMjd1lBEHUtJWoULutD2aJPC9yesYk3JC3QAdUL/Ph6XcubsG+KKNnFVu2f1Q6J
+ MqG4Qjsud1wtc2vlyRebGOOLY0bX6JQ2Ctp0KQb6x8LiJfD0Wi3MVcluMKOdsKQ3BP
+ ORUGNYm1PfxkYDHF0pg8Zia949AJp6FwkyYlvlJQjSH3CCNjrD/PdhlSRRrHkDD8z/
+ zMujCXpvNr0DQ==
 MIME-Version: 1.0
+Subject: Re: [PATCH] Revert "ath10k: drop beacon and probe response which leak
+ from other channel"
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20220315155455.20446-1-kvalo@kernel.org>
+References: <20220315155455.20446-1-kvalo@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <164743054137.26015.17991500615716853281.kvalo@kernel.org>
+Date: Wed, 16 Mar 2022 11:35:44 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220315_221929_301411_1667AF9E 
-X-CRM114-Status: UNSURE (   5.65  )
+X-CRM114-CacheID: sfid-20220316_043548_732451_E0097004 
+X-CRM114-Status: UNSURE (   8.43  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,151 +73,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 5f0b8ad18e605cbd5ed6c12dc1f3c973463b1a78  Revert "ath10k: drop beacon and probe response which leak from other channel"
+Kalle Valo <kvalo@kernel.org> wrote:
 
-elapsed time: 770m
+> This reverts commit 3bf2537ec2e33310b431b53fd84be8833736c256.
+> 
+> I was reported privately that this commit breaks AP and mesh mode on QCA9984
+> (firmware 10.4-3.9.0.2-00156). So revert the commit to fix the regression.
+> 
+> There was a conflict due to cfg80211 API changes but that was easy to fix.
+> 
+> Fixes: 3bf2537ec2e3 ("ath10k: drop beacon and probe response which leak from other channel")
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-configs tested: 125
-configs skipped: 3
+Patch applied to ath-current branch of ath.git, thanks.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+45b4eb7ee6aa Revert "ath10k: drop beacon and probe response which leak from other channel"
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                          randconfig-c001
-powerpc                 mpc834x_itx_defconfig
-arm                     eseries_pxa_defconfig
-arm                      footbridge_defconfig
-mips                        vocore2_defconfig
-arm                         vf610m4_defconfig
-mips                        jmr3927_defconfig
-xtensa                         virt_defconfig
-sh                           se7206_defconfig
-sh                          landisk_defconfig
-powerpc                    amigaone_defconfig
-h8300                            alldefconfig
-sh                          rsk7201_defconfig
-s390                          debug_defconfig
-arm                         lubbock_defconfig
-powerpc                 canyonlands_defconfig
-xtensa                  cadence_csp_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                          rsk7269_defconfig
-arm                        realview_defconfig
-mips                         mpc30x_defconfig
-arm                         axm55xx_defconfig
-powerpc                      pcm030_defconfig
-arm                        shmobile_defconfig
-arm                          pxa910_defconfig
-nios2                         3c120_defconfig
-sh                          polaris_defconfig
-arm                  randconfig-c002-20220314
-arm                  randconfig-c002-20220313
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nds32                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allmodconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20220314
-i386                 randconfig-a004-20220314
-i386                 randconfig-a001-20220314
-i386                 randconfig-a006-20220314
-i386                 randconfig-a002-20220314
-i386                 randconfig-a005-20220314
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-arc                  randconfig-r043-20220313
-arc                  randconfig-r043-20220314
-riscv                randconfig-r042-20220313
-s390                 randconfig-r044-20220313
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                                  kexec
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20220315155455.20446-1-kvalo@kernel.org/
 
-clang tested configs:
-arm                  randconfig-c002-20220313
-x86_64                        randconfig-c007
-powerpc              randconfig-c003-20220313
-riscv                randconfig-c006-20220313
-i386                          randconfig-c001
-powerpc                      acadia_defconfig
-arm                         s3c2410_defconfig
-mips                        omega2p_defconfig
-x86_64               randconfig-a014-20220314
-x86_64               randconfig-a015-20220314
-x86_64               randconfig-a016-20220314
-x86_64               randconfig-a012-20220314
-x86_64               randconfig-a013-20220314
-x86_64               randconfig-a011-20220314
-i386                 randconfig-a012-20220314
-i386                 randconfig-a011-20220314
-i386                 randconfig-a013-20220314
-i386                 randconfig-a014-20220314
-i386                 randconfig-a016-20220314
-i386                 randconfig-a015-20220314
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-hexagon              randconfig-r045-20220313
-hexagon              randconfig-r045-20220314
-hexagon              randconfig-r041-20220313
-s390                 randconfig-r044-20220314
-hexagon              randconfig-r041-20220314
-riscv                randconfig-r042-20220314
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
----
-0-DAY CI Kernel Test Service
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 ath10k mailing list
