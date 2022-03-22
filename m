@@ -4,63 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF2E2C433F5
-	for <ath10k@archiver.kernel.org>; Tue, 22 Mar 2022 03:38:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24BADC433F5
+	for <ath10k@archiver.kernel.org>; Tue, 22 Mar 2022 06:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/wecFRRw2PZN0QIFErmf4Ap1usvAfoQI3jBnMowTU9Y=; b=l9HKNLgC8kGfuH
-	UGOJ33EDon7NgwDF1oPBYhCaEEdPypT9iKVjRXMp0Z9Be7gTgrEzIYoVhOIwJwmrhyxD5MFm5LnGY
-	/apyf+rIGoUDotIS+U/xiyeAzIYBJySvCabtHSPE55YK7DGbIM/08kcBblakgePigt0d/NWFShcj0
-	4pLrYpFgYAQYcQPxMrGxHH+moa3JEQApqgforCphWKt0cz2vP0Y2+W7NEgqsMA/EdUz7nSgVMeQR0
-	Nh2xUlaKdBBvQE547wf8TVipzJjzdjIfMXdeh4ePD4DdacaeigORAd7ASP35CBVN+Xr48sL5ZnRrS
-	zKaavXNiokriWB2bRO4g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=S4Ai00Pc59tAC1l1EYNjFcKG8ooDXuVVxTGTwZHwK1Y=; b=mic4gQW1p3RbACiNhWGEW4pPnr
+	g89Zclmot41mcW7eiBSzkpR34NscGUB8Fw008JjYS9n2/GpivLb71hdkQ8oYtgUyptvIDooQ4WGXK
+	t2EuHHakE50EI83f4fKbnGk9budM3mLuogr8METajt2C2B3//DkuKRZKlEqHmObjc+uHRt1VB/wz+
+	8IrmNrVwlB5uS1jLSzlrc8s+XU0DkE0rigFFE04Hsne8nUd+rkD+D+vkRkCgWg/FjKFVSqcGa4lLh
+	AEsKQsRkbFH9bVeb9TKBXSAnOG3oN511EwhWdBa45Vu2WK71iZFa0exrttLYquKeTLTnOaW8gPScc
+	5swNZTWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWVLN-009tWi-ID; Tue, 22 Mar 2022 03:38:01 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1nWYFo-00AChk-9R; Tue, 22 Mar 2022 06:44:28 +0000
+Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWVLI-009tVx-0Q
- for ath10k@lists.infradead.org; Tue, 22 Mar 2022 03:37:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647920275; x=1679456275;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=HH6UeJ6ZnU2KL8QHulvpoBv4ixKZ5jmzT36S2Cue9kg=;
- b=P6K/qwKgXDUxI4t8w3n/EpqyKRgFKG6EmshwsVVwgwvgSf+d+b8gJRyP
- yLuT8833x081UDRLbalCXYGxZ1RGGkijMC9cufFQCPFGouJ7BD9ELhPoJ
- SiqzusPK0Fb8zTgWAGDmBVcWrhNssrDR9IJRAe8XMuOlbXqKU5gTpWrU2
- 2c61v7LZ4jSgUIZ+T9CTvAHNyEb2sa3B6lTy4P5x3YZz4toPOoJKP3xCY
- lwwTB1wvmpWIx9xve3g6Q6mpSj6XecKSA6QPFZaqR0Gx7lBo5H4OhltTj
- qSsMiqNzz5BkcBf9b5ayWmfSr3lTbucaqBQowBnuVK2wGZBZu7GcjTAnu A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10293"; a="344142317"
-X-IronPort-AV: E=Sophos;i="5.90,200,1643702400"; d="scan'208";a="344142317"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Mar 2022 20:37:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,200,1643702400"; d="scan'208";a="518704757"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
- by orsmga006.jf.intel.com with ESMTP; 21 Mar 2022 20:37:44 -0700
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nWVL5-000IR2-BI; Tue, 22 Mar 2022 03:37:43 +0000
-Date: Tue, 22 Mar 2022 11:37:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- 8f0cd86375ee446a66f0ba379ebc7c3a47d5a10e
-Message-ID: <62394474.TNu1CBzb6NVkinMm%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nWYFZ-00ACdj-Rc
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2022 06:44:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=k1; bh=bhAaAoHzDrHU3De5X0RjnAUGIT+O
+ wJfzwQ5eF0K/cVQ=; b=O1PKZFbygdvZvUPjWOql2HeAuNmG+Mqzue+CrPt+BXKJ
+ k+GX/2eEhNr6I7MDSJy99FdhNAeg6ArjWNMTC/3LJJSOSY6oY6OQ4/xGOvEwwF66
+ f8G+ucaN20R3cPf3ZJ8WmSkaK7+cNqNO1H9eQ570kLH1nvWceNuF9eAbQMRA+yY=
+Received: (qmail 1202223 invoked from network); 22 Mar 2022 07:44:02 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
+ authenticated); 22 Mar 2022 07:44:02 +0100
+X-UD-Smtp-Session: l3s3148p1@O7gT8MjaPpQgAQnoAGKBAM/VPJLYEVe1
+Date: Tue, 22 Mar 2022 07:43:59 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-mmc@vger.kernel.org
+Cc: linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ath10k@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
+ brcm80211-dev-list.pdl@broadcom.com, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ SHA-cyfmac-dev-list@infineon.com
+Subject: Re: [RFC PATCH 00/10] mmc: improve API to make clear {h|s}w_reset is
+ for cards
+Message-ID: <YjlwLzxxxR1QIpDK@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com,
+ brcm80211-dev-list.pdl@broadcom.com,
+ linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ SHA-cyfmac-dev-list@infineon.com
+References: <20220321115059.21803-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
+In-Reply-To: <20220321115059.21803-1-wsa+renesas@sang-engineering.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220321_203756_099404_9889D959 
-X-CRM114-Status: UNSURE (   4.50  )
+X-CRM114-CacheID: sfid-20220321_234414_251659_AAFBD1AC 
+X-CRM114-Status: UNSURE (   6.20  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,145 +77,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1729492860459638942=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 8f0cd86375ee446a66f0ba379ebc7c3a47d5a10e  ath11k: Add peer rhash table support
 
-elapsed time: 761m
+--===============1729492860459638942==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WMfMF+E/rJD23w9V"
+Content-Disposition: inline
 
-configs tested: 114
-configs skipped: 3
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+--WMfMF+E/rJD23w9V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                               defconfig
-arm64                            allyesconfig
-i386                          randconfig-c001
-mips                 randconfig-c004-20220320
-m68k                          hp300_defconfig
-m68k                        m5272c3_defconfig
-sh                           se7721_defconfig
-sh                        edosk7705_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                 mpc834x_itx_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                     sequoia_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                        sh7757lcr_defconfig
-powerpc64                           defconfig
-powerpc                       holly_defconfig
-powerpc                      pasemi_defconfig
-arm                  randconfig-c002-20220320
-arm                  randconfig-c002-20220321
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-nds32                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-parisc64                            defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                              debian-10.3
-i386                   debian-10.3-kselftests
-i386                                defconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-nds32                             allnoconfig
-nios2                               defconfig
-arc                              allyesconfig
-mips                             allmodconfig
-mips                             allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64               randconfig-a013-20220321
-x86_64               randconfig-a012-20220321
-x86_64               randconfig-a014-20220321
-x86_64               randconfig-a011-20220321
-x86_64               randconfig-a016-20220321
-x86_64               randconfig-a015-20220321
-i386                 randconfig-a014-20220321
-i386                 randconfig-a013-20220321
-i386                 randconfig-a015-20220321
-i386                 randconfig-a011-20220321
-i386                 randconfig-a012-20220321
-i386                 randconfig-a016-20220321
-arc                  randconfig-r043-20220320
-riscv                randconfig-r042-20220321
-s390                 randconfig-r044-20220321
-arc                  randconfig-r043-20220321
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
 
-clang tested configs:
-powerpc                   microwatt_defconfig
-arm                         palmz72_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                        neponset_defconfig
-hexagon                             defconfig
-arm                      tct_hammer_defconfig
-x86_64               randconfig-a002-20220321
-x86_64               randconfig-a003-20220321
-x86_64               randconfig-a001-20220321
-x86_64               randconfig-a004-20220321
-x86_64               randconfig-a006-20220321
-x86_64               randconfig-a005-20220321
-i386                 randconfig-a003-20220321
-i386                 randconfig-a004-20220321
-i386                 randconfig-a005-20220321
-i386                 randconfig-a001-20220321
-i386                 randconfig-a006-20220321
-i386                 randconfig-a002-20220321
-hexagon              randconfig-r041-20220321
-hexagon              randconfig-r045-20220321
-hexagon              randconfig-r045-20220320
-hexagon              randconfig-r041-20220320
-s390                 randconfig-r044-20220320
-riscv                randconfig-r042-20220320
+> I tested it with my Renesas boards, so far no regressions. Buildbots are
+> currently checking the series.
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Update: buildbots are happy \o/
+
+
+--WMfMF+E/rJD23w9V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmI5cCsACgkQFA3kzBSg
+Kbau+Q//bVoc4SoG8It5AVIpQdUks3DAupSbmrT8ebI7arPQCFlUV7n9abCA3RZW
+aH9m01itrfZ7TWxSJ2gUp4VR49LlweNqQEcyo/TEkzfZ558St7Wu8pRV9rPfEleo
+v310K9zePQwzipMwNJ1htVYvN6wapEoromv45gj//La15GSw3pc8GJxSZBp+AxHa
+VaeazFG6z9uAL3MGjpTwU8cEu4vWZFP8txloEVXTtT7iRu26H9/x/Rrmu+8xuchk
+ReGG2mn/rAMo3JAzEJvvempkzHSUpjnMq2kDYOqqYvGT8yRGjVcEMSSjp5bVKevz
+vi9zIkfJ8Q+Q/oXSC1jOFP7y98lXv8mIOyPlnHev6KhIZMGVooNWDFpnJqPAaTa7
+HU8mQ1IEqoNsZ7/OCdCliRZGQG5NL0XJDGyxcZyBoUSiAvegDlh8v17A5ukm/jBS
+eWGHjajY/McPxd8LM78WOANF0sQD5Adiyhrx1U5gStqWRYrVE5ppRig38LvSQ3ZH
+GOg3rN2Jfjq/PJv38Ykow9fv4TPIywy/UlZuVGpt3GlqcN1rNojffDYTzbKCPUwX
+83cEyZW4/ngtKZf6scgipsHntN7WDQ/xbSWDHb7uZux/x+cIsZuKQiHB61mqecwa
+k1BwoutPwvyQkK9gHC3hlPEDa+S5CRl5NIQlnPkB1Fic4C1/S1k=
+=nk9X
+-----END PGP SIGNATURE-----
+
+--WMfMF+E/rJD23w9V--
+
+
+--===============1729492860459638942==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============1729492860459638942==--
+
