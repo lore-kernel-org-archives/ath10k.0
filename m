@@ -4,61 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B99F9C433F5
-	for <ath10k@archiver.kernel.org>; Fri, 25 Mar 2022 10:35:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FFEDC433F5
+	for <ath10k@archiver.kernel.org>; Fri, 25 Mar 2022 10:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M24kR7iZZHOvKhc5RN5ze4ms3xi1SqvlpzLr+nF//Eo=; b=U1mFbcPlt21dOv
-	8PVBuj2TTHA1SiD6cyJ0JK8L1ofmVGAKMxB8dz691kJA/z0b/3gIOsVv0n865lA+0MOE9AHZPiNbs
-	SnZCKhsUtdegEULTBy1JTby5Y+Dx2P4y4VaM8wl42B1wo+z8eAA9dEy8dICQT2n8vaWw/6ReVxfng
-	KcTVeyXS11nshSH8V25FQhcbQZK0NSIeFHRY6b+JoGdx3eQKlSFx+3BF78pZLo2dFm6UyBPrtdzw7
-	Qmo1uQKo2i/qutElFzKVQW8r5EvGt6PVXrd0ikxn6VibE7YvduaksYveiYxnM0AtM9zVV4fmDF84T
-	+NwChJgDIiPcjpVVaUsg==;
+	List-Archive:List-Unsubscribe:List-Id:Message-ID:Date:Mime-Version:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=uP3UwzBfUdeUcv7JEmBhmgykG6jVp9Czk67EXUyaLUg=; b=AaW6HEX2cyHiXH
+	OGy5qeQ4EkH1HQ+gDSEu4k3c1oauN5psPCSFIrFm+SfbOiKGe887DrXxRlY3F2VlBLbX/kqj+P6k2
+	0Fuu4Tq/Ib/TSAxTkc0LuavlAE5uYVsKs7n3H+4p7csalumwUWZF/UGffLKkFalVbpISZaKO0pHcd
+	VR7C7YeJtlMB9vMGvHpAfxvzkN/RdzzKCJXkdqBVaKb8SYxjXCSwp7lKq/qmDrLF+lbA/peztSTgg
+	09TT7NCsu7q3s/dGZiLejW0Yw79zwtCJm2ZhgjCBV9DwMPXzCmOBSLyZ/qo5ACh/oxSZgieNoW7QF
+	KoZoPA1KXdiHBgupbq1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nXhHJ-001kdt-Lm; Fri, 25 Mar 2022 10:34:46 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1nXhIT-001l9P-U0; Fri, 25 Mar 2022 10:35:58 +0000
+Received: from out203-205-251-59.mail.qq.com ([203.205.251.59])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nXgxP-001eVX-CZ
- for ath10k@lists.infradead.org; Fri, 25 Mar 2022 10:14:12 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 7A64DCE2915;
- Fri, 25 Mar 2022 10:14:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56B51C340E9;
- Fri, 25 Mar 2022 10:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648203245;
- bh=1AyXCUaVF27lg2Pu/f6PUHluvHvEPmMz80ep6pC4IPs=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=HU2IR/kI6k+yon/hsxCL31++VtD1nlTYECvyauGrjuEHyGbeSTnqYgHiwm5dimmh6
- U/J5LEYvkvo08/Qq72WxsN48hhuJd7I7gHHrSzU5oRq0PEEDN4OIzZUS0DLnPTsb8O
- U1atias+3lYDibaRAcTKQ9Ufo2u4d2sfsVk/kL49LDOuIKJOG4PQfoCsXOep2zy1k1
- IIYabhnyg7G5iRgLcbsExm0eyEzgp+i4D8uxf1Q45Dm+yw3fDQLGxsK/SPs9TrFuKM
- d4boHWeavIftrPYcwwmcTYPzNFSTucnYx8oxrbUKstyPLn53PUjgF2RjQw45kJ4Jgh
- vbQi8YcPGc14Q==
-From: Kalle Valo <kvalo@kernel.org>
-To: =?utf-8?B?5byg6bmP?= <1805692831@qq.com>
-Cc: "ath10k" <ath10k@lists.infradead.org>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Update Qxwlan E2600AC c1 specific
- BDFs
-References: <tencent_93B4B0DBC6D5DF0162F6335C796C3986D606@qq.com>
-Date: Fri, 25 Mar 2022 12:14:02 +0200
-In-Reply-To: <tencent_93B4B0DBC6D5DF0162F6335C796C3986D606@qq.com>
- (=?utf-8?B?IuW8oOm5jyIncw==?=
- message of "Fri, 25 Mar 2022 18:09:21 +0800")
-Message-ID: <87a6de8hlh.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
+ id 1nXh0J-001fTo-3l
+ for ath10k@lists.infradead.org; Fri, 25 Mar 2022 10:17:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+ t=1648203429; bh=6EJzo8Zj5NxbWpGQQX0f8UM3xesz2x134df+LYYpe8U=;
+ h=From:To:Subject:Date;
+ b=WGOl4hFbUQ59elJuNjWECugbdwabVqTRR7+X8TKfWexCOQtH/p6ofILO0ZntAZXT+
+ WxfbHwseS6vSlyZMviiZ0fuVA2NpXt0iRhnfqBWgonlVg5rpdd6z3MZL8nda+Kgwok
+ aIvylBtskDl8LUeJDYXii9MgICdAdP9yvfSq2lLY=
+X-QQ-FEAT: c2tmyB/8aFHUfZq1QDNYaEiBcVndZ0Rc
+X-QQ-SSF: 000000000000006000000000000000A
+X-QQ-XMAILINFO: MHgIBY//xn2MON7hux/nUgF6q/kO7F2YzFxBdJD6GaCPDPkjTGh13g5P71AFhM
+ nLGGKAaYJ5tB6/kDu+k1H445KZUcEip2jqTcaUpkcLvAAUZ1/LaPj+sFKsu4OPBmFHGY4akrFUj4k
+ rG0FPsELGg8QdWVm8zQHI0XJv1Rjef1AMAu9uuT1IwcAuW9raHp0eWiSHHx6Prz6P31eNu3NbrSko
+ XMik6UJjRmv5b1xVz3jEQW+2sd2E20oNPo1E0AdyQHqvLS42naGJOO4Sd8ArezFwia4C5kB6BlNQW
+ HqRq8vkCk5hyG889PqCghpDSVks27Nakdx+0+B10mNrT4THNZ+k/9mOcyoxG95OFFmJKNxBsA2w3I
+ 5Sfo/tKZWh3NwvfjCHARhg7xzeI5RgrHdMaKfGPZF1TwxL58sOuwW7bQII2cB4wLU+ekfplt/o4AF
+ FfXvmHHGIMGgIlmbWv4KMMwSoiJk+3M8qH3wjoo49+flM72b/QMW7Xf9CIbkSEQjj/qanx3lxexrE
+ 2ImEF9AkPefIlSx3+3kQTctWncQ1TaigHVWp/ld6gv/Zb/79vYhrePuB8r/k/xbi2hkv4EINYzrsv
+ EjGWBUpr3NIma9qIQXDTB7V+jAKqdQyyfHd3PKJ+IHjEjysn9w5r/zuBXUmFGa5YUBCSMF9CBk7iI
+ SDatvMHhRLOmd0T5KVE8HTMCw0q9kbJxglY89XVEu/2+imsJuIxSNFSJHLJaPOmzYAkvS0scNPnH7
+ GLgVqGAjo8DQ8Kv8WxmGaEgOOYNlZVCN5Me+NnY/fkyIckqIZP3XzsoEWM3+Paqr2WnmSIy50HyuN
+ tDVlO4DQjDmXjVCHPrTbDDdQ16Na+2IoI6K9HOY8Ur074PAYsU2D65DqjPZp03ZF8pNF6zEktcxOD
+ WPhTT4Yx3Y=
+X-HAS-ATTACH: no
+X-QQ-BUSINESS-ORIGIN: 2
+X-Originating-IP: 111.175.201.132
+X-QQ-STYLE: 
+X-QQ-mid: webmail332t1648203428t4255587
+From: "=?gb18030?B?1cXF9A==?=" <1805692831@qq.com>
+To: "=?gb18030?B?YXRoMTBr?=" <ath10k@lists.infradead.org>
+Subject: ath10k-firmware: QCA4019 hw1.0: Update Qxwlan E2600AC c2 specific BDFs
+Mime-Version: 1.0
+Date: Fri, 25 Mar 2022 18:17:08 +0800
+X-Priority: 3
+Message-ID: <tencent_890F07B1E479A19CA33C496B5DF86D63EF05@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220325_031411_651209_67C2375C 
-X-CRM114-Status: UNSURE (   7.01  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220325_031711_493405_A3847CCD 
+X-CRM114-Status: GOOD (  11.36  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,18 +75,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="gb18030"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-IuW8oOm5jyIgPDE4MDU2OTI4MzFAcXEuY29tPiB3cml0ZXM6Cgo+ICZuYnNwO01vZGlmaWVkIHRo
-ZSByYWRpbyBmcmVxdWVuY3kgaGFyZHdhcmUgcGFydCBvZiBlMjYwMGFjIGMxLAo+IG5lZWQgdG8g
-Y29vcGVyYXRlIHdpdGggdGhlIG1vZGlmaWVkIGJvYXJkLmJpbiBmaWxlLCB0aGUgZGV2aWNlCj4g
-Y2FuIHdvcmsgbm9ybWFsbHkuCgpXaHkgYXJlIHlvdSBzZW5kaW5nIHRoZSBzYW1lIG1haWwgbXVs
-dGlwbGUgdGltZXM/IEkgaGF2ZSBzZWVuIGF0IGxlYXN0CnRocmVlIGNvcGllcyBub3cuCgotLSAK
-aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNzL2xpc3Qv
-CgpodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi9kZXZlbG9wZXJzL2RvY3VtZW50
-YXRpb24vc3VibWl0dGluZ3BhdGNoZXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+SGksCk1vZGlmaWVkIHRoZSByYWRpbyBmcmVxdWVuY3kgaGFyZHdhcmUgcGFydCBvZiBlMjYwMGFj
+IGMyLApuZWVkIHRvIGNvb3BlcmF0ZSB3aXRoIHRoZSBtb2RpZmllZCBib2FyZC5iaW4gZmlsZSwg
+dGhlIGRldmljZQpjYW4gd29yayBub3JtYWxseS4KCgoKRm9yIHRoZSBxdWVzdGlvbnMgZnJvbSB0
+aGUgd2lraSBwYWdlOgoKKiBkZXNjcmlwdGlvbiBmb3Igd2hhdCBoYXJkd2FyZSB0aGlzIGlzOgoK
+LSBpdCBpcyBhIElQUTQwMTkgYmFzZWQgYm9hcmQgKEFQLURLMDQgYW5kIEFQLURLMDcpCi0gb25l
+IFFDQTQweHggcmFkaW8gaXMgdXNlZCBhcyAyLjQgR0h6IHJhZGlvCi0gb25lIFFDQTQweHggcmFk
+aW8gaXMgdXNlZCBhcyA1IEdIeiByYWRpbwotIG9uZSBRQ0E0MHh4IHJhZGlvIGlzIHVzZWQgYXMg
+NSBHSHogcmFkaW8KCiogb3JpZ2luIG9mIHRoZSBib2FyZCBmaWxlIChkaWQgeW91IGNyZWF0ZSBp
+dCB5b3Vyc2VsZiBvciB3aGVyZSB5b3UgZG93bmxvYWRlZCkKCi0gVGhlIGJvYXJkIGZpbGUocykg
+d2hlcmUgZXh0cmFjdGVkIGZyb20gdGhlIFF4d2xhbiBmaXJtd2FyZS4gCi0gVGhlIGZpbGVzIGlu
+IHRoaXMgZW1haWwgYXJlOgoqIGJvYXJkX3dpZmkwXzJnLmJpbgoqIGJvYXJkX3dpZmkwXzVnLmJp
+bgoqIGJvYXJkX3dpZmkxXzVnLmJpbgoKKiBpZHMgdG8gYmUgdXNlZCB3aXRoIHRoZSBib2FyZCBm
+aWxlIChBVEgxMEtfQkRfSUVfQk9BUkRfTkFNRSBpbiBhdGgxMGspCgotIFFDQTQwMTkgaHcxLjAK
+CisgYnVzPWFoYixibWktY2hpcC1pZD0wLGJtaS1ib2FyZC1pZD0yMCx2YXJpYW50PVF4d2xhbi1F
+MjYwMEFDLUMyYmluCnNoYTI1NnN1bToKYTNiMzY4N2MxZDgwZGM5MmI1ZDc4YjFhYTIwNWYxNDYz
+YmQxMWY0ZWZjMjlmNzMxMWJkYWFiYzI4YzFkM2ViMgorYnVzPWFoYixibWktY2hpcC1pZD0wLGJt
+aS1ib2FyZC1pZD0yMSx2YXJpYW50PVF4d2xhbi1FMjYwMEFDLUMyYmluCnNoYTI1NnN1bToKMTEz
+ODk0ZTBkMWU0ZTdmZWVlZDY5YzQ4MWYxZWZhYWRlNTExZDA1ZGI3MWUxMjVjZjBiMzJhOTJiM2Q1
+MDUyMwpzaGEyNTZzdW06CjUzMjg3MTNlNjRlYzhjY2IzYjA0MGVhODQ4NmY3N2JjOTY2MmEzOTBl
+NWZkMjMxNDU4MzMyMTU5YzEzMTJmMGUKCgoKKiBhdHRhY2ggdGhlIGFjdHVhbCBib2FyZCBmaWxl
+IChib2FyZC5iaW4pCgotIFRoZSBuYW1lIG9mIHRoZSBmaWxlcyBhcmUgZXF1YWwgdG8gdGhlIGlk
+IHN0cmluZyBpbiB0aGUgYm9hcmQtMi5iaW4gKG1pbnVzIHRoZSAiLmJpbiIpCgoKS2luZCByZWdh
+cmRzLCAK1cXF9ApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
