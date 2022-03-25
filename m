@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0742EC433EF
-	for <ath10k@archiver.kernel.org>; Fri, 25 Mar 2022 10:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A7DAC433F5
+	for <ath10k@archiver.kernel.org>; Fri, 25 Mar 2022 10:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Date:
 	Content-Transfer-Encoding:Content-Type:Mime-Version:Subject:To:From:Reply-To:
 	Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=W3Ef8EFjA4r9qWH4yYVM6OvCNaf6gjAqzUIGUUE6b+s=; b=VE7rcSv2BEdcUFA7VGtGc39hyd
-	QBQOay6yDMdlESqdNrypwDRTmZFzY4gJBZv6jLQL4kYkGhDaJlmljDjilciAHERwM+13kL2qA5QoS
-	8QxyUAZJQlYb9GhFkHCEhd9rJbsz9g28/yWR0RjtYk5b6MA9BC9ftZyDMl0pwNSJRz2S2raGMPmy1
-	T9VUpP4JE8qbtgwfxMM89oxffNwgDOcotoSTi+vV8h5FHpt5Hxg781mbvHotc5q4tDzDfDXucCFhJ
-	q38TE1tQqH3f6lsPigFFutMU5wfyUzQ93uTCpi3glD5U03Z90lPcrAh+5kZGMJC083epvFlVhbtOE
-	0e5PVHPw==;
+	bh=RfktjmbwjBAEgMW+b4MQcPrtNLjQ4Ab1nEXFIQDjPqI=; b=y5LYtdMJB/o4srgKRduJzax5l1
+	AzofX3XNpEXF3hdLhpxJu3gEZk/N8jkCsw4du7bwHEUKO2YUt/heg0st3ZTaGJVocCsW9uzl7NMC4
+	Dbp0HdwfDfE51FJtY/lLgH5WfEqB7bFZQja5fdfgV8b2HbN69BkrVgPXoYw8J5adklwcDCC6BQpVd
+	FKBu/kCu/P6HfAk/Kj3nx+/Y6ohFErhdSyKrF49iOAsh4qYjR2cxJl76se1gni5cMZWm/q06+JT4R
+	ytn292Mv3tHKBahUdIM8GI5RyMYWMYsC6+yjNkojctvl1cr7FaxEGRk7exiGHJ68jXWgQRCTx/OvI
+	bnH6RkZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nXgso-001cVn-O9; Fri, 25 Mar 2022 10:09:26 +0000
-Received: from out203-205-251-59.mail.qq.com ([203.205.251.59])
+	id 1nXhFp-001k5D-Pl; Fri, 25 Mar 2022 10:33:14 +0000
+Received: from out203-205-251-82.mail.qq.com ([203.205.251.82])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nXgsl-001cTy-Nh
- for ath10k@lists.infradead.org; Fri, 25 Mar 2022 10:09:25 +0000
+ id 1nXgus-001dXy-Nr
+ for ath10k@lists.infradead.org; Fri, 25 Mar 2022 10:11:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
- t=1648202962; bh=SukMKMosAB/+QdVFy2K5otsaDVbZ/8Yxpr8LXCQaYb4=;
+ t=1648203092; bh=LOZRDXz7+psnr2gW7bFaokBMnB6vdeAIlX2qOdf6fCw=;
  h=From:To:Subject:Date;
- b=XH6RLwYC+9jr2UBq3c7JyPtUbQ2JvJmYOCVZIXZLSGPjpTYUf295JjKSaMWCzYpIh
- EL4uLM4l8S+ym75Rvk1VtClqMW6cyi3W2NOFgZVDLVNq7SvWPblMY8EL/wJNgemJGs
- HIjZDiVgMq//t48reIkWRMb/g7Zyu72rk/9OpaMI=
+ b=r4+w2ypI9eRCiRdj+VnwtDraMexNa/M/5YgpD4VYqKEH0ZNOD3NwToYUAMZs+SgWz
+ K7r+FrPSMCWnRnmqRhnl2onqykXJcVQW2C+xfbVcQQuV1L/BHDtfC3S86rgDwKvhPq
+ BBPEjFnb3In7ScJJOBFOV4J/rWDQNYiZddSNDGxI=
 X-QQ-FEAT: c2tmyB/8aFGV9733ZC99mQuZN1hUziLn
 X-QQ-SSF: 000000000000006000000000000000A
-X-QQ-XMAILINFO: Ms0OKOJlqqidiiuW6UaOSbNC+Lqt340dRA0+wHa7HDSe5yjIf/dOujcnSEG+Yg
- 4SuH5J461fQheV7jtbSMZBihhbwlsI2ZeBl2NUu4UuzwYrR7YcrZBFkNbvUJTB2265Gp7Ej1rKRoY
- nfFbXyhVhi6bvkBRsVt5F5STWSkmB6lbr0WUMya3EPiLLGiXua9zkOVUAOjr3Fd8JtA37qEwwV2Oi
- JiXC7GQXSvBDJVgvbK3FMcQn74tUjXjHcsvr24KNmjmrx3gomnDSsiMg//QTZQFbBrjYKO8LJFO8w
- OYWQMsVmwEiXOqK6y+GZiRSSzsKnaKlC/uh+e/687QBJ8XRxHKC5D1hAWS1bxKAZGxmTjy2UJv9Hg
- TJs0G26kFngrLo1ddEGdwyF7dJTLPGza0Bjctl1qBRnCwYbX5I+67edBymept1IH90EDB2lKrNWof
- oyymSx1MStyniFVYwOG9OfKc7Z0Wcpe92+avmwjNwObRKQwrZ2AIAPMNE6AxD/IWhopLQxwT9jGFJ
- V3EKdY0qipbjlYaB5xYBQ26mifS2S2p5evIhDRwWwTteA5U35hvI4Is9knk+GYnLQSlM7nTS8bUa7
- pkeFGXiw4uy8bda591E5qIdJXR/RtiDzv2+iEKoII9Deu+/lMXZR6bNZS7R+tJAAXf9+pYO/G21PA
- cKW0FNb9XQZfjb320eO7f+r5WyEiSB1tfZVFWRxUPIH5sffzJaJ2WGlgZbOGJGYxeBxgKPrbPjlbO
- Pl2qumTsWB+MR1uFTOHXZmgH365/Amtfm9GXNnmpuCBeg7s3SDzXszWP6TJ3WfF0RFD2b31YtKPiC
- zDRYIEldaQGiIjVEAuxYnD+gJfz7yAC/e3d+kLeEXeRrl1I8rMN5DDyDwJg74NRsFGHH5jUx9njW8
- g4nghN6kZ7zEmF1rd5+mVMnuJpSEFmy
+X-QQ-XMAILINFO: NFJYoTYY5EpWZDSZLn7lVyaRwHVQ9bMy1QCnRp6Zuichz30WHE/KfssSeceYGh
+ wFlSruHc5oCSFtseRnHefXKShekESaW4kMywgIv1GxNnx2lDLRvj11rLRZ1V9ktRVEdMjJlBC5p4G
+ IBJnTSyP0Z1BK23yPBw9lvjbW/2mHNjz5qLSxhYdxq65EBNLtmk7ysV0yEHSEz7k3hZTfdGa8lT7q
+ 2M+pYN5Jvos7d58xV6T8yTSw8hQuHrueB6pt3eQF7L7b1yNnMbleN/SXRed5WwFwN2FdvZH726G5s
+ 1ek/gmvSf6OYsB7aeUTNazxdLZe6II02+lTP1qPa5mqLPbnsVwsK1bd3T5R24ncARTrM0owjLcejw
+ VP4IcbEDnEWlbuRsW2uCN3D+i1bfSUdIFa/iLBhd03t+q/IOzMeCBg/Xjx+tDUzwMDffEbvX9J7M/
+ 87tQeqWod0zP4pu2mKWfAvRDU5mAc0OTS5d4GbJaXdbmnbH5XdA+WHwlc8qWEzEei4Tpa2CGfUoAl
+ n2sc7B1HnZU7OSLto7D22+d53cS7+rnGJB7NcrnKf+lAK9PHQPIU/9gm9pVJ6GAWj6oR1SOj6F+H3
+ bLHi3YJPoNSDR5Q5Nz5hmr23gNXezea2i8XmZA+LAumf06tO/QCKcF1YY6Q+nLou+eLqwZqBrRpg+
+ KmS4xXiab/w/MTN543pK7EXEb4oJj/AHCJT6dIpLjTXjfNuq7m349q7EfOeOxfTaFM9bQkFsS7t9T
+ +mEClCljjTLmkR5HMno5CK+knDQkSpY04Rdl6omKazxryRoou/hE31NQxnn8oKrqGfVr6AVxd4Jnc
+ VqDNukWlmXXk+cu1EMdGOLwQIId+UPVyDqSOqR0QES8dpDDkl+VFYmqaG5NFyYegm4sF9+ZEtlT/9
+ +HrvoWGZ+0POQaMhaydPuB8ZxnTUk6U
 X-HAS-ATTACH: no
 X-QQ-BUSINESS-ORIGIN: 2
 X-Originating-IP: 111.175.201.132
 X-QQ-STYLE: 
-X-QQ-mid: webmail332t1648202961t4548803
+X-QQ-mid: webmail332t1648203091t690920
 From: "=?gb18030?B?1cXF9A==?=" <1805692831@qq.com>
 To: "=?gb18030?B?YXRoMTBr?=" <ath10k@lists.infradead.org>
 Subject: ath10k-firmware: QCA4019 hw1.0: Update Qxwlan E2600AC c1 specific BDFs
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="----=_NextPart_623D94D1_11293B28_170FC282"
+ boundary="----=_NextPart_623D9553_10582E58_2CBEC90A"
 Content-Transfer-Encoding: 8Bit
-Date: Fri, 25 Mar 2022 18:09:21 +0800
+Date: Fri, 25 Mar 2022 18:11:31 +0800
 X-Priority: 3
-Message-ID: <tencent_93B4B0DBC6D5DF0162F6335C796C3986D606@qq.com>
+Message-ID: <tencent_4AAA109B9EB5CBAFCA83B558844936E0FE09@qq.com>
 X-QQ-MIME: TCMime 1.0 by Tencent
 X-Mailer: QQMail 2.x
 X-QQ-Mailer: QQMail 2.x
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220325_030924_270484_23ACCF09 
-X-CRM114-Status: UNSURE (   9.20  )
+X-CRM114-CacheID: sfid-20220325_031135_190783_6645DB6A 
+X-CRM114-Status: UNSURE (   9.35  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -84,7 +84,7 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_623D94D1_11293B28_170FC282
+------=_NextPart_623D9553_10582E58_2CBEC90A
 Content-Type: text/plain;
 	charset="gb18030"
 Content-Transfer-Encoding: base64
@@ -93,26 +93,25 @@ SGksCiZuYnNwO01vZGlmaWVkIHRoZSByYWRpbyBmcmVxdWVuY3kgaGFyZHdhcmUgcGFydCBv
 ZiBlMjYwMGFjIGMxLApuZWVkIHRvIGNvb3BlcmF0ZSB3aXRoIHRoZSBtb2RpZmllZCBib2Fy
 ZC5iaW4gZmlsZSwgdGhlIGRldmljZQpjYW4gd29yayBub3JtYWxseS4KCgoKRm9yIHRoZSBx
 dWVzdGlvbnMgZnJvbSB0aGUgd2lraSBwYWdlOgoKKiBkZXNjcmlwdGlvbiBmb3Igd2hhdCBo
-YXJkd2FyZSB0aGlzIGlzOgoKJm5ic3A7LSBpdCBpcyBhIElQUTQwMTkgYmFzZWQgYm9hcmQg
-KEFQLURLMDQpCi0gb25lIFFDQTQweHggcmFkaW8gaXMgdXNlZCBhcyAyLjQgR0h6IHJhZGlv
-Ci0gb25lIFFDQTQweHggcmFkaW8gaXMgdXNlZCBhcyA1IEdIeiByYWRpbwoKKiBvcmlnaW4g
-b2YgdGhlIGJvYXJkIGZpbGUgKGRpZCB5b3UgY3JlYXRlIGl0IHlvdXJzZWxmIG9yIHdoZXJl
-IHlvdQombmJzcDtkb3dubG9hZGVkKQoKLSBUaGUgYm9hcmQgZmlsZShzKSB3aGVyZSBleHRy
-YWN0ZWQgZnJvbSB0aGUgUXh3bGFuIGZpcm13YXJlLiAKLSBUaGUgZmlsZXMgaW4gdGhpcyBl
-bWFpbCBhcmU6CiogYm9hcmRfd2lmaTBfMmcuYmluCiogYm9hcmRfd2lmaTFfNWcuYmluCgoq
-IGlkcyB0byBiZSB1c2VkIHdpdGggdGhlIGJvYXJkIGZpbGUgKEFUSDEwS19CRF9JRV9CT0FS
-RF9OQU1FIGluIGF0aDEwaykKCi0gUUNBNDAxOSBodzEuMAoKKyBidXM9YWhiLGJtaS1jaGlw
-LWlkPTAsYm1pLWJvYXJkLWlkPTIwLHZhcmlhbnQ9UXh3bGFuLUUyNjAwQUMtQzFiaW4Kc2hh
-MjU2c3VtOgphM2IzNjg3YzFkODBkYzkyYjVkNzhiMWFhMjA1ZjE0NjNiZDExZjRlZmMyOWY3
-MzExYmRhYWJjMjhjMWQzZWIyCitidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlk
-PTIxLHZhcmlhbnQ9UXh3bGFuLUUyNjAwQUMtQzFiaW4Kc2hhMjU2c3VtOgo0NGYzZjJlOGQ5
-ZmY5Mzk2ZDNhYjczZGIzZGZlYjg2NGNlZjIwZDdlNDMwMzJhMTMzZmE4YTdjNzRlNWQ3YWQ0
-CgoKKiBhdHRhY2ggdGhlIGFjdHVhbCBib2FyZCBmaWxlIChib2FyZC5iaW4pCgotIFRoZSBu
-YW1lIG9mIHRoZSBmaWxlcyBhcmUgZXF1YWwgdG8gdGhlIGlkIHN0cmluZyBpbiB0aGUgYm9h
-cmQtMi5iaW4KJm5ic3A7KG1pbnVzIHRoZSAiLmJpbiIpCgoKS2luZCByZWdhcmRzLCAK1cXF
-9A==
+YXJkd2FyZSB0aGlzIGlzOgoKLSBpdCBpcyBhIElQUTQwMTkgYmFzZWQgYm9hcmQgKEFQLURL
+MDQpCi0gb25lIFFDQTQweHggcmFkaW8gaXMgdXNlZCBhcyAyLjQgR0h6IHJhZGlvCi0gb25l
+IFFDQTQweHggcmFkaW8gaXMgdXNlZCBhcyA1IEdIeiByYWRpbwoKKiBvcmlnaW4gb2YgdGhl
+IGJvYXJkIGZpbGUgKGRpZCB5b3UgY3JlYXRlIGl0IHlvdXJzZWxmIG9yIHdoZXJlIHlvdSBk
+b3dubG9hZGVkKQoKLSBUaGUgYm9hcmQgZmlsZShzKSB3aGVyZSBleHRyYWN0ZWQgZnJvbSB0
+aGUgUXh3bGFuIGZpcm13YXJlLiAKLSBUaGUgZmlsZXMgaW4gdGhpcyBlbWFpbCBhcmU6Ciog
+Ym9hcmRfd2lmaTBfMmcuYmluCiogYm9hcmRfd2lmaTFfNWcuYmluCgoqIGlkcyB0byBiZSB1
+c2VkIHdpdGggdGhlIGJvYXJkIGZpbGUgKEFUSDEwS19CRF9JRV9CT0FSRF9OQU1FIGluIGF0
+aDEwaykKCi0gUUNBNDAxOSBodzEuMAoKKyBidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1pLWJv
+YXJkLWlkPTIwLHZhcmlhbnQ9UXh3bGFuLUUyNjAwQUMtQzFiaW4Kc2hhMjU2c3VtOgphM2Iz
+Njg3YzFkODBkYzkyYjVkNzhiMWFhMjA1ZjE0NjNiZDExZjRlZmMyOWY3MzExYmRhYWJjMjhj
+MWQzZWIyCitidXM9YWhiLGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlkPTIxLHZhcmlhbnQ9
+UXh3bGFuLUUyNjAwQUMtQzFiaW4Kc2hhMjU2c3VtOgo0NGYzZjJlOGQ5ZmY5Mzk2ZDNhYjcz
+ZGIzZGZlYjg2NGNlZjIwZDdlNDMwMzJhMTMzZmE4YTdjNzRlNWQ3YWQ0CgoKKiBhdHRhY2gg
+dGhlIGFjdHVhbCBib2FyZCBmaWxlIChib2FyZC5iaW4pCgotIFRoZSBuYW1lIG9mIHRoZSBm
+aWxlcyBhcmUgZXF1YWwgdG8gdGhlIGlkIHN0cmluZyBpbiB0aGUgYm9hcmQtMi5iaW4gKG1p
+bnVzIHRoZSAiLmJpbiIpCgoKS2luZCByZWdhcmRzLCAK1cXF9A==
 
-------=_NextPart_623D94D1_11293B28_170FC282
+------=_NextPart_623D9553_10582E58_2CBEC90A
 Content-Type: application/octet-stream;
 	charset="gb18030";
 	name="board_wifi0_2g.bin"
@@ -343,7 +342,7 @@ PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-------=_NextPart_623D94D1_11293B28_170FC282
+------=_NextPart_623D9553_10582E58_2CBEC90A
 Content-Type: application/octet-stream;
 	charset="gb18030";
 	name="board_wifi1_5g.bin"
@@ -574,7 +573,7 @@ PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-------=_NextPart_623D94D1_11293B28_170FC282
+------=_NextPart_623D9553_10582E58_2CBEC90A
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -585,6 +584,6 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
-------=_NextPart_623D94D1_11293B28_170FC282--
-A
+------=_NextPart_623D9553_10582E58_2CBEC90A--
+
 
