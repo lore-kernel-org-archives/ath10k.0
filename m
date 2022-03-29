@@ -4,79 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCA51C433EF
-	for <ath10k@archiver.kernel.org>; Tue, 29 Mar 2022 16:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 998CDC433EF
+	for <ath10k@archiver.kernel.org>; Tue, 29 Mar 2022 21:07:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E1RD2/bp+tn+gxSiu1uordATquqouoFH2nz7nc/mVGE=; b=uaFKbay8mnwKCZ
-	p26fhe/Q5eY69aD1/PvKvEu5SdaKxErseXSxlbPc1TaVyIz0IxdqNEHW5wdlCpn88M80qD2ppzevY
-	/WU92ZESDYJzAbjIfQY6OuI0ZbRId0HOzOJm2+0W0XiXNhxqvB/fGcVF5F9jbcIEnQehYPYpT5+mN
-	XCBhjJW/1E54FHY+3gLs/rItjBRGF/nHcALt6bxm1spfd2f1W0S5FOx4um6eK1tBRkR1zZMjJnEeA
-	C3OGNuNezEyZ9B71PyMRaVcYe/PWG/mC0wJmqeMy67/3WcLfhzcKs3vXMo1nvfnX6oDwnJCv0M+Qq
-	V3Uls2sxoBwYGEaiYRyA==;
+	List-Owner; bh=lKM6qiDM8ZXb2nreehpxZ0jIjUtuHHQudj0go1Ztp6g=; b=23G++OIUWLXl6O
+	xb+1SfJf6ELUcNwFitkMlvhsbDmk3lZCxuNJPPb5AL1ZETlaF0fV4tI0a5aQ6V3sYkr5FKFTiu4Gv
+	VHeU4PIm7hjHjSh7955lPGhclQb7+aqXz2G38dtcnSIFpTY+UVU9ThSjupYgzis7w4dMfl1Pfmnr5
+	O/P9ngAIZBqzVPw2yTfLsXZhBKV+uy08w2Y9ye8TD2F3dRCErc3SVScLP/U7gy87e+VoyCRBjk6F5
+	Eb8fOyMPbAcwzzUvD8qxdNcWWGhDVucSTDS8W9ujGcX18Yln7Cyj/muq2skENobw3C0Ob00BAL2tO
+	zMrzPz+rFAfJRTbkYOYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nZEGZ-00CpSB-HD; Tue, 29 Mar 2022 16:00:19 +0000
-Received: from mail-lj1-x230.google.com ([2a00:1450:4864:20::230])
+	id 1nZJ3K-00DUim-Km; Tue, 29 Mar 2022 21:06:58 +0000
+Received: from mail-qt1-x82a.google.com ([2607:f8b0:4864:20::82a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nZEGX-00CpRr-9N
- for ath10k@lists.infradead.org; Tue, 29 Mar 2022 16:00:18 +0000
-Received: by mail-lj1-x230.google.com with SMTP id r22so24039808ljd.4
- for <ath10k@lists.infradead.org>; Tue, 29 Mar 2022 09:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=YBCXQvdqkUI+N6wX/GhhbJMb7vkKVG7Akhg7ppXMy/E=;
- b=eIBAiNbVkzK6fvdDnW17tD6M5+vhQn1byetq3BRfmeBV+cEjnCNKUHAEWOX/4Xvgo3
- oiyrwq17nz01Qt3AjSR3MGd5/NjwpV+zyK8/+U6AzKYxy7GyDowSBVn4e10NbcOMIg1F
- MddiI5DPKWwyoETitbcTdjsWytvo91cDGrkrTip+7CP5GpQ8JjnJwBBSPhMlqNYrHK35
- rfxHexx68Yqy6l0V0ZrRzsZD/hCDO43ln2VPEefAXeeKiy1JDTgKahRcJiXppKxiNCtp
- mYMfc2NPr3Dyl7oHMeBsjqRbIy59qxREhW+iBR5W+TOQ8/5c9FB+vyWvqlLDQwmXFZXZ
- Yrmw==
+ id 1nZJ3I-00DUiH-1v
+ for ath10k@lists.infradead.org; Tue, 29 Mar 2022 21:06:57 +0000
+Received: by mail-qt1-x82a.google.com with SMTP id z19so13208169qtw.2
+ for <ath10k@lists.infradead.org>; Tue, 29 Mar 2022 14:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=EAqRIc9fT64ewsHGFESskdphI9pIsxJrpTtguJ8/Dyg=;
+ b=fj4lMvN6rKaBuz6EjmSYruA1pk2DRqkImF1f/UDAr2yjOcBE0t/LXrgsp5D1tHiuv/
+ uFRmPT/FtRWSNzy8bys6q1APr5tOfm04N6gxh0AzPVGmWoBFm8aGySQ9TmQi33PNKcCb
+ rwynLXeqS0yAdHpEt5JWck4NM2sNdwOiOWgSs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=YBCXQvdqkUI+N6wX/GhhbJMb7vkKVG7Akhg7ppXMy/E=;
- b=pApyEfJ4uGSXynvt6NwpKiKLj7aTmxvcLOGxnyvvPF1Facg89GPNKjY0nNyK1g/R8L
- Q7dqVDRgoqP+Ywl9p6+It0NPbCYrorUZOb95z/FrizNKSowRc8cPtT+MJs7OyZOaiCcE
- qJMge1ieXMMooQ7uzG5sDUJIvlZeI2xFU/ZmIuTl1JbxUI86q2pEw1ClfuPQ7jUkrS/E
- 4OspHxdGgSwGUPumCrUwgu8bZn1h/PXKDOZlxm5280xhq98QNkwilwbAvrB8ylqUcIjz
- dzvRPZST1k9aLrQjLOmbH1pN/FJxDrh3Tf7ubXEGjO0jH/YCex0NHvASO+TdMDFrAWNz
- AbbQ==
-X-Gm-Message-State: AOAM533Mcxb6bSzqsK8kpPYvSZ1HMsqRa4K0AXZNIBcheQaEOXsbzIfV
- BUMwgkIfBsiMGVyTdV0YJ5LRtJ2ViQxUk1kc
-X-Google-Smtp-Source: ABdhPJzBT5v5dwQGGsY/H85KFOY9KneTZW5sK4ZlFEyqqt894YSC0V5eGj5iAQorXQLDi3xIjSBdZA==
-X-Received: by 2002:a05:651c:1543:b0:249:a2bd:4a74 with SMTP id
- y3-20020a05651c154300b00249a2bd4a74mr3158875ljp.375.1648569613717; 
- Tue, 29 Mar 2022 09:00:13 -0700 (PDT)
-Received: from [192.168.1.244] (81-233-89-221-no75.tbcn.telia.com.
- [81.233.89.221]) by smtp.gmail.com with ESMTPSA id
- p9-20020a056512312900b0044a5312dcbcsm2028709lfd.89.2022.03.29.09.00.07
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=EAqRIc9fT64ewsHGFESskdphI9pIsxJrpTtguJ8/Dyg=;
+ b=xm9pcGm8PFMSLH3vrFF1JfAHrxzubsh4/n2MwY0iiF4Z7jBBTMicbWcJKa7ODitGyl
+ 0zloP9RzBEjz69Z07DiZS//OaONu99/oN8Yj5sFxL/jTcDB0TN1rmrQ36UiBU3pP8OUJ
+ WwC5l5b3HWp53vcCcMkepSig4UHjyuSgSIDDzgQpHK4QiXb4LS2+I+oOYj0cA4QTCCts
+ tLlg7RBr3aMu4DHA0RSr3ijhS+epwJJJFsbdGyZiapd9Tuk+JkEBKHa02Svp4GfVibLi
+ hudkumk28vnsdLRzHPQBhPUNB9yfjmyhHDonEbu9AWhbgO1sYxC2kfVGwvUvKGFqNJ7h
+ IYoQ==
+X-Gm-Message-State: AOAM531JCzM2i9w7ypYYq8CsvIxRMhMk9VyZ3MkHW0xChx+XjmYg0tFS
+ 0iTlb4BUnuv+j1L+Y6ZH08OaFx/bjfMNKQ==
+X-Google-Smtp-Source: ABdhPJygTzTbTjDkF71dDFz74lXmkVxE8Dikj9OlgdXpWIn2jZsJr3f+7vSBdi6eh5Bm29kqRFALrQ==
+X-Received: by 2002:ac8:5c4f:0:b0:2e0:63a9:5197 with SMTP id
+ j15-20020ac85c4f000000b002e063a95197mr30426786qtj.361.1648588013727; 
+ Tue, 29 Mar 2022 14:06:53 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com.
+ [209.85.128.172]) by smtp.gmail.com with ESMTPSA id
+ a16-20020a05622a02d000b002e20e4bf4aesm16682723qtx.23.2022.03.29.14.06.52
+ for <ath10k@lists.infradead.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 29 Mar 2022 09:00:07 -0700 (PDT)
-Message-ID: <1ca2ff88-4751-acce-6202-abc7d22e4494@gmail.com>
-Date: Tue, 29 Mar 2022 18:00:06 +0200
+ Tue, 29 Mar 2022 14:06:52 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id
+ 00721157ae682-2e64a6b20eeso197585837b3.3
+ for <ath10k@lists.infradead.org>; Tue, 29 Mar 2022 14:06:52 -0700 (PDT)
+X-Received: by 2002:a0d:df82:0:b0:2e5:ad6c:d9d with SMTP id
+ i124-20020a0ddf82000000b002e5ad6c0d9dmr33485447ywe.17.1648588011807; Tue, 29
+ Mar 2022 14:06:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH 1/2] ath10k: add support for MSDU IDs for USB devices
-Content-Language: en-US
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- davem@davemloft.net, kuba@kernel.org
-References: <20220327171340.7893-1-erik.stromdahl@gmail.com>
- <875yny1w8t.fsf@kernel.org>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-In-Reply-To: <875yny1w8t.fsf@kernel.org>
+References: <YSJ//ki/A1EgfLga@skv.local>
+ <CA+ASDXNzv6D1PthjUU-CVw6amT+JHmJP2mNSL=LVJKGm0zkEXw@mail.gmail.com>
+ <YSQC32TygIq2SHJR@skv.local>
+ <CA+ASDXPi0RRd0gFYcON=XLu8ABwKKcRXf0j0QoCRnvDwGa0VyQ@mail.gmail.com>
+ <4c44fdc2-8dde-8a98-8dd4-4b7e6b57a090@bang-olufsen.dk>
+In-Reply-To: <4c44fdc2-8dde-8a98-8dd4-4b7e6b57a090@bang-olufsen.dk>
+From: Brian Norris <briannorris@chromium.org>
+Date: Tue, 29 Mar 2022 14:06:40 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXOeC+S2d7g0b=aS_q9XxNtdayF1S5XE9T85NZrxXnK5KA@mail.gmail.com>
+Message-ID: <CA+ASDXOeC+S2d7g0b=aS_q9XxNtdayF1S5XE9T85NZrxXnK5KA@mail.gmail.com>
+Subject: Re: Revert: ath: add support for special 0x0 regulatory domain
+To: =?UTF-8?Q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
+Cc: Andrey Skvortsov <andrej.skvortzov@gmail.com>, 
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ ath10k <ath10k@lists.infradead.org>, 
+ Wen Gong <wgong@codeaurora.org>, Julian Calaby <julian.calaby@gmail.com>,
+ svp <svpm@yandex.ru>, "felix+debian@gueux.org" <felix+debian@gueux.org>,
+ Massimo Maggi <me@massimo-maggi.eu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220329_090017_396212_D34EBA5F 
-X-CRM114-Status: GOOD (  10.42  )
+X-CRM114-CacheID: sfid-20220329_140656_138175_489A2E6F 
+X-CRM114-Status: GOOD (  13.65  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,40 +96,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-
-
-On 3/28/22 07:28, Kalle Valo wrote:
-> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
-> 
->> commit 93bbdec6683e1c8ba2cc4e6 ("ath10k: htt: support MSDU ids with
->> SDIO") introduced MSDU ID allocation in the htt TX path for high latency
->> devices. This feature needs to be enabled for USB as well in order to
->> have a functional TX path.
->>
->> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-> 
-> On what hardware and firmware version did you test these patches? I'll
-> then add the Tested-on tag:
-> 
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#tested-on_tag
-> 
-
-Hardware: Linksys WUSB6100M
-Fw version: QCA9377 hw1.0 USB 1.0.0.299
-
-Above fw version is printed by the driver at startup:
-
-ath10k_log_dbg: usb 1-3 firmware 1.0.0.299 booted
-
-The firmware file can be obtained from here:
-https://www.linksys.com/se/support-article?articleNum=198580
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVHVlLCBBdWcgMjQsIDIwMjEgYXQgMTowMCBBTSBBbHZpbiDFoGlwcmFnYSA8QUxTSUBiYW5n
+LW9sdWZzZW4uZGs+IHdyb3RlOgo+IE51bWVyb3VzIHBlb3BsZSAtIG15c2VsZiBpbmNsdWRlZCAt
+IGhhdmUgY2l0ZWQgc291cmNlcyBjbGVhcmx5Cj4gaW5kaWNhdGluZyB0aGF0IDB4MCA9IFVTLCBO
+T1QgdW5zZXQuIFNlZSB0aGUgc2FtZSBwb3N0WzFdIGZvciBtb3JlIGluZm8uCj4KPiBJIHN0aWxs
+IHRoaW5rIHRoaXMgcGF0Y2ggc2hvdWxkIGJlIHJldmVydGVkIHVubGVzcyBzb21lYm9keSBjYW4g
+cHJvdmlkZQo+IGEgc291cmNlIHRvIHRoZSBjb250cmFyeSwgcmU6IHRoZSBtZWFuaW5nIG9mIDB4
+MC4KPgo+IEl0J3MgdW5mb3J0dW5hdGUgdGhhdCB0aGlzIGlzIHN0aWxsIGFmZmVjdGluZyB1c2Vy
+cywgcGFydGljdWxhcmx5IHdoZW4KPiB0aGUgb3JpZ2luYWwgYXV0aG9yIG9mIHRoZSBwYXRjaCBl
+dmVuIGFza2VkIGZvciBpdCB0byBiZSByZXZlcnRlZC5bMl0KCkZZSSwgbXkgcmV2ZXJ0IHdhcyBy
+ZWNlbnRseSBtZXJnZWQgdG8gTGludXMncyB0cmVlIGFuZCBpcyBtYWtpbmcgaXRzCndheSBpbnRv
+IHZhcmlvdXMgLXN0YWJsZSB0cmVlczoKCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvbGludXMvMWVj
+N2VkNTE2M2M3MGEwZDA0MDE1MGQyMjc5ZjkzMmM3ZTdjMTQzZgoKU2lkZSBub3RlOiBpdCdzIGEg
+c21hbGwgc2hhbWUgdGhhdCBLYWxsZSdzIHNjcmlwdHMgc2VlbSB0byBoYXZlIG11bmdlZAp0aGUg
+YXV0aG9yc2hpcCBkYXRlIC0tIGdpdCB0aGlua3MgaXQgd2FzIGF1dGhvcmVkIGluIDIwMjIsIHdo
+ZW4gaW4KZmFjdCBpdCB3YXMgaW4gMjAyMCA7KQoKUmVnYXJkcywKQnJpYW4KCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
