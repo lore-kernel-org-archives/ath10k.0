@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 269B0C433F5
-	for <ath10k@archiver.kernel.org>; Sat,  2 Apr 2022 06:01:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F229FC433F5
+	for <ath10k@archiver.kernel.org>; Sat,  2 Apr 2022 11:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=st7flqrfmYKpAlKQ8c1VRory15m8QGO9Fnz6EIzzEmI=; b=uy1KZdeaOeg1DC
-	cBK+PNBHmBZ6aP1RZaegxcsdQK52k64klemI4+7uB+8cOsbtfLTsI+ZikilPPU/vCd7svLqsnz1V6
-	DVaYlZWXrqDIOUb9VuHEwkSkouYNPZXWuONCVsUpGafoAzw6GS8A/PnqnWuqRL4v/jzjncQY2FvT9
-	TGNejds5z/MkERkCPxu8Q3ndRfdbqyGkDg3SIaVRSjnlaRoxeJ/q/gWBOOMzYlf6pLpoVsYoRUvwu
-	d9wJjY1u32IbJ/HFnDrnhwJ9aw2YNLtScERyMzQ5O3WuyT5TnEC/u7xVL6NbMaABdPztpnPCvlKmK
-	7MHHBScFTswspvmNzKbg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:Subject:
+	Message-ID:Date:From:MIME-Version:Reply-To:Cc:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=sTMEMXXrCzqh6yKarjCpSV/jA9Sc5XIEmDaJ8dO+VwM=; b=1Xj7KggYdJPVuxYzT0j1vfH+fi
+	kVAa6Ufdjg/AvR/VAGxYWXltlqesDqBFBgzHqnk9hIqXogB8wWiZOdxMyaCuIUIA34XsBxJHe8hHu
+	Yp/I2DV6/7I19mTVk3eHjvaX2vpQpzvlV172nwbuFX5p9JXJ4WAfFrTBPhitWayL6TB9touQhxL0A
+	W9HgCSIFEoeh1gA4V/t8FPmww6MGjo+c3zBZ8E5YBOFVX6Evju0GC2R9zAlPbV8aR/cXohEgQiVo5
+	JbDWqW0dri21Xxj4AqdxIdEEypf2SHeYcDEzHDpc0mg8IhL0zvcm8Qu50xcyPxtA+3AAGJSWT5v/C
+	xzPzFOPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1naWoV-0088Uj-TL; Sat, 02 Apr 2022 06:00:43 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1nabdA-008aB4-B3; Sat, 02 Apr 2022 11:09:20 +0000
+Received: from mail-qt1-x82a.google.com ([2607:f8b0:4864:20::82a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1naWoS-0088UF-Gl
- for ath10k@lists.infradead.org; Sat, 02 Apr 2022 06:00:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648879240; x=1680415240;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=FGXYOIBGyxkOJVGHtecPC7zEFJfNNydIgVWk3byuX3U=;
- b=aRLU+qeN6DKKqm6/E7nE+RlXp6sZWIuO3ve4e3OpW2KXjD4M5wAtLS3h
- vpdFycsqWi8loEEDcdGV9nJ+A83H4FqdH+WJMHZEXY7i/RvHYHN2zEJNP
- AcMKY+7Qsxn/53IT3m+NdZ0qtJWDLPqERQhYCyJmNmcCZO7TFellDUTKw
- cKuidrtrUmSYH4HIUGpsORJDw5xrtEIk2wCz5AEwm3UKFOqieCjXYpAvo
- 267kqe3aM51GRRnJR3Leie+IYN9L3+/0i1gnRNJw2jBDsv4NEN6dgOAkj
- /HPDO7DXjjnb5twaEsWOb4Nm28/X+Z4v0k117xjCs36otxUhuhygNa8kp Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10304"; a="260267103"
-X-IronPort-AV: E=Sophos;i="5.90,229,1643702400"; d="scan'208";a="260267103"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Apr 2022 23:00:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,229,1643702400"; d="scan'208";a="504399114"
-Received: from lkp-server02.sh.intel.com (HELO 3231c491b0e2) ([10.239.97.151])
- by orsmga003.jf.intel.com with ESMTP; 01 Apr 2022 23:00:36 -0700
-Received: from kbuild by 3231c491b0e2 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1naWoO-0001mM-24;
- Sat, 02 Apr 2022 06:00:36 +0000
-Date: Sat, 02 Apr 2022 14:00:03 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 254a25dd444d6ea3932e2121da1307c4c2842fa4
-Message-ID: <6247e663.uxQpDMsw9Fmeg9rg%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nabd7-008aAL-PR
+ for ath10k@lists.infradead.org; Sat, 02 Apr 2022 11:09:19 +0000
+Received: by mail-qt1-x82a.google.com with SMTP id a11so4098761qtb.12
+ for <ath10k@lists.infradead.org>; Sat, 02 Apr 2022 04:09:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=PpqoL0jovZAHCzGwmuLoSZE8u+vlVIT+pZOKcD5s/hE=;
+ b=pXaD6ogmxPgeLjSHzN6liFU6U2o2uSLO5knbc+GdX8iYbCz3w/By47Mh9UaGbqsIXY
+ sDp9E+E/3EjJ5M/3R7JkoT5mHjNyN2exSJK4wVBycTyLf1MJaWrGPIr2+UcnRwBuZOzb
+ /1VE7o6na9mAtTt0cE1Qvx3xNbsUqQu4rv5aCupZnnC3UZdqKWfF8YyXvCjzwJp2Hm56
+ En3bvWnPfuOdwjbjKEHgmL5kLmSE7okKR8Ufyxchr9rFdDZQSZnrPhd2SaZtegA0EbmA
+ xZfaJf46raXza+x+/TcxwQJvSSsRo/EysCmBokYoo2thNIPTC/91So+ws3h2Av49ijjd
+ 8jEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=PpqoL0jovZAHCzGwmuLoSZE8u+vlVIT+pZOKcD5s/hE=;
+ b=gw5v5NshAvEFHEkfYBJcP/ymJTxZHl7IujLYIfd1XlvVs5E2lhZGRCm/bXPN0WnOKG
+ M6a4jI07Xk3313/PGBpO1qUrtE/eQQVr14WnvW005ydsFUS0Lk8t3TQ+D39OUiJcUn9n
+ I+/MkLaqTgSefTrBw6K5dbmypkA7r+XH9rTcIaDs3muWrMPeamwBVs5JRuEeb6lD040/
+ siJJKKBmwl9teU79VjjOXTbn48/ALlyHCXfHuB9JcWI16eVmldRNAnTqae+g/McD7MVF
+ CvCRsEmSW/H3mMo77MPCpVkBZChp7GxCB6293TZAc/uiQjLJRRO7sNAQ2Fp+x6RwPqDH
+ x2Zg==
+X-Gm-Message-State: AOAM530e8eCyXGIfyTvN2NBcY2ggO7F76kb1g4+Si/cy9tumiEPTTshV
+ iDnFGAGoz+3pyVKVfcVzr2M5mKsSCsxcvs4zBbRJdbHGmkqUaw==
+X-Google-Smtp-Source: ABdhPJze5vgW3K07f62OkaBLloS2MUPUbomLnO8tcwcB+Nif+3/7Tmm6Zb/y9kD7Pi0F/ck6sLIgV+5qVnDIF2gmKeo=
+X-Received: by 2002:a05:622a:1314:b0:2e1:d943:c25b with SMTP id
+ v20-20020a05622a131400b002e1d943c25bmr11825161qtk.370.1648897752086; Sat, 02
+ Apr 2022 04:09:12 -0700 (PDT)
 MIME-Version: 1.0
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 2 Apr 2022 14:09:00 +0300
+Message-ID: <CAA8EJppbd=s-R3PnAXCaZAHA-iiBLFaA79Y7fRFY+JUO8jU==g@mail.gmail.com>
+Subject: ath10k-firmware: QCA6174: hw3.0: Add board file for DragonBoard 820c
+To: ath10k@lists.infradead.org
+Content-Type: multipart/mixed; boundary="000000000000c8d8b105dba9ec49"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220401_230040_683667_505462D7 
-X-CRM114-Status: UNSURE (   5.06  )
+X-CRM114-CacheID: sfid-20220402_040917_913834_952E79A8 
+X-CRM114-Status: UNSURE (   7.60  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,139 +74,207 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 254a25dd444d6ea3932e2121da1307c4c2842fa4  Merge branch 'pending' into master-pending
+--000000000000c8d8b105dba9ec49
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 953m
+Hi,
 
-configs tested: 108
-configs skipped: 4
+We'd like to ask for inclusion of the board file for the 96boards
+DragonBoard 820c. It is a development board is based on the Qualcomm=C2=AE
+Snapdragon 820E embedded platform (APQ8096).
+Following the questions from the ath10k wiki page:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+* description for what hardware this is
+  - It is an APQ8096 based board.
+  - It uses qca6174 chip as a WiFi and BT radio
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allmodconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-i386                          randconfig-c001
-sh                        edosk7760_defconfig
-m68k                            mac_defconfig
-sh                          r7780mp_defconfig
-arm                          simpad_defconfig
-sh                            hp6xx_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                        cerfcube_defconfig
-arc                          axs101_defconfig
-powerpc                        cell_defconfig
-mips                         bigsur_defconfig
-sh                            shmin_defconfig
-riscv                            allmodconfig
-mips                 decstation_r4k_defconfig
-arm                        shmobile_defconfig
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20220331
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-m68k                                defconfig
-arc                              allyesconfig
-nios2                               defconfig
-csky                                defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-parisc64                            defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-arc                  randconfig-r043-20220331
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                          rhel-8.3-func
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-x86_64                         rhel-8.3-kunit
+* origin of the board file
+  - It comes from the BSP package distributed by Linaro
+(http://releases.linaro.org/96boards/dragonboard820c/qualcomm/firmware/linu=
+x-board-support-package-r01700.1.zip)
 
-clang tested configs:
-powerpc              randconfig-c003-20220402
-mips                 randconfig-c004-20220402
-arm                  randconfig-c002-20220402
-s390                 randconfig-c005-20220402
-riscv                randconfig-c006-20220402
-arm                         mv78xx0_defconfig
-arm                           omap1_defconfig
-powerpc                   microwatt_defconfig
-powerpc                      walnut_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-x86_64                        randconfig-a014
-x86_64                        randconfig-a012
-x86_64                        randconfig-a016
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r045-20220331
-riscv                randconfig-r042-20220331
-s390                 randconfig-r044-20220331
-hexagon              randconfig-r041-20220331
+* ids to be used with the board file
+bus=3Dpci,bmi-chip-id=3D0,bmi-board-id=3D1
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+* md5sum of each new board file to add
+
+$ md5sum *
+1189e99afcae7b57bf5bd369e9ad1386  bus=3Dpci,bmi-chip-id=3D0,bmi-board-id=3D=
+1.bin
+$ sha256sum *
+d6538f04ad351c1f911acee0334245a4b322f709096f2a74ec51684b8080be2a
+bus=3Dpci,bmi-chip-id=3D0,bmi-board-id=3D1.bin
+
+--=20
+With best wishes
+Dmitry
+
+--000000000000c8d8b105dba9ec49
+Content-Type: application/octet-stream; 
+	name="bus=pci,bmi-chip-id=0,bmi-board-id=1.bin"
+Content-Disposition: attachment; 
+	filename="bus=pci,bmi-chip-id=0,bmi-board-id=1.bin"
+Content-Transfer-Encoding: base64
+Content-ID: <f_l1hr50qy0>
+X-Attachment-Id: f_l1hr50qy0
+
+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
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwrHCJrABwiawAeomsAAAA
+AAAkJCQkJCQkJCQiICAkIiAgJCIgIBYW7qyKRqpopBYW7qyKRqpopBYW7qyKRqpopBQUAAAAAAAA
+ABYWzIqIRohohBYWzIqIRohohBYWzIqIRohohBQUiEQEAEQAQDMDKwMjAxMDAwMzAysDIwMTAwMD
+MwMrAyMDEwMDAzMDKwMjAxMDAwMREhUXGhxBQkVHSkwxMjU3OjwAAHB1naJwdZ2icHWdonp/k5hw
+dZ2ien+TmHB1rLhwdaescHWnrHp/naJwdaesen+donB1p6xwdaescHWnrHp/naJwdaesen+dojx8
+PDw8fDw8PHw8PDx8PDw8fDw8PHw8PDx8PDw8fDw8PHw8PDx8PDw8fDw8PHw8PDx8PDw8fDw8PHw8
+PDx8PDw8fDw8PHw8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcI6irHCOoqzl4PTg
+5eD04N3g8N3d4PDdyND02cXQ9NnI0PDQyNDw0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABM
+VF5oeIySmJygpqy5vcPJ/////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAgXthZklAKQkpBnl8WWRBRykTIQj4+JOXAHl6YWdBQykOKQh5e2FlQUcpESEI+PiTlwCB
+fGloQUUpESEIgXtZZEFHKQ8ZAPj4k5cAgXtpZ0FHKRAhBoF9WWRBRykRGQD4+JOXAIF8YWhBSCkT
+IQlxe1llOUAhDhkA+PiTlwB5e1lmQUYpFBkAcX1JXzlEGQsZC/j4k5cAeXxZZEFGKRMZAHF9UWI5
+RBkKGQr4+JOXAHl8WWVBRykTGQBxfUleOUMZCBkA+PiTlwCBgFloQUcpFBkAaX5JZjlHGQ8ZD/j4
+k5cAeXthaEFHKRQZAGl9UWY5RxkPGQ/4+JOXAHF7UWVBSBkKGQVpfVFlOUUZDRkN+PiTlwCBgVlm
+QUYpExkAcX1RYTlCGQoZCvj4k5cAcXxZZDlCGQwZDGl+UWc5SCEdEQD4+JOXAHF8WWM5QRkKGQpx
+flFkOUYZDRkL+PiTlwBxfFlkOUIZChkJcX1RZTlFGQwZDPj4k5cAcXxZZUFGKRQhBnl8WWc5RCEY
+GQD4+JOXAFmDMVYZJQkFAfZpfFFhOS0ZEikD+PiTlwBhgzlbITIJAwkDcXpRXjEtIREZAfj4k5cA
+YYI5XCExCQMJA4GBUV4xLCEQGQD4+JOXAGGCOVwhMgkCCQJxelFeMSwhEBkA+PiTlwBhgjleITQJ
+BQkFgYBReCETMS4R9Pj4k5cAaX9JbSk6GR8RD3l4WWU5OikZGf74+JOXAGl/SWspOREOGR15d1lj
+OTkhDCEM+PiTlwBhfUFmIS0RDhEOeXtZZjErKRsZAPj4k5cAaX9JZyk1GRkRCXl3WWI5NyEKIQr4
++JOXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTlwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk5cAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAJOXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTlwAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAk5cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJOXAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAACTlwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAdzkA
+APcSdzl3OfcSdzl3OXc5AAD3Enc5dzn3Enc5dzkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAHRwkJS4uOjZJPlxHc0+RV7df5mgdFiQdLiY6Lkk2XD5zRpFPt1fmYB0bJCMu
+LDo0STxcRXNNkVW3XeZmHRQkHC4kOixJNVw9c0WRTbdW5l4dHCQjLis6M0k7XERzS5FUt1zmZB0T
+JBsuJDosSTRcPHNEkU23VeZeHRkkIC4qOjJJOlxCc0qRUrda5mMdEyQaLiM6K0kzXDtzQ5FMt1Tm
+XB0YJCAuKDoxSThcQHNIkVC3WeZiHREkGi4iOipJMlw6c0KRS7dU5lwdFyQeLic6Lkk3XD9zR5FP
+t1jmYh0SJBouIjoqSTJcOnNCkUu3U+ZcHRckHi4nOi9JN1w/c0eRT7dX5mEdESQZLiI6KkkyXDpz
+QpFKt1PmXB0WJB4uJjouSTZcPnNGkU63V+ZgHRAkGC4gOihJMVw5c0KRSrdS5lwdFSQdLiY6Lkk2
+XD5zRpFOt1bmXx0QJBguIDooSTBcOXNAkUm3UeZaHRYkHi4nOi5JNlw+c0aRTrdW5l8dESQYLiA6
+KEkxXDlzQZFJt1LmWR0WJB4uJjouSTZcPnNGkU+3V+ZgHRAkGC4gOihJMFw5c0GRSbdS5lodEyQc
+LiU6LUk1XD1zRZFNt1XmXh0QJBcuHjomSS9cN3M/kUi3UOZZHRQkGy4kOixJNFw9c0SRTbdV5l4d
+DSQWLh86J0kwXDhzQJFIt1DmWR0TJBouJDosSTRcPHNEkUy3VeZeHQ4kFi4fOidJL1w3c0CRSLdQ
+5lkdEiQaLiI6KkkzXDxzQ5FMt1TmXB0MJBUuHjomSS5cNnM+kUa3T+ZYHRIkGS4iOitJMlw6c0OR
+S7dU5lsdDSQULh06JkktXDZzPpFGt07mWCAdKSU5MEY4WEBsR4ROpFbFXexlJBstIzoqTDVfPXNE
+j0yqU89a5GAiGyojNSpJNlk+bUWGTKdTx1rpY0ItUTViPIRHo07FVudf5mbna+ltHxknITYsRDRU
+O2ZDgEqeUbtY62EhFS8hOClHMFo4bUCER6ROxlXoXB0XKCMzKj4yTjpgQXhIkVC0V+BgIxgrIDco
+RDBVN2k/gUacTbxV5VtnQX9Im07IWOth6Wrrcut56X7rfiARLBw2JEEsUjNmO31CmEm2UN1XIBQp
+GzMjPytOMms9hUShS8BS6lkkEi0ZNyFEKV80dDyLQ6xK0FHmVycaLyI7KUwxXThyQJpKt1HXV+ld
+PyZNLl81djyfR71O5FXqXuVj6mQiGiwiNylDMVQ4ckOMSqhRy1joXSEUKxs1Iz4qVzVpPYFEn0vA
+UuRYIxkzJEArTjNeOnNBmku3UttY6144I0YqVTJpOY5ErUvPUuVb6WHqYgAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABM
+VGiMoLnJzUxUaIygucnNTFRojKC5yc1MVGiMoLnJzRoYFhYaGBYWGhgWFhoYFhYaGBYWGhgWFhoY
+FhYaGBYWEBCqaEYCZiRgEBCqaEYCZiRgEBCqaEYCZiRgEBCqaEYCZiRgEBCqaEYCZiRgEBCqaEYC
+ZiRgEBCqaEYCZiRgEBCqaEYCZiRgDg6qaEYCZiRgDg6qaEYCZiRgDg6qaEYCZiRgDg6qaEYCZiRg
+Dg6qaEYCZiRgDg6qaEYCZiRgDg6qaEYCZiRgDg6qaEYCZiRgDAyqaEYCZiRgDAyqaEYCZiRgDAyq
+aEYCZiRgDAyqaEYCZiRgDAyqaEYCZiRgDAyqaEYCZiRgDAyqaEYCZiRgDAyqaEYCZiRgBAQEBAQE
+BAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAA
+AAAAAAAAAAAAAAAAAAAAAAAQFhgZGx1ARkhJS00wNjg5Oz0AAAAATFxgjLS4vc1MXGCMtLi9zU5e
+Zo6utr/HUmKSorLD//9MXGCMtLi9zU5eZo6utr/HTFhcaIyQsLRMWFxojJCwtE5WXmaOlqauUmKS
+ov////9MWFxojJCwtE5WXmaOlqauTFxgjLS4vc1MXGCMtLi9zU5eZo6utr/HUmKSorLD//9MXGCM
+tLi9zU5eZo6utr/HfDx8fDw8fDx8PHx8PDx8PHw8PHw8PDw8PDw8PDw8PDx8PHx8PDx8PHw8PHw8
+PDw8fDx8PDx8PDx8PHw8PHw8PDw8PDw8fDw8PDw8PDw8PDx8PHw8PHw8PDw8PDw8fDw8fDx8fDw8
+fDx8PHx8PDx8PHw8PHw8PDw8PDw8PDw8PDx8PHx8PDx8PHw8PHw8PDw8AAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAExcYGiMmJzFTFxgaIyYnMXs4OLg2Orj4Njo5uDY4OTQ2Nzj0Njc5dDY3OXQ2Nzl2N3e7Ojd
+5O7o3eDr6N3k6ejY5Ond2Nzp3djg5t3Y3ObdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAopBEBPwA/ACykEQE/AD8AMKQRAT8APwConiEB3uDw
+AOze8ABAnjEBIBiGDSAY9g0gGCYNIBgmDSAYJg0EmBEBAOB/fRSYEQEKwOABOKQRARABDD8AAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM0AAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+--000000000000c8d8b105dba9ec49
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--000000000000c8d8b105dba9ec49--
+
