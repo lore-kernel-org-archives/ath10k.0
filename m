@@ -4,58 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02641C433F5
-	for <ath10k@archiver.kernel.org>; Mon,  4 Apr 2022 07:15:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68C9BC433EF
+	for <ath10k@archiver.kernel.org>; Mon,  4 Apr 2022 07:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1IhV1NN35kcIKh1X6zaNfqI8W2c3jXUPcEjNXnFxCJo=; b=UJdmKkTKta+S3g
-	ZG2Chwz3udiJHOZsUdl8wM1B/R6zgcWTydPZmmJQXjdJSVL9jAcx5czD8YN7OiKb6mtWwClj69AgS
-	l/tK7rseg6OyJgdFebGQdJCOmd/F4LZY07QEEEFPxpZcIMs7posMGSHYP1nRVHArLgdUx1cENZSjS
-	ALaApjtfRUn+AetVGaeBNW4qmFVCyv4rcz4jsKmo6w4zlnlK7vwlvlDUEXuNjlveSWIfJF1tldZ1s
-	n6LDWpkjkylV4mu13Az90IyJn7b69f6Cslau+g8hTiKzzo3Peu/AKEE9AuLcl9iDwgS7wXh4TwD6J
-	GivonGvPL/ZsHtbvfpAg==;
+	List-Owner; bh=0aFGz+lQXru7y2qkAN1LkcFGFpyJuBB9y8T4Btp81ZY=; b=KD1OwdYkYcqEpz
+	QNshAApClF92VV15lg9BzvOEohy7kChIW92E815UjwvcDD17hovtK1jlIHh7R6ae2NzZSKEquDI3T
+	Qw6G+0U0J2pZe/HvNHgYORb3UMOA8ktpAJqnAqm+oyrEzHcpxwVQyblyeQmzoQiGKvzAcoLhEDXAU
+	yAfaqscRJhdWXPcJEURwV4J/UYh6B4FLfxTUVJi06YOQIUXecp5KSRmavEZ2XvSZp7aQhTGW9OE7y
+	zWelhh3PMZVdFEf22cLQReWUd4uysnZ86l/lMSS2Hdecw5B6PpKukej2fj+Y6p8ihy71JS+I2wDYC
+	vOoqu54PdGksUGBjAdtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nbGvs-00DZVD-MG; Mon, 04 Apr 2022 07:15:24 +0000
+	id 1nbGxe-00Da0D-W4; Mon, 04 Apr 2022 07:17:15 +0000
 Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbGvq-00DZUC-2G
- for ath10k@lists.infradead.org; Mon, 04 Apr 2022 07:15:23 +0000
+ id 1nbGxb-00DZxa-AX
+ for ath10k@lists.infradead.org; Mon, 04 Apr 2022 07:17:13 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 54A2EB80E77;
- Mon,  4 Apr 2022 07:15:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A3A9C2BBE4;
- Mon,  4 Apr 2022 07:15:18 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 01D62B80E77;
+ Mon,  4 Apr 2022 07:17:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B71AC2BBE4;
+ Mon,  4 Apr 2022 07:17:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649056519;
- bh=33JNaffd8otlV35YViy6jbj0lroij12UsvFEKWkDUX0=;
+ s=k20201202; t=1649056628;
+ bh=rSAJqJnEzLOmUA/q6lIY42NLKwgRv9JO6Lvbj00hQGU=;
  h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=sW9LQZuy5V2Si3gEkIjeOIOiAQBRX6aglO6grAFRG9O9pw26ieOEBWrtM/X2XyeUA
- eTrLOm6sfxpud/rFZx77fief7nxdJfWg0TaSuol3rGNGNh7axFCk+uyvlqw6Sh5Xmt
- 4QmBhgWbaF12XqC8LOdIE8xuMEphoME2LZuTP3HNYcZtTdCV8efS0HuBZh1u5j4Pn1
- RejfZws/kQPA5ByQGubSq4MBHsR854bYJmaAxGH2nBkhrVGsFugQOpcWuO8aTgowEM
- hLfMvBSnmCWsNszYkZ0hiWfrfvNeJ0eG9LoNbba7keXTZdo71DQWcQ8ecyTB2TMGPj
- EigQjLnCGK36Q==
+ b=LD+qLjSRC2bSBXSkPbDsg38XnxDSBf3zqiiKnNKSRx0Xcx1OEYNvhGDry6gwWCg6k
+ sao4GqLFXPpYiMpyeU9oZy2g5C4C13ZVtW/NEbjhGmTSgboPGuSy+IMICxF+zmfbzV
+ pzFSa5sXeSApwpVLBTIKI4aFCV4fyZe9q7W2oUWfkvLXd/4jPH3h/7v9h48xHN+tnl
+ VlQ+TtmWeiPGaafdZNHDETiQIn2Ru0mmee4ylXjHuz/oo9tf0mGX8qhjJ4Vs+BKAQT
+ 07a1zVE3HXOU5ycsGFXvR2XICg2cCnRsxwyojwmV27h1FAsF3zCygjF3lw6hhkF3+H
+ jI0fsxvRlyCuQ==
 From: Kalle Valo <kvalo@kernel.org>
-To: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Cc: ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org
-Subject: Re: [PATCH RFC 0/3] ath10k: add encapsulation offloading support
-References: <20220402153615.9593-1-ryazanov.s.a@gmail.com>
-Date: Mon, 04 Apr 2022 10:15:15 +0300
-In-Reply-To: <20220402153615.9593-1-ryazanov.s.a@gmail.com> (Sergey Ryazanov's
- message of "Sat, 2 Apr 2022 18:36:12 +0300")
-Message-ID: <87v8vps4jg.fsf@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-arm-msm@vger.kernel.org,
+ ath10k@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845-db845c: add wifi variant property
+References: <20220403105711.1173161-1-dmitry.baryshkov@linaro.org>
+Date: Mon, 04 Apr 2022 10:17:05 +0300
+In-Reply-To: <20220403105711.1173161-1-dmitry.baryshkov@linaro.org> (Dmitry
+ Baryshkov's message of "Sun, 3 Apr 2022 13:57:11 +0300")
+Message-ID: <87r16ds4ge.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220404_001522_316601_6CE5BF8B 
-X-CRM114-Status: GOOD (  20.58  )
+X-CRM114-CacheID: sfid-20220404_001711_587919_E668C42D 
+X-CRM114-Status: GOOD (  19.58  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,39 +74,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Sergey Ryazanov <ryazanov.s.a@gmail.com> writes:
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 
-> Hello,
+> Dragonboard845c doesn't have board-specific board-id programmed, it uses
+> generic 0xff. Thus add the property with the 'variant' of the
+> calibration data.
 >
-> this series introduces driver support for hardware encapsulation
-> offloading feature.
+> Note: the driver will check for the calibration data for the following
+> IDs, so older board-2.bin files that were distributed as a part of
+> Linaro releases will continue to work.
 >
-> The main goal of the series is an overall improvement of system
-> performance. On a QCA9563+QCA9888-based access point in bridged mode,
-> encapsulation offloading increases TCP 16-streams DL throughput from
-> 365 to 396 mbps (+8%) and UDP DL throughput from 436 to 483 mbps (+11%).
+> - 'bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C'
+> - 'bus=snoc,qmi-board-id=ff,qmi-chip-id=30214'
+> - 'bus=snoc,qmi-board-id=ff'
 >
-> The series consist of three patches, the first two prepare the code, and
-> the last one introduces the offloading support itself. The first patch
-> reworks transmission status reporting to make it flexible enough to
-> support 802.11 and Ethernet encapsulated frames reporting. The second
-> patch reworks the module parameter that configures the main
-> encapsulation format of frames that are passed from the driver to the
-> hardware. It makes it possible to configure more encapsulation methods
-> than just raw or not-raw. And, as stated before, the third patch
-> actually introduces offloading support. It changes a couple of frame
-> analysis places along the xmit path and starts reporting offloading
-> support to mac80211 via the corresponding hw attribute.
+> For the reference, the board is identified by the driver in the
+> following way:
 >
-> The new feature has been extensively tested with QCA9888 and works well,
-> but it may introduces some regression for other untested chips. So the
-> series is just an RFC for now.
+> ath10k_snoc 18800000.wifi: qmi chip_id 0x30214 chip_family 0x4001 board_id 0xff soc_id 0x40030001
+> ath10k_snoc 18800000.wifi: qmi fw_version 0x2009856b fw_build_timestamp 2018-07-19 12:28 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
+>
+> Fixes: 3f72e2d3e682 ("arm64: dts: qcom: Add Dragonboard 845c")
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> index 13f80a0b6faa..f49de3913dd5 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> @@ -1047,6 +1047,7 @@ &wifi {
+>  	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+>  
+>  	qcom,snoc-host-cap-8bit-quirk;
+> +	qcom,ath10k-calibration-variant = "Thundercomm_DB845C";
 
-This looks very good to me. But the testing part concerns me as well, it
-would be good to have some quick testing at least with QCA6174/QCA9377
-PCI devices to make sure we don't break those. Preferably also
-QCA6174/QCA9377 SDIO devices should be tested, they work somewhat
-differently. Can anyone help?
+I don't think I have documented it anywhere, but to keep things simple I
+would prefer to have the variant all lower case.
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
