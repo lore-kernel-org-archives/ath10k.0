@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0A88C433EF
-	for <ath10k@archiver.kernel.org>; Wed,  6 Apr 2022 21:15:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B73BC433EF
+	for <ath10k@archiver.kernel.org>; Wed,  6 Apr 2022 21:15:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jV0vRn8jFrbhF2gAV2sUUyiSLM/MbKYSVcZT388rJ1w=; b=Lacrt+pvoFMBxS
-	JVakmuN9+Ox29WHfsbSchLWAExns3PLYxNiqmFF8YNN+NQvrVzpo6SWF0BPDRWxe1jHbv3HN5b8O0
-	2cZEkeSXkU9vhfdNDY3p41eK7ZAjQsm3K4uvZx4uP0ZKokPBB8pvUojQUkJDOybZ8eywYnV3qMMp6
-	QsM3uDQh9r4nHV9w/BAzzrKKlJa3bIJ4FXNIvkjbjK9smH25FVELCzSj6klwKQz+dgO3ejrY5dGKF
-	tMjET7thve3QaVpayKixQQ7/1EFq/buxSdoAViLEv+kRV95ahg6fRWohlAxVMhcKzxoFuycrqOHwp
-	Nvz3j2ekeSCqPw7Z4XMA==;
+	List-Owner; bh=YwOIPEJuI16dTFYVZRQP2BS93GI7cj+gLHqHKTj2la0=; b=QB3Cwh3gzy8USp
+	zEfFO9Y014EM0HEDiqvTNKWkPqmr5VPxl4s6Th/Z4je9kuSQQVKxGZoNe+5t6EW+6s8dsGyqYcBTA
+	Y3wEyjxrj5tuGnrjwXb+aSbPkB/dmv6TU5ZZRwFddrXB9v5cImI1m5XJ660qtWKZ/fcTeMpbcJoNh
+	dJpoU344APnd2UkRi4HjxYhpGVopvSEghkutD5zjpNXa0y8XwNlaGB7owGemUg3tWtBM8nZ+8BrQ1
+	EqOCEIQ3ud2ZfkzQmfC2SVQhsF8m2wpP9nojuW9g9tKcp8YHSYpI4u581Ufjxyx14ZMfU7lyt2c3J
+	8LlyVBWk3pu5CyTr1w0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncCzN-007yOg-0l; Wed, 06 Apr 2022 21:14:53 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1ncD0K-007ybL-2Z; Wed, 06 Apr 2022 21:15:52 +0000
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncCzJ-007yMp-VS
- for ath10k@lists.infradead.org; Wed, 06 Apr 2022 21:14:51 +0000
+ id 1ncD0H-007yZa-Ac
+ for ath10k@lists.infradead.org; Wed, 06 Apr 2022 21:15:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649279689; x=1680815689;
+ t=1649279749; x=1680815749;
  h=date:from:to:cc:subject:message-id:mime-version:
  content-transfer-encoding;
- bh=IYecyYzAKsn8chtklsrFOc4K4Fvmtlv4weHr9skhais=;
- b=U6UoMfiLXS3r489vM77z4yu2TLVjnbbi0pnBDxFsm0g8fUUZmPu8RH7y
- /FiVxOTRdB14eBAbdqLA5z27G9IdZ38YK8wAvt/Ibur+eZCC7t5VjoJaj
- UCGi7oMtnAsFaVM1KtWkxCfJhL865VxjGQsiGNWyE/OOaYunW9FMSEK3a
- O2PrnpjjagfnMOHdv6Wt+pxFQdv+sCXcdV+izkELY5ifvucJ3aW1MpV35
- fbiBXgrx9gDO4DFygwQGt72DnudaWCNc5kcbwD0xmts75Y0A5Jd7keUZg
- s+8KNjEQvK9GEB+K6SfU2CeStqU3kQikYHCFinLBxX1+BnvWM7qwJ6bkF g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10309"; a="241745258"
-X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="241745258"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Apr 2022 14:14:46 -0700
+ bh=+V9iqr4nAaINV0yrnCCvInWN/wE0OCwPhr1/4jdcV7M=;
+ b=arfDEpUUiKWUfaucO+VPGOKnUVs0rj3k2lQiVtZLmqCXcf9Xea9nP0gv
+ YxbtxMtJSGOcb6jGamL70WA7pNIz5eiE9s1D100xuOwDCu1v6Hx3ZxHdx
+ bS3MxhMoe9A7hiFFVJRkcbkzb9vc3hr9dzwsMFeHOIsRwViBvYY6Bzohv
+ ewMZtCA8Duw1aQSS3Toc4G9qNBiizHVOkK7qkbgq1tRsqAC5ZH9ZQLIDg
+ TySEAQIy6BJwhLnk7ba9lzmZfQI8XTPkz9F9YWStV+wE14qNT9E8Q2kzk
+ Xb0uo8viTUofdeXb1sZs/ToChhA1aHPOCNWrANT6eD094xyJ2y/zIsY0M Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10309"; a="258746170"
+X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="258746170"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Apr 2022 14:15:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="588531516"
+X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="642214542"
 Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
- by orsmga001.jf.intel.com with ESMTP; 06 Apr 2022 14:14:44 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 06 Apr 2022 14:15:44 -0700
 Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1ncCzD-0004l1-VB;
- Wed, 06 Apr 2022 21:14:43 +0000
-Date: Thu, 07 Apr 2022 05:14:35 +0800
+ (envelope-from <lkp@intel.com>) id 1ncD0C-0004lD-0M;
+ Wed, 06 Apr 2022 21:15:44 +0000
+Date: Thu, 07 Apr 2022 05:14:55 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- b9e34ba6b314780a47ac40f450ec04f18be85b5e
-Message-ID: <624e02bb.2Bx0bHAjsvbi4LVT%lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 607c3dc2750382befa0f3f20063943bd058a2bc1
+Message-ID: <624e02cf.7YqGTW0dv5gHKTUg%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220406_141450_078005_819DACF4 
-X-CRM114-Status: UNSURE (   5.58  )
+X-CRM114-CacheID: sfid-20220406_141549_424003_3CFBCFF4 
+X-CRM114-Status: UNSURE (   6.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,13 +78,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: b9e34ba6b314780a47ac40f450ec04f18be85b5e  ath11k: mhi: remove unnecessary goto from ath11k_mhi_start()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 607c3dc2750382befa0f3f20063943bd058a2bc1  Add localversion-wireless-testing-ath
 
-elapsed time: 746m
+elapsed time: 744m
 
-configs tested: 109
-configs skipped: 4
+configs tested: 104
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -95,11 +95,6 @@ arm64                            allyesconfig
 arm                              allmodconfig
 arm                                 defconfig
 arm                              allyesconfig
-arc                        nsim_700_defconfig
-powerpc                        warp_defconfig
-mips                           ci20_defconfig
-arm                             rpc_defconfig
-powerpc                 linkstation_defconfig
 m68k                         apollo_defconfig
 mips                      loongson3_defconfig
 xtensa                           alldefconfig
@@ -118,7 +113,7 @@ sh                        sh7757lcr_defconfig
 arm                          badge4_defconfig
 arm                         s3c6400_defconfig
 sh                          landisk_defconfig
-ia64                         bigsur_defconfig
+arm                             rpc_defconfig
 x86_64                        randconfig-c001
 i386                          randconfig-c001
 arm                  randconfig-c002-20220406
@@ -151,14 +146,14 @@ i386                   debian-10.3-kselftests
 i386                              debian-10.3
 mips                             allyesconfig
 mips                             allmodconfig
+powerpc                          allyesconfig
 powerpc                           allnoconfig
 powerpc                          allmodconfig
-powerpc                          allyesconfig
 x86_64                        randconfig-a006
 x86_64                        randconfig-a004
 x86_64                        randconfig-a002
-x86_64                        randconfig-a011
 x86_64                        randconfig-a013
+x86_64                        randconfig-a011
 x86_64                        randconfig-a015
 i386                          randconfig-a012
 i386                          randconfig-a014
