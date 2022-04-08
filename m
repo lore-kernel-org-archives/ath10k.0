@@ -4,71 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 956AAC433EF
-	for <ath10k@archiver.kernel.org>; Fri,  8 Apr 2022 08:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 191FDC433EF
+	for <ath10k@archiver.kernel.org>; Fri,  8 Apr 2022 09:07:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PMkEWZWI76Ejs3tSymESi34vRThQgZaFNIjiW21Y6dU=; b=mud4msRiyT9TcC
-	QYolH9WpdtaISHpGYxbPxxmP2C8mWJPkAZiLIFfFhl7Fh/SWKohej+gRZQX2D0otKnUJTj6Eye07+
-	tuyox2IMd/9dXZq/fhI7CRhxnx72+oql0gQjRSf3FZe+DXxepanw3aKCr8RiZVX2EZgRmCkjIgGdk
-	pQKCXVX5RNKAjtQQZMtx4eoq+e80k5AXYFTGWsMpHaNsTej9FxtG//lhIL881uKu5ERkOfB8SDGbu
-	0JStwB9L72YnTOBFSKBoubEz/FB0ePvzPed9N0mF/hyf3Uby4GHpvATCUjmk83eTEXxtQZOhB/R/t
-	S4UnfjiyT47ZwZB9XZNA==;
+	List-Owner; bh=h/SW9+LcXnto4oucSG+k3fkHJDoz+rZOCihcKuwC9nE=; b=0Vzs7oNV5u2c5B
+	/bvLrRomZ4v7zSauf6fA9MLYxrDEZKcpBQpxFdUc33vSk/31wfS0Oz6I/JMgsJEDUdY0Ut/qjV9DL
+	V6hcEEo45cbck50AfSlbAYN1kXD0hCLCRqGpG1iAG7j5VEICucNEoglNWgUn8BWXHyrxz7wuC67Md
+	u2azdRJQ7CyqdAq6y7KBqpwu5D8p/Gqk2fixEa9oAXXnWza89NRlQiYMPMeTkQ66aCdLV1vopPly/
+	9Gju5xMlQ7PQmF1LvAD9gXQE4jAIUfXI3IXscGQ5dOjCDI8Oz0DmmGbEWpOO0NS9+RjLCz7Tv5Djk
+	yMbzVbY7QqGqFceHfvOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncjm8-00FmuI-6I; Fri, 08 Apr 2022 08:15:24 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1nckZs-00G3CR-NU; Fri, 08 Apr 2022 09:06:48 +0000
+Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncjlP-00FmaM-4Q
- for ath10k@lists.infradead.org; Fri, 08 Apr 2022 08:14:41 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 96953615AC;
- Fri,  8 Apr 2022 08:14:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31BDFC385A1;
- Fri,  8 Apr 2022 08:14:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649405678;
- bh=DXntX2Jz7Nztnd1dMcRMCaGMy0UPIH0WJlp5HA4774s=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=Qu+tD/xH27JIeXTaUKCquAn5fQayD4kxRqf9nIEs5/Z/nJRRkNrYMgZhuJZXKt8Al
- NkLhsVjHZOQo7GV7TnXxgY/OhKOkJU3Osmzr9x7wxOTEUJqNBpdfoz4FPDWMUGX/64
- u5jSI6cp8wrTBzl12n2nao2HO36tXUvV7ocDKe08fD9PBw+bB24wUGrlfy8Po3axfC
- 48EribHBfxK/csfTD4gSi23AoDNCMmpAeki/n+TADylKpJEf3htCMIfhNEuUqVJq8e
- vepktCqnHgHTjfdLOMttvcbqtGvHV3pvfSY79LhuYzJ1SgqriOd3dpsluPlBAmvsnT
- YOSlmsHLEDPGA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Ulf Hansson <ulf.hansson@linaro.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Arend van Spriel <aspriel@gmail.com>, Franky Lin <franky.lin@broadcom.com>,
- Hante Meuleman <hante.meuleman@broadcom.com>,
- Amitkumar Karwar <amitkarwar@gmail.com>,
- Ganapathi Bhat <ganapathi017@gmail.com>,
- Sharvari Harisangam <sharvari.harisangam@nxp.com>,
- Xinming Hu <huxinming820@gmail.com>, linux-kernel@vger.kernel.org,
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
- SHA-cyfmac-dev-list@infineon.com
-Subject: Re: [PATCH 1/3] mmc: core: improve API to make clear mmc_hw_reset is
- for cards
-References: <20220408080045.6497-1-wsa+renesas@sang-engineering.com>
- <20220408080045.6497-2-wsa+renesas@sang-engineering.com>
-Date: Fri, 08 Apr 2022 11:14:31 +0300
-In-Reply-To: <20220408080045.6497-2-wsa+renesas@sang-engineering.com> (Wolfram
- Sang's message of "Fri, 8 Apr 2022 10:00:42 +0200")
-Message-ID: <87bkxcouu0.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ id 1nckZh-00G353-Gj
+ for ath10k@lists.infradead.org; Fri, 08 Apr 2022 09:06:40 +0000
+Received: by mail-lf1-x12c.google.com with SMTP id bq30so1186842lfb.3
+ for <ath10k@lists.infradead.org>; Fri, 08 Apr 2022 02:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=ZTgTrO8kYm9f4pu/QJrfNd/0CjpbX6Q1P+5MHmfotqk=;
+ b=i2envguo4E6b4pLxv4XJXo+T/VB92G0yxDyRf6C4Zynw809rRjG4TPgiKQW4iUdAv3
+ 0tw/FwIqX9NFRcxNywh1A2CkXqBeDO3z4zaJ1HWc81YOpnbcYUz2HphICFC28YyT8dRd
+ rnL5rspaX1Anjxgpb5DF1oPVz0MJGGmd0zEMMkm7FLJmnWzCBJfKcnhRsqBP3rZAGVnH
+ UJIRsQeHZCYIOFRUoxrDZxh0DeotCHIgMIdzstU0UQd+Nxv5L1bQcdKzr7r++SlNCXpe
+ QgXC9KKAMxXCuoM3kGDuy6rRVjV0ECnVx9rKx3YmL5/KKn+bFgar4zwneztVZ0fKeyNS
+ qQJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ZTgTrO8kYm9f4pu/QJrfNd/0CjpbX6Q1P+5MHmfotqk=;
+ b=ImI7Ih2r40i4eAaYeAjdeNBrqfeLjXfIrRw9cOQDMMnhlml4beJ3OZF6tgfaP7Ckl4
+ v/syV/Vl72y2Ifkym7LNlRBT4Z6GcLCWNMKGqzDB/4IVXjjh/FmKedsRxhLoEhMbmSBG
+ oT+P27H73ODKvopT0FYqajHye1BCpRYpjEDGPfFFUehmmtEtw0/7BjOq4x/5UqFXNQO/
+ 54juMpg+D/jt2Dq9IcO8j0oiJ2+4DcnekzVTc//Wwf3r3JPlLMoH4UJJwDSw3dmpPmpB
+ 2hOknFNSWFHyVo4X640d5D8DQb5Ued8EWwHlJvWEZwUsJsLkM2ghQmvgfCkcLNCfYdQB
+ y2/g==
+X-Gm-Message-State: AOAM531Z/Ts+2D3/3wq8pNsvDA92KirBAfzN0RIoZieJMLr3xmTve6l6
+ pscTTGxoISQqCoCE0kL+n19g5205H97Aq3o0x9W+uw==
+X-Google-Smtp-Source: ABdhPJxJkWFAtOiYY7lH9mD1xE8veW54kPfgnqaEUsfjr6zNHODKBpmFl1OMxUDn+3CZnMq6R8G5Xp9HAI1SN+XENZ8=
+X-Received: by 2002:a05:6512:2627:b0:44a:f55c:ded9 with SMTP id
+ bt39-20020a056512262700b0044af55cded9mr12460116lfb.373.1649408791888; Fri, 08
+ Apr 2022 02:06:31 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220408080045.6497-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20220408080045.6497-1-wsa+renesas@sang-engineering.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Fri, 8 Apr 2022 11:05:55 +0200
+Message-ID: <CAPDyKFpaMy7ATDm6PCnYBxS_6-TZ-TF+gfHbp_o0nTo-6RaGdQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mmc: improve API to make clear {h|s}w_reset is for
+ cards
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+ ath10k@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, 
+ brcm80211-dev-list.pdl@broadcom.com, linux-amlogic@lists.infradead.org, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org, 
+ linux-sunxi@lists.linux.dev, linux-wireless@vger.kernel.org, 
+ netdev@vger.kernel.org, SHA-cyfmac-dev-list@infineon.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220408_011439_274985_DD342E69 
-X-CRM114-Status: GOOD (  14.67  )
+X-CRM114-CacheID: sfid-20220408_020637_590836_AF2FB257 
+X-CRM114-Status: GOOD (  16.18  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,41 +88,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Wolfram Sang <wsa+renesas@sang-engineering.com> writes:
-
-> To make it unambiguous that mmc_hw_reset() is for cards and not for
-> controllers, we make the function argument mmc_card instead of mmc_host.
-> Also, all users are converted.
+On Fri, 8 Apr 2022 at 10:01, Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
 >
-> Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
+> As discussed in 2020 [1], Ulf and I agreed that it would be easier to
+> understand the {h|s}w_reset mechanisms if it was clear that they are for
+> cards. This series implements that by changing the parameter to mmc_card
+> where apropriate. Also, the callback into host drivers has been renamed
+> to 'card_hw_reset' to make it obvious what exactly the driver is
+> expected to reset.
 >
-> Ulf prefers one cross-subsystem patch to have all users converted. So,
-> we are looking for ACKs from the maintainers of the wireless drivers.
-> Thank you!
+> I tested it with my Renesas boards, so far no regressions. Buildbots are
+> currently checking the series.
 >
-> Changes since RFC:
-> * don't rename the function but only change the argument type
-> * remove fallback and convert all users in one go
-> * remove comment as suggested by Ulf
+> This series is based on mmc/next as of yesterday. A branch is here:
 >
->  drivers/mmc/core/block.c                                | 2 +-
->  drivers/mmc/core/core.c                                 | 5 +++--
->  drivers/mmc/core/mmc_test.c                             | 3 +--
->  drivers/net/wireless/ath/ath10k/sdio.c                  | 2 +-
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 2 +-
->  drivers/net/wireless/marvell/mwifiex/sdio.c             | 2 +-
->  drivers/net/wireless/ti/wlcore/sdio.c                   | 2 +-
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/mmc/reset-api-v2
+>
+> Looking forward to comments. Happy hacking,
+>
+>    Wolfram
+>
+> [1] https://lore.kernel.org/all/20200916090121.2350-1-wsa+renesas@sang-engineering.com/
+>
+> Wolfram Sang (3):
+>   mmc: core: improve API to make clear mmc_hw_reset is for cards
+>   mmc: core: improve API to make clear that mmc_sw_reset is for cards
+>   mmc: improve API to make clear hw_reset callback is for cards
+>
+>  drivers/mmc/core/block.c                             |  2 +-
+>  drivers/mmc/core/core.c                              | 12 +++++++-----
+>  drivers/mmc/core/mmc.c                               |  4 ++--
+>  drivers/mmc/core/mmc_test.c                          |  3 +--
+>  drivers/mmc/host/bcm2835.c                           |  2 +-
+>  drivers/mmc/host/dw_mmc.c                            |  2 +-
+>  drivers/mmc/host/meson-mx-sdhc-mmc.c                 |  2 +-
+>  drivers/mmc/host/mtk-sd.c                            |  2 +-
+>  drivers/mmc/host/sdhci.c                             |  2 +-
+>  drivers/mmc/host/sunxi-mmc.c                         |  2 +-
+>  drivers/mmc/host/uniphier-sd.c                       |  2 +-
+>  drivers/net/wireless/ath/ath10k/sdio.c               |  2 +-
+>  .../net/wireless/broadcom/brcm80211/brcmfmac/sdio.c  |  2 +-
+>  drivers/net/wireless/marvell/mwifiex/sdio.c          |  2 +-
+>  drivers/net/wireless/ti/wlcore/sdio.c                |  2 +-
+>  include/linux/mmc/core.h                             |  4 ++--
+>  include/linux/mmc/host.h                             |  2 +-
+>  17 files changed, 25 insertions(+), 24 deletions(-)
+>
 
-For wireless:
+Patch 1 applied for fixes and the two others for next, thanks!
 
-Acked-by: Kalle Valo <kvalo@kernel.org>
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Kind regards
+Uffe
 
 _______________________________________________
 ath10k mailing list
