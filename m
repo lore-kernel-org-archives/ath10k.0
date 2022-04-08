@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BCD4C433F5
-	for <ath10k@archiver.kernel.org>; Thu,  7 Apr 2022 10:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4480C43217
+	for <ath10k@archiver.kernel.org>; Fri,  8 Apr 2022 07:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5EIllAe5REYMUD7PNxxWPm/kRt8lCXVELIb/YKbC3LE=; b=uwTU1Pr8rKp3T0
-	2JBlyg8Yt7czXJCZBYBbQRKYeVbmN8apKDCpa/pAsHrKargtxHAVo0VRm4lyNEvPiIv6kGSTm13FI
-	GjWdiguAjf1WzNH7aMDIQAGqUVaC3uzF2F82uGt5xa4D4wSy4lR78EVlRsWPBMpVtDldS+H3QZeIS
-	Ii59s9myOWiXZFZwievb3vbcOsfNYsMa8YEfBPsc2tUEDK2+DXJ4tGMTk6BtsN0uWDwj9NjsWNnPO
-	4zvCYG1HRhlC7BygEtJKJidgBglK2XoA1NiptK1Oqu/WRiK3MG/dw5/7mKqfS+iZ7v8RRURlkzU6J
-	FtEIexv2haowRDPM86rA==;
+	List-Owner; bh=DMhoHGwX+ILVV6w241FCJSNGnlzrvTJGlvknvHm2Tb8=; b=1BmCoYpHEw74+7
+	f1DwLCCKCKg/G7Z3lp6azGXYNgDq5pQ/rHuwJmjx3ZbyB/ItEDU4OuO9RxN11qq6xOxhmpluoxLv3
+	c0DSPRwPFgCVgQRTd87/KgkckRsVtHyvxooc6vhL4vl++Jf1yEKNKpB89Z4cggWPrSRYLDyd0N9S3
+	/tT21VFync1ARzpy5Jy+CxheEXctZJwyFrMql18UWun2x//75sp6ZWmOn77j+EdS3HvVT/6m1hwjV
+	psebwOhnR4e+BQe537rN+56wfUx4WlTDUW9/vbkkpSZr47/UQjQwlCgUNcYoBd3Wiozikn2cUTamp
+	RDYPLg2bBAf0KHvsSmkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncPqy-00BQE9-IL; Thu, 07 Apr 2022 10:59:04 +0000
-Received: from mga06.intel.com ([134.134.136.31])
+	id 1nciyv-00FWIG-Rk; Fri, 08 Apr 2022 07:24:34 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncPqe-00BQ39-Ea
- for ath10k@lists.infradead.org; Thu, 07 Apr 2022 10:58:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649329124; x=1680865124;
- h=date:from:to:cc:subject:message-id:mime-version:
+ id 1nciyZ-00FW6E-Lx
+ for ath10k@lists.infradead.org; Fri, 08 Apr 2022 07:24:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1649402652; x=1680938652;
+ h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=qcF1SGNAjrjhXGU+Fky5n3IY8uzKppgu3u778RwLa3g=;
- b=HB8ohUUjwvz+waQNX9sT/7g/wPjmpOjZx41LeHznY+cO6Q4PD8yx39JK
- CTGqTWDTnWpZDB6qdGUNBmS5X4BnR+7NhZytzh1VVo/9J3EbcHhlrEb92
- lr+3k8kZ0JGGzglTrdDhWWcrvak1juqlj8nl8+wJuAZX399BJ3IqFFP/p
- x3z/EQbzWctB58yqs040xrF9fGHi5qu4xfCSU2mC42HmbxOD4oyc0LTst
- AlBDyqdncLUSPEYuCUCdyx+MYVqTxXfwCg0MEQsCBSzTvQvU4IPO80B+x
- JEerMNEN4ZcaQg7FsVVndd4e2Ku7+OTvutX/NCdpTrjJEGT5YhHhYP/ov w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10309"; a="321983243"
-X-IronPort-AV: E=Sophos;i="5.90,241,1643702400"; d="scan'208";a="321983243"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Apr 2022 03:58:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,241,1643702400"; d="scan'208";a="524875833"
-Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
- by orsmga006.jf.intel.com with ESMTP; 07 Apr 2022 03:58:40 -0700
-Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1ncPqZ-0005LT-Sj;
- Thu, 07 Apr 2022 10:58:39 +0000
-Date: Thu, 07 Apr 2022 18:57:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 7641c9a2dca608dd65bdad0e622925a1c41e230c
-Message-ID: <624ec3a4.ttqx4g5V2dv0gFUB%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ bh=gB5rO4nUPpxFT1Coi/Nf2UIpddJcXEObd+JdDHZoykA=;
+ b=WTAZLQEHJfn/GxzmoBAbdNGZKBUaiHlczHErg1mkevwvybxyV/UNIow/
+ 1HFIcbXdJNl0skpjoV5PIR0cpaJe8C7//88SBaIWT5AIi5cpyTzdTxF02
+ sm6kW1zFtx3lg/webHcTIBRY78qtNnaMKbl+WIJWubu4CFSYP0ZnJ55nQ 4=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+ by alexa-out.qualcomm.com with ESMTP; 08 Apr 2022 00:24:09 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Apr 2022 00:24:08 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Fri, 8 Apr 2022 00:24:06 -0700
+Received: from wgong-HP3-Z230-SFF-Workstation.qca.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Fri, 8 Apr 2022 00:24:05 -0700
+From: Wen Gong <quic_wgong@quicinc.com>
+To: <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>, <quic_wgong@quicinc.com>
+Subject: [PATCH v2] ath10k: reset pointer after memory free to avoid kernel
+ crash by multi-free
+Date: Fri, 8 Apr 2022 03:23:50 -0400
+Message-ID: <20220408072350.27947-1-quic_wgong@quicinc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220407_035844_617131_44D7CA7C 
-X-CRM114-Status: UNSURE (   4.20  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220408_002411_782641_23ADF985 
+X-CRM114-Status: GOOD (  10.74  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,123 +79,106 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 7641c9a2dca608dd65bdad0e622925a1c41e230c  Merge branch 'pending' into master-pending
+When WMI command timed out happened in ath10k_wmi_cmd_send(), recovery
+started, then ath10k_core_restart()->ath10k_halt()->ath10k_core_stop()->
+ath10k_htt_rx_free() called for the 1st time, then ath10k_core_restart()->
+ieee80211_restart_hw()->queue_work() called, then ieee80211_restart_work()
+is queued in worker at the moment. Then suspend operation arrived and
+wiphy_suspend called and it acquired rtnl_lock, and then called into
+ath10k_stop()->ath10k_halt()->ath10k_core_stop()->ath10k_htt_rx_free(),
+meanwhile ieee80211_restart_work() is waiting the rtnl_lock, so
+ath10k_htt_rx_alloc() can not be called by ieee80211_restart_work()->
+ieee80211_reconfig()->drv_start()->ath10k_start()->ath10k_core_start(),
+then the memory freed for the 2nd time in ath10k_htt_rx_free() at this
+moment, and kernel crash happened as below call stack.
 
-elapsed time: 959m
+Rest pointer to NULL for free memory to avoid multi-free.
 
-configs tested: 99
-configs skipped: 3
+[  428.469167] ------------[ cut here ]------------
+[  428.469180] kernel BUG at mm/slub.c:4150!
+[  428.469193] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+[  428.469203] CPU: 1 PID: 147 Comm: kworker/u4:4 Tainted: G        W         5.10.91-14222-ga1c4b1c83299 #1 620a72c7194de0370fd0a984a6f7032a6ed43d6c
+[  428.469208] Hardware name: HP Grunt/Grunt, BIOS Google_Grunt.11031.169.0 06/24/2021
+[  428.469219] Workqueue: events_unbound async_run_entry_fn
+[  428.469230] RIP: 0010:kfree+0x319/0x31b
+[  428.469235] Code: f9 fb ff 48 89 df 44 89 f6 48 83 c4 20 5b 41 5c 41 5d 41 5e 41 5f 5d e9 96 01 ff ff e8 6d 43 d5 ff e9 59 fd ff ff 0f 0b 0f 0b <0f> 0b 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 41 54 53 48 83 e4 f0
+[  428.469241] RSP: 0018:ffffa1fac015fc30 EFLAGS: 00010246
+[  428.469247] RAX: ffffedb10419d108 RBX: ffff8c05262b0000 RCX: ffffedb10498ac00
+[  428.469252] RDX: ffff8c04a8c07000 RSI: 0000000000000000 RDI: ffff8c05262b0000
+[  428.469256] RBP: ffffa1fac015fc78 R08: 0000000000000000 R09: ffffffffc04eed71
+[  428.469260] R10: ffffedb10498ac00 R11: 0000000000000000 R12: ffff8c0508600f80
+[  428.469265] R13: ffff8c0508603ca8 R14: 0000000000000000 R15: ffff8c0508602380
+[  428.469271] FS:  0000000000000000(0000) GS:ffff8c052ad00000(0000) knlGS:0000000000000000
+[  428.469276] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  428.469280] CR2: 00005c940ab31a48 CR3: 000000011c764000 CR4: 00000000001506e0
+[  428.469285] Call Trace:
+[  428.469295]  ? dma_free_attrs+0x5f/0x7d
+[  428.469320]  ath10k_core_stop+0x5b/0x6f [ath10k_core 806151abc028dad4ca5e05ccf91f5120f8babc6b]
+[  428.469336]  ath10k_halt+0x126/0x177 [ath10k_core 806151abc028dad4ca5e05ccf91f5120f8babc6b]
+[  428.469352]  ath10k_stop+0x41/0x7e [ath10k_core 806151abc028dad4ca5e05ccf91f5120f8babc6b]
+[  428.469387]  drv_stop+0x88/0x10e [mac80211 c248faf7eea878afb2c5aad3740bc0315b08197b]
+[  428.469410]  __ieee80211_suspend+0x297/0x411 [mac80211 c248faf7eea878afb2c5aad3740bc0315b08197b]
+[  428.469441]  rdev_suspend+0x6e/0xd0 [cfg80211 b5e6ab05f100fefb9c12e1210da0d62f6254b594]
+[  428.469462]  wiphy_suspend+0xb1/0x105 [cfg80211 b5e6ab05f100fefb9c12e1210da0d62f6254b594]
+[  428.469483]  ? name_show+0x2d/0x2d [cfg80211 b5e6ab05f100fefb9c12e1210da0d62f6254b594]
+[  428.469490]  dpm_run_callback+0x8c/0x126
+[  428.469511]  ? name_show+0x2d/0x2d [cfg80211 b5e6ab05f100fefb9c12e1210da0d62f6254b594]
+[  428.469517]  __device_suspend+0x2e7/0x41b
+[  428.469523]  async_suspend+0x1f/0x93
+[  428.469529]  async_run_entry_fn+0x3d/0xd1
+[  428.469535]  process_one_work+0x1b1/0x329
+[  428.469541]  worker_thread+0x213/0x372
+[  428.469547]  kthread+0x150/0x15f
+[  428.469552]  ? pr_cont_work+0x58/0x58
+[  428.469558]  ? kthread_blkcg+0x31/0x31
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+---
+v2:
+   1. change commit log
+   2. remove NULL check before memory free since NULL is OK for dma_free_coherent()/kfree()
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                               defconfig
-arm64                            allyesconfig
-m68k                         apollo_defconfig
-sparc                               defconfig
-mips                      loongson3_defconfig
-xtensa                           alldefconfig
-arc                     haps_hs_smp_defconfig
-openrisc                         alldefconfig
-openrisc                            defconfig
-sh                           se7343_defconfig
-sh                        edosk7705_defconfig
-m68k                        m5407c3_defconfig
-powerpc                         wii_defconfig
-arc                        vdk_hs38_defconfig
-arm                            pleb_defconfig
-arm                         s3c6400_defconfig
-powerpc                         ps3_defconfig
-h8300                       h8s-sim_defconfig
-i386                          randconfig-c001
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20220406
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-alpha                               defconfig
-csky                                defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-arc                  randconfig-r043-20220406
-s390                 randconfig-r044-20220406
-riscv                randconfig-r042-20220406
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-clang tested configs:
-arm                    vt8500_v6_v7_defconfig
-arm                       mainstone_defconfig
-arm                        multi_v5_defconfig
-mips                     cu1830-neo_defconfig
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-hexagon              randconfig-r041-20220406
-hexagon              randconfig-r045-20220406
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 771252dd6d4e..f6645c7c55c2 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -301,12 +301,16 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
+ 			  ath10k_htt_get_vaddr_ring(htt),
+ 			  htt->rx_ring.base_paddr);
+ 
++	ath10k_htt_config_paddrs_ring(htt, NULL);
++
+ 	dma_free_coherent(htt->ar->dev,
+ 			  sizeof(*htt->rx_ring.alloc_idx.vaddr),
+ 			  htt->rx_ring.alloc_idx.vaddr,
+ 			  htt->rx_ring.alloc_idx.paddr);
++	htt->rx_ring.alloc_idx.vaddr = NULL;
+ 
+ 	kfree(htt->rx_ring.netbufs_ring);
++	htt->rx_ring.netbufs_ring = NULL;
+ }
+ 
+ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
+@@ -846,8 +850,10 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 			  ath10k_htt_get_rx_ring_size(htt),
+ 			  vaddr_ring,
+ 			  htt->rx_ring.base_paddr);
++	ath10k_htt_config_paddrs_ring(htt, NULL);
+ err_dma_ring:
+ 	kfree(htt->rx_ring.netbufs_ring);
++	htt->rx_ring.netbufs_ring = NULL;
+ err_netbuf:
+ 	return -ENOMEM;
+ }
 
+base-commit: 748b34786d1c96e758862d8e8577106ccde6515a
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.31.1
+
 
 _______________________________________________
 ath10k mailing list
