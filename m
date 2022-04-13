@@ -4,59 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8B5DC433EF
-	for <ath10k@archiver.kernel.org>; Wed, 13 Apr 2022 09:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C92A4C433EF
+	for <ath10k@archiver.kernel.org>; Wed, 13 Apr 2022 12:11:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L+af5XA9sRZBDIrHR0XjkNvUlwD2l/TVRFBgJ5T0v0Q=; b=T6Ypq7TXzCAfhY
-	TTSid/sfUQbWKwKI4dYMnWGI7SOC/3RZetGDTFIwx6DfB8odDjZUHQqR9U7sQJkIlqCl5Gv01zuRz
-	SkOrfmU1pVBRUgStSDtNbaPy/IpgoY+nC2f6Ioqq+xsFLTQHAMfyuKx+RZeUl3ajhMj5iMzAbbE94
-	lPBitKncpfQwCxu3+km7H4BlEyYu+JgGo1+JDk9iQlOpJMUR5JsLZ9QO3GIdf353aVKAApsG372Ct
-	pi3Qz11UMaBG1MQXNXzPc5WCU6oL+WsXztjc6VYiYlwhu+jOPx02txh7nPIqEHaL8MM/byCKb6DN1
-	AP0SapCazG2JHpNsB/FQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Aj3A2oGTp8GFvadsBaeoArs4FcU+D1uvQP+/HyxaLck=; b=e/oaJve6bdOyzL
+	iN8HPwJAttMuKc+bgh4LvP00KtGMCOBgza1UqJjua4ZnVd86b14dCrKAhx5zXMTB8ZziNSAcBxNSf
+	SDaKCXhhxQkqjpZpKZIviJU8vLpnzNguHL+ubU26jEoOpvrONJ6iTSh3NAKyzilQXlg01kj6TanCB
+	DXvG6TBi14rFP77Zcut5skxHbySgDDhRDbQixDN624MDAkNP1vlUrIbKlMD7PB1R/prM42SpHsZq5
+	weeGvkxKujZWBTORue7GQ8FSN3nDQdDA2QuH9QAj6ltvVYmgSGRNfG2rTa2m5eFSmFDE5XV8UC/Up
+	6t/XTNl9uAeSmtx7nc1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neZ3H-000G3b-IY; Wed, 13 Apr 2022 09:12:39 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1nebqE-000wBY-Sc; Wed, 13 Apr 2022 12:11:22 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neZ3E-000G2c-Cj
- for ath10k@lists.infradead.org; Wed, 13 Apr 2022 09:12:37 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9E35C61AD2;
- Wed, 13 Apr 2022 09:12:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B5FC385A4;
- Wed, 13 Apr 2022 09:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649841155;
- bh=evcW0WxNSAa+y1Y0/tU6Xc06ltwhDrpOXL9oE5IuoLk=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=f3wc0jKEHwyQdbtkBWeiRbvPnNu8jwmcOGTnDJDtxBEqJSm14Rgmt5uegp+rIkYsg
- fJn1ivJGxyzjq3j/7JUEDfzdENZ/mznT7NTUGDrzVIVE6r3VVKdcoNFBE7ZaW+W/9z
- 8GczW52aby5VtPQDADixr4K5OcTd1lNAqES/IzodwGY89owcJAtBuU4e+7EaABHI5Q
- ckJDLv+kKT7ZPOZPtHBY2pLfDgOicX+RLFj4SQVlqZ3Ozzy8Q5oqC2Vq33pUHP8N21
- AFeMGCbVz8X6FiSCUmri3bR96jLuq7WqZy531ReQUXD8YJVaIkZkMgb3ufEsOsTOzq
- +Sl48j6HetMCA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+ id 1nebq9-000w98-Uk
+ for ath10k@lists.infradead.org; Wed, 13 Apr 2022 12:11:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1649851877; x=1681387877;
+ h=date:from:to:cc:subject:message-id:mime-version:
+ content-transfer-encoding;
+ bh=HnMU8kvNk3cTdtYX0G60XR3dR7vqU/Sq1zlGM9gWoxw=;
+ b=XD40S08JakMLpRQP+e0kWI7ru44JQvIQe4JtZG0bx48CTQVk9vLIlEJk
+ f4xsfyEIBKiGMowCUUJ3OnvUFicEhxY6x557GgZiuYDZBNNGnfNDYkhMl
+ 1g3cxS1lVpxRu4hiMIJ/BmdEIJskZvj6VNbecxbPTVGVpl1D9Nau9NRVE
+ o4HTuKtBb6byvUBO9i9E/wUw6le7jKE4UjmjKZwQZHFCHa2TevNAnGvlP
+ tf+4+PBYoi5IKwkN5Nf78agwuIJ3VEKKLApMpQifYJxp5Ewyp+4XIUun4
+ AvEBI+Gex3R5kOJeF/gOxozmdGFx5J2oA0RKrT36GnJn4JP1eIgHKrvWv g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10315"; a="242583192"
+X-IronPort-AV: E=Sophos;i="5.90,256,1643702400"; d="scan'208";a="242583192"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Apr 2022 05:11:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,256,1643702400"; d="scan'208";a="559725979"
+Received: from lkp-server01.sh.intel.com (HELO 3abc53900bec) ([10.239.97.150])
+ by fmsmga007.fm.intel.com with ESMTP; 13 Apr 2022 05:11:14 -0700
+Received: from kbuild by 3abc53900bec with local (Exim 4.95)
+ (envelope-from <lkp@intel.com>) id 1nebq6-0000Gn-9L;
+ Wed, 13 Apr 2022 12:11:14 +0000
+Date: Wed, 13 Apr 2022 20:10:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: Re: ath10k-firmware: WCN3990: Add firmware file for the Qualcomm
- Robotics RB3 / Dragonboard 845c
-References: <CAA8EJpphUrxr5gtW0=-tZh-DrKXmHkfFxWMvYRpTUGuCesGCbw@mail.gmail.com>
-Date: Wed, 13 Apr 2022 12:12:30 +0300
-In-Reply-To: <CAA8EJpphUrxr5gtW0=-tZh-DrKXmHkfFxWMvYRpTUGuCesGCbw@mail.gmail.com>
- (Dmitry Baryshkov's message of "Sun, 3 Apr 2022 15:04:01 +0300")
-Message-ID: <877d7tl535.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ c9a8efc35304a89fc0751649945909caf03eeb29
+Message-ID: <6256bdbf.kJdfO0ebS/WSjAuW%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220413_021236_505103_71985713 
-X-CRM114-Status: GOOD (  19.97  )
+X-CRM114-CacheID: sfid-20220413_051118_059993_4F96E730 
+X-CRM114-Status: UNSURE (   4.35  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,69 +78,168 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: c9a8efc35304a89fc0751649945909caf03eeb29  wil6210: use pm_runtime_resume_and_get() instead of pm_runtime_get_sync()
 
-> Hi,
->
-> We'd like to ask for inclusion of the board file for the Qualcomm
-> Robotics RB3 Platform also known as Thunderomm Dragonboard 845c. It is
-> a development platform based on the Qualcomm SDM845 SoC.
-> Following the questions from the ath10k wiki page:
->
-> * description for what hardware this is
-> - It is an SDM845-based platform
-> - It uses wcn3990 chip as a WiFi and BT radio
->
-> * origin of the board file
->   - It comes from the BSP package distributed by Linaro
-> (http://releases.linaro.org/96boards/dragonboard845c/qualcomm/firmware/RB3_firmware_20190529180356-v4.zip)
->
-> * ids to be used with the board file
-> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C
-> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214
-> bus=snoc,qmi-board-id=ff
->
-> Note, the board comes with the board_id not changed from 0xff.
-> Following the example of Chromebook boards we are adding the
-> calibration variant to the DT [1].
-> I'm asking to include both bdf files: with the variant part and
-> without it (for the sake of backwards compatibility).
-> However once the patch [1] is accepted it should be fine from my point
-> of view if you decide to include just the with-variant patch into the
-> public/distributed board database.
->
-> * md5sum of each new board file to add
->
-> $ md5sum *
-> d8dc08c33402920792928c65262b4955  bus=snoc,qmi-board-id=ff,qmi-chip-id=30214.bin
-> d8dc08c33402920792928c65262b4955
-> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C.bin
->
-> $ sha256sum *
-> 9bdf7859d8d6a6f41f6b55338b51723335bc9cc24a4d2e20ebaef234859d6fb3
-> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214.bin
-> 9bdf7859d8d6a6f41f6b55338b51723335bc9cc24a4d2e20ebaef234859d6fb3
-> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C.bin
+elapsed time: 1130m
 
-Thanks, added to WCN3990/hw1.0/board-2.bin:
+configs tested: 142
+configs skipped: 4
 
-New:
-bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C
-bus=snoc,qmi-board-id=ff,qmi-chip-id=30214
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Changed:
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+mips                           ci20_defconfig
+arm                        cerfcube_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                       maple_defconfig
+arc                    vdk_hs38_smp_defconfig
+sh                           se7750_defconfig
+powerpc                      makalu_defconfig
+powerpc                       eiger_defconfig
+powerpc                       holly_defconfig
+s390                       zfcpdump_defconfig
+h8300                       h8s-sim_defconfig
+s390                          debug_defconfig
+arm                          badge4_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                      ppc40x_defconfig
+arm                          pxa3xx_defconfig
+sh                           se7721_defconfig
+um                           x86_64_defconfig
+arc                            hsdk_defconfig
+arc                     nsimosci_hs_defconfig
+riscv                            allmodconfig
+xtensa                           allyesconfig
+sh                        dreamcast_defconfig
+ia64                      gensparse_defconfig
+sparc                               defconfig
+powerpc                   motionpro_defconfig
+arc                     haps_hs_smp_defconfig
+parisc                           alldefconfig
+arm                            zeus_defconfig
+arc                        vdk_hs38_defconfig
+arm                       aspeed_g5_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                 mpc834x_mds_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220413
+i386                 randconfig-c001-20220411
+x86_64               randconfig-c001-20220411
+arm                  randconfig-c002-20220411
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                 randconfig-a015-20220411
+i386                 randconfig-a011-20220411
+i386                 randconfig-a014-20220411
+i386                 randconfig-a016-20220411
+i386                 randconfig-a012-20220411
+i386                 randconfig-a013-20220411
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                randconfig-r042-20220413
+arc                  randconfig-r043-20220413
+s390                 randconfig-r044-20220413
+arc                  randconfig-r043-20220411
+riscv                randconfig-r042-20220411
+s390                 randconfig-r044-20220411
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                                  kexec
+x86_64                          rhel-8.3-func
+x86_64                               rhel-8.3
+x86_64                         rhel-8.3-kunit
 
-
-Deleted:
-
-2 board image(s) added, 0 changed, 0 deleted, 14 in total
-
-https://github.com/kvalo/ath10k-firmware/commit/22218c422164d618aec37200eae36d85cde3f11e
+clang tested configs:
+x86_64                        randconfig-c007
+powerpc              randconfig-c003-20220413
+arm                  randconfig-c002-20220413
+i386                          randconfig-c001
+riscv                randconfig-c006-20220413
+mips                 randconfig-c004-20220413
+mips                      pic32mzda_defconfig
+hexagon                             defconfig
+powerpc                      ppc44x_defconfig
+powerpc                        icon_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                      obs600_defconfig
+arm                      pxa255-idp_defconfig
+powerpc                      walnut_defconfig
+x86_64               randconfig-a001-20220411
+x86_64               randconfig-a002-20220411
+x86_64               randconfig-a005-20220411
+x86_64               randconfig-a003-20220411
+x86_64               randconfig-a004-20220411
+x86_64               randconfig-a006-20220411
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                 randconfig-a003-20220411
+i386                 randconfig-a005-20220411
+i386                 randconfig-a001-20220411
+i386                 randconfig-a004-20220411
+i386                 randconfig-a002-20220411
+i386                 randconfig-a006-20220411
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+hexagon              randconfig-r041-20220411
+hexagon              randconfig-r045-20220411
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
