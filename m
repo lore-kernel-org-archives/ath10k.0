@@ -4,63 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6489C433EF
-	for <ath10k@archiver.kernel.org>; Wed, 13 Apr 2022 09:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9839FC433F5
+	for <ath10k@archiver.kernel.org>; Wed, 13 Apr 2022 09:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lj88oQGzCWYE32/JkmpBsTNBASXSXqbZI/FUjPYNOjI=; b=Qn2xyVww1I3NmN
-	nUnq/xK+6cpLGJq6CF0ZtxbRyeO5tgnRQWCE2kdVf4sXzR1o5TwS4TqTz0TjWoYOWHhGEqAr0Nfsj
-	lnvls5TaGVjkSQokfj9ujFTbIlKfPMpKpHmyJVFvVVZF5jVYL6nkPAE9Rq4BYRTNs26PcASZOgR9p
-	tKKsz5CTsQSDkQYDZxZqYiJVdHvlWDWd6t9h2pWUMJxe7mSdsYsfO+MCOO7dvbWIf42cwG1o73QOE
-	ZsBLv51b2WVfG4OWiIj5DYnJnZW0iN3RQBb2mbhaLjK3BHX773YWMHt7DIvdUcL9P+YxADlZjGSDO
-	/cXRFZVY4986/zkYdrGg==;
+	List-Owner; bh=Ayveqcj85H+Z+pNmfHsabAL3tQfzNrP7Fjy8Kw7/9+I=; b=HkI6V3IwFjGwCF
+	qzBnWjBXnTyT2f+DjRhfznycDgws91Zykn5Dw/3H/Ki4XOyfjqNVVswHMMtk1VH/b+T/D1kA0av/1
+	iqutrklH5P5xkGmDsfbXjcPQSIee+c+kb90/qmZM2jBbCQV3XjE2jJ0k2Ep1XK+DmBbwR9G0BL/3U
+	4Wu4VoRy92Hm7ukMtaDXKnFD6EpisRx7Yd+17Ix21rLu1eiFAplk0YUgGBUbkc1jbNiCfOXaOslkL
+	Ox3GURJVJlgingHsbGXqO4hB4KyRBWUqZITMTrP7OM3WZ4CzGvI/z/h8ua4rjLiIFs+V32NFWgung
+	QiCc7jGprp7i3F7iNruQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neYtD-000D4T-Nz; Wed, 13 Apr 2022 09:02:15 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1neYv6-000DHY-RO; Wed, 13 Apr 2022 09:04:12 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neYtB-000D46-AR
- for ath10k@lists.infradead.org; Wed, 13 Apr 2022 09:02:14 +0000
+ id 1neYv3-000DGr-HS
+ for ath10k@lists.infradead.org; Wed, 13 Apr 2022 09:04:11 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7CA9261A8B;
- Wed, 13 Apr 2022 09:02:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23A07C385A3;
- Wed, 13 Apr 2022 09:02:10 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0891FB81AB3;
+ Wed, 13 Apr 2022 09:04:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FAE8C385A3;
+ Wed, 13 Apr 2022 09:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649840531;
- bh=A+KEmqGD5HjzFZt3wo53bxpbY5EtGbNqU5hyP49uAoQ=;
+ s=k20201202; t=1649840646;
+ bh=vc95Ucaf3AWbJCZ9vT2y9hEsnUDol9kVmrls2iQ0snU=;
  h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=cHMm+WWJnbaE1Sb6Rsl814+v+I+wHoADqT6USEmDxkwmbxFYueOPKnIL0Kx2dtxmr
- 3V+u2t7KjQ0fuMF6w4zNhA15giqi2O5AUtdd4b2gAD2e5e2/MbxS1m/LHhH/4qbSj9
- Sp6iz6FgBPt/p6HIGY5Opx+FcuDVeNpa1AGnoz7OfteYOhGtSicdzCyPMCmA5ch2Aj
- 942Y1UJXlgV1TsFfYuMEFJZ9V4LZYW0MrsJwwYPM3lqyzdIRLbQVsNy/nkZkRvOVUg
- QazX7HKrd4O6PqRD9o4baKSy3jQpZDSicTI6yi8ya4cTwh/KzuiBYG9F1sDW7ClZ0a
- jW8Zn6HZWUfCw==
+ b=DrNl6Xe7MgUKB6i24f2qEKnrVPnkj0q4TlAZEwpJR58PEVuRRaP7YdDgyImIN65u5
+ IlSsb41FiXjdavgHQ44UUcc4qcaSEz6+RuJhOsR6ypVagSjZmwrDdZdflgwIFd+6ov
+ FRrwKEwwihUnQIS3bbf4yjZJgWlEDbV5rEkKNPCWnA5m2rjm78/IWzaYnfbpIMx+H1
+ hMIMChU5DbhDlBsrD/CoTo43JHO5MwWcyliyzm0mPlVSE8N5tgAD3ivdLSu/GnCSCP
+ wE5aDlti3EQzBrJ9MW9ygZWeZFVfYiysVQWvq5yPQ9zJlVlYoOFf7J6no6t/WEtknp
+ OoPCEugJJExTA==
 From: Kalle Valo <kvalo@kernel.org>
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: Hans Geiblinger <cybrnook2002@yahoo.com>,
- "ath10k\@lists.infradead.org" <ath10k@lists.infradead.org>
-Subject: Re: [v2] ath10k-firmware: QCA9888 hw1.0: Add Linksys MR8300 V1.0
+To: Sven Eckelmann <sven@narfation.org>
+Cc: ath10k@lists.infradead.org
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Update Plasma Cloud PA1200
  specific BDFs
-References: <836543238.4244780.1600533511769.ref@mail.yahoo.com>
- <836543238.4244780.1600533511769@mail.yahoo.com>
- <87mtjp9o58.fsf@kernel.org>
- <078ed972-edb9-5611-6757-a8a907b7a6b8@gmail.com>
-Date: Wed, 13 Apr 2022 12:02:07 +0300
-In-Reply-To: <078ed972-edb9-5611-6757-a8a907b7a6b8@gmail.com> (Christian
- Lamparter's message of "Sun, 20 Feb 2022 01:06:48 +0100")
-Message-ID: <8735ihmk4w.fsf@kernel.org>
+References: <2931430.FNKZsP7sFK@sven-l14>
+Date: Wed, 13 Apr 2022 12:04:04 +0300
+In-Reply-To: <2931430.FNKZsP7sFK@sven-l14> (Sven Eckelmann's message of "Sat, 
+ 22 Jan 2022 09:36:12 +0100")
+Message-ID: <87y209l5h7.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220413_020213_438903_4853850C 
-X-CRM114-Status: GOOD (  15.08  )
+X-CRM114-CacheID: sfid-20220413_020409_741381_A60DE58C 
+X-CRM114-Status: GOOD (  19.90  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,41 +68,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Q2hyaXN0aWFuIExhbXBhcnRlciA8Y2h1bmtlZXlAZ21haWwuY29tPiB3cml0ZXM6Cgo+IEhpLAo+
-Cj4gT24gMjEvMDEvMjAyMiAxNTowOSwgS2FsbGUgVmFsbyB3cm90ZToKPj4gSGFucyBHZWlibGlu
-Z2VyIDxjeWJybm9vazIwMDJAeWFob28uY29tPiB3cml0ZXM6Cj4+Cj4+PiBUaGUgc3VwcG9ydCBm
-b3IgdGhpcyBkZXZpY2UgaXMgY3VycmVudGx5IGJlaW5nIGFkZGVkIGludG8gT3BlbldydC4gVGhp
-cyBBUCByZXF1aXJlcwo+Pj4gdHdvIHNwZWNpYWwgQkRGcyB0byBnZXQgdGhlIFdpLUZpIFBIWXMg
-d29ya2luZyAoY29ycmVjdGx5KS4KPj4+Cj4+Pgo+Pj4gKiBkZXNjcmlwdGlvbiBmb3Igd2hhdCBo
-YXJkd2FyZSB0aGlzIGlzOgo+Pj4gIMKgIMKgLSBpdCBpcyBhIFFDQTk4ODggYmFzZWQgcmFkaW8g
-dXNlZCBmb3IgNUdoego+Pj4KPj4+Cj4+PiAqIG9yaWdpbiBvZiB0aGUgYm9hcmQgZmlsZQo+Pj4g
-IMKgIMKgLSBib2FyZGRhdGEgZmlsZXMgd2VyZSB0YWtlbiBmcm9tIE9FTSBMaW5rc3lzIEZXX01S
-ODMwMF8xLjEuNy4yMDEyODFfcHJvZC5pbWcKPj4+Cj4+Pgo+Pj4gKiBpZHMgdG8gYmUgdXNlZCB3
-aXRoIHRoZSBib2FyZCBmaWxlCj4+PiAgwqAgwqAtIFFDQTk4ODggaHcxLjAKPj4+ICDCoCDCoCDC
-oCvCoGJ1cz1wY2ksYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQtaWQ9MjMsdmFyaWFudD1saW5rc3lz
-LW1yODMwMC12MC1mY2MKPj4+ICDCoCDCoCDCoE1ENTrCoDFmMjYzYzUyZTc4NjJiY2NhYjZmZDY1
-NTEwOTIwNzdjCj4+Pgo+Pj4KPj4+ICogYXR0YWNoIHRoZSBhY3R1YWwgYm9hcmQgZmlsZQo+Pj4g
-IMKgIMKgLSBUaGUgbmFtZSBvZiB0aGUgZmlsZXMgYXJlIGVxdWFsIHRvIHRoZSBpZCBzdHJpbmcg
-aW4gdGhlCj4+PiBib2FyZC0yLmJpbiAobWludXMgdGhlICIuYmluIikKPj4KPj4gVGhhbmtzLCBh
-ZGRlZCB0byBRQ0E5OTg0L2h3MS4wL2JvYXJkLTIuYmluOgo+Cj4gT2guLi4gSSBqdXN0IG5vdGlj
-ZWQuIEkgdGhpbmsgdGhpcyBnb3QgbWlzcGxhY2VkIGludG8KPiBRQ0E5OTg0J3MgYm9hcmQtMi5i
-aW4uIEJ1dCB0aGlzIHdhcyBmb3IgdGhlIFFDQTk4ODgodjIpLiA6KAoKT2gsIHNvcnJ5IGFib3V0
-IHRoYXQuIFZlcnkgZ29vZCB0aGF0IHlvdSBub3RpY2VkIGl0ISBJIHN0aWxsIG1hbnVhbGx5CmNo
-b29zZSB0aGUgZGlyZWN0b3J5IHNvIG1pc3Rha2VzIGNhbiBoYXBwZW4uCgpCVFcsIHRoZSBzdWJq
-ZWN0IHNob3VsZCBoYXZlIGh3Mi4wIGluc3RlYWQgb2YgaHcxLjAuCgo+IFdlbGwsIGF0IGxlYXN0
-IHRoZXJlIHNob3VsZG4ndCBiZSBhbnkgY29uZmxpY3RzLgo+IFNob3VsZCBJIHJlc2VuZCB0aGUg
-TGlua3N5cyBNUjgzMDAncyBib2FyZCBmaWxlcyBhbmQKPiBhZGQgdGhhdCBhcyBhIG5vdGUgZm9y
-IHlvdXIgbmV4dCByb3VuZD8KCk5vIG5lZWQgdG8gcmVzZW5kLCBJIGZpeGVkIGl0IG1hbnVhbGx5
-IG5vdy4gUGxlYXNlIGRvdWJsZSBjaGVjazoKCmh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgx
-MGstZmlybXdhcmUvY29tbWl0L2I4MGYxYzUyMWUzYzQwNmYzMDE4YWEyYjJiMzQ4YjQ5NWI1MWYw
-ZjMKCi0tIApodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgtd2lyZWxl
-c3MvbGlzdC8KCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL2RldmVsb3BlcnMv
-ZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
+Sven Eckelmann <sven@narfation.org> writes:
+
+> Hi,
+>
+> the firmware 10.4-3.6-00140 crashed [1] when the 5GHz of the PA1200 was 
+> set up. It was noticed that this is somehow related to the option 
+> baseEepHeader.nonLinearTxFir which was set to 1. There was no feedback from 
+> QCA and the manufacturer about this problem. So as only known workaround (with 
+> the latest firmware), this option was set to 0 and the modified BDFs were 
+> integrated in OpenWrt [2].
+>
+>
+> Now to the questions from the wiki page [3]:
+>
+> * description for what hardware this is:
+>
+>    - it is a IPQ4019 based board
+>    - one QCA40xx radio is used as 2.4GHz radio
+>    - one QCA40xx radio is used as 5GHz radio
+>
+> * origin of the board file (did you create it yourself or where you
+>   downloaded)
+>
+>   - the file from ath10k-firmware was modified by setting the 
+>     baseEepHeader.nonLinearTxFir to 0 to work around a crash in the ath10k-
+>     firmware
+>
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+>
+>   - BoardNames[0]: 'bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=PlasmaCloud-PA1200'
+>     BoardLength[0]: 12064
+>     BoardCRC32[0]: b587e755
+>     BoardMD5[0]: 4129d301ee1a697af1fa311afcad6f87
+>   - BoardNames[1]: 'bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=PlasmaCloud-PA1200'
+>     BoardLength[1]: 12064
+>     BoardCRC32[1]: 680fe0ec
+>     BoardMD5[1]: 928c27310acfdef356ce6d6a5cdfc1f2
+>
+> * attach the actual board file (board.bin)
+>
+>   - The name of the files are equal to the id string in the board-2.bin
+>     (minus the ".bin")
+
+Thanks, added to QCA4019/hw1.0/board-2.bin:
+
+New:
+
+
+Changed:
+bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=PlasmaCloud-PA1200
+bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=PlasmaCloud-PA1200
+
+Deleted:
+
+0 board image(s) added, 2 changed, 0 deleted, 89 in total
+
+https://github.com/kvalo/ath10k-firmware/commit/648cebaa3ff588ca5de0a13cf3ca772a95813668
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
