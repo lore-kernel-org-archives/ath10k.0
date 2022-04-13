@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DD56C433EF
-	for <ath10k@archiver.kernel.org>; Wed, 13 Apr 2022 09:10:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8B5DC433EF
+	for <ath10k@archiver.kernel.org>; Wed, 13 Apr 2022 09:13:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KmoMEVM7OgOqyZrdTNLgF2QUNWXqQZ5MSLK66GgJPho=; b=BNWK+08fg4iJ3Q
-	PpH+BUmB1vGKPnBzunP5RTnsndMx8gyXwyjpbSL+hakkMviiIMPfKqeyR05TXAIT1YcXUenEplY2f
-	GV6s0G8k438SES70ow0ftWSEd2rk7cKcMjJgNsyFE2N7MdyyDWeZ1EQkYrqf7W3zqdm+SqHowWsOd
-	mYxmtNH6wNZ9kmKMC7zMoXbU07JNBDRAyQc3Tsxagpw/jvh5QZ4uLgz7Euq4SrTMalOrjXJj/7oBX
-	kYchkRqhREMVz1aREB1IthFg0bgu6L/lDDj0LA28/VF0nsNA+PZBiCPcRiae46n/zsf6nNfOCLcZF
-	iNrRxD4f8plUy74nQD1Q==;
+	List-Owner; bh=L+af5XA9sRZBDIrHR0XjkNvUlwD2l/TVRFBgJ5T0v0Q=; b=T6Ypq7TXzCAfhY
+	TTSid/sfUQbWKwKI4dYMnWGI7SOC/3RZetGDTFIwx6DfB8odDjZUHQqR9U7sQJkIlqCl5Gv01zuRz
+	SkOrfmU1pVBRUgStSDtNbaPy/IpgoY+nC2f6Ioqq+xsFLTQHAMfyuKx+RZeUl3ajhMj5iMzAbbE94
+	lPBitKncpfQwCxu3+km7H4BlEyYu+JgGo1+JDk9iQlOpJMUR5JsLZ9QO3GIdf353aVKAApsG372Ct
+	pi3Qz11UMaBG1MQXNXzPc5WCU6oL+WsXztjc6VYiYlwhu+jOPx02txh7nPIqEHaL8MM/byCKb6DN1
+	AP0SapCazG2JHpNsB/FQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neZ0p-000FCM-N4; Wed, 13 Apr 2022 09:10:07 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1neZ3H-000G3b-IY; Wed, 13 Apr 2022 09:12:39 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neZ0m-000FAU-K0
- for ath10k@lists.infradead.org; Wed, 13 Apr 2022 09:10:06 +0000
+ id 1neZ3E-000G2c-Cj
+ for ath10k@lists.infradead.org; Wed, 13 Apr 2022 09:12:37 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BFF6161AD1;
- Wed, 13 Apr 2022 09:10:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A051C385AD;
- Wed, 13 Apr 2022 09:10:01 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 9E35C61AD2;
+ Wed, 13 Apr 2022 09:12:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B5FC385A4;
+ Wed, 13 Apr 2022 09:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649841002;
- bh=J4/0BISmt7fR+TAwQ6jTO7+X9Y8Sx4Kxgg6lLE7W5a0=;
+ s=k20201202; t=1649841155;
+ bh=evcW0WxNSAa+y1Y0/tU6Xc06ltwhDrpOXL9oE5IuoLk=;
  h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=bxZaLXbMnOYejDerHSDnaOeMzdFY8PTo70TEkLqkzy5+eIoos6g6F4zEBFKlroliA
- GES1xu65MotImHZmoKUWrFKBJSguqVbRo7OsyHcBHkDQA0yOHlaGo9mMSPz9JkeW+5
- qt2jzq27FjdLJE4PxGM7B4Bvi99+OWyA2rrsPDnjdI8J7xgOc6RoYcpV67uqtgOTr0
- sad0lb07EW/3qKr+aaeSHMvK52AwAIJuEF67Mt+aXlWObSoRf7MzYElCYsiXzgtX77
- RIPONw7wcpmCqRnPXi7kcXAcJbR0RsnQLgL4GZ/tphbeWy4vTRjwXwOHjdme7NVyQG
- /ATM2UjGNc1hg==
+ b=f3wc0jKEHwyQdbtkBWeiRbvPnNu8jwmcOGTnDJDtxBEqJSm14Rgmt5uegp+rIkYsg
+ fJn1ivJGxyzjq3j/7JUEDfzdENZ/mznT7NTUGDrzVIVE6r3VVKdcoNFBE7ZaW+W/9z
+ 8GczW52aby5VtPQDADixr4K5OcTd1lNAqES/IzodwGY89owcJAtBuU4e+7EaABHI5Q
+ ckJDLv+kKT7ZPOZPtHBY2pLfDgOicX+RLFj4SQVlqZ3Ozzy8Q5oqC2Vq33pUHP8N21
+ AFeMGCbVz8X6FiSCUmri3bR96jLuq7WqZy531ReQUXD8YJVaIkZkMgb3ufEsOsTOzq
+ +Sl48j6HetMCA==
 From: Kalle Valo <kvalo@kernel.org>
 To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Cc: ath10k@lists.infradead.org
-Subject: Re: ath10k-firmware: QCA6174: hw3.0: Add board file for DragonBoard
- 820c
-References: <CAA8EJppbd=s-R3PnAXCaZAHA-iiBLFaA79Y7fRFY+JUO8jU==g@mail.gmail.com>
-Date: Wed, 13 Apr 2022 12:09:59 +0300
-In-Reply-To: <CAA8EJppbd=s-R3PnAXCaZAHA-iiBLFaA79Y7fRFY+JUO8jU==g@mail.gmail.com>
- (Dmitry Baryshkov's message of "Sat, 2 Apr 2022 14:09:00 +0300")
-Message-ID: <87ee21l57c.fsf@kernel.org>
+Subject: Re: ath10k-firmware: WCN3990: Add firmware file for the Qualcomm
+ Robotics RB3 / Dragonboard 845c
+References: <CAA8EJpphUrxr5gtW0=-tZh-DrKXmHkfFxWMvYRpTUGuCesGCbw@mail.gmail.com>
+Date: Wed, 13 Apr 2022 12:12:30 +0300
+In-Reply-To: <CAA8EJpphUrxr5gtW0=-tZh-DrKXmHkfFxWMvYRpTUGuCesGCbw@mail.gmail.com>
+ (Dmitry Baryshkov's message of "Sun, 3 Apr 2022 15:04:01 +0300")
+Message-ID: <877d7tl535.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220413_021004_715554_200E903C 
-X-CRM114-Status: GOOD (  16.06  )
+X-CRM114-CacheID: sfid-20220413_021236_505103_71985713 
+X-CRM114-Status: GOOD (  19.97  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,35 +68,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-RG1pdHJ5IEJhcnlzaGtvdiA8ZG1pdHJ5LmJhcnlzaGtvdkBsaW5hcm8ub3JnPiB3cml0ZXM6Cgo+
-IEhpLAo+Cj4gV2UnZCBsaWtlIHRvIGFzayBmb3IgaW5jbHVzaW9uIG9mIHRoZSBib2FyZCBmaWxl
-IGZvciB0aGUgOTZib2FyZHMKPiBEcmFnb25Cb2FyZCA4MjBjLiBJdCBpcyBhIGRldmVsb3BtZW50
-IGJvYXJkIGlzIGJhc2VkIG9uIHRoZSBRdWFsY29tbcKuCj4gU25hcGRyYWdvbiA4MjBFIGVtYmVk
-ZGVkIHBsYXRmb3JtIChBUFE4MDk2KS4KPiBGb2xsb3dpbmcgdGhlIHF1ZXN0aW9ucyBmcm9tIHRo
-ZSBhdGgxMGsgd2lraSBwYWdlOgo+Cj4gKiBkZXNjcmlwdGlvbiBmb3Igd2hhdCBoYXJkd2FyZSB0
-aGlzIGlzCj4gICAtIEl0IGlzIGFuIEFQUTgwOTYgYmFzZWQgYm9hcmQuCj4gICAtIEl0IHVzZXMg
-cWNhNjE3NCBjaGlwIGFzIGEgV2lGaSBhbmQgQlQgcmFkaW8KPgo+ICogb3JpZ2luIG9mIHRoZSBi
-b2FyZCBmaWxlCj4gICAtIEl0IGNvbWVzIGZyb20gdGhlIEJTUCBwYWNrYWdlIGRpc3RyaWJ1dGVk
-IGJ5IExpbmFybwo+IChodHRwOi8vcmVsZWFzZXMubGluYXJvLm9yZy85NmJvYXJkcy9kcmFnb25i
-b2FyZDgyMGMvcXVhbGNvbW0vZmlybXdhcmUvbGludXgtYm9hcmQtc3VwcG9ydC1wYWNrYWdlLXIw
-MTcwMC4xLnppcCkKPgo+ICogaWRzIHRvIGJlIHVzZWQgd2l0aCB0aGUgYm9hcmQgZmlsZQo+IGJ1
-cz1wY2ksYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQtaWQ9MQo+Cj4gKiBtZDVzdW0gb2YgZWFjaCBu
-ZXcgYm9hcmQgZmlsZSB0byBhZGQKPgo+ICQgbWQ1c3VtICoKPiAxMTg5ZTk5YWZjYWU3YjU3YmY1
-YmQzNjllOWFkMTM4NiAgYnVzPXBjaSxibWktY2hpcC1pZD0wLGJtaS1ib2FyZC1pZD0xLmJpbgo+
-ICQgc2hhMjU2c3VtICoKPiBkNjUzOGYwNGFkMzUxYzFmOTExYWNlZTAzMzQyNDVhNGIzMjJmNzA5
-MDk2ZjJhNzRlYzUxNjg0YjgwODBiZTJhCj4gYnVzPXBjaSxibWktY2hpcC1pZD0wLGJtaS1ib2Fy
-ZC1pZD0xLmJpbgoKVGhhbmtzLCBhZGRlZCB0byBRQ0E2MTc0L2h3My4wL2JvYXJkLTIuYmluOgoK
-TmV3OgpidXM9cGNpLGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlkPTEKCkNoYW5nZWQ6CgoKRGVs
-ZXRlZDoKCjEgYm9hcmQgaW1hZ2UocykgYWRkZWQsIDAgY2hhbmdlZCwgMCBkZWxldGVkLCA4OSBp
-biB0b3RhbAoKaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS9jb21taXQv
-ODIwNDc4MzhmMWNlMWY1ZDAxMGE0YWRhMTUwOWViYWQ4ZGNmNzljMgoKLS0gCmh0dHBzOi8vcGF0
-Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC13aXJlbGVzcy9saXN0LwoKaHR0cHM6Ly93
-aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9kb2N1bWVudGF0aW9uL3N1Ym1p
-dHRpbmdwYXRjaGVzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+
+> Hi,
+>
+> We'd like to ask for inclusion of the board file for the Qualcomm
+> Robotics RB3 Platform also known as Thunderomm Dragonboard 845c. It is
+> a development platform based on the Qualcomm SDM845 SoC.
+> Following the questions from the ath10k wiki page:
+>
+> * description for what hardware this is
+> - It is an SDM845-based platform
+> - It uses wcn3990 chip as a WiFi and BT radio
+>
+> * origin of the board file
+>   - It comes from the BSP package distributed by Linaro
+> (http://releases.linaro.org/96boards/dragonboard845c/qualcomm/firmware/RB3_firmware_20190529180356-v4.zip)
+>
+> * ids to be used with the board file
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214
+> bus=snoc,qmi-board-id=ff
+>
+> Note, the board comes with the board_id not changed from 0xff.
+> Following the example of Chromebook boards we are adding the
+> calibration variant to the DT [1].
+> I'm asking to include both bdf files: with the variant part and
+> without it (for the sake of backwards compatibility).
+> However once the patch [1] is accepted it should be fine from my point
+> of view if you decide to include just the with-variant patch into the
+> public/distributed board database.
+>
+> * md5sum of each new board file to add
+>
+> $ md5sum *
+> d8dc08c33402920792928c65262b4955  bus=snoc,qmi-board-id=ff,qmi-chip-id=30214.bin
+> d8dc08c33402920792928c65262b4955
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C.bin
+>
+> $ sha256sum *
+> 9bdf7859d8d6a6f41f6b55338b51723335bc9cc24a4d2e20ebaef234859d6fb3
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214.bin
+> 9bdf7859d8d6a6f41f6b55338b51723335bc9cc24a4d2e20ebaef234859d6fb3
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C.bin
+
+Thanks, added to WCN3990/hw1.0/board-2.bin:
+
+New:
+bus=snoc,qmi-board-id=ff,qmi-chip-id=30214,variant=Thundercomm_DB845C
+bus=snoc,qmi-board-id=ff,qmi-chip-id=30214
+
+Changed:
+
+
+Deleted:
+
+2 board image(s) added, 0 changed, 0 deleted, 14 in total
+
+https://github.com/kvalo/ath10k-firmware/commit/22218c422164d618aec37200eae36d85cde3f11e
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
