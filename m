@@ -4,68 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2366CC433EF
-	for <ath10k@archiver.kernel.org>; Mon, 18 Apr 2022 15:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4E80C433F5
+	for <ath10k@archiver.kernel.org>; Wed, 20 Apr 2022 00:44:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RBK1vy4tqW1mWn7if7PKTiNNjkvVWXtxj/tuumVpH6k=; b=QsBGaWcUY4LcEf
-	BBabKLUfVCqFDlsgy6FRw1oCmNlCdExdI/Eb1D43Wfq88ASlI83nCXoXFUiEbB78NBXsF95nPyvPx
-	NrNwHu7vjzTLW6mt8xftwPUv/pRE17chtbIbvrV2A9WZncs+vZ4nw0KEUX+hzRewv0/WThH6qYAYg
-	n1JZTd7R0nI+xYw8I/BOs2ncP1f2Q6ip7MIysQ1w4lHiYagj4pj1MdN6GhXayZZWw8ceoTflp5uhU
-	tVeVMcOVvo1DM4wRojmGPjpApjOIiAVuIolLNFxF/Q/Py+h7tW4XJ3hQicsZzBLXh9MbGLfPFNkwj
-	HZCd4HElNWxLZLm8CXoQ==;
+	List-Owner; bh=Js8KridzV6ph2vzx2UdJBMxJK6MlYW+0Hjd5Cyxkny4=; b=yJd6h1IE7B1e2p
+	XZyhNcg6ksXXxhBPVO2W7/YI67jL9xvODSLnezy/E8rs3+k3r+DMH9S9zL+u1p9zRA0siNlFU9Ox/
+	xy04JkBi1BYdbT7XIMvZQOKLzlo0bPM8wsvBCEircMHG2/GP473DnZWzX4cyAwrGjSPudOyPHjIaF
+	87lZufPicvtONKAIwH9wZPG+o1puMQeTJAsGUnsBYOQsRkSIX0qVwVd/RSdoI9REohmBEMLHuhE6V
+	HOP+Y/85AtqRF5YeAiGeXDXzhbf3Wt4rX68U/bRZIt/KtEsWwXxLgY3N22pnvVfhbUNC2BSblLEZT
+	gKartAqOKKiqDhIb+n4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngTWh-00HVqe-FN; Mon, 18 Apr 2022 15:42:55 +0000
-Received: from mail-vs1-xe32.google.com ([2607:f8b0:4864:20::e32])
+	id 1ngyRE-006ikO-HX; Wed, 20 Apr 2022 00:43:20 +0000
+Received: from mail-il1-x12a.google.com ([2607:f8b0:4864:20::12a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngTWf-00HVqF-7Y
- for ath10k@lists.infradead.org; Mon, 18 Apr 2022 15:42:54 +0000
-Received: by mail-vs1-xe32.google.com with SMTP id m14so12970912vsp.11
- for <ath10k@lists.infradead.org>; Mon, 18 Apr 2022 08:42:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ id 1ngyRB-006ijJ-KT
+ for ath10k@lists.infradead.org; Wed, 20 Apr 2022 00:43:19 +0000
+Received: by mail-il1-x12a.google.com with SMTP id t4so34276ilo.12
+ for <ath10k@lists.infradead.org>; Tue, 19 Apr 2022 17:43:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=hqHR0ImHwibt6Y6o1QCx2/fKCQEMa6EyUc6UvVMJ+Hw=;
- b=cRDHbz0O9ZpM4OKWlxmCnXq1sqezyoD4H0IoEg7fvbN5nD06uHZgjAR8koBHKZYkLs
- 4wPhLtRPTszrjKhiOGClhG4hDuJ0HVr7YXCANbWabJdwVlZic3nYLBG6usuRFMROMdYV
- kCJO1p4sjhvn4wnRVrOQxAL8eSNDuhDa+ijQT6HVtz080cV6j4YPj/tpWWEDtDDAbDoa
- r8KjbDB2+03vVPvvPb2MJ+sNKNcRfVP83g2vsHzreNCJl94aB6ZRaHkeX2CVZoWdn2+r
- 9kGuk9In2hc/D1F5NY3eaae9qLLBNW5A6mYh/cKliUCChBhB3euKkgluZxDkWSQwWUVs
- fCCg==
+ :cc; bh=l+ByOqKk3aTPDxOgi+MMXPoJaKvFYjmLHvE3XekD1Uk=;
+ b=JmR0pcqjjI6YzateDyGtk1MhYbDzRKG/FbmqtGeN/mQoa5eGagsWoTWt7YHJ19A7yw
+ IZvnTcD8zmglvHiaKtcUbQmYYQjwRPW4/B/maJVyPt69Vn+Df/Esf+QK+aBi8OOsffB2
+ 2ShP+sI29u2/BwgQ3bxIIHDCYwBU4J3ovXjSI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=hqHR0ImHwibt6Y6o1QCx2/fKCQEMa6EyUc6UvVMJ+Hw=;
- b=0zuqPaVLEzD7DQEHPrdEsapxqB4J25xF4Vayc2uQ/xDqOiUp28IM3usaTTEJ2jW3tW
- GO+44qwWnueWNprmWmaR8Tsy0GM67rCnfrcJCcyKc5iua4KW62qLoFGyAYKeo3NdlU8P
- XffQ95b8zW3Zt6S8SUil+VNAnQ5EQgIPk/1Df/TEbe0M9oVixmtmJ112FTKMnzr1uBrS
- Sb5y+QV+77cAXNbft27GpkiQq45AopLLeasky1lgtDR8t51/FWPqZTqjxvvlOQpSLcTC
- 5AJNcRUuCLtAsWpLCKP5ZE7XXaMkzMvjmIBoSVDDTMPk1ExhR+/joLT7ghAALt8ApAZp
- yK+g==
-X-Gm-Message-State: AOAM5328xW9b2K9lOBx3kHnxa/WJyOo5wjtKee3OQpdJimUFC7M7BxY3
- 6yi1CYBEeBbWQB8IRXIJgXjYNrwaYcigKfz8pbg=
-X-Google-Smtp-Source: ABdhPJyxeWq6xOgq8cewGCYVxa0bNYYedGRh+A5v6brUa2KfCCn2WD7RCvTLuJJHwEJPA/ZytddgAs33HDmGAXQDF3A=
-X-Received: by 2002:a05:6102:a8e:b0:325:aa27:35a7 with SMTP id
- n14-20020a0561020a8e00b00325aa2735a7mr2839149vsg.50.1650296569875; Mon, 18
- Apr 2022 08:42:49 -0700 (PDT)
+ bh=l+ByOqKk3aTPDxOgi+MMXPoJaKvFYjmLHvE3XekD1Uk=;
+ b=Shc4hJ2aPZZwAT88/AfXFoQRbpcKLuTZDS+8P2IeeG9iJ2lJ60CsZr7J5tQDwxfzDa
+ CdUWBpHOwzeon6QjB47oB7NIR9KePLg0KrNkjawqnpQbUc5rlpHUKD1XEesDkAx2WGw7
+ GXbjvbYFohiqfltg9Zxoss6sJqZlaDpUM+EPQG6NSc3GiSSCS8o0NR6shj388GP0n2At
+ QxIpaKffR1HpIhpl59+X4sTSFZ0DO+2mBch8EBXsFrTOklI6RMvwzLkQ6wPTPOJfkZJ0
+ uLzJVDAcZVJ7PlcMq2mWKArCtH7LI2SAyEXPlNqECVlw4JolTb/XbbCDFcT0smXOcs9o
+ Xhpw==
+X-Gm-Message-State: AOAM530mATDTNjGg38JUmBhTCxWiFDGBFDODzq6k3iRNQyGwEDad7Oxf
+ Qtgst6VrdgwFdvn3BLEdSjVPhwwwIDwWCG5Yai2fcg==
+X-Google-Smtp-Source: ABdhPJxMZ9q71p23gnlmfhB955TXqLup+J9rvIv9OISue1PbZHuQDASslHqoDgDuQs/O6ZnxgiievLi/4a2/HhwYXRc=
+X-Received: by 2002:a05:6e02:2184:b0:2cc:56e0:1686 with SMTP id
+ j4-20020a056e02218400b002cc56e01686mr1048598ila.28.1650415395243; Tue, 19 Apr
+ 2022 17:43:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220402153615.9593-1-ryazanov.s.a@gmail.com>
- <87v8vps4jg.fsf@kernel.org>
-In-Reply-To: <87v8vps4jg.fsf@kernel.org>
-From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Date: Mon, 18 Apr 2022 18:42:39 +0300
-Message-ID: <CAHNKnsSbjD_ok+qxj4=HnyNCEKWey34xNQwZwe1gYCKwYmxtAw@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] ath10k: add encapsulation offloading support
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org, Kalle Valo <kvalo@kernel.org>
+References: <20220107200417.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
+ <CAD=FV=W5fHP8K-PcoYWxYHiDWnPUVQQzOzw=REbuJSSqGeVVfg@mail.gmail.com>
+ <87sfrqqfzy.fsf@kernel.org>
+ <CAD=FV=U0Qw-OnKJg8SWk9=e=B0qgqnaTHpuR0cRA0WCmSHSJYQ@mail.gmail.com>
+ <CACTWRwtpYBokTehRE0_zSdSjio6Ga1yqdCfj1TNck7SqOT8o_Q@mail.gmail.com>
+ <87fsmio9y8.fsf@kernel.org>
+In-Reply-To: <87fsmio9y8.fsf@kernel.org>
+From: Abhishek Kumar <kuabhs@chromium.org>
+Date: Tue, 19 Apr 2022 17:43:02 -0700
+Message-ID: <CACTWRwvQNswu1nYNHS-Y580QqDV6MHiS56NwyRXm3cLN2que=Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ath10k: search for default BDF name provided in DT
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Doug Anderson <dianders@chromium.org>,
+ Rakesh Pillai <pillair@codeaurora.org>, 
+ LKML <linux-kernel@vger.kernel.org>, 
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, ath10k <ath10k@lists.infradead.org>, 
+ netdev <netdev@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220418_084253_311996_56AFDBDD 
-X-CRM114-Status: GOOD (  18.52  )
+X-CRM114-CacheID: sfid-20220419_174317_727210_DEEEC407 
+X-CRM114-Status: GOOD (  32.03  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,45 +89,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 4, 2022 at 10:15 AM Kalle Valo <kvalo@kernel.org> wrote:
-> Sergey Ryazanov <ryazanov.s.a@gmail.com> writes:
->> Hello,
->>
->> this series introduces driver support for hardware encapsulation
->> offloading feature.
->>
->> The main goal of the series is an overall improvement of system
->> performance. On a QCA9563+QCA9888-based access point in bridged mode,
->> encapsulation offloading increases TCP 16-streams DL throughput from
->> 365 to 396 mbps (+8%) and UDP DL throughput from 436 to 483 mbps (+11%).
->>
->> The series consist of three patches, the first two prepare the code, and
->> the last one introduces the offloading support itself. The first patch
->> reworks transmission status reporting to make it flexible enough to
->> support 802.11 and Ethernet encapsulated frames reporting. The second
->> patch reworks the module parameter that configures the main
->> encapsulation format of frames that are passed from the driver to the
->> hardware. It makes it possible to configure more encapsulation methods
->> than just raw or not-raw. And, as stated before, the third patch
->> actually introduces offloading support. It changes a couple of frame
->> analysis places along the xmit path and starts reporting offloading
->> support to mac80211 via the corresponding hw attribute.
->>
->> The new feature has been extensively tested with QCA9888 and works well,
->> but it may introduces some regression for other untested chips. So the
->> series is just an RFC for now.
+On Tue, Apr 12, 2022 at 3:47 AM Kalle Valo <kvalo@kernel.org> wrote:
 >
-> This looks very good to me. But the testing part concerns me as well, it
-> would be good to have some quick testing at least with QCA6174/QCA9377
-> PCI devices to make sure we don't break those. Preferably also
-> QCA6174/QCA9377 SDIO devices should be tested, they work somewhat
-> differently. Can anyone help?
+> Abhishek Kumar <kuabhs@chromium.org> writes:
+>
+> > Hi All,
+> >
+> > Apologies for the late reply, too many things at the same time.
+>
+> Trust me, I know the feeling :)
+>
+> > Just a quick note, Qcomm provided a new BDF file with support for
+> > 'bus=snoc,qmi-board-id=ff' as well, so even without this patch, the
+> > non-programmed devices(with board-id=0xff) would work. However, for
+> > optimization of the BDF search strategy, the above mentioned strategy
+> > would still not work: - The stripping of full Board name would not
+> > work if board-id itself is not programmed i.e. =0xff e.g. for
+> > 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320,variant=GO_LAZOR' => no
+> > match 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320' => no match
+> > 'bus=snoc,qmi-board-id=ff' => no match 'bus=snoc' => no match because
+> > all the BDFs contains board-id=67
+>
+> Sorry, not fully following your here. Are you saying that the problem is
+> that WCN3990/hw1.0/board-2.bin is missing board file for 'bus=snoc'?
+Ya, that is what I meant here, the board-2.bin file does not contain
+an entry for 'bus=snoc' and so if board-id=oxff then still there
+cannot be any BDF that matches. So adding BDF for 'bus=snoc' would
+simplify the approach.
+> That's easy to add, each board file within board-2.bin has multiple
+> names so we can easily select one board file for which we add
+> 'bus=snoc'.
+>
+> > So with this DT patch specifically for case 'bus=snoc,qmi-board-id=ff'
+> > => no match, we fallback to default case ( the one provided in DT)
+> > i.e. 'bus=snoc,qmi-board-id=67' => match . I do not see how exactly
+> > the driver can know that it should check for a board-id of 67.
+>
+> Sorry, not following you here either. Why would the driver need to use
+> board-id 67?
+>
+> > However, to still remove dependency on the DT, we can make the
+> > board-id as no-op if it is not programmed i.e. if the board-id=ff then
+> > we would pick any BDF that match 'bus=snoc,qmi-board-id=<XX>' where XX
+> > can be any arbitrary number. Thoughts ?
+>
+> To me using just 'bus=snoc' is more logical than picking up an arbitrary
+> number. But I might be missing something here.
+The reason I mentioned that if the board-id=oxff then pick any
+available BDF entry which matches
+'bus=snoc,qmi-board-id=<XX>' is because:
+- This will atleast let the wlan chip to boot.
+- There is no BDF for 'bus=snoc' , so further stripping of boardname
+will not find any match, but as you mentioned that BDF for 'bus=snoc'
+can be added, then this will make the logic simpler and we don't have
+to pick 'bus=snoc,qmi-board-id=<XX>' with any arbitrary board-id.
+I will rollout a patch with this approach.
+>
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-Is any brave tester trying to improve the performance of their system
-with this change? Can I resend it as a regular patch?
-
--- 
-Sergey
+Thanks
+Abhishek
 
 _______________________________________________
 ath10k mailing list
