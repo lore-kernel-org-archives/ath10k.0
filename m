@@ -4,75 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4E80C433F5
-	for <ath10k@archiver.kernel.org>; Wed, 20 Apr 2022 00:44:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80C09C4332F
+	for <ath10k@archiver.kernel.org>; Thu, 21 Apr 2022 04:49:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Js8KridzV6ph2vzx2UdJBMxJK6MlYW+0Hjd5Cyxkny4=; b=yJd6h1IE7B1e2p
-	XZyhNcg6ksXXxhBPVO2W7/YI67jL9xvODSLnezy/E8rs3+k3r+DMH9S9zL+u1p9zRA0siNlFU9Ox/
-	xy04JkBi1BYdbT7XIMvZQOKLzlo0bPM8wsvBCEircMHG2/GP473DnZWzX4cyAwrGjSPudOyPHjIaF
-	87lZufPicvtONKAIwH9wZPG+o1puMQeTJAsGUnsBYOQsRkSIX0qVwVd/RSdoI9REohmBEMLHuhE6V
-	HOP+Y/85AtqRF5YeAiGeXDXzhbf3Wt4rX68U/bRZIt/KtEsWwXxLgY3N22pnvVfhbUNC2BSblLEZT
-	gKartAqOKKiqDhIb+n4Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=XL8kH7CCwJINvt9dHSx+0sjkpJ6g/cED5YDBtt9u8Z0=; b=fUunPnmt0tJRxn
+	VWdPszPcGaorbR6i5TD24liE3yXSqHp7Tcrs2EIWzS2CUTBLkMyPhK6O9sfQ0HCXAfpECqH9GBiUY
+	V80IFtSfoS7zsNLl8IQlI18aYMaEAmleAe6h1nnsGPtP0mILHqFHUY9DZHVVe5G0EEJoXhkac2LKD
+	ws/tZnZF1yUjyOjm28aj8eZLosU3wV24NVzdt4ZtlF9C1tXzvmcF7xMffNJ+9+m7lHM1OgmFstVVu
+	e0tV4xcPjfdHIi+AIJty/lBkFKOTT1qt3sWKjG/JdCz3F+pVKvYnwMLydswdaQKOpL1a8kK6jRzYt
+	hDhWcytQHA67J2E7KGgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngyRE-006ikO-HX; Wed, 20 Apr 2022 00:43:20 +0000
-Received: from mail-il1-x12a.google.com ([2607:f8b0:4864:20::12a])
+	id 1nhOl8-00BTZo-E3; Thu, 21 Apr 2022 04:49:38 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngyRB-006ijJ-KT
- for ath10k@lists.infradead.org; Wed, 20 Apr 2022 00:43:19 +0000
-Received: by mail-il1-x12a.google.com with SMTP id t4so34276ilo.12
- for <ath10k@lists.infradead.org>; Tue, 19 Apr 2022 17:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=l+ByOqKk3aTPDxOgi+MMXPoJaKvFYjmLHvE3XekD1Uk=;
- b=JmR0pcqjjI6YzateDyGtk1MhYbDzRKG/FbmqtGeN/mQoa5eGagsWoTWt7YHJ19A7yw
- IZvnTcD8zmglvHiaKtcUbQmYYQjwRPW4/B/maJVyPt69Vn+Df/Esf+QK+aBi8OOsffB2
- 2ShP+sI29u2/BwgQ3bxIIHDCYwBU4J3ovXjSI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=l+ByOqKk3aTPDxOgi+MMXPoJaKvFYjmLHvE3XekD1Uk=;
- b=Shc4hJ2aPZZwAT88/AfXFoQRbpcKLuTZDS+8P2IeeG9iJ2lJ60CsZr7J5tQDwxfzDa
- CdUWBpHOwzeon6QjB47oB7NIR9KePLg0KrNkjawqnpQbUc5rlpHUKD1XEesDkAx2WGw7
- GXbjvbYFohiqfltg9Zxoss6sJqZlaDpUM+EPQG6NSc3GiSSCS8o0NR6shj388GP0n2At
- QxIpaKffR1HpIhpl59+X4sTSFZ0DO+2mBch8EBXsFrTOklI6RMvwzLkQ6wPTPOJfkZJ0
- uLzJVDAcZVJ7PlcMq2mWKArCtH7LI2SAyEXPlNqECVlw4JolTb/XbbCDFcT0smXOcs9o
- Xhpw==
-X-Gm-Message-State: AOAM530mATDTNjGg38JUmBhTCxWiFDGBFDODzq6k3iRNQyGwEDad7Oxf
- Qtgst6VrdgwFdvn3BLEdSjVPhwwwIDwWCG5Yai2fcg==
-X-Google-Smtp-Source: ABdhPJxMZ9q71p23gnlmfhB955TXqLup+J9rvIv9OISue1PbZHuQDASslHqoDgDuQs/O6ZnxgiievLi/4a2/HhwYXRc=
-X-Received: by 2002:a05:6e02:2184:b0:2cc:56e0:1686 with SMTP id
- j4-20020a056e02218400b002cc56e01686mr1048598ila.28.1650415395243; Tue, 19 Apr
- 2022 17:43:15 -0700 (PDT)
+ id 1nhOkz-00BTU2-Rv
+ for ath10k@lists.infradead.org; Thu, 21 Apr 2022 04:49:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650516569; x=1682052569;
+ h=date:from:to:cc:subject:message-id:mime-version:
+ content-transfer-encoding;
+ bh=YvaGZuw6W/hrPLseSBYnyCdVXYKvNuBHYOLkRFZxQ3E=;
+ b=mgtgq4chP0DjSC953VmqkK+HuMmt7ICj2wYRF/jPL3FIhzkYpdy6vtI1
+ 1ClXOU3ezJgKHgNGqDzr3JoeIx0uAT2IjUyPeWpInqEYV8JaU+o6t8vSn
+ z2t6M/EsSYO+ivjfMb4n2cTom6bUVxRVYU0MHebdm3L3Yz8daxsIGupKr
+ wVR4xsPkSAxm3LnW7ahVigUNDMdtgJoV9G/xP4zfp2SLnLVOXAzNHtslo
+ XuNTPrlDOlRQV3SiK58I1RksD2ZQiqmNVF4dP86oZ+IDMR0yzUxP362Xa
+ Lvh+WOzaWEvEKP+euQ+E+OF97wFNj1g16zYZR3cmucxJKaJKAIfGSJsq3 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="263702307"
+X-IronPort-AV: E=Sophos;i="5.90,277,1643702400"; d="scan'208";a="263702307"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Apr 2022 21:49:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,277,1643702400"; d="scan'208";a="577007900"
+Received: from lkp-server01.sh.intel.com (HELO 3abc53900bec) ([10.239.97.150])
+ by orsmga008.jf.intel.com with ESMTP; 20 Apr 2022 21:49:25 -0700
+Received: from kbuild by 3abc53900bec with local (Exim 4.95)
+ (envelope-from <lkp@intel.com>) id 1nhOku-0007s6-S1;
+ Thu, 21 Apr 2022 04:49:24 +0000
+Date: Thu, 21 Apr 2022 12:49:05 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ 98874f985f304199ebea179b6219ace2beaa2d91
+Message-ID: <6260e241.VXdmORiDK5yEgrnk%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220107200417.1.Ie4dcc45b0bf365077303c596891d460d716bb4c5@changeid>
- <CAD=FV=W5fHP8K-PcoYWxYHiDWnPUVQQzOzw=REbuJSSqGeVVfg@mail.gmail.com>
- <87sfrqqfzy.fsf@kernel.org>
- <CAD=FV=U0Qw-OnKJg8SWk9=e=B0qgqnaTHpuR0cRA0WCmSHSJYQ@mail.gmail.com>
- <CACTWRwtpYBokTehRE0_zSdSjio6Ga1yqdCfj1TNck7SqOT8o_Q@mail.gmail.com>
- <87fsmio9y8.fsf@kernel.org>
-In-Reply-To: <87fsmio9y8.fsf@kernel.org>
-From: Abhishek Kumar <kuabhs@chromium.org>
-Date: Tue, 19 Apr 2022 17:43:02 -0700
-Message-ID: <CACTWRwvQNswu1nYNHS-Y580QqDV6MHiS56NwyRXm3cLN2que=Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ath10k: search for default BDF name provided in DT
-To: Kalle Valo <kvalo@kernel.org>
-Cc: Doug Anderson <dianders@chromium.org>,
- Rakesh Pillai <pillair@codeaurora.org>, 
- LKML <linux-kernel@vger.kernel.org>, 
- linux-wireless <linux-wireless@vger.kernel.org>,
- "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, ath10k <ath10k@lists.infradead.org>, 
- netdev <netdev@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_174317_727210_DEEEC407 
-X-CRM114-Status: GOOD (  32.03  )
+X-CRM114-CacheID: sfid-20220420_214930_033911_B5C9F829 
+X-CRM114-Status: UNSURE (   4.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,69 +78,152 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue, Apr 12, 2022 at 3:47 AM Kalle Valo <kvalo@kernel.org> wrote:
->
-> Abhishek Kumar <kuabhs@chromium.org> writes:
->
-> > Hi All,
-> >
-> > Apologies for the late reply, too many things at the same time.
->
-> Trust me, I know the feeling :)
->
-> > Just a quick note, Qcomm provided a new BDF file with support for
-> > 'bus=snoc,qmi-board-id=ff' as well, so even without this patch, the
-> > non-programmed devices(with board-id=0xff) would work. However, for
-> > optimization of the BDF search strategy, the above mentioned strategy
-> > would still not work: - The stripping of full Board name would not
-> > work if board-id itself is not programmed i.e. =0xff e.g. for
-> > 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320,variant=GO_LAZOR' => no
-> > match 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320' => no match
-> > 'bus=snoc,qmi-board-id=ff' => no match 'bus=snoc' => no match because
-> > all the BDFs contains board-id=67
->
-> Sorry, not fully following your here. Are you saying that the problem is
-> that WCN3990/hw1.0/board-2.bin is missing board file for 'bus=snoc'?
-Ya, that is what I meant here, the board-2.bin file does not contain
-an entry for 'bus=snoc' and so if board-id=oxff then still there
-cannot be any BDF that matches. So adding BDF for 'bus=snoc' would
-simplify the approach.
-> That's easy to add, each board file within board-2.bin has multiple
-> names so we can easily select one board file for which we add
-> 'bus=snoc'.
->
-> > So with this DT patch specifically for case 'bus=snoc,qmi-board-id=ff'
-> > => no match, we fallback to default case ( the one provided in DT)
-> > i.e. 'bus=snoc,qmi-board-id=67' => match . I do not see how exactly
-> > the driver can know that it should check for a board-id of 67.
->
-> Sorry, not following you here either. Why would the driver need to use
-> board-id 67?
->
-> > However, to still remove dependency on the DT, we can make the
-> > board-id as no-op if it is not programmed i.e. if the board-id=ff then
-> > we would pick any BDF that match 'bus=snoc,qmi-board-id=<XX>' where XX
-> > can be any arbitrary number. Thoughts ?
->
-> To me using just 'bus=snoc' is more logical than picking up an arbitrary
-> number. But I might be missing something here.
-The reason I mentioned that if the board-id=oxff then pick any
-available BDF entry which matches
-'bus=snoc,qmi-board-id=<XX>' is because:
-- This will atleast let the wlan chip to boot.
-- There is no BDF for 'bus=snoc' , so further stripping of boardname
-will not find any match, but as you mentioned that BDF for 'bus=snoc'
-can be added, then this will make the logic simpler and we don't have
-to pick 'bus=snoc,qmi-board-id=<XX>' with any arbitrary board-id.
-I will rollout a patch with this approach.
->
-> --
-> https://patchwork.kernel.org/project/linux-wireless/list/
->
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: 98874f985f304199ebea179b6219ace2beaa2d91  Merge branch 'pending' into master-pending
 
-Thanks
-Abhishek
+elapsed time: 725m
+
+configs tested: 126
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+m68k                       m5208evb_defconfig
+m68k                          hp300_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                      pcm030_defconfig
+mips                     loongson1b_defconfig
+arm                          lpd270_defconfig
+arm                         lpc18xx_defconfig
+powerpc                 canyonlands_defconfig
+mips                       bmips_be_defconfig
+arm                      jornada720_defconfig
+xtensa                         virt_defconfig
+powerpc                      chrp32_defconfig
+ia64                      gensparse_defconfig
+sh                        apsh4ad0a_defconfig
+mips                         cobalt_defconfig
+arm                            qcom_defconfig
+xtensa                           allyesconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                 mpc837x_rdb_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                 mpc834x_itx_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                       bvme6000_defconfig
+sh                   secureedge5410_defconfig
+powerpc                       ppc64_defconfig
+arm64                            alldefconfig
+sh                          polaris_defconfig
+powerpc                      ep88xc_defconfig
+sh                          rsk7269_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220420
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+arc                  randconfig-r043-20220420
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                               rhel-8.3
+x86_64                              defconfig
+
+clang tested configs:
+riscv                randconfig-c006-20220420
+mips                 randconfig-c004-20220420
+x86_64                        randconfig-c007
+i386                          randconfig-c001
+arm                  randconfig-c002-20220420
+powerpc              randconfig-c003-20220420
+powerpc                      walnut_defconfig
+arm                        vexpress_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                         socfpga_defconfig
+arm                           omap1_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                     pseries_defconfig
+powerpc                     skiroot_defconfig
+arm                          ep93xx_defconfig
+powerpc                    gamecube_defconfig
+arm                        neponset_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+hexagon              randconfig-r041-20220420
+riscv                randconfig-r042-20220420
+hexagon              randconfig-r045-20220420
+s390                 randconfig-r044-20220420
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
