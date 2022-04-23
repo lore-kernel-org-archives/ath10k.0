@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 159C2C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13AC6C433EF
 	for <ath10k@archiver.kernel.org>; Sat, 23 Apr 2022 23:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,55 +12,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=oJrFiTDspqmxz0rglq6qy90M/QSEnB0AuRqyFesjrF0=; b=p+LzJPcOWn5NaN
-	vtFNV1MiO4Nt4J2JsCnkIyMFzPSLE1NsVqPr5E7v4EWNA/Q1OJgPRGy8/u6i5Vf9lEq6Z3bNuhnXj
-	DsISm0L9hz61L3fivrpCA4F5MYXFvOFxScwtrvVjmG3GEPRvJiZA1frOMOgcwAziy4jhoJnyyrf+8
-	LeH79hFDnfHDP1IDtjj6BmA/Y9DiouOfLy92NvpY+dEqXD8gzMJk4JDX5coL4KR9qmX6hxrcW2+HE
-	igk/Xd2HubVeAztZuM7lFTftu/+MhaCzehUbFlQtzLEEjKEKz06XBcvpO2AaC7C0EjaSwRjCSGjqE
-	bR+Co7OSUgjGBYWmjyYg==;
+	List-Owner; bh=12XOPvDze4F/AtvoikG9Af/c3u9pOJgS3YHDb1RIs4s=; b=hFASviEQW6/q+I
+	PPVTyi0LcfU65+8kVNoN871KQcONVIJ4crXvSaZ8zYnrOEanJlvA/NzpShOyI35EVAOrRBUo2Sm//
+	2mjUhYIVOu5Q9qH9UMKXoozP9qlHAG1YPNgPsCJElABfvnTC6iupj5Wk5rw45+uP3WOqlJzas4vX9
+	VfAe/td0yJjWybM7bdIuBs88PTVlQOUJefLIWVjiuFjnDyINXptGVIBTT2+8OIfUV0xCH/kx74tgL
+	F9CLn6CBf4EubMw0DPdYLA/5J/9H3HeNu9bT07CxW4evaPXP9GoaMR2D10VzG20U/cOlistH1Mk8k
+	cxlJ7tlmrtDFVDLwktNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1niP5o-005IDX-EY; Sat, 23 Apr 2022 23:23:08 +0000
+	id 1niP5q-005IE5-V1; Sat, 23 Apr 2022 23:23:10 +0000
 Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1niP5k-005ID1-5Z
- for ath10k@lists.infradead.org; Sat, 23 Apr 2022 23:23:07 +0000
+ id 1niP5n-005ID1-7I
+ for ath10k@lists.infradead.org; Sat, 23 Apr 2022 23:23:08 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650756184; x=1682292184;
+ t=1650756187; x=1682292187;
  h=date:from:to:cc:subject:message-id:mime-version:
  content-transfer-encoding;
- bh=XPRx2X5p0p1TMM5iL6MF10tsFjIL0xF5nzLg6dUGBzs=;
- b=YxfChOv9JXllGVNvkvLqkOvxVdFWdfsXbMUFzQRlA1f/LQlLzzfaTOoI
- ckCO6K67aUBJNcKw2zBfhzS+hqdeLrjaPDzKpFvRv0HNCjxVIsTkkDsKe
- 3XfgRiU20Saa8UsvcDjuukjYWLwisqkwU4BhnT0Hh8PqxegpwGuf77qI/
- 1DPeiYZhsbkHlKomZrnxl0FfeEgewh1j7fo7FCZdOiDGZrrN+YnfgEq3W
- 5PgUZVymL2+BRZt7IIBu829+QN1OujGTGbt2Qep+ypODrlKrKvlksXi8V
- e5iDoRAa4A25XtNr078GQowhISBO78Cm4unPZqDGbLqC2tJizYVrmPRBp g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10326"; a="264461912"
-X-IronPort-AV: E=Sophos;i="5.90,285,1643702400"; d="scan'208";a="264461912"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ bh=8MDC+GbonnVUxiKugZCvvVW7B5CVHAOUB+Me8Lxu858=;
+ b=W5r/H+TIT+i8CtkuduKTmimg9BPP6IcjYcn/0gFAgLLLMFofqfXSEtT5
+ kMaPi9BGJEl+9lmadMmbDWx25ikYOWi8wJkZ3U5GVLxBry6g8y0VZ/Jl5
+ hLEdec7z0t7E/ln5zI9V7AGvGgMNYu9Su7zIOSvAdICWhjXNGb5lqaNfy
+ d2CiLneVVLDzEIRes4UE1zS3JI2rvyWNygyHD4L1sPTIJFTvafdHQ/o2a
+ TVCrmmDO62MfK0J4cVHKRlhiCO5gFfAkFlU1xdb3TH81ot9J3/Uz4RY5E
+ 1ZlI5QD9/KYQ2nlrIIs9Ama5t8drR1vXpQAZCw8Jff+kRvoE5ZPI+fZDc Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10326"; a="264461913"
+X-IronPort-AV: E=Sophos;i="5.90,285,1643702400"; d="scan'208";a="264461913"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  23 Apr 2022 16:22:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,285,1643702400"; d="scan'208";a="557041633"
+X-IronPort-AV: E=Sophos;i="5.90,285,1643702400"; d="scan'208";a="512074386"
 Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
- by orsmga007.jf.intel.com with ESMTP; 23 Apr 2022 16:22:57 -0700
+ by orsmga003.jf.intel.com with ESMTP; 23 Apr 2022 16:22:57 -0700
 Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1niP5c-0000hj-Sd;
+ (envelope-from <lkp@intel.com>) id 1niP5c-0000hm-TV;
  Sat, 23 Apr 2022 23:22:56 +0000
-Date: Sun, 24 Apr 2022 07:22:36 +0800
+Date: Sun, 24 Apr 2022 07:22:52 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- e999a5da28a0e0f7de242d841ef7d5e48f4646ae
-Message-ID: <62648a3c.rsFGHV4Evqc5CjlE%lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 01be26cde012478db958d9bde530877c46031e76
+Message-ID: <62648a4c.vX9iePx37pDeSSNn%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220423_162304_338557_71B2CD27 
-X-CRM114-Status: UNSURE (   3.78  )
+X-CRM114-CacheID: sfid-20220423_162307_338674_FA7B8720 
+X-CRM114-Status: UNSURE (   4.56  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,12 +78,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: e999a5da28a0e0f7de242d841ef7d5e48f4646ae  ath9k: fix QCA9561 PA bias level
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 01be26cde012478db958d9bde530877c46031e76  Add localversion-wireless-testing-ath
 
-elapsed time: 763m
+elapsed time: 762m
 
-configs tested: 156
+configs tested: 153
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -100,10 +100,6 @@ arm                             pxa_defconfig
 sparc                       sparc64_defconfig
 xtensa                          iss_defconfig
 ia64                             alldefconfig
-xtensa                  audio_kc705_defconfig
-arm                           imxrt_defconfig
-xtensa                              defconfig
-alpha                               defconfig
 um                                  defconfig
 m68k                          atari_defconfig
 mips                  maltasmvp_eva_defconfig
@@ -124,6 +120,8 @@ arm                         lubbock_defconfig
 sh                           sh2007_defconfig
 powerpc                 mpc837x_mds_defconfig
 xtensa                    xip_kc705_defconfig
+arc                        nsim_700_defconfig
+sh                        apsh4ad0a_defconfig
 arm                             ezx_defconfig
 arm                         vf610m4_defconfig
 arm                        trizeps4_defconfig
@@ -146,9 +144,7 @@ arc                     nsimosci_hs_defconfig
 sh                           se7722_defconfig
 arm                            xcep_defconfig
 sh                           se7619_defconfig
-powerpc                   motionpro_defconfig
-powerpc                      pcm030_defconfig
-arc                 nsimosci_hs_smp_defconfig
+xtensa                  audio_kc705_defconfig
 arm                            zeus_defconfig
 riscv                            allyesconfig
 arm                            mps2_defconfig
@@ -165,16 +161,17 @@ nios2                               defconfig
 arc                              allyesconfig
 csky                                defconfig
 nios2                            allyesconfig
+alpha                               defconfig
 alpha                            allyesconfig
 h8300                            allyesconfig
 xtensa                           allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
-s390                                defconfig
-s390                             allmodconfig
 parisc                              defconfig
 parisc64                            defconfig
 parisc                           allyesconfig
+s390                             allmodconfig
+s390                                defconfig
 s390                             allyesconfig
 sparc                               defconfig
 i386                             allyesconfig
@@ -187,11 +184,14 @@ mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                           allnoconfig
 powerpc                          allmodconfig
-x86_64                        randconfig-a006
 x86_64                        randconfig-a004
 x86_64                        randconfig-a002
-i386                          randconfig-a012
+x86_64                        randconfig-a006
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
 i386                          randconfig-a014
+i386                          randconfig-a012
 i386                          randconfig-a016
 riscv                               defconfig
 riscv                    nommu_virt_defconfig
@@ -222,34 +222,31 @@ mips                           ip27_defconfig
 powerpc                 mpc8315_rdb_defconfig
 powerpc                      ppc64e_defconfig
 powerpc                      pmac32_defconfig
-arm                  colibri_pxa300_defconfig
-mips                      malta_kvm_defconfig
 arm                         hackkit_defconfig
 hexagon                             defconfig
 powerpc                    mvme5100_defconfig
 arm                         mv78xx0_defconfig
 powerpc                      ppc44x_defconfig
-mips                        omega2p_defconfig
-powerpc                     ppa8548_defconfig
+arm                         orion5x_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                     tqm8540_defconfig
+mips                          ath25_defconfig
 arm                          pxa168_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                 mpc832x_mds_defconfig
-mips                         tb0219_defconfig
 x86_64                        randconfig-a005
-x86_64                        randconfig-a003
 x86_64                        randconfig-a001
+x86_64                        randconfig-a003
 i386                          randconfig-a002
 i386                          randconfig-a006
 i386                          randconfig-a004
+x86_64                        randconfig-a016
 x86_64                        randconfig-a012
 x86_64                        randconfig-a014
-x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
 hexagon              randconfig-r041-20220424
 riscv                randconfig-r042-20220424
 hexagon              randconfig-r045-20220424
-hexagon              randconfig-r041-20220422
-riscv                randconfig-r042-20220422
-hexagon              randconfig-r045-20220422
 
 -- 
 0-DAY CI Kernel Test Service
