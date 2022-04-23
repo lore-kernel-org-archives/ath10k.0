@@ -4,92 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D68EC433F5
-	for <ath10k@archiver.kernel.org>; Sat, 23 Apr 2022 10:53:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 159C2C433FE
+	for <ath10k@archiver.kernel.org>; Sat, 23 Apr 2022 23:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qurx5shnS9nuxyV8zJJwtdbxL7018L4Hum4TG09RaC0=; b=Hp13JgX7DVnRzpKzt8Zidf2Szt
-	zrv28H6Wj6MJPHerQZcnIyylJYbetQb2MS11SHvMtj/VslHyiWrddjNzHuD2a14rnigHe7XXKeh66
-	cUK/nF8LoRfDqCQMDpBC3jP1vcFkjV24J6tjQ3XmXQ29EWbhBal75o3UcFwq1uspI/wFWXtvJhRWE
-	wv7wDOT0JejZU0xfR/4laj5rCtSH3noLjv8iMFvGxQS/QyCC9hXRB0QD7R+6noxgk+D1X3JK17TrQ
-	bymY0acWJc5EP6pqIVlW07JlPncLazB3bpC+KO9ZUQ9zqQc3Jd3I8z9fHoZYLRF7RT87var0bK3mQ
-	PVSjp4mA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=oJrFiTDspqmxz0rglq6qy90M/QSEnB0AuRqyFesjrF0=; b=p+LzJPcOWn5NaN
+	vtFNV1MiO4Nt4J2JsCnkIyMFzPSLE1NsVqPr5E7v4EWNA/Q1OJgPRGy8/u6i5Vf9lEq6Z3bNuhnXj
+	DsISm0L9hz61L3fivrpCA4F5MYXFvOFxScwtrvVjmG3GEPRvJiZA1frOMOgcwAziy4jhoJnyyrf+8
+	LeH79hFDnfHDP1IDtjj6BmA/Y9DiouOfLy92NvpY+dEqXD8gzMJk4JDX5coL4KR9qmX6hxrcW2+HE
+	igk/Xd2HubVeAztZuM7lFTftu/+MhaCzehUbFlQtzLEEjKEKz06XBcvpO2AaC7C0EjaSwRjCSGjqE
+	bR+Co7OSUgjGBYWmjyYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1niDNe-004AlS-NA; Sat, 23 Apr 2022 10:52:46 +0000
-Received: from out2-smtp.messagingengine.com ([66.111.4.26])
+	id 1niP5o-005IDX-EY; Sat, 23 Apr 2022 23:23:08 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1niDNb-004AkL-SD
- for ath10k@lists.infradead.org; Sat, 23 Apr 2022 10:52:46 +0000
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.nyi.internal (Postfix) with ESMTP id 1C7005C00E6;
- Sat, 23 Apr 2022 06:52:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute4.internal (MEProxy); Sat, 23 Apr 2022 06:52:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pks.im; h=cc:cc
- :content-type:date:date:from:from:in-reply-to:in-reply-to
- :message-id:mime-version:references:reply-to:sender:subject
- :subject:to:to; s=fm1; t=1650711157; x=1650797557; bh=UE1GerCR9T
- LmzaV9tns9QX/P+hEnHBRCJ/KKmCkbz1k=; b=DpMg52adGu8bG69Y4pZkmTU5V+
- d+rJhUM1R6+bhTuHFdJfDf0Z8/lXMoN2nCCfGFokAKW5boTIidKSI4CWwJc6oLVN
- se0DUWQ1BZqqyTHdDiQsRUdCKhbJXVVcnbYOspn8S8ti15/fMehGRjvv94zozylc
- dGWT3EOm93zrnI5R8nT8C+gq9GbaAEWGR1cafWsoOYHt5jl3uCQAuztjKTL/0wR6
- zAMaLhk/T6iBxQZpQSDFzft/FhN9/EsbO040ASt5aB7x+Bb2tEbvhYl2cLRVEw9f
- sCOZu75kkWb380GC3L8EZ7a74u11ltWsKunZEWvUmwT3kq69lTdLyF2x7zRg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-type:date:date:from:from
- :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1650711157; x=
- 1650797557; bh=UE1GerCR9TLmzaV9tns9QX/P+hEnHBRCJ/KKmCkbz1k=; b=O
- 3nG5iyYeCtVi7aMp8k3niKM4ykY3ooHpiGgTRXRWO2U6rP6+THDz+q1nxd0vF4jW
- ngVonQdbuzt4/e+qW/IQn7wpqgG7bd0mGOZtWNl+ZFpkP0z6sey+D5tNeCBVqOmM
- klJOASfK/N/P2ghEJ1ASakpjeb+9pU2kQq2RHHyx2dhGgwRbh8CJ+2yG7B2hpseo
- ZG2WUMLQJdg1d2G41PyaDgX2b7gEpeGWcXxeWRTMxbqK+K5SepEFnCdgEKmb9uod
- QTOi8tkBZ53C64ABYRLvg8NBerPwO0npg/day8RW8IyAvieJewjYbzcR6gvZl377
- hFZTgsqwgVhIdZyaxMURA==
-X-ME-Sender: <xms:dNpjYj9hVS57y590vJkL7LAw0DxAUWXGoI0DWB2xJyheNFOqYuXWpg>
- <xme:dNpjYvsdw_9emZQCQ4P0XpEu3cxb5RyNCBxThHet3FS58ji1uUCmtKPQ15NcME7gC
- n4I03WS-h9UkiAxDw>
-X-ME-Received: <xmr:dNpjYhCex3e6_I8l-XOnTZ5ilHXg-nM6L_7KhJFanSLeY5covBA_dDWnIhfLGe5devN1GaOU2rgKfyta92BeH-hzWPazo__XKuHLk1z74gAIb_ycXrsDTA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrtdeigdeffecutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpeffhffvvefukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpefrrghtrhhi
- tghkucfuthgvihhnhhgrrhguthcuoehpshesphhkshdrihhmqeenucggtffrrghtthgvrh
- hnpeehgeefhfeuueeghffglefffeduudeffffgfeduleehtddttdelieduudeukedvgeen
- ucffohhmrghinhepghhithhhuhgsrdgtohhmpdgrrhgthhhlihhnuhigrdhorhhgpdhinh
- hfrhgruggvrggurdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
- rghilhhfrhhomhepphhssehpkhhsrdhimh
-X-ME-Proxy: <xmx:dNpjYvcYpDMCGRcKB34PB7rNyhCpoT9oSEJQGrLSrddoKBbqCE-PtA>
- <xmx:dNpjYoNPRN3P7Jk2gTiOkX5w30aRgYtrsq6WrWi2OrxAURZoAGoKpA>
- <xmx:dNpjYhkpMP18LvTtMiGSS9Z5rCz0Fbox4ENHfN8VRA-zdZXlWJdKoQ>
- <xmx:ddpjYlqwJAkB7w-JIQQABeWBXDNxzYEI_LXz9Tg1MPCJ-A8b4kYAEQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 23 Apr 2022 06:52:35 -0400 (EDT)
-Received: from localhost (xps [10.192.0.12])
- by vm-mail.pks.im (OpenSMTPD) with ESMTPSA id c92f9d6c
- (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO); 
- Sat, 23 Apr 2022 10:52:32 +0000 (UTC)
-Date: Sat, 23 Apr 2022 12:52:37 +0200
-From: Patrick Steinhardt <ps@pks.im>
-To: Brian Norris <briannorris@chromium.org>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Wen Gong <wgong@codeaurora.org>
-Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory
- domain"
-Message-ID: <YmPadTu8CfEARfWs@xps>
-References: <20200527165718.129307-1-briannorris@chromium.org>
+ id 1niP5k-005ID1-5Z
+ for ath10k@lists.infradead.org; Sat, 23 Apr 2022 23:23:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650756184; x=1682292184;
+ h=date:from:to:cc:subject:message-id:mime-version:
+ content-transfer-encoding;
+ bh=XPRx2X5p0p1TMM5iL6MF10tsFjIL0xF5nzLg6dUGBzs=;
+ b=YxfChOv9JXllGVNvkvLqkOvxVdFWdfsXbMUFzQRlA1f/LQlLzzfaTOoI
+ ckCO6K67aUBJNcKw2zBfhzS+hqdeLrjaPDzKpFvRv0HNCjxVIsTkkDsKe
+ 3XfgRiU20Saa8UsvcDjuukjYWLwisqkwU4BhnT0Hh8PqxegpwGuf77qI/
+ 1DPeiYZhsbkHlKomZrnxl0FfeEgewh1j7fo7FCZdOiDGZrrN+YnfgEq3W
+ 5PgUZVymL2+BRZt7IIBu829+QN1OujGTGbt2Qep+ypODrlKrKvlksXi8V
+ e5iDoRAa4A25XtNr078GQowhISBO78Cm4unPZqDGbLqC2tJizYVrmPRBp g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10326"; a="264461912"
+X-IronPort-AV: E=Sophos;i="5.90,285,1643702400"; d="scan'208";a="264461912"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Apr 2022 16:22:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,285,1643702400"; d="scan'208";a="557041633"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+ by orsmga007.jf.intel.com with ESMTP; 23 Apr 2022 16:22:57 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+ (envelope-from <lkp@intel.com>) id 1niP5c-0000hj-Sd;
+ Sat, 23 Apr 2022 23:22:56 +0000
+Date: Sun, 24 Apr 2022 07:22:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ e999a5da28a0e0f7de242d841ef7d5e48f4646ae
+Message-ID: <62648a3c.rsFGHV4Evqc5CjlE%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200527165718.129307-1-briannorris@chromium.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220423_035244_452797_BDED8F99 
-X-CRM114-Status: GOOD (  29.13  )
+X-CRM114-CacheID: sfid-20220423_162304_338557_71B2CD27 
+X-CRM114-Status: UNSURE (   3.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,168 +73,189 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0388853602563793971=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: e999a5da28a0e0f7de242d841ef7d5e48f4646ae  ath9k: fix QCA9561 PA bias level
 
---===============0388853602563793971==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fPTOmHiq9JC98ggj"
-Content-Disposition: inline
+elapsed time: 763m
 
+configs tested: 156
+configs skipped: 3
 
---fPTOmHiq9JC98ggj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-On Wed, May 27, 2020 at 09:57:18AM -0700, Brian Norris wrote:
-> This reverts commit 2dc016599cfa9672a147528ca26d70c3654a5423.
->=20
-> Users are reporting regressions in regulatory domain detection and
-> channel availability.
->=20
-> The problem this was trying to resolve was fixed in firmware anyway:
->=20
->     QCA6174 hw3.0: sdio-4.4.1: add firmware.bin_WLAN.RMH.4.4.1-00042
->     https://github.com/kvalo/ath10k-firmware/commit/4d382787f0efa77dba403=
-94e0bc604f8eff82552
->=20
-> Link: https://bbs.archlinux.org/viewtopic.php?id=3D254535
-> Link: http://lists.infradead.org/pipermail/ath10k/2020-April/014871.html
-> Link: http://lists.infradead.org/pipermail/ath10k/2020-May/015152.html
-> Fixes: 2dc016599cfa ("ath: add support for special 0x0 regulatory domain")
-> Cc: <stable@vger.kernel.org>
-> Cc: Wen Gong <wgong@codeaurora.org>
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
->  drivers/net/wireless/ath/regd.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/net/wireless/ath/regd.c b/drivers/net/wireless/ath/r=
-egd.c
-> index bee9110b91f3..20f4f8ea9f89 100644
-> --- a/drivers/net/wireless/ath/regd.c
-> +++ b/drivers/net/wireless/ath/regd.c
-> @@ -666,14 +666,14 @@ ath_regd_init_wiphy(struct ath_regulatory *reg,
-> =20
->  /*
->   * Some users have reported their EEPROM programmed with
-> - * 0x8000 or 0x0 set, this is not a supported regulatory
-> - * domain but since we have more than one user with it we
-> - * need a solution for them. We default to 0x64, which is
-> - * the default Atheros world regulatory domain.
-> + * 0x8000 set, this is not a supported regulatory domain
-> + * but since we have more than one user with it we need
-> + * a solution for them. We default to 0x64, which is the
-> + * default Atheros world regulatory domain.
->   */
->  static void ath_regd_sanitize(struct ath_regulatory *reg)
->  {
-> -	if (reg->current_rd !=3D COUNTRY_ERD_FLAG && reg->current_rd !=3D 0)
-> +	if (reg->current_rd !=3D COUNTRY_ERD_FLAG)
->  		return;
->  	printk(KERN_DEBUG "ath: EEPROM regdomain sanitized\n");
->  	reg->current_rd =3D 0x64;
-> --=20
-> 2.27.0.rc0.183.gde8f92d652-goog
->=20
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+arm                             pxa_defconfig
+sparc                       sparc64_defconfig
+xtensa                          iss_defconfig
+ia64                             alldefconfig
+xtensa                  audio_kc705_defconfig
+arm                           imxrt_defconfig
+xtensa                              defconfig
+alpha                               defconfig
+um                                  defconfig
+m68k                          atari_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                          badge4_defconfig
+m68k                        mvme147_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                           viper_defconfig
+openrisc                    or1ksim_defconfig
+arc                        vdk_hs38_defconfig
+sh                        edosk7760_defconfig
+arm                             rpc_defconfig
+sh                            hp6xx_defconfig
+openrisc                            defconfig
+sh                               j2_defconfig
+mips                    maltaup_xpa_defconfig
+powerpc                    klondike_defconfig
+arm                         lubbock_defconfig
+sh                           sh2007_defconfig
+powerpc                 mpc837x_mds_defconfig
+xtensa                    xip_kc705_defconfig
+arm                             ezx_defconfig
+arm                         vf610m4_defconfig
+arm                        trizeps4_defconfig
+powerpc                         ps3_defconfig
+sh                           se7780_defconfig
+arm                        spear6xx_defconfig
+m68k                            q40_defconfig
+ia64                      gensparse_defconfig
+sh                          lboxre2_defconfig
+arm                      footbridge_defconfig
+powerpc                     taishan_defconfig
+h8300                               defconfig
+powerpc                     tqm8541_defconfig
+xtensa                  cadence_csp_defconfig
+sparc64                          alldefconfig
+m68k                         amcore_defconfig
+sh                          landisk_defconfig
+m68k                          sun3x_defconfig
+arc                     nsimosci_hs_defconfig
+sh                           se7722_defconfig
+arm                            xcep_defconfig
+sh                           se7619_defconfig
+powerpc                   motionpro_defconfig
+powerpc                      pcm030_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                            zeus_defconfig
+riscv                            allyesconfig
+arm                            mps2_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220422
+arm                  randconfig-c002-20220424
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                               rhel-8.3
 
-This revert is in fact causing problems on my machine. I have a QCA9984,
-which exports two network interfaces. While I was able to still use one
-of both NICs for 2.4GHz, I couldn't really use the other card to set up
-a 5GHz AP anymore because all frequencies were restricted. This has
-started with v5.17.1, to which this revert was backported.
+clang tested configs:
+riscv                randconfig-c006-20220424
+mips                 randconfig-c004-20220424
+x86_64                        randconfig-c007
+i386                          randconfig-c001
+arm                  randconfig-c002-20220424
+powerpc              randconfig-c003-20220424
+powerpc                      walnut_defconfig
+powerpc                     kilauea_defconfig
+mips                           ip27_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                      pmac32_defconfig
+arm                  colibri_pxa300_defconfig
+mips                      malta_kvm_defconfig
+arm                         hackkit_defconfig
+hexagon                             defconfig
+powerpc                    mvme5100_defconfig
+arm                         mv78xx0_defconfig
+powerpc                      ppc44x_defconfig
+mips                        omega2p_defconfig
+powerpc                     ppa8548_defconfig
+arm                          pxa168_defconfig
+powerpc                     tqm8560_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                         tb0219_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+hexagon              randconfig-r041-20220424
+riscv                randconfig-r042-20220424
+hexagon              randconfig-r045-20220424
+hexagon              randconfig-r041-20220422
+riscv                randconfig-r042-20220422
+hexagon              randconfig-r045-20220422
 
-Reverting this patch again fixes the issue on my system. So it seems
-like there still are cards out there in the wild which have a value of
-0x0 as their regulatory domain.
-
-Quoting from your other mail:
-
-> My understanding was that no QCA modules *should* be shipped with a
-> value of 0 in this field. The instance I'm aware of was more or less a
-> manufacturing error I think, and we got Qualcomm to patch it over in
-> software.
-
-This sounds like the issue should've already been fixed in firmware,
-right? To the best of my knowledge I'm using the latest that's currently
-available, which seems to contradict this. I've added the relevant dmesg
-snippets though in case I'm mistaken:
-
-    ath10k_pci 0000:03:00.0: enabling device (0000 -> 0002)
-    ath10k_pci 0000:03:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_m=
-ode 0
-    ath10k_pci 0000:04:00.0: enabling device (0000 -> 0002)
-    ath10k_pci 0000:04:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_m=
-ode 0
-    ath10k_pci 0000:03:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_i=
-d 0x00000000 sub 168c:cafe
-    ath10k_pci 0000:03:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 1 test=
-mode 0
-    ath10k_pci 0000:03:00.0: firmware ver 10.4-3.9.0.2-00131 api 5 features=
- no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps,peer-fixed-=
-rate,iram-recovery crc32 23bd9e43
-    ath10k_pci 0000:04:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_i=
-d 0x00000000 sub 168c:cafe
-    ath10k_pci 0000:04:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 1 test=
-mode 0
-    ath10k_pci 0000:04:00.0: firmware ver 10.4-3.9.0.2-00131 api 5 features=
- no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast,no-ps,peer-fixed-=
-rate,iram-recovery crc32 23bd9e43
-    ath10k_pci 0000:03:00.0: board_file api 2 bmi_id 0:1 crc32 85498734
-    ath10k_pci 0000:04:00.0: board_file api 2 bmi_id 0:2 crc32 85498734
-    ath10k_pci 0000:03:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal otp max-sta =
-512 raw 0 hwcrypto 1
-    ath: EEPROM regdomain sanitized
-    ath: EEPROM regdomain: 0x64
-    ath: EEPROM indicates we should expect a direct regpair map
-    ath: Country alpha2 being used: 00
-    ath: Regpair used: 0x64
-    ath10k_pci 0000:04:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal otp max-sta =
-512 raw 0 hwcrypto 1
-    ath: EEPROM regdomain sanitized
-    ath: EEPROM regdomain: 0x64
-    ath: EEPROM indicates we should expect a direct regpair map
-    ath: Country alpha2 being used: 00
-    ath: Regpair used: 0x64
-
-Patrick
-
---fPTOmHiq9JC98ggj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF9hrgiFbCdvenl/rVbJhu7ckPpQFAmJj2nQACgkQVbJhu7ck
-PpR9KhAAiF4B5kQfSXTMPny/kJcAHZn0zrVMyGxLFsrKNwucmhArlaT3n7QCxZ8C
-6vw0oGMXzkc/nA3fYE/O1P8UUzCQYlVPYqVK6iMSfrcfdGR87kPU8bMltSR4DVoo
-Sg4vtGixrTVT1/nG4pzoxnGw8nceuUKgbu3gPa1HWdE+RKkIILNrvq3fNo9utmMk
-nKRXay4P1qgotr2Hydc/OA/PRl/LmydvO39uXLX8H2lZN3wxYEQlhukbkErdyILB
-OCwyy7m+9cxLt0HPZjNo4lhQGR0QnwcOo6GoL+gaVeljM6XyCusnAXud6WZd0EcL
-0tOBuADbe30plhm4Vp+fbHBA3lA1JETBCvpPaaJNVo06NgqLnBdfG1rP2PLaEMfq
-mFFH7fbW5qNUg57JPrqwz1F8FAfLK7DOpOXcymkC9wqgTVclQJvcTKJWlRpRXJ1x
-lwEsN0lB4Y+6zOA0zwsIiUGC4IY6/BGEaEYuDhVYazhYPSDMzM+S/2Wn6zQW02Di
-yea/qAcKITL4eE1OiquRJaJtbGEX9OcG3Vg5kgW+WTD1tx/JgSbQCYl/Ayqj+rEN
-/sHa5zm4S4BRXGbA9+1Q9quYQYS0RE6nBaAUYBZEhT/8swWCGGnNMSXG3ZOUfYi7
-/hMRvB6IWOTtviqLJAmADqsaISjk26JTeODnYMdQQcIOeUFyqXY=
-=MzMM
------END PGP SIGNATURE-----
-
---fPTOmHiq9JC98ggj--
-
-
---===============0388853602563793971==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============0388853602563793971==--
-
