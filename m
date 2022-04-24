@@ -4,126 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B101C433F5
-	for <ath10k@archiver.kernel.org>; Sun, 24 Apr 2022 09:46:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E279C433F5
+	for <ath10k@archiver.kernel.org>; Sun, 24 Apr 2022 22:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=fgTpJ5oFJuO9oE1UqwX1A3LUckkMyuB6FofiPH6V2RQ=; b=kAMLBVfCyWStzv
-	vaaEd64kaSz8t/+J8bbOeMMLVN99TRPsBTTurY921pqJ5NwBsUjMK57j8mrVtMqqPtMn+g/wUCLE1
-	1tPEhDfBVy26SP39yVCcgWaAYyBRjMq8zkPykLNyZ+OS7Bac6U2VSAQd50ikUEKMKaB3Lu/lqTGRY
-	5xEGkE6/0B8Bws2yEr+XaRae2oSvfBtG9ZLVUjGt2j4q8KF8jHqGresX9Y+vnYA6UQW8xPsXR44Xz
-	xoCNGA0Ka0deyae6r7hCsVy7OzWflJVvOUDw+OahUwykIPotjgSRwCXZlcOoEZt848aqmrqjfMANq
-	FMJqhBx8zx4JHmaX8V8g==;
+	List-Owner; bh=Ie2gWqL8Jbc6kN/NXOUrHFGPMDXKi1m5dWjx/jJ/2FI=; b=N7xafYBUh+IpPE
+	vDynYw0cB6mek+dJTSEelIUhyJiiq9qAOUGukkhFMiaXT/9LJct/dFRIB7KvdhxmsZJ8W3Hmlai5q
+	DF1D4eqe2+XxszmdcFN5hb4T/+XZ5bViKKV4Rjijrg0QLVLsvOr1Pdt5GdWqxGivFG1k5jT4aGayJ
+	oWmFyd3wAp4O4aRuW7LAejCDO4xdFdK3N+L6G08NR5F8OxO5LoJJczI2wraMc/D+Yi3r8foyzYOh7
+	PU/R8nHHNJHJlgZBfKnz07w7qX18m/CPygpReVhWn00KSmHExEHAoD563ph1b9VVzAyKzrlV1iYj1
+	vsf2zDcRhjcfbW0FwwBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1niYoK-006IYH-Cs; Sun, 24 Apr 2022 09:45:44 +0000
-Received: from mail-sgaapc01on20724.outbound.protection.outlook.com
- ([2a01:111:f400:feab::724]
- helo=APC01-SG2-obe.outbound.protection.outlook.com)
+	id 1nikl6-007TwQ-V1; Sun, 24 Apr 2022 22:31:13 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1niYoH-006IXt-62
- for ath10k@lists.infradead.org; Sun, 24 Apr 2022 09:45:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QNjK66Bx86oRW0co4mgU1MlT6rR6kwHr7so8VTVOao5PRD5FmzaOL74xgtVIArWg2mrC2kXJv55xL4JDGQuviH2//DaHJXupzCgUmYhlYo50rFHHILrsMKMIR6Vl6hugcDTq/oAbIkUbAVX97WoKO7Rwrt987/2EmdU2ADBoYyeskA4jT1KioTtCOz7/B0YuiQ3KwWQ5HRD44xF+NEDtKSGcyAaCxtADcldxt7ndttWKd/H8RDFzQEdJiKNdpMZKKhLeHEZvRX5jff4TJQ47q/JgFmRmmHEA1K2V2KnahYRh4wcqAkAaZdA3N5zUr7j06pvOYWV55n5/MfczPHXXCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a6yYKYNA50mE/CGfCJHRuKu89Rm4W72b7Gcm5pJ/+6Q=;
- b=nn5fd1FwekXDaOrTf42XEWEuQYMq40YJrFRoRDiSIkkRSHsCYU2haVZjyhZ2aChHiQPRObUXJS5RGBk4TWXA7wqVY1daMlqn0nA+ip7PMSezkEHZG0frg/p7dwNkCLcDPYDK2Jv7t9S4AwfIMz6qd8q3jG5rWun2Tj4YUey/PyuL3E+E9EI6pU8kU7gvY8ddo7rh8ugsrlIyI62LiOk6dk2DODWkaiZhv40qx3NSYw5ZsL3sEO62433M5HmnqtRlrwST+peKlRsrHPqKVMS65d5uXXg83TR9JIt5DcYFV05svMBl7YolH9QjCWObXvMm0f6I6RdegfOKkF4Jtxc2Aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com; 
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a6yYKYNA50mE/CGfCJHRuKu89Rm4W72b7Gcm5pJ/+6Q=;
- b=PANsXplRep12IDNp9uZOLgaPUtPxX73CMYzutwkmC99I42eWuvTd0Rmav29czP5rcoJkJwBIO9G6PDDqDUY7j6lgOYkg+KI6iugcJOw1K8Z5yBACfVMVB1xtqKC2c9lKBg9YvIHDHnIcIpmaSbntZULnJcaDuEDHEhcBbBnDzSA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- TY2PR06MB2925.apcprd06.prod.outlook.com (2603:1096:404:53::21) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5186.15; Sun, 24 Apr 2022 09:45:34 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::4591:4f3e:f951:6c8c]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::4591:4f3e:f951:6c8c%7]) with mapi id 15.20.5186.019; Sun, 24 Apr 2022
- 09:45:34 +0000
-From: Wan Jiabing <wanjiabing@vivo.com>
-To: Kalle Valo <kvalo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: kael_w@yeah.net,
-	Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] ath10k: simplify if-if to if-else
-Date: Sun, 24 Apr 2022 17:45:22 +0800
-Message-Id: <20220424094522.105262-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.35.1
-X-ClientProxiedBy: HK2PR03CA0063.apcprd03.prod.outlook.com
- (2603:1096:202:17::33) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+ id 1nikl3-007Tvw-B5
+ for ath10k@lists.infradead.org; Sun, 24 Apr 2022 22:31:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650839469; x=1682375469;
+ h=date:from:to:cc:subject:message-id:mime-version:
+ content-transfer-encoding;
+ bh=waxMvxztq99wsCQmE9R4oi7XxjSmEshqxhD6faPYKDY=;
+ b=LQcVJo4dFLwn5RDg1dr9PuDD+lVHYP3NFdFGzzvgzIzhAFsgtOpRTaqb
+ luXz/AjzsyBCzveLMGUFqhdIREj9Qz2wdh9iEB7MjTdzFarEHyiMGsR2d
+ wvobml3ENnqBi6fAcvKW9dzvbm8jydNNih1sWJZWP5jO/VUL6O/C58yRL
+ fVRiJ25gKmWq0PNgwgJ8R+kF4TNQyQgeGzgdgD4QWk/0fdjkEX7Hc13xp
+ owB30fvGkT+oywJV7fAFAn+Zi43SDcwPd7CuB8Q16RiUgjZEWrLyPRH1+
+ WfRTWbxZ1ptFIx9Kj8pKs6/2hDtCw4+3Xq5JKAkvW9SFGyBqlEWPZVEnR w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10327"; a="245019859"
+X-IronPort-AV: E=Sophos;i="5.90,287,1643702400"; d="scan'208";a="245019859"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Apr 2022 15:31:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,287,1643702400"; d="scan'208";a="627787506"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+ by fmsmga004.fm.intel.com with ESMTP; 24 Apr 2022 15:31:04 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+ (envelope-from <lkp@intel.com>) id 1nikky-0001qR-6N;
+ Sun, 24 Apr 2022 22:31:04 +0000
+Date: Mon, 25 Apr 2022 06:30:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending-deferred] BUILD SUCCESS
+ 36b576b5f874897c538809dd62c88bcf64cc835e
+Message-ID: <6265cf73.IIiimKVgIwzmGJKo%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a4292273-a2fc-4cd3-b8f5-08da25d72d98
-X-MS-TrafficTypeDiagnostic: TY2PR06MB2925:EE_
-X-Microsoft-Antispam-PRVS: <TY2PR06MB2925250A80A09011EA7BE011ABF99@TY2PR06MB2925.apcprd06.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: InhzxSgYS7+xda3m3CRq7qfQhSk3bRZU/Y6R+toLE/4gIxSJycJrPzm/eVC5TWPW9ojrfN24z3Uf4hWxTtUwiivBFnYkp8fN+DUSiq67AwdUgbOscLJAkAptRbodmDh/bGcEVYvnLefFRISf+DwNJzJbRfHgCn3rxdLjX2CPKUs3Mi5ZkA6kW7S/85nAJEoZ9+piz940QmluJ8wwh1xvpdXkCy4x1RTTQTd+MzdAuMmJNiUVWMjd1F+LS9fVKgPebn4+e2e48Jt5aup1p/1DAULwtCzoprrlOARvWezvdheZRWXp+xODrGzmcS8grh75qDo9Amia6UkzB0rArAreoizXbHuHIBXdVyfPgndnPDQbbww/enB2jlPQDyrk76m2r6OLVaPYQ9jbDioOwJ8ELbcZkn13vJtzeUKbRvV7t9NBdowasfZPdB2EfMQ40Uqeg8tjIFo+QztTMUNPGZ2RkD36fAVKvc6Mv3vNtFxY358HOLRttgMBx91HbVPATLXus2fOA+q0lNUV9Y9b5qhu/YZwfG+WcKeuJ+J1oXT/L3+vvYAlhc6N1GsP13MuoOtXi5LfK0rnpnYLclC5e8mzxHjai8AE8VmTpsxFWQCOdHBW9kZsgv3DOfUuzXKPYKJO3V52VXkp4g7jv1v+YT8b6/2efSj6pyJJsqqOBYHC/VNi82DAwri+MsgMVdqmE1CtiVCpgbpWeLq0uLrOrD3lhw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SG2PR06MB3367.apcprd06.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(186003)(8676002)(66946007)(508600001)(66476007)(6486002)(4744005)(4326008)(83380400001)(66556008)(8936002)(5660300002)(107886003)(2906002)(2616005)(38100700002)(1076003)(38350700002)(36756003)(52116002)(6666004)(6512007)(26005)(6506007)(110136005)(86362001)(316002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xAY+T5WNEGHew43cwT67OUG6S+uwrdGrgtSWLZXbupbTM8FjUKo7uSjzNxWe?=
- =?us-ascii?Q?jova++dfbQnhPK1kQyInpFSuY7o4Xsu5mSbL0zaN+LOlvor0zUr12u7hDskC?=
- =?us-ascii?Q?fwRoQTol3NPHMn1jmC4Kw4Yfdx81+k580G42hl8W4B4USiYkF8lQ3zS4TXif?=
- =?us-ascii?Q?kNjgIf36vRjdD8Img5lv0hTVTSCarlR5eZQfwzItyy+FQ6izunyincFe6q6W?=
- =?us-ascii?Q?VyFcJIfhtOiF0a247wySmfk34KhJdA9Yf2K0UyWBnIFGpRxvM5HwVuKJyqGX?=
- =?us-ascii?Q?O11nLjb1o/Hs5jGbacUAxKBADUoSrAse9jMIFTzuaYZFl1nWkNvnXpg1s6ud?=
- =?us-ascii?Q?MFwGQRW+hX34uZN7ucZki5t/iB6kmc6b6LkRHMCO9/g8Xg489Xg/ToPcop66?=
- =?us-ascii?Q?w+DLhjb4YYUhrnly4/k17Ll6Y/MsMrg4VxQNcUbmQZJ/HsKUiNjMdKFd7zUH?=
- =?us-ascii?Q?olRGwUJrmMiXx4VWSz8ca9LGTJFKz1OpQn3RCvhFTwzFleSrhz2Oyqtezku9?=
- =?us-ascii?Q?FjzEaLYs3yVFagC96t1y7Ipmj6+5DP9YUU3iIwozGEIZEhSTf7vNVvNDRZZe?=
- =?us-ascii?Q?P1GG6063kXaqFgJkoyYaEGHEuwE7wcRkhz2ex08JAW+f9BHu/5C2RU9IlC0g?=
- =?us-ascii?Q?EiZcHRJFp5sV0EPxdNp0LbkusFxgEkUyRLEGckAphThV4k8vNRNXWksI/r0z?=
- =?us-ascii?Q?oDGndpq98jAF2rb3udivJMDjIybROXQL2aBmFN+gNZNQJ1i1RBArS796k/Fm?=
- =?us-ascii?Q?oWESnUS2r1rkul4VC89rCHIGUdDDi3pbgXsU6nOj+SsNZ19JiQ/MFR3PA8OA?=
- =?us-ascii?Q?uOiNf5DGrTOljYFfi7BgIKG/TXJsto+ONLiu9E+mXCx+OBxOtBXMqL/U4ZiH?=
- =?us-ascii?Q?C8efQSWIaTHQIufGg6sRGL5wU0rlgM65Gqqlmq5wFNvg58pI1can+TkYQavY?=
- =?us-ascii?Q?0BR86ngq1NscsrXPJpEDcP5dMxVHGedFEOJzm7aYzVDHZG0zyIlbHlOfRjgO?=
- =?us-ascii?Q?Iiyq4J1WURqsYBi2DJy9sO/nAwMtuaSUgtWfCJroLEo7t0xY9PSSeRP0O3aL?=
- =?us-ascii?Q?P1ZepuDWBsRevc/3dpU6vhGJZWzkUhipalCxw5d/byX7mBEIxV4grsz7uDnO?=
- =?us-ascii?Q?QAdg7g1gUOf7rKwaZ4WIV6k5hUvIbsI2HP9NPLtHZLH1XBsbOfWTWbp9QNAL?=
- =?us-ascii?Q?9IbUVEW+6+x0BrzGVItC6yay80qz4qIBqw4g5Ca5UWbbxlSAHrgHyeN6Oea2?=
- =?us-ascii?Q?UlbZlfhKS2WIwdsdjIqnegPp/E8fkwvonwKce+FRafT0zGq/wWky+HHjt6/i?=
- =?us-ascii?Q?4uJFNRQHjUujQ/mkD1Rmd5ME/ZpTDTvjohWmS1Y7ohG7LFOdXtPape0UtRIQ?=
- =?us-ascii?Q?+3KUrjt95aC00I1HsD+hzUCKVcTDwyrlMxwdm3h+lX2AV0+ShEyRJWKDUvZ3?=
- =?us-ascii?Q?IKw80x0YQx/vZ+nRluGO/zHsDwWCGY7WMsll/Q8BkPn0RRyGPZwEI2LX87+z?=
- =?us-ascii?Q?O6jfjWUS/eO/U/ZZyLnXhxOcSrC2IiKMk0v+DHAobo/xSCekte9QyY511lFt?=
- =?us-ascii?Q?h0JLA/hlJSoLuuPaLtC4lqQDQ80+0aQFU+Wyb41fkNGpCTM6tiPX1z+wMT8N?=
- =?us-ascii?Q?k3JIRvE3KcBQ/S7AVvUghpZWvDfXPEqInmah10NfYWWX8VepN8EhCJdLfhCI?=
- =?us-ascii?Q?UnbsCGZEqgNAEoNra3sI4wX0oEF3uJH6uk8aw7YD8290KdCC/aB10sO1tWgP?=
- =?us-ascii?Q?zmRA6vcaMw=3D=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4292273-a2fc-4cd3-b8f5-08da25d72d98
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2022 09:45:34.1557 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qt0FVFiysD68plnCZ2Oe1jOKOGy+r/VQU9Ruy/q+Hfq6MdO3dJg3RMTUr9YQfEDyTuh1HzYuGznLjYtImeKQig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR06MB2925
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220424_024541_268616_3402C89C 
-X-CRM114-Status: UNSURE (   7.31  )
+X-CRM114-CacheID: sfid-20220424_153109_437654_1CC1E9F2 
+X-CRM114-Status: UNSURE (   5.63  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -141,34 +78,136 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Use if and else instead of if(A) and if (!A).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-deferred
+branch HEAD: 36b576b5f874897c538809dd62c88bcf64cc835e  ath11k: update debugfs support for mupltiple radios in PCI bus
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+elapsed time: 723m
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index d804e19a742a..c460f6f8d4bb 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4119,11 +4119,10 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		peer = ath10k_peer_find(ar, vdev_id, peer_addr);
- 		spin_unlock_bh(&ar->data_lock);
- 
--		if (peer)
-+		if (peer) {
- 			ath10k_warn(ar, "peer %pM on vdev %d already present\n",
- 				    peer_addr, vdev_id);
--
--		if (!peer) {
-+		} else {
- 			ret = ath10k_peer_create(ar, NULL, NULL, vdev_id,
- 						 peer_addr,
- 						 WMI_PEER_TYPE_DEFAULT);
+configs tested: 110
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+sh                           se7750_defconfig
+sh                           sh2007_defconfig
+i386                                defconfig
+powerpc                       maple_defconfig
+sh                        sh7763rdp_defconfig
+arc                          axs103_defconfig
+sh                         ap325rxa_defconfig
+arm                          pxa3xx_defconfig
+arm                           imxrt_defconfig
+sh                           se7780_defconfig
+parisc64                            defconfig
+sh                      rts7751r2d1_defconfig
+parisc                generic-64bit_defconfig
+powerpc                      pasemi_defconfig
+sh                                  defconfig
+arm                           corgi_defconfig
+powerpc                 mpc837x_rdb_defconfig
+mips                    maltaup_xpa_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220424
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+arc                  randconfig-r043-20220424
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                               rhel-8.3
+
+clang tested configs:
+riscv                randconfig-c006-20220424
+mips                 randconfig-c004-20220424
+x86_64                        randconfig-c007
+i386                          randconfig-c001
+arm                  randconfig-c002-20220424
+powerpc              randconfig-c003-20220424
+arm                   milbeaut_m10v_defconfig
+arm                  colibri_pxa270_defconfig
+arm                         orion5x_defconfig
+arm                        spear3xx_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+hexagon              randconfig-r041-20220424
+hexagon              randconfig-r045-20220424
+riscv                randconfig-r042-20220424
+s390                 randconfig-r044-20220424
+
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
