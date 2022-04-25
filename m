@@ -4,64 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E279C433F5
-	for <ath10k@archiver.kernel.org>; Sun, 24 Apr 2022 22:31:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE67C433EF
+	for <ath10k@archiver.kernel.org>; Mon, 25 Apr 2022 02:17:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Ie2gWqL8Jbc6kN/NXOUrHFGPMDXKi1m5dWjx/jJ/2FI=; b=N7xafYBUh+IpPE
-	vDynYw0cB6mek+dJTSEelIUhyJiiq9qAOUGukkhFMiaXT/9LJct/dFRIB7KvdhxmsZJ8W3Hmlai5q
-	DF1D4eqe2+XxszmdcFN5hb4T/+XZ5bViKKV4Rjijrg0QLVLsvOr1Pdt5GdWqxGivFG1k5jT4aGayJ
-	oWmFyd3wAp4O4aRuW7LAejCDO4xdFdK3N+L6G08NR5F8OxO5LoJJczI2wraMc/D+Yi3r8foyzYOh7
-	PU/R8nHHNJHJlgZBfKnz07w7qX18m/CPygpReVhWn00KSmHExEHAoD563ph1b9VVzAyKzrlV1iYj1
-	vsf2zDcRhjcfbW0FwwBA==;
+	List-Owner; bh=78u7T2hLtSOlLHih525utYOjopGN08YJiRBuPJ9lkLw=; b=g410Q5VX8COqQG
+	ds0ccQ2yQ+C9JmDx1Hhp2T7ol7pvmN17h34PFQc7pxRUo+AxfeX0X42RSwQgHjyLi+kxmU1l2am81
+	2rVtwg5md6+rf9zDcJdZ4G2HLAstPUJfJ9eKXBOfVVQ+1swbWPdRzWxd/AS0daw4SUXOJjwd4GrAu
+	YClHp/xfTfch/XMu1q0TLRIxu6vdNx+BpunZ2+qnDl19eA4rRiUkGF2su2hNX+8LjHia0aF9IXNel
+	Ot40+vP+FYkbq3/oclLmdryZwR8RiAdAgFg3StPQxW4hSjD3usuwLqfjq4A0XIDqdEDkonNWONZg+
+	RJCywX+Xtizvhl3lMK5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nikl6-007TwQ-V1; Sun, 24 Apr 2022 22:31:13 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1nioHF-007sb4-Se; Mon, 25 Apr 2022 02:16:37 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nikl3-007Tvw-B5
- for ath10k@lists.infradead.org; Sun, 24 Apr 2022 22:31:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650839469; x=1682375469;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=waxMvxztq99wsCQmE9R4oi7XxjSmEshqxhD6faPYKDY=;
- b=LQcVJo4dFLwn5RDg1dr9PuDD+lVHYP3NFdFGzzvgzIzhAFsgtOpRTaqb
- luXz/AjzsyBCzveLMGUFqhdIREj9Qz2wdh9iEB7MjTdzFarEHyiMGsR2d
- wvobml3ENnqBi6fAcvKW9dzvbm8jydNNih1sWJZWP5jO/VUL6O/C58yRL
- fVRiJ25gKmWq0PNgwgJ8R+kF4TNQyQgeGzgdgD4QWk/0fdjkEX7Hc13xp
- owB30fvGkT+oywJV7fAFAn+Zi43SDcwPd7CuB8Q16RiUgjZEWrLyPRH1+
- WfRTWbxZ1ptFIx9Kj8pKs6/2hDtCw4+3Xq5JKAkvW9SFGyBqlEWPZVEnR w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10327"; a="245019859"
-X-IronPort-AV: E=Sophos;i="5.90,287,1643702400"; d="scan'208";a="245019859"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Apr 2022 15:31:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,287,1643702400"; d="scan'208";a="627787506"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
- by fmsmga004.fm.intel.com with ESMTP; 24 Apr 2022 15:31:04 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1nikky-0001qR-6N;
- Sun, 24 Apr 2022 22:31:04 +0000
-Date: Mon, 25 Apr 2022 06:30:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending-deferred] BUILD SUCCESS
- 36b576b5f874897c538809dd62c88bcf64cc835e
-Message-ID: <6265cf73.IIiimKVgIwzmGJKo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nioHC-007sah-0i
+ for ath10k@lists.infradead.org; Mon, 25 Apr 2022 02:16:35 +0000
+Received: by mail-pf1-x430.google.com with SMTP id j17so13507328pfi.9
+ for <ath10k@lists.infradead.org>; Sun, 24 Apr 2022 19:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=BCvRbfY9AY8AC9ZZ4kIqd8KxfaWph2WE28jsNloDkNo=;
+ b=bvEQjxzyL4c2fT2DnGXRluO3JlDakD1pr4ct/Oj1rhEKU0h0xK4vp2/hKdgirqasfi
+ YrxMolOUmz0/ry+zwaLGvOyGDsGrcpsxlqv31Yvtw0AadrQFmU+CrSInRYcZGS7t1MCA
+ pUjZc532hjTq8RuyEL2V0hZTEtQ2QsFhwkJ8k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=BCvRbfY9AY8AC9ZZ4kIqd8KxfaWph2WE28jsNloDkNo=;
+ b=Ysr3HDMUVSNvUnpB7t0Xh6EQx11rnM1gLgDSxiOC/XB2oyQXQrLfwNqZakXBhZlZ1/
+ rdziMA+BNz0ZEes8EJr3NdwuJd8XGVebUnWMLJuWmgzC7yGYy2mdO1q7lS9b208aI/dL
+ G05SZ5JyVd3MpaUPMdJL2of3kw9Zh69jOwpFx/2DhMEeAOsiJ2LvTJg6nM7QlmYZGRBr
+ va9gVoWoXJS3t4ZDWf50PKc3X13q5fKoG1GBDeD/11RLeObPcz6IMWwoBdcLcyy5J75K
+ n5CJTkImjWCxwggRVT1bk4vXXeZQe/0rbWu10sDo6z83+afbEMf1Shrj4ti6jfngRb1C
+ GCRQ==
+X-Gm-Message-State: AOAM531lIwHJxTpIeQbCflSANODenrzFRWQ+oZ0dh/0okoizw/qjMFt1
+ nDofXBXQMjh9pTGrHg+XrYTVNA==
+X-Google-Smtp-Source: ABdhPJz+Lqt/5YHu1T8zZ7aSkhCOKNwOQpNhJB13OiOixsB8dYE1h/KUbUhhMbHmd62v9xmy5wYPHw==
+X-Received: by 2002:a05:6a00:188c:b0:50d:167f:1b62 with SMTP id
+ x12-20020a056a00188c00b0050d167f1b62mr10288126pfh.49.1650852992140; 
+ Sun, 24 Apr 2022 19:16:32 -0700 (PDT)
+Received: from kuabhs-cdev.c.googlers.com.com
+ (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+ by smtp.gmail.com with ESMTPSA id
+ m1-20020a17090ade0100b001cb3feaddfcsm10918299pjv.2.2022.04.24.19.16.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 24 Apr 2022 19:16:31 -0700 (PDT)
+From: Abhishek Kumar <kuabhs@chromium.org>
+To: kvalo@kernel.org
+Cc: kuabhs@chromium.org, linux-kernel@vger.kernel.org,
+ linux-wireless@vger.kernel.org, briannorris@chromium.org,
+ ath10k@lists.infradead.org, netdev@vger.kernel.org,
+ Wen Gong <quic_wgong@quicinc.com>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH] ath10k: skip ath10k_halt during suspend for driver state
+ RESTARTING
+Date: Mon, 25 Apr 2022 02:15:20 +0000
+Message-Id: <20220425021442.1.I650b809482e1af8d0156ed88b5dc2677a0711d46@changeid>
+X-Mailer: git-send-email 2.36.0.rc2.479.g8af0fa9b8e-goog
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220424_153109_437654_1CC1E9F2 
-X-CRM114-Status: UNSURE (   5.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220424_191634_121625_09363514 
+X-CRM114-Status: GOOD (  16.25  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,136 +89,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-deferred
-branch HEAD: 36b576b5f874897c538809dd62c88bcf64cc835e  ath11k: update debugfs support for mupltiple radios in PCI bus
+Double free crash is observed when FW recovery(caused by wmi
+timeout/crash) is followed by immediate suspend event. The FW recovery
+is triggered by ath10k_core_restart() which calls driver clean up via
+ath10k_halt(). When the suspend event occurs between the FW recovery,
+the restart worker thread is put into frozen state until suspend completes.
+The suspend event triggers ath10k_stop() which again triggers ath10k_halt()
+The double invocation of ath10k_halt() causes ath10k_htt_rx_free() to be
+called twice(Note: ath10k_htt_rx_alloc was not called by restart worker
+thread because of its frozen state), causing the crash.
 
-elapsed time: 723m
+To fix this, during the suspend flow, skip call to ath10k_halt() in
+ath10k_stop() when the current driver state is ATH10K_STATE_RESTARTING.
+Also, for driver state ATH10K_STATE_RESTARTING, call
+ath10k_wait_for_suspend() in ath10k_stop(). This is because call to
+ath10k_wait_for_suspend() is skipped later in
+[ath10k_halt() > ath10k_core_stop()] for the driver state
+ATH10K_STATE_RESTARTING.
 
-configs tested: 110
-configs skipped: 4
+The frozen restart worker thread will be cancelled during resume when the
+device comes out of suspend.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Below is the crash stack for reference:
 
-gcc tested configs:
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                          randconfig-c001
-sh                           se7750_defconfig
-sh                           sh2007_defconfig
-i386                                defconfig
-powerpc                       maple_defconfig
-sh                        sh7763rdp_defconfig
-arc                          axs103_defconfig
-sh                         ap325rxa_defconfig
-arm                          pxa3xx_defconfig
-arm                           imxrt_defconfig
-sh                           se7780_defconfig
-parisc64                            defconfig
-sh                      rts7751r2d1_defconfig
-parisc                generic-64bit_defconfig
-powerpc                      pasemi_defconfig
-sh                                  defconfig
-arm                           corgi_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                    maltaup_xpa_defconfig
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20220424
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-csky                                defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-x86_64                        randconfig-a015
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-arc                  randconfig-r043-20220424
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
+[  428.469167] ------------[ cut here ]------------
+[  428.469180] kernel BUG at mm/slub.c:4150!
+[  428.469193] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+[  428.469219] Workqueue: events_unbound async_run_entry_fn
+[  428.469230] RIP: 0010:kfree+0x319/0x31b
+[  428.469241] RSP: 0018:ffffa1fac015fc30 EFLAGS: 00010246
+[  428.469247] RAX: ffffedb10419d108 RBX: ffff8c05262b0000
+[  428.469252] RDX: ffff8c04a8c07000 RSI: 0000000000000000
+[  428.469256] RBP: ffffa1fac015fc78 R08: 0000000000000000
+[  428.469276] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  428.469285] Call Trace:
+[  428.469295]  ? dma_free_attrs+0x5f/0x7d
+[  428.469320]  ath10k_core_stop+0x5b/0x6f
+[  428.469336]  ath10k_halt+0x126/0x177
+[  428.469352]  ath10k_stop+0x41/0x7e
+[  428.469387]  drv_stop+0x88/0x10e
+[  428.469410]  __ieee80211_suspend+0x297/0x411
+[  428.469441]  rdev_suspend+0x6e/0xd0
+[  428.469462]  wiphy_suspend+0xb1/0x105
+[  428.469483]  ? name_show+0x2d/0x2d
+[  428.469490]  dpm_run_callback+0x8c/0x126
+[  428.469511]  ? name_show+0x2d/0x2d
+[  428.469517]  __device_suspend+0x2e7/0x41b
+[  428.469523]  async_suspend+0x1f/0x93
+[  428.469529]  async_run_entry_fn+0x3d/0xd1
+[  428.469535]  process_one_work+0x1b1/0x329
+[  428.469541]  worker_thread+0x213/0x372
+[  428.469547]  kthread+0x150/0x15f
+[  428.469552]  ? pr_cont_work+0x58/0x58
+[  428.469558]  ? kthread_blkcg+0x31/0x31
 
-clang tested configs:
-riscv                randconfig-c006-20220424
-mips                 randconfig-c004-20220424
-x86_64                        randconfig-c007
-i386                          randconfig-c001
-arm                  randconfig-c002-20220424
-powerpc              randconfig-c003-20220424
-arm                   milbeaut_m10v_defconfig
-arm                  colibri_pxa270_defconfig
-arm                         orion5x_defconfig
-arm                        spear3xx_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-hexagon              randconfig-r041-20220424
-hexagon              randconfig-r045-20220424
-riscv                randconfig-r042-20220424
-s390                 randconfig-r044-20220424
+Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+Co-developed-by: Wen Gong <quic_wgong@quicinc.com>
+Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+---
 
+ drivers/net/wireless/ath/ath10k/mac.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d804e19a742a..57ba27c46371 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5345,8 +5345,22 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 	if (ar->state != ATH10K_STATE_OFF) {
+-		if (!ar->hw_rfkill_on)
+-			ath10k_halt(ar);
++		if (!ar->hw_rfkill_on) {
++			/* If the current driver state is RESTARTING but not yet
++			 * fully RESTARTED because of incoming suspend event,
++			 * then ath11k_halt is already called via
++			 * ath10k_core_restart and should not be called here.
++			 */
++			if (ar->state != ATH10K_STATE_RESTARTING)
++				ath10k_halt(ar);
++			else
++				/* Suspending here, because when in RESTARTING
++				 * state, ath11k_core_stop skips
++				 * ath10k_wait_for_suspend.
++				 */
++				ath10k_wait_for_suspend(ar,
++							WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
++		}
+ 		ar->state = ATH10K_STATE_OFF;
+ 	}
+ 	mutex_unlock(&ar->conf_mutex);
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.36.0.rc2.479.g8af0fa9b8e-goog
+
 
 _______________________________________________
 ath10k mailing list
