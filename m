@@ -4,70 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 918A0C433EF
-	for <ath10k@archiver.kernel.org>; Tue, 26 Apr 2022 06:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E7D3C433F5
+	for <ath10k@archiver.kernel.org>; Tue, 26 Apr 2022 16:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JrIRunfB2vWf5JyzAvOPenGzgYxhZXFtoE1ZKOxk/po=; b=PW4qZ129tjUJZ2
-	27NvMThIQctWfektPMaCxQargMkbt1fYa0UrqL1pfArc/JgFjEZ/6omh/0Mt3X4TzkgTx5nSFW+97
-	UG1TmdlC/8FOr6yb6q+myG6xzRQuGUlbgshnywDDkhLTmpny3Z8tg0M/OXuoa0vbKkkyp3+3wVkiw
-	cZP0Y/sepQIWtx/7VgbxcV9EdLxB73FJnRDlCR8D9aIopgvLZEQdUPdFayXAMnHQ8vv/LSoY/NNdB
-	Da5DA9VeJHNqK+GJD/ndTQecooe1+BgPjb+geJ3KSUgQQKstJVlwi32ilMgjj6Gai/eMZp318ErkQ
-	0s9ZZ23+W/V+sZ3eItuQ==;
+	List-Owner; bh=Lx6YWnwLiu0eeimZTNcBBwYcTKjYBo7dthVFiWrSMsw=; b=30b6lHiov/t1Bl
+	pxziNU9JKOI9PFPsWylIEwJlwXI7jG2Yb0JS484xkHmlUX8uYWBcXp+vjh5ZJG2Bh7O9qdd4+Sk3e
+	K7ktFPbTkdyWINHR2yT4jReq6iN9pPgC4fnl/LovZR544fmbRXYfDl56YVA89P4AAln4Myjv7mmdG
+	bbXLEqwSQW3ltht+vHVQKeVLihu2no3XxqD5+J4wElmpv61NtzEMbOvobDEjmargWIqrUMe0MchwR
+	540yW0+DR0OTfj6Atx9gxinLdmhVuvc9tPZgrpZ+3nsx/0/x0rnxIj0x44Fe24JBnmf6Dn+VPjNYW
+	sjy3bz9PO3xbyg+MwqKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1njEuY-00Cmb2-So; Tue, 26 Apr 2022 06:42:58 +0000
-Received: from mail-il1-x130.google.com ([2607:f8b0:4864:20::130])
+	id 1njNte-00FJxf-HX; Tue, 26 Apr 2022 16:18:38 +0000
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njEuV-00CmXg-82
- for ath10k@lists.infradead.org; Tue, 26 Apr 2022 06:42:56 +0000
-Received: by mail-il1-x130.google.com with SMTP id z12so1712165ilp.8
- for <ath10k@lists.infradead.org>; Mon, 25 Apr 2022 23:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=KZXWw+mQ5SzKYx4pfHPUdeVXw0Lw7Zqv4OHZg6/bECE=;
- b=OKJwseg1BeqVGbbzLWqwmGv8I2ybhlAXs0ZZiquP8s51TudFvCYmyB/NFxUejLaeFQ
- 8YURQdOA78Loxv1i/wvBL8VaG+Sub/jxhqrSmKlyLsKQKgMupTsdUNHzVYeRVj81Ggg8
- 1T3lKGQ0zuv/y700/wT44FGJuCuomHnhlUHA8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=KZXWw+mQ5SzKYx4pfHPUdeVXw0Lw7Zqv4OHZg6/bECE=;
- b=tqYree3ZIW4cr3wGMlbGLvNhSguHQ1U9II+B/8cpeqvSongoOv1VmCFfUUKFrXoJeX
- hZFRKWu0/YVxA2SQg+gGd7ZA77EWH6MLi+DbhQwqUnAb98n7gp+rTzr0FTnjHi2cdxKj
- 17hEC6jmjcyLT1lOiIYE+04k3ZVBeK3VWHKBZLjM6DVWKlxVe3f2nvV9Yyh2FkE4W5Am
- 0Keu9JMTxPeEqlI1KamoOy/OntZw58UTbqI49/9rSpxjaDa08aW5wQ7UQBxYlPHzV4KP
- JWymVr0ykS0x6pBqjXCcYFkgSoX2fZUacnr+qTmGfrcTPNac3w6yKFILO1AvG0NBz2Tc
- YQ0A==
-X-Gm-Message-State: AOAM531ggJZQ4mwGB2eNRZRyIn+P8HcFfNvzaTeom8xtvPPDXiyQWdPY
- txjwC661dP8ireYqd0AWv8hPTgAgeiYEBE4LL3ou1Q==
-X-Google-Smtp-Source: ABdhPJxH9n+PwfsCKTqGm/BpdLMkKverpXfcsHBbklasMzhpv4vrvXWAKTyAnSm2FEo0e4Wj/1yceplZhDz1BC7+DfU=
-X-Received: by 2002:a05:6e02:1c04:b0:2cc:183f:b8cc with SMTP id
- l4-20020a056e021c0400b002cc183fb8ccmr8436041ilh.51.1650955371082; Mon, 25 Apr
- 2022 23:42:51 -0700 (PDT)
+ id 1njNtc-00FJwV-I2
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2022 16:18:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1650989916; x=1682525916;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=32zdlqAxGpL7Dq8ks/2ZRJEQKKPp3/s5aIgIq4Gjo6c=;
+ b=rR64ZNFKgvTaECOPmEbqDtdwp2uoEOiYjrUAnMJu6Uj8xNesC6KCSbtE
+ TcJBRIy/kYJhHpvNLBKehk630+KvYhca9Ohb0KaQuHrTw9DClQ08UUrzA
+ CSxwlTqhjxDyByN5tGJNNjJbSQ4GYrWm5z8GAeVMIQPUWKXFNBAS5Ul3a s=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+ by alexa-out-sd-02.qualcomm.com with ESMTP; 26 Apr 2022 09:18:31 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2022 09:18:30 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Tue, 26 Apr 2022 09:18:30 -0700
+Received: from [10.110.124.35] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Tue, 26 Apr
+ 2022 09:18:29 -0700
+Message-ID: <f429219f-e5e5-6107-473f-a4566f4e7ee1@quicinc.com>
+Date: Tue, 26 Apr 2022 09:18:28 -0700
 MIME-Version: 1.0
-References: <20220425021442.1.I650b809482e1af8d0156ed88b5dc2677a0711d46@changeid>
- <YmcqsFyCMqcWAEMM@google.com> <YmcrBFZ0CB/7abzW@google.com>
-In-Reply-To: <YmcrBFZ0CB/7abzW@google.com>
-From: Abhishek Kumar <kuabhs@chromium.org>
-Date: Mon, 25 Apr 2022 23:42:39 -0700
-Message-ID: <CACTWRwtXsAyudCvNJ1Cuo+Ow3tYN_uaes7QNWzOzHhTjOKzxVA@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
 Subject: Re: [PATCH] ath10k: skip ath10k_halt during suspend for driver state
  RESTARTING
-To: Brian Norris <briannorris@chromium.org>
-Cc: kvalo@kernel.org, linux-kernel@vger.kernel.org, 
- linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
- netdev@vger.kernel.org, Wen Gong <quic_wgong@quicinc.com>, 
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
+Content-Language: en-US
+To: Abhishek Kumar <kuabhs@chromium.org>, <kvalo@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+ <briannorris@chromium.org>, <ath10k@lists.infradead.org>,
+ <netdev@vger.kernel.org>, Wen Gong <quic_wgong@quicinc.com>, "David S.
+ Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>
+References: <20220425021442.1.I650b809482e1af8d0156ed88b5dc2677a0711d46@changeid>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20220425021442.1.I650b809482e1af8d0156ed88b5dc2677a0711d46@changeid>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220425_234255_363380_981D3D20 
-X-CRM114-Status: GOOD (  18.01  )
+X-CRM114-CacheID: sfid-20220426_091836_683323_04A745C6 
+X-CRM114-Status: GOOD (  23.36  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,54 +82,104 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 25, 2022 at 4:13 PM Brian Norris <briannorris@chromium.org> wrote:
->
-> On Mon, Apr 25, 2022 at 04:11:44PM -0700, Brian Norris wrote:
-> > On Mon, Apr 25, 2022 at 02:15:20AM +0000, Abhishek Kumar wrote:
-> > > --- a/drivers/net/wireless/ath/ath10k/mac.c
-> > > +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> > > @@ -5345,8 +5345,22 @@ static void ath10k_stop(struct ieee80211_hw *hw)
-> ...
-> > > +                   /* If the current driver state is RESTARTING but not yet
-> > > +                    * fully RESTARTED because of incoming suspend event,
-> > > +                    * then ath11k_halt is already called via
-> >
-> > s/ath11k/ath10k/
-> >
-> > I know ath11k is the hot new thing, but this is ath10k ;)
-> >
-> > > +                    * ath10k_core_restart and should not be called here.
-> >
-> > s/ath10k/ath11k/
->
-> Oh boy, I got *that* backwards! Should be this, obviously:
->
-> s/ath11k/ath10k/
->
-> > > +                    */
-> > > +                   if (ar->state != ATH10K_STATE_RESTARTING)
-> > > +                           ath10k_halt(ar);
-> > > +                   else
-> > > +                           /* Suspending here, because when in RESTARTING
-> > > +                            * state, ath11k_core_stop skips
-> >
-> > s/ath10k/ath11k/
->
-> Same.
-Oh!, lately working on ath11k mostly and the muscle memory kicked in
-... sorry about this, will fix in next revision. Kale whenever you get
-time, let me know if the logic looks good to you and if ath11k/ath10k
-typo fix is the only comment.
+On 4/24/2022 7:15 PM, Abhishek Kumar wrote:
+> Double free crash is observed when FW recovery(caused by wmi
+> timeout/crash) is followed by immediate suspend event. The FW recovery
+> is triggered by ath10k_core_restart() which calls driver clean up via
+> ath10k_halt(). When the suspend event occurs between the FW recovery,
+> the restart worker thread is put into frozen state until suspend completes.
+> The suspend event triggers ath10k_stop() which again triggers ath10k_halt()
+> The double invocation of ath10k_halt() causes ath10k_htt_rx_free() to be
+> called twice(Note: ath10k_htt_rx_alloc was not called by restart worker
+> thread because of its frozen state), causing the crash.
+> 
+> To fix this, during the suspend flow, skip call to ath10k_halt() in
+> ath10k_stop() when the current driver state is ATH10K_STATE_RESTARTING.
+> Also, for driver state ATH10K_STATE_RESTARTING, call
+> ath10k_wait_for_suspend() in ath10k_stop(). This is because call to
+> ath10k_wait_for_suspend() is skipped later in
+> [ath10k_halt() > ath10k_core_stop()] for the driver state
+> ATH10K_STATE_RESTARTING.
+> 
+> The frozen restart worker thread will be cancelled during resume when the
+> device comes out of suspend.
+> 
+> Below is the crash stack for reference:
+> 
+> [  428.469167] ------------[ cut here ]------------
+> [  428.469180] kernel BUG at mm/slub.c:4150!
+> [  428.469193] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [  428.469219] Workqueue: events_unbound async_run_entry_fn
+> [  428.469230] RIP: 0010:kfree+0x319/0x31b
+> [  428.469241] RSP: 0018:ffffa1fac015fc30 EFLAGS: 00010246
+> [  428.469247] RAX: ffffedb10419d108 RBX: ffff8c05262b0000
+> [  428.469252] RDX: ffff8c04a8c07000 RSI: 0000000000000000
+> [  428.469256] RBP: ffffa1fac015fc78 R08: 0000000000000000
+> [  428.469276] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  428.469285] Call Trace:
+> [  428.469295]  ? dma_free_attrs+0x5f/0x7d
+> [  428.469320]  ath10k_core_stop+0x5b/0x6f
+> [  428.469336]  ath10k_halt+0x126/0x177
+> [  428.469352]  ath10k_stop+0x41/0x7e
+> [  428.469387]  drv_stop+0x88/0x10e
+> [  428.469410]  __ieee80211_suspend+0x297/0x411
+> [  428.469441]  rdev_suspend+0x6e/0xd0
+> [  428.469462]  wiphy_suspend+0xb1/0x105
+> [  428.469483]  ? name_show+0x2d/0x2d
+> [  428.469490]  dpm_run_callback+0x8c/0x126
+> [  428.469511]  ? name_show+0x2d/0x2d
+> [  428.469517]  __device_suspend+0x2e7/0x41b
+> [  428.469523]  async_suspend+0x1f/0x93
+> [  428.469529]  async_run_entry_fn+0x3d/0xd1
+> [  428.469535]  process_one_work+0x1b1/0x329
+> [  428.469541]  worker_thread+0x213/0x372
+> [  428.469547]  kthread+0x150/0x15f
+> [  428.469552]  ? pr_cont_work+0x58/0x58
+> [  428.469558]  ? kthread_blkcg+0x31/0x31
+> 
+> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> Co-developed-by: Wen Gong <quic_wgong@quicinc.com>
+> Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+> ---
+> 
+>   drivers/net/wireless/ath/ath10k/mac.c | 18 ++++++++++++++++--
+>   1 file changed, 16 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index d804e19a742a..57ba27c46371 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -5345,8 +5345,22 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+>   
+>   	mutex_lock(&ar->conf_mutex);
+>   	if (ar->state != ATH10K_STATE_OFF) {
+> -		if (!ar->hw_rfkill_on)
+> -			ath10k_halt(ar);
+> +		if (!ar->hw_rfkill_on) {
+> +			/* If the current driver state is RESTARTING but not yet
+> +			 * fully RESTARTED because of incoming suspend event,
+> +			 * then ath11k_halt is already called via
+> +			 * ath10k_core_restart and should not be called here.
+> +			 */
+> +			if (ar->state != ATH10K_STATE_RESTARTING)
+> +				ath10k_halt(ar);
+> +			else
+> +				/* Suspending here, because when in RESTARTING
+> +				 * state, ath11k_core_stop skips
+> +				 * ath10k_wait_for_suspend.
+> +				 */
+> +				ath10k_wait_for_suspend(ar,
+> +							WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
+> +		}
+>   		ar->state = ATH10K_STATE_OFF;
+>   	}
+>   	mutex_unlock(&ar->conf_mutex);
 
-Thanks
-Abhishek
->
-> Brian
 
 _______________________________________________
 ath10k mailing list
