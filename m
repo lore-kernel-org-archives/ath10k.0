@@ -4,134 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87786C433F5
-	for <ath10k@archiver.kernel.org>; Wed, 27 Apr 2022 08:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D2E4C433F5
+	for <ath10k@archiver.kernel.org>; Wed, 27 Apr 2022 20:28:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zkQU4dQlMFHx/hcN3/25FrdOk56/DseT2SaLgVrMVMY=; b=OyfpLPo9RF3xHk
-	dU9YSXGIEXotvDNFJYFnnatNBkwFOwft+0Ix831cQyKwvY2U4I1e33N/52QXbOJLryY6l5XnDNyGq
-	6HpzoKRzK2+2L6JCaH03h0McG9BPx8rS5+rkB1t8iOEA2pZ7bIGwwnmr2tubEwuwWsCEw+uioqiZc
-	g7cFd4F5b8yLvkDDfsNRZY+w7MdZPlfJtHzOMwGi+2pJ1GIo6601P30tFUZjjs0PsIimDMsj0Dh9Q
-	4jntT4U5q5PDvR896OgBSq20uVvY2FBpdNFsGju5mhvVeXGeNSMrOBzz6Xnkc+D2yZqqEfhvKGnpd
-	wzDslTcQf7sXA/tl9RyQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=R4Qo4jxw8ySI7BqdmC5gNhZ8cPF4LYzgYpl/xEQSnG0=; b=FUrR7w3n3wfRF3
+	aYoeGqscxGwElUPEFvCIr/ouvCieRsPN7RLnoamDuiod9tohAHJm+7banIldDUV6+/MY99D2yMDbx
+	LlpveIUiBpbfSBsR0MnPHk8MzATag/qZuO2ba112wBmH28GyAgZV5Li73FosnDDrkR8ECeFsVjybQ
+	DIoFecB30VwPcyi2MQxYbfpxTJmY2/8M8g1/eNYpA0YIzxUvO9ejJzpiuvNAzxpuAac3XcdFsbHXU
+	CqNEM5PHODTcteeaYJpVMRVJj/JccCmcKhh57Q6TSmYWSizzm6MiEeg3AAxR+5KoxdJ5IwZ3BuIGX
+	SrrwNhdGmxWm74IWBzbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1njd5t-000Xwu-VH; Wed, 27 Apr 2022 08:32:18 +0000
-Received: from esa.hc3962-90.iphmx.com ([216.71.140.77])
+	id 1njoGW-003WIg-5n; Wed, 27 Apr 2022 20:28:00 +0000
+Received: from mail-oo1-xc2f.google.com ([2607:f8b0:4864:20::c2f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njd5p-000Xvv-Of; Wed, 27 Apr 2022 08:32:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=qca.qualcomm.com; i=@qca.qualcomm.com; q=dns/txt;
- s=qccesdkim1; t=1651048333; x=1651653133;
- h=from:to:cc:subject:date:message-id:
- content-transfer-encoding:mime-version;
- bh=+ZZGyj+NACu3dZqgOmZAN9JGPJ24PMow644W6+kYlZ8=;
- b=s8NKRXOtxQHFWUwVBYIlO1GGs2SYd6C/nlMuxYxXwbNNomZOXT63A3ae
- 8ecBr90eZxhU5eCcKZFDEEsHdhBsiKkQbh/4fRmKVp+wABBqHj555rox9
- NHsL1NxYgysPWw8JboKRNqyvbDdB1/UOPRCO8dD755wC4Pco4IFGnk5md g=;
-Received: from mail-bn8nam12lp2170.outbound.protection.outlook.com (HELO
- NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.170])
- by ob1.hc3962-90.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2022 08:32:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hqMI0RWqzMuVEy0meKZ2RYeR8MOW0DbHKH5fdIIwQr/xC4i4L8iu3ZsL/g5KZrWZJDJ0/1avq6bEwHofbmyzQpu+jeoHNvwVezcgEJikVdIhVapzaznjzBpSpbgfDVekSlG4Yp5ki2GjKLXfBPNQzLGRjaNLJWfOjN3pc6RF+B/WxMslOzpk+obFxJnGYo/tla5XM5X0FkNAdDCtWforEBR1DRfYwZa8WCvBtMcftNoZrBoRVRw9YRJQC2OhHYOZW6ff9VwUt6WsK0ea7hrYauGVH6R1+GjwcvNpQV9/wkYEnXj3OCfVuGyp3v2EXL/DmHWUr1ZBLwkmRsPbROImHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+ZZGyj+NACu3dZqgOmZAN9JGPJ24PMow644W6+kYlZ8=;
- b=nfYCKFZr2MlPtmTEl3Iau9hoqQpgJFuY5xmPcx/B9TF5RRZZZ4pPjBH4mGNTLkbofGGgzaBMK3ng5r3tGuFqaqe50cd/YKwX0MyGZyndSnGQ11PfuBuoLcrIW/d5jyTtu6BlC5ofTAnDm8q1+qxLQ3R2DeGEpLkoz3OAxv9q6Ljb7aOCVNt1d5mdfhWAEDIXTWYawdpB4ONQj94Zh8t9EdnaSVC8HlFSCiRaQmyKM7bmp9DpTa2VN9E04fPUOczE6ypY7+9trJlOfwP8zVRb2EZbCvhmJm8fdcn1z1BHg2Nqfbiw655BqIFDY9SIo0RLKmOzpWaUvwioByuOB6yxzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=qca.qualcomm.com; dmarc=pass action=none
- header.from=qca.qualcomm.com; dkim=pass header.d=qca.qualcomm.com; arc=none
-Received: from BYAPR02MB4567.namprd02.prod.outlook.com (2603:10b6:a03:5f::14)
- by BYAPR02MB5334.namprd02.prod.outlook.com (2603:10b6:a03:69::15)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.14; Wed, 27 Apr
- 2022 08:32:05 +0000
-Received: from BYAPR02MB4567.namprd02.prod.outlook.com
- ([fe80::1127:7dc6:c0da:ef4f]) by BYAPR02MB4567.namprd02.prod.outlook.com
- ([fe80::1127:7dc6:c0da:ef4f%3]) with mapi id 15.20.5186.021; Wed, 27 Apr 2022
- 08:32:03 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-To: "linux-firmware@kernel.org" <linux-firmware@kernel.org>
-CC: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
- "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>,
- "ath11k@lists.infradead.org" <ath11k@lists.infradead.org>
-Subject: [PULL linux-firmware] ath10k & ath11k firmware 20220423
-Thread-Topic: [PULL linux-firmware] ath10k & ath11k firmware 20220423
-Thread-Index: AQHYWhDRGoYFrecWGkmfQQAlqnQSiw==
-Date: Wed, 27 Apr 2022 08:32:03 +0000
-Message-ID: <BYAPR02MB4567E377F14F272DFF48907A92FA9@BYAPR02MB4567.namprd02.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-suggested_attachment_session_id: a45af0c3-6979-d88f-b821-d9c424c1b19d
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=qca.qualcomm.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 866347d6-f3d6-4428-6478-08da28286832
-x-ms-traffictypediagnostic: BYAPR02MB5334:EE_
-x-microsoft-antispam-prvs: <BYAPR02MB53343AD9AF6EDEBD8D1C2F1192FA9@BYAPR02MB5334.namprd02.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: k4cPX4Qwj3ZVXFnbuOjNisyeBb5603fV8GKA3ZcYsFzyRa7HXntFqq/f5kU2HQHPpWH9b3IO/Cjb9w5+zwa7LKl/igrn8jNsbDd/KeQXFHi9B+BVHjQLcYqOHhtyCqKy5IzB6ZKphUQkuyrXjMzri7EeP1PTVANjvwGnm8Ul4C5NxikN+s6K+z6wl7+voAW6feqIL+cp/Zka8XKQcobpLHEOZQLLWIylxug1C/LmJm9kjDfc/M/z9xU1XvfvOd9Dn+q3fI+irIbRjBuRZ3FPCL/MgRmXOaQykYDaY2yl6Kjs1365JW5+S/zZgdsnKpfnYxeFmeqJ6WxWZNth+I/Wry9Zu55vIW9w+uSbDKFzq2TRxofltnxjJyIXfSxib6gXn31rsyOSj4i2C1iNWDjTcSqm6WuoIJ+77ktGbS+2Bz7Pgfttg12vYCl5+XfJ2XTN/Z1Jqd+mgy/Km/28vF/sEd8jVrOnRB8dT+cvrSqE7oO3EZT/TOeIB6zCh6A2M/etVk34wMc1BOi0OueaJs9x4oDiAyUmDfESAffWZZYb9n9W8Q8to3lIbs9uJN06zbolLX0HvacO/SkebcFz0ibv2hyz6KSk9Zwy7LvxBj5yE507J6bKmYe2RWRNvRu011L33dgwx76DzvATJOmDk54gGvz084V+uMK2I7IdLzUqDeAvgvepudG6lnsPHzzuJvKj4rA2Z+zy8pVvG3IbT5ubsg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BYAPR02MB4567.namprd02.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(9686003)(4326008)(66446008)(71200400001)(86362001)(8676002)(66476007)(66556008)(38100700002)(38070700005)(26005)(7696005)(6506007)(2906002)(122000001)(52536014)(83380400001)(5660300002)(64756008)(33656002)(8936002)(55016003)(508600001)(66946007)(316002)(186003)(19627235002)(76116006)(6916009)(91956017)(54906003);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?sZ4HA30fXCWqDJGwrxubZJqEzED0ULCsFvwKaOykbB0cTHwsTN8hxQLCyi?=
- =?iso-8859-1?Q?58rThJlsdoiYAQArXvavgNkPHaX9Ksngpyq0oHRcBg1hfe6UgMULSiZipA?=
- =?iso-8859-1?Q?8q9B8KUzwggbNcw8WuVGprh8cndXeu6yO26rLiDrDnnLnjHTjWVTEVdQO5?=
- =?iso-8859-1?Q?0QSVEzCIBcBgXW/xnhRnyM/G3rp9Q6wwQd1cZUcXMqnDzZWlWbBmu8KlAE?=
- =?iso-8859-1?Q?znLhAudMa9swdgvTW0RMSquc/2tIds3A9Em20OV632SUi/rniaiCGZm+qC?=
- =?iso-8859-1?Q?Poh8mtfKzI3IxY6/Vg5OStvqK3lF2b4O7yoebOjzSmnE3mfypHOW4eowTK?=
- =?iso-8859-1?Q?5ZTfx1fYP2JvIa9zsEhaBM1jQBXT45GT/YtYcWb0ULhcxXShgytdmBAcNj?=
- =?iso-8859-1?Q?EyAlPkgbr2iz/0DhAzSoB0c6BxfQLgEZszsz6R+5wvbKy4UKh1hsS6HHCc?=
- =?iso-8859-1?Q?b056DDObzHLgVvSA2U+1+rf8RGC/ASS84jOB82uqVOVGC5s3zwEzwU8m2X?=
- =?iso-8859-1?Q?TQ2mccRJc5Wvegg4bnIKcrO06fnndqVlsQ8SlOOb+gnpkJ3nltukXcCrzW?=
- =?iso-8859-1?Q?oaKrAuXcUqwNd0jrHapr5JjhMwGBk8dvRj9nlkw3F4Lv3Xqea7nshaMwdw?=
- =?iso-8859-1?Q?DSUlsK0Pg7ih6yK8EVgqRXS8rPeP+SxHC5BB/VMjE152MvoyxG5iUHGcr9?=
- =?iso-8859-1?Q?PAcy12+K5LSe4YyTE/8ZjNdrPEf0W+CFsE4+VwKcgoIOIBJ2HHZBcuYCVp?=
- =?iso-8859-1?Q?2HltTjMRMqpe0NYRITQRm0o9go/bu8ocFjlkHNhUArUgT4Rsynrz9dK6Ca?=
- =?iso-8859-1?Q?4ygF8znbdGuwjzoSd9LVmiT7UBFv+oEoJQEQAeKxj41mku8oVL0m7E9MV3?=
- =?iso-8859-1?Q?D/kVZcvpT7cZvTNceqfwrnIOguvdNY+7ywui6w/ED4U2AMgM6SwPv4m8Kq?=
- =?iso-8859-1?Q?mlYaaPdCLndDY67DYAJGMZy3EwWdFxu7QuLhnSqhe71nvCkiUN0hZlxQrr?=
- =?iso-8859-1?Q?dPiBs6yuoqHgeUwEsHrrAMBZwmEKF1rpHGsSFKYvZMhSIBfdjtUfHcbE7h?=
- =?iso-8859-1?Q?ZyosP8AbK4mkpB+OYf1oJAcqrqGRhKMr9xvYVzMlLBAYraeZmyXwUX60aZ?=
- =?iso-8859-1?Q?cfg3AfMjk7mI+EXmLld/NRZBqnuU8D9m4kJvcopxDjsvHD80d/MSHBg3md?=
- =?iso-8859-1?Q?mQRoaAlBe+LHMKsL1lfz+2+pRPyAtPds/wM8KkuLWTQjOoTbIZcfCtp6fr?=
- =?iso-8859-1?Q?KUsvE+WEo97HlYICJcaRirvJ08n94XG1FDnM9m1vvTFZilJZi1Yg+RFH/7?=
- =?iso-8859-1?Q?BcuMTo5mkmAgWE53LYFjugZGvDXtM8lyYwNq69LQgQumS4kvYnJC8ct3O/?=
- =?iso-8859-1?Q?oPLfgYyY37U0Azln4PyFLjRkRblyz8tdrza63Wn+cHMYR7mdoLCXwstvFI?=
- =?iso-8859-1?Q?CLf4Vd/+PJDaoPReGAlpXUxoVbWzb11cmW+VefUFvijTYv/q6ddqsi3zc9?=
- =?iso-8859-1?Q?E6lEpqCqa/fwisLmtR1d76cJ8VhZrwZVjkRMdYnc3zj88PLeKBmOI7zr2d?=
- =?iso-8859-1?Q?tWQhPF3ev9MLJxmScZLaPZgQJXGv7qveMD1wmNYvIHruuzlsD/752GYoGC?=
- =?iso-8859-1?Q?VL3Wl/0QtvZgONg5tRYrqiVaCch33p8Xi3p7GVRGt+OHZ0pMBk6oPWtki5?=
- =?iso-8859-1?Q?OpECt1cHO7mn9kQtfbYPieq5nOz6j+Kjv17fw2ibKaEJL+bnT8czdtDt4c?=
- =?iso-8859-1?Q?QAMbHshynC8FuBvsSrghsqDYY5YZtq/ox1VT4/BtAhRjQT6M+TjB1rIsZq?=
- =?iso-8859-1?Q?H4dZ1Ps8mA=3D=3D?=
+ id 1njoGT-003WI1-7w
+ for ath10k@lists.infradead.org; Wed, 27 Apr 2022 20:27:58 +0000
+Received: by mail-oo1-xc2f.google.com with SMTP id
+ b26-20020a4aba1a000000b0035e9a8d3bc9so462634oop.0
+ for <ath10k@lists.infradead.org>; Wed, 27 Apr 2022 13:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=gp/F1d/4pAenz5mNMTTask9wErh38GRFBpgSf17aNWY=;
+ b=Y0AbeCNkAgs0mjiUiyGZ/engX4b8WVlc02Y2wUD0hDGZhyPfy6Xt5PelzXLROAIYMY
+ eVpRZE834J9mmhPAjJ299MhHB3z/7Wuo1ma5GxgdRNqWE05oroUNUajPWkOIKCBk3FO8
+ JUCvvnkFoHNwWAF74dhzq6T0KmyitBNxK07d8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=gp/F1d/4pAenz5mNMTTask9wErh38GRFBpgSf17aNWY=;
+ b=01TOVEQxFtN7Kpog3obUuUW0R8HFCqO9YDQHY+tMa8gduq6MBExOGFjcMMVXZcf+JX
+ j7MNU1ASpC0otCtrAzVPkGVA/LDS6Ye7+kudymVd5yS/ms2ukUg8j32TnZoKsC9bnQTh
+ RmDMuH3c60bfL4XvAktFONr+5/BbMwNTlit7RsE2Bg4tFoGr6nmGYYkO10h9iCaAMUyn
+ VPbNiGjZek7ZDcivhErUzA0k7RNDg4vGrc6xAoh6eIk4Ca597M6Z9GwQ1C9Toff729MO
+ 0xtLa5cTtgxZfOSmmWazKg/4hb4sAuJBcdu/0BH0Pkwxl/yFLPOW+QLFp6RyJQ5RgybI
+ B5Dw==
+X-Gm-Message-State: AOAM532di4EEdmaeD59r6JdZA9zptDU2O0kVIFeO/U2pMRnj04AENmbQ
+ rvIpA9fFm81rVTT0DiJGK5zvox8MQHAeGw==
+X-Google-Smtp-Source: ABdhPJzhNHvTqEcNIj91p6rGpnHmqtuqD0GmrQ78vHdeGiVS5N0TTEQZQ12nsjpTl+4X0fGzlgm46A==
+X-Received: by 2002:a05:6820:1889:b0:35e:9aea:906a with SMTP id
+ bm9-20020a056820188900b0035e9aea906amr1484860oob.3.1651091274425; 
+ Wed, 27 Apr 2022 13:27:54 -0700 (PDT)
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com.
+ [209.85.210.54]) by smtp.gmail.com with ESMTPSA id
+ t28-20020a056808159c00b00325361c4fbesm3508611oiw.5.2022.04.27.13.27.52
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 27 Apr 2022 13:27:52 -0700 (PDT)
+Received: by mail-ot1-f54.google.com with SMTP id
+ 88-20020a9d0ee1000000b005d0ae4e126fso1844683otj.5
+ for <ath10k@lists.infradead.org>; Wed, 27 Apr 2022 13:27:52 -0700 (PDT)
+X-Received: by 2002:a9d:58c3:0:b0:605:9fa7:f5b6 with SMTP id
+ s3-20020a9d58c3000000b006059fa7f5b6mr7777249oth.230.1651091272112; Wed, 27
+ Apr 2022 13:27:52 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: qca.qualcomm.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4567.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 866347d6-f3d6-4428-6478-08da28286832
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2022 08:32:03.7969 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7d6Yxd6BDmg9C3rgy11LQ2AgBntbTnudac/Tx6S+OsyQAJWH+of+agkIT3ZhIgWcU1FEdq8BtK7f9Nl6/zuBDg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5334
+References: <20220426221859.v2.1.I650b809482e1af8d0156ed88b5dc2677a0711d46@changeid>
+ <CA+ASDXPNFwvYVBMHjbTNQ-uTnQrs5TvPAH2jXgPKuFLUw2GbZA@mail.gmail.com>
+ <CACTWRwtXSHnhxTEZ+pWWNpfd-BANtHuNUDimmwxJ=COL6HJQTA@mail.gmail.com>
+In-Reply-To: <CACTWRwtXSHnhxTEZ+pWWNpfd-BANtHuNUDimmwxJ=COL6HJQTA@mail.gmail.com>
+From: Brian Norris <briannorris@chromium.org>
+Date: Wed, 27 Apr 2022 13:27:40 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXNLnb4OEZtFVb4D64QNkK=sGYUUVuZPwO1-zOOD0hfqyg@mail.gmail.com>
+Message-ID: <CA+ASDXNLnb4OEZtFVb4D64QNkK=sGYUUVuZPwO1-zOOD0hfqyg@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: skip ath10k_halt during suspend for driver
+ state RESTARTING
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: kvalo@kernel.org, quic_wgong@quicinc.com, 
+ Linux Kernel <linux-kernel@vger.kernel.org>, 
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ ath10k <ath10k@lists.infradead.org>, 
+ "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220427_013213_936518_09C1A52B 
-X-CRM114-Status: UNSURE (   6.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220427_132757_322188_CDB9DF41 
+X-CRM114-Status: GOOD (  13.73  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,126 +101,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Add support for QCN9074 and WCN6750 ath11k hardware families. Also
-there are several updates to existing firmwares and board files for both ath10k
-and ath11k.
+On Tue, Apr 26, 2022 at 10:20 PM Abhishek Kumar <kuabhs@chromium.org> wrote:
+> On Tue, Apr 26, 2022 at 3:34 PM Brian Norris <briannorris@chromium.org> wrote:
+> > You could have retained my:
+> >
+> > Reviewed-by: Brian Norris <briannorris@chromium.org>
+> >
+> > but no worries; it's just a few characters ;)
+> Oh! sorry about that, I was under the impression that if the next
+> iteration is posted, then I cannot just add the Reviewed-by tag
+> provided in the previous iteration by myself.
 
-Please let me know if there are any problems.
+You certainly *can* add it, but it's a judgment call on whether you
+should. In this case, you were only making cosmetic changes (commit
+message and comments, requested by reviewers) between versions, so IMO
+that's totally fine. If there are more substantial changes between
+versions, it may be better to skip it, and let the reviewer re-review.
+Sometimes a reviewer might even explicitly say, "with changes X and Y,
+consider this Reviewed-by: foo <foo@bar.tld>", which is a pretty
+strong indication you can add it.
 
-Kalle
+Anyway, it's probably better to omit a review line that should have
+been included, rather than include one that should not have been
+(e.g., because undesirable changes were made). So again, no worries
+from me!
 
-The following changes since commit e6553076626e932983b1947e1cc593421cb83aa8:
-
-  Mellanox: Add new mlxsw_spectrum firmware xx.2010.1502 (2022-04-21 06:46:21 -0400)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20220423
-
-for you to fetch changes up to 4a0e59f95830817b1601631281191a5c3327d138:
-
-  ath11k: QCA6390 hw2.0: update to WLAN.HST.1.0.1-05266-QCAHSTSWPLZ_V2_TO_X86-1 (2022-04-27 11:23:17 +0300)
-
-----------------------------------------------------------------
-Kalle Valo (19):
-      ath11k: IPQ6018 hw1.0: update board-2.bin
-      ath11k: IPQ6018 hw1.0: update to WLAN.HK.2.5.0.1-01208-QCAHKSWPL_SILICONZ-1
-      ath11k: IPQ8074 hw2.0: update board-2.bin
-      ath11k: IPQ8074 hw2.0: update to WLAN.HK.2.5.0.1-01208-QCAHKSWPL_SILICONZ-1
-      ath11k: QCA6390 hw2.0: update board-2.bin
-      ath11k: QCN9074 hw1.0: add board-2.bin
-      ath11k: QCN9074 hw1.0: add to WLAN.HK.2.5.0.1-01208-QCAHKSWPL_SILICONZ-1
-      ath11k: WCN6750 hw1.0: add board-2.bin
-      ath11k: WCN6750 hw1.0: add to WLAN.MSL.1.0.1-00887-QCAMSLSWPLZ-1
-      ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.7
-      ath10k: QCA99X0 hw2.0: add board-2.bin
-      ath10k: QCA4019 hw1.0: update board-2.bin
-      ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00288-QCARMSWPZ-1
-      ath10k: QCA6174 hw3.0: update board-2.bin
-      ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.9.0.2-00156
-      ath10k: QCA9888 hw2.0: update board-2.bin
-      ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00156
-      ath10k: QCA9984 hw1.0: update board-2.bin
-      ath11k: QCA6390 hw2.0: update to WLAN.HST.1.0.1-05266-QCAHSTSWPLZ_V2_TO_X86-1
-
- WHENCE                              |   34 +-
- ath10k/QCA4019/hw1.0/board-2.bin    |  Bin 607304 -> 1129788 bytes
- ath10k/QCA6174/hw3.0/board-2.bin    |  Bin 715444 -> 731852 bytes
- ath10k/QCA6174/hw3.0/firmware-6.bin |  Bin 702844 -> 706004 bytes
- ath10k/QCA9888/hw2.0/board-2.bin    |  Bin 84928 -> 133540 bytes
- ath10k/QCA9888/hw2.0/firmware-5.bin |  Bin 691292 -> 693604 bytes
- ath10k/QCA9984/hw1.0/board-2.bin    |  Bin 171916 -> 220528 bytes
- ath10k/QCA9984/hw1.0/firmware-5.bin |  Bin 679288 -> 681568 bytes
- ath10k/QCA99X0/hw2.0/board-2.bin    |  Bin 0 -> 157680 bytes
- ath10k/QCA99X0/hw2.0/board.bin      |  Bin 12064 -> 0 bytes
- ath11k/IPQ6018/hw1.0/Notice.txt     | 3916 +++++++++++++++++--
- ath11k/IPQ6018/hw1.0/board-2.bin    |  Bin 787208 -> 787208 bytes
- ath11k/IPQ6018/hw1.0/m3_fw.b01      |  Bin 6712 -> 6712 bytes
- ath11k/IPQ6018/hw1.0/m3_fw.b02      |  Bin 294912 -> 294912 bytes
- ath11k/IPQ6018/hw1.0/m3_fw.mdt      |  Bin 6860 -> 6860 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b00      |  Bin 340 -> 340 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b01      |  Bin 7000 -> 7000 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b02      |  Bin 4696 -> 4696 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b03      |  Bin 2357712 -> 2557136 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b04      |  Bin 370560 -> 412064 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b05      |  Bin 175588 -> 198052 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b07      |  Bin 8936 -> 9416 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.b08      |  Bin 409914 -> 453364 bytes
- ath11k/IPQ6018/hw1.0/q6_fw.mdt      |  Bin 7340 -> 7340 bytes
- ath11k/IPQ8074/hw2.0/Notice.txt     | 3916 +++++++++++++++++--
- ath11k/IPQ8074/hw2.0/board-2.bin    |  Bin 1311380 -> 1311380 bytes
- ath11k/IPQ8074/hw2.0/m3_fw.b01      |  Bin 136 -> 136 bytes
- ath11k/IPQ8074/hw2.0/m3_fw.b02      |  Bin 327680 -> 327680 bytes
- ath11k/IPQ8074/hw2.0/m3_fw.mdt      |  Bin 284 -> 284 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b00      |  Bin 340 -> 340 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b01      |  Bin 328 -> 328 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b02      |  Bin 4696 -> 4696 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b03      |  Bin 2589264 -> 2934864 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b04      |  Bin 985504 -> 1009888 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b05      |  Bin 387076 -> 243652 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b07      |  Bin 7048 -> 9816 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.b08      |  Bin 424524 -> 486546 bytes
- ath11k/IPQ8074/hw2.0/q6_fw.mdt      |  Bin 668 -> 668 bytes
- ath11k/QCA6390/hw2.0/Notice.txt     | 4839 ++++++++++++++++-------
- ath11k/QCA6390/hw2.0/amss.bin       |  Bin 3609456 -> 3628672 bytes
- ath11k/QCA6390/hw2.0/board-2.bin    |  Bin 58016 -> 115984 bytes
- ath11k/QCA6390/hw2.0/m3.bin         |  Bin 266684 -> 266684 bytes
- ath11k/QCN9074/hw1.0/Notice.txt     | 4094 +++++++++++++++++++
- ath11k/QCN9074/hw1.0/amss.bin       |  Bin 0 -> 11905872 bytes
- ath11k/QCN9074/hw1.0/board-2.bin    |  Bin 0 -> 786836 bytes
- ath11k/QCN9074/hw1.0/m3.bin         |  Bin 0 -> 340108 bytes
- ath11k/WCN6750/hw1.0/Notice.txt     | 7380 +++++++++++++++++++++++++++++++++++
- ath11k/WCN6750/hw1.0/board-2.bin    |  Bin 0 -> 843548 bytes
- ath11k/WCN6750/hw1.0/wpss.b00       |  Bin 0 -> 340 bytes
- ath11k/WCN6750/hw1.0/wpss.b01       |  Bin 0 -> 6848 bytes
- ath11k/WCN6750/hw1.0/wpss.b02       |  Bin 0 -> 10300 bytes
- ath11k/WCN6750/hw1.0/wpss.b03       |  Bin 0 -> 4096 bytes
- ath11k/WCN6750/hw1.0/wpss.b04       |  Bin 0 -> 5783231 bytes
- ath11k/WCN6750/hw1.0/wpss.b05       |  Bin 0 -> 175236 bytes
- ath11k/WCN6750/hw1.0/wpss.b06       |  Bin 0 -> 266684 bytes
- ath11k/WCN6750/hw1.0/wpss.b07       |  Bin 0 -> 1176368 bytes
- ath11k/WCN6750/hw1.0/wpss.b08       |    0
- ath11k/WCN6750/hw1.0/wpss.mdt       |  Bin 0 -> 7188 bytes
- ath11k/WCN6855/hw2.0/amss.bin       |  Bin 4972544 -> 4972544 bytes
- 59 files changed, 22238 insertions(+), 1941 deletions(-)
- create mode 100644 ath10k/QCA99X0/hw2.0/board-2.bin
- delete mode 100644 ath10k/QCA99X0/hw2.0/board.bin
- create mode 100644 ath11k/QCN9074/hw1.0/Notice.txt
- create mode 100644 ath11k/QCN9074/hw1.0/amss.bin
- create mode 100644 ath11k/QCN9074/hw1.0/board-2.bin
- create mode 100644 ath11k/QCN9074/hw1.0/m3.bin
- create mode 100644 ath11k/WCN6750/hw1.0/Notice.txt
- create mode 100644 ath11k/WCN6750/hw1.0/board-2.bin
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b00
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b01
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b02
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b03
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b04
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b05
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b06
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b07
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.b08
- create mode 100644 ath11k/WCN6750/hw1.0/wpss.mdt
+Brian
 
 _______________________________________________
 ath10k mailing list
