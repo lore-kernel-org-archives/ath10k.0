@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4026C433F5
-	for <ath10k@archiver.kernel.org>; Fri, 29 Apr 2022 05:44:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10B24C433EF
+	for <ath10k@archiver.kernel.org>; Fri, 29 Apr 2022 06:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SgMXitWCrHZ0TzBOYP2AK1q5W0G2AsoHspp5ygACojw=; b=KdYmzmhwkB4Tdn
-	Areifr+Z2p0cHza8AI/pulTbtJ5zxTLKwv4FRlycl4p1L8DOGwszE6hqeWmN7vLxTdUE/KFEeSPhZ
-	Os716BdtuLz+//DAEqZhvRP8uPNoj5GV4CjgNLH7SLIbCyZmKjUOXu4/esFdAHxBwYJc2I7IjAg5j
-	JKfeabzsOtP068vp1nywXdjrtWfVeIK++4qnfNOtCz6Jrjx4coDV4Ga4KWXMtxcg2Ib36l1lr/no0
-	9SLP8eih0K6ZSRazCQ29dZV5Osm6Rh2XXWe82O7n+IPfaghgvfTa0MuN7clrI3SJXlOoiV6OSW828
-	RslxCRskkm5meEy90mXA==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Xow7SgqgQRh3MJQUdtHXtw/HsCpHdQQ66+3nSx6SITE=; b=fzXxje2nw4Ykrt
+	nAVrhadCF+QsWW5TeKezCkyEFc/+5tZnu3mpp55N/thtMwmwXaYhhvuyKf59rdWTiBqjPGPWBxz0/
+	qt8JeK9bsktpNO5obgIlteuc0MOoB/t4eKCDCvMlmHLngQULxI5lUYQhkZtcQxLjEzQuv7eA9OOOW
+	ADn5ePvHprz4ZbzL9GMVpKiQq3U4GbemeLKHGMh9w3KsjzdeWjQluLnrv3K6fG1bxZpRqiwDWPOIi
+	kBHCz/IGF5GoUw18i0wiiTwwsMUxcwFW7QlBfFwY/owSUHr9tdFhfD802HIdYjbTYAHnDoOfv5oS/
+	DeThg7X2+L7McvOiQV+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkJQj-009cEU-Sj; Fri, 29 Apr 2022 05:44:37 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1nkJlv-009ftF-LT; Fri, 29 Apr 2022 06:06:31 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkJQg-009cCv-Ff; Fri, 29 Apr 2022 05:44:36 +0000
+ id 1nkJlt-009fsE-17
+ for ath10k@lists.infradead.org; Fri, 29 Apr 2022 06:06:30 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0E280612D3;
- Fri, 29 Apr 2022 05:44:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 496CFC385A7;
- Fri, 29 Apr 2022 05:44:28 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 61B34619B5;
+ Fri, 29 Apr 2022 06:06:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E366C385A4;
+ Fri, 29 Apr 2022 06:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651211069;
- bh=RgOWZfYnD1p3E6QBrmMNLzNcgmp0EowJzG0gJaNZlH8=;
- h=From:To:List-Id:Cc:Subject:In-Reply-To:References:Date:From;
- b=jymF01sN7zHO8P9154EGfmnwVsjVHOwoQ1gRIu3nY1JIOu3P8EBa1rAMlZMNbXLG+
- B1cxbVId1IiRwvZ1YiKvfU+Tga5cgeXXlBGsCj6f5FrAZfq6PWJRyx0da1gh9znzvi
- XpZj+jPAmOaQnAjaaw18ibkyIg3riH+vM8SJ9FKsIO71lXJIXwH0Ck/wcrYgemNE77
- CHlpaLxuwInPuSA5WHyKVR+PFdJBmvzvZsT7CghrFl8K+eUeMWVc9akwKv+VUtmrje
- 9tRVSb+cLknS/NsrG+d2ncvwqIGz3YmV3I7JNZrsQI0Elx64mgDsnvRB37snan2RGe
- MkVAGq/x/NNew==
-From: Kalle Valo <kvalo@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: "linux-firmware\@kernel.org" <linux-firmware@kernel.org>,
- "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
- "ath10k\@lists.infradead.org" <ath10k@lists.infradead.org>,
- "ath11k\@lists.infradead.org" <ath11k@lists.infradead.org>
-Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20220423
-In-Reply-To: <332e62e5-b04d-3a6a-38fe-924d056bf0f8@linaro.org> (Dmitry
- Baryshkov's message of "Fri, 29 Apr 2022 02:43:38 +0300")
-References: <BYAPR02MB4567E377F14F272DFF48907A92FA9@BYAPR02MB4567.namprd02.prod.outlook.com>
- <332e62e5-b04d-3a6a-38fe-924d056bf0f8@linaro.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date: Fri, 29 Apr 2022 08:44:24 +0300
-Message-ID: <87k0b8fnpj.fsf@kernel.org>
+ s=k20201202; t=1651212387;
+ bh=fOZngMG49/S1ZUbL+kjMvqWelI1jEAECMwdZnFHw9TU=;
+ h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+ b=MuLgH2GKjhHaruwXrCbfflfbNBwxhByXKZD6oQ6xVjO0lmNTt05+Zm8ijLu+BwdWq
+ 2v0p/q0BdxXmfareGn7NIhUKsuCwyHoq8PCFnno+pJHkVDoR8v7d0NHwzBxzsAlMtF
+ ox3jOfrT7lH0bpqjnCwC9P53D14nbU7g93bND5vvxLsxDO7hbXRj7Ki9hMvjLB/kgt
+ NXkt1bnpkBUKbUeuZEhQPm5ZItADBe1a+FEyNVvWSFdZOuiN0cWF5IvtO66QJ2REnM
+ XNtGzUbvl7Z1xYU/4zV9EfjDaQ8HyhS7netxXDUkjJ+fgBbcfYfc0fBjx7cGK1nUi5
+ kDc4KH+NXrqTQ==
 MIME-Version: 1.0
+Subject: Re: [PATCH v2] ath10k: skip ath10k_halt during suspend for driver
+ state RESTARTING
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20220426221859.v2.1.I650b809482e1af8d0156ed88b5dc2677a0711d46@changeid>
+References: <20220426221859.v2.1.I650b809482e1af8d0156ed88b5dc2677a0711d46@changeid>
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: quic_wgong@quicinc.com, kuabhs@chromium.org, briannorris@chromium.org,
+ linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+ ath10k@lists.infradead.org, netdev@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <165121238072.2322.15176530222754995177.kvalo@kernel.org>
+Date: Fri, 29 Apr 2022 06:06:25 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220428_224434_601082_F67C0D79 
-X-CRM114-Status: GOOD (  12.78  )
+X-CRM114-CacheID: sfid-20220428_230629_198118_254A3700 
+X-CRM114-Status: GOOD (  15.63  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,30 +76,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+Abhishek Kumar <kuabhs@chromium.org> wrote:
 
-> Hi Kalle,
->
-> On 27/04/2022 11:32, Kalle Valo wrote:
->> Add support for QCN9074 and WCN6750 ath11k hardware families. Also
->> there are several updates to existing firmwares and board files for both ath10k
->> and ath11k.
->>
->> Please let me know if there are any problems.
->
-> I noticed that this pull request doesn't include the board file for
-> WCN3990. Is there any issue with it that we can solve on our side?
+> Double free crash is observed when FW recovery(caused by wmi
+> timeout/crash) is followed by immediate suspend event. The FW recovery
+> is triggered by ath10k_core_restart() which calls driver clean up via
+> ath10k_halt(). When the suspend event occurs between the FW recovery,
+> the restart worker thread is put into frozen state until suspend completes.
+> The suspend event triggers ath10k_stop() which again triggers ath10k_halt()
+> The double invocation of ath10k_halt() causes ath10k_htt_rx_free() to be
+> called twice(Note: ath10k_htt_rx_alloc was not called by restart worker
+> thread because of its frozen state), causing the crash.
+> 
+> To fix this, during the suspend flow, skip call to ath10k_halt() in
+> ath10k_stop() when the current driver state is ATH10K_STATE_RESTARTING.
+> Also, for driver state ATH10K_STATE_RESTARTING, call
+> ath10k_wait_for_suspend() in ath10k_stop(). This is because call to
+> ath10k_wait_for_suspend() is skipped later in
+> [ath10k_halt() > ath10k_core_stop()] for the driver state
+> ATH10K_STATE_RESTARTING.
+> 
+> The frozen restart worker thread will be cancelled during resume when the
+> device comes out of suspend.
+> 
+> Below is the crash stack for reference:
+> 
+> [  428.469167] ------------[ cut here ]------------
+> [  428.469180] kernel BUG at mm/slub.c:4150!
+> [  428.469193] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [  428.469219] Workqueue: events_unbound async_run_entry_fn
+> [  428.469230] RIP: 0010:kfree+0x319/0x31b
+> [  428.469241] RSP: 0018:ffffa1fac015fc30 EFLAGS: 00010246
+> [  428.469247] RAX: ffffedb10419d108 RBX: ffff8c05262b0000
+> [  428.469252] RDX: ffff8c04a8c07000 RSI: 0000000000000000
+> [  428.469256] RBP: ffffa1fac015fc78 R08: 0000000000000000
+> [  428.469276] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  428.469285] Call Trace:
+> [  428.469295]  ? dma_free_attrs+0x5f/0x7d
+> [  428.469320]  ath10k_core_stop+0x5b/0x6f
+> [  428.469336]  ath10k_halt+0x126/0x177
+> [  428.469352]  ath10k_stop+0x41/0x7e
+> [  428.469387]  drv_stop+0x88/0x10e
+> [  428.469410]  __ieee80211_suspend+0x297/0x411
+> [  428.469441]  rdev_suspend+0x6e/0xd0
+> [  428.469462]  wiphy_suspend+0xb1/0x105
+> [  428.469483]  ? name_show+0x2d/0x2d
+> [  428.469490]  dpm_run_callback+0x8c/0x126
+> [  428.469511]  ? name_show+0x2d/0x2d
+> [  428.469517]  __device_suspend+0x2e7/0x41b
+> [  428.469523]  async_suspend+0x1f/0x93
+> [  428.469529]  async_run_entry_fn+0x3d/0xd1
+> [  428.469535]  process_one_work+0x1b1/0x329
+> [  428.469541]  worker_thread+0x213/0x372
+> [  428.469547]  kthread+0x150/0x15f
+> [  428.469552]  ? pr_cont_work+0x58/0x58
+> [  428.469558]  ? kthread_blkcg+0x31/0x31
+> 
+> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00288-QCARMSWPZ-1
+> Co-developed-by: Wen Gong <quic_wgong@quicinc.com>
+> Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-Oh, sorry about that. I guess this is just a bug in my scripts, I'll
-include the wcn3990 board file in the next pull request.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Linux firmware maintainers, please pull this anyway. I'll submit a
-follow up pull request later.
+b72a4aff947b ath10k: skip ath10k_halt during suspend for driver state RESTARTING
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+https://patchwork.kernel.org/project/linux-wireless/patch/20220426221859.v2.1.I650b809482e1af8d0156ed88b5dc2677a0711d46@changeid/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
