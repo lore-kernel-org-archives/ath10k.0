@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 900D3C433EF
-	for <ath10k@archiver.kernel.org>; Mon,  2 May 2022 10:25:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16412C433F5
+	for <ath10k@archiver.kernel.org>; Mon,  2 May 2022 11:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	Message-ID:Subject:cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=7F07tMwDukwYt702CiuPiQq2t7VYxH8Bez3HjBaHGig=; b=ZkmyU9Gm9FTuac9Riu4xbAWvfs
-	w8a11Tw4ZGYjV40ogjThQ+Q7hOcaoh3Q5Sml9gSTf5VHh3rq+XVGfdTda95aAjePjSKH9M4qOel4d
-	vrwwjizZb3VwrtGf3eQ70bGier5VvHM3r+Bxr0VhGN04Bl3Ja5NQw2dizPkc+DLo8K81mmS4Bom2q
-	OpvLT+oPMpDhTa+FQcK+4j+I9MeKWI4TROlpdrzdZLONoy/bfBmjbQs/cqh2l0xYAW+UNOsre/dd3
-	Z7rAxHnMaRWuiTt0q0kXNGUnb7gCrJZxfKeW09GKOkFZ5KSOAsLZxNxP/jPDreovCvDYasgsXMCq0
-	E5VJVXQQ==;
+	bh=zM5+soNiJU7RVwNPpck4LFvcvL1vZnwsL4Fzp0wZwjs=; b=TouAPqgscWvUmJxt5Zre575CkU
+	ySKA4o/yO7ILD/ttHWyRCILKzznFeYri9HaMSu5uwCAfmu/ksgPjrJx6P5eEB9RWKeYx/CbKtG+Ac
+	MY2WWLkyiU35hjbExKG++HIAhAWr32lhvmPbY2LKumx7M4yb49iYdLBQv/2FehvByIojSNJSo6Lxx
+	RPeGAjsqbAqIDxh3yQvRSUSRev41xvFP07WCPx97iCn5fufFpJezBGSG8CDtN18nz4JDnl0etSSiT
+	xO9Y+rU1nPE1jI8jahitHGzXD7tZipBop/NTIjG3FJh+Q7spYSN2wacHuCB3Lqun43o4jiPdW6QcE
+	tg/v3QNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlTFD-000oiR-TY; Mon, 02 May 2022 10:25:31 +0000
-Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
+	id 1nlU7y-000wRn-C3; Mon, 02 May 2022 11:22:06 +0000
+Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlTFB-000ohi-CE
- for ath10k@lists.infradead.org; Mon, 02 May 2022 10:25:30 +0000
-Received: by mail-ed1-x531.google.com with SMTP id p4so16176271edx.0
- for <ath10k@lists.infradead.org>; Mon, 02 May 2022 03:25:27 -0700 (PDT)
+ id 1nlU7v-000wQB-Fv
+ for ath10k@lists.infradead.org; Mon, 02 May 2022 11:22:05 +0000
+Received: by mail-ed1-x52f.google.com with SMTP id be20so16225625edb.12
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2022 04:22:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=date:from:to:cc:subject:message-id:mime-version;
- bh=zK+aUrkQjrkcf9H+Oz4t2flISOl2B48rS3lcqAAupk8=;
- b=h7P/aHlrebvvsMxo4gkds+UoObtlxOMSsnnNntmdwMu9IQtbCdi8gKX9kw6gmnknLu
- fUgWgENZ0nSIOaVFBHkedF6ffEyzwpowwrYJJbY/Tw4WxzVjKakK31aKFosGgcOMDr6j
- Op8tw28aBt54NjZIztK6Thv4BomXavnnzvOCi6db9KRl90KBAf6RKwwFH5/ls0Ow8LnT
- 5UC5YHAvYTsywc2At15aTgCEhajS0XMGjbXziVZqox601lGwBlGd8i7DTndUMY0/Hexw
- meB6Y/gANbPSNl9hcVLlMoYgWRmQ5JFpIL86i+/IGbw8S9vCfDpZRMGEw99zTnFARY35
- ufgA==
+ bh=71OgqJLjSG6tJDJda1xw1Sn59+VJ7BIC5EnWGdZR3Rs=;
+ b=pgt36cDc8LbJ8lsxkINy0I36z1oD52ntoXO1OuQDVE1sxC9km4zwn1gETKMRpfx2//
+ q1L/j92wkTFEYR8Mnep03sDVfZO1l9IY8Rmtg+8ccz2v9TPdFY57j2aBTN7dDuS653aF
+ bCCmbgrN77Pmre8R/9sYEI2VEwo9FIN2zGkPai0pC5QLRq4cHCq52xXapt5v56MKxa87
+ XigGBYCWk6o7yiFKScjcTfIcZkTwXDuKnuDMHaI4S3JTIXPSPYXciyYOrPW3ZD9xYIX+
+ hZfyB4pqCG8Vq+avX9SJWW2BlZhjbPPXEQ6DMFaEIrx/xOVlfhPmWxljlULi/wrgraGA
+ nnng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
- bh=zK+aUrkQjrkcf9H+Oz4t2flISOl2B48rS3lcqAAupk8=;
- b=LsZQZ4dbhSNJzbg9xliGePObwTCnfEjCESd6Z9zdoatDPOUn+65u8Qb09TuQF8Ik1p
- B7Qxl7+YEKceiLm+IWNo1bbIFh8yVrKKIcTG+vMmISncGZLVZEvN9/qdimrXGrPWg9NQ
- M4bC4g4WJjMh5SJbuYpsmKHTXow+Mf2jwlhPu4YafhRx6qHW8yPSAGio0XSjfl6hv+nH
- 0TpD2JAm0R7PY5yYoSOP/YTMLjc+QIA//zzAJ00bkVVPr2EMItAaXx/o1rD7roxM+hI+
- 7lYfJluSHKuVrT8jtLo1aAtqeyuXrZOXwgsK7KtaAytKGkxzsP4cobKH03kXdOHhqEl7
- d1lg==
-X-Gm-Message-State: AOAM5312joI+isNbxyXprBO6yYIFmtAA9B7nzGAhvDUrRJmZyuMM9wGz
- eBwu4x/D0XpdUNOLDcU+HkhyVsFTBOI=
-X-Google-Smtp-Source: ABdhPJwxM4Om8cxgHN/xyEYZ8UY2kSzPRyD8ilNU2zWjuKQewCILWRtg9KyzBKQyAHbI2MTuzjabMA==
-X-Received: by 2002:a05:6402:486:b0:413:bd00:4f3f with SMTP id
- k6-20020a056402048600b00413bd004f3fmr12925291edv.103.1651487126649; 
- Mon, 02 May 2022 03:25:26 -0700 (PDT)
+ bh=71OgqJLjSG6tJDJda1xw1Sn59+VJ7BIC5EnWGdZR3Rs=;
+ b=ypjrH/qdhEr803JRI4FnHKW6IsZ1CiY2s1AOVCR/vsxdEIYe0XUPKtit9pmgT6Ng2m
+ oVxHo70aiahrCSTtQDvfzJzZQWzpIeT73sKudikrt6dZDe/M88PyM5pOiUGYvl1RPOD/
+ 881tN0lXAvgq9/vmmvo8S1Ak+C3OP7PJOvIndCgizGObdfAgvb7yHHMUBxtP9OiUTKl0
+ Byx6OK1D0DeFUSW+DYjALO70qYAbpOPby0qwJWn0hHyVpD125A5ljvB2PIO2voSi67c8
+ rifijwYiquJPwfRnpf4+xRplQd5Hj2qQ7ZcTkvA63/KSwF8+S0uft9oiEjPvpYto6O5n
+ 5hbA==
+X-Gm-Message-State: AOAM532MWVRvubdpniK6n9uCH+epw66UPxCNvhXfiGS49bQ/yMEu2Ug7
+ g3zFx/7CIHkfx/yXB5G4HtMpOF6jr8I=
+X-Google-Smtp-Source: ABdhPJyA1Up6/TPbkTkRjszj7cBxWo8Ok5f+UpmGxbkzDV8ItaSz/1cV32FWuI/u243LN4vDlI2Zyw==
+X-Received: by 2002:a05:6402:2804:b0:420:caf1:961c with SMTP id
+ h4-20020a056402280400b00420caf1961cmr12940033ede.280.1651490521058; 
+ Mon, 02 May 2022 04:22:01 -0700 (PDT)
 Received: from mStation (h17-ipv4-77-240-224.mynet.it. [77.240.224.17])
  by smtp.gmail.com with ESMTPSA id
- en22-20020a17090728d600b006f3ef214ddesm3455708ejc.68.2022.05.02.03.25.25
+ zd9-20020a17090698c900b006f3ef214e25sm3531802ejb.139.2022.05.02.04.22.00
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 02 May 2022 03:25:26 -0700 (PDT)
-Date: Mon, 2 May 2022 12:25:19 +0200 (CEST)
+ Mon, 02 May 2022 04:22:00 -0700 (PDT)
+Date: Mon, 2 May 2022 13:21:53 +0200 (CEST)
 From: Enrico Mioso <mrkiko.rs@gmail.com>
 To: ath10k@lists.infradead.org
 cc: Christian Lamparter <chunkeey@gmail.com>
-Subject: ath10k-firmware: QCA9888 hw2.0: add GL.iNet GL-B2200 specific board
- file
-Message-ID: <e0fad270-a1fb-c952-d328-b9a8c0f4133f@gmail.com>
+Subject: [V2] ath10k-firmware: QCA9888 hw2.0: add GL.iNet GL-B2200 specific
+ board file
+Message-ID: <2131f701-ff71-8fbb-353b-e40338b3e80d@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="8323329-1577814365-1651487126=:1329414"
+ boundary="8323329-1070299499-1651490520=:1329558"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220502_032529_455346_775FF8E3 
-X-CRM114-Status: UNSURE (   4.00  )
+X-CRM114-CacheID: sfid-20220502_042203_629065_E82E18AB 
+X-CRM114-Status: UNSURE (   9.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -88,19 +88,43 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1577814365-1651487126=:1329414
+--8323329-1070299499-1651490520=:1329558
 Content-Type: text/plain; format=flowed; charset=US-ASCII
 
+Hello all!!
 
+I would like to add a board file for the PCI-E Wi-Fi interface present on the GL.iNet GL-B2200 mesh router, a device added a while ago to OpenWRt.
 
---8323329-1577814365-1651487126=:1329414
-Content-Type: application/octet-stream; name*0="bus=pci,vendor=168c,device=0056,subsystem-vendor=0000,subsystem-device=0000,varia";
-        name*1="nt=GL-B2200.bin"
+* Hardware description:
+
+This device seems based on IPQ4019 / AP-DK04.1-C3.
+Three radios are used:
+- one QCA4019 radio is used for 2.4 GHZ operation (submitted on a previous message)
+- one QCA4019 radio is used for 5 GHZ for operating on lower part of 5 GHZ spectrum (submitted on a previous message)
+- a QCA9888V2 interface connected over PCI-E to operate on higher part of the 5 GHZ spectrum (contained in this message)
+
+* origin of the board files:
+
+The board file was provided by the manifacturer, who provided the original patch to support the device in OpenWRt.
+
+* ids to be used with the board files
+
++ bus=pci,bmi-chip-id=0,bmi-board-id=16,variant=GL-B2200
+SHA256: 7016cac25e5d35cf037f2f6aa63c03bd124fb521ec40c7843eb9d8424afa1a20
+
+* attached files:
+
+The names of the files are equal to the ID strings in the board-2.bin files, minus the .bin extension of course.
+
+Kind regards,
+
+Enrico
+--8323329-1070299499-1651490520=:1329558
+Content-Type: application/octet-stream; name="bus=pci,bmi-chip-id=0,bmi-board-id=16,variant=GL-B2200.bin"
 Content-Transfer-Encoding: BASE64
-Content-ID: <7fe24a1c-9fe4-fcc4-ca7d-9bd608369c3c@gmail.com>
+Content-ID: <d5a083ea-ec32-5625-4fbc-af2b59cedfcf@gmail.com>
 Content-Description: 
-Content-Disposition: attachment; filename*0="bus=pci,vendor=168c,device=0056,subsystem-vendor=0000,subsystem-device=0000,varia";
-        filename*1="nt=GL-B2200.bin"
+Content-Disposition: attachment; filename="bus=pci,bmi-chip-id=0,bmi-board-id=16,variant=GL-B2200.bin"
 
 IC/kxgEBEjRWeJASAAAAABXgAAIAYAAAdXcCAAAAAAAQAAACMwAAAAACBQMA
 AAAAAAAAAAAAAAAAAAAAAAAAAGNjAAEAAAAAADMzM/Ty8gFLFAwA////P///
@@ -372,7 +396,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAA==
 
---8323329-1577814365-1651487126=:1329414
+--8323329-1070299499-1651490520=:1329558
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -383,5 +407,5 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---8323329-1577814365-1651487126=:1329414--
+--8323329-1070299499-1651490520=:1329558--
 
