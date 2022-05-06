@@ -4,61 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 542D4C433EF
-	for <ath10k@archiver.kernel.org>; Fri,  6 May 2022 06:20:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 909E5C433EF
+	for <ath10k@archiver.kernel.org>; Fri,  6 May 2022 18:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
-	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RHP6dQyCdLnKn+qjGoDG8pGll/I6n0jlZ1lFxGA0I5g=; b=bV4uDPKTb5sH4X
-	3/U+xMo/3cIJucZOSHYbDUfunJxqp+PK+IMPL57OTbsBdKzNi86MbDuHnxHWdxc9OGRs99SLmY/em
-	kZvjP3wRnWN4tBxrZ35kSAK+X5pY7CEghwoI7doMwmlBRjuof+xZuTPVu++5v3n0hzonVaB9OaFoZ
-	8hQyy0KawmtR+rE48ALmodboCDVzeREg8yftRlSbdoobFmVkoo/eGQRFatvXvpaVMeufZtQ9PMtoZ
-	difTIeOpv9JbY4ZXwsnfvxj1VdFMJ7xK+XTFZqlQJHHq1QUpZAnqwkybGgp81pNZwz/u+qp2b2994
-	PAzl2dZ2K0QZhQ4TvLfw==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:
+	Subject:From:To:Date:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=2fAdnqCgJFu+JRPe4QswSbE77a3jrdK50uNsYL93u4I=; b=sRZ
+	bKIrKEssNgCSqCKR5b61TfmJtsDVKWY0ZsitkIcLX3sJbXfMQpA+8qzrl0vGrQKrGtVUljVgjDpQd
+	zOuW5JcDoRz0tBRFZLc+4iWDlxX+M84+2lrtdCJKaXhLok9kmhloKcQ3VyiREZd4vGX4loxWR2pFM
+	rKOJ/4P1/UTiv6dQV+o3Pl+WVpOGCn4KSSfxELaqPT6vRSu5mQq6GDkIgfAPnBD1EkN2uXtzoy/ga
+	jhFvyt01SYDRhmY4AQWcL0UTktQq6iPWDTcwXxty3nqwSgtKMXYlaw9+TpcfvYgowSakKaVoLCeJC
+	APHgYFXSVl6eafCakTAza0V8c+5nHbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nmrJo-001YzT-IK; Fri, 06 May 2022 06:20:00 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1nn2xs-004k5o-8J; Fri, 06 May 2022 18:46:08 +0000
+Received: from mail-40130.protonmail.ch ([185.70.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmrJl-001YyY-JJ
- for ath10k@lists.infradead.org; Fri, 06 May 2022 06:19:59 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 10876B83335;
- Fri,  6 May 2022 06:19:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8924C385A8;
- Fri,  6 May 2022 06:19:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651817994;
- bh=V11+LAWJ1d5l67vnmx/JvBJkQlrT/ck1awnxoU+USPo=;
- h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
- b=Td39A2a6SjBgRUPWf5cFiqwthdL+PTezWMG3cVnxsMqzDIghnZwRiSVZCCJluRK7d
- D6qfreohXvGy0Qu2Zq89EgecScEo+tIgygb7sO09B514YTaxy6OCPPUx+hZ8iocr8Y
- 0I0ThOa/ryEEViBVJ1sajMCvuuJQycWDdpBmbRIBXRTN7DoEaqX2c7o+LB867yFE0u
- A1GXvIuAv7e+OCwAQRc8+GJ/xuBdYfHzFO0DiKQaeOodZlstflCsAFHlCc58bMOCMX
- 9HcKY8taN/K+ygFkfr9NDOsYexRJWSTQHB5j3XY8qVQ0EJ2oeF+oRi4TufXm5zS7R4
- 4Hw3vaLXNblqA==
+ id 1nn2xo-004k5X-F6
+ for ath10k@lists.infradead.org; Fri, 06 May 2022 18:46:06 +0000
+Date: Fri, 06 May 2022 18:45:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+ s=protonmail3; t=1651862760;
+ bh=sjJss+FNtHkselknNDMT2aWWbGgsD9Ic1R/jwjO+3DA=;
+ h=Date:To:From:Reply-To:Subject:Message-ID:Feedback-ID:From:To:Cc:
+ Date:Subject:Reply-To:Feedback-ID:Message-ID;
+ b=lXUfqYoV0AFRT0/2vIyTGC5cFs2743S4mTtHhvDW3jrOJush2A6JG5t8xgDx+nX4K
+ oq5adSxCKIChkLm3JiaX6/Jr7Oba2yepg6PXJWgXiSPzQPLUT+yoA8FQ6cnMbxijbZ
+ gyRaHq5NaFb6juZcQw9yH/qDRP3YatoQ2FOP7sC47/3p6WkxE3H4xUAF7lZJDCiLJW
+ hnvLJkLIO91cu6hAg0i4zLeIgoxRzl1DfD0RbvCju7X2p9mVCQNr1B10rFNDh6d5h5
+ PSs8dVQG0mI+DtMkPoUcZNtAs1NNRGKOb59r3jqhzyfAiXsEsAmXWmmgGJLvzzUtdv
+ NmWs0mhnvdKAg==
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+From: Alex <alexknoptech@proton.me>
+Subject: ath_10kpci  Bug
+Message-ID: <QV6gW9w50GNada4YipsJxntzNcT84ajnWslhecSa7W6rRxMVw7wpcpPQaZkzWSTDGC1bnKx-h3t5ubVBm5CJqpq5Kg1wFXE8ZOL-SEHZ83k=@proton.me>
+Feedback-ID: 46172384:user:proton
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: support bus and device specific API 1 BDF
- selection
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20211009221711.2315352-1-robimarko@gmail.com>
-References: <20211009221711.2315352-1-robimarko@gmail.com>
-To: Robert Marko <robimarko@gmail.com>
-Cc: kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Robert Marko <robimarko@gmail.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <165181799100.13324.13296205363993224857.kvalo@kernel.org>
-Date: Fri,  6 May 2022 06:19:52 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220505_231957_811862_7FDEBD5B 
-X-CRM114-Status: GOOD (  15.67  )
+X-CRM114-CacheID: sfid-20220506_114605_208776_5856F1B4 
+X-CRM114-Status: UNSURE (   3.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,49 +58,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Alex <alexknoptech@proton.me>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Robert Marko <robimarko@gmail.com> wrote:
-
-> Some ath10k IPQ40xx devices like the MikroTik hAP ac2 and ac3 require the
-> BDF-s to be extracted from the device storage instead of shipping packaged
-> API 2 BDF-s.
-> 
-> This is required as MikroTik has started shipping boards that require BDF-s
-> to be updated, as otherwise their WLAN performance really suffers.
-> This is however impossible as the devices that require this are release
-> under the same revision and its not possible to differentiate them from
-> devices using the older BDF-s.
-> 
-> In OpenWrt we are extracting the calibration data during runtime and we are
-> able to extract the BDF-s in the same manner, however we cannot package the
-> BDF-s to API 2 format on the fly and can only use API 1 to provide BDF-s on
-> the fly.
-> This is an issue as the ath10k driver explicitly looks only for the
-> board.bin file and not for something like board-bus-device.bin like it does
-> for pre-cal data.
-> Due to this we have no way of providing correct BDF-s on the fly, so lets
-> extend the ath10k driver to first look for BDF-s in the
-> board-bus-device.bin format, for example: board-ahb-a800000.wifi.bin
-> If that fails, look for the default board file name as defined previously.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-f2a7064a78b2 ath10k: support bus and device specific API 1 BDF selection
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211009221711.2315352-1-robimarko@gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVsbG8sCkkgYW0gcnVubmluZyBpbnRvIGEgYnVnIHdoZXJlIFdpLUZpIHdpbGwgb2NjYXNpb25h
+bGx5IHN0b3Agd29ya2luZyBkdXJpbmcgcnVudGltZS4gSSB3aWxsIHN0aWxsIGJlIGNvbm5lY3Rl
+ZCB0byB0aGUgV2ktRmkgbmV0d29yayBidXQgbm90IGJlIGFibGUgdG8gcGluZyBteSBkZWZhdWx0
+IGdhdGV3YXksIHJlYWNoIHdlYnNpdGVzLCBvciBwaW5nIGV4dGVybmFsIGhvc3RzLiBJdCBhcHBl
+YXJzIHRoZXJlIGlzIHNvbWUgaXNzdWUgaGFwcGVuaW5nIGluIHRoZSBrZXJuZWwgYXMgd2VsbC4g
+SGVyZSBhcmUgdGhlIGxvZ3MgSSByZWNlaXZlIHdoZW4gdGhpcyBoYXBwZW5zLiBDdXJyZW50IHdv
+cmthcm91bmQgaXMgdG8gdHVybiBvZmYgV2ktRmkgdGhlbiB0dXJuIGl0IGJhY2sgb24uClsgNDQ2
+NC4xOTUwMTFdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiB0aW1lZCBvdXQgd2FpdGluZyBwZWVy
+IHN0YXRzIGluZm8KWyA0NDY3LjI3MTAxMV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHdtaSBj
+b21tYW5kIDkwMTEzIHRpbWVvdXQsIHJlc3RhcnRpbmcgaGFyZHdhcmUKWyA0NDY3LjI3MTAzMF0g
+YXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGNvdWxkIG5vdCByZXF1ZXN0IHN0YXRzICgtMTEpClsg
+NDQ2Ny4yNzEyODRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBjb3VsZCBub3QgcmVxdWVzdCBw
+ZWVyIHN0YXRzIGluZm86IC0xMDgKWyA0NDY3LjI4MjY0OF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAw
+LjA6IGZhaWxlZCB0byByZWFkIGhpX2JvYXJkX2RhdGEgYWRkcmVzczogLTE2ClsgNDQ3MC4zMjMx
+NzJdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQgdG8gcmVjZWl2ZSBpbml0aWFsaXpl
+ZCBldmVudCBmcm9tIHRhcmdldDogMDAwMDAwMDAKWyA0NDczLjM0NzA1OF0gYXRoMTBrX3BjaSAw
+MDAwOjAxOjAwLjA6IGZhaWxlZCB0byByZWNlaXZlIGluaXRpYWxpemVkIGV2ZW50IGZyb20gdGFy
+Z2V0OiAwMDAwMDAwMApbIDQ0NzMuMzQ3MDYzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFp
+bGVkIHRvIHdhaXQgZm9yIHRhcmdldCBpbml0OiAtMTEwClsgNDQ3My4zNDgwMDldIGllZWU4MDIx
+MSBwaHkwOiBIYXJkd2FyZSByZXN0YXJ0IHdhcyByZXF1ZXN0ZWQKWyA0NDczLjM0ODAyOF0gYXRo
+MTBrX3BjaSAwMDAwOjAxOjAwLjA6IGNvdWxkIG5vdCByZXF1ZXN0IHN0YXRzICgtMTA4KQpbIDQ0
+NzMuNjY1MjY0XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZGV2aWNlIHN1Y2Nlc3NmdWxseSBy
+ZWNvdmVyZWQKCk90aGVyIGluZm86ClsgwqAxNTIuNjcxMDIxXSBhdGgxMGtfcGNpIDAwMDA6MDE6
+MDAuMDogcWNhNjE3NCBodzMuMiB0YXJnZXQgMHgwNTAzMDAwMCBjaGlwX2lkIDB4MDAzNDBhZmYg
+c3ViIDE3YWE6MDgyNwpbIMKgMTUyLjY3MTQzOV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZp
+cm13YXJlIHZlciBXTEFOLlJNLjQuNC4xLTAwMjg4LSBhcGkgNiBmZWF0dXJlcyB3b3dsYW4saWdu
+b3JlLW90cCxtZnAgY3JjMzIgYmY5MDdjN2MKCgpLZXJuZWw6IExpbnV4IDUuMTEuMC00Ni1nZW5l
+cmljIHg4Nl82NAoKQW55IHN1Z2dlc3Rpb25zIG9yIGFueSBvdGhlciBpbmZvIG5lZWRlZCBmb3Ig
+dGhpcyBidWcgcGxlYXNlIGxldCBtZSBrbm93LgoKCkFsZXggSwoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
