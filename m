@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8D54C433EF
-	for <ath10k@archiver.kernel.org>; Tue, 10 May 2022 07:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97916C433EF
+	for <ath10k@archiver.kernel.org>; Tue, 10 May 2022 08:01:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=poScSSnpR47kg5tC1Ro2xhi4hU7zcd0UhFYsMrJSk5E=; b=JiPOMIeDl+H0t+
-	AReeDGKUTU+5HgUc5UpWknU+qkenooE9yzy2BDA8+TqfBAtGpsRLxnHqAMoDo0OvdtrlYWTHBusXK
-	5OdwXC5yjYOjfs2RFrt7hCqsz3gAIdvbmgWEPIuxywhnsZwjtbxyPfbIOcCBJo4bxF79RbWgpvoEl
-	1kJ/W0ZT4b8hIRkCXYmGTa6KxneRoUqGD4s0wURXI9uszkv2ygwzIVWaINE7JmTtt52N97J4FmGlN
-	wAZ7a+6OXDOnp9yGaNtE+ERRMzDBPSJMay4NUSGAXUhBSsCqFDiIWWrsxDxDuZaawTljGB+C/imxL
-	bRNUprncMI7cwDOVsloA==;
+	List-Owner; bh=nOTsjULSRMpNQt9Je5/do8Fjw0VH9mzbam+LgPX2vjs=; b=RUkgzEy+CUpOXM
+	8PvtDcaKzSPluIy+a5VNWzBrpN1JOPFkgFe04/w/8jWMaCEzvcOetrumsWVvXzLfXxLI5+thwDJdt
+	CKJBYT68/oCP3+w7Tes3vKSwQSF4/GHpVtcpZb1IRYhJYczVO6Nkw9PMS1qJ/k43osV6ERwE4aoLZ
+	jierXWNLJ9j/Ox+9JKVyVC82zTQH6lQ7LphW7VF0JHOts+CLdeN0L0JD3AIORLrN6uT/3QxI93wnR
+	aOJl+iA2cvsV/ZeqrrLIeq9sQBC/t7UZpwDGPd/SB27LD6S91JObzVbIdao6p5ZwW9oN0Jd/sGKiX
+	TZKcOx0Ps2sswNk0dwcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1noKlD-000TYc-Uu; Tue, 10 May 2022 07:58:23 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1noKoI-000UaX-8r; Tue, 10 May 2022 08:01:34 +0000
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1noKlB-000TXl-9Z
- for ath10k@lists.infradead.org; Tue, 10 May 2022 07:58:22 +0000
+ id 1noKo7-000UVZ-4z
+ for ath10k@lists.infradead.org; Tue, 10 May 2022 08:01:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652169501; x=1683705501;
+ t=1652169683; x=1683705683;
  h=date:from:to:cc:subject:message-id:mime-version:
  content-transfer-encoding;
- bh=Gf3e0SIV+DDe/vdQ3AWppz+RtXXYVbeY5s2VWhfwQPc=;
- b=erlA9N7nT9nwhgW5L4U5Q5X5tCAhk5rNGjqNss2jeRuqJQ73I53dVoqC
- ylBjoK0jSI75F4UkmX4cVENrOR6kDtdTG4WOGdfG0bU907WS226bLyyRi
- jepInIdPPsrJAt/dYeOBk5j31IQHsCCN4mfE2myzPPgIg0jgAAbDFQxSm
- ijVkww99RDbHsVDJ1kOJp+xRyQ1DTdaqup51zH4uvR4k9GU2l/Os/OpFc
- Svxh/Y4SZ9h4nK2heJ3CHBh3FRGHxTeTsP84dEG+F22bSan21NMwgh2bu
- y0buqJFYeBSsUOiatBQt6oms/5V4xgi6yPMkgp0NujZ/r9GvSofQ+tHXs A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="332333631"
-X-IronPort-AV: E=Sophos;i="5.91,213,1647327600"; d="scan'208";a="332333631"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 May 2022 00:58:18 -0700
+ bh=UKWVL4j1N4Qm7KuNBoZdUjrbo8mhLYesqF12pOJn/FM=;
+ b=bWdBwxp4fO8blKBsPtuLN4MIkagz55cnM6mKkiuJw3GLzeJ4nYmA7eRD
+ TnfHnqw9xB5gSwg1CuFB1CMq6AkNvsAPpTAFPBvGcF5mbszPo9tvI02ht
+ 9OmGR8MexfV1ffl1QWem5nd89ZmkJBM4xdyVdxFimUYyNW0NfoYMlD2L5
+ Z6T1KwJmWlVzR7GduDwlE9MWoQbkJzLS5BUXpiHQhfjLsGoth/r7OOz4i
+ ORHLloKU9CLJDUarUaJtYVdW0y6afc+lGVxwZlOiquPcn6/u816WCr0ca
+ 39iCrXQlfUnjwPrU30mX56eQQOjA58u94IQ4WZifPs7qQ4pCjCaltZGZ1 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="256837205"
+X-IronPort-AV: E=Sophos;i="5.91,213,1647327600"; d="scan'208";a="256837205"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 May 2022 01:01:19 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,213,1647327600"; d="scan'208";a="623351926"
+X-IronPort-AV: E=Sophos;i="5.91,213,1647327600"; d="scan'208";a="635815719"
 Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
- by fmsmga008.fm.intel.com with ESMTP; 10 May 2022 00:58:17 -0700
+ by fmsmga004.fm.intel.com with ESMTP; 10 May 2022 01:01:17 -0700
 Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1noKl6-000HWs-UW;
- Tue, 10 May 2022 07:58:16 +0000
-Date: Tue, 10 May 2022 15:57:48 +0800
+ (envelope-from <lkp@intel.com>) id 1noKo1-000HXq-BK;
+ Tue, 10 May 2022 08:01:17 +0000
+Date: Tue, 10 May 2022 16:00:22 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 9497b7880ffd71fcbd469970f6ef45bb55877bfd
-Message-ID: <627a1afc.LdBbUm8g4jd60/Uv%lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 0371040f5ee5e7a7c115b50147f579e3d633da96
+Message-ID: <627a1b96.Lq/nGb2hEWzAaRzT%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220510_005821_425002_BA551E5E 
-X-CRM114-Status: UNSURE (   4.51  )
+X-CRM114-CacheID: sfid-20220510_010123_303124_C3D248E1 
+X-CRM114-Status: UNSURE (   7.16  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,8 +78,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 9497b7880ffd71fcbd469970f6ef45bb55877bfd  ath11k: reset 11d state in process of recovery
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 0371040f5ee5e7a7c115b50147f579e3d633da96  ath10k: improve BDF search fallback strategy
 
 elapsed time: 1047m
 
@@ -193,8 +193,8 @@ riscv                             allnoconfig
 riscv                            allmodconfig
 riscv                            allyesconfig
 x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
 um                             i386_defconfig
+um                           x86_64_defconfig
 x86_64                          rhel-8.3-func
 x86_64                           rhel-8.3-syz
 x86_64                              defconfig
