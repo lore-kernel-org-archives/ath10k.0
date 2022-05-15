@@ -4,63 +4,393 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94A6FC433EF
-	for <ath10k@archiver.kernel.org>; Sun, 15 May 2022 11:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6EEBC433F5
+	for <ath10k@archiver.kernel.org>; Sun, 15 May 2022 13:23:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:Subject:To:From:Date:MIME-Version:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xBhEhHo8H+2XBPhDdC2o6lXYtNG8NiqoQ6hvcAR2+Ro=; b=xCmSDvqqA9MLov
-	Ly4yaS7ZiZA4pbZCvqgZTKQl9yyYOuU7XrnhPdHdA+Tuc4fsSdSeaheh8YIzmMaMci6WBvAqxvoiQ
-	ViGRo+PAYlPufC6LkB30EW4MlIMT13V6MQT3Zu8LPuPG9JwXYjqg5QQ+JJZLGzsjZrXOVOc30X4L9
-	ivmvPxksAtszbRs4/952AP+9hurR9IUsibeSsceAZNQOrrFspW4gkXleJ74mW4QdnedQraTlSwHOr
-	JpEuFI/i/T1QqLNaahMDncldMsMLHure18WR5Yna87KmOYfU2EIwJRiRl25U7EkPqa5HzXsFUVR+v
-	vL8ZKeEK8P636zJj4GDA==;
+	List-Owner; bh=Qrpy/Uv/djJmiZpJunvAKiUQYuyshTVFUl5kHcelXUk=; b=JAZo1YihPdvAxw
+	xB79S0jF6hjpZaSh3QbBLmqHgEehubsa2y5x+IhBbxnb3v8pwecgvKeK36FkvYVPIAZaFxccnYFXe
+	JVV06/IXxhSQlLbZPXiEHFt092WNcFss7eUqshbYjGGlrVRy5RR1S+3gGiJ+5cbpEXUG1+0e1/OqA
+	Ag0S32nqaiHER1fQDp0fTKvVtjNUm+ttT+4UyI3WUk/S/dtZ6lpvpJCnOCYAmwj1SJ+X5CoOGJjMU
+	9jI466rME85qYU+4OW+m7vrZYr3KgIA2u6VWGQAbqAisZELy6AuuaU+N0VSq+2MyqDTAkYxDE87rs
+	XMSw0m6I35MBSCcGpQ0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nqCjy-003vPj-0R; Sun, 15 May 2022 11:48:50 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1nqECw-0044tn-IJ; Sun, 15 May 2022 13:22:50 +0000
+Received: from vmi833701.contaboserver.net ([38.242.236.104]
+ helo=server.69daily.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nqCjt-003vPG-SZ
- for ath10k@lists.infradead.org; Sun, 15 May 2022 11:48:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652615325; x=1684151325;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=0YAbvnMYfkIyru0bC96GwsQ+Aitfz6EIe6aXXYmsJPM=;
- b=Ykf2/GWGZQTMNsUGtgZ2I0ID4dUWaL4w+P1B7v0FyGHD0UmQ/OzAcfSR
- eGoXeXYelIcFbjUyqHfnanJvSWapq3eWK611wAWat0BQCCmV7dMVFIKx5
- uvA+cs2IcPK8p6B/wj/KK9kRfcM6tf49KQ/JT5633/WpJG4StZg7Rg/Hy
- Ilh4IW4vrhLUoBuSS7XMZL6nPGKC4lm0sQdHb2Mbbww7dO5oKuwusrF5o
- wOo4gOeDxSEuKVPPHIGWlOEpZKim7a0LCFEDZX5lw6EUwmd7zrp04Yqy6
- W8mBbaDMVIPQmtvaa3dzT+DfMzDNUADLp9SWErnZPWQxDExXn64/J9mwj g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10347"; a="357033289"
-X-IronPort-AV: E=Sophos;i="5.91,228,1647327600"; d="scan'208";a="357033289"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2022 04:48:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,228,1647327600"; d="scan'208";a="699138012"
-Received: from lkp-server01.sh.intel.com (HELO d1462bc4b09b) ([10.239.97.150])
- by orsmga004.jf.intel.com with ESMTP; 15 May 2022 04:48:40 -0700
-Received: from kbuild by d1462bc4b09b with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1nqCjm-0001an-Pf;
- Sun, 15 May 2022 11:48:38 +0000
-Date: Sun, 15 May 2022 19:47:38 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- 14c24bc11b43da59fe41d79d3c1b29decc3d21f3
-Message-ID: <6280e85a.NFe7NOcTA9bT9MOI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nqECu-0044sg-0A
+ for ath10k@lists.infradead.org; Sun, 15 May 2022 13:22:49 +0000
+Received: from localhost (unknown [127.0.0.1])
+ by server.69daily.com (Postfix) with ESMTP id A6298380E9B;
+ Sun, 15 May 2022 11:45:47 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at 69daily.com
+Received: from server.69daily.com ([127.0.0.1])
+ by localhost (server.69daily.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 22tYGuK0oroi; Sun, 15 May 2022 13:45:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by server.69daily.com (Postfix) with ESMTPA id 305EA380E8F;
+ Sun, 15 May 2022 13:45:28 +0200 (CEST)
 MIME-Version: 1.0
+Date: Sun, 15 May 2022 13:45:28 +0200
+From: info@69daily.com
+To: deewane-members-1516@lists.andrew.cmu.edu,
+ deewane-members-1516-owner@lists.andrew.cmu.edu,
+ 1510675747534-0.post@n3.nabble.com, deltaxiphi-members@lists.andrew.cmu.edu,
+ design-faculty-staff@lists.andrew.cmu.edu,
+ deltaxiphi-members-owner@lists.andrew.cmu.edu,
+ design-faculty-staff-owner@lists.andrew.cmu.edu,
+ deewane-members-1617@lists.andrew.cmu.edu,
+ deewane-members-1617-owner@lists.andrew.cmu.edu,
+ deewane-members@lists.andrew.cmu.edu,
+ deewane-members-owner@lists.andrew.cmu.edu,
+ 3x1nyy3wlhxtnfxu1a2sradygo97ww@mail.gmail.com,
+ css-members@lists.andrew.cmu.edu, css-members-owner@lists.andrew.cmu.edu,
+ nsuexakbpdqfoh97ognelp0kvc9-gq@mail.gmail.com,
+ 1510749223664-0.post@n3.nabble.com, 15670.1510670191@sss.pgh.pa.us,
+ dc-staff-managers@lists.andrew.cmu.edu,
+ dc-staff-managers-owner@lists.andrew.cmu.edu,
+ ctat-support@lists.andrew.cmu.edu, ctat-support-owner@lists.andrew.cmu.edu,
+ cyertstaff-penn@lists.andrew.cmu.edu, csharp-members@lists.andrew.cmu.edu,
+ csharp-members-owner@lists.andrew.cmu.edu,
+ 16-278e-bfde-cd70-11f8a8beabef@erven.at,
+ csa-eboard-membermailinglist@lists.andrew.cmu.edu,
+ eboard-membermailinglist-owner@lists.andrew.cmu.edu,
+ 3846a8d34abcda258d080120f01b0b@exmbx05.mailcloud.dk,
+ csa-committeemembers@lists.andrew.cmu.edu,
+ csa-committeemembers-owner@lists.andrew.cmu.edu,
+ csa-generalmemberlist@lists.andrew.cmu.edu,
+ csa-generalmemberlist-owner@lists.andrew.cmu.edu,
+ 9d-9d31-415f-b8ab-6cbd320f9b98@creamfinance.com,
+ 3846a8d34abcda258d080120f025c6@exmbx05.mailcloud.dk,
+ 16507.1510671423@sss.pgh.pa.us, 1510550710287-0.post@n3.nabble.com,
+ cpp-members@lists.andrew.cmu.edu, cpp-members-owner@lists.andrew.cmu.edu,
+ cpnp-members@lists.andrew.cmu.edu, cpnp-members-owner@lists.andrew.cmu.edu,
+ cps-members@lists.andrew.cmu.edu, cps-members-owner@lists.andrew.cmu.edu,
+ 29541.1510585509@sss.pgh.pa.us, crew-potential-members@lists.andrew.cmu.edu,
+ crew-potential-members-owner@lists.andrew.cmu.edu,
+ 20171114200817.gx4628@tamriel.snowman.net,
+ contact-cpme@lists.andrew.cmu.edu, contact-cpme-owner@lists.andrew.cmu.edu,
+ d2-6c14-26b4-e7cc-f11f13c997ad@dalibo.com,
+ cmwa-membership2020-2021@lists.andrew.cmu.edu,
+ cmwa-membership2020-2021-owner@lists.andrew.cmu.edu,
+ 1510626497860-0.post@n3.nabble.com, a8owztc2hyb1era@mail.gmail.com,
+ cnast-staff@lists.andrew.cmu.edu, cnast-staff-owner@lists.andrew.cmu.edu,
+ competition-member@lists.andrew.cmu.edu,
+ competition-member-owner@lists.andrew.cmu.edu,
+ mfvfvgjdwbfmaic2g@mail.gmail.com,
+ cmwa-membership2021-2022@lists.andrew.cmu.edu,
+ cmwa-membership2021-2022-owner@lists.andrew.cmu.edu,
+ y5hnmekm3goxq@mail.gmail.com, cmwa-membership2019-2020@lists.andrew.cmu.edu,
+ cmwa-membership2019-2020-owner@lists.andrew.cmu.edu,
+ cmwa-membership2016-2017@lists.andrew.cmu.edu,
+ cmwa-membership2016-2017-owner@lists.andrew.cmu.edu,
+ cmwa-membership2017-2018@lists.andrew.cmu.edu,
+ cmwa-membership2017-2018-owner@lists.andrew.cmu.edu,
+ cmwa-membership2018-2019@lists.andrew.cmu.edu,
+ cmwa-membership2018-2019-owner@lists.andrew.cmu.edu,
+ ujsasv-f7wsuhoxoyza@mail.gmail.com,
+ cmu-portugal-affiliated-staff@lists.andrew.cmu.edu,
+ ortugal-affiliated-staff-owner@lists.andrew.cmu.edu,
+ cmutv-members@lists.andrew.cmu.edu,
+ cmutv-members-owner@lists.andrew.cmu.edu,
+ cmujsa-20-21-members@lists.andrew.cmu.edu,
+ cmujsa-20-21-members-owner@lists.andrew.cmu.edu,
+ cmu-jsa-21-22-members@lists.andrew.cmu.edu,
+ cmu-jsa-21-22-members-owner@lists.andrew.cmu.edu,
+ 5065.1510537861@sss.pgh.pa.us,
+ cmu-administrators-and-staff@lists.andrew.cmu.edu,
+ administrators-and-staff-owner@lists.andrew.cmu.edu,
+ cmu-ems-newmembers@lists.andrew.cmu.edu,
+ cmu-ems-newmembers-owner@lists.andrew.cmu.edu,
+ ca-be3d-0eb7-69db-59b5d837d2f7@informatik.uni-kl.de,
+ cmsr-2021-members@lists.andrew.cmu.edu,
+ cmsr-2021-members-owner@lists.andrew.cmu.edu,
+ cmsr-active-members@lists.andrew.cmu.edu,
+ cmsr-active-members-owner@lists.andrew.cmu.edu,
+ cmsr-new-members@lists.andrew.cmu.edu,
+ cmsr-new-members-owner@lists.andrew.cmu.edu,
+ nm2dvujrr_5lf-k-fsb6iqlhahzj6q@mail.gmail.com,
+ s29lrl0v1gwtbvedtwytrxo1gkfv5a@mail.gmail.com,
+ 1510562579.2835.2.camel@cybertec.at,
+ b0-3409-7112-f297-70991a42adc1@lucee.org, cmcm-members@lists.andrew.cmu.edu,
+ cmfa-members@lists.andrew.cmu.edu, cmfa-members-owner@lists.andrew.cmu.edu,
+ cmcm-members-owner@lists.andrew.cmu.edu,
+ cit18-staffawards@lists.andrew.cmu.edu,
+ cit18-staffawards-owner@lists.andrew.cmu.edu,
+ cit19-staffawards@lists.andrew.cmu.edu,
+ cit19-staffawards-owner@lists.andrew.cmu.edu, u3w@mail.gmail.com,
+ cmba-members@lists.andrew.cmu.edu, oa@mail.gmail.com,
+ cmba-members-owner@lists.andrew.cmu.edu,
+ cit-jedi-summer-2021-staff@lists.andrew.cmu.edu,
+ t-jedi-summer-2021-staff-owner@lists.andrew.cmu.edu,
+ chem-staff@lists.andrew.cmu.edu, chem-staff-owner@lists.andrew.cmu.edu,
+ 1510418459.21117.112.camel@janc.be,
+ cio-workday-members-admins@lists.andrew.cmu.edu,
+ o-workday-members-admins-owner@lists.andrew.cmu.edu,
+ aff-and-teaching-faculty-owner@lists.andrew.cmu.edu,
+ 0171111132805.twahvztncovbp3gt@msg.df7cb.de, cfa-staff@lists.andrew.cmu.edu,
+ cep-members@lists.andrew.cmu.edu, cfa-staff-owner@lists.andrew.cmu.edu,
+ cep-members-owner@lists.andrew.cmu.edu,
+ 4saeagud2em0p8uner60mdayvtw4vq@mail.gmail.com,
+ cfa-staff-assembly@lists.andrew.cmu.edu,
+ cfa-staff-assembly-owner@lists.andrew.cmu.edu,
+ 1510406626.7270.14.camel@gmail.com,
+ 0171112191323.glwqmpokywtm5m5p@hermes.hilbert.loc,
+ ccee-educatorsstaff@lists.andrew.cmu.edu,
+ ccee-educatorsstaff-owner@lists.andrew.cmu.edu,
+ ccee-py20-21-staff@lists.andrew.cmu.edu,
+ ccee-py20-21-staff-owner@lists.andrew.cmu.edu,
+ 1510516369.4986.11.camel@gmail.com, cee-ostaff@ce.cmu.edu,
+ cee-ostaff-owner@ce.cmu.edu, ccee-summer2020-staff@lists.andrew.cmu.edu,
+ ccee-summer2020-staff-owner@lists.andrew.cmu.edu,
+ 87k1yx3vfi.fsf@metapensiero.it, 1041.1510418588@sss.pgh.pa.us,
+ wz3d67u1bkdo3k480kynv10rwerogq@mail.gmail.com,
+ catalog-contacts@lists.andrew.cmu.edu,
+ catalog-contacts-owner@lists.andrew.cmu.edu,
+ casos-lab-staff@lists.andrew.cmu.edu,
+ casos-lab-staff-owner@lists.andrew.cmu.edu, 87mv3sgchr.fsf@metapensiero.it,
+ 8027.1510347112@sss.pgh.pa.us, casos-staff@lists.andrew.cmu.edu,
+ casos-staff-owner@lists.andrew.cmu.edu,
+ bvw-support-fall2011@lists.andrew.cmu.edu,
+ bvw-support-fall2011-owner@lists.andrew.cmu.edu,
+ cas-webapp-support@lists.andrew.cmu.edu,
+ cas-webapp-support-owner@lists.andrew.cmu.edu, wll5pg@mail.gmail.com,
+ blba-members@lists.andrew.cmu.edu, blba-members-owner@lists.andrew.cmu.edu,
+ capd-members@lists.andrew.cmu.edu,
+ 0171111132354.esi73rlpq3goyrqh@msg.df7cb.de,
+ capd-members-owner@lists.andrew.cmu.edu, caps-staff@lists.andrew.cmu.edu,
+ caps-staff-owner@lists.andrew.cmu.edu, 10500.1510349357@sss.pgh.pa.us,
+ jormwjvz5wrvpz88dudrq@mail.gmail.com,
+ dc-29d6-6408-298b-42b2b77d8666@joeconway.com,
+ biometrics-contact@lists.andrew.cmu.edu,
+ biometrics-contact-owner@lists.andrew.cmu.edu,
+ bigstraw-staff@lists.andrew.cmu.edu,
+ bigstraw-staff-owner@lists.andrew.cmu.edu,
+ bib7-allstaff@lists.andrew.cmu.edu,
+ bib7-allstaff-owner@lists.andrew.cmu.edu, postgresql@10-main.service,
+ 0171111205316.u56lkmkakdmcx6zm@msg.df7cb.de,
+ bibv-prstaff@lists.andrew.cmu.edu, bibv-prstaff-owner@lists.andrew.cmu.edu,
+ 0171112122658.md7u7ahq5raqezft@msg.df7cb.de,
+ bib8-allstaff@lists.andrew.cmu.edu,
+ bib8-allstaff-owner@lists.andrew.cmu.edu,
+ 0171112185233.tzynljip2k3ygcxn@msg.df7cb.de,
+ axo-spring2014-cob2-newmembers@lists.andrew.cmu.edu,
+ ring2014-cob2-newmembers-owner@lists.andrew.cmu.edu,
+ 0171112173559.m6chmbyf4vz6fu3c@hjp.at, 20802.1510513605@sss.pgh.pa.us,
+ bib5-allstaff@lists.andrew.cmu.edu,
+ bib5-allstaff-owner@lists.andrew.cmu.edu, 21519.1510514802@sss.pgh.pa.us,
+ 0171112191844.4rry32vdtxzi6crj@msg.df7cb.de,
+ bib6-allstaff@lists.andrew.cmu.edu,
+ bib6-allstaff-owner@lists.andrew.cmu.edu,
+ axo-spring2014-cob-newmembers@lists.andrew.cmu.edu,
+ pring2014-cob-newmembers-owner@lists.andrew.cmu.edu,
+ bam-staff@lists.andrew.cmu.edu, bam-staff-owner@lists.andrew.cmu.edu,
+ au-casual-staff-fy1819@lists.andrew.cmu.edu,
+ au-casual-staff-fy1819-owner@lists.andrew.cmu.edu,
+ 6219.1510539538@sss.pgh.pa.us, auo-members@lists.andrew.cmu.edu,
+ auo-members-owner@lists.andrew.cmu.edu,
+ asa-prmembers-fall2013@lists.andrew.cmu.edu,
+ asa-prmembers-fall2013-owner@lists.andrew.cmu.edu,
+ asme-generalmembers@lists.andrew.cmu.edu,
+ asme-generalmembers-owner@lists.andrew.cmu.edu,
+ 48-8ca3-c79b-e075-53b0baaa45c5@illuminatedcomputing.com,
+ 0171112210309.spjszhibtdpginuc@alap3.anarazel.de,
+ b193354333eeeff37c9b510a4bf540@mwhpr12mb1933.namprd12.prod.outlook.com,
+ asa-prmembers-fall2012@lists.andrew.cmu.edu,
+ asa-prmembers-fall2012-owner@lists.andrew.cmu.edu,
+ savoj2jipoew@mail.gmail.com, natt8ej_baeonsjsuowbgat2sxwsxa@mail.gmail.com,
+ asa-pr-members-2014@lists.andrew.cmu.edu,
+ asa-pr-members-2014-owner@lists.andrew.cmu.edu,
+ archgrad-support@lists.andrew.cmu.edu,
+ archgrad-support-owner@lists.andrew.cmu.edu,
+ asa-prmembers-2012@lists.andrew.cmu.edu,
+ asa-prmembers-2012-owner@lists.andrew.cmu.edu,
+ b8-70ee-a8ea-9493-ad89a1610d1c@computer.org,
+ arts-greenhouse-staff@lists.andrew.cmu.edu,
+ arts-greenhouse-staff-owner@lists.andrew.cmu.edu,
+ qb1wco7m9tucemsw@mail.gmail.com, arb-members@lists.andrew.cmu.edu,
+ arb-members-owner@lists.andrew.cmu.edu,
+ apex-members-2021-2022@lists.andrew.cmu.edu,
+ apex-members-2021-2022-owner@lists.andrew.cmu.edu,
+ 20171110093622.ga5812@zakirov.localdomain,
+ apex-members-2020-2021@lists.andrew.cmu.edu,
+ apex-members-2020-2021-owner@lists.andrew.cmu.edu,
+ 0171110151938.6uhhnhngl5f2mmmq@hjp.at,
+ apex-members-2019-20@lists.andrew.cmu.edu,
+ apex-members-2019-20-owner@lists.andrew.cmu.edu,
+ 5dwnsno9ocw2mnlmtw@mail.gmail.com, anvil-members@lists.andrew.cmu.edu,
+ anvil-members-owner@lists.andrew.cmu.edu,
+ andy-public-contact@lists.andrew.cmu.edu,
+ andy-public-contact-owner@lists.andrew.cmu.edu,
+ knu8abq2gmaruw@mail.gmail.com, 18856.1510266376@sss.pgh.pa.us,
+ estyinternational-boardmembers@lists.andrew.cmu.edu,
+ ternational-boardmembers-owner@lists.andrew.cmu.edu,
+ 3d-29df-0b1f-d2ba-fb7571744f3e@hogranch.com,
+ ais-systems-support@lists.andrew.cmu.edu,
+ ais-systems-support-owner@lists.andrew.cmu.edu,
+ ll-fraternity-sorority-members@lists.andrew.cmu.edu,
+ ternity-sorority-members-owner@lists.andrew.cmu.edu,
+ ue45uxcw@mail.gmail.com, alg-members@lists.andrew.cmu.edu,
+ alg-members-owner@lists.andrew.cmu.edu,
+ 04-77ea-34a1-1af2-f5cdc1fcec60@joeconway.com,
+ egt4-ndmrszai1w-bkb4xfpueaqbbw@mail.gmail.com,
+ a1-7751-18ac-3368-037088dec473@joeconway.com,
+ afrogsa-members@lists.andrew.cmu.edu,
+ afrogsa-members-owner@lists.andrew.cmu.edu,
+ admission-supportstaff@lists.andrew.cmu.edu,
+ admission-supportstaff-owner@lists.andrew.cmu.edu,
+ adapterrex-support@lists.andrew.cmu.edu,
+ adapterrex-support-owner@lists.andrew.cmu.edu,
+ advocate-members@lists.andrew.cmu.edu,
+ advocate-members-owner@lists.andrew.cmu.edu,
+ 76-9986-f9a0-e29d-12013e1b8b8e@aosc.io, 24936.1510245234@sss.pgh.pa.us,
+ aed-members@lists.andrew.cmu.edu, aed-members-owner@lists.andrew.cmu.edu,
+ abtech-new-members-s15@lists.andrew.cmu.edu,
+ actuarialmember2015-2016@lists.andrew.cmu.edu,
+ abtech-new-members-s15-owner@lists.andrew.cmu.edu,
+ actuarialmember2015-2016-owner@lists.andrew.cmu.edu,
+ actuary-members@lists.andrew.cmu.edu,
+ actuary-members-owner@lists.andrew.cmu.edu,
+ wownylqmybxmvhi_csrhm1tbljdtbw@mail.gmail.com,
+ zmy6hs2gt3wfbx5l8-devqotb2kr1a@mail.gmail.com,
+ ee-e7f1-495c-a7ea-142faba6d3ec@hogranch.com,
+ acm-members@lists.andrew.cmu.edu, acm-members-owner@lists.andrew.cmu.edu,
+ ea@mail.gmail.com, abtech-new-members-f14@lists.andrew.cmu.edu,
+ abtech-new-members-f14-owner@lists.andrew.cmu.edu,
+ ab-newmembersf14@lists.andrew.cmu.edu,
+ ab-newmembersf14-owner@lists.andrew.cmu.edu,
+ 80101-staff@lists.andrew.cmu.edu, 80101-staff-owner@lists.andrew.cmu.edu,
+ 760-staff@lists.andrew.cmu.edu, 760-staff-owner@lists.andrew.cmu.edu,
+ about-humans@lists.andrew.cmu.edu, about-humans-owner@lists.andrew.cmu.edu,
+ 2apc4yttk6qgbs3g1nrqr1_ayb_v6a@mail.gmail.com, d_xvx2xq@mail.gmail.com,
+ 23-8b04-0846-8c6f-08a6b4ba8904@lucee.org, 746-staff@lists.andrew.cmu.edu,
+ 746-staff-owner@lists.andrew.cmu.edu, 746-fall17staff@lists.andrew.cmu.edu,
+ 746-fall17staff-owner@lists.andrew.cmu.edu,
+ 746-fall19staff@lists.andrew.cmu.edu,
+ 746-fall19staff-owner@lists.andrew.cmu.edu,
+ 66-30d0-4407-9085-e30a4121a202@blighty.com, zervzopg@mail.gmail.com,
+ 3fsroub5_9n173o9wk2z4ma@mail.gmail.com,
+ 746-fall18staff@lists.andrew.cmu.edu,
+ 746-fall18staff-owner@lists.andrew.cmu.edu,
+ 36-200-staff@lists.andrew.cmu.edu, 746-fall16staff@lists.andrew.cmu.edu,
+ 36-200-staff-owner@lists.andrew.cmu.edu,
+ 746-fall16staff-owner@lists.andrew.cmu.edu, 549-staff@lists.andrew.cmu.edu,
+ 549-staff-owner@lists.andrew.cmu.edu,
+ xjvzivx2oxqfnt76jxr9rzn0lhxgwq@mail.gmail.com,
+ wy2ua53_68zaiw10loeakqb0pcjmtw@mail.gmail.com,
+ 1510249933.12972.12.camel@jordogskog.no,
+ 1510226310.2625.4.camel@cybertec.at, 601a-staff@lists.andrew.cmu.edu,
+ 601a-staff-owner@lists.andrew.cmu.edu, 1510227654.2625.7.camel@cybertec.at,
+ 251-staff-f17@lists.andrew.cmu.edu,
+ 251-staff-f17-owner@lists.andrew.cmu.edu,
+ 251-staff-s17@lists.andrew.cmu.edu,
+ 251-staff-s17-owner@lists.andrew.cmu.edu,
+ 251-staff-s18@lists.andrew.cmu.edu,
+ 251-staff-s18-owner@lists.andrew.cmu.edu,
+ 74-ac7c-2b48-9a3e-8b8acf8b2c36@lucee.org,
+ 21-22-calendar-feedback@lists.andrew.cmu.edu,
+ 21-22-calendar-feedback-owner@lists.andrew.cmu.edu,
+ 251-staff-f18@lists.andrew.cmu.edu,
+ 251-staff-f18-owner@lists.andrew.cmu.edu, czqd_g@mail.gmail.com,
+ 4497.1510188301@sss.pgh.pa.us,
+ 0oikynctuoiq23shkyrxjenxcw7jva@mail.gmail.com,
+ 2019-staff@lists.andrew.cmu.edu, 2019-staff-owner@lists.andrew.cmu.edu,
+ fb-0cbc-b407-feaa-0be86f06e4d9@lucee.org, 2018-staff@lists.andrew.cmu.edu,
+ 2018-staff-owner@lists.andrew.cmu.edu, ua7ua@mail.gmail.com,
+ 2017-precollegestaff@lists.andrew.cmu.edu,
+ 2017-precollegestaff-owner@lists.andrew.cmu.edu,
+ 2017-ostaff@lists.andrew.cmu.edu, 2017-ostaff-owner@lists.andrew.cmu.edu,
+ 18740-staff@lists.andrew.cmu.edu, 18740-staff-owner@lists.andrew.cmu.edu,
+ 62-c165-e6f3-9a22-dbb562b5afd4@lucee.org, 18643-staff@lists.andrew.cmu.edu,
+ 18643-staff-owner@lists.andrew.cmu.edu,
+ 58-87d9-7b02-867b-5d98b93aac7d@lucee.org,
+ 180dc-members@lists.andrew.cmu.edu,
+ 180dc-members-owner@lists.andrew.cmu.edu, rjw@mail.gmail.com,
+ 9vecevsxxth3j3yfbda@mail.gmail.com,
+ 180dc-2019-20-members@lists.andrew.cmu.edu,
+ 18600-staff@lists.andrew.cmu.edu,
+ 180dc-2019-20-members-owner@lists.andrew.cmu.edu,
+ 18600-staff-owner@lists.andrew.cmu.edu, ypv0yaf7nh7iyfa@mail.gmail.com,
+ 17-614-staff@lists.andrew.cmu.edu, 17-614-staff-owner@lists.andrew.cmu.edu,
+ 18220-staff@lists.andrew.cmu.edu, 18220-staff-owner@lists.andrew.cmu.edu,
+ 17655-staff@lists.andrew.cmu.edu, 17655-staff-owner@lists.andrew.cmu.edu,
+ 7b-e488-7509-81fd-c6543fe949ee@lucee.org, rgma@mail.gmail.com,
+ gossip-request@mail-archive.com, 22gossip@mail-archive.com, gossip@jab.org,
+ sundial@uni-koeln.de, terminologia@softcatala.net,
+ asteriskbrasil-request@listas.asteriskbrasil.org,
+ 22asteriskbrasil@listas.asteriskbrasil.org, carlisle@andrew.cmu.edu,
+ cfa-contact@cmu.edu, drama-relations@andrew.cmu.edu, jeff@jab.org,
+ 313@hyperreal.org, 389-users@lists.fedoraproject.org, 4d_tech@lists.4d.com,
+ 6lo@ietf.org, 6tisch@ietf.org, 9fans@9fans.net, abb@cs.stir.ac.uk,
+ accessindia@accessindia.org.in, ace@ietf.org, acme@ietf.org,
+ acopost-devel@lists.sourceforge.net, acpi-bugzilla@lists.sourceforge.net,
+ ada_list@list.waikato.ac.nz, address-policy-wg@ripe.net,
+ address-sanitizer@googlegroups.com, adiyuva@googlegroups.com,
+ adwords-api@googlegroups.com, af@af.afmug.com, africann@afrinic.net,
+ african-wikimedians@lists.wikimedia.org, afripv6-discuss@afrinic.net,
+ agi@agi.topicbox.com, agora-business@agoranomic.org,
+ agora-discussion@agoranomic.org, agora-official@agoranomic.org,
+ aide@lists.launchpad.net, algeriatul@lists.launchpad.net,
+ all-audio@groups.io, all@samathalondon.org.uk, alpha@t157.org,
+ altlinux-announce-en@lists.altlinux.org,
+ altlinux-announce-ru@lists.altlinux.org, alto@ietf.org,
+ amanda-users@amanda.org, amavis-users@amavis.org,
+ amber-spec-experts@openjdk.java.net, amd-gfx@lists.freedesktop.org,
+ amforth-devel@lists.sourceforge.net, amnesia-news@boum.org,
+ amssracing@googlegroups.com, analytics@lists.wikimedia.org,
+ ana.words-recipients@ana.ch, android-building@googlegroups.com,
+ android-developers@googlegroups.com, android-discuss@googlegroups.com,
+ angular@googlegroups.com, anima@ietf.org, announce@afrinic.net,
+ announce@apache.org, announce@couchdb.apache.org,
+ announce@country-files.com, announce@documentfoundation.org,
+ announce@edk2.groups.io, announce@freebsd.org, announce@gtalug.org,
+ announce@jackrabbit.apache.org, announce@ja.libreoffice.org,
+ announce@list.ipol.im, announce@lists.almalinux.org,
+ announce@lists.fedoraproject.org, announce@lists.open-mpi.org,
+ announce@lists.otrs.org, announce@maven.apache.org, announce@mozilla.org,
+ announce@openbsd.org, announce@openoffice.apache.org, announce@ovirt.org,
+ announce@pidgin.im, announce@sel4.systems, announces@tryton.org,
+ announce@tomcat.apache.org, announce@trafficserver.apache.org,
+ announce@wicket.apache.org, announce@wso2.org,
+ ansible-devel@googlegroups.com, ansible-project@googlegroups.com,
+ anyevent@lists.schmorp.de, apertium-stuff@lists.sourceforge.net,
+ api@directory.apache.org, api@openoffice.apache.org,
+ api-users@lists.gbif.org, apnic-announce@apnic.net,
+ apnic-talk@lists.apnic.net, apops@apops.net, apparmor@lists.ubuntu.com,
+ arangodb@googlegroups.com, arch-announce@lists.archlinux.org,
+ arch-commits@lists.archlinux.org, arch-dev-public@lists.archlinux.org,
+ arch-general@lists.archlinux.org, gg2@mail-archive.com,
+ archivesspace_users_group@lyralists.lyrasis.org,
+ arch-projects@lists.archlinux.org, arin-announce@arin.net,
+ arin-issued@arin.net, arin-ppml@arin.net, arin-suggestions@arin.net,
+ arin-tech-discuss@arin.net, arm@lists.fedoraproject.org,
+ arm@lists.opensuse.org, arm-netbook@lists.phcomp.co.uk, arm@openbsd.org,
+ arts_users.mi@lists.uni-hamburg.de, asdf-devel@common-lisp.net,
+ asr_isaadet@googlegroups.com, assp-test@lists.sourceforge.net,
+ asterisk-announce@lists.digium.com,
+ asteriskbrasil-biz@listas.asteriskbrasil.org, asterisk-dev@lists.digium.com,
+ asterisk-users@lists.digium.com, astlinux-users@lists.sourceforge.net,
+ async-sig@python.org, ath10k@lists.infradead.org,
+ ats-lang-users@googlegroups.com, auctex-devel@gnu.org, auctex@gnu.org,
+ audiowmark@googlegroups.com, aufs-users@lists.sourceforge.net,
+ aur-general@lists.archlinux.org, aur-requests@lists.archlinux.org,
+ ausnog@ausnog.net, austin-group-l@opengroup.org, autoconf@gnu.org,
+ automake@gnu.org, avahi@lists.freedesktop.org, avrdude-dev@nongnu.org,
+ avr-gcc-list@nongnu.org, axiom-developer@nongnu.org, axiom-math@nongnu.org,
+ axion-dev@db.apache.org, axion-user@db.apache.org
+Subject: Hello
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <be492b9bc700bc5370b1ed9d4fce59af@69daily.com>
+X-Sender: info@69daily.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220515_044846_036310_48231A1E 
-X-CRM114-Status: UNSURE (   3.80  )
+X-CRM114-CacheID: sfid-20220515_062248_403020_CD4EB182 
+X-CRM114-Status: UNSURE (  -0.11  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,451 +403,13 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: 14c24bc11b43da59fe41d79d3c1b29decc3d21f3  Add localversion-wireless-testing-ath
-
-elapsed time: 6899m
-
-configs tested: 412
-configs skipped: 6
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm64                            allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm64                               defconfig
-i386                 randconfig-c001-20220509
-i386                          randconfig-c001
-sh                               j2_defconfig
-sh                         ap325rxa_defconfig
-sh                      rts7751r2d1_defconfig
-arm                         lpc18xx_defconfig
-sh                          rsk7269_defconfig
-mips                          rb532_defconfig
-powerpc                 mpc834x_mds_defconfig
-s390                                defconfig
-powerpc                  storcenter_defconfig
-arm                         nhk8815_defconfig
-arm                           stm32_defconfig
-csky                                defconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                     tqm8555_defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                       bmips_be_defconfig
-powerpc64                           defconfig
-sh                        edosk7760_defconfig
-arc                          axs101_defconfig
-h8300                       h8s-sim_defconfig
-xtensa                generic_kc705_defconfig
-powerpc                      arches_defconfig
-mips                           ip32_defconfig
-arm                          simpad_defconfig
-arm                        cerfcube_defconfig
-sh                          r7785rp_defconfig
-sh                          urquell_defconfig
-mips                       capcella_defconfig
-xtensa                         virt_defconfig
-um                                  defconfig
-m68k                       m5249evb_defconfig
-ia64                         bigsur_defconfig
-arm                            pleb_defconfig
-xtensa                          iss_defconfig
-xtensa                  audio_kc705_defconfig
-xtensa                           alldefconfig
-m68k                       m5275evb_defconfig
-ia64                      gensparse_defconfig
-xtensa                    xip_kc705_defconfig
-h8300                     edosk2674_defconfig
-arm                            hisi_defconfig
-mips                        bcm47xx_defconfig
-sh                              ul2_defconfig
-sh                           se7712_defconfig
-powerpc                       eiger_defconfig
-mips                           xway_defconfig
-powerpc                      pasemi_defconfig
-arm                        mini2440_defconfig
-arm                        multi_v7_defconfig
-m68k                        m5272c3_defconfig
-sh                          rsk7201_defconfig
-arm                         at91_dt_defconfig
-arc                        nsim_700_defconfig
-powerpc                 linkstation_defconfig
-mips                             allyesconfig
-mips                         tb0226_defconfig
-arm                       omap2plus_defconfig
-ia64                             alldefconfig
-sh                          rsk7203_defconfig
-arm                        spear6xx_defconfig
-arm                          iop32x_defconfig
-arm                         cm_x300_defconfig
-arm                           h3600_defconfig
-um                               alldefconfig
-xtensa                  cadence_csp_defconfig
-sh                        sh7763rdp_defconfig
-arm                         axm55xx_defconfig
-powerpc                     sequoia_defconfig
-powerpc                 mpc8540_ads_defconfig
-parisc64                         alldefconfig
-m68k                            mac_defconfig
-powerpc                        warp_defconfig
-powerpc                     taishan_defconfig
-sh                                  defconfig
-sparc                       sparc64_defconfig
-arm                       aspeed_g5_defconfig
-ia64                        generic_defconfig
-xtensa                  nommu_kc705_defconfig
-mips                           ci20_defconfig
-sh                           se7721_defconfig
-powerpc                    sam440ep_defconfig
-sh                           se7619_defconfig
-sparc                            alldefconfig
-powerpc                       maple_defconfig
-arm                           viper_defconfig
-sparc64                             defconfig
-nios2                            alldefconfig
-arm                            zeus_defconfig
-sh                           sh2007_defconfig
-i386                                defconfig
-sparc                       sparc32_defconfig
-powerpc                      mgcoge_defconfig
-sh                          polaris_defconfig
-sh                            hp6xx_defconfig
-arc                         haps_hs_defconfig
-m68k                            q40_defconfig
-arm                        keystone_defconfig
-powerpc                 mpc85xx_cds_defconfig
-parisc                generic-64bit_defconfig
-sh                   secureedge5410_defconfig
-arc                                 defconfig
-mips                             allmodconfig
-arm                       imx_v6_v7_defconfig
-mips                     decstation_defconfig
-sh                          sdk7780_defconfig
-sh                         ecovec24_defconfig
-ia64                            zx1_defconfig
-ia64                          tiger_defconfig
-m68k                           sun3_defconfig
-openrisc                            defconfig
-arm                          pxa910_defconfig
-arm                        realview_defconfig
-arm                         vf610m4_defconfig
-sh                        sh7785lcr_defconfig
-openrisc                    or1ksim_defconfig
-sh                             sh03_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                       holly_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                mpc7448_hpc2_defconfig
-h8300                    h8300h-sim_defconfig
-nios2                            allyesconfig
-m68k                          multi_defconfig
-s390                             allyesconfig
-nios2                         10m50_defconfig
-openrisc                 simple_smp_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                            ar7_defconfig
-arm                        trizeps4_defconfig
-sparc                               defconfig
-sh                           se7750_defconfig
-arm                          exynos_defconfig
-powerpc                     stx_gp3_defconfig
-arm64                            alldefconfig
-m68k                          sun3x_defconfig
-arm                         lubbock_defconfig
-s390                       zfcpdump_defconfig
-arc                          axs103_defconfig
-riscv                               defconfig
-arc                     haps_hs_smp_defconfig
-m68k                        mvme16x_defconfig
-sh                           se7751_defconfig
-parisc                           alldefconfig
-arc                      axs103_smp_defconfig
-arm                           h5000_defconfig
-powerpc64                        alldefconfig
-mips                      loongson3_defconfig
-m68k                       bvme6000_defconfig
-powerpc                      makalu_defconfig
-arc                    vdk_hs38_smp_defconfig
-sh                        apsh4ad0a_defconfig
-sh                   rts7751r2dplus_defconfig
-nios2                         3c120_defconfig
-arm                           sunxi_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                 canyonlands_defconfig
-sh                         microdev_defconfig
-xtensa                    smp_lx200_defconfig
-powerpc                      bamboo_defconfig
-arm                     eseries_pxa_defconfig
-sh                 kfr2r09-romimage_defconfig
-i386                             alldefconfig
-m68k                        mvme147_defconfig
-powerpc                      tqm8xx_defconfig
-mips                           gcw0_defconfig
-nios2                               defconfig
-xtensa                       common_defconfig
-m68k                             allmodconfig
-powerpc                 mpc837x_mds_defconfig
-m68k                       m5208evb_defconfig
-powerpc                     rainier_defconfig
-arm                             ezx_defconfig
-sh                          lboxre2_defconfig
-sh                          kfr2r09_defconfig
-sh                            migor_defconfig
-sh                           se7206_defconfig
-sh                             shx3_defconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                            mps2_defconfig
-powerpc                      cm5200_defconfig
-powerpc                      pcm030_defconfig
-parisc                generic-32bit_defconfig
-alpha                            allyesconfig
-arm                        shmobile_defconfig
-sh                               alldefconfig
-powerpc                    adder875_defconfig
-arm                            qcom_defconfig
-powerpc                           allnoconfig
-powerpc                        cell_defconfig
-ia64                                defconfig
-m68k                         amcore_defconfig
-sh                            titan_defconfig
-powerpc                      ppc6xx_defconfig
-m68k                          amiga_defconfig
-m68k                             alldefconfig
-m68k                          atari_defconfig
-parisc                           allyesconfig
-arm                           tegra_defconfig
-sh                        sh7757lcr_defconfig
-sh                           se7722_defconfig
-openrisc                  or1klitex_defconfig
-arm                        oxnas_v6_defconfig
-sh                          r7780mp_defconfig
-m68k                        stmark2_defconfig
-powerpc                      chrp32_defconfig
-sh                            shmin_defconfig
-sh                     sh7710voipgw_defconfig
-arm                        clps711x_defconfig
-arc                     nsimosci_hs_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                 decstation_r4k_defconfig
-arm                         assabet_defconfig
-mips                            gpr_defconfig
-microblaze                          defconfig
-powerpc                      ep88xc_defconfig
-powerpc                   currituck_defconfig
-arm                           corgi_defconfig
-powerpc                    amigaone_defconfig
-sh                          landisk_defconfig
-powerpc                       ppc64_defconfig
-powerpc                         ps3_defconfig
-arm                          lpd270_defconfig
-arc                           tb10x_defconfig
-arc                            hsdk_defconfig
-sh                           se7343_defconfig
-powerpc                  iss476-smp_defconfig
-powerpc                 mpc834x_itx_defconfig
-arm                             rpc_defconfig
-powerpc                         wii_defconfig
-arc                        nsimosci_defconfig
-arm                         s3c6400_defconfig
-mips                         mpc30x_defconfig
-microblaze                      mmu_defconfig
-m68k                       m5475evb_defconfig
-mips                     loongson1b_defconfig
-riscv                    nommu_k210_defconfig
-sh                           se7724_defconfig
-powerpc                     tqm8548_defconfig
-openrisc                         alldefconfig
-sh                          sdk7786_defconfig
-sh                          rsk7264_defconfig
-powerpc                     tqm8541_defconfig
-x86_64               randconfig-c001-20220509
-arm                  randconfig-c002-20220509
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20220512
-ia64                             allyesconfig
-ia64                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-alpha                               defconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-sh                               allmodconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc64                            defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64               randconfig-a015-20220509
-x86_64               randconfig-a012-20220509
-x86_64               randconfig-a016-20220509
-x86_64               randconfig-a014-20220509
-x86_64               randconfig-a013-20220509
-x86_64               randconfig-a011-20220509
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                 randconfig-a011-20220509
-i386                 randconfig-a013-20220509
-i386                 randconfig-a016-20220509
-i386                 randconfig-a015-20220509
-i386                 randconfig-a014-20220509
-i386                 randconfig-a012-20220509
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-arc                  randconfig-r043-20220509
-s390                 randconfig-r044-20220509
-riscv                randconfig-r042-20220509
-s390                 randconfig-r044-20220512
-riscv                randconfig-r042-20220512
-arc                  randconfig-r043-20220512
-arc                  randconfig-r043-20220513
-s390                 randconfig-r044-20220510
-riscv                randconfig-r042-20220510
-arc                  randconfig-r043-20220510
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
-
-clang tested configs:
-x86_64               randconfig-c007-20220509
-i386                 randconfig-c001-20220509
-powerpc              randconfig-c003-20220509
-riscv                randconfig-c006-20220509
-mips                 randconfig-c004-20220509
-arm                  randconfig-c002-20220509
-s390                 randconfig-c005-20220509
-s390                 randconfig-c005-20220512
-powerpc              randconfig-c003-20220512
-x86_64                        randconfig-c007
-riscv                randconfig-c006-20220512
-mips                 randconfig-c004-20220512
-i386                          randconfig-c001
-arm                  randconfig-c002-20220512
-powerpc              randconfig-c003-20220510
-riscv                randconfig-c006-20220510
-mips                 randconfig-c004-20220510
-arm                  randconfig-c002-20220510
-mips                        bcm63xx_defconfig
-powerpc                     tqm5200_defconfig
-powerpc                          allyesconfig
-arm                           omap1_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                      acadia_defconfig
-arm                  colibri_pxa300_defconfig
-arm                          pcm027_defconfig
-powerpc                    mvme5100_defconfig
-arm                                 defconfig
-powerpc                      ppc64e_defconfig
-x86_64                           allyesconfig
-arm                         orion5x_defconfig
-arm                         socfpga_defconfig
-powerpc                     akebono_defconfig
-powerpc                     powernv_defconfig
-powerpc                          allmodconfig
-mips                       rbtx49xx_defconfig
-mips                        maltaup_defconfig
-mips                      maltaaprp_defconfig
-arm                      pxa255-idp_defconfig
-arm                  colibri_pxa270_defconfig
-arm                        magician_defconfig
-mips                        omega2p_defconfig
-arm                       netwinder_defconfig
-riscv                    nommu_virt_defconfig
-arm                           spitz_defconfig
-powerpc                          g5_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                     pseries_defconfig
-mips                  cavium_octeon_defconfig
-powerpc                     tqm8540_defconfig
-riscv                             allnoconfig
-powerpc                     tqm8560_defconfig
-hexagon                             defconfig
-arm                         palmz72_defconfig
-mips                           ip28_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                 mpc8272_ads_defconfig
-mips                          ath79_defconfig
-powerpc                     skiroot_defconfig
-arm                          ixp4xx_defconfig
-arm                          collie_defconfig
-arm                       versatile_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                        fsp2_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                      pmac32_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                          moxart_defconfig
-powerpc                   lite5200b_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                      ppc44x_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                          pxa168_defconfig
-powerpc                   bluestone_defconfig
-x86_64               randconfig-a006-20220509
-x86_64               randconfig-a002-20220509
-x86_64               randconfig-a001-20220509
-x86_64               randconfig-a004-20220509
-x86_64               randconfig-a005-20220509
-x86_64               randconfig-a003-20220509
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-i386                 randconfig-a004-20220509
-i386                 randconfig-a006-20220509
-i386                 randconfig-a002-20220509
-i386                 randconfig-a003-20220509
-i386                 randconfig-a001-20220509
-i386                 randconfig-a005-20220509
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r045-20220512
-hexagon              randconfig-r041-20220512
-hexagon              randconfig-r045-20220509
-hexagon              randconfig-r041-20220509
-x86_64                          rhel-8.3-rust
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Free Porno video best in city
+www.69daily.com
 
 _______________________________________________
 ath10k mailing list
