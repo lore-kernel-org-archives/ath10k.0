@@ -4,394 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6EEBC433F5
-	for <ath10k@archiver.kernel.org>; Sun, 15 May 2022 13:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C175EC433EF
+	for <ath10k@archiver.kernel.org>; Mon, 16 May 2022 03:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:Subject:To:From:Date:MIME-Version:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Qrpy/Uv/djJmiZpJunvAKiUQYuyshTVFUl5kHcelXUk=; b=JAZo1YihPdvAxw
-	xB79S0jF6hjpZaSh3QbBLmqHgEehubsa2y5x+IhBbxnb3v8pwecgvKeK36FkvYVPIAZaFxccnYFXe
-	JVV06/IXxhSQlLbZPXiEHFt092WNcFss7eUqshbYjGGlrVRy5RR1S+3gGiJ+5cbpEXUG1+0e1/OqA
-	Ag0S32nqaiHER1fQDp0fTKvVtjNUm+ttT+4UyI3WUk/S/dtZ6lpvpJCnOCYAmwj1SJ+X5CoOGJjMU
-	9jI466rME85qYU+4OW+m7vrZYr3KgIA2u6VWGQAbqAisZELy6AuuaU+N0VSq+2MyqDTAkYxDE87rs
-	XMSw0m6I35MBSCcGpQ0Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+mcVe0jPz5FG1PovwmodHghLehKDpF1GVNgI8BJwS2w=; b=sXGq2UMYvG+eZQ
+	N30E2B0MIuKqtvfWsm4BTqVPluvF08XcWbnfk89HiiCrbr110WUoUvsOZSRq/kyn1dp0TgyvWXJWG
+	1GKDv7nHM30xvdMVJLLIUL6sed1pXH696XrG2a8ICv1lDaMxVBrRsoldrqT99pf2ITbrO9gA+/FBN
+	ZEUIBV6vUp0845NSA44fH2+VTeMEH7ZRXrR3ygyS+qDJUp9SNWlvMU7JSk7xHcGTBrEwE1VnxE89J
+	AlrcG617UCyDXizlnChfUJYHcCVybnG/zEjK5xWx30zNbM7ZqPAUmvWgsrtN1eOWVOQkskwR+JCSx
+	Juqg2kt2zJ6IPT/qc17Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nqECw-0044tn-IJ; Sun, 15 May 2022 13:22:50 +0000
-Received: from vmi833701.contaboserver.net ([38.242.236.104]
- helo=server.69daily.com)
+	id 1nqRMe-005lhK-HT; Mon, 16 May 2022 03:25:44 +0000
+Received: from mail-lj1-x22e.google.com ([2a00:1450:4864:20::22e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nqECu-0044sg-0A
- for ath10k@lists.infradead.org; Sun, 15 May 2022 13:22:49 +0000
-Received: from localhost (unknown [127.0.0.1])
- by server.69daily.com (Postfix) with ESMTP id A6298380E9B;
- Sun, 15 May 2022 11:45:47 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at 69daily.com
-Received: from server.69daily.com ([127.0.0.1])
- by localhost (server.69daily.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 22tYGuK0oroi; Sun, 15 May 2022 13:45:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by server.69daily.com (Postfix) with ESMTPA id 305EA380E8F;
- Sun, 15 May 2022 13:45:28 +0200 (CEST)
+ id 1nqRMa-005lej-Ei
+ for ath10k@lists.infradead.org; Mon, 16 May 2022 03:25:41 +0000
+Received: by mail-lj1-x22e.google.com with SMTP id m23so16616628ljc.0
+ for <ath10k@lists.infradead.org>; Sun, 15 May 2022 20:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=3xta7mXhm2Fn94nk/9joq4nWctV2Qx65e2rWuESLvCI=;
+ b=Hioqv9TGU/FbI35sE3TREY8e3/vmNZPGONyFHjiAwcc9MDOvUNHPD53QhsY149u620
+ Vevyl1GrZSRsjOrDS9hggWqA7R/8Hsht1AGFl0kqZhdN43sML7EG0G2kgzFXOhGDp8S1
+ ROaX1Nacry7w/o0XmxHtgGPgdVPDCvhxWwfg04FUCJuSA1M6DR91zYq2LrrSJLJpbuKv
+ XjKSkDLL32I9GYe25ZdEh8+tUT7zEiRFi6SMcXZ++DBT9aW5c99BJUvFc0Pen4tudogj
+ 0a4sHa5IcbbnspNdJloR3QO1OJqMmkv0JX3n2+cxZHAVKf4WFXbWNDH0u6sDp116Ljv1
+ xr/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=3xta7mXhm2Fn94nk/9joq4nWctV2Qx65e2rWuESLvCI=;
+ b=ts1fot6PAa7ny8dfTDYFSKcK6ITCL//YBziGHtauU14RCjpMz23W5BkLEyYvuhds/A
+ tEEFKp2ckoxjJoWV/3FL8H8orRl8EdXEsJMEbmGhTZKFj9G3xbLegtxwLmqHrcCvzeFE
+ oIcpC0D5BOy23rTC/ScGB22FkyMtaW3PHXJBd/sMBbUo3dTVnMFChHnwuLFQc0UHtfwY
+ ysR6qHalbW5e3Hr7uqxQxN+h665cO7kTQNctqveJ7BzBl4UlGX3vx9j8wd5P2dNNSXJC
+ 6FCy9M5TQSOUYyNJP9gnNEfzl67LDIFl9qiXMBRfhfqD8Fhgo7ziFn25L8XpB4+9ef2G
+ 44Kw==
+X-Gm-Message-State: AOAM532nS6ePy8xjkb/skvUqM9k3RSdDiFvurfCSr3I2JXsI0OBUEkDw
+ vtwzAZeaQM37IuulS0K2XO4=
+X-Google-Smtp-Source: ABdhPJwG21mD1Uu47jm2MyFyRUP+b0rBLtkvdr0bu9qRGPrQoG4/kzUA6vA7jP5N0Yy80KvBI1zgrg==
+X-Received: by 2002:a2e:9e03:0:b0:24f:153c:c479 with SMTP id
+ e3-20020a2e9e03000000b0024f153cc479mr10429362ljk.13.1652671537745; 
+ Sun, 15 May 2022 20:25:37 -0700 (PDT)
+Received: from rsa-laptop.internal.lan ([217.25.229.52])
+ by smtp.gmail.com with ESMTPSA id
+ q18-20020a2e9152000000b0024f3d1daee5sm1337251ljg.109.2022.05.15.20.25.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 15 May 2022 20:25:37 -0700 (PDT)
+From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ Edward Matijevic <motolav@gmail.com>, John Crispin <john@phrozen.org>,
+ =?UTF-8?q?Old=C5=99ich=20Jedli=C4=8Dka?= <oldium.pro@gmail.com>,
+ Tom Psyborg <pozega.tomislav@gmail.com>,
+ Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>,
+ Zhijun You <hujy652@gmail.com>
+Subject: [PATCH 1/4] ath10k: improve tx status reporting
+Date: Mon, 16 May 2022 06:25:16 +0300
+Message-Id: <20220516032519.29831-2-ryazanov.s.a@gmail.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220516032519.29831-1-ryazanov.s.a@gmail.com>
+References: <20220516032519.29831-1-ryazanov.s.a@gmail.com>
 MIME-Version: 1.0
-Date: Sun, 15 May 2022 13:45:28 +0200
-From: info@69daily.com
-To: deewane-members-1516@lists.andrew.cmu.edu,
- deewane-members-1516-owner@lists.andrew.cmu.edu,
- 1510675747534-0.post@n3.nabble.com, deltaxiphi-members@lists.andrew.cmu.edu,
- design-faculty-staff@lists.andrew.cmu.edu,
- deltaxiphi-members-owner@lists.andrew.cmu.edu,
- design-faculty-staff-owner@lists.andrew.cmu.edu,
- deewane-members-1617@lists.andrew.cmu.edu,
- deewane-members-1617-owner@lists.andrew.cmu.edu,
- deewane-members@lists.andrew.cmu.edu,
- deewane-members-owner@lists.andrew.cmu.edu,
- 3x1nyy3wlhxtnfxu1a2sradygo97ww@mail.gmail.com,
- css-members@lists.andrew.cmu.edu, css-members-owner@lists.andrew.cmu.edu,
- nsuexakbpdqfoh97ognelp0kvc9-gq@mail.gmail.com,
- 1510749223664-0.post@n3.nabble.com, 15670.1510670191@sss.pgh.pa.us,
- dc-staff-managers@lists.andrew.cmu.edu,
- dc-staff-managers-owner@lists.andrew.cmu.edu,
- ctat-support@lists.andrew.cmu.edu, ctat-support-owner@lists.andrew.cmu.edu,
- cyertstaff-penn@lists.andrew.cmu.edu, csharp-members@lists.andrew.cmu.edu,
- csharp-members-owner@lists.andrew.cmu.edu,
- 16-278e-bfde-cd70-11f8a8beabef@erven.at,
- csa-eboard-membermailinglist@lists.andrew.cmu.edu,
- eboard-membermailinglist-owner@lists.andrew.cmu.edu,
- 3846a8d34abcda258d080120f01b0b@exmbx05.mailcloud.dk,
- csa-committeemembers@lists.andrew.cmu.edu,
- csa-committeemembers-owner@lists.andrew.cmu.edu,
- csa-generalmemberlist@lists.andrew.cmu.edu,
- csa-generalmemberlist-owner@lists.andrew.cmu.edu,
- 9d-9d31-415f-b8ab-6cbd320f9b98@creamfinance.com,
- 3846a8d34abcda258d080120f025c6@exmbx05.mailcloud.dk,
- 16507.1510671423@sss.pgh.pa.us, 1510550710287-0.post@n3.nabble.com,
- cpp-members@lists.andrew.cmu.edu, cpp-members-owner@lists.andrew.cmu.edu,
- cpnp-members@lists.andrew.cmu.edu, cpnp-members-owner@lists.andrew.cmu.edu,
- cps-members@lists.andrew.cmu.edu, cps-members-owner@lists.andrew.cmu.edu,
- 29541.1510585509@sss.pgh.pa.us, crew-potential-members@lists.andrew.cmu.edu,
- crew-potential-members-owner@lists.andrew.cmu.edu,
- 20171114200817.gx4628@tamriel.snowman.net,
- contact-cpme@lists.andrew.cmu.edu, contact-cpme-owner@lists.andrew.cmu.edu,
- d2-6c14-26b4-e7cc-f11f13c997ad@dalibo.com,
- cmwa-membership2020-2021@lists.andrew.cmu.edu,
- cmwa-membership2020-2021-owner@lists.andrew.cmu.edu,
- 1510626497860-0.post@n3.nabble.com, a8owztc2hyb1era@mail.gmail.com,
- cnast-staff@lists.andrew.cmu.edu, cnast-staff-owner@lists.andrew.cmu.edu,
- competition-member@lists.andrew.cmu.edu,
- competition-member-owner@lists.andrew.cmu.edu,
- mfvfvgjdwbfmaic2g@mail.gmail.com,
- cmwa-membership2021-2022@lists.andrew.cmu.edu,
- cmwa-membership2021-2022-owner@lists.andrew.cmu.edu,
- y5hnmekm3goxq@mail.gmail.com, cmwa-membership2019-2020@lists.andrew.cmu.edu,
- cmwa-membership2019-2020-owner@lists.andrew.cmu.edu,
- cmwa-membership2016-2017@lists.andrew.cmu.edu,
- cmwa-membership2016-2017-owner@lists.andrew.cmu.edu,
- cmwa-membership2017-2018@lists.andrew.cmu.edu,
- cmwa-membership2017-2018-owner@lists.andrew.cmu.edu,
- cmwa-membership2018-2019@lists.andrew.cmu.edu,
- cmwa-membership2018-2019-owner@lists.andrew.cmu.edu,
- ujsasv-f7wsuhoxoyza@mail.gmail.com,
- cmu-portugal-affiliated-staff@lists.andrew.cmu.edu,
- ortugal-affiliated-staff-owner@lists.andrew.cmu.edu,
- cmutv-members@lists.andrew.cmu.edu,
- cmutv-members-owner@lists.andrew.cmu.edu,
- cmujsa-20-21-members@lists.andrew.cmu.edu,
- cmujsa-20-21-members-owner@lists.andrew.cmu.edu,
- cmu-jsa-21-22-members@lists.andrew.cmu.edu,
- cmu-jsa-21-22-members-owner@lists.andrew.cmu.edu,
- 5065.1510537861@sss.pgh.pa.us,
- cmu-administrators-and-staff@lists.andrew.cmu.edu,
- administrators-and-staff-owner@lists.andrew.cmu.edu,
- cmu-ems-newmembers@lists.andrew.cmu.edu,
- cmu-ems-newmembers-owner@lists.andrew.cmu.edu,
- ca-be3d-0eb7-69db-59b5d837d2f7@informatik.uni-kl.de,
- cmsr-2021-members@lists.andrew.cmu.edu,
- cmsr-2021-members-owner@lists.andrew.cmu.edu,
- cmsr-active-members@lists.andrew.cmu.edu,
- cmsr-active-members-owner@lists.andrew.cmu.edu,
- cmsr-new-members@lists.andrew.cmu.edu,
- cmsr-new-members-owner@lists.andrew.cmu.edu,
- nm2dvujrr_5lf-k-fsb6iqlhahzj6q@mail.gmail.com,
- s29lrl0v1gwtbvedtwytrxo1gkfv5a@mail.gmail.com,
- 1510562579.2835.2.camel@cybertec.at,
- b0-3409-7112-f297-70991a42adc1@lucee.org, cmcm-members@lists.andrew.cmu.edu,
- cmfa-members@lists.andrew.cmu.edu, cmfa-members-owner@lists.andrew.cmu.edu,
- cmcm-members-owner@lists.andrew.cmu.edu,
- cit18-staffawards@lists.andrew.cmu.edu,
- cit18-staffawards-owner@lists.andrew.cmu.edu,
- cit19-staffawards@lists.andrew.cmu.edu,
- cit19-staffawards-owner@lists.andrew.cmu.edu, u3w@mail.gmail.com,
- cmba-members@lists.andrew.cmu.edu, oa@mail.gmail.com,
- cmba-members-owner@lists.andrew.cmu.edu,
- cit-jedi-summer-2021-staff@lists.andrew.cmu.edu,
- t-jedi-summer-2021-staff-owner@lists.andrew.cmu.edu,
- chem-staff@lists.andrew.cmu.edu, chem-staff-owner@lists.andrew.cmu.edu,
- 1510418459.21117.112.camel@janc.be,
- cio-workday-members-admins@lists.andrew.cmu.edu,
- o-workday-members-admins-owner@lists.andrew.cmu.edu,
- aff-and-teaching-faculty-owner@lists.andrew.cmu.edu,
- 0171111132805.twahvztncovbp3gt@msg.df7cb.de, cfa-staff@lists.andrew.cmu.edu,
- cep-members@lists.andrew.cmu.edu, cfa-staff-owner@lists.andrew.cmu.edu,
- cep-members-owner@lists.andrew.cmu.edu,
- 4saeagud2em0p8uner60mdayvtw4vq@mail.gmail.com,
- cfa-staff-assembly@lists.andrew.cmu.edu,
- cfa-staff-assembly-owner@lists.andrew.cmu.edu,
- 1510406626.7270.14.camel@gmail.com,
- 0171112191323.glwqmpokywtm5m5p@hermes.hilbert.loc,
- ccee-educatorsstaff@lists.andrew.cmu.edu,
- ccee-educatorsstaff-owner@lists.andrew.cmu.edu,
- ccee-py20-21-staff@lists.andrew.cmu.edu,
- ccee-py20-21-staff-owner@lists.andrew.cmu.edu,
- 1510516369.4986.11.camel@gmail.com, cee-ostaff@ce.cmu.edu,
- cee-ostaff-owner@ce.cmu.edu, ccee-summer2020-staff@lists.andrew.cmu.edu,
- ccee-summer2020-staff-owner@lists.andrew.cmu.edu,
- 87k1yx3vfi.fsf@metapensiero.it, 1041.1510418588@sss.pgh.pa.us,
- wz3d67u1bkdo3k480kynv10rwerogq@mail.gmail.com,
- catalog-contacts@lists.andrew.cmu.edu,
- catalog-contacts-owner@lists.andrew.cmu.edu,
- casos-lab-staff@lists.andrew.cmu.edu,
- casos-lab-staff-owner@lists.andrew.cmu.edu, 87mv3sgchr.fsf@metapensiero.it,
- 8027.1510347112@sss.pgh.pa.us, casos-staff@lists.andrew.cmu.edu,
- casos-staff-owner@lists.andrew.cmu.edu,
- bvw-support-fall2011@lists.andrew.cmu.edu,
- bvw-support-fall2011-owner@lists.andrew.cmu.edu,
- cas-webapp-support@lists.andrew.cmu.edu,
- cas-webapp-support-owner@lists.andrew.cmu.edu, wll5pg@mail.gmail.com,
- blba-members@lists.andrew.cmu.edu, blba-members-owner@lists.andrew.cmu.edu,
- capd-members@lists.andrew.cmu.edu,
- 0171111132354.esi73rlpq3goyrqh@msg.df7cb.de,
- capd-members-owner@lists.andrew.cmu.edu, caps-staff@lists.andrew.cmu.edu,
- caps-staff-owner@lists.andrew.cmu.edu, 10500.1510349357@sss.pgh.pa.us,
- jormwjvz5wrvpz88dudrq@mail.gmail.com,
- dc-29d6-6408-298b-42b2b77d8666@joeconway.com,
- biometrics-contact@lists.andrew.cmu.edu,
- biometrics-contact-owner@lists.andrew.cmu.edu,
- bigstraw-staff@lists.andrew.cmu.edu,
- bigstraw-staff-owner@lists.andrew.cmu.edu,
- bib7-allstaff@lists.andrew.cmu.edu,
- bib7-allstaff-owner@lists.andrew.cmu.edu, postgresql@10-main.service,
- 0171111205316.u56lkmkakdmcx6zm@msg.df7cb.de,
- bibv-prstaff@lists.andrew.cmu.edu, bibv-prstaff-owner@lists.andrew.cmu.edu,
- 0171112122658.md7u7ahq5raqezft@msg.df7cb.de,
- bib8-allstaff@lists.andrew.cmu.edu,
- bib8-allstaff-owner@lists.andrew.cmu.edu,
- 0171112185233.tzynljip2k3ygcxn@msg.df7cb.de,
- axo-spring2014-cob2-newmembers@lists.andrew.cmu.edu,
- ring2014-cob2-newmembers-owner@lists.andrew.cmu.edu,
- 0171112173559.m6chmbyf4vz6fu3c@hjp.at, 20802.1510513605@sss.pgh.pa.us,
- bib5-allstaff@lists.andrew.cmu.edu,
- bib5-allstaff-owner@lists.andrew.cmu.edu, 21519.1510514802@sss.pgh.pa.us,
- 0171112191844.4rry32vdtxzi6crj@msg.df7cb.de,
- bib6-allstaff@lists.andrew.cmu.edu,
- bib6-allstaff-owner@lists.andrew.cmu.edu,
- axo-spring2014-cob-newmembers@lists.andrew.cmu.edu,
- pring2014-cob-newmembers-owner@lists.andrew.cmu.edu,
- bam-staff@lists.andrew.cmu.edu, bam-staff-owner@lists.andrew.cmu.edu,
- au-casual-staff-fy1819@lists.andrew.cmu.edu,
- au-casual-staff-fy1819-owner@lists.andrew.cmu.edu,
- 6219.1510539538@sss.pgh.pa.us, auo-members@lists.andrew.cmu.edu,
- auo-members-owner@lists.andrew.cmu.edu,
- asa-prmembers-fall2013@lists.andrew.cmu.edu,
- asa-prmembers-fall2013-owner@lists.andrew.cmu.edu,
- asme-generalmembers@lists.andrew.cmu.edu,
- asme-generalmembers-owner@lists.andrew.cmu.edu,
- 48-8ca3-c79b-e075-53b0baaa45c5@illuminatedcomputing.com,
- 0171112210309.spjszhibtdpginuc@alap3.anarazel.de,
- b193354333eeeff37c9b510a4bf540@mwhpr12mb1933.namprd12.prod.outlook.com,
- asa-prmembers-fall2012@lists.andrew.cmu.edu,
- asa-prmembers-fall2012-owner@lists.andrew.cmu.edu,
- savoj2jipoew@mail.gmail.com, natt8ej_baeonsjsuowbgat2sxwsxa@mail.gmail.com,
- asa-pr-members-2014@lists.andrew.cmu.edu,
- asa-pr-members-2014-owner@lists.andrew.cmu.edu,
- archgrad-support@lists.andrew.cmu.edu,
- archgrad-support-owner@lists.andrew.cmu.edu,
- asa-prmembers-2012@lists.andrew.cmu.edu,
- asa-prmembers-2012-owner@lists.andrew.cmu.edu,
- b8-70ee-a8ea-9493-ad89a1610d1c@computer.org,
- arts-greenhouse-staff@lists.andrew.cmu.edu,
- arts-greenhouse-staff-owner@lists.andrew.cmu.edu,
- qb1wco7m9tucemsw@mail.gmail.com, arb-members@lists.andrew.cmu.edu,
- arb-members-owner@lists.andrew.cmu.edu,
- apex-members-2021-2022@lists.andrew.cmu.edu,
- apex-members-2021-2022-owner@lists.andrew.cmu.edu,
- 20171110093622.ga5812@zakirov.localdomain,
- apex-members-2020-2021@lists.andrew.cmu.edu,
- apex-members-2020-2021-owner@lists.andrew.cmu.edu,
- 0171110151938.6uhhnhngl5f2mmmq@hjp.at,
- apex-members-2019-20@lists.andrew.cmu.edu,
- apex-members-2019-20-owner@lists.andrew.cmu.edu,
- 5dwnsno9ocw2mnlmtw@mail.gmail.com, anvil-members@lists.andrew.cmu.edu,
- anvil-members-owner@lists.andrew.cmu.edu,
- andy-public-contact@lists.andrew.cmu.edu,
- andy-public-contact-owner@lists.andrew.cmu.edu,
- knu8abq2gmaruw@mail.gmail.com, 18856.1510266376@sss.pgh.pa.us,
- estyinternational-boardmembers@lists.andrew.cmu.edu,
- ternational-boardmembers-owner@lists.andrew.cmu.edu,
- 3d-29df-0b1f-d2ba-fb7571744f3e@hogranch.com,
- ais-systems-support@lists.andrew.cmu.edu,
- ais-systems-support-owner@lists.andrew.cmu.edu,
- ll-fraternity-sorority-members@lists.andrew.cmu.edu,
- ternity-sorority-members-owner@lists.andrew.cmu.edu,
- ue45uxcw@mail.gmail.com, alg-members@lists.andrew.cmu.edu,
- alg-members-owner@lists.andrew.cmu.edu,
- 04-77ea-34a1-1af2-f5cdc1fcec60@joeconway.com,
- egt4-ndmrszai1w-bkb4xfpueaqbbw@mail.gmail.com,
- a1-7751-18ac-3368-037088dec473@joeconway.com,
- afrogsa-members@lists.andrew.cmu.edu,
- afrogsa-members-owner@lists.andrew.cmu.edu,
- admission-supportstaff@lists.andrew.cmu.edu,
- admission-supportstaff-owner@lists.andrew.cmu.edu,
- adapterrex-support@lists.andrew.cmu.edu,
- adapterrex-support-owner@lists.andrew.cmu.edu,
- advocate-members@lists.andrew.cmu.edu,
- advocate-members-owner@lists.andrew.cmu.edu,
- 76-9986-f9a0-e29d-12013e1b8b8e@aosc.io, 24936.1510245234@sss.pgh.pa.us,
- aed-members@lists.andrew.cmu.edu, aed-members-owner@lists.andrew.cmu.edu,
- abtech-new-members-s15@lists.andrew.cmu.edu,
- actuarialmember2015-2016@lists.andrew.cmu.edu,
- abtech-new-members-s15-owner@lists.andrew.cmu.edu,
- actuarialmember2015-2016-owner@lists.andrew.cmu.edu,
- actuary-members@lists.andrew.cmu.edu,
- actuary-members-owner@lists.andrew.cmu.edu,
- wownylqmybxmvhi_csrhm1tbljdtbw@mail.gmail.com,
- zmy6hs2gt3wfbx5l8-devqotb2kr1a@mail.gmail.com,
- ee-e7f1-495c-a7ea-142faba6d3ec@hogranch.com,
- acm-members@lists.andrew.cmu.edu, acm-members-owner@lists.andrew.cmu.edu,
- ea@mail.gmail.com, abtech-new-members-f14@lists.andrew.cmu.edu,
- abtech-new-members-f14-owner@lists.andrew.cmu.edu,
- ab-newmembersf14@lists.andrew.cmu.edu,
- ab-newmembersf14-owner@lists.andrew.cmu.edu,
- 80101-staff@lists.andrew.cmu.edu, 80101-staff-owner@lists.andrew.cmu.edu,
- 760-staff@lists.andrew.cmu.edu, 760-staff-owner@lists.andrew.cmu.edu,
- about-humans@lists.andrew.cmu.edu, about-humans-owner@lists.andrew.cmu.edu,
- 2apc4yttk6qgbs3g1nrqr1_ayb_v6a@mail.gmail.com, d_xvx2xq@mail.gmail.com,
- 23-8b04-0846-8c6f-08a6b4ba8904@lucee.org, 746-staff@lists.andrew.cmu.edu,
- 746-staff-owner@lists.andrew.cmu.edu, 746-fall17staff@lists.andrew.cmu.edu,
- 746-fall17staff-owner@lists.andrew.cmu.edu,
- 746-fall19staff@lists.andrew.cmu.edu,
- 746-fall19staff-owner@lists.andrew.cmu.edu,
- 66-30d0-4407-9085-e30a4121a202@blighty.com, zervzopg@mail.gmail.com,
- 3fsroub5_9n173o9wk2z4ma@mail.gmail.com,
- 746-fall18staff@lists.andrew.cmu.edu,
- 746-fall18staff-owner@lists.andrew.cmu.edu,
- 36-200-staff@lists.andrew.cmu.edu, 746-fall16staff@lists.andrew.cmu.edu,
- 36-200-staff-owner@lists.andrew.cmu.edu,
- 746-fall16staff-owner@lists.andrew.cmu.edu, 549-staff@lists.andrew.cmu.edu,
- 549-staff-owner@lists.andrew.cmu.edu,
- xjvzivx2oxqfnt76jxr9rzn0lhxgwq@mail.gmail.com,
- wy2ua53_68zaiw10loeakqb0pcjmtw@mail.gmail.com,
- 1510249933.12972.12.camel@jordogskog.no,
- 1510226310.2625.4.camel@cybertec.at, 601a-staff@lists.andrew.cmu.edu,
- 601a-staff-owner@lists.andrew.cmu.edu, 1510227654.2625.7.camel@cybertec.at,
- 251-staff-f17@lists.andrew.cmu.edu,
- 251-staff-f17-owner@lists.andrew.cmu.edu,
- 251-staff-s17@lists.andrew.cmu.edu,
- 251-staff-s17-owner@lists.andrew.cmu.edu,
- 251-staff-s18@lists.andrew.cmu.edu,
- 251-staff-s18-owner@lists.andrew.cmu.edu,
- 74-ac7c-2b48-9a3e-8b8acf8b2c36@lucee.org,
- 21-22-calendar-feedback@lists.andrew.cmu.edu,
- 21-22-calendar-feedback-owner@lists.andrew.cmu.edu,
- 251-staff-f18@lists.andrew.cmu.edu,
- 251-staff-f18-owner@lists.andrew.cmu.edu, czqd_g@mail.gmail.com,
- 4497.1510188301@sss.pgh.pa.us,
- 0oikynctuoiq23shkyrxjenxcw7jva@mail.gmail.com,
- 2019-staff@lists.andrew.cmu.edu, 2019-staff-owner@lists.andrew.cmu.edu,
- fb-0cbc-b407-feaa-0be86f06e4d9@lucee.org, 2018-staff@lists.andrew.cmu.edu,
- 2018-staff-owner@lists.andrew.cmu.edu, ua7ua@mail.gmail.com,
- 2017-precollegestaff@lists.andrew.cmu.edu,
- 2017-precollegestaff-owner@lists.andrew.cmu.edu,
- 2017-ostaff@lists.andrew.cmu.edu, 2017-ostaff-owner@lists.andrew.cmu.edu,
- 18740-staff@lists.andrew.cmu.edu, 18740-staff-owner@lists.andrew.cmu.edu,
- 62-c165-e6f3-9a22-dbb562b5afd4@lucee.org, 18643-staff@lists.andrew.cmu.edu,
- 18643-staff-owner@lists.andrew.cmu.edu,
- 58-87d9-7b02-867b-5d98b93aac7d@lucee.org,
- 180dc-members@lists.andrew.cmu.edu,
- 180dc-members-owner@lists.andrew.cmu.edu, rjw@mail.gmail.com,
- 9vecevsxxth3j3yfbda@mail.gmail.com,
- 180dc-2019-20-members@lists.andrew.cmu.edu,
- 18600-staff@lists.andrew.cmu.edu,
- 180dc-2019-20-members-owner@lists.andrew.cmu.edu,
- 18600-staff-owner@lists.andrew.cmu.edu, ypv0yaf7nh7iyfa@mail.gmail.com,
- 17-614-staff@lists.andrew.cmu.edu, 17-614-staff-owner@lists.andrew.cmu.edu,
- 18220-staff@lists.andrew.cmu.edu, 18220-staff-owner@lists.andrew.cmu.edu,
- 17655-staff@lists.andrew.cmu.edu, 17655-staff-owner@lists.andrew.cmu.edu,
- 7b-e488-7509-81fd-c6543fe949ee@lucee.org, rgma@mail.gmail.com,
- gossip-request@mail-archive.com, 22gossip@mail-archive.com, gossip@jab.org,
- sundial@uni-koeln.de, terminologia@softcatala.net,
- asteriskbrasil-request@listas.asteriskbrasil.org,
- 22asteriskbrasil@listas.asteriskbrasil.org, carlisle@andrew.cmu.edu,
- cfa-contact@cmu.edu, drama-relations@andrew.cmu.edu, jeff@jab.org,
- 313@hyperreal.org, 389-users@lists.fedoraproject.org, 4d_tech@lists.4d.com,
- 6lo@ietf.org, 6tisch@ietf.org, 9fans@9fans.net, abb@cs.stir.ac.uk,
- accessindia@accessindia.org.in, ace@ietf.org, acme@ietf.org,
- acopost-devel@lists.sourceforge.net, acpi-bugzilla@lists.sourceforge.net,
- ada_list@list.waikato.ac.nz, address-policy-wg@ripe.net,
- address-sanitizer@googlegroups.com, adiyuva@googlegroups.com,
- adwords-api@googlegroups.com, af@af.afmug.com, africann@afrinic.net,
- african-wikimedians@lists.wikimedia.org, afripv6-discuss@afrinic.net,
- agi@agi.topicbox.com, agora-business@agoranomic.org,
- agora-discussion@agoranomic.org, agora-official@agoranomic.org,
- aide@lists.launchpad.net, algeriatul@lists.launchpad.net,
- all-audio@groups.io, all@samathalondon.org.uk, alpha@t157.org,
- altlinux-announce-en@lists.altlinux.org,
- altlinux-announce-ru@lists.altlinux.org, alto@ietf.org,
- amanda-users@amanda.org, amavis-users@amavis.org,
- amber-spec-experts@openjdk.java.net, amd-gfx@lists.freedesktop.org,
- amforth-devel@lists.sourceforge.net, amnesia-news@boum.org,
- amssracing@googlegroups.com, analytics@lists.wikimedia.org,
- ana.words-recipients@ana.ch, android-building@googlegroups.com,
- android-developers@googlegroups.com, android-discuss@googlegroups.com,
- angular@googlegroups.com, anima@ietf.org, announce@afrinic.net,
- announce@apache.org, announce@couchdb.apache.org,
- announce@country-files.com, announce@documentfoundation.org,
- announce@edk2.groups.io, announce@freebsd.org, announce@gtalug.org,
- announce@jackrabbit.apache.org, announce@ja.libreoffice.org,
- announce@list.ipol.im, announce@lists.almalinux.org,
- announce@lists.fedoraproject.org, announce@lists.open-mpi.org,
- announce@lists.otrs.org, announce@maven.apache.org, announce@mozilla.org,
- announce@openbsd.org, announce@openoffice.apache.org, announce@ovirt.org,
- announce@pidgin.im, announce@sel4.systems, announces@tryton.org,
- announce@tomcat.apache.org, announce@trafficserver.apache.org,
- announce@wicket.apache.org, announce@wso2.org,
- ansible-devel@googlegroups.com, ansible-project@googlegroups.com,
- anyevent@lists.schmorp.de, apertium-stuff@lists.sourceforge.net,
- api@directory.apache.org, api@openoffice.apache.org,
- api-users@lists.gbif.org, apnic-announce@apnic.net,
- apnic-talk@lists.apnic.net, apops@apops.net, apparmor@lists.ubuntu.com,
- arangodb@googlegroups.com, arch-announce@lists.archlinux.org,
- arch-commits@lists.archlinux.org, arch-dev-public@lists.archlinux.org,
- arch-general@lists.archlinux.org, gg2@mail-archive.com,
- archivesspace_users_group@lyralists.lyrasis.org,
- arch-projects@lists.archlinux.org, arin-announce@arin.net,
- arin-issued@arin.net, arin-ppml@arin.net, arin-suggestions@arin.net,
- arin-tech-discuss@arin.net, arm@lists.fedoraproject.org,
- arm@lists.opensuse.org, arm-netbook@lists.phcomp.co.uk, arm@openbsd.org,
- arts_users.mi@lists.uni-hamburg.de, asdf-devel@common-lisp.net,
- asr_isaadet@googlegroups.com, assp-test@lists.sourceforge.net,
- asterisk-announce@lists.digium.com,
- asteriskbrasil-biz@listas.asteriskbrasil.org, asterisk-dev@lists.digium.com,
- asterisk-users@lists.digium.com, astlinux-users@lists.sourceforge.net,
- async-sig@python.org, ath10k@lists.infradead.org,
- ats-lang-users@googlegroups.com, auctex-devel@gnu.org, auctex@gnu.org,
- audiowmark@googlegroups.com, aufs-users@lists.sourceforge.net,
- aur-general@lists.archlinux.org, aur-requests@lists.archlinux.org,
- ausnog@ausnog.net, austin-group-l@opengroup.org, autoconf@gnu.org,
- automake@gnu.org, avahi@lists.freedesktop.org, avrdude-dev@nongnu.org,
- avr-gcc-list@nongnu.org, axiom-developer@nongnu.org, axiom-math@nongnu.org,
- axion-dev@db.apache.org, axion-user@db.apache.org
-Subject: Hello
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <be492b9bc700bc5370b1ed9d4fce59af@69daily.com>
-X-Sender: info@69daily.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220515_062248_403020_CD4EB182 
-X-CRM114-Status: UNSURE (  -0.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220515_202540_530430_BA332C56 
+X-CRM114-Status: GOOD (  13.22  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -403,15 +88,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Free Porno video best in city
-www.69daily.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+V2UgdXNlIGllZWU4MDIxMV90eF9zdGF0dXMoKSB0byByZXBvcnQgZWFjaCBjb21wbGV0ZWQgdHgg
+ZnJhbWUuCkludGVybmFsbHksIHRoaXMgZnVuY3Rpb24gY2FsbHMgc3RhX2luZm9fZ2V0X2J5X2Fk
+ZHJzKCksIHdoYXQgaGFzIGEKY291cGxlIG9mIGRyYXdiYWNrczoKMS4gYWRkaXRpb25hbCBzdGF0
+aW9uIGxvb2t1cCBjYXVzZXMgYSBwZXJmb3JtYW5jZSBkZWdyYWRhdGlvbjsKMi4gbWFjODAyMTEg
+Y2FuIG5vdCBwcm9wZXJseSBhY2NvdW50IEV0aGVybmV0IGVuY2Fwc3VsYXRlZCBmcmFtZXMgZHVl
+CiAgIHRvIHRoZSBpbmFiaWxpdHkgdG8gcHJvcGVybHkgZGV0ZXJtaW5lIHRoZSBkZXN0aW5hdGlv
+biAoc3RhdGlvbikgTUFDCiAgIGFkZHJlc3Mgc2luY2UgaWVlZTgwMjExX3R4X3N0YXR1cygpIGFz
+c3VtZXMgdGhlIGZyYW1lIGhhcyBhIDgwMi4xMQogICBoZWFkZXIuCgpUaGUgbGF0dGVyIGlzIGVz
+cGVjaWFsbHkgZGVzdHJ1Y3RpdmUgaWYgd2Ugd2FudCB0byB1c2UgaGFyZHdhcmUgZnJhbWVzCmVu
+Y2Fwc3VsYXRpb24uCgpUbyBmaXggYm90aCBvZiB0aGVzZSBpc3N1ZXMsIHJlcGxhY2UgaWVlZTgw
+MjExX3R4X3N0YXR1cygpIHdpdGgKaWVlZTgwMjExX3R4X3N0YXR1c19leHQoKSBjYWxsIGFuZCBm
+ZWVkIGl0IHN0YXRpb24gcG9pbnRlciBmcm9tIHRoZSB0eApxdWV1ZSBhc3NvY2lhdGVkIHdpdGgg
+dGhlIHRyYW5zbWl0dGVkIGZyYW1lLgoKVGVzdGVkLW9uOiBRQ0E5ODg4IGh3IDIuMCAxMC40LTMu
+OS4wLjItMDAxMzEKVGVzdGVkLW9uOiBRQ0E2MTc0IGh3IDMuMiBQQ0kgV0xBTi5STS40LjQuMS0w
+MDE1Ny1RQ0FSTVNXUFotMQpTaWduZWQtb2ZmLWJ5OiBTZXJnZXkgUnlhemFub3YgPHJ5YXphbm92
+LnMuYUBnbWFpbC5jb20+ClRlc3RlZC1ieTogT2xkxZlpY2ggSmVkbGnEjWthIDxvbGRpdW0ucHJv
+QGdtYWlsLmNvbT4gIyBUUC1MaW5rIEFyY2hlciBDNyB2NCAmIHY1IChRQ0E5NTYzICsgUUNBOTg4
+MCkKVGVzdGVkLWJ5OiBFZHdhcmQgTWF0aWpldmljIDxtb3RvbGF2QGdtYWlsLmNvbT4gIyBUUC1M
+aW5rIEFyY2hlciBDMjYwMCAoSVBRODA2NCArIFFDQTk5ODAgMTAuNC4xLjAwMDMwLTEpClRlc3Rl
+ZC1ieTogRWR3YXJkIE1hdGlqZXZpYyA8bW90b2xhdkBnbWFpbC5jb20+ICMgUUNBOTM3NyBQQ0kg
+aW4gU3RhIG1vZGUKVGVzdGVkLWJ5OiBaaGlqdW4gWW91IDxodWp5NjUyQGdtYWlsLmNvbT4gIyBO
+RVRHRUFSIFI3ODAwIChRQ0E5OTg0IDEwLjQtMy45LjAuMi0wMDE1OSkKLS0tCgpDaGFuZ2VzIHNp
+bmNlIFJGQzoKICogbmV3IFRlc3RlZC1vbiBhbmQgVGVzdGVkLWJ5IHRhZ3MKCiBkcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYyB8IDEyICsrKysrKysrKysrLQogMSBmaWxlIGNo
+YW5nZWQsIDExIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvdHhyeC5jCmluZGV4IDEwMTIzOTc0YzNkYS4uNzI1NDA0MzRjNzViIDEwMDY0
+NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYworKysgYi9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYwpAQCAtNDMsNiArNDMsNyBAQCBzdGF0
+aWMgdm9pZCBhdGgxMGtfcmVwb3J0X29mZmNoYW5fdHgoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVj
+dCBza19idWZmICpza2IpCiBpbnQgYXRoMTBrX3R4cnhfdHhfdW5yZWYoc3RydWN0IGF0aDEwa19o
+dHQgKmh0dCwKIAkJCSBjb25zdCBzdHJ1Y3QgaHR0X3R4X2RvbmUgKnR4X2RvbmUpCiB7CisJc3Ry
+dWN0IGllZWU4MDIxMV90eF9zdGF0dXMgc3RhdHVzOwogCXN0cnVjdCBhdGgxMGsgKmFyID0gaHR0
+LT5hcjsKIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSBhci0+ZGV2OwogCXN0cnVjdCBpZWVlODAyMTFf
+dHhfaW5mbyAqaW5mbzsKQEAgLTEyOCw3ICsxMjksMTYgQEAgaW50IGF0aDEwa190eHJ4X3R4X3Vu
+cmVmKHN0cnVjdCBhdGgxMGtfaHR0ICpodHQsCiAJCWluZm8tPnN0YXR1cy5mbGFncyB8PSBJRUVF
+ODAyMTFfVFhfU1RBVFVTX0FDS19TSUdOQUxfVkFMSUQ7CiAJfQogCi0JaWVlZTgwMjExX3R4X3N0
+YXR1cyhodHQtPmFyLT5odywgbXNkdSk7CisJbWVtc2V0KCZzdGF0dXMsIDAsIHNpemVvZihzdGF0
+dXMpKTsKKwlzdGF0dXMuc2tiID0gbXNkdTsKKwlzdGF0dXMuaW5mbyA9IGluZm87CisKKwlyY3Vf
+cmVhZF9sb2NrKCk7CisJaWYgKHR4cSAmJiB0eHEtPnN0YSkKKwkJc3RhdHVzLnN0YSA9IHR4cS0+
+c3RhOworCWllZWU4MDIxMV90eF9zdGF0dXNfZXh0KGh0dC0+YXItPmh3LCAmc3RhdHVzKTsKKwly
+Y3VfcmVhZF91bmxvY2soKTsKKwogCS8qIHdlIGRvIG5vdCBvd24gdGhlIG1zZHUgYW55bW9yZSAq
+LwogCiAJcmV0dXJuIDA7Ci0tIAoyLjM1LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
