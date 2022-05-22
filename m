@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C111FC433F5
-	for <ath10k@archiver.kernel.org>; Sat, 21 May 2022 05:32:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 933EEC433F5
+	for <ath10k@archiver.kernel.org>; Sun, 22 May 2022 12:23:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TpEQuYYewM9Ry3cEbCeq1AhHX7HuhFWdohTMtfTu3Ys=; b=XSIJ8iQpsacp6o
-	OahbPU+oJmtpo+0b3lMDX+7b36KE7MD+BMiOQNn0q/yHdy5q9lIqnvnYXjxftJs9HmtTWhK5RfumL
-	u+F8jPN7w0Y9werppPYqsm85yTLB10LA5RBYSjbQ+hkvp8bLEid8/qHunMI/j/NYBTIkcOoF4Cqqp
-	PmEcTemcbU6ltFg2LYZW+TksWjOfr3vqP+Mtmfwb+JNw4a3CHq9qXWLZ1/Y/yLOt8AYXgw6f84zLF
-	5Yt1nBKcf5bfC6I3JNSuNobcYi4I/aDqyKKtAajkqKg7fiwZ4jX5bDOiTM51Av/778/DCYR/b0SLO
-	xmsefekZaiAsvfXhphRw==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=c3Z09jg/GA51014Hj6w2/vZdaAvlLi8b0f9YQEejCGU=; b=XPTLhSgohDAthJ
+	96bKfSILN1Z8dSjzZpQEGC9nDAnN+d7RT4mEGZ0f8kBe77pJWybEuESJ6nM8MmI/7TIJjVC8ToYmz
+	q7EQ+t2mOrRDvktH+l1xmvJp0E+0wDQ3Q/DK2XO+PeVP9iaz9mhXOqwye0xo2E7bgfki8wTB0f21c
+	6rsoheth6YLfeU3dkAeo+DezImG21YO4cBdTJ9kxv4HsBD3TR4X/umD86aOTh+wpoc98pWd0/j2B1
+	SPgO9H5rdJMIQG+FZPI9fL/UO5M0e+awdjrdOYXZeroBkW/cDa+gsIiIw8XqVxVRdW630RA9kRqwX
+	VPg1aOLnqBX6dzKeAvBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nsHiP-00FZCD-2g; Sat, 21 May 2022 05:31:49 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1nskbU-001Ihs-7d; Sun, 22 May 2022 12:22:36 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nsHiE-00FZ9V-Br
- for ath10k@lists.infradead.org; Sat, 21 May 2022 05:31:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1653111098; x=1684647098;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding;
- bh=Gb55S2wJv3pf5ylDzEElZhl643YLPekIQEPRflxILH0=;
- b=FK3r8KSJ2x21OYbqtLlZS4AMtbWxx3hI/kXfpNgSQid6HgY5mLnugj4a
- UyvGM01/cBhiF/TyjCMPOg5O1ch7Y/y1xEPURnHxPoTLPBuai2s9+KUGP
- BbTki/oh+VsTE/yeqSAACqXz53uIyeRLq98YSqnFOMgmnzetTNCsdMm0D
- qHclMoJaE/Tki6hfDl5vk+r5UaTkVrBKVtLYBhYnABTKNoFbZC5EGOPgg
- 9ZGzarCo8ZbQrNYHUsc/j9oUH3OPzCfw/ZONU5kPWJz1ApcD9emTgE6lJ
- nm54WgvzJZVQJwdWOTJ4j4l0sKx9cX7sUyP+jH/WUJYYHBEepdZLo57G9 Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="271636405"
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="271636405"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 22:31:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="662604938"
-Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
- by FMSMGA003.fm.intel.com with ESMTP; 20 May 2022 22:31:30 -0700
-Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1nsHi6-0005yO-2h;
- Sat, 21 May 2022 05:31:30 +0000
-Date: Sat, 21 May 2022 13:31:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- fdb8fc34a6fbf8c7614f222cbe1176a0598f1941
-Message-ID: <62887930.LQTkr1WAnq6iSKYY%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+ id 1nskbI-001Ich-Bj
+ for ath10k@lists.infradead.org; Sun, 22 May 2022 12:22:25 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8C17FB80B34;
+ Sun, 22 May 2022 12:22:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8980EC385AA;
+ Sun, 22 May 2022 12:22:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1653222139;
+ bh=Mfo0m4hywKPiCkbJC9Y94IuwEqZd7gBdjqZR9nR3ImA=;
+ h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+ b=oPLBRLUW8NAnzWitefrHXNP5m6s6TJXvVI1/cuJft5+KabX5BlIvZFC/mDwceWP8A
+ 0goICNZ0uEiVd3NfLswcqUTIq2ULS3Oo/xooWVY3o1vt1YTTE0PDpXOmAeGX0+aJSl
+ KQdOL8aS6ET76aTf37oHSht1TaJwQxD2Ctj/zF2has+e5rO176lGOsBbSwTUAnFWjj
+ wBWdYFTHD2pgiuku6A2o34SbwqFyfqB8BdNRujiTgR4nCMgoe9NoK3WsdO78Wqnchs
+ /Ljpmm+wLyl0c64oFtbMHCTmW1GiQOqKofxvjMRplMefk0h/iJsvRwfdF9A1n4EVwn
+ eUD62H5gc4eUA==
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: do not enforce interrupt trigger type
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20220513151516.357549-1-krzysztof.kozlowski@linaro.org>
+References: <20220513151516.357549-1-krzysztof.kozlowski@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Govind Singh <govinds@codeaurora.org>,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-arm-msm@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <165322213441.774.12044822958989724904.kvalo@kernel.org>
+Date: Sun, 22 May 2022 12:22:16 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220520_223138_465347_BBB46917 
-X-CRM114-Status: UNSURE (   5.34  )
+X-CRM114-CacheID: sfid-20220522_052224_580159_D0855515 
+X-CRM114-Status: UNSURE (   9.64  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,82 +78,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: fdb8fc34a6fbf8c7614f222cbe1176a0598f1941  ath11k: update missing MU-MIMO and OFDMA stats
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-elapsed time: 4195m
+> Interrupt line can be configured on different hardware in different way,
+> even inverted.  Therefore driver should not enforce specific trigger
+> type - edge rising - but instead rely on Devicetree to configure it.
+> 
+> All Qualcomm DTSI with WCN3990 define the interrupt type as level high,
+> so the mismatch between DTSI and driver causes rebind issues:
+> 
+>   $ echo 18800000.wifi > /sys/bus/platform/drivers/ath10k_snoc/unbind
+>   $ echo 18800000.wifi > /sys/bus/platform/drivers/ath10k_snoc/bind
+>   [   44.763114] irq: type mismatch, failed to map hwirq-446 for interrupt-controller@17a00000!
+>   [   44.763130] ath10k_snoc 18800000.wifi: error -ENXIO: IRQ index 0 not found
+>   [   44.763140] ath10k_snoc 18800000.wifi: failed to initialize resource: -6
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.0.c8-00009-QCAHLSWSC8180XMTPLZ-1
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
+> 
+> Fixes: c963a683e701 ("ath10k: add resource init and deinit for WCN3990")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Tested-by: Steev Klimaszewski <steev@kali.org>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-configs tested: 58
-configs skipped: 3
+Patch applied to ath-next branch of ath.git, thanks.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-arm                                 defconfig
-arm64                               defconfig
-sh                             shx3_defconfig
-ia64                             alldefconfig
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-alpha                               defconfig
-csky                                defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-i386                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
-
-clang tested configs:
-powerpc                   microwatt_defconfig
+1ee6c5abebd3 ath10k: do not enforce interrupt trigger type
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+https://patchwork.kernel.org/project/linux-wireless/patch/20220513151516.357549-1-krzysztof.kozlowski@linaro.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
