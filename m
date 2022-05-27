@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C7F4C433EF
-	for <ath10k@archiver.kernel.org>; Thu, 26 May 2022 03:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0A95C433FE
+	for <ath10k@archiver.kernel.org>; Fri, 27 May 2022 22:25:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=x23nh8GYMjwHNv1hmP4hLZEcIL0rLlFkxI1D6PsSTwI=; b=x0YDPcCRR7qi62
-	QtElXfjChthFlm/4uUZODPwIAB0sUm0MnSMslZMfB9oGtFJilG1d7aDL4OwZwgvgUy6jXvwFY1YWP
-	Yw4s9vwsX9vqj0YP4a5Qk5Qs2Woe/2Li3oQyTLEswpAbenBwoTxJuYIdNbvoXo1030iyo5hxhUlnL
-	g9l+yoLFEZTOCh9G4uKQZ6ItZnwW7r5Krrazo1CALzI2uFCLlXq1uTTIY1R5TA7M1yvxYRkARpy0q
-	lNsUJhUyeU7sVUClhZyXk5c59FWxjK/VPacAchgwR2TezJ1czalM2ZwdLHUCaGZHdwra3yXtODvKt
-	MhsRHMJQa6Pa0Bj9O20w==;
+	List-Owner; bh=uXhxtQ1kC81l1xFqxNBO0WWIa/Yqwmj+mKIdFPzmb3g=; b=VMdJ22QgyhrnyM
+	A7jq3ZlVPTNLHkMfgXYUisOwDno7grkvcMzdPLO83rk9f49Tt+Vf6Jv7acQkFS6YJaHer3Ypx+2we
+	FdlxiX6Vox35evFdpP/AiASa5a8C/Z5Vdav9f9grL6ui9rtuPM4wRclSVDuW/tOHvZrBtn/0fqGOx
+	mQ85nVZbUwOVs9iZTUugLOWh1Bwe2oMFXt8XrRLdr+JcgNQX/eSSfm6corMBq835EGlzwUZ/JlQk9
+	31NmUNX1eBPdMx05PudqaIT6MSKPERCqLOQ7WVU6+TTIDgzOOGaAdD0wOZj7zXIo/aihmWc42BzL5
+	AFt1K67xj3gy2h6gU/Yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nu4Qg-00DOvQ-AV; Thu, 26 May 2022 03:44:54 +0000
-Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
+	id 1nuiOw-0013me-Vn; Fri, 27 May 2022 22:25:47 +0000
+Received: from mga18.intel.com ([134.134.136.126])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nu4Qd-00DOuE-C4
-	for ath10k@lists.infradead.org; Thu, 26 May 2022 03:44:52 +0000
+	id 1nuiOs-0013jV-02
+	for ath10k@lists.infradead.org; Fri, 27 May 2022 22:25:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653536691; x=1685072691;
+  t=1653690341; x=1685226341;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=CBjzBxkqSg6jW/u4eHYUPKVJDkAyACNq3DGjbpBPKjc=;
-  b=gPRRDjZpFWj0FPGOCDk7HwHH+pIOuoxv4JHNQhQNa0+zCfM3NsAKdxe1
-   u3j1ggqPZjeCiSxZ/Az4YwgbZD2wLG2rPmp35m2bw/oyLj5N4hmN4cEFv
-   6mvfGQUTgl9coEq3bBXQ1w3BfMOMNYfNTGn2pKKUqYOMiSz2IncRDKiIZ
-   1dpPRLH60vP2D1sox6KHhrmAVgtx053NfNXotMIFe1GPZVAk1qGwlG0jl
-   jE/ShXN5NkRKIHhHll03h1369FbGavEfmgpoH6Xv095AGwMF6X9m+ABNc
-   /md/aU+jGzN/K1PFkBihNULRvIDWaPP3FSAkggf41ZKMQB1C/oANaX1+I
+  bh=oAnIU4MUuk5olTodg6z/evS7rvBC6rPTFuxQ8GYHCKQ=;
+  b=KHWze6OqDAfMfXiOVk8c/StOUWKnyV7oMDlJnBn3+Auw7Z0v/cmlxovX
+   k/hPlofQmP3EsgQDmoiGjlSfSO4ngKuYzR6WX86A3G0gA6AMe3tEeuywW
+   lBrmN9i1ZMkcA8v54nUiXGlAfm0TZxqGa22bTS8Z+YEq5UioS2UcyLaX+
+   tc+wdSGUlgxDfmeRx9S8hWoK6vM0MB1YuYHIMc+o03o8SQxpmh2YCxe9j
+   9Hr0RR4NnUl6uLKDkLQEWHytPLchDAfZtbPmoJM8tLgUSN+2VJ+qTCv4e
+   Zd3oJA7WFfo1rSIPVI6d3nIgzs6viPwAcJmi+e2OMUotmnbcr1cGXPg0k
    g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10358"; a="334661434"
-X-IronPort-AV: E=Sophos;i="5.91,252,1647327600"; 
-   d="scan'208";a="334661434"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2022 20:44:48 -0700
+X-IronPort-AV: E=McAfee;i="6400,9594,10360"; a="256662300"
+X-IronPort-AV: E=Sophos;i="5.91,256,1647327600"; 
+   d="scan'208";a="256662300"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2022 15:25:35 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,252,1647327600"; 
-   d="scan'208";a="549357578"
+X-IronPort-AV: E=Sophos;i="5.91,256,1647327600"; 
+   d="scan'208";a="560952274"
 Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 25 May 2022 20:44:47 -0700
+  by orsmga002.jf.intel.com with ESMTP; 27 May 2022 15:25:34 -0700
 Received: from kbuild by db63a1be7222 with local (Exim 4.95)
 	(envelope-from <lkp@intel.com>)
-	id 1nu4QY-0003ZK-P6;
-	Thu, 26 May 2022 03:44:46 +0000
-Date: Thu, 26 May 2022 11:44:02 +0800
+	id 1nuiOj-0005B9-A6;
+	Fri, 27 May 2022 22:25:33 +0000
+Date: Sat, 28 May 2022 06:24:49 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 2c552c2294efaa53afc66648ef9dd4c9880e7c1a
-Message-ID: <628ef782.w5CMTylMenE1l0Vg%lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 1d5e60e746dd535e6751dafb40905f99e2af06ee
+Message-ID: <62914fb1.NvygTBWk8Wd8TuR8%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220525_204451_508219_30BF2105 
-X-CRM114-Status: UNSURE (   4.69  )
+X-CRM114-CacheID: sfid-20220527_152542_136908_B4AB3869 
+X-CRM114-Status: UNSURE (   6.68  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,13 +81,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 2c552c2294efaa53afc66648ef9dd4c9880e7c1a  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 1d5e60e746dd535e6751dafb40905f99e2af06ee  ath11k: mhi: fix potential memory leak in ath11k_mhi_register()
 
-elapsed time: 721m
+elapsed time: 722m
 
-configs tested: 84
-configs skipped: 3
+configs tested: 175
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -98,9 +98,78 @@ arm64                            allyesconfig
 arm                              allmodconfig
 arm                                 defconfig
 arm                              allyesconfig
+i386                          randconfig-c001
+powerpc                      pcm030_defconfig
+mips                         db1xxx_defconfig
+sh                          polaris_defconfig
+arm                         assabet_defconfig
+arm                            mps2_defconfig
+m68k                          sun3x_defconfig
+powerpc                      ppc6xx_defconfig
+arm                       multi_v4t_defconfig
+powerpc64                           defconfig
+um                                  defconfig
+sh                               alldefconfig
+arm                           sama5_defconfig
+arm                           imxrt_defconfig
+parisc                           alldefconfig
+arm                         vf610m4_defconfig
+sh                             sh03_defconfig
+xtensa                           alldefconfig
+arc                     haps_hs_smp_defconfig
+powerpc                 mpc8540_ads_defconfig
+sh                            hp6xx_defconfig
+mips                 decstation_r4k_defconfig
+sh                            titan_defconfig
+sh                           sh2007_defconfig
+openrisc                         alldefconfig
+arm                          pxa3xx_defconfig
+sh                ecovec24-romimage_defconfig
+mips                         bigsur_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                     tqm8555_defconfig
+sh                            shmin_defconfig
+arm                           u8500_defconfig
+sh                           se7712_defconfig
+powerpc                     ep8248e_defconfig
+sh                          sdk7786_defconfig
+xtensa                  cadence_csp_defconfig
+sh                          kfr2r09_defconfig
 ia64                                defconfig
+sparc                       sparc32_defconfig
+arm                            pleb_defconfig
+powerpc                     asp8347_defconfig
+powerpc                    adder875_defconfig
+sh                          r7780mp_defconfig
+m68k                          atari_defconfig
+arm                     eseries_pxa_defconfig
+sparc                       sparc64_defconfig
+sh                        apsh4ad0a_defconfig
+sh                           se7343_defconfig
+microblaze                          defconfig
+m68k                          multi_defconfig
+arm                          pxa910_defconfig
+arc                      axs103_smp_defconfig
+sh                           se7780_defconfig
+powerpc                mpc7448_hpc2_defconfig
+sh                     magicpanelr2_defconfig
+sh                   sh7724_generic_defconfig
+arm                      footbridge_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                         microdev_defconfig
+s390                       zfcpdump_defconfig
+arm                        trizeps4_defconfig
+m68k                        m5407c3_defconfig
+arc                            hsdk_defconfig
+arm                        shmobile_defconfig
+nios2                         10m50_defconfig
+arm                          lpd270_defconfig
+arm                  randconfig-c002-20220526
+arm                  randconfig-c002-20220524
+x86_64                        randconfig-c001
 ia64                             allmodconfig
 ia64                             allyesconfig
+riscv                             allnoconfig
 m68k                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
@@ -134,11 +203,8 @@ powerpc                          allmodconfig
 x86_64                        randconfig-a006
 x86_64                        randconfig-a004
 x86_64                        randconfig-a002
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a013
 x86_64                        randconfig-a011
+x86_64                        randconfig-a013
 x86_64                        randconfig-a015
 i386                          randconfig-a012
 i386                          randconfig-a014
@@ -146,13 +212,17 @@ i386                          randconfig-a016
 arc                  randconfig-r043-20220524
 s390                 randconfig-r044-20220524
 riscv                randconfig-r042-20220524
+arc                  randconfig-r043-20220527
+arc                  randconfig-r043-20220526
+s390                 randconfig-r044-20220526
+riscv                randconfig-r042-20220526
 riscv                               defconfig
 riscv                    nommu_virt_defconfig
 riscv                          rv32_defconfig
 riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
 riscv                            allmodconfig
 riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
 um                           x86_64_defconfig
 um                             i386_defconfig
 x86_64                                  kexec
@@ -160,25 +230,49 @@ x86_64                              defconfig
 x86_64                           allyesconfig
 x86_64                               rhel-8.3
 x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
 x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
 
 clang tested configs:
+arm                  randconfig-c002-20220524
+x86_64                        randconfig-c007
+s390                 randconfig-c005-20220524
+i386                          randconfig-c001
+powerpc              randconfig-c003-20220524
+riscv                randconfig-c006-20220524
+mips                 randconfig-c004-20220524
+mips                     loongson2k_defconfig
+mips                          malta_defconfig
+mips                      pic32mzda_defconfig
+powerpc                       ebony_defconfig
+mips                           ip28_defconfig
+mips                         tb0287_defconfig
+powerpc                      obs600_defconfig
+arm                        mvebu_v5_defconfig
+mips                  cavium_octeon_defconfig
+mips                           ip22_defconfig
+arm                     am200epdkit_defconfig
+powerpc                          allyesconfig
+powerpc                    mvme5100_defconfig
+arm                      pxa255-idp_defconfig
+arm                       aspeed_g4_defconfig
+mips                     cu1830-neo_defconfig
 x86_64                        randconfig-a005
 x86_64                        randconfig-a003
 x86_64                        randconfig-a001
 i386                          randconfig-a002
 i386                          randconfig-a006
 i386                          randconfig-a004
+x86_64                        randconfig-a012
 x86_64                        randconfig-a014
 x86_64                        randconfig-a016
-x86_64                        randconfig-a012
 i386                          randconfig-a011
 i386                          randconfig-a013
 i386                          randconfig-a015
-hexagon              randconfig-r041-20220524
-hexagon              randconfig-r045-20220524
+hexagon              randconfig-r045-20220527
+hexagon              randconfig-r041-20220527
+s390                 randconfig-r044-20220527
+riscv                randconfig-r042-20220527
 
 -- 
 0-DAY CI Kernel Test Service
