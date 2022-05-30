@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C9B6C433EF
-	for <ath10k@archiver.kernel.org>; Mon, 30 May 2022 13:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD611C433EF
+	for <ath10k@archiver.kernel.org>; Mon, 30 May 2022 14:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8IGaGJM4jAqPJQke9dosoQzYuAFKquqd+rJpMucFo40=; b=X8Mh+JXj5gRB19
-	bonWbLMTYtMl6U70Q7N3QeeKZ/5oMIIf65hqPOiAlYVKeuz/KWncQ+RxcFYSmoFXFUx8DjF82tAT2
-	kKHlWduraOjcJnIahjJBolzK9Plerw2LCCYPXqQedGuZxoITfvedQFx/pZJ/pb/sL41bx4yTjcjhD
-	CgVLKCLtPun0tWWbZQJH7Xwi039gTDhzkKRR216y2Gs9Zi1wX8CNDZ/qOGef7/0sLnSzkElwrYl21
-	1Nh8A+gIJUa9H39Pz8S1rAGTX0SNEWhpQ+4JqFWouXnBuc9UM5gV7z46+3ky31TSkFobP0YY9KNNJ
-	sC8e59/PCSnvv1pVjN+w==;
+	List-Owner; bh=R681pIwsM9hQle17vab0ojJggjvweWrtxe9yQdHh0f0=; b=17pxSqXv7lyBZE
+	F1HRAqzS+NZ7fM25kloII+NU4ZaArnZ6Fs1KD5xBG6GSwstfvY1tY6eR277RrLy2tMkSn2wY8i0e5
+	NM0Hw8stjkqcvRcajYnph1EDAgPG7jtnnT4hRKcG1NOzJ9MDezEGdsZFGiV/av2fxXKMi5fmot/kD
+	NzlE5uFOL8j2HNcS09nI7XgpycM4xo0BDzG6AVEkD9Ix90J4MWrYq8eHLeefheBXIT58AA4pSKzob
+	5kCeie9kKbqWdmaz+OYmSPDKYKZF+1vrYAE3gCXcKd2gPJ2phnp299ONqekmtFdBdq+sW/4L2ghRj
+	fTLlXZEU5qAyiq33UYtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nvfgt-006qZT-QO; Mon, 30 May 2022 13:44:16 +0000
+	id 1nvfvl-006zRZ-LB; Mon, 30 May 2022 13:59:37 +0000
 Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nvfXL-006kxZ-5c
-	for ath10k@lists.infradead.org; Mon, 30 May 2022 13:34:25 +0000
+	id 1nvfdu-006oW0-DD
+	for ath10k@lists.infradead.org; Mon, 30 May 2022 13:41:16 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id C9DE3B80DBE;
-	Mon, 30 May 2022 13:34:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8B63C3411E;
-	Mon, 30 May 2022 13:34:18 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id E47EEB80DA9;
+	Mon, 30 May 2022 13:41:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD03BC3411F;
+	Mon, 30 May 2022 13:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1653917660;
-	bh=0SOjUx1vP3pC5to7NMBxAemGEoK1IKRZDN4I6BH/TuI=;
+	s=k20201202; t=1653918067;
+	bh=qGGdL1YoiHe0RVOyT8zumSlWU3J2LNiqdlPl8Ov1wKM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L+DW5yBQmZVjxeaeVTPIwYP7wDC6D2VrXb1kWwCFkLgphYgNGeJXKvsrqnGaTC1M+
-	 EFkyi5clLZaUZkkLFX6ll1gmMWgy0oXEC3i3mqEyG7iSmLYb8fgl3dDHVm65ZrK51J
-	 C3QGCrWo41DGU1UPHk5xUTPQyAnFBnMx8XDrwcfx98etFv004jGXTYWvwbR7vDBqcS
-	 wamkdZ+i9ZqGr9FR7G1dPyuHDsgJA0vuYiipui0QCiBMtZS1iXDgMYCD5+moZnq+Kt
-	 kOppmu/6tiWw1m21ofRdisLPcAYpYJCdjcQHuGUdHA7k3lK9AenL7xliGK4OrtUz66
-	 oC6UVIATMDl5w==
+	b=elR4BRI/UZwmb3x05Zi46g+Eyt9UTbBKZq6/d+L8x6pN6pIt7XbcSmUPzX9GtAaqc
+	 cdo3I/3BYXiwr57CFr+KTib8MScplgLWBiTvPT2LA4ba4jSZ5eHr/0ZD2urSEN1i2g
+	 dvID40Oezxe7cMrFZV5NCXga44GYn0E5b00kVnwJAxH7Dyb/kxk+WfgCcYKVV1YDhS
+	 MNOlnhBjVqJ0428aXPQhCM1+M5uycSh59gIHWGloJehHJkJCYTVhxAb0+C9GMZ9LbT
+	 S0GLYnOxK2Fr6RsGjfVwE0alUeROXgD3p7dCNqsuarfepX0P4NB6k2UovbNxdFZUKe
+	 oOVeR4ifncyqg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -58,17 +58,17 @@ Cc: Abhishek Kumar <kuabhs@chromium.org>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 056/135] ath10k: skip ath10k_halt during suspend for driver state RESTARTING
-Date: Mon, 30 May 2022 09:30:14 -0400
-Message-Id: <20220530133133.1931716-56-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 048/109] ath10k: skip ath10k_halt during suspend for driver state RESTARTING
+Date: Mon, 30 May 2022 09:37:24 -0400
+Message-Id: <20220530133825.1933431-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530133133.1931716-1-sashal@kernel.org>
-References: <20220530133133.1931716-1-sashal@kernel.org>
+In-Reply-To: <20220530133825.1933431-1-sashal@kernel.org>
+References: <20220530133825.1933431-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220530_063423_522275_C851C4CC 
+X-CRM114-CacheID: sfid-20220530_064110_867444_E5B2F91D 
 X-CRM114-Status: GOOD (  19.11  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -157,7 +157,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b11aaee8b8c0..a11b31191d5a 100644
+index 1f73fbfee0c0..8a80919b627f 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
 @@ -5339,13 +5339,29 @@ static int ath10k_start(struct ieee80211_hw *hw)
