@@ -4,67 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D28CC433F5
-	for <ath10k@archiver.kernel.org>; Tue, 31 May 2022 16:56:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D702FC433F5
+	for <ath10k@archiver.kernel.org>; Wed,  1 Jun 2022 06:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jORFMO/ApHmMHmgx/ucIgEUyGLgjegj8NTzWUmikLlg=; b=KJt4rQy2wYy0Aq
-	4khPGG0FGbvN0ygJnPktSReopJHOa28+IxJGNBORJZDIEM6TyZ+WvV0N4G7KWjVZbC+lctnuaG+yA
-	mA6Gk/3Wc0TWkNSKJd+rwA0+/MG6eYQFLohUGWA1HbO9xN9kx4SL2kdZ170NPckMg/VZW9DOeiEtq
-	y6vKKN6w7EqRUV5mBmWjGoi03tyhOpZ6WJcuMrn2Evztb5eDHMe4AvZlLjz8zeSlEmuWg3fm+NuOh
-	29eVxl1G766myJteGFHbLdkP+nqnVIX5GN1VSWrNDNlC7rRKjm33qVYuFkIhqKj/vbuXHQdqNP7aS
-	ajcwO2yt/JrYInoap14g==;
+	List-Owner; bh=KSXO6CbcImuBBa2lUniQaiiLZT8Sj2OfnNkOEjZjjFw=; b=RVBHV4cP9ADFhr
+	y5sgZBgO+Lbvh2h3r8rhNroO+t/6wghT2oWIePMK4ZG+7sm67IkOER1h+t/acZYkPlNXrxrOiIy39
+	zWPM/156PqluV61fvzDFOuHCaUouPs0O2NgaA3tk8K4zPJnjAKrtvHu7eBOrOTv//9XKnfpZl0SQw
+	dQ9eenmzEoT93ShcE9jq0y4GB58r0DDrKKhc0CicDGGiE+g+N0zhGgrVwGgnhNBLbmJsLhqMaw8kq
+	unVuD8DsupCKYUT3lDPnN1XRuml6y4pZ1+obpjogO+umMsf3Q1D8MFtfMwfKDLVdO2RUXKyoh3q3p
+	UCnTXffytH6JS8DG4YZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nw5AD-00Bvqu-S2; Tue, 31 May 2022 16:56:13 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1nwI5v-00ECEw-K0; Wed, 01 Jun 2022 06:44:39 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nw5AA-00Bvny-9P; Tue, 31 May 2022 16:56:11 +0000
+	id 1nwI5s-00ECDV-Gf; Wed, 01 Jun 2022 06:44:37 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 92FA460B9F;
-	Tue, 31 May 2022 16:56:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0B0EC385A9;
-	Tue, 31 May 2022 16:56:08 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E2C0B612D6;
+	Wed,  1 Jun 2022 06:44:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17349C385B8;
+	Wed,  1 Jun 2022 06:44:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1654016169;
-	bh=O7ipYc08a1ud4PjM8jqwqP/HB7ejnhs+7FiRg2RkfLU=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
-	b=ARiBuyJNKGzgJxTFlEh85RbXEWiAvTBEBYqj51JzXFx6PIVpDQSWsRY1Xb83VdGT1
-	 LBpbaFpxD0dARTBGBpkBN3x6CqL5NLBLtrQtmHeIcavQfnsbUo60w+kD7VBykl0zoj
-	 U9JWDVMO9/1RnSops7og4rVrWikJjFgdP+wSIiedWwR3Jvf8wEEaID0TDbfV34FJqY
-	 k/iqr9rCl23AHjJN6k1MGgIk5zxGssd+s31tGRXjmDsgbOkaOeBcf+XIDBI97pJKSx
-	 tmbYBxtaoaCizpg8iejPhaZVjMeCG9dLAO10G4vzhrLNC6srqoJvYRJvGxgTbcrXBH
-	 au++AavwSQZfQ==
-Received: by mail-il1-f177.google.com with SMTP id y16so5022949ili.13;
-        Tue, 31 May 2022 09:56:08 -0700 (PDT)
-X-Gm-Message-State: AOAM531H3Y2+SAw1wvO6i4/vGfPyY5DD1aBYcmeD7Omzj/W/P9FK/ZT+
-	N4AUEWC6QRX/WpKQSBn8Ef7PoRUn+7JsE9zTPOs=
-X-Google-Smtp-Source: ABdhPJxW+nTmxFvqbYpDjoFa7oeGIavAu7C0DnzXXxPNcupiot1bCXCkfM4+/OZWL4MT60K33XCTLL5unppXnmNnBqQ=
-X-Received: by 2002:a05:6e02:1bef:b0:2d3:c3d5:823d with SMTP id
- y15-20020a056e021bef00b002d3c3d5823dmr1602680ilv.2.1654016168137; Tue, 31 May
- 2022 09:56:08 -0700 (PDT)
+	s=k20201202; t=1654065875;
+	bh=N3F+OXVq3Yhd/7Eme7t9kj59sUbWEwsxF2ZOrdOStTQ=;
+	h=From:To:List-Id:Cc:Subject:References:Date:In-Reply-To:From;
+	b=uuYzfkKWYg/SxWBZw1qE92ktLf5qurc7vlkGMqU6ypRpDxxjPy8PPcbVhOKkS3+dp
+	 wgYxqxodrG0H8laP1IngXj7J5MWZqD2ayn2Gwh/hjKEFFVw9DBexel4jlImFoXbp+b
+	 8o2HBdVe3Xhv3LZHFJ+tqK6T3VrwCkfxDDR22kr7kDGs5qKYSZgeO4/U6un1NrN8g9
+	 I+D1LSS48IWDy18B8HwDLlmLTaP9IpC3hgu+bJVCqfPWzNBDaBpDqANEYw97xUt7N3
+	 E6w1eLKgCZUK7olqL2sP4bzxTKz1WMzLhp5Lmf4DpclaSG/YDx+EFWT0wmuPVjKdaw
+	 GznDXxRYQaxBg==
+From: Kalle Valo <kvalo@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: "linux-firmware\@kernel.org" <linux-firmware@kernel.org>,  "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,  "ath10k\@lists.infradead.org" <ath10k@lists.infradead.org>,  "ath11k\@lists.infradead.org" <ath11k@lists.infradead.org>
+Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20220423
+References: <BYAPR02MB4567E377F14F272DFF48907A92FA9@BYAPR02MB4567.namprd02.prod.outlook.com>
+	<332e62e5-b04d-3a6a-38fe-924d056bf0f8@linaro.org>
+	<87k0b8fnpj.fsf@kernel.org>
+	<CAA8EJpr3Uxa-Tif5TyHfXL03j1--vrAb+DgT=0DY8KDpvHPjeQ@mail.gmail.com>
+Date: Wed, 01 Jun 2022 09:44:29 +0300
+In-Reply-To: <CAA8EJpr3Uxa-Tif5TyHfXL03j1--vrAb+DgT=0DY8KDpvHPjeQ@mail.gmail.com>
+	(Dmitry Baryshkov's message of "Fri, 29 Apr 2022 09:12:28 +0300")
+Message-ID: <87r148opbm.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <BYAPR02MB4567904C36E83634CB0ED09292DD9@BYAPR02MB4567.namprd02.prod.outlook.com>
-In-Reply-To: <BYAPR02MB4567904C36E83634CB0ED09292DD9@BYAPR02MB4567.namprd02.prod.outlook.com>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Tue, 31 May 2022 12:55:57 -0400
-X-Gmail-Original-Message-ID: <CA+5PVA4UzaOXNentsgrgeqOV0N+qPpnvBmTuwDOS0fzb6bCGjQ@mail.gmail.com>
-Message-ID: <CA+5PVA4UzaOXNentsgrgeqOV0N+qPpnvBmTuwDOS0fzb6bCGjQ@mail.gmail.com>
-Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20220530
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-firmware@kernel.org" <linux-firmware@kernel.org>, 
-	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, 
-	"ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, 
-	"ath11k@lists.infradead.org" <ath11k@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220531_095610_464233_41488C58 
-X-CRM114-Status: GOOD (  20.65  )
+X-CRM114-CacheID: sfid-20220531_234436_635838_8EEF6B0F 
+X-CRM114-Status: GOOD (  16.56  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,53 +74,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 30, 2022 at 9:08 AM Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->
-> Hi,
->
-> Here's a new pull request for ath10k and ath11k. Here I'm adding a missing board file for
-> WCN3990, otherwise just regular firmware and board file updates.
->
-> Please let me know if there are any problems.
->
-> Kalle
->
-> The following changes since commit 251d29004ffce3462779dbd08073a2cd8dfd2087:
->
->   amdgpu: update beige goby firmware for 22.10 (2022-05-16 15:25:38 -0400)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20220530
->
-> for you to fetch changes up to 82b0ef7166e2b7f9d12e7745a2af4e4c75c1aea8:
->
->   ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.9 (2022-05-30 16:01:56 +0300)
->
-> ----------------------------------------------------------------
-> Kalle Valo (7):
->       ath10k: WCN3990 hw1.0: add board-2.bin
->       ath10k: QCA4019 hw1.0: update board-2.bin
->       ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.9.0.2-00157
->       ath10k: QCA9888 hw2.0: update board-2.bin
->       ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.9.0.2-00157
->       WHENCE: ath11k: move regdb.bin before board-2.bin
->       ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.9
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 
-Pulled and pushed out.
-
-josh
-
+> On Fri, 29 Apr 2022 at 08:44, Kalle Valo <kvalo@kernel.org> wrote:
+>>
+>> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+>>
+>> > Hi Kalle,
+>> >
+>> > On 27/04/2022 11:32, Kalle Valo wrote:
+>> >> Add support for QCN9074 and WCN6750 ath11k hardware families. Also
+>> >> there are several updates to existing firmwares and board files for both ath10k
+>> >> and ath11k.
+>> >>
+>> >> Please let me know if there are any problems.
+>> >
+>> > I noticed that this pull request doesn't include the board file for
+>> > WCN3990. Is there any issue with it that we can solve on our side?
+>>
+>> Oh, sorry about that. I guess this is just a bug in my scripts, I'll
+>> include the wcn3990 board file in the next pull request.
 >
->  WHENCE                              |  11 ++++++-----
->  ath10k/QCA4019/hw1.0/board-2.bin    | Bin 1129788 -> 1154076 bytes
->  ath10k/QCA9888/hw2.0/board-2.bin    | Bin 133540 -> 145684 bytes
->  ath10k/QCA9888/hw2.0/firmware-5.bin | Bin 693604 -> 693700 bytes
->  ath10k/QCA9984/hw1.0/firmware-5.bin | Bin 681568 -> 681672 bytes
->  ath10k/WCN3990/hw1.0/board-2.bin    | Bin 0 -> 461060 bytes
->  ath11k/WCN6855/hw2.0/amss.bin       | Bin 4972544 -> 4972544 bytes
->  7 files changed, 6 insertions(+), 5 deletions(-)
->  create mode 100644 ath10k/WCN3990/hw1.0/board-2.bin
+> Thank you! No problem, it was more of a question if we missed something.
+
+It was pulled now:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/?id=86f0c5642c4c06583fccce8e03ca400300330cba
+
+Do let me know if there's anything missing or wrong.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
