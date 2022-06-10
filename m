@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0035C43334
-	for <ath10k@archiver.kernel.org>; Wed,  8 Jun 2022 18:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 661D4C43334
+	for <ath10k@archiver.kernel.org>; Fri, 10 Jun 2022 08:21:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:Subject:
-	Message-ID:Date:From:MIME-Version:Reply-To:Cc:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=COJrqQ7UJ2vhuU7vW7GOYi0c6vmMkcNDDEvsIwfvjCU=; b=sY1uGttKtgNq8M+IgmwmJ5h+sJ
-	I91cGhrx30LQxd5WUxui0NinU2VJ9b03eV0j3t5XpCb4GCdQgygSBC0TcB4L62CyW9w978CX3gZqo
-	PjWaYh7c189pDP8hz0pDBEtz8DFcV3gNoVnJsJ2L5OfxlDA7qZY63LrYHEPnYKwiwA65EvBIEQVrQ
-	rkm9ONLgtTmfk7G4wGYTUBRfsXjI5dYCrnsba+MYxW7MmthomU+pfhEStD7hQu72zyDb9CiFpXBBy
-	oNXPqhVJTRu0vSkILGI0ISriJY4X48nXYGbQMI3pDUnsdKF1ynfqkz/NCccVutOuSJ6TXgTDa0+Yf
-	SR2urJBA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xFMsfqwcMo4YOsRbx8AxdweieetnWUlxo6uWA+i3mfw=; b=E2rzZh0KPmB7VE
+	xkOaz2SZq8sQJz80eFNTXvU5lnv2tGDRZuD/l0NWXEsrs+fq2aBlreSZnUDNYMuyHU/EsjXdCj7sr
+	BOMA7J3HkqE5Xz5JPWfyDSMx6U9VlvmyWpkbwx69ocGs/evtHXZ1LLsvmbQK0PMOJ/A43KXSboq5B
+	repJKsXta3rMRKXzAFGGg2/UV+LOdpdKa01ZHIl2QnPiiOVx7WJS32WwQzrx8qOQBXZIiORzHxImF
+	JoYVIzij3G8c7KF9ApZtwWH5MfZQCIZ19l3qsJ8iVpEXMCh68pJ5wPX6aViNBghq8uBGMJE3aE8gw
+	nPpQwJ5/8wuLDb/3Zytg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nz0Z5-00EgY4-6Y; Wed, 08 Jun 2022 18:37:59 +0000
-Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
+	id 1nzZtH-006jpo-QZ; Fri, 10 Jun 2022 08:21:11 +0000
+Received: from mga03.intel.com ([134.134.136.65])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nz0Z2-00EgXi-FQ
-	for ath10k@lists.infradead.org; Wed, 08 Jun 2022 18:37:57 +0000
-Received: by mail-ej1-x634.google.com with SMTP id u12so43169035eja.8
-        for <ath10k@lists.infradead.org>; Wed, 08 Jun 2022 11:37:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=xUBEMDPSjC+dVaY7qxud4Yhx4h7eXUzUx9n59BW7LZw=;
-        b=OncXebl8m6thAjZWydxThZ2Bf0guRoY5JTtaWUXUcxziIX5fJXVEuPf00c1xAXlr65
-         +vQmJItXiNQ3KKUex0Gf9JFDLjYgPHX+jLZHvDDlzY2ycJnc7hbkg1j6Op0hW4kt6Gat
-         jCTXFwn+zjJIQXuwbS3hMldgXUtQiUUvWd+Lp6fT+bEl0icurI9JBwwulZQE69Hck96h
-         O018HlXXERqTPaorb7Pgik+Amrvk22JTyFRMyouHa/l9Zhoxg99GDjbln5UffiIuW6cj
-         Q34dfSb9F4hXJFMhN8OieZOdesMAVUSQGaFLKCuv6QGlHqaKoW6B1R8gR/TE1zISBJml
-         8Lnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=xUBEMDPSjC+dVaY7qxud4Yhx4h7eXUzUx9n59BW7LZw=;
-        b=PK2vuvehTijfWzkEg190O1uO3wWMMhzROl55y6mCL4tjaO/clGw+6zuORuOSoZrEta
-         TQMNSL3Fr0suT+fOJgdwBVfnye/w3rWgG13MntwzRnMCjGwpyOhjJfnqmZB/cTtyQUPS
-         /1F0LfkACpaw737Icx7fINVB8CC7mhQrMpndGCKM6xY87++gSeicVwEw6bIDRy8z2A3x
-         g+MX3UitC/itNiSUYzHE7UxPvcGx2HZQ7uY9h7p2P2Mzc1Q2ZX+axKdoTxVYJjc2ffYM
-         UfG967y7VhqSKGABoxO7d2buE9pyS991mui9znYOcrHngIMYWnUtz/sfbePtFzXKToZn
-         vUNg==
-X-Gm-Message-State: AOAM5333crVVnvr+pMXQYPxUZd5BK4xZ8gGgsQETn5kQVcvsbCkL8Hzf
-	Ofo1krX3we5zHEkWq8SVwUroXeE12WFAjSjVmnC0o8uUXgc=
-X-Google-Smtp-Source: ABdhPJzO66olt9sQoM2BJSfqYqysM+2Yk2hEdZSpE1e4NG1C6aUDAPLwWObqpblxLBAGno+0IHmhx+bzuuvj8u1f90Q=
-X-Received: by 2002:a17:907:364:b0:709:614e:acc0 with SMTP id
- rs4-20020a170907036400b00709614eacc0mr32103060ejb.692.1654713472629; Wed, 08
- Jun 2022 11:37:52 -0700 (PDT)
+	id 1nzZtF-006jog-Av
+	for ath10k@lists.infradead.org; Fri, 10 Jun 2022 08:21:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654849269; x=1686385269;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NrofQJf3YtHtAMsI4OZ28j/JkNBmesTBapb5OgWq33o=;
+  b=OO7dypSy8ZwVcih7NBu9DpmfGWvMFLed2ISgKZoL8pGsJNxS8PI40BLX
+   IrRuWQX1VeoWWxtygIOEG3fHmvyZRqYNuGPEfNk4inGWkU50g6R96QUNM
+   m9RV7c9ytly71mInVRVxoZrhA/0lg9JtWflfPXwrtuX7XdtiL8sIxitMZ
+   3oJoZ9H8xUkBm2RG6Ar1rikuq9WmW+3nk3BY7GmcUC7WU5a4GFMfRJlnu
+   UFVTMjFLKnfFmD8ot2K46uAFsXtcAmAMDaJLq8HB885B3auynAvSmXEoF
+   3VwPCus7ugf1J32tQaZIyL68iiUMmfs/KyeYPoY+7FRgFG9I1cSS6QyHX
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="278697856"
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; 
+   d="scan'208";a="278697856"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 01:21:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; 
+   d="scan'208";a="616389112"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 10 Jun 2022 01:21:06 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+	(envelope-from <lkp@intel.com>)
+	id 1nzZtC-000Gq7-3U;
+	Fri, 10 Jun 2022 08:21:06 +0000
+Date: Fri, 10 Jun 2022 16:20:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ f109ecc75f0a4d5d9bffac220968edb2c91df35a
+Message-ID: <62a2fee1.YyR98akdHC0fMUpB%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-From: Kevin Fibich <kevin.fibich@googlemail.com>
-Date: Wed, 8 Jun 2022 20:37:44 +0200
-Message-ID: <CAExMj0AYZt-iCY3EcOwttNYfReXk_VS0Eb-ev7OQWu_kdjSugA@mail.gmail.com>
-Subject: ath10k-firmware: QCA6174 hw3.0: Surface Go 1 LTE/Wifi
-To: ath10k@lists.infradead.org
-Content-Type: multipart/mixed; boundary="000000000000be200205e0f400d7"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220608_113756_574100_A9F0660B 
-X-CRM114-Status: UNSURE (   4.50  )
+X-CRM114-CacheID: sfid-20220610_012109_476529_5E63187A 
+X-CRM114-Status: UNSURE (   5.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,201 +76,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
---000000000000be200205e0f400d7
-Content-Type: text/plain; charset="UTF-8"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: f109ecc75f0a4d5d9bffac220968edb2c91df35a  Merge branch 'ath-next' into ath-qca
 
-Hi,
+elapsed time: 2871m
 
-please add this boardfile to support the LTE variant of Surface Go Gen 1.
+configs tested: 76
+configs skipped: 3
 
-* description for what hardware this is:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-This boardfile is for the Wifi Module of the Microsoft Surface Go (Gen
-1) LTE/Wifi Variant.
+gcc tested configs:
+arm                              allmodconfig
+arm                              allyesconfig
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+arm                        clps711x_defconfig
+m68k                        mvme147_defconfig
+arm                          simpad_defconfig
+arc                         haps_hs_defconfig
+parisc64                         alldefconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-syz
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
 
-* origin of the board file
+clang tested configs:
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+hexagon              randconfig-r045-20220609
+s390                 randconfig-r044-20220609
+riscv                randconfig-r042-20220609
+hexagon              randconfig-r041-20220609
 
-- Firmware Package downloaded from MS website
-- Link: https://microsoft.com/en-us/download/details.aspx?id=57601
-- Filename to download: SurfaceGo_Win10_18362_22.031.05160_LTE_0.msi
-- Extract via: msiexec /a <MSIFILE> /qb TARGETDIR=C:\temp
-- Filepath: C:\temp\SurfaceUpdate\Drivers\Network\Wifi\eeprom_ar6320_3p0_TX8_lte_clpc.bin
-
-* ids to be used with the board file
-
-- QCA6174 hw3.0
-- md5sum: 8f2895dd63a0c8f11e2d051f0ed4e0a8
-bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3371.bin
-
-Kind regards,
-
-Kevin
-
---000000000000be200205e0f400d7
-Content-Type: application/octet-stream; 
-	name="bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3371.bin"
-Content-Disposition: attachment; 
-	filename="bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3371.bin"
-Content-Transfer-Encoding: base64
-Content-ID: <f_l45xo48b0>
-X-Attachment-Id: f_l45xo48b0
-
-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
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwrHCnrABwiaeseomirAAA
-AAAbGxsbGxsbGxsbGhobGxoaGxsaGhYWVVVEVUVEBBYWVVVEVUVEBBYWVVVEVUVEBBYWVVVEVUVE
-BBYWVVVEVUVEBBYWVVVEVUVEBBYWVVVEVUVEBBYWVVVEVUVEBDMDKwMjAxMDAwMzAysDIwMTAwMD
-MwMrAyMDEwMDAzMDKwMjAxMDAwMREhUXGhxBQkVHSkwxMjU3OjwAAHB1p6xwdaescHWnrHqYnaJw
-daesepidonB1rLhwdaescHWnrHp/naJwdaesen+donB1p6xwdaescHWnrHp/naJwdaesen+dojw8
-Gho8PBcFPDwXBRgPFQI8PBcFGA8VAjw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PFVVVVU8PDw8PDw8
-PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcHqOonB6jqLi3+fl
-4+Lo5tXh7uzc2OHi19Td5tbU2uTRztjh0tHQ1gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-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
-XCpzMpE6t0TmTR0HJA8uEzobSSRcLHM0kTy3ReZPHQQkDC4VOh1JJVwuczaRPrdH5lEdByQPLhM6
-G0kjXCxzNJE9t0bmTx0EJAsuEzobSSNcLHM0kT23RuZPHQYkBy4NOhVJHVwlcy2RNrc/5kgdBCQL
-LhQ6HEkkXCxzNJE9t0bmTx0GJAYuCDoOSRVcHnMmkS+3OOZCHQQkDC4UOhxJJFwsczSRPbdG5lAd
-BiQGLgc6C0kUXBtzI5ErtzTmOh0FJA0uFjoeSSZcLnM2kT+3SOZSHQgkDy4XOh9JJ1wwcziRQbdJ
-5lMeBiYOMBY7HksmXS50NZI+tEbeTh0HJA4uFzogSShcMHM5kUG3SuZTHQUkDy4YOiBJKFwwczmR
-QbdK5lMdAyQLLhQ6HEkkXC1zNJE9t0XmTyMILBA3F0IfVihqL4U4pUDNSOxQHQMkCi4TOhtJI1ws
-czSRPLdF5k4dBCQMLhQ6HEklXC5zNpE+t0fmUR3/JAYuDzoYSSBcKHMwkTm3QuZLIAEoCTIRPhlP
-IWIpezGYOb1B50kd/iQGLg86F0kgXChzMJE5t0HmTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABM
-VGiMoLnJzUxUaIygucnNTFRojKC5yc1MVGiMoLnJzRgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgY
-GBgYGBgYFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIi
-IiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiIC
-FhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYi
-IiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICFhYiIiIiIiICAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAQFhgZGx1ARkhJS00wNjg5Oz0AAAAATFxgjLS4vc1MXGCMtLi9zU5e
-Zo6utr/HUmKSorLD//9MXGCMtLi9zU5eZo6utr/HTFhcaIyQsLRMWFxojJCwtE5WXmaOlqauUmKS
-ov////9MWFxojJCwtE5WXmaOlqauTFxgjLS4vc1MXGCMtLi9zU5eZo6utr/HUmKSorLD//9MXGCM
-tLi9zU5eZo6utr/HPDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8FxgUPDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8AAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAFRojJigrL3JVGiMmKCsvcnY09rS2NLb0tbP183UzdXL1MzUytHJ1MnPx9LIzsbQxt/b2dLd
-19XN087OyNjTzsjY0c3G1M7LxdPOy8TTzszFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEoiEBGIUmABCFJgAAniEBnRQAAB4TAAConiEB3uDw
-gNjY8IBAniEBIBgmDSAYVg08niEBQgStz0IELc4opBEBLAg0DiykEQE0DjAOMKQRASwOLA4ApBEB
-AR/ED1ygEwEBAAAAkNUQAAAAIiCEoiEBIAAAwBAAAADEZBAADwM8B8BkEACICA+jxGAQAA8DPAfA
-YBAAiAgPo8hgEADAYXAAyGQQAMBhcACUmBEBkDgAgJiYEQEGEAEAmJgRASjABACYmBEBg/AMAJiY
-EQEvARoAmJgRARyCKQCYmBEBCiM2AJiYEQGXAzoAmJgRAXfjMQCYmBEBnQIgAJiYEQFUwQoAmJgR
-ARbg+QCYmBEBSw/yAJiYEQEY7/IAmJgRAVi/+ACYmBEBvq/+AJiYEQEL8AEAmJgRASiAAgCYmBEB
-IZABAJiYEQEQkAAAmJgRAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
---000000000000be200205e0f400d7
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---000000000000be200205e0f400d7--
-
