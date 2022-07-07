@@ -4,59 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E918C43334
-	for <ath10k@archiver.kernel.org>; Tue,  5 Jul 2022 22:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96E39C43334
+	for <ath10k@archiver.kernel.org>; Thu,  7 Jul 2022 11:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Subject:Cc:To:
-	From:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=iJiCywFjxTCbUSQSLaDWMvKfVrm//VcF9YpZyzwAmYo=; b=Os1wwBSYosvI4/
-	uOY9UGNHwnM4V9UcJUUDZxcSqLUhjEwRxbi/Gzfdnq/bLQ/5dJFtQ2WDahr6lZrW3WOVrbp3jKp7e
-	vszSyQkrgG2E16QGhtx3q79VEkgxpoqNzTDYpwarkr6P0h5PAMrS5RYDtJz/OmYcEtUoLT3Yn3pwA
-	F+UqNNWCsc61VF6Rz4Yyp5EZ0IloClZ4LUccxZMJsbEVNcfdUHBxILbGSsCXLT0twCFkGvsEZIC5Y
-	EgNWh+2/lzsspDnJhaGZPtNYW6ALnloZ9fB8R6XSmtpeg2yzv+i1CCWyXphPm0Rm3kiUBNV0bbVzT
-	w4uTTTl/MjQ63ygJhXVg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=uo+kBWEyF2/UbuOAF9PZQ0biE2QMCD296Bgs234XPv8=; b=GhtMR12E5sE5ET
+	Th0n3uOMz+5aqT8goSPMnezGG/YJtZ9ZRStky7ZkecOZ47zMkRpZ/Xy1r1Q9OyRy2wbaOgYyHMpVU
+	3TmyyoY6/jg8lTOpGyvJhaCSg4V1SeHUgdflqWVdO0cu0ocBauLtcR+1JDQAJgUIBP5YXBXPXZ7Js
+	lPWpbKlqKfIcmdGC80WDbFh/XyqqnZw2pDLlk1KIzOed/VEJRAW8SCzIsW03i3Q3ZG51G1/flk2VZ
+	TMEpI2c/OEYiRDpx+nWgKGAy8d8eeC70BfCTq7AQTkCMb5cQyHIj0bu6AHuW28vllBEIsyAN/uXZ1
+	Lgt621TUp3SjnfzNl/hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o8rKn-003HTS-D2; Tue, 05 Jul 2022 22:47:57 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1o9Q1x-00Ftum-4R; Thu, 07 Jul 2022 11:50:49 +0000
+Received: from mga17.intel.com ([192.55.52.151])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o8rKj-003HPM-BL; Tue, 05 Jul 2022 22:47:55 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7834161D51;
-	Tue,  5 Jul 2022 22:47:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9C91C341D5;
-	Tue,  5 Jul 2022 22:47:50 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.95)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1o8rKf-001yI8-JS;
-	Tue, 05 Jul 2022 18:47:49 -0400
-Message-ID: <20220705224749.430339634@goodmis.org>
-User-Agent: quilt/0.66
-Date: Tue, 05 Jul 2022 18:44:56 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Cc: Ingo Molnar <mingo@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Kalle Valo <kvalo@kernel.org>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org,
- ath11k@lists.infradead.org
-Subject: [PATCH 03/13] tracing/ath: Use the new __vstring() helper
-References: <20220705224453.120955146@goodmis.org>
+	id 1o9Q1u-00Ftsz-9k
+	for ath10k@lists.infradead.org; Thu, 07 Jul 2022 11:50:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657194646; x=1688730646;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8+rDExxUtv0JOiV12uf4ntD3k3OOD3HTQfVaV0rc+M4=;
+  b=JDRRTalvNTqsJXwfy/fu39byNaPcmR8EkkvElGCi9oCza20iMX2DKSdz
+   ivt6hyNL+T0ncHm+6SGNXC9fPO4L6hinXyxGKrwAmTwirJfoI4G9wNPEt
+   TzkFpQXrjjYUU0gp5EDC9RKYzbm8a0enzF0p0BVIVdyXPXz31JOdi5DXs
+   WkP2Wtb6KE6VcwhCTI7B6VvOLQgCKiS5tVZEO+jcTYukwOuY25bR3c9Lf
+   ljHwkyGdipq6ydWMFO2Te2zWw22Kt1BCQlMv+mLBmowtGCoPD1dc+UjCY
+   l+D8exJ/qf0VELluaT+FdDgTfUvWxp/1s5BiLIE6hm6qzGKLa9Hxxbjwr
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="264420097"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
+   d="scan'208";a="264420097"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 04:50:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
+   d="scan'208";a="661357402"
+Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 07 Jul 2022 04:50:41 -0700
+Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
+	(envelope-from <lkp@intel.com>)
+	id 1o9Q1p-000Lxy-0d;
+	Thu, 07 Jul 2022 11:50:41 +0000
+Date: Thu, 07 Jul 2022 19:50:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath12k-bringup] BUILD SUCCESS WITH WARNING
+ 3a5232728e3f1751da5d1dcff5aac947bde2955e
+Message-ID: <62c6c878.0X/ov9NXKWhRZlvW%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220705_154753_502067_A84A35CB 
-X-CRM114-Status: GOOD (  11.71  )
+X-CRM114-CacheID: sfid-20220707_045046_425995_C01F00B3 
+X-CRM114-Status: UNSURE (   5.06  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,176 +81,211 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath12k-bringup
+branch HEAD: 3a5232728e3f1751da5d1dcff5aac947bde2955e  ath12k: remove unused ath12k_dp_tx_htt_h2t_vdev_stats_ol_req()
 
-Instead of open coding a __dynamic_array() with a fixed length (which
-defeats the purpose of the dynamic array in the first place). Use the new
-__vstring() helper that will use a va_list and only write enough of the
-string into the ring buffer that is needed.
+Warning: (recently discovered and may have been fixed)
 
-Cc: Kalle Valo <kvalo@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: ath11k@lists.infradead.org
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- drivers/net/wireless/ath/ath10k/trace.h  | 14 ++++----------
- drivers/net/wireless/ath/ath11k/trace.h  |  7 ++-----
- drivers/net/wireless/ath/ath6kl/trace.h  | 14 ++++----------
- drivers/net/wireless/ath/trace.h         |  7 ++-----
- drivers/net/wireless/ath/wil6210/trace.h |  7 ++-----
- 5 files changed, 14 insertions(+), 35 deletions(-)
+drivers/net/wireless/ath/ath12k/dp_rx.c:2699:29: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+drivers/net/wireless/ath/ath12k/dp_tx.c:569:35: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+drivers/net/wireless/ath/ath12k/hal_rx.c:406:25: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
 
-diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index 4714c86bb501..64e7a767d963 100644
---- a/drivers/net/wireless/ath/ath10k/trace.h
-+++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -52,15 +52,12 @@ DECLARE_EVENT_CLASS(ath10k_log_event,
- 	TP_STRUCT__entry(
- 		__string(device, dev_name(ar->dev))
- 		__string(driver, dev_driver_string(ar->dev))
--		__dynamic_array(char, msg, ATH10K_MSG_MAX)
-+		__vstring(msg, vaf->fmt, vaf->va)
- 	),
- 	TP_fast_assign(
- 		__assign_str(device, dev_name(ar->dev));
- 		__assign_str(driver, dev_driver_string(ar->dev));
--		WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
--				       ATH10K_MSG_MAX,
--				       vaf->fmt,
--				       *vaf->va) >= ATH10K_MSG_MAX);
-+		__assign_vstr(msg, vaf->fmt, vaf->va);
- 	),
- 	TP_printk(
- 		"%s %s %s",
-@@ -92,16 +89,13 @@ TRACE_EVENT(ath10k_log_dbg,
- 		__string(device, dev_name(ar->dev))
- 		__string(driver, dev_driver_string(ar->dev))
- 		__field(unsigned int, level)
--		__dynamic_array(char, msg, ATH10K_MSG_MAX)
-+		__vstring(msg, vaf->fmt, vaf->va)
- 	),
- 	TP_fast_assign(
- 		__assign_str(device, dev_name(ar->dev));
- 		__assign_str(driver, dev_driver_string(ar->dev));
- 		__entry->level = level;
--		WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
--				       ATH10K_MSG_MAX,
--				       vaf->fmt,
--				       *vaf->va) >= ATH10K_MSG_MAX);
-+		__assign_vstr(msg, vaf->fmt, vaf->va);
- 	),
- 	TP_printk(
- 		"%s %s %s",
-diff --git a/drivers/net/wireless/ath/ath11k/trace.h b/drivers/net/wireless/ath/ath11k/trace.h
-index a02e54735e88..76560587bea0 100644
---- a/drivers/net/wireless/ath/ath11k/trace.h
-+++ b/drivers/net/wireless/ath/ath11k/trace.h
-@@ -126,15 +126,12 @@ DECLARE_EVENT_CLASS(ath11k_log_event,
- 	TP_STRUCT__entry(
- 		__string(device, dev_name(ab->dev))
- 		__string(driver, dev_driver_string(ab->dev))
--		__dynamic_array(char, msg, ATH11K_MSG_MAX)
-+		__vstring(msg, vaf->fmt, vaf->va)
- 	),
- 	TP_fast_assign(
- 		__assign_str(device, dev_name(ab->dev));
- 		__assign_str(driver, dev_driver_string(ab->dev));
--		WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
--				       ATH11K_MSG_MAX,
--				       vaf->fmt,
--				       *vaf->va) >= ATH11K_MSG_MAX);
-+		__assign_vstr(msg, vaf->fmt, vaf->va);
- 	),
- 	TP_printk(
- 		"%s %s %s",
-diff --git a/drivers/net/wireless/ath/ath6kl/trace.h b/drivers/net/wireless/ath/ath6kl/trace.h
-index a3d3740419eb..231a94769ddb 100644
---- a/drivers/net/wireless/ath/ath6kl/trace.h
-+++ b/drivers/net/wireless/ath/ath6kl/trace.h
-@@ -253,13 +253,10 @@ DECLARE_EVENT_CLASS(ath6kl_log_event,
- 	TP_PROTO(struct va_format *vaf),
- 	TP_ARGS(vaf),
- 	TP_STRUCT__entry(
--		__dynamic_array(char, msg, ATH6KL_MSG_MAX)
-+		__vstring(msg, vaf->fmt, vaf->va)
- 	),
- 	TP_fast_assign(
--		WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
--				       ATH6KL_MSG_MAX,
--				       vaf->fmt,
--				       *vaf->va) >= ATH6KL_MSG_MAX);
-+		__assign_vstr(msg, vaf->fmt, vaf->va);
- 	),
- 	TP_printk("%s", __get_str(msg))
- );
-@@ -284,14 +281,11 @@ TRACE_EVENT(ath6kl_log_dbg,
- 	TP_ARGS(level, vaf),
- 	TP_STRUCT__entry(
- 		__field(unsigned int, level)
--		__dynamic_array(char, msg, ATH6KL_MSG_MAX)
-+		__vstring(msg, vaf->fmt, vaf->va)
- 	),
- 	TP_fast_assign(
- 		__entry->level = level;
--		WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
--				       ATH6KL_MSG_MAX,
--				       vaf->fmt,
--				       *vaf->va) >= ATH6KL_MSG_MAX);
-+		__assign_vstr(msg, vaf->fmt, vaf->va);
- 	),
- 	TP_printk("%s", __get_str(msg))
- );
-diff --git a/drivers/net/wireless/ath/trace.h b/drivers/net/wireless/ath/trace.h
-index ba711644d27e..9935cf475b6d 100644
---- a/drivers/net/wireless/ath/trace.h
-+++ b/drivers/net/wireless/ath/trace.h
-@@ -40,16 +40,13 @@ TRACE_EVENT(ath_log,
- 	    TP_STRUCT__entry(
- 		    __string(device, wiphy_name(wiphy))
- 		    __string(driver, KBUILD_MODNAME)
--		    __dynamic_array(char, msg, ATH_DBG_MAX_LEN)
-+		    __vstring(msg, vaf->fmt, vaf->va)
- 	    ),
- 
- 	    TP_fast_assign(
- 		    __assign_str(device, wiphy_name(wiphy));
- 		    __assign_str(driver, KBUILD_MODNAME);
--		    WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
--					   ATH_DBG_MAX_LEN,
--					   vaf->fmt,
--					   *vaf->va) >= ATH_DBG_MAX_LEN);
-+		    __assign_vstr(msg, vaf->fmt, vaf->va);
- 	    ),
- 
- 	    TP_printk(
-diff --git a/drivers/net/wireless/ath/wil6210/trace.h b/drivers/net/wireless/ath/wil6210/trace.h
-index 11c989e95880..201f44612c31 100644
---- a/drivers/net/wireless/ath/wil6210/trace.h
-+++ b/drivers/net/wireless/ath/wil6210/trace.h
-@@ -70,13 +70,10 @@ DECLARE_EVENT_CLASS(wil6210_log_event,
- 	TP_PROTO(struct va_format *vaf),
- 	TP_ARGS(vaf),
- 	TP_STRUCT__entry(
--		__dynamic_array(char, msg, WIL6210_MSG_MAX)
-+		__vstring(msg, vaf->fmt, vaf->va)
- 	),
- 	TP_fast_assign(
--		WARN_ON_ONCE(vsnprintf(__get_dynamic_array(msg),
--				       WIL6210_MSG_MAX,
--				       vaf->fmt,
--				       *vaf->va) >= WIL6210_MSG_MAX);
-+		__assign_vstr(msg, vaf->fmt, vaf->va);
- 	),
- 	TP_printk("%s", __get_str(msg))
- );
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arc-allyesconfig
+|   |-- drivers-net-wireless-ath-ath12k-dp_rx.c:warning:cast-to-pointer-from-integer-of-different-size
+|   |-- drivers-net-wireless-ath-ath12k-dp_tx.c:warning:cast-to-pointer-from-integer-of-different-size
+|   `-- drivers-net-wireless-ath-ath12k-hal_rx.c:warning:cast-to-pointer-from-integer-of-different-size
+|-- i386-allyesconfig
+|   |-- drivers-net-wireless-ath-ath12k-dp_rx.c:warning:cast-to-pointer-from-integer-of-different-size
+|   |-- drivers-net-wireless-ath-ath12k-dp_tx.c:warning:cast-to-pointer-from-integer-of-different-size
+|   `-- drivers-net-wireless-ath-ath12k-hal_rx.c:warning:cast-to-pointer-from-integer-of-different-size
+`-- mips-allyesconfig
+    |-- drivers-net-wireless-ath-ath12k-dp_rx.c:warning:cast-to-pointer-from-integer-of-different-size
+    |-- drivers-net-wireless-ath-ath12k-dp_tx.c:warning:cast-to-pointer-from-integer-of-different-size
+    `-- drivers-net-wireless-ath-ath12k-hal_rx.c:warning:cast-to-pointer-from-integer-of-different-size
+
+elapsed time: 1716m
+
+configs tested: 167
+configs skipped: 3
+
+gcc tested configs:
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+mips                 randconfig-c004-20220706
+sh                          rsk7269_defconfig
+arm                          iop32x_defconfig
+sh                         ecovec24_defconfig
+m68k                        mvme147_defconfig
+m68k                             alldefconfig
+xtensa                       common_defconfig
+powerpc                         wii_defconfig
+m68k                       m5249evb_defconfig
+sh                        apsh4ad0a_defconfig
+arm                          lpd270_defconfig
+arm                           viper_defconfig
+arc                     nsimosci_hs_defconfig
+sh                                  defconfig
+alpha                            alldefconfig
+openrisc                            defconfig
+arm                          badge4_defconfig
+xtensa                         virt_defconfig
+sh                           se7750_defconfig
+arm                           stm32_defconfig
+arm                          gemini_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                    amigaone_defconfig
+openrisc                  or1klitex_defconfig
+mips                         mpc30x_defconfig
+arc                        nsimosci_defconfig
+arm                          exynos_defconfig
+powerpc                      cm5200_defconfig
+s390                          debug_defconfig
+arm                          simpad_defconfig
+xtensa                           allyesconfig
+sh                           se7721_defconfig
+mips                           ip32_defconfig
+sh                          lboxre2_defconfig
+sh                           se7722_defconfig
+um                             i386_defconfig
+riscv                            allyesconfig
+xtensa                  audio_kc705_defconfig
+sh                            titan_defconfig
+mips                  decstation_64_defconfig
+powerpc                     mpc83xx_defconfig
+m68k                        m5407c3_defconfig
+arm                        spear6xx_defconfig
+powerpc                      ppc40x_defconfig
+arm                        cerfcube_defconfig
+powerpc                      chrp32_defconfig
+xtensa                              defconfig
+mips                            gpr_defconfig
+powerpc                    adder875_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                       ppc64_defconfig
+riscv                               defconfig
+sh                          kfr2r09_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                         microdev_defconfig
+sh                          sdk7786_defconfig
+arm                       aspeed_g5_defconfig
+m68k                        m5307c3_defconfig
+powerpc                       eiger_defconfig
+powerpc                   currituck_defconfig
+riscv                    nommu_k210_defconfig
+sh                          urquell_defconfig
+nios2                         3c120_defconfig
+powerpc                      pasemi_defconfig
+arm                      jornada720_defconfig
+arm                        mini2440_defconfig
+arm                             rpc_defconfig
+sh                           se7705_defconfig
+sparc64                             defconfig
+um                               alldefconfig
+mips                       capcella_defconfig
+sparc                               defconfig
+csky                                defconfig
+sparc                            allyesconfig
+x86_64                                  kexec
+s390                                defconfig
+s390                             allmodconfig
+arc                                 defconfig
+alpha                               defconfig
+s390                             allyesconfig
+nios2                            allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                             allnoconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220706
+arm                  randconfig-c002-20220707
+ia64                             allmodconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+i386                             allyesconfig
+i386                                defconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+arc                  randconfig-r043-20220706
+arc                  randconfig-r043-20220703
+riscv                randconfig-r042-20220703
+s390                 randconfig-r044-20220703
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+
+clang tested configs:
+mips                      maltaaprp_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                        icon_defconfig
+powerpc                      walnut_defconfig
+arm                            dove_defconfig
+mips                         tb0287_defconfig
+riscv                          rv32_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                      pxa255-idp_defconfig
+powerpc                     tqm8540_defconfig
+arm                      tct_hammer_defconfig
+mips                        qi_lb60_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                       spear13xx_defconfig
+mips                           ip27_defconfig
+powerpc                     mpc5200_defconfig
+x86_64                        randconfig-k001
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+hexagon              randconfig-r041-20220703
+hexagon              randconfig-r045-20220703
+riscv                randconfig-r042-20220706
+hexagon              randconfig-r045-20220706
+hexagon              randconfig-r041-20220706
+s390                 randconfig-r044-20220706
+
 -- 
-2.35.1
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
