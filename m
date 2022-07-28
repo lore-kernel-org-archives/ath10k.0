@@ -4,61 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28BD8C04A68
-	for <ath10k@archiver.kernel.org>; Wed, 27 Jul 2022 08:48:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1D0FC04A68
+	for <ath10k@archiver.kernel.org>; Thu, 28 Jul 2022 15:20:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H6dw4ew6BB3rv6yhXGTzvfNbk3j+Fv9pTyH7UG18feA=; b=u2Xnyn+OLjViQI
-	IfQrLrtfKlwC1qv9/HLL4oo/6LQ7HYMM780tVKcQpyNb7uOmHleL5XZrAH/81cEm4GdWN/VTz2DsU
-	MLPkWVo6IycK5YE+jJ5VZHRriG5ez1mUIp1QUDEEIzyLVorENAviJbIC5MAacJRBO+wWzDbyaVqFz
-	q9u4VtxtHI+emhwy9jYnuqqAeEvWz+5NUs9NFMWphxz2ecNyQkdHeXbQka+UwfML7/V6nyWxXskia
-	g+2ic1BzirLrRA5ZvxlRAe2f8V4MoDSIfP6Of8/HTuOd+Da3xKVlbNCSwZmelG8h8hRw1UiKnnACr
-	errJEBvj/lO6LspWUjxA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=19t4NaILeH5kny9mZ9kyNAYZEzL/IcD4K97uu8zSAwo=; b=lLBqdjVBOeWMBo
+	3udTmXlyTwEpZ4pRFB/b7d/BhrhbuVHj63jUHvrengSrhe++Os7zhVyE66FxGO+Yka46ZR8n/Q0v2
+	ME6seoIQY37Jk+PcQ2uYvu2dx+/LZvvEeeRNHKNcNiRpFKiTD7UG1xF3/xlGHVTqPVGBJY21nJDr/
+	JZmZXYQiKBcMCAbVrnqrLeZLH8urmSTacZw7N41RN0g20E8unCcgYOhE7V4YrFMecNKw/I9GYfuX+
+	IIIbMDmMugMzoHkdmW3fPdYdb/Yte6xWL3YVwBLgb4q5nOLw2d6v3L41dIZKYOMS3spN5kbXjOBkj
+	6aOzVpSYSc+jbJgb45dQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGchi-00BLQl-15; Wed, 27 Jul 2022 08:47:42 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1oH5IR-00ASjI-LT; Thu, 28 Jul 2022 15:19:31 +0000
+Received: from mga14.intel.com ([192.55.52.115])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGchc-00BLLW-SU
-	for ath10k@lists.infradead.org; Wed, 27 Jul 2022 08:47:40 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 5A0BCCE20A0;
-	Wed, 27 Jul 2022 08:47:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F1CAC433C1;
-	Wed, 27 Jul 2022 08:47:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1658911651;
-	bh=4GuO28BznivsDSDth2Dn8Mdw0gdA1bj+aNBMQfgsvzg=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Qeiw6FahKTgJxAZujGiIyCQtO+OAtKfwtkI6PQP5YfplD2wNjTCPeJ2JzgncmNsTO
-	 Uobyom2VtiwNQ3CMnMPODLwx/f3zupqWRpaATCXrl6BEdsvKxAZi9RHJTiatpKtnxa
-	 JH73JF7l4G5B7C7IakWFO1jJNJz35dgP2fAKOHzTQdCVIEVEF/6Y98W4V32yAw0om2
-	 RlO1LY3XhAEjlpApVFlwpgvPMAy9cjVuKVV+FLs4pWjC5A8cQa1QPQlMlSZJhRMV1w
-	 zXxSkrCrX0fU7VpEDRbhwdYfFsGpphxXfbNBmCSHAh6uf6sX8IssuiC51ma3iWs8gU
-	 IS6LsrY+dIRlA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Caleb Connolly <caleb@connolly.tech>,  Andy Gross <agross@kernel.org>,  Bjorn Andersson <bjorn.andersson@linaro.org>,  Konrad Dybcio <konrad.dybcio@somainline.org>,  Rob Herring <robh+dt@kernel.org>,  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Thierry Reding <thierry.reding@gmail.com>,  Sam Ravnborg <sam@ravnborg.org>,  David Airlie <airlied@linux.ie>,  Daniel Vetter <daniel@ffwll.ch>,  Sumit Semwal <sumit.semwal@linaro.org>,  linux-arm-msm@vger.kernel.org,  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,  dri-devel@lists.freedesktop.org,  phone-devel@vger.kernel.org,  ~postmarketos/upstreaming@lists.sr.ht,  Amit Pundir <amit.pundir@linaro.org>,  Vinod Koul <vkoul@kernel.org>,
-    ath10k@lists.infradead.org
-Subject: Re: [PATCH 2/4] arm64: dts: qcom: add sdm845-google-blueline (Pixel 3)
-References: <20220718213051.1475108-1-caleb@connolly.tech>
-	<20220718213051.1475108-3-caleb@connolly.tech>
-	<d8f24aca-2cdf-413f-2b30-ad41b81be1a5@linaro.org>
-Date: Wed, 27 Jul 2022 11:47:25 +0300
-In-Reply-To: <d8f24aca-2cdf-413f-2b30-ad41b81be1a5@linaro.org> (Dmitry
-	Baryshkov's message of "Tue, 19 Jul 2022 01:13:38 +0300")
-Message-ID: <87o7xbosbm.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+	id 1oH5IO-00ASgk-Pd
+	for ath10k@lists.infradead.org; Thu, 28 Jul 2022 15:19:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1659021568; x=1690557568;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xgyAeXKb5TepEzkpcrHjGOrtUg/wpdTU87Lr6okPy3I=;
+  b=evIV6VDWySN3FJm7dDZuPS4lKPg6+mbKUPTftqqi534IXoSedanh7Li6
+   /odQp/4MK8xHoS160gRSKcInctq4rIuLG2y+ACmJu049xBeD4FEdypz9q
+   E7+WD5rS6Bu5RJdviwS4yWMPix9s+Fu/K8XSR3hU+DYg/gPISnR7iZRMW
+   UmgKAoQM1GiK8CjVs9jfvg5h84lvIqC65rYzlVzGjc357+lLlzJbJgkBY
+   Y73BrXXhkW0ExWA3din7P+Mw7eMchXuGrvZdgjv7Oaay+Stuf5sLmmySZ
+   oqZnIwvcqhMbdneTSTvn6Nt9VzLM6G/g6WcQ6eni01/OqLwXtj5iwfB6l
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10422"; a="288549372"
+X-IronPort-AV: E=Sophos;i="5.93,198,1654585200"; 
+   d="scan'208";a="288549372"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2022 08:19:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,198,1654585200"; 
+   d="scan'208";a="628934729"
+Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 28 Jul 2022 08:19:24 -0700
+Received: from kbuild by e0eace57cfef with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1oH5IJ-000AG3-2G;
+	Thu, 28 Jul 2022 15:19:23 +0000
+Date: Thu, 28 Jul 2022 23:18:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 97ed4b58ce506d69e5bae47d4f9e7886237d53ba
+Message-ID: <62e2a8bf.kKtKA6VhzVFJ/Aa3%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220727_014737_663589_9F793A65 
-X-CRM114-Status: GOOD (  20.42  )
+X-CRM114-CacheID: sfid-20220728_081928_876236_DB4145AC 
+X-CRM114-Status: UNSURE (   4.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,85 +81,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-+ ath10k list
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 97ed4b58ce506d69e5bae47d4f9e7886237d53ba  Merge branch 'ath-next' into ath-qca
 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+elapsed time: 1708m
 
-> On 19/07/2022 00:30, Caleb Connolly wrote:
->
->> From: Amit Pundir <amit.pundir@linaro.org>
->>
->> This adds an initial dts for the Blueline (Pixel 3). Supported
->> functionality includes display, Debug UART, UFS, USB-C (peripheral), WiFi,
->> Bluetooth and modem.
->>
->> Bootloader compatible board and msm IDs are needed for the kernel to boot
->> with Pixel3 bootloader, so those are added.
->>
->> GPIOs 0 through 3 and 81 through 84 are configured to not be accessible
->> from the application CPUs, so we mark them as reserved to allow the Pixel 3
->> to boot.
->>
->> The reserved-memory locations where obtained from downstream using
->> kernel logs:
->> https://gist.github.com/calebccff/090d10bfac3cb9e9bd98dda30b054c96
->>
->> The rmtfs region is allocated with UIO, making it technically "dynamic".
->> It's address and size can be read from sysfs:
->>
->> blueline:/ # cat /sys/class/uio/uio0/name
->> rmtfs
->> at /sys/class/uio/uio0/maps/map0/addr
->> 0x00000000f2701000
->> blueline:/ # cat /sys/class/uio/uio0/maps/map0/size
->> 0x0000000000200000
->>
->> Like the OnePlus 6, it needs 1kB reserved on either side of the rmtfs
->> memory to workaround some XPU bug which would otherwise cause erroneous
->> XPU violations when accessing the rmtfs_mem region.
->>
->> For wifi, the pixel 3 reports a board-id of 0xFF, and downstream
->> only includes a single bdwlan file. The qcom,ath10k-calibration-variant
->> property is set to ensure that the correct calibration data is used.
->>
->> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->> [AmitP: Cherry-picked and refactored from Bjorn's db845c dts
->>          ("arm64: dts: qcom: Add Dragonboard 845c") https://lkml.org/lkml/2019/6/6/7]
->> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
->> [sumits: merged commits to add board and msm ids, gpio range reservation,
->>    ufs device-reset gpio and adaptation to v5.5+ changes]
->> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
->> [vinod: Add display nodes]
->> Signed-off-by: Vinod Koul <vkoul@kernel.org>
->> [caleb: remove db845c bits, cleanup, add reserved-memory for modem/wifi]
->> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
->
-> Thanks for your patch, few minor items to improve.
+configs tested: 57
+configs skipped: 2
 
-[...]
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->> +&wifi {
->> +	status = "okay";
->> +
->> +	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
->> +	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
->> +	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
->> +	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
->> +
->> +	qcom,snoc-host-cap-8bit-quirk;
->> +	qcom,ath10k-calibration-variant = "google_blueline";
->
-> Ideally Kalle Valo should bless this string, added him to the Cc list.
-> Could you please submit the board file to the ath10k (see [1] for the
-> description and [2] for an example).
+gcc tested configs:
+i386                                defconfig
+x86_64                        randconfig-a002
+arc                  randconfig-r043-20220727
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+i386                             allyesconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a015
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+i386                          randconfig-a014
+x86_64                           rhel-8.3-kvm
+x86_64                    rhel-8.3-kselftests
+i386                          randconfig-a012
+x86_64                           rhel-8.3-syz
+i386                          randconfig-a016
+arm                                 defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+ia64                             allmodconfig
+powerpc                          allmodconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+sh                               allmodconfig
+x86_64                              defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+m68k                             allyesconfig
+arc                               allnoconfig
+alpha                             allnoconfig
+riscv                             allnoconfig
+csky                              allnoconfig
+m68k                             allmodconfig
 
-Thanks for CC. I prefer "google-blueline" but that's really a cosmetic
-issue.
+clang tested configs:
+x86_64                        randconfig-a001
+hexagon              randconfig-r045-20220727
+x86_64                        randconfig-a003
+hexagon              randconfig-r041-20220727
+s390                 randconfig-r044-20220727
+riscv                randconfig-r042-20220727
+x86_64                        randconfig-a005
+i386                          randconfig-a002
+i386                          randconfig-a004
+x86_64                        randconfig-a014
+x86_64                        randconfig-a012
+i386                          randconfig-a006
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a015
+i386                          randconfig-a011
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
