@@ -4,67 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 201ADC00140
-	for <ath10k@archiver.kernel.org>; Fri, 29 Jul 2022 00:57:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6D74C00144
+	for <ath10k@archiver.kernel.org>; Mon,  1 Aug 2022 10:54:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XrFafKFtflCTxeUM/efBZ6XMVCEHXzKOcOjWRlVIV4A=; b=PpmqpCq7zSIKRK
-	qwj7QdJTOdFYCUKSY0lACw38u9Flj/47h7po24XQ8VjcprgttjUlZLORHVuFO/SqI8ZW+ROmw2bqr
-	i6gWEq8QDSxt8+f1S/NNSHTJVEOPWQ6bamDV5/RF4Y0/DwSPgDTHiu/DNOzNOq5m9K/f91MikhMxY
-	0eB5LNDk8ZnaRP6p222xma4pLEs07GasjVkRXUVU0wNidXzZyAKnDs2RwiIZbcwBkbQaEglC/a3mm
-	ZtYijX0EKDTIUViysxGxxS9B3B3ZTARkHC8xzOjs0HO9aJYWfw6rCdAvAAoDqafUknqmRvcvJeBUY
-	SeVK+Ks/FvSP4jD+4VHw==;
+	List-Owner; bh=Y62X7I0eKY5edoggoRaUoDSn/ikXGwwhZHwFOL7tq+g=; b=MqO49iMhuAxc3a
+	gTKyAmQHRQLSDACy8eNARn1DaCnFk1wkuUq/tZgrpqcZ6E2MJ7+IvSEJyrW4v3FoTHpkWsZap8yEy
+	lT5b9Fj0wE/ngLd8uPf9aK35Zcm388riBgvhQV34x52tv0i/x1QbUdU71UVGlJV31b8WFVlOiFwPQ
+	wd+QfE/RdBQzS5PK0SiVplbrYqW0P9oG4645DtxALjyxWWJ2ZjyPfFvMQFGxvhR2BlVFtZhYe7Huc
+	4nv70xrJYrvYfCEITMsNExTpV45Ecg/+sGHMwHp89YcCqyrYSPJ6pboHlYyoJ6b5OmA+HV9Jik8E3
+	h1vd9QK+0D6w7KSpi1eA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oHEJP-00GedS-As; Fri, 29 Jul 2022 00:57:07 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1oISzI-005Bh7-Mg; Mon, 01 Aug 2022 10:49:28 +0000
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oHEJM-00Gecw-HC
-	for ath10k@lists.infradead.org; Fri, 29 Jul 2022 00:57:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659056224; x=1690592224;
-  h=date:from:to:cc:subject:message-id:mime-version:
+	id 1oISuF-0058kt-V0
+	for ath10k@lists.infradead.org; Mon, 01 Aug 2022 10:44:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1659350655; x=1690886655;
+  h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=jUlM4ogmCsvv5Mt3n2b9IPL1NtwmX1MP7C74gHHiF8A=;
-  b=gU0mCeQ200tyCkdcXABxeGr0xv5yII/Oan4TNMXkeGztJTWq9Upas7Ae
-   krGJePqIGbneQxO6W1EwbavzpL2BE018u5q1TAkBZCagEBoeYHDfspJuH
-   f6wRil6wn2lRcN6yi2D0Hox9LVfHXE7iuKiDU7DEp4mEtIoZk33/1IYOs
-   2Ac5QZAVhVgEvL6YnRsin0efWv9ol3UMAbHSe6MrFeoUeyLh8zCZn1qjh
-   70FhhoynOqWRvqiTDyhyk3f3mKsjC7gsWpKSV2Qi4ZLTwbtx1Fy88MT6B
-   A5qX7Zv6NVY6b7YgnBX5KT6YrtSltCON1sjhLXXwWsRObGUBJdEqHPjIl
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10422"; a="286209992"
-X-IronPort-AV: E=Sophos;i="5.93,199,1654585200"; 
-   d="scan'208";a="286209992"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2022 17:57:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,199,1654585200"; 
-   d="scan'208";a="928548623"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Jul 2022 17:57:02 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1oHEJJ-000AoE-1M;
-	Fri, 29 Jul 2022 00:57:01 +0000
-Date: Fri, 29 Jul 2022 08:56:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- fdb8d57ce63cfa051edda351ef8c230f2c3cf3f8
-Message-ID: <62e3303a.LFN+be+P6zWN5Rg5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+  bh=yk2pyzJLRogFwStmbJ4+1oodvxCiesrgylgvA+mVC1k=;
+  b=Um5Ocnskf2pFSqz0AnkH6ul6rnoGnYd2Ky/DfShVCcfo+Mln0CwSCGsp
+   7rXDWktThkZGotvLJtR/Y6Jp2y3BBMI+IWmxQKKLhY3Kni/rcFmWetD8v
+   R3ZWrb6gkIKetUbzoKZZHNf73QZfQZd8MjM87UNP3CXy6jzjeQF4sGxgW
+   g=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 01 Aug 2022 03:44:11 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2022 03:44:11 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Mon, 1 Aug 2022 03:44:11 -0700
+Received: from wgong-HP3-Z230-SFF-Workstation.qca.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Mon, 1 Aug 2022 03:44:09 -0700
+From: Wen Gong <quic_wgong@quicinc.com>
+To: <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>, <quic_wgong@quicinc.com>
+Subject: [PATCH] ath10k: add peer map clean up for peer delete in ath10k_sta_state()
+Date: Mon, 1 Aug 2022 06:43:22 -0400
+Message-ID: <20220801104322.3954-1-quic_wgong@quicinc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220728_175704_612646_4E4FEC91 
-X-CRM114-Status: UNSURE (   5.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220801_034416_114325_5B630369 
+X-CRM114-Status: GOOD (  16.83  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,124 +78,201 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: fdb8d57ce63cfa051edda351ef8c230f2c3cf3f8  Merge branch 'pending' into master-pending
+When peer delete failed in a disconnect operation, use-after-free
+detected by KFENCE in below log. It is because for each vdev_id and
+address, it has only one struct ath10k_peer, it is allocated in
+ath10k_peer_map_event(). When connected to an AP, it has more than
+one HTT_T2H_MSG_TYPE_PEER_MAP reported from firmware, then the
+array peer_map of struct ath10k will be set muti-elements to the
+same ath10k_peer in ath10k_peer_map_event(). When peer delete failed
+in ath10k_sta_state(), the ath10k_peer will be free for the 1st peer
+id in array peer_map of struct ath10k, and then use-after-free happened
+for the 2nd peer id because they map to the same ath10k_peer.
 
-elapsed time: 799m
+And clean up all peers in array peer_map for the ath10k_peer, then
+user-after-free disappeared
 
-configs tested: 99
-configs skipped: 2
+peer map event log:
+[  306.911021] wlan0: authenticate with b0:2a:43:e6:75:0e
+[  306.957187] ath10k_pci 0000:01:00.0: mac vdev 0 peer create b0:2a:43:e6:75:0e (new sta) sta 1 / 32 peer 1 / 33
+[  306.957395] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 246
+[  306.957404] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 198
+[  306.986924] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 166
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+peer unmap event log:
+[  435.715691] wlan0: deauthenticating from b0:2a:43:e6:75:0e by local choice (Reason: 3=DEAUTH_LEAVING)
+[  435.716802] ath10k_pci 0000:01:00.0: mac vdev 0 peer delete b0:2a:43:e6:75:0e sta ffff990e0e9c2b50 (sta gone)
+[  435.717177] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 246
+[  435.717186] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 198
+[  435.717193] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 166
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                                defconfig
-powerpc                           allnoconfig
-arc                  randconfig-r043-20220728
-riscv                randconfig-r042-20220728
-s390                 randconfig-r044-20220728
-x86_64                        randconfig-a002
-i386                             allyesconfig
-x86_64                          rhel-8.3-func
-powerpc                          allmodconfig
-x86_64                        randconfig-a015
-arm                                 defconfig
-i386                          randconfig-a001
-x86_64                        randconfig-a004
-i386                          randconfig-a012
-x86_64                         rhel-8.3-kunit
-x86_64                        randconfig-a013
-sh                               allmodconfig
-x86_64                        randconfig-a011
-x86_64                        randconfig-a006
-x86_64                           rhel-8.3-kvm
-i386                          randconfig-a016
-mips                             allyesconfig
-x86_64                    rhel-8.3-kselftests
-i386                          randconfig-a003
-i386                          randconfig-a014
-i386                          randconfig-a005
-x86_64                           rhel-8.3-syz
-arm                              allyesconfig
-arm64                            allyesconfig
-ia64                             allmodconfig
-csky                              allnoconfig
-alpha                             allnoconfig
-arc                               allnoconfig
-riscv                             allnoconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-s390                       zfcpdump_defconfig
-openrisc                         alldefconfig
-i386                          randconfig-c001
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-ia64                        generic_defconfig
-sh                           se7343_defconfig
-arm                            mps2_defconfig
-openrisc                    or1ksim_defconfig
-xtensa                  cadence_csp_defconfig
-mips                           ip32_defconfig
-arc                            hsdk_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                     sh7710voipgw_defconfig
-loongarch                           defconfig
-loongarch                         allnoconfig
-m68k                        m5407c3_defconfig
-powerpc                     taishan_defconfig
-sh                         ap325rxa_defconfig
-powerpc                      tqm8xx_defconfig
-arm                          lpd270_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-i386                          debian-10.3-kvm
-i386                        debian-10.3-kunit
-i386                         debian-10.3-func
-mips                 randconfig-c004-20220728
-powerpc              randconfig-c003-20220728
-nios2                               defconfig
-m68k                            mac_defconfig
+use-after-free log:
+<6>[21705.888627] wlan0: deauthenticating from d0:76:8f:82:be:75 by local choice (Reason: 3=DEAUTH_LEAVING)
+<4>[21713.799910] ath10k_pci 0000:01:00.0: failed to delete peer d0:76:8f:82:be:75 for vdev 0: -110
+<4>[21713.799925] ath10k_pci 0000:01:00.0: found sta peer d0:76:8f:82:be:75 (ptr 0000000000000000 id 102) entry on vdev 0 after it was supposedly removed
+<3>[21713.799968] ==================================================================
+<3>[21713.799991] BUG: KFENCE: use-after-free read in ath10k_sta_state+0x265/0xb8a [ath10k_core]
+<3>[21713.799991]
+<3>[21713.799997] Use-after-free read at 0x00000000abe1c75e (in kfence-#69):
+<4>[21713.800010]  ath10k_sta_state+0x265/0xb8a [ath10k_core]
+<4>[21713.800041]  drv_sta_state+0x115/0x677 [mac80211]
+<4>[21713.800059]  __sta_info_destroy_part2+0xb1/0x133 [mac80211]
+<4>[21713.800076]  __sta_info_flush+0x11d/0x162 [mac80211]
+<4>[21713.800093]  ieee80211_set_disassoc+0x12d/0x2f4 [mac80211]
+<4>[21713.800110]  ieee80211_mgd_deauth+0x26c/0x29b [mac80211]
+<4>[21713.800137]  cfg80211_mlme_deauth+0x13f/0x1bb [cfg80211]
+<4>[21713.800153]  nl80211_deauthenticate+0xf8/0x121 [cfg80211]
+<4>[21713.800161]  genl_rcv_msg+0x38e/0x3be
+<4>[21713.800166]  netlink_rcv_skb+0x89/0xf7
+<4>[21713.800171]  genl_rcv+0x28/0x36
+<4>[21713.800176]  netlink_unicast+0x179/0x24b
+<4>[21713.800181]  netlink_sendmsg+0x3a0/0x40e
+<4>[21713.800187]  sock_sendmsg+0x72/0x76
+<4>[21713.800192]  ____sys_sendmsg+0x16d/0x1e3
+<4>[21713.800196]  ___sys_sendmsg+0x95/0xd1
+<4>[21713.800200]  __sys_sendmsg+0x85/0xbf
+<4>[21713.800205]  do_syscall_64+0x43/0x55
+<4>[21713.800210]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+<3>[21713.800213]
+<4>[21713.800219] kfence-#69: 0x000000009149b0d5-0x000000004c0697fb, size=1064, cache=kmalloc-2k
+<4>[21713.800219]
+<4>[21713.800224] allocated by task 13 on cpu 0 at 21705.501373s:
+<4>[21713.800241]  ath10k_peer_map_event+0x7e/0x154 [ath10k_core]
+<4>[21713.800254]  ath10k_htt_t2h_msg_handler+0x586/0x1039 [ath10k_core]
+<4>[21713.800265]  ath10k_htt_htc_t2h_msg_handler+0x12/0x28 [ath10k_core]
+<4>[21713.800277]  ath10k_htc_rx_completion_handler+0x14c/0x1b5 [ath10k_core]
+<4>[21713.800283]  ath10k_pci_process_rx_cb+0x195/0x1df [ath10k_pci]
+<4>[21713.800294]  ath10k_ce_per_engine_service+0x55/0x74 [ath10k_core]
+<4>[21713.800305]  ath10k_ce_per_engine_service_any+0x76/0x84 [ath10k_core]
+<4>[21713.800310]  ath10k_pci_napi_poll+0x49/0x144 [ath10k_pci]
+<4>[21713.800316]  net_rx_action+0xdc/0x361
+<4>[21713.800320]  __do_softirq+0x163/0x29a
+<4>[21713.800325]  asm_call_irq_on_stack+0x12/0x20
+<4>[21713.800331]  do_softirq_own_stack+0x3c/0x48
+<4>[21713.800337]  __irq_exit_rcu+0x9b/0x9d
+<4>[21713.800342]  common_interrupt+0xc9/0x14d
+<4>[21713.800346]  asm_common_interrupt+0x1e/0x40
+<4>[21713.800351]  ksoftirqd_should_run+0x5/0x16
+<4>[21713.800357]  smpboot_thread_fn+0x148/0x211
+<4>[21713.800362]  kthread+0x150/0x15f
+<4>[21713.800367]  ret_from_fork+0x22/0x30
+<4>[21713.800370]
+<4>[21713.800374] freed by task 708 on cpu 1 at 21713.799953s:
+<4>[21713.800498]  ath10k_sta_state+0x2c6/0xb8a [ath10k_core]
+<4>[21713.800515]  drv_sta_state+0x115/0x677 [mac80211]
+<4>[21713.800532]  __sta_info_destroy_part2+0xb1/0x133 [mac80211]
+<4>[21713.800548]  __sta_info_flush+0x11d/0x162 [mac80211]
+<4>[21713.800565]  ieee80211_set_disassoc+0x12d/0x2f4 [mac80211]
+<4>[21713.800581]  ieee80211_mgd_deauth+0x26c/0x29b [mac80211]
+<4>[21713.800598]  cfg80211_mlme_deauth+0x13f/0x1bb [cfg80211]
+<4>[21713.800614]  nl80211_deauthenticate+0xf8/0x121 [cfg80211]
+<4>[21713.800619]  genl_rcv_msg+0x38e/0x3be
+<4>[21713.800623]  netlink_rcv_skb+0x89/0xf7
+<4>[21713.800628]  genl_rcv+0x28/0x36
+<4>[21713.800632]  netlink_unicast+0x179/0x24b
+<4>[21713.800637]  netlink_sendmsg+0x3a0/0x40e
+<4>[21713.800642]  sock_sendmsg+0x72/0x76
+<4>[21713.800646]  ____sys_sendmsg+0x16d/0x1e3
+<4>[21713.800651]  ___sys_sendmsg+0x95/0xd1
+<4>[21713.800655]  __sys_sendmsg+0x85/0xbf
+<4>[21713.800659]  do_syscall_64+0x43/0x55
+<4>[21713.800663]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-clang tested configs:
-hexagon              randconfig-r045-20220728
-hexagon              randconfig-r041-20220728
-i386                          randconfig-a013
-x86_64                        randconfig-a001
-i386                          randconfig-a011
-x86_64                        randconfig-a003
-x86_64                        randconfig-a014
-i386                          randconfig-a002
-x86_64                        randconfig-a005
-i386                          randconfig-a015
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-i386                          randconfig-a004
-i386                          randconfig-a006
-powerpc                 mpc836x_mds_defconfig
-riscv                             allnoconfig
-x86_64                        randconfig-k001
-powerpc                     tqm5200_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      katmai_defconfig
-powerpc                   microwatt_defconfig
-powerpc                      ppc64e_defconfig
-mips                          rm200_defconfig
-arm                  colibri_pxa270_defconfig
-arm                      pxa255-idp_defconfig
-powerpc                  mpc885_ads_defconfig
+Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00288-QCARMSWPZ-1
 
+Fixes: d0eeafad1189 ("ath10k: Clean up peer when sta goes away.")
+Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 54 ++++++++++++++-------------
+ 1 file changed, 29 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a04e18250dae..5ccbb81739de 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -864,11 +864,36 @@ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ 	return 0;
+ }
+ 
++static void ath10k_peer_map_cleanup(struct ath10k *ar, struct ath10k_peer *peer)
++{
++	int peer_id, i;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	for_each_set_bit(peer_id, peer->peer_ids,
++			 ATH10K_MAX_NUM_PEER_IDS) {
++		ar->peer_map[peer_id] = NULL;
++	}
++
++	/* Double check that peer is properly un-referenced from
++	 * the peer_map
++	 */
++	for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++) {
++		if (ar->peer_map[i] == peer) {
++			ath10k_warn(ar, "removing stale peer_map entry for %pM (ptr %pK idx %d)\n",
++				    peer->addr, peer, i);
++			ar->peer_map[i] = NULL;
++		}
++	}
++
++	list_del(&peer->list);
++	kfree(peer);
++	ar->num_peers--;
++}
++
+ static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
+ {
+ 	struct ath10k_peer *peer, *tmp;
+-	int peer_id;
+-	int i;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+@@ -880,25 +905,7 @@ static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
+ 		ath10k_warn(ar, "removing stale peer %pM from vdev_id %d\n",
+ 			    peer->addr, vdev_id);
+ 
+-		for_each_set_bit(peer_id, peer->peer_ids,
+-				 ATH10K_MAX_NUM_PEER_IDS) {
+-			ar->peer_map[peer_id] = NULL;
+-		}
+-
+-		/* Double check that peer is properly un-referenced from
+-		 * the peer_map
+-		 */
+-		for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++) {
+-			if (ar->peer_map[i] == peer) {
+-				ath10k_warn(ar, "removing stale peer_map entry for %pM (ptr %pK idx %d)\n",
+-					    peer->addr, peer, i);
+-				ar->peer_map[i] = NULL;
+-			}
+-		}
+-
+-		list_del(&peer->list);
+-		kfree(peer);
+-		ar->num_peers--;
++		ath10k_peer_map_cleanup(ar, peer);
+ 	}
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+@@ -7620,10 +7627,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 				/* Clean up the peer object as well since we
+ 				 * must have failed to do this above.
+ 				 */
+-				list_del(&peer->list);
+-				ar->peer_map[i] = NULL;
+-				kfree(peer);
+-				ar->num_peers--;
++				ath10k_peer_map_cleanup(ar, peer);
+ 			}
+ 		}
+ 		spin_unlock_bh(&ar->data_lock);
+
+base-commit: c35538ce3b892dd4b41e24e887a434f296792959
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.31.1
+
 
 _______________________________________________
 ath10k mailing list
