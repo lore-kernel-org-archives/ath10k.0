@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6D74C00144
-	for <ath10k@archiver.kernel.org>; Mon,  1 Aug 2022 10:54:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7DDFC00144
+	for <ath10k@archiver.kernel.org>; Mon,  1 Aug 2022 13:50:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Y62X7I0eKY5edoggoRaUoDSn/ikXGwwhZHwFOL7tq+g=; b=MqO49iMhuAxc3a
-	gTKyAmQHRQLSDACy8eNARn1DaCnFk1wkuUq/tZgrpqcZ6E2MJ7+IvSEJyrW4v3FoTHpkWsZap8yEy
-	lT5b9Fj0wE/ngLd8uPf9aK35Zcm388riBgvhQV34x52tv0i/x1QbUdU71UVGlJV31b8WFVlOiFwPQ
-	wd+QfE/RdBQzS5PK0SiVplbrYqW0P9oG4645DtxALjyxWWJ2ZjyPfFvMQFGxvhR2BlVFtZhYe7Huc
-	4nv70xrJYrvYfCEITMsNExTpV45Ecg/+sGHMwHp89YcCqyrYSPJ6pboHlYyoJ6b5OmA+HV9Jik8E3
-	h1vd9QK+0D6w7KSpi1eA==;
+	List-Owner; bh=sWA8mqFrXwYktrsAlyUyHRnVcBC4D5dkFE0OaSDVJzc=; b=YlHgwVyleAKlRJ
+	+BLSlLdoyJPbaPlBnEB1374CwZfKpTRR3ibWPIbmpB+pPPtu9gqf5nmQTbLdnqFGappgFpYkPFKWX
+	8nOGooWRmO9oOedn/rkqwU0OjTzGiNPlxHPdgN5zeIA+2bEWnbWMWtSKEXsPuomMCDMXCvMbFgBIf
+	YC+v+NgiG422cOSWuxORbAKlH75cu2OHFKQZhoSduHH9R9LI4FPXjhCv13k053rrCEFCj1SOOt0jF
+	xiL44meZBRbHtXN7FEPohjb46qZwR9R9U7QCEttHEK1PeMaN7MvDt4Mam/K5QL9hc2DoKu8dIR7uw
+	N6P+S7FXMROsdpTArjfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oISzI-005Bh7-Mg; Mon, 01 Aug 2022 10:49:28 +0000
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
+	id 1oIVoZ-006pg6-Tq; Mon, 01 Aug 2022 13:50:35 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oISuF-0058kt-V0
-	for ath10k@lists.infradead.org; Mon, 01 Aug 2022 10:44:19 +0000
+	id 1oIVoV-006pbr-TX
+	for ath10k@lists.infradead.org; Mon, 01 Aug 2022 13:50:34 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1659350655; x=1690886655;
+  t=1659361832; x=1690897832;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=yk2pyzJLRogFwStmbJ4+1oodvxCiesrgylgvA+mVC1k=;
-  b=Um5Ocnskf2pFSqz0AnkH6ul6rnoGnYd2Ky/DfShVCcfo+Mln0CwSCGsp
-   7rXDWktThkZGotvLJtR/Y6Jp2y3BBMI+IWmxQKKLhY3Kni/rcFmWetD8v
-   R3ZWrb6gkIKetUbzoKZZHNf73QZfQZd8MjM87UNP3CXy6jzjeQF4sGxgW
-   g=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 01 Aug 2022 03:44:11 -0700
+  bh=OqXZiX9gq6pGhLFYwdK1F8Ucu6j0mtnGUZaMYCUTQFU=;
+  b=OtWXHXypjaVD351nwSgdG1OfUqssAXVOaDJfKcdwNMqSJOtGi56Mcu43
+   BpVYvVn0eQ+8BjAeQH2KEfJeDZ+PgXRkBGiuluLstcpdfSt4C0ucpJePO
+   ZznXcZPQcbEhkGw2dvTDd3nU+cWEcFmlB2hKvFsbG4vdJ57K2K9VX4Ina
+   E=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 01 Aug 2022 06:50:23 -0700
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2022 03:44:11 -0700
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2022 06:50:23 -0700
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Mon, 1 Aug 2022 03:44:11 -0700
-Received: from wgong-HP3-Z230-SFF-Workstation.qca.qualcomm.com (10.80.80.8) by
+ 15.2.986.22; Mon, 1 Aug 2022 06:50:22 -0700
+Received: from youghand-linux.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Mon, 1 Aug 2022 03:44:09 -0700
-From: Wen Gong <quic_wgong@quicinc.com>
+ 15.2.986.22; Mon, 1 Aug 2022 06:50:21 -0700
+From: Youghandhar Chintala <quic_youghand@quicinc.com>
 To: <ath10k@lists.infradead.org>
-CC: <linux-wireless@vger.kernel.org>, <quic_wgong@quicinc.com>
-Subject: [PATCH] ath10k: add peer map clean up for peer delete in ath10k_sta_state()
-Date: Mon, 1 Aug 2022 06:43:22 -0400
-Message-ID: <20220801104322.3954-1-quic_wgong@quicinc.com>
-X-Mailer: git-send-email 2.31.1
+CC: <linux-wireless@vger.kernel.org>, Youghandhar Chintala
+	<quic_youghand@quicinc.com>
+Subject: [PATCH] wifi:ath10k: Set tx credit to one for WCN3990 snoc based devices
+Date: Mon, 1 Aug 2022 19:19:41 +0530
+Message-ID: <20220801134941.15216-1-quic_youghand@quicinc.com>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220801_034416_114325_5B630369 
-X-CRM114-Status: GOOD (  16.83  )
+X-CRM114-CacheID: sfid-20220801_065032_020057_7155833A 
+X-CRM114-Status: GOOD (  13.05  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,208 +74,130 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-When peer delete failed in a disconnect operation, use-after-free
-detected by KFENCE in below log. It is because for each vdev_id and
-address, it has only one struct ath10k_peer, it is allocated in
-ath10k_peer_map_event(). When connected to an AP, it has more than
-one HTT_T2H_MSG_TYPE_PEER_MAP reported from firmware, then the
-array peer_map of struct ath10k will be set muti-elements to the
-same ath10k_peer in ath10k_peer_map_event(). When peer delete failed
-in ath10k_sta_state(), the ath10k_peer will be free for the 1st peer
-id in array peer_map of struct ath10k, and then use-after-free happened
-for the 2nd peer id because they map to the same ath10k_peer.
-
-And clean up all peers in array peer_map for the ath10k_peer, then
-user-after-free disappeared
-
-peer map event log:
-[  306.911021] wlan0: authenticate with b0:2a:43:e6:75:0e
-[  306.957187] ath10k_pci 0000:01:00.0: mac vdev 0 peer create b0:2a:43:e6:75:0e (new sta) sta 1 / 32 peer 1 / 33
-[  306.957395] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 246
-[  306.957404] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 198
-[  306.986924] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 166
-
-peer unmap event log:
-[  435.715691] wlan0: deauthenticating from b0:2a:43:e6:75:0e by local choice (Reason: 3=DEAUTH_LEAVING)
-[  435.716802] ath10k_pci 0000:01:00.0: mac vdev 0 peer delete b0:2a:43:e6:75:0e sta ffff990e0e9c2b50 (sta gone)
-[  435.717177] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 246
-[  435.717186] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 198
-[  435.717193] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 166
-
-use-after-free log:
-<6>[21705.888627] wlan0: deauthenticating from d0:76:8f:82:be:75 by local choice (Reason: 3=DEAUTH_LEAVING)
-<4>[21713.799910] ath10k_pci 0000:01:00.0: failed to delete peer d0:76:8f:82:be:75 for vdev 0: -110
-<4>[21713.799925] ath10k_pci 0000:01:00.0: found sta peer d0:76:8f:82:be:75 (ptr 0000000000000000 id 102) entry on vdev 0 after it was supposedly removed
-<3>[21713.799968] ==================================================================
-<3>[21713.799991] BUG: KFENCE: use-after-free read in ath10k_sta_state+0x265/0xb8a [ath10k_core]
-<3>[21713.799991]
-<3>[21713.799997] Use-after-free read at 0x00000000abe1c75e (in kfence-#69):
-<4>[21713.800010]  ath10k_sta_state+0x265/0xb8a [ath10k_core]
-<4>[21713.800041]  drv_sta_state+0x115/0x677 [mac80211]
-<4>[21713.800059]  __sta_info_destroy_part2+0xb1/0x133 [mac80211]
-<4>[21713.800076]  __sta_info_flush+0x11d/0x162 [mac80211]
-<4>[21713.800093]  ieee80211_set_disassoc+0x12d/0x2f4 [mac80211]
-<4>[21713.800110]  ieee80211_mgd_deauth+0x26c/0x29b [mac80211]
-<4>[21713.800137]  cfg80211_mlme_deauth+0x13f/0x1bb [cfg80211]
-<4>[21713.800153]  nl80211_deauthenticate+0xf8/0x121 [cfg80211]
-<4>[21713.800161]  genl_rcv_msg+0x38e/0x3be
-<4>[21713.800166]  netlink_rcv_skb+0x89/0xf7
-<4>[21713.800171]  genl_rcv+0x28/0x36
-<4>[21713.800176]  netlink_unicast+0x179/0x24b
-<4>[21713.800181]  netlink_sendmsg+0x3a0/0x40e
-<4>[21713.800187]  sock_sendmsg+0x72/0x76
-<4>[21713.800192]  ____sys_sendmsg+0x16d/0x1e3
-<4>[21713.800196]  ___sys_sendmsg+0x95/0xd1
-<4>[21713.800200]  __sys_sendmsg+0x85/0xbf
-<4>[21713.800205]  do_syscall_64+0x43/0x55
-<4>[21713.800210]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-<3>[21713.800213]
-<4>[21713.800219] kfence-#69: 0x000000009149b0d5-0x000000004c0697fb, size=1064, cache=kmalloc-2k
-<4>[21713.800219]
-<4>[21713.800224] allocated by task 13 on cpu 0 at 21705.501373s:
-<4>[21713.800241]  ath10k_peer_map_event+0x7e/0x154 [ath10k_core]
-<4>[21713.800254]  ath10k_htt_t2h_msg_handler+0x586/0x1039 [ath10k_core]
-<4>[21713.800265]  ath10k_htt_htc_t2h_msg_handler+0x12/0x28 [ath10k_core]
-<4>[21713.800277]  ath10k_htc_rx_completion_handler+0x14c/0x1b5 [ath10k_core]
-<4>[21713.800283]  ath10k_pci_process_rx_cb+0x195/0x1df [ath10k_pci]
-<4>[21713.800294]  ath10k_ce_per_engine_service+0x55/0x74 [ath10k_core]
-<4>[21713.800305]  ath10k_ce_per_engine_service_any+0x76/0x84 [ath10k_core]
-<4>[21713.800310]  ath10k_pci_napi_poll+0x49/0x144 [ath10k_pci]
-<4>[21713.800316]  net_rx_action+0xdc/0x361
-<4>[21713.800320]  __do_softirq+0x163/0x29a
-<4>[21713.800325]  asm_call_irq_on_stack+0x12/0x20
-<4>[21713.800331]  do_softirq_own_stack+0x3c/0x48
-<4>[21713.800337]  __irq_exit_rcu+0x9b/0x9d
-<4>[21713.800342]  common_interrupt+0xc9/0x14d
-<4>[21713.800346]  asm_common_interrupt+0x1e/0x40
-<4>[21713.800351]  ksoftirqd_should_run+0x5/0x16
-<4>[21713.800357]  smpboot_thread_fn+0x148/0x211
-<4>[21713.800362]  kthread+0x150/0x15f
-<4>[21713.800367]  ret_from_fork+0x22/0x30
-<4>[21713.800370]
-<4>[21713.800374] freed by task 708 on cpu 1 at 21713.799953s:
-<4>[21713.800498]  ath10k_sta_state+0x2c6/0xb8a [ath10k_core]
-<4>[21713.800515]  drv_sta_state+0x115/0x677 [mac80211]
-<4>[21713.800532]  __sta_info_destroy_part2+0xb1/0x133 [mac80211]
-<4>[21713.800548]  __sta_info_flush+0x11d/0x162 [mac80211]
-<4>[21713.800565]  ieee80211_set_disassoc+0x12d/0x2f4 [mac80211]
-<4>[21713.800581]  ieee80211_mgd_deauth+0x26c/0x29b [mac80211]
-<4>[21713.800598]  cfg80211_mlme_deauth+0x13f/0x1bb [cfg80211]
-<4>[21713.800614]  nl80211_deauthenticate+0xf8/0x121 [cfg80211]
-<4>[21713.800619]  genl_rcv_msg+0x38e/0x3be
-<4>[21713.800623]  netlink_rcv_skb+0x89/0xf7
-<4>[21713.800628]  genl_rcv+0x28/0x36
-<4>[21713.800632]  netlink_unicast+0x179/0x24b
-<4>[21713.800637]  netlink_sendmsg+0x3a0/0x40e
-<4>[21713.800642]  sock_sendmsg+0x72/0x76
-<4>[21713.800646]  ____sys_sendmsg+0x16d/0x1e3
-<4>[21713.800651]  ___sys_sendmsg+0x95/0xd1
-<4>[21713.800655]  __sys_sendmsg+0x85/0xbf
-<4>[21713.800659]  do_syscall_64+0x43/0x55
-<4>[21713.800663]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00288-QCARMSWPZ-1
-
-Fixes: d0eeafad1189 ("ath10k: Clean up peer when sta goes away.")
-Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 54 ++++++++++++++-------------
- 1 file changed, 29 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a04e18250dae..5ccbb81739de 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -864,11 +864,36 @@ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
- 	return 0;
- }
- 
-+static void ath10k_peer_map_cleanup(struct ath10k *ar, struct ath10k_peer *peer)
-+{
-+	int peer_id, i;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	for_each_set_bit(peer_id, peer->peer_ids,
-+			 ATH10K_MAX_NUM_PEER_IDS) {
-+		ar->peer_map[peer_id] = NULL;
-+	}
-+
-+	/* Double check that peer is properly un-referenced from
-+	 * the peer_map
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++) {
-+		if (ar->peer_map[i] == peer) {
-+			ath10k_warn(ar, "removing stale peer_map entry for %pM (ptr %pK idx %d)\n",
-+				    peer->addr, peer, i);
-+			ar->peer_map[i] = NULL;
-+		}
-+	}
-+
-+	list_del(&peer->list);
-+	kfree(peer);
-+	ar->num_peers--;
-+}
-+
- static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
- {
- 	struct ath10k_peer *peer, *tmp;
--	int peer_id;
--	int i;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-@@ -880,25 +905,7 @@ static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
- 		ath10k_warn(ar, "removing stale peer %pM from vdev_id %d\n",
- 			    peer->addr, vdev_id);
- 
--		for_each_set_bit(peer_id, peer->peer_ids,
--				 ATH10K_MAX_NUM_PEER_IDS) {
--			ar->peer_map[peer_id] = NULL;
--		}
--
--		/* Double check that peer is properly un-referenced from
--		 * the peer_map
--		 */
--		for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++) {
--			if (ar->peer_map[i] == peer) {
--				ath10k_warn(ar, "removing stale peer_map entry for %pM (ptr %pK idx %d)\n",
--					    peer->addr, peer, i);
--				ar->peer_map[i] = NULL;
--			}
--		}
--
--		list_del(&peer->list);
--		kfree(peer);
--		ar->num_peers--;
-+		ath10k_peer_map_cleanup(ar, peer);
- 	}
- 	spin_unlock_bh(&ar->data_lock);
- }
-@@ -7620,10 +7627,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 				/* Clean up the peer object as well since we
- 				 * must have failed to do this above.
- 				 */
--				list_del(&peer->list);
--				ar->peer_map[i] = NULL;
--				kfree(peer);
--				ar->num_peers--;
-+				ath10k_peer_map_cleanup(ar, peer);
- 			}
- 		}
- 		spin_unlock_bh(&ar->data_lock);
-
-base-commit: c35538ce3b892dd4b41e24e887a434f296792959
--- 
-2.31.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Q3VycmVudGx5IGhvc3QgY2FuIHNlbmQgdHdvIFdNSSBjb21tYW5kcyBhdCBvbmNlLlRoZXJlIGlz
+IHBvc3NpYmlsaXR5IHRvCmNhdXNlIFNNTVUgaXNzdWVzIG9yIGNvcnJ1cHRpb24sIGlmIGhvc3Qg
+d2FudHMgdG8gaW5pdGlhdGUgMiBETUEKdHJhbnNmZXJzLCBpdCBpcyBwb3NzaWJsZSB3aGVuIGNv
+cHkgY29tcGxldGUgaW50ZXJydXB0IGZvciBmaXJzdCBETUEKcmVhY2hlcyBob3N0LCBDRSBoYXMg
+YWxyZWFkeSB1cGRhdGVkIFNSUkkgKFNvdXJjZSByaW5nIHJlYWQgaW5kZXgpIGZvcgpib3RoIERN
+QSB0cmFuc2ZlcnMgYW5kIGlzIGluIHRoZSBtaWRkbGUgb2YgMm5kIERNQS4gSG9zdCB1c2VzIFNS
+UkkKKFNvdXJjZSByaW5nIHJlYWQgaW5kZXgpIHRvIGludGVycHJldCBob3cgbWFueSBETUHigJlz
+IGhhdmUgYmVlbiBjb21wbGV0ZWQKYW5kIHRyaWVzIHRvIHVubWFwL2ZyZWUgYm90aCB0aGUgRE1B
+IGVudHJpZXMuSGVuY2Ugbm93IGl0IGlzIGxpbWl0aW5nIHRvCm9uZS5CZWNhdXNlIENFIGlzICBz
+dGlsbCBpbiB0aGUgbWlkZGxlIG9mIDJuZCBETUEgd2hpY2ggY2FuIGNhdXNlIHRoZXNlCmlzc3Vl
+cyB3aGVuIGhhbmRsaW5nIHR3byBETUEgdHJhbnNmZXJzLgoKVGhpcyBjaGFuZ2Ugd2lsbCBub3Qg
+aW1wYWN0IG90aGVyIHRhcmdldHMsIGFzIGl0IGlzIG9ubHkgZm9yIFdDTjM5OTAuCgpUZXN0ZWQt
+b246IFdDTjM5OTAgaHcxLjAgU05PQyBXTEFOLkhMLjIuMC0wMTM4Ny1RQ0FITFNXTVRQTFotMQoK
+U2lnbmVkLW9mZi1ieTogWW91Z2hhbmRoYXIgQ2hpbnRhbGEgPHF1aWNfeW91Z2hhbmRAcXVpY2lu
+Yy5jb20+Ci0tLQogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgfCAxNiAr
+KysrKysrKysrKysrKysrCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0Yy5jICB8
+IDEwICsrKysrKystLS0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHcuaCAgIHwg
+IDIgKysKIDMgZmlsZXMgY2hhbmdlZCwgMjUgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCmluZGV4IDI3Njk1NGI3MGQ2My4u
+ZDFhYzY0MDI2Y2IzIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L2NvcmUuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYwpAQCAt
+OTgsNiArOTgsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBr
+X2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50eF9zdGF0c19vdmVyX3BrdGxvZyA9IHRydWUsCiAJ
+CS5keW5hbWljX3Nhcl9zdXBwb3J0ID0gZmFsc2UsCiAJCS5od19yZXN0YXJ0X2Rpc2Nvbm5lY3Qg
+PSBmYWxzZSwKKwkJLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKIAl9LAogCXsKIAkJLmlkID0g
+UUNBOTg4WF9IV18yXzBfVkVSU0lPTiwKQEAgLTEzNiw2ICsxMzcsNyBAQCBzdGF0aWMgY29uc3Qg
+c3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50
+eF9zdGF0c19vdmVyX3BrdGxvZyA9IHRydWUsCiAJCS5keW5hbWljX3Nhcl9zdXBwb3J0ID0gZmFs
+c2UsCiAJCS5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKKwkJLnVzZV9md190eF9jcmVk
+aXRzID0gdHJ1ZSwKIAl9LAogCXsKIAkJLmlkID0gUUNBOTg4N19IV18xXzBfVkVSU0lPTiwKQEAg
+LTE3NSw2ICsxNzcsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRo
+MTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50eF9zdGF0c19vdmVyX3BrdGxvZyA9IGZhbHNl
+LAogCQkuZHluYW1pY19zYXJfc3VwcG9ydCA9IGZhbHNlLAogCQkuaHdfcmVzdGFydF9kaXNjb25u
+ZWN0ID0gZmFsc2UsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCiAJfSwKIAl7CiAJCS5p
+ZCA9IFFDQTYxNzRfSFdfM18yX1ZFUlNJT04sCkBAIC0yMDksNiArMjEyLDcgQEAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zIGF0aDEwa19od19wYXJhbXNfbGlzdFtdID0gewog
+CQkuc3VwcG9ydHNfcGVlcl9zdGF0c19pbmZvID0gdHJ1ZSwKIAkJLmR5bmFtaWNfc2FyX3N1cHBv
+cnQgPSB0cnVlLAogCQkuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0gZmFsc2UsCisJCS51c2VfZndf
+dHhfY3JlZGl0cyA9IHRydWUsCiAJfSwKIAl7CiAJCS5pZCA9IFFDQTYxNzRfSFdfMl8xX1ZFUlNJ
+T04sCkBAIC0yNDcsNiArMjUxLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFy
+YW1zIGF0aDEwa19od19wYXJhbXNfbGlzdFtdID0gewogCQkudHhfc3RhdHNfb3Zlcl9wa3Rsb2cg
+PSBmYWxzZSwKIAkJLmR5bmFtaWNfc2FyX3N1cHBvcnQgPSBmYWxzZSwKIAkJLmh3X3Jlc3RhcnRf
+ZGlzY29ubmVjdCA9IGZhbHNlLAorCQkudXNlX2Z3X3R4X2NyZWRpdHMgPSB0cnVlLAogCX0sCiAJ
+ewogCQkuaWQgPSBRQ0E2MTc0X0hXXzJfMV9WRVJTSU9OLApAQCAtMjg1LDYgKzI5MCw3IEBAIHN0
+YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFyYW1zX2xpc3Rb
+XSA9IHsKIAkJLnR4X3N0YXRzX292ZXJfcGt0bG9nID0gZmFsc2UsCiAJCS5keW5hbWljX3Nhcl9z
+dXBwb3J0ID0gZmFsc2UsCiAJCS5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKKwkJLnVz
+ZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKIAl9LAogCXsKIAkJLmlkID0gUUNBNjE3NF9IV18zXzBf
+VkVSU0lPTiwKQEAgLTMyMyw2ICszMjksNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19o
+d19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50eF9zdGF0c19vdmVyX3Br
+dGxvZyA9IGZhbHNlLAogCQkuZHluYW1pY19zYXJfc3VwcG9ydCA9IGZhbHNlLAogCQkuaHdfcmVz
+dGFydF9kaXNjb25uZWN0ID0gZmFsc2UsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCiAJ
+fSwKIAl7CiAJCS5pZCA9IFFDQTYxNzRfSFdfM18yX1ZFUlNJT04sCkBAIC0zNjUsNiArMzcyLDcg
+QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zIGF0aDEwa19od19wYXJhbXNf
+bGlzdFtdID0gewogCQkuc3VwcG9ydHNfcGVlcl9zdGF0c19pbmZvID0gdHJ1ZSwKIAkJLmR5bmFt
+aWNfc2FyX3N1cHBvcnQgPSB0cnVlLAogCQkuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0gZmFsc2Us
+CisJCS51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCiAJfSwKIAl7CiAJCS5pZCA9IFFDQTk5WDBf
+SFdfMl8wX0RFVl9WRVJTSU9OLApAQCAtNDA5LDYgKzQxNyw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
+Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFyYW1zX2xpc3RbXSA9IHsKIAkJLnR4X3N0
+YXRzX292ZXJfcGt0bG9nID0gZmFsc2UsCiAJCS5keW5hbWljX3Nhcl9zdXBwb3J0ID0gZmFsc2Us
+CiAJCS5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKKwkJLnVzZV9md190eF9jcmVkaXRz
+ID0gdHJ1ZSwKIAl9LAogCXsKIAkJLmlkID0gUUNBOTk4NF9IV18xXzBfREVWX1ZFUlNJT04sCkBA
+IC00NjAsNiArNDY5LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zIGF0
+aDEwa19od19wYXJhbXNfbGlzdFtdID0gewogCQkudHhfc3RhdHNfb3Zlcl9wa3Rsb2cgPSBmYWxz
+ZSwKIAkJLmR5bmFtaWNfc2FyX3N1cHBvcnQgPSBmYWxzZSwKIAkJLmh3X3Jlc3RhcnRfZGlzY29u
+bmVjdCA9IGZhbHNlLAorCQkudXNlX2Z3X3R4X2NyZWRpdHMgPSB0cnVlLAogCX0sCiAJewogCQku
+aWQgPSBRQ0E5ODg4X0hXXzJfMF9ERVZfVkVSU0lPTiwKQEAgLTUwOCw2ICs1MTgsNyBAQCBzdGF0
+aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10g
+PSB7CiAJCS50eF9zdGF0c19vdmVyX3BrdGxvZyA9IGZhbHNlLAogCQkuZHluYW1pY19zYXJfc3Vw
+cG9ydCA9IGZhbHNlLAogCQkuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0gZmFsc2UsCisJCS51c2Vf
+ZndfdHhfY3JlZGl0cyA9IHRydWUsCiAJfSwKIAl7CiAJCS5pZCA9IFFDQTkzNzdfSFdfMV8wX0RF
+Vl9WRVJTSU9OLApAQCAtNTQ2LDYgKzU1Nyw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBr
+X2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFyYW1zX2xpc3RbXSA9IHsKIAkJLnR4X3N0YXRzX292ZXJf
+cGt0bG9nID0gZmFsc2UsCiAJCS5keW5hbWljX3Nhcl9zdXBwb3J0ID0gZmFsc2UsCiAJCS5od19y
+ZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKKwkJLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwK
+IAl9LAogCXsKIAkJLmlkID0gUUNBOTM3N19IV18xXzFfREVWX1ZFUlNJT04sCkBAIC01ODYsNiAr
+NTk4LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zIGF0aDEwa19od19w
+YXJhbXNfbGlzdFtdID0gewogCQkudHhfc3RhdHNfb3Zlcl9wa3Rsb2cgPSBmYWxzZSwKIAkJLmR5
+bmFtaWNfc2FyX3N1cHBvcnQgPSBmYWxzZSwKIAkJLmh3X3Jlc3RhcnRfZGlzY29ubmVjdCA9IGZh
+bHNlLAorCQkudXNlX2Z3X3R4X2NyZWRpdHMgPSB0cnVlLAogCX0sCiAJewogCQkuaWQgPSBRQ0E5
+Mzc3X0hXXzFfMV9ERVZfVkVSU0lPTiwKQEAgLTYxNyw2ICs2MzAsNyBAQCBzdGF0aWMgY29uc3Qg
+c3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS5j
+cmVkaXRfc2l6ZV93b3JrYXJvdW5kID0gdHJ1ZSwKIAkJLmR5bmFtaWNfc2FyX3N1cHBvcnQgPSBm
+YWxzZSwKIAkJLmh3X3Jlc3RhcnRfZGlzY29ubmVjdCA9IGZhbHNlLAorCQkudXNlX2Z3X3R4X2Ny
+ZWRpdHMgPSB0cnVlLAogCX0sCiAJewogCQkuaWQgPSBRQ0E0MDE5X0hXXzFfMF9ERVZfVkVSU0lP
+TiwKQEAgLTY2Miw2ICs2NzYsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJh
+bXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50eF9zdGF0c19vdmVyX3BrdGxvZyA9
+IGZhbHNlLAogCQkuZHluYW1pY19zYXJfc3VwcG9ydCA9IGZhbHNlLAogCQkuaHdfcmVzdGFydF9k
+aXNjb25uZWN0ID0gZmFsc2UsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCiAJfSwKIAl7
+CiAJCS5pZCA9IFdDTjM5OTBfSFdfMV8wX0RFVl9WRVJTSU9OLApAQCAtNjkzLDYgKzcwOCw3IEBA
+IHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFyYW1zX2xp
+c3RbXSA9IHsKIAkJLnR4X3N0YXRzX292ZXJfcGt0bG9nID0gZmFsc2UsCiAJCS5keW5hbWljX3Nh
+cl9zdXBwb3J0ID0gdHJ1ZSwKIAkJLmh3X3Jlc3RhcnRfZGlzY29ubmVjdCA9IHRydWUsCisJCS51
+c2VfZndfdHhfY3JlZGl0cyA9IGZhbHNlLAogCX0sCiB9OwogCmRpZmYgLS1naXQgYS9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0Yy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway9odGMuYwppbmRleCBmYWIzOTgwNDZhM2YuLmNmNTViNGY3YjI4MCAxMDA2NDQKLS0t
+IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odGMuYworKysgYi9kcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0Yy5jCkBAIC05NDcsMTMgKzk0NywxNyBAQCBpbnQgYXRo
+MTBrX2h0Y193YWl0X3RhcmdldChzdHJ1Y3QgYXRoMTBrX2h0YyAqaHRjKQogCQlyZXR1cm4gLUVD
+T01NOwogCX0KIAotCWh0Yy0+dG90YWxfdHJhbnNtaXRfY3JlZGl0cyA9IF9fbGUxNl90b19jcHUo
+bXNnLT5yZWFkeS5jcmVkaXRfY291bnQpOworCWlmIChhci0+aHdfcGFyYW1zLnVzZV9md190eF9j
+cmVkaXRzKQorCQlodGMtPnRvdGFsX3RyYW5zbWl0X2NyZWRpdHMgPSBfX2xlMTZfdG9fY3B1KG1z
+Zy0+cmVhZHkuY3JlZGl0X2NvdW50KTsKKwllbHNlCisJCWh0Yy0+dG90YWxfdHJhbnNtaXRfY3Jl
+ZGl0cyA9IDE7CiAJaHRjLT50YXJnZXRfY3JlZGl0X3NpemUgPSBfX2xlMTZfdG9fY3B1KG1zZy0+
+cmVhZHkuY3JlZGl0X3NpemUpOwogCiAJYXRoMTBrX2RiZyhhciwgQVRIMTBLX0RCR19IVEMsCi0J
+CSAgICJUYXJnZXQgcmVhZHkhIHRyYW5zbWl0IHJlc291cmNlczogJWQgc2l6ZTolZFxuIiwKKwkJ
+ICAgIlRhcmdldCByZWFkeSEgdHJhbnNtaXQgcmVzb3VyY2VzOiAlZCBzaXplOiVkIGFjdHVhbCBj
+cmVkaXRzOiVkXG4iLAogCQkgICBodGMtPnRvdGFsX3RyYW5zbWl0X2NyZWRpdHMsCi0JCSAgIGh0
+Yy0+dGFyZ2V0X2NyZWRpdF9zaXplKTsKKwkJICAgaHRjLT50YXJnZXRfY3JlZGl0X3NpemUsCisJ
+CSAgIG1zZy0+cmVhZHkuY3JlZGl0X2NvdW50KTsKIAogCWlmICgoaHRjLT50b3RhbF90cmFuc21p
+dF9jcmVkaXRzID09IDApIHx8CiAJICAgIChodGMtPnRhcmdldF9jcmVkaXRfc2l6ZSA9PSAwKSkg
+ewpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ody5oIGIvZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ody5oCmluZGV4IDkzYWNmMGRkNTgwYS4uMWI5
+OWYzYTM5YTExIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3
+LmgKKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ody5oCkBAIC02MzUsNiAr
+NjM1LDggQEAgc3RydWN0IGF0aDEwa19od19wYXJhbXMgewogCWJvb2wgZHluYW1pY19zYXJfc3Vw
+cG9ydDsKIAogCWJvb2wgaHdfcmVzdGFydF9kaXNjb25uZWN0OworCisJYm9vbCB1c2VfZndfdHhf
+Y3JlZGl0czsKIH07CiAKIHN0cnVjdCBodHRfcmVzcDsKLS0gCjIuMzcuMAoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
