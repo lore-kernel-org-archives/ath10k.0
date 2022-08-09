@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC214C19F2D
-	for <ath10k@archiver.kernel.org>; Tue,  9 Aug 2022 06:16:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCDF1C19F2D
+	for <ath10k@archiver.kernel.org>; Tue,  9 Aug 2022 06:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
 	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a1zxRw9Xitrqkuk+IFOBe3tJCPwgRd73uVrtEjyl3oY=; b=e7sJj+a97Y6fxr
-	Ys/aQlcNhyLLh3V9yNEXAdRuPMoNjAq1lmCU5fOACcJErmizAlPqLg1gtGpReY41kYJ7z2NTUsSvi
-	i6RWuws71TzVspFNPPYxDFYYTls7wZcdhbP8mz37OC7RtQBT8YbKvrNH9YdHFAJk21liFHxvfLeBn
-	moJNLhEhuXGX4vxUVH0P+9esTGg2jM47vOP3ZtO7ZfFML4W6WCIL533eLEaQhdLWsyOtjSGf/QBzI
-	Yz5bTqjNtRkfDj/VcmDs1Y6X0pvSpE5uFG8TWc2XIVVvkOurRpCvyM4GLwhHbJKP1CrfU7Q5pYcHM
-	1xnOiirRc76kFgbbF3dg==;
+	List-Owner; bh=TbL1+yj84giEsFZcUSYCfiIhAkIXQVjhAbGKEW4N8vc=; b=43FitnEBXfz7+F
+	HZH34hSGJe9iPFV/C5epZwPfLR692RcelkAxEVuBWWtU+9cG2K/jB9vKB3rMKOKuZDZJ2Y6cXqq5m
+	a2D3crosFL4vyyU8sZAjajdIfknFaXePIO6of+7yRJR8OEZ9FZJ18zNhR7751ws+xzvte+mCzEhD0
+	txEJx9h8FxJBVwhuoxNaY52FfXSjPhvniptycVm+Om9Rq3MezFyM3pxmAAcmJnnhO7OMVISyKrGMS
+	nkLKskN6eNhq2EJgVVy0q9LpFUSNNoOJ9AQ+dzet2Ky7yFsK3T/hX8F0eg602FG9nrGZ94sIAFiUZ
+	4zdA+GVdtavLN94Cm3ow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLIXY-001rPT-Pk; Tue, 09 Aug 2022 06:16:32 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1oLIX1-001r8z-9J; Tue, 09 Aug 2022 06:15:59 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLIXQ-001rIy-6h
-	for ath10k@lists.infradead.org; Tue, 09 Aug 2022 06:16:30 +0000
+	id 1oLIWs-001r3x-Sb
+	for ath10k@lists.infradead.org; Tue, 09 Aug 2022 06:15:56 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 40E55B81071;
-	Tue,  9 Aug 2022 06:16:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B181C433C1;
-	Tue,  9 Aug 2022 06:16:17 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6577A611EB;
+	Tue,  9 Aug 2022 06:15:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7E15C433D6;
+	Tue,  9 Aug 2022 06:15:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1660025779;
-	bh=TGchnS6BkA6p6sFkGmCoUx5L9X5+8rZ1CbWWD6TQ7iQ=;
+	s=k20201202; t=1660025748;
+	bh=k7OuGhnfskK7dll6V8t3jjANCTkSpibWPAEjmEo2dHA=;
 	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=KFrVZVSpkjMG3fRbYJl7u65RUpxYEY3dgt0ZMnaMTHkeqf1BCIROTa7ch6oTW7xaa
-	 flmqYS6x77MrFfU2Nn+f2QGlVx6rY6jMAar6PGhHCkehJAxqnslQn4E9a076Ji2dyY
-	 EvtT29v7URRo8+TjN2jJU+dYDUI5N9zAyIVURu3q3e0sq2MgiVR/x3v6+MEY5ijpvz
-	 e6gUxmX6L3gbJsq1bUhJY+e9toxL2o6a+mAIaRvV/72C3HqyrrH6ZEuiHifgy1G/fS
-	 RE+lKRHjnuUKb8zq4nGjdePFk7ItiuBD0TArsQm+nYueOrzC1M6Jz/nbAPz4zlaBPX
-	 QzLZaU5jsmXWg==
+	b=HycFWDhiEN0sC++XhgJIpjbsg35hqKJt0/DKXHRF7tq+dxKWVgyG5oJnRNhzizy+H
+	 GSsRlhsd2BUJZz0ye6lDPXr40lY51hAuqEnSg9S/SF+Yx0r/3RuXjfxMAa89BnjKPn
+	 07H7fC05YUCEysa6xLgze+6xPLF9EttmN4e+X+KvpkPQhB5Cq/xWIZylFIfiI4rHwx
+	 Xq1CoZ1iBpAPXJVMuKrkF/60AlzbXhu46TvxfU+GCoJ5/XXDuA98HWScXZjuRsbOpE
+	 nLSmtwAtUNGSFYYXoKG1r+dYggbtOtaesiAJNd32zmaCZOewa3y9pyTuwL7PRso/MR
+	 8XzD5HheKo6qQ==
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] wifi: ath10k: add peer map clean up for peer delete in
- ath10k_sta_state()
+Subject: Re: [PATCH] wifi:ath10k: Set tx credit to one for WCN3990 snoc based
+ devices
 From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20220801141930.16794-1-quic_wgong@quicinc.com>
-References: <20220801141930.16794-1-quic_wgong@quicinc.com>
-To: Wen Gong <quic_wgong@quicinc.com>
+In-Reply-To: <20220801134941.15216-1-quic_youghand@quicinc.com>
+References: <20220801134941.15216-1-quic_youghand@quicinc.com>
+To: Youghandhar Chintala <quic_youghand@quicinc.com>
 Cc: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
- <quic_wgong@quicinc.com>
+ Youghandhar Chintala <quic_youghand@quicinc.com>
 User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <166002577637.17823.4403860593680632775.kvalo@kernel.org>
-Date: Tue,  9 Aug 2022 06:16:17 +0000 (UTC)
+Message-ID: <166002574373.17823.14670540192835891455.kvalo@kernel.org>
+Date: Tue,  9 Aug 2022 06:15:47 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220808_231624_602167_2388ADA2 
-X-CRM114-Status: GOOD (  14.31  )
+X-CRM114-CacheID: sfid-20220808_231551_005149_360ADFE5 
+X-CRM114-Status: GOOD (  10.37  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,130 +68,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Wen Gong <quic_wgong@quicinc.com> wrote:
-
-> When peer delete failed in a disconnect operation, use-after-free
-> detected by KFENCE in below log. It is because for each vdev_id and
-> address, it has only one struct ath10k_peer, it is allocated in
-> ath10k_peer_map_event(). When connected to an AP, it has more than
-> one HTT_T2H_MSG_TYPE_PEER_MAP reported from firmware, then the
-> array peer_map of struct ath10k will be set muti-elements to the
-> same ath10k_peer in ath10k_peer_map_event(). When peer delete failed
-> in ath10k_sta_state(), the ath10k_peer will be free for the 1st peer
-> id in array peer_map of struct ath10k, and then use-after-free happened
-> for the 2nd peer id because they map to the same ath10k_peer.
-> 
-> And clean up all peers in array peer_map for the ath10k_peer, then
-> user-after-free disappeared
-> 
-> peer map event log:
-> [  306.911021] wlan0: authenticate with b0:2a:43:e6:75:0e
-> [  306.957187] ath10k_pci 0000:01:00.0: mac vdev 0 peer create b0:2a:43:e6:75:0e (new sta) sta 1 / 32 peer 1 / 33
-> [  306.957395] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 246
-> [  306.957404] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 198
-> [  306.986924] ath10k_pci 0000:01:00.0: htt peer map vdev 0 peer b0:2a:43:e6:75:0e id 166
-> 
-> peer unmap event log:
-> [  435.715691] wlan0: deauthenticating from b0:2a:43:e6:75:0e by local choice (Reason: 3=DEAUTH_LEAVING)
-> [  435.716802] ath10k_pci 0000:01:00.0: mac vdev 0 peer delete b0:2a:43:e6:75:0e sta ffff990e0e9c2b50 (sta gone)
-> [  435.717177] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 246
-> [  435.717186] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 198
-> [  435.717193] ath10k_pci 0000:01:00.0: htt peer unmap vdev 0 peer b0:2a:43:e6:75:0e id 166
-> 
-> use-after-free log:
-> [21705.888627] wlan0: deauthenticating from d0:76:8f:82:be:75 by local choice (Reason: 3=DEAUTH_LEAVING)
-> [21713.799910] ath10k_pci 0000:01:00.0: failed to delete peer d0:76:8f:82:be:75 for vdev 0: -110
-> [21713.799925] ath10k_pci 0000:01:00.0: found sta peer d0:76:8f:82:be:75 (ptr 0000000000000000 id 102) entry on vdev 0 after it was supposedly removed
-> [21713.799968] ==================================================================
-> [21713.799991] BUG: KFENCE: use-after-free read in ath10k_sta_state+0x265/0xb8a [ath10k_core]
-> [21713.799991]
-> [21713.799997] Use-after-free read at 0x00000000abe1c75e (in kfence-#69):
-> [21713.800010]  ath10k_sta_state+0x265/0xb8a [ath10k_core]
-> [21713.800041]  drv_sta_state+0x115/0x677 [mac80211]
-> [21713.800059]  __sta_info_destroy_part2+0xb1/0x133 [mac80211]
-> [21713.800076]  __sta_info_flush+0x11d/0x162 [mac80211]
-> [21713.800093]  ieee80211_set_disassoc+0x12d/0x2f4 [mac80211]
-> [21713.800110]  ieee80211_mgd_deauth+0x26c/0x29b [mac80211]
-> [21713.800137]  cfg80211_mlme_deauth+0x13f/0x1bb [cfg80211]
-> [21713.800153]  nl80211_deauthenticate+0xf8/0x121 [cfg80211]
-> [21713.800161]  genl_rcv_msg+0x38e/0x3be
-> [21713.800166]  netlink_rcv_skb+0x89/0xf7
-> [21713.800171]  genl_rcv+0x28/0x36
-> [21713.800176]  netlink_unicast+0x179/0x24b
-> [21713.800181]  netlink_sendmsg+0x3a0/0x40e
-> [21713.800187]  sock_sendmsg+0x72/0x76
-> [21713.800192]  ____sys_sendmsg+0x16d/0x1e3
-> [21713.800196]  ___sys_sendmsg+0x95/0xd1
-> [21713.800200]  __sys_sendmsg+0x85/0xbf
-> [21713.800205]  do_syscall_64+0x43/0x55
-> [21713.800210]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [21713.800213]
-> [21713.800219] kfence-#69: 0x000000009149b0d5-0x000000004c0697fb, size=1064, cache=kmalloc-2k
-> [21713.800219]
-> [21713.800224] allocated by task 13 on cpu 0 at 21705.501373s:
-> [21713.800241]  ath10k_peer_map_event+0x7e/0x154 [ath10k_core]
-> [21713.800254]  ath10k_htt_t2h_msg_handler+0x586/0x1039 [ath10k_core]
-> [21713.800265]  ath10k_htt_htc_t2h_msg_handler+0x12/0x28 [ath10k_core]
-> [21713.800277]  ath10k_htc_rx_completion_handler+0x14c/0x1b5 [ath10k_core]
-> [21713.800283]  ath10k_pci_process_rx_cb+0x195/0x1df [ath10k_pci]
-> [21713.800294]  ath10k_ce_per_engine_service+0x55/0x74 [ath10k_core]
-> [21713.800305]  ath10k_ce_per_engine_service_any+0x76/0x84 [ath10k_core]
-> [21713.800310]  ath10k_pci_napi_poll+0x49/0x144 [ath10k_pci]
-> [21713.800316]  net_rx_action+0xdc/0x361
-> [21713.800320]  __do_softirq+0x163/0x29a
-> [21713.800325]  asm_call_irq_on_stack+0x12/0x20
-> [21713.800331]  do_softirq_own_stack+0x3c/0x48
-> [21713.800337]  __irq_exit_rcu+0x9b/0x9d
-> [21713.800342]  common_interrupt+0xc9/0x14d
-> [21713.800346]  asm_common_interrupt+0x1e/0x40
-> [21713.800351]  ksoftirqd_should_run+0x5/0x16
-> [21713.800357]  smpboot_thread_fn+0x148/0x211
-> [21713.800362]  kthread+0x150/0x15f
-> [21713.800367]  ret_from_fork+0x22/0x30
-> [21713.800370]
-> [21713.800374] freed by task 708 on cpu 1 at 21713.799953s:
-> [21713.800498]  ath10k_sta_state+0x2c6/0xb8a [ath10k_core]
-> [21713.800515]  drv_sta_state+0x115/0x677 [mac80211]
-> [21713.800532]  __sta_info_destroy_part2+0xb1/0x133 [mac80211]
-> [21713.800548]  __sta_info_flush+0x11d/0x162 [mac80211]
-> [21713.800565]  ieee80211_set_disassoc+0x12d/0x2f4 [mac80211]
-> [21713.800581]  ieee80211_mgd_deauth+0x26c/0x29b [mac80211]
-> [21713.800598]  cfg80211_mlme_deauth+0x13f/0x1bb [cfg80211]
-> [21713.800614]  nl80211_deauthenticate+0xf8/0x121 [cfg80211]
-> [21713.800619]  genl_rcv_msg+0x38e/0x3be
-> [21713.800623]  netlink_rcv_skb+0x89/0xf7
-> [21713.800628]  genl_rcv+0x28/0x36
-> [21713.800632]  netlink_unicast+0x179/0x24b
-> [21713.800637]  netlink_sendmsg+0x3a0/0x40e
-> [21713.800642]  sock_sendmsg+0x72/0x76
-> [21713.800646]  ____sys_sendmsg+0x16d/0x1e3
-> [21713.800651]  ___sys_sendmsg+0x95/0xd1
-> [21713.800655]  __sys_sendmsg+0x85/0xbf
-> [21713.800659]  do_syscall_64+0x43/0x55
-> [21713.800663]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00288-QCARMSWPZ-1
-> 
-> Fixes: d0eeafad1189 ("ath10k: Clean up peer when sta goes away.")
-> Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-f020d9570a04 wifi: ath10k: add peer map clean up for peer delete in ath10k_sta_state()
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20220801141930.16794-1-quic_wgong@quicinc.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+WW91Z2hhbmRoYXIgQ2hpbnRhbGEgPHF1aWNfeW91Z2hhbmRAcXVpY2luYy5jb20+IHdyb3RlOgoK
+PiBDdXJyZW50bHkgaG9zdCBjYW4gc2VuZCB0d28gV01JIGNvbW1hbmRzIGF0IG9uY2UuIFRoZXJl
+IGlzIHBvc3NpYmlsaXR5IHRvCj4gY2F1c2UgU01NVSBpc3N1ZXMgb3IgY29ycnVwdGlvbiwgaWYg
+aG9zdCB3YW50cyB0byBpbml0aWF0ZSAyIERNQQo+IHRyYW5zZmVycywgaXQgaXMgcG9zc2libGUg
+d2hlbiBjb3B5IGNvbXBsZXRlIGludGVycnVwdCBmb3IgZmlyc3QgRE1BCj4gcmVhY2hlcyBob3N0
+LCBDRSBoYXMgYWxyZWFkeSB1cGRhdGVkIFNSUkkgKFNvdXJjZSByaW5nIHJlYWQgaW5kZXgpIGZv
+cgo+IGJvdGggRE1BIHRyYW5zZmVycyBhbmQgaXMgaW4gdGhlIG1pZGRsZSBvZiAybmQgRE1BLiBI
+b3N0IHVzZXMgU1JSSQo+IChTb3VyY2UgcmluZyByZWFkIGluZGV4KSB0byBpbnRlcnByZXQgaG93
+IG1hbnkgRE1B4oCZcyBoYXZlIGJlZW4gY29tcGxldGVkCj4gYW5kIHRyaWVzIHRvIHVubWFwL2Zy
+ZWUgYm90aCB0aGUgRE1BIGVudHJpZXMuIEhlbmNlIG5vdyBpdCBpcyBsaW1pdGluZyB0bwo+IG9u
+ZS5CZWNhdXNlIENFIGlzICBzdGlsbCBpbiB0aGUgbWlkZGxlIG9mIDJuZCBETUEgd2hpY2ggY2Fu
+IGNhdXNlIHRoZXNlCj4gaXNzdWVzIHdoZW4gaGFuZGxpbmcgdHdvIERNQSB0cmFuc2ZlcnMuCj4g
+Cj4gVGhpcyBjaGFuZ2Ugd2lsbCBub3QgaW1wYWN0IG90aGVyIHRhcmdldHMsIGFzIGl0IGlzIG9u
+bHkgZm9yIFdDTjM5OTAuCj4gCj4gVGVzdGVkLW9uOiBXQ04zOTkwIGh3MS4wIFNOT0MgV0xBTi5I
+TC4yLjAtMDEzODctUUNBSExTV01UUExaLTEKPiAKPiBTaWduZWQtb2ZmLWJ5OiBZb3VnaGFuZGhh
+ciBDaGludGFsYSA8cXVpY195b3VnaGFuZEBxdWljaW5jLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBL
+YWxsZSBWYWxvIDxxdWljX2t2YWxvQHF1aWNpbmMuY29tPgoKUGF0Y2ggYXBwbGllZCB0byBhdGgt
+bmV4dCBicmFuY2ggb2YgYXRoLmdpdCwgdGhhbmtzLgoKZDgxYmJiNjg0YzI1IHdpZmk6IGF0aDEw
+azogU2V0IHR4IGNyZWRpdCB0byBvbmUgZm9yIFdDTjM5OTAgc25vYyBiYXNlZCBkZXZpY2VzCgot
+LSAKaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNzL3Bh
+dGNoLzIwMjIwODAxMTM0OTQxLjE1MjE2LTEtcXVpY195b3VnaGFuZEBxdWljaW5jLmNvbS8KCmh0
+dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL2RldmVsb3BlcnMvZG9jdW1lbnRhdGlv
+bi9zdWJtaXR0aW5ncGF0Y2hlcwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
+cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
