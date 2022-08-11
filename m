@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4728C25B0C
-	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 15:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73628C19F2A
+	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 15:57:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SfHcv2QVYwLM9u4+0ujwTqc0W0lSLsAug7nkRr7J+Ss=; b=s1TX8XRRwVneYu
-	r5wHUMNjqwtFV8KX/ozFx/zealODMIXbr9ztdBDKciBRE4syxzj/DLo0QsLoTlFK2bkkqN1wcE+90
-	Wphy8TdvTZVqGekqTJzr0nSXrP1PbqenkRmbqbL5zIEbELLkZtfay1keJ1Spu+MeDIF77u5BdbojE
-	Utcntb/olSN3cm2DDMTG5ExSsZIMx10KtYWm/K/sqvteJ7uxSleR2yc5fJm3SrZ4P57GCLUDwzJfV
-	/oWgiTsS35eCYYz0f3nhBvULbI/zBNJa68lKj5bOSgGQROxYikKA1tVLoQgBqi3PP4+58nUUc2XzD
-	B2965rpv5x33tDPs1cfg==;
+	List-Owner; bh=FHOxQkWTcwR4jv0R7lSOGNAHsLUCBtbLI5E3BJmuJkA=; b=uPgG3FN5zMqPGs
+	Ce+PCkt8EoHtjrOxeA6Ui+1Xx7UpdgSC98jLvDtSg7W5Q75B1lCvSfkFpICI3fxl2Iu2U7kwUYhNo
+	sQ7WvjShz7Dyf9PVx04uRPuGyrtzHyH3TKIUEHslLBJtC7Idg5yde071NeuB/yrVfAABghHAleepj
+	Uu2vCh10+QgBfGVC9YwMBpMilfMjBGfAZD0+6FvbfUMIoArAFQ1qFhodDCtx7dNeU1eEwtsdmIXL6
+	HShswTj3bNEGIDjMXd3HN1PzxwI2tceR1A2eirmQReZZF0I8aUOizzGNy7SO42fCQ9eJHoMwSA4xR
+	pbbRLkaB+PqFSHIraNmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAKx-00E9kv-6D; Thu, 11 Aug 2022 15:43:07 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1oMAYW-00EXBm-8M; Thu, 11 Aug 2022 15:57:08 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAKs-00E9dk-Gr
-	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 15:43:04 +0000
+	id 1oMAYP-00EX48-Be
+	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 15:57:04 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 184D9B82165;
-	Thu, 11 Aug 2022 15:43:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 229E3C433D7;
-	Thu, 11 Aug 2022 15:42:58 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E19E561307;
+	Thu, 11 Aug 2022 15:57:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7114CC433C1;
+	Thu, 11 Aug 2022 15:56:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1660232579;
-	bh=ZrVVdqJ1lXbKlPTTe/MiF2IuGjRwNIlSt/ErmVMx+tA=;
+	s=k20201202; t=1660233420;
+	bh=6ZWUFGHzj3t1dR5Jc/nh1Z2SbkQ3ZS2lBDADQz965o4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eM4eIlv9xswx4GCOj9oMtopk5hraUSqmpp1RAlyJnrzqakJhkiNuMXLCcRfx3ZLse
-	 VPAe+5J3ufNdQbafgsFGOZy5erdLjnuA9nSuwXRj61DcmgLw4P0C8y20j5iEuUhUCe
-	 nW9x31pIMjI/ma+FVCqmjJaotE3l2vDqGrxLIFpv9P5XadhoPTnUVYEe+DqUaHp5wC
-	 ZVAF9JcI1lIrIublygkfy43zGLHYuJ6zR8WY2Pfxau4sSJY2uEEvPns5JqKmvWyCh3
-	 NAc2yRfFa41K2OOnw1PXboVDC6UzjjrSoNuUQ2dBrxJr1P/tR0LvXvBGaVAS2IAqOc
-	 CUs5r4x0gNL9w==
+	b=tQYpOuAILVmhw5xOzjPNYEgMLB7Ad9VRKnYMRewQTfWGu+LSmu+250596rwuj7kUS
+	 ihpog0V1FfNljQdezMxG5VgDWgMjjlpNDyvgEQiJ2d4lQQ/RCbck2pu7+SGlCD0Vmx
+	 oeQTCbclWrwXHQwymG9CiUtBgtbhGoegNSKrFg9t4autMr0ek/9oIf0DXuo6kTWhXm
+	 rKaRrLZ5tI++5yHcGusxLRWJN6bWjfFTqRiDgeblYM2F0EnYvLw5hbYFjnfojo2fMl
+	 fjDRQcmFp6FgJRebw9/ka1piXqRvcJBQwWTarM7WkJl74WUjMOwJbXxbp2/ikxr6JV
+	 rDPRxYXL+HIXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -56,17 +56,17 @@ Cc: Maxime Bizon <mbizon@freebox.fr>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 04/93] ath10k: fix misreported tx bandwidth for 160Mhz
-Date: Thu, 11 Aug 2022 11:40:58 -0400
-Message-Id: <20220811154237.1531313-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 04/69] ath10k: fix misreported tx bandwidth for 160Mhz
+Date: Thu, 11 Aug 2022 11:55:13 -0400
+Message-Id: <20220811155632.1536867-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220811154237.1531313-1-sashal@kernel.org>
-References: <20220811154237.1531313-1-sashal@kernel.org>
+In-Reply-To: <20220811155632.1536867-1-sashal@kernel.org>
+References: <20220811155632.1536867-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220811_084302_728808_3FFC5FD8 
+X-CRM114-CacheID: sfid-20220811_085701_469218_CB1C31FC 
 X-CRM114-Status: UNSURE (   8.84  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
@@ -104,10 +104,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 771252dd6d4e..e8727c0b0171 100644
+index adbaeb67eedf..59595001e2d9 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3884,6 +3884,10 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
+@@ -3759,6 +3759,10 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
  		arsta->tx_info.status.rates[0].flags |=
  				IEEE80211_TX_RC_80_MHZ_WIDTH;
  		break;
