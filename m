@@ -4,51 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76ED2C25B06
-	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 16:04:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE6A2C25B0C
+	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 16:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2DyqnVsjIwU0LYmXjLTaxs+SuYXs18qM0LTIocX9DnA=; b=VTFyEZFNbvCJuQ
-	23k+EQ8RYX8zIWVCjunxmaTO1NGa7ZRPtjc4ectY8xNXPjalb8mesTeLDQt0Z0Q6W/W2ZiwDGaxZi
-	SoWGLFESu7RuzoRXas0+icxyElsxNwGjn9eNoeMfYHJiD+66fG6zSt0nhFe3/UJQlwv3ris/oPcdx
-	6anZjo9St0RZhttigZUkrbLw7sx+Hr5dqFMl4ZPzhS3pDgeEciiEGIN+wuNb19rw+HLrXLPOS5sOl
-	0z4EKJS80z+2jZwkaJvp8pN1ZrD2kQXQcxEIl2PQgBe86Bi5GlUBUbbDTIjq3rYkE3YNEus5+NgEP
-	GKJ7OlGre3I2UsV7b/Fg==;
+	List-Owner; bh=IMcSn75W8uVnaRwzEOwWXsWTFQ22MX2euH592jaA7Kw=; b=HzbhkFCO5v1pRs
+	MT0S1/PepK091B+BpvZDrkpGzl1I3DlCrcrlv2Nglw8qnk8wDLXHUyb2r+QV4lfouG15mksdPcxBB
+	+RYnJtWODeRjOXxLY25ISs1skjlqCsyUHP/8QIPwFPK+ZHi9rSQJ/WbGpchuNHsKMZGCE5pDRmBd4
+	U/MQXTFGXpBuxx7DRcTyB+6cDzjERZ2wjKCkRX90+nBnMD9LuiA6E5BgDVwelImj3WVceqkZBTXRe
+	Nxmsr6lRBoxeWDBjDhg/LSKzAlM5AZa/64DE2BaIwbqQrkddBoIZYD6Hmbbi0b3SOqHwX5MNH8jrl
+	EzAjMKaGvg/DnFkVQ+Iw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAfj-00EfZS-FY; Thu, 11 Aug 2022 16:04:35 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1oMAfv-00Efjr-OO; Thu, 11 Aug 2022 16:04:47 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAff-00EfTi-Bm
-	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 16:04:34 +0000
+	id 1oMAfs-00EffZ-Jg
+	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 16:04:46 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id BB40BB821AD;
-	Thu, 11 Aug 2022 16:04:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD57EC433D6;
-	Thu, 11 Aug 2022 16:04:26 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 80A7E61389;
+	Thu, 11 Aug 2022 16:04:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61BB7C433D7;
+	Thu, 11 Aug 2022 16:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1660233868;
-	bh=lwtkU1Z4CuZPbC7W49KZt1Zqcf4qQ7xWvTEWv5T9vs0=;
+	s=k20201202; t=1660233881;
+	bh=eeMxLyMBnHp8qz7QBvTK3AYqhUhlL3pajegNTaJlOcE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b/V0+U24bGeY2ZbKrggofrTzdq3AH9TvhbBQbXTo/9DpYGolgsiT89d2P80UemeBI
-	 Wz06MyZLQArHJIw1a8K+W8oIukUCjW6wa4m2IHqlFfQK1vEm6lr9dTPI/gm9wUPdan
-	 IUmuMbdrFevDB0mB+sGevPpaGdwUWyIyNXCxeeIKx8j6aSLppH6W3UzTknwQSiI2Tm
-	 Mjl0GWs1kI9C1ALV9e1LL0R4rgMoAIFfaslw2KwSqBDTN6W5vteajka88bNz1B4c9S
-	 rp/YZvCSDkLHdTnVFiUHTYaYxkbdMAfUQnJ8r3bYaEMAkcNK7VDSqbCeHd6gRCrUT0
-	 tejFd5EmHOYcg==
+	b=B6nFUxw8TqtAV5Wk73wJvX1MYF7Pjkgz2xtY4uXmuSQP0fR9lrwDb/WSHSdrEuev8
+	 3+RcsmwW4ALwN7TqUwQTqI422DL1z08kaPVGoxXBorsE3yO853DaLUfPE+hI7HpcJr
+	 0+039BssNfRcrHPPR7uEM2mfQPx/9l5+nhUa4B00Dwx4UPbkPklYauCqpR/pgCYMc2
+	 6MSVINQqPdjS1ghU7fz0kGNu1TrNM97TkyiV2E+ViyqsyivS6LdQpHC42n5MWP3cXr
+	 NjN8Arv/gUXWJ+r1m5KsFN1YuQ6uar+4VS5kbCxPrJol4Of7YjzU30+wID5E25Ch/L
+	 xMl5Jfc7ds8yQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-	Zhijun You <hujy652@gmail.com>,
-	Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>,
-	John Crispin <john@phrozen.org>,
+Cc: Wen Gong <quic_wgong@quicinc.com>,
 	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>,
 	kvalo@kernel.org,
@@ -59,9 +56,9 @@ Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 02/46] ath10k: htt_tx: do not interpret Eth frames as WiFi
-Date: Thu, 11 Aug 2022 12:03:26 -0400
-Message-Id: <20220811160421.1539956-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 07/46] ath10k: fix regdomain info of iw reg set/get
+Date: Thu, 11 Aug 2022 12:03:31 -0400
+Message-Id: <20220811160421.1539956-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811160421.1539956-1-sashal@kernel.org>
 References: <20220811160421.1539956-1-sashal@kernel.org>
@@ -69,8 +66,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220811_090431_762149_64C46F49 
-X-CRM114-Status: GOOD (  19.78  )
+X-CRM114-CacheID: sfid-20220811_090444_755806_36821A3D 
+X-CRM114-Status: GOOD (  15.43  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,171 +84,133 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+From: Wen Gong <quic_wgong@quicinc.com>
 
-[ Upstream commit 70f119fb82af7f7417dc659faf02c91e1f853739 ]
+[ Upstream commit 8723750e2753868591ba86a57b0041c5e38047ad ]
 
-The xmit path for the Ethernet encapsulated frames become more or less
-usable since d740d8fd2439 ("ath10k: unify tx mode and dispatch"). This
-change reorganize the xmit path in a manageable way to properly support
-various tx modes, but misses that the Ethernet encapsulated frame is a
-special case. We do not have an IEEE 802.11 header at the begining of
-them. But the HTT Tx handler still interprets first bytes of each frame
-as an IEEE 802.11 Frame Control field.
+When wlan load, firmware report the reg code with 0x6C for QCA6174,
+it is world reg which checked by ath_is_world_regd(), then the reg
+will be save into reg_world_copy of ath_common in ath_regd_init().
+Later the regulatory of ath_common is updated to another country
+code such as "US" in ath_reg_notifier_apply() by below call stack.
+After that, regulatory_hint() is called in ath10k_mac_register()
+and it lead "iw reg get" show two regdomain info as below.
 
-Than this code was copied by e62ee5c381c5 ("ath10k: Add support for
-htt_data_tx_desc_64 descriptor") and a2097d6444c3 ("ath10k: htt: High
-latency TX support") to another handlers. In fact the issue in the high
-latency (HL) handler was introduced by 83ac260151e7 ("ath10k: add mic
-bytes for pmf management packet").
+global
+country US: DFS-FCC
+	(2400 - 2472 @ 40), (N/A, 30), (N/A)
+	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
+	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
+	(5730 - 5850 @ 80), (N/A, 30), (N/A)
+	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
 
-Ethernet encapsulated frame tx mode stay unused until 75d85fd9993c
-("ath10k: introduce basic tdls functionality") started using it for TDLS
-frames to avoid key selection issue in some firmwares.
+phy#0
+country US: DFS-FCC
+	(2400 - 2472 @ 40), (N/A, 30), (N/A)
+	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
+	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
+	(5730 - 5850 @ 80), (N/A, 30), (N/A)
+	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
 
-Trying to interpret the begining of an Ethernet encapsulated frame as an
-IEEE 802.11 header was not hurt us noticeably since we need to meet two
-conditions: (1) xmit should be performed towards a TDLS peer, and (2)
-the TDLS peer should have a specific OUI part of its MAC address. Looks
-like that the rareness in TDLS communications of OUIs that can be
-interpreted as an 802.11 management frame saves users from facing this
-issue earlier.
+[ 4255.704975] Call Trace:
+[ 4255.704983]  ath_reg_notifier_apply+0xa6/0xc5 [ath]
+[ 4255.704991]  ath10k_reg_notifier+0x2f/0xd2 [ath10k_core]
+[ 4255.705010]  wiphy_regulatory_register+0x5f/0x69 [cfg80211]
+[ 4255.705020]  wiphy_register+0x459/0x8f0 [cfg80211]
+[ 4255.705042]  ? ieee80211_register_hw+0x3a6/0x7d1 [mac80211]
+[ 4255.705049]  ? __kmalloc+0xf4/0x218
+[ 4255.705058]  ? ieee80211_register_hw+0x3a6/0x7d1 [mac80211]
+[ 4255.705066]  ? ath10k_mac_register+0x70/0xaab [ath10k_core]
+[ 4255.705075]  ieee80211_register_hw+0x51a/0x7d1 [mac80211]
+[ 4255.705084]  ath10k_mac_register+0x8b4/0xaab [ath10k_core]
+[ 4255.705094]  ath10k_core_register_work+0xa5e/0xb45 [ath10k_core]
+[ 4255.705100]  ? __schedule+0x61f/0x7d3
+[ 4255.705105]  process_one_work+0x1b7/0x392
+[ 4255.705109]  worker_thread+0x271/0x35d
+[ 4255.705112]  ? pr_cont_work+0x58/0x58
+[ 4255.705116]  kthread+0x13f/0x147
+[ 4255.705119]  ? pr_cont_work+0x58/0x58
+[ 4255.705123]  ? kthread_destroy_worker+0x62/0x62
+[ 4255.705126]  ret_from_fork+0x22/0x40
 
-Improve Ethernet tx mode support in the HTT Tx handler by avoiding
-interpreting its first bytes as an IEEE 802.11 header. While at it, make
-the ieee80211_hdr variable local to the code block that is guarded by
-!is_eth check. In this way, we clarify in which cases a frame can be
-interpreted as IEEE 802.11, and saves us from similar issues in the
-future.
+At this moment, the two regdomain info is same, when run "iw reg set KR",
+the global regdomain info changed to KR, but the regdomain of phy#0
+does not change again. It leads inconsistent values between global and
+phy#0 as below.
 
-Credits: this change as part of xmit encapsulation offloading support
-was originally made by QCA and then submitted for inclusion by John
-Crispin [1]. But the whole work was not accepted due to the lack of a
-part for 64-bits descriptors [2]. Zhijun You then pointed this out to me
-in a reply to my initial RFC patch series. And I made this slightly
-reworked version that covered all the HTT Tx handler variants.
+global
+country KR: DFS-JP
+        (2402 - 2482 @ 40), (N/A, 13), (N/A)
+        (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
+        (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
+        (5490 - 5710 @ 160), (N/A, 30), (0 ms), DFS
+        (5735 - 5835 @ 80), (N/A, 30), (N/A)
+        (57000 - 66000 @ 2160), (N/A, 43), (N/A)
 
-1. https://lore.kernel.org/all/20191216092207.31032-1-john@phrozen.org/
-2. https://patchwork.kernel.org/project/linux-wireless/patch/20191216092207.31032-1-john@phrozen.org/
+phy#0
+country US: DFS-FCC
+	(2400 - 2472 @ 40), (N/A, 30), (N/A)
+	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
+	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
+	(5730 - 5850 @ 80), (N/A, 30), (N/A)
+	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
 
-Reported-by: Zhijun You <hujy652@gmail.com>
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Signed-off-by: John Crispin <john@phrozen.org>
-Signed-off-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+The initial reg code is 0x6C which saved in reg_world_copy of ath_common,
+and the code US is updated from cfg80211 later, so ath10k should also
+check the initial reg code before regulatory_hint().
+
+After this fix, regdomain info is same between "iw reg get" and "iw reg
+set xx", it does not have the regdomain info of phy#0 again.
+
+global
+country KR: DFS-JP
+        (2402 - 2482 @ 40), (N/A, 13), (N/A)
+        (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
+        (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
+        (5490 - 5710 @ 160), (N/A, 30), (0 ms), DFS
+        (5735 - 5835 @ 80), (N/A, 30), (N/A)
+        (57000 - 66000 @ 2160), (N/A, 43), (N/A)
+
+This does not effect the channel list and power which ath10k used.
+When the country code for regulatory_hint() in ath10k_mac_register()
+is same with the global country code, then reg_set_rd_driver() of
+cfg80211 called from crda which return -EALREADY to set_regdom() and
+then update_all_wiphy_regulatory() will not be called while wlan load.
+When run "iw reg set xx", reg_get_regdomain() which used by function
+handle_channel() in net/wirelss/reg.c always use the regdomain
+returned by get_cfg80211_regdom() because the initiator of last
+regulatory_request is NL80211_REGDOM_SET_BY_USER, get_cfg80211_regdom()
+is the global regdomain, then all the ieee80211_channel info is updated
+in handle_channel() with the global regdomain.
+
+Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+Tested-on: QCA9984 hw1.0 PCI 10.4-3.6-00104
+
+Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
 Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20220516032519.29831-3-ryazanov.s.a@gmail.com
+Link: https://lore.kernel.org/r/20220525132247.23459-1-quic_wgong@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_tx.c | 61 ++++++++++++++----------
- 1 file changed, 35 insertions(+), 26 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 5f67da47036c..6f0817e1a12a 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -1293,7 +1293,6 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
- 	struct ath10k *ar = htt->ar;
- 	int res, data_len;
- 	struct htt_cmd_hdr *cmd_hdr;
--	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
- 	struct htt_data_tx_desc *tx_desc;
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
- 	struct sk_buff *tmp_skb;
-@@ -1304,11 +1303,15 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
- 	u16 flags1 = 0;
- 	u16 msdu_id = 0;
- 
--	if ((ieee80211_is_action(hdr->frame_control) ||
--	     ieee80211_is_deauth(hdr->frame_control) ||
--	     ieee80211_is_disassoc(hdr->frame_control)) &&
--	     ieee80211_has_protected(hdr->frame_control)) {
--		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+	if (!is_eth) {
-+		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
-+
-+		if ((ieee80211_is_action(hdr->frame_control) ||
-+		     ieee80211_is_deauth(hdr->frame_control) ||
-+		     ieee80211_is_disassoc(hdr->frame_control)) &&
-+		     ieee80211_has_protected(hdr->frame_control)) {
-+			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		}
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b61cd275fbda..a2868f6c7861 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -10108,7 +10108,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ar->hw->wiphy->software_iftypes |= BIT(NL80211_IFTYPE_AP_VLAN);
  	}
  
- 	data_len = msdu->len;
-@@ -1405,7 +1408,6 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
- {
- 	struct ath10k *ar = htt->ar;
- 	struct device *dev = ar->dev;
--	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
- 	struct ath10k_hif_sg_item sg_items[2];
-@@ -1437,15 +1439,19 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
- 	txbuf_paddr = htt->txbuf.paddr +
- 		      (sizeof(struct ath10k_htt_txbuf_32) * msdu_id);
- 
--	if ((ieee80211_is_action(hdr->frame_control) ||
--	     ieee80211_is_deauth(hdr->frame_control) ||
--	     ieee80211_is_disassoc(hdr->frame_control)) &&
--	     ieee80211_has_protected(hdr->frame_control)) {
--		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
--	} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
--		   txmode == ATH10K_HW_TXRX_RAW &&
--		   ieee80211_has_protected(hdr->frame_control)) {
--		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+	if (!is_eth) {
-+		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
-+
-+		if ((ieee80211_is_action(hdr->frame_control) ||
-+		     ieee80211_is_deauth(hdr->frame_control) ||
-+		     ieee80211_is_disassoc(hdr->frame_control)) &&
-+		     ieee80211_has_protected(hdr->frame_control)) {
-+			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
-+			   txmode == ATH10K_HW_TXRX_RAW &&
-+			   ieee80211_has_protected(hdr->frame_control)) {
-+			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		}
- 	}
- 
- 	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
-@@ -1607,7 +1613,6 @@ static int ath10k_htt_tx_64(struct ath10k_htt *htt,
- {
- 	struct ath10k *ar = htt->ar;
- 	struct device *dev = ar->dev;
--	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
- 	struct ath10k_hif_sg_item sg_items[2];
-@@ -1639,15 +1644,19 @@ static int ath10k_htt_tx_64(struct ath10k_htt *htt,
- 	txbuf_paddr = htt->txbuf.paddr +
- 		      (sizeof(struct ath10k_htt_txbuf_64) * msdu_id);
- 
--	if ((ieee80211_is_action(hdr->frame_control) ||
--	     ieee80211_is_deauth(hdr->frame_control) ||
--	     ieee80211_is_disassoc(hdr->frame_control)) &&
--	     ieee80211_has_protected(hdr->frame_control)) {
--		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
--	} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
--		   txmode == ATH10K_HW_TXRX_RAW &&
--		   ieee80211_has_protected(hdr->frame_control)) {
--		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+	if (!is_eth) {
-+		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
-+
-+		if ((ieee80211_is_action(hdr->frame_control) ||
-+		     ieee80211_is_deauth(hdr->frame_control) ||
-+		     ieee80211_is_disassoc(hdr->frame_control)) &&
-+		     ieee80211_has_protected(hdr->frame_control)) {
-+			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
-+			   txmode == ATH10K_HW_TXRX_RAW &&
-+			   ieee80211_has_protected(hdr->frame_control)) {
-+			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+		}
- 	}
- 
- 	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
+-	if (!ath_is_world_regd(&ar->ath_common.regulatory)) {
++	if (!ath_is_world_regd(&ar->ath_common.reg_world_copy) &&
++	    !ath_is_world_regd(&ar->ath_common.regulatory)) {
+ 		ret = regulatory_hint(ar->hw->wiphy,
+ 				      ar->ath_common.regulatory.alpha2);
+ 		if (ret)
 -- 
 2.35.1
 
