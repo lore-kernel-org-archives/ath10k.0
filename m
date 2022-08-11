@@ -4,62 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AEE1C25B07
-	for <ath10k@archiver.kernel.org>; Wed, 10 Aug 2022 01:57:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 544BDC25B06
+	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 15:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:To:MIME-Version:Subject:Message-ID
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ezqoa2PZZU+P1Ai2berJwnXl9NpSFJ6oaRdhcJRQrzc=; b=E4SVYeFkGErovy
-	+o4B3//s0nLUHH+oIAuE9g54Y5j5x6bH0pcuCH9bA3CbF3/QRoi90DxO5OLEO6UoeCS6xtCJseJ9D
-	yQ6JRnxuxxpA4kSCX3+tfJgki5T6JNpzuYHMS/VLCe2Y/bfqj+YLbE2yp8vmo69XhQeIh/TmwNk7N
-	VLdTYDUyYPWANLkpOG8riRSoKn0TvwkHaxUlJcTjUN6Qitw4RCaT4AYX4aSwJBA1IjBI7GIarN419
-	Fj/6g6e50elo+zsKKMrsOGCn0OAAlX+ZFs7QX4R6KAVPC5dh4r3OaDjVxBwYaMD9RrUeP06xP9CPu
-	bRNM1WuYN22ZOUKQytAg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=GMzh36I1NJxxyI/VXNqXVQkY5WbpsgQwzEmeuXhgiZQ=; b=GCoeyMVpdcOWf4
+	lYMEA7rTmK+3aTGUY844OSBu5t3A+hHbTQv7djS6PT2GgrGLPP1/T9PpnyNYFcaUdVwJwHv358T9w
+	gnVjG1eKyPg+GLR2jSqUaitwuxrR5wyQ+DcmOKSsNbaPY3eXJ+qzxggSi8IBLnyLveoHQz7L9QFik
+	32jMpi6i/ABm+YJwY0/r6ma/gbqiyYt7QgEnmqE6R7xyCsi0iD2XQjpa4+o12vzvoJm5+1f9dnWWD
+	/Fm4okU9ghVJV+LYyTqLg6EoP3V2ZQg6ZJbDt588e3ZwpLIXc2oPVKvlKaXFrZ1BBoUn+FYUaqQKU
+	b0n1eIvy/wvSQffZkzlg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLaxu-008G3x-Tw; Wed, 10 Aug 2022 01:56:58 +0000
-Received: from send003.gov-dooray.com ([211.56.2.23])
+	id 1oMA7m-00DwRg-U8; Thu, 11 Aug 2022 15:29:30 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLaxq-008FxT-AN
-	for ath10k@lists.infradead.org; Wed, 10 Aug 2022 01:56:57 +0000
-DKIM-Signature: a=rsa-sha256;
- b=oiohABCHCx5r7AX6v4/61+xk/sJWjzN0E7bOxYq4sqePDb0PbpTGAPLmR4rphmS2oMP7N/C6C9
-  3zXk4oXo3kqH9/ls+G8QLTTc6cMrCjwFsDodv172hcIbQSlQLpTJUJiiEDZWkExPRyac1JIir0Yw
-  0vSgF4G4DeywqW3ai6y8PT+TXUtVdLMcoafKRhXB+XavBhS70JSmnnu/lWA0/tm59YHTMKy4ZoXf
-  LSdYH6M5jegHALNboA4JDC44FEDLtpHyu4k3pNs2o9O9HnOkj/tUXvRzKalbJSGqG+TJ8Dy/AhO/
-  p+p/TNnvxb0LeHTMN1L2AeW2F26cQkWNJeEup6/Q==;
- c=relaxed/relaxed; s=selector; d=dooray.com; v=1;
- bh=jj4MIUQpvaoxcDDWdqS5BGtRyG/6Ocez4OIrRPyKZb0=;
- h=From:To:Subject:Message-ID;
-Dooray-Meta-Signature: s5M2FeXkDsHHlY9v4S1/p0/UBjc64Cc55Wa07pPvBggnMK11ntpnB
-  OQ7ggebV2mIpNdmjwyNDuTnnrvk3LuwAp67hZuqvy66co7oGDaA0i0WgJHQzW4jWuX1mgcPtBed1
-  L7CLDSISCwSw27Yz/PYpwL5CG6s9lKieDdkBT8LyNw599okB8xorZgZS6qV064BEPHhRTKFYNnXI
-  049qnSPgYkM9/4J36d+ui+2OJPGasKg+kjelb3zJouvP7C4v1j5TodcKm/ZKbOBDbjNdMNu2gQmG
-  wFlnakQImFubxdzHGVzneykm0OL3Tmkq/EvMV361o0v1cOh9SPDnizIzjTYmtokpSKKR80KupXMF
-  ODf9II=
-Received: from [172.226.94.46] (HELO 172.226.94.46) ([172.226.94.46]) by
- send003.gov-dooray.com with SMTP id 7d8a365262f31056; Wed, 10 Aug 2022
- 10:56:38 +0900
-From: Wonsup Yoon <pusnow@kaist.ac.kr>
-Message-ID: <pcoa2db959zn.pcoa2db781x3.g6@dooray.com>
-Subject: Questions about QCA6174 firmwares
+	id 1oMA7j-00DwP8-16
+	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 15:29:28 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 93A0161625;
+	Thu, 11 Aug 2022 15:29:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ABC1C433C1;
+	Thu, 11 Aug 2022 15:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1660231766;
+	bh=QoG2AXTUNTkgCb/Z7tMfnRQNeAn8xrjZVWaSk58MQno=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=crU4yMcOlWTFjnuFcu8m6xr+Wwg7BgDgZ7OzxYphc1qSy86i5ApBhQnbnerdjdHwm
+	 nr+SLinvJmy2ZcRLSP294+rp32XquvvvZmfzRaRxdT/qiTqC9O+K6OyNr4ETxXODh3
+	 J9gc8EtnmKXpBwkxPIzUbABW6Fcteyo1jO3p7C1BRDQT+LAmdaeyt/VzYBUPE7SO0U
+	 wRqVS9Unw58NF/ywY/fDtySAV1QL9RPV1t8xp5DkwSguO+J0wMAPhMBVL5/ZBc4r19
+	 RKXK2bYfOitLcGDMWvLzJ4MkSAtJHv2PjExirE1/lgIr9qOyvhPIWPpUr+aDYOjmPv
+	 3CrwW+cXOlvYQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Wen Gong <quic_wgong@quicinc.com>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
+	Sasha Levin <sashal@kernel.org>,
+	kvalo@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.19 009/105] ath10k: fix regdomain info of iw reg set/get
+Date: Thu, 11 Aug 2022 11:26:53 -0400
+Message-Id: <20220811152851.1520029-9-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220811152851.1520029-1-sashal@kernel.org>
+References: <20220811152851.1520029-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Dsn-Request: true
-X-Dooray-Agent: mail-api
-X-Dooray-Mail-Id: 3336882333103539923
-Importance: Normal
-X-Priority: Normal
-X-MSMail-Priority: Normal
-X-Dooray-Attached: c3+LUOpPU/IB7Wl+oemm0lw5HiI/bJHHYClX72L8E3o=
-To: ath10k@lists.infradead.org
-Date: Wed, 10 Aug 2022 10:56:38 +0900 (KST)
+X-stable: review
+X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220809_185654_747015_327CB1A5 
-X-CRM114-Status: UNSURE (   6.50  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220811_082927_171909_35E35E2C 
+X-CRM114-Status: GOOD (  15.33  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,147 +84,137 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+From: Wen Gong <quic_wgong@quicinc.com>
 
-If you don't mind, I'd like ask a few questions regarding QCA6174 firmwares.
+[ Upstream commit 8723750e2753868591ba86a57b0041c5e38047ad ]
 
-1. I've notice that QCA6174 hw3.0 4.4.1 firmwares have 4 versions (none, c1, c2, c3). Are there any differences? Which one is newest or correct?
+When wlan load, firmware report the reg code with 0x6C for QCA6174,
+it is world reg which checked by ath_is_world_regd(), then the reg
+will be save into reg_world_copy of ath_common in ath_regd_init().
+Later the regulatory of ath_common is updated to another country
+code such as "US" in ath_reg_notifier_apply() by below call stack.
+After that, regulatory_hint() is called in ath10k_mac_register()
+and it lead "iw reg get" show two regdomain info as below.
 
-2. My QCA6174 seems to have a compatibility issue with a recent firmware. I've tested theses firmware versions, but only the oldest one works.
+global
+country US: DFS-FCC
+	(2400 - 2472 @ 40), (N/A, 30), (N/A)
+	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
+	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
+	(5730 - 5850 @ 80), (N/A, 30), (N/A)
+	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
 
-RM.4.4.1.c2-00057-QCARMSWP-1 (debian oldstable's stock firmware, 20190114-2, work's fine):
+phy#0
+country US: DFS-FCC
+	(2400 - 2472 @ 40), (N/A, 30), (N/A)
+	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
+	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
+	(5730 - 5850 @ 80), (N/A, 30), (N/A)
+	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
 
-ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-ath10k_pci 0000:01:00.0: firmware: failed to load ath10k/pre-cal-pci-0000:01:00.0.bin (-2)
-ath10k_pci 0000:01:00.0: firmware: failed to load ath10k/cal-pci-0000:01:00.0.bin (-2)
-usbcore: registered new interface driver ath3k
-ath10k_pci 0000:01:00.0: firmware: direct-loading firmware ath10k/QCA6174/hw3.0/firmware-6.bin
-ath10k_pci 0000:01:00.0: qca6174 hw3.0 target 0x05020000 chip_id 0x003409ff sub 168c:3361
-ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
-ath10k_pci 0000:01:00.0: firmware ver RM.4.4.1.c2-00057-QCARMSWP-1 api 6 features wowlan,ignore-otp,no-4addr-pad,raw-mode crc32 e061250a
-ath10k_pci 0000:01:00.0: firmware: direct-loading firmware ath10k/QCA6174/hw3.0/board-2.bin
-ath10k_pci 0000:01:00.0: board_file api 2 bmi_id N/A crc32 20d869c3
-ath10k_pci 0000:01:00.0: htt-ver 3.56 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+[ 4255.704975] Call Trace:
+[ 4255.704983]  ath_reg_notifier_apply+0xa6/0xc5 [ath]
+[ 4255.704991]  ath10k_reg_notifier+0x2f/0xd2 [ath10k_core]
+[ 4255.705010]  wiphy_regulatory_register+0x5f/0x69 [cfg80211]
+[ 4255.705020]  wiphy_register+0x459/0x8f0 [cfg80211]
+[ 4255.705042]  ? ieee80211_register_hw+0x3a6/0x7d1 [mac80211]
+[ 4255.705049]  ? __kmalloc+0xf4/0x218
+[ 4255.705058]  ? ieee80211_register_hw+0x3a6/0x7d1 [mac80211]
+[ 4255.705066]  ? ath10k_mac_register+0x70/0xaab [ath10k_core]
+[ 4255.705075]  ieee80211_register_hw+0x51a/0x7d1 [mac80211]
+[ 4255.705084]  ath10k_mac_register+0x8b4/0xaab [ath10k_core]
+[ 4255.705094]  ath10k_core_register_work+0xa5e/0xb45 [ath10k_core]
+[ 4255.705100]  ? __schedule+0x61f/0x7d3
+[ 4255.705105]  process_one_work+0x1b7/0x392
+[ 4255.705109]  worker_thread+0x271/0x35d
+[ 4255.705112]  ? pr_cont_work+0x58/0x58
+[ 4255.705116]  kthread+0x13f/0x147
+[ 4255.705119]  ? pr_cont_work+0x58/0x58
+[ 4255.705123]  ? kthread_destroy_worker+0x62/0x62
+[ 4255.705126]  ret_from_fork+0x22/0x40
 
+At this moment, the two regdomain info is same, when run "iw reg set KR",
+the global regdomain info changed to KR, but the regdomain of phy#0
+does not change again. It leads inconsistent values between global and
+phy#0 as below.
 
-WLAN.RM.4.4.1-00157-QCARMSWPZ-1 (debian stable's stock firmware, 20210315-3):
+global
+country KR: DFS-JP
+        (2402 - 2482 @ 40), (N/A, 13), (N/A)
+        (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
+        (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
+        (5490 - 5710 @ 160), (N/A, 30), (0 ms), DFS
+        (5735 - 5835 @ 80), (N/A, 30), (N/A)
+        (57000 - 66000 @ 2160), (N/A, 43), (N/A)
 
-ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-ath10k_pci 0000:01:00.0: firmware: failed to load ath10k/pre-cal-pci-0000:01:00.0.bin (-2)
-ath10k_pci 0000:01:00.0: firmware: failed to load ath10k/cal-pci-0000:01:00.0.bin (-2)
-ath10k_pci 0000:01:00.0: firmware: direct-loading firmware ath10k/QCA6174/hw3.0/firmware-6.bin
-ath10k_pci 0000:01:00.0: qca6174 hw3.0 target 0x05020000 chip_id 0x003409ff sub 168c:3361
-ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
-ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00157-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp crc32 90eebefb
-ath10k_pci 0000:01:00.0: firmware: direct-loading firmware ath10k/QCA6174/hw3.0/board-2.bin
-ath10k_pci 0000:01:00.0: board_file api 2 bmi_id N/A crc32 318825bf
-ath10k_pci 0000:01:00.0: wmi unified ready event not received
-ath10k_pci 0000:01:00.0: device has crashed during init
-ath10k_pci 0000:01:00.0: device has crashed during init
-ath10k_pci 0000:01:00.0: failed to wait for target init: -70
-ath10k_pci 0000:01:00.0: could not init core (-110)
-ath10k_pci 0000:01:00.0: could not probe fw (-110)
+phy#0
+country US: DFS-FCC
+	(2400 - 2472 @ 40), (N/A, 30), (N/A)
+	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
+	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
+	(5730 - 5850 @ 80), (N/A, 30), (N/A)
+	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
 
+The initial reg code is 0x6C which saved in reg_world_copy of ath_common,
+and the code US is updated from cfg80211 later, so ath10k should also
+check the initial reg code before regulatory_hint().
 
+After this fix, regdomain info is same between "iw reg get" and "iw reg
+set xx", it does not have the regdomain info of phy#0 again.
 
-WLAN.RM.4.4.1-00288- (most recent version?):
+global
+country KR: DFS-JP
+        (2402 - 2482 @ 40), (N/A, 13), (N/A)
+        (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
+        (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
+        (5490 - 5710 @ 160), (N/A, 30), (0 ms), DFS
+        (5735 - 5835 @ 80), (N/A, 30), (N/A)
+        (57000 - 66000 @ 2160), (N/A, 43), (N/A)
 
-ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-ath10k_pci 0000:01:00.0: firmware: failed to load ath10k/pre-cal-pci-0000:01:00.0.bin (-2)
-ath10k_pci 0000:01:00.0: firmware: failed to load ath10k/cal-pci-0000:01:00.0.bin (-2)
-ath10k_pci 0000:01:00.0: firmware: direct-loading firmware ath10k/QCA6174/hw3.0/firmware-6.bin
-ath10k_pci 0000:01:00.0: qca6174 hw3.0 target 0x05020000 chip_id 0x003409ff sub 168c:3361
-ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
-ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00288- api 6 features wowlan,ignore-otp,mfp crc32 bf907c7c
-ath10k_pci 0000:01:00.0: board_file api 2 bmi_id N/A crc32 318825bf
-ath10k_pci 0000:01:00.0: wmi unified ready event not received
-ath10k_pci 0000:01:00.0: device has crashed during init
-ath10k_pci 0000:01:00.0: device has crashed during init
-ath10k_pci 0000:01:00.0: failed to wait for target init: -70
-ath10k_pci 0000:01:00.0: could not init core (-110)
-ath10k_pci 0000:01:00.0: could not probe fw (-110)
+This does not effect the channel list and power which ath10k used.
+When the country code for regulatory_hint() in ath10k_mac_register()
+is same with the global country code, then reg_set_rd_driver() of
+cfg80211 called from crda which return -EALREADY to set_regdom() and
+then update_all_wiphy_regulatory() will not be called while wlan load.
+When run "iw reg set xx", reg_get_regdomain() which used by function
+handle_channel() in net/wirelss/reg.c always use the regdomain
+returned by get_cfg80211_regdom() because the initiator of last
+regulatory_request is NL80211_REGDOM_SET_BY_USER, get_cfg80211_regdom()
+is the global regdomain, then all the ieee80211_channel info is updated
+in handle_channel() with the global regdomain.
 
+Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+Tested-on: QCA9984 hw1.0 PCI 10.4-3.6-00104
 
+Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20220525132247.23459-1-quic_wgong@quicinc.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Kernel: Linux XXXX 5.10.0-16-amd64 #1 SMP Debian 5.10.127-2 (2022-07-23) x86_64 GNU/Linux
-
-My lspci info:
-
-01:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter [168c:003e] (rev 30)
-	Subsystem: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter [168c:3361]
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 0, Cache Line Size: 64 bytes
-	Interrupt: pin A routed to IRQ 150
-	IOMMU group: 12
-	Region 0: Memory at 7fc00000 (64-bit, non-prefetchable) [size=2M]
-	Capabilities: [40] Power Management version 3
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [50] MSI: Enable+ Count=1/8 Maskable+ 64bit-
-		Address: fee005f8  Data: 0000
-		Masking: 000000fe  Pending: 00000000
-	Capabilities: [70] Express (v2) Endpoint, MSI 00
-		DevCap:	MaxPayload 256 bytes, PhantFunc 0, Latency L0s unlimited, L1 <64us
-			ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 10.000W
-		DevCtl:	CorrErr- NonFatalErr- FatalErr- UnsupReq-
-			RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
-			MaxPayload 256 bytes, MaxReadReq 512 bytes
-		DevSta:	CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr+ TransPend-
-		LnkCap:	Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit Latency L0s <4us, L1 <64us
-			ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
-		LnkCtl:	ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-			ExtSynch- ClockPM+ AutWidDis- BWInt- AutBWInt-
-		LnkSta:	Speed 2.5GT/s (ok), Width x1 (ok)
-			TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-		DevCap2: Completion Timeout: Not Supported, TimeoutDis+ NROPrPrP- LTR+
-			 10BitTagComp- 10BitTagReq- OBFF Via message, ExtFmt- EETLPPrefix-
-			 EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-			 FRS- TPHComp- ExtTPHComp-
-			 AtomicOpsCap: 32bit- 64bit- 128bitCAS-
-		DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR+ OBFF Disabled,
-			 AtomicOpsCtl: ReqEn-
-		LnkCap2: Supported Link Speeds: 2.5GT/s, Crosslink- Retimer- 2Retimers- DRS-
-		LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
-			 Transmit Margin: Normal Operating Range, EnterModifiedCompliance- ComplianceSOS-
-			 Compliance De-emphasis: -6dB
-		LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete- EqualizationPhase1-
-			 EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-			 Retimer- 2Retimers- CrosslinkRes: unsupported
-	Capabilities: [100 v2] Advanced Error Reporting
-		UESta:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-		UEMsk:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-		UESvrt:	DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
-		CESta:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
-		CEMsk:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
-		AERCap:	First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap- ECRCChkEn-
-			MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
-		HeaderLog: 00000000 00000000 00000000 00000000
-	Capabilities: [148 v1] Virtual Channel
-		Caps:	LPEVC=0 RefClk=100ns PATEntryBits=1
-		Arb:	Fixed- WRR32- WRR64- WRR128-
-		Ctrl:	ArbSelect=Fixed
-		Status:	InProgress-
-		VC0:	Caps:	PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
-			Arb:	Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
-			Ctrl:	Enable+ ID=0 ArbSelect=Fixed TC/VC=ff
-			Status:	NegoPending- InProgress-
-	Capabilities: [168 v1] Device Serial Number 00-00-00-00-00-00-00-00
-	Capabilities: [178 v1] Latency Tolerance Reporting
-		Max snoop latency: 3145728ns
-		Max no snoop latency: 3145728ns
-	Capabilities: [180 v1] L1 PM Substates
-		L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
-			  PortCommonModeRestoreTime=50us PortTPowerOnTime=10us
-		L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2- ASPM_L1.1-
-			   T_CommonMode=0us LTR1.2_Threshold=81920ns
-		L1SubCtl2: T_PwrOn=10us
-	Kernel driver in use: ath10k_pci
-	Kernel modules: ath10k_pci
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 3570a5895ea8..69da7b826387 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -10229,7 +10229,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ar->hw->wiphy->software_iftypes |= BIT(NL80211_IFTYPE_AP_VLAN);
+ 	}
+ 
+-	if (!ath_is_world_regd(&ar->ath_common.regulatory)) {
++	if (!ath_is_world_regd(&ar->ath_common.reg_world_copy) &&
++	    !ath_is_world_regd(&ar->ath_common.regulatory)) {
+ 		ret = regulatory_hint(ar->hw->wiphy,
+ 				      ar->ath_common.regulatory.alpha2);
+ 		if (ret)
+-- 
+2.35.1
 
 
-Best Regards,
-Wonsup Yoon
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
