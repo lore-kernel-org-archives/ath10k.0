@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE6A2C25B0C
-	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 16:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71B5AC19F2A
+	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 16:08:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IMcSn75W8uVnaRwzEOwWXsWTFQ22MX2euH592jaA7Kw=; b=HzbhkFCO5v1pRs
-	MT0S1/PepK091B+BpvZDrkpGzl1I3DlCrcrlv2Nglw8qnk8wDLXHUyb2r+QV4lfouG15mksdPcxBB
-	+RYnJtWODeRjOXxLY25ISs1skjlqCsyUHP/8QIPwFPK+ZHi9rSQJ/WbGpchuNHsKMZGCE5pDRmBd4
-	U/MQXTFGXpBuxx7DRcTyB+6cDzjERZ2wjKCkRX90+nBnMD9LuiA6E5BgDVwelImj3WVceqkZBTXRe
-	Nxmsr6lRBoxeWDBjDhg/LSKzAlM5AZa/64DE2BaIwbqQrkddBoIZYD6Hmbbi0b3SOqHwX5MNH8jrl
-	EzAjMKaGvg/DnFkVQ+Iw==;
+	List-Owner; bh=iae+NG8RKYKtPuk6UngCrceTK7rM1SjYydobca87kdA=; b=VZS988jCi2buFt
+	40PyiX1iBRoBhtMKG/+ENA2w7Vg9JQ/Kp02k/s/c1vnZ0JtX9aiHlW9LE6bEO+tpjoE4uDXgvOsQU
+	AM8NTdy1y2R9vvw4eDZIh0mtYLibRNPcydglajjArcU9wUxZMNRlcSBR1EzFZWVdXDoR82yEq2mOq
+	HdB7vyCc4vhfU86hIYqpJBkl0gXgMAfYuqer+90tS6n+dxX6BE+HHsujGK2ibAt4q99XRn9hQbURT
+	cmxOpl6uIPcKX3JC7zFtL5lsqZ936+bm+RoneR23+k9a2J2DC2tbNaMbEk5C2a/EOuuKKl09eG8t4
+	y8+/CRPq7AbkIThStEmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAfv-00Efjr-OO; Thu, 11 Aug 2022 16:04:47 +0000
+	id 1oMAjp-00Ek7Y-K6; Thu, 11 Aug 2022 16:08:49 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAfs-00EffZ-Jg
-	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 16:04:46 +0000
+	id 1oMAja-00Ejqs-Gy
+	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 16:08:36 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 80A7E61389;
-	Thu, 11 Aug 2022 16:04:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61BB7C433D7;
-	Thu, 11 Aug 2022 16:04:40 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id EDB566144F;
+	Thu, 11 Aug 2022 16:08:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78ABAC433D6;
+	Thu, 11 Aug 2022 16:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1660233881;
-	bh=eeMxLyMBnHp8qz7QBvTK3AYqhUhlL3pajegNTaJlOcE=;
+	s=k20201202; t=1660234113;
+	bh=IvK5vr6DMKLGtEAo+VxNzrO/s9h7vybNjsPB5ui6Euw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B6nFUxw8TqtAV5Wk73wJvX1MYF7Pjkgz2xtY4uXmuSQP0fR9lrwDb/WSHSdrEuev8
-	 3+RcsmwW4ALwN7TqUwQTqI422DL1z08kaPVGoxXBorsE3yO853DaLUfPE+hI7HpcJr
-	 0+039BssNfRcrHPPR7uEM2mfQPx/9l5+nhUa4B00Dwx4UPbkPklYauCqpR/pgCYMc2
-	 6MSVINQqPdjS1ghU7fz0kGNu1TrNM97TkyiV2E+ViyqsyivS6LdQpHC42n5MWP3cXr
-	 NjN8Arv/gUXWJ+r1m5KsFN1YuQ6uar+4VS5kbCxPrJol4Of7YjzU30+wID5E25Ch/L
-	 xMl5Jfc7ds8yQ==
+	b=KXSJpkzvqd6A6aVGtrCEalbuHwYsx5BSJNPgTX50mwcLZrrDwsqSG7MILCmz2I6j5
+	 UuEzsfccFoM97nqENrZPvhEDQ/oxwW6ajBmhZ5ENMr9bukVbWDZr3PZxWZHYaeKC6p
+	 Cw9Z9BOP9/FnPvhdwQXVrVtpWyEl0joLCAtz2w/YoGruQEp1fkcg3jNQ92Lmm4eoIV
+	 lYlYl5x2RrpxzosbjE26MGrEXmAhYFqwL/D8de0Mhmfbc+jWCEYeo0rxOYwCbsKcu2
+	 1vh1Hs2J19UGMBRWFb8Dutgs/Nqc0c8PEooBtwXC01tVCi8AmwZ+Fexa11pmCzmESy
+	 XoA4gMm26HY3w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Wen Gong <quic_wgong@quicinc.com>,
+Cc: Maxime Bizon <mbizon@freebox.fr>,
 	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>,
 	kvalo@kernel.org,
@@ -56,18 +56,19 @@ Cc: Wen Gong <quic_wgong@quicinc.com>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 07/46] ath10k: fix regdomain info of iw reg set/get
-Date: Thu, 11 Aug 2022 12:03:31 -0400
-Message-Id: <20220811160421.1539956-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 03/25] ath10k: fix misreported tx bandwidth for 160Mhz
+Date: Thu, 11 Aug 2022 12:07:58 -0400
+Message-Id: <20220811160826.1541971-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220811160421.1539956-1-sashal@kernel.org>
-References: <20220811160421.1539956-1-sashal@kernel.org>
+In-Reply-To: <20220811160826.1541971-1-sashal@kernel.org>
+References: <20220811160826.1541971-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220811_090444_755806_36821A3D 
-X-CRM114-Status: GOOD (  15.43  )
+X-CRM114-CacheID: sfid-20220811_090834_665397_10CCE576 
+X-CRM114-Status: UNSURE (   8.84  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,133 +85,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Wen Gong <quic_wgong@quicinc.com>
+From: Maxime Bizon <mbizon@freebox.fr>
 
-[ Upstream commit 8723750e2753868591ba86a57b0041c5e38047ad ]
+[ Upstream commit 75a7062e533e309a9ca0812c69f3ac3cefadb8b1 ]
 
-When wlan load, firmware report the reg code with 0x6C for QCA6174,
-it is world reg which checked by ath_is_world_regd(), then the reg
-will be save into reg_world_copy of ath_common in ath_regd_init().
-Later the regulatory of ath_common is updated to another country
-code such as "US" in ath_reg_notifier_apply() by below call stack.
-After that, regulatory_hint() is called in ath10k_mac_register()
-and it lead "iw reg get" show two regdomain info as below.
+Because of this missing switch case, 160Mhz transmit was reported as
+20Mhz, leading to wrong airtime calculation and AQL limiting max
+throughput.
 
-global
-country US: DFS-FCC
-	(2400 - 2472 @ 40), (N/A, 30), (N/A)
-	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
-	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
-	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
-	(5730 - 5850 @ 80), (N/A, 30), (N/A)
-	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
+Tested-on: QCA9984 hw2.0 PCI 10.4-3.10-00047
 
-phy#0
-country US: DFS-FCC
-	(2400 - 2472 @ 40), (N/A, 30), (N/A)
-	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
-	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
-	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
-	(5730 - 5850 @ 80), (N/A, 30), (N/A)
-	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
-
-[ 4255.704975] Call Trace:
-[ 4255.704983]  ath_reg_notifier_apply+0xa6/0xc5 [ath]
-[ 4255.704991]  ath10k_reg_notifier+0x2f/0xd2 [ath10k_core]
-[ 4255.705010]  wiphy_regulatory_register+0x5f/0x69 [cfg80211]
-[ 4255.705020]  wiphy_register+0x459/0x8f0 [cfg80211]
-[ 4255.705042]  ? ieee80211_register_hw+0x3a6/0x7d1 [mac80211]
-[ 4255.705049]  ? __kmalloc+0xf4/0x218
-[ 4255.705058]  ? ieee80211_register_hw+0x3a6/0x7d1 [mac80211]
-[ 4255.705066]  ? ath10k_mac_register+0x70/0xaab [ath10k_core]
-[ 4255.705075]  ieee80211_register_hw+0x51a/0x7d1 [mac80211]
-[ 4255.705084]  ath10k_mac_register+0x8b4/0xaab [ath10k_core]
-[ 4255.705094]  ath10k_core_register_work+0xa5e/0xb45 [ath10k_core]
-[ 4255.705100]  ? __schedule+0x61f/0x7d3
-[ 4255.705105]  process_one_work+0x1b7/0x392
-[ 4255.705109]  worker_thread+0x271/0x35d
-[ 4255.705112]  ? pr_cont_work+0x58/0x58
-[ 4255.705116]  kthread+0x13f/0x147
-[ 4255.705119]  ? pr_cont_work+0x58/0x58
-[ 4255.705123]  ? kthread_destroy_worker+0x62/0x62
-[ 4255.705126]  ret_from_fork+0x22/0x40
-
-At this moment, the two regdomain info is same, when run "iw reg set KR",
-the global regdomain info changed to KR, but the regdomain of phy#0
-does not change again. It leads inconsistent values between global and
-phy#0 as below.
-
-global
-country KR: DFS-JP
-        (2402 - 2482 @ 40), (N/A, 13), (N/A)
-        (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
-        (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
-        (5490 - 5710 @ 160), (N/A, 30), (0 ms), DFS
-        (5735 - 5835 @ 80), (N/A, 30), (N/A)
-        (57000 - 66000 @ 2160), (N/A, 43), (N/A)
-
-phy#0
-country US: DFS-FCC
-	(2400 - 2472 @ 40), (N/A, 30), (N/A)
-	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
-	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
-	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
-	(5730 - 5850 @ 80), (N/A, 30), (N/A)
-	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
-
-The initial reg code is 0x6C which saved in reg_world_copy of ath_common,
-and the code US is updated from cfg80211 later, so ath10k should also
-check the initial reg code before regulatory_hint().
-
-After this fix, regdomain info is same between "iw reg get" and "iw reg
-set xx", it does not have the regdomain info of phy#0 again.
-
-global
-country KR: DFS-JP
-        (2402 - 2482 @ 40), (N/A, 13), (N/A)
-        (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
-        (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
-        (5490 - 5710 @ 160), (N/A, 30), (0 ms), DFS
-        (5735 - 5835 @ 80), (N/A, 30), (N/A)
-        (57000 - 66000 @ 2160), (N/A, 43), (N/A)
-
-This does not effect the channel list and power which ath10k used.
-When the country code for regulatory_hint() in ath10k_mac_register()
-is same with the global country code, then reg_set_rd_driver() of
-cfg80211 called from crda which return -EALREADY to set_regdom() and
-then update_all_wiphy_regulatory() will not be called while wlan load.
-When run "iw reg set xx", reg_get_regdomain() which used by function
-handle_channel() in net/wirelss/reg.c always use the regdomain
-returned by get_cfg80211_regdom() because the initiator of last
-regulatory_request is NL80211_REGDOM_SET_BY_USER, get_cfg80211_regdom()
-is the global regdomain, then all the ieee80211_channel info is updated
-in handle_channel() with the global regdomain.
-
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
-Tested-on: QCA9984 hw1.0 PCI 10.4-3.6-00104
-
-Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
 Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20220525132247.23459-1-quic_wgong@quicinc.com
+Link: https://lore.kernel.org/r/cd2735a40da7f4fcc5323e3fca3775e7b5402ece.camel@freebox.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b61cd275fbda..a2868f6c7861 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -10108,7 +10108,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 		ar->hw->wiphy->software_iftypes |= BIT(NL80211_IFTYPE_AP_VLAN);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 760d24a28f39..3aa9536b95d7 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -3748,6 +3748,10 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
+ 		arsta->tx_info.status.rates[0].flags |=
+ 				IEEE80211_TX_RC_80_MHZ_WIDTH;
+ 		break;
++	case RATE_INFO_BW_160:
++		arsta->tx_info.status.rates[0].flags |=
++				IEEE80211_TX_RC_160_MHZ_WIDTH;
++		break;
  	}
  
--	if (!ath_is_world_regd(&ar->ath_common.regulatory)) {
-+	if (!ath_is_world_regd(&ar->ath_common.reg_world_copy) &&
-+	    !ath_is_world_regd(&ar->ath_common.regulatory)) {
- 		ret = regulatory_hint(ar->hw->wiphy,
- 				      ar->ath_common.regulatory.alpha2);
- 		if (ret)
+ 	if (peer_stats->succ_pkts) {
 -- 
 2.35.1
 
