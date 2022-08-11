@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4A21C25B0E
-	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 15:29:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4D7FC19F2A
+	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 15:43:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sbBAyvWdNaHBWXvM6E/zpcd/e3kRINkSYkd1NRnpaHA=; b=FTI6MmAkyE7MDN
-	9bXT8K1MG3YEUyiN+q2ZTkkvOzT2Ar7qAbpVGl/DNyGbV0cszJJUJEwJkUNf6H4gOdtTMdOMKxfAv
-	dVF8cr/V0N7ak9dvamtVeN6KOMH6z0a/7S5dPyUmAXKCtkktU36ptHjwp+RVKYEgOK82GxwozwLfn
-	ThLOEv07r0g29nqF5NoOvbGbjW2LbcCVyBaIxY8Y2Se+3H1ztlPhkrbm0sy1dFNO8DqE0wMVwn/Ns
-	42jNzJcDyo91WG2kOCS9BOWaWZUNORJZ3FTjZyXGq048tQj6Ep+3/lnyC1M7yFD8jLYntHwmPvIXF
-	uO30uVW6TKEL41pr9VpA==;
+	List-Owner; bh=sbBAyvWdNaHBWXvM6E/zpcd/e3kRINkSYkd1NRnpaHA=; b=VXXMzQ+u/nBPc2
+	xP8u0z608821tp7xxsrSt1nUSGGYCUW4VzsKctT0xFHkv/vZpoqYMS0rNsnM9fex/5qeYJtZRKc4u
+	XjCA0il66On8fC+DliTvJxitFriWrGSYFecprjzrMbCzi7c4b4mEFBsiJXmHRZ8jZZNCNaiSRl5fQ
+	ZBCyLN0n747c/IYvV4d5+d5sGQBQ51Li3iJ+2sTDI5PMy469R5ulF8kG2SDv0ouvg1cn5DJAwD/yp
+	9WbCRwkPsUa7QIpzFG8qH9OdD+UVCmuzJXn9nj6uQG+zdoHdzJwD4j1NdO0bKQ0qMYwbNNWaD4Yw3
+	JErkfeePmmtzMpECtIjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMA7Y-00DwEO-Da; Thu, 11 Aug 2022 15:29:16 +0000
+	id 1oMAKv-00E9jM-4C; Thu, 11 Aug 2022 15:43:05 +0000
 Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMA7U-00DwAl-Lw
-	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 15:29:14 +0000
+	id 1oMAKp-00E9Z9-Py
+	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 15:43:03 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 06DC3B82155;
-	Thu, 11 Aug 2022 15:29:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A89C433D7;
-	Thu, 11 Aug 2022 15:29:07 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 127B4B82150;
+	Thu, 11 Aug 2022 15:42:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9DF4C433D6;
+	Thu, 11 Aug 2022 15:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1660231749;
+	s=k20201202; t=1660232576;
 	bh=5wTtuUIFeTcRyFWGyYy6LDbITmPaqwM+5MxDB0K12yQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MjJU4qZdRWIj+5WOFcXCTYzk89RhlYxGBwxoKoIlFQfjhWN1/tOY/8CdKHewwY2l5
-	 LiKshJ1iRcTrP3qNwxJNBQgjQVFKCGX7Y9NBbYguwLxruyb6vN318YRlRyM37RDrGG
-	 QRYvFeaTB/bdUIGz7oqBPnsVH0jkSWMap18VyQ6v95qt0HDhJEXp967JVDZlm3xn1o
-	 gKX0fhsKLitKrBudOzhQ2Eho61hDl3K9YNpsVfQLVjY6SuOEXXbpJ9hcLknPtWa4lr
-	 At4nBBQGvY6uZzUL9LMAl2oeAvlv0g/6zjan5OKICZLdUltpdNvYl4mi644jzw00ED
-	 Glmb5WSypbsOw==
+	b=oyncDHNJbc4iKbQOZ2eXW+baF5mrcOGVh/90TkZjrsMCiIH47L4hdvy3Ku5JWuuP2
+	 3jUsPUjIir6+cUZ0M8RAQ0cOIdEU+Usvr/Y2XMivwWqTn7RuTkif0wNU7NmHStoCB5
+	 Mn4E9SAkRnCqQhDsUBxuqfkYwem9SDMeDYQ1MRIzrLGHh/894SN/u0iSEjarou2OE3
+	 fgz3AtBPnDO7vG0BVQyJQaTy1yQvE/cLmEcmDVkSueEumQJURORDbTrUQtlVMgoRZN
+	 a9P5XdxCaTvcPpXWhK+sfyDIlaW69g6ijITDyyIPEqAt3Rqadsupoyjs8Gu0wPI6bu
+	 2nDfMLL7KAexA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -59,18 +59,18 @@ Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 003/105] ath10k: htt_tx: do not interpret Eth frames as WiFi
-Date: Thu, 11 Aug 2022 11:26:47 -0400
-Message-Id: <20220811152851.1520029-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 03/93] ath10k: htt_tx: do not interpret Eth frames as WiFi
+Date: Thu, 11 Aug 2022 11:40:57 -0400
+Message-Id: <20220811154237.1531313-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220811152851.1520029-1-sashal@kernel.org>
-References: <20220811152851.1520029-1-sashal@kernel.org>
+In-Reply-To: <20220811154237.1531313-1-sashal@kernel.org>
+References: <20220811154237.1531313-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220811_082913_033595_A0F0A976 
-X-CRM114-Status: GOOD (  19.59  )
+X-CRM114-CacheID: sfid-20220811_084300_249286_690547DB 
+X-CRM114-Status: GOOD (  19.86  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
