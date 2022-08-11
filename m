@@ -4,48 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71B5AC19F2A
-	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 16:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBE33C19F2A
+	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 16:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iae+NG8RKYKtPuk6UngCrceTK7rM1SjYydobca87kdA=; b=VZS988jCi2buFt
-	40PyiX1iBRoBhtMKG/+ENA2w7Vg9JQ/Kp02k/s/c1vnZ0JtX9aiHlW9LE6bEO+tpjoE4uDXgvOsQU
-	AM8NTdy1y2R9vvw4eDZIh0mtYLibRNPcydglajjArcU9wUxZMNRlcSBR1EzFZWVdXDoR82yEq2mOq
-	HdB7vyCc4vhfU86hIYqpJBkl0gXgMAfYuqer+90tS6n+dxX6BE+HHsujGK2ibAt4q99XRn9hQbURT
-	cmxOpl6uIPcKX3JC7zFtL5lsqZ936+bm+RoneR23+k9a2J2DC2tbNaMbEk5C2a/EOuuKKl09eG8t4
-	y8+/CRPq7AbkIThStEmg==;
+	List-Owner; bh=HEhwVBVDV7XUSw1hwWLpfW1xdk0buSV7i3WVSsGJh98=; b=xE2bxPDyJf2u8z
+	oPInnQRKBb/Kc67RUtW0pxjGIXE94WNq57GZEGruDflBLWWICsXE6op64ndmY96JMCpn1XjE5Gcxv
+	7xijqG3+IfS9ye65ZNhYD8eE/o+9iqZ0DuXKg+xMdn42rpvGq5YzrVrOIVthHtWWj0EbSvocgW+4/
+	BgIeWT3schB0UUKnzhMD41MNBv192NH+n65Iv8fVe94VMGql9e0IG3STBQFU52Q8WVqVJ2wPG9RS7
+	fU4g9FIAVqPik6NqcjENoMgrsh41FDrsL9MAEgqEpda2SmQ+f5uUeOOvfpiUfwbE7WQcso49+VL1e
+	auh6y82RX18VKgQuFUNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAjp-00Ek7Y-K6; Thu, 11 Aug 2022 16:08:49 +0000
+	id 1oMAjj-00Ek0R-FK; Thu, 11 Aug 2022 16:08:43 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAja-00Ejqs-Gy
-	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 16:08:36 +0000
+	id 1oMAjZ-00Ejp1-9k
+	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 16:08:35 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id EDB566144F;
-	Thu, 11 Aug 2022 16:08:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78ABAC433D6;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B048061405;
 	Thu, 11 Aug 2022 16:08:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37178C433B5;
+	Thu, 11 Aug 2022 16:08:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1660234113;
-	bh=IvK5vr6DMKLGtEAo+VxNzrO/s9h7vybNjsPB5ui6Euw=;
+	s=k20201202; t=1660234111;
+	bh=W+lt4UsgxFtSwNLW8MAynTH2Z1I3/gnm3K/icSV2Mnc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KXSJpkzvqd6A6aVGtrCEalbuHwYsx5BSJNPgTX50mwcLZrrDwsqSG7MILCmz2I6j5
-	 UuEzsfccFoM97nqENrZPvhEDQ/oxwW6ajBmhZ5ENMr9bukVbWDZr3PZxWZHYaeKC6p
-	 Cw9Z9BOP9/FnPvhdwQXVrVtpWyEl0joLCAtz2w/YoGruQEp1fkcg3jNQ92Lmm4eoIV
-	 lYlYl5x2RrpxzosbjE26MGrEXmAhYFqwL/D8de0Mhmfbc+jWCEYeo0rxOYwCbsKcu2
-	 1vh1Hs2J19UGMBRWFb8Dutgs/Nqc0c8PEooBtwXC01tVCi8AmwZ+Fexa11pmCzmESy
-	 XoA4gMm26HY3w==
+	b=rDG8b7OOzZNrY/qncEFwXna9KD7v8+VFUAKleAaCNSLwCzRukiQuviOu+uFNKsoa4
+	 7n9MAx1HDQQBZsz7RPvWGwGbVtzjeo379eLq9Er/kfM6gDjqdHPoQmNdWbV5RKX/Qi
+	 qEUru7q/6bN4klmunqvotryfo8yI0SzSabqeyVUoMQd0Zne6BGrHn0L01BdEesa5js
+	 10nno68WLBmzChPUdwgE8JSrIseVH5L33RhBtLl1yxRAR9Aykes9062Bl1Fhhv02OB
+	 NDXZedp9eCPvNzzeVbw4mCtxrwpzPq4zrgTKM/qHL9IWTvjeNp3T1ziGY2zsZVCpio
+	 GfGoqzakjnE3w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maxime Bizon <mbizon@freebox.fr>,
+Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+	Zhijun You <hujy652@gmail.com>,
+	Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>,
+	John Crispin <john@phrozen.org>,
 	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>,
 	kvalo@kernel.org,
@@ -56,9 +59,9 @@ Cc: Maxime Bizon <mbizon@freebox.fr>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 03/25] ath10k: fix misreported tx bandwidth for 160Mhz
-Date: Thu, 11 Aug 2022 12:07:58 -0400
-Message-Id: <20220811160826.1541971-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 02/25] ath10k: htt_tx: do not interpret Eth frames as WiFi
+Date: Thu, 11 Aug 2022 12:07:57 -0400
+Message-Id: <20220811160826.1541971-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811160826.1541971-1-sashal@kernel.org>
 References: <20220811160826.1541971-1-sashal@kernel.org>
@@ -66,9 +69,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220811_090834_665397_10CCE576 
-X-CRM114-Status: UNSURE (   8.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220811_090833_469437_F00CACE3 
+X-CRM114-Status: GOOD (  19.78  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,39 +87,171 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Maxime Bizon <mbizon@freebox.fr>
+From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
 
-[ Upstream commit 75a7062e533e309a9ca0812c69f3ac3cefadb8b1 ]
+[ Upstream commit 70f119fb82af7f7417dc659faf02c91e1f853739 ]
 
-Because of this missing switch case, 160Mhz transmit was reported as
-20Mhz, leading to wrong airtime calculation and AQL limiting max
-throughput.
+The xmit path for the Ethernet encapsulated frames become more or less
+usable since d740d8fd2439 ("ath10k: unify tx mode and dispatch"). This
+change reorganize the xmit path in a manageable way to properly support
+various tx modes, but misses that the Ethernet encapsulated frame is a
+special case. We do not have an IEEE 802.11 header at the begining of
+them. But the HTT Tx handler still interprets first bytes of each frame
+as an IEEE 802.11 Frame Control field.
 
-Tested-on: QCA9984 hw2.0 PCI 10.4-3.10-00047
+Than this code was copied by e62ee5c381c5 ("ath10k: Add support for
+htt_data_tx_desc_64 descriptor") and a2097d6444c3 ("ath10k: htt: High
+latency TX support") to another handlers. In fact the issue in the high
+latency (HL) handler was introduced by 83ac260151e7 ("ath10k: add mic
+bytes for pmf management packet").
 
-Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
+Ethernet encapsulated frame tx mode stay unused until 75d85fd9993c
+("ath10k: introduce basic tdls functionality") started using it for TDLS
+frames to avoid key selection issue in some firmwares.
+
+Trying to interpret the begining of an Ethernet encapsulated frame as an
+IEEE 802.11 header was not hurt us noticeably since we need to meet two
+conditions: (1) xmit should be performed towards a TDLS peer, and (2)
+the TDLS peer should have a specific OUI part of its MAC address. Looks
+like that the rareness in TDLS communications of OUIs that can be
+interpreted as an 802.11 management frame saves users from facing this
+issue earlier.
+
+Improve Ethernet tx mode support in the HTT Tx handler by avoiding
+interpreting its first bytes as an IEEE 802.11 header. While at it, make
+the ieee80211_hdr variable local to the code block that is guarded by
+!is_eth check. In this way, we clarify in which cases a frame can be
+interpreted as IEEE 802.11, and saves us from similar issues in the
+future.
+
+Credits: this change as part of xmit encapsulation offloading support
+was originally made by QCA and then submitted for inclusion by John
+Crispin [1]. But the whole work was not accepted due to the lack of a
+part for 64-bits descriptors [2]. Zhijun You then pointed this out to me
+in a reply to my initial RFC patch series. And I made this slightly
+reworked version that covered all the HTT Tx handler variants.
+
+1. https://lore.kernel.org/all/20191216092207.31032-1-john@phrozen.org/
+2. https://patchwork.kernel.org/project/linux-wireless/patch/20191216092207.31032-1-john@phrozen.org/
+
+Reported-by: Zhijun You <hujy652@gmail.com>
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Signed-off-by: John Crispin <john@phrozen.org>
+Signed-off-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
 Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/cd2735a40da7f4fcc5323e3fca3775e7b5402ece.camel@freebox.fr
+Link: https://lore.kernel.org/r/20220516032519.29831-3-ryazanov.s.a@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 61 ++++++++++++++----------
+ 1 file changed, 35 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 760d24a28f39..3aa9536b95d7 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3748,6 +3748,10 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
- 		arsta->tx_info.status.rates[0].flags |=
- 				IEEE80211_TX_RC_80_MHZ_WIDTH;
- 		break;
-+	case RATE_INFO_BW_160:
-+		arsta->tx_info.status.rates[0].flags |=
-+				IEEE80211_TX_RC_160_MHZ_WIDTH;
-+		break;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index f73ed1044390..dac1b202cfb9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -1245,7 +1245,6 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
+ 	struct ath10k *ar = htt->ar;
+ 	int res, data_len;
+ 	struct htt_cmd_hdr *cmd_hdr;
+-	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
+ 	struct htt_data_tx_desc *tx_desc;
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+ 	struct sk_buff *tmp_skb;
+@@ -1256,11 +1255,15 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
+ 	u16 flags1 = 0;
+ 	u16 msdu_id = 0;
+ 
+-	if ((ieee80211_is_action(hdr->frame_control) ||
+-	     ieee80211_is_deauth(hdr->frame_control) ||
+-	     ieee80211_is_disassoc(hdr->frame_control)) &&
+-	     ieee80211_has_protected(hdr->frame_control)) {
+-		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++	if (!is_eth) {
++		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
++
++		if ((ieee80211_is_action(hdr->frame_control) ||
++		     ieee80211_is_deauth(hdr->frame_control) ||
++		     ieee80211_is_disassoc(hdr->frame_control)) &&
++		     ieee80211_has_protected(hdr->frame_control)) {
++			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++		}
  	}
  
- 	if (peer_stats->succ_pkts) {
+ 	data_len = msdu->len;
+@@ -1354,7 +1357,6 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
+ {
+ 	struct ath10k *ar = htt->ar;
+ 	struct device *dev = ar->dev;
+-	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+ 	struct ath10k_hif_sg_item sg_items[2];
+@@ -1386,15 +1388,19 @@ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
+ 	txbuf_paddr = htt->txbuf.paddr +
+ 		      (sizeof(struct ath10k_htt_txbuf_32) * msdu_id);
+ 
+-	if ((ieee80211_is_action(hdr->frame_control) ||
+-	     ieee80211_is_deauth(hdr->frame_control) ||
+-	     ieee80211_is_disassoc(hdr->frame_control)) &&
+-	     ieee80211_has_protected(hdr->frame_control)) {
+-		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+-	} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
+-		   txmode == ATH10K_HW_TXRX_RAW &&
+-		   ieee80211_has_protected(hdr->frame_control)) {
+-		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++	if (!is_eth) {
++		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
++
++		if ((ieee80211_is_action(hdr->frame_control) ||
++		     ieee80211_is_deauth(hdr->frame_control) ||
++		     ieee80211_is_disassoc(hdr->frame_control)) &&
++		     ieee80211_has_protected(hdr->frame_control)) {
++			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++		} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
++			   txmode == ATH10K_HW_TXRX_RAW &&
++			   ieee80211_has_protected(hdr->frame_control)) {
++			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++		}
+ 	}
+ 
+ 	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
+@@ -1556,7 +1562,6 @@ static int ath10k_htt_tx_64(struct ath10k_htt *htt,
+ {
+ 	struct ath10k *ar = htt->ar;
+ 	struct device *dev = ar->dev;
+-	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+ 	struct ath10k_hif_sg_item sg_items[2];
+@@ -1588,15 +1593,19 @@ static int ath10k_htt_tx_64(struct ath10k_htt *htt,
+ 	txbuf_paddr = htt->txbuf.paddr +
+ 		      (sizeof(struct ath10k_htt_txbuf_64) * msdu_id);
+ 
+-	if ((ieee80211_is_action(hdr->frame_control) ||
+-	     ieee80211_is_deauth(hdr->frame_control) ||
+-	     ieee80211_is_disassoc(hdr->frame_control)) &&
+-	     ieee80211_has_protected(hdr->frame_control)) {
+-		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+-	} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
+-		   txmode == ATH10K_HW_TXRX_RAW &&
+-		   ieee80211_has_protected(hdr->frame_control)) {
+-		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++	if (!is_eth) {
++		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
++
++		if ((ieee80211_is_action(hdr->frame_control) ||
++		     ieee80211_is_deauth(hdr->frame_control) ||
++		     ieee80211_is_disassoc(hdr->frame_control)) &&
++		     ieee80211_has_protected(hdr->frame_control)) {
++			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++		} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
++			   txmode == ATH10K_HW_TXRX_RAW &&
++			   ieee80211_has_protected(hdr->frame_control)) {
++			skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
++		}
+ 	}
+ 
+ 	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
 -- 
 2.35.1
 
