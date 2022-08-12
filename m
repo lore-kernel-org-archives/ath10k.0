@@ -4,70 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B874DC25B0C
-	for <ath10k@archiver.kernel.org>; Thu, 11 Aug 2022 16:09:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 364EAC25B06
+	for <ath10k@archiver.kernel.org>; Fri, 12 Aug 2022 02:21:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x188qLgVydICM0olU2kwE4YdXc1jHMfxGsCnYM63M2g=; b=nyajz05CUi9KBO
-	neLX3c0BB0J674JsK4d3EM0Qqyv/d/iJX7GhyeH1Y+uyTB3wXYIjiaC4UmaVRgvFHqusxOY3t9QBE
-	XtmTRqxUMoq3goqIFsJ9MeYshbIawF6ZVf1dHz6jPknbMIVZzNottWH3ZT5qY0U9Gom+G1Z/nLjpL
-	sD9NiOEjiBzYOCWqFRAC3sUaCKoAHzv9scxJ1vR6JrssuZndOBr3uO0n2XlZIPLdFPscait17EHSg
-	SUlWAn3yDtSWyiQSdw1hv1bJy94Y7i/h1yUH8I9CqBvT3D1bn0zWTtEwkaIrzXNl3xVm+Phf/Fujb
-	xYVeuxqQsWGcrcv1Be7Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ytCuYpCRko5bIzNqINLKvNJ/qUIdI157Ab9eazdX+yo=; b=wt2MzEuzsGHGzR
+	Z4SlbzJDbTGB6Mu3/bMsBqgQ4JqWiqaQ9u2mG6GM2UjGAL3R7CRrUm0vd8PI/k4WAADcq8c1TaESx
+	7SEqfgeCvITucYqjvv6DmEddDvlV700BXBawa9n/Alk4Z6Qw/t5wKuC58so5oYVfL5O4uURo+negh
+	lT5vnIvmwby7KlEzEDdjITd/Q9uGuxndYKqti2NeIXJk09zoGGnqaUpZfEfLOiPbvH99RKY7M8/Lf
+	8ACD6jxqjllphmO7VndOVVnlkQ+hM3GnCaFSizghQkzONe3fA5JXV4sCnfKDgI96PiBRNR0Z0TMC9
+	4fCZxrgYLl9J2DqNQgrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAjx-00EkG3-6u; Thu, 11 Aug 2022 16:08:57 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1oMKHj-008MuB-Ui; Fri, 12 Aug 2022 02:20:27 +0000
+Received: from mga12.intel.com ([192.55.52.136])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMAjg-00EjxM-Cy
-	for ath10k@lists.infradead.org; Thu, 11 Aug 2022 16:08:42 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C547C6144D;
-	Thu, 11 Aug 2022 16:08:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7009C43141;
-	Thu, 11 Aug 2022 16:08:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1660234119;
-	bh=/q9N+iPToJwMdreUkRYyHNDyXDbWuEokyrUXEgfbwHw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oTv1Ly0A86HaH0v5JV9Z/LW3okxjoq2DpTEIltc9FXn+yf7EgekDOUV+VScGnji6N
-	 P9OLuIxtPrTw7sIkJ5Fg5wJOKHVpVHc7ExEOdXnYP90ZXb3PHAXpkJ+cK/1yQy4UX+
-	 LiKho5hHYroT8kyI2YQXnhtZPlcUoeMkys/gQQuBEEs4cyAEx1xb3rGWJ8DCsky01T
-	 bIfYC77BOSVIVj+do0myN2uXM64aAU6tc1NfAE4xCYOSTbsUK6c7LE6Yq3uc/j3uJ7
-	 yNciFLKye2FreCysZ6KKCKzqjqNV5HTIAqOVrhRcum6R2OPvZF8cAn3A/Yt5xmpFJD
-	 wf2tX/wlfK0/w==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Wen Gong <quic_wgong@quicinc.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
-	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/25] ath10k: fix regdomain info of iw reg set/get
-Date: Thu, 11 Aug 2022 12:08:01 -0400
-Message-Id: <20220811160826.1541971-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220811160826.1541971-1-sashal@kernel.org>
-References: <20220811160826.1541971-1-sashal@kernel.org>
+	id 1oMKHh-008MqG-9V
+	for ath10k@lists.infradead.org; Fri, 12 Aug 2022 02:20:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660270825; x=1691806825;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=c0vMo07aSlR5xoDpnEclZrIWcB6UDhU9ht8zL7h3qIs=;
+  b=i3rwr82b1JnBGPsSya6MYObhAooLxpcWz1oBp+nbsmguTGtnNjIGwuOE
+   l30HmH8MAJivmu/lGbEvNiQgRdKM1qUQ+r7l6zOuQRWLVJEO4A2LzEArZ
+   1BCmgyjEne0soWd7UuA+58nDqY4TAOh2Z4uOdIWo7Mx1F4rg34sY+XONK
+   8UlgdKEd4pwuKIZi9qEAj0bwJ3W7sbHlvxFLdaG39bJ4RQngKlGUCibew
+   03m1L/wwmEnqcIVqcgbUB9TNkDJcTow6fbczHMCmr7aD8wyFBXfw84dl3
+   S0afJc5zDngs/YN6lDNnERfyu3nluNwjrysA0xWmqtaK05Q2apcXq/mO2
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10436"; a="271278897"
+X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
+   d="scan'208";a="271278897"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2022 19:20:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
+   d="scan'208";a="673928289"
+Received: from lkp-server02.sh.intel.com (HELO cfab306db114) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Aug 2022 19:20:20 -0700
+Received: from kbuild by cfab306db114 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1oMKHb-0000yR-2m;
+	Fri, 12 Aug 2022 02:20:19 +0000
+Date: Fri, 12 Aug 2022 10:19:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath12k-bringup] BUILD SUCCESS
+ e82bf2417c8e49527db04491a988832e0ec9d5a1
+Message-ID: <62f5b8bf.m9Fv4RC287uNBRMz%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220811_090840_992881_D51F7464 
-X-CRM114-Status: GOOD (  15.43  )
+X-CRM114-CacheID: sfid-20220811_192025_415255_DE2E0236 
+X-CRM114-Status: UNSURE (   5.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,136 +81,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Wen Gong <quic_wgong@quicinc.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath12k-bringup
+branch HEAD: e82bf2417c8e49527db04491a988832e0ec9d5a1  wifi: ath12k: remove extra line from hw.c
 
-[ Upstream commit 8723750e2753868591ba86a57b0041c5e38047ad ]
+elapsed time: 717m
 
-When wlan load, firmware report the reg code with 0x6C for QCA6174,
-it is world reg which checked by ath_is_world_regd(), then the reg
-will be save into reg_world_copy of ath_common in ath_regd_init().
-Later the regulatory of ath_common is updated to another country
-code such as "US" in ath_reg_notifier_apply() by below call stack.
-After that, regulatory_hint() is called in ath10k_mac_register()
-and it lead "iw reg get" show two regdomain info as below.
+configs tested: 76
+configs skipped: 3
 
-global
-country US: DFS-FCC
-	(2400 - 2472 @ 40), (N/A, 30), (N/A)
-	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
-	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
-	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
-	(5730 - 5850 @ 80), (N/A, 30), (N/A)
-	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-phy#0
-country US: DFS-FCC
-	(2400 - 2472 @ 40), (N/A, 30), (N/A)
-	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
-	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
-	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
-	(5730 - 5850 @ 80), (N/A, 30), (N/A)
-	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+i386                                defconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+x86_64                              defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+x86_64                               rhel-8.3
+powerpc                          allmodconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+i386                             allyesconfig
+sh                               allmodconfig
+x86_64                           allyesconfig
+i386                          randconfig-a014
+x86_64                        randconfig-a002
+arc                  randconfig-r043-20220811
+x86_64                        randconfig-a015
+x86_64                           rhel-8.3-kvm
+i386                          randconfig-a012
+i386                          randconfig-a016
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                    rhel-8.3-kselftests
+x86_64                        randconfig-a006
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-syz
+x86_64                        randconfig-a004
+ia64                             allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-a001
+arm64                            allyesconfig
+i386                          randconfig-a003
+i386                          randconfig-a005
+xtensa                  cadence_csp_defconfig
+arm64                            alldefconfig
+ia64                            zx1_defconfig
+csky                              allnoconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+riscv                             allnoconfig
+loongarch                           defconfig
+loongarch                         allnoconfig
+sh                   secureedge5410_defconfig
+sh                          rsk7264_defconfig
+m68k                       m5475evb_defconfig
+sh                        sh7757lcr_defconfig
+arc                           tb10x_defconfig
+sh                            titan_defconfig
+arm                           tegra_defconfig
+m68k                        mvme147_defconfig
+csky                             alldefconfig
+mips                            gpr_defconfig
+i386                          randconfig-c001
 
-[ 4255.704975] Call Trace:
-[ 4255.704983]  ath_reg_notifier_apply+0xa6/0xc5 [ath]
-[ 4255.704991]  ath10k_reg_notifier+0x2f/0xd2 [ath10k_core]
-[ 4255.705010]  wiphy_regulatory_register+0x5f/0x69 [cfg80211]
-[ 4255.705020]  wiphy_register+0x459/0x8f0 [cfg80211]
-[ 4255.705042]  ? ieee80211_register_hw+0x3a6/0x7d1 [mac80211]
-[ 4255.705049]  ? __kmalloc+0xf4/0x218
-[ 4255.705058]  ? ieee80211_register_hw+0x3a6/0x7d1 [mac80211]
-[ 4255.705066]  ? ath10k_mac_register+0x70/0xaab [ath10k_core]
-[ 4255.705075]  ieee80211_register_hw+0x51a/0x7d1 [mac80211]
-[ 4255.705084]  ath10k_mac_register+0x8b4/0xaab [ath10k_core]
-[ 4255.705094]  ath10k_core_register_work+0xa5e/0xb45 [ath10k_core]
-[ 4255.705100]  ? __schedule+0x61f/0x7d3
-[ 4255.705105]  process_one_work+0x1b7/0x392
-[ 4255.705109]  worker_thread+0x271/0x35d
-[ 4255.705112]  ? pr_cont_work+0x58/0x58
-[ 4255.705116]  kthread+0x13f/0x147
-[ 4255.705119]  ? pr_cont_work+0x58/0x58
-[ 4255.705123]  ? kthread_destroy_worker+0x62/0x62
-[ 4255.705126]  ret_from_fork+0x22/0x40
+clang tested configs:
+i386                          randconfig-a013
+i386                          randconfig-a011
+hexagon              randconfig-r045-20220811
+x86_64                        randconfig-a014
+x86_64                        randconfig-a005
+riscv                randconfig-r042-20220811
+x86_64                        randconfig-a001
+i386                          randconfig-a015
+hexagon              randconfig-r041-20220811
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+s390                 randconfig-r044-20220811
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-k001
+mips                        omega2p_defconfig
+mips                  cavium_octeon_defconfig
 
-At this moment, the two regdomain info is same, when run "iw reg set KR",
-the global regdomain info changed to KR, but the regdomain of phy#0
-does not change again. It leads inconsistent values between global and
-phy#0 as below.
-
-global
-country KR: DFS-JP
-        (2402 - 2482 @ 40), (N/A, 13), (N/A)
-        (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
-        (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
-        (5490 - 5710 @ 160), (N/A, 30), (0 ms), DFS
-        (5735 - 5835 @ 80), (N/A, 30), (N/A)
-        (57000 - 66000 @ 2160), (N/A, 43), (N/A)
-
-phy#0
-country US: DFS-FCC
-	(2400 - 2472 @ 40), (N/A, 30), (N/A)
-	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
-	(5250 - 5350 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
-	(5470 - 5730 @ 160), (N/A, 23), (0 ms), DFS
-	(5730 - 5850 @ 80), (N/A, 30), (N/A)
-	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
-
-The initial reg code is 0x6C which saved in reg_world_copy of ath_common,
-and the code US is updated from cfg80211 later, so ath10k should also
-check the initial reg code before regulatory_hint().
-
-After this fix, regdomain info is same between "iw reg get" and "iw reg
-set xx", it does not have the regdomain info of phy#0 again.
-
-global
-country KR: DFS-JP
-        (2402 - 2482 @ 40), (N/A, 13), (N/A)
-        (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
-        (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
-        (5490 - 5710 @ 160), (N/A, 30), (0 ms), DFS
-        (5735 - 5835 @ 80), (N/A, 30), (N/A)
-        (57000 - 66000 @ 2160), (N/A, 43), (N/A)
-
-This does not effect the channel list and power which ath10k used.
-When the country code for regulatory_hint() in ath10k_mac_register()
-is same with the global country code, then reg_set_rd_driver() of
-cfg80211 called from crda which return -EALREADY to set_regdom() and
-then update_all_wiphy_regulatory() will not be called while wlan load.
-When run "iw reg set xx", reg_get_regdomain() which used by function
-handle_channel() in net/wirelss/reg.c always use the regdomain
-returned by get_cfg80211_regdom() because the initiator of last
-regulatory_request is NL80211_REGDOM_SET_BY_USER, get_cfg80211_regdom()
-is the global regdomain, then all the ieee80211_channel info is updated
-in handle_channel() with the global regdomain.
-
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
-Tested-on: QCA9984 hw1.0 PCI 10.4-3.6-00104
-
-Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20220525132247.23459-1-quic_wgong@quicinc.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3026eb54a7f2..95687e41006b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -9030,7 +9030,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 		ar->hw->wiphy->software_iftypes |= BIT(NL80211_IFTYPE_AP_VLAN);
- 	}
- 
--	if (!ath_is_world_regd(&ar->ath_common.regulatory)) {
-+	if (!ath_is_world_regd(&ar->ath_common.reg_world_copy) &&
-+	    !ath_is_world_regd(&ar->ath_common.regulatory)) {
- 		ret = regulatory_hint(ar->hw->wiphy,
- 				      ar->ath_common.regulatory.alpha2);
- 		if (ret)
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
