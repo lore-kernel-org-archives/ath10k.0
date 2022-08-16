@@ -4,71 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07E54C00140
-	for <ath10k@archiver.kernel.org>; Mon, 15 Aug 2022 20:00:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CFF9C25B0F
+	for <ath10k@archiver.kernel.org>; Tue, 16 Aug 2022 04:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g7PBPajrJJ4v5rhDDhDVR1RNfAmMyhEODKONStdsYEQ=; b=WjjhqTEVqfuZov
-	dwUt5bEo1tKuTUyikWaUXs0tR++iwy/qzptCDKtS3tVO3QXJu+2zeiCLxornmDaSOLwqM6/jeTLvY
-	1qSMxG2huBXeFniciWwSAfOFzipr/D2o5L3tcQfYJvBZj6qlrhf8AaEaP9lQdWknzoiyNw7u6+1Qd
-	FI13bJzmUCHGTa7Y2efgNQXe5fYaokg2DisrdzTZPhGJOjeoK5bMxvfAoBQmM7G8Oke1Z8f+QLjFA
-	nUN5W61a2TAuxpzaUWQa7lg95ucpePwUzYKgPUv+0BdzDKLj16TgPn0rOYL/BXtjmyNoUXL4YLy4r
-	gDqSsEUhJAiqw3EONbcA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=bxEA9sg/ZpKNNDn5/jC2Cq9gn5KTFskZqFWy7vm6NII=; b=lLNmR0roCnciVm
+	o5QQgbzNDzS1NhHdb/bHmfQsSgEGMXataydM7vXv1S/J9FyfGT2xsVoQs/ND/pOqW0rPROMR7v5TS
+	u2WfG2rOyKfO7xjWJHOy30gl0VYfJoo3KLhdnl+W5+dISmDmCcQ4LRZy0NJ/GXMxdfFQ7CoCF6O9n
+	agkymRKt0s2kLbpDDCUvlzslljjuH1+X0Qk3hpjkJyR1xWAGWaXhdpFHFIHBJWytyWd2PoleISIrN
+	iZTcrABqWDopYJVFI1RaMCXMRul7zytdTRtcErv3K6PNt0jX+/M2I41Cl5wgJAURU+u8DkklkbwyU
+	vjWLv2mwT5j5p9M1hstw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNgFn-004RJ8-FP; Mon, 15 Aug 2022 20:00:04 +0000
-Received: from mail-qk1-x72e.google.com ([2607:f8b0:4864:20::72e])
+	id 1oNoT6-00Ay0A-Jn; Tue, 16 Aug 2022 04:46:20 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNgFi-004RCQ-Nf
-	for ath10k@lists.infradead.org; Mon, 15 Aug 2022 20:00:01 +0000
-Received: by mail-qk1-x72e.google.com with SMTP id w18so1355445qki.8
-        for <ath10k@lists.infradead.org>; Mon, 15 Aug 2022 12:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=protectli.com; s=google;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc;
-        bh=0ldcUDWK9C7thj76YfZwaPOMpOuuTv51lpUqGuh2flA=;
-        b=ak1H2wzXRHlo3XidnTWZLjY7pkg01LqecAWnfI6ZV0O4y+AAsDhP62/QGt2S2+nBOR
-         B4tVTbgqYY1pCx+kOVRUufsdhy7Psov9E+VlnRrPM4sbqok6BooNmx/DHZEVsuJFnmPj
-         CB1OaDqPFHdd0VqsHw5DL2SddQGzwFNOjERS8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=0ldcUDWK9C7thj76YfZwaPOMpOuuTv51lpUqGuh2flA=;
-        b=FRLugXzbSsjEwpas2IM1SopwYgUPMJzBJIjX3VYWSwWcrLJrYdpbR0+3E67Jg81xGb
-         XUhddGogj/yNfAr+JEqHkwhtHSx2jTy4BpDkdumj9Px670XkBmJfkazbHPFTXmMJ3IZ9
-         QX+9jZiHj9qUWve/0HQh1Xv+NhLQ1hh4CMMtLBDvbw0dtrX7AzsvwDVUw72KGmcxoaKi
-         YKpHv5fFWLDFii0BuBLj9tTlQgfEmf5NtDrkwdnrStL2BAklfXM8n0vrteGiHrKQ49wW
-         7LfmSY9+XvrNzCCjV+IBdjcdFlOOr9XqC4eY++BaqLrNcrsEfg74JeAAfgLleLwgLzU4
-         0t1A==
-X-Gm-Message-State: ACgBeo3PhqrDmOaNLemgVJTjQgE5K775g8L81Q6A3/uIXRMu16j+u+Px
-	6ZuvOXMqeR7J8n7KJsui6B/yOql0FPkQObgz
-X-Google-Smtp-Source: AA6agR4Wot7OeFu7xMBbfsJtnAAZvkJHtCz6JJfAcmqNSTSvqyLr9ZU5KaErnw5nYHsgYnQCN1pCbg==
-X-Received: by 2002:a05:620a:74e:b0:6b5:f0ec:edbe with SMTP id i14-20020a05620a074e00b006b5f0ecedbemr13015089qki.436.1660593594629;
-        Mon, 15 Aug 2022 12:59:54 -0700 (PDT)
-Received: from lycia.zebraskunk.int ([199.168.73.145])
-        by smtp.gmail.com with ESMTPSA id m2-20020a05620a290200b006b46a78bc0fsm10513370qkp.118.2022.08.15.12.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Aug 2022 12:59:54 -0700 (PDT)
-Date: Mon, 15 Aug 2022 15:59:52 -0400
-From: Brett Mastbergen <brett.mastbergen@protectli.com>
-To: Wonsup Yoon <pusnow@kaist.ac.kr>
-Cc: ath10k@lists.infradead.org
-Subject: Re: Questions about QCA6174 firmwares
-Message-ID: <20220815195952.GA7798@lycia.zebraskunk.int>
-References: <pcoa2db959zn.pcoa2db781x3.g6@dooray.com>
+	id 1oNoQj-00AvYm-AA
+	for ath10k@lists.infradead.org; Tue, 16 Aug 2022 04:43:55 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27G31pAX000356;
+	Tue, 16 Aug 2022 04:43:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=zIA+fZqlZx/rjs6oujnUrA96RwP+POPHbLBSEiMs9a4=;
+ b=obHcGeVsQAVFlBECDkMzD8gdNVNbT5GAuKrHsKBhYVDamUNLD3CwRxLyRKiwaTPliX6s
+ wdI8SShBBpKLOEX5C7K5sYqgn39LwsxRtxDO7lc7bB1u6CYJRKyHGpgriTH0gWy+qOOY
+ ulaDh8sD7acm4hT1hOBxUlPTbYqqzd54pdZ4R4uYgOJ5bEgpc3JuZouYRDF5hF7XIKq9
+ dBZEnaec7qEpvE4A1nY3owU1ZXs/eEQSRdLY/XRccJuiHUjn+vc0g//yqWccRBgVQtwC
+ D12AvgM5Y3lpghelvCULBJ6XLGIZoCiXyz+Kzgx7ZIZiNGShs4oYTAf6LF86Vz46lohI rQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3j01w0rgw7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Aug 2022 04:43:45 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 27G4hi9r030434
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Aug 2022 04:43:44 GMT
+Received: from youghand-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Mon, 15 Aug 2022 21:43:42 -0700
+From: Youghandhar Chintala <quic_youghand@quicinc.com>
+To: <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>,
+        Youghandhar Chintala
+	<quic_youghand@quicinc.com>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH] wifi: ath10k: Delay the unmapping of the buffer
+Date: Tue, 16 Aug 2022 10:13:10 +0530
+Message-ID: <20220816044310.19101-1-quic_youghand@quicinc.com>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <pcoa2db959zn.pcoa2db781x3.g6@dooray.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 0Gr-GHGiIYs_-16S31hyrVni7pGrLu4w
+X-Proofpoint-GUID: 0Gr-GHGiIYs_-16S31hyrVni7pGrLu4w
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-16_03,2022-08-16_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ mlxscore=0 malwarescore=0 spamscore=0 suspectscore=0 priorityscore=1501
+ phishscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2207270000
+ definitions=main-2208160018
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220815_125958_809846_98DD8C92 
-X-CRM114-Status: GOOD (  13.04  )
+X-CRM114-CacheID: sfid-20220815_214353_614413_69683D93 
+X-CRM114-Status: GOOD (  18.02  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,20 +94,182 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 10, 2022 at 10:56:38AM +0900, Wonsup Yoon wrote:
-> Hi,
-> 
-> If you don't mind, I'd like ask a few questions regarding QCA6174 firmwares.
-> 
-> 1. I've notice that QCA6174 hw3.0 4.4.1 firmwares have 4 versions (none, c1, c2, c3). Are there any differences? Which one is newest or correct?
-> 
-> 2. My QCA6174 seems to have a compatibility issue with a recent firmware. I've tested theses firmware versions, but only the oldest one works.
-> 
+We are seeing a corner case where host receiving copy completion for WMI
+command though copy engine is processing it. Once host receives the
+copy completion, host is unmapping corresponding memory which results
+in SMMU fault. To avoid such conditions though host receives copy
+completion, as a work around we are adding a delay to unmap the memory
+for WMI end point.
 
-I have observed the same firmware crashes with those versions with my QCA6174 module (JWW6051).  Would love to know if RM.4.4.1.c2-00057-QCARMSWP-1 is the correct version to use, or if there is another newer version that I should be using.
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
 
-Thanks,
-brett
+Tested-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Youghandhar Chintala <quic_youghand@quicinc.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
+ drivers/net/wireless/ath/ath10k/htc.c  |  8 ++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  2 ++
+ 3 files changed, 25 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index d1ac64026cb3..c2fda8deb9ef 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -99,6 +99,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA988X_HW_2_0_VERSION,
+@@ -138,6 +139,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -178,6 +180,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -252,6 +255,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -291,6 +295,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -330,6 +335,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -373,6 +379,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = true,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -418,6 +425,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -470,6 +478,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -519,6 +528,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -558,6 +568,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -599,6 +610,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -631,6 +643,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -677,6 +690,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = false,
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
++		.delay_unmap_buffer = false,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -709,6 +723,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.dynamic_sar_support = true,
+ 		.hw_restart_disconnect = true,
+ 		.use_fw_tx_credits = false,
++		.delay_unmap_buffer = true,
+ 	},
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 6d1784f74bea..e04b9545cca6 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -56,6 +56,14 @@ void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC, "%s: ep %d skb %pK\n", __func__,
+ 		   ep->eid, skb);
+ 
++	/* A corner case where the copy completion is reaching to host but still
++	 * copy engine is processing it due to which host unmaps corresponding
++	 * memory and causes SMMU fault, hence as workaround adding delay
++	 * the unmapping memory to avoid SMMU faults.
++	 */
++	if (ar->hw_params.delay_unmap_buffer &&
++	    ep->ul_pipe_id == 3)
++		mdelay(2);
+ 	hdr = (struct ath10k_htc_hdr *)skb->data;
+ 	ath10k_htc_restore_tx_skb(ep->htc, skb);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 1b99f3a39a11..9643031a4427 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -637,6 +637,8 @@ struct ath10k_hw_params {
+ 	bool hw_restart_disconnect;
+ 
+ 	bool use_fw_tx_credits;
++
++	bool delay_unmap_buffer;
+ };
+ 
+ struct htt_resp;
+-- 
+2.37.0
+
 
 _______________________________________________
 ath10k mailing list
