@@ -4,80 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CFF9C25B0F
-	for <ath10k@archiver.kernel.org>; Tue, 16 Aug 2022 04:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00B05C19F2C
+	for <ath10k@archiver.kernel.org>; Tue, 16 Aug 2022 05:42:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=bxEA9sg/ZpKNNDn5/jC2Cq9gn5KTFskZqFWy7vm6NII=; b=lLNmR0roCnciVm
-	o5QQgbzNDzS1NhHdb/bHmfQsSgEGMXataydM7vXv1S/J9FyfGT2xsVoQs/ND/pOqW0rPROMR7v5TS
-	u2WfG2rOyKfO7xjWJHOy30gl0VYfJoo3KLhdnl+W5+dISmDmCcQ4LRZy0NJ/GXMxdfFQ7CoCF6O9n
-	agkymRKt0s2kLbpDDCUvlzslljjuH1+X0Qk3hpjkJyR1xWAGWaXhdpFHFIHBJWytyWd2PoleISIrN
-	iZTcrABqWDopYJVFI1RaMCXMRul7zytdTRtcErv3K6PNt0jX+/M2I41Cl5wgJAURU+u8DkklkbwyU
-	vjWLv2mwT5j5p9M1hstw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Date:
+	MIME-Version:Subject:Message-ID:Cc:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=ZEuTh5CJ9Ts2p/6jSvC6Hc33WT+10kOSB6j+CmJnoNc=; b=LK98r0/kxBNupo7Nc2ZIXoxLGF
+	eTxamr6hA1IWRkoeczRaRnl1HOZbos7xWAcvx3twGoILyetYakHCyYJ8vLoGaUwLwc6zdOUpRhxT4
+	S21WAWUdESwqnptVxE5nHw9WK12YAy5FWWOsIzSrparfA+jUAOS8L8D8h4w7YBw4LG8WYdPobUPQ4
+	M/ommxwsB/1PsZ8bT/p7tg9HW5rpeXr/O21lWRo+ucwihnQrhrJR5RxlgBM4t5HNNX++aWULXq1uy
+	A53Fm91c1U4WsScmOGCz6nLKUPT79bv5fsEs9NhzU2JzXFyIwIVwJQXCZLnaO4+lUDHlCgmYwYndT
+	0cV7Sm/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNoT6-00Ay0A-Jn; Tue, 16 Aug 2022 04:46:20 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1oNpL2-00CI7m-ME; Tue, 16 Aug 2022 05:42:04 +0000
+Received: from send005.gov-dooray.com ([211.56.2.33])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNoQj-00AvYm-AA
-	for ath10k@lists.infradead.org; Tue, 16 Aug 2022 04:43:55 +0000
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27G31pAX000356;
-	Tue, 16 Aug 2022 04:43:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=zIA+fZqlZx/rjs6oujnUrA96RwP+POPHbLBSEiMs9a4=;
- b=obHcGeVsQAVFlBECDkMzD8gdNVNbT5GAuKrHsKBhYVDamUNLD3CwRxLyRKiwaTPliX6s
- wdI8SShBBpKLOEX5C7K5sYqgn39LwsxRtxDO7lc7bB1u6CYJRKyHGpgriTH0gWy+qOOY
- ulaDh8sD7acm4hT1hOBxUlPTbYqqzd54pdZ4R4uYgOJ5bEgpc3JuZouYRDF5hF7XIKq9
- dBZEnaec7qEpvE4A1nY3owU1ZXs/eEQSRdLY/XRccJuiHUjn+vc0g//yqWccRBgVQtwC
- D12AvgM5Y3lpghelvCULBJ6XLGIZoCiXyz+Kzgx7ZIZiNGShs4oYTAf6LF86Vz46lohI rQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3j01w0rgw7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Aug 2022 04:43:45 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 27G4hi9r030434
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Aug 2022 04:43:44 GMT
-Received: from youghand-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Mon, 15 Aug 2022 21:43:42 -0700
-From: Youghandhar Chintala <quic_youghand@quicinc.com>
-To: <ath10k@lists.infradead.org>
-CC: <linux-wireless@vger.kernel.org>,
-        Youghandhar Chintala
-	<quic_youghand@quicinc.com>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] wifi: ath10k: Delay the unmapping of the buffer
-Date: Tue, 16 Aug 2022 10:13:10 +0530
-Message-ID: <20220816044310.19101-1-quic_youghand@quicinc.com>
-X-Mailer: git-send-email 2.37.0
+	id 1oNpKy-00CHNq-3j
+	for ath10k@lists.infradead.org; Tue, 16 Aug 2022 05:42:03 +0000
+DKIM-Signature: a=rsa-sha256;
+ b=RJ4qBWrzW900tHzVcz0Q/fX0G5Rg4EgjgCsA8Vl8IYE+lgAhGj8CPms1SDFFa2GJWcTShu3NF0
+  Stie8dz79y8whICmZImYv5ii7XPiT9JSg+qnS/9mPA6QTyEwQcQeXTbVfHhCyI9yRZYa3ZjUb41Y
+  k45eDK0jBABFGxlqSnWKiOMIO6G7K0Ktr+c6FBnarDyY+2zbFjBA2scRTpTC1yjkjr8xQV+1OUQa
+  zv7rOcuCW5KpPMH3Irmchg0CEDnlu4OrBU05VLUFvOVxARmkhpcJ6ZNqoWxb4iElp+h3xg77lQ6Y
+  vPiSmjOQaYhPsgA2AsM7FQ9sCbUpshqAv9WLXu+g==;
+ c=relaxed/relaxed; s=selector; d=dooray.com; v=1;
+ bh=gBovxtY+hk2MRP2mHceSQ6HOhIrxf62QBDPGYweejmw=;
+ h=From:To:Subject:Message-ID;
+Dooray-Meta-Signature: Z6vC2Djn9ct3Prl16ZlBE31fQhQ3YfYMc5HDHDgv1KeFcE2+UQuG8
+  hQoQImQx4/tpNdmjwyNDuTnnrvk3LuwAp67hZuqvy66co7oGDaA0i0WgJHQzW4jWuX1mgcPtBed1
+  L7CLDSISCwSw27Yz/PYpwL5CG6s9lKieDdkBT8LyNw599okB8xorZgZS6qV064Bg0zXou2Nbxi1g
+  qmHWhyfAKwU1fKgNdHmbsfQwNf+DoSg+kjelb3zJouvP7C4v1j5TodcKm/ZKbOBDbjNdMNu2rZzV
+  0nMwXg/dq3xkk8MU/9zneykm0OL3Tmkq/EvMV361o0v1cOh9SPDnizIzjTYmtokpSKKR80KupXMF
+  ODf9II=
+Received: from [172.226.94.42] (HELO 172.226.94.42) ([172.226.94.42]) by
+ send005.gov-dooray.com with SMTP id 1fd8721762fb2e18; Tue, 16 Aug 2022
+ 14:41:44 +0900
+From: Wonsup Yoon <pusnow@kaist.ac.kr>
+To: Brett Mastbergen <brett.mastbergen@protectli.com>
+Cc: ath10k@lists.infradead.org
+Message-ID: <pdwmg9b8y9s0.pdwmg9b8zyhc.g6@dooray.com>
+Subject: RE: Re: Questions about QCA6174 firmwares
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 0Gr-GHGiIYs_-16S31hyrVni7pGrLu4w
-X-Proofpoint-GUID: 0Gr-GHGiIYs_-16S31hyrVni7pGrLu4w
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-16_03,2022-08-16_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- mlxscore=0 malwarescore=0 spamscore=0 suspectscore=0 priorityscore=1501
- phishscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2207270000
- definitions=main-2208160018
+X-Dsn-Request: true
+X-Dooray-Agent: mail-api
+X-Dooray-Mail-Id: 3341385912906680832
+Importance: Normal
+X-Priority: Normal
+X-MSMail-Priority: Normal
+X-Dooray-Attached: c3+LUOpPU/IB7Wl+oemm0lw5HiI/bJHHYClX72L8E3o=
+Date: Tue, 16 Aug 2022 14:41:43 +0900 (KST)
+References: <pcoa2db959zn.pcoa2db781x3.g6@dooray.com>
+	<20220815195952.GA7798@lycia.zebraskunk.int>
+In-Reply-To: <20220815195952.GA7798@lycia.zebraskunk.int>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220815_214353_614413_69683D93 
-X-CRM114-Status: GOOD (  18.02  )
+X-CRM114-CacheID: sfid-20220815_224200_447191_062646CB 
+X-CRM114-Status: GOOD (  11.49  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,189 +75,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-We are seeing a corner case where host receiving copy completion for WMI
-command though copy engine is processing it. Once host receives the
-copy completion, host is unmapping corresponding memory which results
-in SMMU fault. To avoid such conditions though host receives copy
-completion, as a work around we are adding a delay to unmap the memory
-for WMI end point.
-
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
-
-Tested-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Youghandhar Chintala <quic_youghand@quicinc.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
- drivers/net/wireless/ath/ath10k/htc.c  |  8 ++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  2 ++
- 3 files changed, 25 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index d1ac64026cb3..c2fda8deb9ef 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -99,6 +99,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA988X_HW_2_0_VERSION,
-@@ -138,6 +139,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -178,6 +180,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -252,6 +255,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -291,6 +295,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -330,6 +335,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -373,6 +379,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = true,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -418,6 +425,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
-@@ -470,6 +478,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
-@@ -519,6 +528,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
-@@ -558,6 +568,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -599,6 +610,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -631,6 +643,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
-@@ -677,6 +690,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = false,
- 		.hw_restart_disconnect = false,
- 		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
- 	},
- 	{
- 		.id = WCN3990_HW_1_0_DEV_VERSION,
-@@ -709,6 +723,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.dynamic_sar_support = true,
- 		.hw_restart_disconnect = true,
- 		.use_fw_tx_credits = false,
-+		.delay_unmap_buffer = true,
- 	},
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 6d1784f74bea..e04b9545cca6 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -56,6 +56,14 @@ void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
- 	ath10k_dbg(ar, ATH10K_DBG_HTC, "%s: ep %d skb %pK\n", __func__,
- 		   ep->eid, skb);
- 
-+	/* A corner case where the copy completion is reaching to host but still
-+	 * copy engine is processing it due to which host unmaps corresponding
-+	 * memory and causes SMMU fault, hence as workaround adding delay
-+	 * the unmapping memory to avoid SMMU faults.
-+	 */
-+	if (ar->hw_params.delay_unmap_buffer &&
-+	    ep->ul_pipe_id == 3)
-+		mdelay(2);
- 	hdr = (struct ath10k_htc_hdr *)skb->data;
- 	ath10k_htc_restore_tx_skb(ep->htc, skb);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 1b99f3a39a11..9643031a4427 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -637,6 +637,8 @@ struct ath10k_hw_params {
- 	bool hw_restart_disconnect;
- 
- 	bool use_fw_tx_credits;
-+
-+	bool delay_unmap_buffer;
- };
- 
- struct htt_resp;
--- 
-2.37.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgpJJ20gY3VycmVudGx5IHVzaW5nIHRoZSBsYXRlc3QgImMzIiB2ZXJzaW9uLCBhbmQgaXQg
+d29ya3MgZmluZS4KRmlybXdhcmUgdmVyc2lvbjogV0xBTi5STS40LjQuMS5jMy0wMDIzMCAuCgpC
+dXQgSSdtIHN0aWxsIGN1cmlvdXMgd2hhdCB0aGUgImMiIHZlcnNpb24gbWVhbnMuCgpCZXN0IHJl
+Z2FyZHMsCldvbnN1cCBZb29uCgotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQpGcm9tOiAgIkJy
+ZXR0IE1hc3RiZXJnZW4iIDxicmV0dC5tYXN0YmVyZ2VuQHByb3RlY3RsaS5jb20+ClRvOiAgICAg
+IldvbnN1cCBZb29uIiA8cHVzbm93QGthaXN0LmFjLmtyPjsgCkNjOiAgICAgIDxhdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZz47IApTZW50OiAgMjAyMi0wOC0xNiAo7ZmUKSAwNDo1OTo1NyAoVVRD
+KzA5OjAwKQpTdWJqZWN0OiBSZTogUXVlc3Rpb25zIGFib3V0IFFDQTYxNzQgZmlybXdhcmVzCgpP
+biBXZWQsIEF1ZyAxMCwgMjAyMiBhdCAxMDo1NjozOEFNICswOTAwLCBXb25zdXAgWW9vbiB3cm90
+ZToKPiBIaSwKPiAKPiBJZiB5b3UgZG9uJ3QgbWluZCwgSSdkIGxpa2UgYXNrIGEgZmV3IHF1ZXN0
+aW9ucyByZWdhcmRpbmcgUUNBNjE3NCBmaXJtd2FyZXMuCj4gCj4gMS4gSSd2ZSBub3RpY2UgdGhh
+dCBRQ0E2MTc0IGh3My4wIDQuNC4xIGZpcm13YXJlcyBoYXZlIDQgdmVyc2lvbnMgKG5vbmUsIGMx
+LCBjMiwgYzMpLiBBcmUgdGhlcmUgYW55IGRpZmZlcmVuY2VzPyBXaGljaCBvbmUgaXMgbmV3ZXN0
+IG9yIGNvcnJlY3Q/Cj4gCj4gMi4gTXkgUUNBNjE3NCBzZWVtcyB0byBoYXZlIGEgY29tcGF0aWJp
+bGl0eSBpc3N1ZSB3aXRoIGEgcmVjZW50IGZpcm13YXJlLiBJJ3ZlIHRlc3RlZCB0aGVzZXMgZmly
+bXdhcmUgdmVyc2lvbnMsIGJ1dCBvbmx5IHRoZSBvbGRlc3Qgb25lIHdvcmtzLgo+IAoKSSBoYXZl
+IG9ic2VydmVkIHRoZSBzYW1lIGZpcm13YXJlIGNyYXNoZXMgd2l0aCB0aG9zZSB2ZXJzaW9ucyB3
+aXRoIG15IFFDQTYxNzQgbW9kdWxlIChKV1c2MDUxKS4gIFdvdWxkIGxvdmUgdG8ga25vdyBpZiBS
+TS40LjQuMS5jMi0wMDA1Ny1RQ0FSTVNXUC0xIGlzIHRoZSBjb3JyZWN0IHZlcnNpb24gdG8gdXNl
+LCBvciBpZiB0aGVyZSBpcyBhbm90aGVyIG5ld2VyIHZlcnNpb24gdGhhdCBJIHNob3VsZCBiZSB1
+c2luZy4KClRoYW5rcywKYnJldHQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
