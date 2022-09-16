@@ -4,61 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00F5DECAAD8
-	for <ath10k@archiver.kernel.org>; Fri, 16 Sep 2022 09:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CED9ECAAD8
+	for <ath10k@archiver.kernel.org>; Fri, 16 Sep 2022 22:03:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
-	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=etkK0cFROs4ZcSyUcSb0HWF1+Bz60R9WSiydqcASck0=; b=qkim8+B/kShTqD
-	r9KIYZDRz/18tPOYocHfRW85CEo+Jgoj8fg0I1aKNghrHzB0w89uHmDTe4J5em8C5Oo5rwThcJBXf
-	fgxt9cI0bzEwHU5Jhn3vFnaWKmB9QkCV3r7ZvCxY1godIGhhiVLF0wOpJjoMGSwPEiX3fKlCLU3cm
-	7XO8EiA8Ch0Hpfg8MX5dgi1T5CjebwYlBQ1GbNw93uFouT7zWz2YYleb8c2PdhGP4rWVxU92OWPH2
-	TXYW3UXyQPxEBGJFsWqS6OJiQh4XNoIgOeEGUFqr6qpiCuClK00S9ALlLSiAli5K4080vB7wN+8ir
-	B6OL14Umw3yGc4hr0log==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+ntZesVXiF7WUEJOuXqFdTnZBc1RNEyBBbXjsSiKeY4=; b=Cw2oqDknhjWwQ9
+	8LQ0DQeumzBumkimqkC07WWDbzuNlqeIraWahpcotaQNThCDTuqd67GQOgwdYO5xG97dpPvdNGHQU
+	/W6id0I57tJbcJpUgI/yE4m1YOPOSVqZTya8xX5SiwFMxcODAtxqGsOg999kZmSNeY4ROQOaNXN3a
+	hvdjMI143U8kPpXQvbZ/R5y1ugfYADriovJHrqXWNGMic9/4RR2zgIerhgeWUzJ2/Qpkr7b0G04M7
+	4S63L3eGlWppyPZIeEQROO9cEuUMRSzbQBz7gmshAXeLLI1Mn5JaZCpISz/4W4eMPowxXNBLkgqnU
+	bXFX5w2gNSFOfgCmmc5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oZ7V6-00BckW-Ex; Fri, 16 Sep 2022 09:19:08 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1oZJR5-00HRes-W2; Fri, 16 Sep 2022 22:03:48 +0000
+Received: from mga01.intel.com ([192.55.52.88])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oZ7V3-00Bcig-4L
-	for ath10k@lists.infradead.org; Fri, 16 Sep 2022 09:19:06 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id C3D2FB8249C;
-	Fri, 16 Sep 2022 09:19:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98032C433D6;
-	Fri, 16 Sep 2022 09:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1663319942;
-	bh=aiE0aNs/n84c+xuU+XoKoBmHaYfUU8+iVr1pUZCDPTg=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=ZMb2L73zBT8/jNipi1PHoOjPT+X2yU5J6G9Z5JPRUSLmShMm58j55f74drDjCDLO6
-	 5rXCGi5Hf1WKQwCMSSJT2VX+8LrBJTdgwlCD9IZR9VseqrgbGh8AsKGa5SftvHybGP
-	 NFqSZBB0GE4Eu4X6OQc/SxG3917mT/p9ofJyvAjT4AIly7tP7WtHLjLKSqBJcSBrle
-	 S8JwCrbsPHTkCXndH6RMGM3PZFM5fJxHDkM5MKQsRZF8Ky3SH3X0sFDb+UwpnbuIf6
-	 5sstBBHiRv81lIn6fUYOtVwgRB2L0YFZMnjP6U/kLHqE3tcg065sV0S+JEFGynbsnB
-	 4//V9RSeRZiSQ==
+	id 1oZJR2-00HRcI-FU
+	for ath10k@lists.infradead.org; Fri, 16 Sep 2022 22:03:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663365824; x=1694901824;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=x0pIXqfSQNpPSzVwCiGNIvCvMDY6jJa+Bxnt5UO+wbM=;
+  b=OrcJLIRLYi+vLCdJndr2ErFDL8sSBm/5/5j+7R6uMe5qfWxMtKcTNXqP
+   qiCGFuKpLfPdaGWLgPQ1mAaRwa7Ufk46i0jx1MlQGR9EfOwE9iRvaIRn0
+   tcMiAgT93JOyXwixQKB0p4ahsa0AADNSF8+kgeKSgA8/4p19mZRVlvmxD
+   i9PTd6KjlPwbAdndVWo+Z2urTJ+f1Dy8CDttiNI7PSKjX2dxYBvyUvsvB
+   wZNu6eVJ4baM0V5fsOPZjXR/LVenpRdL8MNy5wDRD3DpLJ4/CG6JoD1xx
+   HCGnBUeoeWTVp3WhtE3ShmQHgnfVggMNDMggp+/DuYi9yoILOINUyo1HW
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10472"; a="325365748"
+X-IronPort-AV: E=Sophos;i="5.93,321,1654585200"; 
+   d="scan'208";a="325365748"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2022 15:03:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,321,1654585200"; 
+   d="scan'208";a="568977406"
+Received: from lkp-server02.sh.intel.com (HELO 41300c7200ea) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 16 Sep 2022 15:03:40 -0700
+Received: from kbuild by 41300c7200ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1oZJQx-0002Ay-2q;
+	Fri, 16 Sep 2022 22:03:39 +0000
+Date: Sat, 17 Sep 2022 06:03:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 85aa1815f5acdf0cf2fedba022a4944db83cd720
+Message-ID: <6324f2b3.fuZpinlsLbLvBD0B%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Subject: Re: [PATCH] wifi: ath10k: Fix miscellaneous spelling errors
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20220909145300.19223-1-quic_jjohnson@quicinc.com>
-References: <20220909145300.19223-1-quic_jjohnson@quicinc.com>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, <ath10k@lists.infradead.org>,
- <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <166331993629.3127.6990826637982175822.kvalo@kernel.org>
-Date: Fri, 16 Sep 2022 09:19:00 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220916_021905_359343_997126A0 
-X-CRM114-Status: UNSURE (   5.72  )
+X-CRM114-CacheID: sfid-20220916_150344_679890_920D2DD8 
+X-CRM114-Status: UNSURE (   6.72  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,22 +81,135 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 85aa1815f5acdf0cf2fedba022a4944db83cd720  wifi: ath11k: Include STA_KEEPALIVE_ARP_RESPONSE TLV header by default
 
-> Fix misspellings flagged by 'codespell'.
-> 
-> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+elapsed time: 726m
 
-Patch applied to ath-next branch of ath.git, thanks.
+configs tested: 111
+configs skipped: 5
 
-b8a71b953653 wifi: ath10k: Fix miscellaneous spelling errors
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+arc                  randconfig-r043-20220916
+x86_64                           allyesconfig
+arc                                 defconfig
+alpha                               defconfig
+i386                                defconfig
+s390                             allmodconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+i386                          randconfig-a001
+x86_64                        randconfig-a015
+s390                                defconfig
+i386                          randconfig-a003
+arm                                 defconfig
+i386                          randconfig-a005
+s390                             allyesconfig
+mips                             allyesconfig
+i386                             allyesconfig
+x86_64                          rhel-8.3-func
+powerpc                           allnoconfig
+sh                               allmodconfig
+powerpc                          allmodconfig
+x86_64                         rhel-8.3-kunit
+i386                          randconfig-a012
+x86_64                           rhel-8.3-kvm
+i386                          randconfig-a016
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+i386                          randconfig-a014
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+arm64                            allyesconfig
+arm                              allyesconfig
+ia64                             allmodconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+csky                              allnoconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+riscv                             allnoconfig
+i386                          randconfig-c001
+xtensa                    xip_kc705_defconfig
+mips                    maltaup_xpa_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220916
+mips                        bcm47xx_defconfig
+arc                           tb10x_defconfig
+arc                          axs101_defconfig
+openrisc                       virt_defconfig
+mips                      maltasmvp_defconfig
+arc                 nsimosci_hs_smp_defconfig
+loongarch                           defconfig
+sh                         ecovec24_defconfig
+nios2                            allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+powerpc                          allyesconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+arc                        nsimosci_defconfig
+riscv             nommu_k210_sdcard_defconfig
+sh                            hp6xx_defconfig
+powerpc                   currituck_defconfig
+mips                     loongson1b_defconfig
+powerpc                      bamboo_defconfig
+arm64                               defconfig
+powerpc                      pcm030_defconfig
+sparc                               defconfig
+powerpc                      pasemi_defconfig
+ia64                             allyesconfig
+arm                              allmodconfig
+m68k                                defconfig
+ia64                                defconfig
+mips                             allmodconfig
+arm                       omap2plus_defconfig
+powerpc                      chrp32_defconfig
+openrisc                 simple_smp_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+
+clang tested configs:
+hexagon              randconfig-r041-20220916
+riscv                randconfig-r042-20220916
+hexagon              randconfig-r045-20220916
+s390                 randconfig-r044-20220916
+x86_64                        randconfig-a014
+x86_64                        randconfig-a012
+x86_64                        randconfig-a016
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+arm                          sp7021_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                     mpc512x_defconfig
+x86_64                        randconfig-k001
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20220909145300.19223-1-quic_jjohnson@quicinc.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
