@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F17F9C54EE9
-	for <ath10k@archiver.kernel.org>; Tue, 20 Sep 2022 05:43:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10478C6FA82
+	for <ath10k@archiver.kernel.org>; Wed, 21 Sep 2022 05:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TrjaqKYWv7nZD7BmbhgPTFr/KgeCyBmF3TmnBvb4INM=; b=rixtjVddcsYi+J
-	mid8Q9v1jmarkMePMMbkRN5IjMNfXakZu6iTEru5RWsgJuibVuipSfZWyTIz0u8Cdi4GUDFLChl4j
-	i6s2Cn5ub1Lf2fAqH2kaP6InT1J/8AvHu1i8m4PLQ9NLz6mAMowRgKQPpN5HoGtlMEYwFi+dIeO4S
-	WYQY3DnM1kAIBwuWxaoGbRSO/IamPFU/dcTrubokWighPv+SOrKh7+c23AvFSsziok2ctXxXp4AvM
-	DKVLalEBGPHlpB9jj8s571jDwIGOpTJZOCymUK8hnRYjzoJlw4MGmg+W6ntEnLorxfp+rWORlwDov
-	gczkbR7OiRKFBxmFG/uQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cN6b4SSMkhdnGhzR5jchtCRpBvcNE7GHGL8jAs9QImk=; b=XbewZPRcARQ09p
+	DxanaPLAUI0fKkVYi8HZt7mLEfJm6jsfnZpQqrUlJX3sW4ia61RQQnCegylBOkeBvLcatIFDA3ymX
+	+WPlzP2WOMtQNPHKlAXPRFIPKCIUXieTeOXJLS6DUKsvRhdabSCLmuL/zmQ9CBsHkPVNvn82pXLeY
+	2fmbNS2X2usErCM785paW1M1EiY70BpMXttK9gj1VG6v+a2a/e41q4COG13aJhqwfvN7aTS0FJHYr
+	I0Uv5w0tZHRQGTC8ovCugoj2usALGwf3h7a6A15XWZN8cql41E0Kqw2m0AHTBjab1cC+COywgoIwg
+	UIqBsDG7SMlAI/xOdofA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaW20-000jBV-LI; Tue, 20 Sep 2022 05:42:52 +0000
-Received: from mail.as201155.net ([185.84.6.188])
+	id 1oasT3-00959d-5F; Wed, 21 Sep 2022 05:40:17 +0000
+Received: from mga14.intel.com ([192.55.52.115])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaW1w-000j8L-Hz
-	for ath10k@lists.infradead.org; Tue, 20 Sep 2022 05:42:51 +0000
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]:52170 helo=webmail.newmedia-net.de)
-	by mail.as201155.net with esmtps  (TLS1) tls TLS_DHE_RSA_WITH_AES_256_CBC_SHA
-	(Exim 4.95)
-	(envelope-from <s.gottschall@newmedia-net.de>)
-	id 1oaW1l-00068B-2A;
-	Tue, 20 Sep 2022 07:42:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=newmedia-net.de; s=mikd;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID; bh=cSPxfDNULS8335PqZiOl1xMpOB11dQ6WXoJ1j1PJL5Y=;
-	b=uy/m6mQqJVtsVXkHC6lmDz9LI4quYrHKCRxsO7V6QobXqk3RwA34WCr6GDTgTxZ5tolHKTyENWIfoDjJPh0sGfVhPZYWgPuWyWvRStKUxW/g3Cy5zBSy0rmmjN1ZkZBfkreACk2CX0fGoqaxOJ9MdDS5XLM6iEKIzGLFB8eubuQ=;
-Message-ID: <c9904373-7e20-64b6-8900-69d38f2cdef4@newmedia-net.de>
-Date: Tue, 20 Sep 2022 07:42:36 +0200
+	id 1oasSx-009571-KE
+	for ath10k@lists.infradead.org; Wed, 21 Sep 2022 05:40:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663738811; x=1695274811;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/n7E0S7k9aZybSTIY2tbuRw0tm+EmhMygFb4L/62Fio=;
+  b=LHgfC8sTM7JMlH/HH5i5b8ckfi87qCxO7yGfDPJLuse2ObPQTZV4piAU
+   9rYjx5o/fOGQOWWeBbwMS9Qest3B/FJcYfU+bBepjvYHLNNLHwG6Rpehr
+   iVQEx1ltRCgeRFP0KnY/q4kz8lDuY1A8emw9ir8PInTkDU0mF8R8RSTRu
+   /afoBQeszJiJspg0PFWpAechBMYGsClFk7+eFb4RK8WPhJjBZMmD04eIg
+   hlBP23Wtrf3cFi4O1A9MWj1/Qcqhpt7zJRsYAw1GKKtbvSRRJSCj69VsF
+   TmgB5PfyyB6owGVR54lnKyFQFeefU7AWHf1PCkY0RcmYWLZ7acDgVneL9
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="299893208"
+X-IronPort-AV: E=Sophos;i="5.93,332,1654585200"; 
+   d="scan'208";a="299893208"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2022 22:40:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,332,1654585200"; 
+   d="scan'208";a="652391652"
+Received: from lkp-server01.sh.intel.com (HELO c0a60f19fe7e) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 20 Sep 2022 22:40:07 -0700
+Received: from kbuild by c0a60f19fe7e with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1oasSq-0003HR-3D;
+	Wed, 21 Sep 2022 05:40:04 +0000
+Date: Wed, 21 Sep 2022 13:39:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 250fbdcd1e6fdd0f11289fa66b427d782bccbb2d
+Message-ID: <632aa38e.bYXeUsjk8Qee095e%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101
- Thunderbird/105.0
-Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory
- domain"
-To: Sergey Ryazanov <ryazanov.s.a@gmail.com>,
- Tim Harvey <tharvey@gateworks.com>
-Cc: Brian Norris <briannorris@chromium.org>,
- Cale Collins <ccollins@gateworks.com>, kvalo@kernel.org,
- Patrick Steinhardt <ps@pks.im>, ath10k <ath10k@lists.infradead.org>,
- linux-wireless <linux-wireless@vger.kernel.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>, stable
- <stable@vger.kernel.org>, Stephen McCarthy <stephen.mccarthy@pctel.com>
-References: <20200527165718.129307-1-briannorris@chromium.org>
- <YmPadTu8CfEARfWs@xps>
- <CA+ASDXPeJ6fD9hvc0Nq_RY05YRdSP77U_96vUZcTYgkQKY9Bvg@mail.gmail.com>
- <CAG2Q2vXce2V3Y6MnPhV6obcNWyQzyusMTL=5oCQLRNh2_ffNYA@mail.gmail.com>
- <CAG2Q2vXFcSVwF4CbU5o3VP1MWwrdqrZjTHgfBj_Q0t3nNipJRw@mail.gmail.com>
- <CA+ASDXNx30A3=BA9b-tiAQzYHP=nV_eLw1QFpJij=F=JgWZ5sg@mail.gmail.com>
- <CAJ+vNU38WyC=FFZVgqyKunEnjXid6vXqkorv8a8+ywjJBk_0NA@mail.gmail.com>
- <CAHNKnsTEBr4m1SpZxnfFPWiSgxBg5HhqYCdWwm=9gp7qHXg=Pg@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
-In-Reply-To: <CAHNKnsTEBr4m1SpZxnfFPWiSgxBg5HhqYCdWwm=9gp7qHXg=Pg@mail.gmail.com>
-X-Received: from [2003:d4:df03:78ee:bd3f:9dfc:a067:ec5]
-	by webmail.newmedia-net.de with esmtpsa (TLSv1:AES128-SHA:128)
-	(Exim 4.72)
-	(envelope-from <s.gottschall@newmedia-net.de>)
-	id 1oaW1l-0007RI-Ev; Tue, 20 Sep 2022 07:42:37 +0200
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220919_224248_967990_0F29FB7D 
-X-CRM114-Status: GOOD (  12.80  )
+X-CRM114-CacheID: sfid-20220920_224011_755915_9DE6211B 
+X-CRM114-Status: UNSURE (   6.31  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,43 +76,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Am 20.09.2022 um 01:42 schrieb Sergey Ryazanov:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 250fbdcd1e6fdd0f11289fa66b427d782bccbb2d  wifi: ath11k: retrieve MAC address from system firmware if provided
 
-> Hello,
->
-> I would like to add my 2c.
->
-> On Mon, Sep 19, 2022 at 8:25 PM Tim Harvey <tharvey@gateworks.com> wrote:
->> I'm not clear if
->> there are many other cards that have this same issue.
-> The list of cards with unprogrammed regdomain can be extended with
-> several relatively modern models:
->    * MikroTik R11e-5HacD (QCA9882 based)
->    * MikroTik R11e-5HacT (QCA9880 based)
->    * QNAP QWA-AC2600 (QCA9984 based) [1]
->
-> As you can see these are powerful and massive cards for WISPs. Or at
-> least to run as an AP. I also know a bunch of .11a/b/g/n cards with
-> zero regdomain and the same target audience. Except maybe for the
-> legacy Wistorn CM9, which is a relatively compact card.
->
-> Also, a huge number of wireless routers and access points have
-> unprogrammed regdomain. But probably this is not the case, since they
-> anyway can not run a stock kernel.
->
-> 1. https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1895333
-let me add my 2c. the regdomain 0 is very common and defacto a standard 
-for all non oem cards on the market. i have only seen real programmed cards
-as buildin cards in laptops.
-beside of these zero cards there are other special regdomains available 
-for ath cards
+elapsed time: 721m
 
->
+configs tested: 58
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+arc                                 defconfig
+s390                             allmodconfig
+alpha                               defconfig
+s390                                defconfig
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+s390                             allyesconfig
+sh                               allmodconfig
+arc                  randconfig-r043-20220921
+riscv                randconfig-r042-20220921
+s390                 randconfig-r044-20220921
+i386                                defconfig
+x86_64                        randconfig-a002
+i386                          randconfig-a001
+x86_64                        randconfig-a004
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a006
+i386                             allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+x86_64                              defconfig
+x86_64                        randconfig-a013
+x86_64                               rhel-8.3
+x86_64                        randconfig-a011
+ia64                             allmodconfig
+x86_64                        randconfig-a015
+x86_64                           allyesconfig
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+
+clang tested configs:
+hexagon              randconfig-r041-20220921
+hexagon              randconfig-r045-20220921
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
