@@ -4,67 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E873ECAAD8
-	for <ath10k@archiver.kernel.org>; Thu, 22 Sep 2022 21:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2C36ECAAD8
+	for <ath10k@archiver.kernel.org>; Fri, 23 Sep 2022 14:39:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=7EUvFVWvRw7Gvjat0dVMYSwtq5yjoFe5UHhY66TgrcM=; b=xZ1EbNS4HVoix6
-	qPoh3+geYreWiyGoZ3WQqvPjU+qaBfrkNcaSjVF+/VvHRlW2EKo9Y7ADYNp6GSWsg1Vxo6N1qeoDY
-	DFfNzgjQ+KrdWk22l8UM9g6uYgMXGheDmM9839ty+f426Otb9x+CDBvN0QgwfKjMWfovHIquGudvy
-	tRLhfkYsyBe+D/4iOR+6pRFs6lbVoiclrqJFDSK37WkSjfTnhSRJT8USGKt7mX3CRgabSMUe9oD29
-	sqcyyz0KEyOMd7XotJt4pgk8OXziymmTuXyKChpA1VB6YLyXG8z3w//5X7Ts2ukTDwI0/VJ7S0ZaH
-	PvRkkSpxQhbecnyvPa3g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
+	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ICIwb+WXeAanOcyNWQqAuaf5sVk9PoNL0BPjTa2Hq2Q=; b=3x4zlDxEFVOKhj
+	7H6TvjS4OAa9jsyrsM22qZUyeTP4+42gFTFv9eTpiCpTpO8ry46tcSyMzIauRHfh1ijlKAms366I9
+	JgEpNngkLOX3d6Fkbpyno8SI1SJKyy6gkcfHYbkDIbbVDxOZB/TG8Q4GDm7S/Y+z0NRyB1T39bJO0
+	YpygUm9ZAsQoecQK8El/jcWRHO9gZQtqY41AUXZP3BS9fiTukRq4OAiukD/KyM3w1dCoFkVeOZ0lh
+	7AoA0C2IdW2tiUP2kKHDLoVjgXJOgBNpbVs5k22fndvVIQo9WXBCI8eOqhJ/HmtHYH0aH34cWa7zG
+	g9sHKNeg4KbtQve5Xs7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obTNK-000EdD-9x; Thu, 22 Sep 2022 21:04:50 +0000
-Received: from mga18.intel.com ([134.134.136.126])
+	id 1objpz-004f1h-Gc; Fri, 23 Sep 2022 14:39:31 +0000
+Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obTNG-000EaU-MR
-	for ath10k@lists.infradead.org; Thu, 22 Sep 2022 21:04:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663880686; x=1695416686;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KNk1nygAj/z3SmFctuVA+FKCpbv+lmydrbtQl2m5HWI=;
-  b=U2Ea5uvzjvCq0HmfA+hAYYSVGKZjPyEM6I36kEUmuodHk0Nrhv131SmG
-   C64wIavSPaZoc35s1mA0wQGP2Xh8XhxlpO6NUbhBqBsO1e62Pie9rZMwc
-   Cr4F6h5aj9IfmU3ztOa61GKU+smLbeK63eQaHkmW2QTihhWEWWQuwnQO8
-   8up8biJ8y1q5Ezgemgf68G4Gk1dnUL+1onQY6eaQhcYvnQGIIG4mOK+Qu
-   Y93obuIR6l1q/+NHrLtq1WsQsiq1UxW7mcPEAfvVTqPRxB3ulc75Uc+cY
-   Cqo9OAwfCEDZFymuq8MUgLKKfEjUt+tab6/+3tkxidJgX3lY5WZt4eb4D
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="283525056"
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="283525056"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 14:04:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="597608013"
-Received: from lkp-server01.sh.intel.com (HELO c0a60f19fe7e) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 22 Sep 2022 14:04:41 -0700
-Received: from kbuild by c0a60f19fe7e with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1obTNA-0004xY-3D;
-	Thu, 22 Sep 2022 21:04:41 +0000
-Date: Fri, 23 Sep 2022 05:03:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 9083badc0481aedc0bef04ba7ec8316496cc2191
-Message-ID: <632ccdb8.C0wz9Y8C81yiRo53%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
+	id 1objpv-004ezg-Lk
+	for ath10k@lists.infradead.org; Fri, 23 Sep 2022 14:39:30 +0000
+Received: by mail-ej1-x62b.google.com with SMTP id bj12so1064622ejb.13
+        for <ath10k@lists.infradead.org>; Fri, 23 Sep 2022 07:39:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date;
+        bh=S5eZN2svmhOfsW6VEcUb5Ry7O5bFBRCb5lC2tn/7Tfo=;
+        b=gkzAlIt/hpKoRZEZLqhfZ8OysZ9L7bILUx3sexHwwb/6XDB+pCPacUz+MJjhWKhuR8
+         03WIYD6q3het0x2eUZOaFt4+8DLRxhO61dji69+3Me4MLavSly0qeRo0vqetAht869ok
+         ifG9Ps6irane6AxqQ0QfJg90uACXU5trZG5FNLfEzHAvnDR/7MbC/Fiy3LIbWwjANhiM
+         E2UJl7+e5iXNxOJG9pVXNlrbpNeiZUe/b5JBc4Ah587wHR6LrqOEcMd85sSJX+AHXzVH
+         ylFVisJVdx3w/VxoxI7/ouKWTh3F9lVB7kokwRSC1DxQ36BVKR9k3+145PxEiaip0TUB
+         rnCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date;
+        bh=S5eZN2svmhOfsW6VEcUb5Ry7O5bFBRCb5lC2tn/7Tfo=;
+        b=3oszzgN8GOKFniyTDFQLq1fSyzrRZcW8QxtYfoD5mqEnvdFRl/zLjbPueHSJLWWpVb
+         VE9Lo/2GxdGV2psgMKLY5OnZAimP4+MnVqapeLWY47FnqlAuoBHUK/C7qHlYREhARhuL
+         t4E923weQ71KSaqRg5TY7aYPdZaUbSqW29Yu3b1EPOCYW9HdSnLNvdbsn80LsR6uMUNs
+         eDO5DtLANYQmcmv+k2PhtvVDRD4WbIpo/7+oLRFoIr9Vl9N71fk6uUHFmfY5YvTP9MHF
+         QP/6MNhGiSn3+GknEVDZhrp8eLfu4g7jz7fiI8UR0OvJCfgIjR2qYaLgZ/mGGFnxj/cY
+         x04A==
+X-Gm-Message-State: ACrzQf2OmavARBJ3+LApShsETXlX4VKkRwmanqXJkJrhbFlCy3NQ3mjN
+	uDKPa60CHceUx15WPiS3cRbYsg==
+X-Google-Smtp-Source: AMsMyM5/0fjixHZUeDGkqTbJZktQlwbIg9e75ri3yi5AJ6I4VwtQ3bwL9pzvfhAltPu40POCkTiVNg==
+X-Received: by 2002:a17:906:8469:b0:781:fc76:fbd7 with SMTP id hx9-20020a170906846900b00781fc76fbd7mr7457238ejc.486.1663943960828;
+        Fri, 23 Sep 2022 07:39:20 -0700 (PDT)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id j2-20020a17090623e200b0078197a9421csm4117653ejg.85.2022.09.23.07.39.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Sep 2022 07:39:20 -0700 (PDT)
+Mime-Version: 1.0
+Date: Fri, 23 Sep 2022 16:39:18 +0200
+Message-Id: <CN3UWLRBLVPF.VV4AX2X9TS34@otso>
+Subject: Re: [PATCH v1 00/15] create power sequencing subsystem
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>, "Andy Gross"
+ <agross@kernel.org>, "Bjorn Andersson" <bjorn.andersson@linaro.org>, "Ulf
+ Hansson" <ulf.hansson@linaro.org>, "Marcel Holtmann" <marcel@holtmann.org>,
+ "Johan Hedberg" <johan.hedberg@gmail.com>, "Luiz Augusto von Dentz"
+ <luiz.dentz@gmail.com>, "Kalle Valo" <kvalo@codeaurora.org>, "David S.
+ Miller" <davem@davemloft.net>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Stanimir Varbanov" <svarbanov@mm-sol.com>
+Cc: <linux-arm-msm@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
+ <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+ <netdev@vger.kernel.org>
+X-Mailer: aerc 0.12.0
+References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220922_140446_822714_5E25F230 
-X-CRM114-Status: UNSURE (   5.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220923_073928_553827_D22BB728 
+X-CRM114-Status: GOOD (  20.39  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,80 +97,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 9083badc0481aedc0bef04ba7ec8316496cc2191  Merge branch 'ath-next' into ath-qca
+Hi Dmitry,
 
-elapsed time: 802m
+On Wed Oct 6, 2021 at 5:53 AM CEST, Dmitry Baryshkov wrote:
+> This is a proposed power sequencer subsystem. This is a
+> generification of the MMC pwrseq code. The subsystem tries to abstract
+> the idea of complex power-up/power-down/reset of the devices.
+>
+> The primary set of devices that promted me to create this patchset is
+> the Qualcomm BT+WiFi family of chips. They reside on serial+platform
+> or serial + SDIO interfaces (older generations) or on serial+PCIe (newer
+> generations).  They require a set of external voltage regulators to be
+> powered on and (some of them) have separate WiFi and Bluetooth enable
+> GPIOs.
+>
+> The major drawback for now is the lack of proper PCIe integration
+> At this moment support for PCIe is hacked up to be able to test the
+> PCIe part of qca6390. Proper PCIe support would require automatically
+> powering up the devices before the scan basing on the proper device
+> structure in the device tree. This two last patches are noted as WIP and
+> are included into the patchset for the purpose of testing WiFi on newer
+> chips (like qca6390/qca6391).
 
-configs tested: 56
-configs skipped: 2
+What's the status of this series? With this I have gotten Bluetooth to
+somewhat work on sm7225-fairphone-fp4, which is using WCN3990/WCN3988.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Is there another solution with a different patch series that could make
+it work also?
 
-gcc tested configs:
-arc                                 defconfig
-alpha                               defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-s390                             allmodconfig
-arm                                 defconfig
-powerpc                           allnoconfig
-s390                                defconfig
-arc                  randconfig-r043-20220921
-riscv                randconfig-r042-20220921
-s390                 randconfig-r044-20220921
-m68k                             allmodconfig
-x86_64                        randconfig-a004
-alpha                            allyesconfig
-x86_64                              defconfig
-i386                                defconfig
-x86_64                        randconfig-a002
-i386                          randconfig-a014
-x86_64                        randconfig-a015
-i386                          randconfig-a001
-arc                              allyesconfig
-i386                          randconfig-a003
-i386                          randconfig-a012
-x86_64                               rhel-8.3
-i386                          randconfig-a016
-x86_64                          rhel-8.3-func
-x86_64                        randconfig-a006
-sh                               allmodconfig
-x86_64                        randconfig-a013
-m68k                             allyesconfig
-x86_64                         rhel-8.3-kunit
-i386                             allyesconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-x86_64                           allyesconfig
-x86_64                        randconfig-a011
-i386                          randconfig-a005
-x86_64                           rhel-8.3-kvm
-x86_64                           rhel-8.3-syz
-arm64                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-arm                              allyesconfig
-s390                             allyesconfig
-ia64                             allmodconfig
+The latest I could find regarding some new Bluetooth thing is the
+following email from June 2022, but nothing seems to have happened since
+then.
+https://lore.kernel.org/linux-arm-msm/SJ0PR02MB7135746D204F13550E9BAE77F8B29@SJ0PR02MB7135.namprd02.prod.outlook.com/
 
-clang tested configs:
-hexagon              randconfig-r041-20220921
-hexagon              randconfig-r045-20220921
-i386                          randconfig-a013
-x86_64                        randconfig-a001
-i386                          randconfig-a011
-i386                          randconfig-a002
-x86_64                        randconfig-a003
-i386                          randconfig-a015
-i386                          randconfig-a004
-x86_64                        randconfig-a016
-i386                          randconfig-a006
-x86_64                        randconfig-a005
+Regards
+Luca
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+>
+> Changes since RFC v2:
+>  - Add documentation for the pwrseq code. Document data structures,
+>    macros and exported functions.
+>  - Export of_pwrseq_xlate_onecell()
+>  - Add separate pwrseq_set_drvdata() function to follow the typical API
+>    design
+>  - Remove pwrseq_get_optional()/devm_pwrseq_get_optional()
+>  - Moved code to handle old mmc-pwrseq binding to the MMC patch
+>  - Split of_pwrseq_xlate_onecell() support to a separate patch
+>
+> Changes since RFC v1:
+>  - Provider pwrseq fallback support
+>  - Implement fallback support in pwrseq_qca.
+>  - Mmove susclk handling to pwrseq_qca.
+>  - Significantly simplify hci_qca.c changes, by dropping all legacy
+>    code. Now hci_qca uses only pwrseq calls to power up/down bluetooth
+>    parts of the chip.
+
 
 _______________________________________________
 ath10k mailing list
