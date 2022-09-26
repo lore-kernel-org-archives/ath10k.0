@@ -4,76 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63BADC07E9D
-	for <ath10k@archiver.kernel.org>; Mon, 26 Sep 2022 22:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10BADC32771
+	for <ath10k@archiver.kernel.org>; Mon, 26 Sep 2022 22:34:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Kf+6zr3m/hD9Ukh41LaHjvCjLmJwmWMG64iEL9W8++U=; b=quvH8rN0a82BBv
-	JuqksaM31max73OJfRQXZdn5YbkK3/PQ5WY0Ayheg4Cpoll1/Sze0PvWaqrmwLiCRyxqMl/xwLe8h
-	oE5QnkjMhglgqrU+j/ZWhPZIZi1UftX/b+R4FtQXxTol6QQ7hmjfURoisHZ1goBw04yVc+hJhune8
-	zDcYsQz0RWtosME95w4LC2jV8Pexc3MBpWFQSqrM8bUZVsiMQuSJpv1xdrNr8f0IyGSP/QyI8MQ73
-	tWC8V6Xf6aEaLYvmRjcML7EkUyLAU9QqDrgqyQeYiRWpkYmFcOsIcPxn2Izac/ChLwI+3pdRtbC9L
-	VEiVWneOr81oZUB39piQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=BbkLMaUJTjSq12l8zKyUwTE3Ss1DqkAJHfubk9CpApk=; b=C9m/ieR4ZA6WW/
+	zR5iZtNTJySP003mucYi5XXugtn5miahPmYnd0g2EuPauUve5xeP8YDijoS70iH60fnCVBpKOi60Z
+	3wBunytUQ3gzydUJchhLCWdOnh9iPeO9kXTXP1DeDtZWSPKNinX4sO0lQy3+E2YMV6kjx9j7wN1pN
+	SSqRqHXa7rfaDQpdyjpu9ZoR8PNVTcTuZFYFhQvaZYhqWdhbrDuf7EDt6i4jm1Vg6S1FDNRg/PkR+
+	zjX8J/56yjbCMqgMu1Z/hnlYLEZWneSiMJjtSKsfecodObUN+uznxOfBRYB0fnhRSjsicbk3UTHoZ
+	kZyFtsJULdqQo3+nQssQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ocw9V-0077aW-EO; Mon, 26 Sep 2022 22:00:37 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1ocwgK-007Bsc-0i; Mon, 26 Sep 2022 22:34:32 +0000
+Received: from mga07.intel.com ([134.134.136.100])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ocw9S-0077ZP-Ni
-	for ath10k@lists.infradead.org; Mon, 26 Sep 2022 22:00:36 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id e68so8042644pfe.1
-        for <ath10k@lists.infradead.org>; Mon, 26 Sep 2022 15:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=vA/6myQNQnJHYk+EUx6DGwR93ze/m7/gJ74a1YFBZ2E=;
-        b=U8sJtotxHMan7w/+4cTY25Ek0IfBdX5nCMlrmk+usONkjHNzmc7aD7dc0o8CYs171r
-         tQ/XiitLYP4hzQ8L64lYJumQEojtI9TgQluFVjbRZDcyZ4/NDftB8giHUEk0o/af7Yca
-         4HFZaiM/0R/tiAmzw0SY5Bbr5mQZqxk6Esb7I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=vA/6myQNQnJHYk+EUx6DGwR93ze/m7/gJ74a1YFBZ2E=;
-        b=ShEA4OsONtAxJq+e8ZUblc+MamzS/4En6TCXsk97Js/mPS5cV5iY6RgEWlmRFOLCwI
-         Q2HejRjeWN4veO+V2JMhkpi2HHrrgcJjG4vtOnz5xHw1d/+DOK9X6yd2rGgeC/cInKGx
-         JGZEEbD1YbsmKAq21yRBXMW2ArNRrK/b/Kr2Tkk65IfyDcZ9TinMoOJMzNmTf+0aitUu
-         h8aTbWdKJHHvshuMnxoDY61HJTbc1zh62XeikzF2gPlt1TDgyxvhSBVhEBWtitldCQnI
-         v1jJLLHpBibbO2f+fZBiNE4bEWmRsox5vjQBIIj9OGAZ7ybBbifffcgjix9lWZ8cRL3+
-         VnnQ==
-X-Gm-Message-State: ACrzQf1mQrX9gb/UXVWId8xEZLOlvtrtn0uKsg7eTUiFC3QUmgXhwXRk
-	d6p9BrarRV55VlVwDV61wLtj8A==
-X-Google-Smtp-Source: AMsMyM5JiIgVIgSTi23Z1w9ajKUhq1aAliulpHYeL13NSOYqKW4HOG61sl4hc17hHP8PREpsKCyqHA==
-X-Received: by 2002:a63:fc5b:0:b0:43c:3f90:ca07 with SMTP id r27-20020a63fc5b000000b0043c3f90ca07mr18295865pgk.110.1664229632744;
-        Mon, 26 Sep 2022 15:00:32 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 7-20020a621507000000b0053e80515df8sm12685410pfv.202.2022.09.26.15.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Sep 2022 15:00:32 -0700 (PDT)
-Date: Mon, 26 Sep 2022 15:00:31 -0700
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Kalle Valo <kvalo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] ath10k: Replace zero-length arrays with
- DECLARE_FLEX_ARRAY() helper
-Message-ID: <202209261500.38CBB07FB0@keescook>
-References: <YzIcoloIQBDqGlgc@work>
+	id 1ocwg8-007Bqi-Jr
+	for ath10k@lists.infradead.org; Mon, 26 Sep 2022 22:34:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1664231660; x=1695767660;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ECPMHBZIcMgHEEaoeENA4dEX21YxWc8eidaOB5qQPPI=;
+  b=gbRMMZWK4+winfi6cUKYmg/VfyIANzHPvBefGCQ/zB1/j7lXejPdls+U
+   4JIDeVT7swPmqx8zgZI/T7sHGghu63POikuBOf99L5mCNhMPRJ8Xf98UY
+   w08tmNNWg5dXTOgLKwQ7dTqF6osWNQkPl5dIbNjsIYCpX/ltmcFAvp0k4
+   gzRTO0JoFBYrN4UIEF/ypBKMp+2yuubu0x1HU6/cR+9WxQZv9pDcUSKo1
+   FXy9oEg0VxK0tiPSEP94jFGHUtlrzHwHCCXQOX+Gcq/Im5lJONOjVUT4P
+   7HGUm55bLHbneHJO4RRf4X9lK3u//2UUoQ0jcO1o+O0CUJU9z+VgV6sMr
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="365193547"
+X-IronPort-AV: E=Sophos;i="5.93,347,1654585200"; 
+   d="scan'208";a="365193547"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2022 15:34:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="654476345"
+X-IronPort-AV: E=Sophos;i="5.93,347,1654585200"; 
+   d="scan'208";a="654476345"
+Received: from lkp-server02.sh.intel.com (HELO dfa2c9fcd321) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 26 Sep 2022 15:34:18 -0700
+Received: from kbuild by dfa2c9fcd321 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ocwg0-0000JT-1g;
+	Mon, 26 Sep 2022 22:34:12 +0000
+Date: Tue, 27 Sep 2022 06:33:28 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 94b477e266563b528fc2efbf6a4302d7c8216093
+Message-ID: <633228b8.NsDGT5/ZwM9mDDIB%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YzIcoloIQBDqGlgc@work>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220926_150034_793744_3347E6B5 
-X-CRM114-Status: UNSURE (   7.92  )
+X-CRM114-CacheID: sfid-20220926_153420_722571_42622C0A 
+X-CRM114-Status: UNSURE (   5.89  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -91,23 +82,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 26, 2022 at 04:41:54PM -0500, Gustavo A. R. Silva wrote:
-> Zero-length arrays are deprecated and we are moving towards adopting
-> C99 flexible-array members, instead. So, replace zero-length arrays
-> declarations in anonymous union with the new DECLARE_FLEX_ARRAY()
-> helper macro.
-> 
-> This helper allows for flexible-array members in unions.
-> 
-> Link: https://github.com/KSPP/linux/issues/193
-> Link: https://github.com/KSPP/linux/issues/212
-> Link: https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 94b477e266563b528fc2efbf6a4302d7c8216093  Merge branch 'ath-next' into ath-qca
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+elapsed time: 760m
+
+configs tested: 63
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+i386                                defconfig
+x86_64                              defconfig
+arc                                 defconfig
+s390                             allmodconfig
+alpha                               defconfig
+s390                                defconfig
+x86_64                          rhel-8.3-func
+x86_64               randconfig-a002-20220926
+x86_64               randconfig-a004-20220926
+s390                             allyesconfig
+arm                                 defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64               randconfig-a001-20220926
+x86_64               randconfig-a003-20220926
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+x86_64               randconfig-a005-20220926
+x86_64                           rhel-8.3-kvm
+x86_64               randconfig-a006-20220926
+i386                             allyesconfig
+x86_64                           allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+mips                             allyesconfig
+arm64                            allyesconfig
+m68k                             allyesconfig
+sh                               allmodconfig
+m68k                             allmodconfig
+arm                              allyesconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+arc                  randconfig-r043-20220925
+i386                 randconfig-a001-20220926
+i386                 randconfig-a002-20220926
+i386                 randconfig-a003-20220926
+riscv                randconfig-r042-20220925
+i386                 randconfig-a004-20220926
+i386                 randconfig-a005-20220926
+i386                 randconfig-a006-20220926
+arc                  randconfig-r043-20220926
+s390                 randconfig-r044-20220925
+ia64                             allmodconfig
+
+clang tested configs:
+hexagon              randconfig-r045-20220925
+i386                 randconfig-a011-20220926
+i386                 randconfig-a015-20220926
+i386                 randconfig-a014-20220926
+i386                 randconfig-a013-20220926
+hexagon              randconfig-r041-20220926
+i386                 randconfig-a016-20220926
+i386                 randconfig-a012-20220926
+x86_64               randconfig-a014-20220926
+hexagon              randconfig-r045-20220926
+x86_64               randconfig-a013-20220926
+hexagon              randconfig-r041-20220925
+x86_64               randconfig-a011-20220926
+riscv                randconfig-r042-20220926
+s390                 randconfig-r044-20220926
+x86_64               randconfig-a016-20220926
+x86_64               randconfig-a012-20220926
+x86_64               randconfig-a015-20220926
 
 -- 
-Kees Cook
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
