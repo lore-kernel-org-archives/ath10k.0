@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D2A6C433FE
-	for <ath10k@archiver.kernel.org>; Sun,  9 Oct 2022 22:18:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52E4DC433FE
+	for <ath10k@archiver.kernel.org>; Sun,  9 Oct 2022 22:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0J+PCn81+Ui/wWEAVAVc3XvOLhYY/nXfrPJVA9uGVfc=; b=QvROzyjIqEMR7R
-	sESbAy/IpO+u9idtWppQh01yZrreAzS5NIad0d9lCKHJUF3Eu4vqAMwdtjEMYJjb3dVL6uYA3tKin
-	T1ZeeaLCyiKfj461lx9HE1uQZkaFdeGbkLTopR9MGpGMhGDtiWHRzJJ05H8Yh9Cz/jADOHqxYYN90
-	apMpszvCHvWHQl0JqOcvEMBUiQU63RwR5RpuvgXg1HbK2+B1yYlJDmvz9EUbREcqMu6lFpH1e6DLo
-	5IkdCVHOlO+oGcNI9LGaMEiA9GdJOLwPSGAbhcDZjBaNdZ3R2qCW4WoYNWsc8IO+L8LW4WHAAkKCs
-	NYKmAkRJOcAPWWW6mEIA==;
+	List-Owner; bh=KctVJNTOQZXaPfTERPijQHB3LSrrYjNMfAby4TpzWus=; b=t4ks57mrmnTb8j
+	TyUgTiTJ82tJMerYLi0HZQMxGFFrsPv8LCs2IBgc1vMKCTSuCDhXctbCdMGKzV8CASjTisZNL9NFL
+	Xx6gw/EbkD3JZ7F2C5VSrT/+ehguFNYDryVgwaN3Jvy3UoNYns/5xsM9qkPbpzHxbIaXpZjWAnTxa
+	mHlQHUUNrdaEMt8N10Gfg7ogw8hHJMZIj1uCJrIqVA9hA+euWS/MjUMC4d3yUKPHwo0FzKXvlyWYB
+	IIeqzYds4miDUBqEyV/1/mzQ9iDEFwF/wPbCwAF1I+012898O5+1b5mJPkBBDYKK5v+s684VL6mfH
+	xyHIdK9VaCyGyZrFJirg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ohecl-00GIg7-9Y; Sun, 09 Oct 2022 22:18:19 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1ohefK-00GJeK-SW; Sun, 09 Oct 2022 22:20:58 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ohech-00GIbc-Aa
-	for ath10k@lists.infradead.org; Sun, 09 Oct 2022 22:18:17 +0000
+	id 1ohefI-00GJd1-9J
+	for ath10k@lists.infradead.org; Sun, 09 Oct 2022 22:20:57 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 378D6B80E08;
-	Sun,  9 Oct 2022 22:18:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA988C43470;
-	Sun,  9 Oct 2022 22:18:05 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D308560C27;
+	Sun,  9 Oct 2022 22:20:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F0BC433D7;
+	Sun,  9 Oct 2022 22:20:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1665353887;
-	bh=UVZMA2RK0mPNN5VAO8y4/YIx8AFwayIMshF7l9Se24k=;
+	s=k20201202; t=1665354055;
+	bh=ugQ/thLrGL8YWbf9qKG8TfT/1cbnhLrxAMzqWyDt5pk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DN6qT3r6cj3w33JifhTN6fX3Dh/KwOPAgYuq7wPAJSgflngzCj96jNUwnmHP9EQVC
-	 2QqwDJlyyE3pw+7uAYjR+MeUM5tn1v48rOzCUaOG1jILmGCEi5LgswMVVwzgDdTKqo
-	 +lskP3BNpOvbI9rXHW/95o7xxcCiRqQAaIHRVWIFOHJxZlx4A85L4BT0DSvNiNnb+t
-	 RZlrbSF1TD/GXgY1vLZ8avwCvVZTSid4OpumcWiayElE0DOwTiVBWFyRmJPhu64pwC
-	 Xf96eVXzR8Xz2cYOaMPVDnha0zOgemlSq8nyRQc9QFDad+uW5T9G+P/dvU+DCtJmer
-	 EILwxMl0nApZg==
+	b=MeMzQYLQ4/Yn8yWGgt+hVjXpM84K0ckzRa7+bK8ACwV3Cu8cp//CG/XqiQ/tCO9Ln
+	 JFWUElETTogmUsFHpFZiSVCF3OuEfpt/Gp3+pJhx1HH6DDmopoh8uu8E0od5ZAa+po
+	 3z6pChMF2/kiw3lPIRQaZ2te3MlITQfP8ovF2qselV4s+VOfmEMEBuNNjXx17HIOE+
+	 jWSnEgaz+3XcWeJzpV7Mm3bGsru4hF2dYhzVYRzki0QFmufR4K4Wef2c/8J0PS8CdB
+	 dRki395KO87LnWcvDK6Qtrz0UaWh8XIZXVwelyzswn7qNBIFpZtulntKkZ9mcrTANA
+	 RGJRoRvGg3yEA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -56,17 +56,17 @@ Cc: Wen Gong <quic_wgong@quicinc.com>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 54/73] wifi: ath10k: reset pointer after memory free to avoid potential use-after-free
-Date: Sun,  9 Oct 2022 18:14:32 -0400
-Message-Id: <20221009221453.1216158-54-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 35/46] wifi: ath10k: reset pointer after memory free to avoid potential use-after-free
+Date: Sun,  9 Oct 2022 18:19:00 -0400
+Message-Id: <20221009221912.1217372-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221009221453.1216158-1-sashal@kernel.org>
-References: <20221009221453.1216158-1-sashal@kernel.org>
+In-Reply-To: <20221009221912.1217372-1-sashal@kernel.org>
+References: <20221009221912.1217372-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221009_151815_553291_84B9A8F9 
+X-CRM114-CacheID: sfid-20221009_152056_389994_8435940D 
 X-CRM114-Status: GOOD (  11.08  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -108,10 +108,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fe34fcc00af0..55a520237263 100644
+index adbaeb67eedf..9458540b7dde 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -301,12 +301,16 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
+@@ -297,12 +297,16 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
  			  ath10k_htt_get_vaddr_ring(htt),
  			  htt->rx_ring.base_paddr);
  
@@ -128,7 +128,7 @@ index fe34fcc00af0..55a520237263 100644
  }
  
  static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
-@@ -846,8 +850,10 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+@@ -823,8 +827,10 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
  			  ath10k_htt_get_rx_ring_size(htt),
  			  vaddr_ring,
  			  htt->rx_ring.base_paddr);
