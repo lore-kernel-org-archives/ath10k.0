@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1123BC433F5
-	for <ath10k@archiver.kernel.org>; Sun,  9 Oct 2022 22:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D2A6C433FE
+	for <ath10k@archiver.kernel.org>; Sun,  9 Oct 2022 22:18:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZR4WuNVFKW7dCashJRbe0r1HPVndZbPeZLhX2xLX7wo=; b=XHQ1kZSFWmDy39
-	VoZ2B5GKCrKohotsLLo3QO7v3gWHZW+7bPgeak3IPdjod7/jPoYtJyfBKy6gp42flyHSZcdZM2zDv
-	xCBC7EdJWFa7QQMDFUqJ0x4q3s7Ynn3WnajTXmte2WE27yaekHf02k9BogJ0SJ0mjJf5wvD1oVMhX
-	ElrJ4GHH0nLQE4E+XVsHI+5H33qB5xdfyb6CZL74nkeCwSq8ZeH+r8hgiR7I8vvuPVJvLoT6HiN8Y
-	7y+tHcmquvAWecVCKEIULpDM6yOq1YUYFHENdPf4vJ3YPWBCym1VbVw0eU1bCQb6HHr4tmEzPOYiF
-	FKUKnJDnD0wTbK8Cr3Sg==;
+	List-Owner; bh=0J+PCn81+Ui/wWEAVAVc3XvOLhYY/nXfrPJVA9uGVfc=; b=QvROzyjIqEMR7R
+	sESbAy/IpO+u9idtWppQh01yZrreAzS5NIad0d9lCKHJUF3Eu4vqAMwdtjEMYJjb3dVL6uYA3tKin
+	T1ZeeaLCyiKfj461lx9HE1uQZkaFdeGbkLTopR9MGpGMhGDtiWHRzJJ05H8Yh9Cz/jADOHqxYYN90
+	apMpszvCHvWHQl0JqOcvEMBUiQU63RwR5RpuvgXg1HbK2+B1yYlJDmvz9EUbREcqMu6lFpH1e6DLo
+	5IkdCVHOlO+oGcNI9LGaMEiA9GdJOLwPSGAbhcDZjBaNdZ3R2qCW4WoYNWsc8IO+L8LW4WHAAkKCs
+	NYKmAkRJOcAPWWW6mEIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oheZi-00GHe9-Kp; Sun, 09 Oct 2022 22:15:10 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1ohecl-00GIg7-9Y; Sun, 09 Oct 2022 22:18:19 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oheZf-00GHd1-EU
-	for ath10k@lists.infradead.org; Sun, 09 Oct 2022 22:15:09 +0000
+	id 1ohech-00GIbc-Aa
+	for ath10k@lists.infradead.org; Sun, 09 Oct 2022 22:18:17 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2D6B160CEC;
-	Sun,  9 Oct 2022 22:15:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3878AC433C1;
-	Sun,  9 Oct 2022 22:15:04 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 378D6B80E08;
+	Sun,  9 Oct 2022 22:18:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA988C43470;
+	Sun,  9 Oct 2022 22:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1665353705;
-	bh=t4QUz7k5ixCbtG/WyjayRMs4byyTtxxTPJyT7nb1rRM=;
+	s=k20201202; t=1665353887;
+	bh=UVZMA2RK0mPNN5VAO8y4/YIx8AFwayIMshF7l9Se24k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b8nxLwVum8v0IlZfGDR5SlZEoFSrki9th+GNZFxeDHxB481iwLiof2PKDvzMuUau0
-	 qmgnmV99jLWmFTOP2PVSbD1rtGh3apWmlQtcD/XSXWsD565Xkq/veuisRBeYyt6H7K
-	 x2UxiwqdVUccusYoFWTGak6w4jXorJIuPxWoaRHpbj1BiujRdInMFZr28ARzZ67i+C
-	 usA1qXn3XgAKl4BProR+nxO35FGNFFYfpemQviLF1VdFA9M6XPb76OKrimm3AyOZ76
-	 UjoeucaDK4DQjqB34wyzxQc9J9JQm1baBKpx7fg+RVx/yz9e+zfvS3mWe2FNy9bK2W
-	 I/w/F1EhWpSkQ==
+	b=DN6qT3r6cj3w33JifhTN6fX3Dh/KwOPAgYuq7wPAJSgflngzCj96jNUwnmHP9EQVC
+	 2QqwDJlyyE3pw+7uAYjR+MeUM5tn1v48rOzCUaOG1jILmGCEi5LgswMVVwzgDdTKqo
+	 +lskP3BNpOvbI9rXHW/95o7xxcCiRqQAaIHRVWIFOHJxZlx4A85L4BT0DSvNiNnb+t
+	 RZlrbSF1TD/GXgY1vLZ8avwCvVZTSid4OpumcWiayElE0DOwTiVBWFyRmJPhu64pwC
+	 Xf96eVXzR8Xz2cYOaMPVDnha0zOgemlSq8nyRQc9QFDad+uW5T9G+P/dvU+DCtJmer
+	 EILwxMl0nApZg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Youghandhar Chintala <quic_youghand@quicinc.com>,
+Cc: Wen Gong <quic_wgong@quicinc.com>,
 	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>,
 	kvalo@kernel.org,
@@ -56,9 +56,9 @@ Cc: Youghandhar Chintala <quic_youghand@quicinc.com>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 03/73] wifi: ath10k: Set tx credit to one for WCN3990 snoc based devices
-Date: Sun,  9 Oct 2022 18:13:41 -0400
-Message-Id: <20221009221453.1216158-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.19 54/73] wifi: ath10k: reset pointer after memory free to avoid potential use-after-free
+Date: Sun,  9 Oct 2022 18:14:32 -0400
+Message-Id: <20221009221453.1216158-54-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221009221453.1216158-1-sashal@kernel.org>
 References: <20221009221453.1216158-1-sashal@kernel.org>
@@ -66,8 +66,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221009_151507_588077_2A906C31 
-X-CRM114-Status: GOOD (  15.56  )
+X-CRM114-CacheID: sfid-20221009_151815_553291_84B9A8F9 
+X-CRM114-Status: GOOD (  11.08  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,135 +79,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogWW91Z2hhbmRoYXIgQ2hpbnRhbGEgPHF1aWNfeW91Z2hhbmRAcXVpY2luYy5jb20+Cgpb
-IFVwc3RyZWFtIGNvbW1pdCBkODFiYmI2ODRjMjUwYTYzNzE4NmQ5Mjg2ZDc1YjFjYjA0ZDI5ODZj
-IF0KCkN1cnJlbnRseSBob3N0IGNhbiBzZW5kIHR3byBXTUkgY29tbWFuZHMgYXQgb25jZS4gVGhl
-cmUgaXMgcG9zc2liaWxpdHkgdG8KY2F1c2UgU01NVSBpc3N1ZXMgb3IgY29ycnVwdGlvbiwgaWYg
-aG9zdCB3YW50cyB0byBpbml0aWF0ZSAyIERNQQp0cmFuc2ZlcnMsIGl0IGlzIHBvc3NpYmxlIHdo
-ZW4gY29weSBjb21wbGV0ZSBpbnRlcnJ1cHQgZm9yIGZpcnN0IERNQQpyZWFjaGVzIGhvc3QsIENF
-IGhhcyBhbHJlYWR5IHVwZGF0ZWQgU1JSSSAoU291cmNlIHJpbmcgcmVhZCBpbmRleCkgZm9yCmJv
-dGggRE1BIHRyYW5zZmVycyBhbmQgaXMgaW4gdGhlIG1pZGRsZSBvZiAybmQgRE1BLiBIb3N0IHVz
-ZXMgU1JSSQooU291cmNlIHJpbmcgcmVhZCBpbmRleCkgdG8gaW50ZXJwcmV0IGhvdyBtYW55IERN
-QeKAmXMgaGF2ZSBiZWVuIGNvbXBsZXRlZAphbmQgdHJpZXMgdG8gdW5tYXAvZnJlZSBib3RoIHRo
-ZSBETUEgZW50cmllcy4gSGVuY2Ugbm93IGl0IGlzIGxpbWl0aW5nIHRvCm9uZS5CZWNhdXNlIENF
-IGlzICBzdGlsbCBpbiB0aGUgbWlkZGxlIG9mIDJuZCBETUEgd2hpY2ggY2FuIGNhdXNlIHRoZXNl
-Cmlzc3VlcyB3aGVuIGhhbmRsaW5nIHR3byBETUEgdHJhbnNmZXJzLgoKVGhpcyBjaGFuZ2Ugd2ls
-bCBub3QgaW1wYWN0IG90aGVyIHRhcmdldHMsIGFzIGl0IGlzIG9ubHkgZm9yIFdDTjM5OTAuCgpU
-ZXN0ZWQtb246IFdDTjM5OTAgaHcxLjAgU05PQyBXTEFOLkhMLjIuMC0wMTM4Ny1RQ0FITFNXTVRQ
-TFotMQoKU2lnbmVkLW9mZi1ieTogWW91Z2hhbmRoYXIgQ2hpbnRhbGEgPHF1aWNfeW91Z2hhbmRA
-cXVpY2luYy5jb20+ClNpZ25lZC1vZmYtYnk6IEthbGxlIFZhbG8gPHF1aWNfa3ZhbG9AcXVpY2lu
-Yy5jb20+Ckxpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMjA4MDExMzQ5NDEuMTUy
-MTYtMS1xdWljX3lvdWdoYW5kQHF1aWNpbmMuY29tClNpZ25lZC1vZmYtYnk6IFNhc2hhIExldmlu
-IDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L2NvcmUuYyB8IDE2ICsrKysrKysrKysrKysrKysKIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvaHRjLmMgIHwgMTEgKysrKysrKystLS0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvaHcuaCAgIHwgIDIgKysKIDMgZmlsZXMgY2hhbmdlZCwgMjYgaW5zZXJ0aW9ucygrKSwg
-MyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL2NvcmUuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCmluZGV4
-IDY4ODE3NzQ1M2IwNy4uMDdjNGE0ZjBlZDMzIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL2NvcmUuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL2NvcmUuYwpAQCAtOTUsNiArOTUsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19o
-d19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50eF9zdGF0c19vdmVyX3Br
-dGxvZyA9IHRydWUsCiAJCS5keW5hbWljX3Nhcl9zdXBwb3J0ID0gZmFsc2UsCiAJCS5od19yZXN0
-YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKKwkJLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKIAl9
-LAogCXsKIAkJLmlkID0gUUNBOTg4WF9IV18yXzBfVkVSU0lPTiwKQEAgLTEzMyw2ICsxMzQsNyBA
-QCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19s
-aXN0W10gPSB7CiAJCS50eF9zdGF0c19vdmVyX3BrdGxvZyA9IHRydWUsCiAJCS5keW5hbWljX3Nh
-cl9zdXBwb3J0ID0gZmFsc2UsCiAJCS5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKKwkJ
-LnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKIAl9LAogCXsKIAkJLmlkID0gUUNBOTg4N19IV18x
-XzBfVkVSU0lPTiwKQEAgLTE3Miw2ICsxNzQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEw
-a19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50eF9zdGF0c19vdmVy
-X3BrdGxvZyA9IGZhbHNlLAogCQkuZHluYW1pY19zYXJfc3VwcG9ydCA9IGZhbHNlLAogCQkuaHdf
-cmVzdGFydF9kaXNjb25uZWN0ID0gZmFsc2UsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUs
-CiAJfSwKIAl7CiAJCS5pZCA9IFFDQTYxNzRfSFdfM18yX1ZFUlNJT04sCkBAIC0yMDYsNiArMjA5
-LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zIGF0aDEwa19od19wYXJh
-bXNfbGlzdFtdID0gewogCQkuc3VwcG9ydHNfcGVlcl9zdGF0c19pbmZvID0gdHJ1ZSwKIAkJLmR5
-bmFtaWNfc2FyX3N1cHBvcnQgPSB0cnVlLAogCQkuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0gZmFs
-c2UsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCiAJfSwKIAl7CiAJCS5pZCA9IFFDQTYx
-NzRfSFdfMl8xX1ZFUlNJT04sCkBAIC0yNDQsNiArMjQ4LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVj
-dCBhdGgxMGtfaHdfcGFyYW1zIGF0aDEwa19od19wYXJhbXNfbGlzdFtdID0gewogCQkudHhfc3Rh
-dHNfb3Zlcl9wa3Rsb2cgPSBmYWxzZSwKIAkJLmR5bmFtaWNfc2FyX3N1cHBvcnQgPSBmYWxzZSwK
-IAkJLmh3X3Jlc3RhcnRfZGlzY29ubmVjdCA9IGZhbHNlLAorCQkudXNlX2Z3X3R4X2NyZWRpdHMg
-PSB0cnVlLAogCX0sCiAJewogCQkuaWQgPSBRQ0E2MTc0X0hXXzJfMV9WRVJTSU9OLApAQCAtMjgy
-LDYgKzI4Nyw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtf
-aHdfcGFyYW1zX2xpc3RbXSA9IHsKIAkJLnR4X3N0YXRzX292ZXJfcGt0bG9nID0gZmFsc2UsCiAJ
-CS5keW5hbWljX3Nhcl9zdXBwb3J0ID0gZmFsc2UsCiAJCS5od19yZXN0YXJ0X2Rpc2Nvbm5lY3Qg
-PSBmYWxzZSwKKwkJLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKIAl9LAogCXsKIAkJLmlkID0g
-UUNBNjE3NF9IV18zXzBfVkVSU0lPTiwKQEAgLTMyMCw2ICszMjYsNyBAQCBzdGF0aWMgY29uc3Qg
-c3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50
-eF9zdGF0c19vdmVyX3BrdGxvZyA9IGZhbHNlLAogCQkuZHluYW1pY19zYXJfc3VwcG9ydCA9IGZh
-bHNlLAogCQkuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0gZmFsc2UsCisJCS51c2VfZndfdHhfY3Jl
-ZGl0cyA9IHRydWUsCiAJfSwKIAl7CiAJCS5pZCA9IFFDQTYxNzRfSFdfM18yX1ZFUlNJT04sCkBA
-IC0zNjIsNiArMzY5LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zIGF0
-aDEwa19od19wYXJhbXNfbGlzdFtdID0gewogCQkuc3VwcG9ydHNfcGVlcl9zdGF0c19pbmZvID0g
-dHJ1ZSwKIAkJLmR5bmFtaWNfc2FyX3N1cHBvcnQgPSB0cnVlLAogCQkuaHdfcmVzdGFydF9kaXNj
-b25uZWN0ID0gZmFsc2UsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCiAJfSwKIAl7CiAJ
-CS5pZCA9IFFDQTk5WDBfSFdfMl8wX0RFVl9WRVJTSU9OLApAQCAtNDA2LDYgKzQxNCw3IEBAIHN0
-YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFyYW1zX2xpc3Rb
-XSA9IHsKIAkJLnR4X3N0YXRzX292ZXJfcGt0bG9nID0gZmFsc2UsCiAJCS5keW5hbWljX3Nhcl9z
-dXBwb3J0ID0gZmFsc2UsCiAJCS5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKKwkJLnVz
-ZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKIAl9LAogCXsKIAkJLmlkID0gUUNBOTk4NF9IV18xXzBf
-REVWX1ZFUlNJT04sCkBAIC00NTcsNiArNDY2LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgx
-MGtfaHdfcGFyYW1zIGF0aDEwa19od19wYXJhbXNfbGlzdFtdID0gewogCQkudHhfc3RhdHNfb3Zl
-cl9wa3Rsb2cgPSBmYWxzZSwKIAkJLmR5bmFtaWNfc2FyX3N1cHBvcnQgPSBmYWxzZSwKIAkJLmh3
-X3Jlc3RhcnRfZGlzY29ubmVjdCA9IGZhbHNlLAorCQkudXNlX2Z3X3R4X2NyZWRpdHMgPSB0cnVl
-LAogCX0sCiAJewogCQkuaWQgPSBRQ0E5ODg4X0hXXzJfMF9ERVZfVkVSU0lPTiwKQEAgLTUwNSw2
-ICs1MTUsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3
-X3BhcmFtc19saXN0W10gPSB7CiAJCS50eF9zdGF0c19vdmVyX3BrdGxvZyA9IGZhbHNlLAogCQku
-ZHluYW1pY19zYXJfc3VwcG9ydCA9IGZhbHNlLAogCQkuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0g
-ZmFsc2UsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCiAJfSwKIAl7CiAJCS5pZCA9IFFD
-QTkzNzdfSFdfMV8wX0RFVl9WRVJTSU9OLApAQCAtNTQzLDYgKzU1NCw3IEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFyYW1zX2xpc3RbXSA9IHsKIAkJ
-LnR4X3N0YXRzX292ZXJfcGt0bG9nID0gZmFsc2UsCiAJCS5keW5hbWljX3Nhcl9zdXBwb3J0ID0g
-ZmFsc2UsCiAJCS5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKKwkJLnVzZV9md190eF9j
-cmVkaXRzID0gdHJ1ZSwKIAl9LAogCXsKIAkJLmlkID0gUUNBOTM3N19IV18xXzFfREVWX1ZFUlNJ
-T04sCkBAIC01ODMsNiArNTk1LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFy
-YW1zIGF0aDEwa19od19wYXJhbXNfbGlzdFtdID0gewogCQkudHhfc3RhdHNfb3Zlcl9wa3Rsb2cg
-PSBmYWxzZSwKIAkJLmR5bmFtaWNfc2FyX3N1cHBvcnQgPSBmYWxzZSwKIAkJLmh3X3Jlc3RhcnRf
-ZGlzY29ubmVjdCA9IGZhbHNlLAorCQkudXNlX2Z3X3R4X2NyZWRpdHMgPSB0cnVlLAogCX0sCiAJ
-ewogCQkuaWQgPSBRQ0E5Mzc3X0hXXzFfMV9ERVZfVkVSU0lPTiwKQEAgLTYxNCw2ICs2MjcsNyBA
-QCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19s
-aXN0W10gPSB7CiAJCS5jcmVkaXRfc2l6ZV93b3JrYXJvdW5kID0gdHJ1ZSwKIAkJLmR5bmFtaWNf
-c2FyX3N1cHBvcnQgPSBmYWxzZSwKIAkJLmh3X3Jlc3RhcnRfZGlzY29ubmVjdCA9IGZhbHNlLAor
-CQkudXNlX2Z3X3R4X2NyZWRpdHMgPSB0cnVlLAogCX0sCiAJewogCQkuaWQgPSBRQ0E0MDE5X0hX
-XzFfMF9ERVZfVkVSU0lPTiwKQEAgLTY1OSw2ICs2NzMsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
-IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7CiAJCS50eF9zdGF0
-c19vdmVyX3BrdGxvZyA9IGZhbHNlLAogCQkuZHluYW1pY19zYXJfc3VwcG9ydCA9IGZhbHNlLAog
-CQkuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0gZmFsc2UsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9
-IHRydWUsCiAJfSwKIAl7CiAJCS5pZCA9IFdDTjM5OTBfSFdfMV8wX0RFVl9WRVJTSU9OLApAQCAt
-NjkwLDYgKzcwNSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgx
-MGtfaHdfcGFyYW1zX2xpc3RbXSA9IHsKIAkJLnR4X3N0YXRzX292ZXJfcGt0bG9nID0gZmFsc2Us
-CiAJCS5keW5hbWljX3Nhcl9zdXBwb3J0ID0gdHJ1ZSwKIAkJLmh3X3Jlc3RhcnRfZGlzY29ubmVj
-dCA9IHRydWUsCisJCS51c2VfZndfdHhfY3JlZGl0cyA9IGZhbHNlLAogCX0sCiB9OwogCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0Yy5jIGIvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odGMuYwppbmRleCBmYWIzOTgwNDZhM2YuLjZkMTc4NGY3
-NGJlYSAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odGMuYwor
-KysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0Yy5jCkBAIC05NDcsMTMgKzk0
-NywxOCBAQCBpbnQgYXRoMTBrX2h0Y193YWl0X3RhcmdldChzdHJ1Y3QgYXRoMTBrX2h0YyAqaHRj
-KQogCQlyZXR1cm4gLUVDT01NOwogCX0KIAotCWh0Yy0+dG90YWxfdHJhbnNtaXRfY3JlZGl0cyA9
-IF9fbGUxNl90b19jcHUobXNnLT5yZWFkeS5jcmVkaXRfY291bnQpOworCWlmIChhci0+aHdfcGFy
-YW1zLnVzZV9md190eF9jcmVkaXRzKQorCQlodGMtPnRvdGFsX3RyYW5zbWl0X2NyZWRpdHMgPSBf
-X2xlMTZfdG9fY3B1KG1zZy0+cmVhZHkuY3JlZGl0X2NvdW50KTsKKwllbHNlCisJCWh0Yy0+dG90
-YWxfdHJhbnNtaXRfY3JlZGl0cyA9IDE7CisKIAlodGMtPnRhcmdldF9jcmVkaXRfc2l6ZSA9IF9f
-bGUxNl90b19jcHUobXNnLT5yZWFkeS5jcmVkaXRfc2l6ZSk7CiAKIAlhdGgxMGtfZGJnKGFyLCBB
-VEgxMEtfREJHX0hUQywKLQkJICAgIlRhcmdldCByZWFkeSEgdHJhbnNtaXQgcmVzb3VyY2VzOiAl
-ZCBzaXplOiVkXG4iLAorCQkgICAiVGFyZ2V0IHJlYWR5ISB0cmFuc21pdCByZXNvdXJjZXM6ICVk
-IHNpemU6JWQgYWN0dWFsIGNyZWRpdHM6JWRcbiIsCiAJCSAgIGh0Yy0+dG90YWxfdHJhbnNtaXRf
-Y3JlZGl0cywKLQkJICAgaHRjLT50YXJnZXRfY3JlZGl0X3NpemUpOworCQkgICBodGMtPnRhcmdl
-dF9jcmVkaXRfc2l6ZSwKKwkJICAgbXNnLT5yZWFkeS5jcmVkaXRfY291bnQpOwogCiAJaWYgKCho
-dGMtPnRvdGFsX3RyYW5zbWl0X2NyZWRpdHMgPT0gMCkgfHwKIAkgICAgKGh0Yy0+dGFyZ2V0X2Ny
-ZWRpdF9zaXplID09IDApKSB7CmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL2h3LmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmgKaW5kZXgg
-OTNhY2YwZGQ1ODBhLi4xYjk5ZjNhMzlhMTEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvaHcuaAorKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L2h3LmgKQEAgLTYzNSw2ICs2MzUsOCBAQCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyB7CiAJYm9v
-bCBkeW5hbWljX3Nhcl9zdXBwb3J0OwogCiAJYm9vbCBod19yZXN0YXJ0X2Rpc2Nvbm5lY3Q7CisK
-Kwlib29sIHVzZV9md190eF9jcmVkaXRzOwogfTsKIAogc3RydWN0IGh0dF9yZXNwOwotLSAKMi4z
-NS4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+From: Wen Gong <quic_wgong@quicinc.com>
+
+[ Upstream commit 1e1cb8e0b73e6f39a9d4a7a15d940b1265387eb5 ]
+
+When running suspend test, kernel crash happened in ath10k, and it is
+fixed by commit b72a4aff947b ("ath10k: skip ath10k_halt during suspend
+for driver state RESTARTING").
+
+Currently the crash is fixed, but as a common code style, it is better
+to set the pointer to NULL after memory is free.
+
+This is to address the code style and it will avoid potential bug of
+use-after-free.
+
+Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20220505092248.787-1-quic_wgong@quicinc.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index fe34fcc00af0..55a520237263 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -301,12 +301,16 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
+ 			  ath10k_htt_get_vaddr_ring(htt),
+ 			  htt->rx_ring.base_paddr);
+ 
++	ath10k_htt_config_paddrs_ring(htt, NULL);
++
+ 	dma_free_coherent(htt->ar->dev,
+ 			  sizeof(*htt->rx_ring.alloc_idx.vaddr),
+ 			  htt->rx_ring.alloc_idx.vaddr,
+ 			  htt->rx_ring.alloc_idx.paddr);
++	htt->rx_ring.alloc_idx.vaddr = NULL;
+ 
+ 	kfree(htt->rx_ring.netbufs_ring);
++	htt->rx_ring.netbufs_ring = NULL;
+ }
+ 
+ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
+@@ -846,8 +850,10 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 			  ath10k_htt_get_rx_ring_size(htt),
+ 			  vaddr_ring,
+ 			  htt->rx_ring.base_paddr);
++	ath10k_htt_config_paddrs_ring(htt, NULL);
+ err_dma_ring:
+ 	kfree(htt->rx_ring.netbufs_ring);
++	htt->rx_ring.netbufs_ring = NULL;
+ err_netbuf:
+ 	return -ENOMEM;
+ }
+-- 
+2.35.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
