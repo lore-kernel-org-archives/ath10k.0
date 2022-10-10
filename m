@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EA8EC433FE
-	for <ath10k@archiver.kernel.org>; Sun,  9 Oct 2022 22:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD202C433FE
+	for <ath10k@archiver.kernel.org>; Mon, 10 Oct 2022 22:19:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yGjiFw3rv1wU0+g6lT1GkqB2PAiU9JqXR+14gHJjAoA=; b=QPRUPC2o0QBYZC
-	YUI1EpoCzheCyEaaaXTbu9FYZ0HXo9QpU+18eY2TTDtpWScoK2XWGqquxJYW3Ch8ErsdbO8nzxzK1
-	4PnjU5QcIBbmc7EFoaPaInYB1tdZDTeoD9yo5c8iT53HNjV4MXDN3qM5qe9YLAsPL+V1Q1LM9ALRh
-	jYagnEESDEkhHRyovq2+3n6rjR88h4+MBwdlSCrfP8ZG8pA8s5k7kw6fpahDYNQ9g3gqHZMwFv4oM
-	EKR3AJsqn8vPowR+Q4mQ8UinvfcLtC5EiimOiMwx+0qbmUy50UzncD78OOB9BwDrDtQhvzaAZW3r2
-	g1mInfaD8ndzvPXJSX2w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Y7j1DrKYa3zIhy+b+wWDos4FQlzWZj+8fNqz0WfcKw4=; b=0Ya1EyZWVueM8h
+	MEAVdAap9c2lTIohdyR7UUuGEnTmWH2yqEM0GcgKmuQaZZIcE3mdLU46QZ9Nvfl7dgdIwR7Qdj94K
+	5NGXz45hDiMv4ASDCz7F0puisDI9MQ1TSkS4z5whHkN3wnOr7VpLe/s/rL2NIiICUjx6o9QFzX6WU
+	JCoJtekBakXQMIYMPs7VkdWk9qyNWYOXxhXmT0x2TPkDYUc3v3RlJ0i6lIo3VVC0a8CoPIFeaLzf8
+	0EAkzD+FjCKENfhG9b4LHttQ+tPUlFHS3ovnvSUt9tLLJF8rVb7C9OGVpNe646881PqOiBqgo3Aj/
+	kOMZTQlyDgUfNyQ9GPgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ohejm-00GL0d-BZ; Sun, 09 Oct 2022 22:25:34 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1oi17j-002RJW-4k; Mon, 10 Oct 2022 22:19:47 +0000
+Received: from mga18.intel.com ([134.134.136.126])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ohejj-00GKzs-EH
-	for ath10k@lists.infradead.org; Sun, 09 Oct 2022 22:25:32 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 2BDD1B80DDF;
-	Sun,  9 Oct 2022 22:25:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84B8DC4347C;
-	Sun,  9 Oct 2022 22:25:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1665354329;
-	bh=Z88gscPgKN76zJ93T2DPK3bjOaxFlCelhKvCEzfYnJU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AB5bPMorY5Bkg+dfOZi/q5qkU0lhBEZEbAb64JK0R5fcMNy5q0LJ/J1Q32u25fSyF
-	 herpFWANCArn92ChaEll8uaT4eccxEX7CEmElZZVycXLfxd+q6K2NPxJYHZOWm/7Ub
-	 ABOzvk4nv7xDgoRJqtz4BSgKAQkP1jOphLW41AsycI/1yiE0IHE09yR/Tb4qzmZzul
-	 o2v5cPfFlJXOO7Qe+UlbJzBGPoVcRRhtbaug3xiC6eM/H08t+SFIoeag9YelMJXeMc
-	 6u8KgyTjs7yjd2WONwuD2JECgHDWA9Nfmfdv7Ru/i8hEllcL3Ui6uEpEtoDgokRkcL
-	 oXsm8C39vmFxg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Wen Gong <quic_wgong@quicinc.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
-	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 16/25] wifi: ath10k: reset pointer after memory free to avoid potential use-after-free
-Date: Sun,  9 Oct 2022 18:24:21 -0400
-Message-Id: <20221009222436.1219411-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221009222436.1219411-1-sashal@kernel.org>
-References: <20221009222436.1219411-1-sashal@kernel.org>
+	id 1oi17Z-002RFD-55
+	for ath10k@lists.infradead.org; Mon, 10 Oct 2022 22:19:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1665440377; x=1696976377;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GJ9DY4reTzINRqpvqcmGFhh60/ucW7ar71IzVevprZ8=;
+  b=YxjwUVmK9RXMtRYi8a4bRAfa7ZOufUhlJKgJUDOBgpCDg9voPzdnWuEQ
+   W5+TRfY4kUXdJSaXzr5Yn8s8k2fQGwXHtxo7oFwzfBvoNQruknNZp/05u
+   +Ge0LWGlw3imFnylY3035RXM0nBYFksuy2eQK75Au9UCnpegBNUiSpVss
+   VUMAvPTaeOtxO3yXDv9tqCnHbsjKQCJuwZo6qLKka6Q2JlK6k5rvVLebC
+   8gnhdN/wD+c9xvtw/b8qR0LfU0rjgeKaEWXPn5eSLuZ17mF8PlWzJRBvc
+   J97grTACYrySad+Aulr11QuldPhJhoS6eiZXpMkR4NGCZxdOFiumc9SRt
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10496"; a="287611980"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; 
+   d="scan'208";a="287611980"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2022 15:19:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10496"; a="715274113"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; 
+   d="scan'208";a="715274113"
+Received: from lkp-server01.sh.intel.com (HELO 2af0a69ca4e0) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Oct 2022 15:19:32 -0700
+Received: from kbuild by 2af0a69ca4e0 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1oi17U-0002DU-0L;
+	Mon, 10 Oct 2022 22:19:32 +0000
+Date: Tue, 11 Oct 2022 06:18:50 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ e161d4b60ae3a5356e07202e0bfedb5fad82c6aa
+Message-ID: <63449a4a.ebXjG+/4OVXvdMiU%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221009_152531_647289_473F60C9 
-X-CRM114-Status: GOOD (  11.08  )
+X-CRM114-CacheID: sfid-20221010_151937_268598_07B50227 
+X-CRM114-Status: UNSURE (   6.12  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,64 +82,146 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Wen Gong <quic_wgong@quicinc.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: e161d4b60ae3a5356e07202e0bfedb5fad82c6aa  wifi: ath9k: Make arrays prof_prio and channelmap static const
 
-[ Upstream commit 1e1cb8e0b73e6f39a9d4a7a15d940b1265387eb5 ]
+elapsed time: 747m
 
-When running suspend test, kernel crash happened in ath10k, and it is
-fixed by commit b72a4aff947b ("ath10k: skip ath10k_halt during suspend
-for driver state RESTARTING").
+configs tested: 121
+configs skipped: 4
 
-Currently the crash is fixed, but as a common code style, it is better
-to set the pointer to NULL after memory is free.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-This is to address the code style and it will avoid potential bug of
-use-after-free.
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+arc                  randconfig-r043-20221010
+s390                 randconfig-r044-20221010
+riscv                randconfig-r042-20221010
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+csky                              allnoconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+riscv                             allnoconfig
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+x86_64               randconfig-a014-20221010
+x86_64               randconfig-a015-20221010
+x86_64               randconfig-a012-20221010
+x86_64               randconfig-a011-20221010
+x86_64               randconfig-a013-20221010
+x86_64               randconfig-a016-20221010
+i386                             allyesconfig
+i386                                defconfig
+arm                       omap2plus_defconfig
+m68k                                defconfig
+sh                          sdk7780_defconfig
+parisc                generic-64bit_defconfig
+mips                          rb532_defconfig
+parisc64                         alldefconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+i386                 randconfig-a013-20221010
+i386                 randconfig-a015-20221010
+i386                 randconfig-a016-20221010
+i386                 randconfig-a011-20221010
+i386                 randconfig-a014-20221010
+i386                 randconfig-a012-20221010
+s390                                defconfig
+s390                             allmodconfig
+arc                                 defconfig
+alpha                               defconfig
+s390                             allyesconfig
+arm                           h5000_defconfig
+arm                        keystone_defconfig
+sh                      rts7751r2d1_defconfig
+i386                 randconfig-c001-20221010
+powerpc                     tqm8541_defconfig
+sh                                  defconfig
+xtensa                    xip_kc705_defconfig
+mips                        bcm47xx_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                           sama5_defconfig
+arm                          pxa910_defconfig
+sh                            shmin_defconfig
+powerpc                      pcm030_defconfig
+powerpc                 canyonlands_defconfig
+sh                        sh7785lcr_defconfig
+sh                          kfr2r09_defconfig
+m68k                        mvme16x_defconfig
+sh                         ecovec24_defconfig
+arc                        nsim_700_defconfig
+arm64                               defconfig
+sh                           se7750_defconfig
+powerpc                     rainier_defconfig
+ia64                             allmodconfig
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+mips                         bigsur_defconfig
+powerpc                 linkstation_defconfig
+arm                        trizeps4_defconfig
+arm                           stm32_defconfig
+arm                            pleb_defconfig
+arm                         s3c6400_defconfig
+arm                         lubbock_defconfig
+m68k                        m5272c3_defconfig
+_defconfig                            powerpc
+currituck_defconfig                             m68k
+m5407c3_defconfig                          powerpc
+pq2fads_defconfig                              arm
+integrator_defconfig                               sh
+shx3_defconfig                             mips
+maltasmvp_defconfig                              arm
+clps711x_defconfig                             m68k
+hp300_defconfig                              arm
+footbridge_defconfig                               sh
+sh7710voipgw_defconfig                        loongarch
+allmodconfig                               sh
+se7206_defconfig                               sh
+edosk7760_defconfig                           x86_64
+randconfig-k001-20221010                        loongarch
+defconfig                           loongarch
+allnoconfig                                  
 
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
-Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20220505092248.787-1-quic_wgong@quicinc.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+clang tested configs:
+i386                 randconfig-a005-20221010
+i386                 randconfig-a003-20221010
+i386                 randconfig-a002-20221010
+i386                 randconfig-a004-20221010
+i386                 randconfig-a001-20221010
+i386                 randconfig-a006-20221010
+x86_64               randconfig-a004-20221010
+x86_64               randconfig-a001-20221010
+x86_64               randconfig-a002-20221010
+x86_64               randconfig-a006-20221010
+x86_64               randconfig-a003-20221010
+x86_64               randconfig-a005-20221010
+arm                     am200epdkit_defconfig
+arm                          ep93xx_defconfig
+mips                      maltaaprp_defconfig
+i386                             allyesconfig
+hexagon                             defconfig
+powerpc                  mpc885_ads_defconfig
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 0a7551dc0f94..68728cba6df3 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -302,12 +302,16 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
- 			  ath10k_htt_get_vaddr_ring(htt),
- 			  htt->rx_ring.base_paddr);
- 
-+	ath10k_htt_config_paddrs_ring(htt, NULL);
-+
- 	dma_free_coherent(htt->ar->dev,
- 			  sizeof(*htt->rx_ring.alloc_idx.vaddr),
- 			  htt->rx_ring.alloc_idx.vaddr,
- 			  htt->rx_ring.alloc_idx.paddr);
-+	htt->rx_ring.alloc_idx.vaddr = NULL;
- 
- 	kfree(htt->rx_ring.netbufs_ring);
-+	htt->rx_ring.netbufs_ring = NULL;
- }
- 
- static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
-@@ -641,8 +645,10 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
- 			  ath10k_htt_get_rx_ring_size(htt),
- 			  vaddr_ring,
- 			  htt->rx_ring.base_paddr);
-+	ath10k_htt_config_paddrs_ring(htt, NULL);
- err_dma_ring:
- 	kfree(htt->rx_ring.netbufs_ring);
-+	htt->rx_ring.netbufs_ring = NULL;
- err_netbuf:
- 	return -ENOMEM;
- }
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
