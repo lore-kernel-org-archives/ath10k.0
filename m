@@ -4,66 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F302EC4332F
-	for <ath10k@archiver.kernel.org>; Sat, 15 Oct 2022 16:11:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01A13C4332F
+	for <ath10k@archiver.kernel.org>; Sun, 16 Oct 2022 07:15:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=24PHc0c32PWtYH7hbG7nK4gSUy/m3NihCjPD+lmTGmo=; b=pvW
-	rX1vkGeSQnZNTLr8UA9zf7TpQethtchKxhKMDOAFHFjLsVRHBMl/T5NbZ1COKelQakaXahLRUsn+d
-	Q6McD8NzBNJwkuOwuzdaCA0bJzhyMMI0nFGO4ehLeZIijkdPDMJmS/lZMEl1RaP4PSAc6b2/ODSkP
-	uhgIMX3l4t0RNHWf3gZPXf9BVqS3YS9AVsAZhQ9Y/nAgYgCbFWpQkCciRnaKBew/W0SM9vVh1DYBy
-	YstyGWJWbxu3XQsH73BudNNiF6ovKwyMvx/w6XmVr5+tnPDo3+Qe6IQzAV3oQzBzfCqx+SET7p/Tf
-	G7oeI/hXjE5AZn2cjoPIs8RuCGq0khg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:From:To
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=NTiOy9jwrM8spzkc5uWFJuV/8LdIadFXp42fIyvtyq0=; b=gykwYi+W0FqbXl
+	ymAEiIj6dcqBmi3gFwlAoKw0p3K0dTeBIm8+xqFRXLIBvHuiPEmAp1rjZvzZSvTNN1gQ4M85nsBKm
+	3HcwkCIlG7/Mwj2FE8htdkPzZTCRcF5ZOMw4S0Jj4Ty0mlV1Pk2CJ8ZDTgMPQojeCXzXp5CQLaNSv
+	mPKsXedPvFdqADp4m5d4fU7MQXEumQq2DRWhpZTlq1wnsjcRFiT2XoYXTFCKzfahALwoqc9gQthk1
+	5YNdO9NnqBy2My7xg5hbrPOpTm/iZ7mYDbcW9VT3dA2kxEWu0c5IFkbVtIdlwFPjEkNhUMmp50bb9
+	5VvDXmT8LsoveJFy0Kfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ojjkD-00HDcG-3z; Sat, 15 Oct 2022 16:10:37 +0000
-Received: from mail-io1-xd29.google.com ([2607:f8b0:4864:20::d29])
+	id 1ojxrC-000hsy-HI; Sun, 16 Oct 2022 07:14:46 +0000
+Received: from mwb-bld-mts-003c1.ocn.ad.jp ([153.128.188.44])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ojjkA-00HDb8-ML
-	for ath10k@lists.infradead.org; Sat, 15 Oct 2022 16:10:35 +0000
-Received: by mail-io1-xd29.google.com with SMTP id l127so6108678iof.12
-        for <ath10k@lists.infradead.org>; Sat, 15 Oct 2022 09:10:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sckBXyGI3QyBk0NtHvXevTiTU/dxpLlifZRIopdnK6U=;
-        b=dworQHWXEyjcNJVHSLp6d4OUmQvw+XvHBL9cp057xiutNO+qIZR/iJourkydDy1rnv
-         /+wvgAlQXsN4IWZGFmux4sghwaPBVEhY3hbiqgIjM+dYMxrPR0TZHz590nyIsi4NBbif
-         TERSX1hH23tyn06gI5DaHQq3g5mkv9mLkx0aeCAQ9txN9C6TKF6Yr6q2o2bKDEcW7KPW
-         kAzNIFyvkxs689FtM4NI8jw1PJTP7zL2CpzfvMGkmRnKBU8Golcd229fjFLT6lzxaU/J
-         aZuqjOkoGN7vl179jmTCr7Bql9GIxqywqtkmBr0Ynji2ZZ3IkWxikGLBqrrtw27Po+LG
-         8ygg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sckBXyGI3QyBk0NtHvXevTiTU/dxpLlifZRIopdnK6U=;
-        b=NjNwjs9nVsng7l+nRCzaM7csVl0qZ7Uk2xP2Kt2Wy8H/7v/hP7Gj5a1W/TFRxGx6/p
-         Yusr0OMtuhWsMiQoWq7XOtQ+C6/oHpvVZQyEQDSc6/cTrFS3GSeOS4u8ElG4g6fjbuYi
-         GIYaiiTUDGHo05KV55B81hmrOthnVmz4fKbiJqbWzhLKxJTYiFRjyOA8TITtF48M//cS
-         FWfko9MkPknoL2Qux5m1Sh3Z51e2e01noG4o98QzcNMdDRepX0GmWVIQd0/uy7qKre4P
-         h4xKfx4J0Di3LeLAZxBt2FuXsTM59n/12N+5Wrv0H95ZS4LC4MHOqvGgUkBCYevoRYUp
-         vPTQ==
-X-Gm-Message-State: ACrzQf1yYgGmpqdDwa3U+YiEN7WqZ7qx0UlDP5cvW/pScfpMvdzfmtiA
-	O7EirgsC3S7UK3SQmoUR0zrms+tTqlIfDgOJLWS7SkLEmgkX3w==
-X-Google-Smtp-Source: AMsMyM6PTDrobJb2WScp7K3Fo7NNezDmo6LD3zdBKlsR/A7kFWJb0MZgrW5mYeWrnH05ucUEmOiT1Ko7uDW/l9P+zxM=
-X-Received: by 2002:a05:6602:2dc7:b0:6a5:14e5:d709 with SMTP id
- l7-20020a0566022dc700b006a514e5d709mr1372072iow.54.1665850233904; Sat, 15 Oct
- 2022 09:10:33 -0700 (PDT)
-MIME-Version: 1.0
-From: =?UTF-8?B?QmHFn2FyIEcu?= <basargirginer@gmail.com>
-Date: Sat, 15 Oct 2022 19:10:23 +0300
-Message-ID: <CAMz3DNn5K+8wOe6g6F3RNLo4V6-iM4EL+yQHSyKECbyHSe8xhA@mail.gmail.com>
-Subject: QCA9377 Slows wifi speed when bluetooth is active
+	id 1ojxr7-000hr3-Ap
+	for ath10k@lists.infradead.org; Sun, 16 Oct 2022 07:14:45 +0000
+Received: from cmn-spm-mts-006c1.ocn.ad.jp (cmn-spm-mts-006c1.ocn.ad.jp [153.153.67.160])
+	by mwb-bld-mts-003c1.ocn.ad.jp (Postfix) with ESMTP id 17D293C000A88
+	for <ath10k@lists.infradead.org>; Sun, 16 Oct 2022 16:14:13 +0900 (JST)
+Received: from mwb-vc-mts-003c1.ocn.ad.jp ([153.153.67.72])
+	by cmn-spm-mts-006c1.ocn.ad.jp with ESMTP
+	id jxqfoOQ6AWDWajxqfoRxnQ; Sun, 16 Oct 2022 16:14:13 +0900
+X-BIZ-RELAY: yes
+Received: from mwb-sdgw-mts-003c1.ocn.ad.jp ([122.28.88.78])
+	by mwb-vc-mts-003c1.ocn.ad.jp with ESMTP
+	id jxqfo0vRx6Jgujxqfo7VbG; Sun, 16 Oct 2022 16:14:13 +0900
+Received: from sisiku.com (sisiku.com [61.112.14.202])
+	by mwb-sdgw-mts-003c1.ocn.ad.jp (Postfix) with ESMTP id EF771800023B
+	for <ath10k@lists.infradead.org>; Sun, 16 Oct 2022 16:14:12 +0900 (JST)
+Received: from www.sisiku.com (www3576.sakura.ne.jp [49.212.243.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by sisiku.com (Postfix) with ESMTPSA id B72A1127B04
+	for <ath10k@lists.infradead.org>; Sun, 16 Oct 2022 16:14:14 +0900 (JST)
+Date: Sun, 16 Oct 2022 07:14:12 +0000
 To: ath10k@lists.infradead.org
+From: =?UTF-8?B?44K344K344Kv44Ki44OJ44Kv44Op44Kk44K55qCq5byP5Lya56S+?= <info@sisiku.com>
+Subject: =?UTF-8?B?44GK5ZWP44GE5ZCI44KP44Gb?=
+Message-ID: <0l2Nf1vpL2MJr9zt8g7XqGZnkFrEUDYJ8FFeAv711sI@www.sisiku.com>
+X-Mailer: WPMailSMTP/Mailer/smtp 2.8.0
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221015_091034_747625_0C8E84C9 
-X-CRM114-Status: UNSURE (   2.23  )
+X-CRM114-CacheID: sfid-20221016_001441_533697_8A925C87 
+X-CRM114-Status: UNSURE (   2.25  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,33 +65,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello i am using qca9377 network card
-
-Wifi slows when bluetooth streaming the audio
-
-For ex:
-No BT: 900kb/s
-BT is active: 50kb/s
-
-Tried solve methods:
-- Disable powersave
-- CNSS WLAN1.0 WLAN2.0 different firmware versions loaded
-- ath10k_core otp and swcrypto settings changed
-
-But the methods not fix the problem, i am request please fix in short time
-
-Device Inf:
-Dell Inspiron 3580
-Qualcomm Atheros QCA9377 802.11ac Wireless Network Adapter
-Opensuse tumbleweed snapshot 20221013
-Linux Kernel 6.0.0
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+77u/8J+SmyBBbGljZSB3YW50IHRvIG1lZXQgeW91ISBDTElDSyBIRVJFOiBodHRwOi8vZWR3aW5j
+cmVhdGlvbi5jb20vdXBsb2Fkcy9nby5waHA/eTlxdCDwn5Ka5qeYCgrjgYrllY/jgYTlkIjjgo/j
+gZvjgYLjgorjgYzjgajjgYbjgZTjgZbjgYTjgb7jgZnjgIIK44GK5ZWP44GE5ZCI44KP44Gb5YaF
+5a6544Gr44Gk44GN44G+44GX44Gm44Gv44CB5Yil6YCU44CB5Za25qWt5ouF5b2T6ICF44GM44GU
+6L+U562U44GE44Gf44GX44G+44GZCuOAggoK44OL44Ol44O844K544Oh44O844Or6LO86Kqt77ya
+IOW4jOacm+OBl+OBquOBhAoK44GK5ZCN5YmN77yaIO+7v/CfkpsgQWxpY2Ugd2FudCB0byBtZWV0
+IHlvdSEgQ0xJQ0sgSEVSRTogaHR0cDovL2Vkd2luY3JlYXRpb24uY29tL3VwbG9hZHMvZ28ucGhw
+P3k5cXQg8J+Smgrjg5Xjg6rjgqzjg4rvvJogYWRncmxnCuS8muekvuWQje+8miAyYng2NWIK5Lya
+56S+5ZCN77yI44OV44Oq44Ks44OK77yJ77yaIDY4ZHA1bQrpg6jnvbLvvJogN3piMm91CuW9ueiB
+t++8miAzMGF0ankK6YO15L6/55Wq5Y+377yaMDY2MTQK44GU5L2P5omA77yaIGNlMGVvNArjgYrp
+m7voqbHnlarlj7fvvJogOTg5ODE1MzYwMDQxCkZBWOeVquWPt++8miA5ODk4MTUzNjAwNDEK44Oh
+44O844Or44Ki44OJ44Os44K577yaIGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCuOBiuWVj+OB
+hOWQiOOCj+OBm+WGheWuue+8miAKcTdhNHRmCgrjgZTkuI3mmI7jgarngrnjgYzjgYLjgorjgb7j
+gZfjgZ/jgonjgIHkuIvoqJjjgb7jgafjgYrllY/jgYTlkIjjgo/jgZvjgY/jgaDjgZXjgYTjgIIK
+CioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqCuOCt+OCt+OCr1NJU0lLVeOCouODieOCr+ODqeOCpOOCueagquW8j+S8muekvgrjgJI5
+MjAtMDg2N+OAgOefs+W3neecjOmHkeayouW4gumVt+Wcn+WhgDEtMTYtMTXjgIDkuLjmmIzjg5Pj
+g6sKVEVM77yaMDc2LTIzNC0wNDQ544CAIEZBWO+8mjA3Ni0yMjQtMDQ0OQpFLW1haWwgOiBpbmZv
+QHNpc2lrdS5jb23jgIDjgIBXZWIgOiBodHRwczovL3d3dy5zaXNpa3UuY29tCioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
