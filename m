@@ -4,77 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F4BFC433FE
-	for <ath10k@archiver.kernel.org>; Wed, 19 Oct 2022 06:03:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD7D2C4332F
+	for <ath10k@archiver.kernel.org>; Fri, 21 Oct 2022 00:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SIQq9lN7m39Fvevyv0GrV6Ma08Hesm6gSSL6nNtoj+8=; b=01+hNCxlD/gq+L
-	500aSQMTjye4FwPgtvK+qoyQvLEvVe7ODXnFqQ2E1bdWMgC8uiJ8mc5H58ifhLT0xN0meaUxVZmLX
-	xgA5+4PHNqKboabM2x/9Jn5+NwjeNUv9fUPDJHbs9lOzXYcHCSwHmRv6q4okek+hnYghZpNNea4k4
-	vADxPdGJ+o9XYDdhBzhT3kv1quKCdlkPrHXpBppqLxHkPrYr7iT8woO3zbXydjHSy4vyiII/maagY
-	iUsY8mJLbYIaXF8ooEwGvw1pbFP5K+2y66LcnSRs1emzL/zgsRhqPj8dR/U9lbDhnTRXp4a7YcZwO
-	OTSdyRFK+m4Vb5hIJGYQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=H4vWDlZBDttggtzcraLkNlGOW2IJpIb53DPRipUGSHQ=; b=SPBIMtluuvBGRe
+	6yB0na8m+dmBGWAejtN/g43AvxvPLkVxltW2etQiydO5skkkjoqb7nZSmBpgAUT0+FGa1RSA9lpfQ
+	fWs9+rr1MK/ciA+/tGNoL3r0jiVeIm1nVxbRuD9YArG0OqgZjaJQZpme42gadR8mxEnnlfrx/mrbx
+	56C8AnLW403UrtELA5ozWNPn/ojeNB3eXPBpOa+tkw6aaJSUcdz7QmMHuSIaMA8FyXsaEfP3h/zbB
+	Y6Jb6taUcpq6n3SYFXp6YW/zXGpAHHqychcsmZhfTbDqT3bvmJ+yalnckjKg4v2i7Hoe7QR2U2F3B
+	gEM1V42reHc46bcp9EWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ol2B0-00FNuA-Ff; Wed, 19 Oct 2022 06:03:38 +0000
-Received: from mail-yw1-x1131.google.com ([2607:f8b0:4864:20::1131])
+	id 1olg38-0035ot-LD; Fri, 21 Oct 2022 00:38:10 +0000
+Received: from mga11.intel.com ([192.55.52.93])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ol2Ax-00FNiu-FB
-	for ath10k@lists.infradead.org; Wed, 19 Oct 2022 06:03:37 +0000
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-3321c2a8d4cso158189887b3.5
-        for <ath10k@lists.infradead.org>; Tue, 18 Oct 2022 23:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=s5DB7EnWinUCVvHnFkWiifLYJ7ZYVSrywNKSXQZJdFI=;
-        b=zVYtNmW6565ZCEXxTkDChTvQvHXVZBJgGadsGALKU3QKMGV7PrXldFeksaQiPFFwos
-         gOa5LHUXC9ENeji5ixZomlslrjXs7gRNn5sa4/rC/7oX9vcohhS7XlO8sDMJLXWscr+q
-         bF06XsYuYWzUbcYRDjzfQO7njw5hC0lUkvvqRBtzHG+VCf+kO0dojSk2HwepiWXgSYBP
-         78G6I41n+j4b5oQ86dSQb0agTuBmkZQLAXpLW2ShZuHRDidswcSNmuHVA4Q/JlRHChj1
-         CVLKFFo1MbwWbp2VHMZdc2bMjhHGPyCYYpL8L1H7itzUSN66IyZ5++j9CAcdb550Y7AK
-         nt/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s5DB7EnWinUCVvHnFkWiifLYJ7ZYVSrywNKSXQZJdFI=;
-        b=ONWcg5ostcxUyOUwnaKHVDeS35UbEYvLLVmena4mkfVTtHLFtcP37YSzxMwQeg+Fl+
-         cTEGdqmPsvkdJucXnb9XXAVIeteW+iVcTJhy3/8l/VZLTpRFNx7On/VLQXj6OQ0MKzpn
-         aa73VOpGwN4YjphzLSTyBy9iq5WsSWtR2piA5+DMmFulBIHj9aPYDwYeQ7AqAIqyHjhf
-         HVQmn3MW5Q5YRGUnvQ1Dursq+QwRZ/ZbdC8rCSc1Tg9vnxzSr8jDa6V4WzSZ7TVeODRH
-         IIAcGp0l3puhiRam4Of6t0Sj51BGOhASg3Q4jXNBshfX/HhVWSTaFhIjrEXvRkx09NY8
-         c6Aw==
-X-Gm-Message-State: ACrzQf0Havn/snPZPX+su0ERiEOiB2ZOO8p6EO1GoJgZXEBHxGBmGwoJ
-	SKwmu407M3+fJdZdaOvQuwZost+OILwVOr60e426aA==
-X-Google-Smtp-Source: AMsMyM6pJW+QkixNplXOsyqax6puLF7anBgDILMTra0UqNAILCFqM+RlWPnUCA7ntqHj/xXFKBs5j8LsVWWer2PZbHY=
-X-Received: by 2002:a81:4881:0:b0:361:5080:91fe with SMTP id
- v123-20020a814881000000b00361508091femr5409889ywa.485.1666159413839; Tue, 18
- Oct 2022 23:03:33 -0700 (PDT)
+	id 1olg35-0035gz-Sq
+	for ath10k@lists.infradead.org; Fri, 21 Oct 2022 00:38:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666312687; x=1697848687;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=HWEs/w8N/P63yWGZGoYZreWC5BdQpbdcLvz8c+dUD7g=;
+  b=VUxIXyFeWsV7fH0H3Zf5DndjhIxMTs4+DBxnWcNQyfQri9PQAUzVPMzt
+   r3RJk19hsnQ0CT0fBofIb5FRLtsm5rBRNGKDwungd1rNp5vCnaU9+5Rf8
+   dFpnHbVT+8lrl5P42ijbXecxBadC6uSuDDIRym9cg0KowJQlHF6ZmQTvN
+   hIpI3eVQ0bvuFqtNe1oeS6K64QGIFy7370vO17czf1xKUH8L/fN7Ln26M
+   0gFzI3IWgIrcBQWKtTVDhV0QNWG5Z7BYP2ZqfhodORR+Ifq6Y36dUQzwC
+   d20PJl2u+2tSMzpyiKIzsl7MgaqlCbfzDTzt5gJkMp4VbtTe8jRlH/rBv
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10506"; a="304489501"
+X-IronPort-AV: E=Sophos;i="5.95,200,1661842800"; 
+   d="scan'208";a="304489501"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2022 17:38:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10506"; a="772711710"
+X-IronPort-AV: E=Sophos;i="5.95,200,1661842800"; 
+   d="scan'208";a="772711710"
+Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Oct 2022 17:38:02 -0700
+Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1olg2z-0001tn-36;
+	Fri, 21 Oct 2022 00:38:01 +0000
+Date: Fri, 21 Oct 2022 08:37:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 116733763737b2631bbd4a109279101c610f6587
+Message-ID: <6351e9c6.VoTbjB63qP6IUE92%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org> <Y0hr9XTGAg8Q6K6y@google.com>
-In-Reply-To: <Y0hr9XTGAg8Q6K6y@google.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 19 Oct 2022 09:03:22 +0300
-Message-ID: <CAA8EJppuGbDGb1D-yf2WL77U1bqx1QQStQeDArWmGFCUiOtnww@mail.gmail.com>
-Subject: Re: [PATCH v1 00/15] create power sequencing subsystem
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Stanimir Varbanov <svarbanov@mm-sol.com>, linux-arm-msm@vger.kernel.org, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-bluetooth@vger.kernel.org, ath10k@lists.infradead.org, 
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221018_230335_537430_B35F3BCC 
-X-CRM114-Status: GOOD (  27.77  )
+X-CRM114-CacheID: sfid-20221020_173807_974018_2B376B3C 
+X-CRM114-Status: UNSURE (   6.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,68 +82,112 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Ho,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 116733763737b2631bbd4a109279101c610f6587  Merge branch 'ath-next' into ath-qca
 
-On Thu, 13 Oct 2022 at 22:50, Matthias Kaehlcke <mka@chromium.org> wrote:
-> Do you still plan to refresh this series?
->
-> I know there have been multiple attempts to get something similar
-> landed in the past 10 year or so. Your series didn't seem to get
-> much pushback from maintainers, might be worth sending a refresh :)
+elapsed time: 2536m
 
-Yes, I hope to return to it eventually. I just had no time for it lately.
+configs tested: 88
+configs skipped: 3
 
-> On Wed, Oct 06, 2021 at 06:53:52AM +0300, Dmitry Baryshkov wrote:
-> > This is a proposed power sequencer subsystem. This is a
-> > generification of the MMC pwrseq code. The subsystem tries to abstract
-> > the idea of complex power-up/power-down/reset of the devices.
-> >
-> > The primary set of devices that promted me to create this patchset is
-> > the Qualcomm BT+WiFi family of chips. They reside on serial+platform
-> > or serial + SDIO interfaces (older generations) or on serial+PCIe (newer
-> > generations).  They require a set of external voltage regulators to be
-> > powered on and (some of them) have separate WiFi and Bluetooth enable
-> > GPIOs.
-> >
-> > The major drawback for now is the lack of proper PCIe integration
-> > At this moment support for PCIe is hacked up to be able to test the
-> > PCIe part of qca6390. Proper PCIe support would require automatically
-> > powering up the devices before the scan basing on the proper device
-> > structure in the device tree. This two last patches are noted as WIP and
-> > are included into the patchset for the purpose of testing WiFi on newer
-> > chips (like qca6390/qca6391).
-> >
-> > Changes since RFC v2:
-> >  - Add documentation for the pwrseq code. Document data structures,
-> >    macros and exported functions.
-> >  - Export of_pwrseq_xlate_onecell()
-> >  - Add separate pwrseq_set_drvdata() function to follow the typical API
-> >    design
-> >  - Remove pwrseq_get_optional()/devm_pwrseq_get_optional()
-> >  - Moved code to handle old mmc-pwrseq binding to the MMC patch
-> >  - Split of_pwrseq_xlate_onecell() support to a separate patch
-> >
-> > Changes since RFC v1:
-> >  - Provider pwrseq fallback support
-> >  - Implement fallback support in pwrseq_qca.
-> >  - Mmove susclk handling to pwrseq_qca.
-> >  - Significantly simplify hci_qca.c changes, by dropping all legacy
-> >    code. Now hci_qca uses only pwrseq calls to power up/down bluetooth
-> >    parts of the chip.
-> >
-> >
-> >
-> >
-> > _______________________________________________
-> > ath10k mailing list
-> > ath10k@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/ath10k
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                                 defconfig
+s390                             allmodconfig
+arm                                 defconfig
+x86_64                        randconfig-a013
+alpha                               defconfig
+x86_64                        randconfig-a011
+s390                                defconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+x86_64                        randconfig-a015
+alpha                            allyesconfig
+s390                             allyesconfig
+m68k                             allyesconfig
+x86_64                        randconfig-a002
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+x86_64                        randconfig-a006
+x86_64                         rhel-8.3-kunit
+i386                                defconfig
+arc                  randconfig-r043-20221018
+riscv                randconfig-r042-20221018
+arm                              allyesconfig
+s390                 randconfig-r044-20221018
+i386                          randconfig-a012
+x86_64                        randconfig-a004
+i386                          randconfig-a016
+mips                             allyesconfig
+arm64                            allyesconfig
+powerpc                           allnoconfig
+i386                          randconfig-a014
+powerpc                          allmodconfig
+x86_64                               rhel-8.3
+sh                               allmodconfig
+i386                             allyesconfig
+x86_64                           allyesconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+arc                  randconfig-r043-20221019
+arc                  randconfig-r043-20221020
+s390                 randconfig-r044-20221020
+riscv                randconfig-r042-20221020
+powerpc                 mpc834x_itx_defconfig
+mips                           gcw0_defconfig
+arm                           stm32_defconfig
+openrisc                            defconfig
+arm                       aspeed_g5_defconfig
+openrisc                  or1klitex_defconfig
+sh                        sh7763rdp_defconfig
+arc                               allnoconfig
+sh                            titan_defconfig
+m68k                          amiga_defconfig
+sh                           se7619_defconfig
+arc                        nsimosci_defconfig
+sparc                       sparc32_defconfig
+ia64                             allmodconfig
 
+clang tested configs:
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+hexagon              randconfig-r045-20221018
+i386                          randconfig-a013
+x86_64                        randconfig-a001
+i386                          randconfig-a011
+x86_64                        randconfig-a003
+hexagon              randconfig-r041-20221018
+x86_64                        randconfig-a005
+i386                          randconfig-a015
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+s390                 randconfig-r044-20221019
+hexagon              randconfig-r045-20221019
+riscv                randconfig-r042-20221019
+hexagon              randconfig-r041-20221019
+i386                 randconfig-a013-20221017
+i386                 randconfig-a015-20221017
+i386                 randconfig-a016-20221017
+i386                 randconfig-a011-20221017
+i386                 randconfig-a014-20221017
+i386                 randconfig-a012-20221017
+powerpc                     skiroot_defconfig
+powerpc                     ksi8560_defconfig
+arm                         s3c2410_defconfig
 
 -- 
-With best wishes
-Dmitry
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
