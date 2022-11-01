@@ -4,61 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AFADC4332F
-	for <ath10k@archiver.kernel.org>; Tue,  1 Nov 2022 21:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E62FC433FE
+	for <ath10k@archiver.kernel.org>; Tue,  1 Nov 2022 21:41:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cfkZbUTWBOu3uCRkymBskdHvo/9BH2k+OoWp1VmGdM4=; b=phZwE2zOhBiG8A
-	egCUP+ddwwUaTVi2UWg8CDENl/vV0OOHT3T6/L5zxH/VV5YX6DP0gwNIYz3IflIiHKCAzs3esbA/w
-	fIB5Vo9Ng4dwfhP1pDhJUAsjqUZgzbqVNxJF6MxjwL5YdGzYwxpG6yEGwZmIA1XtrRYL/sIJ5BMyP
-	7RNOByeXRJKFcPlos7VEqkRmjaDCgLv49DYXivw4vKDINOkkLzfRG3VdzpDpJRir/277Ks7ytpgmI
-	q41kgoTsWUBBkXaBptOYyTyZTtE5OlhM/JENcxKvouX31rjkVFLEloUo0b+rIon92iUN0GpEeMog0
-	ogdUvBOuBnA/6xvoABrw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1/T5ZFYa8TcKakt1X2QMDSzQUP7mMH3TqYRyn5Asw7g=; b=LEawCVqj+UbK7o
+	1ZnH+wgUBBY5DGmk/HgD+H6j+m8e9qRmQTCLuOw1FmE/7L8zPvQyA/R9kH+Bqb+Cxk9InIQyCX/2X
+	8kbxavPHUEN9gwsco7KhPZ3uuWtmKew6vWAnHwKCCAc9rjDnnH2NKfLn5T3aYlb2PIH5prkD8pWgA
+	IIC33mQGGurHp0B1ybCjIxGvMqaBn1J94Te+cAh7hVwgEWHF5daPeXttS9oamxp/OAVMh0kc/gSnD
+	oBrgqrsd9gDSHXUD0HD4XebD3E04bUOptNN7lWeB3LzkTy0KOYZtbDXQrLzJIwwFqWN/RPOJLxMxG
+	75AK7lSdNUesyrrE0Vlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1opybA-00770K-4C; Tue, 01 Nov 2022 21:15:04 +0000
-Received: from smtp-16.smtpout.orange.fr ([80.12.242.16] helo=smtp.smtpout.orange.fr)
+	id 1opz0p-007EZx-W2; Tue, 01 Nov 2022 21:41:36 +0000
+Received: from mga02.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1opyb4-0076wK-TI
-	for ath10k@lists.infradead.org; Tue, 01 Nov 2022 21:15:01 +0000
-Received: from pop-os.home ([86.243.100.34])
-	by smtp.orange.fr with ESMTPA
-	id pyanoKD2rsfCIpyauoWfGf; Tue, 01 Nov 2022 22:14:49 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 01 Nov 2022 22:14:49 +0100
-X-ME-IP: 86.243.100.34
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Kalle Valo <kvalo@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Amitkumar Karwar <amitkarwar@gmail.com>,
-	Ganapathi Bhat <ganapathi017@gmail.com>,
-	Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-	Xinming Hu <huxinming820@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 02/30] wifi: Use kstrtobool() instead of strtobool()
-Date: Tue,  1 Nov 2022 22:13:50 +0100
-Message-Id: <1ff34549af5ad6f7c80d5b9e11872b5499065fc1.1667336095.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1667336095.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1667336095.git.christophe.jaillet@wanadoo.fr>
+	id 1opz0m-007EXv-C5
+	for ath10k@lists.infradead.org; Tue, 01 Nov 2022 21:41:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1667338892; x=1698874892;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tkRHCugwl4wUn0vbXGqiPQulkrQhhbdc0SjR9cQrvAE=;
+  b=n4xakrrK24RULBg6/6wQKHNrtApmTl4VibVORJFbyfdxvNw8GFEBE9Pg
+   ZjK+l9oEpq/3U9wLWBxI9Z/Jsy2fmRqsDPVL3RqxrZLFcrazbn2j5ZBpD
+   bqw4+WH5enOybVn5M9iLiLEv3juE1KovIVLZjMSArlPmTVtes5078t4s9
+   u6De6z9snbyM4woQWBC6aTrj6roKXz6c4wdeMai5iAAfSLSf4gASzSxTi
+   3jgPQjlIgYiA/LQ+S9bSLt6xKreeYvuXjnP7gOzwdUWjKg72PZx3QNNcx
+   XTcKgFtXAhmMKziTaodqon9Sj+XTQj45yorUZtVcCcqvaU2XxZMnYET9b
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10518"; a="296685136"
+X-IronPort-AV: E=Sophos;i="5.95,232,1661842800"; 
+   d="scan'208";a="296685136"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2022 14:41:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10518"; a="879233127"
+X-IronPort-AV: E=Sophos;i="5.95,232,1661842800"; 
+   d="scan'208";a="879233127"
+Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Nov 2022 14:41:25 -0700
+Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1opz0f-000E46-1E;
+	Tue, 01 Nov 2022 21:41:25 +0000
+Date: Wed, 02 Nov 2022 05:40:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ 85209c1fa23030269358b870b812abf54c727bc3
+Message-ID: <63619269.L/LH4mGg4CMLUdWl%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221101_141459_124020_B4B254BA 
-X-CRM114-Status: GOOD (  15.20  )
+X-CRM114-CacheID: sfid-20221101_144132_485140_A9B707EA 
+X-CRM114-Status: UNSURE (   6.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,116 +82,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-strtobool() is the same as kstrtobool().
-However, the latter is more used within the kernel.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: 85209c1fa23030269358b870b812abf54c727bc3  Merge branch 'pending' into master-pending
 
-In order to remove strtobool() and slightly simplify kstrtox.h, switch to
-the other function name.
+elapsed time: 724m
 
-While at it, include the corresponding header file (<linux/kstrtox.h>)
+configs tested: 63
+configs skipped: 2
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This patch is part of a serie that axes all usages of strtobool().
-Each patch can be applied independently from the other ones.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-The last patch of the serie removes the definition of strtobool().
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+i386                                defconfig
+arc                                 defconfig
+alpha                               defconfig
+x86_64                        randconfig-a002
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+s390                                defconfig
+x86_64                         rhel-8.3-kunit
+i386                 randconfig-a011-20221031
+s390                             allmodconfig
+i386                 randconfig-a012-20221031
+x86_64                        randconfig-a006
+i386                          randconfig-a001
+x86_64               randconfig-a012-20221031
+x86_64                           rhel-8.3-kvm
+i386                 randconfig-a013-20221031
+x86_64                               rhel-8.3
+i386                 randconfig-a015-20221031
+x86_64               randconfig-a015-20221031
+x86_64               randconfig-a011-20221031
+x86_64                           rhel-8.3-syz
+i386                 randconfig-a014-20221031
+i386                 randconfig-a016-20221031
+arc                  randconfig-r043-20221101
+ia64                             allmodconfig
+s390                             allyesconfig
+x86_64               randconfig-a013-20221031
+x86_64                              defconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a016-20221031
+x86_64                        randconfig-a004
+i386                          randconfig-a003
+x86_64               randconfig-a014-20221031
+powerpc                          allmodconfig
+sh                               allmodconfig
+mips                             allyesconfig
+arc                              allyesconfig
+i386                             allyesconfig
+i386                          randconfig-a005
+alpha                            allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+x86_64                           allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+arc                  randconfig-r043-20221031
+riscv                randconfig-r042-20221031
+s390                 randconfig-r044-20221031
 
-You may not be in copy of the cover letter. So, if needed, it is available
-at [1].
+clang tested configs:
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+hexagon              randconfig-r045-20221101
+s390                 randconfig-r044-20221101
+i386                          randconfig-a002
+riscv                randconfig-r042-20221101
+hexagon              randconfig-r041-20221101
+i386                          randconfig-a006
+i386                          randconfig-a004
+hexagon              randconfig-r045-20221031
+hexagon              randconfig-r041-20221031
 
-[1]: https://lore.kernel.org/all/cover.1667336095.git.christophe.jaillet@wanadoo.fr/
----
- drivers/net/wireless/ath/ath10k/debug.c        | 5 +++--
- drivers/net/wireless/ath/ath9k/ath9k.h         | 1 +
- drivers/net/wireless/ath/ath9k/tx99.c          | 2 +-
- drivers/net/wireless/marvell/mwifiex/debugfs.c | 2 +-
- drivers/net/wireless/marvell/mwifiex/main.h    | 1 +
- 5 files changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index c861e66ef6bc..b9aea1510f7b 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -10,6 +10,7 @@
- #include <linux/vmalloc.h>
- #include <linux/crc32.h>
- #include <linux/firmware.h>
-+#include <linux/kstrtox.h>
- 
- #include "core.h"
- #include "debug.h"
-@@ -1975,7 +1976,7 @@ static ssize_t ath10k_write_btcoex(struct file *file,
- 
- 	buf[buf_size] = '\0';
- 
--	if (strtobool(buf, &val) != 0)
-+	if (kstrtobool(buf, &val) != 0)
- 		return -EINVAL;
- 
- 	if (!ar->coex_support)
-@@ -2113,7 +2114,7 @@ static ssize_t ath10k_write_peer_stats(struct file *file,
- 
- 	buf[buf_size] = '\0';
- 
--	if (strtobool(buf, &val) != 0)
-+	if (kstrtobool(buf, &val) != 0)
- 		return -EINVAL;
- 
- 	mutex_lock(&ar->conf_mutex);
-diff --git a/drivers/net/wireless/ath/ath9k/ath9k.h b/drivers/net/wireless/ath/ath9k/ath9k.h
-index 3ccf8cfc6b63..2cc23605c9fc 100644
---- a/drivers/net/wireless/ath/ath9k/ath9k.h
-+++ b/drivers/net/wireless/ath/ath9k/ath9k.h
-@@ -20,6 +20,7 @@
- #include <linux/etherdevice.h>
- #include <linux/device.h>
- #include <linux/interrupt.h>
-+#include <linux/kstrtox.h>
- #include <linux/leds.h>
- #include <linux/completion.h>
- #include <linux/time.h>
-diff --git a/drivers/net/wireless/ath/ath9k/tx99.c b/drivers/net/wireless/ath/ath9k/tx99.c
-index 95544ce05acf..8a996ed9a3be 100644
---- a/drivers/net/wireless/ath/ath9k/tx99.c
-+++ b/drivers/net/wireless/ath/ath9k/tx99.c
-@@ -189,7 +189,7 @@ static ssize_t write_file_tx99(struct file *file, const char __user *user_buf,
- 
- 	buf[len] = '\0';
- 
--	if (strtobool(buf, &start))
-+	if (kstrtobool(buf, &start))
- 		return -EINVAL;
- 
- 	mutex_lock(&sc->mutex);
-diff --git a/drivers/net/wireless/marvell/mwifiex/debugfs.c b/drivers/net/wireless/marvell/mwifiex/debugfs.c
-index bda53cb91f37..52b18f4a774b 100644
---- a/drivers/net/wireless/marvell/mwifiex/debugfs.c
-+++ b/drivers/net/wireless/marvell/mwifiex/debugfs.c
-@@ -874,7 +874,7 @@ mwifiex_timeshare_coex_write(struct file *file, const char __user *ubuf,
- 	if (copy_from_user(&kbuf, ubuf, min_t(size_t, sizeof(kbuf) - 1, count)))
- 		return -EFAULT;
- 
--	if (strtobool(kbuf, &timeshare_coex))
-+	if (kstrtobool(kbuf, &timeshare_coex))
- 		return -EINVAL;
- 
- 	ret = mwifiex_send_cmd(priv, HostCmd_CMD_ROBUST_COEX,
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.h b/drivers/net/wireless/marvell/mwifiex/main.h
-index 63f861e6b28a..b95886e1413e 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.h
-+++ b/drivers/net/wireless/marvell/mwifiex/main.h
-@@ -10,6 +10,7 @@
- 
- #include <linux/completion.h>
- #include <linux/kernel.h>
-+#include <linux/kstrtox.h>
- #include <linux/module.h>
- #include <linux/sched.h>
- #include <linux/semaphore.h>
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
