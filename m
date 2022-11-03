@@ -4,67 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3BE5C433FE
-	for <ath10k@archiver.kernel.org>; Thu,  3 Nov 2022 05:57:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98899C4332F
+	for <ath10k@archiver.kernel.org>; Thu,  3 Nov 2022 06:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=4sjES4Kn8xgtYVslaiOCNCkZ6BaNQ+LNeOXXXdWAM+I=; b=KzNTMBImxueIzP
-	GEnU9y+T36Qzs+jIYAIhmKFIVx2Kgw/KAQtkw4QwKPiW/fJ6jn+3/uqEk1D4tKUqwNQ00kZBKv/LS
-	E5QpOSZx/1uCB/kNY81WyO9y8ynqtnjGROYQeRE32eHvtai/M2nFNXEoAw80DJEBVdoq82uxAAYQw
-	mNCqF1/5ZQ5JqUTTM06GqtfxgKrQgeY7k/Mtk2xosDhItfrdUHnZ7S1TF/cqmakb1VcPOIAWSMVne
-	snopsnafrlYIDXLa2/Gi3+9t0z6PIA/Ls7WKNydGAGlHF/6ujxCrq/aZ7ayyu4kp2shmDrm/b518X
-	7LAmqdxiV/9aPMnocKpA==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=D4lD0GsOUlQB+/waPIQ6aUw13nVBNeE/kIy62F4VnBo=; b=lYyAholbGbfKhy
+	IA2BCFlB6vQyOHa5eqImcLll0wKoPeEf/ZgMtaAW8szYmKc55yFpcLvoMV8qG8cI5JdeCQUTm7m03
+	yepg0Y3I1eKd2Y8rutembPqxWEASTQRLMSmI+gaWedIueO6xzqHGuA1QDyD5JoM9t8mKNer19zKEr
+	3lSv2ExOqWbyoWUK1DaUz5P6jCETbiv5DUI/SNLLHSN4q+Sdeva4uE8Y+BXXqRkQAqGNCBq4M7PJw
+	wksAc1dpwk0EfoypjSji4BtNbKVm4732LZmRoRKsW2sDBlXRHok1Am6GUN6USm/Iogxv7QDn/vl/8
+	QvyOUgfP+S0L8RAHB9fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqTEE-00GF57-RC; Thu, 03 Nov 2022 05:57:26 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1oqTNZ-00GGGk-QP; Thu, 03 Nov 2022 06:07:05 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqTEB-00GF4V-QO
-	for ath10k@lists.infradead.org; Thu, 03 Nov 2022 05:57:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667455043; x=1698991043;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Y2md2qzdmTZHbC8NZc0hg+crP5/v8mxwB2WgSElPNK8=;
-  b=ZV0/Qa4vg/JY0Lb5TDo/xXecORwPTOeLxcV+CKMSUcK9LE9bgUVoaHDo
-   J0/WZnFo+u2sEu5suDGBNeqPREtFwepFaJH6zWph9osN33X/DzVzVoah+
-   wPHIpv9hkK1C1hexg83bBsIk8AX5EYw1sw5YVC57GjSWomCGC4K7nqgd9
-   rUopt7wxuleCQipNZbZFkspHUKEIIIFTMx+rcAr4Syr2i5URhB59sxp4p
-   pwUPPtIVi/qthTBtZSKfoyhsZ8rQ87bFxecaZEJfigcYKCJ4OGIc+7m/N
-   2VQQ6hzKW8tmfqltduChqDC0dcLp0m6pR3Ejg/pVq+otphkbUQOx89+Wb
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10519"; a="336283157"
-X-IronPort-AV: E=Sophos;i="5.95,235,1661842800"; 
-   d="scan'208";a="336283157"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2022 22:57:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10519"; a="777175709"
-X-IronPort-AV: E=Sophos;i="5.95,235,1661842800"; 
-   d="scan'208";a="777175709"
-Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Nov 2022 22:57:20 -0700
-Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1oqTE8-000FZ2-13;
-	Thu, 03 Nov 2022 05:57:20 +0000
-Date: Thu, 03 Nov 2022 13:57:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- cee4bbcabec1882f7084183c7f1a1ddc3cd32413
-Message-ID: <63635830.xI0ZOpNH/Sv3odOo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+	id 1oqTNW-00GGGE-DU
+	for ath10k@lists.infradead.org; Thu, 03 Nov 2022 06:07:03 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AC25561D43;
+	Thu,  3 Nov 2022 06:07:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33235C433D6;
+	Thu,  3 Nov 2022 06:06:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1667455621;
+	bh=LPrafYX9hEsEzaF5fMXuFCwDsoy3H56OcRw/rH9JSXM=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=SFHvRsWL6B4CnT0K6atnhiGEFmoh72vRzlJkk0ycPcCDJUWg8XaCq0gyic1c37aST
+	 53sfpIR/srKbe851c5z2J/rGT0AttdFSo2eSLVFQjaB+kEdab9BN/SqDBdjjmi5WXG
+	 eH/Ysi5IJbAJssr1GQoxFSPmIECgKvCKQzhqEnswoWaclVGpAdh7fsmwBThpdJ1t1x
+	 pkVCeiEqlBsCZ5PcJmKzHcdTe5RSpCk4jcYPhCTS9P+cq/Bt3oyb526N8pZD4lduqU
+	 axBDLByaWX2JZgK2XvDdrxaFNDWfN7D5vl9sDU59c0nZWeRY0/Dpfml5GGhceFNrGj
+	 XaDjDuOuT+LCA==
 MIME-Version: 1.0
+Subject: Re: [PATCH v2] wifi: ath10k: Make QMI message rules const
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20220915002612.13394-1-quic_jjohnson@quicinc.com>
+References: <20220915002612.13394-1-quic_jjohnson@quicinc.com>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, <ath10k@lists.infradead.org>,
+ <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <166745561698.21329.18124838626287583830.kvalo@kernel.org>
+Date: Thu,  3 Nov 2022 06:06:59 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221102_225723_914229_9A39CA9D 
-X-CRM114-Status: UNSURE (   6.96  )
+X-CRM114-CacheID: sfid-20221102_230702_518130_D568D963 
+X-CRM114-Status: UNSURE (   6.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,82 +76,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: cee4bbcabec1882f7084183c7f1a1ddc3cd32413  Merge branch 'ath-current' into ath-qca
+Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
 
-elapsed time: 736m
+> Commit ff6d365898d4 ("soc: qcom: qmi: use const for struct
+> qmi_elem_info") allows QMI message encoding/decoding rules
+> to be const, so do that for ath10k.
+> 
+> Compile tested only.
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-configs tested: 58
-configs skipped: 2
+Patch applied to ath-next branch of ath.git, thanks.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-arc                                 defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-kvm
-alpha                               defconfig
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-m68k                             allmodconfig
-s390                             allmodconfig
-ia64                             allmodconfig
-i386                          randconfig-a001
-arc                              allyesconfig
-alpha                            allyesconfig
-s390                                defconfig
-i386                          randconfig-a003
-m68k                             allyesconfig
-i386                          randconfig-a005
-x86_64                              defconfig
-s390                             allyesconfig
-x86_64                               rhel-8.3
-powerpc                          allmodconfig
-i386                          randconfig-a014
-i386                                defconfig
-mips                             allyesconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a013
-x86_64                           allyesconfig
-sh                               allmodconfig
-x86_64                        randconfig-a011
-arc                  randconfig-r043-20221102
-x86_64                        randconfig-a002
-riscv                randconfig-r042-20221102
-x86_64                        randconfig-a015
-s390                 randconfig-r044-20221102
-i386                          randconfig-a012
-i386                          randconfig-a016
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-i386                             allyesconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-
-clang tested configs:
-i386                          randconfig-a002
-i386                          randconfig-a013
-i386                          randconfig-a006
-i386                          randconfig-a015
-hexagon              randconfig-r041-20221102
-i386                          randconfig-a004
-i386                          randconfig-a011
-hexagon              randconfig-r045-20221102
-x86_64                        randconfig-a012
-x86_64                        randconfig-a005
-x86_64                        randconfig-a014
-x86_64                        randconfig-a001
-x86_64                        randconfig-a016
-x86_64                        randconfig-a003
+11e1fcf2b494 wifi: ath10k: Make QMI message rules const
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+https://patchwork.kernel.org/project/linux-wireless/patch/20220915002612.13394-1-quic_jjohnson@quicinc.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
