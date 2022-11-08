@@ -4,73 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02AB6C4332F
-	for <ath10k@archiver.kernel.org>; Sun,  6 Nov 2022 16:23:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C13F4C4332F
+	for <ath10k@archiver.kernel.org>; Tue,  8 Nov 2022 02:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hAY3MOGNIazcl29oHeDjLqOt/LgDQlnUBrDnYkxPGr8=; b=GiZSoQxFT7z670
-	18Gat/PAtNZua3XR9sbrhB3dJAHzKk9Rac0T8la+Gt+hcpX8cPTea4C97JyvRRO7ZNYTWNDxDCVHa
-	ACKRvfxdBoCXKa6dbNpF0ZG/13XajE0R1IZkvN7yLRnVfsxxVU4BOMrniUZ15v1so66Yk8LXWL167
-	IWi2cwYjH9e+t/Uum1PY9BhTFGaZuTzYNvjMBJfBckRmY+vZzv4/ETPKnyMTsq3KzNGt2DHRyS8iv
-	7mYC79T7lK7fogHBQ01PI/AJ5F6B8tIHY/cnEM+35UZe69hF1JpA4Z8V8UHY4TvqI/58L2DGP7J1c
-	dFKmbrRVn6VCX+4kC5yA==;
+	List-Owner; bh=xJ2gPOYopKi0dw3g1PHy0PgYuHgv8fp+PjQQOCTopLk=; b=ays4ZJ1EK5bdwU
+	0uoLOvf4TUy+vuVq9W3Et6/zi9QlYsrmsMQT4Fo+7XCOBS7Th7CUJ72DrakW8WCMARJVzfnPJm5fM
+	wuU+ODcSm7eUvJz8F8bb1+pi6Kz9HzGw/7x5iMPkPQtenMFiMxd6vU2N/RqIMevu21g1UqSsKFif9
+	fjItyOfdZKkULy8G0oR6Thsl319xQz5Y/yzme9CTU7Yo2/z8eFfFWYyBgMrC8K2KQgfw683MsUZA8
+	RRgkOLGGsCOAfhQhrmm15XVIsuMfnUmm/kyse++wY9icArySs/XN5dOZYp9P6EiUhSNji9k4WGfbV
+	/c5p3ZpFPaYxl7hIdnRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oriPs-008nHy-3g; Sun, 06 Nov 2022 16:22:36 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1osEIK-00207L-Py; Tue, 08 Nov 2022 02:24:56 +0000
+Received: from mga05.intel.com ([192.55.52.43])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oriPo-008nHB-HI
-	for ath10k@lists.infradead.org; Sun, 06 Nov 2022 16:22:34 +0000
-Received: by mail-pf1-x432.google.com with SMTP id y203so8590232pfb.4
-        for <ath10k@lists.infradead.org>; Sun, 06 Nov 2022 08:22:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/wVMRQYq8fkVBXtAwiW4f5YaI2apCsd/u8FPJMnqNok=;
-        b=g/3dZ7V6H4TGo6Dx9VFMdPSAakRhYAvypjCvUEz/ORr2IGW9cP/rNct16U9A4LBoQV
-         DqrJw6LPZthIM4YQIbD6bX3n8UlmvMmB/B0o7sJvmX9I5NY/pf9k4i3ItWnwX37xuo8D
-         AVGNrxztMlS/SWiDtWj1q1oN2QeQzBzkk8JIs/7eJYaBetHCJNq8Sr/PhcOamlMWHBLk
-         4QovzyhjlFFrrnfY3a/fySl7jpFGKVAcb/WgtP5YR1f5F5GnqW/dTzYmiHjSc598GSoW
-         OHGS4Q+nH+eQuCpRB83XMYHmkL3HjbmXUiti9XLD57gY9S4q+kDKtFgYxtVNN2BJEJPN
-         mxPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/wVMRQYq8fkVBXtAwiW4f5YaI2apCsd/u8FPJMnqNok=;
-        b=6dxOcawh8n76nLWhwgCxSm4I1X47TAskjySHqvnm1mhZPAVRNEYs2QH4YEdgdWbZU8
-         8z9MWBIgqCRRNStzQgzLtHDizjBhd6XpXeRXmYfHffVfYkC3FAU9f/BoEuNuGbB1ewkn
-         MtE/EBPBKiAkSquUL+5pSxMsgDKxj+K3CHNLWlqDEqo+dO+aXyZrlW5EDL7WnrfeLCyy
-         tkZ/Stb9amoNwmZZf0GOLJDQxkcHNCURtzCZQB4taGcDDzpUziDAtKE5Oyjw4QSI+J6T
-         zoBHzZq5LtvOzhw62KXnTLT3J5WEltUaxBpi8FZ4FpohTcGxqIjGEebj6M0fLXJCJWf8
-         a4tQ==
-X-Gm-Message-State: ACrzQf3U2riGfVEB9WmVLljrMomTK453Hsrlt2K8lAPoh9DAZgQigedL
-	3XNtTaGgu4oU1I77VM3rmHMWb0DD1LYz4w==
-X-Google-Smtp-Source: AMsMyM7pZC81Z40/KXXnKnySA/OU1VrWMbZGP+jcb+vEqEgusRCPwNOcJ7MLaC40KgrjVd0Lz7eK2w==
-X-Received: by 2002:a05:6a00:1889:b0:56c:3d4f:ae14 with SMTP id x9-20020a056a00188900b0056c3d4fae14mr45593009pfh.49.1667751748721;
-        Sun, 06 Nov 2022 08:22:28 -0800 (PST)
-Received: from Redminer.localdomain ([115.165.217.97])
-        by smtp.gmail.com with ESMTPSA id f7-20020a170902ce8700b0018691ce1696sm3330267plg.131.2022.11.06.08.22.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Nov 2022 08:22:28 -0800 (PST)
-From: Zhi-Jun You <hujy652@gmail.com>
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org,
-	Zhi-Jun You <hujy652@gmail.com>
-Subject: [PATCH] wifi: ath10k: Use macro for seq_ctrl conversion
-Date: Mon,  7 Nov 2022 00:22:27 +0800
-Message-Id: <20221106162227.1119-1-hujy652@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	id 1osEG6-001zNs-PL
+	for ath10k@lists.infradead.org; Tue, 08 Nov 2022 02:22:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1667874158; x=1699410158;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bRk+BeDaioh+HdAoF9as9zDZgqYzDgZJeUfvWiMKvEM=;
+  b=ZaHuzXfBOIKHFVVNIzQVXuzGGSBum90CoC6gkJBdfMQ9YYo9I/YhRs6g
+   5t5gmrGujoPmiSXvG4Y+ZlI4l6oEjdViuNBLsKw/qQclygLzovUDAdFa4
+   g5CxDkkaAZzNjijN4nR6mD6iQ/XULGHdSHki4Psz27Fh3u/z4DEgCNspD
+   FHOC/V7XOpNhhuB6m36Rt2+Swe0AYEnkHY1nBRzaV92Lv7HhXuDTa3cpg
+   E5lT6DVj5IxXfyRxgchBRcrI14SorHfCaJsjDwv4MptvJrskCDhGhnoE2
+   W0euBMglBtSquBVQuCzy5ozwUHw4H9a4hMEf3QzB93Dy4Ti0uHd1N+z2J
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="396878075"
+X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; 
+   d="scan'208";a="396878075"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2022 18:22:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="667411779"
+X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; 
+   d="scan'208";a="667411779"
+Received: from lkp-server01.sh.intel.com (HELO 462403710aa9) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 07 Nov 2022 18:22:36 -0800
+Received: from kbuild by 462403710aa9 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1osEG3-0001V9-1Y;
+	Tue, 08 Nov 2022 02:22:35 +0000
+Date: Tue, 08 Nov 2022 10:22:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath12k-bringup-extras] BUILD SUCCESS
+ f9b3b6aa0317dc4f6cffa5a7f6a6da693d93725e
+Message-ID: <6369bd65.SJ307uGg6QFBj+aL%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221106_082232_608062_87D75F35 
-X-CRM114-Status: UNSURE (   8.86  )
+X-CRM114-CacheID: sfid-20221107_182238_893989_34BDE60C 
+X-CRM114-Status: UNSURE (   4.67  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -88,48 +82,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Use IEEE80211_SEQ_TO_SN macro to convert seq_ctrl to sn for better
-readability.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath12k-bringup-extras
+branch HEAD: f9b3b6aa0317dc4f6cffa5a7f6a6da693d93725e  Merge ath-next into ath12k-bringup
 
-Signed-off-by: Zhi-Jun You <hujy652@gmail.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+elapsed time: 727m
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index e76aab973320..3df52906b356 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1379,7 +1379,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct sk_buff *skb)
- 		   ath10k_get_tid(hdr, tid, sizeof(tid)),
- 		   is_multicast_ether_addr(ieee80211_get_DA(hdr)) ?
- 							"mcast" : "ucast",
--		   (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4,
-+		   IEEE80211_SEQ_TO_SN(__le16_to_cpu(hdr->seq_ctrl)),
- 		   (status->encoding == RX_ENC_LEGACY) ? "legacy" : "",
- 		   (status->encoding == RX_ENC_HT) ? "ht" : "",
- 		   (status->encoding == RX_ENC_VHT) ? "vht" : "",
-@@ -1902,7 +1902,7 @@ static bool ath10k_htt_rx_h_frag_pn_check(struct ath10k *ar,
- 	last_pn = &peer->frag_tids_last_pn[tid];
- 	new_pn.pn48 = ath10k_htt_rx_h_get_pn(ar, skb, offset, enctype);
- 	frag_number = le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_FRAG;
--	seq = (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4;
-+	seq = IEEE80211_SEQ_TO_SN(__le16_to_cpu(hdr->seq_ctrl));
- 
- 	if (frag_number == 0) {
- 		last_pn->pn48 = new_pn.pn48;
-@@ -2824,7 +2824,7 @@ static bool ath10k_htt_rx_proc_rx_frag_ind_hl(struct ath10k_htt *htt,
- 
- 	hdr_space = ieee80211_hdrlen(hdr->frame_control);
- 	sc = __le16_to_cpu(hdr->seq_ctrl);
--	seq = (sc & IEEE80211_SCTL_SEQ) >> 4;
-+	seq = IEEE80211_SEQ_TO_SN(sc);
- 	frag = sc & IEEE80211_SCTL_FRAG;
- 
- 	sec_index = MS(rx_desc_info, HTT_RX_DESC_HL_INFO_MCAST_BCAST) ?
+configs tested: 119
+configs skipped: 5
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+alpha                             allnoconfig
+arc                               allnoconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+alpha                            allyesconfig
+arc                              allyesconfig
+m68k                             allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+arc                  randconfig-r043-20221107
+x86_64                           rhel-8.3-syz
+m68k                             allmodconfig
+x86_64                              defconfig
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+arc                                 defconfig
+alpha                               defconfig
+s390                             allyesconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+i386                             allyesconfig
+i386                                defconfig
+ia64                             allmodconfig
+powerpc                       ppc64_defconfig
+loongarch                           defconfig
+parisc64                         alldefconfig
+sh                   sh7724_generic_defconfig
+x86_64                           alldefconfig
+x86_64               randconfig-a006-20221107
+x86_64               randconfig-a001-20221107
+x86_64               randconfig-a004-20221107
+x86_64               randconfig-a003-20221107
+x86_64               randconfig-a005-20221107
+x86_64               randconfig-a002-20221107
+i386                 randconfig-a001-20221107
+i386                 randconfig-a006-20221107
+i386                 randconfig-a003-20221107
+i386                 randconfig-a002-20221107
+i386                 randconfig-a005-20221107
+i386                 randconfig-a004-20221107
+i386                 randconfig-c001-20221107
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+powerpc                      bamboo_defconfig
+sh                           se7721_defconfig
+sh                           se7705_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                        warp_defconfig
+microblaze                          defconfig
+m68k                        stmark2_defconfig
+powerpc                      pasemi_defconfig
+m68k                         apollo_defconfig
+sh                            shmin_defconfig
+riscv                            allmodconfig
+powerpc                       holly_defconfig
+arm                      footbridge_defconfig
+arm                           tegra_defconfig
+sh                           sh2007_defconfig
+arc                    vdk_hs38_smp_defconfig
+sparc                            alldefconfig
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+i386                          randconfig-c001
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+powerpc                    adder875_defconfig
+parisc                              defconfig
+arm                            hisi_defconfig
+mips                        bcm47xx_defconfig
+sh                        edosk7760_defconfig
+nios2                            allyesconfig
+nios2                               defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+
+clang tested configs:
+hexagon              randconfig-r041-20221107
+s390                 randconfig-r044-20221107
+riscv                randconfig-r042-20221107
+hexagon              randconfig-r045-20221107
+x86_64               randconfig-a014-20221107
+x86_64               randconfig-a015-20221107
+x86_64               randconfig-a013-20221107
+x86_64               randconfig-a012-20221107
+x86_64               randconfig-a011-20221107
+x86_64               randconfig-a016-20221107
+mips                        omega2p_defconfig
+hexagon              randconfig-r041-20221108
+hexagon              randconfig-r045-20221108
+i386                 randconfig-a013-20221107
+i386                 randconfig-a015-20221107
+i386                 randconfig-a016-20221107
+i386                 randconfig-a011-20221107
+i386                 randconfig-a014-20221107
+i386                 randconfig-a012-20221107
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+x86_64               randconfig-k001-20221107
+powerpc                        fsp2_defconfig
+arm                           omap1_defconfig
+arm                       netwinder_defconfig
+arm                         palmz72_defconfig
+powerpc                 mpc832x_mds_defconfig
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+mips                      malta_kvm_defconfig
+powerpc                     mpc512x_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                    gamecube_defconfig
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 _______________________________________________
 ath10k mailing list
