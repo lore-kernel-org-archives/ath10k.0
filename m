@@ -4,51 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98035C433FE
-	for <ath10k@archiver.kernel.org>; Thu, 10 Nov 2022 03:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7181FC4332F
+	for <ath10k@archiver.kernel.org>; Thu, 10 Nov 2022 03:25:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Qqf0e6iFjpKiQIYkIsmi0am+tU9xNYwcV4wdQdHBG8o=; b=DraHSFubYsoJ0d
-	Z4luXxl/Etxbl2fXyyMZgzToRCf34lvErDnkp8w4KHvKnrn1ZM9vNn9NIJIQ6f6v0Agh/sInSQe4y
-	HKX6v0P/+YP9JmZ/tiYSNgQSCWC80fYBRRA2ULtf1ekxQDD/6RwSdljJLfrS2iosCMllCG4Kja67v
-	L2niDWHgplQfepW5/PRieb73/UXNWWCMBiH2PmzkpUm9VoFIGJ3iZQ7CHC5t9c0Hb2JoLQQcoSDZB
-	C1EXqwH3p0fQJJB83QTY031XeP1kxsTd1C/khYWn6aryzHL8Y1Wn2V7aiWNpEDzJJBYW4WaZZ85Gm
-	vKoUwNDR/oBddIcZD+KQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=VX2qesYAZfXJAEHC0fEupUlJ1cENvrUNgaTZ8lq7I6Y=; b=qKi3jsy3jVLzAz
+	XtP5Npp95UV/CHZ62gWj1uO5UOD1DNvqiIYnAB3s9/6MfZ3ezjrYZ9BZEev57OYEZbPNuAmL94aZm
+	Bm11kQ1QegBXYbjjpVRC6YCQUu6M6wn3ZW4lxv0GvJjtmqCPBDsrajJ0PvXVPyll1RUBiXZqB9pn5
+	faZXqt7PZfXmvxU0uIOI/N8sd8cNBsl5IrCjgFWEUUDtBAo0xfU0BRdOBz8RAcSKze6iVIYnHdrkF
+	V3O2DnGXe6XwW02Tevzkwy4BqM2YvK66kWXDanclyrZpyUzoJ/8UvNBsKfwEpnwI3Q6PRPtPf0clN
+	hWdJ1aUyeSYC7PWVuFEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1osy2c-0029tQ-Gc; Thu, 10 Nov 2022 03:15:46 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1osyCC-002DsA-5t; Thu, 10 Nov 2022 03:25:40 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1osy2Z-0029o3-SE
-	for ath10k@lists.infradead.org; Thu, 10 Nov 2022 03:15:45 +0000
-Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.57])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N76Qp2cBJzHvbv;
-	Thu, 10 Nov 2022 11:15:14 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.58) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 11:15:39 +0800
-From: Xiu Jianfeng <xiujianfeng@huawei.com>
-To: <kvalo@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <rmani@qti.qualcomm.com>
-CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] wifi: ath10k: Fix return value in ath10k_pci_init()
-Date: Thu, 10 Nov 2022 11:12:28 +0800
-Message-ID: <20221110031228.247361-1-xiujianfeng@huawei.com>
-X-Mailer: git-send-email 2.17.1
+	id 1osyCA-002DrX-2M
+	for ath10k@lists.infradead.org; Thu, 10 Nov 2022 03:25:39 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id AC1F4B82083;
+	Thu, 10 Nov 2022 03:25:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D63E7C433D6;
+	Thu, 10 Nov 2022 03:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1668050734;
+	bh=Fe/+mlw2GT+auwCFctSRJ7rue+T//tu/7QyWdoqsU8k=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KgrTMmT5DEZa/jSJwgo+OVcuSILF5cfiijOXmDVGMDA1WO3rHKOnz5jwqDET9eNpr
+	 Y6JtDJqxvImb7YdMZUAsW82fU2kX/Mt/A1eBzWedX5UQFshq53ZG3JtHT2zYo1cRXl
+	 789WMm0knTN70viC3oAOvVwLeYky/Y2PwkHrsBrb103lBxQKLu4DAuXTKJ35l3EowW
+	 VJotD+gTEwCKVTYu/F6Iny/9ipAJ1yE04wPul68x7Z/70YxrUBxhr8JLmwY4inTwOq
+	 gxbWIeWWwBVoPvqK3IO/0+ifmQEYwwM8YofVP2v7omtVINI1FF85a4G+EIPJhuZVY0
+	 4noYnll4H+12g==
+Date: Wed, 9 Nov 2022 19:25:32 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: <kvalo@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+ <pabeni@redhat.com>, <rmani@qti.qualcomm.com>,
+ <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] wifi: ath10k: Fix return value in ath10k_pci_init()
+Message-ID: <20221109192532.259e4af3@kernel.org>
+In-Reply-To: <20221110031228.247361-1-xiujianfeng@huawei.com>
+References: <20221110031228.247361-1-xiujianfeng@huawei.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.58]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221109_191544_096579_5DC9B6C1 
-X-CRM114-Status: GOOD (  11.51  )
+X-CRM114-CacheID: sfid-20221109_192538_310152_DF826B63 
+X-CRM114-Status: UNSURE (   6.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,60 +74,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-This driver is attempting to register to support two different buses.
-if either of these is successful then ath10k_pci_init() should return 0
-so that hardware attached to the successful bus can be probed and
-supported. only if both of these are unsuccessful should ath10k_pci_init()
-return an errno.
+On Thu, 10 Nov 2022 11:12:28 +0800 Xiu Jianfeng wrote:
+> To: <kvalo@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,  <kuba@kernel.org>, <pabeni@redhat.com>, <rmani@qti.qualcomm.com>
+> CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,  <linux-kernel@vger.kernel.org>
 
-Fixes: 0b523ced9a3c ("ath10k: add basic skeleton to support ahb")
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-
----
-v2: modify according to Jeff's suggestion, and change the commit message
-    and body as well.
----
- drivers/net/wireless/ath/ath10k/pci.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e56c6a6b1379..728d607289c3 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3792,18 +3792,22 @@ static struct pci_driver ath10k_pci_driver = {
- 
- static int __init ath10k_pci_init(void)
- {
--	int ret;
-+	int ret1, ret2;
- 
--	ret = pci_register_driver(&ath10k_pci_driver);
--	if (ret)
-+	ret1 = pci_register_driver(&ath10k_pci_driver);
-+	if (ret1)
- 		printk(KERN_ERR "failed to register ath10k pci driver: %d\n",
--		       ret);
-+		       ret1);
- 
--	ret = ath10k_ahb_init();
--	if (ret)
--		printk(KERN_ERR "ahb init failed: %d\n", ret);
-+	ret2 = ath10k_ahb_init();
-+	if (ret2)
-+		printk(KERN_ERR "ahb init failed: %d\n", ret2);
- 
--	return ret;
-+	if (ret1 && ret2)
-+		return ret1;
-+
-+	/* registered to at least one bus */
-+	return 0;
- }
- module_init(ath10k_pci_init);
- 
--- 
-2.17.1
-
+How did you come up with this CC list? If you're CCing netdev
+maintainers you should also CC netdev@vger.kernel.org 
+Somehow you managed to CC LMKL but not netdev :S
 
 _______________________________________________
 ath10k mailing list
