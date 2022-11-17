@@ -4,59 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27D58C4332F
-	for <ath10k@archiver.kernel.org>; Thu, 17 Nov 2022 12:57:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AFD2C4332F
+	for <ath10k@archiver.kernel.org>; Thu, 17 Nov 2022 17:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
-	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/2xjkudWbmgbmyMgXvVrekUW+QEgQzwkKkitYzeNqlY=; b=HAzdV1DHo9AwUV
-	640sJGLS0HebJO5QeHdYoPjiWaTAjJxunpN6fcatLd28f8bdkEwNdABmV3+gk/PLNOM86s+mQLZB3
-	z9nBDwaEgYziznj8HOT9suCjUiGGB0v2z/70lWyxS1hLlKyi/D0cO12Ezz6n03lj2K/8+qNdif86R
-	rHm4tCJ6EH22QPRozH28vsS4tWV+8WLTrLqnOzoJ6c6ts99KgjUhBHaCkIKyS2bWHMDwuUTrisIlo
-	MI5HECuLFhVOl4QshgWt+aHsUWghTqr8q9e+HMMNbXX6eG9kQGh8m5CG/QsulIcE2GzSFrTGu6zr4
-	tDnrlUCj1THRYN3xwIFw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jCDqpc55O7z3f2N8Tp4bg0knxgj3vTr1YZzqT7LEgmA=; b=u/DTMEziE5vjPg
+	cBrTx7WvY6AbxS6KalZ3s7ghmgyO67Des2l2QmNmvC21dzTd7L1O4Rzdmu2uBRfFNMloXmLUqd/W5
+	WfJib5G6pEkBOnRYpqy2qX3AWiri4fNyFNXvqMmq33rHkQa3dWJBzQjXStAw1yB3TuVQnbrblBTub
+	DYkSbzxM15+/M0cvoaL9TApICOPKD7wpQgbzaC4V7cyudhVYhSH/lZDV50t0jZgN1dnfsBN39CNUw
+	kKp3G2IagEB2cCzM7H2BchTU0w1rDkN1o9GpPsXEBnwSxR5bT/sMp9bUN6gT+GzW3tRwu1K9Nvwbq
+	9R3l4fumDDcUR+rYpfpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oveSn-00Dzh0-4Z; Thu, 17 Nov 2022 12:57:53 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1ovj6B-00GVSS-Bo; Thu, 17 Nov 2022 17:54:51 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oveSk-00Dzdo-Nb
-	for ath10k@lists.infradead.org; Thu, 17 Nov 2022 12:57:52 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id AA9C6B81FFA;
-	Thu, 17 Nov 2022 12:57:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0A7C433C1;
-	Thu, 17 Nov 2022 12:57:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1668689863;
-	bh=0/DXGG0FpalOrK5YKRn6w8anso4j2ak9dr9rUgU/UAE=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=bcNRfVMHLhuFw0q6nXAdhsNM4UYjHCSPnoZFskVPO+Iy3Oz6lUBqQqWfi2tEQ2Pez
-	 /sAo04b7/2vPxiKv1OZDgSTDTC87oqfTqCD5I0lavxti5S0or4Z6AHWot8NzIAODGz
-	 iowoQzvnHIxkO3nLHEdu0DWsZ9pWNqLRNrnBb3IkeTx31CJRRNt7Pxhr1t5noFoKrS
-	 uM7+CYQjJ1hdkbLpy/YLBRhaLgI42FnfCBP7DJ5lFF+E6RBRNr2mBwf9pu+8gwKeN1
-	 8YNP0ZPIEXHGg9XhRO9PiK7LvWV0oYwxDxuf2Y07Jv5AooZ0MoNOBiPz6bdI+4jGVg
-	 GrI9r2vKo9NEQ==
+	id 1ovj65-00GV7z-TX
+	for ath10k@lists.infradead.org; Thu, 17 Nov 2022 17:54:49 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AHHqWJa002066;
+	Thu, 17 Nov 2022 17:54:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=dmHG/a6iT5M+Wlk/pJMeQSjTn+VMW2+OXLY/p6k654c=;
+ b=fTc42uJJy1aYogAwR0sW6eXzN27XWDSqXsrkiA0Y3WWFhCxRNnKMBYhkGNNMUqjrosDB
+ kKmHYGTDBunn2zJE0RdFA5id65BZ6btgdVNShp8eV97VSlgaAarSrVTbgvNZ5oVWNvM1
+ VjQlkYgXhmrHkLNhFyklThg6lS2t80Of3INWyRb80GcM/gFq9ekqvpAEpyPaowuheXqE
+ seAtSxO8uDK6rj/g+t5kKY61zfkRPNCjBxSZPBmdr+CsPeeg+XKoAmVaa6hSyUE+0CPr
+ XcPHZqNeXeLFK48pYtxSM+DvTRru3Owfq7VlwXFyj7/5AJphcA43oqwCOM1hP16N7tWu 1w== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3kwrwb0952-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 17 Nov 2022 17:54:37 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2AHHsanv018990
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 17 Nov 2022 17:54:36 GMT
+Received: from [10.216.15.99] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Thu, 17 Nov
+ 2022 09:54:34 -0800
+Message-ID: <5d6c1894-5037-2267-eac6-8c6974ea3b51@quicinc.com>
+Date: Thu, 17 Nov 2022 23:24:31 +0530
 MIME-Version: 1.0
-Subject: Re: [PATCH] wifi: ath10k: Remove redundant argument offset
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20221110164025.14418-1-hujy652@gmail.com>
-References: <20221110164025.14418-1-hujy652@gmail.com>
-To: Zhi-Jun You <hujy652@gmail.com>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- Zhi-Jun You <hujy652@gmail.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <166868986062.22046.4412615782635710951.kvalo@kernel.org>
-Date: Thu, 17 Nov 2022 12:57:42 +0000 (UTC)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH v3] wifi: ath10k: Add WLAN firmware image version info
+ into smem
+To: Bjorn Andersson <andersson@kernel.org>
+CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_mpubbise@quicinc.com>, <ath10k@lists.infradead.org>
+References: <20221111114235.10287-1-quic_youghand@quicinc.com>
+ <20221111202302.nbzu53hir2azdb4o@builder.lan>
+Content-Language: en-US
+From: "Youghandhar Chintala (Temp)" <quic_youghand@quicinc.com>
+In-Reply-To: <20221111202302.nbzu53hir2azdb4o@builder.lan>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: vu3VxZdZJTK0m89o-74DPwGcy2p_7WMG
+X-Proofpoint-GUID: vu3VxZdZJTK0m89o-74DPwGcy2p_7WMG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-17_06,2022-11-17_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 priorityscore=1501 clxscore=1011
+ bulkscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211170129
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221117_045750_955280_66E59B0D 
-X-CRM114-Status: UNSURE (   6.82  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221117_095446_161639_C838F206 
+X-CRM114-Status: GOOD (  38.31  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,27 +93,185 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Zhi-Jun You <hujy652@gmail.com> wrote:
 
-> This argument of ath10k_htt_rx_h_frag_pn_check() is always set to 0 so
-> drop this.
-> 
-> Signed-off-by: Zhi-Jun You <hujy652@gmail.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+On 11/12/2022 1:53 AM, Bjorn Andersson wrote:
+> On Fri, Nov 11, 2022 at 05:12:35PM +0530, Youghandhar Chintala wrote:
+>
+> Can you please change the subject to:
+> wifi: ath10k: Store WLAN firmware version in SMEM image table
+>
+>> In a SoC based solution, it would be useful to know the versions of the
+>> various binary firmware blobs the system is running on. On a QCOM based
+>> SoC, this info can be obtained from socinfo debugfs infrastructure. For
+>> this to work, respective subsystem drivers have to export the firmware
+>> version information to an SMEM based version information table.
+>>
+>> Having firmware version information at one place will help quickly
+>> figure out the firmware versions of various subsystems on the device
+>> instead of going through builds/logs in an event of a system crash.
+>>
+>> Fill WLAN firmware version information in SMEM version table to be
+>> printed as part of socinfo debugfs infrastructure on a Qualcomm based
+>> SoC.
+>>
+>> This change is applicable only for WCN399X targets.
+>>
+> Why is this restricted to WCN399X? Is it not the case that it only
+> relates to the SNOC/QMI-based implementation? Perhaps that's the same
+> thing, but if so I think the comment could be improved.
+>
+>> Example:
+>> cat /sys/kernel/debug/qcom_socinfo/cnss/name
+>> QC_IMAGE_VERSION_STRING=WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+> I don't think that kernel test robot reported the lack of this feature.
+>
+>> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
+>>
+>> Signed-off-by: Youghandhar Chintala <quic_youghand@quicinc.com>
+>> ---
+>> Changes from v2:
+>>   - Removed blank line between trailers
+>>   - Changed memcpy to strscpy
+>>   - Removed version_string_size
+>>   - Added new condition fw_build_id against max length
+>>   - Added depends on QCOM_SMEM for ath10k_snoc
+>> ---
+>>   drivers/net/wireless/ath/ath10k/Kconfig |  1 +
+>>   drivers/net/wireless/ath/ath10k/qmi.c   | 34 +++++++++++++++++++++++++
+>>   2 files changed, 35 insertions(+)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+>> index ca007b800f75..e6ea884cafc1 100644
+>> --- a/drivers/net/wireless/ath/ath10k/Kconfig
+>> +++ b/drivers/net/wireless/ath/ath10k/Kconfig
+>> @@ -44,6 +44,7 @@ config ATH10K_SNOC
+>>   	tristate "Qualcomm ath10k SNOC support"
+>>   	depends on ATH10K
+>>   	depends on ARCH_QCOM || COMPILE_TEST
+>> +	depends on QCOM_SMEM
+>>   	select QCOM_SCM
+>>   	select QCOM_QMI_HELPERS
+>>   	help
+>> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+>> index 66cb7a1e628a..6c3ddad26417 100644
+>> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+>> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+>> @@ -14,6 +14,7 @@
+>>   #include <linux/net.h>
+>>   #include <linux/platform_device.h>
+>>   #include <linux/qcom_scm.h>
+>> +#include <linux/soc/qcom/smem.h>
+>>   #include <linux/string.h>
+>>   #include <net/sock.h>
+>>   
+>> @@ -22,6 +23,8 @@
+>>   
+>>   #define ATH10K_QMI_CLIENT_ID		0x4b4e454c
+>>   #define ATH10K_QMI_TIMEOUT		30
+>> +#define ATH10K_SMEM_IMAGE_VERSION_TABLE       469
+> This isn't the ATH10K SMEM_IMAGE_VERSION_TABLE, it's the one and only
+> SMEM_IMAGE_VERSION_TABLE. As that is defined in socinfo.c, you can
+> use the same define here.
+>
+>> +#define ATH10K_SMEM_IMAGE_TABLE_CNSS_INDEX     13
+> SMEM_IMAGE_TABLE_CNSS_INDEX
+>
+>>   
+>>   static int ath10k_qmi_map_msa_permission(struct ath10k_qmi *qmi,
+>>   					 struct ath10k_msa_mem_info *mem_info)
+>> @@ -536,6 +539,35 @@ int ath10k_qmi_wlan_disable(struct ath10k *ar)
+>>   	return ath10k_qmi_mode_send_sync_msg(ar, QMI_WLFW_OFF_V01);
+>>   }
+>>   
+>> +static void ath10k_qmi_add_wlan_ver_smem(struct ath10k *ar, const char *fw_build_id)
+>> +{
+>> +	u8 *smem_table_ptr;
+> I don't think "smem" or "ptr" adds any value in this variable name.
+> "table" should be sufficient.
+>
+>> +	size_t smem_block_size;
+> This is the "smem_item_size".
+>
+>> +	const u32 smem_img_idx_wlan = ATH10K_SMEM_IMAGE_TABLE_CNSS_INDEX * 128;
+> Why not just "offset"?
+>
+> #define SMEM_IMAGE_VERSION_ENTRY_SIZE 128
+>
+> Instead of writing 128 here and abusing MAX_BUILD_ID_LEN below.
+>
+>> +
+>> +	smem_table_ptr = qcom_smem_get(QCOM_SMEM_HOST_ANY,
+>> +				       ATH10K_SMEM_IMAGE_VERSION_TABLE,
+>> +				       &smem_block_size);
+>> +	if (IS_ERR(smem_table_ptr)) {
+>> +		ath10k_dbg(ar, ATH10K_DBG_QMI,
+>> +			   "smem image version table not found\n");
+>> +		return;
+>> +	}
+>> +
+>> +	if (smem_img_idx_wlan + MAX_BUILD_ID_LEN > smem_block_size) {
+>> +		ath10k_dbg(ar, ATH10K_DBG_QMI, "smem block size too small: %zu\n",
+>> +			   smem_block_size);
+> You found a IMAGE_VERSION_TABLE, but it's smaller than expected. That
+> sounds like an ath10k_err() to me.
+>
+>> +		return;
+>> +	}
+>> +
+>> +	if (strlen(fw_build_id) > MAX_BUILD_ID_LEN) {
+> Is this really a concern, if the string is too long strscpy() below will
+> truncate it.
+>
+>> +		ath10k_dbg(ar, ATH10K_DBG_QMI, "fw_build_id length more than max length\n");
+>> +		return;
+>> +	}
+>> +
+>> +	strscpy(smem_table_ptr + smem_img_idx_wlan, fw_build_id, MAX_BUILD_ID_LEN);
+> MAX_BUILD_ID_LEN is the length of fw_build_id, which is 128.
+>
+> But the memory you're writing to is defined as:
+>
+> struct smem_image_version {
+> 	char name[SMEM_IMAGE_VERSION_NAME_SIZE];
+> 	char variant[SMEM_IMAGE_VERSION_VARIANT_SIZE];
+> 	char pad;
+> 	char oem[SMEM_IMAGE_VERSION_OEM_SIZE];
+> };
+>
+> With SMEM_IMAGE_VERSION_NAME_SIZE being 75.
+>
+>> +}
+>> +
+>>   static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
+>>   {
+>>   	struct wlfw_cap_resp_msg_v01 *resp;
+>> @@ -606,6 +638,8 @@ static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
+>>   			    qmi->fw_version, qmi->fw_build_timestamp, qmi->fw_build_id);
+>>   	}
+>>   
+>> +	ath10k_qmi_add_wlan_ver_smem(ar, qmi->fw_build_id);
+> qmi->fw_build_id is only valid if resp->fw_build_id_valid is set...
+>
+> Regards,
+> Bjorn
+>
+>> +
+>>   	kfree(resp);
+>>   	return 0;
+>>   
+>> -- 
+>> 2.38.0
 
-Patch applied to ath-next branch of ath.git, thanks.
 
-d9e38350a7b1 wifi: ath10k: Remove redundant argument offset
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20221110164025.14418-1-hujy652@gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Thank you Andersson. I will address all your comments in my next version 
+of patch.
 
 
 _______________________________________________
