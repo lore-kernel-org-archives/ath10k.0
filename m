@@ -4,68 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED739C4332F
-	for <ath10k@archiver.kernel.org>; Tue, 29 Nov 2022 07:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26F94C4167B
+	for <ath10k@archiver.kernel.org>; Tue, 29 Nov 2022 16:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IJXzBhLWb5wT5vb8mwfqaCKx+G8rTGRbx+5V450yC+s=; b=ODmVJWeQBUdeE0
-	pViG0j/X3hvUzGbau8+Y5A4cARm7GesMCtfB4Dg7vZYWRcJkL3IlD1SG0YdfmQXAqvo93pLIFJyZs
-	DDEgZqkkRqRsImV3DILvRqaPpo6GaBv1v9gGnoKONytaPzvlQ5MKpE0sC94gW/aVhLCf/HZoRCpxZ
-	2w80qm9C3xBHdxxCrcL3OL5J9vhMoZq6vRtWjkcY0/IjH/8qjCPS6e4XEIxaRiU4TAIZykd/pVa6m
-	2rDLbqAvNsEDM1jX2Z5Yca6gXvdpP5ejrPS5Sr85bRlvCgH59wsznI2E2oegpDKlkFCBmcdo2OPJC
-	VWi7gGDlQdomqOn4zLfA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=dLaeIR4dRZnPA1YuZT7uPa7JCAqjmCeps9ZoaPnTNh4=; b=XaNQFiRY2tAdzP
+	CDE0dqkI1tmKAGOyaOmcxQcBnGA0TxgL+RN0rAxVeObYMaGA0YV0YJb0Pq7wuEqf0YoOtsxsN6hE0
+	RCaDrQl6r5q2N2Yff5MYaTMBKwD2O1rXe1wRudTEXJX15wY3gD9vdUCtbcBanhLR+USswl4k44GXS
+	aui5IYkgalWvZKtF2L1eY8gZeyWtXV6e7m1dhhz2Hw68BFHqUSdIZE1EYGCaelUaq/m6JNie7boci
+	RtXnHCb9Ui7gSXsZ4FlrOUa+tl1BlARrzxEzx2531ZHLwlrTxq1xThBw12/ymTpDJz2u/HJ5QZWOl
+	J/Oy45Ap/6yJx1M4xivQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozvAu-006zGZ-1F; Tue, 29 Nov 2022 07:37:04 +0000
-Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
+	id 1p032u-009vUT-MI; Tue, 29 Nov 2022 16:01:20 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozvAr-006zFI-EO
-	for ath10k@lists.infradead.org; Tue, 29 Nov 2022 07:37:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669707421; x=1701243421;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=y1hPff/GpoA22mIYTBQ+iy+4s6R1P7xn5WPniA5IMzk=;
-  b=a1kna5KCjBTzPIG8+pQUjJjJap7+6566cU5f4Y/gKCzyxSAELInKNb2S
-   /+12Qo9Vk7miVuxXckMBt6omBprtWOON3Sokx8ZxkBcCnF/nksAisMKpJ
-   zWl1B5KY+AqaBueasdmdresNsZStB1ABn4e4xuNphroTHWb2/DNnTUWKX
-   jAueT2tJsI/6v3m1NsHurT/h6ctpqZ4aXpmaRtBgqGCTaOhjtju/vUAVo
-   Rzh88Lu7RIAeC/boK8h+1MhqtFnFIuSsv+7ePRkwKTaaxYcWeQ35bLq7O
-   jolDzt3w2oZDFMHdeprRppXuggGsv6WJN+jSDnV5BRhd1pjYjI7qNTQ8+
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="377189640"
-X-IronPort-AV: E=Sophos;i="5.96,202,1665471600"; 
-   d="scan'208";a="377189640"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2022 23:36:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="818125129"
-X-IronPort-AV: E=Sophos;i="5.96,202,1665471600"; 
-   d="scan'208";a="818125129"
-Received: from lkp-server01.sh.intel.com (HELO 64a2d449c951) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 28 Nov 2022 23:36:56 -0800
-Received: from kbuild by 64a2d449c951 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ozvAl-0008lt-1a;
-	Tue, 29 Nov 2022 07:36:55 +0000
-Date: Tue, 29 Nov 2022 15:36:27 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- be3c35742097cd84b7262dccdac6e47b71c8560e
-Message-ID: <6385b67b.gdl6+sHooBQ/oHL5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+	id 1p032r-009vRY-75
+	for ath10k@lists.infradead.org; Tue, 29 Nov 2022 16:01:19 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0F8FE6179B;
+	Tue, 29 Nov 2022 16:01:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19EE2C433D7;
+	Tue, 29 Nov 2022 16:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1669737675;
+	bh=8uKzlZTZC2ESrdzmt02/0HkkY8tj+YyjH5lSyh2/YO4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CwujNeHxIeWrco7PrymPAw/sUMvLOyF7r1hnfVrUrfKSGtB6r4VuhrUA9i97muYid
+	 TUlzKotRYr5hdhguQlEhlRdgxtkNcRzGUM+W9R0oq/wqlSUS8JyX09P9bAxoIz5onS
+	 4rQSmqgzSw8F78D8WbJfwnD7+dQh0MSaTSP7YTY3zGC1ZWSUYIG+bdN12h2Zy5VZo1
+	 qwrP3O++dnmu47U+btgGwgon7+dD0jKFB5g6lkM7epb2OC7KuD8Q7caFonZuxpcItG
+	 vNOILe6ynowSrzgik86daIvwswInLymyYlRpD/XATy0pG+lMjZSkPwTYTwU2+ZLQQ1
+	 /OpJPIpxNzOsA==
+Date: Tue, 29 Nov 2022 09:01:13 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Youghandhar Chintala <quic_youghand@quicinc.com>
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_mpubbise@quicinc.com,
+	rameshn@qti.qualcomm.com
+Subject: Re: [PATCH v4] wifi: ath10k: Store WLAN firmware version in SMEM
+ image table
+Message-ID: <Y4YsyaIW+CPdHWv3@dev-arch.thelio-3990X>
+References: <20221117180534.2267-1-quic_youghand@quicinc.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221117180534.2267-1-quic_youghand@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221128_233701_554027_4A7526EA 
-X-CRM114-Status: UNSURE (   4.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221129_080117_363731_E79734A8 
+X-CRM114-Status: GOOD (  28.33  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,82 +74,138 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: be3c35742097cd84b7262dccdac6e47b71c8560e  wifi: ath12k: driver for Qualcomm Wi-Fi 7 devices
+On Thu, Nov 17, 2022 at 11:35:34PM +0530, Youghandhar Chintala wrote:
+> In a SoC based solution, it would be useful to know the versions of the
+> various binary firmware blobs the system is running on. On a QCOM based
+> SoC, this info can be obtained from socinfo debugfs infrastructure. For
+> this to work, respective subsystem drivers have to export the firmware
+> version information to an SMEM based version information table.
+> 
+> Having firmware version information at one place will help quickly
+> figure out the firmware versions of various subsystems on the device
+> instead of going through builds/logs in an event of a system crash.
+> 
+> Fill WLAN firmware version information in SMEM version table to be
+> printed as part of socinfo debugfs infrastructure on a Qualcomm based
+> SoC.
+> 
+> This change is applicable only for SNOC/QMI based targets.
+> 
+> Example:
+> cat /sys/kernel/debug/qcom_socinfo/cnss/name
+> QC_IMAGE_VERSION_STRING=WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
+> 
+> Signed-off-by: Youghandhar Chintala <quic_youghand@quicinc.com>
+> ---
+> Changes from v3:
+>  - Changed patch title
+>  - Changed naming conventions
+>  - Removed MAX_BUILD_ID_LEN usuage
+>  - Added condition to call API
+>  - Changed depends on QCOM_SMEM to select QCOM_SMEM
 
-elapsed time: 968m
+You cannot blindly select user configurable symbols that have
+dependencies, otherwise you end up with Kconfig warnings. I see the
+following warning in -next when CONFIG_HWSPINLOCK is disabled:
 
-configs tested: 58
-configs skipped: 2
+  WARNING: unmet direct dependencies detected for QCOM_SMEM
+    Depends on [n]: (ARCH_QCOM [=y] || COMPILE_TEST [=n]) && HWSPINLOCK [=n]
+    Selected by [m]:
+    - ATH10K_SNOC [=m] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && ATH10K [=m] && (ARCH_QCOM [=y] || COMPILE_TEST [=n])
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+That should likely be changed back to 'depends on'. The reason the other
+QCOM symbols are selected is because they are not user-selectable, so
+they have to be selected by the configurations that need them.
 
-gcc tested configs:
-arc                                 defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-m68k                             allyesconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-arc                  randconfig-r043-20221128
-powerpc                           allnoconfig
-x86_64                              defconfig
-s390                                defconfig
-s390                             allmodconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-i386                 randconfig-a002-20221128
-s390                             allyesconfig
-x86_64                               rhel-8.3
-i386                 randconfig-a003-20221128
-x86_64                           rhel-8.3-syz
-sh                               allmodconfig
-x86_64                         rhel-8.3-kunit
-i386                 randconfig-a001-20221128
-x86_64                           rhel-8.3-kvm
-i386                 randconfig-a005-20221128
-i386                 randconfig-a006-20221128
-x86_64                           allyesconfig
-i386                 randconfig-a004-20221128
-i386                                defconfig
-mips                             allyesconfig
-x86_64               randconfig-a002-20221128
-powerpc                          allmodconfig
-x86_64               randconfig-a001-20221128
-x86_64               randconfig-a003-20221128
-x86_64               randconfig-a004-20221128
-ia64                             allmodconfig
-x86_64               randconfig-a005-20221128
-x86_64               randconfig-a006-20221128
-i386                             allyesconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-
-clang tested configs:
-hexagon              randconfig-r041-20221128
-hexagon              randconfig-r045-20221128
-riscv                randconfig-r042-20221128
-s390                 randconfig-r044-20221128
-x86_64               randconfig-a012-20221128
-x86_64               randconfig-a014-20221128
-x86_64               randconfig-a011-20221128
-x86_64               randconfig-a015-20221128
-x86_64               randconfig-a013-20221128
-x86_64               randconfig-a016-20221128
-i386                 randconfig-a012-20221128
-i386                 randconfig-a015-20221128
-i386                 randconfig-a011-20221128
-i386                 randconfig-a013-20221128
-i386                 randconfig-a014-20221128
-i386                 randconfig-a016-20221128
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+>> ---  drivers/net/wireless/ath/ath10k/Kconfig |  1 +
+>  drivers/net/wireless/ath/ath10k/qmi.c   | 35 +++++++++++++++++++++++++
+>  2 files changed, 36 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+> index ca007b800f75..e0a51dad8e42 100644
+> --- a/drivers/net/wireless/ath/ath10k/Kconfig
+> +++ b/drivers/net/wireless/ath/ath10k/Kconfig
+> @@ -44,6 +44,7 @@ config ATH10K_SNOC
+>  	tristate "Qualcomm ath10k SNOC support"
+>  	depends on ATH10K
+>  	depends on ARCH_QCOM || COMPILE_TEST
+> +	select QCOM_SMEM
+>  	select QCOM_SCM
+>  	select QCOM_QMI_HELPERS
+>  	help
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> index 66cb7a1e628a..cdcb162f93c2 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/net.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/qcom_scm.h>
+> +#include <linux/soc/qcom/smem.h>
+>  #include <linux/string.h>
+>  #include <net/sock.h>
+>  
+> @@ -22,6 +23,10 @@
+>  
+>  #define ATH10K_QMI_CLIENT_ID		0x4b4e454c
+>  #define ATH10K_QMI_TIMEOUT		30
+> +#define SMEM_IMAGE_VERSION_TABLE       469
+> +#define SMEM_IMAGE_TABLE_CNSS_INDEX     13
+> +#define SMEM_IMAGE_VERSION_ENTRY_SIZE	128
+> +#define SMEM_IMAGE_VERSION_NAME_SIZE	75
+>  
+>  static int ath10k_qmi_map_msa_permission(struct ath10k_qmi *qmi,
+>  					 struct ath10k_msa_mem_info *mem_info)
+> @@ -536,6 +541,33 @@ int ath10k_qmi_wlan_disable(struct ath10k *ar)
+>  	return ath10k_qmi_mode_send_sync_msg(ar, QMI_WLFW_OFF_V01);
+>  }
+>  
+> +static void ath10k_qmi_add_wlan_ver_smem(struct ath10k *ar, const char *fw_build_id)
+> +{
+> +	u8 *table_ptr;
+> +	size_t smem_item_size;
+> +	const u32 smem_img_idx_wlan = SMEM_IMAGE_TABLE_CNSS_INDEX *
+> +				      SMEM_IMAGE_VERSION_ENTRY_SIZE;
+> +
+> +	table_ptr = qcom_smem_get(QCOM_SMEM_HOST_ANY,
+> +				  SMEM_IMAGE_VERSION_TABLE,
+> +				  &smem_item_size);
+> +
+> +	if (IS_ERR(table_ptr)) {
+> +		ath10k_err(ar, "smem image version table not found\n");
+> +		return;
+> +	}
+> +
+> +	if (smem_img_idx_wlan + SMEM_IMAGE_VERSION_ENTRY_SIZE >
+> +	    smem_item_size) {
+> +		ath10k_err(ar, "smem block size too small: %zu\n",
+> +			   smem_item_size);
+> +		return;
+> +	}
+> +
+> +	strscpy(table_ptr + smem_img_idx_wlan, fw_build_id,
+> +		SMEM_IMAGE_VERSION_NAME_SIZE);
+> +}
+> +
+>  static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
+>  {
+>  	struct wlfw_cap_resp_msg_v01 *resp;
+> @@ -606,6 +638,9 @@ static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
+>  			    qmi->fw_version, qmi->fw_build_timestamp, qmi->fw_build_id);
+>  	}
+>  
+> +	if (resp->fw_build_id_valid)
+> +		ath10k_qmi_add_wlan_ver_smem(ar, qmi->fw_build_id);
+> +
+>  	kfree(resp);
+>  	return 0;
+>  
+> -- 
+> 2.38.0
+> 
+> 
 
 _______________________________________________
 ath10k mailing list
