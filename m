@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FFE9C4332F
-	for <ath10k@archiver.kernel.org>; Mon,  5 Dec 2022 16:19:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F669C352A1
+	for <ath10k@archiver.kernel.org>; Tue,  6 Dec 2022 07:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=dd7YhOOdXz62x3IDDUNOsoBDvlQ8CdvuoNhGw2+EZ6s=; b=3/7blC835a6gRj
-	+UbpN1enCIfJVhr6wTOhfg1+7ULOYuLPEAGz1PZB7At25ODMUSJOmzCV+Wbj+aG9Uh0VGJZakVuQH
-	7itucmghvStxqyoAeLzXbO3STLGsAP1QruHgGS7/k80XhMcBfQY/ChghARX6fOr2N4eWQ3YW+Sl5w
-	4MKCPRKEsSLNC9n7nZ6Occ/5uJlLLsMCSxQV4uZqbPKvvB50h0/gYmqqgzA8qEbsiWjnXoa9P+L/t
-	OWrl2OneLdu3e+lttmE8BVUyhTVI1Sd6UNwag0Yem5tG1MnqId6FvHV/AMEwo8Jhd21oqfvBrZt75
-	RYQdhJwQuDsO9AhawEaA==;
+	List-Owner; bh=OGbFiQjhqwj5VDbzr3oYg+/Fn8+6Fr9/vxGREzKqhII=; b=yMWiVTI5XNFsIE
+	FC0AFKiIkVxB5RE4KCLz+mah41CknlBo4kOGdU/nopiYu8vY5uzI7TfpKxfX904Sez2EuaAHsqYGv
+	3wzKkAlVd2oARL4Rsd5l8MqgSc2OKdJOzCEIYmdnr9QWaFKuxx2ZSeiHnKIOHysW6SFEd1QvjzkQM
+	vYUXSM0GWws/wQu6aIzZ4dVcJCXYRxWpdIuq4+CpRl93hyUn7NmWgA3PiCqTMuC79MiCgMLu4OfSd
+	0D4qFm4UsY9q0DifIjBNd6++A+T9phRpET8X0ElITkcZNwQAdTQzUIUgfPg1UOv+4rHoNNoTqykSR
+	P4lQdm647ZgOa/j3PmKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2EBG-006RD9-1j; Mon, 05 Dec 2022 16:18:58 +0000
-Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
+	id 1p2SP4-003gcu-UJ; Tue, 06 Dec 2022 07:30:10 +0000
+Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2EBC-006RCT-Uy
-	for ath10k@lists.infradead.org; Mon, 05 Dec 2022 16:18:56 +0000
-Received: by mail-pj1-x1036.google.com with SMTP id o1-20020a17090a678100b00219cf69e5f0so3364905pjj.2
-        for <ath10k@lists.infradead.org>; Mon, 05 Dec 2022 08:18:52 -0800 (PST)
+	id 1p2SP1-003gbf-Uf
+	for ath10k@lists.infradead.org; Tue, 06 Dec 2022 07:30:09 +0000
+Received: by mail-pj1-x1029.google.com with SMTP id u5so4249151pjy.5
+        for <ath10k@lists.infradead.org>; Mon, 05 Dec 2022 23:30:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ytU64R1G/iMmVuMBEsmSCZI0O1tcdDULe4aARBScRq4=;
-        b=D++8Lklr5KRz/aYuujJ0eIGqvt1JAlTZaAQE+eEj7W5JzQ8YNezlcnL9CcWHQc7mDU
-         UHMldWGhshNDNIwdGb0UC8wLoIuzetV9hlVJ0F7aMyrJIFGofyx9IYFv8kcfn6bEh5XV
-         1fREcr9y0f+bghItuas0XEQmGKiWaVOaC5dMYt19+iWa4W/xGAYsUIbID7NEC692hV/s
-         h8iV+3LqfvOf1e/9R2Jt4Zzuxuva6mFpCuUpo+aDhQ25iDG22/ljSrkygFsYpg2+0000
-         G6VzlW8tdUjEVkvXGJY8ZdCAhVgdlv8DLrmnV9MxALUId8mWaChaFOEFtvzs72STWGTk
-         w4bQ==
+        bh=U7cxGP4aDMRTSXUKwYN4iP+kaCx+JxMxEOFOmKjx5C8=;
+        b=ARTWSz9VNxVqYMSCi7RMol9dR2G9amgwweLxUMdhtvu13OUMoVT+mUUYOUZWy6vU1J
+         gf3TDzCjpDy79bOEs+4Y++YPISwXS/ykH+LPlnw7r4SNTPKwHD/ugmA4yC97XrLQOUXc
+         varxThG6jcUEcdF4jw2CPUATpAI/mGP2hY/yVmsMlddNlee4ae7qlkkVYqbCKuPrKNv/
+         hLLTkHnJZOcwzbktwwlZ2py8OyociUZE8JckFKhkvZPb+3cGYvehNq9GBMSna8mgGYXc
+         qkfDTozYRG1WeW/E43scJyuwHH/nNGBq3ZUtptxkBt8GUJiS+clQF9BdTasRxpqX+uI/
+         zKJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ytU64R1G/iMmVuMBEsmSCZI0O1tcdDULe4aARBScRq4=;
-        b=H2/eu1F1WMWycXfj2od8GPzqI3nbhC+mv814VnKQHt2Froa93yEzXvj/p/p/tgHVxP
-         LytbHdrreF2EFF+VN6aT97tYdejuDrBHufZMU4VFPjFHNjBdYPmfSry5D6ArygMoBwZe
-         KfC3/pAt1Wkj/LRHLmyVKfzIBm5jtMeASQoLDMLhQyXNdr7rU51FGQdO/e/SA1g0inHn
-         Bcyq76JrBtFypkNRno0rhVrgu4iyXvJ5YMDMusKAjceJOEpRDn3QvhkvvankxYp1dKxs
-         5EoZWY9CRyucQ8Dvcwx3NMDu9bMmbuE1XUnfVZ+p2Hzmu8G7PNu1Io36zzmF0Lf9bEGk
-         qHFw==
-X-Gm-Message-State: ANoB5pmyLEwmS9C63i+2B0lRTZK0Tz2h+kgYq4hZ5yw9vx0eEW166VM6
-	as1ixVQUhOuPTV5AcTByGg6CXagnZqrCjA==
-X-Google-Smtp-Source: AA0mqf4ko+6gABQyRhmb2CvqNKJcE4zmhk0IEi/ZO91inzPA6jlrXxlxJgxHEnK/VrHTpAujGs2Llg==
-X-Received: by 2002:a17:902:f641:b0:181:b25e:e7bc with SMTP id m1-20020a170902f64100b00181b25ee7bcmr66569522plg.46.1670257132170;
-        Mon, 05 Dec 2022 08:18:52 -0800 (PST)
+        bh=U7cxGP4aDMRTSXUKwYN4iP+kaCx+JxMxEOFOmKjx5C8=;
+        b=yhW5KwoBWsiChMrImQ5Q6ZsB73vHv14VV1U9b9MFHNarJJa7I1mSa/uVsqxr22TKvO
+         xuaJwOndU3+zwmLTeu0ZvV/ZtPR6TN+RRhkY2gAxHh2SDrAlp8SlNcPI8+oitjvfnarO
+         PL9SAwLG3kYd0IS6pQUWC2ageI7v3s1WoDVjzwXUKu/K8Aj1fpjZoERZFElV2+a29F+f
+         KrE6QiXfNGQqdhapMw6dHsuOHgHfUNtKkz1i3fek5BSMcGs90QtTzBbXaavvFF2NJ7GI
+         o2sYcCPl8qMSjxbY71zd3sSInfbJZKHHOl2vLizr36NUWUEBXO2jGETBCivGPsnHAiSU
+         oJ8Q==
+X-Gm-Message-State: ANoB5pnbm3H5jH99R+XsXrYkKqIF5qzvzuStD1HYFPo9SWTSVyNaTbFZ
+	1C7oZu0Xw1cstt6COj5Wsqmi1cP1tj5lTw==
+X-Google-Smtp-Source: AA0mqf7x5T1XcD8p/B/ZSn8vcL1HSmf8w4oDx4hRzILBrPyfIj/h48rMN3Sz468L69ImFS176u+xAw==
+X-Received: by 2002:a17:90a:6b4e:b0:219:6a07:c6d0 with SMTP id x14-20020a17090a6b4e00b002196a07c6d0mr29475616pjl.178.1670311805452;
+        Mon, 05 Dec 2022 23:30:05 -0800 (PST)
 Received: from localhost.localdomain ([115.165.217.97])
-        by smtp.googlemail.com with ESMTPSA id u11-20020a170902e80b00b0018996404dd5sm10835379plg.109.2022.12.05.08.18.50
+        by smtp.googlemail.com with ESMTPSA id jj10-20020a170903048a00b00177fb862a87sm11866872plb.20.2022.12.05.23.30.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Dec 2022 08:18:51 -0800 (PST)
+        Mon, 05 Dec 2022 23:30:04 -0800 (PST)
 From: Zhi-Jun You <hujy652@gmail.com>
 To: linux-wireless@vger.kernel.org
 Cc: ath10k@lists.infradead.org,
 	Zhi-Jun You <hujy652@gmail.com>
-Subject: [RFC] wifi: ath10k: Implement duplicate detection for non-offloaded PCIe
-Date: Tue,  6 Dec 2022 00:18:51 +0800
-Message-Id: <20221205161851.780-1-hujy652@gmail.com>
+Subject: [RFC v2] wifi: ath10k: Implement duplicate detection for non-offloaded PCIe
+Date: Tue,  6 Dec 2022 15:30:04 +0800
+Message-Id: <20221206073004.22608-1-hujy652@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221205_081855_024714_98F77DE6 
-X-CRM114-Status: GOOD (  13.27  )
+X-CRM114-CacheID: sfid-20221205_233008_011102_608A4F04 
+X-CRM114-Status: GOOD (  13.50  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,7 +96,7 @@ header.
 Tested-on: QCA9984 10.4-3.9.0.2-00159
 Signed-off-by: Zhi-Jun You <hujy652@gmail.com>
 ---
-
+V1 -> V2: fix typo in txrx.c
 I am not sure what's the formal name for chips like QCA9984 so I will
 call it non-offloaded PCIe for now.
 ---
@@ -187,7 +187,7 @@ index 438b0caaceb7..e241eab4cce1 100644
  			     false);
  	msdus_to_queue = skb_queue_len(&amsdu);
 diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index da3bc35e41aa..a8b8186537f4 100644
+index da3bc35e41aa..69422d2bd9bc 100644
 --- a/drivers/net/wireless/ath/ath10k/txrx.c
 +++ b/drivers/net/wireless/ath/ath10k/txrx.c
 @@ -219,6 +219,7 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
@@ -203,7 +203,7 @@ index da3bc35e41aa..a8b8186537f4 100644
  		ether_addr_copy(peer->addr, ev->addr);
  		list_add(&peer->list, &ar->peers);
 +		for (i = 0; i <= IEEE80211_NUM_TIDS; i++)
-+			peer->last_rx_sec_ctrl[i] = USHRT_MAX;
++			peer->last_rx_seq_ctrl[i] = USHRT_MAX;
  		wake_up(&ar->peer_mapping_wq);
  	}
  
