@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 433E3C4332F
-	for <ath10k@archiver.kernel.org>; Thu, 15 Dec 2022 03:08:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 669B7C4332F
+	for <ath10k@archiver.kernel.org>; Thu, 15 Dec 2022 09:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+semYagnYT4xYHyFJvMujbt+zTbmwhzvfwrjFiehAhM=; b=bqx14RqT6mhjvq
-	M+xNjvp+NPtVjFQC9JfD3LMQ/qtqD9w/Mvf0PUerxbL9KbIZ6U9hkkVWyaSfo6+5VI8rs34dppj5d
-	n8qbAx+Ai6u4KFu6M+lCk0sAmfe1djCVWOCc3leXxhxsLF2LCuZh1mRvbRCsNy48Gb6QOZxKNcTbe
-	qpa3wIeixY7ABIb9QNvzF7pgCGa890Fn7zFPx9I1trL1k98eU0EthLW2YRUaFO4gFlzxR2eQwo97K
-	zZ2BtmmR4OrbwbUWWxCgrOBin4wZNbedGE9p42ksZA+yGczpCaHSV21CcgAe8Vm5mTr4Xgse68QrJ
-	j6JRQOTH4Ta6+UG4cgDw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=Ud9r0mla4b7RWAURgu78zZ2UGM73TQq4+KPwJ7/vHR8=; b=RCAEip7jEs9+0cd7TJnlqsmWOI
+	Vymwf9dbpzabAJzaKkqT7f5Ni2Yvaqr5pqxFSDQvMmADUqA5QLpGYIHnOEfmt3AEDmKCuuNdgldZY
+	UOEwSYtypG9S4trTXCy5WlA7jh77dvjPCu0y4IUMfgCc3jD3iP3wAicmTwUO8ANbG8ShzxaT9weWU
+	DjoLhW7E2Qmiu+TbK38xOF8lTfZedSkHgTbkgR+8HY7kuxS+DrGsFRcC547hENvXs1XuE3TKZ8VF8
+	JKPr1px6dL26RLEDXYUQ7LRr7JksvNLu9asyutPqsWJWMldekK9e8T3eiKKf/yJ2clL1E6p3wp8P7
+	z1cItAgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5ebK-005sWR-PP; Thu, 15 Dec 2022 03:08:02 +0000
-Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
+	id 1p5kpE-008Ugh-Ux; Thu, 15 Dec 2022 09:46:48 +0000
+Received: from zz.twinspot.net ([81.170.212.65])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5ebF-005sTw-SM
-	for ath10k@lists.infradead.org; Thu, 15 Dec 2022 03:08:01 +0000
-Received: by mail-pl1-x62b.google.com with SMTP id s7so5465642plk.5
-        for <ath10k@lists.infradead.org>; Wed, 14 Dec 2022 19:07:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P08lro6pXIgZsnHXJ63EgbqX1MMlMBaBu2T+ZdHNZPY=;
-        b=GQiBResFsCJfduxUE0McRnVeqtF179oFIJJNAkdSqxucc90r1pqT4ZvGOfT6EJmCXl
-         UN4fjrFcHTTvxYNIqM0wzqj30pJlRCISKBNviY3HlFBTy+tVFI5jLBicEGjk+IgxM5Mg
-         IYe6weoPJKkmlJh7KJYyXhW1VME3WO6JnnQIWCXKD6oosWS/StwlcbdXwHRVTUzTvwZz
-         kKF5XPhsPpVQV0910M3VvGU8DXdcelTEMAaDp9nwdozt1z7AuS1X5S57aKgrapAFheAx
-         KeZMhf4fiO4QX8+SMgK8WMyS31P8SnuAVGQxMCmhQJaDbH/qYzKVURlNsdNyxnrxQNut
-         +ZPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P08lro6pXIgZsnHXJ63EgbqX1MMlMBaBu2T+ZdHNZPY=;
-        b=BakiKEXpjCPTDJC0BGfE9UtovZiMkfEV2MF8GMMWr5uys0wJCFwbIa6nkJvoRU47S/
-         sNk2y451JecPLtNhbtV0/tT/91pSj2FQHfJjMrIpR+IopEL13Y5q5Wnrpxss+NvtrZkG
-         DvDdV650LS9sXzW8ijFZ8HjOqz4CBtnpeXBSTtI+hk7qFl6ZnSGtgdF2Ewq9YDXWIiVL
-         ZKF4MTbl5Oi07ImnDKB+nbsJiYubDMdIdrPe3oxTvfOJnKRfHClPwWyQ2eOim8BrvAaR
-         rpyec6+f2TMOAIOdJDADNjYegBWw96ReIRCXifikqwjfwKD1a5y/DABWtgrVTsvVg7p9
-         zGiw==
-X-Gm-Message-State: AFqh2krUQUmvpKV2ATWA7ojkvw9pWCQJXHNFtbYU7jGIu6mKhr/Ex6Gg
-	JWqI3HTQ3U2GB8WQe+ZNYursX7epFTwp985Zbwk=
-X-Google-Smtp-Source: AMrXdXsqrivS4bqA10GBvBi0S0zFAMuspTaV3cP8v24vZ/ExJPvTLWwW1Or4/LPd7mbc6g6UTaID0OkuQxqL5p4T+d4=
-X-Received: by 2002:a17:90a:8506:b0:219:720c:29cb with SMTP id
- l6-20020a17090a850600b00219720c29cbmr64481pjn.76.1671073676496; Wed, 14 Dec
- 2022 19:07:56 -0800 (PST)
-MIME-Version: 1.0
-From: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 15 Dec 2022 00:07:38 -0300
-Message-ID: <CAOMZO5AW4JUEFiaFgr8PvC5x3a5VWA4Ut8cXYYAme5-scgBV6Q@mail.gmail.com>
-Subject: ath10k: IRQ timeout after AP-STA-POLL-OK
-To: kvalo@kernel.org
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, 
-	Bough Chen <haibo.chen@nxp.com>, Kevin Groeneveld <KGroeneveld@lenbrook.com>, 
+	id 1p5kp5-008UOq-SO
+	for ath10k@lists.infradead.org; Thu, 15 Dec 2022 09:46:47 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by zz.twinspot.net (Postfix) with ESMTP id 1144C162DD;
+	Thu, 15 Dec 2022 10:46:30 +0100 (CET)
+Received: from zz.twinspot.net ([127.0.0.1])
+	by localhost (zz.twinspot.net [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id 3mV4RL-P1mLO; Thu, 15 Dec 2022 10:46:26 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by zz.twinspot.net (Postfix) with ESMTP id BC0AB16322;
+	Thu, 15 Dec 2022 10:46:26 +0100 (CET)
+X-Virus-Scanned: amavisd-new at twinspot.net
+Received: from zz.twinspot.net ([127.0.0.1])
+	by localhost (zz.twinspot.net [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id KmeO2syrntaI; Thu, 15 Dec 2022 10:46:26 +0100 (CET)
+Received: from zz.twinspot.net (zz.twinspot.net [10.2.10.111])
+	by zz.twinspot.net (Postfix) with ESMTP id 91BC8162DD;
+	Thu, 15 Dec 2022 10:46:26 +0100 (CET)
+Date: Thu, 15 Dec 2022 10:46:26 +0100 (CET)
+From: Patrik Arven <patrik.arven@j-2.se>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: kvalo@kernel.org, linux-wireless <linux-wireless@vger.kernel.org>, 
+	ath10k@lists.infradead.org, Bough Chen <haibo.chen@nxp.com>, 
+	Kevin Groeneveld <KGroeneveld@lenbrook.com>, 
 	Jakub Kicinski <kuba@kernel.org>
+Message-ID: <872024534.20587.1671097586476.JavaMail.zimbra@z.j-2.se>
+In-Reply-To: <CAOMZO5AW4JUEFiaFgr8PvC5x3a5VWA4Ut8cXYYAme5-scgBV6Q@mail.gmail.com>
+References: <CAOMZO5AW4JUEFiaFgr8PvC5x3a5VWA4Ut8cXYYAme5-scgBV6Q@mail.gmail.com>
+Subject: Re: ath10k: IRQ timeout after AP-STA-POLL-OK
+MIME-Version: 1.0
+X-Mailer: Zimbra 8.6.0_GA_1242 (ZimbraWebClient - FF108 (Win)/8.6.0_GA_1242)
+Thread-Topic: ath10k: IRQ timeout after AP-STA-POLL-OK
+Thread-Index: Z7QXHHkVpUUB3JGNZV7vJwwkb5rbLA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221214_190757_977572_13C7B289 
-X-CRM114-Status: UNSURE (   8.58  )
+X-CRM114-CacheID: sfid-20221215_014640_280839_98AB14F8 
+X-CRM114-Status: UNSURE (   8.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,669 +72,672 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On an imx6dl-pico board with a QCA9377 connected via SDIO, we see very rarely
-the following error:
-
-mmc1: Timeout waiting for hardware interrupt.
-
-which happens right after an AP-STA-POLL-OK event.
-
-mmc1 is the eMMC port connected to the QCA9377. The QCA9377 operates in AP mode.
-
-Since the error is difficult to reproduce, we found a way to accelerate its
-occurrence and it consists of passing a short ap_max_inactivity value into the
-hostapd conf file, such as ap_max_inactivity=3. This makes AP-STA-POLL-OK
-happen more frequently.
-
-The full kernel logs are shown below.
-
-The mmc timeouts always happen right after an AP-STA-POLL-OK event and
-AP-STA-POLL-OK always happens after the fifth connection/disconnection.
-
-Originally the error was reported on a 5.10 kernel, but I have also reproduced
-the issue on 6.1.
-
-I appreciate it if anyone could provide any suggestions.
-
-Thanks,
-
-Fabio Estevam
-
-# hostapd /etc/wifi.conf
-Configuration file: /etc/wifi.conf
-wlan0: interface state UNINITIALIZED->COUNTRY_UPDATE
-Using interface wlan0 with hwaddr 00:1f:7b:31:xx:yy and ssid "thessid"
-[   25.209268] IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-wlan0: interface state COUNTRY_UPDATE->ENABLED
-wlan0: AP-ENABLED
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: authenticated
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: associated (aid 1)
-wlan0: AP-STA-CONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy WPA: pairwise key handshake completed (RSN)
-wlan0: AP-STA-DISCONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: authenticated
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: associated (aid 1)
-wlan0: AP-STA-CONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy WPA: pairwise key handshake completed (RSN)
-cfg80211: failed to load regulatory.db
-wlan0: AP-STA-DISCONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: authenticated
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: associated (aid 1)
-wlan0: AP-STA-CONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy WPA: pairwise key handshake completed (RSN)
-wlan0: AP-STA-DISCONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: authenticated
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: associated (aid 1)
-wlan0: AP-STA-CONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy WPA: pairwise key handshake completed (RSN)
-wlan0: AP-STA-DISCONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: authenticated
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: associated (aid 1)
-wlan0: AP-STA-CONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy WPA: pairwise key handshake completed (RSN)
-wlan0: AP-STA-POLL-OK 1e:e3:0e:49:xx:yy
-wlan0: AP-STA-DISCONNECTED 1e:e3:0e:49:xx:yy
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: disassociated due to inactivity
- mmc1: Timeout waiting for hardware interrupt.
- mmc1: sdhci: ============ SDHCI REGISTER DUMP ===========
- mmc1: sdhci: Sys addr:  0x121e005c | Version:  0x00000002
- mmc1: sdhci: Blk size:  0x0000002c | Blk cnt:  0x00000001
- mmc1: sdhci: Argument:  0x1410002c | Trn mode: 0x00000013
- mmc1: sdhci: Present:   0x01d88a0a | Host ctl: 0x00000013
- mmc1: sdhci: Power:     0x00000002 | Blk gap:  0x00000080
- mmc1: sdhci: Wake-up:   0x00000008 | Clock:    0x0000003f
- mmc1: sdhci: Timeout:   0x0000008f | Int stat: 0x00000000
- mmc1: sdhci: Int enab:  0x107f100b | Sig enab: 0x107f100b
- mmc1: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000103
- mmc1: sdhci: Caps:      0x07eb0000 | Caps_1:   0x0000a000
- mmc1: sdhci: Cmd:       0x0000353a | Max curr: 0x00ffffff
- mmc1: sdhci: Resp[0]:   0x00001000 | Resp[1]:  0x00000000
- mmc1: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
- mmc1: sdhci: Host ctl2: 0x00000000
- mmc1: sdhci: ADMA Err:  0x00000007 | ADMA Ptr: 0x2c041200
- mmc1: sdhci-esdhc-imx: ========= ESDHC IMX DEBUG STATUS DUMP =========
- mmc1: sdhci-esdhc-imx: cmd debug status:  0x2100
- mmc1: sdhci-esdhc-imx: data debug status:  0x2200
- mmc1: sdhci-esdhc-imx: trans debug status:  0x2300
- mmc1: sdhci-esdhc-imx: dma debug status:  0x2402
- mmc1: sdhci-esdhc-imx: adma debug status:  0x25b4
- mmc1: sdhci-esdhc-imx: fifo debug status:  0x2610
- mmc1: sdhci-esdhc-imx: async fifo debug status:  0x2751
- mmc1: sdhci: ============================================
- ath10k_sdio mmc1:0001:1: failed to read from address 0x800: -110
- ath10k_sdio mmc1:0001:1: read int status fail, start recovery
-wlan0: STA 1e:e3:0e:49:xx:yy IEEE 802.11: deauthenticated due to
-inactivity (timer DEAUTH/REMOVE)
- ath10k_sdio mmc1:0001:1: sdio irq disable request timed out
- mmc1: Timeout waiting for hardware interrupt.
- mmc1: sdhci: ============ SDHCI REGISTER DUMP ===========
- mmc1: sdhci: Sys addr:  0x121e005c | Version:  0x00000002
- mmc1: sdhci: Blk size:  0x00000032 | Blk cnt:  0x00000001
- mmc1: sdhci: Argument:  0x965f9c32 | Trn mode: 0x00000003
- mmc1: sdhci: Present:   0x01f8858e | Host ctl: 0x00000013
- mmc1: sdhci: Power:     0x00000002 | Blk gap:  0x00000080
- mmc1: sdhci: Wake-up:   0x00000008 | Clock:    0x0000003f
- mmc1: sdhci: Timeout:   0x0000008f | Int stat: 0x00000000
- mmc1: sdhci: Int enab:  0x107f100b | Sig enab: 0x107f100b
- mmc1: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000103
- mmc1: sdhci: Caps:      0x07eb0000 | Caps_1:   0x0000a000
- mmc1: sdhci: Cmd:       0x0000353a | Max curr: 0x00ffffff
- mmc1: sdhci: Resp[0]:   0x00001000 | Resp[1]:  0x00000000
- mmc1: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
- mmc1: sdhci: Host ctl2: 0x00000000
- mmc1: sdhci: ADMA Err:  0x00000007 | ADMA Ptr: 0x2c041200
- mmc1: sdhci-esdhc-imx: ========= ESDHC IMX DEBUG STATUS DUMP =========
- mmc1: sdhci-esdhc-imx: cmd debug status:  0x2100
- mmc1: sdhci-esdhc-imx: data debug status:  0x2220
- mmc1: sdhci-esdhc-imx: trans debug status:  0x2328
- mmc1: sdhci-esdhc-imx: dma debug status:  0x2402
- mmc1: sdhci-esdhc-imx: adma debug status:  0x25b4
- mmc1: sdhci-esdhc-imx: fifo debug status:  0x2684
- mmc1: sdhci-esdhc-imx: async fifo debug status:  0x2750
- mmc1: sdhci: ============================================
- ath10k_sdio mmc1:0001:1: failed to write to address 0x12fce: -110
- ath10k_sdio mmc1:0001:1: failed to write skb to 0x12fce asynchronously: -110
- ath10k_sdio mmc1:0001:1: failed to process pending SDIO interrupts: -110
- ath10k_sdio mmc1:0001:1: failed to write to address 0x1c780: -110
- ath10k_sdio mmc1:0001:1: failed to write skb to 0x1c780 asynchronously: -110
- ath10k_sdio mmc1:0001:1: failed to write to address 0x828: -110
- ath10k_sdio mmc1:0001:1: failed to write skb to 0x828 asynchronously: -110
- ath10k_sdio mmc1:0001:1: failed to read from address 0x868: -110
- ath10k_sdio mmc1:0001:1: failed to read fifo/chip control register: -110
- ath10k_sdio mmc1:0001:1: failed to read from address 0x868: -110
- mmc1: queuing unknown CIS tuple 0x01 [d9 01 ff] (3 bytes)
- mmc1: queuing unknown CIS tuple 0x1a [01 01 00 02 07] (5 bytes)
- mmc1: queuing unknown CIS tuple 0x1b [c1 41 30 30 ff ff 32 00] (8 bytes)
- mmc1: queuing unknown CIS tuple 0x14 [] (0 bytes)
- ieee80211 phy0: Hardware restart was requested
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 240 at net/mac80211/sta_info.c:1288
-__sta_info_destroy_part2+0x13c/0x21c
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 240 Comm: hostapd Not tainted 6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x5c/0xd8
-  warn_slowpath_fmt from __sta_info_destroy_part2+0x13c/0x21c
-  __sta_info_destroy_part2 from __sta_info_destroy+0x20/0x28
-  __sta_info_destroy from sta_info_destroy_addr_bss+0x30/0x4c
-  sta_info_destroy_addr_bss from nl80211_del_station+0x130/0x358
-  nl80211_del_station from genl_rcv_msg+0x174/0x3ac
-  genl_rcv_msg from netlink_rcv_skb+0xbc/0x120
-  netlink_rcv_skb from genl_rcv+0x20/0x34
-  genl_rcv from netlink_unicast+0x1a4/0x2c4
-  netlink_unicast from netlink_sendmsg+0x1c4/0x444
-  netlink_sendmsg from ____sys_sendmsg+0x184/0x254
-  ____sys_sendmsg from ___sys_sendmsg+0x6c/0xa4
-  ___sys_sendmsg from __sys_sendmsg+0x50/0x98
-  __sys_sendmsg from ret_fast_syscall+0x0/0x1c
- Exception stack(0xe0de1fa8 to 0xe0de1ff0)
- 1fa0:                   00d76bc0 00d6f830 00000005 becdbaec 00000000 00000000
- 1fc0: 00d76bc0 00d6f830 b6cffc68 00000128 00000001 00000000 00000004 becdbb3c
- 1fe0: b6cffe14 becdba90 b6ce6db4 b6c02428
- irq event stamp: 156791
- hardirqs last  enabled at (156803): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (156814): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (156790): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (156779): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 240 at net/mac80211/sta_info.c:416
-sta_info_free+0x9c/0x140
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 240 Comm: hostapd Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x5c/0xd8
-  warn_slowpath_fmt from sta_info_free+0x9c/0x140
-  sta_info_free from __sta_info_destroy+0x20/0x28
-  __sta_info_destroy from sta_info_destroy_addr_bss+0x30/0x4c
-  sta_info_destroy_addr_bss from nl80211_del_station+0x130/0x358
-  nl80211_del_station from genl_rcv_msg+0x174/0x3ac
-  genl_rcv_msg from netlink_rcv_skb+0xbc/0x120
-  netlink_rcv_skb from genl_rcv+0x20/0x34
-  genl_rcv from netlink_unicast+0x1a4/0x2c4
-  netlink_unicast from netlink_sendmsg+0x1c4/0x444
-  netlink_sendmsg from ____sys_sendmsg+0x184/0x254
-  ____sys_sendmsg from ___sys_sendmsg+0x6c/0xa4
-  ___sys_sendmsg from __sys_sendmsg+0x50/0x98
-  __sys_sendmsg from ret_fast_syscall+0x0/0x1c
- Exception stack(0xe0de1fa8 to 0xe0de1ff0)
- 1fa0:                   00d76bc0 00d6f830 00000005 becdbaec 00000000 00000000
- 1fc0: 00d76bc0 00d6f830 b6cffc68 00000128 00000001 00000000 00000004 becdbb3c
- 1fe0: b6cffe14 becdba90 b6ce6db4 b6c02428
- irq event stamp: 157365
- hardirqs last  enabled at (157377): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (157388): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (157364): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (157353): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 240 at net/mac80211/sta_info.c:419
-sta_info_free+0xd4/0x140
- sta_info_move_state() returned -2
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 240 Comm: hostapd Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x90/0xd8
-  warn_slowpath_fmt from sta_info_free+0xd4/0x140
-  sta_info_free from __sta_info_destroy+0x20/0x28
-  __sta_info_destroy from sta_info_destroy_addr_bss+0x30/0x4c
-  sta_info_destroy_addr_bss from nl80211_del_station+0x130/0x358
-  nl80211_del_station from genl_rcv_msg+0x174/0x3ac
-  genl_rcv_msg from netlink_rcv_skb+0xbc/0x120
-  netlink_rcv_skb from genl_rcv+0x20/0x34
-  genl_rcv from netlink_unicast+0x1a4/0x2c4
-  netlink_unicast from netlink_sendmsg+0x1c4/0x444
-  netlink_sendmsg from ____sys_sendmsg+0x184/0x254
-  ____sys_sendmsg from ___sys_sendmsg+0x6c/0xa4
-  ___sys_sendmsg from __sys_sendmsg+0x50/0x98
-  __sys_sendmsg from ret_fast_syscall+0x0/0x1c
- Exception stack(0xe0de1fa8 to 0xe0de1ff0)
- 1fa0:                   00d76bc0 00d6f830 00000005 becdbaec 00000000 00000000
- 1fc0: 00d76bc0 00d6f830 b6cffc68 00000128 00000001 00000000 00000004 becdbb3c
- 1fe0: b6cffe14 becdba90 b6ce6db4 b6c02428
- irq event stamp: 157585
- hardirqs last  enabled at (157595): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (157606): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (157498): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (157463): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- mmc1: Timeout waiting for hardware interrupt.
- mmc1: sdhci: ============ SDHCI REGISTER DUMP ===========
- mmc1: sdhci: Sys addr:  0x12782240 | Version:  0x00000002
- mmc1: sdhci: Blk size:  0x00000004 | Blk cnt:  0x00000001
- mmc1: sdhci: Argument:  0x1410d004 | Trn mode: 0x00000013
- mmc1: sdhci: Present:   0x01f8820e | Host ctl: 0x00000013
- mmc1: sdhci: Power:     0x00000002 | Blk gap:  0x00000080
- mmc1: sdhci: Wake-up:   0x00000008 | Clock:    0x0000003f
- mmc1: sdhci: Timeout:   0x0000008f | Int stat: 0x00000000
- mmc1: sdhci: Int enab:  0x107f100b | Sig enab: 0x107f100b
- mmc1: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000103
- mmc1: sdhci: Caps:      0x07eb0000 | Caps_1:   0x0000a000
- mmc1: sdhci: Cmd:       0x0000353a | Max curr: 0x00ffffff
- mmc1: sdhci: Resp[0]:   0x00001200 | Resp[1]:  0x00000000
- mmc1: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
- mmc1: sdhci: Host ctl2: 0x00000000
- mmc1: sdhci: ADMA Err:  0x00000003 | ADMA Ptr: 0x2c041204
- mmc1: sdhci-esdhc-imx: ========= ESDHC IMX DEBUG STATUS DUMP =========
- mmc1: sdhci-esdhc-imx: cmd debug status:  0x2100
- mmc1: sdhci-esdhc-imx: data debug status:  0x22a0
- mmc1: sdhci-esdhc-imx: trans debug status:  0x23a0
- mmc1: sdhci-esdhc-imx: dma debug status:  0x2420
- mmc1: sdhci-esdhc-imx: adma debug status:  0x25b4
- mmc1: sdhci-esdhc-imx: fifo debug status:  0x2680
- mmc1: sdhci-esdhc-imx: async fifo debug status:  0x2750
- mmc1: sdhci: ============================================
- ath10k_warn: 7 callbacks suppressed
- ath10k_sdio mmc1:0001:1: failed to read from address 0x868: -110
- ath10k_sdio mmc1:0001:1: failed to read fifo/chip control register: -110
- mmc1: Timeout waiting for hardware interrupt.
- mmc1: sdhci: ============ SDHCI REGISTER DUMP ===========
- mmc1: sdhci: Sys addr:  0x12782240 | Version:  0x00000002
- mmc1: sdhci: Blk size:  0x00000004 | Blk cnt:  0x00000001
- mmc1: sdhci: Argument:  0x1410a004 | Trn mode: 0x00000013
- mmc1: sdhci: Present:   0x01f8820e | Host ctl: 0x00000013
- mmc1: sdhci: Power:     0x00000002 | Blk gap:  0x00000080
- mmc1: sdhci: Wake-up:   0x00000008 | Clock:    0x0000003f
- mmc1: sdhci: Timeout:   0x0000008f | Int stat: 0x00000000
- mmc1: sdhci: Int enab:  0x107f100b | Sig enab: 0x107f100b
- mmc1: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000103
- mmc1: sdhci: Caps:      0x07eb0000 | Caps_1:   0x0000a000
- mmc1: sdhci: Cmd:       0x0000353a | Max curr: 0x00ffffff
- mmc1: sdhci: Resp[0]:   0x00001000 | Resp[1]:  0x00000000
- mmc1: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
- mmc1: sdhci: Host ctl2: 0x00000000
- mmc1: sdhci: ADMA Err:  0x00000003 | ADMA Ptr: 0x2c041204
- mmc1: sdhci-esdhc-imx: ========= ESDHC IMX DEBUG STATUS DUMP =========
- mmc1: sdhci-esdhc-imx: cmd debug status:  0x2100
- mmc1: sdhci-esdhc-imx: data debug status:  0x22a0
- mmc1: sdhci-esdhc-imx: trans debug status:  0x23a2
- mmc1: sdhci-esdhc-imx: dma debug status:  0x2420
- mmc1: sdhci-esdhc-imx: adma debug status:  0x25b4
- mmc1: sdhci-esdhc-imx: fifo debug status:  0x2680
- mmc1: sdhci-esdhc-imx: async fifo debug status:  0x2750
- mmc1: sdhci: ============================================
- ath10k_sdio mmc1:0001:1: failed to read from address 0x850: -110
- ath10k_sdio mmc1:0001:1: unable to decrement the command credit count
-register: -110
- ath10k_sdio mmc1:0001:1: Unable to read soc register from device: -110
- ath10k_sdio mmc1:0001:1: failed to read from address 0x850: -110
- ath10k_sdio mmc1:0001:1: unable to decrement the command credit count
-register: -110
- ath10k_sdio mmc1:0001:1: unable to write to the device (-110)
- ath10k_sdio mmc1:0001:1: settings HTC version failed
- ath10k_sdio mmc1:0001:1: Could not init core: -22
- ath10k_sdio mmc1:0001:1: failed to read from address 0x868: -110
- ath10k_sdio mmc1:0001:1: failed to read fifo/chip control register: -110
- mmc1: queuing unknown CIS tuple 0x01 [d9 01 ff] (3 bytes)
- mmc1: queuing unknown CIS tuple 0x1a [01 01 00 02 07] (5 bytes)
- mmc1: queuing unknown CIS tuple 0x1b [c1 41 30 30 ff ff 32 00] (8 bytes)
- mmc1: queuing unknown CIS tuple 0x14 [] (0 bytes)
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/util.c:2442
-ieee80211_reconfig+0xc8/0x1a0c
- Hardware became unavailable during restart.
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x90/0xd8
-  warn_slowpath_fmt from ieee80211_reconfig+0xc8/0x1a0c
-  ieee80211_reconfig from ieee80211_restart_work+0xfc/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 16829
- hardirqs last  enabled at (16847): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (16858): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (16842): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (16837): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/driver-ops.c:458
-drv_set_key+0x23c/0x320
- wlan0: Failed check-sdata-in-driver check, flags: 0x0
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x90/0xd8
-  warn_slowpath_fmt from drv_set_key+0x23c/0x320
-  drv_set_key from ieee80211_key_disable_hw_accel+0xe8/0x134
-  ieee80211_key_disable_hw_accel from ieee80211_key_replace+0x49c/0x904
-  ieee80211_key_replace from ieee80211_free_keys_iface+0x64/0x98
-  ieee80211_free_keys_iface from ieee80211_free_keys+0x60/0x264
-  ieee80211_free_keys from ieee80211_stop_ap+0x1f0/0x65c
-  ieee80211_stop_ap from ___cfg80211_stop_ap+0xc4/0x55c
-  ___cfg80211_stop_ap from __cfg80211_stop_ap+0x3c/0x90
-  __cfg80211_stop_ap from cfg80211_leave+0x28/0x34
-  cfg80211_leave from cfg80211_netdev_notifier_call+0x2d0/0x7cc
-  cfg80211_netdev_notifier_call from raw_notifier_call_chain+0x34/0x64
-  raw_notifier_call_chain from __dev_close_many+0x54/0x12c
-  __dev_close_many from dev_close_many+0x7c/0x118
-  dev_close_many from dev_close+0x68/0x80
-  dev_close from cfg80211_shutdown_all_interfaces+0x3c/0xfc
-  cfg80211_shutdown_all_interfaces from ieee80211_restart_work+0x124/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 17111
- hardirqs last  enabled at (17121): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (17132): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (17110): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (17091): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- wlan0: failed to remove key (1, ff:ff:ff:ff:ff:ff) from hardware (-5)
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/main.c:287
-ieee80211_link_info_change_notify+0xb0/0x104
- wlan0: Failed check-sdata-in-driver check, flags: 0x0
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x90/0xd8
-  warn_slowpath_fmt from ieee80211_link_info_change_notify+0xb0/0x104
-  ieee80211_link_info_change_notify from ieee80211_stop_ap+0x220/0x65c
-  ieee80211_stop_ap from ___cfg80211_stop_ap+0xc4/0x55c
-  ___cfg80211_stop_ap from __cfg80211_stop_ap+0x3c/0x90
-  __cfg80211_stop_ap from cfg80211_leave+0x28/0x34
-  cfg80211_leave from cfg80211_netdev_notifier_call+0x2d0/0x7cc
-  cfg80211_netdev_notifier_call from raw_notifier_call_chain+0x34/0x64
-  raw_notifier_call_chain from __dev_close_many+0x54/0x12c
-  __dev_close_many from dev_close_many+0x7c/0x118
-  dev_close_many from dev_close+0x68/0x80
-  dev_close from cfg80211_shutdown_all_interfaces+0x3c/0xfc
-  cfg80211_shutdown_all_interfaces from ieee80211_restart_work+0x124/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 17345
- hardirqs last  enabled at (17357): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (17368): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (17256): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (17225): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/driver-ops.h:944
-ieee80211_stop_ap+0x590/0x65c
- wlan0: Failed check-sdata-in-driver check, flags: 0x0
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x90/0xd8
-  warn_slowpath_fmt from ieee80211_stop_ap+0x590/0x65c
-  ieee80211_stop_ap from ___cfg80211_stop_ap+0xc4/0x55c
-  ___cfg80211_stop_ap from __cfg80211_stop_ap+0x3c/0x90
-  __cfg80211_stop_ap from cfg80211_leave+0x28/0x34
-  cfg80211_leave from cfg80211_netdev_notifier_call+0x2d0/0x7cc
-  cfg80211_netdev_notifier_call from raw_notifier_call_chain+0x34/0x64
-  raw_notifier_call_chain from __dev_close_many+0x54/0x12c
-  __dev_close_many from dev_close_many+0x7c/0x118
-  dev_close_many from dev_close+0x68/0x80
-  dev_close from cfg80211_shutdown_all_interfaces+0x3c/0xfc
-  cfg80211_shutdown_all_interfaces from ieee80211_restart_work+0x124/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 17521
- hardirqs last  enabled at (17533): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (17544): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (17256): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (17225): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/driver-ops.c:315
-drv_unassign_vif_chanctx+0x250/0x370
- wlan0: Failed check-sdata-in-driver check, flags: 0x0
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x90/0xd8
-  warn_slowpath_fmt from drv_unassign_vif_chanctx+0x250/0x370
-  drv_unassign_vif_chanctx from ieee80211_assign_link_chanctx+0x60/0x220
-  ieee80211_assign_link_chanctx from __ieee80211_link_release_channel+0x7c/0x188
-  __ieee80211_link_release_channel from ieee80211_link_release_channel+0x48/0x98
-  ieee80211_link_release_channel from ieee80211_stop_ap+0x308/0x65c
-  ieee80211_stop_ap from ___cfg80211_stop_ap+0xc4/0x55c
-  ___cfg80211_stop_ap from __cfg80211_stop_ap+0x3c/0x90
-  __cfg80211_stop_ap from cfg80211_leave+0x28/0x34
-  cfg80211_leave from cfg80211_netdev_notifier_call+0x2d0/0x7cc
-  cfg80211_netdev_notifier_call from raw_notifier_call_chain+0x34/0x64
-  raw_notifier_call_chain from __dev_close_many+0x54/0x12c
-  __dev_close_many from dev_close_many+0x7c/0x118
-  dev_close_many from dev_close+0x68/0x80
-  dev_close from cfg80211_shutdown_all_interfaces+0x3c/0xfc
-  cfg80211_shutdown_all_interfaces from ieee80211_restart_work+0x124/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 17737
- hardirqs last  enabled at (17749): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (17760): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (17638): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (17601): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/driver-ops.h:156
-ieee80211_vif_cfg_change_notify+0x1ec/0x334
- wlan0: Failed check-sdata-in-driver check, flags: 0x0
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x90/0xd8
-  warn_slowpath_fmt from ieee80211_vif_cfg_change_notify+0x1ec/0x334
-  ieee80211_vif_cfg_change_notify from ieee80211_assign_link_chanctx+0x1d4/0x220
-  ieee80211_assign_link_chanctx from __ieee80211_link_release_channel+0x7c/0x188
-  __ieee80211_link_release_channel from ieee80211_link_release_channel+0x48/0x98
-  ieee80211_link_release_channel from ieee80211_stop_ap+0x308/0x65c
-  ieee80211_stop_ap from ___cfg80211_stop_ap+0xc4/0x55c
-  ___cfg80211_stop_ap from __cfg80211_stop_ap+0x3c/0x90
-  __cfg80211_stop_ap from cfg80211_leave+0x28/0x34
-  cfg80211_leave from cfg80211_netdev_notifier_call+0x2d0/0x7cc
-  cfg80211_netdev_notifier_call from raw_notifier_call_chain+0x34/0x64
-  raw_notifier_call_chain from __dev_close_many+0x54/0x12c
-  __dev_close_many from dev_close_many+0x7c/0x118
-  dev_close_many from dev_close+0x68/0x80
-  dev_close from cfg80211_shutdown_all_interfaces+0x3c/0xfc
-  cfg80211_shutdown_all_interfaces from ieee80211_restart_work+0x124/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 17957
- hardirqs last  enabled at (17967): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (17978): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (17858): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (17817): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/driver-ops.h:872
-ieee80211_del_chanctx+0x1fc/0x334
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x5c/0xd8
-  warn_slowpath_fmt from ieee80211_del_chanctx+0x1fc/0x334
-  ieee80211_del_chanctx from ieee80211_free_chanctx+0x50/0xd4
-  ieee80211_free_chanctx from __ieee80211_link_release_channel+0xa8/0x188
-  __ieee80211_link_release_channel from ieee80211_link_release_channel+0x48/0x98
-  ieee80211_link_release_channel from ieee80211_stop_ap+0x308/0x65c
-  ieee80211_stop_ap from ___cfg80211_stop_ap+0xc4/0x55c
-  ___cfg80211_stop_ap from __cfg80211_stop_ap+0x3c/0x90
-  __cfg80211_stop_ap from cfg80211_leave+0x28/0x34
-  cfg80211_leave from cfg80211_netdev_notifier_call+0x2d0/0x7cc
-  cfg80211_netdev_notifier_call from raw_notifier_call_chain+0x34/0x64
-  raw_notifier_call_chain from __dev_close_many+0x54/0x12c
-  __dev_close_many from dev_close_many+0x7c/0x118
-  dev_close_many from dev_close+0x68/0x80
-  dev_close from cfg80211_shutdown_all_interfaces+0x3c/0xfc
-  cfg80211_shutdown_all_interfaces from ieee80211_restart_work+0x124/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 18153
- hardirqs last  enabled at (18163): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (18174): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (18152): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (18141): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/driver-ops.c:98
-drv_remove_interface+0x1c4/0x28c
- wlan0: Failed check-sdata-in-driver check, flags: 0x0
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x90/0xd8
-  warn_slowpath_fmt from drv_remove_interface+0x1c4/0x28c
-  drv_remove_interface from ieee80211_do_stop+0x5e8/0x8b4
-  ieee80211_do_stop from ieee80211_stop+0x44/0x14c
-  ieee80211_stop from __dev_close_many+0xa4/0x12c
-  __dev_close_many from dev_close_many+0x7c/0x118
-  dev_close_many from dev_close+0x68/0x80
-  dev_close from cfg80211_shutdown_all_interfaces+0x3c/0xfc
-  cfg80211_shutdown_all_interfaces from ieee80211_restart_work+0x124/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 18525
- hardirqs last  enabled at (18537): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (18548): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (18524): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (18505): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 35 at net/mac80211/driver-ops.c:37
-ieee80211_do_stop+0x6e8/0x8b4
- Modules linked in: ath10k_sdio ath10k_core ath coda_vpu v4l2_jpeg
-imx_vdoa imx_sdma ov5645
- CPU: 0 PID: 35 Comm: kworker/0:8 Tainted: G        W          6.1.0 #67
- Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
- Workqueue: events_freezable ieee80211_restart_work
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x58/0x70
-  dump_stack_lvl from __warn+0xb4/0x24c
-  __warn from warn_slowpath_fmt+0x5c/0xd8
-  warn_slowpath_fmt from ieee80211_do_stop+0x6e8/0x8b4
-  ieee80211_do_stop from ieee80211_stop+0x44/0x14c
-  ieee80211_stop from __dev_close_many+0xa4/0x12c
-  __dev_close_many from dev_close_many+0x7c/0x118
-  dev_close_many from dev_close+0x68/0x80
-  dev_close from cfg80211_shutdown_all_interfaces+0x3c/0xfc
-  cfg80211_shutdown_all_interfaces from ieee80211_restart_work+0x124/0x160
-  ieee80211_restart_work from process_one_work+0x288/0x734
-  process_one_work from worker_thread+0x38/0x4d0
-  worker_thread from kthread+0xe4/0x104
-  kthread from ret_from_fork+0x14/0x28
- Exception stack(0xe0971fb0 to 0xe0971ff8)
- 1fa0:                                     00000000 00000000 00000000 00000000
- 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
- 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- irq event stamp: 18743
- hardirqs last  enabled at (18755): [<c019970c>] __up_console_sem+0x50/0x60
- hardirqs last disabled at (18766): [<c01996f8>] __up_console_sem+0x3c/0x60
- softirqs last  enabled at (18654): [<c01017d0>] __do_softirq+0x2c0/0x624
- softirqs last disabled at (18615): [<c012fc14>] __irq_exit_rcu+0x138/0x17c
- ---[ end trace 0000000000000000 ]---
-Failed to set beacon parameters
-wlan0: INTERFACE-DISABLED
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgpQb3NzaWJseSByZWxhdGVkIChtYXliZSBub3QgdGhlIHNhbWUgcHJvYmxlbSBidXQgdGhl
+IHNvbHV0aW9uIG1pZ2h0IGhlbHApOiAKU3lzdGVtIElNWDZVTCArIFFDQTkzNzcgbW9kdWxlIGZy
+b20gVGVjaE5leGlvbiwga2VybmVsIDUuMTAgYXRoMTBrX3NkaW8gZHJvcHBpbmcgcGFja2V0cy4K
+Tm9ybWFsbHkgaXQgd29ya3MsIGJ1dCB1bmRlciBoaWdoIGxvYWQgaXQgc3RhcnRzIGRyb3BwaW5n
+IHBhY2tldHMuIERpc2NvdmVyZWQgdGhpcyB3aGVuIHN0cmVhbWluZyBzZW5zb3IgZGF0YS4KRS5n
+IHdoZW4gZmxvb2QgcGluZ2luZyB0aGUgZ2F0ZXdheToKCiBwaW5nIC1mIDE5Mi4xNjguMTAuMQoK
+WyAzMTU3LjM4Mjc4Nl0gYXRoMTBrX3NkaW8gbW1jMTowMDAxOjE6IGZhaWxlZCB0byB0cmFuc21p
+dCBwYWNrZXQsIGRyb3BwaW5nOiAtMTIKWyAzMTU3LjM5MDA2M10gYXRoMTBrX3NkaW8gbW1jMTow
+MDAxOjE6IGZhaWxlZCB0byBzdWJtaXQgZnJhbWU6IC0xMgpbIDMxNTcuMzk2MTU4XSBhdGgxMGtf
+c2RpbyBtbWMxOjAwMDE6MTogZmFpbGVkIHRvIHB1c2ggZnJhbWU6IC0xMgpbIDMxNTcuNDkyNDMz
+XSBhdGgxMGtfc2RpbyBtbWMxOjAwMDE6MTogZmFpbGVkIHRvIHRyYW5zbWl0IHBhY2tldCwgZHJv
+cHBpbmc6IC0xMgpbIDMxNTcuNDk5NzI4XSBhdGgxMGtfc2RpbyBtbWMxOjAwMDE6MTogZmFpbGVk
+IHRvIHN1Ym1pdCBmcmFtZTogLTEyClsgMzE1Ny41MDU3NTNdIGF0aDEwa19zZGlvIG1tYzE6MDAw
+MToxOiBmYWlsZWQgdG8gcHVzaCBmcmFtZTogLTEyCih0aGVuIGxvY2tzIHVwIHRoZSBzc2ggdGVy
+bWluYWwpLgoKClNvbHV0aW9uIGluIG15IGNhc2Ugd2FzIHRvIHJldmVydCB0byBhIGN1c3RvbSg/
+KSBxY2EgZHJpdmVyOgpnaXQgY2xvbmUgaHR0cHM6Ly9naXRodWIuY29tL1RlY2hOZXhpb24vcWNh
+Y2xkLTIuMC5naXQKY2QgcWNhY2xkLTIuMAooZXhwZWN0cyBhIGNyb3NzIGNvbXBpbGVyIHRvb2xj
+aGFpbiB0byBiZSBpbnN0YWxsZWQgYW5kIGNvbmZpZ3VyZWQsIGFzIHdlbGwgYXMgdGhlIGtlcm5l
+bCBzb3VyY2UgdG8gYmUgYXQgfi9vcy9saW51eC10bi1pbXgpOgpLRVJORUxfU1JDPX4vb3MvbGlu
+dXgtdG4taW14IENPTkZJR19DTERfSExfU0RJT19DT1JFPXkgVEFSR0VUX0JVSUxEX1ZBUklBTlQ9
+dXNlciBtYWtlIC1qJChucHJvYykKS0VSTkVMX1NSQz1+L29zL2xpbnV4LXRuLWlteCAgSU5TVEFM
+TF9NT0RfUEFUSD1+L29zL2xpbnV4LXRuLWlteF9tb2R1bGVzIG1ha2UgbW9kdWxlc19pbnN0YWxs
+CldoZW4gY29waWVkIHRvIHRoZSB0YXJnZXQgYW5kIHNldCB1cCwgbHNtb2Qgc2hvdWxkIHNob3cg
+c2ltaWxhciB0bzoKTW9kdWxlICAgICAgICAgICAgICAgICAgU2l6ZSAgVXNlZCBieQp3bGFuICAg
+ICAgICAgICAgICAgICAzNzY0MjI0ICAwCmlteF9zZG1hICAgICAgICAgICAgICAgMjg2NzIgIDgK
+CkJlc3QgcmVnYXJkcwpQYXRyaWsKCgoKLS0gCkVsZWN0cmljYWwgRW5naW5lZXJpbmcKSjIgSG9s
+ZGluZyBBQiAoaHR0cDovL3d3dy5qLTIuc2UpClNreXBlOiBwYXRyaWsuYXJ2ZW4uajIKQ2VsbDog
+KzQ2ICgwKTcwMiA3ODA0NjAgKEdNVCsxLCA4OjAwLTIwOjAwLCBDYWxscyBmcm9tIHdpdGhoZWxk
+L2hpZGRlbiBudW1iZXJzIHdpbGwgbm90IGJlIGFuc3dlcmVkKQoKLS0tLS0gVXJzcHJ1bmdsaWd0
+IG1lZGRlbGFuZGUgLS0tLS0KRnLDpW46ICJGYWJpbyBFc3RldmFtIiA8ZmVzdGV2YW1AZ21haWwu
+Y29tPgpUaWxsOiBrdmFsb0BrZXJuZWwub3JnCktvcGlhOiAibGludXgtd2lyZWxlc3MiIDxsaW51
+eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmc+LCBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZywg
+IkJvdWdoIENoZW4iIDxoYWliby5jaGVuQG54cC5jb20+LCAiS2V2aW4gR3JvZW5ldmVsZCIgPEtH
+cm9lbmV2ZWxkQGxlbmJyb29rLmNvbT4sICJKYWt1YiBLaWNpbnNraSIgPGt1YmFAa2VybmVsLm9y
+Zz4KU2tpY2thdDogdG9yc2RhZywgMTUgZGVjIDIwMjIgNDowNzozOArDhG1uZTogYXRoMTBrOiBJ
+UlEgdGltZW91dCBhZnRlciBBUC1TVEEtUE9MTC1PSwoKSGksCgpPbiBhbiBpbXg2ZGwtcGljbyBi
+b2FyZCB3aXRoIGEgUUNBOTM3NyBjb25uZWN0ZWQgdmlhIFNESU8sIHdlIHNlZSB2ZXJ5IHJhcmVs
+eQp0aGUgZm9sbG93aW5nIGVycm9yOgoKbW1jMTogVGltZW91dCB3YWl0aW5nIGZvciBoYXJkd2Fy
+ZSBpbnRlcnJ1cHQuCgp3aGljaCBoYXBwZW5zIHJpZ2h0IGFmdGVyIGFuIEFQLVNUQS1QT0xMLU9L
+IGV2ZW50LgoKbW1jMSBpcyB0aGUgZU1NQyBwb3J0IGNvbm5lY3RlZCB0byB0aGUgUUNBOTM3Ny4g
+VGhlIFFDQTkzNzcgb3BlcmF0ZXMgaW4gQVAgbW9kZS4KClNpbmNlIHRoZSBlcnJvciBpcyBkaWZm
+aWN1bHQgdG8gcmVwcm9kdWNlLCB3ZSBmb3VuZCBhIHdheSB0byBhY2NlbGVyYXRlIGl0cwpvY2N1
+cnJlbmNlIGFuZCBpdCBjb25zaXN0cyBvZiBwYXNzaW5nIGEgc2hvcnQgYXBfbWF4X2luYWN0aXZp
+dHkgdmFsdWUgaW50byB0aGUKaG9zdGFwZCBjb25mIGZpbGUsIHN1Y2ggYXMgYXBfbWF4X2luYWN0
+aXZpdHk9My4gVGhpcyBtYWtlcyBBUC1TVEEtUE9MTC1PSwpoYXBwZW4gbW9yZSBmcmVxdWVudGx5
+LgoKVGhlIGZ1bGwga2VybmVsIGxvZ3MgYXJlIHNob3duIGJlbG93LgoKVGhlIG1tYyB0aW1lb3V0
+cyBhbHdheXMgaGFwcGVuIHJpZ2h0IGFmdGVyIGFuIEFQLVNUQS1QT0xMLU9LIGV2ZW50IGFuZApB
+UC1TVEEtUE9MTC1PSyBhbHdheXMgaGFwcGVucyBhZnRlciB0aGUgZmlmdGggY29ubmVjdGlvbi9k
+aXNjb25uZWN0aW9uLgoKT3JpZ2luYWxseSB0aGUgZXJyb3Igd2FzIHJlcG9ydGVkIG9uIGEgNS4x
+MCBrZXJuZWwsIGJ1dCBJIGhhdmUgYWxzbyByZXByb2R1Y2VkCnRoZSBpc3N1ZSBvbiA2LjEuCgpJ
+IGFwcHJlY2lhdGUgaXQgaWYgYW55b25lIGNvdWxkIHByb3ZpZGUgYW55IHN1Z2dlc3Rpb25zLgoK
+VGhhbmtzLAoKRmFiaW8gRXN0ZXZhbQoKIyBob3N0YXBkIC9ldGMvd2lmaS5jb25mCkNvbmZpZ3Vy
+YXRpb24gZmlsZTogL2V0Yy93aWZpLmNvbmYKd2xhbjA6IGludGVyZmFjZSBzdGF0ZSBVTklOSVRJ
+QUxJWkVELT5DT1VOVFJZX1VQREFURQpVc2luZyBpbnRlcmZhY2Ugd2xhbjAgd2l0aCBod2FkZHIg
+MDA6MWY6N2I6MzE6eHg6eXkgYW5kIHNzaWQgInRoZXNzaWQiClsgICAyNS4yMDkyNjhdIElQdjY6
+IEFERFJDT05GKE5FVERFVl9DSEFOR0UpOiB3bGFuMDogbGluayBiZWNvbWVzIHJlYWR5CndsYW4w
+OiBpbnRlcmZhY2Ugc3RhdGUgQ09VTlRSWV9VUERBVEUtPkVOQUJMRUQKd2xhbjA6IEFQLUVOQUJM
+RUQKd2xhbjA6IFNUQSAxZTplMzowZTo0OTp4eDp5eSBJRUVFIDgwMi4xMTogYXV0aGVudGljYXRl
+ZAp3bGFuMDogU1RBIDFlOmUzOjBlOjQ5Onh4Onl5IElFRUUgODAyLjExOiBhc3NvY2lhdGVkIChh
+aWQgMSkKd2xhbjA6IEFQLVNUQS1DT05ORUNURUQgMWU6ZTM6MGU6NDk6eHg6eXkKd2xhbjA6IFNU
+QSAxZTplMzowZTo0OTp4eDp5eSBXUEE6IHBhaXJ3aXNlIGtleSBoYW5kc2hha2UgY29tcGxldGVk
+IChSU04pCndsYW4wOiBBUC1TVEEtRElTQ09OTkVDVEVEIDFlOmUzOjBlOjQ5Onh4Onl5CndsYW4w
+OiBTVEEgMWU6ZTM6MGU6NDk6eHg6eXkgSUVFRSA4MDIuMTE6IGF1dGhlbnRpY2F0ZWQKd2xhbjA6
+IFNUQSAxZTplMzowZTo0OTp4eDp5eSBJRUVFIDgwMi4xMTogYXNzb2NpYXRlZCAoYWlkIDEpCnds
+YW4wOiBBUC1TVEEtQ09OTkVDVEVEIDFlOmUzOjBlOjQ5Onh4Onl5CndsYW4wOiBTVEEgMWU6ZTM6
+MGU6NDk6eHg6eXkgV1BBOiBwYWlyd2lzZSBrZXkgaGFuZHNoYWtlIGNvbXBsZXRlZCAoUlNOKQpj
+Zmc4MDIxMTogZmFpbGVkIHRvIGxvYWQgcmVndWxhdG9yeS5kYgp3bGFuMDogQVAtU1RBLURJU0NP
+Tk5FQ1RFRCAxZTplMzowZTo0OTp4eDp5eQp3bGFuMDogU1RBIDFlOmUzOjBlOjQ5Onh4Onl5IElF
+RUUgODAyLjExOiBhdXRoZW50aWNhdGVkCndsYW4wOiBTVEEgMWU6ZTM6MGU6NDk6eHg6eXkgSUVF
+RSA4MDIuMTE6IGFzc29jaWF0ZWQgKGFpZCAxKQp3bGFuMDogQVAtU1RBLUNPTk5FQ1RFRCAxZTpl
+MzowZTo0OTp4eDp5eQp3bGFuMDogU1RBIDFlOmUzOjBlOjQ5Onh4Onl5IFdQQTogcGFpcndpc2Ug
+a2V5IGhhbmRzaGFrZSBjb21wbGV0ZWQgKFJTTikKd2xhbjA6IEFQLVNUQS1ESVNDT05ORUNURUQg
+MWU6ZTM6MGU6NDk6eHg6eXkKd2xhbjA6IFNUQSAxZTplMzowZTo0OTp4eDp5eSBJRUVFIDgwMi4x
+MTogYXV0aGVudGljYXRlZAp3bGFuMDogU1RBIDFlOmUzOjBlOjQ5Onh4Onl5IElFRUUgODAyLjEx
+OiBhc3NvY2lhdGVkIChhaWQgMSkKd2xhbjA6IEFQLVNUQS1DT05ORUNURUQgMWU6ZTM6MGU6NDk6
+eHg6eXkKd2xhbjA6IFNUQSAxZTplMzowZTo0OTp4eDp5eSBXUEE6IHBhaXJ3aXNlIGtleSBoYW5k
+c2hha2UgY29tcGxldGVkIChSU04pCndsYW4wOiBBUC1TVEEtRElTQ09OTkVDVEVEIDFlOmUzOjBl
+OjQ5Onh4Onl5CndsYW4wOiBTVEEgMWU6ZTM6MGU6NDk6eHg6eXkgSUVFRSA4MDIuMTE6IGF1dGhl
+bnRpY2F0ZWQKd2xhbjA6IFNUQSAxZTplMzowZTo0OTp4eDp5eSBJRUVFIDgwMi4xMTogYXNzb2Np
+YXRlZCAoYWlkIDEpCndsYW4wOiBBUC1TVEEtQ09OTkVDVEVEIDFlOmUzOjBlOjQ5Onh4Onl5Cnds
+YW4wOiBTVEEgMWU6ZTM6MGU6NDk6eHg6eXkgV1BBOiBwYWlyd2lzZSBrZXkgaGFuZHNoYWtlIGNv
+bXBsZXRlZCAoUlNOKQp3bGFuMDogQVAtU1RBLVBPTEwtT0sgMWU6ZTM6MGU6NDk6eHg6eXkKd2xh
+bjA6IEFQLVNUQS1ESVNDT05ORUNURUQgMWU6ZTM6MGU6NDk6eHg6eXkKd2xhbjA6IFNUQSAxZTpl
+MzowZTo0OTp4eDp5eSBJRUVFIDgwMi4xMTogZGlzYXNzb2NpYXRlZCBkdWUgdG8gaW5hY3Rpdml0
+eQogbW1jMTogVGltZW91dCB3YWl0aW5nIGZvciBoYXJkd2FyZSBpbnRlcnJ1cHQuCiBtbWMxOiBz
+ZGhjaTogPT09PT09PT09PT09IFNESENJIFJFR0lTVEVSIERVTVAgPT09PT09PT09PT0KIG1tYzE6
+IHNkaGNpOiBTeXMgYWRkcjogIDB4MTIxZTAwNWMgfCBWZXJzaW9uOiAgMHgwMDAwMDAwMgogbW1j
+MTogc2RoY2k6IEJsayBzaXplOiAgMHgwMDAwMDAyYyB8IEJsayBjbnQ6ICAweDAwMDAwMDAxCiBt
+bWMxOiBzZGhjaTogQXJndW1lbnQ6ICAweDE0MTAwMDJjIHwgVHJuIG1vZGU6IDB4MDAwMDAwMTMK
+IG1tYzE6IHNkaGNpOiBQcmVzZW50OiAgIDB4MDFkODhhMGEgfCBIb3N0IGN0bDogMHgwMDAwMDAx
+MwogbW1jMTogc2RoY2k6IFBvd2VyOiAgICAgMHgwMDAwMDAwMiB8IEJsayBnYXA6ICAweDAwMDAw
+MDgwCiBtbWMxOiBzZGhjaTogV2FrZS11cDogICAweDAwMDAwMDA4IHwgQ2xvY2s6ICAgIDB4MDAw
+MDAwM2YKIG1tYzE6IHNkaGNpOiBUaW1lb3V0OiAgIDB4MDAwMDAwOGYgfCBJbnQgc3RhdDogMHgw
+MDAwMDAwMAogbW1jMTogc2RoY2k6IEludCBlbmFiOiAgMHgxMDdmMTAwYiB8IFNpZyBlbmFiOiAw
+eDEwN2YxMDBiCiBtbWMxOiBzZGhjaTogQUNtZCBzdGF0OiAweDAwMDAwMDAwIHwgU2xvdCBpbnQ6
+IDB4MDAwMDAxMDMKIG1tYzE6IHNkaGNpOiBDYXBzOiAgICAgIDB4MDdlYjAwMDAgfCBDYXBzXzE6
+ICAgMHgwMDAwYTAwMAogbW1jMTogc2RoY2k6IENtZDogICAgICAgMHgwMDAwMzUzYSB8IE1heCBj
+dXJyOiAweDAwZmZmZmZmCiBtbWMxOiBzZGhjaTogUmVzcFswXTogICAweDAwMDAxMDAwIHwgUmVz
+cFsxXTogIDB4MDAwMDAwMDAKIG1tYzE6IHNkaGNpOiBSZXNwWzJdOiAgIDB4MDAwMDAwMDAgfCBS
+ZXNwWzNdOiAgMHgwMDAwMDAwMAogbW1jMTogc2RoY2k6IEhvc3QgY3RsMjogMHgwMDAwMDAwMAog
+bW1jMTogc2RoY2k6IEFETUEgRXJyOiAgMHgwMDAwMDAwNyB8IEFETUEgUHRyOiAweDJjMDQxMjAw
+CiBtbWMxOiBzZGhjaS1lc2RoYy1pbXg6ID09PT09PT09PSBFU0RIQyBJTVggREVCVUcgU1RBVFVT
+IERVTVAgPT09PT09PT09CiBtbWMxOiBzZGhjaS1lc2RoYy1pbXg6IGNtZCBkZWJ1ZyBzdGF0dXM6
+ICAweDIxMDAKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogZGF0YSBkZWJ1ZyBzdGF0dXM6ICAweDIy
+MDAKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogdHJhbnMgZGVidWcgc3RhdHVzOiAgMHgyMzAwCiBt
+bWMxOiBzZGhjaS1lc2RoYy1pbXg6IGRtYSBkZWJ1ZyBzdGF0dXM6ICAweDI0MDIKIG1tYzE6IHNk
+aGNpLWVzZGhjLWlteDogYWRtYSBkZWJ1ZyBzdGF0dXM6ICAweDI1YjQKIG1tYzE6IHNkaGNpLWVz
+ZGhjLWlteDogZmlmbyBkZWJ1ZyBzdGF0dXM6ICAweDI2MTAKIG1tYzE6IHNkaGNpLWVzZGhjLWlt
+eDogYXN5bmMgZmlmbyBkZWJ1ZyBzdGF0dXM6ICAweDI3NTEKIG1tYzE6IHNkaGNpOiA9PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogYXRoMTBrX3NkaW8gbW1jMTow
+MDAxOjE6IGZhaWxlZCB0byByZWFkIGZyb20gYWRkcmVzcyAweDgwMDogLTExMAogYXRoMTBrX3Nk
+aW8gbW1jMTowMDAxOjE6IHJlYWQgaW50IHN0YXR1cyBmYWlsLCBzdGFydCByZWNvdmVyeQp3bGFu
+MDogU1RBIDFlOmUzOjBlOjQ5Onh4Onl5IElFRUUgODAyLjExOiBkZWF1dGhlbnRpY2F0ZWQgZHVl
+IHRvCmluYWN0aXZpdHkgKHRpbWVyIERFQVVUSC9SRU1PVkUpCiBhdGgxMGtfc2RpbyBtbWMxOjAw
+MDE6MTogc2RpbyBpcnEgZGlzYWJsZSByZXF1ZXN0IHRpbWVkIG91dAogbW1jMTogVGltZW91dCB3
+YWl0aW5nIGZvciBoYXJkd2FyZSBpbnRlcnJ1cHQuCiBtbWMxOiBzZGhjaTogPT09PT09PT09PT09
+IFNESENJIFJFR0lTVEVSIERVTVAgPT09PT09PT09PT0KIG1tYzE6IHNkaGNpOiBTeXMgYWRkcjog
+IDB4MTIxZTAwNWMgfCBWZXJzaW9uOiAgMHgwMDAwMDAwMgogbW1jMTogc2RoY2k6IEJsayBzaXpl
+OiAgMHgwMDAwMDAzMiB8IEJsayBjbnQ6ICAweDAwMDAwMDAxCiBtbWMxOiBzZGhjaTogQXJndW1l
+bnQ6ICAweDk2NWY5YzMyIHwgVHJuIG1vZGU6IDB4MDAwMDAwMDMKIG1tYzE6IHNkaGNpOiBQcmVz
+ZW50OiAgIDB4MDFmODg1OGUgfCBIb3N0IGN0bDogMHgwMDAwMDAxMwogbW1jMTogc2RoY2k6IFBv
+d2VyOiAgICAgMHgwMDAwMDAwMiB8IEJsayBnYXA6ICAweDAwMDAwMDgwCiBtbWMxOiBzZGhjaTog
+V2FrZS11cDogICAweDAwMDAwMDA4IHwgQ2xvY2s6ICAgIDB4MDAwMDAwM2YKIG1tYzE6IHNkaGNp
+OiBUaW1lb3V0OiAgIDB4MDAwMDAwOGYgfCBJbnQgc3RhdDogMHgwMDAwMDAwMAogbW1jMTogc2Ro
+Y2k6IEludCBlbmFiOiAgMHgxMDdmMTAwYiB8IFNpZyBlbmFiOiAweDEwN2YxMDBiCiBtbWMxOiBz
+ZGhjaTogQUNtZCBzdGF0OiAweDAwMDAwMDAwIHwgU2xvdCBpbnQ6IDB4MDAwMDAxMDMKIG1tYzE6
+IHNkaGNpOiBDYXBzOiAgICAgIDB4MDdlYjAwMDAgfCBDYXBzXzE6ICAgMHgwMDAwYTAwMAogbW1j
+MTogc2RoY2k6IENtZDogICAgICAgMHgwMDAwMzUzYSB8IE1heCBjdXJyOiAweDAwZmZmZmZmCiBt
+bWMxOiBzZGhjaTogUmVzcFswXTogICAweDAwMDAxMDAwIHwgUmVzcFsxXTogIDB4MDAwMDAwMDAK
+IG1tYzE6IHNkaGNpOiBSZXNwWzJdOiAgIDB4MDAwMDAwMDAgfCBSZXNwWzNdOiAgMHgwMDAwMDAw
+MAogbW1jMTogc2RoY2k6IEhvc3QgY3RsMjogMHgwMDAwMDAwMAogbW1jMTogc2RoY2k6IEFETUEg
+RXJyOiAgMHgwMDAwMDAwNyB8IEFETUEgUHRyOiAweDJjMDQxMjAwCiBtbWMxOiBzZGhjaS1lc2Ro
+Yy1pbXg6ID09PT09PT09PSBFU0RIQyBJTVggREVCVUcgU1RBVFVTIERVTVAgPT09PT09PT09CiBt
+bWMxOiBzZGhjaS1lc2RoYy1pbXg6IGNtZCBkZWJ1ZyBzdGF0dXM6ICAweDIxMDAKIG1tYzE6IHNk
+aGNpLWVzZGhjLWlteDogZGF0YSBkZWJ1ZyBzdGF0dXM6ICAweDIyMjAKIG1tYzE6IHNkaGNpLWVz
+ZGhjLWlteDogdHJhbnMgZGVidWcgc3RhdHVzOiAgMHgyMzI4CiBtbWMxOiBzZGhjaS1lc2RoYy1p
+bXg6IGRtYSBkZWJ1ZyBzdGF0dXM6ICAweDI0MDIKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogYWRt
+YSBkZWJ1ZyBzdGF0dXM6ICAweDI1YjQKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogZmlmbyBkZWJ1
+ZyBzdGF0dXM6ICAweDI2ODQKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogYXN5bmMgZmlmbyBkZWJ1
+ZyBzdGF0dXM6ICAweDI3NTAKIG1tYzE6IHNkaGNpOiA9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQogYXRoMTBrX3NkaW8gbW1jMTowMDAxOjE6IGZhaWxlZCB0byB3
+cml0ZSB0byBhZGRyZXNzIDB4MTJmY2U6IC0xMTAKIGF0aDEwa19zZGlvIG1tYzE6MDAwMToxOiBm
+YWlsZWQgdG8gd3JpdGUgc2tiIHRvIDB4MTJmY2UgYXN5bmNocm9ub3VzbHk6IC0xMTAKIGF0aDEw
+a19zZGlvIG1tYzE6MDAwMToxOiBmYWlsZWQgdG8gcHJvY2VzcyBwZW5kaW5nIFNESU8gaW50ZXJy
+dXB0czogLTExMAogYXRoMTBrX3NkaW8gbW1jMTowMDAxOjE6IGZhaWxlZCB0byB3cml0ZSB0byBh
+ZGRyZXNzIDB4MWM3ODA6IC0xMTAKIGF0aDEwa19zZGlvIG1tYzE6MDAwMToxOiBmYWlsZWQgdG8g
+d3JpdGUgc2tiIHRvIDB4MWM3ODAgYXN5bmNocm9ub3VzbHk6IC0xMTAKIGF0aDEwa19zZGlvIG1t
+YzE6MDAwMToxOiBmYWlsZWQgdG8gd3JpdGUgdG8gYWRkcmVzcyAweDgyODogLTExMAogYXRoMTBr
+X3NkaW8gbW1jMTowMDAxOjE6IGZhaWxlZCB0byB3cml0ZSBza2IgdG8gMHg4MjggYXN5bmNocm9u
+b3VzbHk6IC0xMTAKIGF0aDEwa19zZGlvIG1tYzE6MDAwMToxOiBmYWlsZWQgdG8gcmVhZCBmcm9t
+IGFkZHJlc3MgMHg4Njg6IC0xMTAKIGF0aDEwa19zZGlvIG1tYzE6MDAwMToxOiBmYWlsZWQgdG8g
+cmVhZCBmaWZvL2NoaXAgY29udHJvbCByZWdpc3RlcjogLTExMAogYXRoMTBrX3NkaW8gbW1jMTow
+MDAxOjE6IGZhaWxlZCB0byByZWFkIGZyb20gYWRkcmVzcyAweDg2ODogLTExMAogbW1jMTogcXVl
+dWluZyB1bmtub3duIENJUyB0dXBsZSAweDAxIFtkOSAwMSBmZl0gKDMgYnl0ZXMpCiBtbWMxOiBx
+dWV1aW5nIHVua25vd24gQ0lTIHR1cGxlIDB4MWEgWzAxIDAxIDAwIDAyIDA3XSAoNSBieXRlcykK
+IG1tYzE6IHF1ZXVpbmcgdW5rbm93biBDSVMgdHVwbGUgMHgxYiBbYzEgNDEgMzAgMzAgZmYgZmYg
+MzIgMDBdICg4IGJ5dGVzKQogbW1jMTogcXVldWluZyB1bmtub3duIENJUyB0dXBsZSAweDE0IFtd
+ICgwIGJ5dGVzKQogaWVlZTgwMjExIHBoeTA6IEhhcmR3YXJlIHJlc3RhcnQgd2FzIHJlcXVlc3Rl
+ZAogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCiBXQVJOSU5HOiBDUFU6IDAg
+UElEOiAyNDAgYXQgbmV0L21hYzgwMjExL3N0YV9pbmZvLmM6MTI4OApfX3N0YV9pbmZvX2Rlc3Ry
+b3lfcGFydDIrMHgxM2MvMHgyMWMKIE1vZHVsZXMgbGlua2VkIGluOiBhdGgxMGtfc2RpbyBhdGgx
+MGtfY29yZSBhdGggY29kYV92cHUgdjRsMl9qcGVnCmlteF92ZG9hIGlteF9zZG1hIG92NTY0NQog
+Q1BVOiAwIFBJRDogMjQwIENvbW06IGhvc3RhcGQgTm90IHRhaW50ZWQgNi4xLjAgIzY3CiBIYXJk
+d2FyZSBuYW1lOiBGcmVlc2NhbGUgaS5NWDYgUXVhZC9EdWFsTGl0ZSAoRGV2aWNlIFRyZWUpCiAg
+dW53aW5kX2JhY2t0cmFjZSBmcm9tIHNob3dfc3RhY2srMHgxMC8weDE0CiAgc2hvd19zdGFjayBm
+cm9tIGR1bXBfc3RhY2tfbHZsKzB4NTgvMHg3MAogIGR1bXBfc3RhY2tfbHZsIGZyb20gX193YXJu
+KzB4YjQvMHgyNGMKICBfX3dhcm4gZnJvbSB3YXJuX3Nsb3dwYXRoX2ZtdCsweDVjLzB4ZDgKICB3
+YXJuX3Nsb3dwYXRoX2ZtdCBmcm9tIF9fc3RhX2luZm9fZGVzdHJveV9wYXJ0MisweDEzYy8weDIx
+YwogIF9fc3RhX2luZm9fZGVzdHJveV9wYXJ0MiBmcm9tIF9fc3RhX2luZm9fZGVzdHJveSsweDIw
+LzB4MjgKICBfX3N0YV9pbmZvX2Rlc3Ryb3kgZnJvbSBzdGFfaW5mb19kZXN0cm95X2FkZHJfYnNz
+KzB4MzAvMHg0YwogIHN0YV9pbmZvX2Rlc3Ryb3lfYWRkcl9ic3MgZnJvbSBubDgwMjExX2RlbF9z
+dGF0aW9uKzB4MTMwLzB4MzU4CiAgbmw4MDIxMV9kZWxfc3RhdGlvbiBmcm9tIGdlbmxfcmN2X21z
+ZysweDE3NC8weDNhYwogIGdlbmxfcmN2X21zZyBmcm9tIG5ldGxpbmtfcmN2X3NrYisweGJjLzB4
+MTIwCiAgbmV0bGlua19yY3Zfc2tiIGZyb20gZ2VubF9yY3YrMHgyMC8weDM0CiAgZ2VubF9yY3Yg
+ZnJvbSBuZXRsaW5rX3VuaWNhc3QrMHgxYTQvMHgyYzQKICBuZXRsaW5rX3VuaWNhc3QgZnJvbSBu
+ZXRsaW5rX3NlbmRtc2crMHgxYzQvMHg0NDQKICBuZXRsaW5rX3NlbmRtc2cgZnJvbSBfX19fc3lz
+X3NlbmRtc2crMHgxODQvMHgyNTQKICBfX19fc3lzX3NlbmRtc2cgZnJvbSBfX19zeXNfc2VuZG1z
+ZysweDZjLzB4YTQKICBfX19zeXNfc2VuZG1zZyBmcm9tIF9fc3lzX3NlbmRtc2crMHg1MC8weDk4
+CiAgX19zeXNfc2VuZG1zZyBmcm9tIHJldF9mYXN0X3N5c2NhbGwrMHgwLzB4MWMKIEV4Y2VwdGlv
+biBzdGFjaygweGUwZGUxZmE4IHRvIDB4ZTBkZTFmZjApCiAxZmEwOiAgICAgICAgICAgICAgICAg
+ICAwMGQ3NmJjMCAwMGQ2ZjgzMCAwMDAwMDAwNSBiZWNkYmFlYyAwMDAwMDAwMCAwMDAwMDAwMAog
+MWZjMDogMDBkNzZiYzAgMDBkNmY4MzAgYjZjZmZjNjggMDAwMDAxMjggMDAwMDAwMDEgMDAwMDAw
+MDAgMDAwMDAwMDQgYmVjZGJiM2MKIDFmZTA6IGI2Y2ZmZTE0IGJlY2RiYTkwIGI2Y2U2ZGI0IGI2
+YzAyNDI4CiBpcnEgZXZlbnQgc3RhbXA6IDE1Njc5MQogaGFyZGlycXMgbGFzdCAgZW5hYmxlZCBh
+dCAoMTU2ODAzKTogWzxjMDE5OTcwYz5dIF9fdXBfY29uc29sZV9zZW0rMHg1MC8weDYwCiBoYXJk
+aXJxcyBsYXN0IGRpc2FibGVkIGF0ICgxNTY4MTQpOiBbPGMwMTk5NmY4Pl0gX191cF9jb25zb2xl
+X3NlbSsweDNjLzB4NjAKIHNvZnRpcnFzIGxhc3QgIGVuYWJsZWQgYXQgKDE1Njc5MCk6IFs8YzAx
+MDE3ZDA+XSBfX2RvX3NvZnRpcnErMHgyYzAvMHg2MjQKIHNvZnRpcnFzIGxhc3QgZGlzYWJsZWQg
+YXQgKDE1Njc3OSk6IFs8YzAxMmZjMTQ+XSBfX2lycV9leGl0X3JjdSsweDEzOC8weDE3YwogLS0t
+WyBlbmQgdHJhY2UgMDAwMDAwMDAwMDAwMDAwMCBdLS0tCiAtLS0tLS0tLS0tLS1bIGN1dCBoZXJl
+IF0tLS0tLS0tLS0tLS0KIFdBUk5JTkc6IENQVTogMCBQSUQ6IDI0MCBhdCBuZXQvbWFjODAyMTEv
+c3RhX2luZm8uYzo0MTYKc3RhX2luZm9fZnJlZSsweDljLzB4MTQwCiBNb2R1bGVzIGxpbmtlZCBp
+bjogYXRoMTBrX3NkaW8gYXRoMTBrX2NvcmUgYXRoIGNvZGFfdnB1IHY0bDJfanBlZwppbXhfdmRv
+YSBpbXhfc2RtYSBvdjU2NDUKIENQVTogMCBQSUQ6IDI0MCBDb21tOiBob3N0YXBkIFRhaW50ZWQ6
+IEcgICAgICAgIFcgICAgICAgICAgNi4xLjAgIzY3CiBIYXJkd2FyZSBuYW1lOiBGcmVlc2NhbGUg
+aS5NWDYgUXVhZC9EdWFsTGl0ZSAoRGV2aWNlIFRyZWUpCiAgdW53aW5kX2JhY2t0cmFjZSBmcm9t
+IHNob3dfc3RhY2srMHgxMC8weDE0CiAgc2hvd19zdGFjayBmcm9tIGR1bXBfc3RhY2tfbHZsKzB4
+NTgvMHg3MAogIGR1bXBfc3RhY2tfbHZsIGZyb20gX193YXJuKzB4YjQvMHgyNGMKICBfX3dhcm4g
+ZnJvbSB3YXJuX3Nsb3dwYXRoX2ZtdCsweDVjLzB4ZDgKICB3YXJuX3Nsb3dwYXRoX2ZtdCBmcm9t
+IHN0YV9pbmZvX2ZyZWUrMHg5Yy8weDE0MAogIHN0YV9pbmZvX2ZyZWUgZnJvbSBfX3N0YV9pbmZv
+X2Rlc3Ryb3krMHgyMC8weDI4CiAgX19zdGFfaW5mb19kZXN0cm95IGZyb20gc3RhX2luZm9fZGVz
+dHJveV9hZGRyX2JzcysweDMwLzB4NGMKICBzdGFfaW5mb19kZXN0cm95X2FkZHJfYnNzIGZyb20g
+bmw4MDIxMV9kZWxfc3RhdGlvbisweDEzMC8weDM1OAogIG5sODAyMTFfZGVsX3N0YXRpb24gZnJv
+bSBnZW5sX3Jjdl9tc2crMHgxNzQvMHgzYWMKICBnZW5sX3Jjdl9tc2cgZnJvbSBuZXRsaW5rX3Jj
+dl9za2IrMHhiYy8weDEyMAogIG5ldGxpbmtfcmN2X3NrYiBmcm9tIGdlbmxfcmN2KzB4MjAvMHgz
+NAogIGdlbmxfcmN2IGZyb20gbmV0bGlua191bmljYXN0KzB4MWE0LzB4MmM0CiAgbmV0bGlua191
+bmljYXN0IGZyb20gbmV0bGlua19zZW5kbXNnKzB4MWM0LzB4NDQ0CiAgbmV0bGlua19zZW5kbXNn
+IGZyb20gX19fX3N5c19zZW5kbXNnKzB4MTg0LzB4MjU0CiAgX19fX3N5c19zZW5kbXNnIGZyb20g
+X19fc3lzX3NlbmRtc2crMHg2Yy8weGE0CiAgX19fc3lzX3NlbmRtc2cgZnJvbSBfX3N5c19zZW5k
+bXNnKzB4NTAvMHg5OAogIF9fc3lzX3NlbmRtc2cgZnJvbSByZXRfZmFzdF9zeXNjYWxsKzB4MC8w
+eDFjCiBFeGNlcHRpb24gc3RhY2soMHhlMGRlMWZhOCB0byAweGUwZGUxZmYwKQogMWZhMDogICAg
+ICAgICAgICAgICAgICAgMDBkNzZiYzAgMDBkNmY4MzAgMDAwMDAwMDUgYmVjZGJhZWMgMDAwMDAw
+MDAgMDAwMDAwMDAKIDFmYzA6IDAwZDc2YmMwIDAwZDZmODMwIGI2Y2ZmYzY4IDAwMDAwMTI4IDAw
+MDAwMDAxIDAwMDAwMDAwIDAwMDAwMDA0IGJlY2RiYjNjCiAxZmUwOiBiNmNmZmUxNCBiZWNkYmE5
+MCBiNmNlNmRiNCBiNmMwMjQyOAogaXJxIGV2ZW50IHN0YW1wOiAxNTczNjUKIGhhcmRpcnFzIGxh
+c3QgIGVuYWJsZWQgYXQgKDE1NzM3Nyk6IFs8YzAxOTk3MGM+XSBfX3VwX2NvbnNvbGVfc2VtKzB4
+NTAvMHg2MAogaGFyZGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMTU3Mzg4KTogWzxjMDE5OTZmOD5d
+IF9fdXBfY29uc29sZV9zZW0rMHgzYy8weDYwCiBzb2Z0aXJxcyBsYXN0ICBlbmFibGVkIGF0ICgx
+NTczNjQpOiBbPGMwMTAxN2QwPl0gX19kb19zb2Z0aXJxKzB4MmMwLzB4NjI0CiBzb2Z0aXJxcyBs
+YXN0IGRpc2FibGVkIGF0ICgxNTczNTMpOiBbPGMwMTJmYzE0Pl0gX19pcnFfZXhpdF9yY3UrMHgx
+MzgvMHgxN2MKIC0tLVsgZW5kIHRyYWNlIDAwMDAwMDAwMDAwMDAwMDAgXS0tLQogLS0tLS0tLS0t
+LS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCiBXQVJOSU5HOiBDUFU6IDAgUElEOiAyNDAgYXQg
+bmV0L21hYzgwMjExL3N0YV9pbmZvLmM6NDE5CnN0YV9pbmZvX2ZyZWUrMHhkNC8weDE0MAogc3Rh
+X2luZm9fbW92ZV9zdGF0ZSgpIHJldHVybmVkIC0yCiBNb2R1bGVzIGxpbmtlZCBpbjogYXRoMTBr
+X3NkaW8gYXRoMTBrX2NvcmUgYXRoIGNvZGFfdnB1IHY0bDJfanBlZwppbXhfdmRvYSBpbXhfc2Rt
+YSBvdjU2NDUKIENQVTogMCBQSUQ6IDI0MCBDb21tOiBob3N0YXBkIFRhaW50ZWQ6IEcgICAgICAg
+IFcgICAgICAgICAgNi4xLjAgIzY3CiBIYXJkd2FyZSBuYW1lOiBGcmVlc2NhbGUgaS5NWDYgUXVh
+ZC9EdWFsTGl0ZSAoRGV2aWNlIFRyZWUpCiAgdW53aW5kX2JhY2t0cmFjZSBmcm9tIHNob3dfc3Rh
+Y2srMHgxMC8weDE0CiAgc2hvd19zdGFjayBmcm9tIGR1bXBfc3RhY2tfbHZsKzB4NTgvMHg3MAog
+IGR1bXBfc3RhY2tfbHZsIGZyb20gX193YXJuKzB4YjQvMHgyNGMKICBfX3dhcm4gZnJvbSB3YXJu
+X3Nsb3dwYXRoX2ZtdCsweDkwLzB4ZDgKICB3YXJuX3Nsb3dwYXRoX2ZtdCBmcm9tIHN0YV9pbmZv
+X2ZyZWUrMHhkNC8weDE0MAogIHN0YV9pbmZvX2ZyZWUgZnJvbSBfX3N0YV9pbmZvX2Rlc3Ryb3kr
+MHgyMC8weDI4CiAgX19zdGFfaW5mb19kZXN0cm95IGZyb20gc3RhX2luZm9fZGVzdHJveV9hZGRy
+X2JzcysweDMwLzB4NGMKICBzdGFfaW5mb19kZXN0cm95X2FkZHJfYnNzIGZyb20gbmw4MDIxMV9k
+ZWxfc3RhdGlvbisweDEzMC8weDM1OAogIG5sODAyMTFfZGVsX3N0YXRpb24gZnJvbSBnZW5sX3Jj
+dl9tc2crMHgxNzQvMHgzYWMKICBnZW5sX3Jjdl9tc2cgZnJvbSBuZXRsaW5rX3Jjdl9za2IrMHhi
+Yy8weDEyMAogIG5ldGxpbmtfcmN2X3NrYiBmcm9tIGdlbmxfcmN2KzB4MjAvMHgzNAogIGdlbmxf
+cmN2IGZyb20gbmV0bGlua191bmljYXN0KzB4MWE0LzB4MmM0CiAgbmV0bGlua191bmljYXN0IGZy
+b20gbmV0bGlua19zZW5kbXNnKzB4MWM0LzB4NDQ0CiAgbmV0bGlua19zZW5kbXNnIGZyb20gX19f
+X3N5c19zZW5kbXNnKzB4MTg0LzB4MjU0CiAgX19fX3N5c19zZW5kbXNnIGZyb20gX19fc3lzX3Nl
+bmRtc2crMHg2Yy8weGE0CiAgX19fc3lzX3NlbmRtc2cgZnJvbSBfX3N5c19zZW5kbXNnKzB4NTAv
+MHg5OAogIF9fc3lzX3NlbmRtc2cgZnJvbSByZXRfZmFzdF9zeXNjYWxsKzB4MC8weDFjCiBFeGNl
+cHRpb24gc3RhY2soMHhlMGRlMWZhOCB0byAweGUwZGUxZmYwKQogMWZhMDogICAgICAgICAgICAg
+ICAgICAgMDBkNzZiYzAgMDBkNmY4MzAgMDAwMDAwMDUgYmVjZGJhZWMgMDAwMDAwMDAgMDAwMDAw
+MDAKIDFmYzA6IDAwZDc2YmMwIDAwZDZmODMwIGI2Y2ZmYzY4IDAwMDAwMTI4IDAwMDAwMDAxIDAw
+MDAwMDAwIDAwMDAwMDA0IGJlY2RiYjNjCiAxZmUwOiBiNmNmZmUxNCBiZWNkYmE5MCBiNmNlNmRi
+NCBiNmMwMjQyOAogaXJxIGV2ZW50IHN0YW1wOiAxNTc1ODUKIGhhcmRpcnFzIGxhc3QgIGVuYWJs
+ZWQgYXQgKDE1NzU5NSk6IFs8YzAxOTk3MGM+XSBfX3VwX2NvbnNvbGVfc2VtKzB4NTAvMHg2MAog
+aGFyZGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMTU3NjA2KTogWzxjMDE5OTZmOD5dIF9fdXBfY29u
+c29sZV9zZW0rMHgzYy8weDYwCiBzb2Z0aXJxcyBsYXN0ICBlbmFibGVkIGF0ICgxNTc0OTgpOiBb
+PGMwMTAxN2QwPl0gX19kb19zb2Z0aXJxKzB4MmMwLzB4NjI0CiBzb2Z0aXJxcyBsYXN0IGRpc2Fi
+bGVkIGF0ICgxNTc0NjMpOiBbPGMwMTJmYzE0Pl0gX19pcnFfZXhpdF9yY3UrMHgxMzgvMHgxN2MK
+IC0tLVsgZW5kIHRyYWNlIDAwMDAwMDAwMDAwMDAwMDAgXS0tLQogbW1jMTogVGltZW91dCB3YWl0
+aW5nIGZvciBoYXJkd2FyZSBpbnRlcnJ1cHQuCiBtbWMxOiBzZGhjaTogPT09PT09PT09PT09IFNE
+SENJIFJFR0lTVEVSIERVTVAgPT09PT09PT09PT0KIG1tYzE6IHNkaGNpOiBTeXMgYWRkcjogIDB4
+MTI3ODIyNDAgfCBWZXJzaW9uOiAgMHgwMDAwMDAwMgogbW1jMTogc2RoY2k6IEJsayBzaXplOiAg
+MHgwMDAwMDAwNCB8IEJsayBjbnQ6ICAweDAwMDAwMDAxCiBtbWMxOiBzZGhjaTogQXJndW1lbnQ6
+ICAweDE0MTBkMDA0IHwgVHJuIG1vZGU6IDB4MDAwMDAwMTMKIG1tYzE6IHNkaGNpOiBQcmVzZW50
+OiAgIDB4MDFmODgyMGUgfCBIb3N0IGN0bDogMHgwMDAwMDAxMwogbW1jMTogc2RoY2k6IFBvd2Vy
+OiAgICAgMHgwMDAwMDAwMiB8IEJsayBnYXA6ICAweDAwMDAwMDgwCiBtbWMxOiBzZGhjaTogV2Fr
+ZS11cDogICAweDAwMDAwMDA4IHwgQ2xvY2s6ICAgIDB4MDAwMDAwM2YKIG1tYzE6IHNkaGNpOiBU
+aW1lb3V0OiAgIDB4MDAwMDAwOGYgfCBJbnQgc3RhdDogMHgwMDAwMDAwMAogbW1jMTogc2RoY2k6
+IEludCBlbmFiOiAgMHgxMDdmMTAwYiB8IFNpZyBlbmFiOiAweDEwN2YxMDBiCiBtbWMxOiBzZGhj
+aTogQUNtZCBzdGF0OiAweDAwMDAwMDAwIHwgU2xvdCBpbnQ6IDB4MDAwMDAxMDMKIG1tYzE6IHNk
+aGNpOiBDYXBzOiAgICAgIDB4MDdlYjAwMDAgfCBDYXBzXzE6ICAgMHgwMDAwYTAwMAogbW1jMTog
+c2RoY2k6IENtZDogICAgICAgMHgwMDAwMzUzYSB8IE1heCBjdXJyOiAweDAwZmZmZmZmCiBtbWMx
+OiBzZGhjaTogUmVzcFswXTogICAweDAwMDAxMjAwIHwgUmVzcFsxXTogIDB4MDAwMDAwMDAKIG1t
+YzE6IHNkaGNpOiBSZXNwWzJdOiAgIDB4MDAwMDAwMDAgfCBSZXNwWzNdOiAgMHgwMDAwMDAwMAog
+bW1jMTogc2RoY2k6IEhvc3QgY3RsMjogMHgwMDAwMDAwMAogbW1jMTogc2RoY2k6IEFETUEgRXJy
+OiAgMHgwMDAwMDAwMyB8IEFETUEgUHRyOiAweDJjMDQxMjA0CiBtbWMxOiBzZGhjaS1lc2RoYy1p
+bXg6ID09PT09PT09PSBFU0RIQyBJTVggREVCVUcgU1RBVFVTIERVTVAgPT09PT09PT09CiBtbWMx
+OiBzZGhjaS1lc2RoYy1pbXg6IGNtZCBkZWJ1ZyBzdGF0dXM6ICAweDIxMDAKIG1tYzE6IHNkaGNp
+LWVzZGhjLWlteDogZGF0YSBkZWJ1ZyBzdGF0dXM6ICAweDIyYTAKIG1tYzE6IHNkaGNpLWVzZGhj
+LWlteDogdHJhbnMgZGVidWcgc3RhdHVzOiAgMHgyM2EwCiBtbWMxOiBzZGhjaS1lc2RoYy1pbXg6
+IGRtYSBkZWJ1ZyBzdGF0dXM6ICAweDI0MjAKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogYWRtYSBk
+ZWJ1ZyBzdGF0dXM6ICAweDI1YjQKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogZmlmbyBkZWJ1ZyBz
+dGF0dXM6ICAweDI2ODAKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogYXN5bmMgZmlmbyBkZWJ1ZyBz
+dGF0dXM6ICAweDI3NTAKIG1tYzE6IHNkaGNpOiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PQogYXRoMTBrX3dhcm46IDcgY2FsbGJhY2tzIHN1cHByZXNzZWQKIGF0
+aDEwa19zZGlvIG1tYzE6MDAwMToxOiBmYWlsZWQgdG8gcmVhZCBmcm9tIGFkZHJlc3MgMHg4Njg6
+IC0xMTAKIGF0aDEwa19zZGlvIG1tYzE6MDAwMToxOiBmYWlsZWQgdG8gcmVhZCBmaWZvL2NoaXAg
+Y29udHJvbCByZWdpc3RlcjogLTExMAogbW1jMTogVGltZW91dCB3YWl0aW5nIGZvciBoYXJkd2Fy
+ZSBpbnRlcnJ1cHQuCiBtbWMxOiBzZGhjaTogPT09PT09PT09PT09IFNESENJIFJFR0lTVEVSIERV
+TVAgPT09PT09PT09PT0KIG1tYzE6IHNkaGNpOiBTeXMgYWRkcjogIDB4MTI3ODIyNDAgfCBWZXJz
+aW9uOiAgMHgwMDAwMDAwMgogbW1jMTogc2RoY2k6IEJsayBzaXplOiAgMHgwMDAwMDAwNCB8IEJs
+ayBjbnQ6ICAweDAwMDAwMDAxCiBtbWMxOiBzZGhjaTogQXJndW1lbnQ6ICAweDE0MTBhMDA0IHwg
+VHJuIG1vZGU6IDB4MDAwMDAwMTMKIG1tYzE6IHNkaGNpOiBQcmVzZW50OiAgIDB4MDFmODgyMGUg
+fCBIb3N0IGN0bDogMHgwMDAwMDAxMwogbW1jMTogc2RoY2k6IFBvd2VyOiAgICAgMHgwMDAwMDAw
+MiB8IEJsayBnYXA6ICAweDAwMDAwMDgwCiBtbWMxOiBzZGhjaTogV2FrZS11cDogICAweDAwMDAw
+MDA4IHwgQ2xvY2s6ICAgIDB4MDAwMDAwM2YKIG1tYzE6IHNkaGNpOiBUaW1lb3V0OiAgIDB4MDAw
+MDAwOGYgfCBJbnQgc3RhdDogMHgwMDAwMDAwMAogbW1jMTogc2RoY2k6IEludCBlbmFiOiAgMHgx
+MDdmMTAwYiB8IFNpZyBlbmFiOiAweDEwN2YxMDBiCiBtbWMxOiBzZGhjaTogQUNtZCBzdGF0OiAw
+eDAwMDAwMDAwIHwgU2xvdCBpbnQ6IDB4MDAwMDAxMDMKIG1tYzE6IHNkaGNpOiBDYXBzOiAgICAg
+IDB4MDdlYjAwMDAgfCBDYXBzXzE6ICAgMHgwMDAwYTAwMAogbW1jMTogc2RoY2k6IENtZDogICAg
+ICAgMHgwMDAwMzUzYSB8IE1heCBjdXJyOiAweDAwZmZmZmZmCiBtbWMxOiBzZGhjaTogUmVzcFsw
+XTogICAweDAwMDAxMDAwIHwgUmVzcFsxXTogIDB4MDAwMDAwMDAKIG1tYzE6IHNkaGNpOiBSZXNw
+WzJdOiAgIDB4MDAwMDAwMDAgfCBSZXNwWzNdOiAgMHgwMDAwMDAwMAogbW1jMTogc2RoY2k6IEhv
+c3QgY3RsMjogMHgwMDAwMDAwMAogbW1jMTogc2RoY2k6IEFETUEgRXJyOiAgMHgwMDAwMDAwMyB8
+IEFETUEgUHRyOiAweDJjMDQxMjA0CiBtbWMxOiBzZGhjaS1lc2RoYy1pbXg6ID09PT09PT09PSBF
+U0RIQyBJTVggREVCVUcgU1RBVFVTIERVTVAgPT09PT09PT09CiBtbWMxOiBzZGhjaS1lc2RoYy1p
+bXg6IGNtZCBkZWJ1ZyBzdGF0dXM6ICAweDIxMDAKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogZGF0
+YSBkZWJ1ZyBzdGF0dXM6ICAweDIyYTAKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogdHJhbnMgZGVi
+dWcgc3RhdHVzOiAgMHgyM2EyCiBtbWMxOiBzZGhjaS1lc2RoYy1pbXg6IGRtYSBkZWJ1ZyBzdGF0
+dXM6ICAweDI0MjAKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogYWRtYSBkZWJ1ZyBzdGF0dXM6ICAw
+eDI1YjQKIG1tYzE6IHNkaGNpLWVzZGhjLWlteDogZmlmbyBkZWJ1ZyBzdGF0dXM6ICAweDI2ODAK
+IG1tYzE6IHNkaGNpLWVzZGhjLWlteDogYXN5bmMgZmlmbyBkZWJ1ZyBzdGF0dXM6ICAweDI3NTAK
+IG1tYzE6IHNkaGNpOiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQogYXRoMTBrX3NkaW8gbW1jMTowMDAxOjE6IGZhaWxlZCB0byByZWFkIGZyb20gYWRkcmVzcyAw
+eDg1MDogLTExMAogYXRoMTBrX3NkaW8gbW1jMTowMDAxOjE6IHVuYWJsZSB0byBkZWNyZW1lbnQg
+dGhlIGNvbW1hbmQgY3JlZGl0IGNvdW50CnJlZ2lzdGVyOiAtMTEwCiBhdGgxMGtfc2RpbyBtbWMx
+OjAwMDE6MTogVW5hYmxlIHRvIHJlYWQgc29jIHJlZ2lzdGVyIGZyb20gZGV2aWNlOiAtMTEwCiBh
+dGgxMGtfc2RpbyBtbWMxOjAwMDE6MTogZmFpbGVkIHRvIHJlYWQgZnJvbSBhZGRyZXNzIDB4ODUw
+OiAtMTEwCiBhdGgxMGtfc2RpbyBtbWMxOjAwMDE6MTogdW5hYmxlIHRvIGRlY3JlbWVudCB0aGUg
+Y29tbWFuZCBjcmVkaXQgY291bnQKcmVnaXN0ZXI6IC0xMTAKIGF0aDEwa19zZGlvIG1tYzE6MDAw
+MToxOiB1bmFibGUgdG8gd3JpdGUgdG8gdGhlIGRldmljZSAoLTExMCkKIGF0aDEwa19zZGlvIG1t
+YzE6MDAwMToxOiBzZXR0aW5ncyBIVEMgdmVyc2lvbiBmYWlsZWQKIGF0aDEwa19zZGlvIG1tYzE6
+MDAwMToxOiBDb3VsZCBub3QgaW5pdCBjb3JlOiAtMjIKIGF0aDEwa19zZGlvIG1tYzE6MDAwMTox
+OiBmYWlsZWQgdG8gcmVhZCBmcm9tIGFkZHJlc3MgMHg4Njg6IC0xMTAKIGF0aDEwa19zZGlvIG1t
+YzE6MDAwMToxOiBmYWlsZWQgdG8gcmVhZCBmaWZvL2NoaXAgY29udHJvbCByZWdpc3RlcjogLTEx
+MAogbW1jMTogcXVldWluZyB1bmtub3duIENJUyB0dXBsZSAweDAxIFtkOSAwMSBmZl0gKDMgYnl0
+ZXMpCiBtbWMxOiBxdWV1aW5nIHVua25vd24gQ0lTIHR1cGxlIDB4MWEgWzAxIDAxIDAwIDAyIDA3
+XSAoNSBieXRlcykKIG1tYzE6IHF1ZXVpbmcgdW5rbm93biBDSVMgdHVwbGUgMHgxYiBbYzEgNDEg
+MzAgMzAgZmYgZmYgMzIgMDBdICg4IGJ5dGVzKQogbW1jMTogcXVldWluZyB1bmtub3duIENJUyB0
+dXBsZSAweDE0IFtdICgwIGJ5dGVzKQogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0t
+LS0tCiBXQVJOSU5HOiBDUFU6IDAgUElEOiAzNSBhdCBuZXQvbWFjODAyMTEvdXRpbC5jOjI0NDIK
+aWVlZTgwMjExX3JlY29uZmlnKzB4YzgvMHgxYTBjCiBIYXJkd2FyZSBiZWNhbWUgdW5hdmFpbGFi
+bGUgZHVyaW5nIHJlc3RhcnQuCiBNb2R1bGVzIGxpbmtlZCBpbjogYXRoMTBrX3NkaW8gYXRoMTBr
+X2NvcmUgYXRoIGNvZGFfdnB1IHY0bDJfanBlZwppbXhfdmRvYSBpbXhfc2RtYSBvdjU2NDUKIENQ
+VTogMCBQSUQ6IDM1IENvbW06IGt3b3JrZXIvMDo4IFRhaW50ZWQ6IEcgICAgICAgIFcgICAgICAg
+ICAgNi4xLjAgIzY3CiBIYXJkd2FyZSBuYW1lOiBGcmVlc2NhbGUgaS5NWDYgUXVhZC9EdWFsTGl0
+ZSAoRGV2aWNlIFRyZWUpCiBXb3JrcXVldWU6IGV2ZW50c19mcmVlemFibGUgaWVlZTgwMjExX3Jl
+c3RhcnRfd29yawogIHVud2luZF9iYWNrdHJhY2UgZnJvbSBzaG93X3N0YWNrKzB4MTAvMHgxNAog
+IHNob3dfc3RhY2sgZnJvbSBkdW1wX3N0YWNrX2x2bCsweDU4LzB4NzAKICBkdW1wX3N0YWNrX2x2
+bCBmcm9tIF9fd2FybisweGI0LzB4MjRjCiAgX193YXJuIGZyb20gd2Fybl9zbG93cGF0aF9mbXQr
+MHg5MC8weGQ4CiAgd2Fybl9zbG93cGF0aF9mbXQgZnJvbSBpZWVlODAyMTFfcmVjb25maWcrMHhj
+OC8weDFhMGMKICBpZWVlODAyMTFfcmVjb25maWcgZnJvbSBpZWVlODAyMTFfcmVzdGFydF93b3Jr
+KzB4ZmMvMHgxNjAKICBpZWVlODAyMTFfcmVzdGFydF93b3JrIGZyb20gcHJvY2Vzc19vbmVfd29y
+aysweDI4OC8weDczNAogIHByb2Nlc3Nfb25lX3dvcmsgZnJvbSB3b3JrZXJfdGhyZWFkKzB4Mzgv
+MHg0ZDAKICB3b3JrZXJfdGhyZWFkIGZyb20ga3RocmVhZCsweGU0LzB4MTA0CiAga3RocmVhZCBm
+cm9tIHJldF9mcm9tX2ZvcmsrMHgxNC8weDI4CiBFeGNlcHRpb24gc3RhY2soMHhlMDk3MWZiMCB0
+byAweGUwOTcxZmY4KQogMWZhMDogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKIDFmYzA6IDAwMDAwMDAwIDAwMDAw
+MDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAw
+CiAxZmUwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAxMyAwMDAw
+MDAwMAogaXJxIGV2ZW50IHN0YW1wOiAxNjgyOQogaGFyZGlycXMgbGFzdCAgZW5hYmxlZCBhdCAo
+MTY4NDcpOiBbPGMwMTk5NzBjPl0gX191cF9jb25zb2xlX3NlbSsweDUwLzB4NjAKIGhhcmRpcnFz
+IGxhc3QgZGlzYWJsZWQgYXQgKDE2ODU4KTogWzxjMDE5OTZmOD5dIF9fdXBfY29uc29sZV9zZW0r
+MHgzYy8weDYwCiBzb2Z0aXJxcyBsYXN0ICBlbmFibGVkIGF0ICgxNjg0Mik6IFs8YzAxMDE3ZDA+
+XSBfX2RvX3NvZnRpcnErMHgyYzAvMHg2MjQKIHNvZnRpcnFzIGxhc3QgZGlzYWJsZWQgYXQgKDE2
+ODM3KTogWzxjMDEyZmMxND5dIF9faXJxX2V4aXRfcmN1KzB4MTM4LzB4MTdjCiAtLS1bIGVuZCB0
+cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0KIC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0t
+LS0tLS0tLQogV0FSTklORzogQ1BVOiAwIFBJRDogMzUgYXQgbmV0L21hYzgwMjExL2RyaXZlci1v
+cHMuYzo0NTgKZHJ2X3NldF9rZXkrMHgyM2MvMHgzMjAKIHdsYW4wOiBGYWlsZWQgY2hlY2stc2Rh
+dGEtaW4tZHJpdmVyIGNoZWNrLCBmbGFnczogMHgwCiBNb2R1bGVzIGxpbmtlZCBpbjogYXRoMTBr
+X3NkaW8gYXRoMTBrX2NvcmUgYXRoIGNvZGFfdnB1IHY0bDJfanBlZwppbXhfdmRvYSBpbXhfc2Rt
+YSBvdjU2NDUKIENQVTogMCBQSUQ6IDM1IENvbW06IGt3b3JrZXIvMDo4IFRhaW50ZWQ6IEcgICAg
+ICAgIFcgICAgICAgICAgNi4xLjAgIzY3CiBIYXJkd2FyZSBuYW1lOiBGcmVlc2NhbGUgaS5NWDYg
+UXVhZC9EdWFsTGl0ZSAoRGV2aWNlIFRyZWUpCiBXb3JrcXVldWU6IGV2ZW50c19mcmVlemFibGUg
+aWVlZTgwMjExX3Jlc3RhcnRfd29yawogIHVud2luZF9iYWNrdHJhY2UgZnJvbSBzaG93X3N0YWNr
+KzB4MTAvMHgxNAogIHNob3dfc3RhY2sgZnJvbSBkdW1wX3N0YWNrX2x2bCsweDU4LzB4NzAKICBk
+dW1wX3N0YWNrX2x2bCBmcm9tIF9fd2FybisweGI0LzB4MjRjCiAgX193YXJuIGZyb20gd2Fybl9z
+bG93cGF0aF9mbXQrMHg5MC8weGQ4CiAgd2Fybl9zbG93cGF0aF9mbXQgZnJvbSBkcnZfc2V0X2tl
+eSsweDIzYy8weDMyMAogIGRydl9zZXRfa2V5IGZyb20gaWVlZTgwMjExX2tleV9kaXNhYmxlX2h3
+X2FjY2VsKzB4ZTgvMHgxMzQKICBpZWVlODAyMTFfa2V5X2Rpc2FibGVfaHdfYWNjZWwgZnJvbSBp
+ZWVlODAyMTFfa2V5X3JlcGxhY2UrMHg0OWMvMHg5MDQKICBpZWVlODAyMTFfa2V5X3JlcGxhY2Ug
+ZnJvbSBpZWVlODAyMTFfZnJlZV9rZXlzX2lmYWNlKzB4NjQvMHg5OAogIGllZWU4MDIxMV9mcmVl
+X2tleXNfaWZhY2UgZnJvbSBpZWVlODAyMTFfZnJlZV9rZXlzKzB4NjAvMHgyNjQKICBpZWVlODAy
+MTFfZnJlZV9rZXlzIGZyb20gaWVlZTgwMjExX3N0b3BfYXArMHgxZjAvMHg2NWMKICBpZWVlODAy
+MTFfc3RvcF9hcCBmcm9tIF9fX2NmZzgwMjExX3N0b3BfYXArMHhjNC8weDU1YwogIF9fX2NmZzgw
+MjExX3N0b3BfYXAgZnJvbSBfX2NmZzgwMjExX3N0b3BfYXArMHgzYy8weDkwCiAgX19jZmc4MDIx
+MV9zdG9wX2FwIGZyb20gY2ZnODAyMTFfbGVhdmUrMHgyOC8weDM0CiAgY2ZnODAyMTFfbGVhdmUg
+ZnJvbSBjZmc4MDIxMV9uZXRkZXZfbm90aWZpZXJfY2FsbCsweDJkMC8weDdjYwogIGNmZzgwMjEx
+X25ldGRldl9ub3RpZmllcl9jYWxsIGZyb20gcmF3X25vdGlmaWVyX2NhbGxfY2hhaW4rMHgzNC8w
+eDY0CiAgcmF3X25vdGlmaWVyX2NhbGxfY2hhaW4gZnJvbSBfX2Rldl9jbG9zZV9tYW55KzB4NTQv
+MHgxMmMKICBfX2Rldl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlX21hbnkrMHg3Yy8weDExOAog
+IGRldl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlKzB4NjgvMHg4MAogIGRldl9jbG9zZSBmcm9t
+IGNmZzgwMjExX3NodXRkb3duX2FsbF9pbnRlcmZhY2VzKzB4M2MvMHhmYwogIGNmZzgwMjExX3No
+dXRkb3duX2FsbF9pbnRlcmZhY2VzIGZyb20gaWVlZTgwMjExX3Jlc3RhcnRfd29yaysweDEyNC8w
+eDE2MAogIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsgZnJvbSBwcm9jZXNzX29uZV93b3JrKzB4Mjg4
+LzB4NzM0CiAgcHJvY2Vzc19vbmVfd29yayBmcm9tIHdvcmtlcl90aHJlYWQrMHgzOC8weDRkMAog
+IHdvcmtlcl90aHJlYWQgZnJvbSBrdGhyZWFkKzB4ZTQvMHgxMDQKICBrdGhyZWFkIGZyb20gcmV0
+X2Zyb21fZm9yaysweDE0LzB4MjgKIEV4Y2VwdGlvbiBzdGFjaygweGUwOTcxZmIwIHRvIDB4ZTA5
+NzFmZjgpCiAxZmEwOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwMDAwMDAw
+MCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAogMWZjMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAw
+MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKIDFmZTA6
+IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDEzIDAwMDAwMDAwCiBp
+cnEgZXZlbnQgc3RhbXA6IDE3MTExCiBoYXJkaXJxcyBsYXN0ICBlbmFibGVkIGF0ICgxNzEyMSk6
+IFs8YzAxOTk3MGM+XSBfX3VwX2NvbnNvbGVfc2VtKzB4NTAvMHg2MAogaGFyZGlycXMgbGFzdCBk
+aXNhYmxlZCBhdCAoMTcxMzIpOiBbPGMwMTk5NmY4Pl0gX191cF9jb25zb2xlX3NlbSsweDNjLzB4
+NjAKIHNvZnRpcnFzIGxhc3QgIGVuYWJsZWQgYXQgKDE3MTEwKTogWzxjMDEwMTdkMD5dIF9fZG9f
+c29mdGlycSsweDJjMC8weDYyNAogc29mdGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMTcwOTEpOiBb
+PGMwMTJmYzE0Pl0gX19pcnFfZXhpdF9yY3UrMHgxMzgvMHgxN2MKIC0tLVsgZW5kIHRyYWNlIDAw
+MDAwMDAwMDAwMDAwMDAgXS0tLQogd2xhbjA6IGZhaWxlZCB0byByZW1vdmUga2V5ICgxLCBmZjpm
+ZjpmZjpmZjpmZjpmZikgZnJvbSBoYXJkd2FyZSAoLTUpCiAtLS0tLS0tLS0tLS1bIGN1dCBoZXJl
+IF0tLS0tLS0tLS0tLS0KIFdBUk5JTkc6IENQVTogMCBQSUQ6IDM1IGF0IG5ldC9tYWM4MDIxMS9t
+YWluLmM6Mjg3CmllZWU4MDIxMV9saW5rX2luZm9fY2hhbmdlX25vdGlmeSsweGIwLzB4MTA0CiB3
+bGFuMDogRmFpbGVkIGNoZWNrLXNkYXRhLWluLWRyaXZlciBjaGVjaywgZmxhZ3M6IDB4MAogTW9k
+dWxlcyBsaW5rZWQgaW46IGF0aDEwa19zZGlvIGF0aDEwa19jb3JlIGF0aCBjb2RhX3ZwdSB2NGwy
+X2pwZWcKaW14X3Zkb2EgaW14X3NkbWEgb3Y1NjQ1CiBDUFU6IDAgUElEOiAzNSBDb21tOiBrd29y
+a2VyLzA6OCBUYWludGVkOiBHICAgICAgICBXICAgICAgICAgIDYuMS4wICM2NwogSGFyZHdhcmUg
+bmFtZTogRnJlZXNjYWxlIGkuTVg2IFF1YWQvRHVhbExpdGUgKERldmljZSBUcmVlKQogV29ya3F1
+ZXVlOiBldmVudHNfZnJlZXphYmxlIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsKICB1bndpbmRfYmFj
+a3RyYWNlIGZyb20gc2hvd19zdGFjaysweDEwLzB4MTQKICBzaG93X3N0YWNrIGZyb20gZHVtcF9z
+dGFja19sdmwrMHg1OC8weDcwCiAgZHVtcF9zdGFja19sdmwgZnJvbSBfX3dhcm4rMHhiNC8weDI0
+YwogIF9fd2FybiBmcm9tIHdhcm5fc2xvd3BhdGhfZm10KzB4OTAvMHhkOAogIHdhcm5fc2xvd3Bh
+dGhfZm10IGZyb20gaWVlZTgwMjExX2xpbmtfaW5mb19jaGFuZ2Vfbm90aWZ5KzB4YjAvMHgxMDQK
+ICBpZWVlODAyMTFfbGlua19pbmZvX2NoYW5nZV9ub3RpZnkgZnJvbSBpZWVlODAyMTFfc3RvcF9h
+cCsweDIyMC8weDY1YwogIGllZWU4MDIxMV9zdG9wX2FwIGZyb20gX19fY2ZnODAyMTFfc3RvcF9h
+cCsweGM0LzB4NTVjCiAgX19fY2ZnODAyMTFfc3RvcF9hcCBmcm9tIF9fY2ZnODAyMTFfc3RvcF9h
+cCsweDNjLzB4OTAKICBfX2NmZzgwMjExX3N0b3BfYXAgZnJvbSBjZmc4MDIxMV9sZWF2ZSsweDI4
+LzB4MzQKICBjZmc4MDIxMV9sZWF2ZSBmcm9tIGNmZzgwMjExX25ldGRldl9ub3RpZmllcl9jYWxs
+KzB4MmQwLzB4N2NjCiAgY2ZnODAyMTFfbmV0ZGV2X25vdGlmaWVyX2NhbGwgZnJvbSByYXdfbm90
+aWZpZXJfY2FsbF9jaGFpbisweDM0LzB4NjQKICByYXdfbm90aWZpZXJfY2FsbF9jaGFpbiBmcm9t
+IF9fZGV2X2Nsb3NlX21hbnkrMHg1NC8weDEyYwogIF9fZGV2X2Nsb3NlX21hbnkgZnJvbSBkZXZf
+Y2xvc2VfbWFueSsweDdjLzB4MTE4CiAgZGV2X2Nsb3NlX21hbnkgZnJvbSBkZXZfY2xvc2UrMHg2
+OC8weDgwCiAgZGV2X2Nsb3NlIGZyb20gY2ZnODAyMTFfc2h1dGRvd25fYWxsX2ludGVyZmFjZXMr
+MHgzYy8weGZjCiAgY2ZnODAyMTFfc2h1dGRvd25fYWxsX2ludGVyZmFjZXMgZnJvbSBpZWVlODAy
+MTFfcmVzdGFydF93b3JrKzB4MTI0LzB4MTYwCiAgaWVlZTgwMjExX3Jlc3RhcnRfd29yayBmcm9t
+IHByb2Nlc3Nfb25lX3dvcmsrMHgyODgvMHg3MzQKICBwcm9jZXNzX29uZV93b3JrIGZyb20gd29y
+a2VyX3RocmVhZCsweDM4LzB4NGQwCiAgd29ya2VyX3RocmVhZCBmcm9tIGt0aHJlYWQrMHhlNC8w
+eDEwNAogIGt0aHJlYWQgZnJvbSByZXRfZnJvbV9mb3JrKzB4MTQvMHgyOAogRXhjZXB0aW9uIHN0
+YWNrKDB4ZTA5NzFmYjAgdG8gMHhlMDk3MWZmOCkKIDFmYTA6ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwCiAxZmMw
+OiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAw
+MDAwMDAwMCAwMDAwMDAwMAogMWZlMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
+MDAgMDAwMDAwMTMgMDAwMDAwMDAKIGlycSBldmVudCBzdGFtcDogMTczNDUKIGhhcmRpcnFzIGxh
+c3QgIGVuYWJsZWQgYXQgKDE3MzU3KTogWzxjMDE5OTcwYz5dIF9fdXBfY29uc29sZV9zZW0rMHg1
+MC8weDYwCiBoYXJkaXJxcyBsYXN0IGRpc2FibGVkIGF0ICgxNzM2OCk6IFs8YzAxOTk2Zjg+XSBf
+X3VwX2NvbnNvbGVfc2VtKzB4M2MvMHg2MAogc29mdGlycXMgbGFzdCAgZW5hYmxlZCBhdCAoMTcy
+NTYpOiBbPGMwMTAxN2QwPl0gX19kb19zb2Z0aXJxKzB4MmMwLzB4NjI0CiBzb2Z0aXJxcyBsYXN0
+IGRpc2FibGVkIGF0ICgxNzIyNSk6IFs8YzAxMmZjMTQ+XSBfX2lycV9leGl0X3JjdSsweDEzOC8w
+eDE3YwogLS0tWyBlbmQgdHJhY2UgMDAwMDAwMDAwMDAwMDAwMCBdLS0tCiAtLS0tLS0tLS0tLS1b
+IGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KIFdBUk5JTkc6IENQVTogMCBQSUQ6IDM1IGF0IG5ldC9t
+YWM4MDIxMS9kcml2ZXItb3BzLmg6OTQ0CmllZWU4MDIxMV9zdG9wX2FwKzB4NTkwLzB4NjVjCiB3
+bGFuMDogRmFpbGVkIGNoZWNrLXNkYXRhLWluLWRyaXZlciBjaGVjaywgZmxhZ3M6IDB4MAogTW9k
+dWxlcyBsaW5rZWQgaW46IGF0aDEwa19zZGlvIGF0aDEwa19jb3JlIGF0aCBjb2RhX3ZwdSB2NGwy
+X2pwZWcKaW14X3Zkb2EgaW14X3NkbWEgb3Y1NjQ1CiBDUFU6IDAgUElEOiAzNSBDb21tOiBrd29y
+a2VyLzA6OCBUYWludGVkOiBHICAgICAgICBXICAgICAgICAgIDYuMS4wICM2NwogSGFyZHdhcmUg
+bmFtZTogRnJlZXNjYWxlIGkuTVg2IFF1YWQvRHVhbExpdGUgKERldmljZSBUcmVlKQogV29ya3F1
+ZXVlOiBldmVudHNfZnJlZXphYmxlIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsKICB1bndpbmRfYmFj
+a3RyYWNlIGZyb20gc2hvd19zdGFjaysweDEwLzB4MTQKICBzaG93X3N0YWNrIGZyb20gZHVtcF9z
+dGFja19sdmwrMHg1OC8weDcwCiAgZHVtcF9zdGFja19sdmwgZnJvbSBfX3dhcm4rMHhiNC8weDI0
+YwogIF9fd2FybiBmcm9tIHdhcm5fc2xvd3BhdGhfZm10KzB4OTAvMHhkOAogIHdhcm5fc2xvd3Bh
+dGhfZm10IGZyb20gaWVlZTgwMjExX3N0b3BfYXArMHg1OTAvMHg2NWMKICBpZWVlODAyMTFfc3Rv
+cF9hcCBmcm9tIF9fX2NmZzgwMjExX3N0b3BfYXArMHhjNC8weDU1YwogIF9fX2NmZzgwMjExX3N0
+b3BfYXAgZnJvbSBfX2NmZzgwMjExX3N0b3BfYXArMHgzYy8weDkwCiAgX19jZmc4MDIxMV9zdG9w
+X2FwIGZyb20gY2ZnODAyMTFfbGVhdmUrMHgyOC8weDM0CiAgY2ZnODAyMTFfbGVhdmUgZnJvbSBj
+Zmc4MDIxMV9uZXRkZXZfbm90aWZpZXJfY2FsbCsweDJkMC8weDdjYwogIGNmZzgwMjExX25ldGRl
+dl9ub3RpZmllcl9jYWxsIGZyb20gcmF3X25vdGlmaWVyX2NhbGxfY2hhaW4rMHgzNC8weDY0CiAg
+cmF3X25vdGlmaWVyX2NhbGxfY2hhaW4gZnJvbSBfX2Rldl9jbG9zZV9tYW55KzB4NTQvMHgxMmMK
+ICBfX2Rldl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlX21hbnkrMHg3Yy8weDExOAogIGRldl9j
+bG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlKzB4NjgvMHg4MAogIGRldl9jbG9zZSBmcm9tIGNmZzgw
+MjExX3NodXRkb3duX2FsbF9pbnRlcmZhY2VzKzB4M2MvMHhmYwogIGNmZzgwMjExX3NodXRkb3du
+X2FsbF9pbnRlcmZhY2VzIGZyb20gaWVlZTgwMjExX3Jlc3RhcnRfd29yaysweDEyNC8weDE2MAog
+IGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsgZnJvbSBwcm9jZXNzX29uZV93b3JrKzB4Mjg4LzB4NzM0
+CiAgcHJvY2Vzc19vbmVfd29yayBmcm9tIHdvcmtlcl90aHJlYWQrMHgzOC8weDRkMAogIHdvcmtl
+cl90aHJlYWQgZnJvbSBrdGhyZWFkKzB4ZTQvMHgxMDQKICBrdGhyZWFkIGZyb20gcmV0X2Zyb21f
+Zm9yaysweDE0LzB4MjgKIEV4Y2VwdGlvbiBzdGFjaygweGUwOTcxZmIwIHRvIDB4ZTA5NzFmZjgp
+CiAxZmEwOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwMDAwMDAwMCAwMDAw
+MDAwMCAwMDAwMDAwMCAwMDAwMDAwMAogMWZjMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
+MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKIDFmZTA6IDAwMDAw
+MDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDEzIDAwMDAwMDAwCiBpcnEgZXZl
+bnQgc3RhbXA6IDE3NTIxCiBoYXJkaXJxcyBsYXN0ICBlbmFibGVkIGF0ICgxNzUzMyk6IFs8YzAx
+OTk3MGM+XSBfX3VwX2NvbnNvbGVfc2VtKzB4NTAvMHg2MAogaGFyZGlycXMgbGFzdCBkaXNhYmxl
+ZCBhdCAoMTc1NDQpOiBbPGMwMTk5NmY4Pl0gX191cF9jb25zb2xlX3NlbSsweDNjLzB4NjAKIHNv
+ZnRpcnFzIGxhc3QgIGVuYWJsZWQgYXQgKDE3MjU2KTogWzxjMDEwMTdkMD5dIF9fZG9fc29mdGly
+cSsweDJjMC8weDYyNAogc29mdGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMTcyMjUpOiBbPGMwMTJm
+YzE0Pl0gX19pcnFfZXhpdF9yY3UrMHgxMzgvMHgxN2MKIC0tLVsgZW5kIHRyYWNlIDAwMDAwMDAw
+MDAwMDAwMDAgXS0tLQogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCiBXQVJO
+SU5HOiBDUFU6IDAgUElEOiAzNSBhdCBuZXQvbWFjODAyMTEvZHJpdmVyLW9wcy5jOjMxNQpkcnZf
+dW5hc3NpZ25fdmlmX2NoYW5jdHgrMHgyNTAvMHgzNzAKIHdsYW4wOiBGYWlsZWQgY2hlY2stc2Rh
+dGEtaW4tZHJpdmVyIGNoZWNrLCBmbGFnczogMHgwCiBNb2R1bGVzIGxpbmtlZCBpbjogYXRoMTBr
+X3NkaW8gYXRoMTBrX2NvcmUgYXRoIGNvZGFfdnB1IHY0bDJfanBlZwppbXhfdmRvYSBpbXhfc2Rt
+YSBvdjU2NDUKIENQVTogMCBQSUQ6IDM1IENvbW06IGt3b3JrZXIvMDo4IFRhaW50ZWQ6IEcgICAg
+ICAgIFcgICAgICAgICAgNi4xLjAgIzY3CiBIYXJkd2FyZSBuYW1lOiBGcmVlc2NhbGUgaS5NWDYg
+UXVhZC9EdWFsTGl0ZSAoRGV2aWNlIFRyZWUpCiBXb3JrcXVldWU6IGV2ZW50c19mcmVlemFibGUg
+aWVlZTgwMjExX3Jlc3RhcnRfd29yawogIHVud2luZF9iYWNrdHJhY2UgZnJvbSBzaG93X3N0YWNr
+KzB4MTAvMHgxNAogIHNob3dfc3RhY2sgZnJvbSBkdW1wX3N0YWNrX2x2bCsweDU4LzB4NzAKICBk
+dW1wX3N0YWNrX2x2bCBmcm9tIF9fd2FybisweGI0LzB4MjRjCiAgX193YXJuIGZyb20gd2Fybl9z
+bG93cGF0aF9mbXQrMHg5MC8weGQ4CiAgd2Fybl9zbG93cGF0aF9mbXQgZnJvbSBkcnZfdW5hc3Np
+Z25fdmlmX2NoYW5jdHgrMHgyNTAvMHgzNzAKICBkcnZfdW5hc3NpZ25fdmlmX2NoYW5jdHggZnJv
+bSBpZWVlODAyMTFfYXNzaWduX2xpbmtfY2hhbmN0eCsweDYwLzB4MjIwCiAgaWVlZTgwMjExX2Fz
+c2lnbl9saW5rX2NoYW5jdHggZnJvbSBfX2llZWU4MDIxMV9saW5rX3JlbGVhc2VfY2hhbm5lbCsw
+eDdjLzB4MTg4CiAgX19pZWVlODAyMTFfbGlua19yZWxlYXNlX2NoYW5uZWwgZnJvbSBpZWVlODAy
+MTFfbGlua19yZWxlYXNlX2NoYW5uZWwrMHg0OC8weDk4CiAgaWVlZTgwMjExX2xpbmtfcmVsZWFz
+ZV9jaGFubmVsIGZyb20gaWVlZTgwMjExX3N0b3BfYXArMHgzMDgvMHg2NWMKICBpZWVlODAyMTFf
+c3RvcF9hcCBmcm9tIF9fX2NmZzgwMjExX3N0b3BfYXArMHhjNC8weDU1YwogIF9fX2NmZzgwMjEx
+X3N0b3BfYXAgZnJvbSBfX2NmZzgwMjExX3N0b3BfYXArMHgzYy8weDkwCiAgX19jZmc4MDIxMV9z
+dG9wX2FwIGZyb20gY2ZnODAyMTFfbGVhdmUrMHgyOC8weDM0CiAgY2ZnODAyMTFfbGVhdmUgZnJv
+bSBjZmc4MDIxMV9uZXRkZXZfbm90aWZpZXJfY2FsbCsweDJkMC8weDdjYwogIGNmZzgwMjExX25l
+dGRldl9ub3RpZmllcl9jYWxsIGZyb20gcmF3X25vdGlmaWVyX2NhbGxfY2hhaW4rMHgzNC8weDY0
+CiAgcmF3X25vdGlmaWVyX2NhbGxfY2hhaW4gZnJvbSBfX2Rldl9jbG9zZV9tYW55KzB4NTQvMHgx
+MmMKICBfX2Rldl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlX21hbnkrMHg3Yy8weDExOAogIGRl
+dl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlKzB4NjgvMHg4MAogIGRldl9jbG9zZSBmcm9tIGNm
+ZzgwMjExX3NodXRkb3duX2FsbF9pbnRlcmZhY2VzKzB4M2MvMHhmYwogIGNmZzgwMjExX3NodXRk
+b3duX2FsbF9pbnRlcmZhY2VzIGZyb20gaWVlZTgwMjExX3Jlc3RhcnRfd29yaysweDEyNC8weDE2
+MAogIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsgZnJvbSBwcm9jZXNzX29uZV93b3JrKzB4Mjg4LzB4
+NzM0CiAgcHJvY2Vzc19vbmVfd29yayBmcm9tIHdvcmtlcl90aHJlYWQrMHgzOC8weDRkMAogIHdv
+cmtlcl90aHJlYWQgZnJvbSBrdGhyZWFkKzB4ZTQvMHgxMDQKICBrdGhyZWFkIGZyb20gcmV0X2Zy
+b21fZm9yaysweDE0LzB4MjgKIEV4Y2VwdGlvbiBzdGFjaygweGUwOTcxZmIwIHRvIDB4ZTA5NzFm
+ZjgpCiAxZmEwOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwMDAwMDAwMCAw
+MDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAogMWZjMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
+MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKIDFmZTA6IDAw
+MDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDEzIDAwMDAwMDAwCiBpcnEg
+ZXZlbnQgc3RhbXA6IDE3NzM3CiBoYXJkaXJxcyBsYXN0ICBlbmFibGVkIGF0ICgxNzc0OSk6IFs8
+YzAxOTk3MGM+XSBfX3VwX2NvbnNvbGVfc2VtKzB4NTAvMHg2MAogaGFyZGlycXMgbGFzdCBkaXNh
+YmxlZCBhdCAoMTc3NjApOiBbPGMwMTk5NmY4Pl0gX191cF9jb25zb2xlX3NlbSsweDNjLzB4NjAK
+IHNvZnRpcnFzIGxhc3QgIGVuYWJsZWQgYXQgKDE3NjM4KTogWzxjMDEwMTdkMD5dIF9fZG9fc29m
+dGlycSsweDJjMC8weDYyNAogc29mdGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMTc2MDEpOiBbPGMw
+MTJmYzE0Pl0gX19pcnFfZXhpdF9yY3UrMHgxMzgvMHgxN2MKIC0tLVsgZW5kIHRyYWNlIDAwMDAw
+MDAwMDAwMDAwMDAgXS0tLQogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCiBX
+QVJOSU5HOiBDUFU6IDAgUElEOiAzNSBhdCBuZXQvbWFjODAyMTEvZHJpdmVyLW9wcy5oOjE1Ngpp
+ZWVlODAyMTFfdmlmX2NmZ19jaGFuZ2Vfbm90aWZ5KzB4MWVjLzB4MzM0CiB3bGFuMDogRmFpbGVk
+IGNoZWNrLXNkYXRhLWluLWRyaXZlciBjaGVjaywgZmxhZ3M6IDB4MAogTW9kdWxlcyBsaW5rZWQg
+aW46IGF0aDEwa19zZGlvIGF0aDEwa19jb3JlIGF0aCBjb2RhX3ZwdSB2NGwyX2pwZWcKaW14X3Zk
+b2EgaW14X3NkbWEgb3Y1NjQ1CiBDUFU6IDAgUElEOiAzNSBDb21tOiBrd29ya2VyLzA6OCBUYWlu
+dGVkOiBHICAgICAgICBXICAgICAgICAgIDYuMS4wICM2NwogSGFyZHdhcmUgbmFtZTogRnJlZXNj
+YWxlIGkuTVg2IFF1YWQvRHVhbExpdGUgKERldmljZSBUcmVlKQogV29ya3F1ZXVlOiBldmVudHNf
+ZnJlZXphYmxlIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsKICB1bndpbmRfYmFja3RyYWNlIGZyb20g
+c2hvd19zdGFjaysweDEwLzB4MTQKICBzaG93X3N0YWNrIGZyb20gZHVtcF9zdGFja19sdmwrMHg1
+OC8weDcwCiAgZHVtcF9zdGFja19sdmwgZnJvbSBfX3dhcm4rMHhiNC8weDI0YwogIF9fd2FybiBm
+cm9tIHdhcm5fc2xvd3BhdGhfZm10KzB4OTAvMHhkOAogIHdhcm5fc2xvd3BhdGhfZm10IGZyb20g
+aWVlZTgwMjExX3ZpZl9jZmdfY2hhbmdlX25vdGlmeSsweDFlYy8weDMzNAogIGllZWU4MDIxMV92
+aWZfY2ZnX2NoYW5nZV9ub3RpZnkgZnJvbSBpZWVlODAyMTFfYXNzaWduX2xpbmtfY2hhbmN0eCsw
+eDFkNC8weDIyMAogIGllZWU4MDIxMV9hc3NpZ25fbGlua19jaGFuY3R4IGZyb20gX19pZWVlODAy
+MTFfbGlua19yZWxlYXNlX2NoYW5uZWwrMHg3Yy8weDE4OAogIF9faWVlZTgwMjExX2xpbmtfcmVs
+ZWFzZV9jaGFubmVsIGZyb20gaWVlZTgwMjExX2xpbmtfcmVsZWFzZV9jaGFubmVsKzB4NDgvMHg5
+OAogIGllZWU4MDIxMV9saW5rX3JlbGVhc2VfY2hhbm5lbCBmcm9tIGllZWU4MDIxMV9zdG9wX2Fw
+KzB4MzA4LzB4NjVjCiAgaWVlZTgwMjExX3N0b3BfYXAgZnJvbSBfX19jZmc4MDIxMV9zdG9wX2Fw
+KzB4YzQvMHg1NWMKICBfX19jZmc4MDIxMV9zdG9wX2FwIGZyb20gX19jZmc4MDIxMV9zdG9wX2Fw
+KzB4M2MvMHg5MAogIF9fY2ZnODAyMTFfc3RvcF9hcCBmcm9tIGNmZzgwMjExX2xlYXZlKzB4Mjgv
+MHgzNAogIGNmZzgwMjExX2xlYXZlIGZyb20gY2ZnODAyMTFfbmV0ZGV2X25vdGlmaWVyX2NhbGwr
+MHgyZDAvMHg3Y2MKICBjZmc4MDIxMV9uZXRkZXZfbm90aWZpZXJfY2FsbCBmcm9tIHJhd19ub3Rp
+Zmllcl9jYWxsX2NoYWluKzB4MzQvMHg2NAogIHJhd19ub3RpZmllcl9jYWxsX2NoYWluIGZyb20g
+X19kZXZfY2xvc2VfbWFueSsweDU0LzB4MTJjCiAgX19kZXZfY2xvc2VfbWFueSBmcm9tIGRldl9j
+bG9zZV9tYW55KzB4N2MvMHgxMTgKICBkZXZfY2xvc2VfbWFueSBmcm9tIGRldl9jbG9zZSsweDY4
+LzB4ODAKICBkZXZfY2xvc2UgZnJvbSBjZmc4MDIxMV9zaHV0ZG93bl9hbGxfaW50ZXJmYWNlcysw
+eDNjLzB4ZmMKICBjZmc4MDIxMV9zaHV0ZG93bl9hbGxfaW50ZXJmYWNlcyBmcm9tIGllZWU4MDIx
+MV9yZXN0YXJ0X3dvcmsrMHgxMjQvMHgxNjAKICBpZWVlODAyMTFfcmVzdGFydF93b3JrIGZyb20g
+cHJvY2Vzc19vbmVfd29yaysweDI4OC8weDczNAogIHByb2Nlc3Nfb25lX3dvcmsgZnJvbSB3b3Jr
+ZXJfdGhyZWFkKzB4MzgvMHg0ZDAKICB3b3JrZXJfdGhyZWFkIGZyb20ga3RocmVhZCsweGU0LzB4
+MTA0CiAga3RocmVhZCBmcm9tIHJldF9mcm9tX2ZvcmsrMHgxNC8weDI4CiBFeGNlcHRpb24gc3Rh
+Y2soMHhlMDk3MWZiMCB0byAweGUwOTcxZmY4KQogMWZhMDogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKIDFmYzA6
+IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAw
+MDAwMDAwIDAwMDAwMDAwCiAxZmUwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAw
+MCAwMDAwMDAxMyAwMDAwMDAwMAogaXJxIGV2ZW50IHN0YW1wOiAxNzk1NwogaGFyZGlycXMgbGFz
+dCAgZW5hYmxlZCBhdCAoMTc5NjcpOiBbPGMwMTk5NzBjPl0gX191cF9jb25zb2xlX3NlbSsweDUw
+LzB4NjAKIGhhcmRpcnFzIGxhc3QgZGlzYWJsZWQgYXQgKDE3OTc4KTogWzxjMDE5OTZmOD5dIF9f
+dXBfY29uc29sZV9zZW0rMHgzYy8weDYwCiBzb2Z0aXJxcyBsYXN0ICBlbmFibGVkIGF0ICgxNzg1
+OCk6IFs8YzAxMDE3ZDA+XSBfX2RvX3NvZnRpcnErMHgyYzAvMHg2MjQKIHNvZnRpcnFzIGxhc3Qg
+ZGlzYWJsZWQgYXQgKDE3ODE3KTogWzxjMDEyZmMxND5dIF9faXJxX2V4aXRfcmN1KzB4MTM4LzB4
+MTdjCiAtLS1bIGVuZCB0cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0KIC0tLS0tLS0tLS0tLVsg
+Y3V0IGhlcmUgXS0tLS0tLS0tLS0tLQogV0FSTklORzogQ1BVOiAwIFBJRDogMzUgYXQgbmV0L21h
+YzgwMjExL2RyaXZlci1vcHMuaDo4NzIKaWVlZTgwMjExX2RlbF9jaGFuY3R4KzB4MWZjLzB4MzM0
+CiBNb2R1bGVzIGxpbmtlZCBpbjogYXRoMTBrX3NkaW8gYXRoMTBrX2NvcmUgYXRoIGNvZGFfdnB1
+IHY0bDJfanBlZwppbXhfdmRvYSBpbXhfc2RtYSBvdjU2NDUKIENQVTogMCBQSUQ6IDM1IENvbW06
+IGt3b3JrZXIvMDo4IFRhaW50ZWQ6IEcgICAgICAgIFcgICAgICAgICAgNi4xLjAgIzY3CiBIYXJk
+d2FyZSBuYW1lOiBGcmVlc2NhbGUgaS5NWDYgUXVhZC9EdWFsTGl0ZSAoRGV2aWNlIFRyZWUpCiBX
+b3JrcXVldWU6IGV2ZW50c19mcmVlemFibGUgaWVlZTgwMjExX3Jlc3RhcnRfd29yawogIHVud2lu
+ZF9iYWNrdHJhY2UgZnJvbSBzaG93X3N0YWNrKzB4MTAvMHgxNAogIHNob3dfc3RhY2sgZnJvbSBk
+dW1wX3N0YWNrX2x2bCsweDU4LzB4NzAKICBkdW1wX3N0YWNrX2x2bCBmcm9tIF9fd2FybisweGI0
+LzB4MjRjCiAgX193YXJuIGZyb20gd2Fybl9zbG93cGF0aF9mbXQrMHg1Yy8weGQ4CiAgd2Fybl9z
+bG93cGF0aF9mbXQgZnJvbSBpZWVlODAyMTFfZGVsX2NoYW5jdHgrMHgxZmMvMHgzMzQKICBpZWVl
+ODAyMTFfZGVsX2NoYW5jdHggZnJvbSBpZWVlODAyMTFfZnJlZV9jaGFuY3R4KzB4NTAvMHhkNAog
+IGllZWU4MDIxMV9mcmVlX2NoYW5jdHggZnJvbSBfX2llZWU4MDIxMV9saW5rX3JlbGVhc2VfY2hh
+bm5lbCsweGE4LzB4MTg4CiAgX19pZWVlODAyMTFfbGlua19yZWxlYXNlX2NoYW5uZWwgZnJvbSBp
+ZWVlODAyMTFfbGlua19yZWxlYXNlX2NoYW5uZWwrMHg0OC8weDk4CiAgaWVlZTgwMjExX2xpbmtf
+cmVsZWFzZV9jaGFubmVsIGZyb20gaWVlZTgwMjExX3N0b3BfYXArMHgzMDgvMHg2NWMKICBpZWVl
+ODAyMTFfc3RvcF9hcCBmcm9tIF9fX2NmZzgwMjExX3N0b3BfYXArMHhjNC8weDU1YwogIF9fX2Nm
+ZzgwMjExX3N0b3BfYXAgZnJvbSBfX2NmZzgwMjExX3N0b3BfYXArMHgzYy8weDkwCiAgX19jZmc4
+MDIxMV9zdG9wX2FwIGZyb20gY2ZnODAyMTFfbGVhdmUrMHgyOC8weDM0CiAgY2ZnODAyMTFfbGVh
+dmUgZnJvbSBjZmc4MDIxMV9uZXRkZXZfbm90aWZpZXJfY2FsbCsweDJkMC8weDdjYwogIGNmZzgw
+MjExX25ldGRldl9ub3RpZmllcl9jYWxsIGZyb20gcmF3X25vdGlmaWVyX2NhbGxfY2hhaW4rMHgz
+NC8weDY0CiAgcmF3X25vdGlmaWVyX2NhbGxfY2hhaW4gZnJvbSBfX2Rldl9jbG9zZV9tYW55KzB4
+NTQvMHgxMmMKICBfX2Rldl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlX21hbnkrMHg3Yy8weDEx
+OAogIGRldl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlKzB4NjgvMHg4MAogIGRldl9jbG9zZSBm
+cm9tIGNmZzgwMjExX3NodXRkb3duX2FsbF9pbnRlcmZhY2VzKzB4M2MvMHhmYwogIGNmZzgwMjEx
+X3NodXRkb3duX2FsbF9pbnRlcmZhY2VzIGZyb20gaWVlZTgwMjExX3Jlc3RhcnRfd29yaysweDEy
+NC8weDE2MAogIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsgZnJvbSBwcm9jZXNzX29uZV93b3JrKzB4
+Mjg4LzB4NzM0CiAgcHJvY2Vzc19vbmVfd29yayBmcm9tIHdvcmtlcl90aHJlYWQrMHgzOC8weDRk
+MAogIHdvcmtlcl90aHJlYWQgZnJvbSBrdGhyZWFkKzB4ZTQvMHgxMDQKICBrdGhyZWFkIGZyb20g
+cmV0X2Zyb21fZm9yaysweDE0LzB4MjgKIEV4Y2VwdGlvbiBzdGFjaygweGUwOTcxZmIwIHRvIDB4
+ZTA5NzFmZjgpCiAxZmEwOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwMDAw
+MDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAogMWZjMDogMDAwMDAwMDAgMDAwMDAwMDAg
+MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKIDFm
+ZTA6IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDEzIDAwMDAwMDAw
+CiBpcnEgZXZlbnQgc3RhbXA6IDE4MTUzCiBoYXJkaXJxcyBsYXN0ICBlbmFibGVkIGF0ICgxODE2
+Myk6IFs8YzAxOTk3MGM+XSBfX3VwX2NvbnNvbGVfc2VtKzB4NTAvMHg2MAogaGFyZGlycXMgbGFz
+dCBkaXNhYmxlZCBhdCAoMTgxNzQpOiBbPGMwMTk5NmY4Pl0gX191cF9jb25zb2xlX3NlbSsweDNj
+LzB4NjAKIHNvZnRpcnFzIGxhc3QgIGVuYWJsZWQgYXQgKDE4MTUyKTogWzxjMDEwMTdkMD5dIF9f
+ZG9fc29mdGlycSsweDJjMC8weDYyNAogc29mdGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMTgxNDEp
+OiBbPGMwMTJmYzE0Pl0gX19pcnFfZXhpdF9yY3UrMHgxMzgvMHgxN2MKIC0tLVsgZW5kIHRyYWNl
+IDAwMDAwMDAwMDAwMDAwMDAgXS0tLQogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0t
+LS0tCiBXQVJOSU5HOiBDUFU6IDAgUElEOiAzNSBhdCBuZXQvbWFjODAyMTEvZHJpdmVyLW9wcy5j
+Ojk4CmRydl9yZW1vdmVfaW50ZXJmYWNlKzB4MWM0LzB4MjhjCiB3bGFuMDogRmFpbGVkIGNoZWNr
+LXNkYXRhLWluLWRyaXZlciBjaGVjaywgZmxhZ3M6IDB4MAogTW9kdWxlcyBsaW5rZWQgaW46IGF0
+aDEwa19zZGlvIGF0aDEwa19jb3JlIGF0aCBjb2RhX3ZwdSB2NGwyX2pwZWcKaW14X3Zkb2EgaW14
+X3NkbWEgb3Y1NjQ1CiBDUFU6IDAgUElEOiAzNSBDb21tOiBrd29ya2VyLzA6OCBUYWludGVkOiBH
+ICAgICAgICBXICAgICAgICAgIDYuMS4wICM2NwogSGFyZHdhcmUgbmFtZTogRnJlZXNjYWxlIGku
+TVg2IFF1YWQvRHVhbExpdGUgKERldmljZSBUcmVlKQogV29ya3F1ZXVlOiBldmVudHNfZnJlZXph
+YmxlIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsKICB1bndpbmRfYmFja3RyYWNlIGZyb20gc2hvd19z
+dGFjaysweDEwLzB4MTQKICBzaG93X3N0YWNrIGZyb20gZHVtcF9zdGFja19sdmwrMHg1OC8weDcw
+CiAgZHVtcF9zdGFja19sdmwgZnJvbSBfX3dhcm4rMHhiNC8weDI0YwogIF9fd2FybiBmcm9tIHdh
+cm5fc2xvd3BhdGhfZm10KzB4OTAvMHhkOAogIHdhcm5fc2xvd3BhdGhfZm10IGZyb20gZHJ2X3Jl
+bW92ZV9pbnRlcmZhY2UrMHgxYzQvMHgyOGMKICBkcnZfcmVtb3ZlX2ludGVyZmFjZSBmcm9tIGll
+ZWU4MDIxMV9kb19zdG9wKzB4NWU4LzB4OGI0CiAgaWVlZTgwMjExX2RvX3N0b3AgZnJvbSBpZWVl
+ODAyMTFfc3RvcCsweDQ0LzB4MTRjCiAgaWVlZTgwMjExX3N0b3AgZnJvbSBfX2Rldl9jbG9zZV9t
+YW55KzB4YTQvMHgxMmMKICBfX2Rldl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlX21hbnkrMHg3
+Yy8weDExOAogIGRldl9jbG9zZV9tYW55IGZyb20gZGV2X2Nsb3NlKzB4NjgvMHg4MAogIGRldl9j
+bG9zZSBmcm9tIGNmZzgwMjExX3NodXRkb3duX2FsbF9pbnRlcmZhY2VzKzB4M2MvMHhmYwogIGNm
+ZzgwMjExX3NodXRkb3duX2FsbF9pbnRlcmZhY2VzIGZyb20gaWVlZTgwMjExX3Jlc3RhcnRfd29y
+aysweDEyNC8weDE2MAogIGllZWU4MDIxMV9yZXN0YXJ0X3dvcmsgZnJvbSBwcm9jZXNzX29uZV93
+b3JrKzB4Mjg4LzB4NzM0CiAgcHJvY2Vzc19vbmVfd29yayBmcm9tIHdvcmtlcl90aHJlYWQrMHgz
+OC8weDRkMAogIHdvcmtlcl90aHJlYWQgZnJvbSBrdGhyZWFkKzB4ZTQvMHgxMDQKICBrdGhyZWFk
+IGZyb20gcmV0X2Zyb21fZm9yaysweDE0LzB4MjgKIEV4Y2VwdGlvbiBzdGFjaygweGUwOTcxZmIw
+IHRvIDB4ZTA5NzFmZjgpCiAxZmEwOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAogMWZjMDogMDAwMDAwMDAgMDAw
+MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
+MDAKIDFmZTA6IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDEzIDAw
+MDAwMDAwCiBpcnEgZXZlbnQgc3RhbXA6IDE4NTI1CiBoYXJkaXJxcyBsYXN0ICBlbmFibGVkIGF0
+ICgxODUzNyk6IFs8YzAxOTk3MGM+XSBfX3VwX2NvbnNvbGVfc2VtKzB4NTAvMHg2MAogaGFyZGly
+cXMgbGFzdCBkaXNhYmxlZCBhdCAoMTg1NDgpOiBbPGMwMTk5NmY4Pl0gX191cF9jb25zb2xlX3Nl
+bSsweDNjLzB4NjAKIHNvZnRpcnFzIGxhc3QgIGVuYWJsZWQgYXQgKDE4NTI0KTogWzxjMDEwMTdk
+MD5dIF9fZG9fc29mdGlycSsweDJjMC8weDYyNAogc29mdGlycXMgbGFzdCBkaXNhYmxlZCBhdCAo
+MTg1MDUpOiBbPGMwMTJmYzE0Pl0gX19pcnFfZXhpdF9yY3UrMHgxMzgvMHgxN2MKIC0tLVsgZW5k
+IHRyYWNlIDAwMDAwMDAwMDAwMDAwMDAgXS0tLQogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0t
+LS0tLS0tLS0tCiBXQVJOSU5HOiBDUFU6IDAgUElEOiAzNSBhdCBuZXQvbWFjODAyMTEvZHJpdmVy
+LW9wcy5jOjM3CmllZWU4MDIxMV9kb19zdG9wKzB4NmU4LzB4OGI0CiBNb2R1bGVzIGxpbmtlZCBp
+bjogYXRoMTBrX3NkaW8gYXRoMTBrX2NvcmUgYXRoIGNvZGFfdnB1IHY0bDJfanBlZwppbXhfdmRv
+YSBpbXhfc2RtYSBvdjU2NDUKIENQVTogMCBQSUQ6IDM1IENvbW06IGt3b3JrZXIvMDo4IFRhaW50
+ZWQ6IEcgICAgICAgIFcgICAgICAgICAgNi4xLjAgIzY3CiBIYXJkd2FyZSBuYW1lOiBGcmVlc2Nh
+bGUgaS5NWDYgUXVhZC9EdWFsTGl0ZSAoRGV2aWNlIFRyZWUpCiBXb3JrcXVldWU6IGV2ZW50c19m
+cmVlemFibGUgaWVlZTgwMjExX3Jlc3RhcnRfd29yawogIHVud2luZF9iYWNrdHJhY2UgZnJvbSBz
+aG93X3N0YWNrKzB4MTAvMHgxNAogIHNob3dfc3RhY2sgZnJvbSBkdW1wX3N0YWNrX2x2bCsweDU4
+LzB4NzAKICBkdW1wX3N0YWNrX2x2bCBmcm9tIF9fd2FybisweGI0LzB4MjRjCiAgX193YXJuIGZy
+b20gd2Fybl9zbG93cGF0aF9mbXQrMHg1Yy8weGQ4CiAgd2Fybl9zbG93cGF0aF9mbXQgZnJvbSBp
+ZWVlODAyMTFfZG9fc3RvcCsweDZlOC8weDhiNAogIGllZWU4MDIxMV9kb19zdG9wIGZyb20gaWVl
+ZTgwMjExX3N0b3ArMHg0NC8weDE0YwogIGllZWU4MDIxMV9zdG9wIGZyb20gX19kZXZfY2xvc2Vf
+bWFueSsweGE0LzB4MTJjCiAgX19kZXZfY2xvc2VfbWFueSBmcm9tIGRldl9jbG9zZV9tYW55KzB4
+N2MvMHgxMTgKICBkZXZfY2xvc2VfbWFueSBmcm9tIGRldl9jbG9zZSsweDY4LzB4ODAKICBkZXZf
+Y2xvc2UgZnJvbSBjZmc4MDIxMV9zaHV0ZG93bl9hbGxfaW50ZXJmYWNlcysweDNjLzB4ZmMKICBj
+Zmc4MDIxMV9zaHV0ZG93bl9hbGxfaW50ZXJmYWNlcyBmcm9tIGllZWU4MDIxMV9yZXN0YXJ0X3dv
+cmsrMHgxMjQvMHgxNjAKICBpZWVlODAyMTFfcmVzdGFydF93b3JrIGZyb20gcHJvY2Vzc19vbmVf
+d29yaysweDI4OC8weDczNAogIHByb2Nlc3Nfb25lX3dvcmsgZnJvbSB3b3JrZXJfdGhyZWFkKzB4
+MzgvMHg0ZDAKICB3b3JrZXJfdGhyZWFkIGZyb20ga3RocmVhZCsweGU0LzB4MTA0CiAga3RocmVh
+ZCBmcm9tIHJldF9mcm9tX2ZvcmsrMHgxNC8weDI4CiBFeGNlcHRpb24gc3RhY2soMHhlMDk3MWZi
+MCB0byAweGUwOTcxZmY4KQogMWZhMDogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKIDFmYzA6IDAwMDAwMDAwIDAw
+MDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAw
+MDAwCiAxZmUwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAxMyAw
+MDAwMDAwMAogaXJxIGV2ZW50IHN0YW1wOiAxODc0MwogaGFyZGlycXMgbGFzdCAgZW5hYmxlZCBh
+dCAoMTg3NTUpOiBbPGMwMTk5NzBjPl0gX191cF9jb25zb2xlX3NlbSsweDUwLzB4NjAKIGhhcmRp
+cnFzIGxhc3QgZGlzYWJsZWQgYXQgKDE4NzY2KTogWzxjMDE5OTZmOD5dIF9fdXBfY29uc29sZV9z
+ZW0rMHgzYy8weDYwCiBzb2Z0aXJxcyBsYXN0ICBlbmFibGVkIGF0ICgxODY1NCk6IFs8YzAxMDE3
+ZDA+XSBfX2RvX3NvZnRpcnErMHgyYzAvMHg2MjQKIHNvZnRpcnFzIGxhc3QgZGlzYWJsZWQgYXQg
+KDE4NjE1KTogWzxjMDEyZmMxND5dIF9faXJxX2V4aXRfcmN1KzB4MTM4LzB4MTdjCiAtLS1bIGVu
+ZCB0cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0KRmFpbGVkIHRvIHNldCBiZWFjb24gcGFyYW1l
+dGVycwp3bGFuMDogSU5URVJGQUNFLURJU0FCTEVECgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
