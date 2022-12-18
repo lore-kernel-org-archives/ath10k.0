@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EE70C4332F
-	for <ath10k@archiver.kernel.org>; Sun, 18 Dec 2022 16:03:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D39B0C4332F
+	for <ath10k@archiver.kernel.org>; Sun, 18 Dec 2022 16:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5pPAEFoQ7CMKmUy8B7J1WyXKDPMutsTbTafAfD3TFIo=; b=VP4M0AxFRYnH3Z
-	PDGistv7HEG3x/1E/9LA7JHmIL1STCOqQoWEvVo7sjNifVN+YJWy9jAiTELULF5Vo6H51ooIfSCHO
-	ij80jWfXgfPf3Yagaf8J0eI7FumhXebVpL9YsEXh1FJXHZjB/ORn0DSWvhPE16AEzrt9DkbculeNL
-	unCBw3phWBKWrsTHTxTTWGpnQLhUE4OiKI9jVBcx7xjIK/3hmSEMzyWYQNdMfTPpbUhDJwBb7zbGy
-	ZJjY+w2WciOnWj2ufWK4Q/DqJd3S3jtICm83JxJHXAn3mgg7/AaEgS0PrOEdIX3yhdIfVbDQ1If1/
-	j4zwlTDwsGJyi1RnEZhQ==;
+	List-Owner; bh=37bH6ZC/WDbmdNmnFL2m67zcwRcu+b4Cde2j8Mbcdc8=; b=0ut2I/eHa1giqq
+	6WY8SVlGiZ2jQ7OL6Gc6zI9uqIdny62KSnKWElRg43dKqgCNSFv1Fnb9AVXbg5hfA7L5ydbUFPa8f
+	P1R6t7wNoAwSIWQ9y3nnMvbdsZW2AmIKeWwz0e2Nabsd32on7vnsYrNSrKWpmHoWtWowmFNHDk2F1
+	orUWPsBtCvy30R57gfITqgZQFKjo9ItvgYiSjpx5oEQMAhUff6uxa3hksint1BkXENKCBntoSk0OU
+	oWKMMsaHCb5MZWvSYAdfaZRmYHEwxcj0faLXPcCSf4Bsv4mWguSQyUNi7QZloipsKNa29v6zULjzE
+	oyOrRkjrU9CQie9VZP7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p6w7Z-002mUN-U9; Sun, 18 Dec 2022 16:02:37 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1p6wDG-002q4P-HH; Sun, 18 Dec 2022 16:08:30 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p6w7V-002mSX-KV
-	for ath10k@lists.infradead.org; Sun, 18 Dec 2022 16:02:35 +0000
+	id 1p6wDB-002pyy-4Z
+	for ath10k@lists.infradead.org; Sun, 18 Dec 2022 16:08:27 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 19AB360DD0;
-	Sun, 18 Dec 2022 16:02:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20B83C433EF;
-	Sun, 18 Dec 2022 16:02:29 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 87B5FB80BA7;
+	Sun, 18 Dec 2022 16:08:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D65D5C433EF;
+	Sun, 18 Dec 2022 16:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1671379350;
-	bh=T9mn1zmQ+v4LISaYmdrM2m1wy/9c+yHJoJ5Zv0Uwfpc=;
+	s=k20201202; t=1671379702;
+	bh=lYeqhZTVdxlXHUF1Ro3QXXxj16GCd6F402Y0YWB+ewA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NHZMRL/IAMGF3BiCOrsu/RQlPfBcY5KuJMY+MYQ+TfaMJEmm9ofZFRMv+5AzUv3bx
-	 2ZEsv+uxOw8TfY0imR83WILOR53o/m0jxEOPbL0NyYw6xG1bynEajc7ixMT9eTrter
-	 TgUqx/pzPK6R+cTB54dPHlT3uH7zvcyMbz1pYVkDd7IHC2FlRfmk1xD7NKDugOWkIU
-	 wOCSV9azS2VewLdnkKTL7v0VHFkfoECrt0Gqs7gLCO5XAFFQJHyLHl430ph63l1WRR
-	 +w+6e5+VkDa9olqbwEncNDbOWOsW6py+bJvWKZ24NlF1eujKN6fueKz95IGWBa530R
-	 brMmslIGiG2SQ==
+	b=NZ8iUBxzaaPe9/zx1D7uViQM5/68HD6JrYPQLLpDq6ceTRWhngrRtO8isK1YewXw8
+	 nYe/lEsqvxBTyrsBVhZxFtKpMbJble4iKN43k6Ft/uAqNERVpts5V1/55NQuaO3WoC
+	 P2501SgC+A8w+ID79fbyXVfOMeoBpyDbBBUwbIQduFkY5lUIczJpxinJ0r0b8mle7H
+	 JfPsBDUYCHlml6iCV93PFflMmTL9hQXgsvn1+eEdwrLKL+k+x3129dKfv+eecriaDG
+	 oicvbIDYa6YEE58PUK84y80j3tmu57MN/3humvnmJ3FhqIV/YIyShfpb8Ut847Vmco
+	 M0wE9WjjQM36Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -57,17 +57,17 @@ Cc: Youghandhar Chintala <quic_youghand@quicinc.com>,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 09/85] wifi: ath10k: Delay the unmapping of the buffer
-Date: Sun, 18 Dec 2022 11:00:26 -0500
-Message-Id: <20221218160142.925394-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.0 09/73] wifi: ath10k: Delay the unmapping of the buffer
+Date: Sun, 18 Dec 2022 11:06:37 -0500
+Message-Id: <20221218160741.927862-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221218160142.925394-1-sashal@kernel.org>
-References: <20221218160142.925394-1-sashal@kernel.org>
+In-Reply-To: <20221218160741.927862-1-sashal@kernel.org>
+References: <20221218160741.927862-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221218_080233_780585_6080FE62 
+X-CRM114-CacheID: sfid-20221218_080825_530516_70D13F08 
 X-CRM114-Status: GOOD (  18.42  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -181,7 +181,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 27 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 400f332a7ff0..5eb131ab916f 100644
+index d1ac64026cb3..9a8ea7231a9e 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
 @@ -99,6 +99,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
