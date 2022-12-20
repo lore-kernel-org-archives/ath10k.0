@@ -4,87 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCB31C3DA7A
-	for <ath10k@archiver.kernel.org>; Tue, 20 Dec 2022 12:19:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 790A1C4332F
+	for <ath10k@archiver.kernel.org>; Tue, 20 Dec 2022 15:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6qLlOSrJmLRgbedq7bEkeJkpl84Ik7wfWsfq3wPDqgU=; b=NENJHr+PhzLnQa
-	/gjNoKaxTFHDQTGvZGiFQuwh+vRiIyoQQL/oq6/uNIC2LwzBkLVHp2WPV+0tQYZh9jL5KWpIWt+Re
-	8evSLWQQVTcKhp069G82bsLEx0MAIsMR+LRlRbQca79f/rjb9HdETO+LV6YfHFbn42uqEGckfyIuJ
-	x0p/U6KOQuEcBzC/sQ4tHnYdvkbhQPi5SJ0nrQivN6jC39rQTJp4qg0+xAxfwdJSfaSr6Kf8Yrv63
-	j5O7el4aC2FCGcgF81Y4vjueLWT9j9ioqGVaX80WGtyFS3L/K0Bw435nxD+v8gyPJpjs/Bbg+rBE/
-	XRffg1ZmCdcuG9t77qJw==;
+	List-Owner; bh=OOUGoQW6kVHAXDEDOrWe0pkIPFhkYsrA0O13jkCOAAg=; b=CrwMU/ff7GPUd1
+	DirlRhu23iWwL42GBCRJeIvScFnND922KPU7JL+KxzdWsvDYvmH58jFXk8X9U1+FPzfvoUCPmrzUD
+	8wtacI1ce684HVYv0EgWSbfo++TOpFGnnGAm8MtPOa+YLuMl0pYbyYjd0fk33aaGGGi1cWXD8q49F
+	xBw0BxiC8IBErEFVspgSTd2siJ9UHCQfYrECYP2/Tb5Q+T9sWHkGqebg448w/5050Qpe2FmEJATaX
+	bMjg32C/+34SFEob4UZUdp07Wt1Ex8bMRDmnuYlj9RLEZEmOqAmHDr3kqEXK4FfYkTb+O6R7ORJLT
+	G9iWSNQXGuE/ULouQ4jQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p7bah-00Ec0U-WC; Tue, 20 Dec 2022 12:19:28 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1p7eIU-00HCNB-RH; Tue, 20 Dec 2022 15:12:50 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p7bWF-00EWQy-PT
-	for ath10k@lists.infradead.org; Tue, 20 Dec 2022 12:14:55 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BKABAMI032452;
-	Tue, 20 Dec 2022 12:14:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=wLqDcO+Wsi26P0nos/+8/kSQfghM5ThFrgbZ4/Pqpn8=;
- b=jVXUPoovH6l3UXbdHTkvrxkegxnp9pGaYIGsoK8PPCPQqIyEgHztqL+dn0fLRDj1dAQu
- iVegfwcwYkmvD2UQPSwNMS2B2SShNkEtJx7yCngp7RifeS5cWlhdQCF+FkduNx3GfLkx
- gz4XDNWR8wDM8u/0Fq/+H6MIhFWPntWkzgJRWDCfUxgl+8uhFbY/ouyXdLn+1Jz90cKP
- Mr/XgXuSbtZ7Ut9LuS3NsGwdI2Rq1YHTM1W8dYwJFjjG/oAPY1HJIQ6OeHTtJWBe4uqT
- i4s9LMEvJ88oz6PZNOcWWFWHpQMr8MBRmiKlq8nPGGz+YqX2vRiYydjb/+PzzdshSYQZ hQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mk39t96pd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Dec 2022 12:14:40 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BKCEdqR003361
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Dec 2022 12:14:39 GMT
-Received: from [10.216.28.180] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Tue, 20 Dec
- 2022 04:14:35 -0800
-Message-ID: <56d4941a-ad35-37ca-48ca-5f1bf7a86d25@quicinc.com>
-Date: Tue, 20 Dec 2022 17:44:31 +0530
+	id 1p7eGQ-00HAE9-0H
+	for ath10k@lists.infradead.org; Tue, 20 Dec 2022 15:10:44 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id o5so12042590wrm.1
+        for <ath10k@lists.infradead.org>; Tue, 20 Dec 2022 07:10:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lr9AVfm10LzRAZpy4+5D7cvTFDu/zEzjOWE+1rGSMUA=;
+        b=Ow34D0WtZ8vf/7IKCPWxmRhNMt3UuVJO5F6Ie0EItmu7v+ur/NiICu0PKTiwhrNvD0
+         iBne+gG1O6884DWGz5nAwBqzR4Sbzb0qbNEuIQrzCfaTFTs8d+ljvi04YAbVNVrfXqDx
+         4yP6aObGVc/uNRKSSm/HRiC2cBtDii/wegvUx/rxa2K5ogoDXM0vcjBshp/P24iVdhPc
+         EeEbUOel4WQ6Qr2KsqXQ0Fir1fMLfu29G7hQ+18Z16tEc+eeZEcqAGKCWMV/YDK0iLo1
+         L97xLbN6RTD8FpRfeU5vB/mhj6tOMSeagQ3FjpSunUIScXHfyZiB8WB7vcYLE8uHlDdA
+         CXaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lr9AVfm10LzRAZpy4+5D7cvTFDu/zEzjOWE+1rGSMUA=;
+        b=0qzb7gZitlytyS6ga5d1uGU7BJfXSmQBpm/FJJRnuek4u2caMD5YNMpaR5DOK9uidG
+         6dPS3confHMEXCaE2RXJXBJH6M1H9i0rsozqtOiH3hP7EpGSoSAkcOIeop10x7wPCs3Y
+         YkHTu/ADV42t8ejNV4B77gKSgKMjO0Q5KGRqhwlPznNFnYtU7ZAwG7whFrqXlNV0kJez
+         W5sSZY2SwrftY4bvGYCV8U28T6zGYO+Tyhkn9e0dujTQ3V1rX2v1mpv6Ip6uXfBrqc+M
+         izyN5BpEBVAkroA3oZzUal1rZ8v1w6X39Cj5mNrhazR6DfzR+9cf4LP3BO472veIJYjG
+         4ejQ==
+X-Gm-Message-State: ANoB5pnHrOue4DL37t1inytR9LnWQTaP5YpAKRAmxF/Bsk/8i98z2rce
+	E3/e2mGy9Wm8EBG/4ugOKetM+fjNFflzFUylp44=
+X-Google-Smtp-Source: AA0mqf4z0IYN8h/my+4Y2tn+vHBA2ekOyKsR6wg27aNTif4lxwhgHiVs6vHWxbqzkPdBBa5Uci5Z7iz1p0z9skBBIp4=
+X-Received: by 2002:a5d:510c:0:b0:242:82f5:fe65 with SMTP id
+ s12-20020a5d510c000000b0024282f5fe65mr4799109wrt.688.1671549036567; Tue, 20
+ Dec 2022 07:10:36 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] ath10k: snoc: enable threaded napi on WCN3990
-Content-Language: en-US
-To: Abhishek Kumar <kuabhs@chromium.org>, <kvalo@kernel.org>
-CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
 References: <20221220075215.1.Ic12e347e0d61a618124b742614e82bbd5d770173@changeid>
-From: Manikanta Pubbisetty <quic_mpubbise@quicinc.com>
 In-Reply-To: <20221220075215.1.Ic12e347e0d61a618124b742614e82bbd5d770173@changeid>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: y7oCJvTmlbthnqGTIZ5zOR0qIdiaHjqF
-X-Proofpoint-GUID: y7oCJvTmlbthnqGTIZ5zOR0qIdiaHjqF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-20_05,2022-12-20_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 spamscore=0 clxscore=1011 adultscore=0 priorityscore=1501
- impostorscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2212200101
+From: Dave Taht <dave.taht@gmail.com>
+Date: Tue, 20 Dec 2022 07:10:23 -0800
+Message-ID: <CAA93jw7Qi1rfBRxaG=5ARshDwepO=b_Qg3BXFi2AHSG7cO44uw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: snoc: enable threaded napi on WCN3990
+To: Abhishek Kumar <kuabhs@chromium.org>
+Cc: kvalo@kernel.org, ath10k@lists.infradead.org, 
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Make-Wifi-fast <make-wifi-fast@lists.bufferbloat.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221220_041451_970107_0FEA5FBD 
-X-CRM114-Status: GOOD (  22.57  )
+X-CRM114-CacheID: sfid-20221220_071042_146801_700A8F09 
+X-CRM114-Status: GOOD (  21.11  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,199 +84,175 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 12/20/2022 1:25 PM, Abhishek Kumar wrote:
-> NAPI poll can be done in threaded context along with soft irq
-> context. Threaded context can be scheduled efficiently, thus
-> creating less of bottleneck during Rx processing. This patch is
-> to enable threaded NAPI on ath10k driver.
-> 
-> Based on testing, it was observed that on WCN3990, the CPU0 reaches
-> 100% utilization when napi runs in softirq context. At the same
-> time the other CPUs are at low consumption percentage. This
-> does not allow device to reach its maximum throughput potential.
-> After enabling threaded napi, CPU load is balanced across all CPUs
-> and following improvments were observed:
-> - UDP_RX increase by ~22-25%
-> - TCP_RX increase by ~15%
-> 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> ---
-> 
->   drivers/net/wireless/ath/ath10k/core.c | 16 ++++++++++++++++
->   drivers/net/wireless/ath/ath10k/hw.h   |  2 ++
->   drivers/net/wireless/ath/ath10k/snoc.c |  3 +++
->   3 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 5eb131ab916fd..ee4b6ba508c81 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -100,6 +100,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA988X_HW_2_0_VERSION,
-> @@ -140,6 +141,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA9887_HW_1_0_VERSION,
-> @@ -181,6 +183,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA6174_HW_3_2_VERSION,
-> @@ -217,6 +220,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA6174_HW_2_1_VERSION,
-> @@ -257,6 +261,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA6174_HW_2_1_VERSION,
-> @@ -297,6 +302,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA6174_HW_3_0_VERSION,
-> @@ -337,6 +343,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA6174_HW_3_2_VERSION,
-> @@ -381,6 +388,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA99X0_HW_2_0_DEV_VERSION,
-> @@ -427,6 +435,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA9984_HW_1_0_DEV_VERSION,
-> @@ -480,6 +489,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA9888_HW_2_0_DEV_VERSION,
-> @@ -530,6 +540,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA9377_HW_1_0_DEV_VERSION,
-> @@ -570,6 +581,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA9377_HW_1_1_DEV_VERSION,
-> @@ -612,6 +624,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA9377_HW_1_1_DEV_VERSION,
-> @@ -645,6 +658,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = QCA4019_HW_1_0_DEV_VERSION,
-> @@ -692,6 +706,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = false,
->   		.use_fw_tx_credits = true,
->   		.delay_unmap_buffer = false,
-> +		.enable_threaded_napi = false,
->   	},
->   	{
->   		.id = WCN3990_HW_1_0_DEV_VERSION,
-> @@ -725,6 +740,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->   		.hw_restart_disconnect = true,
->   		.use_fw_tx_credits = false,
->   		.delay_unmap_buffer = true,
-> +		.enable_threaded_napi = true,
->   	},
->   };
->   
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-> index 9643031a4427a..adf3076b96503 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.h
-> +++ b/drivers/net/wireless/ath/ath10k/hw.h
-> @@ -639,6 +639,8 @@ struct ath10k_hw_params {
->   	bool use_fw_tx_credits;
->   
->   	bool delay_unmap_buffer;
-> +
-> +	bool enable_threaded_napi;
->   };
->   
->   struct htt_resp;
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> index cfcb759a87dea..b94150fb6ef06 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -927,6 +927,9 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
->   
->   	bitmap_clear(ar_snoc->pending_ce_irqs, 0, CE_COUNT_MAX);
->   
-> +	if (ar->hw_params.enable_threaded_napi)
-> +		dev_set_threaded(&ar->napi_dev, true);
-> +
-
-Since this is done in the API specific to WCN3990, we do not need 
-hw_param for this.
-
-Thanks,
-Manikanta
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBhbSBhbHdheXMgaW50ZXJlc3RlZCBpbiBmbGVudC5vcmcgdGNwX251cCwgdGNwX25kb3duLCBh
+bmQgcnJ1bF9iZQp0ZXN0cyBvbiB3aWZpIGhhcmR3YXJlLiBJbiBBUCBtb2RlLCBlc3BlY2lhbGx5
+LCBhZ2FpbnN0IGEgZmV3IGNsaWVudHMKaW4gcnR0X2ZhaXIgb24gdGhlICJlbmRpbmcgdGhlIGFu
+b21hbHkiIHRlc3Qgc3VpdGUgYXQgdGhlIGJvdHRvbSBvZgp0aGlzIGxpbms6IGh0dHBzOi8vd3d3
+LmNzLmthdS5zZS90b2hvam8vYWlydGltZS1mYWlybmVzcy8gLiBPZiB0aGVzZSwKaXQncyB0cnlp
+bmcgdG8gb3B0aW1pemUgYmFuZHdpZHRoIG1vcmUgZmFpcmx5IGFuZCBrZWVwIGxhdGVuY2llcyBs
+b3cKd2hlbiA0IG9yIG1vcmUgc3RhdGlvbnMgYXJlIHRyeWluZyB0byB0cmFuc21pdCAoaW4gYSB3
+b3JsZCB3aXRoIDE2IG9yCm1vcmUgc3RhdGlvbnMgb25saW5lKSwgdGhhdCBpbmNyZWFzaW5nbHkg
+Ym90aGVycyBtZSB0aGUgbW9zdC4gSSdtCnNlZWluZyA1KyBzZWNvbmRzIG9uIHNvbWUgcnR0X2Zh
+aXItbGlrZSB0ZXN0cyBub3dhZGF5cy4KCkkgd2FzIGFsc28gc2VlaW5nIGh1Z2Ugc2ltdWx0YW5l
+b3VzIHVwbG9hZCB2cyBkb3dubG9hZCBkaXNwYXJpdGllcyBvbgp0aGUgbGF0ZXN0IGtlcm5lbHMs
+IG9uIHZhcmlvdXMgdGhyZWFkcyBvdmVyIGhlcmU6Cmh0dHBzOi8vZm9ydW0ub3BlbndydC5vcmcv
+dC9hcWwtYW5kLXRoZS1hdGgxMGstaXMtbG92ZWx5LzU5MDAyIGFuZAptb3JlIHJlY2VudGx5IGhl
+cmU6Cmh0dHBzOi8vZm9ydW0ub3BlbndydC5vcmcvdC9yZWR1Y2luZy1tdWx0aXBsZXhpbmctbGF0
+ZW5jaWVzLXN0aWxsLWZ1cnRoZXItaW4td2lmaS8xMzM2MDUKCkkgZG9uJ3QgdW5kZXJzdGFuZCB3
+aHkgbmFwaSB3aXRoIHRoZSBkZWZhdWx0IGJ1ZGdldCAoNjQpIGlzIGV2ZW4KbmVlZGVkIG9uIHRo
+ZSBhdGgxMGssIGFzIGEgc2luZ2xlIHR4b3AgdGFrZXMgYSBtaW5pbXVtIG9mIH4yMDB1cywgYnV0
+CnBlcmhhcHMgeW91ciBwYXRjaCB3aWxsIGhlbHAuIFN0aWxsLCBtZWFzdXJpbmcgdGhlIFRDUCBz
+dGF0aXN0aWNzCmluLWJhbmQgd291bGQgYmUgbmljZSB0byBzZWUuIFNvbWUgbmV3IHRvb2xzIGFy
+ZSBhcHBlYXJpbmcgdGhhdCBjYW4gZG8KdGhpcywgQXBwbGUncyBnb3Jlc3BvbnNpdmVuZXNzLCBj
+cnVzYWRlci4uLiB0aGF0IGFyZSBzaW1wbGVyIHRvIHVzZQp0aGFuIGZsZW50LgoKT24gVHVlLCBE
+ZWMgMjAsIDIwMjIgYXQgMTI6MTcgQU0gQWJoaXNoZWsgS3VtYXIgPGt1YWJoc0BjaHJvbWl1bS5v
+cmc+IHdyb3RlOgo+Cj4gTkFQSSBwb2xsIGNhbiBiZSBkb25lIGluIHRocmVhZGVkIGNvbnRleHQg
+YWxvbmcgd2l0aCBzb2Z0IGlycQo+IGNvbnRleHQuIFRocmVhZGVkIGNvbnRleHQgY2FuIGJlIHNj
+aGVkdWxlZCBlZmZpY2llbnRseSwgdGh1cwo+IGNyZWF0aW5nIGxlc3Mgb2YgYm90dGxlbmVjayBk
+dXJpbmcgUnggcHJvY2Vzc2luZy4gVGhpcyBwYXRjaCBpcwo+IHRvIGVuYWJsZSB0aHJlYWRlZCBO
+QVBJIG9uIGF0aDEwayBkcml2ZXIuCj4KPiBCYXNlZCBvbiB0ZXN0aW5nLCBpdCB3YXMgb2JzZXJ2
+ZWQgdGhhdCBvbiBXQ04zOTkwLCB0aGUgQ1BVMCByZWFjaGVzCj4gMTAwJSB1dGlsaXphdGlvbiB3
+aGVuIG5hcGkgcnVucyBpbiBzb2Z0aXJxIGNvbnRleHQuIEF0IHRoZSBzYW1lCj4gdGltZSB0aGUg
+b3RoZXIgQ1BVcyBhcmUgYXQgbG93IGNvbnN1bXB0aW9uIHBlcmNlbnRhZ2UuIFRoaXMKPiBkb2Vz
+IG5vdCBhbGxvdyBkZXZpY2UgdG8gcmVhY2ggaXRzIG1heGltdW0gdGhyb3VnaHB1dCBwb3RlbnRp
+YWwuCj4gQWZ0ZXIgZW5hYmxpbmcgdGhyZWFkZWQgbmFwaSwgQ1BVIGxvYWQgaXMgYmFsYW5jZWQg
+YWNyb3NzIGFsbCBDUFVzCj4gYW5kIGZvbGxvd2luZyBpbXByb3ZtZW50cyB3ZXJlIG9ic2VydmVk
+Ogo+IC0gVURQX1JYIGluY3JlYXNlIGJ5IH4yMi0yNSUKPiAtIFRDUF9SWCBpbmNyZWFzZSBieSB+
+MTUlCj4KPiBUZXN0ZWQtb246IFdDTjM5OTAgaHcxLjAgU05PQyBXTEFOLkhMLjMuMi4yLTAwNjk2
+LVFDQUhMU1dNVFBMLTEKPiBTaWduZWQtb2ZmLWJ5OiBBYmhpc2hlayBLdW1hciA8a3VhYmhzQGNo
+cm9taXVtLm9yZz4KPiAtLS0KPgo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2Nv
+cmUuYyB8IDE2ICsrKysrKysrKysrKysrKysKPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9ody5oICAgfCAgMiArKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3Nu
+b2MuYyB8ICAzICsrKwo+ICAzIGZpbGVzIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKykKPgo+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyBiL2RyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4gaW5kZXggNWViMTMxYWI5MTZmZC4u
+ZWU0YjZiYTUwOGM4MSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL2NvcmUuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5j
+Cj4gQEAgLTEwMCw2ICsxMDAsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJh
+bXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7Cj4gICAgICAgICAgICAgICAgIC5od19yZXN0
+YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKPiAgICAgICAgICAgICAgICAgLnVzZV9md190eF9jcmVk
+aXRzID0gdHJ1ZSwKPiAgICAgICAgICAgICAgICAgLmRlbGF5X3VubWFwX2J1ZmZlciA9IGZhbHNl
+LAo+ICsgICAgICAgICAgICAgICAuZW5hYmxlX3RocmVhZGVkX25hcGkgPSBmYWxzZSwKPiAgICAg
+ICAgIH0sCj4gICAgICAgICB7Cj4gICAgICAgICAgICAgICAgIC5pZCA9IFFDQTk4OFhfSFdfMl8w
+X1ZFUlNJT04sCj4gQEAgLTE0MCw2ICsxNDEsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEw
+a19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7Cj4gICAgICAgICAgICAgICAg
+IC5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKPiAgICAgICAgICAgICAgICAgLnVzZV9m
+d190eF9jcmVkaXRzID0gdHJ1ZSwKPiAgICAgICAgICAgICAgICAgLmRlbGF5X3VubWFwX2J1ZmZl
+ciA9IGZhbHNlLAo+ICsgICAgICAgICAgICAgICAuZW5hYmxlX3RocmVhZGVkX25hcGkgPSBmYWxz
+ZSwKPiAgICAgICAgIH0sCj4gICAgICAgICB7Cj4gICAgICAgICAgICAgICAgIC5pZCA9IFFDQTk4
+ODdfSFdfMV8wX1ZFUlNJT04sCj4gQEAgLTE4MSw2ICsxODMsNyBAQCBzdGF0aWMgY29uc3Qgc3Ry
+dWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7Cj4gICAgICAg
+ICAgICAgICAgIC5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKPiAgICAgICAgICAgICAg
+ICAgLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKPiAgICAgICAgICAgICAgICAgLmRlbGF5X3Vu
+bWFwX2J1ZmZlciA9IGZhbHNlLAo+ICsgICAgICAgICAgICAgICAuZW5hYmxlX3RocmVhZGVkX25h
+cGkgPSBmYWxzZSwKPiAgICAgICAgIH0sCj4gICAgICAgICB7Cj4gICAgICAgICAgICAgICAgIC5p
+ZCA9IFFDQTYxNzRfSFdfM18yX1ZFUlNJT04sCj4gQEAgLTIxNyw2ICsyMjAsNyBAQCBzdGF0aWMg
+Y29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7
+Cj4gICAgICAgICAgICAgICAgIC5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKPiAgICAg
+ICAgICAgICAgICAgLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKPiAgICAgICAgICAgICAgICAg
+LmRlbGF5X3VubWFwX2J1ZmZlciA9IGZhbHNlLAo+ICsgICAgICAgICAgICAgICAuZW5hYmxlX3Ro
+cmVhZGVkX25hcGkgPSBmYWxzZSwKPiAgICAgICAgIH0sCj4gICAgICAgICB7Cj4gICAgICAgICAg
+ICAgICAgIC5pZCA9IFFDQTYxNzRfSFdfMl8xX1ZFUlNJT04sCj4gQEAgLTI1Nyw2ICsyNjEsNyBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19s
+aXN0W10gPSB7Cj4gICAgICAgICAgICAgICAgIC5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxz
+ZSwKPiAgICAgICAgICAgICAgICAgLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKPiAgICAgICAg
+ICAgICAgICAgLmRlbGF5X3VubWFwX2J1ZmZlciA9IGZhbHNlLAo+ICsgICAgICAgICAgICAgICAu
+ZW5hYmxlX3RocmVhZGVkX25hcGkgPSBmYWxzZSwKPiAgICAgICAgIH0sCj4gICAgICAgICB7Cj4g
+ICAgICAgICAgICAgICAgIC5pZCA9IFFDQTYxNzRfSFdfMl8xX1ZFUlNJT04sCj4gQEAgLTI5Nyw2
+ICszMDIsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3
+X3BhcmFtc19saXN0W10gPSB7Cj4gICAgICAgICAgICAgICAgIC5od19yZXN0YXJ0X2Rpc2Nvbm5l
+Y3QgPSBmYWxzZSwKPiAgICAgICAgICAgICAgICAgLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwK
+PiAgICAgICAgICAgICAgICAgLmRlbGF5X3VubWFwX2J1ZmZlciA9IGZhbHNlLAo+ICsgICAgICAg
+ICAgICAgICAuZW5hYmxlX3RocmVhZGVkX25hcGkgPSBmYWxzZSwKPiAgICAgICAgIH0sCj4gICAg
+ICAgICB7Cj4gICAgICAgICAgICAgICAgIC5pZCA9IFFDQTYxNzRfSFdfM18wX1ZFUlNJT04sCj4g
+QEAgLTMzNyw2ICszNDMsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMg
+YXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7Cj4gICAgICAgICAgICAgICAgIC5od19yZXN0YXJ0
+X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKPiAgICAgICAgICAgICAgICAgLnVzZV9md190eF9jcmVkaXRz
+ID0gdHJ1ZSwKPiAgICAgICAgICAgICAgICAgLmRlbGF5X3VubWFwX2J1ZmZlciA9IGZhbHNlLAo+
+ICsgICAgICAgICAgICAgICAuZW5hYmxlX3RocmVhZGVkX25hcGkgPSBmYWxzZSwKPiAgICAgICAg
+IH0sCj4gICAgICAgICB7Cj4gICAgICAgICAgICAgICAgIC5pZCA9IFFDQTYxNzRfSFdfM18yX1ZF
+UlNJT04sCj4gQEAgLTM4MSw2ICszODgsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19o
+d19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7Cj4gICAgICAgICAgICAgICAgIC5o
+d19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKPiAgICAgICAgICAgICAgICAgLnVzZV9md190
+eF9jcmVkaXRzID0gdHJ1ZSwKPiAgICAgICAgICAgICAgICAgLmRlbGF5X3VubWFwX2J1ZmZlciA9
+IGZhbHNlLAo+ICsgICAgICAgICAgICAgICAuZW5hYmxlX3RocmVhZGVkX25hcGkgPSBmYWxzZSwK
+PiAgICAgICAgIH0sCj4gICAgICAgICB7Cj4gICAgICAgICAgICAgICAgIC5pZCA9IFFDQTk5WDBf
+SFdfMl8wX0RFVl9WRVJTSU9OLAo+IEBAIC00MjcsNiArNDM1LDcgQEAgc3RhdGljIGNvbnN0IHN0
+cnVjdCBhdGgxMGtfaHdfcGFyYW1zIGF0aDEwa19od19wYXJhbXNfbGlzdFtdID0gewo+ICAgICAg
+ICAgICAgICAgICAuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0gZmFsc2UsCj4gICAgICAgICAgICAg
+ICAgIC51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCj4gICAgICAgICAgICAgICAgIC5kZWxheV91
+bm1hcF9idWZmZXIgPSBmYWxzZSwKPiArICAgICAgICAgICAgICAgLmVuYWJsZV90aHJlYWRlZF9u
+YXBpID0gZmFsc2UsCj4gICAgICAgICB9LAo+ICAgICAgICAgewo+ICAgICAgICAgICAgICAgICAu
+aWQgPSBRQ0E5OTg0X0hXXzFfMF9ERVZfVkVSU0lPTiwKPiBAQCAtNDgwLDYgKzQ4OSw3IEBAIHN0
+YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFyYW1zX2xpc3Rb
+XSA9IHsKPiAgICAgICAgICAgICAgICAgLmh3X3Jlc3RhcnRfZGlzY29ubmVjdCA9IGZhbHNlLAo+
+ICAgICAgICAgICAgICAgICAudXNlX2Z3X3R4X2NyZWRpdHMgPSB0cnVlLAo+ICAgICAgICAgICAg
+ICAgICAuZGVsYXlfdW5tYXBfYnVmZmVyID0gZmFsc2UsCj4gKyAgICAgICAgICAgICAgIC5lbmFi
+bGVfdGhyZWFkZWRfbmFwaSA9IGZhbHNlLAo+ICAgICAgICAgfSwKPiAgICAgICAgIHsKPiAgICAg
+ICAgICAgICAgICAgLmlkID0gUUNBOTg4OF9IV18yXzBfREVWX1ZFUlNJT04sCj4gQEAgLTUzMCw2
+ICs1NDAsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3
+X3BhcmFtc19saXN0W10gPSB7Cj4gICAgICAgICAgICAgICAgIC5od19yZXN0YXJ0X2Rpc2Nvbm5l
+Y3QgPSBmYWxzZSwKPiAgICAgICAgICAgICAgICAgLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwK
+PiAgICAgICAgICAgICAgICAgLmRlbGF5X3VubWFwX2J1ZmZlciA9IGZhbHNlLAo+ICsgICAgICAg
+ICAgICAgICAuZW5hYmxlX3RocmVhZGVkX25hcGkgPSBmYWxzZSwKPiAgICAgICAgIH0sCj4gICAg
+ICAgICB7Cj4gICAgICAgICAgICAgICAgIC5pZCA9IFFDQTkzNzdfSFdfMV8wX0RFVl9WRVJTSU9O
+LAo+IEBAIC01NzAsNiArNTgxLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFy
+YW1zIGF0aDEwa19od19wYXJhbXNfbGlzdFtdID0gewo+ICAgICAgICAgICAgICAgICAuaHdfcmVz
+dGFydF9kaXNjb25uZWN0ID0gZmFsc2UsCj4gICAgICAgICAgICAgICAgIC51c2VfZndfdHhfY3Jl
+ZGl0cyA9IHRydWUsCj4gICAgICAgICAgICAgICAgIC5kZWxheV91bm1hcF9idWZmZXIgPSBmYWxz
+ZSwKPiArICAgICAgICAgICAgICAgLmVuYWJsZV90aHJlYWRlZF9uYXBpID0gZmFsc2UsCj4gICAg
+ICAgICB9LAo+ICAgICAgICAgewo+ICAgICAgICAgICAgICAgICAuaWQgPSBRQ0E5Mzc3X0hXXzFf
+MV9ERVZfVkVSU0lPTiwKPiBAQCAtNjEyLDYgKzYyNCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+YXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFyYW1zX2xpc3RbXSA9IHsKPiAgICAgICAgICAg
+ICAgICAgLmh3X3Jlc3RhcnRfZGlzY29ubmVjdCA9IGZhbHNlLAo+ICAgICAgICAgICAgICAgICAu
+dXNlX2Z3X3R4X2NyZWRpdHMgPSB0cnVlLAo+ICAgICAgICAgICAgICAgICAuZGVsYXlfdW5tYXBf
+YnVmZmVyID0gZmFsc2UsCj4gKyAgICAgICAgICAgICAgIC5lbmFibGVfdGhyZWFkZWRfbmFwaSA9
+IGZhbHNlLAo+ICAgICAgICAgfSwKPiAgICAgICAgIHsKPiAgICAgICAgICAgICAgICAgLmlkID0g
+UUNBOTM3N19IV18xXzFfREVWX1ZFUlNJT04sCj4gQEAgLTY0NSw2ICs2NTgsNyBAQCBzdGF0aWMg
+Y29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3X3BhcmFtc19saXN0W10gPSB7
+Cj4gICAgICAgICAgICAgICAgIC5od19yZXN0YXJ0X2Rpc2Nvbm5lY3QgPSBmYWxzZSwKPiAgICAg
+ICAgICAgICAgICAgLnVzZV9md190eF9jcmVkaXRzID0gdHJ1ZSwKPiAgICAgICAgICAgICAgICAg
+LmRlbGF5X3VubWFwX2J1ZmZlciA9IGZhbHNlLAo+ICsgICAgICAgICAgICAgICAuZW5hYmxlX3Ro
+cmVhZGVkX25hcGkgPSBmYWxzZSwKPiAgICAgICAgIH0sCj4gICAgICAgICB7Cj4gICAgICAgICAg
+ICAgICAgIC5pZCA9IFFDQTQwMTlfSFdfMV8wX0RFVl9WRVJTSU9OLAo+IEBAIC02OTIsNiArNzA2
+LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zIGF0aDEwa19od19wYXJh
+bXNfbGlzdFtdID0gewo+ICAgICAgICAgICAgICAgICAuaHdfcmVzdGFydF9kaXNjb25uZWN0ID0g
+ZmFsc2UsCj4gICAgICAgICAgICAgICAgIC51c2VfZndfdHhfY3JlZGl0cyA9IHRydWUsCj4gICAg
+ICAgICAgICAgICAgIC5kZWxheV91bm1hcF9idWZmZXIgPSBmYWxzZSwKPiArICAgICAgICAgICAg
+ICAgLmVuYWJsZV90aHJlYWRlZF9uYXBpID0gZmFsc2UsCj4gICAgICAgICB9LAo+ICAgICAgICAg
+ewo+ICAgICAgICAgICAgICAgICAuaWQgPSBXQ04zOTkwX0hXXzFfMF9ERVZfVkVSU0lPTiwKPiBA
+QCAtNzI1LDYgKzc0MCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBh
+dGgxMGtfaHdfcGFyYW1zX2xpc3RbXSA9IHsKPiAgICAgICAgICAgICAgICAgLmh3X3Jlc3RhcnRf
+ZGlzY29ubmVjdCA9IHRydWUsCj4gICAgICAgICAgICAgICAgIC51c2VfZndfdHhfY3JlZGl0cyA9
+IGZhbHNlLAo+ICAgICAgICAgICAgICAgICAuZGVsYXlfdW5tYXBfYnVmZmVyID0gdHJ1ZSwKPiAr
+ICAgICAgICAgICAgICAgLmVuYWJsZV90aHJlYWRlZF9uYXBpID0gdHJ1ZSwKPiAgICAgICAgIH0s
+Cj4gIH07Cj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9o
+dy5oIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ody5oCj4gaW5kZXggOTY0MzAz
+MWE0NDI3YS4uYWRmMzA3NmI5NjUwMyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL2h3LmgKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L2h3LmgKPiBAQCAtNjM5LDYgKzYzOSw4IEBAIHN0cnVjdCBhdGgxMGtfaHdfcGFyYW1zIHsKPiAg
+ICAgICAgIGJvb2wgdXNlX2Z3X3R4X2NyZWRpdHM7Cj4KPiAgICAgICAgIGJvb2wgZGVsYXlfdW5t
+YXBfYnVmZmVyOwo+ICsKPiArICAgICAgIGJvb2wgZW5hYmxlX3RocmVhZGVkX25hcGk7Cj4gIH07
+Cj4KPiAgc3RydWN0IGh0dF9yZXNwOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL3Nub2MuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvc25v
+Yy5jCj4gaW5kZXggY2ZjYjc1OWE4N2RlYS4uYjk0MTUwZmI2ZWYwNiAxMDA2NDQKPiAtLS0gYS9k
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3Nub2MuYwo+ICsrKyBiL2RyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvc25vYy5jCj4gQEAgLTkyNyw2ICs5MjcsOSBAQCBzdGF0aWMg
+aW50IGF0aDEwa19zbm9jX2hpZl9zdGFydChzdHJ1Y3QgYXRoMTBrICphcikKPgo+ICAgICAgICAg
+Yml0bWFwX2NsZWFyKGFyX3Nub2MtPnBlbmRpbmdfY2VfaXJxcywgMCwgQ0VfQ09VTlRfTUFYKTsK
+Pgo+ICsgICAgICAgaWYgKGFyLT5od19wYXJhbXMuZW5hYmxlX3RocmVhZGVkX25hcGkpCj4gKyAg
+ICAgICAgICAgICAgIGRldl9zZXRfdGhyZWFkZWQoJmFyLT5uYXBpX2RldiwgdHJ1ZSk7Cj4gKwo+
+ICAgICAgICAgYXRoMTBrX2NvcmVfbmFwaV9lbmFibGUoYXIpOwo+ICAgICAgICAgYXRoMTBrX3Nu
+b2NfaXJxX2VuYWJsZShhcik7Cj4gICAgICAgICBhdGgxMGtfc25vY19yeF9wb3N0KGFyKTsKPiAt
+LQo+IDIuMzkuMC4zMTQuZzg0YjlhNzEzYzQxLWdvb2cKPgoKCi0tIApUaGlzIHNvbmcgZ29lcyBv
+dXQgdG8gYWxsIHRoZSBmb2xrIHRoYXQgdGhvdWdodCBTdGFkaWEgd291bGQgd29yazoKaHR0cHM6
+Ly93d3cubGlua2VkaW4uY29tL3Bvc3RzL2R0YWh0X3RoZS1tdXNocm9vbS1zb25nLWFjdGl2aXR5
+LTY5ODEzNjY2NjU2MDczNTIzMjAtRlh0egpEYXZlIFTDpGh0IENFTywgVGVrTGlicmUsIExMQwoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
