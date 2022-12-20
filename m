@@ -4,127 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F92AC4332F
-	for <ath10k@archiver.kernel.org>; Mon, 19 Dec 2022 23:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16368C4332F
+	for <ath10k@archiver.kernel.org>; Tue, 20 Dec 2022 07:56:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=adCUiF1/R12+ml+SL+taa3FDbqBJypWiKP3vB5+YiNw=; b=ttTqd/HBJClww/
-	MoTgj7CfCMijzNK+99aVb4Kjl2x8hTRfAKr/uroUJ/U8Nq3oNgFaCPUNQb6N1iOf7FikKOg+od3RV
-	D4KVPxSzrCW3nPmLLdnYwRXK8ChIC0mWqDeejg2OlD01ZZjAfFNBDxzy1MPFvx+Wsj/gWFmhTSBYE
-	jFhegp3VPAiyXA2QOr0vi+uNXSR6M+ZHfpCqpe90xCaDjdBavpspHFHnxYOERiCZPjk54ODD3LC3z
-	MzylhIDdINkiVdi6MROqrrsIelbeMMYZB5/f/Q7BNZZe4m7aG2X80QrgFgCTWeViKtKj91yQpcTjy
-	xAUvp0J0BAhBcuyYh73A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PWB1T3oDoaMaJd9N6VJeIVz3EdJZt/N9Nhz7MjOCWss=; b=U6zTM+Px/sCFHx
+	6qtNnDJFLLgtTyhRH82Q0EQ0EWWkcykN2t8EZ5JsMLGh2AuPKayHzoeyp5VsFtbfU+ZnmxhqEITYz
+	dgsuGgiO7KqdYDPC6x6+aOhX6Z3CygnE96TeoBPzsrZQHqw4Ltq24+XYu+iErAJ3YJOGkS7eNIQRg
+	1kC3k+RnJEXVxUUc3LDazSMC47n2SOjg0xy+E3ufP5CjOAYpMer/Hzi01L4p5QnA1SR3UPBHVUgkS
+	cTDbNTzW+T0eI7Qy2Bim3P8u+27g2C6ObZUqIRGGLCnrkN20c2cTtLkjBIz+qf8vvAcByqNMD1ZMk
+	WoXEWqnB5kywhlLA/kWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p7Pc7-00541m-7Z; Mon, 19 Dec 2022 23:32:07 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1p7XTd-00BN1i-TB; Tue, 20 Dec 2022 07:55:53 +0000
+Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p7P7x-004oaD-LC; Mon, 19 Dec 2022 23:01:04 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJIKvmX015286;
-	Mon, 19 Dec 2022 23:00:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=SWJzjgVg9CxBHb/tHJ5rN/ghb1Be0SCQGn7z+gHv/Rw=;
- b=fH3cB2T1WJreeiJ/LAGY71vNdTnLJyvOqSGyObN9BGM7zDLU87yKQ/xEMExPM3HvJmzh
- NAnJRSEX9A98VAA932urzSj6HVTDq7KfRCoDHQUdZm8d3L0ATLdddnBhxcHoker8qmgV
- MHGdpie/Y8/NwFmxH6WeGONd0CLlkhgnd7l+gWTuU9X97AfpW94HO2hMCJ9CQMWfpHKw
- uGqDzuO5wyf/XWpig8+NRpCu71VNVhYs/Z15bi33YJIi1lXzg+VuPugEbFq+/6OIbZRP
- dj/GfsRpJvgRS9M+0ikdc+Ae//Pqe7W5ebkW6WVbAe2Lbj8iPPTf/tM1N8LtuxhWP289 cg== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mh72gd4dg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Dec 2022 23:00:46 +0000
-Received: from nasanex01b.na.qualcomm.com (corens_vlan604_snip.qualcomm.com [10.53.140.1])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BJN0gBV006331
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Dec 2022 23:00:42 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Mon, 19 Dec 2022 15:00:41 -0800
-From: Elliot Berman <quic_eberman@quicinc.com>
-To: Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Andy Gross
-	<agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@somainline.org>,
-        Srinivas Kandagatla
-	<srinivas.kandagatla@linaro.org>,
-        Amol Maheshwari <amahesh@qti.qualcomm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        "David S.
- Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jakub
- Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Mathieu Poirier
-	<mathieu.poirier@linaro.org>
-CC: Elliot Berman <quic_eberman@quicinc.com>,
-        Murali Nalajala
-	<quic_mnalajal@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        "Srivatsa
- Vaddagiri" <quic_svaddagi@quicinc.com>,
-        Carl van Schaik
-	<quic_cvanscha@quicinc.com>,
-        Prakruthi Deepak Heragu
-	<quic_pheragu@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Jonathan Corbet
-	<corbet@lwn.net>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Catalin Marinas
-	<catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Jassi Brar
-	<jassisinghbrar@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mark Rutland
-	<mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        "Dmitry
- Baryshkov" <dmitry.baryshkov@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-acpi@vger.kernel.org>,
-        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
-Subject: [PATCH v8 18/28] firmware: qcom_scm: Use fixed width src vm bitmap
-Date: Mon, 19 Dec 2022 14:58:39 -0800
-Message-ID: <20221219225850.2397345-19-quic_eberman@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221219225850.2397345-1-quic_eberman@quicinc.com>
-References: <20221219225850.2397345-1-quic_eberman@quicinc.com>
+	id 1p7XTa-00BMwU-Ir
+	for ath10k@lists.infradead.org; Tue, 20 Dec 2022 07:55:52 +0000
+Received: by mail-pj1-x1036.google.com with SMTP id gt4so11635210pjb.1
+        for <ath10k@lists.infradead.org>; Mon, 19 Dec 2022 23:55:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+lUH7ICleRb/CYwKzbaXCdf221Goq9bYxBGSvWpk034=;
+        b=m5nTnrA9JUKHMNfFob+CNWz9Y5A1kA/3Jg6cLD2QsBzePMwiGtry/ONhtt0M6DLHQp
+         nDTdgG2QLz7YZjToSy+z02blQQO/SSdch1ihyHDei1Ao12BSLtsQM0JaN95eblZG12ss
+         2eoqXXhHY7PGgAznQJ9xkaJaha4nQFcP00W2M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+lUH7ICleRb/CYwKzbaXCdf221Goq9bYxBGSvWpk034=;
+        b=DKGHFMTlPI9+2oSycwChQRaWp7ajs/ZWdfVhsRpg4WBrxQS8oO4OVGV4z6GtNA95du
+         SGqXt9lHcl9vGcJFdJPYji2ZTd40YVizYrtzdH9o75BplWDqOtdzLUl/jhyyJWuVaNB6
+         Id6Ixxrmzoz4FAoKGPU1oyVB5Fuwz98tbrwHxRZ9lScflNctcKX4viYNniIKJVq5FV8Y
+         BuUKMTcybv21CDMj1cUlHwcvRIAQ5fv8CcvxbaNmkrGFfTpSHHcLqQ+HA7B01x1MbeNz
+         iwYiilqJtJDtKt1Jluv7VGabCDgh0iZrEOm2P07DV2Ttvxc6Sg6ZyB9dBEntMbmdPoCv
+         gmrw==
+X-Gm-Message-State: AFqh2kqWDB9dbvnum8TGGjABGYUh7/LzaPH5Ww9LAKD4dEnZGrRjv2va
+	xPde64Ly2yAKLIZh5cBtm9cSgA==
+X-Google-Smtp-Source: AMrXdXuRYKUKejxanv4Te75F99BbTwv5kTv7YHUdJwG87aH6dXGAIybbLVj7i9Do71YO5LR1lUMflw==
+X-Received: by 2002:a05:6a20:9e05:b0:b2:18da:1515 with SMTP id ms5-20020a056a209e0500b000b218da1515mr3509202pzb.20.1671522947919;
+        Mon, 19 Dec 2022 23:55:47 -0800 (PST)
+Received: from kuabhs-cdev.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id u31-20020a63235f000000b00488b8ad57bfsm5124215pgm.54.2022.12.19.23.55.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Dec 2022 23:55:47 -0800 (PST)
+From: Abhishek Kumar <kuabhs@chromium.org>
+To: kvalo@kernel.org
+Cc: ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	kuabhs@chromium.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH] ath10k: snoc: enable threaded napi on WCN3990
+Date: Tue, 20 Dec 2022 07:55:06 +0000
+Message-Id: <20221220075215.1.Ic12e347e0d61a618124b742614e82bbd5d770173@changeid>
+X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
 MIME-Version: 1.0
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rAJFpKPyIcVWf8l1hxpOMIY0DGylboWS
-X-Proofpoint-ORIG-GUID: rAJFpKPyIcVWf8l1hxpOMIY0DGylboWS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-19_01,2022-12-15_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- suspectscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- spamscore=0 priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2212190202
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221219_150057_857931_03AB6545 
-X-CRM114-Status: GOOD (  23.29  )
+X-CRM114-CacheID: sfid-20221219_235550_754340_03F64ABA 
+X-CRM114-Status: GOOD (  11.98  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,170 +91,190 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The maximum VMID for assign_mem is 63. Use a u64 to represent this
-bitmap instead of architecture-dependent "unsigned int" which varies in
-size on 32-bit and 64-bit platforms.
+NAPI poll can be done in threaded context along with soft irq
+context. Threaded context can be scheduled efficiently, thus
+creating less of bottleneck during Rx processing. This patch is
+to enable threaded NAPI on ath10k driver.
 
-Acked-by: Kalle Valo <kvalo@kernel.org> [ath10k]
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+Based on testing, it was observed that on WCN3990, the CPU0 reaches
+100% utilization when napi runs in softirq context. At the same
+time the other CPUs are at low consumption percentage. This
+does not allow device to reach its maximum throughput potential.
+After enabling threaded napi, CPU load is balanced across all CPUs
+and following improvments were observed:
+- UDP_RX increase by ~22-25%
+- TCP_RX increase by ~15%
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
 ---
- drivers/firmware/qcom_scm.c           | 12 +++++++-----
- drivers/misc/fastrpc.c                |  6 ++++--
- drivers/net/wireless/ath/ath10k/qmi.c |  4 ++--
- drivers/remoteproc/qcom_q6v5_mss.c    |  8 ++++----
- drivers/soc/qcom/rmtfs_mem.c          |  2 +-
- include/linux/qcom_scm.h              |  2 +-
- 6 files changed, 19 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index cdbfe54c8146..92763dce6477 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -898,7 +898,7 @@ static int __qcom_scm_assign_mem(struct device *dev, phys_addr_t mem_region,
-  * Return negative errno on failure or 0 on success with @srcvm updated.
-  */
- int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
--			unsigned int *srcvm,
-+			u64 *srcvm,
- 			const struct qcom_scm_vmperm *newvm,
- 			unsigned int dest_cnt)
- {
-@@ -915,9 +915,9 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	__le32 *src;
- 	void *ptr;
- 	int ret, i, b;
--	unsigned long srcvm_bits = *srcvm;
-+	u64 srcvm_bits = *srcvm;
- 
--	src_sz = hweight_long(srcvm_bits) * sizeof(*src);
-+	src_sz = hweight64(srcvm_bits) * sizeof(*src);
- 	mem_to_map_sz = sizeof(*mem_to_map);
- 	dest_sz = dest_cnt * sizeof(*destvm);
- 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
-@@ -930,8 +930,10 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	/* Fill source vmid detail */
- 	src = ptr;
- 	i = 0;
--	for_each_set_bit(b, &srcvm_bits, BITS_PER_LONG)
--		src[i++] = cpu_to_le32(b);
-+	for (b = 0; b < BITS_PER_TYPE(u64); b++) {
-+		if (srcvm_bits & BIT(b))
-+			src[i++] = cpu_to_le32(b);
-+	}
- 
- 	/* Fill details of mem buff to map */
- 	mem_to_map = ptr + ALIGN(src_sz, SZ_64);
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 7ff0b63c25e3..2ad388f99fe1 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -299,11 +299,13 @@ static void fastrpc_free_map(struct kref *ref)
- 		if (map->attr & FASTRPC_ATTR_SECUREMAP) {
- 			struct qcom_scm_vmperm perm;
- 			int err = 0;
-+			u64 src;
- 
-+			src = BIT(map->fl->cctx->vmperms[0].vmid);
- 			perm.vmid = QCOM_SCM_VMID_HLOS;
- 			perm.perm = QCOM_SCM_PERM_RWX;
- 			err = qcom_scm_assign_mem(map->phys, map->size,
--				&(map->fl->cctx->vmperms[0].vmid), &perm, 1);
-+				&src, &perm, 1);
- 			if (err) {
- 				dev_err(map->fl->sctx->dev, "Failed to assign memory phys 0x%llx size 0x%llx err %d",
- 						map->phys, map->size, err);
-@@ -744,7 +746,7 @@ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
- 		 * If subsystem VMIDs are defined in DTSI, then do
- 		 * hyp_assign from HLOS to those VM(s)
- 		 */
--		unsigned int perms = BIT(QCOM_SCM_VMID_HLOS);
-+		u64 perms = BIT(QCOM_SCM_VMID_HLOS);
- 
- 		map->attr = attr;
- 		err = qcom_scm_assign_mem(map->phys, (u64)map->size, &perms,
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 66cb7a1e628a..6d1d87e1cdde 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -28,7 +28,7 @@ static int ath10k_qmi_map_msa_permission(struct ath10k_qmi *qmi,
- {
- 	struct qcom_scm_vmperm dst_perms[3];
- 	struct ath10k *ar = qmi->ar;
--	unsigned int src_perms;
-+	u64 src_perms;
- 	u32 perm_count;
- 	int ret;
- 
-@@ -60,7 +60,7 @@ static int ath10k_qmi_unmap_msa_permission(struct ath10k_qmi *qmi,
- {
- 	struct qcom_scm_vmperm dst_perms;
- 	struct ath10k *ar = qmi->ar;
--	unsigned int src_perms;
-+	u64 src_perms;
- 	int ret;
- 
- 	src_perms = BIT(QCOM_SCM_VMID_MSS_MSA) | BIT(QCOM_SCM_VMID_WLAN);
-diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index fddb63cffee0..9e8bde7a7ec4 100644
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -227,8 +227,8 @@ struct q6v5 {
- 	bool has_qaccept_regs;
- 	bool has_ext_cntl_regs;
- 	bool has_vq6;
--	int mpss_perm;
--	int mba_perm;
-+	u64 mpss_perm;
-+	u64 mba_perm;
- 	const char *hexagon_mdt_image;
- 	int version;
+ drivers/net/wireless/ath/ath10k/core.c | 16 ++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  2 ++
+ drivers/net/wireless/ath/ath10k/snoc.c |  3 +++
+ 3 files changed, 21 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5eb131ab916fd..ee4b6ba508c81 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -100,6 +100,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA988X_HW_2_0_VERSION,
+@@ -140,6 +141,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -181,6 +183,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -217,6 +220,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -257,6 +261,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -297,6 +302,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -337,6 +343,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -381,6 +388,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -427,6 +435,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -480,6 +489,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -530,6 +540,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -570,6 +581,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -612,6 +624,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -645,6 +658,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -692,6 +706,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = false,
+ 		.use_fw_tx_credits = true,
+ 		.delay_unmap_buffer = false,
++		.enable_threaded_napi = false,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -725,6 +740,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.hw_restart_disconnect = true,
+ 		.use_fw_tx_credits = false,
+ 		.delay_unmap_buffer = true,
++		.enable_threaded_napi = true,
+ 	},
  };
-@@ -404,7 +404,7 @@ static void q6v5_pds_disable(struct q6v5 *qproc, struct device **pds,
- 	}
- }
  
--static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, int *current_perm,
-+static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, u64 *current_perm,
- 				   bool local, bool remote, phys_addr_t addr,
- 				   size_t size)
- {
-@@ -939,7 +939,7 @@ static int q6v5_mpss_init_image(struct q6v5 *qproc, const struct firmware *fw,
- 	struct page *page;
- 	dma_addr_t phys;
- 	void *metadata;
--	int mdata_perm;
-+	u64 mdata_perm;
- 	int xferop_ret;
- 	size_t size;
- 	void *vaddr;
-diff --git a/drivers/soc/qcom/rmtfs_mem.c b/drivers/soc/qcom/rmtfs_mem.c
-index 0feaae357821..69991e47aa23 100644
---- a/drivers/soc/qcom/rmtfs_mem.c
-+++ b/drivers/soc/qcom/rmtfs_mem.c
-@@ -30,7 +30,7 @@ struct qcom_rmtfs_mem {
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 9643031a4427a..adf3076b96503 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -639,6 +639,8 @@ struct ath10k_hw_params {
+ 	bool use_fw_tx_credits;
  
- 	unsigned int client_id;
- 
--	unsigned int perms;
-+	u64 perms;
+ 	bool delay_unmap_buffer;
++
++	bool enable_threaded_napi;
  };
  
- static ssize_t qcom_rmtfs_mem_show(struct device *dev,
-diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
-index f8335644a01a..77f7b5837216 100644
---- a/include/linux/qcom_scm.h
-+++ b/include/linux/qcom_scm.h
-@@ -96,7 +96,7 @@ extern int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
- 					  u32 cp_nonpixel_start,
- 					  u32 cp_nonpixel_size);
- extern int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
--			       unsigned int *src,
-+			       u64 *src,
- 			       const struct qcom_scm_vmperm *newvm,
- 			       unsigned int dest_cnt);
+ struct htt_resp;
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index cfcb759a87dea..b94150fb6ef06 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -927,6 +927,9 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
  
+ 	bitmap_clear(ar_snoc->pending_ce_irqs, 0, CE_COUNT_MAX);
+ 
++	if (ar->hw_params.enable_threaded_napi)
++		dev_set_threaded(&ar->napi_dev, true);
++
+ 	ath10k_core_napi_enable(ar);
+ 	ath10k_snoc_irq_enable(ar);
+ 	ath10k_snoc_rx_post(ar);
 -- 
-2.25.1
+2.39.0.314.g84b9a713c41-goog
 
 
 _______________________________________________
