@@ -4,131 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28819C3DA7A
-	for <ath10k@archiver.kernel.org>; Fri,  6 Jan 2023 17:32:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4963CC54EBD
+	for <ath10k@archiver.kernel.org>; Mon,  9 Jan 2023 21:37:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qqrAJTf/yVqSNq/Yr7FRUFGpqFZecVUbZXfR7yCYlaM=; b=IoXEQ+HKqoaVh7
-	tQTXutOo28T4ATIosOEOE27/EnxWBtbNprGVdN3bt41uuQ9GRqiieTTinhCxO82NJX/JAdbfpvIj8
-	osTxDcneTd4BECTh+tjYQCVXqp4RxYmN7QRknKCEPGBcpANk1K1LEh591GmEsY+P05g6VlmhpuFZf
-	B3ighareS39FHfc7U00D61e94CjjA8S/CBWg0xYuOkjYztSfbUo0Cz0ZlUsAstAt6K/Yd5UAVvww5
-	3g55Dg0a2bwnMtphhbWuG5FFW72J9zT3jDiNWfJW8vJ7D6YklaCNvcfy/1+yegSlHMCsW8d8wyUKb
-	kMvFVOISWboidcoA307g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:From:To:MIME-Version:Date:
+	Message-ID:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=G2krcbdlyllZZlhM2b7yOiu6qo7LOL0ixrMiYl2seDc=; b=tX3O06uutM8N2t
+	qD1n01HHhsGWF19To4M+opye1c282Wco4Fh6B5rpVLOfH0dgHqcLdEEEx5CzA+8zQAdP6RfQd3bY1
+	wUWr9Y2MCV0CdQDBAV9fjTafsJTuQDMAcwrmj/umnLN4rzE3AQdHoj9oaKx7+6fWMs31vNPwNijmR
+	U/k01vxcWUe0tRqQmyNeIEuXjg64DJexRBHaEfrGnl/wbQpT+Lw5xmf3Lbs8XWQxKKmv4k2/6WxNc
+	ZpmpFLVQYvv9rpDZbcPzkRacH8ydb0HA3LrVCqQRWZEbT3uc8D+TIVUP9nMyZMkzQeePQ4MPIxsmx
+	5TA2OtIPwo7XTpZOLM5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pDqZv-00BxYt-4S; Fri, 06 Jan 2023 17:32:27 +0000
-Received: from mail-dm6nam12on2063.outbound.protection.outlook.com ([40.107.243.63] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
+	id 1pEzq0-004GwN-Da; Mon, 09 Jan 2023 21:37:48 +0000
+Received: from mx.mtailounie.net ([2607:5300:60:3211::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pDqS1-00BZhF-CI; Fri, 06 Jan 2023 17:24:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eS4WQQpuFUVu0BIQ24Tne76BrkHarT20WNH5gB/5ZCjZ2L+s1EdaNDyOqch0er8vtw/9lToOafchyylBbZeuHv+RvAuM8duxVEGJ07Mz2fgG6tyiU0B60Z2MgHkorqOBoXDAMUhoicyK1JN3PbUpyUAfEC2lbMX6wSz9PDJyG7z8JXkc3wEWZWo/hXaW8MQVy8B1NPOVn6jf4MMiwHGFr0VwbXt+fqlRc2P8Jdto5J9qOE+mkt9VpjClLUIxsDNEsjVDa52k6a6V39smSUBd5IpOHEiQPO5YZT0HoPtrrwI7zv0fs8JjwtrpQ6SJl+geNwIuhJ6S6wbYEtmoN6yV0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nC8yyf2i/rJX4emyigWAVpCtFlGoeW7cDYHn+lLikTc=;
- b=f8Kz8Bfw5h9iCquFZM+HlJpSwJQF6rMLmXtlDFR350JAV+djauH7kN9fqYBRjQpwUPou3Miju5Kd+QZUIKRDc2jRcoYC8zlAqg7nEtD+4spvf+uLcyZfuM91Sl/zM+YXp5VjA7O55rKfckOTA2Plqc4YK2PCJfSXbxxtDt5BSRzq3oalIwiaGHZIXf3UqCmD5WyQj1jC8lnXyVncOcAR9MpoLC5NPcJDuqsKw3lmEYAXadBRPB7tHokA2rYPfD8vZkvkUdeU58SHYHX3wydiQM+EOFYnpEECVduqSc0UI3VLSfqmWo26YEMgnjBun5PpfoAjXcgWnpQrIp4MFhYFEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nC8yyf2i/rJX4emyigWAVpCtFlGoeW7cDYHn+lLikTc=;
- b=dy20YQ0zCwCUynL/UqFT3QUZ6wkH8WAP961E41nFNktXLo5DgWVcTZKTe7YDgLfdAcUIDLJPX/QE3pfrYPzi5jbiSj24JpPmIVKd23pD9DbbQr1F3gQlDH90P2a2V0kniP0DC7a1tpqk89VJ0Z6unmx9H8CUFWpaKHoJhUZsxjVoszhyGWwc6JizHnzZ1MAn1gnAnl5YNZwCu8cwxWx65d1H0hCipwIXGaU5bpWmVJc3qXQJBQGb+aChnmOEzrzYDcNzzbtLJOfTuoSV3asnKKxbYyVdkOA3BqmpbFOYVQbk4fxanA5qkSMXtI3qT1j7dwlWSkanKzhPKrArovVEtg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW4PR12MB5601.namprd12.prod.outlook.com (2603:10b6:303:168::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Fri, 6 Jan
- 2023 17:24:13 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.5944.019; Fri, 6 Jan 2023
- 17:24:12 +0000
-Date: Fri, 6 Jan 2023 13:24:11 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	dri-devel@lists.freedesktop.org, iommu@lists.linux.dev,
-	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-tegra@vger.kernel.org, linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 1/8] iommu: Add a gfp parameter to iommu_map()
-Message-ID: <Y7hZOwerwljDKoQq@nvidia.com>
-References: <1-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
- <4fd1b194-29ef-621d-4059-a8336058f217@arm.com>
-Content-Disposition: inline
-In-Reply-To: <4fd1b194-29ef-621d-4059-a8336058f217@arm.com>
-X-ClientProxiedBy: MN2PR12CA0004.namprd12.prod.outlook.com
- (2603:10b6:208:a8::17) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	id 1pEzg1-004DDx-EP
+	for ath10k@lists.infradead.org; Mon, 09 Jan 2023 21:27:31 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mx.mtailounie.net (SYPOSTER) with ESMTP id E54C3840A2A
+	for <ath10k@lists.infradead.org>; Mon,  9 Jan 2023 15:25:00 -0500 (EST)
+X-Virus-Scanned: amavisd-new at mtailounie.net.softiternity.com
+Received: from mx.mtailounie.net ([127.0.0.1])
+	by localhost (mx.mtailounie.net [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id kCynAWDdAp1J for <ath10k@lists.infradead.org>;
+	Mon,  9 Jan 2023 15:24:59 -0500 (EST)
+Received: from [10.9.9.10] (ip-088-153-114-186.um27.pools.vodafone-ip.de [88.153.114.186])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx.mtailounie.net (SYPOSTER) with ESMTPSA id 9893E840A27
+	for <ath10k@lists.infradead.org>; Mon,  9 Jan 2023 15:24:58 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mx.mtailounie.net 9893E840A27
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mtailounie.net;
+	s=symt; t=1673295899;
+	bh=jfQff9hrZ2xhlNMhA6urRfMqPpL9cMcHgNUMMgyp4tU=;
+	h=Date:Reply-To:To:From:Subject:From;
+	b=JBFVVjEaQtlEFNmv5xzkp6FPiFZZE/iiFaeZeOKhf0/XK7adTaOGrmevsYLsjYsdG
+	 P4Gw4Ct9nrHASd9GWO0AZAQLQufVBkGju9wrvUzNbouxzxIvDpCLlRAFsD31oFVzHF
+	 6fSoNsmc9r8Tw1W2Vw7lnTtwcEQ/q5ytqz/vfz+WjYupeGUobEu4j02DhblUwFEBas
+	 6NMaVHzs9SVIquhB1i15i7FrWIA4boIhoa3ZNAlCCkxfrfo6iQi4YIY2989jboPvbK
+	 4Z1bKEpoBkDg3p+GB74R+EwG4ekFybuDvqYpezG3LQRMa76xErQk2pjmjzOcK0lJjC
+	 JWaakmLDJJoCg==
+Message-ID: <b51f5efc-b3a4-9c64-1fa2-0243ab951193@mtailounie.net>
+Date: Mon, 9 Jan 2023 21:24:55 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW4PR12MB5601:EE_
-X-MS-Office365-Filtering-Correlation-Id: a380c960-bbc3-4788-e1ef-08daf00ad407
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	6qJH666CBhIW5tUF2AsyhSKgkkKCL7qQ+0QvpkGXxA5fosBL2pe5k3FzB+YXv22Q2GysE6xXwb1HuOzGxF+qXLaq+nXCQrFd4y/n1GxEk8+S0bp5z9AYM0xBOoKAYRNbd5PBTl0BT7ABQFgzk9OqAQX5tRnqsTsNUgBG0TB6XpeH2RH6klh8Cza8zimRZeiqwEfNkiY3aK2XlvkEJU3OBi1agbVr2x8o2xq1CGGL+CTyWuYyEAF8w4caTrGQGp4bPYE1xwnPc3b3DyeMDZnVgNbBJD+h3lD+VE60bntuYQaIzJqRiOtJI2ksLPU6h8vEggZPTmS1rG51A3T3uTYAWG+dKn1+SxZ+G8iD4GtUWRVLKbLYNCjLOeHX6LsN6vv0fyQYQc8ud+tt9hIV8CdlrqHrpuAwoFwQ5pRuNvPPewxJ4OZILiGc+u6MVIw8lrm5XwFJG2m5n4m0ru0Y6rlol2eqebZJUSM84fCUCjd2fr4ChBU1OyOi34eIEBiJwDRPe6xIuWahIJSlBbFBY3Fv7/KwkjYRD35ynFav+MidO58TKqaGY2VimiJ/rbDKyPX3SXaN5HGJ0QaWCnld407OD+S9TFDS2mf2CozxQjxNITbgoKZqXwrbfspiAk41amQrhl4+9anZ9rkFCh+0s5XviQ==
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(451199015)(54906003)(186003)(26005)(66556008)(66476007)(2616005)(6486002)(478600001)(6512007)(8676002)(8936002)(7416002)(83380400001)(41300700001)(5660300002)(2906002)(4326008)(316002)(66946007)(86362001)(6916009)(6506007)(53546011)(38100700002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?gUtguh/BhjSsWFMyOvOkTocwMW34MIv6f+dQH0dsuXmPdkuOjqZjELhOoCBR?=
- =?us-ascii?Q?jw/9LzWuOml7GUNslDGnwn35hTk3PfwFosS/n//Om1Omq40fna+7KkqQTSF4?=
- =?us-ascii?Q?D6sIJr7h9Gfk0ZeWsJBVRBm11B+Darv7rylsGsY0WKszhDnvMWSWJRA/MqI9?=
- =?us-ascii?Q?hsetMQd/d1+oJdZAlyW1iiJTtgk8PrMuAzfkTs42KLEZ+2QU6H8iSsT1FyBt?=
- =?us-ascii?Q?VSLPzGYe8cQxO1WUF86hM/4N4RWO3dfhARjrkUizubFVbCstcWf4VA2Q4sm9?=
- =?us-ascii?Q?42sdcJJNEd0DrrgSCfk0chB21gvbI14S6UJ6XJhl81+UKR1TlxKjdkfIVroU?=
- =?us-ascii?Q?vHa3qlcSPjUK7l9PJk46XCLZSa7BLIZLIEn2ktcKl47Azrm6LIu/XszuIu+8?=
- =?us-ascii?Q?UZOWwrCt74fT43uZdnZT9Zfbrwn0w7BW0mGaXpCth8FfaFN07Rl2mam0O7D0?=
- =?us-ascii?Q?gxA1/xJcSE7aUKUncuhSvGsSCPeFfgx1T71E+59Z+8/rGdGH6PD0HwxggPz+?=
- =?us-ascii?Q?gFjHo/QAVRvyJqoTqP3N9gzeaLxiWLoaDwWM+O2eCTe3VaEavpuLW+X7ZqaB?=
- =?us-ascii?Q?nZAyRj8OV/ujMXMFsg4pKDLJSWMsd8u/f5t5rjZgfVBkKFGTZ0CVRjEi2OIM?=
- =?us-ascii?Q?HplJ3hvt6yMxfJ8HU7BcD1G2JXVtQhGD/Lxt8braTiN/MSuDWSO6tUoUmIvs?=
- =?us-ascii?Q?4MVTggacoJznwyUTxA7mKHOs3oX1EQD3Bi/0DAxiCXsWKShBaITtJh6m9ucK?=
- =?us-ascii?Q?k5gbShKvKfd8d6t5YWtP1RrTSUXXVxaXGLHzPg8KlSPCNHcUQhQBWTWYY4By?=
- =?us-ascii?Q?NFE5y/n2dynXHdjy2/nIf8Yxd/vSzBW/gx2vDf7m0kJjIAJk/vdXr8x755Up?=
- =?us-ascii?Q?qgnC7KJ8wu3VE42HIMu+T0s0WGsEZlRNtPGlwAxEI+OisFxdreVgEUmHHFpK?=
- =?us-ascii?Q?nJagpumxXtxVoVDp6I4zPrivqQSVZzplcfplE0qu6mXkdj9qZK2F6wL36b3q?=
- =?us-ascii?Q?jrCXpMZaCFpv+Xal25tX6jqHeYX+3OPYeLc+jZYNZzEpqkTyy2VRvTomYZt1?=
- =?us-ascii?Q?PRhA5xSzVWtHhxDWZXLj+Ha4bpATSb8KkyB1f+G0W5F+OX0f3+U44ZXm5G/d?=
- =?us-ascii?Q?nmuL44r/aT8Odag8gE0zL+vnZsYjkif6UEqiH4w1p/fPdVOTy2Ze8kiB6Ecv?=
- =?us-ascii?Q?GeS18tfQFq2kBnYk/+U6iSkDavbJo5rO8mpMqLb+BzxQfpGAQJZMrfOknBnK?=
- =?us-ascii?Q?oBPIbmEe5Jzp/w1D1B+nuoTMCYm0i6YBD+84hAOe06aU2IVF70WG8pa0Lo67?=
- =?us-ascii?Q?y3gr3I894Exe5oQkhznS2TuG3UDApRj7jZQYSxdOp62P83+SwGHOgL1P6jgA?=
- =?us-ascii?Q?GbV53ubvNCNTBM0uP9GhYwb4WWnjh7jjIDhyZELmQDlSTtuh1tOr67dGTqW2?=
- =?us-ascii?Q?nKOaf5OvnXFR3G+ycDWf6znVbK0mGti3bQ51KYU1ieMy+4Oc9L8HJDxAScD+?=
- =?us-ascii?Q?eUzyRx/JZt4JOZ75y4YnKNES9JvIpZjayYtbPSws/bsAm12Qp7pbrpsNv0Bf?=
- =?us-ascii?Q?BLbdROencX9YMTiONhIirY8MXkPGWLo+bBmeTMjI?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a380c960-bbc3-4788-e1ef-08daf00ad407
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2023 17:24:12.7096
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /G4slPQ9LdfbZ+iK5j2t1fMDw7VqdkXkdo74dzB3f1XOhCF0xdxdWnTliW/zmjfK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5601
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Content-Language: en-CA
+To: ath10k@lists.infradead.org
+From: Linuxero Moxero <mageia@mtailounie.net>
+Subject: First email - ATH10K
+Organization: Opensource
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230106_092417_485375_65A52F33 
-X-CRM114-Status: GOOD (  17.63  )
+X-CRM114-CacheID: sfid-20230109_132729_887687_1AA7CBE2 
+X-CRM114-Status: UNSURE (   8.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,45 +75,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: mageia@mtailounie.net
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 06, 2023 at 05:15:28PM +0000, Robin Murphy wrote:
-> On 2023-01-06 16:42, Jason Gunthorpe wrote:
-> > The internal mechanisms support this, but instead of exposting the gfp to
-> > the caller it wrappers it into iommu_map() and iommu_map_atomic()
-> > 
-> > Fix this instead of adding more variants for GFP_KERNEL_ACCOUNT.
-> 
-> FWIW, since we *do* have two variants already, I think I'd have a mild
-> preference for leaving the regular map calls as-is (i.e. implicit
-> GFP_KERNEL), and just generalising the _atomic versions for the special
-> cases.
-
-I think it is just better to follow kernel convention and have
-allocation functions include the GFP because it is a clear signal to
-the user that there is an allocation hidden inside the API. The whole
-point of gfp is not to have multitudes of every function for every
-allocation mode.
-
-There are not so many callers that it seems worth worrying about
-removing the extra GFP_KERNEL argument.
-
-> However, echoing the recent activity over on the DMA API side of things, I
-> think it's still worth proactively constraining the set of permissible
-> flags, lest we end up with more weird problems if stuff that doesn't really
-> make sense, like GFP_COMP or zone flags, manages to leak through (that may
-> have been part of the reason for having the current wrappers rather than a
-> bare gfp argument in the first place, I forget now).
-
-Yeah, that can be done
-
-Thanks,
-Jason
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGk7CgpJIGFtIG5ldyB0byBCU0QgYW5kIEkgaGF2ZSBqdXN0IG1hbmFnZWQgdG8gaW5zdGFsbCB0
+aGUgbGF0ZXN0IEZyZWVCU0TCoCAKb24gbXkgRGVsbCBJbnNwaXJvbiAxNSA1MDAwIHNlcmllcy4K
+CkkgY2Fubm90IGdldCBteSBXSUZJIGNhcmQgdG8gd29yay4gVGhlIHZlbmRvciBJRCBpcyAweDE2
+OGMgYW5kIHRoZSAKZGV2aWNlIElEIGlzIDB4MDAzZS4gVGhpcyBpcyBhIFFDQTYxNzQgODAyLjEx
+YWMgUENJIEV4cHJlc3MgY2FyZC4KCkkgaGF2ZSB0cmllZCB0byBkb3dubG9hZCBkaWZmZXJlbnQg
+ZmlybXdhcmUgYW5kIHRyaWVkIHRvIGxvYWQgdGhlbSB3aXRoIAprbGRsb2FkLiBJIGRvIG5vdCB3
+aXNoIHRvIG1lc3MgdXAgd2l0aCBteSBzeXN0ZW0gYSBsb3QgYmVjYXVzZSwgYXMgSSAKbWVudGlv
+bmVkLCBJIGFtIHN0aWxsIG5ldyB0byBCU0QuIFNvIEkgYW0gdHJ5aW5nIHQga2VlcCBsb2FkZXIu
+Y29uZiBjbGVhbi4KCkkgYXBwcmVjaWF0ZSBhbnkgaGVscCBvciBsZWFkIHRvIGdldCBteSB3aWZp
+IHJ1bm5pbmcuCgpUaGFuayB5b3UgaW4gYWR2YW5jZSwKCk11aGFtbWFkCgotLSAKQmUgZ29vZCwg
+YmUgaGFwcHkgYW5kIG5ldmVyIGxldCB0aGUgbG92ZWx5IHNtaWxlIG9uIHlvdXIgbmljZSBsaXBz
+IGZhZGUgYXdheQpCZWF0aXR1ZGUgU2hhbTsgVGhlcmUgYXJlIHRoZSBhbmdlbHMgb2YgR29kIHdp
+dGggdGhlaXIgd2luZ3Mgc3ByZWFkIHdpZGUgb3BlbiBhbGwgb3ZlciBTaGFtLgpJbmRlZWQ7IHdo
+ZW4gd2hlZWRsaW5nIGJsYW5kaXNobWVudHMgcHJldmFpbCwgZmFpdGggZHdlbGxzIGluIFNoYW0u
+Ck9oIEdvZDsgYmVzdG93IG91ciBTaGFtIHdpdGggWW91ciBibGVzc2luZ3MuCgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
