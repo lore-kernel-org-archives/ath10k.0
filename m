@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 930E5C54EBC
-	for <ath10k@archiver.kernel.org>; Wed, 11 Jan 2023 01:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 950AEC54EBC
+	for <ath10k@archiver.kernel.org>; Wed, 11 Jan 2023 02:17:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=D7XqRsidt9nxhZfFZW4Oo7JIHAJcFWZvb1IIkGdsxAM=; b=MmEE0qNzM0vUQ2
-	vYTncqMOQQUElGcML+9SCQne1h4yrd4M5ZNU9UD5Mn50KqrAzzcHDvL03h40udQotr+ZE2UMxVhDx
-	62pItH1PDBpqYmgCUF9FSP/b/PJUCCiwpE2uLR0EmHdxXfCHok1B+CtBk1EdbMZpbpzZGUm4ElvoD
-	4CGZvDApUbNTf/RLadO86IphjhOyMNBdZ3nIPUPD2CtqhApoDLags20cef4XLmBwXhIFP1WEYqQbP
-	Hr+p/ErNTy0Q2l7RR4g8LLZO2C1BioJcqrHPuqRYP6RvlNwKuN8INY/MZmIK5Y4rSsFVcFmec59Ij
-	rCzGaZZraSEjyVmcLpHg==;
+	List-Owner; bh=ugc4zeVeN+H5zSqEKBETfFgYbxhqcQoN783oHngySXg=; b=qEGSUams4Y86t1
+	SwgVHmmzlBgADczXM9+BHuMwGr6rz5sokaI9JZ8JOxsARLaEBPBvJ1gPWrIBjsH1wi4KQwdsZptM9
+	l0+l8YJPyvWF7khd81jEtjXTMOt90jUjnMN5FOcqVcFm1uXeCfyM4b7QNMV2rmUJTp7VbEAqSncO3
+	foWZvm5G1iy3dRJDRq0FTLIdFp5sB/Ng0ZuROoGUgOHghWkEKuocvPqm4/qg69e7Xq4qsKesEzrtA
+	TrTD8iPhvemVpPWkuykBlKu+v2PUYEWVzL9kuTaxqMOnWjR7QFj4ABQIfvAd83WpvLv9enKBW4oAA
+	EG5Vu0oiT5NVZvu6tHwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pFQBT-0099Qj-Sv; Wed, 11 Jan 2023 01:45:43 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1pFQgR-009Fh3-Gp; Wed, 11 Jan 2023 02:17:43 +0000
+Received: from mga05.intel.com ([192.55.52.43])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pFQBQ-0099Q7-So
-	for ath10k@lists.infradead.org; Wed, 11 Jan 2023 01:45:42 +0000
+	id 1pFQgP-009FgT-5R
+	for ath10k@lists.infradead.org; Wed, 11 Jan 2023 02:17:42 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673401540; x=1704937540;
+  t=1673403461; x=1704939461;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=xS3H99+SB0fIY9W+XqjZx7pCGv3UTMv/Z29Tk2tpPvQ=;
-  b=c6zGqsviEIF2kZUgRA6QFPRQUar4QP+XXVrsnHEwvHmPbfybHQtM4N8V
-   Jr1UXmwtl0T9nNRMS7fgW2DlmFlR1LrvEG1CBsNUpM/GJ0WtOBuNCkIX/
-   urP52X2w0ONpXSLHyBAQezrv1Tt0lijGRlOg/Zx4ebXYr4h8gf/+ndSZB
-   NYoz2SetDwXO5zMRUtgPL/fdGCfg0rqFHnv4AdrTK9yOBN9PTpjyt+7PU
-   E29ABXwt/R1mjrHrADEvnPo/omLI2M5u/eOJXYzzDc/y8/nJxvL1AcYeG
-   kYbpetm+HW8MUT0ky+Wft8SwPR4TZ27qNBXPULyx525WrLOYLwHciXxeL
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="320996819"
+  bh=32U3Ps6b35seEqRsIFXuzYqygZ3jcShcgkchfVajmRA=;
+  b=XfD+bTcuuVFyzhg7BNsz47TE5GqLdsuJM3ikckml2xhQNTMvKZtrRusN
+   t7GsCmr4UEvmXHPF/bHm8OG848mjhH2ke+L55zJK2nGj/OrDpRR672F30
+   NZEsYNIUUH+vgEx+/NSpURTepN7n3WylxOweh0Ygs4A974Ks767S9kSuC
+   8WiTEMWX9b5qC6oBlvMMNVne8PYUfUbzuxZh9KA+lzq5/tQOhLdnTyrfP
+   YAJmZLpBskUIirYHURAW3gg7DdM/fknx61gRxE0PwQXKFMGyldDZl1jaY
+   KwxJrJ/pJaPZy5pQmOhhT5O7desAjuiUg0FmJYB0kYAYyeSd3g/9Upr26
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="409547131"
 X-IronPort-AV: E=Sophos;i="5.96,315,1665471600"; 
-   d="scan'208";a="320996819"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2023 17:45:38 -0800
+   d="scan'208";a="409547131"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2023 18:17:39 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="687760059"
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="725753537"
 X-IronPort-AV: E=Sophos;i="5.96,315,1665471600"; 
-   d="scan'208";a="687760059"
+   d="scan'208";a="725753537"
 Received: from lkp-server02.sh.intel.com (HELO f1920e93ebb5) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 10 Jan 2023 17:45:36 -0800
+  by fmsmga004.fm.intel.com with ESMTP; 10 Jan 2023 18:17:38 -0800
 Received: from kbuild by f1920e93ebb5 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1pFQBH-0008aQ-0x;
-	Wed, 11 Jan 2023 01:45:34 +0000
-Date: Wed, 11 Jan 2023 09:44:46 +0800
+	id 1pFQgL-0008cG-23;
+	Wed, 11 Jan 2023 02:17:37 +0000
+Date: Wed, 11 Jan 2023 10:17:18 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 323d91d4684d238f6bc3693fed93caf795378fe0
-Message-ID: <63be148e.uMHbSDvVunNUhNED%lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ e51980bf88c65f6ad4916baf720ad1234de01791
+Message-ID: <63be1c2e.9JO9H0U/S3AUGgIP%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230110_174540_988743_D7C0D543 
-X-CRM114-Status: UNSURE (   6.38  )
+X-CRM114-CacheID: sfid-20230110_181741_249726_3EFF6980 
+X-CRM114-Status: UNSURE (   5.75  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,69 +82,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 323d91d4684d238f6bc3693fed93caf795378fe0  wifi: ath11k: debugfs: fix to work with multiple PCI devices
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: e51980bf88c65f6ad4916baf720ad1234de01791  Add localversion-wireless-testing-ath
 
-elapsed time: 722m
+elapsed time: 754m
 
-configs tested: 49
+configs tested: 62
 configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
 gcc tested configs:
-arc                                 defconfig
 x86_64                            allnoconfig
-alpha                               defconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
+powerpc                           allnoconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
 m68k                             allyesconfig
 m68k                             allmodconfig
 arc                              allyesconfig
-alpha                            allyesconfig
-powerpc                           allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-ia64                             allmodconfig
-i386                             allyesconfig
 i386                                defconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-kvm
-x86_64                           rhel-8.3-syz
+alpha                            allyesconfig
+arc                  randconfig-r043-20230110
+s390                 randconfig-r044-20230110
+riscv                randconfig-r042-20230110
+i386                          randconfig-a001
+i386                          randconfig-a003
+ia64                             allmodconfig
+sh                               allmodconfig
+i386                          randconfig-a005
 x86_64                           rhel-8.3-bpf
+x86_64                           rhel-8.3-syz
 x86_64                         rhel-8.3-kunit
 x86_64                              defconfig
-x86_64                           allyesconfig
+x86_64                           rhel-8.3-kvm
 x86_64                               rhel-8.3
-um                             i386_defconfig
-um                           x86_64_defconfig
-s390                                defconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+i386                             allyesconfig
+mips                             allyesconfig
+x86_64                        randconfig-a015
+x86_64                           allyesconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+arc                                 defconfig
 s390                             allmodconfig
+alpha                               defconfig
+s390                                defconfig
 s390                             allyesconfig
-arm64                            allyesconfig
 arm                                 defconfig
+arm64                            allyesconfig
 arm                              allyesconfig
-riscv                randconfig-r042-20230110
-s390                 randconfig-r044-20230110
-arc                  randconfig-r043-20230110
 
 clang tested configs:
+hexagon              randconfig-r041-20230110
+arm                  randconfig-r046-20230110
+hexagon              randconfig-r045-20230110
 i386                          randconfig-a002
 i386                          randconfig-a004
 i386                          randconfig-a006
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-x86_64                        randconfig-k001
-x86_64                          rhel-8.3-rust
-x86_64                        randconfig-a012
 x86_64                        randconfig-a014
+x86_64                        randconfig-a012
 x86_64                        randconfig-a016
-mips                malta_qemu_32r6_defconfig
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+x86_64                          rhel-8.3-rust
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
 
 -- 
 0-DAY CI Kernel Test Service
