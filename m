@@ -4,67 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5749C63797
-	for <ath10k@archiver.kernel.org>; Tue, 17 Jan 2023 07:00:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7179BC3DA78
+	for <ath10k@archiver.kernel.org>; Tue, 17 Jan 2023 08:36:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ALQKbvUCZRkZOfnACOt+0ooeiALFwqvw+d/imlQMjoY=; b=3p+vATbjTlkkVb
-	xaPpjVPFrIOsRCKylQxuBlUcTLSsnalUYQBzYobAB8MvGLNpnmg3YpmUJVpTcMMqn9G82/C+CblHk
-	NDzJTJfbNmb7KE23YDvv/Ct/0MJEgs4qnYRNcEpT7g1jyEcr+Z7qXR/tnJ3uvqtdYfPhGLyc9aERh
-	wTreECMZfxl6SZuIUL1OkEXLa884sk0dgMmWJFoU+cR4ZUF/+SFXb+SNJgd693n/QdembFii/qeGm
-	293SXFcViVooATSu8NMeKFO+TaXs6XpYsKsqdLVqonlSzv2m5/VXO3cFhwmKkuhBwWqdMyqDlDmkT
-	6CbB5yjz5w3pDQVMA+fg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:Cc:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=DY+gW9cdtFBXq1UkX1cSgwfUI86MFV7vKnAgLQeunJQ=; b=mJdM0Cxmi9BZfv
+	3XN+ZJgS2J1Pmq3/4dbct11LuojObuIYQWx9xdYQxHupLVRBpXNPAUCEsa557Om+0cGvEMmppwF5Q
+	VVEAokw4/+h4IE7xmUO9TIAMCylNK05MPFC5YLxdaoS7+wCUZVapFVVVduGL3nnng6kKLuYPVrbzg
+	NrvtUJbo6YzignJ9lYJnGX731pmThi6xYyVN8i60JQXJ5GJy+gZXB9MUONkwmePP2Yse874whjgGW
+	eypnC7th51OmS98yVDOcnzJT8JvS52bYNKHEG7jA0ql3CiUnLYLpuovqRgKyTxfKmeslO3CZcUNZU
+	/z7e7aglraH15buYbZbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHfxc-00D6tU-68; Tue, 17 Jan 2023 07:00:44 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1pHhS0-00DLCy-2V; Tue, 17 Jan 2023 08:36:12 +0000
+Received: from mga14.intel.com ([192.55.52.115])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHfxZ-00D6sX-Be
-	for ath10k@lists.infradead.org; Tue, 17 Jan 2023 07:00:42 +0000
+	id 1pHhRx-00DLCI-BD; Tue, 17 Jan 2023 08:36:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673938841; x=1705474841;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=bALhVIrEZLApSePIzzRm2ySz6UJLaLZhPR6VR07WzfQ=;
-  b=AFUy08HN7GE3U/xoczjSrGADkpyIkteUlPSiGepcO3DcLW/M0jhkXMJb
-   xt3Ea25HnaFMAnDEfbL6nxqXYPfN7UhKYkZ0Vr3NvLF13BU3ZVMarDcBQ
-   9BRw292GtIkJDzTuItuoETCV8k1i3f04yD7H19pvkPo6kFanRUsMAb/G/
-   hMLqEWihGZNIsv6Rx9GYexrB5HeETwawZaCKb1wdPidhEKFTErSfXsDuG
-   rP21/a6gyJqls+cMNuCMgcH86IybqOtgczuxbI7Sg9t5VugcOB4VjrZDm
-   zPYvW8hAkI4fvmls2Qy+vciB9gk4wsUHyI4gZinRqEngqBV/5EAf9EfBr
+  t=1673944569; x=1705480569;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+/sep6cg202vL4sr/HrqlldWJYwNCPz0Civ/zJRrPiM=;
+  b=WindGijWW1SRfUReVORUbSpeG5K0Iiy3aKXMXe4XGDHbXDHNpW7DY14s
+   xuZNOd9d1ddORgijNN7X9PqlqnPJhIB4nMnp6cBAr4CYvFG/EZfFyvdWg
+   v6fd8TrZzAUEy6G00G3golRrefHypqW9zTvQDeWeTPcGfUUW7+FCmcCpx
+   ivRk67WuFiGQPfDu1HVL5Nqnr7okwx1VBdm/aN+NcOF1+q3Ccz5gfa3iU
+   8thDEz4qM0se7CkjGd0d76s+H0akY9aVRJTxjDQlf270Pq+q8BF+Ar4KR
+   fyNpvkH5xgew0392aH+MabWSx/OCiXbYlU6s0CmcmOflGbksfHtj/kRZo
    w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="323323812"
+X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="324696295"
 X-IronPort-AV: E=Sophos;i="5.97,222,1669104000"; 
-   d="scan'208";a="323323812"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2023 23:00:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="722543177"
+   d="scan'208";a="324696295"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 00:36:06 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="783168240"
 X-IronPort-AV: E=Sophos;i="5.97,222,1669104000"; 
-   d="scan'208";a="722543177"
-Received: from lkp-server02.sh.intel.com (HELO f57cd993bc73) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 16 Jan 2023 23:00:18 -0800
-Received: from kbuild by f57cd993bc73 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pHfxB-000132-2L;
-	Tue, 17 Jan 2023 07:00:17 +0000
-Date: Tue, 17 Jan 2023 14:59:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 504fac6c0111460a75d5748c26abea526d8efa1e
-Message-ID: <63c64751.9ZmGF2JK01m4MkC+%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="783168240"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.187.178]) ([10.252.187.178])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 00:35:59 -0800
+Message-ID: <c742969d-d692-1580-d22c-0f8f3d897201@linux.intel.com>
+Date: Tue, 17 Jan 2023 16:35:56 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Cc: baolu.lu@linux.intel.com, Alex Williamson <alex.williamson@redhat.com>,
+ "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>,
+ "ath11k@lists.infradead.org" <ath11k@lists.infradead.org>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "linux-stm32@st-md-mailman.stormreply.com"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+ Niklas Schnelle <schnelle@linux.ibm.com>,
+ "virtualization@lists.linux-foundation.org"
+ <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 7/8] iommu/intel: Support the gfp argument to the
+ map_pages op
+Content-Language: en-US
+To: "Tian, Kevin" <kevin.tian@intel.com>, Jason Gunthorpe <jgg@nvidia.com>,
+ Joerg Roedel <joro@8bytes.org>, Matthew Rosato <mjrosato@linux.ibm.com>,
+ Robin Murphy <robin.murphy@arm.com>
+References: <0-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
+ <7-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
+ <BN9PR11MB52765EE38CA21BA27EEA06548CC69@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB52765EE38CA21BA27EEA06548CC69@BN9PR11MB5276.namprd11.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230116_230041_464266_D3313DAA 
-X-CRM114-Status: UNSURE (   5.31  )
+X-CRM114-CacheID: sfid-20230117_003609_449597_9797116F 
+X-CRM114-Status: UNSURE (   7.80  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,103 +101,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 504fac6c0111460a75d5748c26abea526d8efa1e  Merge branch 'pending' into master-pending
+On 2023/1/17 11:38, Tian, Kevin wrote:
+>> From: Jason Gunthorpe<jgg@nvidia.com>
+>> Sent: Saturday, January 7, 2023 12:43 AM
+>>
+>> @@ -2368,7 +2372,7 @@ static int iommu_domain_identity_map(struct
+>> dmar_domain *domain,
+>>
+>>   	return __domain_mapping(domain, first_vpfn,
+>>   				first_vpfn, last_vpfn - first_vpfn + 1,
+>> -				DMA_PTE_READ|DMA_PTE_WRITE);
+>> +				DMA_PTE_READ|DMA_PTE_WRITE,
+>> GFP_KERNEL);
+>>   }
+> Baolu, can you help confirm whether switching from GFP_ATOMIC to
+> GFP_KERNEL is OK in this path? it looks fine to me in a quick glance
+> but want to be conservative here.
 
-elapsed time: 721m
+This is also good for me. The memory notifier callback runs in a process
+context and allowed to block.
 
-configs tested: 74
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-x86_64                            allnoconfig
-powerpc                           allnoconfig
-arc                                 defconfig
-s390                             allmodconfig
-alpha                               defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-s390                                defconfig
-i386                                defconfig
-x86_64                              defconfig
-s390                             allyesconfig
-sh                               allmodconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-x86_64                               rhel-8.3
-ia64                             allmodconfig
-i386                 randconfig-a014-20230116
-i386                 randconfig-a013-20230116
-arm                                 defconfig
-i386                 randconfig-a012-20230116
-i386                 randconfig-a011-20230116
-i386                 randconfig-a016-20230116
-i386                 randconfig-a015-20230116
-x86_64                           allyesconfig
-i386                             allyesconfig
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-arc                  randconfig-r043-20230115
-s390                 randconfig-r044-20230116
-x86_64                           rhel-8.3-bpf
-riscv                randconfig-r042-20230116
-arc                  randconfig-r043-20230116
-arm                  randconfig-r046-20230115
-arm                              allyesconfig
-x86_64               randconfig-a011-20230116
-arm                  randconfig-r046-20230117
-x86_64               randconfig-a013-20230116
-arc                  randconfig-r043-20230117
-x86_64               randconfig-a012-20230116
-x86_64               randconfig-a016-20230116
-x86_64               randconfig-a014-20230116
-arm64                            allyesconfig
-x86_64               randconfig-a015-20230116
-m68k                             allmodconfig
-m68k                             allyesconfig
-alpha                            allyesconfig
-arc                              allyesconfig
-
-clang tested configs:
-x86_64                          rhel-8.3-rust
-x86_64               randconfig-a001-20230116
-x86_64               randconfig-a003-20230116
-x86_64               randconfig-a002-20230116
-hexagon              randconfig-r041-20230116
-x86_64               randconfig-a004-20230116
-riscv                randconfig-r042-20230117
-x86_64               randconfig-a005-20230116
-x86_64               randconfig-a006-20230116
-hexagon              randconfig-r045-20230117
-s390                 randconfig-r044-20230117
-hexagon              randconfig-r045-20230115
-hexagon              randconfig-r041-20230117
-riscv                randconfig-r042-20230115
-arm                  randconfig-r046-20230116
-s390                 randconfig-r044-20230115
-hexagon              randconfig-r045-20230116
-hexagon              randconfig-r041-20230115
-i386                 randconfig-a002-20230116
-i386                 randconfig-a004-20230116
-i386                 randconfig-a003-20230116
-i386                 randconfig-a006-20230116
-i386                 randconfig-a005-20230116
-i386                 randconfig-a001-20230116
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Best regards,
+baolu
 
 _______________________________________________
 ath10k mailing list
