@@ -4,141 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96DE1C63797
-	for <ath10k@archiver.kernel.org>; Tue, 17 Jan 2023 13:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37E19C3DA78
+	for <ath10k@archiver.kernel.org>; Tue, 17 Jan 2023 19:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HICKsdZYwXVhtaTwXOFsUO1/fnb3uA6s21v1T9jeGZY=; b=b4pBC5JpeZlmrO
-	sKflTuVsQNuyfU5BhQL6rcClqWUTL27MqdipSbySN1FXNP2XYPjnZAaj26SL8TdlCoALiaJSExFnb
-	OWs3gTwsVz/kug/M447KInmUEdNJ89SAcrHM+ks/493/DVXhMsPomDmLsfmaIG2EpKLDUXqn3VcEp
-	o44C3fbckzz216jwCc8dXEWtpQJTUZ6Jd7F2hcGi1n4Udth0IkjfYA9zHFUgzZ3VldhDuCoHn9Kao
-	+kLt/3os+BlPegpHJ+Nf33p9GtCW0BniER72oHV4vtlDilGAqMNWlc02Eq34I21GwQL/K9BEN53yP
-	ZMXQNR/sihNIf0m08kcQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=ujht1CG7YTsTzL5mNRhi3NgYGDImOxcdOpi6Jku4Zoo=; b=FUZdTGbzYyUbgK
+	WGtVC7ILiaq+zvG0Ld7nhwMBTuXcVUmVrAt82O2Xdy2PLM1jvFFGgVl1fBCOmHVYSeHvfeHvkf4Lm
+	dD6awpsdklVnXR/9jmrkZEYfZYn6SU8Ppcsoauo+mku2QYcOpedkA95VK2FUmeIEm3+y/eQoh0/6+
+	PMu9KPxjO1VRMzs0q8mAay+TO3HmMi1fTidQQr34aV2n0L74vJWby3fq0kzV42sBlZLGc2EAmDY5l
+	4R+JITO0vUSpEEPuwO2RL10810xl7HZ/fQrhBnFaSKRhcgcimgGY7xo02NBQP/1EtNkVsvh1QQKFy
+	Zgg0YH36Xgh6zdDPhqAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHm36-00EMjb-FV; Tue, 17 Jan 2023 13:30:48 +0000
-Received: from mail-dm6nam12on2081.outbound.protection.outlook.com ([40.107.243.81] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
+	id 1pHruZ-00Ffb9-2N; Tue, 17 Jan 2023 19:46:23 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHm2p-00EMbt-Ej; Tue, 17 Jan 2023 13:30:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UCvEnLw5KG0qDzBl9xERUBBu7fCC7dpVHSWEMQcx8ACCW0kF0wrer7gfG7dBgr8WNiFJyW1XnX2DvAIpKERyCBgWJyGO8BX5k1fm5bJsehNwMBx9qd+yhsT8az3NNtHNKrvtyg43Wfw7yHIQZSLuU1AUUKnMrEWZJ38sGNNoj3KsGGP+smZKDAa0c1qBHFYv/5m+2DRwp5r9vX1DyfsXs4GioT5Wd4uZc5w9yPSeybRALNi1oOewZY1rAHDIkwKjnq3UkUM9pUsEb46loNSzZvm6sHIXMWdxaAVB7FtT9qlVsEwRu1sR4lehUyceMamow7FozK/vWo6mypW/EaHyVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hsytL9wJ1VxKzILKFyD+VW4nBBi6uFgymaKFp2fLMIY=;
- b=UAFYxHTcCYE65PkbZp1MuZkFw17MYwtMm0c6Ovjkv4+iAb67ejtp5pkE2rDu9xoti6xfIQeTE0unJ2pXUJ5jv/4zQBAi/y2N00un7tOi9/n/3vN79I2X8hf88elZa99E4+AmMeglJDH1HmqLCdTsupV3ZESmB60kDumn6+YVZamAH5oPfsRAANcZuaO7RPGIqlegPx4ldesW83hSIon/sXgE4+evkUelIrpRm4A8C0UVuBqYtXmupht1dad0wEvEidL3JoOLCtkU8neHBZ5jZ4GbaVK/5bD+W6Yf2QAINMM3lgdE8bso8V7YroX1yS4orz7sPNvSW0UUEmm5RHzqsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hsytL9wJ1VxKzILKFyD+VW4nBBi6uFgymaKFp2fLMIY=;
- b=RCtKIaIpQvvAq8yUs0er0TZJb7VFNDBPkjutc3/CaRv4syn/aRLJCdJ0tKBNDKpAM2BaJaazxor7f4P/AfCuW5DeS2f4xy4rf2fbRBiXGJHcHeyTfAE/lgyxr1VFEjhLvUUIepQBgOxOC8QA+qCI7f0raoseRFc5Oq51nMkwHX33gK/3cBSUsi1vufGdr9iUq0No58TdsbXH83aF/auAhV6EBZzBAu0r4OgR+4fk5s6vtkbrwGQKrQKLWvIz6m+h3DStncYE5sOcPq5rW+rlLoPNsHt3fpLkUSZw93P4tUtSRbgGNwdme8RrMKu7bkiGQyFz+zL8AnGf0srXDLa3yw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CY8PR12MB7754.namprd12.prod.outlook.com (2603:10b6:930:86::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.23; Tue, 17 Jan
- 2023 13:30:27 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.6002.013; Tue, 17 Jan 2023
- 13:30:27 +0000
-Date: Tue, 17 Jan 2023 09:30:26 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	"ath10k@lists.infradead.org" <ath10k@lists.infradead.org>,
-	"ath11k@lists.infradead.org" <ath11k@lists.infradead.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>,
-	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH 6/8] iommu/intel: Add a gfp parameter to
- alloc_pgtable_page()
-Message-ID: <Y8ai8i2FpW4CuAX6@nvidia.com>
-References: <0-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
- <6-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
- <BN9PR11MB5276A8193DE752CA8D8D89928CC69@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276A8193DE752CA8D8D89928CC69@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: MN2PR13CA0008.namprd13.prod.outlook.com
- (2603:10b6:208:160::21) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	id 1pHruV-00FfaX-H1
+	for ath10k@lists.infradead.org; Tue, 17 Jan 2023 19:46:21 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 4A0F1B81910;
+	Tue, 17 Jan 2023 19:46:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA3EAC433D2;
+	Tue, 17 Jan 2023 19:46:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1673984775;
+	bh=xnGXOoNgDFnCfGFqkYWtMg89FKyKMFlSJejrent0z50=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=itmvIkkVnXQD3R7IotNEycsLmC3O4tBaQYU5mOCcXZqCOMI7i9dA0geFJippxBuCK
+	 /aBw2JY3GAwurtKKME1uROUPqbpNjCmCzq1L5+G7uRfkOB+BYO02iVCR9oTp8qP4I3
+	 V9CkPwOEPS6E7i+oygkth6Eb9ynfobPtAIzEe3ExtTIxSTzs1pCrz3uycYQXEVywoW
+	 ptJNobblHKki+s3DSFOrtSw4sFyb5xy1SOSUtzyrKTRpKj2fdDPAI2qSz1lBb0M2hV
+	 se8QXiRH5Cc2WqjoHsheaHMf7gy12LBFc+kB4M/OPAigSFuPHHWjc1eytqydHO16hc
+	 ZRopnLwgpukPQ==
+Date: Tue, 17 Jan 2023 13:46:14 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Edward Chow <persmule@gmail.com>
+Cc: lpieralisi@kernel.org, toke@toke.dk, kvalo@kernel.org,
+	linux-pci@vger.kernel.org, robh@kernel.org,
+	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+	Edward Chow <equu@openmail.cc>
+Subject: Re: [PATCH 2/3] wifi: ath9k: stop loading incompatible DT cal data
+Message-ID: <20230117194614.GA135447@bhelgaas>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY8PR12MB7754:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99078ce9-5e35-490b-7427-08daf88eff02
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	qypHGm+neClz/zCECh7tGdQmWpptWD+l4XdJqhvfOpSgMH12xabqMVBLI99fytEZzQQaftQKOFf1EK/U5AQJF5HrQ4mlxQNNnR25+1njD5gN2kyD1ZGoKunpm/OlmKAI9922VnMle0Ke0brer3GNTMoWY4YRjpghiw362Hb/Gs7xl9qvOWRt0g8r88xnMZso31AMBjfWO4+nN9ccIvW693ZWtB1ptXc/D6eoSL/kn4jP/OZgiQyehowKBaQ6XcmVIdXRWjmT4eVny7ta51BSTvKS/1mil7a0EBncuWBDb6mM/JFkEEsseUgdeh0zMvSGmmYk7MS5Yum6zfiBBFftkW5o509mbIDOKUyrNa1EsrlJZY5NIWvzyxWQiC7uIWetgNQf47ea6NntJ6IBoOkWfYI//6h626m14YFZVb5KcaUPKjRQdDLwC9BD00g6pS8plsPajjMYKuq6YQONg8A3exTK6q+p3R5VfWT5GZOq9Zmy2QiNUBA9KxJMIxmz10L8lxS6vbP+7Q+rABwmcC4peys0+TDY+KjB2iaqgbYVro89/FU5I5BYxV4DcpLLlX6rcf4ZV0u2+ubvAOiMJ5CGRMCi5y78Vnr1QPiGl/lKbwqH5cfNPutNlQGpdMT3ccfn/wfJaUWXyJRO+F1fPrexWg==
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(136003)(346002)(376002)(366004)(396003)(451199015)(38100700002)(86362001)(7416002)(4744005)(5660300002)(2906002)(8936002)(8676002)(6916009)(4326008)(66476007)(66946007)(66556008)(41300700001)(6512007)(6506007)(186003)(26005)(2616005)(54906003)(316002)(478600001)(6486002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?Daxf/0fWTX+SCv/ujbQEaECMLH7OWG5pBEqH1XbO8LdCXrJ+9g1UxY4oVmDW?=
- =?us-ascii?Q?oDWFT606eG7IUvRqbT3TMYUs6w9qXnUyTdMLR5VgWyxIsNfDBof+aFeS0A82?=
- =?us-ascii?Q?/4FFu+QzAi5vRTCCcNk/VRbftPdPggBMV+sjbnc+8TTSyTOzWV2AT5K6fRyw?=
- =?us-ascii?Q?SOO96h7nwzpQceiUyl7DLA+thBhNURe4hvyWF8ayvH9h1kH6zJQeEqOPMod7?=
- =?us-ascii?Q?8SIEsIv3kbJGhHzi8IsrM8UFHVoC714axnHvWlMWnnVL+8dmg3nn/UCzfNpz?=
- =?us-ascii?Q?zXfXG6H+ssCBg6mPavWtqPWMNAoFKju7GwfWUGx9CRIGvTvzXiOqcPg0s5+8?=
- =?us-ascii?Q?SFc1hmHg73h+jVadfZpUIHGn+LmSmC5MEAFCe9w0eJnpTVX/03ixBM1evGbz?=
- =?us-ascii?Q?dm9K69SbcEntjGVUhCvJ8wtQYB93wpS/ffXEhA1OcdXGcQqR86GCQ9RchKsl?=
- =?us-ascii?Q?ZIUIHFGl7BhWW7Jg2pugkTffMn6UGLeX+WL6nmVI0Qwmtg13eXxW/P0mWzsA?=
- =?us-ascii?Q?wq6Xf4X532yRYs1B4GnlIug9qJbDQVMnmnLwpJroUg0FVhkzhYloCnm1tm1C?=
- =?us-ascii?Q?47DBmjmA6dVWbi7t1qCPf7L4umv6NpwV/xx0yZZd2Ssj4zP477wgfKNkvg6m?=
- =?us-ascii?Q?K+3jkHS6B++H1QlhWL0oXojbiDkRZiRjFPuba8v8j0xxbX05z/LBTPwgBaVJ?=
- =?us-ascii?Q?peENjQpfG77ohMVE+xkCpwrOsnk0UAriWpCpQrk07Lj+ZU/KjrvyBx7h8CWI?=
- =?us-ascii?Q?foNU+vkhGu9yMEFZaorpCJK+J4rhHPCgVLJoZv3/Eqqocyt1uUTX1S+7N24u?=
- =?us-ascii?Q?e7fMMyLULiuXXNcM6R7hggE4o2tKuuzJz5dwwlS/wQXs76cvbaPBiMSguMZz?=
- =?us-ascii?Q?rHZKy/75MlpnUCotc4KDjwNgQIpBgKp38wl27wT4gvWzCSpDfrlbUYUxwj4C?=
- =?us-ascii?Q?S6JdseE4F+/zdSakSfdO+00QDoMjpgabYV10+QOlnNWJJcFvB3gOOOwA3NVn?=
- =?us-ascii?Q?maZTXykTApbjrB6O+tjJw0qaY8ilR1EGsuJB+SuuzRzt8AHF6niTiUUYBb+v?=
- =?us-ascii?Q?UHEO+bW07RFZy7jwhbzN28PIX6JPFjkzQhKOPvjp4ViBy1O/ZwEu6nQPUtb7?=
- =?us-ascii?Q?2WrcN+r/lxuMp1oUKtDWS2VGm3WBHbvHbzP6iIqhPL+G/n56DVhKw1gMFCdU?=
- =?us-ascii?Q?qZVqWjCkcUoSxLuz2WhYTU7zRe1n/nQzE6Y1Pl5CVBnK5xrJUeHrtG0CZOxl?=
- =?us-ascii?Q?BOMeRgB6moKW/AsJto8GALrJKzwzOcu03FsRPU03RB1TG8hAJdSq76tmBquH?=
- =?us-ascii?Q?2CiK4ef+DQuK1TlxwHmmrv9354y3VZVAW4nzUHtj6yD6qSk4Ah22Y+rjZqY2?=
- =?us-ascii?Q?b5Nmh8nU2jguxJxwxirX5Ul5nZuafXuiRr3iFKk1cdtb/vR4+6/SgYYVnV0p?=
- =?us-ascii?Q?FFrmTjRBMo26xFpd8f7bX78Oa7Vf8yxkdG83TX0bIfQKBUvGQGq8ovTiJUd3?=
- =?us-ascii?Q?p+EBmo3Y4Ot9EaBIbNgSdrOQdgJuqZ57YVEmUpTPlu7a+uq3hREZ2nN4Vy0x?=
- =?us-ascii?Q?IIgRw7Vf+odqVqPLgwavm78fdh1VuiTw69u2ZCto?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99078ce9-5e35-490b-7427-08daf88eff02
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2023 13:30:27.5460
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KiYEfeCnCtHWcIwHNEH8MCNG3yP0JSRqsOQvJVIFStgJg91AStEssh6QsPw5SbgL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7754
+Content-Disposition: inline
+In-Reply-To: <20230117092746.1149155-1-equu@openmail.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230117_053031_526687_2A973C07 
-X-CRM114-Status: UNSURE (   9.34  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230117_114619_906661_A77BD99C 
+X-CRM114-Status: GOOD (  33.43  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,44 +73,112 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 17, 2023 at 03:35:08AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Saturday, January 7, 2023 12:43 AM
-> > 
-> > @@ -2676,7 +2676,7 @@ static int copy_context_table(struct intel_iommu
-> > *iommu,
-> >  			if (!old_ce)
-> >  				goto out;
-> > 
-> > -			new_ce = alloc_pgtable_page(iommu->node);
-> > +			new_ce = alloc_pgtable_page(iommu->node,
-> > GFP_KERNEL);
+On Tue, Jan 17, 2023 at 05:27:46PM +0800, Edward Chow wrote:
+> Loading calibration data from an OF device tree node not declared
+> compatible with the device (e.g. a PCI device with calibration data
+> from corresponding DT node gets replaced, so the newly installed
+> device become incompatible with the node) or driver may lead to fatal
+> result, e.g. kernel panic.
+
+Please include a link to a bug report and include a few lines of the
+oops or panic directly in the commit log so when users see this
+problem, they can search for the text and possibly find this fix.
+
+> The driver should check whether the DT node corresponding to the
+> device compatible with it, and load calibration data only from
+> compatible node.
+
+If you read this commit log carefully, it doesn't actually say what
+this patch *does*.  It has some background and this assertion about
+what drivers *should* do, but it doesn't say what this patch does.
+
+Suggest structure like this (flesh out with the relevant DT property
+names, etc):
+
+  For PCI ath9k devices, load calibration data only if there is a DT
+  node corresponding to the device with XXX ...
+
+More details: https://chris.beams.io/posts/git-commit/
+
+> Signed-off-by: Edward Chow <equu@openmail.cc>
+> ---
+>  drivers/net/wireless/ath/ath9k/ath9k.h |  1 +
+>  drivers/net/wireless/ath/ath9k/init.c  | 26 ++++++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath9k/pci.c   |  2 +-
+>  3 files changed, 28 insertions(+), 1 deletion(-)
 > 
-> GFP_ATOMIC
-
-Can't be:
-
-			old_ce = memremap(old_ce_phys, PAGE_SIZE,
-					MEMREMAP_WB);
-			if (!old_ce)
-				goto out;
-
-			new_ce = alloc_pgtable_page(iommu->node, GFP_KERNEL);
-			if (!new_ce)
-
-memremap() is sleeping.
-
-And the only caller is:
-
-	ctxt_tbls = kcalloc(ctxt_table_entries, sizeof(void *), GFP_KERNEL);
-	if (!ctxt_tbls)
-		goto out_unmap;
-
-	for (bus = 0; bus < 256; bus++) {
-		ret = copy_context_table(iommu, &old_rt[bus],
-					 ctxt_tbls, bus, ext);
-
-Jason
+> diff --git a/drivers/net/wireless/ath/ath9k/ath9k.h b/drivers/net/wireless/ath/ath9k/ath9k.h
+> index 2cc23605c9fc..4f6f0383a5f8 100644
+> --- a/drivers/net/wireless/ath/ath9k/ath9k.h
+> +++ b/drivers/net/wireless/ath/ath9k/ath9k.h
+> @@ -35,6 +35,7 @@ struct ath_node;
+>  struct ath_vif;
+>  
+>  extern struct ieee80211_ops ath9k_ops;
+> +extern struct pci_driver ath_pci_driver;
+>  extern int ath9k_modparam_nohwcrypt;
+>  extern int ath9k_led_blink;
+>  extern bool is_ath9k_unloaded;
+> diff --git a/drivers/net/wireless/ath/ath9k/init.c b/drivers/net/wireless/ath/ath9k/init.c
+> index 4f00400c7ffb..f88a48e8456b 100644
+> --- a/drivers/net/wireless/ath/ath9k/init.c
+> +++ b/drivers/net/wireless/ath/ath9k/init.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/of_net.h>
+> +#include <linux/pci.h>
+>  #include <linux/nvmem-consumer.h>
+>  #include <linux/relay.h>
+>  #include <linux/dmi.h>
+> @@ -577,6 +578,31 @@ static int ath9k_nvmem_request_eeprom(struct ath_softc *sc)
+>  	size_t len;
+>  	int err;
+>  
+> +	/* devm_nvmem_cell_get() will get a cell first from the OF
+> +	 * DT node representing the given device with nvmem-cell-name
+> +	 * "calibration", and from the global lookup table as a fallback,
+> +	 * and an ath9k device could be either a pci one or a platform one.
+> +	 *
+> +	 * If the OF DT node is not compatible with the real device, the
+> +	 * calibration data got from the node should not be applied.
+> +	 *
+> +	 * dev_is_pci(sc->dev) && ( no OF node || caldata not from node
+> +	 * || not compatible ) -> do not use caldata .
+> +	 *
+> +	 * !dev_is_pci(sc->dev) -> always use caldata .
+> +	 */
+> +	if (dev_is_pci(sc->dev) &&
+> +	    (!sc->dev->of_node ||
+> +	     !of_property_match_string(sc->dev->of_node,
+> +				       "nvmem-cell-names",
+> +				       "calibration") ||
+> +	     !of_pci_node_match_driver(sc->dev->of_node,
+> +				       &ath_pci_driver)))
+> +		/* follow the "just return 0;" convention as
+> +		 * noted below.
+> +		 */
+> +		return 0;
+> +
+>  	cell = devm_nvmem_cell_get(sc->dev, "calibration");
+>  	if (IS_ERR(cell)) {
+>  		err = PTR_ERR(cell);
+> diff --git a/drivers/net/wireless/ath/ath9k/pci.c b/drivers/net/wireless/ath/ath9k/pci.c
+> index a074e23013c5..fcb19761e60d 100644
+> --- a/drivers/net/wireless/ath/ath9k/pci.c
+> +++ b/drivers/net/wireless/ath/ath9k/pci.c
+> @@ -1074,7 +1074,7 @@ static SIMPLE_DEV_PM_OPS(ath9k_pm_ops, ath_pci_suspend, ath_pci_resume);
+>  
+>  MODULE_DEVICE_TABLE(pci, ath_pci_id_table);
+>  
+> -static struct pci_driver ath_pci_driver = {
+> +struct pci_driver ath_pci_driver = {
+>  	.name       = "ath9k",
+>  	.id_table   = ath_pci_id_table,
+>  	.probe      = ath_pci_probe,
+> -- 
+> 2.39.0
+> 
 
 _______________________________________________
 ath10k mailing list
