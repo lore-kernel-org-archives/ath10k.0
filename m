@@ -4,60 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26D43C38147
-	for <ath10k@archiver.kernel.org>; Wed, 18 Jan 2023 16:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8483EC38147
+	for <ath10k@archiver.kernel.org>; Wed, 18 Jan 2023 18:01:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jPhjX5HX44G16GnSy7yCRIA4xcoPU0onHiIeFr1VyDw=; b=26pql0WdZAbbOL
-	lLKoKqNFILb9wTi2J5U+mOVqnJhni2xiLA6X/FV5oaKrKfi26Cgno4Umv9KjwoscKf3AWYzqDzHwt
-	16ksPEpUzDd6ueT4XsPP+bDUXWRO5Xx/Rvw9+yOOs33YqUv+ZqIEQFMLkBbDFoJZwBseDcbEDZNbK
-	6ZAvm/QT/k+aP2lWM+zGoY8oF5Gc7DB1rgoeRd6sX7II4BhpVwpwKgURfD66RUGwqLlXLzpMiUQJq
-	PIn0R4GqCEtDSlqw6lZ71B5S5FCR91QB4ksP45U6urPjWa7n/W9ooofHtKJaa8Xh+2bAy3OOt94oj
-	JKarOQku37JHdScjGLMA==;
+	List-Owner; bh=27x1a7XmX9cepHAKSXbv6LgnwTHOgkh+cBPhj/reG70=; b=CKkueo7HPuaVWn
+	2vvyOp5/0++j/dgSM8YEOIA8L797AyKeoyl86WNA0TaMg8N+yFMWj/cMT6A8tILHMQpwNRoaUeg30
+	3sGxXQ+SUwCRXSLJdgpDQ6rid8qGPNriew1x2tr0D/qLYKsmn6kfaA0ToxklkoCID0obDtj5/qPgu
+	IFTGUXuZgvo+5qPdUqawQ41OMdR6u+tYiW1oDH5gyGS6Naa6yr2p5WXkfUj25ajFFtPdyZSmHBQzB
+	tph/u6WS81lwCe+Lmtnt6QbSzmC2vQuEnoEd92s1IpuC751aNrjHcT/7RJPQ8a1xTo/xgBP+LoOa2
+	ZIfYNJQ4peDhwrlJbnBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pIBKN-001pgc-Gl; Wed, 18 Jan 2023 16:30:19 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
+	id 1pICkW-0029S2-Gv; Wed, 18 Jan 2023 18:01:24 +0000
+Received: from mail-co1nam11on2065.outbound.protection.outlook.com ([40.107.220.65] helo=NAM11-CO1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pIBKK-001pen-SZ
-	for ath10k@lists.infradead.org; Wed, 18 Jan 2023 16:30:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=K/+rA7ADEh7Cf9JIm+LeaHAHtk2gmiF0EE0EQlQ4VrM=;
-	t=1674059415; x=1675269015; b=XtojV5SSh5megmKTifUGL+8U2pqmuXb0h45soXQavoosVIX
-	3JyWJnKx5cCaIwZdpj7QlZ+u9lKptfrVdfaeeoDKnpTSGDNxOEo10KMxUfGHTvKymcdOdd1qHVuRe
-	07dBC1E8P6d27KBl16SPD+yGDHJdgRUGdGhe+ypuKs40FQhGaPTMFWM7graHZc0b6KwfWhfYrImll
-	U/P8545x/kncz2HeNQTC6KmfFINb1RbY0kN+6RiqvwbNE09AtHHAb/8pCVkYzj04bFHvH64QH1Fkm
-	XlzxexnVGBSAwkrLpk8YfyjH6fV8DBtpc0IP0H8QiTx4zB0BrsU3JIpGWfJIx7rw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1pIBKG-005fqO-24;
-	Wed, 18 Jan 2023 17:30:12 +0100
-Message-ID: <1df59863e78e8ddbe7eb3a74e6dd4c8f0bd7f098.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/2] wifi: cfg80211: Add beacon hint notifier support
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Youghandhar Chintala <quic_youghand@quicinc.com>, 
-	ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	quic_mpubbise@quicinc.com
-Date: Wed, 18 Jan 2023 17:30:11 +0100
-In-Reply-To: <20221222124221.30894-2-quic_youghand@quicinc.com>
-References: <20221222124221.30894-1-quic_youghand@quicinc.com>
-	 <20221222124221.30894-2-quic_youghand@quicinc.com>
-User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+	id 1pICjz-00297h-VS; Wed, 18 Jan 2023 18:00:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wx7Mfi9c9598MGO7VDpFziWWxxJ4gz/TyUW7RXtkp7bJ7ZBCWOb3723JTda2aGRQDgncw9G4pNn9AKA+ejnI8Ork6hyWRKi78gVE4P2etY00UCqo/68ej7Pn83M28h7G0K6HVO4xTd1KoE2ev4YqwIT5Q7ggb22tlHOYYbIa+gLi6sdQbolWXiPAfjT2oeneJp2u0k3Etra6csnaZHNT1KX7xCLkLY4t9Mha77TZHlXVHxsCYVOnN1i/n99c03sUNxNdG2zUZDchoc4zYrChitoFllfziUMVSbEvl/Npfu6zfSFlqE4THnfcBzlt8oii0PDB49YlvBWcdZbkC8e+qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XnNRTH+1KqtZpYz+T8OWUErte65QR16s7yRZD6Lo1y0=;
+ b=gsgwGo1wYMm92EInpIdGtISZKPN6kLP7zVMyzIG4XPaAYTptiwuNW1DRksSHQwzyZScuybg4/9uzwJ5trG9ABTJQXoSVTbK3gN70DjtdM8Skc+Lcd33d73gDkq84AiXa7jK1PSOaNn6FOoRGysZFCcZyYsl1JRvOsY5YwzaQy6qac4VrVxzax6wW58tnJ25QXkeE3FgNoRdDc5HBSv6v+TRxQIqIvVVFN+Vw3ynfknMDcLs2NySGrX9Ifqj8+iFKsWMRmcRoTiAcbq7cYHCFgFBiYsc3klXL+9Ufd9HiNVqjgyH32BBF+O9WN7y0vZR61NDrZSVj+u+47CTEpbc3ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XnNRTH+1KqtZpYz+T8OWUErte65QR16s7yRZD6Lo1y0=;
+ b=Or3GiQS44xpDMh4YXT4PN+t+ZTtzD3XDn4nV7Hzgd8gmnDBYIUM5HoA8b88Vjc4fHCYpFerij12VAaCVaZoFMEBbDwDiMnCQ99PAlxSVFyMgW7d98QC49MSEv9AnYZqmgmRgPu/FRD/w/kR+Yyg181ToikOcAAKVTvZm1N/FAedaYiZHVb/Z49zLmjfamqS0kEeVCsMbqC3RdyweFsMNsYhExNc8kml5hGSgCziMpBva5Dp+VAOFMChbnljIfcMVzbePsZF4ml3QDBFeCxifFCi6MaEQk8gvRyqBGgK/dv9qcPgioNpjrfALNg0vz+eVB0Xd0RUrg7Nl4uO9zdzA/A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by IA1PR12MB7614.namprd12.prod.outlook.com (2603:10b6:208:429::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.13; Wed, 18 Jan
+ 2023 18:00:46 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.6002.013; Wed, 18 Jan 2023
+ 18:00:46 +0000
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Lu Baolu <baolu.lu@linux.intel.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Matthew Rosato <mjrosato@linux.ibm.com>,
+	Robin Murphy <robin.murphy@arm.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>,
+	ath10k@lists.infradead.org,
+	ath11k@lists.infradead.org,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	dri-devel@lists.freedesktop.org,
+	iommu@lists.linux.dev,
+	kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-remoteproc@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-tegra@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org,
+	nouveau@lists.freedesktop.org,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	virtualization@lists.linux-foundation.org
+Subject: [PATCH v2 02/10] iommu: Remove iommu_map_atomic()
+Date: Wed, 18 Jan 2023 14:00:36 -0400
+Message-Id: <2-v2-ce66f632bd0d+484-iommu_map_gfp_jgg@nvidia.com>
+In-Reply-To: <0-v2-ce66f632bd0d+484-iommu_map_gfp_jgg@nvidia.com>
+References: 
+X-ClientProxiedBy: BLAPR03CA0077.namprd03.prod.outlook.com
+ (2603:10b6:208:329::22) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA1PR12MB7614:EE_
+X-MS-Office365-Filtering-Correlation-Id: 00ed64dc-f8c6-437e-d839-08daf97debfe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	dipnW/eamyJcaoHLcKnIMEqSMmU5OsjSOROkII/0hH0rEUmWOqMUS4wQC6zUcuQ8R3kdiF3yLMXrN7rkIUNg9Nd48/YitoQLrp8xSN7xXqhRqLSWgb41djZfxt943UQDEQPcIwfYOKCnjs1hRFZbuZu7pp3xGYvlFBXIh9IqS+ZZR0uQMM2XM/lKneS7iv4SrgQWFwu4SWpl3mJezRDHFLPmUK3WCiIOfIBjdLtKHLOy7V5bhFU/hixjYvd73ctxwBYuCgft4xzSPzQBt3gzbC3QhotYaWmkjnUlIN3qyclrFI2C70B+2z+B5DA0f7wwoO2iqA6jEw0B9Nvi3qKS3C8ftpjmDHh35D5kPBJVVsD0PyI4GBE0rlIv0a3jsiib2BMRXZJ7aqTvOz7piDtUpT/0m1kVI68zO53NO88y9XQkhMqSLvWk78rRPU/YIujD1WWBvXs2MVLnE1UigM8jci1BYDVu63MM6K7X2DDoDJ00452vP61WFxjfjra4obMhyE/QJM/uhyxRALB+vdWdDbFL7qdZEEdU9O4ParU7+mpJirH3DaYUFfLnxZBY41XkfUd6T6fP6xEjqMG+aWh6PzDTB00WslGojzevCedglGIw/1FJp5UImlPi32Lo2hkmJB5oQDj1ZeVoFAo0C9ePutuCQlhJmI3bZDvr9KAM/m40JAZ5TNwsqvZAm06UI1Nu
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(39860400002)(396003)(136003)(366004)(376002)(451199015)(6506007)(186003)(26005)(478600001)(6512007)(6486002)(6666004)(54906003)(316002)(110136005)(4326008)(66946007)(66556008)(8676002)(66476007)(36756003)(2616005)(41300700001)(8936002)(83380400001)(2906002)(7416002)(5660300002)(38100700002)(86362001)(4216001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?Fck4Wpnziv2Cz+QwkZG5eG/tqENIhIvF1lMtUwsMzTzIeP6NZPu+49PmtcPt?=
+ =?us-ascii?Q?HGu1v7UMs7LwlUFq9PzEJHP+2eXENLnncNIdVmnQa/HNHmEwMjWYRAafVH/j?=
+ =?us-ascii?Q?E5qHVgRTKppgKacMifaqSNCWfPsFh5hPNoRPuujUmHczsGnFHcatERKQ4dSk?=
+ =?us-ascii?Q?KH00wxo6F22xyj2ZF4OLtBSRX+TODvPWhRClFblr1PuMLcbHoPOW8inlt0tC?=
+ =?us-ascii?Q?m67TXfHuVnvMTtnTPz1Wy8t8itxJsIFiy+gdV5quzmeAikCiAiwNH52JvC+W?=
+ =?us-ascii?Q?fb79fE2gvMVBpze2Jc76U8YbFSoKR4h4ce7SUNn6ZbbZKAfuEgNzSOsKYQRY?=
+ =?us-ascii?Q?3SQiCCBwJfH5umQose98ZfKebiantQ39Mwqsbt/hR++3gxsbUTakzQ9CyZRO?=
+ =?us-ascii?Q?oZQue0tnoceCVudOWeWZmfdjJHbXf1xmXZLQe1YsFTGLc74qhqplTiWXmCa6?=
+ =?us-ascii?Q?d5gblhnTiQxSy8aW3ChN0rFqFozi9wRG0leFHu+0KTcE1WWbg2yny4Nq2xf9?=
+ =?us-ascii?Q?U8Axb8ImXfE66cMqHsqOc3SitE4R6XLBU7Rc3MhWbVvSDqll7fo188UQnGQp?=
+ =?us-ascii?Q?EfhhR0ZMUtJiWE7kVkBEOtY995HtqjJ8FfANG8uDCFv1XHuLf7TM3e0XE4Pb?=
+ =?us-ascii?Q?C2nlgKRUSJIslbFoyUgHFyBINwyeWbegOBoUHtv8WTKR7XPBlbIE+1eaIT2H?=
+ =?us-ascii?Q?aT2DAj6dv/MwdtZXdTeQaJFaV4/zR1GHSNhXvkPswx6ukmB+cdGUm9N5hVAS?=
+ =?us-ascii?Q?NzomGwC6DpQePIWVeKHCrcjtRG5szMIqYinvzzJaQWar9OaSLBkthRVd0Zqw?=
+ =?us-ascii?Q?ouT7tNEydsFmY79G6EnWPnFzl/ic0IcJuGAu80MpcHRSM6nDHT6ZB92qWNIq?=
+ =?us-ascii?Q?PfCLRKiye71yr3ZL5foJJ9Q9Xb3la8x8VfoYBBECrfbd5aKHlAIaqOvGmNBe?=
+ =?us-ascii?Q?u7x2rd2dQMo4h2/lsP6ff9ZOB+srrg3lWmHX4dsYqMBhV+abZD1fiDLqpnXd?=
+ =?us-ascii?Q?Y2Cd/VCUzE1+KDnu+mqY6bywkrpKbptNtyqnddzVGnr3FHTytiQm+P7sukJW?=
+ =?us-ascii?Q?TbHw2ylNxbr0SyDb3NgiP0bMo4iYNaPAVkUmwxWwYWQvaTzvGTBkIkfDLGi0?=
+ =?us-ascii?Q?G0Jin6FMa7xuJPYQ3bZ6wWXPO9AjgbX1ZRTEPpgFAsbS/kI4bFsGehW3uHGl?=
+ =?us-ascii?Q?km8arweoc1DSwzmd1/XmFp/Vw3o2btpRvklwAY4CXnyAKh3dG6ZEALWxSM/G?=
+ =?us-ascii?Q?0k+rrp9rdkasZK+uOF162moJUf6CiKUlgfbeALjPg72XHcTkJfCrSlGHtX/R?=
+ =?us-ascii?Q?ZHjOFYu9x860w3sJJ+Q10X0PZsAm9C7EHoy2NGk53UrKnQPmJMCeASHvsWR1?=
+ =?us-ascii?Q?aBlmyigdY5NjIoWf3Hm+GDG7KEozB3DZHjdqmJxZJhjRtBpaBuTg6K49nTr7?=
+ =?us-ascii?Q?fsTHQh5cR//YUCkj3BGnCtBvABseMwnb0axlioDZVbugLtjNPR9Rd1pmGSdD?=
+ =?us-ascii?Q?9esGMmX14xln1DDetdBl+v1a4L3VVHnEXQt3HiIjLS3dUorxzx62sSre0xhd?=
+ =?us-ascii?Q?DUd8Xz5soNo/6wUN9PVOfUd439MNOD4otlohN5li?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00ed64dc-f8c6-437e-d839-08daf97debfe
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2023 18:00:45.4590
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +olxkA7gy+fLu/rmzQ4CvFah9pVF9kR60kmfMv20LRjO5anjsEGL3tWZl82WS655
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7614
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230118_083016_945456_9FEF043D 
-X-CRM114-Status: UNSURE (   9.52  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230118_100052_036842_1A1294DF 
+X-CRM114-Status: GOOD (  10.36  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,38 +151,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+There is only one call site and it can now just pass the GFP_ATOMIC to the
+normal iommu_map().
 
-> +++ b/include/net/cfg80211.h
-> @@ -5386,6 +5386,8 @@ struct wiphy {
->  	void (*reg_notifier)(struct wiphy *wiphy,
->  			     struct regulatory_request *request);
->  
-> +	void (*beacon_hint_notifier)(struct wiphy *wiphy);
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ drivers/iommu/dma-iommu.c | 2 +-
+ drivers/iommu/iommu.c     | 7 -------
+ include/linux/iommu.h     | 9 ---------
+ 3 files changed, 1 insertion(+), 17 deletions(-)
 
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 8bdb65e7686ff9..7016db569f81fc 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -713,7 +713,7 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
+ 	if (!iova)
+ 		return DMA_MAPPING_ERROR;
+ 
+-	if (iommu_map_atomic(domain, iova, phys - iova_off, size, prot)) {
++	if (iommu_map(domain, iova, phys - iova_off, size, prot, GFP_ATOMIC)) {
+ 		iommu_dma_free_iova(cookie, iova, size, NULL);
+ 		return DMA_MAPPING_ERROR;
+ 	}
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 7dac062b58f039..9412b420d07257 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -2381,13 +2381,6 @@ int iommu_map(struct iommu_domain *domain, unsigned long iova,
+ }
+ EXPORT_SYMBOL_GPL(iommu_map);
+ 
+-int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
+-	      phys_addr_t paddr, size_t size, int prot)
+-{
+-	return iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
+-}
+-EXPORT_SYMBOL_GPL(iommu_map_atomic);
+-
+ static size_t __iommu_unmap_pages(struct iommu_domain *domain,
+ 				  unsigned long iova, size_t size,
+ 				  struct iommu_iotlb_gather *iotlb_gather)
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index d2020994f292db..521cd79700f4d8 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -468,8 +468,6 @@ extern struct iommu_domain *iommu_get_domain_for_dev(struct device *dev);
+ extern struct iommu_domain *iommu_get_dma_domain(struct device *dev);
+ extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
+ 		     phys_addr_t paddr, size_t size, int prot, gfp_t gfp);
+-extern int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
+-			    phys_addr_t paddr, size_t size, int prot);
+ extern size_t iommu_unmap(struct iommu_domain *domain, unsigned long iova,
+ 			  size_t size);
+ extern size_t iommu_unmap_fast(struct iommu_domain *domain,
+@@ -778,13 +776,6 @@ static inline int iommu_map(struct iommu_domain *domain, unsigned long iova,
+ 	return -ENODEV;
+ }
+ 
+-static inline int iommu_map_atomic(struct iommu_domain *domain,
+-				   unsigned long iova, phys_addr_t paddr,
+-				   size_t size, int prot)
+-{
+-	return -ENODEV;
+-}
+-
+ static inline size_t iommu_unmap(struct iommu_domain *domain,
+ 				 unsigned long iova, size_t size)
+ {
+-- 
+2.39.0
 
-missing documentation, for sure
-
-Also this should probably be in the ops, rather than here? Not sure why
-reg_notifier is here.
-
-> -	if (channel_changed)
-> +	if (channel_changed) {
->  		nl80211_send_beacon_hint_event(wiphy, &chan_before, chan);
-> +		if (wiphy->beacon_hint_notifier)
-> +			wiphy->beacon_hint_notifier(wiphy);
-> +	}
-
-This also seems excessive if you're not even passing the channel - you
-call it for every (affected) channel, but you don't tell it anything
-about the channel? Seems strange.
-
-
-However ...
-
-Why is this even needed? You should always get reg_notifier after this
-anyway?
-
-johannes
 
 _______________________________________________
 ath10k mailing list
