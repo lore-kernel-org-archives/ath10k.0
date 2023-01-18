@@ -4,68 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C980C00A5A
-	for <ath10k@archiver.kernel.org>; Wed, 18 Jan 2023 01:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA881C32793
+	for <ath10k@archiver.kernel.org>; Wed, 18 Jan 2023 15:16:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=EkabHN3jSyQqw2KA0iqcz10tJyKCHMQOtxR3UZXOVWA=; b=vnd2+dV1SPnAf8
-	RvImyq7m0FtnXI1PIxWp0z6dfqoMYaQR5I2TPLVb1JfJy6Z89uEVNm/jXkoUxQnYmjL+e7q4w9qMp
-	4hkD9LjkQrLP2DcfVOhWJ/w8aGeH3vc6jrRqGeo/kwlnPGRRoaqksHcUh+74Gr7sNrqAsxM7FmVb6
-	3kPxiCog8SYrdmYWrRjbVS7IKl4AG3ir4iPD+xxHcu6vtz7ws3XlUp5V9GPnZbJ5if1GnDMMFH4su
-	nMDObzxCkyuCskJSg6GdDM8v7ZF05SxJbw378WUsxg1qYpCnsrsmDIiFPNaJmtrR7pfUiSOWFPawT
-	o2TeLX8Ij+X03Fxo33uA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qKGOQtfQjHceojBM+eAUVDk8L5M5QadlazE/rQCOPXk=; b=kXDbsA8mhKPkEG
+	RJJ3nLuODFUYyoxBlJdPWvmYuLtKtVth/saauRdmudowhlRymr17C8NrWi8e2hHOztwXNlQoDfobs
+	iU86tgDN3mlKhH2hR+WRTJVR+dNpgsF3moywRAdBMRMMBj3OIuaa+3R34rfFw7yqcjyEUTwsO/+6f
+	PAfPjYuTjiUIjH+2d1gKuwLadxTsPPjVru8v+UT0a4kbh3e7EbQzf6kHL276SLKFq+dyBIWUv4E5T
+	ujW8WPLkyKCWNohWwgQGi6+hj2TspD/GRFhEWHXvZHru0Dw7+/PWquKal9Al3oRqN0w41vYWwrcfh
+	lQGxW0eBXYUhq9m2Mgfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHxGt-00GTVR-Jl; Wed, 18 Jan 2023 01:29:47 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1pIAAG-001X0A-52; Wed, 18 Jan 2023 15:15:48 +0000
+Received: from mail-bn7nam10on2081.outbound.protection.outlook.com ([40.107.92.81] helo=NAM10-BN7-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHxGq-00GTUq-N1
-	for ath10k@lists.infradead.org; Wed, 18 Jan 2023 01:29:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674005384; x=1705541384;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=LoFHVTWK0eGGqeiMH3d+WLpCCKiBBbX4wKZmi9lnwiQ=;
-  b=dv65vZGsDM03iQjfbphqDavDi8O9tny2zvMDpCd6/rh+P552lY+5CNiB
-   Cb36WrGq++9Z2imN0aNiC5dzywFuiF9M5NffFuEsISsfefAgZU/x7ZqO6
-   +XyQiEOJ+XAHK0Vh9o4M29k8hA4tcN99wiNeSeOXByP/+LtzlYyZcDt58
-   s+UKYTP9EPdni05Z+IVx7nr4frUsumB8H+8kM7IYcq8be+2C0G6bi5dQM
-   KbIQc221LgP/oFqZnmUkHrP9h8WgcgItJbmVZthVta9P438pjRdtpPbXf
-   j1WgiriZ9hq1ZxUgdhRRsZDTNXz4iDGWMIbHgXFkWMHA1JMFK5TbEeJqp
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="322560854"
-X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
-   d="scan'208";a="322560854"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 17:29:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="652724208"
-X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
-   d="scan'208";a="652724208"
-Received: from lkp-server02.sh.intel.com (HELO f57cd993bc73) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 17 Jan 2023 17:29:40 -0800
-Received: from kbuild by f57cd993bc73 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pHxGm-0001Wu-0G;
-	Wed, 18 Jan 2023 01:29:40 +0000
-Date: Wed, 18 Jan 2023 09:29:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- b234851cd3142c1033dc4e59313744e7d69430f4
-Message-ID: <63c74b6e.0yyJByZRqc0wDhN0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+	id 1pIAA2-001Wwf-QQ; Wed, 18 Jan 2023 15:15:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d7AMX38483WMPLEb3WZe3hdAXOyWBjU8bq8505wLWPPFt2I43KyNklfeLBafcpRyr1jvvkERuvu7NLWT1k0l3EzbZLb2JQkBpk6ZychWFq5rD2CCLeelpVRA2Qh7qE8iM4iH+/OFMG9OwQGQ50oBN2YT1nmKXPqaT4YY8mNopARdNNIwjnwo+bsXjj5HeyE2w7yUtBtzxL9vduRipRI2QaDCxeyZgAY4KLlL1QhHyvNigQWbG1h37EwSKeQzVgYxFvweE+AsLS4i7VHU//EDUCNj08dedIMej9UVgvBT+zGJOD52kXha32k3VfBPY/88zh9HGoZY3d4CzHUrN7HENA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/xLXlvtemBKhxT+1GV7IkwISw+CoMPNriPHVjiccKyA=;
+ b=NwqBfDjTL9xcC0sw95Z/BkrjXRS34JQ0NzO+Df15tYzRxCWYDRtOngEdQY1wnTe8eLqf5fRinTUu9dxFjCAlKJKbcKDLfMpD78AQQlMKajnUNIsqyRuN1e55eDf0dOgXNXR6lpZA6QQ/kGiyeYZQaGSWO2ccPqH1tsrvkQfJJQyzhaN8/WXcoyBx48S4jncD7ylQrLup9aruPtcA9Zt0jqHWJ5LwmdXo1IBcBHpO2HC08HDhFtmsD/CBFRdAKNQvFqWBOHaz5+pxOiyeWRCo0w+ugr1Tf7GOxY9tkjGfCt1MHlt0VXOBMXK9KzUAgUeIBr8XeJ+HC2F8CASTR1GPBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/xLXlvtemBKhxT+1GV7IkwISw+CoMPNriPHVjiccKyA=;
+ b=hdyLkqGV5r+91p5X4Cz0z4Gxj3XKt/blPaQ2OlUIIaTxLLkobqR5tjiuPbGnsDDZYc9/o/HMJLMl0p0o+e6L1VokvX013F+npis3JW9ltWLGCBYHURr6t39/Yychin8Y3ius32/Z+85BSIU7Nt6O/M2uUQwDaY8v8hH2fO4YodleDQ9i0nmUcEWeTrfFB5q8EF3zWbeJCpE13eEjrkVWE4Edik0fm3oa2B/rL+66ZSDGRl8mFitw+jACxPAoKnSWsejWUI7QlO5U98izRvq9t4VtrdxGQkFtmbJkeeyleAl2+qPkPLzR9VXI8WVMTgPJvEc0+Gpz7t2Os8D5JezY2g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH8PR12MB6770.namprd12.prod.outlook.com (2603:10b6:510:1c5::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.23; Wed, 18 Jan
+ 2023 15:15:30 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.6002.013; Wed, 18 Jan 2023
+ 15:15:30 +0000
+Date: Wed, 18 Jan 2023 11:15:29 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Matthew Rosato <mjrosato@linux.ibm.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	"ath10k@lists.infradead.org" <ath10k@lists.infradead.org>,
+	"ath11k@lists.infradead.org" <ath11k@lists.infradead.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	"linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>,
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 6/8] iommu/intel: Add a gfp parameter to
+ alloc_pgtable_page()
+Message-ID: <Y8gNEUJ9ffSdfH51@nvidia.com>
+References: <0-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
+ <6-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
+ <BN9PR11MB5276A8193DE752CA8D8D89928CC69@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <Y8ai8i2FpW4CuAX6@nvidia.com>
+ <BN9PR11MB52769B8225A81D0636FFE5648CC79@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB52769B8225A81D0636FFE5648CC79@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-ClientProxiedBy: MN2PR08CA0004.namprd08.prod.outlook.com
+ (2603:10b6:208:239::9) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH8PR12MB6770:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8e88fa23-14eb-49ed-3ef4-08daf966d618
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	VqkeOZyMHCubF29L0ig33g7+rBZaJdLP+HxE0a7KWTJL1bO/GVHuwH9VXCWVlC8VA/puDGcmtuq76cwVUl0ZaiubsrY+G5yqnP8ZQQ4saMe5U3sfka7QSOvqvWfHZshzjspmc1yOJ5vM8ih+9Cp45lxg8mhQ8PBKK8qQVCfIwZhAcFvKm6FKAmivzU4OBx8T6wDuBvbmI/wK4PECoih9kksnc/RqiyfKd+GXHKZ/lsfs8X0kGCb9KpSs03anNaLXD00IuY77tgeC6/tDKeUmc5KLUQwr4hEtNNsISCNDvfRpalXq4fjJgHPPzOStm1e9bLumMS8EefC+xGRbW1kim7YVNmEuPwVkNqWr59/qyYThYyTsZnWLVGAGzw7ZjDRq6ZR0UQgQ+Md+Raqg8G97nFjpjvSR7SHsJaqoIqK7HktLd16n3lzNCYvg372pxEQatUL/5ogQQ01ZNy+GysuzOOPvypfgFwXzRDyaxX6dc5axLUqyeiE05PiJ750Giw7y5PMQeG8ohRL7pOeiWNKslGGhCZtxu19IZWE+34MakhMi0kMVqjQnpxAfxUDvnQ6h8eSuURkqnDwwH3njv/OG23efH9oXzdHPpRgKh1mwQ4JLwNTid9nN9T25fcuqHlFQADHXZ1Zl1RjFdXwP9zS8Kw==
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(136003)(396003)(346002)(376002)(366004)(451199015)(8676002)(86362001)(38100700002)(7416002)(6916009)(5660300002)(8936002)(2906002)(66476007)(66556008)(4326008)(66946007)(41300700001)(26005)(6506007)(6512007)(2616005)(186003)(478600001)(316002)(6486002)(54906003)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?rOpluIWQy+1NxO6yGe6376cl0Tmrlsf1pZTdI6ZISSltWdpHsrIiC4ygZANe?=
+ =?us-ascii?Q?17iMBFpiXH4dIj+MYVDYKWyTveytvsJF2TOyJO5X1MlPo95dQoAhiUZ7QgDV?=
+ =?us-ascii?Q?HRjO53y8p/CLi4uyqIptvgGlTAZ1krXuBCoqwMV1XBftLDafDofGSfqFtGLw?=
+ =?us-ascii?Q?9vq17QpRDzBfpb8+ROqpZdXZ7MV2VUD50zrpemUVoSn2j96Nkc6rZGKfieay?=
+ =?us-ascii?Q?yHFpo8kTLwS4vvRPmLA/uCc1c2W+gF8NMSDQp0X8ynTWZpNRMp6FM9COr1nJ?=
+ =?us-ascii?Q?43gE7/bUZhZ6J5CpG38EscYXh+y021z0rwTppvb09+Ql2mZ7pZTfzfYrV4eT?=
+ =?us-ascii?Q?LnZ985b0NzwyET1IlONll8NWUybOnM9fsXckRpbOjzrEwb2v70aB21+SpXOf?=
+ =?us-ascii?Q?48pC8xG7QPVIi8v9iWhx/2xwY4XDJWHOGJeiNe4ZUc01cCENSYPPosjCe5yi?=
+ =?us-ascii?Q?2mwTe2/ItMW/2Y96l58WNDyXSdYCR8xkMgkns3D3D0gfI75wcHehQootzEAJ?=
+ =?us-ascii?Q?UbWs18WKCJJF3foRcypxCJXTeZJncGNXvZgEzbjL1++p6yYCdb4bu+wHQaR7?=
+ =?us-ascii?Q?9G6zINy0P483Dd3KMSatfyfTg02vTavPXr4HzgC6i8E0VDfcpCA7DOPolRAQ?=
+ =?us-ascii?Q?2m6A4KUG5W8wTIm5pyh6y0x5Unc2fzbtR6MJ4VR1no0nQuccP2HnfVkvLydG?=
+ =?us-ascii?Q?+4eA/9wdzo4uPxZqQR47HRE3uYV58Rnb7ZqIoT+xYq/qATaACOnxEhqEZ3HF?=
+ =?us-ascii?Q?CdBJltqtvbTCLrDaNxNciB1mXpdwTKsOc4pLONzhok200Xk51N10CgsYpsAK?=
+ =?us-ascii?Q?uwSRrS1wVIqq3UxxUyGY1Nsqa5BivnMdx5sA/En3sKtrKSTfv1sChnKgid52?=
+ =?us-ascii?Q?jmGiyAJS1eY+NzCgO7Z/sxlBB7BC3i2DPOA39yCeSk4EfOm0HBAKWzh0kt+f?=
+ =?us-ascii?Q?Jy8VxJzPXcRBc9iA96noM+qXoQyJl0cQChyU56UZkJn5LkELEHh6Rw1tOCny?=
+ =?us-ascii?Q?/b8CSSFY9yKISluAOJ3pW4qR5jYejr/erVAxDfcYgx8YdP5BPrNZpD1rJ/ku?=
+ =?us-ascii?Q?l6ghcHY6T3R++zs7rXqcLMoEfYkRdrU8uKwF1KApSrppyyPmvYvNb/XuOHRR?=
+ =?us-ascii?Q?AIBQfs0b+cHEuu1kkPiqkoSUYBfkeUJ1Cbsncuqv2BTz3/iAjPicZl92UXj2?=
+ =?us-ascii?Q?3Lh0iT/dPcRpPIvRzjl5tA1KFbDHd0n8R+sfgqLCl5O3F0B9icuij+tAtpZ1?=
+ =?us-ascii?Q?NPhniNuoj+IZWJATC49hWlImv4VSdGc8PBlHZdTmDCDe7tifFG9N/JWv/wsV?=
+ =?us-ascii?Q?4qLUWJy4uMpEZpSQtfZJ6HPcAgGBovxLPWZX/nglgpTXAUNEhMzVDgMvrNkB?=
+ =?us-ascii?Q?lV9w937M6Hl/UvmqzoZK8JPt93HzAcydjCRxnz799wJPT0qUnzowEQWoCRpK?=
+ =?us-ascii?Q?YZTyXf6+S9bkQvdE09DsNutidZ+MGx/C7YY8u11SGhtMOlOt24XE0hHrXZi5?=
+ =?us-ascii?Q?eG6p+iJZPMzd88nG073Uj7uBMNRf+tY1t2lng8RKyn73ITCoQX9k6AjH6oH7?=
+ =?us-ascii?Q?cXCgHAg/1bu1JK4byEAKLxJ1JOvx3Hx3RYokkAWq?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e88fa23-14eb-49ed-3ef4-08daf966d618
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2023 15:15:30.2895
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QIZyr6v+oKhwQQpCgWjDbbncIhOISvKiO9v5UR7uZ6xhPj2xLZYEfjszUIXgPrOV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6770
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230117_172944_847420_5CB7792A 
-X-CRM114-Status: UNSURE (   6.34  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230118_071535_091473_82254C00 
+X-CRM114-Status: GOOD (  15.39  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,168 +156,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: b234851cd3142c1033dc4e59313744e7d69430f4  ath6kl: minor fix for allocation size
+On Wed, Jan 18, 2023 at 01:18:18AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Tuesday, January 17, 2023 9:30 PM
+> > 
+> > On Tue, Jan 17, 2023 at 03:35:08AM +0000, Tian, Kevin wrote:
+> > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > Sent: Saturday, January 7, 2023 12:43 AM
+> > > >
+> > > > @@ -2676,7 +2676,7 @@ static int copy_context_table(struct
+> > intel_iommu
+> > > > *iommu,
+> > > >  			if (!old_ce)
+> > > >  				goto out;
+> > > >
+> > > > -			new_ce = alloc_pgtable_page(iommu->node);
+> > > > +			new_ce = alloc_pgtable_page(iommu->node,
+> > > > GFP_KERNEL);
+> > >
+> > > GFP_ATOMIC
+> > 
+> > Can't be:
+> > 
+> > 			old_ce = memremap(old_ce_phys, PAGE_SIZE,
+> > 					MEMREMAP_WB);
+> > 			if (!old_ce)
+> > 				goto out;
+> > 
+> > 			new_ce = alloc_pgtable_page(iommu->node,
+> > GFP_KERNEL);
+> > 			if (!new_ce)
+> > 
+> > memremap() is sleeping.
+> > 
+> > And the only caller is:
+> > 
+> > 	ctxt_tbls = kcalloc(ctxt_table_entries, sizeof(void *), GFP_KERNEL);
+> > 	if (!ctxt_tbls)
+> > 		goto out_unmap;
+> > 
+> > 	for (bus = 0; bus < 256; bus++) {
+> > 		ret = copy_context_table(iommu, &old_rt[bus],
+> > 					 ctxt_tbls, bus, ext);
+> > 
+> 
+> Yes, but the patch description says "Push the GFP_ATOMIC to all
+> callers." implying it's purely a refactoring w/o changing those
+> semantics.
 
-elapsed time: 728m
+Sure, lets split the patch, it is a good idea
 
-configs tested: 143
-configs skipped: 5
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-powerpc                           allnoconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                            allnoconfig
-i386                                defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-arc                                 defconfig
-alpha                               defconfig
-x86_64                           allyesconfig
-s390                                defconfig
-i386                          randconfig-a014
-i386                          randconfig-a012
-s390                             allmodconfig
-i386                          randconfig-a016
-x86_64                           rhel-8.3-bpf
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                    rhel-8.3-kselftests
-arm                                 defconfig
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-sh                               allmodconfig
-s390                             allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-mips                             allyesconfig
-x86_64                        randconfig-a004
-x86_64               randconfig-a011-20230116
-arc                              allyesconfig
-x86_64                        randconfig-a002
-x86_64               randconfig-a013-20230116
-x86_64               randconfig-a012-20230116
-ia64                             allmodconfig
-powerpc                          allmodconfig
-i386                             allyesconfig
-alpha                            allyesconfig
-x86_64               randconfig-a015-20230116
-arm64                            allyesconfig
-x86_64               randconfig-a014-20230116
-x86_64                        randconfig-a006
-arm                              allyesconfig
-x86_64               randconfig-a016-20230116
-i386                 randconfig-a014-20230116
-i386                 randconfig-a013-20230116
-i386                 randconfig-a012-20230116
-i386                 randconfig-a011-20230116
-arc                  randconfig-r043-20230115
-i386                 randconfig-a016-20230116
-s390                 randconfig-r044-20230116
-i386                 randconfig-a015-20230116
-riscv                randconfig-r042-20230116
-arc                  randconfig-r043-20230116
-arm                  randconfig-r046-20230115
-arm                  randconfig-r046-20230117
-arc                  randconfig-r043-20230117
-i386                 randconfig-c001-20230116
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-riscv                randconfig-r042-20230118
-s390                 randconfig-r044-20230118
-arc                  randconfig-r043-20230118
-i386                          debian-10.3-kvm
-i386                        debian-10.3-kunit
-i386                         debian-10.3-func
-xtensa                  cadence_csp_defconfig
-sh                             shx3_defconfig
-sh                          kfr2r09_defconfig
-sh                     magicpanelr2_defconfig
-m68k                            q40_defconfig
-ia64                      gensparse_defconfig
-mips                  decstation_64_defconfig
-m68k                          multi_defconfig
-powerpc                    sam440ep_defconfig
-sh                         ap325rxa_defconfig
-riscv                            allyesconfig
-i386                          randconfig-c001
-loongarch                           defconfig
-loongarch                         allnoconfig
-loongarch                        allmodconfig
-sparc                               defconfig
-xtensa                           allyesconfig
-csky                                defconfig
-sparc                            allyesconfig
-x86_64                                  kexec
-nios2                            allyesconfig
-nios2                               defconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-m68k                          hp300_defconfig
-arm                            lart_defconfig
-
-clang tested configs:
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-x86_64                          rhel-8.3-rust
-i386                 randconfig-a002-20230116
-i386                 randconfig-a004-20230116
-i386                 randconfig-a003-20230116
-i386                 randconfig-a001-20230116
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-i386                 randconfig-a006-20230116
-i386                 randconfig-a005-20230116
-x86_64                        randconfig-k001
-hexagon              randconfig-r041-20230116
-arm                          sp7021_defconfig
-powerpc                     ppa8548_defconfig
-riscv                randconfig-r042-20230117
-hexagon              randconfig-r045-20230117
-s390                 randconfig-r044-20230117
-hexagon              randconfig-r045-20230115
-hexagon              randconfig-r041-20230117
-x86_64               randconfig-a003-20230116
-x86_64               randconfig-a004-20230116
-x86_64               randconfig-a006-20230116
-x86_64               randconfig-a005-20230116
-x86_64               randconfig-a001-20230116
-x86_64               randconfig-a002-20230116
-riscv                randconfig-r042-20230115
-arm                  randconfig-r046-20230116
-s390                 randconfig-r044-20230115
-hexagon              randconfig-r045-20230116
-hexagon              randconfig-r041-20230115
-powerpc                        fsp2_defconfig
-mips                           rs90_defconfig
-powerpc                 mpc836x_rdk_defconfig
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-powerpc                      acadia_defconfig
-arm                        magician_defconfig
-riscv                             allnoconfig
-arm                         hackkit_defconfig
-mips                          malta_defconfig
-mips                        qi_lb60_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                     kmeter1_defconfig
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Jason
 
 _______________________________________________
 ath10k mailing list
