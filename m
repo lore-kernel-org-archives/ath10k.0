@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1606DC54E94
-	for <ath10k@archiver.kernel.org>; Wed, 25 Jan 2023 10:59:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C0F1C38142
+	for <ath10k@archiver.kernel.org>; Fri, 27 Jan 2023 22:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aKBPqMn0xg87WIZb6tN/7YLmNTZ1Vka7c9lK+YJvEhY=; b=u2lhNqoupFoPZO
-	exbf255GHVAOXl3CdxiLd5uaQaDizHe9jGOVuXB7P2owMkDb5+oYmcdMf408ISL+3nlXSPz7iEKVP
-	dME0BjhVDG8038iT/lsDT+knZdaGji/pmTHMFyHjL1mwiHCvjD9Np8bgCNoG5vkLFH+x4197eSGD2
-	pyP68l54uojxIbAatA6IzLey4kp5lFD5w1ze5m9NI+KVwvq3TXDJYzxpTD7aHIGf6HoDfY0idFiVj
-	gSEocMisWWUzi8/AWEpJVYvsD77P/gqOxXsbDuiloulMZ98wpuzMSKhzFkqe+pbwubsISJavKNOjk
-	29nLTTAjTAo/duH/9c2w==;
+	List-Owner; bh=sGPuq70m0AioPq/4RQCDGMuUh46QxRYw5a4B2/yRNbg=; b=0t4sYzXC/HIG3d
+	giDdeYbSRg/AosoDV1pcFJLaV2no7iIrOkV6SC1iAH0R/v0EGYIxpp0mItzpnncYTjOoFxgIV8yDs
+	PICWcnwcrmaVworOyIcaLI0UBmV7I9DikCXypYHrGxdwn42bHTIodX5/XGPq+0FsLbsuiW9rTWK+0
+	eNu5SXpDAqH47q6iqSIygX7vz0ZR8sz7DufKVQ/8E9micTrMF1MHR+kIqjpqTHl9qUcR2StNGcEk8
+	gpZZCN1g9ZfcvOkRAUEx44SueKpXYhvPn71r5TmfmZfHZSC3emuSu+vnTdkU4kwKsfgNGIVVien0d
+	TbaRRI7yOiN6R8velOFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKdV8-0072lw-JX; Wed, 25 Jan 2023 10:59:34 +0000
-Received: from mail.8bytes.org ([85.214.250.239])
-	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKdV6-0072kP-Gw; Wed, 25 Jan 2023 10:59:33 +0000
-Received: from 8bytes.org (p200300c27714bc0086ad4f9d2505dd0d.dip0.t-ipconnect.de [IPv6:2003:c2:7714:bc00:86ad:4f9d:2505:dd0d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id EA1A7262E65;
-	Wed, 25 Jan 2023 11:59:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1674644369;
-	bh=T38KYBmqOO/YysbFxidRcHI2EqxeKT2mSwZbXhYqf1E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=xjLIYBe2Reb4sUbyDIO/QWp7US6P8C31V+nRPiKC12bUvIf7ZM2sEz6rexMly82MG
-	 SdqC2ipNyx624847dznAPsTr5JegX+avBcrYfRuhpCCtUCj00j5UMMKFv2s5yqcp78
-	 M0y7wdWzVXQ3svUwvlcuJMoxQJuspChvYRhYbBD4VgYfSxytDzzifVhHBhI3LbACxs
-	 T3fe0NZnfc4OI4+mzTVEq4TCO9vBUsWz4/KYFySgVFLjFM48o+FEL/Pas2FYAxM+s5
-	 h6WCzD311EPYK4UyWDMAMAz7XrOhVE163Ksfw3L/LtMiYeejlNUntipX85M2JSVOt+
-	 8KBgiGtflHGcg==
-Date: Wed, 25 Jan 2023 11:59:27 +0100
-From: Joerg Roedel <joro@8bytes.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>, Kevin Tian <kevin.tian@intel.com>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	dri-devel@lists.freedesktop.org, iommu@lists.linux.dev,
-	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-tegra@vger.kernel.org, linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v3 00/10] Let iommufd charge IOPTE allocations to the
- memory cgroup
-Message-ID: <Y9ELj1yKsE58mlgi@8bytes.org>
-References: <0-v3-76b587fe28df+6e3-iommu_map_gfp_jgg@nvidia.com>
+	id 1pLWtk-00GewW-Gl; Fri, 27 Jan 2023 22:08:40 +0000
+Received: from mail-io1-xd36.google.com ([2607:f8b0:4864:20::d36])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1pLWth-00GevS-Fo
+	for ath10k@lists.infradead.org; Fri, 27 Jan 2023 22:08:39 +0000
+Received: by mail-io1-xd36.google.com with SMTP id b4so821169ioj.0
+        for <ath10k@lists.infradead.org>; Fri, 27 Jan 2023 14:08:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=al9oy3E79ODPhEjXEHhJKk/A8XmQzAwjko7z1WJnZkc=;
+        b=NPwfv5aXAsscvOxtwXtO9484xYSoDmyOBMRHaq6lKLS61CV1IWSbgh14Mvd5VHqR4X
+         bwh/qNckPyHJ3rRfcMqtRB0SQKEsB2IPGnJT/H4kwO7OemTtVM4iRqS2UZSsGlDbjn/Y
+         nkENSjnV/+noRbM4zBn6bygihOczkHMzXE/os=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=al9oy3E79ODPhEjXEHhJKk/A8XmQzAwjko7z1WJnZkc=;
+        b=Xu8d/65HHXY2e4w1Zm4Usu/smhRvaffMzwVDKAiXGaWyNBiE0Rb9BumQiWHydisy0d
+         gZ24Mfbc0SFMrik6+bhzJ1vXXPqkmSvTTasXcSg1lwacLl9FIRb/Q1ephNLw11qoLrMe
+         W8malZnIvxBRaOi/hysH8XqQmXw0fVhQ5kDjHIat9h118EC4GbbI72Qoc+mrAczIl0sS
+         aO25W81aFkPpRjjve3DmNvoh1+5nkXE4mm3kS31T+v9ju05yzt7W48ZEt/FqpzUPiPDm
+         plmLNPGaZsQYr/+dXoHSzNzeSpR3HkBi0eiAj3AawfaZ8D4zeVlVwfl8DitLtF88W1fH
+         BjMw==
+X-Gm-Message-State: AO0yUKXcGH+OFJE7zzGOQ4I3+Y9oAoF4Wc3dn7SodDPb8MD2MCuv5mkS
+	d/aGuqRW7D7D8SjB42Lm41blv51NB04S4O+Ho8nagw==
+X-Google-Smtp-Source: AK7set/q2kaa+ypIxOjsL1soOvTsxLlm1mLlh4dFrILigvfOQioehJJTu0K8nJ8YHs49B/9ZVlPODT+AvZNEaOu5JHQ=
+X-Received: by 2002:a05:6638:10d4:b0:3a9:6f3a:4b55 with SMTP id
+ q20-20020a05663810d400b003a96f3a4b55mr805907jad.6.1674857315411; Fri, 27 Jan
+ 2023 14:08:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0-v3-76b587fe28df+6e3-iommu_map_gfp_jgg@nvidia.com>
+References: <20221220075215.1.Ic12e347e0d61a618124b742614e82bbd5d770173@changeid>
+ <56d4941a-ad35-37ca-48ca-5f1bf7a86d25@quicinc.com> <CACTWRwt7oQrCyHf=ZF6dW8TtRhOfa14XMZW39cYZWi4hhszcqg@mail.gmail.com>
+ <87tu0wcb3l.fsf@kernel.org>
+In-Reply-To: <87tu0wcb3l.fsf@kernel.org>
+From: Abhishek Kumar <kuabhs@chromium.org>
+Date: Fri, 27 Jan 2023 14:08:23 -0800
+Message-ID: <CACTWRwvhRUFvdv06YkQEgnz1Zyig_FqCeJU06VypT0Lvzv5OXw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: snoc: enable threaded napi on WCN3990
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Manikanta Pubbisetty <quic_mpubbise@quicinc.com>, ath10k@lists.infradead.org, 
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_025932_810346_CDB7C64D 
-X-CRM114-Status: UNSURE (   9.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230127_140837_610758_856F075E 
+X-CRM114-Status: GOOD (  21.03  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,28 +86,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 23, 2023 at 04:35:53PM -0400, Jason Gunthorpe wrote:
-> Jason Gunthorpe (10):
->   iommu: Add a gfp parameter to iommu_map()
->   iommu: Remove iommu_map_atomic()
->   iommu: Add a gfp parameter to iommu_map_sg()
->   iommu/dma: Use the gfp parameter in __iommu_dma_alloc_noncontiguous()
->   iommufd: Use GFP_KERNEL_ACCOUNT for iommu_map()
->   iommu/intel: Add a gfp parameter to alloc_pgtable_page()
->   iommu/intel: Support the gfp argument to the map_pages op
->   iommu/intel: Use GFP_KERNEL in sleepable contexts
->   iommu/s390: Push the gfp parameter to the kmem_cache_alloc()'s
->   iommu/s390: Use GFP_KERNEL in sleepable contexts
+Thanks for all the comments. I will call dev_set_threaded() directly
+without HW params and rollout a v2 soon.
 
-Merged into branch iommu-memory-accounting and merged that branch into
-core.
-
-The merge commit contains your cover-letter descriptions. Given all
-tests pass I will push it out later today.
-
-Regards,
-
-	Joerg
+On Thu, Jan 12, 2023 at 2:15 AM Kalle Valo <kvalo@kernel.org> wrote:
+>
+> Abhishek Kumar <kuabhs@chromium.org> writes:
+>
+> >> > --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> >> > +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> >> > @@ -927,6 +927,9 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
+> >> >
+> >> >       bitmap_clear(ar_snoc->pending_ce_irqs, 0, CE_COUNT_MAX);
+> >> >
+> >> > +     if (ar->hw_params.enable_threaded_napi)
+> >> > +             dev_set_threaded(&ar->napi_dev, true);
+> >> > +
+> >>
+> >> Since this is done in the API specific to WCN3990, we do not need
+> >> hw_param for this.
+> >
+> > Just so that I am clear, are you suggesting to enable this by default
+> > in snoc.c, similar to what you did in
+> >
+> > https://lore.kernel.org/all/20220905071805.31625-2-quic_mpubbise@quicinc.com/
+> >
+> > If my understanding is correct and there is no objection, I can remove
+> > hw_param and enable it by default on snoc.c . I used hw_param because,
+> > as I see it, threaded NAPI can have some adverse effect on the cache
+> > utilization and power.
+>
+> WCN3990 is the only device using SNOC bus so the hw_param is not needed.
+> It's safe to call dev_set_threaded() in ath10k_snoc_hif_start()
+> unconditionally as it only affects WCN3990.
+>
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
