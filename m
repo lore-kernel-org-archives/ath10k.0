@@ -4,63 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51A9DC636CC
-	for <ath10k@archiver.kernel.org>; Fri,  3 Feb 2023 08:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D658C61DA4
+	for <ath10k@archiver.kernel.org>; Fri,  3 Feb 2023 09:57:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uRr3UrCZHFmSb1xyiLPxMpERBhvgO9XtqnH0Cr4t/HI=; b=XTwDYUBmmoT6k4
-	rCeYxLW4HzUt5Ta/0ERXO+vWGBnEHJJZ9uDqmjNWl/CTwqJURnm/DTGM+An23rPQOdwUIa6GMk8U7
-	FN6HgdDlzJA8f74vzweutG44qNvDcbFhBcf9gxTrVDtHl6hBMVbFPgNFmTRw11n2IUXZ17KrE0fwk
-	VXQhktYiDbN7SA3+9KO0exktY0yYkrQFpkAgJsqG9frXPsTWF3KOxAQ0N9AhOeNiLTqaGMnBEolQU
-	C3wViswwv1PXrzT4+1hN5IAkjzixFtd2NbN5q/g4rEa7Aeu6u/sRWPyTzN67K+HFZjz0o9zRQ8JGf
-	JDt476lFnGRzwD7VJjsg==;
+	List-Owner; bh=rJys5GqDoX4CPRO6didv/a74Y4LX1d6B7Pi3eMZnpIo=; b=WrjtX/RcmCRiBC
+	fe7zSMNSXtVsSofcT6UblFa23YVRNjEoQi+Fb27lLZWasD3WiktOqRLPcHzGZfYjBsJ5Upv4NMTjd
+	ZahuhanHC9ieM+4EQtpLJGPG+PWy/NLJF6KlFk6Vk9H6U0jJHwp+5Mgv3Wtwo8TsO8PZ+tko6+lD5
+	3DhOR6Oe87h0EP/29vOEOzixSDtVjhkPGZBGu3ddXkNVytJ1jmLdRKQSvxK+fy/72tDXBaFEwDNAo
+	yna/ZKLifPVMHmxP/k4u2KK19ZHUf+8p7AhqMmCvBPqH7D6RU+oJ5r2t1YZm8aMTHafm0r/tOKlie
+	HOmVYo3gCPzuitaXwzGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNrak-0012nO-N9; Fri, 03 Feb 2023 08:38:42 +0000
-Received: from smtp161.vfemail.net ([146.59.185.161])
+	id 1pNsog-001GkN-6E; Fri, 03 Feb 2023 09:57:10 +0000
+Received: from mga09.intel.com ([134.134.136.24])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNrah-0012lu-KS
-	for ath10k@lists.infradead.org; Fri, 03 Feb 2023 08:38:41 +0000
-Received: (qmail 21277 invoked from network); 3 Feb 2023 08:38:37 +0000
-Received: from localhost (HELO nl101-3.vfemail.net) ()
-  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 3 Feb 2023 08:38:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=openmail.cc; h=from:to:cc
-	:subject:date:message-id:in-reply-to:references:mime-version
-	:content-transfer-encoding; s=2018; bh=vkUokFEKUNrbGw2Y9QiZUTjdI
-	5XpPUPWkM46g3tjAUg=; b=lcrIEzbYmh6l/NropDxFLEwRoVBQGsX9dweWGp2Fg
-	nkdtKnxHRGNKHa5Bt4zcC6vN+D71g914p3u70/nX01Ppdv3soSwWdjWyIbAfMZQc
-	SFHjIYVA1Itj2kfL/OQnup0F7sKJ12JHT094NWbvry/fMmAvr/X384Z8SrZWpcaX
-	pI=
-Received: (qmail 36141 invoked from network); 3 Feb 2023 08:38:37 -0000
-Received: by simscan 1.4.0 ppid: 35085, pid: 36128, t: 1.1774s
-         scanners:none
-Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (ZXF1dUBvcGVubWFpbC5jYw==@MTkyLjE2OC4xLjE5Mg==)
-  by nl101.vfemail.net with ESMTPA; 3 Feb 2023 08:38:36 -0000
-From: equu@openmail.cc
-To: lpieralisi@kernel.org,
-	toke@toke.dk,
-	kvalo@kernel.org
-Cc: linux-pci@vger.kernel.org,
-	robh@kernel.org,
-	linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	equu@openmail.cc,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH v4 3/3] wifi: ath10k: only load compatible DT cal data
-Date: Fri,  3 Feb 2023 16:37:31 +0800
-Message-Id: <20230203083731.349695-4-equu@openmail.cc>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230203083731.349695-1-equu@openmail.cc>
-References: <ab8ff515-19ec-fe3f-0237-c30275e9744d@openmail.cc>
- <20230203083731.349695-1-equu@openmail.cc>
+	id 1pNsoc-001GiK-EY
+	for ath10k@lists.infradead.org; Fri, 03 Feb 2023 09:57:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675418226; x=1706954226;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dJ2q9PwEMW0SSkG+4Ta7q5xMk9OhifxLsOSev/dtMJg=;
+  b=mRIyT3OFVTIwSirTLy/G4foQfFP2WWrOUjBAd93yDFXXzcI4JV46Xv6n
+   O/nPVzPwPYqxcebTfeIwMgNYoYcMuqH8HTSdSMkKJt7ZjS96m1kdzO6W4
+   fAsgfxVtaTB0s750GuE+P4ZPdKyEHjZHMTgCsKie4dy5YI6dbKUkhrv2b
+   kXGQeMcv1Dtt2A6eVum0StsXrkdvwcy4X6Gz7K2cOZK5Rqb1exAgbHSKi
+   0bvWk3guRAQt6bft/Eynipfv+Eq+LZjCPnrcuo/jSz48g/NRc0Q0MGxNV
+   eItbve9CLV5LnZWoPkIUfoVrkDqmP6iM4eR/SOP+BVYNzigWln18gryQm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10609"; a="329994210"
+X-IronPort-AV: E=Sophos;i="5.97,270,1669104000"; 
+   d="scan'208";a="329994210"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2023 01:56:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10609"; a="808324883"
+X-IronPort-AV: E=Sophos;i="5.97,270,1669104000"; 
+   d="scan'208";a="808324883"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 03 Feb 2023 01:56:52 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1pNsoN-0000ND-1v;
+	Fri, 03 Feb 2023 09:56:51 +0000
+Date: Fri, 3 Feb 2023 17:56:34 +0800
+From: kernel test robot <lkp@intel.com>
+To: equu@openmail.cc, lpieralisi@kernel.org, toke@toke.dk, kvalo@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-pci@vger.kernel.org,
+	robh@kernel.org, linux-wireless@vger.kernel.org,
+	ath10k@lists.infradead.org, equu@openmail.cc
+Subject: Re: [PATCH v3 2/3] wifi: ath9k: stop loading incompatible DT cal data
+Message-ID: <202302031700.zxbfZuRh-lkp@intel.com>
+References: <20230202075524.2911058-3-equu@openmail.cc>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230202075524.2911058-3-equu@openmail.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230203_003840_010789_F91E4373 
-X-CRM114-Status: GOOD (  15.50  )
+X-CRM114-CacheID: sfid-20230203_015706_560254_0F3E8641 
+X-CRM114-Status: GOOD (  20.90  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,108 +84,140 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Edward Chow <equu@openmail.cc>
+Hi,
 
-ath10k might also be sensitive to the issue reported on
-https://github.com/openwrt/openwrt/pull/11345 , loading calibration
-data from a device tree node declared incompatible.
+Thank you for the patch! Yet something to improve:
 
-ath10k will first check whether the device tree node is compatible
-with it, using the functionality introduced with the first patch of
-this series, ("PCI: of: Match pci devices or drivers against OF DT
-nodes") and only proceed loading calibration data from compatible node.
+[auto build test ERROR on helgaas-pci/next]
+[also build test ERROR on helgaas-pci/for-linus wireless-next/main wireless/main linus/master v6.2-rc6 next-20230203]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Edward Chow <equu@openmail.cc>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 29 ++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/pci.c  |  2 +-
- drivers/net/wireless/ath/ath10k/pci.h  |  2 ++
- 3 files changed, 32 insertions(+), 1 deletion(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/equu-openmail-cc/wifi-ath9k-stop-loading-incompatible-DT-cal-data/20230202-165536
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git next
+patch link:    https://lore.kernel.org/r/20230202075524.2911058-3-equu%40openmail.cc
+patch subject: [PATCH v3 2/3] wifi: ath9k: stop loading incompatible DT cal data
+config: i386-randconfig-a005 (https://download.01.org/0day-ci/archive/20230203/202302031700.zxbfZuRh-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/b8656d7cf0ddf9edc732511d6d959c1b3a8b4ea8
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review equu-openmail-cc/wifi-ath9k-stop-loading-incompatible-DT-cal-data/20230202-165536
+        git checkout b8656d7cf0ddf9edc732511d6d959c1b3a8b4ea8
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 olddefconfig
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash drivers/net/wireless/ath/ath10k/ drivers/net/wireless/ath/ath9k/
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5eb131ab916f..a1cf65679046 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -13,6 +13,7 @@
- #include <linux/ctype.h>
- #include <linux/pm_qos.h>
- #include <linux/nvmem-consumer.h>
-+#include <linux/of_pci.h>
- #include <asm/byteorder.h>
- 
- #include "core.h"
-@@ -26,6 +27,7 @@
- #include "testmode.h"
- #include "wmi-ops.h"
- #include "coredump.h"
-+#include "pci.h"
- 
- unsigned int ath10k_debug_mask;
- EXPORT_SYMBOL(ath10k_debug_mask);
-@@ -1958,6 +1960,33 @@ static int ath10k_download_cal_nvmem(struct ath10k *ar, const char *cell_name)
- 	size_t len;
- 	int ret;
- 
-+	/* devm_nvmem_cell_get() will get a cell first from the OF
-+	 * DT node representing the given device with nvmem-cell-name
-+	 * "calibration", and from the global lookup table as a fallback,
-+	 * and an ath10k device could be either a pci one or a platform one.
-+	 *
-+	 * If the OF DT node is not compatible with the real device, the
-+	 * calibration data got from the node should not be applied.
-+	 *
-+	 * dev_is_pci(ar->dev) && ( no OF node || caldata not from node
-+	 * || not compatible ) -> do not use caldata .
-+	 *
-+	 * !dev_is_pci(ar->dev) -> always use caldata .
-+	 *
-+	 * The judgement for compatibility differs with ath9k for many
-+	 * DT using "qcom,ath10k" as compatibility string.
-+	 */
-+	if (dev_is_pci(ar->dev) &&
-+	    (!ar->dev->of_node ||
-+	     (of_property_match_string(ar->dev->of_node,
-+				       "nvmem-cell-names",
-+				       cell_name) < 0) ||
-+	     !of_device_is_compatible(ar->dev->of_node,
-+				      "qcom,ath10k") ||
-+	     !of_pci_node_match_driver(ar->dev->of_node,
-+				       &ath10k_pci_driver)))
-+		return -ENOENT;
-+
- 	cell = devm_nvmem_cell_get(ar->dev, cell_name);
- 	if (IS_ERR(cell)) {
- 		ret = PTR_ERR(cell);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 728d607289c3..5d9f6046f8cf 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3780,7 +3780,7 @@ static SIMPLE_DEV_PM_OPS(ath10k_pci_pm_ops,
- 			 ath10k_pci_pm_suspend,
- 			 ath10k_pci_pm_resume);
- 
--static struct pci_driver ath10k_pci_driver = {
-+struct pci_driver ath10k_pci_driver = {
- 	.name = "ath10k_pci",
- 	.id_table = ath10k_pci_id_table,
- 	.probe = ath10k_pci_probe,
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 480cd97ab739..de676797b736 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -209,6 +209,8 @@ static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
- #define DIAG_ACCESS_CE_TIMEOUT_US 10000 /* 10 ms */
- #define DIAG_ACCESS_CE_WAIT_US	50
- 
-+extern struct pci_driver ath10k_pci_driver;
-+
- void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value);
- void ath10k_pci_soc_write32(struct ath10k *ar, u32 addr, u32 val);
- void ath10k_pci_reg_write32(struct ath10k *ar, u32 addr, u32 val);
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+
+All error/warnings (new ones prefixed by >>):
+
+   In file included from drivers/net/wireless/ath/ath9k/init.c:25:
+>> include/linux/of_pci.h:23:33: warning: 'struct pci_driver' declared inside parameter list will not be visible outside of this definition or declaration
+      23 |                          struct pci_driver *drv);
+         |                                 ^~~~~~~~~~
+   drivers/net/wireless/ath/ath9k/init.c: In function 'ath9k_nvmem_request_eeprom':
+>> drivers/net/wireless/ath/ath9k/init.c:594:13: error: implicit declaration of function 'dev_is_pci' [-Werror=implicit-function-declaration]
+     594 |         if (dev_is_pci(sc->dev) &&
+         |             ^~~~~~~~~~
+>> drivers/net/wireless/ath/ath9k/init.c:600:40: error: passing argument 2 of 'of_pci_node_match_driver' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     600 |                                        &ath_pci_driver)))
+         |                                        ^~~~~~~~~~~~~~~
+         |                                        |
+         |                                        struct pci_driver *
+   In file included from drivers/net/wireless/ath/ath9k/init.c:25:
+   include/linux/of_pci.h:23:45: note: expected 'struct pci_driver *' but argument is of type 'struct pci_driver *'
+      23 |                          struct pci_driver *drv);
+         |                          ~~~~~~~~~~~~~~~~~~~^~~
+   cc1: some warnings being treated as errors
+
+
+vim +/dev_is_pci +594 drivers/net/wireless/ath/ath9k/init.c
+
+   572	
+   573	static int ath9k_nvmem_request_eeprom(struct ath_softc *sc)
+   574	{
+   575		struct ath_hw *ah = sc->sc_ah;
+   576		struct nvmem_cell *cell;
+   577		void *buf;
+   578		size_t len;
+   579		int err;
+   580	
+   581		/* devm_nvmem_cell_get() will get a cell first from the OF
+   582		 * DT node representing the given device with nvmem-cell-name
+   583		 * "calibration", and from the global lookup table as a fallback,
+   584		 * and an ath9k device could be either a pci one or a platform one.
+   585		 *
+   586		 * If the OF DT node is not compatible with the real device, the
+   587		 * calibration data got from the node should not be applied.
+   588		 *
+   589		 * dev_is_pci(sc->dev) && ( no OF node || caldata not from node
+   590		 * || not compatible ) -> do not use caldata .
+   591		 *
+   592		 * !dev_is_pci(sc->dev) -> always use caldata .
+   593		 */
+ > 594		if (dev_is_pci(sc->dev) &&
+   595		    (!sc->dev->of_node ||
+   596		     !of_property_match_string(sc->dev->of_node,
+   597					       "nvmem-cell-names",
+   598					       "calibration") ||
+   599		     !of_pci_node_match_driver(sc->dev->of_node,
+ > 600					       &ath_pci_driver)))
+   601			/* follow the "just return 0;" convention as
+   602			 * noted below.
+   603			 */
+   604			return 0;
+   605	
+   606		cell = devm_nvmem_cell_get(sc->dev, "calibration");
+   607		if (IS_ERR(cell)) {
+   608			err = PTR_ERR(cell);
+   609	
+   610			/* nvmem cell might not be defined, or the nvmem
+   611			 * subsystem isn't included. In this case, follow
+   612			 * the established "just return 0;" convention of
+   613			 * ath9k_init_platform to say:
+   614			 * "All good. Nothing to see here. Please go on."
+   615			 */
+   616			if (err == -ENOENT || err == -EOPNOTSUPP)
+   617				return 0;
+   618	
+   619			return err;
+   620		}
+   621	
+   622		buf = nvmem_cell_read(cell, &len);
+   623		if (IS_ERR(buf))
+   624			return PTR_ERR(buf);
+   625	
+   626		/* run basic sanity checks on the returned nvram cell length.
+   627		 * That length has to be a multiple of a "u16" (i.e.: & 1).
+   628		 * Furthermore, it has to be more than "let's say" 512 bytes
+   629		 * but less than the maximum of AR9300_EEPROM_SIZE (16kb).
+   630		 */
+   631		if ((len & 1) == 1 || len < 512 || len >= AR9300_EEPROM_SIZE) {
+   632			kfree(buf);
+   633			return -EINVAL;
+   634		}
+   635	
+   636		/* devres manages the calibration values release on shutdown */
+   637		ah->nvmem_blob = (u16 *)devm_kmemdup(sc->dev, buf, len, GFP_KERNEL);
+   638		kfree(buf);
+   639		if (!ah->nvmem_blob)
+   640			return -ENOMEM;
+   641	
+   642		ah->nvmem_blob_len = len;
+   643		ah->ah_flags &= ~AH_USE_EEPROM;
+   644		ah->ah_flags |= AH_NO_EEP_SWAP;
+   645	
+   646		return 0;
+   647	}
+   648	
+
 -- 
-2.39.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
 
 _______________________________________________
 ath10k mailing list
