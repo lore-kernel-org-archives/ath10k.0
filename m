@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63AEDC61DA4
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BCF1C636D6
 	for <ath10k@archiver.kernel.org>; Fri,  3 Feb 2023 10:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,34 +12,34 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AmY4gxvJQjSa2WJrDMhmd8Wwm97Nndoi5oUhwSi3jdE=; b=gVEIBWjRfij4mW
-	qDMgHn60P4Lgc8DoLH6qehFFLTOEdU+68JjV4lNmwExDdyl+yGMCtGZ8tDwYl/6mYmLnnXekMFsG3
-	LRABUIy1RmsAk7UYTVkQKPKMqpM+/xT0nRDUSTsyAajvA5gUVo499cAgGo6kQJ+l52wrDrDR2dCaD
-	WrBw/17jd+N/SEdoGGvLBRHMwEkitQ4cbIJOk3uEeeSmYOozgfTNRtWp2PC4Uwc1MpHE5N0AHFBd0
-	tZMEg37UwAhjborHs5/13XE2EwciSd7zWIpGfiQ/5a9TIVaSG4He/bs62B5yI+sR77ftJ+Igi2dAq
-	kImQj3YQk1XosVjAjaCw==;
+	List-Owner; bh=Dyd5DeKVAQ6czjvvF9XNPBlHUJ/nEKaT2wagYFL24Lk=; b=YpcXNyb5nPf7Ou
+	0fHhiv+KNYGQu02vRJjPTdBgcBADL64mW+MXGvIJHpUQZiwAfvUd7CwGHZN26aEzlEklHiI+alBlB
+	GE+aOFqpSEJc7VJn2H13rhaF+V1/JdAT+Sg0I4lgMjfExJ/iW+xV+HAMo+YJ6yRjx/1TC8ONBWS+i
+	ZcA/xzLPxRe1H3Ud4RmzvR8Yb4iJ8piuPLBxODOAJwyYtGOFkEGvK8BcR/jNq5a5G97lvQGPy1KnD
+	0kYa9Dtvw9cycHDTO32FOf4mF14ziSGvlETr/xNLi7FkGlIyIxQCu+iDy18D8MOPw65AB6JNGbeUn
+	lR3t09gixH24tTdkCzeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNtcc-001SKJ-ES; Fri, 03 Feb 2023 10:48:46 +0000
+	id 1pNtcl-001SP5-4N; Fri, 03 Feb 2023 10:48:55 +0000
 Received: from smtp161.vfemail.net ([146.59.185.161])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNtcX-001SIW-Pe
-	for ath10k@lists.infradead.org; Fri, 03 Feb 2023 10:48:44 +0000
-Received: (qmail 23313 invoked from network); 3 Feb 2023 10:48:39 +0000
+	id 1pNtci-001SMS-40
+	for ath10k@lists.infradead.org; Fri, 03 Feb 2023 10:48:54 +0000
+Received: (qmail 23384 invoked from network); 3 Feb 2023 10:48:50 +0000
 Received: from localhost (HELO nl101-3.vfemail.net) ()
-  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 3 Feb 2023 10:48:39 +0000
+  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 3 Feb 2023 10:48:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=openmail.cc; h=from:to:cc
 	:subject:date:message-id:in-reply-to:references:mime-version
-	:content-transfer-encoding; s=2018; bh=jGDc/3893t4jNKAvwgDt3uZmN
-	UUcdVNuxLUyeohAn90=; b=sox/N8rtVuzVO0FmkB4rxOh2zc9VYoaH/TIxhjOHB
-	9sroiKATfpa9ACmQ8mhCX+ErNXKU51nnNsvzi8neHagMHEQchM/Y88+79/cEVHUd
-	3iE53rYc/wl/qoAXcYanBCdgJbe76EWa2HF6pruZFkaCojCouu91Lcn6sHEOOT4n
-	2s=
-Received: (qmail 11134 invoked from network); 3 Feb 2023 10:48:38 -0000
-Received: by simscan 1.4.0 ppid: 10872, pid: 11084, t: 1.0183s
+	:content-transfer-encoding; s=2018; bh=luqcaObS1k1HfP8OVP84w5hUj
+	FkjuY9aMKp1HYAdJpQ=; b=TWAiBH26NLBjbPruV4V9vA5mr5M3bmVG/PX9+mX6t
+	1hxZcXH3vvGj64folDPEd2k4mFZXV1uS/zBhisILIKm+yivgepe8f9LARasHRxJp
+	XH7cNqBY0rjDxtL0Lbjq5zeP/szEIBZJbL4+7PJ0rDF5ihbE1djF0tT36QMHfXTI
+	eE=
+Received: (qmail 11399 invoked from network); 3 Feb 2023 10:48:49 -0000
+Received: by simscan 1.4.0 ppid: 10872, pid: 11391, t: 0.5900s
          scanners:none
 Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (ZXF1dUBvcGVubWFpbC5jYw==@MTkyLjE2OC4xLjE5Mg==)
-  by nl101.vfemail.net with ESMTPA; 3 Feb 2023 10:48:37 -0000
+  by nl101.vfemail.net with ESMTPA; 3 Feb 2023 10:48:49 -0000
 From: equu@openmail.cc
 To: lpieralisi@kernel.org,
 	toke@toke.dk,
@@ -49,19 +49,18 @@ Cc: linux-pci@vger.kernel.org,
 	linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org,
 	equu@openmail.cc,
-	Bjorn Helgaas <helgaas@kernel.org>,
 	kernel test robot <lkp@intel.com>
-Subject: [PATCH v5 1/3] PCI: of: Match pci devices or drivers against OF DT nodes
-Date: Fri,  3 Feb 2023 18:48:20 +0800
-Message-Id: <20230203104822.361415-2-equu@openmail.cc>
+Subject: [PATCH v5 3/3] wifi: ath10k: only load compatible DT cal data
+Date: Fri,  3 Feb 2023 18:48:22 +0800
+Message-Id: <20230203104822.361415-4-equu@openmail.cc>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230203104822.361415-1-equu@openmail.cc>
 References: <ab8ff515-19ec-fe3f-0237-c30275e9744d@openmail.cc>
  <20230203104822.361415-1-equu@openmail.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230203_024842_207110_F20A37DC 
-X-CRM114-Status: GOOD (  25.23  )
+X-CRM114-CacheID: sfid-20230203_024852_511319_E58E0F01 
+X-CRM114-Status: GOOD (  15.40  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,503 +79,104 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 From: Edward Chow <equu@openmail.cc>
 
-Currently, whether a compatibility string within an OF DT node for a
-PCI device (whose spec is at
-https://www.devicetree.org/open-firmware/bindings/pci/ ) matches the
-vendor and device id of either the PCI device installed on the
-corresponding location or the driver suggested by the compatibility
-string is not supported.
+ath10k might also be sensitive to the issue reported on
+https://github.com/openwrt/openwrt/pull/11345 , loading calibration
+data from a device tree node declared incompatible.
 
-This patch introduces a function to decode a compatibility string into
-a struct pci_device_id, which could further be matched against PCI
-devices or drivers, as well as functions to match a compatibility
-string or OF DT node against PCI devices or drivers.
+ath10k will first check whether the device tree node is compatible
+with it, using the functionality introduced with the first patch of
+this series, ("PCI: of: Match pci devices or drivers against OF DT
+nodes") and only proceed loading calibration data from compatible node.
 
 Signed-off-by: Edward Chow <equu@openmail.cc>
-Cc: Bjorn Helgaas <helgaas@kernel.org>
 Reported-by: kernel test robot <lkp@intel.com>
 ---
- drivers/pci/of.c         | 299 +++++++++++++++++++++++++++++++++++++++
- drivers/pci/pci-driver.c |   5 -
- drivers/pci/pci.h        |  56 ++++++++
- include/linux/of_pci.h   |  25 ++++
- include/linux/pci.h      |   6 +
- 5 files changed, 386 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 30 ++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/pci.c  |  2 +-
+ drivers/net/wireless/ath/ath10k/pci.h  |  2 ++
+ 3 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-index 196834ed44fe..a9c3648cd9e9 100644
---- a/drivers/pci/of.c
-+++ b/drivers/pci/of.c
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5eb131ab916f..a776b06f49b5 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
 @@ -13,6 +13,8 @@
- #include <linux/of_irq.h>
- #include <linux/of_address.h>
- #include <linux/of_pci.h>
-+#include <linux/string.h>
-+#include <linux/kstrtox.h>
- #include "pci.h"
+ #include <linux/ctype.h>
+ #include <linux/pm_qos.h>
+ #include <linux/nvmem-consumer.h>
++#include <linux/of_pci.h>
++#include <linux/pci.h>
+ #include <asm/byteorder.h>
  
- #ifdef CONFIG_PCI
-@@ -251,6 +253,303 @@ void of_pci_check_probe_only(void)
- }
- EXPORT_SYMBOL_GPL(of_pci_check_probe_only);
+ #include "core.h"
+@@ -26,6 +28,7 @@
+ #include "testmode.h"
+ #include "wmi-ops.h"
+ #include "coredump.h"
++#include "pci.h"
  
-+/**
-+ * of_pci_compat_to_device_id() - Decode an OF compatibility string into a
-+ * pci_device_id structure.
-+ * @compat: the compatibility string to decode, could be NULL
-+ * @id: pointer to a struct pci_device_id, to store the result
-+ * @rev: pointer to output revision info, PCI_ANY_ID if no revision in @compat
-+ * @req_pcie: pointer to output whether @compat mandates PCIe compatibility
-+ *
-+ * returns 0 when success, -EINVAL when failed.
-+ */
-+int of_pci_compat_to_device_id(const char *compat, struct pci_device_id *id,
-+			       u32 *rev, u32 *req_pcie)
-+{
-+	union {
-+		u8 u8;
-+		u16 u16;
-+		u32 u32;
-+	} res = {0};
-+	*req_pcie = 0;
-+	*rev = PCI_ANY_ID;
-+	if (!compat || strncasecmp(compat, "pci", 3) != 0)
-+		return -EINVAL;
-+	compat += 3;
-+
-+	if (strncasecmp(compat, "class,", 6) == 0) {
-+		/* pciclass,CCSSPP */
-+		compat += 6;
-+		if ((strlen(compat) < 4)
-+		   || kstrtouint(compat, 16, &id->class))
-+			return -EINVAL;
-+		if (id->class < 0x10000) {
-+			id->class <<= 8;
-+			id->class_mask = 0xFFFF00;
-+		} else {
-+			id->class_mask = PCI_ANY_ID;
-+		}
-+		id->vendor = PCI_ANY_ID;
-+		id->device = PCI_ANY_ID;
-+		id->subvendor = PCI_ANY_ID;
-+		id->subdevice = PCI_ANY_ID;
-+		return 0;
-+	}
-+
-+	if (strncasecmp(compat, "ex", 2) == 0) {
-+		/* pciex...  */
-+		*req_pcie = 1;
-+		compat += 2;
-+	}
-+	if (kstrtou16(compat, 16, &res.u16))
-+		return -EINVAL;
-+	id->vendor = res.u16;
-+	compat = strchr(compat, ',');
-+	if (!compat)
-+		return -EINVAL;
-+	compat++;
-+	if (kstrtou16(compat, 16, &res.u16))
-+		return -EINVAL;
-+	id->device = res.u16;
-+	compat = strchr(compat, '.');
-+	if (compat == NULL) {
-+		/* pciVVVV,DDDD */
-+		id->subvendor = PCI_ANY_ID;
-+		id->subdevice = PCI_ANY_ID;
-+		return 0;
-+	}
-+
-+	compat++;
-+	if (strlen(compat) == 2) {
-+		/* pciVVVV,DDDD.RR */
-+		if (kstrtou8(compat, 16, &res.u8))
-+			return -EINVAL;
-+		*rev = res.u8;
-+		id->subvendor = PCI_ANY_ID;
-+		id->subdevice = PCI_ANY_ID;
-+		return 0;
-+	}
-+
-+	if (kstrtou16(compat, 16, &res.u16))
-+		return -EINVAL;
-+	id->subvendor = res.u16;
-+	compat = strchr(compat, '.');
-+	if (!compat)
-+		return -EINVAL;
-+	compat++;
-+	if (kstrtou16(compat, 16, &res.u16))
-+		return -EINVAL;
-+	id->subdevice = res.u16;
-+	compat = strchr(compat, '.');
-+	if (compat == NULL)
-+		/* pciVVVV,DDDD.SSSS.ssss */
-+		return 0;
-+
-+	compat++;
-+	if (strlen(compat) == 2) {
-+		/* pciVVVV,DDDD.SSSS.ssss.RR */
-+		if (kstrtou8(compat, 16, &res.u8))
-+			return -EINVAL;
-+		*rev = res.u8;
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * of_pci_compat_match_device() - Tell whether a PCI device structure matches
-+ * a given OF compatibility string
-+ * @compat: single OF compatibility string to match, could be NULL
-+ * @dev the PCI device structure to match against
-+ *
-+ * Returns whether they match.
-+ */
-+bool of_pci_compat_match_device(const char *compat, const struct pci_dev *dev)
-+{
-+	__u32 rev = PCI_ANY_ID;
-+	__u32 req_pcie = 0;
-+	struct pci_device_id id = {0};
-+
-+	if (of_pci_compat_to_device_id(compat, &id, &rev, &req_pcie))
-+		return false;
-+	return pci_match_one_device(&id, dev) &&
-+		(rev == PCI_ANY_ID || rev == dev->revision) &&
-+		req_pcie ? dev->pcie_cap : true;
-+}
-+
-+/**
-+ * of_pci_node_match_device() - Tell whether an OF device tree node
-+ * matches the given pci device
-+ * @node: single OF device tree node to match, could be NULL
-+ * @dev: the PCI device structure to match against, could be NULL
-+ *
-+ * Returns whether they match.
-+ */
-+bool of_pci_node_match_device(const struct device_node *node,
-+			      const struct pci_dev *dev)
-+{
-+	struct property *prop;
-+	const char *cp;
-+
-+	if (!node || !dev)
-+		return false;
-+	prop = of_find_property(node, "compatible", NULL);
-+	for (cp = of_prop_next_string(prop, NULL); cp;
-+	     cp = of_prop_next_string(prop, cp)) {
-+		if (of_pci_compat_match_device(cp, dev))
-+			return true;
-+	}
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(of_pci_node_match_device);
-+
-+/**
-+ * of_pci_compat_match_one_id() - Tell whether a PCI device ID structure matches
-+ * a given OF compatibility string, note that there is no revision nor PCIe
-+ * capability info in PCI device ID structures
-+ *
-+ * @compat: single OF compatibility string to match, could be NULL
-+ * @id the PCI device ID structure to match against, could be NULL
-+ *
-+ * Returns the matching pci_device_id structure pointed by ID
-+ * or %NULL if there is no match.
-+ */
-+const struct pci_device_id *
-+of_pci_compat_match_one_id(const char *compat, const struct pci_device_id *id)
-+{
-+	__u32 rev = PCI_ANY_ID;
-+	__u32 req_pcie = 0;
-+	struct pci_device_id pr = {0};
-+
-+	if (!compat || !id ||
-+	    of_pci_compat_to_device_id(compat, &pr, &rev, &req_pcie))
-+		return NULL;
-+	return pci_match_one_id(id, &pr);
-+}
-+
-+/**
-+ * of_pci_compat_match_id_table() - Tell whether a given OF compatibility string
-+ * matches a given pci_id table
-+ *
-+ * @compat: single OF compatibility string to match, could be NULL
-+ * @table the PCI device ID table to match against, could be NULL
-+ *
-+ * Returns the matching pci_device_id structure or %NULL if there is no match.
-+ */
-+const struct pci_device_id *
-+of_pci_compat_match_id_table(const char *compat, const struct pci_device_id *table)
-+{
-+	if (compat && table) {
-+		while (table->vendor || table->subvendor || table->class_mask) {
-+			if (of_pci_compat_match_one_id(compat, table))
-+				return table;
-+			table++;
-+		}
-+	}
-+	return NULL;
-+}
-+
-+/**
-+ * of_pci_node_match_id_table() - Tell whether an OF device tree node
-+ * matches the given pci_id table
-+ * @node: single OF device tree node to match, could be NULL
-+ * @table: the PCI device ID table to match against, could be NULL
-+ *
-+ * Returns the matching pci_device_id structure
-+ * or %NULL if there is no match.
-+ */
-+const struct pci_device_id *
-+of_pci_node_match_id_table(const struct device_node *node,
-+			   const struct pci_device_id *table)
-+{
-+	struct property *prop;
-+	const char *cp;
-+	const struct pci_device_id *id;
-+
-+	if (!node || !table)
-+		return NULL;
-+	prop = of_find_property(node, "compatible", NULL);
-+	for (cp = of_prop_next_string(prop, NULL); cp;
-+	     cp = of_prop_next_string(prop, cp)) {
-+		id = of_pci_compat_match_id_table(cp, table);
-+		if (id)
-+			return id;
-+	}
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(of_pci_node_match_id_table);
-+
-+/**
-+ * of_pci_compat_match_driver - See if a given OF compatibility string matches
-+ * a driver's list of IDs
-+ * @compat: single OF compatibility string to match, could be NULL
-+ * @drv: the PCI driver to match against, could be NULL
-+ *
-+ * Used by a driver to check whether an OF compatibility string matches one of
-+ * (dynamically) supported devices, which may have been augmented
-+ * via the sysfs "new_id" file.  Returns the matching pci_device_id
-+ * structure or %NULL if there is no match.
-+ */
-+const struct pci_device_id *
-+of_pci_compat_match_driver(const char *compat, struct pci_driver *drv)
-+{
-+	struct pci_dynid *dynid;
-+	const struct pci_device_id *found_id = NULL, *ids;
-+
-+	if (!compat || !drv)
-+		return NULL;
-+	/* Look at the dynamic ids first, before the static ones */
-+	spin_lock(&drv->dynids.lock);
-+	list_for_each_entry(dynid, &drv->dynids.list, node) {
-+		if (of_pci_compat_match_one_id(compat, &dynid->id)) {
-+			found_id = &dynid->id;
-+			break;
-+		}
-+	}
-+	spin_unlock(&drv->dynids.lock);
-+
-+	if (found_id)
-+		return found_id;
-+
-+	for (ids = drv->id_table; (found_id = of_pci_compat_match_one_id(compat, ids));
-+	     ids = found_id + 1) {
-+		/* exclude ids in id_table with override_only */
-+		if (!found_id->override_only)
-+			return found_id;
-+	}
-+
-+	return NULL;
-+}
-+
-+/**
-+ * of_pci_node_match_driver() - Tell whether an OF device tree node
-+ * matches the given pci driver
-+ * @node: single OF device tree node to match, could be NULL
-+ * @drv: the PCI driver structure to match against, could be NULL
-+ *
-+ * Returns the matching pci_device_id structure
-+ * or %NULL if there is no match.
-+ */
-+const struct pci_device_id *
-+of_pci_node_match_driver(const struct device_node *node,
-+			 struct pci_driver *drv)
-+{
-+	struct property *prop;
-+	const char *cp;
-+	const struct pci_device_id *id;
-+
-+	if (!node || !drv)
-+		return NULL;
-+	prop = of_find_property(node, "compatible", NULL);
-+	for (cp = of_prop_next_string(prop, NULL); cp;
-+	     cp = of_prop_next_string(prop, cp)) {
-+		id = of_pci_compat_match_driver(cp, drv);
-+		if (id)
-+			return id;
-+	}
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(of_pci_node_match_driver);
-+
- /**
-  * devm_of_pci_get_host_bridge_resources() - Resource-managed parsing of PCI
-  *                                           host bridge resources from DT
-diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-index a2ceeacc33eb..aa212d12353f 100644
---- a/drivers/pci/pci-driver.c
-+++ b/drivers/pci/pci-driver.c
-@@ -24,11 +24,6 @@
- #include "pci.h"
- #include "pcie/portdrv.h"
+ unsigned int ath10k_debug_mask;
+ EXPORT_SYMBOL(ath10k_debug_mask);
+@@ -1958,6 +1961,33 @@ static int ath10k_download_cal_nvmem(struct ath10k *ar, const char *cell_name)
+ 	size_t len;
+ 	int ret;
  
--struct pci_dynid {
--	struct list_head node;
--	struct pci_device_id id;
--};
--
- /**
-  * pci_add_dynid - add a new PCI device ID to this driver and re-probe devices
-  * @drv: target pci driver
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 9ed3b5550043..e30652021a63 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -204,6 +204,29 @@ pci_match_one_device(const struct pci_device_id *id, const struct pci_dev *dev)
- 	return NULL;
- }
- 
-+/**
-+ * pci_match_one_id - Tell if a PCI device id structure matches another
-+ *			  PCI device id structure
-+ * @id: single PCI device id structure to match, usually in a list or array
-+ * @pr: the probing PCI device id structure to match against, usually converted from
-+ *      other format
-+ *
-+ * Returns the matching pci_device_id structure pointed by id
-+ * or %NULL if there is no match.
-+ */
-+static inline const struct pci_device_id *
-+pci_match_one_id(const struct pci_device_id *id, const struct pci_device_id *pr)
-+{
-+	if ((id->vendor == pr->vendor) &&
-+	    (id->device == pr->device) &&
-+	    (id->subvendor == pr->subvendor) &&
-+	    (id->subdevice == pr->subdevice) &&
-+	    (id->class == pr->class) &&
-+	    (id->class_mask == pr->class_mask))
-+		return id;
-+	return NULL;
-+}
++	/* devm_nvmem_cell_get() will get a cell first from the OF
++	 * DT node representing the given device with nvmem-cell-name
++	 * "calibration", and from the global lookup table as a fallback,
++	 * and an ath10k device could be either a pci one or a platform one.
++	 *
++	 * If the OF DT node is not compatible with the real device, the
++	 * calibration data got from the node should not be applied.
++	 *
++	 * dev_is_pci(ar->dev) && ( no OF node || caldata not from node
++	 * || not compatible ) -> do not use caldata .
++	 *
++	 * !dev_is_pci(ar->dev) -> always use caldata .
++	 *
++	 * The judgement for compatibility differs with ath9k for many
++	 * DT using "qcom,ath10k" as compatibility string.
++	 */
++	if (dev_is_pci(ar->dev) &&
++	    (!ar->dev->of_node ||
++	     (of_property_match_string(ar->dev->of_node,
++				       "nvmem-cell-names",
++				       cell_name) < 0) ||
++	     !of_device_is_compatible(ar->dev->of_node,
++				      "qcom,ath10k") ||
++	     !of_pci_node_match_driver(ar->dev->of_node,
++				       &ath10k_pci_driver)))
++		return -ENOENT;
 +
- /* PCI slot sysfs helper code */
- #define to_pci_slot(s) container_of(s, struct pci_slot, kobj)
+ 	cell = devm_nvmem_cell_get(ar->dev, cell_name);
+ 	if (IS_ERR(cell)) {
+ 		ret = PTR_ERR(cell);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 728d607289c3..5d9f6046f8cf 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3780,7 +3780,7 @@ static SIMPLE_DEV_PM_OPS(ath10k_pci_pm_ops,
+ 			 ath10k_pci_pm_suspend,
+ 			 ath10k_pci_pm_resume);
  
-@@ -638,6 +661,15 @@ void pci_release_bus_of_node(struct pci_bus *bus);
+-static struct pci_driver ath10k_pci_driver = {
++struct pci_driver ath10k_pci_driver = {
+ 	.name = "ath10k_pci",
+ 	.id_table = ath10k_pci_id_table,
+ 	.probe = ath10k_pci_probe,
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index 480cd97ab739..de676797b736 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -209,6 +209,8 @@ static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
+ #define DIAG_ACCESS_CE_TIMEOUT_US 10000 /* 10 ms */
+ #define DIAG_ACCESS_CE_WAIT_US	50
  
- int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge);
- 
-+int of_pci_compat_to_device_id(const char *compat, struct pci_device_id *id,
-+			       __u32 *rev, __u32 *req_pcie);
-+bool of_pci_compat_match_device(const char *compat, const struct pci_dev *dev);
-+const struct pci_device_id *
-+of_pci_compat_match_one_id(const char *compat, const struct pci_device_id *id);
-+const struct pci_device_id *
-+of_pci_compat_match_id_table(const char *compat, const struct pci_device_id *table);
-+const struct pci_device_id *
-+of_pci_compat_match_driver(const char *compat, struct pci_driver *drv);
- #else
- static inline int
- of_pci_parse_bus_range(struct device_node *node, struct resource *res)
-@@ -679,6 +711,30 @@ static inline int devm_of_pci_bridge_init(struct device *dev, struct pci_host_br
- 	return 0;
- }
- 
-+static inline int of_pci_compat_to_device_id(const char *compat, struct pci_device_id *id,
-+			       __u32 *rev, __u32 *req_pcie)
-+{
-+	return -EINVAL;
-+}
-+static inline bool of_pci_compat_match_device(const char *compat, const struct pci_dev *dev)
-+{
-+	return false;
-+}
-+static inline const struct pci_device_id *
-+of_pci_compat_match_one_id(const char *compat, const struct pci_device_id *id)
-+{
-+	return NULL;
-+}
-+static inline const struct pci_device_id *
-+of_pci_compat_match_id_table(const char *compat, const struct pci_device_id *table)
-+{
-+	return NULL;
-+}
-+static inline const struct pci_device_id *
-+of_pci_compat_match_driver(const char *compat, struct pci_driver *drv)
-+{
-+	return NULL;
-+}
- #endif /* CONFIG_OF */
- 
- #ifdef CONFIG_PCIEAER
-diff --git a/include/linux/of_pci.h b/include/linux/of_pci.h
-index 29658c0ee71f..eef1eaafc03d 100644
---- a/include/linux/of_pci.h
-+++ b/include/linux/of_pci.h
-@@ -13,6 +13,14 @@ struct device_node *of_pci_find_child_device(struct device_node *parent,
- 					     unsigned int devfn);
- int of_pci_get_devfn(struct device_node *np);
- void of_pci_check_probe_only(void);
-+bool of_pci_node_match_device(const struct device_node *node,
-+			      const struct pci_dev *dev);
-+const struct pci_device_id *
-+of_pci_node_match_id_table(const struct device_node *node,
-+			   const struct pci_device_id *table);
-+const struct pci_device_id *
-+of_pci_node_match_driver(const struct device_node *node,
-+			 struct pci_driver *drv);
- #else
- static inline struct device_node *of_pci_find_child_device(struct device_node *parent,
- 					     unsigned int devfn)
-@@ -26,6 +34,23 @@ static inline int of_pci_get_devfn(struct device_node *np)
- }
- 
- static inline void of_pci_check_probe_only(void) { }
-+static inline bool of_pci_node_match_device(const struct device_node *node,
-+			      const struct pci_dev *dev)
-+{
-+	return false;
-+}
-+static inline const struct pci_device_id *
-+of_pci_node_match_id_table(const struct device_node *node,
-+			   const struct pci_device_id *table)
-+{
-+	return NULL;
-+}
-+static inline const struct pci_device_id *
-+of_pci_node_match_driver(const struct device_node *node,
-+			 struct pci_driver *drv)
-+{
-+	return NULL;
-+}
- #endif
- 
- #if IS_ENABLED(CONFIG_OF_IRQ)
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index adffd65e84b4..04c908d84b90 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -1513,6 +1513,12 @@ void pci_unregister_driver(struct pci_driver *dev);
- 	builtin_driver(__pci_driver, pci_register_driver)
- 
- struct pci_driver *pci_dev_driver(const struct pci_dev *dev);
++extern struct pci_driver ath10k_pci_driver;
 +
-+struct pci_dynid {
-+	struct list_head node;
-+	struct pci_device_id id;
-+};
-+
- int pci_add_dynid(struct pci_driver *drv,
- 		  unsigned int vendor, unsigned int device,
- 		  unsigned int subvendor, unsigned int subdevice,
+ void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value);
+ void ath10k_pci_soc_write32(struct ath10k *ar, u32 addr, u32 val);
+ void ath10k_pci_reg_write32(struct ath10k *ar, u32 addr, u32 val);
 -- 
 2.39.1
 
