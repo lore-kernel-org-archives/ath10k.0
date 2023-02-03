@@ -4,63 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE624C61DA4
-	for <ath10k@archiver.kernel.org>; Thu,  2 Feb 2023 07:56:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C880C636D3
+	for <ath10k@archiver.kernel.org>; Fri,  3 Feb 2023 00:02:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uRr3UrCZHFmSb1xyiLPxMpERBhvgO9XtqnH0Cr4t/HI=; b=cneHQnWtnUsUTa
-	mnxJPPzuUMkIi37aOvpluYRy2YhMR8Wx5NFuVF8oTSC/I8pnKlFThgtib1JowQ/hNBLwd2kCfQmm4
-	W/9IfTXT0xxPVSun4GfeBox8031rl/Er0swgERGQWFPCFZDW9NQVV321l2CGScp+2ZJbtPfEIVMyl
-	3T6pXWMbnKk/79Dwl0kB3TuYlEcNFJsKEh7iHDDdK5bGduH1usToAdSw/OmMKWyHXU+aDOhigsBxK
-	6qG3oXe4dQoYLMCZfO26PU6LFqLHLO9/MB18lmVJOlG06sljCZ9uV0ZyvYXGth+aLtOGBA5JIueML
-	Mxa8WOjYe0XlayUepJhw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=gmb2tVAmJSLTFIRhRQHPEk5oqnM2Vzyu/2mMiXOKzwc=; b=kFbyaz0MRT+o7S
+	Ozn+5f+DUvMFK3pSoCLC89vhADNVZi7c2lNqKbHUaV+EIpqfZaTm4DflT7/Yoa0/nFe0o6gO/89I/
+	fFRmHLLGfAiaA4L/F8jA8daXcMAzmFkb+sZZlYOFqoG1HYmoNrpUz4WpGRYKuMDLtojNUDgntkOke
+	ggTIUoq+nGaz8Pg+MozEAuNY/FPydycIec3ZX4j6bPVZo+KmEnhdAvt4DsmTeW2DiiI+zD0J9h7sh
+	+/QYWyBnTsIMDC4URwobWDY0PxPaB/HVdQsjNeSYYZvl2uLfvPxwkXySIO0QMqTxc4jRrVb9FUHCm
+	gZpuSMEl3z8jUhKMYiag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNUSI-00Eni5-5n; Thu, 02 Feb 2023 07:56:26 +0000
-Received: from smtp161.vfemail.net ([146.59.185.161])
+	id 1pNjXD-00HTFy-RR; Fri, 03 Feb 2023 00:02:31 +0000
+Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNUS5-00EnZv-Hl
-	for ath10k@lists.infradead.org; Thu, 02 Feb 2023 07:56:15 +0000
-Received: (qmail 28647 invoked from network); 2 Feb 2023 07:56:11 +0000
-Received: from localhost (HELO nl101-3.vfemail.net) ()
-  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 2 Feb 2023 07:56:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=openmail.cc; h=from:to:cc
-	:subject:date:message-id:in-reply-to:references:mime-version
-	:content-transfer-encoding; s=2018; bh=vkUokFEKUNrbGw2Y9QiZUTjdI
-	5XpPUPWkM46g3tjAUg=; b=jzxun3AS3h401SZB1QhFYTNKTWxZXucf8QCVPEWQv
-	tBgtwIhV5KPUTxlhml4SaAG2j1lFpoDmblZvlDYqJkdSRAX141IwwvLhAk0w9Il4
-	Te7KyiIpp3kV3EWU3xXrYfi5Gq7XjtN0MHXWrcFUo3t1O7meZFFztwYSVzP0ZtNH
-	pQ=
-Received: (qmail 14461 invoked from network); 2 Feb 2023 07:56:11 -0000
-Received: by simscan 1.4.0 ppid: 13438, pid: 14402, t: 0.9448s
-         scanners:none
-Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (ZXF1dUBvcGVubWFpbC5jYw==@MTkyLjE2OC4xLjE5Mg==)
-  by nl101.vfemail.net with ESMTPA; 2 Feb 2023 07:56:10 -0000
-From: equu@openmail.cc
-To: lpieralisi@kernel.org,
-	toke@toke.dk,
-	kvalo@kernel.org
-Cc: linux-pci@vger.kernel.org,
-	robh@kernel.org,
-	linux-wireless@vger.kernel.org,
+	id 1pNjXB-00HTF9-0w
+	for ath10k@lists.infradead.org; Fri, 03 Feb 2023 00:02:30 +0000
+Received: by mail-pj1-x102e.google.com with SMTP id m11so3487117pji.0
+        for <ath10k@lists.infradead.org>; Thu, 02 Feb 2023 16:02:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v/uoZPK/zWO0yibS8CdCNbFUWtgKpQlxSjVcWvpZrkc=;
+        b=Nu8867/F4vDAB9fNuH6rMWSRYVKaUfSWT7KA3ap7k5g623WXFwtXGy5XWgnXj9MVup
+         qHN/p3SbK0kn5xI7zocwHsFxgZdMZ6ZccPIZ03bCNv9C4/GUYhEe6vVQK8yifNI1P9UD
+         UDHR6pTZUh4ExAFbkqj0Y+ln4pfa8RTMBPRhs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v/uoZPK/zWO0yibS8CdCNbFUWtgKpQlxSjVcWvpZrkc=;
+        b=gUdV8FYN4XrcpMKRSPKffOO3pPFaRzBbBXRr36Co3+47PASEra0iuoCJqiWKj88JQW
+         7Q1R7+ThRFwbw3i8YilPh5oNFeUZg2tYoMuxiGOOk6pbOro4pCDj2g8Bj1P73ZCJIo1H
+         +vtFYXU2HTV7vfwCuF2IMKka71a95MXSlwVwYjcD5bm0ggps5/sSYGQsCaenzJrysWUl
+         etpNHNUDRK0+oiKdRf9KvzZtSCWL7HxY2a4Zj8XjbnzVASjv2d34Z+svKnz2KHBtsCSQ
+         rl4Ea9yrqzQKC1f8hjxuStMbdztW7YjBXt11VLnaqONvqDBFV6pEpPuYAmf489gVoZv2
+         6NcA==
+X-Gm-Message-State: AO0yUKWVWOXnLxlRZ7H683rkegZi8WKr1QMbrXtuMAuqBRJNJKhPvfRb
+	hRTUJoZYE6HC+WRs0UrGWWVeXg==
+X-Google-Smtp-Source: AK7set/kzdkl0NIss0rGuyaBJv2SZPrgJMbP54clf2ry9p5GePxKjRGFVo07vZpBPElS/WlbO8mQhg==
+X-Received: by 2002:a17:90b:4d84:b0:22b:e7a8:d4d0 with SMTP id oj4-20020a17090b4d8400b0022be7a8d4d0mr8470470pjb.25.1675382546272;
+        Thu, 02 Feb 2023 16:02:26 -0800 (PST)
+Received: from kuabhs-cdev.c.googlers.com.com (252.157.168.34.bc.googleusercontent.com. [34.168.157.252])
+        by smtp.gmail.com with ESMTPSA id u11-20020a17090ae00b00b00227223c58ecsm414601pjy.42.2023.02.02.16.02.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 16:02:25 -0800 (PST)
+From: Abhishek Kumar <kuabhs@chromium.org>
+To: kvalo@kernel.org
+Cc: kuabhs@chromium.org,
+	davem@davemloft.net,
 	ath10k@lists.infradead.org,
-	equu@openmail.cc,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH v3 3/3] wifi: ath10k: only load compatible DT cal data
-Date: Thu,  2 Feb 2023 15:55:24 +0800
-Message-Id: <20230202075524.2911058-4-equu@openmail.cc>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230202075524.2911058-1-equu@openmail.cc>
-References: <ab8ff515-19ec-fe3f-0237-c30275e9744d@openmail.cc>
- <20230202075524.2911058-1-equu@openmail.cc>
+	quic_mpubbise@quicinc.com,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	linux-wireless@vger.kernel.org,
+	pabeni@redhat.com,
+	linux-kernel@vger.kernel.org,
+	Eric Dumazet <edumazet@google.com>
+Subject: [PATCH v2] ath10k: snoc: enable threaded napi on WCN3990
+Date: Fri,  3 Feb 2023 00:01:40 +0000
+Message-Id: <20230203000116.v2.1.I5bb9c164a2d2025655dee810b983e01ecd81c14e@changeid>
+X-Mailer: git-send-email 2.39.1.519.gcb327c4b5f-goog
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230201_235613_934270_0276AAC2 
-X-CRM114-Status: GOOD (  15.99  )
+X-CRM114-CacheID: sfid-20230202_160229_134230_AD340ECD 
+X-CRM114-Status: GOOD (  10.31  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,107 +92,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Edward Chow <equu@openmail.cc>
+NAPI poll can be done in threaded context along with soft irq
+context. Threaded context can be scheduled efficiently, thus
+creating less of bottleneck during Rx processing. This patch is
+to enable threaded NAPI on ath10k driver.
 
-ath10k might also be sensitive to the issue reported on
-https://github.com/openwrt/openwrt/pull/11345 , loading calibration
-data from a device tree node declared incompatible.
+Based on testing, it was observed that on WCN3990, the CPU0 reaches
+100% utilization when napi runs in softirq context. At the same
+time the other CPUs are at low consumption percentage. This
+does not allow device to reach its maximum throughput potential.
+After enabling threaded napi, CPU load is balanced across all CPUs
+and following improvments were observed:
+- UDP_RX increase by ~22-25%
+- TCP_RX increase by ~15%
 
-ath10k will first check whether the device tree node is compatible
-with it, using the functionality introduced with the first patch of
-this series, ("PCI: of: Match pci devices or drivers against OF DT
-nodes") and only proceed loading calibration data from compatible node.
+Here are some of the additional raw data with and without threaded napi:
+==================================================
+udp_rx(Without threaded NAPI)
+435.98+-5.16 : Channel 44
+439.06+-0.66 : Channel 157
 
-Signed-off-by: Edward Chow <equu@openmail.cc>
-Reported-by: kernel test robot <lkp@intel.com>
+udp_rx(With threaded NAPI)
+509.73+-41.03 : Channel 44
+549.97+-7.62 : Channel 157
+===================================================
+udp_tx(Without threaded NAPI)
+461.31+-0.69  : Channel 44
+461.46+-0.78 : Channel 157
+
+udp_tx(With threaded NAPI)
+459.20+-0.77 : Channel 44
+459.78+-1.08 : Channel 157
+===================================================
+tcp_rx(Without threaded NAPI)
+472.63+-2.35 : Channel 44
+469.29+-6.31 : Channel 157
+
+tcp_rx(With threaded NAPI)
+498.49+-2.44 : Channel 44
+541.14+-40.65 : Channel 157
+===================================================
+tcp_tx(Without threaded NAPI)
+317.34+-2.37 : Channel 44
+317.01+-2.56 : Channel 157
+
+tcp_tx(With threaded NAPI)
+371.34+-2.36 : Channel 44
+376.95+-9.40 : Channel 157
+===================================================
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 29 ++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/pci.c  |  2 +-
- drivers/net/wireless/ath/ath10k/pci.h  |  2 ++
- 3 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5eb131ab916f..a1cf65679046 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -13,6 +13,7 @@
- #include <linux/ctype.h>
- #include <linux/pm_qos.h>
- #include <linux/nvmem-consumer.h>
-+#include <linux/of_pci.h>
- #include <asm/byteorder.h>
+Changes in v2:
+- Removed the hw param checks to add dev_set_threaded() to snoc.c
+- Added some more test data in the commit message.
+
+ drivers/net/wireless/ath/ath10k/snoc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index cfcb759a87de..0f6d2f67ff6b 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -927,6 +927,7 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
  
- #include "core.h"
-@@ -26,6 +27,7 @@
- #include "testmode.h"
- #include "wmi-ops.h"
- #include "coredump.h"
-+#include "pci.h"
+ 	bitmap_clear(ar_snoc->pending_ce_irqs, 0, CE_COUNT_MAX);
  
- unsigned int ath10k_debug_mask;
- EXPORT_SYMBOL(ath10k_debug_mask);
-@@ -1958,6 +1960,33 @@ static int ath10k_download_cal_nvmem(struct ath10k *ar, const char *cell_name)
- 	size_t len;
- 	int ret;
- 
-+	/* devm_nvmem_cell_get() will get a cell first from the OF
-+	 * DT node representing the given device with nvmem-cell-name
-+	 * "calibration", and from the global lookup table as a fallback,
-+	 * and an ath10k device could be either a pci one or a platform one.
-+	 *
-+	 * If the OF DT node is not compatible with the real device, the
-+	 * calibration data got from the node should not be applied.
-+	 *
-+	 * dev_is_pci(ar->dev) && ( no OF node || caldata not from node
-+	 * || not compatible ) -> do not use caldata .
-+	 *
-+	 * !dev_is_pci(ar->dev) -> always use caldata .
-+	 *
-+	 * The judgement for compatibility differs with ath9k for many
-+	 * DT using "qcom,ath10k" as compatibility string.
-+	 */
-+	if (dev_is_pci(ar->dev) &&
-+	    (!ar->dev->of_node ||
-+	     (of_property_match_string(ar->dev->of_node,
-+				       "nvmem-cell-names",
-+				       cell_name) < 0) ||
-+	     !of_device_is_compatible(ar->dev->of_node,
-+				      "qcom,ath10k") ||
-+	     !of_pci_node_match_driver(ar->dev->of_node,
-+				       &ath10k_pci_driver)))
-+		return -ENOENT;
-+
- 	cell = devm_nvmem_cell_get(ar->dev, cell_name);
- 	if (IS_ERR(cell)) {
- 		ret = PTR_ERR(cell);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 728d607289c3..5d9f6046f8cf 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3780,7 +3780,7 @@ static SIMPLE_DEV_PM_OPS(ath10k_pci_pm_ops,
- 			 ath10k_pci_pm_suspend,
- 			 ath10k_pci_pm_resume);
- 
--static struct pci_driver ath10k_pci_driver = {
-+struct pci_driver ath10k_pci_driver = {
- 	.name = "ath10k_pci",
- 	.id_table = ath10k_pci_id_table,
- 	.probe = ath10k_pci_probe,
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 480cd97ab739..de676797b736 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -209,6 +209,8 @@ static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
- #define DIAG_ACCESS_CE_TIMEOUT_US 10000 /* 10 ms */
- #define DIAG_ACCESS_CE_WAIT_US	50
- 
-+extern struct pci_driver ath10k_pci_driver;
-+
- void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value);
- void ath10k_pci_soc_write32(struct ath10k *ar, u32 addr, u32 val);
- void ath10k_pci_reg_write32(struct ath10k *ar, u32 addr, u32 val);
++	dev_set_threaded(&ar->napi_dev, true);
+ 	ath10k_core_napi_enable(ar);
+ 	ath10k_snoc_irq_enable(ar);
+ 	ath10k_snoc_rx_post(ar);
 -- 
-2.39.1
+2.39.1.519.gcb327c4b5f-goog
 
 
 _______________________________________________
