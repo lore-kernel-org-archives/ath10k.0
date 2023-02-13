@@ -4,69 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8695CC636D4
-	for <ath10k@archiver.kernel.org>; Thu,  9 Feb 2023 18:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 311CAC64ED8
+	for <ath10k@archiver.kernel.org>; Mon, 13 Feb 2023 18:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cufK4C7t2MRbicH+L+RZoERMsgtgNqUa8QjkL2JUWr0=; b=illKG4V5ZwVV38
-	K+1iPYgdH3jrFl/43yH5oL3HZBrmzNJUusC6F5v/XJvytGNvrqaNcx0KwTNWfGDxLwftSliOTEH3h
-	03kImsRjR+8ZUhSmy7jDaVA7uZWW1EOMooOpuWRaCSAQJunqCqbpQz3iCGIGW0jkrlZBxDwfVxr9R
-	OmFq5PSKXeGEbHsZiuYlp1KIhMfEkMPsQt+ePF/E4l2+qAvQEDERftp1xb+eeJ9wXL8zUkICG8CcJ
-	tqYZUCDqyvldUr/7r6d2MvveZJJdzxedtnvH67AAv+tju9XJh2JpgyQSpGEI2WoyMd+UIY051xbEv
-	frjCJLz7cNJndGiqzrOg==;
+	List-Owner; bh=DGCoQXztB++tSoARMQQ17hCxct8se1ze+HXZAJGG3AM=; b=oIeyZV5vVfV+x+
+	Kh1ENNAhRfp0aLJKp0dIUh7aGt+HCv1jWTjTc/malJWfiu+naZGiccsy5j3Mjlnff7Ues8nwq9gXU
+	RDpHfvHhCckFCPaUW5JBFrDzWA1fXU/OljgBZu4FwkZ87fHNgj6VBR0Wc/WXwX3tSoPzOUmHpnjDz
+	+phonQJYP/PWlTfQAknuxCpeSb/GDsy44qKhIKKvxhIu627lZOeR5kXkoSEX94dq++dxLUPljiz4j
+	jOSArcbA5nlLiWGmKwoiIOySXaxFeZ6aeTUUbS9AGse+N70konQYgzrWvciXhji7GoRaUIV/EZt3v
+	FYhjwQCj4cx0ZzPJ8S/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pQBZa-002pDv-GP; Thu, 09 Feb 2023 18:23:06 +0000
-Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
+	id 1pRdPz-00FsRS-Q4; Mon, 13 Feb 2023 18:19:11 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pQBZX-002pBq-1l
-	for ath10k@lists.infradead.org; Thu, 09 Feb 2023 18:23:05 +0000
-Received: by mail-qt1-x831.google.com with SMTP id cr22so2960285qtb.10
-        for <ath10k@lists.infradead.org>; Thu, 09 Feb 2023 10:23:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OTfzY/Chfs7uqsAiNDpZ6trUEll/L71CbJHJALFQZM4=;
-        b=DJLHE80cm2ZtcScbPjB3jkl1zPCVeS9NEMKViyY+OTpQLwK6D0kg6ElVae4AKU+Jka
-         SL90Vfbk8qTR3pv34qEO9KUGIbs9ebJdXWsPNSVfLzkUyxq6yMiSzxKIjPwEsAxt8ixh
-         /avGwCoJmwamxNuQ7t6t0aXK/VczWGZmzLApZmBAwGbB/yOajj2PJHYjhY8GvKh5aoaX
-         sOrpAxqgzLC3V7xn4atGu8ox3Twpu6PiDnbdidfhYAV4Up0w8MQ/YJqh/AHf9G+L0woQ
-         Ok+MCxGY5UyofFCk091V1XqjXmz5RN/HabbFHxwl9pGHseR9iVNXQEy82zzFhkmQq/b9
-         LsKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OTfzY/Chfs7uqsAiNDpZ6trUEll/L71CbJHJALFQZM4=;
-        b=HltHVZPCWPMO0boR8KDJKG3AJochQfQmF1qJ/Est8rSD5f5Qag56k81ML7Bt6sB05W
-         ExnrNuXNL0M5CuNb0fY1v4x+mynzuld08E2xygayJJZ0Nh4K3Y/wKv4eX+zjaDTOk8KW
-         C+83B+gOnMxNA+x8F8I5IqnK8Y50ofk8Wv6R8wNPRKr4/iio7TTgRjvlbQJbHsC2CnmX
-         m41t0eirj5wDUFF7mpAo1FfuJFsvBSW3dhwWkxsVKfGEQLxfYP+G0wT4x7XY0jPgFywx
-         Rf1uJqjoG3q+oJxueHDxdDBPKiFCM5rA/1hrFMOR44Ic8EZVirCc3YMEuS0RzkhrOp4T
-         WNZw==
-X-Gm-Message-State: AO0yUKXpc732IWxKnD8YzaMKn4zoRi8vn1Lav7elodvd+Y2cqIgiIRlb
-	wNjDfG04gHWOaI+JYdTo1Ml1ULxr3rBhGfyoQ/2rTA==
-X-Google-Smtp-Source: AK7set8h+mdHWWDG4oLkSXScXaXN0cqzbhlR6uKGYD/Kkjxgn8UPf05SLjNs0A3Mgg8gR3fUoGHSuYUgsGUadNOQpDk=
-X-Received: by 2002:ac8:5783:0:b0:3b8:6a00:87ca with SMTP id
- v3-20020ac85783000000b003b86a0087camr2389017qta.81.1675966980408; Thu, 09 Feb
- 2023 10:23:00 -0800 (PST)
+	id 1pRdPv-00FsPF-5W
+	for ath10k@lists.infradead.org; Mon, 13 Feb 2023 18:19:09 +0000
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31DHGVQo006845;
+	Mon, 13 Feb 2023 18:18:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=Y+Le7LwRjpxda1vxKUtObFrDXg1v7xhnLppJdxbxaWs=;
+ b=l3yLtaChpVY0x4FcEVEWhZ2dGD7ztX/W9v9fbhcoG4WKtn8f6Q3COUb5vbQszkhUQ5Dl
+ gBV+07cMpQHPDjptNaclDtp5eiR6IGKFvY3LLTRjZDkPKMjw+/PIkWgTEjyuP4KfwfNQ
+ QkF+5E6umLnx1AMDwF9WKfcqkPlQ2ZpgcC5nv/Ko0gUhVzbKlelWmQYvSCNgBxiWTdej
+ oleVaDGssOIoXVd7yCk4T+Z0SPC7febYbSDwQEEtes2Lm0UXwFr/1mXQ2tYi403Z2Xt5
+ 54a6uikWApmNt4xdDTgB9shCopH5xrKa3/e9DoTbr3uqYNAACmyg6d/6nKJwjAJ9oA3f dA== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3np4agcpw0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 13 Feb 2023 18:18:54 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 31DIIram000624
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 13 Feb 2023 18:18:53 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.36; Mon, 13 Feb 2023 10:18:51 -0800
+From: Elliot Berman <quic_eberman@quicinc.com>
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Amol Maheshwari <amahesh@qti.qualcomm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        "David S.
+ Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>
+CC: Elliot Berman <quic_eberman@quicinc.com>,
+        Gokul krishna Krishnakumar
+	<quic_gokukris@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
+Subject: [PATCH] firmware: qcom_scm: Use fixed width src vm bitmap
+Date: Mon, 13 Feb 2023 10:18:29 -0800
+Message-ID: <20230213181832.3489174-1-quic_eberman@quicinc.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-From: Amit Pundir <amit.pundir@linaro.org>
-Date: Thu, 9 Feb 2023 23:52:24 +0530
-Message-ID: <CAMi1Hd3hYo00ieqWNJyXzBmknKkb1y76T8xKUVZBJGXMvRSpNg@mail.gmail.com>
-Subject: ath10k: wcn3990: hitting kernel warnings while running hostapd
-To: Kalle Valo <kvalo@kernel.org>, Loic Poulain <loic.poulain@linaro.org>, 
-	ath10k <ath10k@lists.infradead.org>, linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Vl4WWr97nClKVOvR-5PTydbX9DG6Bncr
+X-Proofpoint-GUID: Vl4WWr97nClKVOvR-5PTydbX9DG6Bncr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-13_12,2023-02-13_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 impostorscore=0 clxscore=1015 adultscore=0 bulkscore=0
+ suspectscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302130163
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230209_102303_157474_24BC6A22 
-X-CRM114-Status: UNSURE (   6.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230213_101907_235589_CA07C003 
+X-CRM114-Status: GOOD (  19.77  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,148 +111,173 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+The maximum VMID for assign_mem is 63. Use a u64 to represent this
+bitmap instead of architecture-dependent "unsigned int" which varies in
+size on 32-bit and 64-bit platforms.
 
-I'm using WiFi hotspot (hostapd) on Dragonboard 845c
-(sdm845|ath10k|wcn3990) running AOSP, and I run into following
-non-fatal warnings when a station disassociates from the AP. I wanted
-to raise the issue in case anyone had ideas what might be going wrong.
-Any known issues? I can reproduce similar warnings all the way to
-v5.15.y (or may be older LTS versions as well but didn't try yet).
+Acked-by: Kalle Valo <kvalo@kernel.org> (ath10k)
+Tested-by: Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
+Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+---
+ drivers/firmware/qcom_scm.c            | 12 +++++++-----
+ drivers/misc/fastrpc.c                 |  2 +-
+ drivers/net/wireless/ath/ath10k/qmi.c  |  4 ++--
+ drivers/remoteproc/qcom_q6v5_mss.c     |  8 ++++----
+ drivers/remoteproc/qcom_q6v5_pas.c     |  2 +-
+ drivers/soc/qcom/rmtfs_mem.c           |  2 +-
+ include/linux/firmware/qcom/qcom_scm.h |  2 +-
+ 7 files changed, 17 insertions(+), 15 deletions(-)
 
---------------------->8----------8<------------------
-[ 9759.346966][ T1989] ath10k_snoc 18800000.wifi: failed to install
-key for vdev 0 peer 8a:55:b5:61:9c:a7: -110
-[ 9759.356962][ T1989] wlan0: failed to remove key (0,
-8a:55:b5:61:9c:a7) from hardware (-110)
-[ 9759.394757][ T1989] ath10k_snoc 18800000.wifi: cipher 0 is not supported
-[ 9759.401548][ T1989] ath10k_snoc 18800000.wifi: failed to remove
-peer wep key 0: -95
-[ 9759.409545][ T1989] ath10k_snoc 18800000.wifi: failed to clear all
-peer wep keys for vdev 0: -95
-[ 9759.418574][ T1989] ath10k_snoc 18800000.wifi: failed to
-disassociate station: 8a:55:b5:61:9c:a7 vdev 0: -95
-[ 9759.428742][ T1989] ------------[ cut here ]------------
-[ 9759.434103][ T1989] WARNING: CPU: 3 PID: 1989 at
-net/mac80211/sta_info.c:1307 __sta_info_destroy_part2+0x108/0x150
-........
-[ 9759.721639][ T1989] CPU: 3 PID: 1989 Comm: hostapd Tainted: G
-     E      6.2.0-rc7-mainline-00015-gdc06692108da #1
-[ 9759.732680][ T1989] Hardware name: Thundercomm Dragonboard 845c (DT)
-[ 9759.739088][ T1989] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT
--SSBS BTYPE=--)
-[ 9759.746812][ T1989] pc : __sta_info_destroy_part2+0x108/0x150
-[ 9759.752620][ T1989] lr : __sta_info_destroy_part2+0x6c/0x150
-..............
-[ 9759.841441][ T1989] Call trace:
-[ 9759.844616][ T1989]  __sta_info_destroy_part2+0x108/0x150
-[ 9759.850069][ T1989]  __sta_info_destroy+0x2c/0x40
-[ 9759.854826][ T1989]  sta_info_destroy_addr_bss+0x34/0x58
-[ 9759.860189][ T1989]  ieee80211_del_station+0x1c/0x40
-[ 9759.865208][ T1989]  nl80211_del_station+0xdc/0x250
-[ 9759.870136][ T1989]  genl_family_rcv_msg_doit.isra.0+0xbc/0x128
-[ 9759.876119][ T1989]  genl_rcv_msg+0x1f0/0x280
-[ 9759.880529][ T1989]  netlink_rcv_skb+0x58/0x138
-[ 9759.885112][ T1989]  genl_rcv+0x38/0x50
-[ 9759.888990][ T1989]  netlink_unicast+0x1cc/0x298
-[ 9759.893659][ T1989]  netlink_sendmsg+0x1d8/0x448
-[ 9759.898328][ T1989]  sock_sendmsg+0x4c/0x58
-[ 9759.902562][ T1989]  ____sys_sendmsg+0x314/0x3a8
-[ 9759.907226][ T1989]  ___sys_sendmsg+0x80/0xc8
-[ 9759.911634][ T1989]  __sys_sendmsg+0x68/0xc8
-[ 9759.915946][ T1989]  __arm64_sys_sendmsg+0x24/0x30
-[ 9759.920787][ T1989]  invoke_syscall+0x44/0x108
-[ 9759.925286][ T1989]  el0_svc_common.constprop.0+0x44/0xf0
-[ 9759.930746][ T1989]  do_el0_svc+0x38/0xb0
-[ 9759.934799][ T1989]  el0_svc+0x2c/0xb8
-[ 9759.938594][ T1989]  el0t_64_sync_handler+0xb8/0xc0
-[ 9759.943521][ T1989]  el0t_64_sync+0x1a0/0x1a4
-[ 9759.947929][ T1989] ---[ end trace 0000000000000000 ]---
-[ 9759.975839][ T1989] ------------[ cut here ]------------
-[ 9759.981188][ T1989] WARNING: CPU: 4 PID: 1989 at
-net/mac80211/sta_info.c:417 sta_info_free+0xa0/0x110
-....................
-[ 9760.266646][ T1989] CPU: 4 PID: 1989 Comm: hostapd Tainted: G
- W   E      6.2.0-rc7-mainline-00015-gdc06692108da #1
-[ 9760.277675][ T1989] Hardware name: Thundercomm Dragonboard 845c (DT)
-[ 9760.284076][ T1989] pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT
--SSBS BTYPE=--)
-[ 9760.291782][ T1989] pc : sta_info_free+0xa0/0x110
-[ 9760.296524][ T1989] lr : __sta_info_destroy_part2+0xf4/0x150
-.................................
-[ 9760.385123][ T1989] Call trace:
-[ 9760.388286][ T1989]  sta_info_free+0xa0/0x110
-[ 9760.392673][ T1989]  __sta_info_destroy_part2+0xf4/0x150
-[ 9760.398026][ T1989]  __sta_info_destroy+0x2c/0x40
-[ 9760.402763][ T1989]  sta_info_destroy_addr_bss+0x34/0x58
-[ 9760.408115][ T1989]  ieee80211_del_station+0x1c/0x40
-[ 9760.413115][ T1989]  nl80211_del_station+0xdc/0x250
-[ 9760.418027][ T1989]  genl_family_rcv_msg_doit.isra.0+0xbc/0x128
-[ 9760.423987][ T1989]  genl_rcv_msg+0x1f0/0x280
-[ 9760.428374][ T1989]  netlink_rcv_skb+0x58/0x138
-[ 9760.432943][ T1989]  genl_rcv+0x38/0x50
-[ 9760.436805][ T1989]  netlink_unicast+0x1cc/0x298
-[ 9760.441461][ T1989]  netlink_sendmsg+0x1d8/0x448
-[ 9760.446117][ T1989]  sock_sendmsg+0x4c/0x58
-[ 9760.450333][ T1989]  ____sys_sendmsg+0x314/0x3a8
-[ 9760.454984][ T1989]  ___sys_sendmsg+0x80/0xc8
-[ 9760.459371][ T1989]  __sys_sendmsg+0x68/0xc8
-[ 9760.463672][ T1989]  __arm64_sys_sendmsg+0x24/0x30
-[ 9760.468498][ T1989]  invoke_syscall+0x44/0x108
-[ 9760.472982][ T1989]  el0_svc_common.constprop.0+0x44/0xf0
-[ 9760.478422][ T1989]  do_el0_svc+0x38/0xb0
-[ 9760.482467][ T1989]  el0_svc+0x2c/0xb8
-[ 9760.486245][ T1989]  el0t_64_sync_handler+0xb8/0xc0
-[ 9760.491164][ T1989]  el0t_64_sync+0x1a0/0x1a4
-[ 9760.495551][ T1989] ---[ end trace 0000000000000000 ]---
-[ 9760.500964][ T1989] ath10k_snoc 18800000.wifi: failed to clear all
-peer wep keys for vdev 0: -2
-[ 9760.509735][ T1989] ath10k_snoc 18800000.wifi: failed to
-disassociate station: 8a:55:b5:61:9c:a7 vdev 0: -2
-[ 9760.519547][ T1989] ------------[ cut here ]------------
-[ 9760.519548][ T1989] sta_info_move_state() returned -2
-[ 9760.519562][ T1989] WARNING: CPU: 4 PID: 1989 at
-net/mac80211/sta_info.c:420 sta_info_free+0x108/0x110
-..............................
-[ 9760.889840][ T1989] CPU: 4 PID: 1989 Comm: hostapd Tainted: G
- W   E      6.2.0-rc7-mainline-00015-gdc06692108da #1
-[ 9760.900872][ T1989] Hardware name: Thundercomm Dragonboard 845c (DT)
-[ 9760.907270][ T1989] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT
--SSBS BTYPE=--)
-[ 9760.914975][ T1989] pc : sta_info_free+0x108/0x110
-[ 9760.919801][ T1989] lr : sta_info_free+0x108/0x110
-...............................................
-[ 9761.007538][ T1989] Call trace:
-[ 9761.010703][ T1989]  sta_info_free+0x108/0x110
-[ 9761.015185][ T1989]  __sta_info_destroy_part2+0xf4/0x150
-[ 9761.020537][ T1989]  __sta_info_destroy+0x2c/0x40
-[ 9761.025277][ T1989]  sta_info_destroy_addr_bss+0x34/0x58
-[ 9761.030625][ T1989]  ieee80211_del_station+0x1c/0x40
-[ 9761.035632][ T1989]  nl80211_del_station+0xdc/0x250
-[ 9761.040544][ T1989]  genl_family_rcv_msg_doit.isra.0+0xbc/0x128
-[ 9761.046507][ T1989]  genl_rcv_msg+0x1f0/0x280
-[ 9761.050901][ T1989]  netlink_rcv_skb+0x58/0x138
-[ 9761.055469][ T1989]  genl_rcv+0x38/0x50
-[ 9761.059340][ T1989]  netlink_unicast+0x1cc/0x298
-[ 9761.063995][ T1989]  netlink_sendmsg+0x1d8/0x448
-[ 9761.068650][ T1989]  sock_sendmsg+0x4c/0x58
-[ 9761.072866][ T1989]  ____sys_sendmsg+0x314/0x3a8
-[ 9761.077520][ T1989]  ___sys_sendmsg+0x80/0xc8
-[ 9761.081906][ T1989]  __sys_sendmsg+0x68/0xc8
-[ 9761.086206][ T1989]  __arm64_sys_sendmsg+0x24/0x30
-[ 9761.091028][ T1989]  invoke_syscall+0x44/0x108
-[ 9761.095512][ T1989]  el0_svc_common.constprop.0+0x44/0xf0
-[ 9761.100949][ T1989]  do_el0_svc+0x38/0xb0
-[ 9761.104993][ T1989]  el0_svc+0x2c/0xb8
-[ 9761.108768][ T1989]  el0t_64_sync_handler+0xb8/0xc0
-[ 9761.113679][ T1989]  el0t_64_sync+0x1a0/0x1a4
-[ 9761.118066][ T1989] ---[ end trace 0000000000000000 ]---
---------------------->8----------8<------------------
+diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+index 468d4d5ab550..b95616b35bff 100644
+--- a/drivers/firmware/qcom_scm.c
++++ b/drivers/firmware/qcom_scm.c
+@@ -905,7 +905,7 @@ static int __qcom_scm_assign_mem(struct device *dev, phys_addr_t mem_region,
+  * Return negative errno on failure or 0 on success with @srcvm updated.
+  */
+ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+-			unsigned int *srcvm,
++			u64 *srcvm,
+ 			const struct qcom_scm_vmperm *newvm,
+ 			unsigned int dest_cnt)
+ {
+@@ -922,9 +922,9 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	__le32 *src;
+ 	void *ptr;
+ 	int ret, i, b;
+-	unsigned long srcvm_bits = *srcvm;
++	u64 srcvm_bits = *srcvm;
+ 
+-	src_sz = hweight_long(srcvm_bits) * sizeof(*src);
++	src_sz = hweight64(srcvm_bits) * sizeof(*src);
+ 	mem_to_map_sz = sizeof(*mem_to_map);
+ 	dest_sz = dest_cnt * sizeof(*destvm);
+ 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
+@@ -937,8 +937,10 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	/* Fill source vmid detail */
+ 	src = ptr;
+ 	i = 0;
+-	for_each_set_bit(b, &srcvm_bits, BITS_PER_LONG)
+-		src[i++] = cpu_to_le32(b);
++	for (b = 0; b < BITS_PER_TYPE(u64); b++) {
++		if (srcvm_bits & BIT(b))
++			src[i++] = cpu_to_le32(b);
++	}
+ 
+ 	/* Fill details of mem buff to map */
+ 	mem_to_map = ptr + ALIGN(src_sz, SZ_64);
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index a701132638cf..f48466960f1b 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -262,7 +262,7 @@ struct fastrpc_channel_ctx {
+ 	int domain_id;
+ 	int sesscount;
+ 	int vmcount;
+-	u32 perms;
++	u64 perms;
+ 	struct qcom_scm_vmperm vmperms[FASTRPC_MAX_VMIDS];
+ 	struct rpmsg_device *rpdev;
+ 	struct fastrpc_session_ctx session[FASTRPC_MAX_SESSIONS];
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 90f457b8e1fe..038c5903c0dc 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -33,7 +33,7 @@ static int ath10k_qmi_map_msa_permission(struct ath10k_qmi *qmi,
+ {
+ 	struct qcom_scm_vmperm dst_perms[3];
+ 	struct ath10k *ar = qmi->ar;
+-	unsigned int src_perms;
++	u64 src_perms;
+ 	u32 perm_count;
+ 	int ret;
+ 
+@@ -65,7 +65,7 @@ static int ath10k_qmi_unmap_msa_permission(struct ath10k_qmi *qmi,
+ {
+ 	struct qcom_scm_vmperm dst_perms;
+ 	struct ath10k *ar = qmi->ar;
+-	unsigned int src_perms;
++	u64 src_perms;
+ 	int ret;
+ 
+ 	src_perms = BIT(QCOM_SCM_VMID_MSS_MSA) | BIT(QCOM_SCM_VMID_WLAN);
+diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+index ab053084f7a2..1ba711bc0100 100644
+--- a/drivers/remoteproc/qcom_q6v5_mss.c
++++ b/drivers/remoteproc/qcom_q6v5_mss.c
+@@ -235,8 +235,8 @@ struct q6v5 {
+ 	bool has_qaccept_regs;
+ 	bool has_ext_cntl_regs;
+ 	bool has_vq6;
+-	int mpss_perm;
+-	int mba_perm;
++	u64 mpss_perm;
++	u64 mba_perm;
+ 	const char *hexagon_mdt_image;
+ 	int version;
+ };
+@@ -414,7 +414,7 @@ static void q6v5_pds_disable(struct q6v5 *qproc, struct device **pds,
+ 	}
+ }
+ 
+-static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, int *current_perm,
++static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, u64 *current_perm,
+ 				   bool local, bool remote, phys_addr_t addr,
+ 				   size_t size)
+ {
+@@ -967,7 +967,7 @@ static int q6v5_mpss_init_image(struct q6v5 *qproc, const struct firmware *fw,
+ 	unsigned long dma_attrs = DMA_ATTR_FORCE_CONTIGUOUS;
+ 	dma_addr_t phys;
+ 	void *metadata;
+-	int mdata_perm;
++	u64 mdata_perm;
+ 	int xferop_ret;
+ 	size_t size;
+ 	void *ptr;
+diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
+index 1e14ae4d233a..a0fa7176fde7 100644
+--- a/drivers/remoteproc/qcom_q6v5_pas.c
++++ b/drivers/remoteproc/qcom_q6v5_pas.c
+@@ -94,7 +94,7 @@ struct qcom_adsp {
+ 	size_t region_assign_size;
+ 
+ 	int region_assign_idx;
+-	int region_assign_perms;
++	u64 region_assign_perms;
+ 
+ 	struct qcom_rproc_glink glink_subdev;
+ 	struct qcom_rproc_subdev smd_subdev;
+diff --git a/drivers/soc/qcom/rmtfs_mem.c b/drivers/soc/qcom/rmtfs_mem.c
+index 2d3ee22b9249..2657c6105bb7 100644
+--- a/drivers/soc/qcom/rmtfs_mem.c
++++ b/drivers/soc/qcom/rmtfs_mem.c
+@@ -31,7 +31,7 @@ struct qcom_rmtfs_mem {
+ 
+ 	unsigned int client_id;
+ 
+-	unsigned int perms;
++	u64 perms;
+ };
+ 
+ static ssize_t qcom_rmtfs_mem_show(struct device *dev,
+diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
+index 1e449a5d7f5c..250ea4efb7cb 100644
+--- a/include/linux/firmware/qcom/qcom_scm.h
++++ b/include/linux/firmware/qcom/qcom_scm.h
+@@ -94,7 +94,7 @@ extern int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
+ 					  u32 cp_nonpixel_start,
+ 					  u32 cp_nonpixel_size);
+ extern int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+-			       unsigned int *src,
++			       u64 *src,
+ 			       const struct qcom_scm_vmperm *newvm,
+ 			       unsigned int dest_cnt);
+ 
 
-Full log here: https://www.irccloud.com/pastebin/P4cJCw0H/
+base-commit: 09e41676e35ab06e4bce8870ea3bf1f191c3cb90
+-- 
+2.39.1
 
-Regards,
-Amit Pundir
 
 _______________________________________________
 ath10k mailing list
