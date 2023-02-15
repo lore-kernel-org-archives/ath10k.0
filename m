@@ -4,54 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B83ACC636CC
-	for <ath10k@archiver.kernel.org>; Wed, 15 Feb 2023 09:17:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C114FC636D4
+	for <ath10k@archiver.kernel.org>; Wed, 15 Feb 2023 11:27:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lkdTjDLCaLjhOOsP+4xXa6JKcZr5xSFGp46k8MMEUVE=; b=lw8iAodejCxL1Y
-	VqRwcKL9dTmzvjZk/62kB82HVxnhOB1OmfWy1DTo+v5Xs4w1hqoROq5Or1Xye+2Qr+2AsdjrMHJHv
-	41evtSeQv3/0Z7tSSLlUd8NFAxFiO2NDziy0eJIbbw/0FJOe/61+NrtR7cuWFndva7aWccG+tLNf/
-	PCyQ6ql0Lrr5LtTV9/WCbcivYWXrP1buktHLRk23XNhkwrM6/Z5nria3O1z9r/jt1+pdrqMP/Pdy2
-	HDTYuACXU99NKqvSxFJDSBw/umGPGoZKpFlgRNFGDiIw6uGh6bfU6Gz7qwXl6bIroU8pl165Zniqi
-	H34yplPE03k0aOFd+VeA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=oqxaq4xu+SaOSH5ioT95XsBhxvy0s38lAImVY/nWESU=; b=L6HuT7YCVtfMJq
+	/PB4cCvyVPXm+3RmMsIAYy56Hloue4SQfOgQqKolKjP8VhGLjDCYJbcSO+sBCmhZq3Y7ZvmIiOtsp
+	zKmLwUq6i54+xQzzWAAM/VinFz7zb2sSDkUOdK5yUnsYPy/gy1+Gsek+w960WXGNRdKVIQvBeF3R+
+	dZ2dG/MxQKXETOx3la7uz+CTBezKzHaTMKXz4Nhy0fojE350hphiKkcVRyd2e3IZeaj3gNNO0x2ss
+	DF4Ub8FyRj8XEdkVh8jBr+oOgU5dbmAyEpIBGy0yNWc99CTfCNvUM3ykaVpOISahDxmVBDBLQ3XxH
+	U+uv68jCV7d51LPYLSgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSDuZ-005IWa-QR; Wed, 15 Feb 2023 09:17:11 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1pSFw4-005bHy-8N; Wed, 15 Feb 2023 11:26:52 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSDuW-005IVf-6T; Wed, 15 Feb 2023 09:17:09 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 82777B81F91;
-	Wed, 15 Feb 2023 09:17:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A718C433D2;
-	Wed, 15 Feb 2023 09:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1676452625;
-	bh=2JN9BL2uqV+9tFYoJoTLAzaxp3WSWxoz3z+XyVU9fAw=;
-	h=From:List-Id:To:Cc:Subject:Date:From;
-	b=bKREpx9b4YUQqZ2vn8vJ82WJfcMes5/Ll62IgpBwnnxLiZC56dAfr52C7qwzlo8Gh
-	 a7Tjr0xqi59WtkkGkg0YNNzxvWU7qvgHXecD0GVJlR0zR8YdFcr+oF0qduHjVtZ+MK
-	 P0e0oLef1A9QTwKcIM7saT8He1Uxf+UpvrNFCkE13AGAeQn3LwEyOOi1WixDVi0SSr
-	 ZLOsEwsFHLAL6FV8pP0qQVrlsEizbTPPrB/xcPA5B7a25FpgSGGuziffOqYV76TOtk
-	 CKaGAHl24/BzuDwo8k+E8afc0ZzYB86TZ3+M0vwZI4y/N9swaqzAE+Sbcxv+vaVroU
-	 vCsSNNhMGM45w==
-From: Kalle Valo <kvalo@kernel.org>
-To: linux-firmware@kernel.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, ath11k@lists.infradead.org
-Subject: [PULL linux-firmware] ath10k & ath11k firmware 20230215
-Date: Wed, 15 Feb 2023 11:17:00 +0200
-Message-ID: <878rgzuw37.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+	id 1pSFw0-005bDq-MF
+	for ath10k@lists.infradead.org; Wed, 15 Feb 2023 11:26:50 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31F9mHmf008282;
+	Wed, 15 Feb 2023 11:26:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yZwXSKB70ZCMG1kqAHoH0/rLY/jRKvpp9gZFYBjBVIg=;
+ b=iMIrbtMiHFtFFag+z0vxzXz/VSfUh/3+Gl7uYZ0pWW6hB+hPhbsQF0RZcG8XB5XICvjZ
+ klZmYwMIyFjHXETosW8a3CUQD8g7dMNUDKTE2yWtZA39DIBv0q+u56ZW5T8seqFOFPY0
+ 41mUH6f5FB75N2iIQBgLlkzdA4FjZvLWyEXWIfrbwDmhm/WmpyYaJ5dpvMxCKQYZklhP
+ w5bqbfls+TlfvGgnJ/HmDBpfJ8NExN4R28uuidp+Nt8zosW+1TBJVtPXi8hELUWkAhv2
+ ZICLwDVv8KTFAvHXb8nmY6aZKHCSk9FXVhwyz0LLUCsMt/t2JqagX4E1Wjz1PLfAVM4V Nw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nr6ps3sgh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 15 Feb 2023 11:26:23 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 31FBQMo6028355
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 15 Feb 2023 11:26:22 GMT
+Received: from [10.206.71.180] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Wed, 15 Feb
+ 2023 03:26:20 -0800
+Message-ID: <96cab5d9-9090-4cb2-ff17-eadc9da12f50@quicinc.com>
+Date: Wed, 15 Feb 2023 16:56:17 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [PATCH 1/2] wifi: cfg80211: Add beacon hint notifier support
+To: Johannes Berg <johannes@sipsolutions.net>, <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_mpubbise@quicinc.com>
+References: <20221222124221.30894-1-quic_youghand@quicinc.com>
+ <20221222124221.30894-2-quic_youghand@quicinc.com>
+ <1df59863e78e8ddbe7eb3a74e6dd4c8f0bd7f098.camel@sipsolutions.net>
+Content-Language: en-US
+From: "Youghandhar Chintala (Temp)" <quic_youghand@quicinc.com>
+In-Reply-To: <1df59863e78e8ddbe7eb3a74e6dd4c8f0bd7f098.camel@sipsolutions.net>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: YupBIji6VphxvCJ0xbXQ4JYtLRQYL1z7
+X-Proofpoint-GUID: YupBIji6VphxvCJ0xbXQ4JYtLRQYL1z7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-15_06,2023-02-15_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ impostorscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 lowpriorityscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302150103
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230215_011708_559108_DE25B8D3 
-X-CRM114-Status: GOOD (  12.37  )
+X-CRM114-CacheID: sfid-20230215_032648_766108_F3555EC5 
+X-CRM114-Status: GOOD (  16.93  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,95 +93,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-Here's a new pull request for ath10k and ath11k. We have new hardware
-IPQ5018 and various updates for existing hardware. Especially many have
-requested the firmware update for WCN6855 which seems to fix an
-important suspend problem.
+On 1/18/2023 10:00 PM, Johannes Berg wrote:
+>> +++ b/include/net/cfg80211.h
+>> @@ -5386,6 +5386,8 @@ struct wiphy {
+>>   	void (*reg_notifier)(struct wiphy *wiphy,
+>>   			     struct regulatory_request *request);
+>>   
+>> +	void (*beacon_hint_notifier)(struct wiphy *wiphy);
+>
+> missing documentation, for sure
+I will add the missed documentation in next version of patch.
+> Also this should probably be in the ops, rather than here? Not sure why
+> reg_notifier is here.
+I followed reg_notifier implementation.
+>> -	if (channel_changed)
+>> +	if (channel_changed) {
+>>   		nl80211_send_beacon_hint_event(wiphy, &chan_before, chan);
+>> +		if (wiphy->beacon_hint_notifier)
+>> +			wiphy->beacon_hint_notifier(wiphy);
+>> +	}
+> This also seems excessive if you're not even passing the channel - you
+> call it for every (affected) channel, but you don't tell it anything
+> about the channel? Seems strange.
+I will address this in next version of patch.
+>
+>
+> However ...
+>
+> Why is this even needed? You should always get reg_notifier after this
+> anyway?
+>
+> johannes
 
-Please let me know if there are any problems.
+Currently when channel flag changed through the beacon hints are not 
+informed to driver.
 
-Kalle
+reg_notifier will be triggered for regdomain changes but not for channel flag changes due to beacon hints.
 
-The following changes since commit a253a3723f8a0ee5bc5d4f551981a651ba660186:
+Regards,
+Youghandhar
 
-  cnm: update chips&media wave521c firmware. (2023-02-14 12:58:03 -0500)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20230215
-
-for you to fetch changes up to c7a57ef688f7d99d8338a5d8edddc8836ff0e6de:
-
-  ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23 (2023-02-15 11:09:53 +0200)
-
-----------------------------------------------------------------
-Kalle Valo (7):
-      ath10k: WCN3990 hw1.0: update board-2.bin
-      ath10k: QCA6174 hw3.0: update firmware-sdio-6.bin to version WLAN.RMH.4.4.1-00174
-      ath11k: IPQ5018 hw1.0: add board-2.bin
-      ath11k: IPQ5018 hw1.0: add to WLAN.HK.2.6.0.1-00861-QCAHKSWPL_SILICONZ-1
-      ath11k: WCN6750 hw1.0: update board-2.bin
-      ath11k: WCN6855 hw2.0: update board-2.bin
-      ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
-
- WHENCE                                   |   27 +-
- ath10k/QCA6174/hw3.0/firmware-sdio-6.bin |  Bin 604416 -> 607252 bytes
- ath10k/WCN3990/hw1.0/board-2.bin         |  Bin 461060 -> 513892 bytes
- ath11k/IPQ5018/hw1.0/Notice.txt          | 4094 ++++++++++++++++++++++++++++++
- ath11k/IPQ5018/hw1.0/board-2.bin         |  Bin 0 -> 524564 bytes
- ath11k/IPQ5018/hw1.0/m3_fw.b00           |  Bin 0 -> 148 bytes
- ath11k/IPQ5018/hw1.0/m3_fw.b01           |  Bin 0 -> 136 bytes
- ath11k/IPQ5018/hw1.0/m3_fw.b02           |  Bin 0 -> 262144 bytes
- ath11k/IPQ5018/hw1.0/m3_fw.flist         |    3 +
- ath11k/IPQ5018/hw1.0/m3_fw.mdt           |  Bin 0 -> 284 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b00           |  Bin 0 -> 532 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b01           |  Bin 0 -> 520 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b02           |  Bin 0 -> 7552 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b03           |  Bin 0 -> 545008 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b04           |  Bin 0 -> 86788 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b05           |  Bin 0 -> 17776 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b07           |  Bin 0 -> 1488 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b08           |  Bin 0 -> 4096 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b09           |  Bin 0 -> 2330624 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b10           |  Bin 0 -> 269028 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b11           |  Bin 0 -> 99436 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b13           |  Bin 0 -> 7024 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.b14           |  Bin 0 -> 1668 bytes
- ath11k/IPQ5018/hw1.0/q6_fw.flist         |   13 +
- ath11k/IPQ5018/hw1.0/q6_fw.mdt           |  Bin 0 -> 1052 bytes
- ath11k/WCN6750/hw1.0/board-2.bin         |  Bin 843548 -> 843548 bytes
- ath11k/WCN6855/hw2.0/amss.bin            |  Bin 4972544 -> 4980736 bytes
- ath11k/WCN6855/hw2.0/board-2.bin         |  Bin 1322820 -> 6158196 bytes
- 28 files changed, 4135 insertions(+), 2 deletions(-)
- create mode 100644 ath11k/IPQ5018/hw1.0/Notice.txt
- create mode 100644 ath11k/IPQ5018/hw1.0/board-2.bin
- create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.b00
- create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.b01
- create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.b02
- create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.flist
- create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.mdt
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b00
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b01
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b02
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b03
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b04
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b05
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b07
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b08
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b09
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b10
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b11
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b13
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b14
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.flist
- create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.mdt
 
 _______________________________________________
 ath10k mailing list
