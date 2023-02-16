@@ -4,65 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5804DC636CC
-	for <ath10k@archiver.kernel.org>; Wed, 15 Feb 2023 19:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0AD3C61DA4
+	for <ath10k@archiver.kernel.org>; Thu, 16 Feb 2023 15:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KZC/BlcsFUFOhzOPEAo0EkE/39rjpbNj3GsysSMyiEc=; b=0AOQJecCKSE3rm
-	p9hqrwdCDQKyzqk7lVMI6X2yzJFXLMOYjTiyT18Hq+pAidPc+MhSPW7o8qoUcoQdiAt0cuWsMazwX
-	ZNJ2TVU5XvPV95gqlWubSBIHJm9D6ILo4YhlT4e0KCA113By1db1CjW+HK/cSzotW4//jcM4230Ud
-	3wK3onDrBXSZjPSebw5VBL4F7poAwJGmKYDE5xDRLdtNQJGZSgH3o4o1kV6IIAfLnP/3oljyqeaNR
-	VD+HHlsfWzuxwi7OZwYewE91SwKs081ImeDXulINsPKDcdhBe/RNWPkJaNT45Ugd796bbRt8bi6GV
-	ZOuh8QjXlpCjfIu8/x1g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Ud8Y9SQNeY7bN5qBBVNrN5iJxi/uTf3a4sMWYTxvx1o=; b=LJypQM41TcmkhB
+	OoINiFaiiu52wfBL1mR4h0/nguP6TUuYN7m0OOLKR7G/qxXyftIwzcblLT07TDy0wRuYyp8uGseSy
+	0VW4DYE5QSa5x9y9uLFr2jRQNQu9W0uXIOinoUS6cbn4nnwAhJ//B7/KnzLBksaRPFgAWYmEaop9z
+	K5RVC50tw2De3J1AzDTtpAtS8oQP6cpxeu7axxLjsvzSMvYRgc1XdyddaLdfB+CZUEM/V67R5VD3F
+	7sikoyc9ZiE81ee0ajswfmy5F14JA/87qQCAEgDkEFWeaV92HL5UmwMnw1Me/XODSe7MrZ1fUQ0YK
+	Q9TLO5tgzT+YUXV4y+Eg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSNRi-006y0D-6g; Wed, 15 Feb 2023 19:28:02 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pSg4L-00Aqdi-Of; Thu, 16 Feb 2023 15:21:09 +0000
+Received: from mga17.intel.com ([192.55.52.151])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSNRf-006xz0-MC; Wed, 15 Feb 2023 19:28:01 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5528261BD5;
-	Wed, 15 Feb 2023 19:27:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BC1C433EF;
-	Wed, 15 Feb 2023 19:27:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1676489276;
-	bh=77deFbh1kwzI95YfY2HOEGkz4OJJgjpZQiM18t9j1YI=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
-	b=JSB57JY5SU4XD8WCG/8IqtCLsJ7HbfO/vun00tY9rynBj3oPJ6WYArYWkCbtgl2nr
-	 0AAeormczFQnH6FJPmtK+g8/VcbHGc+isuOvEmxG9QdbUmPNbEhKVJ5Y+2b+LH5gwG
-	 VH/OwttOxK/59+4DGpnsOhQwLIPy2p7bZLpGt+udNODZx2H0GFaDxq3hZLzsLhBH88
-	 PVU6yGeaczNPsPWQGSODSJv7qOo3YP8FEimhEnnFNymrBBBCZZRiassuxni17U+KTb
-	 t57ZmVlyvPZj9uyb5QidTBmmK7GvzD2jPix/TWNwLW8sgbjHQGhc/mZZ29wLrVahbX
-	 pNh7VYNUZqdqg==
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-530b9a0a789so69410807b3.13;
-        Wed, 15 Feb 2023 11:27:56 -0800 (PST)
-X-Gm-Message-State: AO0yUKXavQpt0ubcotnxb+nnD1Ev7V7KGUPlcxtuRutf/HfsIqbEeW69
-	IuuoTuLKrBhCtcLV2RTQKnse6cdfstmr80y6YvE=
-X-Google-Smtp-Source: AK7set8YE4F0WC5yQ6uu/RsU32AgWOEa1eUtcJ9r+GVQcQ8y0YXMwNvjSc6L7U5wNA9mrQitnIu3TbnJLfgP1XpXIK4=
-X-Received: by 2002:a25:ab30:0:b0:8d7:814e:4e53 with SMTP id
- u45-20020a25ab30000000b008d7814e4e53mr303226ybi.564.1676489275682; Wed, 15
- Feb 2023 11:27:55 -0800 (PST)
+	id 1pSg4H-00Aqc3-50
+	for ath10k@lists.infradead.org; Thu, 16 Feb 2023 15:21:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676560865; x=1708096865;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cyoL7fYMV/lQkhP0Ld+RTqqPtQMzEcgE/MPQ2AbdTkY=;
+  b=IcaDIwFh5Y6MRgEwx1mLpm/DM5hDkZfwx3J6vMxKc2Y4O4aewxL1tAvE
+   T50VrSoUoW8mxGBduWwi2ozBDQtoYH6wBHGTrxfxuLaQXeGxqlwMOoB1p
+   t5cKwBH626Im1SIOM3kGDj2Vl5pkpUEgpldVMzsOyumqcX4m1P3vVtzD7
+   bGGYJVEhgTYzHGjm1qAsWeUnXtLYIZD1vQ8+VVybYkTLABLuOvS36eFJu
+   NPhE2btU0r4Ux9ZWqoUE3q0zn3D45B3SQDTAd2YIhYc143u/+Y6DJxi1C
+   K2nehVGBogZBI15DyBUVHUZtel1J5+hdSxAkd0daGYdsg+DWGEqi6oVjS
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="312102802"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="312102802"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 07:20:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="794055196"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="794055196"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 16 Feb 2023 07:20:34 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1pSg3g-000AJX-2l;
+	Thu, 16 Feb 2023 15:20:28 +0000
+Date: Thu, 16 Feb 2023 23:20:13 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ b1f995ddf415a846b0d705bbbec10c164fca8746
+Message-ID: <63ee49ad.ZJiv8FPuRoqikprv%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <878rgzuw37.fsf@kernel.org>
-In-Reply-To: <878rgzuw37.fsf@kernel.org>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Wed, 15 Feb 2023 14:27:44 -0500
-X-Gmail-Original-Message-ID: <CA+5PVA40QB4_5eEiQ_s0M4OSD+-Abbzr8z+YasUGasMZBxboYw@mail.gmail.com>
-Message-ID: <CA+5PVA40QB4_5eEiQ_s0M4OSD+-Abbzr8z+YasUGasMZBxboYw@mail.gmail.com>
-Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20230215
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230215_112759_848604_13EC5233 
-X-CRM114-Status: GOOD (  20.83  )
+X-CRM114-CacheID: sfid-20230216_072105_237111_C6572593 
+X-CRM114-Status: UNSURE (   4.39  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,97 +82,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Feb 15, 2023 at 4:17 AM Kalle Valo <kvalo@kernel.org> wrote:
->
-> Hi,
->
-> Here's a new pull request for ath10k and ath11k. We have new hardware
-> IPQ5018 and various updates for existing hardware. Especially many have
-> requested the firmware update for WCN6855 which seems to fix an
-> important suspend problem.
->
-> Please let me know if there are any problems.
->
-> Kalle
->
-> The following changes since commit a253a3723f8a0ee5bc5d4f551981a651ba660186:
->
->   cnm: update chips&media wave521c firmware. (2023-02-14 12:58:03 -0500)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20230215
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: b1f995ddf415a846b0d705bbbec10c164fca8746  wifi: ath: Silence memcpy run-time false positive warning
 
-Pulled and pushed out.  Thanks.
+elapsed time: 1240m
 
-josh
+configs tested: 73
+configs skipped: 3
 
->
-> for you to fetch changes up to c7a57ef688f7d99d8338a5d8edddc8836ff0e6de:
->
->   ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23 (2023-02-15 11:09:53 +0200)
->
-> ----------------------------------------------------------------
-> Kalle Valo (7):
->       ath10k: WCN3990 hw1.0: update board-2.bin
->       ath10k: QCA6174 hw3.0: update firmware-sdio-6.bin to version WLAN.RMH.4.4.1-00174
->       ath11k: IPQ5018 hw1.0: add board-2.bin
->       ath11k: IPQ5018 hw1.0: add to WLAN.HK.2.6.0.1-00861-QCAHKSWPL_SILICONZ-1
->       ath11k: WCN6750 hw1.0: update board-2.bin
->       ath11k: WCN6855 hw2.0: update board-2.bin
->       ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
->
->  WHENCE                                   |   27 +-
->  ath10k/QCA6174/hw3.0/firmware-sdio-6.bin |  Bin 604416 -> 607252 bytes
->  ath10k/WCN3990/hw1.0/board-2.bin         |  Bin 461060 -> 513892 bytes
->  ath11k/IPQ5018/hw1.0/Notice.txt          | 4094 ++++++++++++++++++++++++++++++
->  ath11k/IPQ5018/hw1.0/board-2.bin         |  Bin 0 -> 524564 bytes
->  ath11k/IPQ5018/hw1.0/m3_fw.b00           |  Bin 0 -> 148 bytes
->  ath11k/IPQ5018/hw1.0/m3_fw.b01           |  Bin 0 -> 136 bytes
->  ath11k/IPQ5018/hw1.0/m3_fw.b02           |  Bin 0 -> 262144 bytes
->  ath11k/IPQ5018/hw1.0/m3_fw.flist         |    3 +
->  ath11k/IPQ5018/hw1.0/m3_fw.mdt           |  Bin 0 -> 284 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b00           |  Bin 0 -> 532 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b01           |  Bin 0 -> 520 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b02           |  Bin 0 -> 7552 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b03           |  Bin 0 -> 545008 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b04           |  Bin 0 -> 86788 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b05           |  Bin 0 -> 17776 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b07           |  Bin 0 -> 1488 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b08           |  Bin 0 -> 4096 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b09           |  Bin 0 -> 2330624 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b10           |  Bin 0 -> 269028 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b11           |  Bin 0 -> 99436 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b13           |  Bin 0 -> 7024 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.b14           |  Bin 0 -> 1668 bytes
->  ath11k/IPQ5018/hw1.0/q6_fw.flist         |   13 +
->  ath11k/IPQ5018/hw1.0/q6_fw.mdt           |  Bin 0 -> 1052 bytes
->  ath11k/WCN6750/hw1.0/board-2.bin         |  Bin 843548 -> 843548 bytes
->  ath11k/WCN6855/hw2.0/amss.bin            |  Bin 4972544 -> 4980736 bytes
->  ath11k/WCN6855/hw2.0/board-2.bin         |  Bin 1322820 -> 6158196 bytes
->  28 files changed, 4135 insertions(+), 2 deletions(-)
->  create mode 100644 ath11k/IPQ5018/hw1.0/Notice.txt
->  create mode 100644 ath11k/IPQ5018/hw1.0/board-2.bin
->  create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.b00
->  create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.b01
->  create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.b02
->  create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.flist
->  create mode 100644 ath11k/IPQ5018/hw1.0/m3_fw.mdt
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b00
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b01
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b02
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b03
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b04
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b05
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b07
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b08
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b09
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b10
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b11
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b13
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.b14
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.flist
->  create mode 100644 ath11k/IPQ5018/hw1.0/q6_fw.mdt
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+alpha                            allyesconfig
+alpha                               defconfig
+arc                              allyesconfig
+arc                                 defconfig
+arc                  randconfig-r043-20230214
+arm                              allmodconfig
+arm                              allyesconfig
+arm                                 defconfig
+arm                  randconfig-r046-20230214
+arm64                            allyesconfig
+arm64                               defconfig
+csky                                defconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                                defconfig
+i386                 randconfig-a011-20230213
+i386                 randconfig-a012-20230213
+i386                 randconfig-a013-20230213
+i386                 randconfig-a014-20230213
+i386                 randconfig-a015-20230213
+i386                 randconfig-a016-20230213
+ia64                             allmodconfig
+ia64                                defconfig
+loongarch                        allmodconfig
+loongarch                         allnoconfig
+loongarch                           defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc64                            defconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+s390                                defconfig
+sh                               allmodconfig
+sparc                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                            allnoconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                                  kexec
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+x86_64                               rhel-8.3
+
+clang tested configs:
+hexagon              randconfig-r041-20230214
+hexagon              randconfig-r045-20230214
+i386                 randconfig-a001-20230213
+i386                 randconfig-a002-20230213
+i386                 randconfig-a003-20230213
+i386                 randconfig-a004-20230213
+i386                 randconfig-a005-20230213
+i386                 randconfig-a006-20230213
+riscv                randconfig-r042-20230214
+s390                 randconfig-r044-20230214
+x86_64               randconfig-a001-20230213
+x86_64               randconfig-a002-20230213
+x86_64               randconfig-a003-20230213
+x86_64               randconfig-a004-20230213
+x86_64               randconfig-a005-20230213
+x86_64               randconfig-a006-20230213
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
 
 _______________________________________________
 ath10k mailing list
