@@ -4,67 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0F66C636CC
-	for <ath10k@archiver.kernel.org>; Thu, 16 Feb 2023 16:21:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D13EC05027
+	for <ath10k@archiver.kernel.org>; Fri, 17 Feb 2023 18:57:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5SVaIjC90U9kNPtiE4C6qbrUSSSWtZCSToKbdRQdqaU=; b=AnHKN4rndQa6QP
-	U59vP0Xbje0fXBz/2bumH9nYLuipvDSf4ASI1rF6sHJnGu8RnzIDGva79r8iUXyyRjF+Jtbkielwn
-	drWU9YVi88gHOguR+cUKqD/dbfAoYUdDSICqiqSCKM8Y1RADNhCXbQaV9EX/nGSg8kLOe2EVAkga9
-	x8sLMOKZ1fzua076Gj1v3rWaUsPNWT1mmfJ0qJhbD3WLcMaluL+90Y7RiQFhnJbVgWgzksmXroww6
-	hUVjWil4ytlk8dZkKgxpR6TNWwPMeOk56ll+WXXsetIJSt8OKiujS/LaO3MVLqYbxVbnjvW+K9nUJ
-	lWxjkIq2SCnPmOFf3ijA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=AeNzNMcYxpV0/xl2Xht2V/3QhQuSbHTQoQ/7+AsXIYI=; b=VXWnr5nI4+vgzV
+	WaZAHwBsDnNzDvuu3s5cFdIuMOnUuMaiiZ63gVXpPJSG9b80+CbHnJ51wSIT8mm3pfnMNuZGt5rgr
+	BYDluvuvhr58qKtGauSxAUWfn34VsJ32TvhuVs5FRMwMRLlf+8Ah9E82ZjnaApbtK+7QNW9iZ0hZp
+	mRH4eOgOZ5lxb+f3NUludrbLgX2+Gswp6yqbgEWgefAD/W7mcINVvAmJJkrphN93JRJTPcN3BW1RC
+	agtthfkNGmqUMEgfS4rC8TRALrb9AMOKe44JEEr8u45VKheb/0Zg6nRWwO2zROi+ibNThEzaWWmHm
+	E27541aJ0NNCcLRFAOGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSh0U-00B9v7-E2; Thu, 16 Feb 2023 16:21:14 +0000
-Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
+	id 1pT5uv-00FQmq-OC; Fri, 17 Feb 2023 18:57:09 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSh0N-00B9qd-5p
-	for ath10k@lists.infradead.org; Thu, 16 Feb 2023 16:21:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676564467; x=1708100467;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8Qlw8s4ivl76XULQ3XSLDF3/joXHvb5hn/Bt++voT70=;
-  b=LYOJighMLQxsehQYftbsQklGOBJz3FJYR7PwHtElaGNGOslw7qtQWmxx
-   JzHcWlrZX5QoiuS+DSnhlTCiXkx5YnqokcDhaBC/O8IWCro75Pxx02ne9
-   vBe3zDv9yPCZI9/Z4Foni1cZvyQk+my2KEcaCDDcYRwgM8X54/wIfjWxz
-   sY6ix2LIKeWdX1Lb7tTfT0qKFx+dH0azFsuPSoojZMqzm2GwnEQAjwhRH
-   4+e08mlV/4ZcYSEBfwJXIZVWjE17huJ7thjPqijsQD86F0JnICmY6OKD4
-   Gi49AetVQgVAwpwHPh/+QhNSrn8aVH5IehlWRh9h8N7Ebnq+cDY9Ix0GU
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="394200322"
-X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
-   d="scan'208";a="394200322"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 07:58:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="779390443"
-X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
-   d="scan'208";a="779390443"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 16 Feb 2023 07:58:30 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pSgeT-000AKT-1A;
-	Thu, 16 Feb 2023 15:58:29 +0000
-Date: Thu, 16 Feb 2023 23:57:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- d9681d7ed0ede433efd83b4c18e423f25868dddf
-Message-ID: <63ee5274.D/gPybHwfGXZiJ7m%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+	id 1pT5ut-00FQmE-K7; Fri, 17 Feb 2023 18:57:08 +0000
+Received: by mail-ed1-x529.google.com with SMTP id ee31so9380252edb.3;
+        Fri, 17 Feb 2023 10:57:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cZK4iMZWPcfp2djDH5P0nJB7FnClrPgur4nJbLfogCk=;
+        b=bZkI+ZDXWkrlkum6pG5qrsYh7zAUJjViKF2N+coifZDNAFQzSmAVvKwhtyyithADh/
+         gSFcZmiDFt+BdovUlm1Y8dEFajX597ZLDRdjmAvuKM0VL/B7wpuZJlzYI9Ev3P4sXXEw
+         UGqFjvhk9PZBgTa3sxKf7qR++cefhVBacAGf1APiD4/fAKXnlnVdyjRMh6IqPkNS2DQm
+         ANSF8l79YXWYKzq0kvW60KEVoRRbOjNHNYEPka3FWGaThfWqCPU2/rr1R3vmrvGqfDHH
+         VnoaZqCNB1Wg/bL+bfOw2N1KlxA1DasnWSFx17kcjWKlf3OqaGWGS++BU/QxDULbV4Q1
+         psbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cZK4iMZWPcfp2djDH5P0nJB7FnClrPgur4nJbLfogCk=;
+        b=tIp/v25JCEcFeVaoe/0+2qhf60TRCt1ZAvWJeReCFUGItb/RyXxi9P+56x4maF7FGP
+         xaXEZTD8J9HOFa5e0Obaedm+JDmbF51jVbv3X3HK7a4XBvq/60yTLb/YQTmSp+1Xb+J3
+         HiY69OEstTa8QiBtuXpy+VbR6i0gW+wV+zXEhPf5xdrpCFDcJ7idMgtZfSt0urcNMBag
+         eOrXh1E++szUDZXUCkSqw2axLyncu/qaeay4QLnlyRMiB2bOf266d1KKzL/qCpBm5HW3
+         7VAmNJ4xuC98LXvsalm12X+B6JHMnUPcJlbUV2pWlHAy4opFRre0jBceydrs7nG+uPY7
+         Gygg==
+X-Gm-Message-State: AO0yUKUDfVWK2zz9WeX9xf7pTpOfZ65Tb3nGmcHYBAAsiqpfSSTLEnE5
+	poi10RDFrFEVwcWyLSSAPkY=
+X-Google-Smtp-Source: AK7set+b4J0inl8B8lYw3XAZ1JbIGLoKK4Xzv7T394iQRyeJB1n7MeyI1/ZTlH5SwHtulf0MrhSxEA==
+X-Received: by 2002:aa7:da8c:0:b0:4a2:6573:5c35 with SMTP id q12-20020aa7da8c000000b004a265735c35mr2463967eds.21.1676660224484;
+        Fri, 17 Feb 2023 10:57:04 -0800 (PST)
+Received: from shift (pd9e2966a.dip0.t-ipconnect.de. [217.226.150.106])
+        by smtp.gmail.com with ESMTPSA id j17-20020a508a91000000b004a21c9facd5sm2659347edj.67.2023.02.17.10.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Feb 2023 10:57:04 -0800 (PST)
+Received: from localhost ([127.0.0.1])
+	by shift with esmtp (Exim 4.96)
+	(envelope-from <chunkeey@gmail.com>)
+	id 1pT5s1-000HLD-2b;
+	Fri, 17 Feb 2023 19:57:03 +0100
+Message-ID: <c9ccbfe1-9535-f46c-756e-4eb19c1afbff@gmail.com>
+Date: Fri, 17 Feb 2023 19:57:03 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20230215
+Content-Language: de-DE
+To: Kalle Valo <kvalo@kernel.org>, linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org
+References: <878rgzuw37.fsf@kernel.org>
+From: Christian Lamparter <chunkeey@gmail.com>
+In-Reply-To: <878rgzuw37.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230216_082107_288446_C0A5C18A 
-X-CRM114-Status: UNSURE (   5.67  )
+X-CRM114-CacheID: sfid-20230217_105707_689266_637C7897 
+X-CRM114-Status: UNSURE (   8.68  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,108 +92,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: d9681d7ed0ede433efd83b4c18e423f25868dddf  Merge branch 'pending' into master-pending
+Hi Kalle,
 
-elapsed time: 1278m
+On 2/15/23 10:17, Kalle Valo wrote:
+> Here's a new pull request for ath10k and ath11k. We have new hardware
+> IPQ5018 and various updates for existing hardware. Especially many have
+> requested the firmware update for WCN6855 which seems to fix an
+> important suspend problem.
+> 
+> Please let me know if there are any problems.
 
-configs tested: 79
-configs skipped: 3
+Could you also please include all the QCA9888+IPQ4019 boardfiles updates
+from last year too?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-alpha                            allyesconfig
-alpha                               defconfig
-arc                              allyesconfig
-arc                                 defconfig
-arc                  randconfig-r043-20230212
-arc                  randconfig-r043-20230213
-arm                              allmodconfig
-arm                              allyesconfig
-arm                                 defconfig
-arm                  randconfig-r046-20230212
-arm64                            allyesconfig
-arm64                               defconfig
-csky                                defconfig
-i386                             allyesconfig
-i386                              debian-10.3
-i386                                defconfig
-i386                 randconfig-a011-20230213
-i386                 randconfig-a012-20230213
-i386                 randconfig-a013-20230213
-i386                 randconfig-a014-20230213
-i386                 randconfig-a015-20230213
-i386                 randconfig-a016-20230213
-ia64                             allmodconfig
-ia64                                defconfig
-loongarch                        allmodconfig
-loongarch                         allnoconfig
-loongarch                           defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-mips                             allmodconfig
-mips                             allyesconfig
-nios2                               defconfig
-parisc                              defconfig
-parisc64                            defconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                randconfig-r042-20230213
-riscv                          rv32_defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-s390                                defconfig
-s390                 randconfig-r044-20230213
-sh                               allmodconfig
-sparc                               defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                            allnoconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64               randconfig-a011-20230213
-x86_64               randconfig-a012-20230213
-x86_64               randconfig-a013-20230213
-x86_64               randconfig-a014-20230213
-x86_64               randconfig-a015-20230213
-x86_64               randconfig-a016-20230213
-x86_64                               rhel-8.3
-
-clang tested configs:
-arm                  randconfig-r046-20230213
-hexagon              randconfig-r041-20230212
-hexagon              randconfig-r041-20230213
-hexagon              randconfig-r045-20230212
-hexagon              randconfig-r045-20230213
-i386                 randconfig-a001-20230213
-i386                 randconfig-a002-20230213
-i386                 randconfig-a003-20230213
-i386                 randconfig-a004-20230213
-i386                 randconfig-a005-20230213
-i386                 randconfig-a006-20230213
-riscv                randconfig-r042-20230212
-s390                 randconfig-r044-20230212
-x86_64               randconfig-a001-20230213
-x86_64               randconfig-a002-20230213
-x86_64               randconfig-a003-20230213
-x86_64               randconfig-a004-20230213
-x86_64               randconfig-a005-20230213
-x86_64               randconfig-a006-20230213
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Cheers,
+Christian
 
 _______________________________________________
 ath10k mailing list
