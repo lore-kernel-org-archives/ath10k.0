@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A8B2C636CC
-	for <ath10k@archiver.kernel.org>; Mon, 20 Feb 2023 09:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DB77C05027
+	for <ath10k@archiver.kernel.org>; Mon, 20 Feb 2023 16:05:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=klQef+f33+9grbpHl1lX4nDSSaQFNh2VvZxrD4ssj6I=; b=4W5H07ntn2DHKz
-	HhbX/tOYebJHU9yuaS1g+EBw13wDhUWrfR0OGpIDcNBwL8lGXJKKyASqckAeG9CkeD8K9+PYZw/hI
-	BW1fzcfeauD+0NCvcVOfWYvYFjiC41kVmQ0BOEkrxTnjNbRrp26lrfw/W3I3KkuJrz4PBwMhdR+++
-	oytcx6did5Y7NpsTiiDw1n2s4jTl9Wd5of2ca5QupLAebdP0Q+MdJfb20kjgptwDe6M9wmHMf7gXa
-	Br64PwZFlcQrIs/IdpVv+O9ue9jtAYQZ+2J/yZtTMIQfqDHgbDQcUTgFIR4YfHURTpZAd2xsA2t4m
-	MqOpyVkHz9VyZ/ux+o7w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Subject:Message-ID:To:From:Date:Reply-To:Cc:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=9eyAHcPfaMuovmhvz7Sh9FmLgvDrr0sy/KgGi3eaF6g=; b=yG13urfQyoIAyjw8kwwcqhEyPZ
+	7VRZBvcFOT5TMNBsqvG3NDjbPtb+C1OZnICe/QboPxrVpNRViYkxRHk29OxNhopfIBQUJSD1d8ZTg
+	kdQOOQG9jWxAuF4xKs3JqX6/aI6JT4+bnbbSaPDkWQd7QEi+nr2ymBahmZKXxsdwClsq43sPgny6F
+	H+haGgQZXK7yTAJIt0ZFYtH28RmvxmUsKOtGVK83+lVOIGdQiWrrLzcYEXt0MH3x2tdO+gF92dsOE
+	N39VhWvutnIzYG3dEjswmJYc+MbCml2t96ijM1PqJFxD0QihOCtrFfpXqEmSoeHv86omHY7rfEDuO
+	r8klCwRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pU2rm-003Ypi-2e; Mon, 20 Feb 2023 09:53:50 +0000
-Received: from mail-yw1-x112b.google.com ([2607:f8b0:4864:20::112b])
+	id 1pU8ei-004paa-N2; Mon, 20 Feb 2023 16:04:44 +0000
+Received: from mail-qt1-x82c.google.com ([2607:f8b0:4864:20::82c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pU2rh-003Yod-Jj
-	for ath10k@lists.infradead.org; Mon, 20 Feb 2023 09:53:48 +0000
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-536aa45367eso14453887b3.13
-        for <ath10k@lists.infradead.org>; Mon, 20 Feb 2023 01:53:43 -0800 (PST)
+	id 1pU8ee-004pZW-V5
+	for ath10k@lists.infradead.org; Mon, 20 Feb 2023 16:04:42 +0000
+Received: by mail-qt1-x82c.google.com with SMTP id h16so991604qta.8
+        for <ath10k@lists.infradead.org>; Mon, 20 Feb 2023 08:04:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wOWqn+EAZZ7317oUrwJbDkD6fh11WKF6IR6078s/7WA=;
-        b=C5teJZbQONCsIOB7m95k7jDdFnGVQ8naBFmRn/Yo1vSkMj+oGLgej+3+l6EkEQPLv/
-         3D2gCBwbofhplqppytAt/Do0xQq5AmDuSe5DQqoETdzkVebMMPomOP+J5KEfWP0+NPby
-         uR4oW97Yy4hSec1DPhjNE4opOey3nJJRyE8MxVzhilxVGm/nVllDejDa6TQdwFq2sc5D
-         n8lk4yAnun1mBMqRHBjWCaf0ZB1h1ubfQ5KdhTh1LTRCrt4pyEmsRAvdpfsg3bXSBkTa
-         pWejfSl3M6TqGiD+ej+Rv8C/ZZJrepcdxFdSyiCBGxn50Z2+/pextqxrIehlW/xk/06/
-         XXJw==
+        d=gmail.com; s=20210112; t=1676909079;
+        h=mime-version:subject:message-id:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Fy2VQhm37C5Dv3nnU9BZUH855/QBh9EBPfOzKkcBc6E=;
+        b=m5lbHMYH4qiozZgU00bc4jLkcaalGTVpUKJOmkUJEBFcBm0DaUV2EDUiLWu+OCWQ5X
+         /1XDiLJuJZ6FBzgchKe/QWYCK7y+/1JSYaBCMpSpxRPjAi6xdNm7oGTYeZTm8zO98ZQe
+         W5ejz/qw8X9zIiEJsMGGQ/0g8mGP9Cnk5bCNjUjh7tcYMT+AURxYCcw8qrG/E3ae73xh
+         zVND7QEtKDRcO5tqeBbNCBHO9NQ9ZX9OY7/bVv5eZczPT64q2TOpXJ9X0DLbb0COrlzB
+         XEA+tHvwzsZlQsXJkGoZkudoNNw1uITSCWwGMiv5FcwXSx/GfVcGcWjCmaORnrxscSeQ
+         Cu7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wOWqn+EAZZ7317oUrwJbDkD6fh11WKF6IR6078s/7WA=;
-        b=4OrIwEl7I5bI68foDQotT5GHAKK3WjV6XDP4ABG/QCMefyi21AK+12KhJtnYOmV+Cl
-         WVyvzOTl4jWTOoe4UYVJ4BXNRI4u/wllh3LlQHDNenWmztNLQc67UQ+zUaFRvoJ7GTSn
-         qgECQ5qF+nkjRe0fWxaH1KztnRyaSt8//7OrdG7JLazd0l9egmIGq9LtRRo3nbMqS/Aq
-         dHn4SYMG15afD5pVVeslQ5/hohzqrByL8x+Z7c0Nyg66R637EGQFl6yowF69KfzCHjyV
-         4InrPZupeJBRD6Vl1YD/R9MAtQfiY51zjscgukEg9KXdqSuEUSBKyNcG06CuNjdR52Ia
-         O7DA==
-X-Gm-Message-State: AO0yUKUeOpCRE3SJaC/Hlh1nbu1ATTbPeUE5FpCU0Q7KRU5KJZi9r7VJ
-	MxSL5VJZiapNniY6JPucLD5JVPgtkH3BN899d67fBg==
-X-Google-Smtp-Source: AK7set/2dwXd27/U0AMPCISzGm1O92AqYnl1I5+rauxbdw0/k5w5/se5XXm5tw7BKylzYbe6fJl/WoCPFr2mH7EUQXo=
-X-Received: by 2002:a0d:c185:0:b0:527:3e8:5bab with SMTP id
- c127-20020a0dc185000000b0052703e85babmr358791ywd.306.1676886822812; Mon, 20
- Feb 2023 01:53:42 -0800 (PST)
+        d=1e100.net; s=20210112; t=1676909079;
+        h=mime-version:subject:message-id:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fy2VQhm37C5Dv3nnU9BZUH855/QBh9EBPfOzKkcBc6E=;
+        b=zE/ie4k0xm6z5vETmcw2gk5E2Qr5sSsxlmgzRw/BfkvqMx0A3y2izAF8oUyKwt1ILw
+         xOWhM6d9md2h3CGPezNVpEDfn9NsGfQGLLFt8aqjGjhU+IoR4t+IWWu3DCPj8yr4vysu
+         zHvBcxwwsqBlNtkgZGxj7Hs/I8wyEfrCoAE2iXAG7iN4TK70xLIfrSBI6tTotd1ssZ80
+         2F8KrIMdxLCd6e5zw9R48vI3gw5hItmC5l4XYMxu8y3PCfYlg0TvJTonZyt88ZH+vwfC
+         B8bvXJ01CGesUxw31mfyJNDa1iLluFRzmK+BWNXtVxN4auFqCjomuPLmc0Q4bhp0ee2E
+         KW7Q==
+X-Gm-Message-State: AO0yUKXMmsMJaLeCxOhdNAo0hSJjKX13/5pp0efSQA4Ap1LeWvjMVz5l
+	gzFD0l70AiDZcqXyWvhng+an7O9Lie8=
+X-Google-Smtp-Source: AK7set9tqkcbc/vB1yzOH4q0yd08TLhLzlWsYuuJxQzFV+K9Ad2DU75LnntoxqrOBucbcuOvCqaPrw==
+X-Received: by 2002:a05:622a:19a6:b0:3b8:6bef:61df with SMTP id u38-20020a05622a19a600b003b86bef61dfmr3990626qtc.6.1676909079641;
+        Mon, 20 Feb 2023 08:04:39 -0800 (PST)
+Received: from boobie.home (c-24-147-218-101.hsd1.ct.comcast.net. [24.147.218.101])
+        by smtp.gmail.com with ESMTPSA id k5-20020ac80205000000b003b86d3ca969sm6972875qtg.51.2023.02.20.08.04.39
+        for <ath10k@lists.infradead.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES256-GCM-SHA384 bits=256/256);
+        Mon, 20 Feb 2023 08:04:39 -0800 (PST)
+Date: Mon, 20 Feb 2023 11:04:38 -0500 (EST)
+From: Ameer Antar <antfarmer@gmail.com>
+To: ath10k@lists.infradead.org
+Message-ID: <812264853.5.1676909078999@boobie.home>
+Subject: ath10k rx ring corrupted on QCA9984
 MIME-Version: 1.0
-References: <CAA8EJpqrHuTaN-bB6XoB7ZWNvfggNtMts3bBQwqMH8RpO1E3QQ@mail.gmail.com>
- <81448efc-5b77-5022-5b9f-3b5188509068@linaro.org> <875ybw513n.fsf@kernel.org>
-In-Reply-To: <875ybw513n.fsf@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 20 Feb 2023 11:53:32 +0200
-Message-ID: <CAA8EJpr4C=Rvq_uUVdC00KX70DMLcWHWuFOYfNn=fXzHdfXasg@mail.gmail.com>
-Subject: Re: ath10k-firmware: WCN3990: Add board file for the Lenovo Yoga C630 laptop
-To: Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org, 
-	"open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_3_665840272.1676909078998"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230220_015345_685040_8B17BED7 
-X-CRM114-Status: GOOD (  13.35  )
+X-CRM114-CacheID: sfid-20230220_080441_021064_0CA31EAD 
+X-CRM114-Status: UNSURE (   6.77  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,36 +82,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, 20 Feb 2023 at 07:59, Kalle Valo <kvalo@kernel.org> wrote:
->
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
->
-> > On 07/10/2022 15:22, Dmitry Baryshkov wrote:
-> >> We'd like to ask for inclusion of the board file for the Lenovo Yoga
-> >> C630 laptop. It is
-> >> a WfA laptop using the Snapdragon SDM850 SoC.
-> >
-> > I noticed that you've updated the WCN3990's board-2.bin, but this file
-> > was not included. Are there any issues with the submission?
->
-> It's just that I haven't processed the pending ath10k board file
-> submissions from the list yet, I do it quite infrequently.
+------=_Part_3_665840272.1676909078998
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_4_1845107913.1676909078998"
 
-Ack, thanks. I saw an update of wcn3990's board file in linux-firmware
-and thus I wondered, what happened with this submission. Please excuse
-me then.
+------=_Part_4_1845107913.1676909078998
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Hi, I have a QCA9984 chipset mpcie card (Compex WLE1216V5-20) running in AP=
+ mode and occasionally crashes with the following message:
 
--- 
-With best wishes
-Dmitry
+ath10k_pci 0000:08:00.0: rx ring became corrupted: -5
+
+I found the section in 'htt_rx.c' which has a FIXME tag saying the device s=
+hould be rebooted. Is there an example of this in any other place? I'd like=
+ to submit a patch, but don't know where to start.
+
+Thanks for any help.
+------=_Part_4_1845107913.1676909078998--
+
+------=_Part_3_665840272.1676909078998
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+------=_Part_3_665840272.1676909078998--
+
