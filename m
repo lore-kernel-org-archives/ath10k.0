@@ -4,68 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE9FDC64ED6
-	for <ath10k@archiver.kernel.org>; Tue, 28 Feb 2023 02:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E278C64ED6
+	for <ath10k@archiver.kernel.org>; Wed,  1 Mar 2023 08:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/AUIGAS7stNjiaNcmdT6su6YxLR9IUa77ht+Xckp4R4=; b=zmrQZNS05a0CZv
-	ZgADIO20cGbPdNz016scXP8eVU9UVt09QrbvO102by6CyHKRp8I9D6YrX+ZmZkyRPGIs2nwu/SETn
-	EfQ32uofxesIHdQjRNw+iGQInmUjabAEET1cvZGquuJ+xpSclYDDikmjVylWuJLRrdhhBQ8zA9wyM
-	n6nfttJuUOCuaazvJS7Culxz63W8s3gsjZc4Sv17C+V/dj0R8usW7/AxtRR1pg5ERHroFkdGvTXV5
-	itUzrYnRf4Ye7pew9Cj/vq4ri+HAGAa7lRhg2HFKw86o05mXc34Xqct28f8EtH0MFepNQ2W4boK1B
-	M3xC3xIWUKse49OwKIIw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+OHR8BLaUmhhtKOcURXuTCCDfxmd27E2svUKkh2Pvvc=; b=1c2THnZpJUdqAN
+	+NcIhIUxs3ghNMgAw+MmmkD8NpWCmGHfv+lOlu0jp+eg+LD8LjsBm4L1RftHUGB4S/gqU6bAd2SY1
+	8+WdNywAPvYonWMV+2Sa7Q1EJJ+DVE44WerDN25y5j4sj03NstgprfZQ1MziBGhlFaUEPw7ix5BRT
+	JYtz1q3b4h2NxLjayp5L9xeX0oBxjmgVJf0aB5vd/f1L8jqyjeMrmFlG7rYtWfHiF4SJ2PUf3l9AP
+	mdQW7snEgi4oo4iMUE5jC+CqOZYM3KhB8JOtLBDrg/mvoR+m+MAwiQEEqPxSSgohod6V3jpjAFLsb
+	pmKl2JnKZb+Bk+A0ixJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pWpnz-00BpOK-7R; Tue, 28 Feb 2023 02:33:27 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1pXHf0-00FR66-Ru; Wed, 01 Mar 2023 08:18:02 +0000
+Received: from mx1.tq-group.com ([93.104.207.81])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pWpnv-00BpNY-Ad
-	for ath10k@lists.infradead.org; Tue, 28 Feb 2023 02:33:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677551603; x=1709087603;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=LogUcP+C6Qew87H17CWkMtQYVtWmHtxFJYHW5jFlu6c=;
-  b=YgeAOnF9sg6JITZiRcS1a2uboEiDWSWqQaW7GveZvO5zV58agCuU0Fai
-   qaSeTqnM6pjeS6CaRa8DuVYjHf0CJqJ858rh8veILxnBjvD4+Gn6SSAbH
-   QceTRxSQPdicKzI8+HCBx5wcH50af5IbKjQZbHwWO7lsKc3P60eRnKEJS
-   1XiKH4sNaj/+CSsVKYpGnerBbV9kYMoXr1XllDe6VsVFz2q+4CMEbQ6De
-   2VR65HzekdmGWAmghw2qpxJPXJBOQ51YeO5JkL4a4urIE0NE1YygXgg1q
-   T+Ji3xPUmzDZm3c4DICFnQm0busY8AegMPaTV7mXv6vnueeh2ChqRThkh
+	id 1pXHew-00FR3V-94
+	for ath10k@lists.infradead.org; Wed, 01 Mar 2023 08:18:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1677658678; x=1709194678;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FWeHY8fcd0cSFhXWZizDGcsqg2Tv5UalzCBsb0/6y80=;
+  b=NjYiJEGH2EwIOuEEKLYwlK4fXIor2PFjGvhCxDx3evc9grlKOfwb2QxQ
+   G9xbzOIk56AoWO+FiRzNbZ33wNMeMBf84/02x22PJV+/McCPHWz7I/yzw
+   +9FExOJQVrQm5TLEyHo0NfBX+ByKIlsYy58y8cP29mpeAhWmtqnSkssT7
+   Xsk7gsqaLDBos7qQ+KhcSvP/Vd+/jYJgIeZIIutDmDfHR22Gej96pnRXw
+   /793XMR1T4ywQFqlVl2HUQmY7iirW3PDpCUZUA5YPlzqgW264nRNUhrny
+   UfU8jWJ1tW843LZZK6lLKfC88sSd8P0LZ34l6jX+fVNqiIznY5bBmND28
    Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10634"; a="332753494"
-X-IronPort-AV: E=Sophos;i="5.98,220,1673942400"; 
-   d="scan'208";a="332753494"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2023 18:33:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10634"; a="783646612"
-X-IronPort-AV: E=Sophos;i="5.98,220,1673942400"; 
-   d="scan'208";a="783646612"
-Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 27 Feb 2023 18:33:13 -0800
-Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pWpnk-00050V-22;
-	Tue, 28 Feb 2023 02:33:12 +0000
-Date: Tue, 28 Feb 2023 10:33:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 6fda96b511694e387b7112f2c268d0adab480e3d
-Message-ID: <63fd67e3.YBq+V/l1+tCXXTVb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+X-IronPort-AV: E=Sophos;i="5.98,224,1673910000"; 
+   d="scan'208";a="29386920"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 01 Mar 2023 09:17:53 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 01 Mar 2023 09:17:53 +0100
+X-PGP-Universal: processed;
+	by tq-pgp-pr1.tq-net.de on Wed, 01 Mar 2023 09:17:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1677658673; x=1709194673;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FWeHY8fcd0cSFhXWZizDGcsqg2Tv5UalzCBsb0/6y80=;
+  b=kZhKxr2QOBN2csBA+goakWFRKF/A9T46K1hKy1/8Z0U0/u6xAh8UfOcB
+   I2WNX/82iVZcqbMnj12R84pirzVH5PPJE0jYTrBRD0mFuv/RDoAQwNR7S
+   c0djQ+XxTvuQt+U6mzoZjohZNAt5f/79wNE68DzEhlvgn2j6Ii5GBNEi9
+   8U3mGLUQWPSWf7OfKms7Nbtw+kQDJeTlXAzQj4HgVmC50kwehLjcXm5wI
+   NOCVjNWBLyl9cGSnFhhe9mOlRkLmx4nc8LAQ9mXsJh0V7POvXZ6b+iptq
+   1zyD10DyKpsKigiEcznoQwcZ9vFYCtPAuYrE861Pmk/+m85hzqmwe82fu
+   A==;
+X-IronPort-AV: E=Sophos;i="5.98,224,1673910000"; 
+   d="scan'208";a="29386919"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 01 Mar 2023 09:17:52 +0100
+Received: from steina-w.localnet (unknown [10.123.53.21])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 6BDB8280056;
+	Wed,  1 Mar 2023 09:17:52 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Matthias Kaehlcke <mka@chromium.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Stanimir Varbanov <svarbanov@mm-sol.com>, linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v1 00/15] create power sequencing subsystem
+Date: Wed, 01 Mar 2023 09:17:50 +0100
+Message-ID: <10237323.nUPlyArG6x@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <CAA8EJppuGbDGb1D-yf2WL77U1bqx1QQStQeDArWmGFCUiOtnww@mail.gmail.com>
+References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org> <Y0hr9XTGAg8Q6K6y@google.com> <CAA8EJppuGbDGb1D-yf2WL77U1bqx1QQStQeDArWmGFCUiOtnww@mail.gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230227_183323_414481_C361B32B 
-X-CRM114-Status: UNSURE (   6.23  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230301_001758_738030_AF15A3BF 
+X-CRM114-Status: GOOD (  37.21  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,158 +93,130 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 6fda96b511694e387b7112f2c268d0adab480e3d  Merge branch 'ath-next' into ath-qca
+Hi,
 
-elapsed time: 821m
+sorry for being late to the party.
 
-configs tested: 131
-configs skipped: 11
+Am Mittwoch, 19. Oktober 2022, 08:03:22 CET schrieb Dmitry Baryshkov:
+> Ho,
+> =
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> On Thu, 13 Oct 2022 at 22:50, Matthias Kaehlcke <mka@chromium.org> wrote:
+> > Do you still plan to refresh this series?
+> > =
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha        buildonly-randconfig-r003-20230226   gcc  
-alpha        buildonly-randconfig-r003-20230227   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r002-20230227   gcc  
-alpha                randconfig-r006-20230227   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r043-20230226   gcc  
-arc                  randconfig-r043-20230227   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm          buildonly-randconfig-r006-20230226   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r023-20230226   gcc  
-arm                  randconfig-r024-20230227   clang
-arm                  randconfig-r046-20230226   gcc  
-arm                  randconfig-r046-20230227   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r021-20230226   clang
-arm64                randconfig-r026-20230227   gcc  
-arm64                randconfig-r031-20230227   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r011-20230227   gcc  
-csky                 randconfig-r036-20230226   gcc  
-hexagon      buildonly-randconfig-r004-20230227   clang
-hexagon              randconfig-r013-20230226   clang
-hexagon              randconfig-r015-20230226   clang
-hexagon              randconfig-r041-20230226   clang
-hexagon              randconfig-r041-20230227   clang
-hexagon              randconfig-r045-20230226   clang
-hexagon              randconfig-r045-20230227   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-a001-20230227   clang
-i386                 randconfig-a002-20230227   clang
-i386                 randconfig-a003-20230227   clang
-i386                 randconfig-a004-20230227   clang
-i386                 randconfig-a005-20230227   clang
-i386                 randconfig-a006-20230227   clang
-i386                 randconfig-a011-20230227   gcc  
-i386                 randconfig-a012-20230227   gcc  
-i386                 randconfig-a013-20230227   gcc  
-i386                 randconfig-a014-20230227   gcc  
-i386                 randconfig-a015-20230227   gcc  
-i386                 randconfig-a016-20230227   gcc  
-i386                 randconfig-r023-20230227   gcc  
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r001-20230226   gcc  
-ia64                 randconfig-r022-20230227   gcc  
-ia64                 randconfig-r024-20230226   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch    buildonly-randconfig-r002-20230226   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r003-20230226   gcc  
-loongarch            randconfig-r011-20230226   gcc  
-loongarch            randconfig-r031-20230226   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r013-20230227   gcc  
-m68k                 randconfig-r016-20230227   gcc  
-microblaze           randconfig-r025-20230226   gcc  
-microblaze           randconfig-r035-20230226   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r014-20230227   clang
-nios2                               defconfig   gcc  
-nios2                randconfig-r002-20230226   gcc  
-openrisc             randconfig-r004-20230226   gcc  
-openrisc             randconfig-r022-20230226   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r005-20230227   gcc  
-parisc               randconfig-r015-20230227   gcc  
-parisc               randconfig-r034-20230226   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r001-20230227   clang
-powerpc              randconfig-r006-20230226   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r034-20230227   clang
-riscv                randconfig-r036-20230227   clang
-riscv                randconfig-r042-20230226   clang
-riscv                randconfig-r042-20230227   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r001-20230227   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230226   clang
-s390                 randconfig-r044-20230227   gcc  
-sh                               allmodconfig   gcc  
-sh           buildonly-randconfig-r001-20230226   gcc  
-sh                   randconfig-r004-20230227   gcc  
-sh                   randconfig-r012-20230226   gcc  
-sh                   randconfig-r025-20230227   gcc  
-sh                   randconfig-r032-20230227   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r016-20230226   gcc  
-sparc                randconfig-r026-20230226   gcc  
-sparc64      buildonly-randconfig-r005-20230227   gcc  
-sparc64              randconfig-r033-20230227   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r006-20230227   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230227   clang
-x86_64               randconfig-a002-20230227   clang
-x86_64               randconfig-a003-20230227   clang
-x86_64               randconfig-a004-20230227   clang
-x86_64               randconfig-a005-20230227   clang
-x86_64               randconfig-a006-20230227   clang
-x86_64               randconfig-a011-20230227   gcc  
-x86_64               randconfig-a012-20230227   gcc  
-x86_64               randconfig-a013-20230227   gcc  
-x86_64               randconfig-a014-20230227   gcc  
-x86_64               randconfig-a015-20230227   gcc  
-x86_64               randconfig-a016-20230227   gcc  
-x86_64               randconfig-r035-20230227   clang
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r002-20230227   gcc  
-xtensa               randconfig-r033-20230226   gcc  
+> > I know there have been multiple attempts to get something similar
+> > landed in the past 10 year or so. Your series didn't seem to get
+> > much pushback from maintainers, might be worth sending a refresh :)
+> =
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+> Yes, I hope to return to it eventually. I just had no time for it lately.
+
+I just found this thread while searching for power sequencing devices in =
+
+Linux. From what I understand this is transforming the existing mmc pwrseq =
+
+drivers into generic ones. What is the intention of this new subsystem? Wha=
+t =
+
+is it supposed to address?
+In my case I have an LTE module attached via USB, but in order to use it I =
+
+need to perform several steps:
+1. apply power supply
+2. Issue a reset pulse(!), the length actually defines whether its a reset =
+or =
+
+poweroff/on
+3a. wait for a GPIO to toggle
+3b. wait a minimum time
+4a. device will enumerate on USB
+4b. device can be access using UART
+
+This is something required to actually see/detect the device in the first =
+
+place, thus it cannot be part of the device driver side.
+Is this something pwrseq is supposed to address?
+
+Best regards,
+Alexander
+
+> > On Wed, Oct 06, 2021 at 06:53:52AM +0300, Dmitry Baryshkov wrote:
+> > > This is a proposed power sequencer subsystem. This is a
+> > > generification of the MMC pwrseq code. The subsystem tries to abstract
+> > > the idea of complex power-up/power-down/reset of the devices.
+> > > =
+
+> > > The primary set of devices that promted me to create this patchset is
+> > > the Qualcomm BT+WiFi family of chips. They reside on serial+platform
+> > > or serial + SDIO interfaces (older generations) or on serial+PCIe (ne=
+wer
+> > > generations).  They require a set of external voltage regulators to be
+> > > powered on and (some of them) have separate WiFi and Bluetooth enable
+> > > GPIOs.
+> > > =
+
+> > > The major drawback for now is the lack of proper PCIe integration
+> > > At this moment support for PCIe is hacked up to be able to test the
+> > > PCIe part of qca6390. Proper PCIe support would require automatically
+> > > powering up the devices before the scan basing on the proper device
+> > > structure in the device tree. This two last patches are noted as WIP =
+and
+> > > are included into the patchset for the purpose of testing WiFi on new=
+er
+> > > chips (like qca6390/qca6391).
+> > > =
+
+> > > Changes since RFC v2:
+> > >  - Add documentation for the pwrseq code. Document data structures,
+> > >  =
+
+> > >    macros and exported functions.
+> > >  =
+
+> > >  - Export of_pwrseq_xlate_onecell()
+> > >  - Add separate pwrseq_set_drvdata() function to follow the typical A=
+PI
+> > >  =
+
+> > >    design
+> > >  =
+
+> > >  - Remove pwrseq_get_optional()/devm_pwrseq_get_optional()
+> > >  - Moved code to handle old mmc-pwrseq binding to the MMC patch
+> > >  - Split of_pwrseq_xlate_onecell() support to a separate patch
+> > > =
+
+> > > Changes since RFC v1:
+> > >  - Provider pwrseq fallback support
+> > >  - Implement fallback support in pwrseq_qca.
+> > >  - Mmove susclk handling to pwrseq_qca.
+> > >  - Significantly simplify hci_qca.c changes, by dropping all legacy
+> > >  =
+
+> > >    code. Now hci_qca uses only pwrseq calls to power up/down bluetooth
+> > >    parts of the chip.
+> > > =
+
+> > > _______________________________________________
+> > > ath10k mailing list
+> > > ath10k@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/ath10k
+
+
+-- =
+
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
+
 
 _______________________________________________
 ath10k mailing list
