@@ -4,84 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E278C64ED6
-	for <ath10k@archiver.kernel.org>; Wed,  1 Mar 2023 08:18:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAEC7C7EE30
+	for <ath10k@archiver.kernel.org>; Wed,  1 Mar 2023 09:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+OHR8BLaUmhhtKOcURXuTCCDfxmd27E2svUKkh2Pvvc=; b=1c2THnZpJUdqAN
-	+NcIhIUxs3ghNMgAw+MmmkD8NpWCmGHfv+lOlu0jp+eg+LD8LjsBm4L1RftHUGB4S/gqU6bAd2SY1
-	8+WdNywAPvYonWMV+2Sa7Q1EJJ+DVE44WerDN25y5j4sj03NstgprfZQ1MziBGhlFaUEPw7ix5BRT
-	JYtz1q3b4h2NxLjayp5L9xeX0oBxjmgVJf0aB5vd/f1L8jqyjeMrmFlG7rYtWfHiF4SJ2PUf3l9AP
-	mdQW7snEgi4oo4iMUE5jC+CqOZYM3KhB8JOtLBDrg/mvoR+m+MAwiQEEqPxSSgohod6V3jpjAFLsb
-	pmKl2JnKZb+Bk+A0ixJw==;
+	List-Owner; bh=K1cyQ/OtxKFCRgNmGD+FdJvNi6R/mBsP/VkkYauDPfQ=; b=4StCkCaKlO95Zb
+	jt1OBjwONHSf7KE3jfzb2v4LOjZDTj/SYaOyi/ybSDUIRdjWW6vy9ERc+avmQah7O7SilBeY/vC/i
+	UC3VLYMWKNvnA7CPDV9NO3ntr9B66oZNK58dgqXvCsWmQ2NDelJ5gytsB6oxqYj5amhdqfDvrS2ny
+	zVOqTkksNA6LZ0NDCgcyLeyvZys1zEccTwUI39Ed/MyEOIpURQF6UoonUzLU1QGPtyL0rQLrAwI3H
+	eRQHYolEzwgLsbFnRK0BehtL6Pbg2Fq+zDsPoW2dLGTPAeTP+RLBSo84DDNPT+7C92lONgdmYrvgJ
+	Y8pD+AXUewDdkvzrcK2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXHf0-00FR66-Ru; Wed, 01 Mar 2023 08:18:02 +0000
-Received: from mx1.tq-group.com ([93.104.207.81])
+	id 1pXIN0-00FVBj-4z; Wed, 01 Mar 2023 09:03:30 +0000
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXHew-00FR3V-94
-	for ath10k@lists.infradead.org; Wed, 01 Mar 2023 08:18:01 +0000
+	id 1pXIMw-00FVBH-Mi
+	for ath10k@lists.infradead.org; Wed, 01 Mar 2023 09:03:28 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id cp7-20020a17090afb8700b0023756229427so16561086pjb.1
+        for <ath10k@lists.infradead.org>; Wed, 01 Mar 2023 01:03:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1677658678; x=1709194678;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FWeHY8fcd0cSFhXWZizDGcsqg2Tv5UalzCBsb0/6y80=;
-  b=NjYiJEGH2EwIOuEEKLYwlK4fXIor2PFjGvhCxDx3evc9grlKOfwb2QxQ
-   G9xbzOIk56AoWO+FiRzNbZ33wNMeMBf84/02x22PJV+/McCPHWz7I/yzw
-   +9FExOJQVrQm5TLEyHo0NfBX+ByKIlsYy58y8cP29mpeAhWmtqnSkssT7
-   Xsk7gsqaLDBos7qQ+KhcSvP/Vd+/jYJgIeZIIutDmDfHR22Gej96pnRXw
-   /793XMR1T4ywQFqlVl2HUQmY7iirW3PDpCUZUA5YPlzqgW264nRNUhrny
-   UfU8jWJ1tW843LZZK6lLKfC88sSd8P0LZ34l6jX+fVNqiIznY5bBmND28
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.98,224,1673910000"; 
-   d="scan'208";a="29386920"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 01 Mar 2023 09:17:53 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 01 Mar 2023 09:17:53 +0100
-X-PGP-Universal: processed;
-	by tq-pgp-pr1.tq-net.de on Wed, 01 Mar 2023 09:17:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1677658673; x=1709194673;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FWeHY8fcd0cSFhXWZizDGcsqg2Tv5UalzCBsb0/6y80=;
-  b=kZhKxr2QOBN2csBA+goakWFRKF/A9T46K1hKy1/8Z0U0/u6xAh8UfOcB
-   I2WNX/82iVZcqbMnj12R84pirzVH5PPJE0jYTrBRD0mFuv/RDoAQwNR7S
-   c0djQ+XxTvuQt+U6mzoZjohZNAt5f/79wNE68DzEhlvgn2j6Ii5GBNEi9
-   8U3mGLUQWPSWf7OfKms7Nbtw+kQDJeTlXAzQj4HgVmC50kwehLjcXm5wI
-   NOCVjNWBLyl9cGSnFhhe9mOlRkLmx4nc8LAQ9mXsJh0V7POvXZ6b+iptq
-   1zyD10DyKpsKigiEcznoQwcZ9vFYCtPAuYrE861Pmk/+m85hzqmwe82fu
-   A==;
-X-IronPort-AV: E=Sophos;i="5.98,224,1673910000"; 
-   d="scan'208";a="29386919"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 01 Mar 2023 09:17:52 +0100
-Received: from steina-w.localnet (unknown [10.123.53.21])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 6BDB8280056;
-	Wed,  1 Mar 2023 09:17:52 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Matthias Kaehlcke <mka@chromium.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Stanimir Varbanov <svarbanov@mm-sol.com>, linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v1 00/15] create power sequencing subsystem
-Date: Wed, 01 Mar 2023 09:17:50 +0100
-Message-ID: <10237323.nUPlyArG6x@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <CAA8EJppuGbDGb1D-yf2WL77U1bqx1QQStQeDArWmGFCUiOtnww@mail.gmail.com>
-References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org> <Y0hr9XTGAg8Q6K6y@google.com> <CAA8EJppuGbDGb1D-yf2WL77U1bqx1QQStQeDArWmGFCUiOtnww@mail.gmail.com>
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7kLFJAEhf38Z91ErKT+SpxGk8u9CKv5JjAsWvmwSh1U=;
+        b=kFV6gWvUnLZUgZ3rx1fWN6XsMVZGaOvEhSfcLg/s8cO8hXYZcsfYyMQVpM1nPe0baw
+         9ArjHkD/rTNKS5uasdrwh9EyO2HLnFSdTwYbjkFKAu3WyoU4IHt3Tz34CYydA9oO369D
+         BObp7hV6riaekilNuiKshaOLfMCvvMGnhgoDEztu+nfov0YCkeX/+HL/23Yn7jAZ8k5x
+         NMf4axghp3wg1SxSNbK2DtkVk61xSTsSv7ln/oLuupE6mXwtZ4StRepp85j7sHIy6sLP
+         gDU3wf3dZ189e0zn3+AZIZ/STcotbaSfkInW+N3RhCLw3z5qel277LPsO3bAKE4Pkh8k
+         BMvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7kLFJAEhf38Z91ErKT+SpxGk8u9CKv5JjAsWvmwSh1U=;
+        b=0aXuFZ/l7JJJhpoaBaymmPYssi5TLW/khvkQYPSc+US/y5iqcU5Vpwyn2HafjlY1Y4
+         wHtv+IK9+QRu7o0z2fRjQZnGUVtVSOPf61ka4xU8wneAQeNOrIPzxh4T/hkbebM7iXVM
+         f+9+rD+OIR8ZS4E3h4lhdet+kqPOESZXGblp2zculQskHhjtPWfpanjVr3IIlBrdubvg
+         ABhRNwX1FrNooqF1gN2kmq+edIB/LF2bZ1PCcsixRZAWYwVgkDzfAWHZ3a+FVoMuzT6B
+         pCgb4YhPVmQPxgMP7WasgMyVJbuINprRm++bQj956YJNT1/OovuRAyj5tHAzVoFKpyJ0
+         fmBg==
+X-Gm-Message-State: AO0yUKWf+/lIHbWeh3QcvKMxWtWC8/rHHv9OaZKDpc+UvTW9cJFQ8z9/
+	KEvzvAM4NamJ9qt1nBxvwMemKER3FjVyDcskxeUcFg==
+X-Google-Smtp-Source: AK7set/EtY+OG6oXO/oVlz80z4XiEM8n0HHmXdl5DR+0gJsIWwZvMhJ6meksEeV5+DLgP3I/bf83eA0yaUAqAI17xbc=
+X-Received: by 2002:a17:902:e5d0:b0:19a:fa2f:559e with SMTP id
+ u16-20020a170902e5d000b0019afa2f559emr3823016plf.3.1677661405158; Wed, 01 Mar
+ 2023 01:03:25 -0800 (PST)
 MIME-Version: 1.0
+References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
+ <Y0hr9XTGAg8Q6K6y@google.com> <CAA8EJppuGbDGb1D-yf2WL77U1bqx1QQStQeDArWmGFCUiOtnww@mail.gmail.com>
+ <10237323.nUPlyArG6x@steina-w>
+In-Reply-To: <10237323.nUPlyArG6x@steina-w>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Wed, 1 Mar 2023 10:02:48 +0100
+Message-ID: <CAPDyKFq7NFx_cwTZajqjOnRsjJ1i-F0ip+b0ZjFUcOdLjMJSkQ@mail.gmail.com>
+Subject: Re: [PATCH v1 00/15] create power sequencing subsystem
+To: Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: Matthias Kaehlcke <mka@chromium.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Kalle Valo <kvalo@codeaurora.org>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Stanimir Varbanov <svarbanov@mm-sol.com>, linux-arm-msm@vger.kernel.org, 
+	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-bluetooth@vger.kernel.org, ath10k@lists.infradead.org, 
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_001758_738030_AF15A3BF 
-X-CRM114-Status: GOOD (  37.21  )
+X-CRM114-CacheID: sfid-20230301_010326_761648_3EC52B56 
+X-CRM114-Status: GOOD (  26.02  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,130 +89,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Wed, 1 Mar 2023 at 09:17, Alexander Stein
+<alexander.stein@ew.tq-group.com> wrote:
+>
+> Hi,
+>
+> sorry for being late to the party.
+>
+> Am Mittwoch, 19. Oktober 2022, 08:03:22 CET schrieb Dmitry Baryshkov:
+> > Ho,
+> >
+> > On Thu, 13 Oct 2022 at 22:50, Matthias Kaehlcke <mka@chromium.org> wrote:
+> > > Do you still plan to refresh this series?
+> > >
+> > > I know there have been multiple attempts to get something similar
+> > > landed in the past 10 year or so. Your series didn't seem to get
+> > > much pushback from maintainers, might be worth sending a refresh :)
+> >
+> > Yes, I hope to return to it eventually. I just had no time for it lately.
+>
+> I just found this thread while searching for power sequencing devices in
+> Linux. From what I understand this is transforming the existing mmc pwrseq
+> drivers into generic ones. What is the intention of this new subsystem? What
+> is it supposed to address?
+> In my case I have an LTE module attached via USB, but in order to use it I
+> need to perform several steps:
+> 1. apply power supply
+> 2. Issue a reset pulse(!), the length actually defines whether its a reset or
+> poweroff/on
+> 3a. wait for a GPIO to toggle
+> 3b. wait a minimum time
+> 4a. device will enumerate on USB
+> 4b. device can be access using UART
+>
+> This is something required to actually see/detect the device in the first
+> place, thus it cannot be part of the device driver side.
+> Is this something pwrseq is supposed to address?
 
-sorry for being late to the party.
+Yes, this is one of those typical use-cases for discoverable buses
+that we need to add support for, in one way or the other.
 
-Am Mittwoch, 19. Oktober 2022, 08:03:22 CET schrieb Dmitry Baryshkov:
-> Ho,
-> =
+>
+> Best regards,
+> Alexander
 
-> On Thu, 13 Oct 2022 at 22:50, Matthias Kaehlcke <mka@chromium.org> wrote:
-> > Do you still plan to refresh this series?
-> > =
+[...]
 
-> > I know there have been multiple attempts to get something similar
-> > landed in the past 10 year or so. Your series didn't seem to get
-> > much pushback from maintainers, might be worth sending a refresh :)
-> =
-
-> Yes, I hope to return to it eventually. I just had no time for it lately.
-
-I just found this thread while searching for power sequencing devices in =
-
-Linux. From what I understand this is transforming the existing mmc pwrseq =
-
-drivers into generic ones. What is the intention of this new subsystem? Wha=
-t =
-
-is it supposed to address?
-In my case I have an LTE module attached via USB, but in order to use it I =
-
-need to perform several steps:
-1. apply power supply
-2. Issue a reset pulse(!), the length actually defines whether its a reset =
-or =
-
-poweroff/on
-3a. wait for a GPIO to toggle
-3b. wait a minimum time
-4a. device will enumerate on USB
-4b. device can be access using UART
-
-This is something required to actually see/detect the device in the first =
-
-place, thus it cannot be part of the device driver side.
-Is this something pwrseq is supposed to address?
-
-Best regards,
-Alexander
-
-> > On Wed, Oct 06, 2021 at 06:53:52AM +0300, Dmitry Baryshkov wrote:
-> > > This is a proposed power sequencer subsystem. This is a
-> > > generification of the MMC pwrseq code. The subsystem tries to abstract
-> > > the idea of complex power-up/power-down/reset of the devices.
-> > > =
-
-> > > The primary set of devices that promted me to create this patchset is
-> > > the Qualcomm BT+WiFi family of chips. They reside on serial+platform
-> > > or serial + SDIO interfaces (older generations) or on serial+PCIe (ne=
-wer
-> > > generations).  They require a set of external voltage regulators to be
-> > > powered on and (some of them) have separate WiFi and Bluetooth enable
-> > > GPIOs.
-> > > =
-
-> > > The major drawback for now is the lack of proper PCIe integration
-> > > At this moment support for PCIe is hacked up to be able to test the
-> > > PCIe part of qca6390. Proper PCIe support would require automatically
-> > > powering up the devices before the scan basing on the proper device
-> > > structure in the device tree. This two last patches are noted as WIP =
-and
-> > > are included into the patchset for the purpose of testing WiFi on new=
-er
-> > > chips (like qca6390/qca6391).
-> > > =
-
-> > > Changes since RFC v2:
-> > >  - Add documentation for the pwrseq code. Document data structures,
-> > >  =
-
-> > >    macros and exported functions.
-> > >  =
-
-> > >  - Export of_pwrseq_xlate_onecell()
-> > >  - Add separate pwrseq_set_drvdata() function to follow the typical A=
-PI
-> > >  =
-
-> > >    design
-> > >  =
-
-> > >  - Remove pwrseq_get_optional()/devm_pwrseq_get_optional()
-> > >  - Moved code to handle old mmc-pwrseq binding to the MMC patch
-> > >  - Split of_pwrseq_xlate_onecell() support to a separate patch
-> > > =
-
-> > > Changes since RFC v1:
-> > >  - Provider pwrseq fallback support
-> > >  - Implement fallback support in pwrseq_qca.
-> > >  - Mmove susclk handling to pwrseq_qca.
-> > >  - Significantly simplify hci_qca.c changes, by dropping all legacy
-> > >  =
-
-> > >    code. Now hci_qca uses only pwrseq calls to power up/down bluetooth
-> > >    parts of the chip.
-> > > =
-
-> > > _______________________________________________
-> > > ath10k mailing list
-> > > ath10k@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/ath10k
-
-
--- =
-
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+Kind regards
+Uffe
 
 _______________________________________________
 ath10k mailing list
