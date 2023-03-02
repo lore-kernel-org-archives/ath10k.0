@@ -4,81 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAF2CC7EE33
-	for <ath10k@archiver.kernel.org>; Thu,  2 Mar 2023 09:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 261C4C6FA8E
+	for <ath10k@archiver.kernel.org>; Thu,  2 Mar 2023 12:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+cH4996Klj63i0RVdq691v6dmjw0PwMKixT2kLLUbEk=; b=t1pTJSheIxvpq7
-	tAjbsRTql64vDlujOkju2ohNg0vE7xj2cAKkFCRlVBwkLTAS80M1e28o/syv5kjIOExlc+kG1YuIm
-	GlgEnifxym64J5XTVwQbVwTgeMrPYoxpV0HjH1360sPzffcr7ccDsuEbC9tbcYpbZTINK51zYVa9I
-	xrocDtC6JevICUY/50B3mEmqSlX1MYvw8/ztHexBH3eXVhN6PnU9oLO9Ew2kr5zotUd6/iv3PlNW5
-	0LqxQwiq/vQxrbdJRTyPbzc5mdqojKr2wODV7M0nUbOQobj2PBDc9Q2fA6pn5dENVINiBNmcdMBRw
-	q9xPYtku/d36U75gNO9A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=NALj0ElAcSA3ABZ4xDkIFjrysEY+htVXOi29xQW4yTs=; b=4SPoxmQaqxR5zP
+	q7sUH7mffgFTcYgeILGldbeV2nlxmAfBmHHDsykTwlmXLtJxdBW+QC7Q26Qj3lyAZJoxx5kY0bpJF
+	UULAa/R+CinbzP+D1uDN2jz7cbidEJi2cmO5jLzbC317xJeZJvootR/pIJowEtesDfflyPBfmdpnT
+	XY8alNRVh4ViSq+NM3G8QUmpfM5Y0FYaUjA9+QTxLT68XfnfXoqs0NtH+sNg2XuFZ7X3bVon0fU4F
+	JqDQTXHYr63w0gKk4tBhjmA6ut4ofIs7ILdwEbjSt50v3k3nn6DGATCrelrAsrmM7fTzbB9ZjP6oX
+	limRyKnHerAOjBuvzGvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXffr-001YE7-Ua; Thu, 02 Mar 2023 09:56:31 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1pXi5f-0029Ku-JX; Thu, 02 Mar 2023 12:31:19 +0000
+Received: from mga14.intel.com ([192.55.52.115])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXffp-001YCW-13
-	for ath10k@lists.infradead.org; Thu, 02 Mar 2023 09:56:30 +0000
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3229Y9L0007938;
-	Thu, 2 Mar 2023 09:56:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=MTsgqO7xP3p9rwDXfqj5sodizXPDanLo7GrBOLQSl88=;
- b=hpO0dG81ZQdeRzaI/JymlVYxAeq2oxjSsfZ2s6VTt1bsox6PqFKdeteJFJtICZsxdLTP
- fUCetmjOohctHequfh0mvYXjLGetBlTw85UwxCyw2wEg6rrN9LGGXMzotoB1aBXrhRy7
- dRHVs7ewAIWAjAgZA0gP9OB8WX/XVHnbOzKU1Rop5JZQ/vvd40gpIWUP2Q90zCicshwI
- 3A3HXU/nzbYadGJFun8GzY2SG4vtCEjIBz5ldhNu4DxNBCAdFsVNLuhGtIhH2VCOTSNU
- eCDi5CGrk+zAAnW3kM5nj0ry+Dwx+oU/fRJiVKOROAB5NvMrk5Npz3yILTPcbFwQ9H2W GQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p2rbg86ut-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 Mar 2023 09:56:28 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3229uSXI004698
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 2 Mar 2023 09:56:28 GMT
-Received: from youghand-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Thu, 2 Mar 2023 01:56:25 -0800
-From: Youghandhar Chintala <quic_youghand@quicinc.com>
-To: <ath10k@lists.infradead.org>
-CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mpubbise@qti.qualcomm.com>,
-        Youghandhar Chintala <quic_youghand@quicinc.com>
-Subject: [PATCH v2 1/2] wifi: cfg80211: Add beacon hint notifier support
-Date: Thu, 2 Mar 2023 15:25:50 +0530
-Message-ID: <20230302095551.5510-2-quic_youghand@quicinc.com>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20230302095551.5510-1-quic_youghand@quicinc.com>
-References: <20230302095551.5510-1-quic_youghand@quicinc.com>
+	id 1pXi5d-0029In-6z
+	for ath10k@lists.infradead.org; Thu, 02 Mar 2023 12:31:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677760277; x=1709296277;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8xtDa8bRH7H3YH8ezK8w+B3+4tDCFNsFcr8liCpOxgw=;
+  b=bVH3qak1kbQvZbFgde14IRsuaQKG0d9i/cyIirdMyzVzsYz4nRHqFlv7
+   Awt9w2yCntOg6mO0vIlsHcbuDTC/Soyv5ZTzZaxKhOdxvtSrCz+vXWHLx
+   uaf3+8UmM7kqRt9RfX30HqP+OSM1RwYXxqxokYiFvOaB+DeluaM+GTasE
+   ec9w/h/TCDMgOGdEvu3YdLhtBHUlZkJfD8VJKkNRVA03F5rn4Eh6rDMch
+   sl3afYH1YmpSDRLrZAmeCT6LqEcKjGeczC4JjNaPkjF1fxUcs/3OjXIl1
+   Sn66b/+xDUT8CwZMKYqKyg5hT1Caa6STCbiVnBxYnXE2wsqAkCSOhKEZc
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="334733636"
+X-IronPort-AV: E=Sophos;i="5.98,227,1673942400"; 
+   d="scan'208";a="334733636"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2023 04:31:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="743841050"
+X-IronPort-AV: E=Sophos;i="5.98,227,1673942400"; 
+   d="scan'208";a="743841050"
+Received: from lkp-server01.sh.intel.com (HELO 776573491cc5) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Mar 2023 04:31:13 -0800
+Received: from kbuild by 776573491cc5 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1pXi5Y-0000Sk-2r;
+	Thu, 02 Mar 2023 12:31:12 +0000
+Date: Thu, 02 Mar 2023 20:30:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 79844ef915e120046ace380101834e09369a5aaa
+Message-ID: <640096f1.357yWc35+guZeyKb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: khrtZ2QWnlU6W8nzttTmPGbLgJ-54qY5
-X-Proofpoint-ORIG-GUID: khrtZ2QWnlU6W8nzttTmPGbLgJ-54qY5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-02_04,2023-03-02_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 spamscore=0 malwarescore=0 adultscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2303020086
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230302_015629_182030_7195951D 
-X-CRM114-Status: GOOD (  24.55  )
+X-CRM114-CacheID: sfid-20230302_043117_364412_D3601B85 
+X-CRM114-Status: UNSURE (   5.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,73 +82,127 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-There are connection failures in hidden SSID case when the device is
-with default reg domain WW.
-For WW reg domain most of the 5 GHz channels are passive. When device
-listens to the beacon on that channel, the driver is updating its
-channel flag but firmware is not aware of it and firmware is not
-sending probes on that channels.
-Due to this, we are seeing connection failures when the device is trying
-to connect with hidden SSID AP.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 79844ef915e120046ace380101834e09369a5aaa  Merge branch 'ath-next' into ath-qca
 
-In the case of devices using the ath10k driver, it is required to update
-the change in channel flags to firmware as well. Therefore, we need a
-mechanism to notify the driver from the regulatory core regarding the
-channel flag changes.
-Adding a beacon hint notifier logic, so that drivers can register
-callbacks to get notified whenever there is a change in channel flags.
+elapsed time: 1319m
 
-Signed-off-by: Youghandhar Chintala <quic_youghand@quicinc.com>
----
- include/net/cfg80211.h | 7 +++++++
- net/wireless/reg.c     | 5 ++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+configs tested: 105
+configs skipped: 10
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 11a370e64143..7a00f5317e1f 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -5096,6 +5096,10 @@ struct wiphy_iftype_akm_suites {
-  * @reg_notifier: the driver's regulatory notification callback,
-  *	note that if your driver uses wiphy_apply_custom_regulatory()
-  *	the reg_notifier's request can be passed as NULL
-+ * @beacon_hint_notifier: the driver's beacon hint notification callback,
-+ *	which will trigger when there is channel flag updates seen in
-+ *	beacon hints. The beacon_hint_notifier's request can be passed
-+ *	with chan context.
-  * @regd: the driver's regulatory domain, if one was requested via
-  *	the regulatory_hint() API. This can be used by the driver
-  *	on the reg_notifier() if it chooses to ignore future
-@@ -5386,6 +5390,9 @@ struct wiphy {
- 	void (*reg_notifier)(struct wiphy *wiphy,
- 			     struct regulatory_request *request);
- 
-+	void (*beacon_hint_notifier)(struct wiphy *wiphy,
-+				     struct ieee80211_channel *chan);
-+
- 	/* fields below are read-only, assigned by cfg80211 */
- 
- 	const struct ieee80211_regdomain __rcu *regd;
-diff --git a/net/wireless/reg.c b/net/wireless/reg.c
-index c3d950d29432..2dc6880a28c5 100644
---- a/net/wireless/reg.c
-+++ b/net/wireless/reg.c
-@@ -2219,8 +2219,11 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
- 		channel_changed = true;
- 	}
- 
--	if (channel_changed)
-+	if (channel_changed) {
- 		nl80211_send_beacon_hint_event(wiphy, &chan_before, chan);
-+		if (wiphy->beacon_hint_notifier)
-+			wiphy->beacon_hint_notifier(wiphy, chan);
-+	}
- }
- 
- /*
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r043-20230302   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         assabet_defconfig   gcc  
+arm                        clps711x_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r025-20230302   gcc  
+arm                  randconfig-r046-20230302   gcc  
+arm64                            allyesconfig   gcc  
+arm64        buildonly-randconfig-r006-20230302   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r005-20230302   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r012-20230302   gcc  
+hexagon              randconfig-r041-20230302   clang
+hexagon              randconfig-r045-20230302   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                          randconfig-a001   gcc  
+i386                          randconfig-a002   clang
+i386                          randconfig-a003   gcc  
+i386                          randconfig-a004   clang
+i386                          randconfig-a005   gcc  
+i386                          randconfig-a006   clang
+i386                          randconfig-a011   clang
+i386                          randconfig-a012   gcc  
+i386                          randconfig-a013   clang
+i386                          randconfig-a014   gcc  
+i386                          randconfig-a015   clang
+i386                          randconfig-a016   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r011-20230302   gcc  
+microblaze                      mmu_defconfig   gcc  
+microblaze           randconfig-r023-20230302   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r003-20230302   clang
+mips                         rt305x_defconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r026-20230302   gcc  
+openrisc     buildonly-randconfig-r005-20230302   gcc  
+openrisc             randconfig-r014-20230302   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r001-20230302   gcc  
+parisc               randconfig-r006-20230302   gcc  
+parisc               randconfig-r035-20230301   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                mpc7448_hpc2_defconfig   gcc  
+powerpc              randconfig-r034-20230301   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r042-20230302   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r015-20230302   clang
+s390                 randconfig-r044-20230302   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r002-20230302   gcc  
+sh                   randconfig-r016-20230302   gcc  
+sparc        buildonly-randconfig-r001-20230302   gcc  
+sparc        buildonly-randconfig-r003-20230302   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r021-20230302   gcc  
+sparc                randconfig-r033-20230301   gcc  
+sparc64              randconfig-r022-20230302   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a002   gcc  
+x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a004   gcc  
+x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a006   gcc  
+x86_64               randconfig-a011-20230227   gcc  
+x86_64                        randconfig-a011   gcc  
+x86_64                        randconfig-a012   clang
+x86_64               randconfig-a013-20230227   gcc  
+x86_64                        randconfig-a013   gcc  
+x86_64               randconfig-a014-20230227   gcc  
+x86_64                        randconfig-a014   clang
+x86_64                        randconfig-a015   gcc  
+x86_64                        randconfig-a016   clang
+x86_64                               rhel-8.3   gcc  
+xtensa       buildonly-randconfig-r002-20230302   gcc  
+xtensa                    xip_kc705_defconfig   gcc  
+
 -- 
-2.38.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
 
 _______________________________________________
 ath10k mailing list
