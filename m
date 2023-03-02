@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E5F4C7EE36
-	for <ath10k@archiver.kernel.org>; Thu,  2 Mar 2023 09:56:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAF2CC7EE33
+	for <ath10k@archiver.kernel.org>; Thu,  2 Mar 2023 09:56:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VGNJu1YylQRhMQEmcRA07dIBrY/n8EAK2LH9gp7J7l0=; b=1l3qqCntOzhT82
-	69fze5jCCr2qI2b7B1mNuOYnoPy1RLtpm/drpsMkEcAwE78kjR8AOL4uuByhlczKYNbnX+ZbJERJy
-	faTkCJSzS0Qp33Q0EJeyqZIlgop4vDy5/6DPjWNZjPJawyt1Q7zUeoX99mY4xb9EVT7knRjeKM3Uj
-	8c+nYBC9mUdaaFjKeNEkM/f210n+3rcOHaCiBSNSPihRS+7jtJCyd0xzRVnFP6Epl2oELKY1ihPIk
-	6qg9ObwTwlwitiN+oJzDqtKTWrqww167HghlfH+h+aAc5Kv/Shl1UmPCz+NSZ3/Pbbwl/qtMB34F9
-	fFpDdVaPceHGMH4t6amg==;
+	List-Owner; bh=+cH4996Klj63i0RVdq691v6dmjw0PwMKixT2kLLUbEk=; b=t1pTJSheIxvpq7
+	tAjbsRTql64vDlujOkju2ohNg0vE7xj2cAKkFCRlVBwkLTAS80M1e28o/syv5kjIOExlc+kG1YuIm
+	GlgEnifxym64J5XTVwQbVwTgeMrPYoxpV0HjH1360sPzffcr7ccDsuEbC9tbcYpbZTINK51zYVa9I
+	xrocDtC6JevICUY/50B3mEmqSlX1MYvw8/ztHexBH3eXVhN6PnU9oLO9Ew2kr5zotUd6/iv3PlNW5
+	0LqxQwiq/vQxrbdJRTyPbzc5mdqojKr2wODV7M0nUbOQobj2PBDc9Q2fA6pn5dENVINiBNmcdMBRw
+	q9xPYtku/d36U75gNO9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXffw-001YJI-TG; Thu, 02 Mar 2023 09:56:36 +0000
+	id 1pXffr-001YE7-Ua; Thu, 02 Mar 2023 09:56:31 +0000
 Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXfft-001YGb-PM
-	for ath10k@lists.infradead.org; Thu, 02 Mar 2023 09:56:35 +0000
+	id 1pXffp-001YCW-13
+	for ath10k@lists.infradead.org; Thu, 02 Mar 2023 09:56:30 +0000
 Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3229YABT007962;
-	Thu, 2 Mar 2023 09:56:33 GMT
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3229Y9L0007938;
+	Thu, 2 Mar 2023 09:56:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=n4u0QORlDQIiNmr9PqyeFNaeaGjlinS5DG6hnZGlICQ=;
- b=I9vp27UfFLSfM1MTuK6ylnKDQT1Jnjtyy2DWEwFZK6psuuB2+1idlFtpUunGbE6e+kzz
- zQAUdzXNZV0pJOvAAfh1XaetQsjaNT5NCddrta4CoeStkCdFsy1M9GSrJK4fp9c3mTRH
- sEqsuDqP9BqAQJWkdgsU/WXzkm32+VQBlu+JGTfqDorOWokWuM5CpBlHJlv3/LMQKdvm
- BYZt+bfEBU/kdYSRzGk1lb8BHciDeEdQ0VdpLXhSycMBmGDmWaXsaicVZ5lJ5kOXMawU
- hkpYHmawP2PVfIaGrUUrpfWuGUZR632hobievzde2vgSqaKRagnDeSyy+/Xrr6P3nLAO 1Q== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p2rbg86uv-1
+ bh=MTsgqO7xP3p9rwDXfqj5sodizXPDanLo7GrBOLQSl88=;
+ b=hpO0dG81ZQdeRzaI/JymlVYxAeq2oxjSsfZ2s6VTt1bsox6PqFKdeteJFJtICZsxdLTP
+ fUCetmjOohctHequfh0mvYXjLGetBlTw85UwxCyw2wEg6rrN9LGGXMzotoB1aBXrhRy7
+ dRHVs7ewAIWAjAgZA0gP9OB8WX/XVHnbOzKU1Rop5JZQ/vvd40gpIWUP2Q90zCicshwI
+ 3A3HXU/nzbYadGJFun8GzY2SG4vtCEjIBz5ldhNu4DxNBCAdFsVNLuhGtIhH2VCOTSNU
+ eCDi5CGrk+zAAnW3kM5nj0ry+Dwx+oU/fRJiVKOROAB5NvMrk5Npz3yILTPcbFwQ9H2W GQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p2rbg86ut-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 Mar 2023 09:56:33 +0000
+	Thu, 02 Mar 2023 09:56:28 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3229uWda006777
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3229uSXI004698
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 2 Mar 2023 09:56:32 GMT
+	Thu, 2 Mar 2023 09:56:28 GMT
 Received: from youghand-linux.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Thu, 2 Mar 2023 01:56:30 -0800
+ 15.2.986.41; Thu, 2 Mar 2023 01:56:25 -0800
 From: Youghandhar Chintala <quic_youghand@quicinc.com>
 To: <ath10k@lists.infradead.org>
 CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <mpubbise@qti.qualcomm.com>,
         Youghandhar Chintala <quic_youghand@quicinc.com>
-Subject: [PATCH v2 2/2] wifi: ath10k: update the channel list if change in channel flags.
-Date: Thu, 2 Mar 2023 15:25:51 +0530
-Message-ID: <20230302095551.5510-3-quic_youghand@quicinc.com>
+Subject: [PATCH v2 1/2] wifi: cfg80211: Add beacon hint notifier support
+Date: Thu, 2 Mar 2023 15:25:50 +0530
+Message-ID: <20230302095551.5510-2-quic_youghand@quicinc.com>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20230302095551.5510-1-quic_youghand@quicinc.com>
 References: <20230302095551.5510-1-quic_youghand@quicinc.com>
@@ -66,8 +66,8 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ikjBkfh0fAhWeuvsbqtUXPLbCL1FMQoG
-X-Proofpoint-ORIG-GUID: ikjBkfh0fAhWeuvsbqtUXPLbCL1FMQoG
+X-Proofpoint-GUID: khrtZ2QWnlU6W8nzttTmPGbLgJ-54qY5
+X-Proofpoint-ORIG-GUID: khrtZ2QWnlU6W8nzttTmPGbLgJ-54qY5
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-02_04,2023-03-02_01,2023-02-09_01
@@ -77,8 +77,8 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishsc
  clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2212070000 definitions=main-2303020086
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230302_015633_865774_5623FB6B 
-X-CRM114-Status: GOOD (  19.18  )
+X-CRM114-CacheID: sfid-20230302_015629_182030_7195951D 
+X-CRM114-Status: GOOD (  24.55  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,49 +101,64 @@ For WW reg domain most of the 5 GHz channels are passive. When device
 listens to the beacon on that channel, the driver is updating its
 channel flag but firmware is not aware of it and firmware is not
 sending probes on that channels.
-Due to this, we are seeing connection failures when a device is trying
+Due to this, we are seeing connection failures when the device is trying
 to connect with hidden SSID AP.
-Register beacon hint notifier to the regulatory core so that driver get
-notified when there is a change in channel flags. Driver's notifier
-callback will send the updated flags to the firmware.
 
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00174
+In the case of devices using the ath10k driver, it is required to update
+the change in channel flags to firmware as well. Therefore, we need a
+mechanism to notify the driver from the regulatory core regarding the
+channel flag changes.
+Adding a beacon hint notifier logic, so that drivers can register
+callbacks to get notified whenever there is a change in channel flags.
 
 Signed-off-by: Youghandhar Chintala <quic_youghand@quicinc.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ include/net/cfg80211.h | 7 +++++++
+ net/wireless/reg.c     | 5 ++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ec8d5b29bc72..91a957295456 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3534,6 +3534,15 @@ static void ath10k_mac_update_channel_list(struct ath10k *ar,
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index 11a370e64143..7a00f5317e1f 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -5096,6 +5096,10 @@ struct wiphy_iftype_akm_suites {
+  * @reg_notifier: the driver's regulatory notification callback,
+  *	note that if your driver uses wiphy_apply_custom_regulatory()
+  *	the reg_notifier's request can be passed as NULL
++ * @beacon_hint_notifier: the driver's beacon hint notification callback,
++ *	which will trigger when there is channel flag updates seen in
++ *	beacon hints. The beacon_hint_notifier's request can be passed
++ *	with chan context.
+  * @regd: the driver's regulatory domain, if one was requested via
+  *	the regulatory_hint() API. This can be used by the driver
+  *	on the reg_notifier() if it chooses to ignore future
+@@ -5386,6 +5390,9 @@ struct wiphy {
+ 	void (*reg_notifier)(struct wiphy *wiphy,
+ 			     struct regulatory_request *request);
+ 
++	void (*beacon_hint_notifier)(struct wiphy *wiphy,
++				     struct ieee80211_channel *chan);
++
+ 	/* fields below are read-only, assigned by cfg80211 */
+ 
+ 	const struct ieee80211_regdomain __rcu *regd;
+diff --git a/net/wireless/reg.c b/net/wireless/reg.c
+index c3d950d29432..2dc6880a28c5 100644
+--- a/net/wireless/reg.c
++++ b/net/wireless/reg.c
+@@ -2219,8 +2219,11 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
+ 		channel_changed = true;
  	}
+ 
+-	if (channel_changed)
++	if (channel_changed) {
+ 		nl80211_send_beacon_hint_event(wiphy, &chan_before, chan);
++		if (wiphy->beacon_hint_notifier)
++			wiphy->beacon_hint_notifier(wiphy, chan);
++	}
  }
  
-+static void ath10k_mac_beacon_notifier(struct wiphy *wiphy)
-+{
-+	struct ieee80211_hw *hw = wiphy_to_ieee80211_hw(wiphy);
-+	struct ath10k *ar = hw->priv;
-+
-+	if (ath10k_update_channel_list(ar))
-+		ath10k_warn(ar, "failed to update channel list\n");
-+}
-+
- static void ath10k_reg_notifier(struct wiphy *wiphy,
- 				struct regulatory_request *request)
- {
-@@ -10286,6 +10295,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 			goto err_unregister;
- 	}
- 
-+	ar->hw->wiphy->beacon_hint_notifier = ath10k_mac_beacon_notifier;
-+
- 	return 0;
- 
- err_unregister:
+ /*
 -- 
 2.38.0
 
