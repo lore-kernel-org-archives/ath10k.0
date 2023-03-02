@@ -4,68 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A962C678D4
-	for <ath10k@archiver.kernel.org>; Thu,  2 Mar 2023 03:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3743C7EE30
+	for <ath10k@archiver.kernel.org>; Thu,  2 Mar 2023 09:56:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=BEXfO7IGzIY+6O8qPmiApBSHOUgA/gNlJ+bpnAa3Xv0=; b=JIJnLWoOq3ZKDh
-	0k29pd9cgWoTD3iITqdCHvtLlwejBWb94JF3PQq+SRME+zwck8kItbvAwoH63p3i4RJRS/6Dw5fYU
-	M0W3O5V/UqQFin4NuDqiVm7JqW6WP3N3+xJ/55L1bJEGsc8jk9NNfguFlA8Da7tHGAo7nB1oN6hNw
-	i/llVyplHKIk93lEWKkRVxYICAuc9lriuh7P7p9rQGGfR+9IZp88L5AEoejOeHkMmSzPTQIhlxzQK
-	at60eUHSyDYk73b+WzC0YhdkEZJxspOOY+dwdA7YTHkgq5vUIz2f14XRjYgz/EIDHuu1KJ/YJ5n8b
-	gTChbp4ikpfruL25SMQQ==;
+	List-Owner; bh=xGOxoJAd67IZaVigBTSyzXeo4i8P22j5NOgcqulQ2IM=; b=eUFGQkvAWfSbNw
+	3OuIxswmICg23/LO36YnlKF8xq2FhaqTJ/+PAotVPMh9eV9NH0zJ4cE222CoEnBkXYg9qrvFmx0rr
+	rsuPaD3lrsQbyf4SdVbPU5fyT89EuPcvL5cO/0KsB97EOrLWk4mxPGsW1k3NnTLu5aHkfjmViD4yP
+	ksnCUIwgTkla9qkn728LKQpE4LpH9uZr0B25utN7nho3+CrLGBxHCvFBnmHFe87eUQSGt12on/g1f
+	w+MAhonX3e5p9vFCmVY/z/7nV9Ma0E9toMUGBzM/rBUp1ueEpcmr2syrO/jRjrTgS/P+H/mCVs0Hu
+	R7QXRUpRJJ2zvDywGdUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXZtQ-000idV-Lh; Thu, 02 Mar 2023 03:46:08 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1pXffp-001YDC-V1; Thu, 02 Mar 2023 09:56:29 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXZtK-000id0-Ug
-	for ath10k@lists.infradead.org; Thu, 02 Mar 2023 03:46:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677728762; x=1709264762;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=84xPibpBAm1z3ci/kRkqvVMlqnct3ll5Jw6WEu6xArQ=;
-  b=MO1zOtaCkz6oM1BrlLATQMcT/BYhb0tAhNeKUxMlUtNnAbNvNtkqFsQN
-   87OBqZz9ni4U2TKFmfyJY7x3m+ZWAX+ypsVaWkNE53QRrwY2StV0hD02c
-   l5JqK6HW+/gAk/zTmkkseKAGolEFEyysqDh+tbqKZjvE+vJc8VQEjhS1q
-   GLDTvPu7TvCqXdVLYcuZ4CNWRKSK9JkYJ5OEXOnq2c2l0PkeF5eIJGHLz
-   lDkl5Wg8VyritG4si/Sq8OYYAg9QKCKzuhfa1jUnTqP/Sq8EOwukfeEPE
-   TCAjpA61IBabwaoaPJx3LMC99Z2Edo/6KkOG5dr0CUViBypRUe20EpTZv
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="362192160"
-X-IronPort-AV: E=Sophos;i="5.98,226,1673942400"; 
-   d="scan'208";a="362192160"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2023 19:46:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="652257187"
-X-IronPort-AV: E=Sophos;i="5.98,226,1673942400"; 
-   d="scan'208";a="652257187"
-Received: from lkp-server01.sh.intel.com (HELO 776573491cc5) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 01 Mar 2023 19:45:59 -0800
-Received: from kbuild by 776573491cc5 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pXZtG-0000AV-2E;
-	Thu, 02 Mar 2023 03:45:58 +0000
-Date: Thu, 02 Mar 2023 11:45:00 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- f2893862b63132d21062e311a7f8532335bfd525
-Message-ID: <64001bbc.p3QpEg5qoTeKQLEs%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+	id 1pXffm-001YAV-Uw
+	for ath10k@lists.infradead.org; Thu, 02 Mar 2023 09:56:28 +0000
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3229YFLd014826;
+	Thu, 2 Mar 2023 09:56:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=YSL8PIvsEULRIHWIOnANmoDoFzlGhSKEBLvUCGt5U3k=;
+ b=ZApQzhtn1NCx5KzX5sPMya4Qte8ii1+0V33LZ138GyIEsxVvE7ocPNTZW3y+wXMOARtt
+ LVhsQzYJm/bJzgXC6UQyCVPmqyfQP6HI6EATyyZ1Mjf1FWguxhx8bvUIEn2SqqIFIhjP
+ q9linKy9gIBhK/tL3RmUfUreGmoL3xW2EzmiXJCcZiG/3ksUsk6gGWSUnPn5rfsW6G/t
+ gbqd3MFejtxwfh/nADWMBAIetqJ8JXucdiu/U9c17R8b2F4VZAj7JhLWvNtMXGk0kVOT
+ MC7+toWD8UVdWfH5D2++BBlJ2peRtHiwiXbZ7E7knZNhHf7j9n+/W8k92kU7QPlhuzT4 pg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p2ar125vb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 Mar 2023 09:56:24 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3229uNSW028432
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 2 Mar 2023 09:56:23 GMT
+Received: from youghand-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Thu, 2 Mar 2023 01:56:21 -0800
+From: Youghandhar Chintala <quic_youghand@quicinc.com>
+To: <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <mpubbise@qti.qualcomm.com>,
+        Youghandhar Chintala <quic_youghand@quicinc.com>
+Subject: [PATCH v2 0/2] Update the channel list if the change in channel flags 
+Date: Thu, 2 Mar 2023 15:25:49 +0530
+Message-ID: <20230302095551.5510-1-quic_youghand@quicinc.com>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: gjtb1_ME9_JF8CT7LQFKgwp_CNKnluQI
+X-Proofpoint-ORIG-GUID: gjtb1_ME9_JF8CT7LQFKgwp_CNKnluQI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-02_04,2023-03-02_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 mlxlogscore=813 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2303020086
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_194603_058427_662D3494 
-X-CRM114-Status: UNSURE (   6.61  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230302_015627_048199_D6B9235F 
+X-CRM114-Status: GOOD (  16.97  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,122 +93,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: f2893862b63132d21062e311a7f8532335bfd525  wifi: ath11k: add debug prints in regulatory WMI event processing
+There are connection failures in hidden SSID case when the device is with
+default reg domain WW.
+For WW reg domain most of the 5 GHz channels are passive. When device
+listens to the beacon on that channel, the driver is updating its channel
+flag but firmware is not aware of it and firmware is not sending probes
+on that channels.
+Due to this, we are seeing connection failures when the device is tries to
+connect with hidden SSID AP.
+Whenever the driver detects a channel flag change, send the updated channel
+list command to the firmware.
 
-elapsed time: 792m
+Changes from v1:
+ - Added the documentation for notifier call back.
+ - Passed channel context as argument for notifier.
 
-configs tested: 100
-configs skipped: 8
+Youghandhar Chintala (2):
+  wifi: cfg80211: Add beacon hint notifier support
+  wifi: ath10k: update the channel list if change in channel flags.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r006-20230302   gcc  
-alpha                randconfig-r015-20230302   gcc  
-alpha                randconfig-r025-20230302   gcc  
-alpha                randconfig-r031-20230302   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r043-20230302   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm          buildonly-randconfig-r001-20230302   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r034-20230302   clang
-arm                  randconfig-r046-20230302   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r014-20230302   gcc  
-hexagon              randconfig-r021-20230302   clang
-hexagon              randconfig-r041-20230302   clang
-hexagon              randconfig-r045-20230302   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                          randconfig-a001   gcc  
-i386                          randconfig-a002   clang
-i386                          randconfig-a003   gcc  
-i386                          randconfig-a004   clang
-i386                          randconfig-a005   gcc  
-i386                          randconfig-a006   clang
-i386                          randconfig-a011   clang
-i386                          randconfig-a012   gcc  
-i386                          randconfig-a013   clang
-i386                          randconfig-a014   gcc  
-i386                          randconfig-a015   clang
-i386                          randconfig-a016   gcc  
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r026-20230302   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r016-20230302   gcc  
-m68k                 randconfig-r032-20230302   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips         buildonly-randconfig-r002-20230302   clang
-nios2        buildonly-randconfig-r003-20230302   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r012-20230302   gcc  
-openrisc             randconfig-r013-20230302   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r005-20230302   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r033-20230302   gcc  
-powerpc              randconfig-r035-20230302   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230302   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r022-20230302   clang
-s390                 randconfig-r024-20230302   clang
-s390                 randconfig-r044-20230302   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r002-20230302   gcc  
-sh                   randconfig-r003-20230302   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r001-20230302   gcc  
-sparc                randconfig-r011-20230302   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                        randconfig-a001   clang
-x86_64               randconfig-a002-20230227   clang
-x86_64                        randconfig-a002   gcc  
-x86_64               randconfig-a003-20230227   clang
-x86_64                        randconfig-a003   clang
-x86_64                        randconfig-a004   gcc  
-x86_64                        randconfig-a005   clang
-x86_64               randconfig-a006-20230227   clang
-x86_64                        randconfig-a006   gcc  
-x86_64                        randconfig-a011   gcc  
-x86_64                        randconfig-a012   clang
-x86_64                        randconfig-a013   gcc  
-x86_64                        randconfig-a014   clang
-x86_64                        randconfig-a015   gcc  
-x86_64                        randconfig-a016   clang
-x86_64                               rhel-8.3   gcc  
+ drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++++
+ include/net/cfg80211.h                |  7 +++++++
+ net/wireless/reg.c                    |  5 ++++-
+ 3 files changed, 22 insertions(+), 1 deletion(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.38.0
+
 
 _______________________________________________
 ath10k mailing list
