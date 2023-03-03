@@ -4,68 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99FE7C6FA8E
-	for <ath10k@archiver.kernel.org>; Thu,  2 Mar 2023 14:32:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA48EC678D4
+	for <ath10k@archiver.kernel.org>; Fri,  3 Mar 2023 02:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=dqZrdJQS9SZgXYzSbnj9R0Z3wcOESqMt+yJI4dZBtBw=; b=kuY7pf2OdTu4he
-	GrkhoPWt9SuizJRSDQtX7spUJIbDczGDQcyzKD+t8QGCDRq6bWI4Qt+HZBjjU9vSk5arSoCbHZjhY
-	2LiVyCDXEiPWHtqyOUpkL9DyQi3miI2/jTmkd3Mo2mWOBG9ipLiozaYSHuh6bAXADwXA48uDfm1T/
-	2BT2rwQ4l/O0cgFOtQepINnsDXEm0blOR8nweWORGctInedEw5LpbKcsILRDLSRER6SsWABffrFOi
-	vjXh+3Z5P80nf02DkuYJ4W8h6MBnhxQH9cupyvdU9nBGu+Ym3CGq/PI8JWS2PgF7+YUJb5pYw1aLT
-	vnxhbpKnWyAuipOlKoeg==;
+	List-Owner; bh=eo2UD9TenXL928kO7tEiBlISBwCNpNkT29/ACyHsuJA=; b=GsAgG8foP9i0KL
+	v/YapJg4Y49ubx9k+z5lXgMe0uCs8dpC/fa5Voq4ntWCOrdtNjkP8LtJafzM9lnxOH10NCCaSzxdf
+	iFc03vHf9Am0E/PKF4RoaPAuPMd1tyYE1rfg4r+C2Cky+7xUf2ktUFy30D81VYF1nauxJaATx2l3/
+	zqIiXlWBCnJOoKGIyfLPQCHOMo1mx/4yr+QD470SoAJMj8wEBHQTDxBF4fGtmA2dfh0RvgL/rMiFg
+	7Lmg7U/gVVekisRPxsno3M2v+maYp0IIigKDAbygijYuMwYp08DNZ0MOPSaxzMgBQa6dcjUpmMPbO
+	TDilV4DoOuClvNnHEtSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXjyp-002Tay-Ek; Thu, 02 Mar 2023 14:32:23 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1pXvNq-004Xuf-1j; Fri, 03 Mar 2023 02:42:58 +0000
+Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXjym-002Ta4-1R
-	for ath10k@lists.infradead.org; Thu, 02 Mar 2023 14:32:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677767540; x=1709303540;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=19OQ4LezRgs8qvW8HyW4JG9UZ0u3ajKyxWFMUuLVXcs=;
-  b=Vky3+aiP+7OIopRz2osMwEdxb3gjktLyI8wlZE/mNq+cnL7anRpdXTIj
-   NE0Mw+XK3Q+9Cmz27aNmgTRHja3DIEx7uHg5qEndzqxU92I/dTCoj33Dc
-   1Rek1dYhuYBFNKv29Bli+jNexbHVrUwGXF7lGd1TpnWF1NUyXPfyQeyMM
-   7mUw8rRMimCSgdRVfmNd+ek9vqu8wmQJ5ZSc0j3EOcDigve7+oT5aILiJ
-   mJbO8SciOPiVABpqaGbYC95HmYElyZ43dX15Bq1XpHErM8AuzDiLxWjUp
-   DrxNwRFLzmqd0bw5vDweQV+nk8bwIdIjHc7397E6oREvaYN2/3SES/+1K
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10637"; a="362326955"
-X-IronPort-AV: E=Sophos;i="5.98,227,1673942400"; 
-   d="scan'208";a="362326955"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2023 06:32:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10637"; a="677231724"
-X-IronPort-AV: E=Sophos;i="5.98,227,1673942400"; 
-   d="scan'208";a="677231724"
-Received: from lkp-server01.sh.intel.com (HELO 776573491cc5) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 02 Mar 2023 06:32:15 -0800
-Received: from kbuild by 776573491cc5 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pXjyh-0000WO-0s;
-	Thu, 02 Mar 2023 14:32:15 +0000
-Date: Thu, 02 Mar 2023 22:32:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 01c6c9fccbd51c1d9eab0f5794b0271b026178df
-Message-ID: <6400b36a.8m/VeXtPvKfBFF7i%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+	id 1pXvNn-004XtN-1Q
+	for ath10k@lists.infradead.org; Fri, 03 Mar 2023 02:42:56 +0000
+Received: by mail-lf1-x129.google.com with SMTP id n2so1801672lfb.12
+        for <ath10k@lists.infradead.org>; Thu, 02 Mar 2023 18:42:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1677811370;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDNEXw8teYXC1RePAZhjBh/dGMalMHP9Lg4fn2iWwxc=;
+        b=dbiBVX/9NCg6BYhGh8+LSwc0ol2iHOSJAG4s5qAC8SSKGGXFnOadO4zhO2ClOZxR+T
+         h57Xi6/m6alMV2KeoMcOwLJA60xhg5m6RjAK6+BoJZ4dx7z96UaS52+hN+DkPCwJQBJm
+         RHNHTKlIH4lcldJhSyQYjwdaAHxB/ubgYt5BqbeBSM8sSAnaw20m5OcPsoiABIHqU/JK
+         +fj74GC4nkL+uA3QG61opD2K90/6c6crSgwyJ9VnKZ1NguTDCU4irPdKTbOjJGFruvtB
+         SsgVDZ5RTYAneDGzXiT4gt+sDQ9u9pf7mqs7XGld37ce1IvRjhktTGktDeKxdJF8dZSJ
+         nE6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677811370;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iDNEXw8teYXC1RePAZhjBh/dGMalMHP9Lg4fn2iWwxc=;
+        b=c7u1C7aE4hhg41Ye0PzuYOj6Ze97XlWoIr38VWqtgtujUHo3Dzayj0zbuSABgcIkSI
+         uqHPsxbfcENh0Izzfreish7ZMBUm9dcaE/srLr///HEBLp9YYTR2sGtoujkCQJgfC1VA
+         bnMZX3O1kA/uaHzVDRwfgAzD/SUNdSRVfHY8/oDhrxwRkmJ3qVRl6aG3AftnsunYgxDx
+         VboWVtm+5h/NwdCJdPEaH5ZbZDycTxgpW2Y9IE+s7atZmerMz6HuBQb0hhR7DyKuFL3W
+         W75F3R19Ufs3o44HX9u3bTKE18XyhS7sXNJSUhPG54/a9FfiPT3Z9LAIsSrwJknxGF+1
+         b9xw==
+X-Gm-Message-State: AO0yUKU1LkPQSz+mK7b5XpRm6wze1i1mp6kthnTpAuGHR0wv+aplqwBX
+	T/czpikwespkgVV6/WtnX+8jrQ==
+X-Google-Smtp-Source: AK7set/6zMdHJiXD7PXCcw4098kJJxCA5Cq9XHtnY3BVqas1Stg1PK/SfGNLLtpNEMiO4rTo9aUbOw==
+X-Received: by 2002:ac2:548d:0:b0:4e0:ff8e:bbfc with SMTP id t13-20020ac2548d000000b004e0ff8ebbfcmr98941lfk.31.1677811369885;
+        Thu, 02 Mar 2023 18:42:49 -0800 (PST)
+Received: from localhost.localdomain (abym99.neoplus.adsl.tpnet.pl. [83.9.32.99])
+        by smtp.gmail.com with ESMTPSA id x19-20020a19f613000000b004db1cd5efcesm181379lfe.241.2023.03.02.18.42.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Mar 2023 18:42:49 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+To: linux-arm-msm@vger.kernel.org,
+	andersson@kernel.org,
+	agross@kernel.org
+Cc: marijn.suijten@somainline.org,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: ath10k: Add vdd-smps supply
+Date: Fri,  3 Mar 2023 03:42:45 +0100
+Message-Id: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230302_063220_150614_EB313DA5 
-X-CRM114-Status: UNSURE (   6.19  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230302_184255_121543_5869C2C7 
+X-CRM114-Status: GOOD (  10.79  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,118 +101,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 01c6c9fccbd51c1d9eab0f5794b0271b026178df  wifi: ath11k: Add tx ack signal support for management packets
+Mention the newly added vdd-smps supply.
 
-elapsed time: 1441m
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-configs tested: 96
-configs skipped: 9
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r006-20230302   gcc  
-alpha                randconfig-r021-20230302   gcc  
-alpha                randconfig-r023-20230302   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r004-20230227   gcc  
-arc                  randconfig-r014-20230302   gcc  
-arc                  randconfig-r043-20230302   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r046-20230302   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r001-20230302   gcc  
-csky         buildonly-randconfig-r006-20230302   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r022-20230302   gcc  
-csky                 randconfig-r024-20230302   gcc  
-csky                 randconfig-r034-20230302   gcc  
-csky                 randconfig-r035-20230302   gcc  
-hexagon      buildonly-randconfig-r005-20230302   clang
-hexagon              randconfig-r025-20230302   clang
-hexagon              randconfig-r041-20230302   clang
-hexagon              randconfig-r045-20230302   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                          randconfig-a006   clang
-i386                          randconfig-a015   clang
-i386                          randconfig-a016   gcc  
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r013-20230302   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r012-20230302   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze   buildonly-randconfig-r003-20230302   gcc  
-microblaze           randconfig-r011-20230302   gcc  
-microblaze           randconfig-r015-20230302   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r003-20230302   clang
-nios2                               defconfig   gcc  
-openrisc     buildonly-randconfig-r004-20230302   gcc  
-openrisc             randconfig-r004-20230226   gcc  
-openrisc             randconfig-r004-20230302   gcc  
-parisc       buildonly-randconfig-r002-20230302   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r005-20230302   gcc  
-parisc               randconfig-r031-20230302   gcc  
-parisc               randconfig-r033-20230302   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230302   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r026-20230302   clang
-s390                 randconfig-r044-20230302   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r002-20230302   gcc  
-sparc                               defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                        randconfig-a001   clang
-x86_64                        randconfig-a002   gcc  
-x86_64               randconfig-a003-20230227   clang
-x86_64                        randconfig-a003   clang
-x86_64                        randconfig-a004   gcc  
-x86_64                        randconfig-a005   clang
-x86_64                        randconfig-a006   gcc  
-x86_64                        randconfig-a011   gcc  
-x86_64                        randconfig-a012   clang
-x86_64               randconfig-a013-20230227   gcc  
-x86_64                        randconfig-a013   gcc  
-x86_64               randconfig-a014-20230227   gcc  
-x86_64                        randconfig-a014   clang
-x86_64                        randconfig-a015   gcc  
-x86_64                        randconfig-a016   clang
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r001-20230302   gcc  
-
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index b61c2d5a0ff7..8697e63aeffa 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -66,7 +66,7 @@ Optional properties:
+ - <supply-name>-supply: handle to the regulator device tree node
+ 			   optional "supply-name" are "vdd-0.8-cx-mx",
+ 			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
+-			   and "vdd-3.3-ch1".
++			   "vdd-3.3-ch1" and "vdd-smps".
+ - memory-region:
+ 	Usage: optional
+ 	Value type: <phandle>
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.39.2
+
 
 _______________________________________________
 ath10k mailing list
