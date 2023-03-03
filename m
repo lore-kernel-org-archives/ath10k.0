@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA48EC678D4
-	for <ath10k@archiver.kernel.org>; Fri,  3 Mar 2023 02:43:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFE5DC6FA8E
+	for <ath10k@archiver.kernel.org>; Fri,  3 Mar 2023 02:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eo2UD9TenXL928kO7tEiBlISBwCNpNkT29/ACyHsuJA=; b=GsAgG8foP9i0KL
-	v/YapJg4Y49ubx9k+z5lXgMe0uCs8dpC/fa5Voq4ntWCOrdtNjkP8LtJafzM9lnxOH10NCCaSzxdf
-	iFc03vHf9Am0E/PKF4RoaPAuPMd1tyYE1rfg4r+C2Cky+7xUf2ktUFy30D81VYF1nauxJaATx2l3/
-	zqIiXlWBCnJOoKGIyfLPQCHOMo1mx/4yr+QD470SoAJMj8wEBHQTDxBF4fGtmA2dfh0RvgL/rMiFg
-	7Lmg7U/gVVekisRPxsno3M2v+maYp0IIigKDAbygijYuMwYp08DNZ0MOPSaxzMgBQa6dcjUpmMPbO
-	TDilV4DoOuClvNnHEtSg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jsMAafNH/MGkF2mOnAoLWyucskNzRzilYr9ibrfr01k=; b=pR7/Ctz0pU2Lj7
+	B8vcrv3qNbFO2cLC6rwC4slybq2xCjLigtnNrjpa6rOlDbezN1uGKzW94iNk58NrM3b5/EMNAVuwM
+	9+jAJ1RFgg3EVhua+7oN8GgEhbLtaTXknJlXfMGSfd8ClW0pzAttu88x6FROZeVofwJGpiIhclEcU
+	rwkVRIhp9b9TX+HEqtnrppFx+aabQY6Djp4vI5+SpbAKGk+05pw1pfmtOzjhcwoFgfXXBBhhCiPX6
+	pfAp1LWDOtuOZiazN0S+WJZOWQ2YHI0lK3S300kXZQi+l2Jw7LYJsTEUEY9BieB8rTNmNq8w7kG0s
+	N9AoOVQDWwARD4SjZ/Lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXvNq-004Xuf-1j; Fri, 03 Mar 2023 02:42:58 +0000
-Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
+	id 1pXvNr-004Xux-Hw; Fri, 03 Mar 2023 02:42:59 +0000
+Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXvNn-004XtN-1Q
+	id 1pXvNn-004XtS-7R
 	for ath10k@lists.infradead.org; Fri, 03 Mar 2023 02:42:56 +0000
-Received: by mail-lf1-x129.google.com with SMTP id n2so1801672lfb.12
-        for <ath10k@lists.infradead.org>; Thu, 02 Mar 2023 18:42:51 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id j11so1790074lfg.13
+        for <ath10k@lists.infradead.org>; Thu, 02 Mar 2023 18:42:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1677811370;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iDNEXw8teYXC1RePAZhjBh/dGMalMHP9Lg4fn2iWwxc=;
-        b=dbiBVX/9NCg6BYhGh8+LSwc0ol2iHOSJAG4s5qAC8SSKGGXFnOadO4zhO2ClOZxR+T
-         h57Xi6/m6alMV2KeoMcOwLJA60xhg5m6RjAK6+BoJZ4dx7z96UaS52+hN+DkPCwJQBJm
-         RHNHTKlIH4lcldJhSyQYjwdaAHxB/ubgYt5BqbeBSM8sSAnaw20m5OcPsoiABIHqU/JK
-         +fj74GC4nkL+uA3QG61opD2K90/6c6crSgwyJ9VnKZ1NguTDCU4irPdKTbOjJGFruvtB
-         SsgVDZ5RTYAneDGzXiT4gt+sDQ9u9pf7mqs7XGld37ce1IvRjhktTGktDeKxdJF8dZSJ
-         nE6g==
+        d=linaro.org; s=google; t=1677811371;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U5WGNHoHvFrqEzbIMWPaETRGh642NbHa8AZbtFWCIaY=;
+        b=a1Th93dRZhNLFhiK7IaDAOwo6+U7mQU2G9IxkKcOhsXbtvHHwqOJBbyqnZq9OWlJbe
+         PRy2m3odeC/uu+rdRtGZFHE4CyA+ZQyW570JMMZLN4ZkJTbwPvvrklO6MtzsN/isn4BZ
+         d6+Vw3elF8Thke2Olw45Gfy2cHVxP7Mn/m34a+orjQ73+ZKOSd2QIvCAH5Xjl2PGcOSe
+         Kt+nHfF3mpKhQlnRl82T+Ihx/9ydlw6UJibClFQKxIyBYPPaSJ8YYC0mAaBnuZk5yqdu
+         wUD+TIYQLfmen1g5gsYWk2+PTx84nUjPbl82gCmqpBZeOrpdzxTaESrrrRSVSUuAlubS
+         glEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677811370;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iDNEXw8teYXC1RePAZhjBh/dGMalMHP9Lg4fn2iWwxc=;
-        b=c7u1C7aE4hhg41Ye0PzuYOj6Ze97XlWoIr38VWqtgtujUHo3Dzayj0zbuSABgcIkSI
-         uqHPsxbfcENh0Izzfreish7ZMBUm9dcaE/srLr///HEBLp9YYTR2sGtoujkCQJgfC1VA
-         bnMZX3O1kA/uaHzVDRwfgAzD/SUNdSRVfHY8/oDhrxwRkmJ3qVRl6aG3AftnsunYgxDx
-         VboWVtm+5h/NwdCJdPEaH5ZbZDycTxgpW2Y9IE+s7atZmerMz6HuBQb0hhR7DyKuFL3W
-         W75F3R19Ufs3o44HX9u3bTKE18XyhS7sXNJSUhPG54/a9FfiPT3Z9LAIsSrwJknxGF+1
-         b9xw==
-X-Gm-Message-State: AO0yUKU1LkPQSz+mK7b5XpRm6wze1i1mp6kthnTpAuGHR0wv+aplqwBX
-	T/czpikwespkgVV6/WtnX+8jrQ==
-X-Google-Smtp-Source: AK7set/6zMdHJiXD7PXCcw4098kJJxCA5Cq9XHtnY3BVqas1Stg1PK/SfGNLLtpNEMiO4rTo9aUbOw==
-X-Received: by 2002:ac2:548d:0:b0:4e0:ff8e:bbfc with SMTP id t13-20020ac2548d000000b004e0ff8ebbfcmr98941lfk.31.1677811369885;
-        Thu, 02 Mar 2023 18:42:49 -0800 (PST)
+        d=1e100.net; s=20210112; t=1677811371;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U5WGNHoHvFrqEzbIMWPaETRGh642NbHa8AZbtFWCIaY=;
+        b=PVFkU96GP1vPT7WpwSs+HYl2Uy66TFduTfZ77+W2uSNJLIEYndg2ar+Uakja7AvQ16
+         ssSjpnoy9dDs2VY8ZqSbzYmRTW+cEdD0b/A3gj7hNPItEddDJWygguMWRgqKDWZiRJXQ
+         sVOxtx9v1vIDejtIWox527fNhQ62vNPuV4l3lfADJ7Tj6Jr3uJHiYxufTQAy652FgOzT
+         H9PNb5AdFaLKGbYvHYsEZ2yb4H+uEWJ42MEL8WjVnhFXZ+fjLli8QV5CXWFa2BByNuKV
+         +iO+UdU5eqv4ZnXr5iGJDZPjncaT5grQIhe6E54M+Eztsnl0CyZrfwOBn/w7JewdW1hH
+         smkg==
+X-Gm-Message-State: AO0yUKUXkI4cgs2EzNMiVJ0oPMbdJbl+KFiKkicLrj5Wjgd4k2doBpvW
+	LpgFf9jNHpf/Zs5xIjbc3vJuMg==
+X-Google-Smtp-Source: AK7set9F3ef7m9KaxrogAYM4oalKAF6WRYPXP6o4DQr3SoBD77rCGtH28CpKaBUu35HPmnfJ/K7pCw==
+X-Received: by 2002:a19:7611:0:b0:4b5:b705:9bf7 with SMTP id c17-20020a197611000000b004b5b7059bf7mr99636lff.11.1677811371416;
+        Thu, 02 Mar 2023 18:42:51 -0800 (PST)
 Received: from localhost.localdomain (abym99.neoplus.adsl.tpnet.pl. [83.9.32.99])
-        by smtp.gmail.com with ESMTPSA id x19-20020a19f613000000b004db1cd5efcesm181379lfe.241.2023.03.02.18.42.48
+        by smtp.gmail.com with ESMTPSA id x19-20020a19f613000000b004db1cd5efcesm181379lfe.241.2023.03.02.18.42.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 18:42:49 -0800 (PST)
+        Thu, 02 Mar 2023 18:42:51 -0800 (PST)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 To: linux-arm-msm@vger.kernel.org,
 	andersson@kernel.org,
@@ -77,14 +78,16 @@ Cc: marijn.suijten@somainline.org,
 	netdev@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] dt-bindings: ath10k: Add vdd-smps supply
-Date: Fri,  3 Mar 2023 03:42:45 +0100
-Message-Id: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
+Subject: [PATCH 2/2] wifi: ath10k: snoc: Add VDD_SMPS regulator
+Date: Fri,  3 Mar 2023 03:42:46 +0100
+Message-Id: <20230303024246.2175382-2-konrad.dybcio@linaro.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
+References: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230302_184255_121543_5869C2C7 
-X-CRM114-Status: GOOD (  10.79  )
+X-CRM114-CacheID: sfid-20230302_184255_304293_B0D12A0B 
+X-CRM114-Status: GOOD (  10.40  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,26 +104,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Mention the newly added vdd-smps supply.
+At least SM6375 (bundled with soc_id 0x400e0000) and SM4350 (bundled
+with unknown, probably the same) expect one more supply, called vdd-smps
+downstream. It's set to 0.984V and connected to a - you guessed it - SMPS
+regulator on PM6125. Add support for it.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The smps name sounds like a quick downstream hack and is probably
+something more exquisite in reality.. Not something I know, though.
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index b61c2d5a0ff7..8697e63aeffa 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -66,7 +66,7 @@ Optional properties:
- - <supply-name>-supply: handle to the regulator device tree node
- 			   optional "supply-name" are "vdd-0.8-cx-mx",
- 			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
--			   and "vdd-3.3-ch1".
-+			   "vdd-3.3-ch1" and "vdd-smps".
- - memory-region:
- 	Usage: optional
- 	Value type: <phandle>
+ drivers/net/wireless/ath/ath10k/snoc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 9a82f0336d95..6443523131db 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -48,6 +48,7 @@ static const char * const ath10k_regulators[] = {
+ 	"vdd-1.3-rfa",
+ 	"vdd-3.3-ch0",
+ 	"vdd-3.3-ch1",
++	"vdd-smps",
+ };
+ 
+ static const char * const ath10k_clocks[] = {
 -- 
 2.39.2
 
