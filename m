@@ -4,60 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 757A2C64EC4
-	for <ath10k@archiver.kernel.org>; Fri,  3 Mar 2023 12:56:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35B09C7EE30
+	for <ath10k@archiver.kernel.org>; Fri,  3 Mar 2023 21:09:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:References:CC:To:Subject:From:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Mo/+Li+eUKm3q+Sx3BPMllVJspI8D0Rmu8It5er/M9U=; b=ey9py34ZyLABft
-	rETKFsKLLKTiYmcLPEePt1doUpH8leeNj0pGHEF+9LVaXra2zdfrnfOiBUq9I580GlOhOkCBzofhz
-	PtLWxybXC75Qk1XF5OTNP58cv2TN94vli+jc/CQZdGxLupEE1PFGHKyvWxEZ2b/V+Ul+3nNInUvRk
-	FNFw4Sh2WLc6o2kF+g20ZqhpS2CP4MWO1BxmsAL+jlItDBqigufJ2kRFBYvIYKOAuCL0XQW0a4yIO
-	HWp+DXtbCi5m7JZthkw9zZ7UBT4dudv/Y1z6qSaje9QcbvSrs8POqevWA7EinFAV1j4cLqkjyBfF3
-	VtcdwvmO2viWVMSUw8ww==;
+	List-Owner; bh=i2IX/kf9IB6+wr4v0qniairtrGZ9eVLV0nbE3urDt/4=; b=UBwNqecHxVeoZG
+	Et4A6sPkfR/5aVvRxAfkF93ehM3mpgpHKdW7D7BgPj+xOK4z1TC5pKcpO9FpM4FV3Ol5oJ2DTEZOe
+	C7wKM4eOhTiRD21uU9nEeXM9y3dOohY2HrpCwgth6VOxhiUrYoG7Treu5svP/OSK8iLNeb66wVuCC
+	BW3Xm/PoHzieRmB/eCscYBAKEo7KBDXFCQ8J6HyB/Lp7f85fi1za0ww93w5DwLRzxDJSu7tFSrAVr
+	mMs6HedOE+iayOrI7jXz1O7taCoX1t8Bv/PKRnvYw5NIoqfGsaDnOre4JlTdvKJiqchJ7bNSGe9my
+	oRAyCTiGcGjTOhP2OcVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pY4xu-006NDj-UY; Fri, 03 Mar 2023 12:56:50 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pYCen-007RL6-CX; Fri, 03 Mar 2023 21:09:37 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pY4xs-006NCy-Dy
-	for ath10k@lists.infradead.org; Fri, 03 Mar 2023 12:56:49 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4DAE4617F0;
-	Fri,  3 Mar 2023 12:56:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C0A9C433D2;
-	Fri,  3 Mar 2023 12:56:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677848206;
-	bh=+b8VhHcKMAf5AlRnGJugTeQ8FLmcJRwHbHLB2Me/d0Q=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=K5f/zp+h6k4W5qp3yW46hJu0292vk2WgBvLP0LSDar561Y18RqRCAqtIamAqCNlIh
-	 6vzY2NhmQ7bb2QSXtIQ1CoM+iT7BNp4ei+wE4uebPF3RHAY/gzlkkFQlHPW9yJg5lB
-	 Vst1998vixy+qVvhpEWwdaSaPG0XlPG2R2p4J3DSSigFwybKqQZMDjKq/6UIvfq7sO
-	 5faVefergO6ULYEzBmILazHWwBIX8bDHHhv7WrMYUWynKgG+4Sa3O1PLQFNpLY1b8z
-	 jp+2+S+tV/ps5L+VldD5MnDq4nCofjPZQJLOXg4B2EY+m0RyuwWe06FSjBFfhjRpU5
-	 qnVjCNvoaW5GQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,  linux-arm-msm@vger.kernel.org,  andersson@kernel.org,  agross@kernel.org,  marijn.suijten@somainline.org,  "David S. Miller" <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  Rob Herring <robh+dt@kernel.org>,  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,  netdev@vger.kernel.org,  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: ath10k: Add vdd-smps supply
-References: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
-	<8e695c64-6abd-3c1e-8d80-de636d950442@linaro.org>
-	<41665c73-1647-2cb2-bd33-8dc281a97ee5@linaro.org>
-Date: Fri, 03 Mar 2023 14:56:36 +0200
-In-Reply-To: <41665c73-1647-2cb2-bd33-8dc281a97ee5@linaro.org> (Konrad
-	Dybcio's message of "Fri, 3 Mar 2023 12:28:21 +0100")
-Message-ID: <87o7payovv.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+	id 1pYCeh-007RIh-Ha
+	for ath10k@lists.infradead.org; Fri, 03 Mar 2023 21:09:33 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 323Hw71Q027393;
+	Fri, 3 Mar 2023 21:09:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : from : subject : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=0GV0GIblVbFArHNpmZ1Srz0Rk2Sez5YtbO96Shw/C94=;
+ b=K3GuB/c67HB+9X5scaPeKggDaitwzAl87gNnC3C2vueKKu5ykHfKheQhr1xKU/22aTAG
+ 2+qjLzzrcdUMfHDrMM8J2lxHIyVHw3312cEHlYqeO4nzKWp0jVnGkb3wsqgDTsz83U2S
+ nuBYJpzVB0bP0JlKacrywW+IItuotYBNMh/5qrIlH2w3bzY3RVFj2YEo71ZnLw2D5cs0
+ kiHUZjliGhYkEWITN3YHvZZeHW/E9PUMeEH2Yv/bx3TZjK2WeuMe2bZZma6hvZxrc/Ta
+ tyt1/AmHVAK43H2/wqZIiWRyYD0i8xWBH4KecTVsak0SRfxB0QClW+YoH0gbO2hx0Rh5 zQ== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p3dpxj579-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 Mar 2023 21:09:11 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 323L9ALS015416
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 3 Mar 2023 21:09:10 GMT
+Received: from [10.110.20.90] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 3 Mar 2023
+ 13:09:09 -0800
+Message-ID: <2ae96b75-82f1-165a-e56d-7446c90bb7af@quicinc.com>
+Date: Fri, 3 Mar 2023 13:09:08 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+From: Elliot Berman <quic_eberman@quicinc.com>
+Subject: Re: [PATCH] firmware: qcom_scm: Use fixed width src vm bitmap
+To: Bjorn Andersson <andersson@kernel.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>
+CC: Andy Gross <agross@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Amol Maheshwari
+	<amahesh@qti.qualcomm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Kalle Valo
+	<kvalo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "Gokul
+ krishna Krishnakumar" <quic_gokukris@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
+References: <20230213181832.3489174-1-quic_eberman@quicinc.com>
+ <20230213214417.mtcpeultvynyls6s@ripper> <Y+tNRPf0PGdShf5l@kroah.com>
+ <20230214172325.lplxgbprhj3bzvr3@ripper>
+ <bdda82f7-933d-443b-614a-6befad2899b5@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <bdda82f7-933d-443b-614a-6befad2899b5@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: fFgsdjU-gZTIeIOv6LUxDDseAdoa3PuQ
+X-Proofpoint-GUID: fFgsdjU-gZTIeIOv6LUxDDseAdoa3PuQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-03_05,2023-03-03_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ spamscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1011 priorityscore=1501 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2303030177
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230303_045648_545765_E01F0AA0 
-X-CRM114-Status: GOOD (  12.01  )
+X-CRM114-CacheID: sfid-20230303_130931_750970_912E4FB0 
+X-CRM114-Status: GOOD (  20.56  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,33 +111,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Konrad Dybcio <konrad.dybcio@linaro.org> writes:
 
-> On 3.03.2023 08:12, Krzysztof Kozlowski wrote:
->> On 03/03/2023 03:42, Konrad Dybcio wrote:
->>> Mention the newly added vdd-smps supply.
->> 
->> There is no explanation here, but looking at your driver change it
->> suggests name is not correct. You named it based on regulator (so the
->> provider), not the consumer.
 
-Yeah, it would be nice to have more than just one sentence in the commit
-log.
+On 2/14/2023 10:52 AM, Elliot Berman wrote:
+> 
+> 
+> On 2/14/2023 9:23 AM, Bjorn Andersson wrote:
+>> On Tue, Feb 14, 2023 at 09:58:44AM +0100, Greg Kroah-Hartman wrote:
+>>> On Mon, Feb 13, 2023 at 01:44:17PM -0800, Bjorn Andersson wrote:
+>>>> On Mon, Feb 13, 2023 at 10:18:29AM -0800, Elliot Berman wrote:
+>>>>> The maximum VMID for assign_mem is 63. Use a u64 to represent this
+>>>>> bitmap instead of architecture-dependent "unsigned int" which 
+>>>>> varies in
+>>>>> size on 32-bit and 64-bit platforms.
+>>>>>
+>>>>> Acked-by: Kalle Valo <kvalo@kernel.org> (ath10k)
+>>>>> Tested-by: Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
+>>>>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+>>>>
+>>>> Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+>>>>
+>>>> @Greg, would you mind taking this through your tree for v6.3, you
+>>>> already have a related change in fastrpc.c in your tree...
+>>>
+>>> I tried, but it doesn't apply to my char-misc tree at all:
+>>>
+>>> checking file drivers/firmware/qcom_scm.c
+>>> Hunk #1 succeeded at 898 (offset -7 lines).
+>>> Hunk #2 succeeded at 915 (offset -7 lines).
+>>> Hunk #3 succeeded at 930 (offset -7 lines).
+>>> checking file drivers/misc/fastrpc.c
+>>> checking file drivers/net/wireless/ath/ath10k/qmi.c
+>>> checking file drivers/remoteproc/qcom_q6v5_mss.c
+>>> Hunk #1 succeeded at 227 (offset -8 lines).
+>>> Hunk #2 succeeded at 404 (offset -10 lines).
+>>> Hunk #3 succeeded at 939 with fuzz 1 (offset -28 lines).
+>>> checking file drivers/remoteproc/qcom_q6v5_pas.c
+>>> Hunk #1 FAILED at 94.
+>>> 1 out of 1 hunk FAILED
+>>> checking file drivers/soc/qcom/rmtfs_mem.c
+>>> Hunk #1 succeeded at 30 (offset -1 lines).
+>>> can't find file to patch at input line 167
+>>> Perhaps you used the wrong -p or --strip option?
+>>> The text leading up to this was:
+>>> --------------------------
+>>> |diff --git a/include/linux/firmware/qcom/qcom_scm.h
+>>> b/include/linux/firmware/qcom/qcom_scm.h
+>>> |index 1e449a5d7f5c..250ea4efb7cb 100644
+>>> |--- a/include/linux/firmware/qcom/qcom_scm.h
+>>> |+++ b/include/linux/firmware/qcom/qcom_scm.h
+>>> --------------------------
+>>>
+>>> What tree is this patch made against?
+>>>
+>>
+>> Sorry about that, I missed the previous changes in qcom_q6v5_pas in the
+>> remoteproc tree. Elliot said he based it on linux-next, so I expect that
+>> it will merge fine on top of -rc1, once that arrives.
+>>
+> 
+> Yes, this patch applies on next-20230213. I guess there are enough 
+> changes were coming from QCOM side (via Bjorn's qcom tree) as well as 
+> the fastrpc change (via Greg's char-misc tree).
+> 
+> Let me know if I should do anything once -rc1 arrives. Happy to post 
+> version on the -rc1 if it helps.
+> 
 
-> Right, I admit this could have been posted with an RFC tag.
-> Maybe Kalle knows more.
-
-Unfortunately not, but maybe Bjorn knows?
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+The patch now applies on tip of Linus's tree and on char-misc.
 
 _______________________________________________
 ath10k mailing list
