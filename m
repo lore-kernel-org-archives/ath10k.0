@@ -4,90 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFE5DC6FA8E
-	for <ath10k@archiver.kernel.org>; Fri,  3 Mar 2023 02:43:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA22CC64EC4
+	for <ath10k@archiver.kernel.org>; Fri,  3 Mar 2023 07:12:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jsMAafNH/MGkF2mOnAoLWyucskNzRzilYr9ibrfr01k=; b=pR7/Ctz0pU2Lj7
-	B8vcrv3qNbFO2cLC6rwC4slybq2xCjLigtnNrjpa6rOlDbezN1uGKzW94iNk58NrM3b5/EMNAVuwM
-	9+jAJ1RFgg3EVhua+7oN8GgEhbLtaTXknJlXfMGSfd8ClW0pzAttu88x6FROZeVofwJGpiIhclEcU
-	rwkVRIhp9b9TX+HEqtnrppFx+aabQY6Djp4vI5+SpbAKGk+05pw1pfmtOzjhcwoFgfXXBBhhCiPX6
-	pfAp1LWDOtuOZiazN0S+WJZOWQ2YHI0lK3S300kXZQi+l2Jw7LYJsTEUEY9BieB8rTNmNq8w7kG0s
-	N9AoOVQDWwARD4SjZ/Lg==;
+	List-Owner; bh=iFed/Esrs3nlkxELWj4UH/kdTakHD7Pj9oZdBCAbdSc=; b=OiuUPdFWmGxeGk
+	xiD8wqwY/MvhuS2AQ8TxxLITzlEkkL5A2CJKHjIuU97JhttWJVCSxVatRuGDfbNHd0V9ltB22GTZU
+	4nfwmPckxwmViIQEUs4vpIE9J7i4xwFdXor0RoHFbQ3QD0pTILw+ijXD2ltZkBlpp/G4t1qVTM7g8
+	Sevp1txC+hLUtZ/qaxHbC7UYJupgzVx7ysdBE/vksCtv+Kcka33eBV8pyGp4PmJO/auvHPfB7XmRb
+	dLymN9bX01BvnBrnPtbebguPV/IHYw8Vkx8p32qqU7WXIY7/rUcAwv3MfkcDq8mg1kzW8nub55Hp8
+	QqaRiimgZNlNR3jlQLow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXvNr-004Xux-Hw; Fri, 03 Mar 2023 02:42:59 +0000
-Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	id 1pXzaU-005CTm-4g; Fri, 03 Mar 2023 07:12:18 +0000
+Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXvNn-004XtS-7R
-	for ath10k@lists.infradead.org; Fri, 03 Mar 2023 02:42:56 +0000
-Received: by mail-lf1-x12b.google.com with SMTP id j11so1790074lfg.13
-        for <ath10k@lists.infradead.org>; Thu, 02 Mar 2023 18:42:52 -0800 (PST)
+	id 1pXzaR-005CTD-JP
+	for ath10k@lists.infradead.org; Fri, 03 Mar 2023 07:12:16 +0000
+Received: by mail-ed1-x533.google.com with SMTP id d30so6639902eda.4
+        for <ath10k@lists.infradead.org>; Thu, 02 Mar 2023 23:12:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1677811371;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U5WGNHoHvFrqEzbIMWPaETRGh642NbHa8AZbtFWCIaY=;
-        b=a1Th93dRZhNLFhiK7IaDAOwo6+U7mQU2G9IxkKcOhsXbtvHHwqOJBbyqnZq9OWlJbe
-         PRy2m3odeC/uu+rdRtGZFHE4CyA+ZQyW570JMMZLN4ZkJTbwPvvrklO6MtzsN/isn4BZ
-         d6+Vw3elF8Thke2Olw45Gfy2cHVxP7Mn/m34a+orjQ73+ZKOSd2QIvCAH5Xjl2PGcOSe
-         Kt+nHfF3mpKhQlnRl82T+Ihx/9ydlw6UJibClFQKxIyBYPPaSJ8YYC0mAaBnuZk5yqdu
-         wUD+TIYQLfmen1g5gsYWk2+PTx84nUjPbl82gCmqpBZeOrpdzxTaESrrrRSVSUuAlubS
-         glEw==
+        d=linaro.org; s=google; t=1677827534;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xi3e3zf8Klpq1iRcEdmcSTKwBOu4pz/Ei0EPeIx1fZY=;
+        b=EZLxu7Y+iizjsoeGeUbmzPxbTlnTsVxbNP5WplEQkHBNoOsLzB62obZ9C7HjJdud77
+         56/49ai23BGpoS36DG6EcSbmf63qfNq5oJWGrjeCcUiiqcP5s7T2Mro0aZ/J/j8ksgeI
+         +bg2Y9ZjHQdv3oumc/D705agQ/kTIHtIJYSd3isGNZ021cdwZsiNraxSgOkprbG1/VSs
+         Jy/A3i7jQicgkpkM9EZeoKOzBEgUtXQp/lpjyn7AuUuLTBZDpT2aSxgAtP6jsOAfs7BX
+         anizbYYk4ixsFk47zhnqdrNzqaha1yJxtgSvDN8tkCbRbvXSD9EdiLHjOJXucHQh16pa
+         x2XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677811371;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U5WGNHoHvFrqEzbIMWPaETRGh642NbHa8AZbtFWCIaY=;
-        b=PVFkU96GP1vPT7WpwSs+HYl2Uy66TFduTfZ77+W2uSNJLIEYndg2ar+Uakja7AvQ16
-         ssSjpnoy9dDs2VY8ZqSbzYmRTW+cEdD0b/A3gj7hNPItEddDJWygguMWRgqKDWZiRJXQ
-         sVOxtx9v1vIDejtIWox527fNhQ62vNPuV4l3lfADJ7Tj6Jr3uJHiYxufTQAy652FgOzT
-         H9PNb5AdFaLKGbYvHYsEZ2yb4H+uEWJ42MEL8WjVnhFXZ+fjLli8QV5CXWFa2BByNuKV
-         +iO+UdU5eqv4ZnXr5iGJDZPjncaT5grQIhe6E54M+Eztsnl0CyZrfwOBn/w7JewdW1hH
-         smkg==
-X-Gm-Message-State: AO0yUKUXkI4cgs2EzNMiVJ0oPMbdJbl+KFiKkicLrj5Wjgd4k2doBpvW
-	LpgFf9jNHpf/Zs5xIjbc3vJuMg==
-X-Google-Smtp-Source: AK7set9F3ef7m9KaxrogAYM4oalKAF6WRYPXP6o4DQr3SoBD77rCGtH28CpKaBUu35HPmnfJ/K7pCw==
-X-Received: by 2002:a19:7611:0:b0:4b5:b705:9bf7 with SMTP id c17-20020a197611000000b004b5b7059bf7mr99636lff.11.1677811371416;
-        Thu, 02 Mar 2023 18:42:51 -0800 (PST)
-Received: from localhost.localdomain (abym99.neoplus.adsl.tpnet.pl. [83.9.32.99])
-        by smtp.gmail.com with ESMTPSA id x19-20020a19f613000000b004db1cd5efcesm181379lfe.241.2023.03.02.18.42.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 18:42:51 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-To: linux-arm-msm@vger.kernel.org,
-	andersson@kernel.org,
-	agross@kernel.org
-Cc: marijn.suijten@somainline.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] wifi: ath10k: snoc: Add VDD_SMPS regulator
-Date: Fri,  3 Mar 2023 03:42:46 +0100
-Message-Id: <20230303024246.2175382-2-konrad.dybcio@linaro.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
-References: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
+        d=1e100.net; s=20210112; t=1677827534;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xi3e3zf8Klpq1iRcEdmcSTKwBOu4pz/Ei0EPeIx1fZY=;
+        b=RI34zSoUGePtmTfShnIbTZ2jczAj2umSRWYDQRWIrFrOaljvI1M4icqnxriWldDEyU
+         rRCixLVDVPXMoP0u5kJUmGh8gnMvuSzdcQhvmtYeC+IlgO8FMN1iIKS25zmJHJ51E5pV
+         zBl4P/FMFx9kLyPAZkpdSYke8vtxiJ5a4t417OLG4Ar+YuVSrpju3xOb8pVN+BCaD+5X
+         pSUxPaEOGuAa1i2L8PuY77TW0t7JtqcPDnKkMSpOkWipOMIp6J2afGw+5BrkSu3rKUGI
+         VL/hxTmUc5KX5LplWSCLP1FcGbTguDJtweSkDnvoa84QRd3FDWHnJak1JKQnx1FftXDr
+         Lmzw==
+X-Gm-Message-State: AO0yUKUYWgRi41iEQMKDdYl44aGUE0uY/v9e9CeVBwf2ZPG9Anad24ad
+	aqoBy9PCQooAsV0KCZaw2pEzvg==
+X-Google-Smtp-Source: AK7set+r+vvJNdv0SgAgspPvo26Cw4Qq2bYappwi6VBNmRDuHd2TtvD3UYnxUh2P0DnOzbQxgvzdAA==
+X-Received: by 2002:a17:907:7289:b0:8e3:74ad:94ce with SMTP id dt9-20020a170907728900b008e374ad94cemr866444ejc.8.1677827533823;
+        Thu, 02 Mar 2023 23:12:13 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id t26-20020a1709060c5a00b008ec793ac3f4sm614812ejf.192.2023.03.02.23.12.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Mar 2023 23:12:13 -0800 (PST)
+Message-ID: <8e695c64-6abd-3c1e-8d80-de636d950442@linaro.org>
+Date: Fri, 3 Mar 2023 08:12:11 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 1/2] dt-bindings: ath10k: Add vdd-smps supply
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, linux-arm-msm@vger.kernel.org,
+ andersson@kernel.org, agross@kernel.org
+Cc: marijn.suijten@somainline.org, Kalle Valo <kvalo@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230303024246.2175382-1-konrad.dybcio@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230302_184255_304293_B0D12A0B 
-X-CRM114-Status: GOOD (  10.40  )
+X-CRM114-CacheID: sfid-20230302_231215_696361_AFE7C9BC 
+X-CRM114-Status: UNSURE (   6.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,33 +100,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-At least SM6375 (bundled with soc_id 0x400e0000) and SM4350 (bundled
-with unknown, probably the same) expect one more supply, called vdd-smps
-downstream. It's set to 0.984V and connected to a - you guessed it - SMPS
-regulator on PM6125. Add support for it.
+On 03/03/2023 03:42, Konrad Dybcio wrote:
+> Mention the newly added vdd-smps supply.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
-The smps name sounds like a quick downstream hack and is probably
-something more exquisite in reality.. Not something I know, though.
+There is no explanation here, but looking at your driver change it
+suggests name is not correct. You named it based on regulator (so the
+provider), not the consumer.
 
- drivers/net/wireless/ath/ath10k/snoc.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 9a82f0336d95..6443523131db 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -48,6 +48,7 @@ static const char * const ath10k_regulators[] = {
- 	"vdd-1.3-rfa",
- 	"vdd-3.3-ch0",
- 	"vdd-3.3-ch1",
-+	"vdd-smps",
- };
- 
- static const char * const ath10k_clocks[] = {
--- 
-2.39.2
+Best regards,
+Krzysztof
 
 
 _______________________________________________
