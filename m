@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60FE0C678D5
-	for <ath10k@archiver.kernel.org>; Wed,  8 Mar 2023 12:39:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76A48C678D5
+	for <ath10k@archiver.kernel.org>; Wed,  8 Mar 2023 12:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	Date:Message-ID:Subject:From:To:Reply-To:Cc:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=x/gR7dSK8RicbltZKj/2nTprmGQUbEKEdhQrXJtyqQE=; b=Z76KGQx6DF0L3MOj49AmQU7SDy
-	UwAhJMmhbK66TEfLgkqy1GH3UR4O6GwvK6KV+03IYLCYMqvcI6DWFKDr5E6/MiwdHPDGxhanhI4NU
-	l8FBeTn+/cPuYW+Rua2SiAQD0a/zZo4f3r/6W2DFGiorYIgB/bzVEy3gjFRzHLB7ZVI1fCobVCHn+
-	MwO7T7sRY7KgPRXe78TKEVGOlg2vkLrzQyS+JtzBGWPyzZgqBhWzMGjavZ4uYRUMjM2pwQdYU49be
-	AKxZ4mAlSTn8L+MQ30Ut45VnafUH4DRjbNatVLkFmRbi2OilH6pkFT3uygqZmZa/4APRaWIbM9Rmu
-	/Ux/kDaQ==;
+	bh=ptksm4t4Ee+pWJYSdflY8MeOcl/n2NOCgcuu5ZrmioI=; b=WGsxE8g3UTPb105tzf8p7uLvMY
+	2r2jjH5slEx/l3u8qqYqRAh1U/9fJpSHPbvLFuDcdLDMd//1SEQnhqa+78RpLjAPKzg2A88ArHWue
+	vfLE4xlD9tvT2VFbQWJHjTzhP5kziyPMUO1XRpbhJNPqWFKYqlLs4L9Wsq7d/Bmq2w1OSSmcdyHMS
+	xT72Q3kBZp1zFsNDEk03/1Au4+WCa13954t853qE1HtU8MSKZYcw0wJ4ecTfMyJCs+9Sg6lWFZdS+
+	3f2/+LC/YUYxcUblccWWomew8nwmFv3q/Vz32E4nnyUf4LSlt2twMmTQzilAPRJ/FURoNb4vwXzDP
+	T3TEy9Vg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZt4L-004tHY-UN; Wed, 08 Mar 2023 12:38:57 +0000
-Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
+	id 1pZt5k-004tjY-Ul; Wed, 08 Mar 2023 12:40:24 +0000
+Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZt4J-004tFc-7L
-	for ath10k@lists.infradead.org; Wed, 08 Mar 2023 12:38:56 +0000
-Received: by mail-lj1-x232.google.com with SMTP id h3so16388729lja.12
-        for <ath10k@lists.infradead.org>; Wed, 08 Mar 2023 04:38:52 -0800 (PST)
+	id 1pZt5g-004thj-UE
+	for ath10k@lists.infradead.org; Wed, 08 Mar 2023 12:40:22 +0000
+Received: by mail-lj1-x231.google.com with SMTP id b13so16430604ljf.6
+        for <ath10k@lists.infradead.org>; Wed, 08 Mar 2023 04:40:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=8devices.com; s=8devices; t=1678279130;
+        d=8devices.com; s=8devices; t=1678279217;
         h=content-language:mime-version:user-agent:date:message-id:subject
          :from:to:from:to:cc:subject:date:message-id:reply-to;
-        bh=ODwWDpc46yzcN2PX2sjXM+35b2rZN3EHHxFfY/8muT4=;
-        b=E618CgAxPlyuAsHnAS4uGQ/nNRnd2rizH7Edq9gyheBUryZL17uaOOCIljNvcL2ru/
-         u8SFAhywA7ATJLSAMdNgAZRF4bcg/u+MCoXMiex98id8TS46S5cngX2im1hkUQwwMJip
-         Z+RVf8owYzMLseM3BEYCRmjixEjRdT37O/Mq2hiEHtiJ8tKpljdxCpe4mJSSFNizw/Rc
-         aasMk9i4YSkesF6LVxBJFZx+Tqf5iPOksADmIkH/gnG2vpyZlUHd+DFWTc3/6NlaZiRc
-         XbvpA+GJcMbrVRYWZo/yDTXIUp704J+zCbuU3dPXGq191kSJHRnmrJ1zPGBUsKWJcH5a
-         N8xQ==
+        bh=oTtKXLK78aDU2qs5a8I8JPZQK8pTgpAQGqampnPeGTc=;
+        b=XjRbnXptU1/wk6uoIhVUP+rtV4uGb22I/cLNBGiCnKDjDsmsRbOCZiHGy9JZDoc2HD
+         pOtULhzmWhVSF4jouV4IYeeOYKykMB5D09sRwe16FdH+TlAZUz+/z12avWGEyWI6Zy/d
+         G9V2goSBdE8Xy+lyRlOEnzCBPtlcjQ+R1lEjuNsQbCnL+4zZQLtQX67hLd9XO1EHIHMh
+         b8lUks0lSRLYeYY/TmJEQa306VHDb1xRQ1cdUmQr3x3rzma0Yo0QW4mVrbd4VOTamxS/
+         dadVO3aooC457h3orrlP2lTRmSLMzvFY/19V9aj9yOLFp5jNtBKFM3SbGdJmwzfAUArv
+         TJ1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678279130;
+        d=1e100.net; s=20210112; t=1678279217;
         h=content-language:mime-version:user-agent:date:message-id:subject
          :from:to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ODwWDpc46yzcN2PX2sjXM+35b2rZN3EHHxFfY/8muT4=;
-        b=hN4kRAvkwEUvduT+JiA46Z5ulPDDHsBUhT/s1A1soZhLw5xk1FVEsdOu7YaTcH9GD0
-         7glfV+r9YIa29DqImVhpIAp7SmS5IVdFvw0xN9aAemXC+GPPoqdS/2BWjhsmLs+/7b2+
-         EpdBlTm3dWgI30VgRKOZgnFZs3VUCAhg+1zQbPT8QXO1z6pVxTi6htaek6XV/knNYmPW
-         Cfc+zo+LdV5WMnWMMl6/Yxx0crUqZmrlI1NYWS93x7I1CsvPS6waJKeFa5SOQY5XMnH/
-         fnyxWZktlTG9VlhcAqMZiogxT6ZGZ7NsJnoPw5DXwQMGcfrwZER7XIeNmeqL9t9dLNTW
-         GNAw==
-X-Gm-Message-State: AO0yUKVBZ2f4tb+EwGbGMARs7oPv0zBbnBCg3mVpXbYWB29ysjJ68mP+
-	U19DRzZSplrsKQ4UbloEmpElJZWOtSnVThOy5+E=
-X-Google-Smtp-Source: AK7set9rs+ILWOkBKJw/zVqduFeL8iozDh1HegEgDtJki7MRSWO3g04Nej5a+5v8gT4EWbLZVlUsDg==
-X-Received: by 2002:a2e:98d6:0:b0:295:bab7:c7df with SMTP id s22-20020a2e98d6000000b00295bab7c7dfmr5392580ljj.38.1678279130617;
-        Wed, 08 Mar 2023 04:38:50 -0800 (PST)
+        bh=oTtKXLK78aDU2qs5a8I8JPZQK8pTgpAQGqampnPeGTc=;
+        b=gwS30rKxU/0q1Tusj5wpGtRpI4pP3EnO+J0fUxFTxBdJUf5NR+ngaYR8YA/4uEy+pL
+         wPNCVbB2dWR24VqvzxwT9/7zh5MDVJLK/mwsw8oieKjWRnaqTTe7exJFiPHl05RsrgIH
+         0696Ho7nIkUkvuFPrOOFpPqSH51djjxKaVp22KqewZF3bARSoA5Pf/9CHmXcGsePBl6m
+         3HQxAS+lAPlf0TJz1FKeD571v2uKpDJimxhCs5Y+rXbCMDtjOVP9k/NHw+xl14MJTqtM
+         MwLgYdKqzi20p6fL0dWcVH797qJwLBxfADMiMoTDiy1XHcX70HME//flsLeS8JCJBADo
+         iKng==
+X-Gm-Message-State: AO0yUKXzyWg0Kyxlm42I+bTIr1zF8pT+MxS3Ck6YlSA1JsMr0qss3YsE
+	d7l6WVIy6OWkw4JTHUjS29lHDVG9USqOHArsijk=
+X-Google-Smtp-Source: AK7set+Ghuvrfyh/cQK2j+G6FwfI6G31hcbElTDVD0jy/iOz4BoGql6KJabKIl1gjUDSOnQZcg1Dvg==
+X-Received: by 2002:a2e:6e15:0:b0:293:5164:4f2b with SMTP id j21-20020a2e6e15000000b0029351644f2bmr4870745ljc.8.1678279217653;
+        Wed, 08 Mar 2023 04:40:17 -0800 (PST)
 Received: from [192.168.2.180] (78-62-132-154.static.zebra.lt. [78.62.132.154])
-        by smtp.googlemail.com with ESMTPSA id l7-20020ac24a87000000b004b5ab5e904esm2350903lfp.306.2023.03.08.04.38.49
+        by smtp.googlemail.com with ESMTPSA id w3-20020a2e9983000000b00295b6b7e125sm2531862lji.24.2023.03.08.04.40.17
         for <ath10k@lists.infradead.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Mar 2023 04:38:50 -0800 (PST)
+        Wed, 08 Mar 2023 04:40:17 -0800 (PST)
 To: ath10k@lists.infradead.org
 From: Mantas <mantas@8devices.com>
-Subject: ath10k-firmware: QCA4019 hw1.0: Update 8devices Habanero specific
+Subject: ath10k-firmware: QCA4019 hw1.0: Update 8devices Jalapeno specific
  BDFs
-Message-ID: <3dcf3b55-b461-5b2e-d123-371533134d44@8devices.com>
-Date: Wed, 8 Mar 2023 14:38:48 +0200
+Message-ID: <76ce61b0-e122-5402-d9bf-f6e11b611603@8devices.com>
+Date: Wed, 8 Mar 2023 14:40:16 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------749A2B780C4B4FF0B4A7C118"
+ boundary="------------E97C81C24B7306865DA55A9C"
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230308_043855_347943_FEEDE9D3 
-X-CRM114-Status: UNSURE (   5.03  )
+X-CRM114-CacheID: sfid-20230308_044021_053784_D92EC59F 
+X-CRM114-Status: UNSURE (   5.04  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -91,11 +91,11 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 This is a multi-part message in MIME format.
---------------749A2B780C4B4FF0B4A7C118
+--------------E97C81C24B7306865DA55A9C
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-This updates 8devices Habanero BDF to fix temperature sensor readout.
+This updates 8devices Jalapeno BDF to fix temperature sensor readout.
 
 * description for what hardware this is:
 
@@ -111,24 +111,24 @@ This updates 8devices Habanero BDF to fix temperature sensor readout.
 * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
 
    - QCA4019 hw1.0
-     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Habanero
+     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Jalapeno
        md5sum:
-       16b805bd273526cdae8650931ff7c24f
-     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Habanero
+       047757f6ab01f7aa731997e607993116
+     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Jalapeno
        md5sum:
-       02f6f427acba54c19fd609045d097834
+       bdb7619af5e098e1d08aafb07324e1ce
 
 
 [1] 
 https://github.com/8devices/openwrt-8devices/commit/b908630864addfa32cd76c4c97dd0c0d79a7ce4a
 
---------------749A2B780C4B4FF0B4A7C118
+--------------E97C81C24B7306865DA55A9C
 Content-Type: application/octet-stream;
- name="bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Habanero.bin"
+ name="bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Jalapeno.bin"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment;
- filename*0="bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Haban";
- filename*1="ero.bin"
+ filename*0="bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Jalap";
+ filename*1="eno.bin"
 
 IC/CUAEBAAN/EjQWAAAAACpAAAAAYAAACgcAAAAAAAAQAAANMwAAABAAEAAAAAAAAAAAAAAA
 AAAAAAAAAAAAACkpMwEAAAAAADMzM/Ty8gA8FAYA+OOPP/jjjz/4448/AxQAAAAAAAAAAAAA
@@ -184,10 +184,10 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 kJB2dlRUTEY4ACMjHh4AAAAAAAA4KSUjIiIfAAAAFAf2+P7+FQAAADgpJSMiIiIfAAAdDAcC
 BAT9AAAADwABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAAmJCIgJiQiICwqKigkIh4c
-GhgsKiooJCIeHBoYLCoqKCQiHhwaGCwqKigkIh4cGhgsKiooJCIeHBoYLCoqKCQiHhwaGCwq
-KigkIh4cGhgsKiooJCIeHBoYLCwsKiYkIB4cGCwsLComJCAeHBgsLCwqJiQgHhwYLCwsKiYk
-IB4cGCwsLComJCAeHBgsLCwqJiQgHhwYLCwsKiYkIB4cGCwsLComJCAeHBgAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAAmJCIgJiQiICYiICAeHh4c
+HBwmIiAgHh4eHBwcJiIgIB4eHhwcHCYiICAeHh4cHBwmIiAgHh4eHBwcJiIgIB4eHhwcHCYi
+ICAeHh4cHBwmIiAgHh4eHBwcJCAeHh4eHBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4e
+HBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4eHBwcHCQgHh4eHhwcHBwAAAAAAAAAAAAA
 AAAAAAAAAAAAABEeERFBHkERMR4xEXB1en+EiY6TmHB1en+EiY6TmHB1en+EiY6TmAA8PDw8
 PDw8PLw8PDw8PDw8PLw8PDw8PDw8PLw8PDw8PDw8PLw8PDw8PDw8PLw8PDw8PDw8PLwSHhIu
 EswSERoeGi4aTBAeEBEYHkIeQi5CzEIRSh5KLkpMQB5AEUgeMh4yLjLMMhE6HjouOkwwHjAR
@@ -354,13 +354,13 @@ PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---------------749A2B780C4B4FF0B4A7C118
+--------------E97C81C24B7306865DA55A9C
 Content-Type: application/octet-stream;
- name="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Habanero.bin"
+ name="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Jalapeno.bin"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment;
- filename*0="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Haban";
- filename*1="ero.bin"
+ filename*0="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Jalap";
+ filename*1="eno.bin"
 
 IC9M8QEBEjRWeJAWAAAAABVAAAAAYAAAFScAAAAAAAARAAANMwAAAAAIGAgAAAAAAAAAAAAA
 AAAAAAAAAAAAABhQMwEAAAAAADMzM/Ty8gA8FAYA////P////z////8/AxQAAAAAAAAAAAAA
@@ -525,16 +525,16 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAABMUFhojKC0zExQWGiMoLTMTFBYaIygtMxMUFhojKC0zCoqKCYkIh4Y
-HhgqKigmJCIeGB4YKiooJiQiHhkeGSoqKCYkIh4ZHhkqKigmJCIeGh4aKiooJiQiHhoeGioq
-KCYkIh4aHhoqKigmJCIeGh4aKiooJiQiICAeHCoqKCYkIiAgHhwqKigmJCIgIB4cKiooJiQi
-ICAeHCoqKCYkIiAgHhwqKigmJCIgIB4cKiooJiQiHhoeGioqKCYkIh4aHhoqKigmJCIgIB4c
-KiooJiQiICAeHCoqKCYkIiAgHhwqKigmJCIgIB4cKiooJiQiICAeHCoqKCYkIiAgHhwqKigm
-JCIgIB4cKiooJiQiICAeHCoqKCYkIiAgHhwqKigmJCIgIB4cKiooJiQiICAeHCoqKCYkIiAg
-HhwqKigmJCIgIB4cKiooJiQiICAeHCoqKCYkIiAgHhwqKigmJCIgIB4cKigmJiQiICAeHCoo
-JiYkIiAgHhwqKCYmJCIgIB4cKigmJiQiICAeHCooJiYkIiAgHhwqKCYmJCIgIB4cKigmJiQi
-ICAeHCooJiYkIiAgHhwqKCYmJCIgIB4cKigmJiQiICAeHCooJiYkIiAgHhwqKCYmJCIgIB4c
-KigmJiQiICAeHCooJiYkIiAgHhwqKCYmJCIgIB4cKigmJiQiICAeHAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAABMUFhojKC0zExQWGiMoLTMTFBYaIygtMxMUFhojKC0zCYiICAeHh4c
+HBwmIiAgHh4eHBwcJiIgIB4eHhwcHCYiICAeHh4cHBwmIiAgHh4eHBwcJiIgIB4eHhwcHCYi
+ICAeHh4cHBwmIiAgHh4eHBwcJiIgIB4eHhwcHCYiICAeHh4cHBwmIiAgHh4eHBwcJiIgIB4e
+HhwcHCYiICAeHh4cHBwmIiAgHh4eHBwcJiIgIB4eHhwcHCYiICAeHh4cHBwkIB4eHh4cHBwc
+JCAeHh4eHBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4eHBwcHCQgHh4eHhwcHBwkIB4e
+Hh4cHBwcJCAeHh4eHBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4eHBwcHCQgHh4eHhwc
+HBwkIB4eHh4cHBwcJCAeHh4eHBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4eHBwcHCQg
+Hh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4eHBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4e
+HBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4eHBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwc
+JCAeHh4eHBwcHCQgHh4eHhwcHBwkIB4eHh4cHBwcJCAeHh4eHBwcHAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8ABEBQgUp0gAAEQEkEgAA
@@ -586,7 +586,7 @@ PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---------------749A2B780C4B4FF0B4A7C118
+--------------E97C81C24B7306865DA55A9C
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -597,5 +597,5 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---------------749A2B780C4B4FF0B4A7C118--
+--------------E97C81C24B7306865DA55A9C--
 
