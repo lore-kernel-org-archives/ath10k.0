@@ -4,95 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE975C74A4B
-	for <ath10k@archiver.kernel.org>; Fri, 10 Mar 2023 07:57:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E87C6FA99
+	for <ath10k@archiver.kernel.org>; Sun, 12 Mar 2023 19:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7eNF4hVmAGjMPgKiPFJUytU/35iu2EfWSMFJ67DK2q4=; b=voK/3+Bq1lcyWN
-	/1nh0XwxHpvljv6OwqYvi6t+EyL0sCnc2/tjsMIeipKtxu5Djp1g5sk4mwXR+ZWLOcibJFMogAexG
-	HraRtvf0YO/Onl7tp6RGwxT3CV88E4y+ViuIKf+O1BHECPiVwyoU0y+KkwBXLnacHxvVZQtxqIMrC
-	6UQNZcbm6jU4El9aJzJ/0dmWXm/2RLFT80ENEQoLo7X01WMzJJrLwYLiVH/PjykDNWDlQJoCT4bVd
-	HQmguUa6mrRgqVNRTzvzt2s/pCdJHx+nPVKf6dfid7TkV1BXnqIDqZlVLn/Rqg5AOqzwjPIqdM34s
-	bV4vxFt2MlO13bvPRmgQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Au/mnIpcmE4CjjDQBNSkWCnm5NZJ+lFrDP644ldeumY=; b=bF8FBIJD8gJGWM
+	jZmCYht6b3YIGAARlYrWCiOmhfENTOShjp1QLgDDupjsmdHLgY635Qbedgd3omhui0zo/mDA0ozVp
+	WGSMOw3U4J0B+HhxAzpoijyGKY6o4Xy7JAK/23XI+K8O6Nw+vuXNCQJc2pdVZZpmQ0nOu9IH48l+R
+	RGhRuMyVSWw2XCkJJ3q9SyTFCcysMhKT8P7LOUaMWS8AkGeqZwbkcKCx8MODspV453p+y1y/lFGYd
+	lGYvg9Z9sFZicxrNVc43/kpvnyS4++55hxbfHoODbTzcAmgOhX9z1yNa5YHlfykP1Qd6U5DKOfFOm
+	D0v9yhbl5r8gkWyMPWeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1paXcW-00DUai-7d; Fri, 10 Mar 2023 07:56:56 +0000
-Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
+	id 1pbRb7-003NxD-2H; Sun, 12 Mar 2023 19:43:13 +0000
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1paXcT-00DUZm-0E
-	for ath10k@lists.infradead.org; Fri, 10 Mar 2023 07:56:54 +0000
-Received: by mail-ed1-x529.google.com with SMTP id j11so17033394edq.4
-        for <ath10k@lists.infradead.org>; Thu, 09 Mar 2023 23:56:52 -0800 (PST)
+	id 1pbRb3-003NvC-US
+	for ath10k@lists.infradead.org; Sun, 12 Mar 2023 19:43:11 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id n2so13099763lfb.12
+        for <ath10k@lists.infradead.org>; Sun, 12 Mar 2023 12:43:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1678435011;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Na4vhlLIT8h87R1c4saJtnoc0rpStTN6SAaJv5Ui0DU=;
-        b=f/cdum7O6TN5gJ9ROGgx6QjE0oljMSgdfelOxJDv/A44aZ7Mm1unTj43LMrAl8qXD3
-         sHI50PXnWoUWOCaGf+Lw7NcDVU4NiPijijYupEKrMb/i7yVzAFSIs2Sdxro3W9NWDoHv
-         l0FZKC3iXGb6IU9h1xEP+L1xj0TStwEsdmZgH7BeJN1yxjzdFSB6oJFobXTUS45dVs0M
-         ULQH07khMas1d0aBIt/OjZLOHVTDe9lhbsnUreYNdh+WszcP/mDLVMMeWmaL4KFGK0LG
-         +5HnCCB4hC8JohJPmZdM8SSKIi+lKSrrSUXogyHzjsDGs1U97Mara0hXF/7LevUFdWY9
-         OvCg==
+        d=vtremblay.dev; s=google; t=1678650179;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=aoWDm6ZvoLUF7S3MwvjvsZ9EtvnX0w1eA+1a4fAYPFo=;
+        b=MRUo+6uH6ZRSO6/0ST6hEl8hFEHL+/Jlt/VITXca/2FVm/4cxI0W1u1DZJlbQ73Id5
+         3wU1T45GxE6PdWyx8K2NssDthOHNQGZ6LMCfPjDETu14Q66QpeTqF74EknyrXsv5mrUd
+         T3f5tDVZnMEm6fCmaiRXdXGC959bpLU5PKzg7m93YNSqg2iaywKKCkzwXR9QjjAPAMQZ
+         5nXphPs9wgpOPaspqMxBW/76eBSgtFxBVEZiQ+rXdoFtrHLz6VkOwUKMaoUUoY/6Tjay
+         u99Ijp7sb8YkgJJRGCTI3DCj1fAsd2TZT/Q2Vx0NY5kA0JzVA/Te7Z+CQhn19oux1pVJ
+         LUEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678435011;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Na4vhlLIT8h87R1c4saJtnoc0rpStTN6SAaJv5Ui0DU=;
-        b=e9GTGRPUYcDP9ALhhtnv2hrHDzSdenkYPH7oxZ6f4PiylUuQEcoTy4kfvjvPVKvblZ
-         X8MVITZflMKT9hqkaXCkbZdSA3364/B04jtfmugv6XWX+GwxehCsSrwkeD4HTJvc2MzS
-         PNiNFy3BVYVf79SLZRNrSqAie+GuHdPrDuEHKFYAPhO+l0bh8lyi+tNuV9i/kT76oKT3
-         lYYgz+e+cTW3ZODakLaBZKCAujBwBLozQbP8Yzg0FPhvboy4D/Dn3w/H7kCkpGUhjCCh
-         7lJuo4+cRPRCI7lWH+RKtvKxQMRp3WYW6tqAk884SMVT6+IlJGA1oDYuCUigXkvzxt+z
-         XcMA==
-X-Gm-Message-State: AO0yUKVA7eEhwU2sBBZYwOArzTmivHqhZL+VLvErDbnTeXyI+aJ32ueR
-	KrkF318mc9O3UMES28ItqnoTCQ==
-X-Google-Smtp-Source: AK7set83ouw7MBm0jqo5iH57IkMFwoOVUzIry7zQggJ4hxcJBeN03UC69xrHLWNGpiqGw+nvqtrohA==
-X-Received: by 2002:a17:906:eecc:b0:90b:167e:3050 with SMTP id wu12-20020a170906eecc00b0090b167e3050mr30865633ejb.36.1678435011591;
-        Thu, 09 Mar 2023 23:56:51 -0800 (PST)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id ox11-20020a170907100b00b008cf6f8798e1sm641097ejb.54.2023.03.09.23.56.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Mar 2023 23:56:50 -0800 (PST)
-Message-ID: <6108c68b-e38b-3060-f6fa-53be79a795d7@linaro.org>
-Date: Fri, 10 Mar 2023 07:56:49 +0000
+        d=1e100.net; s=20210112; t=1678650179;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aoWDm6ZvoLUF7S3MwvjvsZ9EtvnX0w1eA+1a4fAYPFo=;
+        b=FoOQ44tt1z/d17xLn9ydbZa98WABIpcJQYrpco8GFmgTsWCHEVSbxh7YTugjToJAyR
+         Qi9zkq6pm+py/Ol1GmnDzUzSO5ULli87LckR//0qZjyANjiEREjG7LaZEf9InbjIclmG
+         GZl9fbQkYZcraPK4kl6j3/guzJzIe75X0INe5MQ+8ECM7M87HaXm7UtlPkt4GQkFW6i9
+         fPW0u6S6cHs5msU2+c0QzvAvPA842mPAfQpYzeVxRXlx61/KeqHsNcOEPTDQYcP6AB+6
+         silGs+kV8NQtSS/ChDdJO04HIWRP7ayr+NJOsLhfVRqq8H5XbVQHfgBwocF1QDMVTDGw
+         gP5w==
+X-Gm-Message-State: AO0yUKWhaDLwEpECnWVzk/3a6Uc/x5Hyrk02OBQJIILDcApvgJg2GSiD
+	vyRTWQFc3D5bD1AB3FoPIQaM7fr5T6c7233BGXK91rJEA46gR5I5bAUqRg==
+X-Google-Smtp-Source: AK7set/JdhbmCYvzyVHpzDGiI6rd4IlV2eKMxhAp0xPqIhwVaAo0QYAyMSMBQ6DaHVbP4yZQyldvidpcE5x2Bn7Zdz4=
+X-Received: by 2002:ac2:51aa:0:b0:4dc:807a:d14a with SMTP id
+ f10-20020ac251aa000000b004dc807ad14amr9784883lfk.9.1678650178750; Sun, 12 Mar
+ 2023 12:42:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v1 01/15] dt-bindings: add pwrseq device tree bindings
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Rob Herring <robh@kernel.org>
-Cc: Andy Gross <agross@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, Marcel Holtmann <marcel@holtmann.org>,
- Johan Hedberg <johan.hedberg@gmail.com>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Kalle Valo <kvalo@codeaurora.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Stanimir Varbanov <svarbanov@mm-sol.com>,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
- ath10k@lists.infradead.org, linux-wireless <linux-wireless@vger.kernel.org>,
- netdev <netdev@vger.kernel.org>, Abel Vesa <abel.vesa@linaro.org>
-References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
- <20211006035407.1147909-2-dmitry.baryshkov@linaro.org>
- <YXf6TbV2IpPbB/0Y@robh.at.kernel.org>
- <37b26090-945f-1e17-f6ab-52552a4b6d89@linaro.org>
- <CAL_JsqLAnJqZ95_bf6_fFmPJFMjuy43UfP2UxzEmFMNnG_t-Ug@mail.gmail.com>
- <31792ef1-20b0-b801-23b7-29f303b91def@linaro.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <31792ef1-20b0-b801-23b7-29f303b91def@linaro.org>
+From: Vincent Tremblay <vincent@vtremblay.dev>
+Date: Sun, 12 Mar 2023 15:42:47 -0400
+Message-ID: <CA+RD57MwUfAzF2u31Ews4uT0+A6uhjwwd40O=9uyZihap4nxdA@mail.gmail.com>
+Subject: [PATCH v2] wifi: ath10k: read qcom,coexist-support as a u32
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Vincent Tremblay <vincent@vtremblay.dev>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230309_235653_079320_6B4D0AD4 
-X-CRM114-Status: GOOD (  31.07  )
+X-CRM114-CacheID: sfid-20230312_124310_134484_4FCA0FAD 
+X-CRM114-Status: GOOD (  15.87  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,88 +76,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Read qcom,coexist-support as a u32 instead of a u8
 
+When we set the property to <1> in the DT (as specified in the doc),
+"of_property_read_u8" read 0 instead of 1. This is because of the data format.
 
-On 02/11/2021 15:26, Dmitry Baryshkov wrote:
-> On 28/10/2021 00:53, Rob Herring wrote:
->> On Tue, Oct 26, 2021 at 9:42 AM Dmitry Baryshkov
->> <dmitry.baryshkov@linaro.org> wrote:
->>>
->>> On 26/10/2021 15:53, Rob Herring wrote:
->>>> On Wed, Oct 06, 2021 at 06:53:53AM +0300, Dmitry Baryshkov wrote:
->>>>> Add device tree bindings for the new power sequencer subsystem.
->>>>> Consumers would reference pwrseq nodes using "foo-pwrseq" properties.
->>>>> Providers would use '#pwrseq-cells' property to declare the amount of
->>>>> cells in the pwrseq specifier.
->>>>
->>>> Please use get_maintainers.pl.
->>>>
->>>> This is not a pattern I want to encourage, so NAK on a common binding.
->>>
->>>
->>> Could you please spend a few more words, describing what is not
->>> encouraged? The whole foo-subsys/#subsys-cells structure?
->>
->> No, that's generally how common provider/consumer style bindings work.
->>
->>> Or just specifying the common binding?
->>
->> If we could do it again, I would not have mmc pwrseq binding. The
->> properties belong in the device's node. So don't generalize the mmc
->> pwrseq binding.
->>
->> It's a kernel problem if the firmware says there's a device on a
->> 'discoverable' bus and the kernel can't discover it. I know you have
->> the added complication of a device with 2 interfaces, but please,
->> let's solve one problem at a time.
+By default <1> is written with 32 bits.
+The problem is that the driver is trying to read a u8.
 
-Just to keep this topic updated with some pointers [1] to changes done 
-to solve same problem in USB Hub. These patches 
-(drivers/usb/misc/onboard_usb_hub*) have been merged since last year July.
+The difference can be visualized using hexdump in a running device:
+Default 32 bits output:
+=======================
+0000000 0000 0100
+0000004
 
-It looks like we can take some inspiration from this to address PCIE Bus 
-issue aswell.
+8 bits output:
+==============
+0000000 0001
+0000001
 
-Thanks to Neil to point this.
+By changing "of_property_read_u8" by "of_property_read_u32", the driver
+is aligned with the documentation and is able to read the value without
+modifying the DT.
 
-[1] 
-https://lore.kernel.org/lkml/20220630193530.2608178-1-mka@chromium.org/T/
+The other solution would be to force the value in the DT to be saved as
+an 8 bits value (qcom,coexist-support = /bits/ 8 <1>),
+which is against the doc and less intuitive.
 
+Validation:
+===========
+The patch was tested on a real device and we can see in the debug logs
+that the feature is properly initialized:
 
---srini
-> 
-> The PCI bus handling is a separate topic for now (as you have seen from 
-> the clearly WIP patches targeting just testing of qca6390's wifi part).
-> 
-> For me there are three parts of the device:
-> - power regulator / device embedded power domain.
-> - WiFi
-> - Bluetooth
-> 
-> With the power regulator being a complex and a bit nasty beast. It has 
-> several regulators beneath, which have to be powered up in a proper way.
-> Next platforms might bring additional requirements common to both WiFi 
-> and BT parts (like having additional clocks, etc). It is externally 
-> controlled (after providing power to it you have to tell, which part of 
-> the chip is required by pulling up the WiFi and/or BT enable GPIOs.
-> 
-> Having to duplicate this information in BT and WiFi cases results in 
-> non-aligned bindings (with WiFi and BT parts using different set of 
-> properties and different property names) and non-algined drivers (so the 
-> result of the powerup would depend on the order of drivers probing).
-> 
-> So far I still suppose that having a single separate entity controlling 
-> the powerup of such chips is the right thing to do.
-> 
-> I'd prefer to use the power-domain bindings (as the idea seems to be 
-> aligned here), but as the power-domain is used for the in-chip power 
-> domains, we had to invent the pwrseq name.
-> 
+[  109.102097] ath10k_ahb a000000.wifi: boot coex_support 1 coex_gpio_pin 52
+
+Signed-off-by: Vincent Tremblay <vincent@vtremblay.dev>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c
+b/drivers/net/wireless/ath/ath10k/core.c
+index 5eb131ab916f..802d6a12dc1e 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2355,14 +2355,14 @@ static int ath10k_download_cal_data(struct ath10k *ar)
+ static void ath10k_core_fetch_btcoex_dt(struct ath10k *ar)
+ {
+        struct device_node *node;
+-       u8 coex_support = 0;
++       u32 coex_support = 0;
+        int ret;
+
+        node = ar->dev->of_node;
+        if (!node)
+                goto out;
+
+-       ret = of_property_read_u8(node, "qcom,coexist-support", &coex_support);
++       ret = of_property_read_u32(node, "qcom,coexist-support", &coex_support);
+        if (ret) {
+                ar->coex_support = true;
+                goto out;
 
 _______________________________________________
 ath10k mailing list
