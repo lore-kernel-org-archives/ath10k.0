@@ -4,58 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AF37C6FD19
-	for <ath10k@archiver.kernel.org>; Mon, 13 Mar 2023 06:40:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABC62C61DA4
+	for <ath10k@archiver.kernel.org>; Mon, 13 Mar 2023 17:31:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XqfRjLWXkiG5Wb43kz+A8dFCbRihi6JgBvYqN0QuBEA=; b=yyQnLhEvCCndvN
-	blPZ5vmBKSLl3H2eV6Hk+sMpE70oZxZxHoRVmZ1TuxYP5VFiHmoL4aAYKDhzN0v82jPXQXg2g8fsA
-	ShBW6EUZUEVlCFgqFnueTiae25xzlG9kzXscLV4vXmkJop1IthjKD4xcIBO37YzycfO9iv8J8RhzV
-	AK1aPa8ZHufnXoWn36HbFTuoTbgrEgtirFl0WHszQ0djWPTtre7v0LiOYAlzfhUHnP7/21Gklrv8v
-	K6wIIv5291YrfRA3U7YKOri69Qh4aaoluQDXicc6H8zMle5wk1Q+HL4xe5iXOZ5/02sMMwyyXbF8x
-	C1qy8hVS/vBkEp1/EIVg==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:
+	Subject:To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=CtGsjlSBAX9Wiu4IdJ1A2TfsjuelwYZUXTZ7nW5S8YA=; b=qjy4tr/1N0U50z
+	cQNwi+VCwooZNkje7M/0ZB3OYdu4C7GGv/QzKyUut18VLXWAgK88XglcZuE9Mew04EtUmtZxH30s3
+	wMxc+aGgvfNPtmtiMCMS72MrGgyHRjqWZ4F0SDTLqFmKw/xPbe1VprwUxGPDvOu42A9fTgBCX6zje
+	FYYT3jjCu24m7+RwZ/uWcvBS/uESdNbdOr34Y6v6+gtiKW9IyvGUEc/pFAoQV0qtqybKpHKMZZhOG
+	0jsSZHiT7pQaboVq+DuLfAFLrQAnudp3RoAkDkcxTBtbKDp6eT4cu8YbNzZ8i+yt3TcJq/+Ql1Vsw
+	+54lITiH6Vh3D9i7O3ew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pbbqG-004UPS-G3; Mon, 13 Mar 2023 06:39:32 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1pbm1S-0078Bt-TD; Mon, 13 Mar 2023 17:31:48 +0000
+Received: from [103.30.145.160] (helo=defaultworkshop.klidefectmanagement.com.novalocal)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pbbqA-004UOt-Um
-	for ath10k@lists.infradead.org; Mon, 13 Mar 2023 06:39:29 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 5B724CE0C4F;
-	Mon, 13 Mar 2023 06:39:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D845BC433EF;
-	Mon, 13 Mar 2023 06:39:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678689561;
-	bh=YhY5bTcA62cTrlA63Mq3LC3b1cNGNJkrBXgaaTWRNwc=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=UgqqTYOdf16PGs5hs0m+TNKJOHZ7DQ69VdD/DGaoqsivRfuQ2NYn4Z4i0k+ofsTvs
-	 nyiGMcVYBQ5o3lO6N0QjVQYm7HuHrhNw2Az2mlYf2Oo99eECKNQnPqA6O1K/3VGHdU
-	 C8a/UZEv8WCHNLCfblw330QNRi5e4oqu4JJGL52/bKFvzdvJ+4EX1IezA3GT6asx0A
-	 2Gl/37PXqwYSgdGJn23MjlC9t4MAUifGTnU1ExS9nRvGg7S5hdCNN+8P4b8vKarfje
-	 8Tw3rWC0cL8vUci1BQsUb9OKOzpxVomPzjYsAU/rf3GX53U/sM4IagGq+8Or21A4Pm
-	 MjcBfAXDrqoeg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Vincent Tremblay <vincent@vtremblay.dev>
-Cc: ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org
-Subject: Re: [PATCH v2] wifi: ath10k: read qcom,coexist-support as a u32
-References: <CA+RD57MwUfAzF2u31Ews4uT0+A6uhjwwd40O=9uyZihap4nxdA@mail.gmail.com>
-Date: Mon, 13 Mar 2023 08:39:17 +0200
-In-Reply-To: <CA+RD57MwUfAzF2u31Ews4uT0+A6uhjwwd40O=9uyZihap4nxdA@mail.gmail.com>
-	(Vincent Tremblay's message of "Sun, 12 Mar 2023 15:42:47 -0400")
-Message-ID: <873569p33e.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+	id 1pblys-00775B-Ew
+	for ath10k@lists.infradead.org; Mon, 13 Mar 2023 17:29:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=asda.co.uk;
+	s=x; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:
+	Subject:To:From:Reply-To:Sender:Cc:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
+	List-Owner:List-Archive; bh=yQ2DpaTtF/o3hQPEE+fO9PF4Tl9KpVOY4i4byTbW+cc=; b=X
+	WNRBz2tkfSI5qAKtQ9LF1ORY/R0IIzWlpVcv/Bwfa37L1vQtvlU9kj61U5GF7leBlTdprfG2GlgQ3
+	MeHpWdIYIZ+e6bPQ4dEmuxuop0h3Ptoq94I3XyPRvoqSoaQXsRjFxR7yLQNYK4ldNfzrwM1ZeH2XX
+	kRYr+R5jsY6MlXDU=;
+Received: from ec2-52-11-215-80.us-west-2.compute.amazonaws.com ([52.11.215.80] helo=asda.co.uk)
+	by defaultworkshop.klidefectmanagement.com.novalocal with esmtpa (Exim 4.94.2)
+	(envelope-from <sales1@asda.co.uk>)
+	id 1pblyq-00067Y-07
+	for ath10k@lists.infradead.org; Tue, 14 Mar 2023 00:29:04 +0700
+From: ASDA Stores Limited <sales1@asda.co.uk>
+To: ath10k@lists.infradead.org
+Subject: First quarter procurement order/enquiry
+Date: 13 Mar 2023 17:29:03 +0000
+Message-ID: <20230313152049.997BDEF6DD2D8EEF@asda.co.uk>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230312_233928_255630_3E88F0F6 
-X-CRM114-Status: GOOD (  19.25  )
+X-CRM114-CacheID: sfid-20230313_102907_918393_EA3E1F87 
+X-CRM114-Status: UNSURE (  -0.82  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,56 +60,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Reply-To: sales@asda-c.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Vincent Tremblay <vincent@vtremblay.dev> writes:
+Dear ath10k
+I'm a procurement manager  with ASDA Group (the owners of ASDA 
+Stores) and your company product has caught our interest. 
+Therefore, we request you send
+list and prices of your hot selling items (products) for our 
+evaluation/pick.
 
-> Read qcom,coexist-support as a u32 instead of a u8
->
-> When we set the property to <1> in the DT (as specified in the doc),
-> "of_property_read_u8" read 0 instead of 1. This is because of the data format.
->
-> By default <1> is written with 32 bits.
-> The problem is that the driver is trying to read a u8.
->
-> The difference can be visualized using hexdump in a running device:
-> Default 32 bits output:
-> =======================
-> 0000000 0000 0100
-> 0000004
->
-> 8 bits output:
-> ==============
-> 0000000 0001
-> 0000001
->
-> By changing "of_property_read_u8" by "of_property_read_u32", the driver
-> is aligned with the documentation and is able to read the value without
-> modifying the DT.
->
-> The other solution would be to force the value in the DT to be saved as
-> an 8 bits value (qcom,coexist-support = /bits/ 8 <1>),
-> which is against the doc and less intuitive.
->
-> Validation:
-> ===========
-> The patch was tested on a real device and we can see in the debug logs
-> that the feature is properly initialized:
->
-> [  109.102097] ath10k_ahb a000000.wifi: boot coex_support 1 coex_gpio_pin 52
->
-> Signed-off-by: Vincent Tremblay <vincent@vtremblay.dev>
+Soon as we receive your reply, we shall send you our company 
+profile and buying proposal. You can also check our website below 
+for detailed info of our purchase area and trading capacity.
 
-What are the changes in v2? Please always include a list of changes,
-more info in the wiki below.
+Your immediate response E-mail:  sales@asda-c.com   shall be 
+appreciated.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Best Wishes
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Ms Stelle Montgomery
+Purchasing Dept.
+ASDA Stores Limited
+Tel:  +44 7418367220
+WhatsApp: + 44-7502985874
+Website: www.asda.com
 
 _______________________________________________
 ath10k mailing list
