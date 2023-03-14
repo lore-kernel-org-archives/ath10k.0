@@ -4,58 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 998A9C6FD19
-	for <ath10k@archiver.kernel.org>; Mon, 13 Mar 2023 18:29:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F61FC6FD19
+	for <ath10k@archiver.kernel.org>; Tue, 14 Mar 2023 00:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
-	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fmE2II0N8MYRrUubzl8RRIoAev96WFZ4ogxqtt7a8Ac=; b=qkEEdtHof8DkSu
-	z6LLVhKgBgcQn3HI3PVL3bfxtP3cwcM+t7prQ7c66UZVtbtgQZzzCSWV252RPoC/yNaxVtvkubrm8
-	2bCg6KEtDpPbkQbTvRJFBDr8oWZaXjZAkFl3AuqaUAz1M+jdteDHKNe2OnoMEfpVcHNm019Ix2LPW
-	VLfetuvbkkCT9mGfhV4v4GKWdDcjfHkXPkbRsCfKVh+Rj7r81aM3Y4p8DoXnfMMpJOesMIDORV1BS
-	ObvMEthbWFE4NQKEIVdqDskJuOTYw0L9sF3hjf8GEju2xsA2N+HyANyxhjbnw5H07UhovKU9pPF5F
-	WQeyALHevoLcw7ee+Dfg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=tAqjLnQkAG4+yZuNWlPp5227GNbPcn+Vhb52/FFRGdM=; b=Ib77E09RlkqYDO
+	SqK0n7223SGtpiUcaTvOvI73cvdbI0lBfId3c5QBL7ItM3890QGwQ8a3GGQq9RY3i06UUMhSh5u3q
+	0fCDH4pGmPhDDtutvqnDPCa1nRvJX4YiEoSwr8nOwPoexNhI7wYEPy4tM0uhBv5VsBW2+DG7f335n
+	Ki6yB2cMPflyNnKumBzafuA9+VfkhjYMjYwI5h9XCx6kH7c8uF7PvR1cOwaYNZk3GGwkH06BBSj4M
+	fnez324wILY1YuX55qHu3/6dFDqfr2l8pJMiMlXjcqu10EwkGDYVyxa0UOFUwyH7JQO85xJdbQp3u
+	uiZhMvI3QZhCey0oXFHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pbmux-007IiX-0T; Mon, 13 Mar 2023 18:29:07 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1pbsVM-008Plk-1r; Tue, 14 Mar 2023 00:27:04 +0000
+Received: from mga09.intel.com ([134.134.136.24])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pbmut-007Ii9-Tj
-	for ath10k@lists.infradead.org; Mon, 13 Mar 2023 18:29:05 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 34AD5B811D8;
-	Mon, 13 Mar 2023 18:29:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1C7EC433D2;
-	Mon, 13 Mar 2023 18:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678732140;
-	bh=KDQ88u+goxlApfNXunHcZS4KKdnQNzBLDOl5twt2rdE=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=WigvBTkkFSGefA8mS7GEN/M03ll/ZRujAICxeK9QF+ZOBmoxhe0nFBcyXxKxNg0fT
-	 URC0QXtoipXplmqouAX2qjSV7WR9hx16XlLAG8fFbzwA64KVARkcmmhZvwIZhcglpj
-	 7+x0n+K2QgEEUyOIHqmbPbgsj8DWTduO2VcgqtD6tZeFFIpHWDOVfL5lOAB60qnxkz
-	 KCk09nIBPrLTIoBPYnkYoR2smFqup/xF2ee2UpA6AE5cAm5vsBsySBCkWkIjLatNz1
-	 cA81cbEaztgHbiDiIlk/5Wk5jvtsXJTHPpQSoTK994ZmB3jNCjpxkKyqbIJrW/A/Zw
-	 gxGCWZtdFCcZA==
+	id 1pbsVH-008PlL-FE
+	for ath10k@lists.infradead.org; Tue, 14 Mar 2023 00:27:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678753619; x=1710289619;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ia4+hQIHQEpJ5FJEz6k2lo4/3zxoE6eBixqYYATmOSU=;
+  b=dwFQoFl1/cWx+N+lcvsDH2OwQ3vtTTmFpfeBkBKmJ7Ec7OFf7T61IqJQ
+   CKK5x9pjGisoQRuidSlamKYWkxUfPWMz/Q5WGwF3Zfx5sCbSDbzt3L5Sf
+   HJ0oSQPe10/gMwEgCScRLmbSH0BNOWV606dbwNokTCUcXVs/Odv+n9gPm
+   wUz66VBgFgLt+P9f3RRMnkGJMLSLAN6tSRBZ5KWnYOD3rigooFtCiKV4c
+   gvv4wgyPiMnFm8Qbd2yo23fl3iQo0ec1z2ZBOJKnH3zQQ/wgkW/Tkz/JD
+   NpMbgQoyFniUlOwpuf0BaN5OYpEtde5CezRpCoHfAOr/JCTzh38iXyHFk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="338840818"
+X-IronPort-AV: E=Sophos;i="5.98,258,1673942400"; 
+   d="scan'208";a="338840818"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2023 17:26:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="747797982"
+X-IronPort-AV: E=Sophos;i="5.98,258,1673942400"; 
+   d="scan'208";a="747797982"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Mar 2023 17:26:55 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1pbsVC-0006IG-2u;
+	Tue, 14 Mar 2023 00:26:54 +0000
+Date: Tue, 14 Mar 2023 08:26:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ e238e62ba8868a784e485eb94451c87cd1b85cee
+Message-ID: <640fbf3c.AwcoYA1D2JQ6eYhO%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] wifi: ath10k: read qcom,coexist-support as a u32
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To:  <CA+RD57MwUfAzF2u31Ews4uT0+A6uhjwwd40O=9uyZihap4nxdA@mail.gmail.com>
-References:  <CA+RD57MwUfAzF2u31Ews4uT0+A6uhjwwd40O=9uyZihap4nxdA@mail.gmail.com>
-To: Vincent Tremblay <vincent@vtremblay.dev>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- Vincent Tremblay <vincent@vtremblay.dev>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <167873213607.17591.12426656381855505512.kvalo@kernel.org>
-Date: Mon, 13 Mar 2023 18:28:59 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230313_112904_145660_6CD42687 
-X-CRM114-Status: GOOD (  17.57  )
+X-CRM114-CacheID: sfid-20230313_172659_606916_598C2C75 
+X-CRM114-Status: UNSURE (   6.08  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,56 +82,151 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Vincent Tremblay <vincent@vtremblay.dev> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: e238e62ba8868a784e485eb94451c87cd1b85cee  wifi: ath11k: add debug prints in regulatory WMI event processing
 
-> Read qcom,coexist-support as a u32 instead of a u8
-> 
-> When we set the property to <1> in the DT (as specified in the doc),
-> "of_property_read_u8" read 0 instead of 1. This is because of the data format.
-> 
-> By default <1> is written with 32 bits.
-> The problem is that the driver is trying to read a u8.
-> 
-> The difference can be visualized using hexdump in a running device:
-> Default 32 bits output:
-> =======================
-> 0000000 0000 0100
-> 0000004
-> 
-> 8 bits output:
-> ==============
-> 0000000 0001
-> 0000001
-> 
-> By changing "of_property_read_u8" by "of_property_read_u32", the driver
-> is aligned with the documentation and is able to read the value without
-> modifying the DT.
-> 
-> The other solution would be to force the value in the DT to be saved as
-> an 8 bits value (qcom,coexist-support = /bits/ 8 <1>),
-> which is against the doc and less intuitive.
-> 
-> Validation:
-> ===========
-> The patch was tested on a real device and we can see in the debug logs
-> that the feature is properly initialized:
-> 
-> [  109.102097] ath10k_ahb a000000.wifi: boot coex_support 1 coex_gpio_pin 52
-> 
-> Signed-off-by: Vincent Tremblay <vincent@vtremblay.dev>
+elapsed time: 731m
 
-Fails to apply:
+configs tested: 129
+configs skipped: 13
 
-error: git diff header lacks filename information when removing 1 leading pathname component (line 6)
-stg import: Diff does not apply cleanly
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Patch set to Changes Requested.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r026-20230313   gcc  
+alpha                randconfig-r032-20230312   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r011-20230313   gcc  
+arc                  randconfig-r013-20230313   gcc  
+arc                  randconfig-r031-20230312   gcc  
+arc                  randconfig-r033-20230312   gcc  
+arc                  randconfig-r043-20230312   gcc  
+arc                  randconfig-r043-20230313   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r001-20230312   gcc  
+arm                  randconfig-r006-20230313   clang
+arm                  randconfig-r033-20230313   clang
+arm                  randconfig-r046-20230312   clang
+arm                  randconfig-r046-20230313   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r004-20230312   clang
+arm64                randconfig-r006-20230312   clang
+arm64                randconfig-r034-20230313   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r032-20230313   gcc  
+hexagon              randconfig-r041-20230312   clang
+hexagon              randconfig-r041-20230313   clang
+hexagon              randconfig-r045-20230312   clang
+hexagon              randconfig-r045-20230313   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-a001-20230313   gcc  
+i386                 randconfig-a002-20230313   gcc  
+i386                 randconfig-a003-20230313   gcc  
+i386                 randconfig-a004-20230313   gcc  
+i386                 randconfig-a005-20230313   gcc  
+i386                 randconfig-a006-20230313   gcc  
+i386                 randconfig-a011-20230313   clang
+i386                 randconfig-a012-20230313   clang
+i386                 randconfig-a013-20230313   clang
+i386                 randconfig-a014-20230313   clang
+i386                 randconfig-a015-20230313   clang
+i386                 randconfig-a016-20230313   clang
+i386                 randconfig-r004-20230313   gcc  
+i386                 randconfig-r022-20230313   clang
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r011-20230312   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r003-20230312   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r001-20230313   gcc  
+loongarch            randconfig-r025-20230312   gcc  
+m68k                             allmodconfig   gcc  
+m68k         buildonly-randconfig-r001-20230312   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r002-20230313   gcc  
+m68k                 randconfig-r005-20230312   gcc  
+m68k                 randconfig-r014-20230313   gcc  
+m68k                 randconfig-r023-20230312   gcc  
+m68k                 randconfig-r035-20230313   gcc  
+microblaze   buildonly-randconfig-r005-20230312   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r015-20230313   gcc  
+mips                 randconfig-r023-20230313   gcc  
+nios2        buildonly-randconfig-r006-20230312   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r022-20230312   gcc  
+openrisc             randconfig-r003-20230312   gcc  
+openrisc             randconfig-r014-20230312   gcc  
+openrisc             randconfig-r035-20230312   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r024-20230313   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r012-20230312   gcc  
+powerpc              randconfig-r021-20230313   clang
+powerpc              randconfig-r024-20230312   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r042-20230312   gcc  
+riscv                randconfig-r042-20230313   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390         buildonly-randconfig-r002-20230312   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r005-20230313   gcc  
+s390                 randconfig-r013-20230312   gcc  
+s390                 randconfig-r031-20230313   gcc  
+s390                 randconfig-r044-20230312   gcc  
+s390                 randconfig-r044-20230313   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r036-20230312   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r025-20230313   gcc  
+sparc                randconfig-r026-20230312   gcc  
+sparc64      buildonly-randconfig-r002-20230313   gcc  
+sparc64              randconfig-r012-20230313   gcc  
+sparc64              randconfig-r021-20230312   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230313   gcc  
+x86_64               randconfig-a002-20230313   gcc  
+x86_64               randconfig-a003-20230313   gcc  
+x86_64               randconfig-a004-20230313   gcc  
+x86_64               randconfig-a005-20230313   gcc  
+x86_64               randconfig-a006-20230313   gcc  
+x86_64               randconfig-a011-20230313   clang
+x86_64               randconfig-a012-20230313   clang
+x86_64               randconfig-a013-20230313   clang
+x86_64               randconfig-a014-20230313   clang
+x86_64               randconfig-a015-20230313   clang
+x86_64               randconfig-a016-20230313   clang
+x86_64                               rhel-8.3   gcc  
+xtensa       buildonly-randconfig-r001-20230313   gcc  
+xtensa               randconfig-r002-20230312   gcc  
+xtensa               randconfig-r016-20230312   gcc  
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/CA+RD57MwUfAzF2u31Ews4uT0+A6uhjwwd40O=9uyZihap4nxdA@mail.gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
 
 _______________________________________________
 ath10k mailing list
