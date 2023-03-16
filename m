@@ -4,69 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F013C61DA4
-	for <ath10k@archiver.kernel.org>; Thu, 16 Mar 2023 02:22:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57196C6FD1D
+	for <ath10k@archiver.kernel.org>; Thu, 16 Mar 2023 03:18:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VMkLXM28Q1SsxC+xvSImEbTLHQY3Qoya77o+XGAb3oQ=; b=rfkal1/K0PP1zX
-	0dn64ec/NjffPU+5KPctFj0ltvVFT4Y96QdN16zKdbStrdeKN2Mk9op9w4hLEEFQaGqVX9vRZ4PKt
-	H4o77viqiU4DvQ3hQhSpqaktEG/rV2m7O2FKgB+MP28qBSsZCFIBykM6JaPG3+K+L5MzJmatHTdPI
-	TLThSxVwPIWbNPuVKKHCk2+tiuV5QHesDRYzPnAO9vd2bhq1y5/H7Y0mfFY97MsqVcHd5cddKQ1Jp
-	/9pTiIQFP/yDGDrnx2/QU+a2i8+4bmo9UMD8ndr4bDrfZqk5EIgUHd/xokgHmAQHvEodAZ8PKgZWV
-	81BopnfqFcr9dm56X6Dg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=0Z+n6bUA37WH0uGwtaxkXpAuY1ewB3dlKR/ayq50/Gs=; b=HCTLb/As+/HX72
+	cAu8yomxjJciZrOzXVcVSlNM2SBvTM336WtkzkDGMGnE40hSXP2U5BGfRtfOp1l6/jYtdN8Q04kZP
+	5T9HqxcjdYxea7KUX58FFBfDW3sw6hf7PFkuuLU+gkgjrrZ1AyG0/62ZIeDcWH6jmgyzVedLlMCQC
+	y6mV7OPpKrwgeEClZS6vHgKGFjI4RAi8a0Fm8xR2iak4ar15n+l5fJhHVQmp5BPAi9EdgN6CHm+Su
+	U7DpgC3l/voJPyQb5Ocvo25dk6Lo2VAb5TnejN1Aa4AivABf9fUiqg5zwbPF4biBfRXotHUD4Bj1e
+	s26uJNN7ljOVIp+qlFGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pcdFl-00EyHr-06;
-	Thu, 16 Mar 2023 02:22:05 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1pce7z-00F4nS-1u;
+	Thu, 16 Mar 2023 03:18:07 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pcdFg-00EyH4-0D
-	for ath10k@lists.infradead.org;
-	Thu, 16 Mar 2023 02:22:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678933320; x=1710469320;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=EqeU9sKbuJyJbjaGbX1AGkACg2KoM41Kn568r3PnmR8=;
-  b=PBW6ETqCeFmLXoT6LqdOVbQnVE5rMP1TOrDvFpdXdLSSvs+lS2V9KREu
-   x5ZZTXRC5OZI/R0rfhXNrxX2tKeQ48ebNXEtvqg+ZLxdGUQ6W6o7Ijy6V
-   MW64iap2i2UL2G2wXcftRSXH6jsoMaJMPpfPEBm9ffaAT2o+NTUeYqjDp
-   KFPd7saBLlRDwDjcClS3RbiGve3C3K8Ixr8dNg7fMx7bwg9AK4oTOKHTP
-   kEznOJTULvRdnNaMm/oEzYu9et8qWi9DNiJRRcGknsq0kQ+W4Z1nKpWFQ
-   V3IKkdMPtWe7ADQn3f7srLN0/O+SjUE9kuzEJy8jXtmDKETXdriLnH3Jp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10650"; a="340234315"
-X-IronPort-AV: E=Sophos;i="5.98,264,1673942400"; 
-   d="scan'208";a="340234315"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2023 19:21:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10650"; a="629685578"
-X-IronPort-AV: E=Sophos;i="5.98,264,1673942400"; 
-   d="scan'208";a="629685578"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 15 Mar 2023 19:21:18 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pcdEz-0008FN-1v;
-	Thu, 16 Mar 2023 02:21:17 +0000
-Date: Thu, 16 Mar 2023 10:20:19 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 5c783f7cdcbee5a036bb42e3cb4b94c576e04679
-Message-ID: <64127ce3.Z0m2pIey4JEFI2Ry%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+	id 1pce7w-00F4mJ-2c;
+	Thu, 16 Mar 2023 03:18:06 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 85B49B81FB3;
+	Thu, 16 Mar 2023 03:18:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE274C433AE;
+	Thu, 16 Mar 2023 03:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1678936682;
+	bh=y0sZoUeFff+6cDV3HaVMqB5f4yIzmgYZdM8d6h5o3pc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=jawiJkp4F2oYL3A1ptkMbLijjPnwxZp3UEKvAHclV5SnuNbnvSKtEvzsA5/2zLFX1
+	 wNhl3Zja0S9RiC6c6bD5aJ5EDGoejYe2Q/W4Vqyf2ipXCkD7RERM0xTkL5tBHBmYt0
+	 uNmGObR85LSgDkI6ZAhx09n+b+bA1g734mcxcies2Dd4UAa2enhH1EHydVBWDzFQyH
+	 qYLuQ3LGLLxZ7bQl/kv9TiHXU5iRi4PENdtAc6jrSCWOOPZB4XNptSZ4Tau1K/qHAz
+	 4hgcG/tmkkee1FWYq1YSJ4cL3D3TRPVAyalv3ZCpfpl8WMXTtiBop9i10FzPY+51Ia
+	 0L8sJJUIiXpHg==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	Andy Gross <agross@kernel.org>,
+	Alex Elder <elder@linaro.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Elliot Berman <quic_eberman@quicinc.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Amol Maheshwari <amahesh@qti.qualcomm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Bagas Sanjaya <bagasdotme@gmail.com>,
+	ath10k@lists.infradead.org,
+	Jassi Brar <jassisinghbrar@gmail.com>,
+	linux-wireless@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	linux-remoteproc@vger.kernel.org,
+	Carl van Schaik <quic_cvanscha@quicinc.com>,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	netdev@vger.kernel.org,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Murali Nalajala <quic_mnalajal@quicinc.com>,
+	Will Deacon <will@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
+	Marc Zyngier <maz@kernel.org>,
+	linux-doc@vger.kernel.org,
+	Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+	Trilok Soni <quic_tsoni@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: (subset) [PATCH v9 17/27] firmware: qcom_scm: Use fixed width src vm bitmap
+Date: Wed, 15 Mar 2023 20:21:02 -0700
+Message-Id: <167893686406.303819.2573416221076147237.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230120224627.4053418-18-quic_eberman@quicinc.com>
+References: <20230120224627.4053418-1-quic_eberman@quicinc.com> <20230120224627.4053418-18-quic_eberman@quicinc.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230315_192200_145481_470DFA63 
-X-CRM114-Status: UNSURE (   5.00  )
+X-CRM114-CacheID: sfid-20230315_201804_997855_9B59A107 
+X-CRM114-Status: UNSURE (   9.29  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -84,153 +110,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 5c783f7cdcbee5a036bb42e3cb4b94c576e04679  Merge branch 'ath-next' into ath-qca
+On Fri, 20 Jan 2023 14:46:16 -0800, Elliot Berman wrote:
+> The maximum VMID for assign_mem is 63. Use a u64 to represent this
+> bitmap instead of architecture-dependent "unsigned int" which varies in
+> size on 32-bit and 64-bit platforms.
+> 
+> 
 
-elapsed time: 791m
+Applied, thanks!
 
-configs tested: 131
-configs skipped: 11
+[17/27] firmware: qcom_scm: Use fixed width src vm bitmap
+        commit: 968a26a07f75377afbd4f7bb18ef587a1443c244
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc          buildonly-randconfig-r005-20230312   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r002-20230313   gcc  
-arc                  randconfig-r006-20230313   gcc  
-arc                  randconfig-r012-20230312   gcc  
-arc                  randconfig-r043-20230312   gcc  
-arc                  randconfig-r043-20230313   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r004-20230313   clang
-arm                  randconfig-r016-20230312   clang
-arm                  randconfig-r046-20230312   clang
-arm                  randconfig-r046-20230313   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r005-20230312   clang
-arm64                randconfig-r034-20230312   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r031-20230313   gcc  
-hexagon              randconfig-r001-20230313   clang
-hexagon              randconfig-r015-20230312   clang
-hexagon              randconfig-r023-20230313   clang
-hexagon              randconfig-r035-20230313   clang
-hexagon              randconfig-r041-20230312   clang
-hexagon              randconfig-r041-20230313   clang
-hexagon              randconfig-r045-20230312   clang
-hexagon              randconfig-r045-20230313   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-a001-20230313   gcc  
-i386                 randconfig-a002-20230313   gcc  
-i386                 randconfig-a003-20230313   gcc  
-i386                 randconfig-a004-20230313   gcc  
-i386                 randconfig-a005-20230313   gcc  
-i386                 randconfig-a006-20230313   gcc  
-i386                 randconfig-a011-20230313   clang
-i386                 randconfig-a012-20230313   clang
-i386                 randconfig-a013-20230313   clang
-i386                 randconfig-a014-20230313   clang
-i386                 randconfig-a015-20230313   clang
-i386                 randconfig-a016-20230313   clang
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r001-20230312   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r006-20230312   gcc  
-m68k                             allmodconfig   gcc  
-m68k         buildonly-randconfig-r001-20230312   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r011-20230313   gcc  
-m68k                 randconfig-r032-20230313   gcc  
-microblaze           randconfig-r031-20230312   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r022-20230313   gcc  
-mips                 randconfig-r023-20230312   clang
-mips                 randconfig-r025-20230312   clang
-mips                 randconfig-r034-20230313   clang
-nios2        buildonly-randconfig-r003-20230312   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r003-20230313   gcc  
-nios2                randconfig-r013-20230312   gcc  
-nios2                randconfig-r014-20230312   gcc  
-nios2                randconfig-r025-20230313   gcc  
-nios2                randconfig-r033-20230312   gcc  
-openrisc     buildonly-randconfig-r002-20230313   gcc  
-openrisc     buildonly-randconfig-r004-20230312   gcc  
-openrisc             randconfig-r026-20230312   gcc  
-parisc       buildonly-randconfig-r005-20230313   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r014-20230313   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv        buildonly-randconfig-r004-20230313   clang
-riscv                               defconfig   gcc  
-riscv                randconfig-r002-20230312   clang
-riscv                randconfig-r015-20230313   clang
-riscv                randconfig-r022-20230312   gcc  
-riscv                randconfig-r026-20230313   clang
-riscv                randconfig-r033-20230313   gcc  
-riscv                randconfig-r036-20230313   gcc  
-riscv                randconfig-r042-20230312   gcc  
-riscv                randconfig-r042-20230313   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r006-20230313   clang
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230312   gcc  
-s390                 randconfig-r044-20230313   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r016-20230313   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r004-20230312   gcc  
-sparc                randconfig-r013-20230313   gcc  
-sparc                randconfig-r024-20230312   gcc  
-sparc64      buildonly-randconfig-r002-20230312   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230313   gcc  
-x86_64               randconfig-a002-20230313   gcc  
-x86_64               randconfig-a003-20230313   gcc  
-x86_64               randconfig-a004-20230313   gcc  
-x86_64               randconfig-a005-20230313   gcc  
-x86_64               randconfig-a006-20230313   gcc  
-x86_64               randconfig-a011-20230313   clang
-x86_64               randconfig-a012-20230313   clang
-x86_64               randconfig-a013-20230313   clang
-x86_64               randconfig-a014-20230313   clang
-x86_64               randconfig-a015-20230313   clang
-x86_64               randconfig-a016-20230313   clang
-x86_64               randconfig-r024-20230313   clang
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r003-20230313   gcc  
-xtensa               randconfig-r005-20230313   gcc  
-xtensa               randconfig-r012-20230313   gcc  
-xtensa               randconfig-r021-20230313   gcc  
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Bjorn Andersson <andersson@kernel.org>
 
 _______________________________________________
 ath10k mailing list
