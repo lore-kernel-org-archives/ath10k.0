@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70FD8C6FD1D
-	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 11:46:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D202CC6FD1D
+	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 11:48:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0NjgwfiTEc78shaUf4Ca9vJPgjzMGn3NzrgRmYd9p+8=; b=Iq1eNmwwzuCBiZ
-	+7CQakjOOkL3R4PRUkeR7RjS4LaElKg8hFZ5hWNs8FGXq6HDVzRbyksvvyaLokeDZf7EwmF9h3p+l
-	FkIX5naDgULl0exP+c/9P5kOf3BajnvneVPOysyNvqwctC4FvSQU3IjERm0s6eSbLG+htvWvBO/Hm
-	KJhAPWrhCOnRmZf/qyJ5yAI1Xrm5i/Cc2cUbqpUOP7DSDqj7uQWl7IFT3QQGMZp8Wpp3LD01O3Z2w
-	VntJlMLwdOCQzShyAFTkWlnwBVTHU7aiHyfN+KChYXjQ0RO8sr1eKhoJIgYpdHp/LSgtHd54MVbCV
-	KhHiRRtlAJ4n9JtOxulw==;
+	List-Owner; bh=n3qOII2qLnhEm7IIyrWACOEF10bh+EKocf9BloPiLzM=; b=QQUp7Ek1Af/Yf/
+	wiqSktqmsceoHJDfOFpfISrY4rT5lDPpaWcXHUFBCEUfwQZeTxqAIbV4D7UbJ/X4zYmt02vu+hCPn
+	+vUFNZvRYfWhmU4WUYo3t+XjyrFlXVYuiElarFSkiLAXtDiwrdE+3gHM8WMTWflzH3lbzfwklmF9r
+	YxL2wIOyL48pRKcmSczsAXGvlWNeRvzizzcBGVIW+5FmSZBPMhb2vEvVoQXCLxArDIgiqlsY1/pXm
+	r43TRHkkTgoe5v+FvxskNiCJptwvK4P6JFJvZHP31EjRbwMLyNzrZluNkcf1sQZ/5owmyOehFV0Il
+	em6VH1unyBMVl5V+nwyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd8X9-0027Nk-27;
-	Fri, 17 Mar 2023 11:46:07 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pd8ZD-0027cI-1U;
+	Fri, 17 Mar 2023 11:48:15 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd8X7-0027Me-1b
+	id 1pd8ZA-0027br-2w
 	for ath10k@lists.infradead.org;
-	Fri, 17 Mar 2023 11:46:06 +0000
+	Fri, 17 Mar 2023 11:48:14 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E89726228D;
-	Fri, 17 Mar 2023 11:46:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C212BC433EF;
-	Fri, 17 Mar 2023 11:46:03 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 84665B8259E;
+	Fri, 17 Mar 2023 11:48:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8321FC433D2;
+	Fri, 17 Mar 2023 11:48:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679053564;
-	bh=7sMdoofiPFjueS94DLc1CgO9pBCCAHcMwVPE7WwaGj4=;
+	s=k20201202; t=1679053690;
+	bh=g+WLQk6lPmjDVyE7QTR6gGrMAPZ74IUZN67A0anHq1g=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Q2F0rKF8+cEHaFTtahgPnixXZNYnrw4rofdZ9C6q/htdT3lFOdY+52q24MqSaYcXg
-	 /tjAQxwVyWeTpx1JpRkUUeegzxfHk0hK7WLPDc7Z2rOqmrUX82TZgOPGA6/UDLWKzz
-	 RWruVxwIwDX3tfmPDwgkcY7U3FZ+fwtPmVUku5GRYdh59B8n4kbySDwetskLt+dp4p
-	 9502yGQy3q8IdHfxbHMKIgKBiMB5PaXnu3Gu7i+Wok67353YyQ1W4BklCj+on72oHR
-	 PLaS0yN++iTK1SqtRj/2nDY7UTjFuA6Qma518aaD831OEN7MnfMWzjloKQF+dhlDw6
-	 Ixvifo0Y19fPQ==
+	b=SLwp9ijMICb4rODg9/LmGM1bAf40WOgbtKwQgqCvpb+hJPVW0XqSGXr2sAgAwKktp
+	 LolXIW4mXpy+0IkfW+8u0S5QNn8bszFKSB7diOzL3P2IfBasCTPwydOzYFw8MwosqT
+	 +3QldAamhgm72noD2J0rsmpEAW4VwypPinwQwwpHhwIQv2umSeOEm0axpyYrvPJPXU
+	 IdKHpqzFKTgl5HrsVFZl/60nz9MvQSFdFAzGvYz7oSInwmRDGg+TknaxQipbmz+h7V
+	 12AF1EN7fvoHfZNYDMhdefzJGUtfY/zqlRgrMNXlT3r71phzOa44WtM6Vl0LZqspif
+	 L6tnp73/5EztQ==
 From: Kalle Valo <kvalo@kernel.org>
-To: Mantas <mantas@8devices.com>
-Cc: ath10k@lists.infradead.org
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Update 8devices Jalapeno specific BDFs
-References: <76ce61b0-e122-5402-d9bf-f6e11b611603@8devices.com>
-Date: Fri, 17 Mar 2023 13:45:58 +0200
-In-Reply-To: <76ce61b0-e122-5402-d9bf-f6e11b611603@8devices.com> (Mantas's
-	message of "Wed, 8 Mar 2023 14:40:16 +0200")
-Message-ID: <87cz57k3d5.fsf@kernel.org>
+To: Vincent Tremblay <vincent@vtremblay.dev>
+Cc: ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org
+Subject: Re: wifi: ath10k-firmware: QCA4019 hw1.0: Add Linksys WHW03V2 specific BDFs
+References: <CA+RD57MNn7H13uHadJFr2UsxK7VodB7UAba9jr2GquYOzq+bwQ@mail.gmail.com>
+Date: Fri, 17 Mar 2023 13:48:07 +0200
+In-Reply-To: <CA+RD57MNn7H13uHadJFr2UsxK7VodB7UAba9jr2GquYOzq+bwQ@mail.gmail.com>
+	(Vincent Tremblay's message of "Sun, 12 Mar 2023 16:00:24 -0400")
+Message-ID: <875yazk39k.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230317_044605_574266_AC83EA92 
-X-CRM114-Status: GOOD (  12.22  )
+X-CRM114-CacheID: sfid-20230317_044813_098481_26690472 
+X-CRM114-Status: GOOD (  16.40  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,46 +74,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Mantas <mantas@8devices.com> writes:
+Vincent Tremblay <vincent@vtremblay.dev> writes:
 
-> This updates 8devices Jalapeno BDF to fix temperature sensor readout.
+> This is a set of files for the Linksys WHW03V2 that are currently
+> missing from the repository.
 >
-> * description for what hardware this is:
+> *  description for what hardware this is:
 >
 >   - it is a IPQ4019 based board
 >   - one QCA40xx radio is used as 2.4GHz radio
 >   - one QCA40xx radio is used as 5GHz radio
 >
 > * origin of the board file (did you create it yourself or where you
->   downloaded)
+>   downloaded):
 >
->   - updated file myself [1]
+>   They were extracted from the vendor firmware (version 2.1.19.209783).
+>   The files can be found in the folder "/lib/firmware/IPQ4019/v2/FCC".
 >
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k):
 >
->   - QCA4019 hw1.0
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Jalapeno
->       md5sum:
->       047757f6ab01f7aa731997e607993116
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Jalapeno
->       md5sum:
->       bdb7619af5e098e1d08aafb07324e1ce
+> bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-whw03v2.bin
+> md5sum: 0435269fbb0797bf269b8cb0591e7544
+>
+> bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-whw03v2.bin
+> md5sum: 79042d093e81a43c8c790bc124ca4dfc
+>
+> * attach the actual board file (board.bin):
+>
+>   - The name of the files are equal to the id string in the board-2.bin
+>     (minus the ".bin")
 
 Thanks, added to QCA4019/hw1.0/board-2.bin:
 
 New:
-
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-whw03v2
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-whw03v2
 
 Changed:
-bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=8devices-Jalapeno
-bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=8devices-Jalapeno
+
 
 Deleted:
 
-0 board image(s) added, 2 changed, 0 deleted, 126 in total
+2 board image(s) added, 0 changed, 0 deleted, 128 in total
 
-https://github.com/kvalo/ath10k-firmware/commit/fedcd44bde5144d5ed21963ebee015f307a8e709
-
+https://github.com/kvalo/ath10k-firmware/commit/785cdae1a7a818813ac1faa715f69bc925e381ee
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
