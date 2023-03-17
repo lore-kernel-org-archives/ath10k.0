@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22D23C6FD1D
-	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 16:31:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53714C6FD1D
+	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 16:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	Subject:To:From:Date:Message-ID:Reply-To:Cc:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=9ztwXiAmfSoYP4Q6USXypup1F8EhroeW9WoHJdd0f+E=; b=3JCsSxIdUR5nVAdZJG0rFEC1WE
-	afOzGlZzcO9dTpEgqObbVoB66og0N5qjmJqVFImXhDdDyjO5ShSn+i5MfRq52cVwBBn/P+fDnZFOP
-	eYModAEg0iYTClotf2XWx240pPjojdj21htuoFMJH/7yBWJlqM3oH12TPxUYA5OSxPIhyMS/ujwOn
-	6DclV3jvO1Bgfvm7Zvmxj6XwYU9hwRJ7zrXCSgCBI45B4TtFEK9t3Ro+xadcDPpkCL4pBPQPaZnFQ
-	TFaoXcpPis8NBmbBn1IJp+yV8kkTukIxM16Cs8QNbLLvp260OKCPfTfrUQhhhHJOtq1VKujYelMbr
-	6agE77SQ==;
+	bh=zx34hwf5X2ICIAJB7vmVFD3MX1Dh7gto/s1GEA6MVeU=; b=KpThm4a+6b7QOc5ACWIxoudL8P
+	/c7oXtjwpBcJO2RHTfOfXm2yacfqzNaiM/7QrGpzicYhiTORPG4kQt64HBSgYPGF2Jure8XVbMtGb
+	HRJwBpUbHgVWkbHmMckUH/WKYwrxj2lF3s4MLnOdIS/8/cNWf8izQqxau58wXOI70Glg6uUK9Ez8W
+	r+XeHScgxyu9mHn1WVwVChbhP6PrvRJbYErUaHCmmM+t/vSBZimmrM1YcGAJwnWrsJkiQ20Ft+A1i
+	7cCtE1ztnPzJCEgvuZ+Fv6/L/51EZnmemh+pP++di27B1BSndgQZVUkgz184qtWUMNqxmEkImcwjl
+	i3KTMpmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pdCz5-002m2s-1C;
-	Fri, 17 Mar 2023 16:31:15 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1pdD7v-002mzd-0q;
+	Fri, 17 Mar 2023 16:40:23 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pdCz3-002m0l-0Q
+	id 1pdD7s-002myL-2i
 	for ath10k@lists.infradead.org;
-	Fri, 17 Mar 2023 16:31:14 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id p16so3722411wmq.5
-        for <ath10k@lists.infradead.org>; Fri, 17 Mar 2023 09:31:08 -0700 (PDT)
+	Fri, 17 Mar 2023 16:40:22 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id t15so5000121wrz.7
+        for <ath10k@lists.infradead.org>; Fri, 17 Mar 2023 09:40:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679070667;
+        d=gmail.com; s=20210112; t=1679071211;
         h=content-disposition:mime-version:subject:to:from:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=swQFyfKzygLsPiByJUe1ME/x7eG3vTjHWB4+YUL8ttk=;
-        b=iuG8cMRghRKhltlEARxtmYlnf6u1E3UdERe7Cfc0iNsCvyyyO4z5zi2PVgKuWk03jW
-         8nqpVTOCKaOwi+AJfW4cj6DitDYeLbevsjg8sjrooxTtE2mBRc46aJ7Q2A8fYI+hSVWb
-         0gRqd5KP4iDgVRo5pnZqOMsCj3kTiHxNaxEyrZ4KPf9zippTkbaoL+onwlykSCTlXs81
-         ViX5lsOcMTkF6YdCmAhzG1BtD1iwcyX7znwcfK0jFFKXVR5HoBrgmbtY6PSaVEVz9fAc
-         KUx9EFptZ1NH0fWNefnqbixQgxqpweFsvipnn1hbturJEX2ibWipPTVdvjwTwDari3cX
-         KONg==
+        bh=WooH1MM06xPyQxT7u23OVB3oig9By+vOvPePDTko/Nk=;
+        b=dTQJx4f8MWr9Q/w0eI42Nx7mM8rD66QEeSyevNtL1MrUWRhIEcVfuSvdaChIye0TuT
+         gn+2TZ3t9aUNXkUWZ1H7Y4dTBasgrWUbLoq3LH9Ur/bfEn53iMWWyjWtjSmFJsl9xQbj
+         ZFU587C+vRtdI1IOvxgjphwMpGkOk93r2ELczl4inf5vm5fW4dnfrMIsqXiQifGTydiP
+         mqGv+jCAq0n9M0Mve68U3tSn53/yhnIuk7hbgI9F3f3jZzRLwpJUAGtY21TXXGl8yA7c
+         0kJDw74NgBA1Qny66JEgnRL2HQfmtIJtXz28G0TFgYKq5pLIWW+Scygw0TPzA3qTmhbQ
+         +Lng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679070667;
+        d=1e100.net; s=20210112; t=1679071211;
         h=content-disposition:mime-version:subject:to:from:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=swQFyfKzygLsPiByJUe1ME/x7eG3vTjHWB4+YUL8ttk=;
-        b=afxr1xS6g+kgP0glcaHtONRD36udLXm0rJ31FdD8SNRtTOBq+3yqf4jVo9wW9p4BTE
-         wPnj+CsgA9a7LiJMBYgYhb55Ghk3T3+VWRl1CYR+9K1CIyGAKUuY3YCi21VhJFHi4qg9
-         jJylAD0iBWLSiGYNCTjhBL7I7iYZA/9atp4n+Ea7sx/3L4v/dRFE1yqNRBgzLX//q1NT
-         A+v3P+O7KBPP4p+Nu5MZzmfdld+9N4WYkyhJwxwj/y/nR4io5QSoMSIKpk/1MRPYpVmY
-         GnWEHNT7XR8TQ9ORbYEiZgYbSvpkhKLpgEnnvnamIdwmzWbCWwuDj+UtPrFVO4zFjlaD
-         RPUw==
-X-Gm-Message-State: AO0yUKUpG3WvnpVVT2vzv9ITSNFMwrCWYrEFwCJC9wr6u4NYTsi+hlIu
-	4TdCAP0a3trGxQ6FNsktRRTpXsuMg7A=
-X-Google-Smtp-Source: AK7set8knF0voyPjU62ikVKnpD+IRGN/igRYc5xA9VvPbWJ12wc3FVd5NDLJkgLzG4SqZrCJVbmMiQ==
-X-Received: by 2002:a05:600c:470e:b0:3ed:1fa1:9030 with SMTP id v14-20020a05600c470e00b003ed1fa19030mr19751415wmo.29.1679070666803;
-        Fri, 17 Mar 2023 09:31:06 -0700 (PDT)
+        bh=WooH1MM06xPyQxT7u23OVB3oig9By+vOvPePDTko/Nk=;
+        b=mTd2Tr6Se9hed/A8gOSKS5ZVGMs9wP8tu/dkGpeX/k7oNyQh0VEc4d4SIjlVY4ey6R
+         K+nmml4kO71lICMJ/3o6zg+kZjYC+S0OCN0++3v8x6t/bqo+fYyOewKZY+xc+WFt4aMX
+         gKiOAPpHQkL/ONNJVXH54DAFGn3UTKfUbrKbkAlx6SBzv7eKrpdOkcgXi/BP+Fvo/D2x
+         9Dxzmu3Cx892y9V0x2ehUxmFeSRMdyka/P+BTcsy7mnD18Vr199ayME9y98cMZSbG3qT
+         iYhWPSHD+q4NMPA3MeSBtJ43iWECV84meIaZL1axRT64sYJWmISVj2W1myO2SjOm/hRi
+         9M5g==
+X-Gm-Message-State: AO0yUKVGViMJEX7USVZ7rrmbXlTAPuZJwP9hInt7/CMLtR5Z0Md3fD6i
+	FHBGobsIlvz+BoZm76GcQuU=
+X-Google-Smtp-Source: AK7set9gbpp616rMK84WxPlVk3BJGt+m6ZjMItahaRn46tClH6QsNMHnMiQEBT6LqYnYFfL1REkLHA==
+X-Received: by 2002:adf:ed45:0:b0:2d3:aefb:6414 with SMTP id u5-20020adfed45000000b002d3aefb6414mr2011781wro.23.1679071211348;
+        Fri, 17 Mar 2023 09:40:11 -0700 (PDT)
 Received: from Ansuel-xps. (93-34-89-197.ip49.fastwebnet.it. [93.34.89.197])
-        by smtp.gmail.com with ESMTPSA id m17-20020a05600c4f5100b003ed51cdb94csm5313387wmq.26.2023.03.17.09.31.05
+        by smtp.gmail.com with ESMTPSA id p10-20020a056000018a00b002c3f9404c45sm2401412wrx.7.2023.03.17.09.40.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Mar 2023 09:31:06 -0700 (PDT)
-Message-ID: <641495ca.050a0220.da360.e807@mx.google.com>
-X-Google-Original-Message-ID: <ZBSVyNelQxqBIIbW@Ansuel-xps.>
-Date: Fri, 17 Mar 2023 17:31:04 +0100
+        Fri, 17 Mar 2023 09:40:10 -0700 (PDT)
+Message-ID: <641497ea.050a0220.ad7fe.fe81@mx.google.com>
+X-Google-Original-Message-ID: <ZBSX6c5CcbhRx5XB@Ansuel-xps.>
+Date: Fri, 17 Mar 2023 17:40:09 +0100
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Kalle Valo <kvalo@kernel.org>, ath10k@lists.infradead.org
-Subject: ath10k-firmware: QCA4019 hw1.0: Add GL-A1300 specific BDFs
+Subject: [v2] ath10k-firmware: QCA4019 hw1.0: Add GL-A1300 specific BDFs
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="h25NHyCrX7zDxZO/"
+Content-Type: multipart/mixed; boundary="Vzjhw4NGNlbIi8xl"
 Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230317_093113_181641_95BEC541 
-X-CRM114-Status: UNSURE (   7.40  )
+X-CRM114-CacheID: sfid-20230317_094020_891041_538F468A 
+X-CRM114-Status: UNSURE (   7.33  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -88,12 +88,14 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 
---h25NHyCrX7zDxZO/
+--Vzjhw4NGNlbIi8xl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 Hi, we have many board file not pused upstream in openwrt. The intention
 is to fix this and have all of them merged.
+
+Resending due to copy past error in the ids (extra .bin)
 
 * description for what hardware this is:
 
@@ -110,10 +112,10 @@ is to fix this and have all of them merged.
 
   - QCA4019 hw1.0
 
-    + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=GL-A1300.bin
+    + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=GL-A1300
       sha256sum:
       7dd85d4d5b95570985ecd4a66f51258d6973f14e57d715e49e0f6006a7b91f66
-    + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=GL-A1300.bin
+    + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=GL-A1300
       sha256sum:
       9ec16a0670d71e29c4f9c0758babee85fd57982fad870a78ca779fbd43eb4731
 
@@ -125,7 +127,7 @@ is to fix this and have all of them merged.
 -- 
 	Ansuel
 
---h25NHyCrX7zDxZO/
+--Vzjhw4NGNlbIi8xl
 Content-Type: application/octet-stream
 Content-Disposition: attachment;
 	filename="bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=GL-A1300.bin"
@@ -356,7 +358,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
 
---h25NHyCrX7zDxZO/
+--Vzjhw4NGNlbIi8xl
 Content-Type: application/octet-stream
 Content-Disposition: attachment;
 	filename="bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=GL-A1300.bin"
@@ -587,7 +589,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
 
---h25NHyCrX7zDxZO/
+--Vzjhw4NGNlbIi8xl
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -598,5 +600,5 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---h25NHyCrX7zDxZO/--
+--Vzjhw4NGNlbIi8xl--
 
