@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8918C6FD1D
-	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 11:30:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A153AC74A5B
+	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 11:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lewx1FgNzs31YRIVN7OEA6kHJEfYdVeA8X76MtepNxU=; b=IDSHzXFfyq1tLX
-	5yKLmachZaPMl/We0YyoatieTCtnJp6Q0actdOs/zdBVlV2x4qiMJShjJ49VLyM1G/kUpTcHCpG83
-	z9nrEsll7he53jekG2XhCjq3NVhCSqs76k3nZxR+WGyXxIXAwQfpzUZjVe8KXQnbrXp6D91YA4ajq
-	khJVj5CGyVv3VuqU6oDRPi3EYBHhn7f3IADd+8ZopULFvDvjEkI5ynDXLYphoZjXXlyP08Ojis0fj
-	zx4X95aqHwjVUnElVlUqHSMMGm+XDuGiCPJEDa7sMkJ5kWMksPkTwg9BM0Agce5J5QwlOSqozsDMV
-	NXWsLpUkt2V32pvitHew==;
+	List-Owner; bh=jL2jBify460pYQLt8EunWTrUglYjsSYZwsMJwpnk3Vs=; b=i3yEuj9UQkiIS6
+	fH+ckhn5n34GXSmNdPJRBxavLcGcXMtLg7qjGP511fC9pq+FM1d36clGb1G1tzt18TrGAYQbV7XLJ
+	VLt9ruZwh7g8bpIcW+g3nzPaj3r6L17SRTA3nCv8u+O6UVJ7l5NKRBI2AYS4SEMm894UYLn7V0oz0
+	E1gGQdHy+ETczv3NKq6PnA9rAD+fMjqjNY8FG42qkhMXsGdSLXeJnl9i1NrjcP4TA4d1SY9GA9rp0
+	snHKr5TvTzN6w3H0I9OgAg35zrcWUGz7yK1pTMhwl/wQBIsoUqQjGpvBfOp5/hTXrGStwXpRDwGWh
+	UPdvSflD+cIf2s132s5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd8IT-0023vU-1n;
-	Fri, 17 Mar 2023 11:30:57 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1pd8JA-0023zv-0i;
+	Fri, 17 Mar 2023 11:31:40 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd8IQ-0023ur-2C
+	id 1pd8J7-0023zQ-1y
 	for ath10k@lists.infradead.org;
-	Fri, 17 Mar 2023 11:30:56 +0000
+	Fri, 17 Mar 2023 11:31:38 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id D02F6B82433;
-	Fri, 17 Mar 2023 11:30:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EE23C433D2;
-	Fri, 17 Mar 2023 11:30:48 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AE5366226D;
+	Fri, 17 Mar 2023 11:31:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 825F5C433D2;
+	Fri, 17 Mar 2023 11:31:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679052649;
-	bh=LXLqORXKNKIJfa6KBoPq+/JzpxqJ+LcukTK7RDPDf6Q=;
+	s=k20201202; t=1679052696;
+	bh=7OdlLbrLXb04om3FanCaGHPjUjNNEoUNA0M78GMf3WA=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=aEPOb38HAKqQv/NJzyumrmD4GhguA53paAZSwXnveewQGzrAIU5osKpjkPDQ1Rnib
-	 Fn7Bg++CUQmVrtJK3iqnmmxolXpf8mOPymowJ11X2ScesyzI65hlrxaRDH5it5AL9Y
-	 D/1j49GZuxBFCie4cN2LvoCWXJaNU4Me4FWClUCXLyne9p9pOWiKU4PyLR1I/Ch2b8
-	 5zotutMvHZ4CV+vSqq4XjDkxYVybG/lHOF8XhATE7YdEWI7lm60D3dGK3M+pfLvirA
-	 CBfsL0XSdjEuQ4yRgyAArwYti+Fj3vBLAwEYSD/HL+jJCuHXr1AAA59apTir5XqBWO
-	 gfHaNJI0awhKg==
+	b=JgL0HKEQucFclkSup+Vb10z1VcQmSuYo8fQOPp5ycL64zqgrEzViPmUAIGRd/4riM
+	 qTEOWbE/sL4P4Wo9nIeQDN4ZrWkAFjyYgUAyjWtesWmJ31z6TkNhhz3KcrCoPozqIc
+	 Z1SvUbeJONNDClmqmxz1gG6LjkEJb7geRLJNMVAHEL+25Iruy+VvibhKXnzbPGs+XP
+	 W6qOYZ71hsyLYR3i+zajj2bAV4cbOlDumreKLKxVOc09E5/FuAprE5q6jEQle4issJ
+	 aDFvLVwbemB2yj725DDrBb3LJy48UPsm5RSBPGbpM88iq+15PzVTyFYMpBFII6fm84
+	 yzavBAQoU39JQ==
 From: Kalle Valo <kvalo@kernel.org>
 To: Christian Marangi <ansuelsmth@gmail.com>
 Cc: ath10k@lists.infradead.org
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add devolo Magic 2 WiFi next
-References: <62bce2a4.1c69fb81.8b9c9.f548@mx.google.com>
-Date: Fri, 17 Mar 2023 13:30:46 +0200
-In-Reply-To: <62bce2a4.1c69fb81.8b9c9.f548@mx.google.com> (Christian Marangi's
-	message of "Thu, 30 Jun 2022 01:39:15 +0200")
-Message-ID: <871qlnmx7d.fsf@kernel.org>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Aruba AP-365
+References: <62bce629.1c69fb81.2a90e.6915@mx.google.com>
+Date: Fri, 17 Mar 2023 13:31:33 +0200
+In-Reply-To: <62bce629.1c69fb81.2a90e.6915@mx.google.com> (Christian Marangi's
+	message of "Thu, 30 Jun 2022 01:54:16 +0200")
+Message-ID: <87wn3flilm.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230317_043054_864069_769B2D96 
-X-CRM114-Status: GOOD (  15.80  )
+X-CRM114-CacheID: sfid-20230317_043137_689627_97847D77 
+X-CRM114-Status: GOOD (  15.88  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,12 +94,12 @@ Christian Marangi <ansuelsmth@gmail.com> writes:
 >
 >   - QCA4019 hw1.0
 >
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=devolo,magic-2-wifi-next
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Aruba-AP-365
 >       sha256sum:
->       3827df1fdf182d907af87f83520d6cf6c9cc8873d14cddcc8d274ff91b53844a
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=devolo,magic-2-wifi-next
+>       a7fd4b262a3aa7bb1ae57bc442cc1e4bd0eb56c1883bd60d19178cfa1e099f44
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Aruba-AP-365
 >       sha256sum:
->       ee86fd52dcdd7c719cea3348a89d2bbbfbb6169cd6a3a8e42bc4332f5d7befc5
+>       63a8000380ad07689a091528f20f1a24465d08ba9540403a844f9ad6e203a298
 >
 > * attach the actual board file (board.bin)
 >
@@ -109,17 +109,17 @@ Christian Marangi <ansuelsmth@gmail.com> writes:
 Thanks, added to QCA4019/hw1.0/board-2.bin:
 
 New:
-bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=devolo,magic-2-wifi-next
-bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=devolo,magic-2-wifi-next
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Aruba-AP-365
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Aruba-AP-365
 
 Changed:
 
 
 Deleted:
 
-2 board image(s) added, 0 changed, 0 deleted, 99 in total
+2 board image(s) added, 0 changed, 0 deleted, 101 in total
 
-https://github.com/kvalo/ath10k-firmware/commit/2c35c6b2f41bb3fcef91e9c003b4d734f46a65cc
+https://github.com/kvalo/ath10k-firmware/commit/57fc07bd53623a09ea73b2a75859302b9c1a17d1
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
