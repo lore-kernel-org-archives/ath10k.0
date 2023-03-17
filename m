@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E0DCC7618B
-	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 11:33:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80667C74A5B
+	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 11:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=y//uez7LLZB/q7hsaVxEXDzSjCd9gEYbpVSf9azKmhY=; b=gI0mxRMvvTolou
-	Pkd6F3GEpJ0Ic1QbdEolQI5vAePjvn6O4MFWKUomo3zeRpAmNMUJM850gnrBdSnZy1whHwDfcWRmy
-	9qaOWtiNp8ovOxdo4sNphuiuOrRQisD8YoMIpP5zrD2oxjNN82uVZloBIiDpE6nGiVarEh6slIUeU
-	2InDI4+61BzPdxAj2S/6Sqa3/dIT320GC34Iba51KQDtG7kH+iqE93J2NDSN1DCxDHm3zGgvfaLoj
-	GxpRbwzl1bgflhAE0crh7w5JOfIWng3riZ3AefZht/FwAP/9hUzxSnlNUz4kB02Qm9+FQBCSLQI9H
-	fVl0plNgq9sNe+3UQ6eQ==;
+	List-Owner; bh=PyaSDI1Zlqx9dG+AHeP/lhZiuIOuaJN1hEge8oDZaCc=; b=j4KGKkyHeKzyEB
+	Sen5G0+4xkwSl2RpZnZjf42b4INob/Vg5IUsy7s0b5B64zaDUvgXBcfm314fi+sfDXCbFnl5u+e0Y
+	wDUK1AKIMJz4MJd/6mEuZdx1JnZSbe5wYaMPmDxHDuGG3maVTL7iYVppqxisIQshBqTmM0mYUNFOf
+	utr4I05x/ZFwiJmD+JhzlxFYVBvZjHRHLJSsEU2yqOMIxmZ35XYRDo0gxigS8UwmQI0+VDdLsUWcQ
+	SGBpPfZv8KFN6KCcCxa9BVpm+BpbNDViTtvsJdttbcXuFZ7NRFkfhScNOyw9TZpJzSHvCH7WumC5T
+	KbrTWbUenmEkDjILWg8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd8LI-0024OR-09;
-	Fri, 17 Mar 2023 11:33:52 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1pd8Me-0024ch-18;
+	Fri, 17 Mar 2023 11:35:16 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd8LB-0024Mx-1R
+	id 1pd8Mb-0024cB-2X
 	for ath10k@lists.infradead.org;
-	Fri, 17 Mar 2023 11:33:49 +0000
+	Fri, 17 Mar 2023 11:35:15 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 02CAAB825A1;
-	Fri, 17 Mar 2023 11:33:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09727C433D2;
-	Fri, 17 Mar 2023 11:33:41 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3CC7162274;
+	Fri, 17 Mar 2023 11:35:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5815C4339B;
+	Fri, 17 Mar 2023 11:35:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679052822;
-	bh=RGPvAtBuZeTyFDv6lRZ4aYHOQffz4llvFqhrpleC98Q=;
+	s=k20201202; t=1679052912;
+	bh=XRo7Vy9tx2dhMXbNuZWYF0STovTliFvFV+aMdx6Pv2c=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=bebwvF4XmA2W8reNU9fjN6iSHguNycil0kuJTLlY7598UypM9OgLZnDhzmfr/ejll
-	 TuJUj1/ElDWMTIZtgzp6j/dzvkG8CUFjVXGAcUvw33D1H5WnRw2EiPTKX1bYDmxCgg
-	 vyqL9j3Azgl7wiV61L56jVtzlcNW0mVbCBwbw8aXhgRnJAjT23X9Wi9dS99oCe2JW3
-	 1LFuloGOCYtxhsXr9B1+RqqqvDTzegVWM1tJpUO+MpTj3r2YQ0UleNNbsOldi1YVPs
-	 olatOpQmVQ0PWTUIDAgBZCLpuC9ltAnF3CMT6gwW2Ou1HLbTpxoy0UJvYAz3Avv7Ww
-	 gJI6O9scyZEeg==
+	b=L/tJzdfU5XxAKwv/F4QusqiK679zNVRMr7WYizaliOkS6JRC6Jh3wxV1XL64pukUB
+	 1rtHUOsX8p803Q+yZ/7tJ0e6S2cnvpAeD5LfpW87vQZr9a1hB5p+QPZNYrJVCZ2cbE
+	 GON3wP45BE2In2FdeYIO+JU/3uon1sOuHrS4fmXvxwYDj+sHK/JPQoShVdTnsY2JOk
+	 IhekuLwjreS5cXkwtNJ3IZ9meH0iMi+NZXxZnNNxGP+w8DAnx6jUbw0uR6O6nJ/Cfs
+	 mHyXw7Xyqu4FJpw2dW5AedGq3pWs7/z9l/2sJwV8v3Wo8fnt/wsCvslpD/J3QYUFZn
+	 fo5DMLf3I7h0g==
 From: Kalle Valo <kvalo@kernel.org>
 To: Christian Lamparter <chunkeey@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>,  =?utf-8?B?5byg6bmP?=
- <1805692831@qq.com>
-Subject: Re: [V2] ath10k-firmware: QCA4019 hw1.0: Update Qxwlan E2600AC c2 specific BDFs
-References: <028d7d59-7b00-225b-6a53-87e67047bf23@gmail.com>
-Date: Fri, 17 Mar 2023 13:33:40 +0200
-In-Reply-To: <028d7d59-7b00-225b-6a53-87e67047bf23@gmail.com> (Christian
-	Lamparter's message of "Fri, 1 Jul 2022 13:25:08 +0200")
-Message-ID: <87o7orlii3.fsf@kernel.org>
+Cc: ath10k@lists.infradead.org
+Subject: Re: [V2] ath10k-firmware: QCA4019 hw1.0: Add BDF for Linksys EA8300 [1/2]
+References: <4ac52436-699f-cd31-4538-a63ba37505df@gmail.com>
+Date: Fri, 17 Mar 2023 13:35:10 +0200
+In-Reply-To: <4ac52436-699f-cd31-4538-a63ba37505df@gmail.com> (Christian
+	Lamparter's message of "Fri, 1 Jul 2022 13:25:13 +0200")
+Message-ID: <87jzzflifl.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230317_043345_631925_DAA3B506 
-X-CRM114-Status: GOOD (  13.11  )
+X-CRM114-CacheID: sfid-20230317_043513_907459_0E8B9FDC 
+X-CRM114-Status: GOOD (  19.61  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,41 +69,120 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Q2hyaXN0aWFuIExhbXBhcnRlciA8Y2h1bmtlZXlAZ21haWwuY29tPiB3cml0ZXM6Cgo+IEZyb206
-IOW8oOm5jyA8MTgwNTY5MjgzMUBxcS5jb20+Cj4KPiBNb2RpZmllZCB0aGUgcmFkaW8gZnJlcXVl
-bmN5IGhhcmR3YXJlIHBhcnQgb2YgZTI2MDBhYyBjMiwKPiBuZWVkIHRvIGNvb3BlcmF0ZSB3aXRo
-IHRoZSBtb2RpZmllZCBib2FyZC5iaW4gZmlsZS4KPgo+IEZvciB0aGUgcXVlc3Rpb25zIGZyb20g
-dGhlIHdpa2kgcGFnZToKPgo+ICogZGVzY3JpcHRpb24gZm9yIHdoYXQgaGFyZHdhcmUgdGhpcyBp
-czoKPgo+ICAgICAgaXQgaXMgYSBJUFE0MDE5IGJhc2VkIGJvYXJkIChBUC1ESzA0IGFuZCBBUC1E
-SzA3KQo+ICAgICAgLSBvbmUgUUNBNDB4eCByYWRpbyBpcyB1c2VkIGFzIDIuNCBHSHogcmFkaW8K
-PiAgICAgIC0gb25lIFFDQTQweHggcmFkaW8gaXMgdXNlZCBhcyA1IEdIeiByYWRpbwo+ICAgICAg
-LSBvbmUgUUNBNDB4eCByYWRpbyBpcyB1c2VkIGFzIDUgR0h6IHJhZGlvCj4KPiAqIG9yaWdpbiBv
-ZiB0aGUgYm9hcmQgZmlsZSAoZGlkIHlvdSBjcmVhdGUgaXQgeW91cnNlbGYgb3Igd2hlcmUgeW91
-IGRvd25sb2FkZWQpCj4KPiAgICAgIFRoZSBib2FyZCBmaWxlKHMpIHdoZXJlIGV4dHJhY3RlZCBm
-cm9tIHRoZSBReHdsYW4gZmlybXdhcmUuCj4KPiAqIGlkcyB0byBiZSB1c2VkIHdpdGggdGhlIGJv
-YXJkIGZpbGUgKEFUSDEwS19CRF9JRV9CT0FSRF9OQU1FIGluIGF0aDEwaykKPgo+ICAgIFFDQTQw
-MTkgaHcxLjA6Cj4KPiAgICAgICAtIGJ1cz1haGIsYm1pLWNoaXAtaWQ9MCxibWktYm9hcmQtaWQ9
-MjAsdmFyaWFudD1ReHdsYW4tRTI2MDBBQy1DMgo+ICAgICAgICAgbWQ1c3VtOiBmZDg0N2FiOTQ2
-YTY0ZjJmNzZkMTY5MGNiOWM4MjA5YQo+ICAgICAgIC0gYnVzPWFoYixibWktY2hpcC1pZD0wLGJt
-aS1ib2FyZC1pZD0yMSx2YXJpYW50PVF4d2xhbi1FMjYwMEFDLUMyCj4gICAgICAgICBtZDVzdW06
-IDE5NjE0YWM1ZWY5MTM5ZmQxYjNlMjcxNTRhMTg2ZmQ4Cj4gICAgICAgLSBidXM9YWhiLGJtaS1j
-aGlwLWlkPTAsYm1pLWJvYXJkLWlkPTI5LHZhcmlhbnQ9UXh3bGFuLUUyNjAwQUMtQzIKPiAgICAg
-ICAgIG1kNXN1bTogM2RiOTk2Mjk0NDJlN2M3MTRmNDAyMzYzNDAwM2I1YzIKClRoYW5rcywgYWRk
-ZWQgdG8gUUNBNDAxOS9odzEuMC9ib2FyZC0yLmJpbjoKCk5ldzoKYnVzPWFoYixibWktY2hpcC1p
-ZD0wLGJtaS1ib2FyZC1pZD0yMCx2YXJpYW50PVF4d2xhbi1FMjYwMEFDLUMyCmJ1cz1haGIsYm1p
-LWNoaXAtaWQ9MCxibWktYm9hcmQtaWQ9MjEsdmFyaWFudD1ReHdsYW4tRTI2MDBBQy1DMgpidXM9
-YWhiLGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlkPTI5LHZhcmlhbnQ9UXh3bGFuLUUyNjAwQUMt
-QzIKCkNoYW5nZWQ6CgoKRGVsZXRlZDoKCjMgYm9hcmQgaW1hZ2UocykgYWRkZWQsIDAgY2hhbmdl
-ZCwgMCBkZWxldGVkLCAxMDYgaW4gdG90YWwKCmh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgx
-MGstZmlybXdhcmUvY29tbWl0L2ZiODE3ZmZkODA3YzEyMmYxNzBkM2RhMWMxN2MzOWRmNjFhNmFk
-NjEKCi0tIApodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgtd2lyZWxl
-c3MvbGlzdC8KCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL2RldmVsb3BlcnMv
-ZG9jdW1lbnRhdGlvbi9zdWJtaXR0aW5ncGF0Y2hlcwoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
+Christian Lamparter <chunkeey@gmail.com> writes:
+
+> From: Jeff Kletsky <lede@allycomm.com>
+>
+> This is a QCA4019-based device with a PCI-attached QCA9888
+> supplying a third radio on 5 GHz. The OEM's firmware and source
+> suggest that this device is "based on Qualcomm AP DK07.1-c1"
+>
+> Linksys ships four market-specific variants of this device, notated as
+> -AH, -EU, (no suffix), and -CA. They supply four sets of pre-cal board
+> files in their firmware, AH, EU, FCC, and IC. The corresponding files
+> differ from each other, and appear to provide different parameters in
+> the different regions. The OEM firmware copies the appropriate set of
+> files into place based on examining the SKU of the device at boot.
+>
+> These board files may be obtained from extraction of the OEM firmware
+> Ver. 1.1.4.191539, Latest Date: 11/8/2018, 49.0 MB
+> http://downloads.linksys.com/downloads/firmware/FW_EA8300_1.1.4.191539_prod.img
+> Ver. 1.1.3.184925, Latest Date: 11/15/2017, 47.4 MB
+> http://downloads.linksys.com/downloads/firmware/FW_EA8300_1.1.3.184925_prod.img
+> and/or from a running device. There does not appear to be a difference
+> in the board files between the two firmware versions.
+>
+> DTS for the EA8300 under OpenWrt expects that the variant be encoded
+> as, for example, linksys-ea8300-fcc, with the lower-cased suffix
+> indicating the OEM's regional code, or -fcc.
+>
+>
+> The files selected and their original names and organization include:
+>
+>          435d236890521515feffc834218ca594  OEM/IPQ4019/IC/boardData_1_0_IPQ4019_DK04_5G.bin
+>          e8858ab9259f7d4372040da1c592d1cc  OEM/IPQ4019/IC/boardData_1_0_IPQ4019_DK04_2G.bin
+>          d6d7ed00db985b4d8c48ccc3fe10fa87  OEM/IPQ4019/EU/boardData_1_0_IPQ4019_DK04_5G.bin
+>          5cef8208a0345c1469494e44e1f370f1  OEM/IPQ4019/EU/boardData_1_0_IPQ4019_DK04_2G.bin
+>          0e820f5946b5773ad9f4a74809c05b79  OEM/IPQ4019/FCC/boardData_1_0_IPQ4019_DK04_5G.bin
+>          057ed5528e360197c2239796710cb61c  OEM/IPQ4019/FCC/boardData_1_0_IPQ4019_DK04_2G.bin
+>          0171919a4576199ae88e8831f72c03fe  OEM/IPQ4019/AH/boardData_1_0_IPQ4019_DK04_5G.bin
+>          a8e23769dc98da97b6c70a4f601ffca8  OEM/IPQ4019/AH/boardData_1_0_IPQ4019_DK04_2G.bin
+>
+>
+> The files were renamed as follows:
+>
+>          for JD in AH EU FCC IC ; do
+>              jd=$(echo "$JD" | tr 'A-Z' 'a-z')
+>              cp -vp OEM/IPQ4019/${JD}/boardData_1_0_IPQ4019_DK04_2G.bin \
+> 	    ${dest}/bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-${jd}
+>              cp -vp OEM/IPQ4019/${JD}/boardData_1_0_IPQ4019_DK04_5G.bin \
+> 	    ${dest}/bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-${jd}
+>          done
+>
+>
+> Renamed board files are individually attached to the IPQ4019
+> messages. dmesg excerpts are from the device running OpenWrt with
+> locally crafted, aggregate board files.
+>
+>
+> - QCA4019 hw1.0
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-ah
+>     md5sum: a8e23769dc98da97b6c70a4f601ffca8
+>
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-fcc
+>     md5sum: 057ed5528e360197c2239796710cb61c
+>
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-eu
+>     md5sum: 5cef8208a0345c1469494e44e1f370f1
+>
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-ic
+>     md5sum: e8858ab9259f7d4372040da1c592d1cc
+>
+>
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-eu
+>     md5sum: d6d7ed00db985b4d8c48ccc3fe10fa87
+>
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-ic
+>     md5sum: 435d236890521515feffc834218ca594
+>
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-fcc
+>     md5sum: 0e820f5946b5773ad9f4a74809c05b79
+>
+>     bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-ah
+>     md5sum: 0171919a4576199ae88e8831f72c03fe
+
+Thanks, added to QCA4019/hw1.0/board-2.bin:
+
+New:
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-ah
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-eu
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-fcc
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=linksys-ea8300-ic
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-ah
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-eu
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-fcc
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=linksys-ea8300-ic
+
+Changed:
+
+
+Deleted:
+
+8 board image(s) added, 0 changed, 0 deleted, 114 in total
+
+https://github.com/kvalo/ath10k-firmware/commit/0c3378faf4622bea1d328e6e004f3972777f5ac2
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
