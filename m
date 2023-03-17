@@ -4,78 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F642C61DA4
-	for <ath10k@archiver.kernel.org>; Thu, 16 Mar 2023 03:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69D3EC74A5B
+	for <ath10k@archiver.kernel.org>; Fri, 17 Mar 2023 11:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qJ8YQR6bZwZvRR+5LufMxtvm+Melsa+M1BHfjoJo1eg=; b=kXNiaFbao7V5Rj
-	c2SaY5+QT9laKRj7Z/QK3ul0C9sG5tZZegxj3MZ2nfkUaIQlkpGCtiDMsiG+KMQApJ1Ztj0nu/SDz
-	6Smu36rfR/7nNM1RWKbREqhL9I9hN+3tkuVOFYOoQT5mfG8jR/NJdiXi6UX6r+XSFVaxa86IjPdFx
-	vwkACIbaYo1Jm7ULJkS3ZzHt2Lhgb7T7uCk5kVoM8ALH1ARnPOgRV/0YYLOmUoWe5bzJbPcEh70Hd
-	JJwMvxT6Iii+DUOyX3m4PmzAak/L5WvivbbmudXG4e9t1OznR5VvSpSkGCP8ZoTYx8s8AAfr93wpF
-	SskhD4cbwB07RoX4M/cg==;
+	List-Owner; bh=7TwmALR7WOTGkI3tSxYmvvJwzem+PrXe6CAMVskfdcw=; b=JzhGb25dKH+6Sg
+	sN+OezjD1/l5W0jxWtnXCdbRRM1mdbSjgWJDjgF1vpsDKm9SHtlRD2QvvcI0k73OBALCBngL/dVhv
+	GeCiiuuiih4jtzl4p1x8sN3TWTrLheHDsGbz7JgDJxxGth5yka2xvZSN6W4MChlHqoNwa5OBdjFcR
+	+v8njrxrnjZeHW6xIs82UY0JNjCnBRmpRejp6G45X8nvshqNbgrn28FIXwZsYCO8WOAdP9JmFpdmY
+	HNFwBVLeqXmMbIwZYTzi2ttBP8l5tnw9lYXdztDQmFt135q89K8P1LfdBM51tP5KteoeCD7Hh9nHF
+	5NiiBMQzyo9opDohEmZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pce7w-00F4mU-2w;
-	Thu, 16 Mar 2023 03:18:04 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1pd84z-0021PA-1y;
+	Fri, 17 Mar 2023 11:17:01 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pce7t-00F4kZ-1g
+	id 1pd84x-0021Ob-0L
 	for ath10k@lists.infradead.org;
-	Thu, 16 Mar 2023 03:18:02 +0000
+	Fri, 17 Mar 2023 11:17:00 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 2724AB81FB3;
-	Thu, 16 Mar 2023 03:18:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18ED4C433AA;
-	Thu, 16 Mar 2023 03:17:58 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 06FAE62285;
+	Fri, 17 Mar 2023 11:16:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D42B2C433EF;
+	Fri, 17 Mar 2023 11:16:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678936679;
-	bh=2veV2xaJf5ssmKjUauZ5Y3zT1WI8lFivE+RzW+XrW8c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IgiEX17qXBlzGAT4MGrFiIiNc79cEJRT3pJMPA6RlSqTKlyam6YYSapyvm/k+Ulqa
-	 oaRkKDgO5rh1ADhCRN1sPDNOfmzDp6H7q03xgU9UM6z7rF1aIhJdB2grVRXc813c0G
-	 X+8Q2ZyN0ZebnFvDJJqZUDpVnOgu6oW2M+PVR1xyFpo5t4IFwjHBWW4o6mAuagEMLR
-	 5wNumIklIdhns3yyGDNFgAAPvE4YOAGv6TxCm/QkQ6BWvDJQdLyAGcvzJ0og4Rq4ib
-	 ZjIDxNILAa0LKrB9zikjbLJlW+XvEtt26vRyRCPoKEANnV5R87/uarcdfAtBqTgPQj
-	 HAXAjHnLtsxSw==
-From: Bjorn Andersson <andersson@kernel.org>
-To: Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Andy Gross <agross@kernel.org>,
-	Elliot Berman <quic_eberman@quicinc.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Amol Maheshwari <amahesh@qti.qualcomm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-remoteproc@vger.kernel.org,
-	Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
-Subject: Re: [PATCH] firmware: qcom_scm: Use fixed width src vm bitmap
-Date: Wed, 15 Mar 2023 20:21:01 -0700
-Message-Id: <167893686409.303819.14364343251308679131.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230213181832.3489174-1-quic_eberman@quicinc.com>
-References: <20230213181832.3489174-1-quic_eberman@quicinc.com>
+	s=k20201202; t=1679051816;
+	bh=6yakOzuqBoDaykUytBuw+jPt1Zrw+H6oyoJiTpQnkkw=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=KcjuibTrsvxtTIc9uwViDZqG0KkUGD4ie1JYRDJCRqr38PbJXAeUeePLPVnpNXXy1
+	 acuCyspuTiylv78h2Dep+IJFbHek+LRExXbLfXCi+Qh2f/WxRf90TmWbdYz8xCahGj
+	 UP7++onFWE9bviyZeCJjz7d+nXAd0nqMP4B7w9M+QGXMrIl0xqf8dvaekEJbasOfXF
+	 YcVBSlx8N7Kr5kXT0O5Cwm+uUOIc0cM9PE/7tHucSJVVLVpS+oS4hMf+92VzIlq2W4
+	 2uIN+V5JsJav+1kbUbpP+7X53HITknlJuOhDjbA3RrTdxUj7Rsya1aRKGr7uy22g4J
+	 IWaiCaJ3VwMpw==
+From: Kalle Valo <kvalo@kernel.org>
+To: Kevin Fibich <kevin.fibich@googlemail.com>
+Cc: ath10k@lists.infradead.org
+Subject: Re: ath10k-firmware: QCA6174 hw3.0: Surface Go 1 LTE/Wifi
+References: <CAExMj0AYZt-iCY3EcOwttNYfReXk_VS0Eb-ev7OQWu_kdjSugA@mail.gmail.com>
+Date: Fri, 17 Mar 2023 13:16:52 +0200
+In-Reply-To: <CAExMj0AYZt-iCY3EcOwttNYfReXk_VS0Eb-ev7OQWu_kdjSugA@mail.gmail.com>
+	(Kevin Fibich's message of "Wed, 8 Jun 2022 20:37:44 +0200")
+Message-ID: <87a60bmxuj.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230315_201801_701258_51DA707B 
-X-CRM114-Status: UNSURE (   8.46  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230317_041659_184024_04ED2C3B 
+X-CRM114-Status: GOOD (  12.17  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,21 +74,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, 13 Feb 2023 10:18:29 -0800, Elliot Berman wrote:
-> The maximum VMID for assign_mem is 63. Use a u64 to represent this
-> bitmap instead of architecture-dependent "unsigned int" which varies in
-> size on 32-bit and 64-bit platforms.
-> 
-> 
+Kevin Fibich <kevin.fibich@googlemail.com> writes:
 
-Applied, thanks!
+> Hi,
+>
+> please add this boardfile to support the LTE variant of Surface Go Gen 1.
+>
+> * description for what hardware this is:
+>
+> This boardfile is for the Wifi Module of the Microsoft Surface Go (Gen
+> 1) LTE/Wifi Variant.
+>
+> * origin of the board file
+>
+> - Firmware Package downloaded from MS website
+> - Link: https://microsoft.com/en-us/download/details.aspx?id=57601
+> - Filename to download: SurfaceGo_Win10_18362_22.031.05160_LTE_0.msi
+> - Extract via: msiexec /a <MSIFILE> /qb TARGETDIR=C:\temp
+> - Filepath:
+> C:\temp\SurfaceUpdate\Drivers\Network\Wifi\eeprom_ar6320_3p0_TX8_lte_clpc.bin
+>
+> * ids to be used with the board file
+>
+> - QCA6174 hw3.0
+> - md5sum: 8f2895dd63a0c8f11e2d051f0ed4e0a8
+> bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3371.bin
 
-[1/1] firmware: qcom_scm: Use fixed width src vm bitmap
-      commit: 968a26a07f75377afbd4f7bb18ef587a1443c244
+Thanks, added to QCA6174/hw3.0/board-2.bin:
 
-Best regards,
+New:
+bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3371
+
+Changed:
+
+
+Deleted:
+
+1 board image(s) added, 0 changed, 0 deleted, 90 in total
+
+https://github.com/kvalo/ath10k-firmware/commit/fb75d97d72a79b18e96066925816cabe3062d58f
+
 -- 
-Bjorn Andersson <andersson@kernel.org>
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
