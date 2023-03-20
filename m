@@ -4,60 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA52DC6FD1D
-	for <ath10k@archiver.kernel.org>; Mon, 20 Mar 2023 17:11:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55987C6FD1D
+	for <ath10k@archiver.kernel.org>; Mon, 20 Mar 2023 18:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=n0MdaUKnodmoNTAq8r+YUoAvtuYOtuUSf16cOtcZh54=; b=ByTQIlnRArgcdO
-	Qw8jEMhL6XuLgsRkyArG1vwORX+VDFG6bNIm8ZEbDW4qj3YN4zDDjOSUbCjODQL8TcrEJJXMmUYSm
-	9svbBCN3a/MZwBhAbAvUUw9/D0jiAWb0476KuCcgcSHOcULjyYQxED92qtuofuZUJs8H5+5KcJ+ze
-	lv/tCF3rHu/ysJtshAsbNNHZB9WQOtPBHxcSXrMIy/4/t6Ys/elQiwXU10UfSGV4NXPK1gWPyYl4t
-	1A/qsF3GO8OB6bIRoGsjEJLo2pQ1VrbtjWDHkbeXst4K1mOOpQLKve0H/Tof+OIzrNsN0EJ8hNLVQ
-	TzZ1p+lGF5ZcvAlHCQtQ==;
+	List-Owner; bh=HR6AmFhhaV5mmM3G2WWK1Mn5KZMGA5iDShqUNUtD9Q0=; b=wAYpk5ObfaNg/P
+	5g4GkUBkqSH5VflgMwjGCqRsSgrtCGLQyDMEOgw/5qvMYB4vp6XMZzKL6n/l3OAyZOfMQ/omYz0rX
+	1iJ6bNvc79qMnTzeagYup2PNV0ydRYQyX/rg62Nko8zBnbKrBsM5jVrZxTFTapXCN8XdBPwsAJUDM
+	a0BYwjfcwPLl6C1+QasB1AvfH278IWPptZoHdpth9oumzpbeQm2Y1XmH5Dlc6Obk5sO/74sjnTL5h
+	7gS7bmA5yaA+gdg47ZvkLqnC3bilBblG3EjLSw8D41sVaYE19Vvzt5rXmifSXXPLRCww7G4Bi9heA
+	Dy3QLle4mtJr/iyURpQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1peJ2h-009wtn-2b;
-	Mon, 20 Mar 2023 17:11:31 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1peKTq-00AAMO-2D;
+	Mon, 20 Mar 2023 18:43:38 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1peJ2b-009wsu-1m
+	id 1peKTo-00AALa-0T
 	for ath10k@lists.infradead.org;
-	Mon, 20 Mar 2023 17:11:29 +0000
+	Mon, 20 Mar 2023 18:43:37 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 154C26171F;
-	Mon, 20 Mar 2023 17:11:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2C5CC433B3;
-	Mon, 20 Mar 2023 17:11:23 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8BBC861755;
+	Mon, 20 Mar 2023 18:43:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2A6C433EF;
+	Mon, 20 Mar 2023 18:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679332284;
-	bh=VBtuxnj0aFz8rshXe01Rb2iz94qtzmBFOD2WgmOYKaw=;
+	s=k20201202; t=1679337814;
+	bh=sDLC//SPnJSbwZbuz3wTxDzPIwJ0qjTpmW5CZEG7EcY=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=FkyMLz9AdT/0fHYrrV16RntbvhZT/BMIcbFZpA3VBFSIAnm0+zfqM9RZnEwwhrmOP
-	 Tr8l1RI6QM9WAGkh1k4Y38KoplqFdVQJIAKKt3LC+b6UJ95K9RDchR1jwHBfys3Bpl
-	 f8XprRhjRMgq6Ao/8R1w/ngHvoYZXNn5jlhLsezbNQddzQIakawzZz6B8mjBXBKQIz
-	 Qz0GtGWU/JJEpTKPnQDYS78LlS5mmS6c2/D9QYa85AOXin57yJRiypRgcBgia9ENrM
-	 8yeeAanVRTnhwZgWg2FHkUUPM3ryMF9dwTU+ALuxJKj4/ObqFEoHxov/+7nYZP3OsV
-	 4YL2tHYVXBbgA==
+	b=YyznV0gJHD6IjMVWdRaSgEERivdd4V9szqkQWKvHcxnlaNKcXzia3QqEIH0ic6ovC
+	 rGDS+Pg6qSRI7J5J/D3pb8vNuq2EGCko5CB3FgqjgV2qJ4fjUi851CbVHUJXkUDhwr
+	 v67BkkE4sLRSeiY/VmRUs/tkYTz/cq+VbFA/G86HqwOz+Ej3QmlMzen2p3LTjki7R6
+	 8KeXMV5r+vyyUWPALDEHzVlrF0ZqzoHa8CbQlq94O8SKGjwSagqz0bLo2zjfzzgzk6
+	 6lyWy2NDDvgFQyvYHjY4FFVy7R/vMQNdaGOPK0FJD4hImvz62goMapcwD3wUkXWNFY
+	 oCaNnkbY60GNQ==
 From: Kalle Valo <kvalo@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
+To: dukzcry@ya.ru
 Cc: ath10k@lists.infradead.org
-Subject: Re: ath10k-firmware: QCA9984 hw1.0: Add Nokia-AC400i specific BDFs
-References: <641601bb.050a0220.3cae0.e1d4@mx.google.com>
-Date: Mon, 20 Mar 2023 19:11:22 +0200
-In-Reply-To: <641601bb.050a0220.3cae0.e1d4@mx.google.com> (Christian Marangi's
-	message of "Sat, 18 Mar 2023 13:29:22 +0100")
-Message-ID: <87edpjfiv9.fsf@kernel.org>
+Subject: Re: [BUG] SoftAP: zero speed between clients on QCA6174
+References: <02bed0819c13c14dc1f52d7d2b658b00280d2634.camel@ya.ru>
+	<c7ecaf558a6b2b46c73ecbe8a291de3af40b35fd.camel@ya.ru>
+Date: Mon, 20 Mar 2023 20:43:32 +0200
+In-Reply-To: <c7ecaf558a6b2b46c73ecbe8a291de3af40b35fd.camel@ya.ru> (dukzcry's
+	message of "Thu, 12 Jan 2023 22:12:31 +0300")
+Message-ID: <875yavfeln.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230320_101125_644200_CD2CF3A1 
-X-CRM114-Status: GOOD (  16.31  )
+X-CRM114-CacheID: sfid-20230320_114336_219725_3FCB43D9 
+X-CRM114-Status: UNSURE (   8.20  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,52 +76,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Christian Marangi <ansuelsmth@gmail.com> writes:
+dukzcry@ya.ru writes:
 
-> Hi, we have many board file not pused upstream in openwrt. The intention
-> is to fix this and have all of them merged.
+> Looks like firmware issue. Fixed by downgrading linux-firmware package
+> down to 20220411
 >
-> * description for what hardware this is:
->
->   - it is a IPQ806X based board
->   - one QCA9984 radio is used as 2.4GHz radio
->   - one QCA9984 radio is used as 5GHz radio
->
-> * origin of the board file (did you create it yourself or where you
->   downloaded)
->
->   - extracted from the original stock firmware image
->
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
->
->   - QCA9984 hw1.0
->
->     + bus=pci,bmi-chip-id=0,bmi-board-id=1,variant=Nokia-AC400i
->       sha256sum:
->       1277be6d5c0dafe7d6ceb7d8f0d37a7f111f274c65dfe8a5c78df0d0e26303d0
->     + bus=pci,bmi-chip-id=0,bmi-board-id=2,variant=Nokia-AC400i
->       sha256sum:
->       c716e0d70deb5401b19af9809b13c702908a2cb165ecd009faf1d7c33faaa82e
->
-> * attach the actual board file (board.bin)
->
->   - The name of the files are equal to the id string in the board-2.bin
->     (minus the ".bin")
+> Last good firmware 
+> linux-firmware-20220411
+> [    3.859587] ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-
+> 00157-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp crc32 90eebefb
 
-Thanks, added to QCA9984/hw1.0/board-2.bin:
+[...]
 
-New:
-bus=pci,bmi-chip-id=0,bmi-board-id=1,variant=Nokia-AC400i
-bus=pci,bmi-chip-id=0,bmi-board-id=2,variant=Nokia-AC400i
+> First bad firmware
+> linux-firmware-20220509
+> [    3.767713] ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-
+> 00288- api 6 features wowlan,ignore-otp,mfp crc32 bf907c7c
 
-Changed:
-
-
-Deleted:
-
-2 board image(s) added, 0 changed, 0 deleted, 24 in total
-
-https://github.com/kvalo/ath10k-firmware/commit/fb46dd77357113bd03121e8dcdaea085aa1e28c3
+Thanks for the report, I forwarded this and hopefully it gets fixed.
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
