@@ -4,42 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C6CEC7618A
-	for <ath10k@archiver.kernel.org>; Mon, 20 Mar 2023 11:52:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9943CC6FD1D
+	for <ath10k@archiver.kernel.org>; Mon, 20 Mar 2023 15:42:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Uu0qx0Tl9HmwHYeJQrogQK5vhnivyx8UDin7eP7AcUA=; b=R+ma1H8FRaiz+/
-	pAn4twdz8po2zjdR4zeaXxPUXFaR0ONqiCTh9u7KamhUmCuub7NaqEqkmfg4i3Mxlwug1BaTgSbln
-	8DSm5tGPBKVTbhhefXTIXzzgN/3WhNXLJIE1rD0cm771JXvSSarIrn5SWpNcnS3lySOLwiPzATFOY
-	u9V4/R2Jyafo36DCyTxKieSHlRPWRfzcqBcHucgWzI/NIP8z0BIpjgji5dSn3qQmYKG8+OWRXp0y/
-	w2EX9piuYPBwfr6pSBP9nnB5uyScv9FavWLjRs50h60nUj9LhUMgHEuIJodHnJNHhzUD6Lzv23Cgl
-	kozEFlCaNJVwDRQEdqRA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zL1qQdFpvknGTaQYK8BuhpYCq6caz5uaS8PBvU2LrjA=; b=hnxjomCO2Ri6KB
+	ZXTwO+TB8DIK7NzgNvOGblaDMILXeivuU1SZeH3QVWrIQZ8gV1RnML2CWVApyJIlHuRE0cKaueiIq
+	MFTaHkMUPq+NWoCnnLwoG76QBfLIaZY7RudyeNI42AdU7jzEYJ3wpFbGGC8H8Fn8Uv0Uhwwic6ebE
+	60SrQyqRleMSNvXUkUrOTmHsBzYAylIqKnD55fFKUUtguSjXigqId7Efyo5Rjp6lmxSa3phoWY7fR
+	Y1vkzwc1bM9V7OhLaMDPj2Py4BzsaWH4UYgF4ldke2JmuIKPcb5+coYK6YNQnQVeJ0tH6FHs3fRHv
+	Dg2rzHQ4I/TvHI2TbAbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1peE3h-008tJA-0y;
-	Mon, 20 Mar 2023 11:52:13 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1peHdo-009bNL-02;
+	Mon, 20 Mar 2023 15:41:44 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1peE3e-008tHa-0i
+	id 1peHdk-009bMG-3C
 	for ath10k@lists.infradead.org;
-	Mon, 20 Mar 2023 11:52:12 +0000
-Received: (Authenticated sender: repk@triplefau.lt)
-	by mail.gandi.net (Postfix) with ESMTPSA id D521320002
-	for <ath10k@lists.infradead.org>; Mon, 20 Mar 2023 11:52:05 +0000 (UTC)
-Date: Mon, 20 Mar 2023 12:51:16 +0100
-From: Remi Pommarel <repk@triplefau.lt>
-To: ath10k@lists.infradead.org
-Subject: QCA9888: mesh does not receive broadcast packets
-Message-ID: <ZBhItHAcYwNY82zR@pilgrim>
+	Mon, 20 Mar 2023 15:41:42 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 802C2B80ECE;
+	Mon, 20 Mar 2023 15:41:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE839C4339B;
+	Mon, 20 Mar 2023 15:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1679326898;
+	bh=QjJNrUnvBi1VCrd5IZHE7yO404Z2KBmKQ4BQiPlebbU=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=Z/Petf5TipqFKCJZPn9sVsUR/v82hhRz293Rh8NXBusBNTCteo5TGgASWSgd9mw5U
+	 1H+wXHfKv/FodHm3VqQSUd8fdyR9u+Xrqe2OKGJUZUtVI5oBvON/Rx2wORyN5tcY9j
+	 KCnYcIzspxybCXhG5A7xDMicAovEmpLou34KaEAClx4JNDlGy+8ks3NfoIpWWXl8f3
+	 aFqMxgN/8bGV8UVyTQxPUPUPV6eajFS00OC14qFmyH8LgeslgV/UsQ73mrPX/wGz61
+	 JS3TTdLGzm/I17IJ30MUpji/b9fTNAOPqVSnTUt02FztmhyUmFJtdgCmwoiNg24UwE
+	 ZuYITheyFE+Ug==
+From: Kalle Valo <kvalo@kernel.org>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: ath10k@lists.infradead.org
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Qxwlan-E2600AC-C1 specific BDFs
+References: <64149043.5d0a0220.5f4b7.e8d1@mx.google.com>
+Date: Mon, 20 Mar 2023 17:41:32 +0200
+In-Reply-To: <64149043.5d0a0220.5f4b7.e8d1@mx.google.com> (Christian Marangi's
+	message of "Fri, 17 Mar 2023 17:07:29 +0100")
+Message-ID: <87wn3bh1lf.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230320_045210_413685_BDD3BF5F 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20230320_084141_178704_6B347D1F 
+X-CRM114-Status: GOOD (  16.21  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -56,97 +74,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Christian Marangi <ansuelsmth@gmail.com> writes:
 
-Using QCA9888 on kernel 5.15 with FW 10.4-3.10-00076, if a mesh
-interface is created while a STA is scanning on the same phy, the mesh
-interface connects correctly to other mesh nodes but not a single
-broadcast packet is received by ath10k (unicast packets are received
-correctly). Creating a monitor interface on this phy and bringing it up
-allows the mesh interface to receive those broadcast packet.
+> Hi, we have many board file not pused upstream in openwrt. The intention
+> is to fix this and have all of them merged.
+>
+> * description for what hardware this is:
+>
+>   - it is a QCA4019 based board
+>   - one QCA40xx radio is used as 2.4GHz radio
+>   - one QCA40xx radio is used as 5GHz radio
+>
+> * origin of the board file (did you create it yourself or where you
+>   downloaded)
+>
+>   - extracted from the original stock firmware image
+>
+> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+>
+>   - QCA4019 hw1.0
+>
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Qxwlan-E2600AC-C1
+>       sha256sum:
+>       a3b3687c1d80dc92b5d78b1aa205f1463bd11f4efc29f7311bdaabc28c1d3eb2
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Qxwlan-E2600AC-C1
+>       sha256sum:
+>       44f3f2e8d9ff9396d3ab73db3dfeb864cef20d7e43032a133fa8a7c74e5d7ad4
+>
+> * attach the actual board file (board.bin)
+>
+>   - The name of the files are equal to the id string in the board-2.bin
+>     (minus the ".bin")
 
-I tried to add debug in ath10k_htt_rx_h_enqueue() to see ath10k was
-seeing those broadcast packets but it doesn't (ath10k_htt_rx_h_enqueue()
-sees them only when monitor interface is up).
+Thanks, added to QCA4019/hw1.0/board-2.bin:
 
-So I have a hunch it could be that this is a FW issue, I tried with
-10.4-3.9.0.2-00157 FW which seem more recent than 10.4-3.10-00076 but
-the issue is still here.
+New:
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Qxwlan-E2600AC-C1
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Qxwlan-E2600AC-C1
 
-Has anyone with a better understanding of the 9888 firmware and/or
-ath10k driver any idea how to debug this further ?
+Changed:
 
-I use the script below to reproduce the issue but as it seems to be very
-timing sensitive I am not sure other plateform will behave the same.
 
-Thanks
+Deleted:
+
+2 board image(s) added, 0 changed, 0 deleted, 130 in total
+
+https://github.com/kvalo/ath10k-firmware/commit/9feef68f00133885952b29b5d79512c339382e7a
 
 -- 
-Remi
+https://patchwork.kernel.org/project/linux-wireless/list/
 
----
-
-#!/bin/sh
-
-start_sta() {
-        iw phy phy1 interface add  wlan1 type managed
-        wpa_supplicant -Dnl80211 -i wlan1 -C /tmp/sta_supp&
-        STA_PID=$!
-
-        sleep 4
-
-        wpa_cli -p /tmp/sta_supp/ RAW ADD_NETWORK
-        wpa_cli -p /tmp/sta_supp/ RAW SET_NETWORK 0 ssid \"\"
-        wpa_cli -p /tmp/sta_supp/ RAW SET_NETWORK 0 key_mgmt NONE
-        wpa_cli -p /tmp/sta_supp/ RAW SET_NETWORK 0 scan_ssid 0
-        wpa_cli -p /tmp/sta_supp/ RAW ENABLE_NETWORK 0
-}
-
-stop_sta() {
-        if [ ! "x${STA_PID}" = "x" ]; then
-                wpa_cli -p /tmp/wpa_supp RAW REMOVE_NETWORK 0
-                kill ${STA_PID}
-        fi
-        iw dev wlan1 del
-}
-
-start_mesh() {
-        iw phy phy1 interface add mesh1 type mesh
-        ip link set dev mesh1 address 72:FC:8F:A6:00:C4
-        wpa_supplicant -Dnl80211 -i mesh1 -C /tmp/mesh_supp&
-        MESH_PID=$!
-
-        sleep 4
-
-        wpa_cli -p /tmp/mesh_supp/ RAW ADD_NETWORK
-        wpa_cli -p /tmp/mesh_supp/ RAW SET_NETWORK 0 ssid \"mesh\"
-        wpa_cli -p /tmp/mesh_supp/ RAW SET_NETWORK 0 key_mgmt NONE
-        wpa_cli -p /tmp/mesh_supp/ RAW SET_NETWORK 0 frequency 5240
-        wpa_cli -p /tmp/mesh_supp/ RAW SET_NETWORK 0 mode 5
-        wpa_cli -p /tmp/mesh_supp/ RAW SET_NETWORK 0 beacon_int 120
-        wpa_cli -p /tmp/mesh_supp/ RAW ENABLE_NETWORK 0
-}
-
-stop_mesh() {
-        if [ ! "x${MESH_PID}" = "x" ]; then
-                wpa_cli -p /tmp/mesh_supp RAW REMOVE_NETWORK 0
-                kill ${MESH_PID}
-        fi
-        iw dev mesh1 del
-}
-
-main() {
-        while [ true ]; do
-                stop_sta
-                stop_mesh
-                start_sta
-                start_mesh
-                sleep 10
-                tcpdump -nepi mesh1 -c 4 -Qin broadcast
-        done
-}                                                             
-
-main
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
