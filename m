@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93F3DC7618A
-	for <ath10k@archiver.kernel.org>; Mon, 20 Mar 2023 05:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44A7EC7618A
+	for <ath10k@archiver.kernel.org>; Mon, 20 Mar 2023 05:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5e1DUIttmWWhuEv/+751vcZEy5t8Q+g/4opVjansptI=; b=w8LTbjtQBeZWfy
-	KzuC3POZo4Z/x+tSKBKr7eykVx2FbvuseVj1h59KJ7ZGhZkzcE6CI6CZm7M+74J8Q1QSl4wjr86J0
-	VI957uxzrUE6mS++B2KSEqszfpglhqwH+I0l9Y/S8SfF5Q/fN9I55saf4fJYV5rykgedJYH0r12/o
-	SM6DQzNhqTuk5J5F5oqLZKW5gSFslnt6DSpFu+rcSxW/Vs7wdKfiVSkiWH8S7Xy3Y8B9lpcBV3wb9
-	z1a+aKpvmSMDvEmOsZfWIashvz7oey7kOjev4iL+EjoJdaY7LYOPB0S4DM0BXHCzBA/Kear3/aRyD
-	pax+HEb423ZNzWKM9slg==;
+	List-Owner; bh=yrUXgGoECgEtTgEsgo59mxQhIxaRkUb2WOLBYRLaUaQ=; b=3ceyCcpGfZP65W
+	OldsQiM9hWUdEOOqOq8NPhUR7fe3kGGN8RLIonhhVwKMRkKbV4a2yFflB2h2swhXz6YMa2CfTNn7D
+	BJOuBBe3GtgEGiMzrBpSmkaEkJ0Mw8pen7xlNVY/PI3xTEZwWQ2HAS/zHmxBN1Py3wCccxNZofL7j
+	fAMhS9CBy52HkQ0x5px9GXl3WlB0ZS+tmEJnIMqs9BhxzIL3am5n61nDeLcNqpVUkaTpmWc1osQKD
+	IWGjTxLGGRxnvNTnroZ20QPLzOvYkh8usYL7Pzf/FHbZCgajarg/tSN9UmLh6rbY+FWCk5zg7zBkn
+	Vcrfysucy23YURzSuUgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pe8Wn-008CSq-08;
-	Mon, 20 Mar 2023 05:57:53 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1pe8XT-008CW8-2H;
+	Mon, 20 Mar 2023 05:58:35 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pe8Wk-008CS9-2y
+	id 1pe8XQ-008CVN-2q
 	for ath10k@lists.infradead.org;
-	Mon, 20 Mar 2023 05:57:52 +0000
+	Mon, 20 Mar 2023 05:58:34 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 9D738B80B8A;
-	Mon, 20 Mar 2023 05:57:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C94EBC4339B;
-	Mon, 20 Mar 2023 05:57:44 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 70637CE0FB6;
+	Mon, 20 Mar 2023 05:58:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ADE7C433EF;
+	Mon, 20 Mar 2023 05:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679291865;
-	bh=MVJdg0zuxR0GxfRZ1sE+e2DoNdON37bKMRVAUgs+eRM=;
+	s=k20201202; t=1679291902;
+	bh=3yKLmbDPeOrdTfqUlBRRlWo2S4TSqbZZLeP6dyUiINU=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=H9Jvp51r+wPlZ5461I16/Ed+R8MZLuSFdnkp1H5AksroxSRhPBJCkXEhcwUowPEWu
-	 dPwbwq+sbWKIZc74gotOjZ+OsILLeoBwEWzSVRk8UWZ9CrE8k+J8n+AGbStWap3SrB
-	 MU2bqR2xMWWeMQcSSCteTWCx6nGdiJuVddPiavBWVPm+jdOKLqNmGnF9XsQi2D6AlN
-	 SbcC1wjhHnh6n1thAyhFc8tSM7F8rI0ctM+y43gmb0IcUHHK/b4XnjC413sgJAG7Q2
-	 aLS0ja7JoH37y9IrH02iuCKde3k9ixk0ntEvCi0aVj3J6nmE/KEfGpHH7RM1OxQ59d
-	 cdoJgQ82Z0pNw==
+	b=rTJeYeEn0rHOGfySajcRjGr4Vef3hJHLwWs4UXSQf13Etus+7r8RBzDux4MQDcfAg
+	 p3lB57H++KbvwtMSB7KrRcMit0m99Cljmclznpz3XT2msxvtxXSxTk4ztS5i0lv5uM
+	 gTvF2Wi3zC/ASf7tRI3I3D6daWfBB8BUo4RQ8S36uBhr8HB2u1Vq7HGRRF1ZGlmfQv
+	 h6DX/PhUjRrJKilyuRNVOHxhZI68rWPMSawwpQ83y2v3y8oEHRJEvRATrulzv1GROB
+	 gdiqsL8w0Q4aqOgEfYtjotkBGXNblKlsenssHY3Qn5Kkrbdjehqjaa11HPviRzvSl3
+	 4OySkUWw9SpBw==
 From: Kalle Valo <kvalo@kernel.org>
 To: Christian Marangi <ansuelsmth@gmail.com>
 Cc: ath10k@lists.infradead.org
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add GL-A1300 specific BDFs
-References: <641495ca.050a0220.da360.e807@mx.google.com>
-Date: Mon, 20 Mar 2023 07:57:42 +0200
-In-Reply-To: <641495ca.050a0220.da360.e807@mx.google.com> (Christian Marangi's
-	message of "Fri, 17 Mar 2023 17:31:04 +0100")
-Message-ID: <87bkkohsmh.fsf@kernel.org>
+Subject: Re: ath10k-firmware: QCA9984 hw1.0: Add Edgecore-ECW5410-L specific BDFs
+References: <6414891b.5d0a0220.6f9f5.e092@mx.google.com>
+Date: Mon, 20 Mar 2023 07:58:19 +0200
+In-Reply-To: <6414891b.5d0a0220.6f9f5.e092@mx.google.com> (Christian Marangi's
+	message of "Fri, 17 Mar 2023 16:36:58 +0100")
+Message-ID: <877cvchslg.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230319_225751_121393_4CDEF8E9 
+X-CRM114-CacheID: sfid-20230319_225833_108181_E4D03B7E 
 X-CRM114-Status: GOOD (  16.19  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,9 +81,9 @@ Christian Marangi <ansuelsmth@gmail.com> writes:
 >
 > * description for what hardware this is:
 >
->   - it is a QCA4019 based board
->   - one QCA40xx radio is used as 2.4GHz radio
->   - one QCA40xx radio is used as 5GHz radio
+>   - it is a IPQ806X based board
+>   - one QCA9984 radio is used as 2.4GHz radio
+>   - one QCA9984 radio is used as 5GHz radio
 >
 > * origin of the board file (did you create it yourself or where you
 >   downloaded)
@@ -94,12 +94,12 @@ Christian Marangi <ansuelsmth@gmail.com> writes:
 >
 >   - QCA4019 hw1.0
 >
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=GL-A1300.bin
+>     + bus=pci,bmi-chip-id=0,bmi-board-id=1,variant=Edgecore-ECW5410-L
 >       sha256sum:
->       7dd85d4d5b95570985ecd4a66f51258d6973f14e57d715e49e0f6006a7b91f66
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=GL-A1300.bin
+>       add8a7574c1bce2fedc43fdd69825510be68096aac86c5ef3e5bbd438ff18295
+>     + bus=pci,bmi-chip-id=0,bmi-board-id=2,variant=Edgecore-ECW5410-L
 >       sha256sum:
->       9ec16a0670d71e29c4f9c0758babee85fd57982fad870a78ca779fbd43eb4731
+>       9786e70bcb62480d24ff8c5801fa1f211fe78eaf217566b4742b475b4034f4f1
 >
 > * attach the actual board file (board.bin)
 >
