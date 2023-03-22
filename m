@@ -4,94 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F33CEC6FD1F
-	for <ath10k@archiver.kernel.org>; Wed, 22 Mar 2023 12:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7126DC6FD1F
+	for <ath10k@archiver.kernel.org>; Wed, 22 Mar 2023 20:41:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FGNot1Id8oc+InNBuifrVSKsli97+pQv1j+BVbN1jmg=; b=ZiG2eO8Vp9F4jb
-	bg2dIzs/M7blqCvf4ltbLws5SlXdAOwhiN+4s2xTp+QGFsH3T/hSqK4IuFWDmVBoHcMyambi5VIrf
-	45UdlrgfPedJe0YfkdWhPwl/oboAbVQjWUPCRFFO19wHLAcAq+i8bXsGs8STD5SGlt7/0+cJBF42t
-	WKsb4197GUGlDGJhpBj3fpP1xBllIUSNz2kQtE88vuZe/V3ZXYghZolF5AsjGMHfiOsce1eHe5Td1
-	s6YZTEPsejm0qBPs2CPVPRkae2172pVunrV2lB2bbr9VmQfnEthAH4AsM9oD+xeBYvSjUk+JJUHL4
-	yRxFKsg5c8B98iwtDj2g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/0KyfgfUEn3ZycpL9muzFJxkH2Ih3cvDb7SE58EgRWU=; b=AMriJb0lE/EXmw
+	xaNELKuQRG9HzSWnPIXR0FWBtm2k+BdKTMsDaY0ItZ0e2YJCqkNc/jiswZydm4TiXRPcLbNgCnGUg
+	RMY9mllreLZvz2FNFQp4tYnlhj7VvwxtI9MzdZtFCCSdiBajSyRgfKDGPwgjLzEWVu52Bio0BKlXG
+	PjOt6z7UG/7+bl7oBAWZMndM3vEBArGMmhXigZuc//uhUqq57bWWBZJieVCqLngDr018J7mWZs+IB
+	bVUld+e6VPf3jJRKUqV96aGP9tgttcGY73OZqJBwrjXnzsfgjlLD+Z2/ITPCd95G7Ic652PGADECg
+	RAn+c4f3nZgLK4OK9egQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pexaS-00FvwD-2d;
-	Wed, 22 Mar 2023 12:29:04 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1pf5GY-00HMxk-1O;
+	Wed, 22 Mar 2023 20:41:02 +0000
+Received: from mail-mw2nam12on20706.outbound.protection.outlook.com ([2a01:111:f400:fe5a::706] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pexaP-00Fvva-1S
+	id 1pf5GV-00HMwT-1i
 	for ath10k@lists.infradead.org;
-	Wed, 22 Mar 2023 12:29:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1679488140;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=/RmaCdFiflknr5F/EzALZWl8EQAEMlohlo+Bq/6n784=;
-	b=Mj8ociXFfTjBg2nuSt6ayckqj5PVKL2CyF8i8RxiDh6LIJ/s684sz/xxKCBp++SqCx+Ktb
-	ZlOCDaUwbwH4bh3GBMD7TIn0TJwP8w7E3MbXsDM6zY7YYym7OBG4UlNn7YadkDxZqHfuyp
-	SQfMjdRUvbFXoHPA7KrivXolCUx+G1c=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-25-eh6wpEGJMcCzriKT_XYK6Q-1; Wed, 22 Mar 2023 08:28:58 -0400
-X-MC-Unique: eh6wpEGJMcCzriKT_XYK6Q-1
-Received: by mail-qt1-f200.google.com with SMTP id l17-20020ac84cd1000000b003bfbae42753so10679956qtv.12
-        for <ath10k@lists.infradead.org>; Wed, 22 Mar 2023 05:28:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679488138;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/RmaCdFiflknr5F/EzALZWl8EQAEMlohlo+Bq/6n784=;
-        b=GvNtCBfQc7gKK7RTKmvRNQe5IHM0THlCgN/BD4ruPEyknGSnTVz6f7o/S2KcSZ2S4M
-         rZDBXatXilJg8KHXuO1tVVZDF0y6EsjKkeFefnYKtJbR7tE4Cg8TcRO5gXej0lx3ERbB
-         F640j7ZR3mFYXOvZdGYfjtTOJEbJZJDcbGuWMvAjKWbDCCKCMqsU5HYq52FPQa5UgnL2
-         11xpqPqAk57yGhWMRLSNjxIyCMeP6fvoItxFc0A1dYlZ+LFEW3EebGVz7iY6lDl4l6Vz
-         uNEX8JR90vxEmKATbsH7+30d8zV0j1XYX34H9hCseyjZRrMIydEytBZlfei5cayEXGLX
-         hdQg==
-X-Gm-Message-State: AO0yUKXgjW8ZwK+r0cjwEaq7+5K//ev/rPaK85y4Qmeo1dD/5KSASnFO
-	7NemY56ZWmTd2eLICBX9M4yMfNXHWCe2GJm5TUtLx8I3ICn0VPxU/B/Mm7Cng7SQIsxX6Hj7zDE
-	2ENcY6PfLlNetVvt2vA3zUQ==
-X-Received: by 2002:ac8:7f8e:0:b0:3bf:d9d2:484f with SMTP id z14-20020ac87f8e000000b003bfd9d2484fmr5698849qtj.11.1679488138455;
-        Wed, 22 Mar 2023 05:28:58 -0700 (PDT)
-X-Google-Smtp-Source: AK7set8Gcxx8GdV/OeVtTOhHQR7MlyYiQ1UjJcEDEFgxn3029wWSBoOMbr8ofWD/oxpFcUXsweisow==
-X-Received: by 2002:ac8:7f8e:0:b0:3bf:d9d2:484f with SMTP id z14-20020ac87f8e000000b003bfd9d2484fmr5698812qtj.11.1679488138211;
-        Wed, 22 Mar 2023 05:28:58 -0700 (PDT)
-Received: from dell-per740-01.7a2m.lab.eng.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
-        by smtp.gmail.com with ESMTPSA id j13-20020a37ef0d000000b00729b7d71ac7sm11174245qkk.33.2023.03.22.05.28.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Mar 2023 05:28:57 -0700 (PDT)
-From: Tom Rix <trix@redhat.com>
-To: kvalo@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	nathan@kernel.org,
-	ndesaulniers@google.com
-Cc: ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev,
-	Tom Rix <trix@redhat.com>
-Subject: [PATCH] ath10k: remove unused ath10k_get_ring_byte function
-Date: Wed, 22 Mar 2023 08:28:55 -0400
-Message-Id: <20230322122855.2570417-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+	Wed, 22 Mar 2023 20:41:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zi4NdqGVgKBV9LKtKSQ1V1VFcT4dyQ4PQupvu+DlFsjb13iysxn+a/CnwmGz4oKhrrImIxDmfmqulMWzk78IGlYTBwWo7CHLkDuDD/ORPlqtAYS5GpcYvPrhehHxK9pMi7KF1E+NYmx1K4twm2k8mZZTcH+a0PjXBJ1HZrCfSbENVwXpLy1UWnRnTxCC5/tErTLl51qesqNFzSAYEI74VeCLNMUIvU4Qlm9SXswTNDMZ+1ha2gsUUDyiokCz1a0cgBash0/pZj7zCbHgWA0dpCT43eu47z8IXmjuAZoygDSqFysq7zMgOpCkNa9rTAQFdSIc4xgdvz4gB+G7mD3NIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tgZD2KmchfSEjwnxFRYWSv6wB0c7DH7Rry+jZ2QV8lE=;
+ b=YNTsYFCTJCBx1HKClhbIIR2M+vYbfXz3oh1xH8vntJ32wkuqY+QLZ9wT9fYgrI962crjHFj0YTaGUEBAYTjO9BTnVnhLJWM8NVNs0RY+UVWGUDUDr1s/dfkffJEGbpbRsyy96yiqYzrMLLYLjMiDUPog/4RuRfrUWQtBKWn///451xLPfrvyvkGV4hvxdSXYDRxI2xRTYfX+T9qLLkxSpdQ4elfRQqpdjXraDIrPuyOvvMLIHcI9ew4jLTty56n4wzj00k92CnHLp9ZiDx8clRgXssKpCnQo48jVZUvg34NpFugXKgBd0hRRPiSXBY5SvMTGY5QLxH+GLsrEiLOpVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tgZD2KmchfSEjwnxFRYWSv6wB0c7DH7Rry+jZ2QV8lE=;
+ b=V25RtERJR8TBCvsEgPGZfdASA+bywV1aDRWaAY57Tk9UcAYoGCAPHFnZOlCoK7dFhpVlcPnbhHDlhunH4htHQRGTybe9KEKWWDzN7V7mbvnIk0tLAt12lB8h5iGrL8mXx8HPgB+UwUWdkBS7QMhWiHCFRfvI4pDdjEdJBjJNKjg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by SA0PR13MB4143.namprd13.prod.outlook.com (2603:10b6:806:94::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Wed, 22 Mar
+ 2023 20:40:50 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::85f5:bdb:fb9e:294c]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::85f5:bdb:fb9e:294c%2]) with mapi id 15.20.6178.037; Wed, 22 Mar 2023
+ 20:40:50 +0000
+Date: Wed, 22 Mar 2023 21:40:43 +0100
+From: Simon Horman <simon.horman@corigine.com>
+To: Tom Rix <trix@redhat.com>
+Cc: kvalo@kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, nathan@kernel.org,
+	ndesaulniers@google.com, ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] ath10k: remove unused ath10k_get_ring_byte function
+Message-ID: <ZBtnbgeW9T75ZXfv@corigine.com>
+References: <20230322122855.2570417-1-trix@redhat.com>
+Content-Disposition: inline
+In-Reply-To: <20230322122855.2570417-1-trix@redhat.com>
+X-ClientProxiedBy: AM0PR10CA0104.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:e6::21) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SA0PR13MB4143:EE_
+X-MS-Office365-Filtering-Correlation-Id: cd1eed4f-a8e8-4d17-0bfb-08db2b15b8b3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	B2OtgbQ8a/rsryUIIRtCmyT+/CPS002lOkreX+NjaUQvrhdHAeaRPuwBWxhF6diypjj8zU3TP9Gcoe+W2i4zZJm45bhY7Uqa2PShelhi6BGtOsxLsfmpByvgnwcF2BCkSGgAK+5X+xFTaW8LkA3knQhX71rbCjhW4a4YYdrPg6lelNH23mJrJQQi+oJLzC5rLa35Q00Mk3M5JyipEQYuUjGfkTc7ivT9LG1F4uNfy/3vOoSxECnDMZKuBdif6ArfUJX5wvpbYH4QthnI4VMweK7Ku9Rkc6k/psRui/LfolLYhX6naixcSwDtdHeIk845M99a70ZqXJdncQFG11482m810Wh1qQJDa+B3pcnbgCg92xyZIjQeCvVXiaVsOXA7sY/CQLVTXq5WMI4kDvfLcMznRUwzni8u2Ekz+yUeOHfjCcvT7uoAvXw/nSb5ficmy1plNpiO0DVUzHCJesq/9TnfNOvXbEWzfjOl/cnG6nEYM391tblgMrKH4QmKXTL1GkRXjIvbg3zfQKmmtp8mrL+G2gBO0WIRjogdXRCOFOlu77/gP6jNBED3ChsIX+NaW2dQHrOrMHSL7HaPNF4EFzXgCWYa4bcu7ZJqJx/5SPmwxRPXg9kqm1priL++TGlsdblLYKp84NfUYmnbc8vNJCZluYCIlhcgYDguwWU+4VFSRZMepSLpWkoISTiDBcbC
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39840400004)(396003)(136003)(346002)(366004)(376002)(451199018)(6512007)(2616005)(83380400001)(6666004)(6486002)(4326008)(6916009)(6506007)(8676002)(66476007)(8936002)(316002)(66556008)(478600001)(66946007)(7416002)(5660300002)(44832011)(2906002)(41300700001)(186003)(38100700002)(86362001)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?8ABZ7QnnuKdbgg6S1PU4i0rxUmK55EeXll/p6jBGLN8CqumiCAb0YxRD3b4k?=
+ =?us-ascii?Q?j/jWntRqOUtuG02yHTJcsl/ILXHpkDmk7ASlFUx5e1BlMFHVMXrsyx1nOLDH?=
+ =?us-ascii?Q?6DjsmWdL0WHURTxOdyK+waYzejIAikLUHgYWfdSAWkwohU2ItBe3J5w38Q9E?=
+ =?us-ascii?Q?VQRys4doH0caTIO9Eio8wZXsJdpfIdTbae2LoJPWgrzwWjUvql9lpJv+M0RT?=
+ =?us-ascii?Q?oVsrpx7czFvlhoi99kdm4/XTt5gFzJ8G2VQPAVq5eoiaD+DN0BeN/RQXQ6FG?=
+ =?us-ascii?Q?iID9VvyiJnK8cZ1aFjiImUs700KWwV3yeO/8TYoVkIrlr/ut+CAlyUOuQrC6?=
+ =?us-ascii?Q?JIuEJjqE33zG1XU4OZCZ4J2hE3EW8WYPQ7hDy0+ojPElAsJNcnRu/zupEsBt?=
+ =?us-ascii?Q?Ub+7rBH+jy5/wfsSy2I6SWvcWL4tOAcXU4FkUsKt96w5FpbRccf2I+jhRthS?=
+ =?us-ascii?Q?Wl9R9A37pLGDTZQILauqq9Je+I7GJfrtVh6xWb2NA9sk37ZccbuRe1zD4/Jf?=
+ =?us-ascii?Q?OdBRD29pLF5AZkgMfbnhPDDGmE3Tfjpfh+9ddlQeCy3h/xApMKCMgWy3RgU2?=
+ =?us-ascii?Q?2fd7x0VeHgeOWe3l9OK5XaSdDsyGOGrw+5RZy3yOD5FNG/PrSn73Sms7B8qg?=
+ =?us-ascii?Q?7/ATgXvf7rhQHNFkY05AVizKOoW4FaGeYqsVbHnQPld4bxPOzHClZK0PRtL0?=
+ =?us-ascii?Q?IipF6ZExSiaehpAa9CStJdi5XwqhvH1JXMPQ2VYq6V7FGO372IiYmvFezYRA?=
+ =?us-ascii?Q?QMoauxV8EZev3TTc0fCxQZP5/0maSiaT/IN3YDLgCDQN2BB7vftpXBZl13ub?=
+ =?us-ascii?Q?GLCtr5aFKAWxsO99Mjk7efkqn/fGuVTN4yg6j3eY7jBf+aRJqSqqbAN4c7zT?=
+ =?us-ascii?Q?hXftFgfDq25mFS+MbkyF8AvHO9PunWX7XX5nKK4zHp9QyO4O/s6pN/z5Kuen?=
+ =?us-ascii?Q?7a0qxpcgzkcqCj5xPiJYXCzNPCpEPaS5XGzOUtSLUaNw1almRuf3f9idQBdS?=
+ =?us-ascii?Q?nvo3m16z+CKUMJZhxFQBlBeYxX7llMZ6r34hOdAjCECSqNmptT465bHPnIWI?=
+ =?us-ascii?Q?Ta4iLGVjarSrsLJ1cCjY2WoH6XNtsZPxw+/UVuan707Z+MSTU1vuyUyN75Zi?=
+ =?us-ascii?Q?nNCJptOdOLCOA/Gan+docdVtJiJz00r/SY80+QHLuiR6glf3PeMkQ8grCKdX?=
+ =?us-ascii?Q?Bwxe3ArlwbnACSOLaETV/FvVcrPPCL3mMXeBJXnya1H75WCydBa2Js2okbzN?=
+ =?us-ascii?Q?Fhc8VWdifS0D1c/+QKZjtXvxQCrfPfR8YGbHQXE4JIEm0A7V7wJ20fAsh0BO?=
+ =?us-ascii?Q?t4r8X0rj6RI4Bkfc2jTR5W1u4fc/xtLkX908gYUOv4E0lS4zb8bYJXGxP3+z?=
+ =?us-ascii?Q?BNvOvuVMXnAQG0hhmy05qiGTZ8Q8ZNdwoYMdiGpkeTd/mLaVisVJsnnrAVmM?=
+ =?us-ascii?Q?hlYprUs7yGyL2noMOxgwoxLfrUhVQ1rHiMLa02SrF+tG6WLgBWRsgciux2g2?=
+ =?us-ascii?Q?oFG5railicQhPHYy7omvFXc3V+77TXtIa9cPsh6iYTdih4P2rj5fJHpnXJ+l?=
+ =?us-ascii?Q?DGDENpdgDxhb4bHL5Sn8xUiTzFmMuz4jev/k5tjK0XTzRyMAbQHhpqQbihFM?=
+ =?us-ascii?Q?xQAYLKYxQv/6X2eVINh8NFj7ZRVIe4EXs3wT/Cos6vdTcp+9dqkbtfDkoEAE?=
+ =?us-ascii?Q?aioZGw=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd1eed4f-a8e8-4d17-0bfb-08db2b15b8b3
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2023 20:40:49.9243
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6qQHIgK1EUB8Vqv1VakVDoX3hhmlNQuaTAt9/C+OvB43mFhSpER7rzNs8tyKF+/lEzxiF+FfDzAzE7MKc6OD8lJ/1sc+gg84HB+2Rpj9Z0k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR13MB4143
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_052901_563550_19C7289F 
-X-CRM114-Status: UNSURE (   7.64  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230322_134059_599227_F8C9F68B 
+X-CRM114-Status: GOOD (  15.45  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,39 +138,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-clang with W=1 reports
-drivers/net/wireless/ath/ath10k/ce.c:88:1: error:
-  unused function 'ath10k_get_ring_byte' [-Werror,-Wunused-function]
-ath10k_get_ring_byte(unsigned int offset,
-^
-This function is not used so remove it.
+On Wed, Mar 22, 2023 at 08:28:55AM -0400, Tom Rix wrote:
+> clang with W=1 reports
+> drivers/net/wireless/ath/ath10k/ce.c:88:1: error:
+>   unused function 'ath10k_get_ring_byte' [-Werror,-Wunused-function]
+> ath10k_get_ring_byte(unsigned int offset,
+> ^
+> This function is not used so remove it.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/net/wireless/ath/ath10k/ce.c | 7 -------
- 1 file changed, 7 deletions(-)
+Hi Tom,
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index b656cfc03648..c27b8204718a 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -84,13 +84,6 @@ ath10k_set_ring_byte(unsigned int offset,
- 	return ((offset << addr_map->lsb) & addr_map->mask);
- }
- 
--static inline unsigned int
--ath10k_get_ring_byte(unsigned int offset,
--		     struct ath10k_hw_ce_regs_addr_map *addr_map)
--{
--	return ((offset & addr_map->mask) >> (addr_map->lsb));
--}
--
- static inline u32 ath10k_ce_read32(struct ath10k *ar, u32 offset)
- {
- 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
--- 
-2.27.0
+this looks good. But this patch applied, and with clang 11.0.2,
+make CC=clang W=1 tells me:
 
+drivers/net/wireless/ath/ath10k/ce.c:80:19: error: unused function 'shadow_dst_wr_ind_addr' [-Werror,-Wunused-function]
+static inline u32 shadow_dst_wr_ind_addr(struct ath10k *ar,
+                  ^
+drivers/net/wireless/ath/ath10k/ce.c:434:20: error: unused function 'ath10k_ce_error_intr_enable' [-Werror,-Wunused-function]
+static inline void ath10k_ce_error_intr_enable(struct ath10k *ar,
+                   ^
+Perhaps those functions should be removed too?
+
+> ---
+>  drivers/net/wireless/ath/ath10k/ce.c | 7 -------
+>  1 file changed, 7 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+> index b656cfc03648..c27b8204718a 100644
+> --- a/drivers/net/wireless/ath/ath10k/ce.c
+> +++ b/drivers/net/wireless/ath/ath10k/ce.c
+> @@ -84,13 +84,6 @@ ath10k_set_ring_byte(unsigned int offset,
+>  	return ((offset << addr_map->lsb) & addr_map->mask);
+>  }
+>  
+> -static inline unsigned int
+> -ath10k_get_ring_byte(unsigned int offset,
+> -		     struct ath10k_hw_ce_regs_addr_map *addr_map)
+> -{
+> -	return ((offset & addr_map->mask) >> (addr_map->lsb));
+> -}
+> -
+>  static inline u32 ath10k_ce_read32(struct ath10k *ar, u32 offset)
+>  {
+>  	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+> -- 
+> 2.27.0
+> 
 
 _______________________________________________
 ath10k mailing list
