@@ -4,51 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E6F7C6FD1C
-	for <ath10k@archiver.kernel.org>; Thu, 23 Mar 2023 16:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 669D2C74A5B
+	for <ath10k@archiver.kernel.org>; Thu, 23 Mar 2023 18:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=E+nGkha33JOV4pWdvFs6CT0m99H3I5OA+2/+TMRnlyI=; b=sfZuYm4WtZ29n3
-	Dz2rkdWrdYiBIRFhag5O/VEqPj4vFZkbX2mxmSw3Je7RQUzaU69uG4oe9wZbXSAVZoMHL+rqSUTIJ
-	+uUuNZg7CziSc+AwaCCQuXReQBIr85kPRS7ShU+eu3uNnIMQM1qMJlb04PLanNoM3rWaiTRSuS+2/
-	E9sX1r031pD6k+/XdaHW4ar8EU7Z9ptngzfaWkafsE2IYnxDnviYGztpyRXcuMicLbP9lL3Xz9jC/
-	6kN2/bAlLy9aJjNxZFBLZyjpuSHCa0QomN6bsMqYnDxuJY8kkywrnHbKeUUYE54iLO4cV+WTgDfHf
-	E6WNoljBqaYNOtSavpiw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=v0Sus26T5FGb68noX6dwPK2sAn7XmybfBwWZi21PDjg=; b=um9dxrfMSuTnkI
+	qk5/saGZI3R4WprNSTa43N7Gvelcde7P5qvVLEk4lkxdkxGLYQJPHZLJecw07yIXXQW20RoHuXsI/
+	Iarjb+XPda7TyCUKz76aHolRsfjX3o7fURhpLEtvX+Ix6v978a481pTj8oVtLu03S/pZZOJNowAZb
+	3lw3benhYKF9fo1VnYT/Feb57iwh//0IXSGL36yWtE3nl0/GhcXB5zkt7y29dSsqPY1cPgZ1pkMct
+	elN9V9CbzAXAbHcs1QiiXqgQRCJiR22bjk+aUR7QrdoP5iSCtoXP54le/7SlZ3m4ZrS1A+fk8CA5u
+	gUX6m6dR5x0DHpb7XvXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfOGK-002XTB-0N;
-	Thu, 23 Mar 2023 16:58:04 +0000
-Received: from ns2.wdyn.eu ([5.252.227.236])
-	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfOGG-002XRx-1k
+	id 1pfPj8-002isa-0r;
+	Thu, 23 Mar 2023 18:31:54 +0000
+Received: from mail-mw2nam12on20713.outbound.protection.outlook.com ([2a01:111:f400:fe5a::713] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1pfPj4-002iqY-2K
 	for ath10k@lists.infradead.org;
-	Thu, 23 Mar 2023 16:58:02 +0000
-From: Alexander Wetzel <alexander@wetzel-home.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wetzel-home.de;
-	s=wetzel-home; t=1679590667;
-	bh=b65rg+Ns9zniat0wIt6g2YkntDD1KWVkHkHtk40xSCk=;
-	h=From:To:Cc:Subject:Date;
-	b=FT7RrLICxvsBUjsNmMBwIsnO/PJxVYmQ+LBDrZnNPm0cDwDl3r1tVJVs0A72twOmq
-	 lFE6ZkABxP0hzpDC/3H7CRQftfCSiqvY0ZCxtUyFsjpdvlG88k/bWQM3dWS1e4ik5M
-	 3xpGqCmLVtCGGq3UK7tgOAAx4v9ZrXicTYtYC0pg=
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Alexander Wetzel <alexander@wetzel-home.de>,
-	Felix Fietkau <nbd@nbd.name>,
-	stable@vger.kernel.org
-Subject: [PATCH] wifi: ath10k: Serialize wake_tx_queue ops
-Date: Thu, 23 Mar 2023 17:55:27 +0100
-Message-Id: <20230323165527.156414-1-alexander@wetzel-home.de>
-X-Mailer: git-send-email 2.40.0
+	Thu, 23 Mar 2023 18:31:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KQO6VNJwDerSoV8cFu3Mn12MdReE0kmNU0jhN95m1VOfhT44ojtfoOEV8T8dyq90PPgZsCS5+4wlc3qDfpjaxhugkzS8rrEIHPOuTMh2rlRgBgDHAvgvBX/lpvWZoK1bn4BWwExj3ArjYFSTsgX+EpCF//2ewOgyvK9jFFQRjqyyJ6I+D+vT4NPsoCZAL41FzNYLV8zmxfHHp85jSZA3UvwxGkhgGibwPe/9BKvpH/Dz+amIIfJkWMnlEZwHg1JTIvutSt5NaCIQJ7P8xbyfSYOYruDa0BUL4zV83U6EUH3+XrEfWVYga/8NQKLEm3ZIgBdp1CV0GXIT9QE1+O8+6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lofKCubnXUaYWHmHuodlsCRyFwNUQNqBMaRVMvxVDoE=;
+ b=d0wfgy4kAeWGbO0XaI3+cDrA/8ktkWujoFYskbW1W6/ILuicMubIrOIpeeuqIz6Vv0AeJtt5kMruiS8ScVhrRzySypO9zieg7I0AuHBNzmJSKuHBUgzKIQ+EC/Db+Obz/1cxtrdVOCcIdatSbFUAdmheFZjUwcUNyVv/7gwGEwS2UmC1RRPnISkD7wELM45Zs+G+/hfyLg5yl68QQeZk8l6x5rqxaHGgUCnfFSoth8fW1gmyQE0zRXRuSTuj09Soa1JL2YjmaFY4ldzkg89R46J7eR5nqPESoZrOR1fDQwd3sQe2S5Cwm8p+UM4PBYCZ5/5sWJy7CLvhg6b+4sNVXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lofKCubnXUaYWHmHuodlsCRyFwNUQNqBMaRVMvxVDoE=;
+ b=XSYJ7MbbmI2t10TZKTAduxqc4rNUNPY7m42XGdq7wezZG6CuJL9C5SlxfYO5reyg2tUiysfwK7465IfuKZanrN6BPu24WMErf9RimbJX35JLinCoUzhMF9XmQoEyG/ZChAZgik17PbT/LaqWbKeMxmvyeX3APUkhZdvkOqgB4z8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by BN0PR13MB5149.namprd13.prod.outlook.com (2603:10b6:408:150::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Thu, 23 Mar
+ 2023 18:31:44 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::85f5:bdb:fb9e:294c]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::85f5:bdb:fb9e:294c%2]) with mapi id 15.20.6178.038; Thu, 23 Mar 2023
+ 18:31:44 +0000
+Date: Thu, 23 Mar 2023 19:31:38 +0100
+From: Simon Horman <simon.horman@corigine.com>
+To: Tom Rix <trix@redhat.com>
+Cc: kvalo@kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, nathan@kernel.org,
+	ndesaulniers@google.com, ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] ath10k: remove unused ath10k_get_ring_byte function
+Message-ID: <ZBybCkpexqml5hHF@corigine.com>
+References: <20230322122855.2570417-1-trix@redhat.com>
+ <ZBtnbgeW9T75ZXfv@corigine.com>
+ <0b9f9c45-7e88-deda-46a6-8c7961878b83@redhat.com>
+Content-Disposition: inline
+In-Reply-To: <0b9f9c45-7e88-deda-46a6-8c7961878b83@redhat.com>
+X-ClientProxiedBy: AM0PR03CA0041.eurprd03.prod.outlook.com (2603:10a6:208::18)
+ To PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|BN0PR13MB5149:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b4d2f70-5f0b-4218-8e5a-08db2bccda72
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	MqZWPIlhAKpD+mUo0mn2q60YO3J1TK4CxXAZpWKipnZwRhZLhRLc99fTwc9i0E0FOdoM9QBfmXOPQvMe5d90REoLqlqJmwC4FJ1yKmzmSWV2mkWZM2G++rf50z0udfzibwaKnrCk7LizeqdRgjvUFh1i0Hqw8z9XK4RbQHyB/pv9QnZ6XTv7Nc/hnpUB7y8Xrf4e9LGvRT+6vD2ty6Lrjej0jLkL+nJa4cgvDWEFkDtDoGgJF193n8ZzeDCfhUSQS97tz9HxbTN3ZAM+QAacGK8NpAB+VxdzMY/8FTrJ7w96gVCLb+O628HqcxxhXQl5GXJlOy52rjb+nZtPwk2YlOSkUbXog8OHTTCVp1nFZKjIQ3qwAeuhPw/Llvdpdt1mhKRHNMq1CSoJ9MlCStA49uUUJwsG/gkB3SFnhbdpQkj/5DOdjTjN1JcSTI2qoHqhUkYKJQ/3ZzyYhpMTC8i3sOaibe0OjRda1yMvk/6x9f6isy65MRkztmSnGGXqR1RN+ebLvZTyNw4+1UuKg9YdZ75D4zf/KA7RKLMJvONMeHh3ZuRcO6l+rkWW2rX/25eXFf38RM6TqTqNBuH8twufr9cGp+TsUTbiUdOTl2+Xk9+5Y6+sY0Mwvq1rF1siRrOUCvu59VgUWkQQCHoFZB4FTALFq0dA1Tb2eQt1RCBdIANzvXOKGGp65ssjHV8oDR/8
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(396003)(376002)(136003)(366004)(39840400004)(451199018)(38100700002)(2906002)(6486002)(478600001)(186003)(2616005)(86362001)(36756003)(8676002)(4326008)(66556008)(66946007)(66476007)(6916009)(5660300002)(53546011)(6666004)(8936002)(6512007)(6506007)(316002)(7416002)(44832011)(41300700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?Qt0SEXzdk6SFGE3SljezVfP7Q+8J0JXPDU1uK4w555ItK1UsHTqcsayigDFu?=
+ =?us-ascii?Q?7V+rREiTndwooCG4mEdk1xFLF6kX+ktWZpmnMEA8oeMM00PQlBUZSEkc3JCH?=
+ =?us-ascii?Q?1xfeB/FE9PpGigKn0Tjpb5ED0AyXzFft0FB5MFrYrYnF/H/XZS2lx+cyUDr+?=
+ =?us-ascii?Q?AaCvBOEOL/1xH2RwY5m2Ng4cqJZ8ItaBkX8kAqdI5SEERWoy3GJh9YuNxNLg?=
+ =?us-ascii?Q?A/DyyZm1iaUf8ThY2dTqJHgt7jVlsWy3UW216qxQ2rAP3AGzXpbbUKn4Fwib?=
+ =?us-ascii?Q?Cb41KQPoftFSe2lDW+96nlGM/VBagCzGnMfndR3XkbTSIeE5oSWb6/N3k5wx?=
+ =?us-ascii?Q?sLv9tfpq6xI77Y679FXH0t1PF1wyGT73bEVD0JivC9SYNBj2yKWO3xu3CN4O?=
+ =?us-ascii?Q?WKAJxEqPy6E28qjtMVMNZ4UgcmLC2BovcZOQIL+nkrU3H4XXH5m0jTbNWESJ?=
+ =?us-ascii?Q?I8nza1v/a4upS8B6lzVI+EgE+ivFB2U5XxeIaSCdQ0J2ObnNhg7IINA6Dk6b?=
+ =?us-ascii?Q?iIs+MdUJ2oU/b8gvOYakP+VF6NFmzDkOL3RoLO2VANPr0MFi23sZdQB93Bjz?=
+ =?us-ascii?Q?cSwC6wXErUfMqhmMr0m5hO292CAdPqwx+CmgZSZzQNSGYcNM96buarA+q2w3?=
+ =?us-ascii?Q?0ivkIVQj5Zmsi6at6Jm/TQPFjxpYMfWwi2zxYtnqnfpz92XqEHdANlyZJ2ay?=
+ =?us-ascii?Q?4n3qfArP7kh/DbwKhX0/8Rz/Em/AZ1SUI1xdp7s+lhpJfqyLrSqwq6LjkHCe?=
+ =?us-ascii?Q?rt71aoAvo41Xyblq30AU9tnTJfhtPbGSprrRxf04uZ4y99qUpnKjtt1fyQ+w?=
+ =?us-ascii?Q?1rXuXzImPoZLNnPzfQzYiWvphHk74IY1Yy16oVRzI+D7L5zh/Dr7HQ4yzv3f?=
+ =?us-ascii?Q?GcpnLceIBGIsnw1hHkbpaVah/zHmLE5PeX48w6l6k0tz9Rrbec3nh0u1cBeA?=
+ =?us-ascii?Q?d2VESzAtDBlJVRfFWURpuLrzuLLy5bchMLSla2K2wvnjw+Z02dJN+TW/bYEr?=
+ =?us-ascii?Q?SK4/Vz20akWqL/C6Qj3667RDLZIHDsx3EJn0UnMG4+ZmD/g19+Yi5uxpTtFz?=
+ =?us-ascii?Q?mTbK3fE7fWLtO9+KR73b04kNjl216BbWn8JQKUjIOxJzvAbeGAsAgh50AHI6?=
+ =?us-ascii?Q?y0jLQnQ161IOS9kPheEe/xtr2ogPAjUEOS0Ceaw3getXCnMpF7Bl0Rm1ssiw?=
+ =?us-ascii?Q?7XYHbO6Yt4Vwp1SKx1VEMzi2r4TDciraLxiOyhskFcfoEI5mQryYfRfrSZbW?=
+ =?us-ascii?Q?hEx5G/uRfOBxFZhu5TLf+LeK9xrR/uUnGjDqSvDuYTvMJFqngoa/SgN9Gxax?=
+ =?us-ascii?Q?hF4Pk1QHYqKVG39TIUziTZwHcrIUehe7vAIjZ+/zI9rjpoZhRj7U+ePVum+I?=
+ =?us-ascii?Q?PHyCUuNUdtPfo88i6edPNE5RCWGoO7PVEwh3XpjNYLwBudmoyGqxtZZ+bIxs?=
+ =?us-ascii?Q?J8gpzYwMrbhm9GISciJf/VRlNvqWdfOHGeNoyJtJ/xvPk7U/cKRYiItfbi6b?=
+ =?us-ascii?Q?n1zO4g17/nPt1C/MqV0yLhBt7Rl8mfJ+mM1BnkSHZH6J/FR1szvb15EEw1G6?=
+ =?us-ascii?Q?8Z5Y1xjiX8fmvUmstaOAKQom7wrcOPbfLuZwwSccledumb9vtHjgrBydECFo?=
+ =?us-ascii?Q?DIGY+5SPlqCvrLoDDQTg7wA13FYoqHfLvFRkfC+f7u6Qa6MmMh+8I5WzfO96?=
+ =?us-ascii?Q?UKtE3g=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b4d2f70-5f0b-4218-8e5a-08db2bccda72
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2023 18:31:44.4614
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fGMDZxPTYrRzk7+pLZLMVpifim3zX0Rk1MW5YJ8oU8xJoa43biSMb7jjFB01bZYdRClNoTsAxwMRXCCgx3247gGevezCGtk6fzk8ij3HAn0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR13MB5149
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230323_095801_029462_F336D89C 
-X-CRM114-Status: GOOD (  12.32  )
+X-CRM114-CacheID: sfid-20230323_113150_779533_F419A1DC 
+X-CRM114-Status: GOOD (  14.25  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,92 +139,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Serialize the ath10k implementation of the wake_tx_queue ops.
-ath10k_mac_op_wake_tx_queue() must not run concurrent since it's using
-ieee80211_txq_schedule_start().
+On Thu, Mar 23, 2023 at 07:18:09AM -0700, Tom Rix wrote:
+> 
+> On 3/22/23 1:40 PM, Simon Horman wrote:
+> > On Wed, Mar 22, 2023 at 08:28:55AM -0400, Tom Rix wrote:
+> > > clang with W=1 reports
+> > > drivers/net/wireless/ath/ath10k/ce.c:88:1: error:
+> > >    unused function 'ath10k_get_ring_byte' [-Werror,-Wunused-function]
+> > > ath10k_get_ring_byte(unsigned int offset,
+> > > ^
+> > > This function is not used so remove it.
+> > > 
+> > > Signed-off-by: Tom Rix <trix@redhat.com>
+> > Hi Tom,
+> > 
+> > this looks good. But this patch applied, and with clang 11.0.2,
+> > make CC=clang W=1 tells me:
+> > 
+> > drivers/net/wireless/ath/ath10k/ce.c:80:19: error: unused function 'shadow_dst_wr_ind_addr' [-Werror,-Wunused-function]
+> > static inline u32 shadow_dst_wr_ind_addr(struct ath10k *ar,
+> >                    ^
+> > drivers/net/wireless/ath/ath10k/ce.c:434:20: error: unused function 'ath10k_ce_error_intr_enable' [-Werror,-Wunused-function]
+> > static inline void ath10k_ce_error_intr_enable(struct ath10k *ar,
+> >                     ^
+> > Perhaps those functions should be removed too?
+> 
+> I believe these were removed with
+> 
+> c3ab8c9a296 ("wifi: ath10k: Remove the unused function
+> shadow_dst_wr_ind_addr() and ath10k_ce_error_intr_enable()")
 
-Fixes: bb2edb733586 ("ath10k: migrate to mac80211 txq scheduling")
-Reported-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/519b5bb9-8899-ae7c-4eff-f3116cdfdb56@nbd.name
-CC: <stable@vger.kernel.org>
-Signed-off-by: Alexander Wetzel <alexander@wetzel-home.de>
----
+Sorry, my bad. You are correct.
+Patch looks good to me (now).
 
-The intend of this patch is to sort out an issue discovered in the discussion
-referred to by the Link tag.
-
-I can't test it with real HW and thus just implemented the per-ac queue lock
-Felix suggested. One obvious alternative to the per-ac lock would be to
-bring back the txqs_lock commit bb2edb733586 ("ath10k: migrate to mac80211 txq
-scheduling") dropped.
-
-Alexander
-
----
- drivers/net/wireless/ath/ath10k/core.c | 3 +++
- drivers/net/wireless/ath/ath10k/core.h | 3 +++
- drivers/net/wireless/ath/ath10k/mac.c  | 6 ++++--
- 3 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5eb131ab916f..533ed7169e11 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -3643,6 +3643,9 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	mutex_init(&ar->dump_mutex);
- 	spin_lock_init(&ar->data_lock);
- 
-+	for (int ac = 0; ac < IEEE80211_NUM_ACS; ac++)
-+		spin_lock_init(&ar->queue_lock[ac]);
-+
- 	INIT_LIST_HEAD(&ar->peers);
- 	init_waitqueue_head(&ar->peer_mapping_wq);
- 	init_waitqueue_head(&ar->htt.empty_tx_wq);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index f5de8ce8fb45..4b5239de4018 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1170,6 +1170,9 @@ struct ath10k {
- 	/* protects shared structure data */
- 	spinlock_t data_lock;
- 
-+	/* serialize wake_tx_queue calls per ac */
-+	spinlock_t queue_lock[IEEE80211_NUM_ACS];
-+
- 	struct list_head arvifs;
- 	struct list_head peers;
- 	struct ath10k_peer *peer_map[ATH10K_MAX_NUM_PEER_IDS];
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 7675858f069b..9c4bf2fdbc0f 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4732,13 +4732,14 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
- {
- 	struct ath10k *ar = hw->priv;
- 	int ret;
--	u8 ac;
-+	u8 ac = txq->ac;
- 
- 	ath10k_htt_tx_txq_update(hw, txq);
- 	if (ar->htt.tx_q_state.mode != HTT_TX_MODE_SWITCH_PUSH)
- 		return;
- 
--	ac = txq->ac;
-+	spin_lock_bh(&ar->queue_lock[ac]);
-+
- 	ieee80211_txq_schedule_start(hw, ac);
- 	txq = ieee80211_next_txq(hw, ac);
- 	if (!txq)
-@@ -4753,6 +4754,7 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
- 	ath10k_htt_tx_txq_update(hw, txq);
- out:
- 	ieee80211_txq_schedule_end(hw, ac);
-+	spin_unlock_bh(&ar->queue_lock[ac]);
- }
- 
- /* Must not be called with conf_mutex held as workers can use that also. */
--- 
-2.40.0
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
 
 _______________________________________________
