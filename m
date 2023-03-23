@@ -4,74 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B136BC6FD1C
-	for <ath10k@archiver.kernel.org>; Thu, 23 Mar 2023 09:35:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72A08C6FD1D
+	for <ath10k@archiver.kernel.org>; Thu, 23 Mar 2023 10:19:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hOOKqzZVY6m+nXWn2020p0fVZd2+uGbqWMh56/8uBIo=; b=0lmnUbhtEG4Q8t
-	V6hHox51Er+PdtqpYcAFmbmDskRyNMUD3CGwul1fHeN23ZF0hGZudb7ntY9nLHh/py5IvUU09wnht
-	/JqoGUM7+DkL0VtxjYUIe5dhrXCcxFld7baXXX2T27jJddR7RDdLmhigrLto6no+hi1Z+az3ZDp/a
-	WM06mp6f5UGQ7RaY/UyFcXf4IvgPmB/rOrv5lJbebcJQVMYTRiolzxIeiKtCiINaTxlDsPT0JXUNd
-	eyBsS141WLj6ghmHRpa40/e92RoYna8hCMsFnqqkJbnAmlTD0u+rgxJxnKHEeBjaGSAWAvLEv4aph
-	DZ9JwKYL3fA/kBW7K2JQ==;
+	List-Owner; bh=+6RyPoRBPcut/qmkf26/FgCYCUwpvCz3iTRgYoCnjIc=; b=f24hOkheB4uLLu
+	/cP5OE+KlkdH0E+IDSOuxFxKCMZJiwf+aM4Sg7vMtaz/eKU6gQ2uhKu0PkhYQb8nkYjVy6B/jKRLJ
+	yvMa7zgFjTTrinfm28Hxz/O0hx75J9Ghs7QAnE654r8ZI9XRioi1ab3zc5MxfKzLSXcck3m5V23km
+	tFmfik4nY8PhOkV6e7uRr6uEJKSpVeG/eIjSzIID1dR/HjDH7dQTe7RaBf2QaG/iWS6XUxMFYp9h6
+	CYNZ1WJn7X4KBjDMY/glOsTMRttxowGd3H25VBLEMJ+yijmFucAXgyu+5ikwYmNC2WdWeHrSgPGoJ
+	W+bjPfhxayVPwR2NioSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfHLu-001UKx-0k;
-	Thu, 23 Mar 2023 09:35:22 +0000
-Received: from mail-yb1-xb2c.google.com ([2607:f8b0:4864:20::b2c])
+	id 1pfI2U-001YPe-0j;
+	Thu, 23 Mar 2023 10:19:22 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfHLo-001UJU-2L
-	for ath10k@lists.infradead.org;
-	Thu, 23 Mar 2023 09:35:19 +0000
-Received: by mail-yb1-xb2c.google.com with SMTP id p204so12911651ybc.12
-        for <ath10k@lists.infradead.org>; Thu, 23 Mar 2023 02:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679564112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JF+vGQVgdI6sx9plJs4AJswLA4WXZNTBD08CbZnYmOw=;
-        b=qgnBDQsImBRsBRzL04y/XruUAp85l8H3/quagH2UU3puPCBRsAsmXcd0fQqkGckt22
-         3VLNedY8PKZr5ZwPq1czPzZAkvbryUhYFIe0hSApclFTrouW4GcL7UR1EUL6+juQphEt
-         uHYHwGObMae+CTi4Q5Rj0hbbE4nGkI4o8qpg7GdTOkBwLf1x8nkqJJPdyYBRX7Gm0adu
-         Wt2WlQ5ByWszvYzJsYf/Gwe3uwr7LDZlJPViam/w9AYmGiGpmGE7WFRszWLdCSA6j8nI
-         klqDqSxihNxQSyXykhMvL26Ym84VBmx7T3oeSM8bqxRlXHQNGqNKY6My2yKDO8cP2/m3
-         GqOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679564112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JF+vGQVgdI6sx9plJs4AJswLA4WXZNTBD08CbZnYmOw=;
-        b=H48XEXM4ci4/n6zGKgszSr8vZSC5sv7IOslg8hFUnbZFGCN4TTCrOQ2rwlMFwMoNVf
-         UU15NGV/DEhHsQ30A+9SV9TXLqZySJ19RiOsjasB7A61JqHpFMJmj+k+/D/OX4gtPEE6
-         mX0fuwUP+nHlMwj0GuBrik4UONyOW+XT6+aKQraDHx11KYyQxCv2Cbq8FojBm7le7E4P
-         5vXV/Y4AMIoAp84oAM74BzuTnDzYdF7kkyUsMyk5qxHz+/NJt4G6FIvSdlm9bPzX5yuM
-         XwCJn2hcTGcwe96lvi5xXGVhAjWrhK0Sf/Y3XIoLHGNx126sUTFqPkTrGE1LqON7++Tx
-         NJ/g==
-X-Gm-Message-State: AAQBX9fVYdFRdj0O9dXrIo1q/qWppqq18DFJvoSZfpxNeOY3yIZ6iXrZ
-	ErIuY0gJl/1SwdYStvGEeb3rK8sjYQPuuYiBUy/RrA==
-X-Google-Smtp-Source: AKy350bNDlq8omL6C5VYBvrDpmMp+ZJqXKk9D1arTEZ5Jo48ki+2fH+W9YnpT+A9TVctPNAUkGxRMWzPGLfKS2MSHg0=
-X-Received: by 2002:a05:6902:a8e:b0:b6d:1483:bc0f with SMTP id
- cd14-20020a0569020a8e00b00b6d1483bc0fmr1379565ybb.9.1679564112387; Thu, 23
- Mar 2023 02:35:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <878rgzuw37.fsf@kernel.org> <f08d7310-8c33-ab0b-c9f1-317f737ba37c@linaro.org>
- <87v8ite3g4.fsf@kernel.org>
-In-Reply-To: <87v8ite3g4.fsf@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 23 Mar 2023 11:35:01 +0200
-Message-ID: <CAA8EJppge=2Zf1CZPY4sUNkC2VzhDQ8ah8f3x6LGAky=PdFQrw@mail.gmail.com>
+	id 1pfI2R-001YOr-2X;
+	Thu, 23 Mar 2023 10:19:21 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7405A625A0;
+	Thu, 23 Mar 2023 10:19:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6258C4339B;
+	Thu, 23 Mar 2023 10:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1679566757;
+	bh=iFJ0dkfOZcvaIQ3ZbdpbveioIRv27g+mvElOL3bbjQo=;
+	h=From:To:List-Id:Cc:Subject:References:Date:In-Reply-To:From;
+	b=R33ga/d6UTStTQxmB4aRweFN8ZDbDdmlk1qXXmHygvPHiOcWF0EuBo1ooSt71O/DO
+	 1U2BD9/lxM7sILSn11/f2BuF3/tgO46zJaXCJKM39r2YUjOShV3QrXC19P5fXbsoTi
+	 uIUfvk6h8RqUuoJYsRyFxLGCqoF+L0i6dtkPbiZ6i+J395ZG7GkUZslSaSgj47J1gs
+	 rZjJcDh780KGD2jz/m2KvzUPgNLvubczmM8kJw/vuo5NDZOEhiW7uU579ardqcFAOS
+	 XKytJFo1Ib6EVopZ6OK6AdKg7cvUjrk05YDDoFTrcf3B4pPHC4rRV+WMXRwUnXJyyS
+	 XDttGd9erQyjQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-firmware@kernel.org,  linux-wireless@vger.kernel.org,  ath10k@lists.infradead.org,  ath11k@lists.infradead.org
 Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20230215
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org
+References: <878rgzuw37.fsf@kernel.org>
+	<f08d7310-8c33-ab0b-c9f1-317f737ba37c@linaro.org>
+	<87v8ite3g4.fsf@kernel.org>
+	<CAA8EJppge=2Zf1CZPY4sUNkC2VzhDQ8ah8f3x6LGAky=PdFQrw@mail.gmail.com>
+Date: Thu, 23 Mar 2023 12:19:12 +0200
+In-Reply-To: <CAA8EJppge=2Zf1CZPY4sUNkC2VzhDQ8ah8f3x6LGAky=PdFQrw@mail.gmail.com>
+	(Dmitry Baryshkov's message of "Thu, 23 Mar 2023 11:35:01 +0200")
+Message-ID: <875yarepnj.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230323_023516_767606_CD6AF4D0 
-X-CRM114-Status: GOOD (  15.44  )
+X-CRM114-CacheID: sfid-20230323_031919_920057_C82C2E97 
+X-CRM114-Status: GOOD (  16.80  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,57 +76,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, 22 Mar 2023 at 07:54, Kalle Valo <kvalo@kernel.org> wrote:
->
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
->
-> >>   ath11k/IPQ5018/hw1.0/Notice.txt          | 4094 ++++++++++++++++++++++++++++++
-> >>   ath11k/IPQ5018/hw1.0/board-2.bin         |  Bin 0 -> 524564 bytes
-> >>   ath11k/IPQ5018/hw1.0/m3_fw.b00           |  Bin 0 -> 148 bytes
-> >>   ath11k/IPQ5018/hw1.0/m3_fw.b01           |  Bin 0 -> 136 bytes
-> >>   ath11k/IPQ5018/hw1.0/m3_fw.b02           |  Bin 0 -> 262144 bytes
-> >>   ath11k/IPQ5018/hw1.0/m3_fw.flist         |    3 +
-> >>   ath11k/IPQ5018/hw1.0/m3_fw.mdt           |  Bin 0 -> 284 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b00           |  Bin 0 -> 532 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b01           |  Bin 0 -> 520 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b02           |  Bin 0 -> 7552 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b03           |  Bin 0 -> 545008 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b04           |  Bin 0 -> 86788 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b05           |  Bin 0 -> 17776 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b07           |  Bin 0 -> 1488 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b08           |  Bin 0 -> 4096 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b09           |  Bin 0 -> 2330624 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b10           |  Bin 0 -> 269028 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b11           |  Bin 0 -> 99436 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b13           |  Bin 0 -> 7024 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.b14           |  Bin 0 -> 1668 bytes
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.flist         |   13 +
-> >>   ath11k/IPQ5018/hw1.0/q6_fw.mdt           |  Bin 0 -> 1052 bytes
-> >
-> > For the past several years, the Qualcomm community has been shifting
-> > from the pack of .mdt+.bNN files to a single .mbn file as a main
-> > firmware file format. It reduces the back-and-forth between the kernel
-> > and userspace and also simplifies handling of these files.
-> >
-> > In-kernel mdt loader provides backwards compatibility, detecting the
-> > file type and using .mbn instead of .mdt one, retaining the name (or
-> > using symlink).
-> >
-> > Do you have any plans to also shift from .mdt to .mbn?
->
-> I have not heard any such plans but I'll ask around. Would you mind
-> filing this to bugzilla as a feature request?
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 
-Done, https://bugzilla.kernel.org/show_bug.cgi?id=217235
-
-> https://wireless.wiki.kernel.org/en/users/drivers/ath11k/bugreport
+> On Wed, 22 Mar 2023 at 07:54, Kalle Valo <kvalo@kernel.org> wrote:
+>>
+>> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+>>
+>> >>   ath11k/IPQ5018/hw1.0/Notice.txt          | 4094 ++++++++++++++++++++++++++++++
+>> >>   ath11k/IPQ5018/hw1.0/board-2.bin         |  Bin 0 -> 524564 bytes
+>> >>   ath11k/IPQ5018/hw1.0/m3_fw.b00           |  Bin 0 -> 148 bytes
+>> >>   ath11k/IPQ5018/hw1.0/m3_fw.b01           |  Bin 0 -> 136 bytes
+>> >>   ath11k/IPQ5018/hw1.0/m3_fw.b02           |  Bin 0 -> 262144 bytes
+>> >>   ath11k/IPQ5018/hw1.0/m3_fw.flist         |    3 +
+>> >>   ath11k/IPQ5018/hw1.0/m3_fw.mdt           |  Bin 0 -> 284 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b00           |  Bin 0 -> 532 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b01           |  Bin 0 -> 520 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b02           |  Bin 0 -> 7552 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b03           |  Bin 0 -> 545008 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b04           |  Bin 0 -> 86788 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b05           |  Bin 0 -> 17776 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b07           |  Bin 0 -> 1488 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b08           |  Bin 0 -> 4096 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b09           |  Bin 0 -> 2330624 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b10           |  Bin 0 -> 269028 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b11           |  Bin 0 -> 99436 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b13           |  Bin 0 -> 7024 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.b14           |  Bin 0 -> 1668 bytes
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.flist         |   13 +
+>> >>   ath11k/IPQ5018/hw1.0/q6_fw.mdt           |  Bin 0 -> 1052 bytes
+>> >
+>> > For the past several years, the Qualcomm community has been shifting
+>> > from the pack of .mdt+.bNN files to a single .mbn file as a main
+>> > firmware file format. It reduces the back-and-forth between the kernel
+>> > and userspace and also simplifies handling of these files.
+>> >
+>> > In-kernel mdt loader provides backwards compatibility, detecting the
+>> > file type and using .mbn instead of .mdt one, retaining the name (or
+>> > using symlink).
+>> >
+>> > Do you have any plans to also shift from .mdt to .mbn?
+>>
+>> I have not heard any such plans but I'll ask around. Would you mind
+>> filing this to bugzilla as a feature request?
 >
-> That way it's easier for me to track it.
+> Done, https://bugzilla.kernel.org/show_bug.cgi?id=217235
 
+Thanks, this helps me with tracking.
 
 -- 
-With best wishes
-Dmitry
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
