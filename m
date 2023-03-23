@@ -4,70 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2CE7C6FD1D
-	for <ath10k@archiver.kernel.org>; Thu, 23 Mar 2023 06:29:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B136BC6FD1C
+	for <ath10k@archiver.kernel.org>; Thu, 23 Mar 2023 09:35:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TQwQ+AAm56v2cRMYV8MkShrwQsf67K4KsvIrbrjn0Js=; b=ZHJi6p7GtXkuzm
-	R8PUB8jbJ6EDJ6mrKJp9sE+iBzSD0jexIzfVNXyxNiYAFTvDykr02wxliTxf5Of8z3qkbqaI+7ZI9
-	Iq5vrOZQVSFEHM7STJjQ2hChT4+/fqmehPWY98aCe96JSHPVVqmgSAjm5JwWk2yfU4DZh8B+Ec9dc
-	ksx3qqPZ6rMGLWzAHebYVNJAVaFfMEFrnTi+L8k0WFM040/V3alV+CphlggmReypVo/8UUhtVOPZ3
-	k5IbvpBiy6sTrrBUljqIFmLvetdoQFX0JYYhSs7qMAgjzJ/nUi+CzYPuL6x5H8v9dSnvnGGakq3GO
-	nqdee7FqhnwbfiL+obTw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hOOKqzZVY6m+nXWn2020p0fVZd2+uGbqWMh56/8uBIo=; b=0lmnUbhtEG4Q8t
+	V6hHox51Er+PdtqpYcAFmbmDskRyNMUD3CGwul1fHeN23ZF0hGZudb7ntY9nLHh/py5IvUU09wnht
+	/JqoGUM7+DkL0VtxjYUIe5dhrXCcxFld7baXXX2T27jJddR7RDdLmhigrLto6no+hi1Z+az3ZDp/a
+	WM06mp6f5UGQ7RaY/UyFcXf4IvgPmB/rOrv5lJbebcJQVMYTRiolzxIeiKtCiINaTxlDsPT0JXUNd
+	eyBsS141WLj6ghmHRpa40/e92RoYna8hCMsFnqqkJbnAmlTD0u+rgxJxnKHEeBjaGSAWAvLEv4aph
+	DZ9JwKYL3fA/kBW7K2JQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfERs-000zbJ-33;
-	Thu, 23 Mar 2023 06:29:20 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1pfHLu-001UKx-0k;
+	Thu, 23 Mar 2023 09:35:22 +0000
+Received: from mail-yb1-xb2c.google.com ([2607:f8b0:4864:20::b2c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfERq-000zZw-1k
+	id 1pfHLo-001UJU-2L
 	for ath10k@lists.infradead.org;
-	Thu, 23 Mar 2023 06:29:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679552958; x=1711088958;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=d8dAalWLn/M2Zpj+myIl4VOPn/eOARIrmrvhOeNaP/Y=;
-  b=g/VMH6j3p40CFLkui45uVD2kRMepYmaK+EiueaNOOndbD4z+Mu0DZfkc
-   w6jAVT0XjimseAfvyiRnLbX742/pndsLQcUjOR5rGsvDftFJK7vBHoNN4
-   1EuKAlq9e7XrdTYyOrudxktwmod+D+OU0tWzcv+njYZ4iLlOJobBYWTWL
-   1kkmBNtquh29grrF31yj1rsWc6Sw+cOOJa4lbUPGTdUHXS02eAT1v7nDv
-   l8mwzVoHVC7yD6ABuy4S5ztjASMxljmqv9BqglJlIGFacetaWbLXmtmLm
-   ZcuNGIVmrfYQvSBAf11pkzzOLnbCXBO2jekEyNQgFfOSicx36BF8IKfIx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="340946962"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="340946962"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2023 23:29:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="714680963"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="714680963"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 22 Mar 2023 23:29:13 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pfERk-000E3y-30;
-	Thu, 23 Mar 2023 06:29:12 +0000
-Date: Thu, 23 Mar 2023 14:29:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- e240b49ac61124ffc5b421a8cf0594490815505e
-Message-ID: <641bf1b4.r/P6wLkzEMM7jFK/%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+	Thu, 23 Mar 2023 09:35:19 +0000
+Received: by mail-yb1-xb2c.google.com with SMTP id p204so12911651ybc.12
+        for <ath10k@lists.infradead.org>; Thu, 23 Mar 2023 02:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1679564112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JF+vGQVgdI6sx9plJs4AJswLA4WXZNTBD08CbZnYmOw=;
+        b=qgnBDQsImBRsBRzL04y/XruUAp85l8H3/quagH2UU3puPCBRsAsmXcd0fQqkGckt22
+         3VLNedY8PKZr5ZwPq1czPzZAkvbryUhYFIe0hSApclFTrouW4GcL7UR1EUL6+juQphEt
+         uHYHwGObMae+CTi4Q5Rj0hbbE4nGkI4o8qpg7GdTOkBwLf1x8nkqJJPdyYBRX7Gm0adu
+         Wt2WlQ5ByWszvYzJsYf/Gwe3uwr7LDZlJPViam/w9AYmGiGpmGE7WFRszWLdCSA6j8nI
+         klqDqSxihNxQSyXykhMvL26Ym84VBmx7T3oeSM8bqxRlXHQNGqNKY6My2yKDO8cP2/m3
+         GqOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679564112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JF+vGQVgdI6sx9plJs4AJswLA4WXZNTBD08CbZnYmOw=;
+        b=H48XEXM4ci4/n6zGKgszSr8vZSC5sv7IOslg8hFUnbZFGCN4TTCrOQ2rwlMFwMoNVf
+         UU15NGV/DEhHsQ30A+9SV9TXLqZySJ19RiOsjasB7A61JqHpFMJmj+k+/D/OX4gtPEE6
+         mX0fuwUP+nHlMwj0GuBrik4UONyOW+XT6+aKQraDHx11KYyQxCv2Cbq8FojBm7le7E4P
+         5vXV/Y4AMIoAp84oAM74BzuTnDzYdF7kkyUsMyk5qxHz+/NJt4G6FIvSdlm9bPzX5yuM
+         XwCJn2hcTGcwe96lvi5xXGVhAjWrhK0Sf/Y3XIoLHGNx126sUTFqPkTrGE1LqON7++Tx
+         NJ/g==
+X-Gm-Message-State: AAQBX9fVYdFRdj0O9dXrIo1q/qWppqq18DFJvoSZfpxNeOY3yIZ6iXrZ
+	ErIuY0gJl/1SwdYStvGEeb3rK8sjYQPuuYiBUy/RrA==
+X-Google-Smtp-Source: AKy350bNDlq8omL6C5VYBvrDpmMp+ZJqXKk9D1arTEZ5Jo48ki+2fH+W9YnpT+A9TVctPNAUkGxRMWzPGLfKS2MSHg0=
+X-Received: by 2002:a05:6902:a8e:b0:b6d:1483:bc0f with SMTP id
+ cd14-20020a0569020a8e00b00b6d1483bc0fmr1379565ybb.9.1679564112387; Thu, 23
+ Mar 2023 02:35:12 -0700 (PDT)
 MIME-Version: 1.0
+References: <878rgzuw37.fsf@kernel.org> <f08d7310-8c33-ab0b-c9f1-317f737ba37c@linaro.org>
+ <87v8ite3g4.fsf@kernel.org>
+In-Reply-To: <87v8ite3g4.fsf@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 23 Mar 2023 11:35:01 +0200
+Message-ID: <CAA8EJppge=2Zf1CZPY4sUNkC2VzhDQ8ah8f3x6LGAky=PdFQrw@mail.gmail.com>
+Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20230215
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, ath11k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_232918_671909_E3EBB676 
-X-CRM114-Status: UNSURE (   6.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230323_023516_767606_CD6AF4D0 
+X-CRM114-Status: GOOD (  15.44  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,119 +88,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: e240b49ac61124ffc5b421a8cf0594490815505e  Merge branch 'pending' into master-pending
+On Wed, 22 Mar 2023 at 07:54, Kalle Valo <kvalo@kernel.org> wrote:
+>
+> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+>
+> >>   ath11k/IPQ5018/hw1.0/Notice.txt          | 4094 ++++++++++++++++++++++++++++++
+> >>   ath11k/IPQ5018/hw1.0/board-2.bin         |  Bin 0 -> 524564 bytes
+> >>   ath11k/IPQ5018/hw1.0/m3_fw.b00           |  Bin 0 -> 148 bytes
+> >>   ath11k/IPQ5018/hw1.0/m3_fw.b01           |  Bin 0 -> 136 bytes
+> >>   ath11k/IPQ5018/hw1.0/m3_fw.b02           |  Bin 0 -> 262144 bytes
+> >>   ath11k/IPQ5018/hw1.0/m3_fw.flist         |    3 +
+> >>   ath11k/IPQ5018/hw1.0/m3_fw.mdt           |  Bin 0 -> 284 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b00           |  Bin 0 -> 532 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b01           |  Bin 0 -> 520 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b02           |  Bin 0 -> 7552 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b03           |  Bin 0 -> 545008 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b04           |  Bin 0 -> 86788 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b05           |  Bin 0 -> 17776 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b07           |  Bin 0 -> 1488 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b08           |  Bin 0 -> 4096 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b09           |  Bin 0 -> 2330624 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b10           |  Bin 0 -> 269028 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b11           |  Bin 0 -> 99436 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b13           |  Bin 0 -> 7024 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.b14           |  Bin 0 -> 1668 bytes
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.flist         |   13 +
+> >>   ath11k/IPQ5018/hw1.0/q6_fw.mdt           |  Bin 0 -> 1052 bytes
+> >
+> > For the past several years, the Qualcomm community has been shifting
+> > from the pack of .mdt+.bNN files to a single .mbn file as a main
+> > firmware file format. It reduces the back-and-forth between the kernel
+> > and userspace and also simplifies handling of these files.
+> >
+> > In-kernel mdt loader provides backwards compatibility, detecting the
+> > file type and using .mbn instead of .mdt one, retaining the name (or
+> > using symlink).
+> >
+> > Do you have any plans to also shift from .mdt to .mbn?
+>
+> I have not heard any such plans but I'll ask around. Would you mind
+> filing this to bugzilla as a feature request?
 
-elapsed time: 731m
+Done, https://bugzilla.kernel.org/show_bug.cgi?id=217235
 
-configs tested: 97
-configs skipped: 10
+> https://wireless.wiki.kernel.org/en/users/drivers/ath11k/bugreport
+>
+> That way it's easier for me to track it.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r002-20230322   gcc  
-arc                  randconfig-r033-20230322   gcc  
-arc                  randconfig-r043-20230322   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r013-20230322   clang
-arm                  randconfig-r023-20230322   clang
-arm                  randconfig-r025-20230322   clang
-arm                  randconfig-r046-20230322   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r003-20230322   clang
-arm64                randconfig-r004-20230322   clang
-csky         buildonly-randconfig-r001-20230322   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r015-20230322   clang
-hexagon              randconfig-r041-20230322   clang
-hexagon              randconfig-r045-20230322   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                          randconfig-a001   gcc  
-i386                          randconfig-a002   clang
-i386                          randconfig-a003   gcc  
-i386                          randconfig-a004   clang
-i386                          randconfig-a005   gcc  
-i386                          randconfig-a006   clang
-i386                          randconfig-a011   clang
-i386                          randconfig-a012   gcc  
-i386                          randconfig-a013   clang
-i386                          randconfig-a014   gcc  
-i386                          randconfig-a015   clang
-i386                          randconfig-a016   gcc  
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r032-20230322   gcc  
-m68k                             allmodconfig   gcc  
-m68k         buildonly-randconfig-r004-20230322   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r011-20230322   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r006-20230322   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r026-20230322   gcc  
-openrisc             randconfig-r012-20230322   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r031-20230322   gcc  
-parisc               randconfig-r034-20230322   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230322   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r005-20230322   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r014-20230322   gcc  
-s390                 randconfig-r035-20230322   clang
-s390                 randconfig-r044-20230322   gcc  
-sh                               allmodconfig   gcc  
-sh           buildonly-randconfig-r006-20230322   gcc  
-sh                   randconfig-r024-20230322   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r001-20230322   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                        randconfig-a001   clang
-x86_64                        randconfig-a002   gcc  
-x86_64                        randconfig-a003   clang
-x86_64                        randconfig-a004   gcc  
-x86_64                        randconfig-a005   clang
-x86_64                        randconfig-a006   gcc  
-x86_64                        randconfig-a011   gcc  
-x86_64                        randconfig-a012   clang
-x86_64                        randconfig-a013   gcc  
-x86_64                        randconfig-a014   clang
-x86_64                        randconfig-a015   gcc  
-x86_64                        randconfig-a016   clang
-x86_64                        randconfig-k001   clang
-x86_64                               rhel-8.3   gcc  
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+With best wishes
+Dmitry
 
 _______________________________________________
 ath10k mailing list
