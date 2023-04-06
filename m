@@ -4,67 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DD3CC7618D
-	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 17:10:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55973C76196
+	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 17:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
-	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rLKP9iYILB10f5AKD02I/OCcMSb8UTPsMKKYg9yX3qo=; b=XQpWiuOY6g6HeE
-	OobS/nx7BH6DdGwZji6hkGwZ0CsTB9488W6tZfprEumAINr8JiCe6Dpz9TayDsMuMnHDd1BuaIAEI
-	U90OYTu0SKXz5qWDTPPcyJwBSETswZxzj9Q/Z+ZvdJCFaugLVt9QwsVvmWWgNEa9UZfL24l7ZYvn/
-	u08BxYw/q/hNwOVF4eNyx9YEWQRPtAAFWzdEEGp4dFaiu9uVxqVAxWy7nDryFcza3k7lFl+xTiGEs
-	Vx+kOmlRfEeD9hFPJtBRFNKBJGtA8xgrgLn/5Fj7eR0PK8Uw51hrfcvWxibIZaSJpPd4hG/jfaPDU
-	3MbjNegN/ykLEoCIReSg==;
+	List-Owner; bh=JoSAvMUJqYT74XXa+L79nFNZUMspzRUcj+77mLvuaEs=; b=2p/cynDL7A67ke
+	OdS0Zn4eg4t+Tyt0x0gyRJ7DRD6PPa64Prosg1AmyPBDYPd9inD8VRLL6+DJ339HnxMj4/a3eQ5Rs
+	j6j9S5BbLR/TK0hpglYHwTY73qlnDnXvy6LS3XnawBBQW10ryIAJtuioDSy8+afuAuEp3cIvfM2KR
+	WERcECEYrrtmVtBDRn/IaN+8rVobAvbzs95I01HiP6RAK0NOCi+auJZg0/ewbz4oCajeA+LcGrAyT
+	p9+a5eisz35Z1D9TUX7htmTBuBYsxXiFE8Dt0XRKxuRrBUsRfkRIhG7KzB0Tf/A/aR4AXNFS5/h6p
+	7FQOI2Ek2rnxwdb/kuSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkT7d-0085eO-0s;
-	Thu, 06 Apr 2023 17:10:05 +0000
-Received: from mail-oi1-f178.google.com ([209.85.167.178])
+	id 1pkTCv-0086FQ-0E;
+	Thu, 06 Apr 2023 17:15:33 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkT7a-0085co-1X
+	id 1pkTCs-0086EG-27
 	for ath10k@lists.infradead.org;
-	Thu, 06 Apr 2023 17:10:03 +0000
-Received: by mail-oi1-f178.google.com with SMTP id r14so23869896oiw.12
-        for <ath10k@lists.infradead.org>; Thu, 06 Apr 2023 10:10:00 -0700 (PDT)
+	Thu, 06 Apr 2023 17:15:32 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-942e6555947so127930266b.2
+        for <ath10k@lists.infradead.org>; Thu, 06 Apr 2023 10:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680801326;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6/acLh4KOig99xCm/V9WrFZvIgzSBqVUp64UT391SRw=;
+        b=JIwo5ZGRMeYyE/7IQxTnC3A+fotsrn9neIdNq6E4NRFpsndyz0JehvXFSIylJBK8ub
+         LoTdXHdIv2pb2QHJk08i423+1ZXsWKfwfXardNdMMYqjl8XGrTBflzMzgYxYb8Dq8cZY
+         wmFzjrSzL7x8l6aUC8Q4BP2jrAE/YIwbG/XNaUI+kc4U0I8JRag7J4iMb9aYymowQB4C
+         IUMSUOHYgOMSvXKup2jBydbq1nnvIb4coRAOpHIxHHhYUfJPfZczqErwZQwFsbNvUrlg
+         8WAFrQaSH9sYi2CpuOlwjZ0y97RysFZID/bdh+9H5ozb+Xki4QUP1xWCMvxjMZPB/Qv0
+         SMdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680801000; x=1683393000;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=aznOVjaPJTvuXKx1gmzX1wmBBoPOixwVKU/ceJyrGsk=;
-        b=ePawrpN+GDXd0/i5sQsRR28Uq2oJU7aLsD8v3Ftu08xML/8EwcDuQqMXZ/FStVC+s2
-         Tn0/L9njLmjtynTvB0L7Ir96p39inzcKIMEDdBBmwhKI9rYPkZhC4qSxEihxLedU6/Up
-         DmbwtTF34H7soOqdCzeLp1xtUbeAYLaNOzcT09Z75lYvg6MBYoDHKy+mtiI/vUQc6OPB
-         ZEHS+OqidVH3C58a0ep5bHLcNj/+9qErnfIpCodcHpC8saIV/yGSIYQ82hfZ6uiNrG3h
-         Jmr/6nqY8QkAPB0nJCNbN2pqjUGK5DHNYWm6SEf44eEnQJAXkSQ+gtGTGGnQfxAfJ4LW
-         vf0g==
-X-Gm-Message-State: AAQBX9eaAlptTnKzb+Z2oWz8HIWrPPABOJH4baZeuGgDNVJYVvjImbgD
-	9XBaXAK6yFJpLtVRwvWtYQ==
-X-Google-Smtp-Source: AKy350aJ6h65ENKDGuv6javi5hpdIYx3FtFdawgKK8IQG5QLN2+FWPP1Sks4yTp40K/P+Ldr/TLnNQ==
-X-Received: by 2002:aca:1a09:0:b0:387:3239:61fa with SMTP id a9-20020aca1a09000000b00387323961famr4415278oia.30.1680800998716;
-        Thu, 06 Apr 2023 10:09:58 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id k9-20020acaba09000000b00387367989d7sm878253oif.23.2023.04.06.10.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 10:09:58 -0700 (PDT)
-Received: (nullmailer pid 3363580 invoked by uid 1000);
-	Thu, 06 Apr 2023 17:09:57 -0000
+        d=1e100.net; s=20210112; t=1680801326;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6/acLh4KOig99xCm/V9WrFZvIgzSBqVUp64UT391SRw=;
+        b=n61lZWeHvpaDnBiLvyJT03c2dAkBLqmvhKwPU442i55Hil+/XCLihJ7uBEqsOm0IJ7
+         HLgfftjd05LaC0B7kqFVJLb5EJwooNcdnMiPxBlbyTxD03h6F1zDmrLlT0hAS/YfEzD3
+         OKy04/1kVjHSXjMXQ8v6ASskfN3FcZpnDDydsjo3Nt2YPdYquaSlqm++XjPYqFRZEfGl
+         Vt5E0SvSupQTEJ7G4S8pUhJYmiZ78rweIn9gBoFMrqS0z16nZI82JWWMQXYvLV/7y9rt
+         uk9P9xBMZNncsCLHX77hU8dnoCrlM9pA3VEGD1H7rIGRFB2PQwW7tf11MwCGxUXll3cX
+         kHqg==
+X-Gm-Message-State: AAQBX9fbIipsj+UmEDgCWW59DlroXUGpUrpbUAPxHutiXAgeBdU3WrS9
+	i9R7Wod+2M+C9CrpDVDk3H46CA==
+X-Google-Smtp-Source: AKy350bE/vnELTyryVtVPyEHqcyqo0/nGsw5Ao9XOGbN+UWCla4cqusv78f8aqXGcfYpdxMYmQ7eyw==
+X-Received: by 2002:a05:6402:611:b0:502:4c82:9b4d with SMTP id n17-20020a056402061100b005024c829b4dmr347667edv.15.1680801326585;
+        Thu, 06 Apr 2023 10:15:26 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:49e6:bb8c:a05b:c4ed? ([2a02:810d:15c0:828:49e6:bb8c:a05b:c4ed])
+        by smtp.gmail.com with ESMTPSA id k30-20020a508ade000000b005024aff3bb5sm965527edk.80.2023.04.06.10.15.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Apr 2023 10:15:26 -0700 (PDT)
+Message-ID: <223892d0-9b1b-9459-dec1-574875f7c1c6@linaro.org>
+Date: Thu, 6 Apr 2023 19:15:25 +0200
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, Marijn Suijten <marijn.suijten@somainline.org>, linux-wireless@vger.kernel.org, Andy Gross <agross@kernel.org>, Kalle Valo <kvalo@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>, ath10k@lists.infradead.org, Bjorn Andersson <andersson@kernel.org>
-In-Reply-To: <20230406-topic-ath10k_bindings-v3-1-00895afc7764@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: net: Convert ATH10K to YAML
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, Kalle Valo <kvalo@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
 References: <20230406-topic-ath10k_bindings-v3-0-00895afc7764@linaro.org>
  <20230406-topic-ath10k_bindings-v3-1-00895afc7764@linaro.org>
-Message-Id: <168080086267.3336076.3393733023108971913.robh@kernel.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: net: Convert ATH10K to YAML
-Date: Thu, 06 Apr 2023 12:09:57 -0500
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230406-topic-ath10k_bindings-v3-1-00895afc7764@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230406_101002_520557_C09AF840 
-X-CRM114-Status: GOOD (  12.75  )
+X-CRM114-CacheID: sfid-20230406_101530_825055_3277D574 
+X-CRM114-Status: GOOD (  11.55  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,8 +102,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-
-On Thu, 06 Apr 2023 14:55:44 +0200, Konrad Dybcio wrote:
+On 06/04/2023 14:55, Konrad Dybcio wrote:
 > Convert the ATH10K bindings to YAML.
 > 
 > Dropped properties that are absent at the current state of mainline:
@@ -93,29 +113,113 @@ On Thu, 06 Apr 2023 14:55:44 +0200, Konrad Dybcio wrote:
 > be reconsidered on the driver side, especially the latter one.
 > 
 > Somewhat based on the ath11k bindings.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  .../bindings/net/wireless/qcom,ath10k.txt          | 215 -------------
->  .../bindings/net/wireless/qcom,ath10k.yaml         | 357 +++++++++++++++++++++
->  2 files changed, 357 insertions(+), 215 deletions(-)
-> 
-
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
-
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
-
-Full log is available here: https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230406-topic-ath10k_bindings-v3-1-00895afc7764@linaro.org
 
 
-wifi@0,0: reg: [[65536, 0, 0, 0, 0], [50397200, 0, 0, 0, 2097152]] is too long
-	arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dtb
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,ipq4019-wifi
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 17
+> +          maxItems: 17
+> +
+> +        interrupt-names:
+> +          minItems: 17
 
-wifi@18800000: 'qcom,snoc-host-cap-skip-quirk' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dtb
+Drop minItems (the number of items is defined by listing them below, as
+you did).
+
+> +          items:
+> +            - const: msi0
+> +            - const: msi1
+> +            - const: msi2
+> +            - const: msi3
+> +            - const: msi4
+> +            - const: msi5
+> +            - const: msi6
+> +            - const: msi7
+> +            - const: msi8
+> +            - const: msi9
+> +            - const: msi10
+> +            - const: msi11
+> +            - const: msi12
+> +            - const: msi13
+> +            - const: msi14
+> +            - const: msi15
+> +            - const: legacy
+> +
+> +        clocks:
+> +          items:
+> +            - description: Wi-Fi command clock
+> +            - description: Wi-Fi reference clock
+> +            - description: Wi-Fi RTC clock
+> +
+> +        clock-names:
+> +          items:
+> +            - const: wifi_wcss_cmd
+> +            - const: wifi_wcss_ref
+> +            - const: wifi_wcss_rtc
+> +
+> +      required:
+> +        - clocks
+> +        - clock-names
+> +        - interrupts
+> +        - interrupt-names
+> +        - resets
+> +        - reset-names
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,wcn3990-wifi
+> +
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 1
+> +          items:
+> +            - description: XO reference clock
+> +            - description: Qualcomm Debug Subsystem clock
+> +
+> +        clock-names:
+> +          minItems: 1
+> +          items:
+> +            - const: cxo_ref_clk_pin
+> +            - const: qdss
+> +
+> +        interrupts:
+> +          items:
+> +            - description: CE0
+> +            - description: CE1
+> +            - description: CE2
+> +            - description: CE3
+> +            - description: CE4
+> +            - description: CE5
+> +            - description: CE6
+> +            - description: CE7
+> +            - description: CE8
+> +            - description: CE9
+> +            - description: CE10
+> +            - description: CE11
+
+What about interrupt-names here? If they are not expected, then just
+interrupt-names: false
+
+
+
+Best regards,
+Krzysztof
 
 
 _______________________________________________
