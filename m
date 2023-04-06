@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EACAC7618D
-	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 11:54:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 264F5C76196
+	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 11:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vDs3CX9dpf32bKu8pMiyiQRkELb/Qw6Wy+HoM51pWU8=; b=RE7WfqbZBHQCUI
-	p9y5r6dm60jciNAanNeKrphC3whJykhdJcLznG142FjsrAxNfYWRTawQmke8/q3Pn0yCpgRRLbpzI
-	5M2ISVE+3SHnNaeNlY6Jvh7RWacBYykl52MGMX6IJfQZTecQT1huV29SZWKg6bsK3GZRGkUjkAgjX
-	ow+oLMRkOxZ4w/jLUpkxLO0hLGqhbRnWfvhrnvwc0PEve5o4d0i2UEYXEz+vUbANZNedSas57L7zc
-	yOt+l+cHf0cMngH1FZjeyIA+1dSpTsuruozENKcnHb/k0F2bN48H1OGUXPi9ONhoP3WlPNV8bJGp/
-	UAmAxfzUB8CI7KV4OXbQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZSTlPqShaxxoxrZjHWSxf0kGWcn8VTI91jisvFZ2P/o=; b=ZKwG6bLWryovAF
+	utUq83daXmJW0VWJ0PtOEpk3DITELShvVjX9cuZ5986F6SMvbFSYRcMmgratDLLHI7k7qvK5MmRPH
+	0RwpkaYf+ecN+kt0GYnc3zp7lCN4MHsQlIxEF1JhcgmBjSg3hglD5qUR/DVmMPV/rxNcoW/uHFyKn
+	EkV+Ectds80CtHhhJY3NHlZ8S8ynaGh3uFOiaeMqDcB73t9g67bXt5hX9gRp2O3XZR7EP4BaNXd9Q
+	7HeGcInv3Gfzd8P82x6GLDYRPWsG3XH519bUPg09+e2Q6RMaREH3jiXmHjzZQxaDMB3WtZm//+L6Z
+	SMeZaJVTanj8luo3Y+CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkOBz-007Dql-1S;
-	Thu, 06 Apr 2023 11:54:15 +0000
-Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
+	id 1pkOC0-007Dr6-04;
+	Thu, 06 Apr 2023 11:54:16 +0000
+Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkOBw-007Dp5-1f
+	id 1pkOBx-007Dpa-2V
 	for ath10k@lists.infradead.org;
-	Thu, 06 Apr 2023 11:54:14 +0000
-Received: by mail-lf1-x12e.google.com with SMTP id k37so50518358lfv.0
-        for <ath10k@lists.infradead.org>; Thu, 06 Apr 2023 04:54:09 -0700 (PDT)
+	Thu, 06 Apr 2023 11:54:15 +0000
+Received: by mail-lf1-x134.google.com with SMTP id j11so50421818lfg.13
+        for <ath10k@lists.infradead.org>; Thu, 06 Apr 2023 04:54:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680782048;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=n6l0BLvsSWDtkRz9aUFi9SPl6s8wHflLgsTf9M4sGzY=;
-        b=VpRvDS6I2j9ZGNfd6eTalAUFSUsn9koI9Ian09vQPED8vKdvjsCIF5Fu1SWKpkP0bf
-         vpz9hDindB4QpEPaPB7QJkB9pQAqatYB4kDNB4lcQiJLLNEKgZNuPKs4Qv5HWwT00tgp
-         66PeA2z8H9nOGJdt/NmTJU4jgoEQMEOdCwq7wV3+BAR0HD3v8G9e4RRBhEG2WncZPHed
-         1y2Y7NFfBsIqjdGClDAghvkspFg3EgjeviUuNtEz1yH8AH2rr+1Tkybfm0iGFRia1dY5
-         kTbiUFYPwyZUY4KYohy+0GETM4nQN2PHQmb8sKFQwedHIf9YAhAe3ft8lw0ME4/+mZWR
-         5Whg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680782048;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1680782052;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=n6l0BLvsSWDtkRz9aUFi9SPl6s8wHflLgsTf9M4sGzY=;
-        b=QxnUqPix90HH+wsjZVmTqOvvQfq/ottOZ9zJfBNk6Gym4WYqIj6gufGZAlBtuISl1G
-         3FeP6aMkFar3reNLnKy4YBgRTiwuIQXodmXelUu9dbLBqON6tiGU76wVCLl/b19AanT+
-         ZbaugBXDbzAr6QAjKPkQQwVrq8QdVUip1lrD4m0Bn8hCPuyXfiKYxMAANguJb5PlthV9
-         z5flkskDOHTsZf7kDsaucBvXF7BI6/j6WtqTWcXamqiNijYEewY9f1OKpwKdyrl3HUpe
-         cq9U2AuS10qMCcXIIDWx+1YQI8YpLdRYbKnazDSHPdhL+UafUKEpZ3tstKny77dY7fWW
-         pkdQ==
-X-Gm-Message-State: AAQBX9eYMMtXQzlPxXm6BZ/XqSejRqYkK2VnOqMugVbj2U5iQ7aCiFgk
-	/Z3aTaOk08ZiDhdP5zE7NsgDMw==
-X-Google-Smtp-Source: AKy350Zh6vcE5UnLaiImstkVryfvKxUr33qlr+VPS1jLGGlCPEgbn7sSgvSI9t4ILDdqaqZJoa8+uQ==
-X-Received: by 2002:ac2:5d2d:0:b0:4eb:1008:6063 with SMTP id i13-20020ac25d2d000000b004eb10086063mr2220897lfb.55.1680782048531;
-        Thu, 06 Apr 2023 04:54:08 -0700 (PDT)
+        bh=vr7hvDh/glr30Yw4qpt5Kbr2lkI/viKC3PQIzjAY6io=;
+        b=NT0z1D54Jz23Qd8QBqW5y4LUgbLtaQiI1TTTYvzoNpqNjsOnHncu4tIm1w0PLSWfus
+         FcGnKVh4sD4n20MNNi8iHuadPLgpCDZy3tNxNa+3prJ768N6bKVXy5ptvrYhfmmP153M
+         nQT/Rvmq+0VrCWP7UfX/LVCU0QvOlyKPLKiaKC76p+4gyYfBcH048wCc/sJ0dGjmFB12
+         SBH7ATZwDZgnf+2p8rbb5dnINgkFDUZxaevgSsqVaCXU8PiAW0dN9GX/a9MPcCZQT9dy
+         jsjn0PO7g5uIHM+UuOO0VqtmQ9vqvErlM/XEs0HeE7HRYS2ojiPvPbuUXnSNbBXOHhoI
+         tfuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680782052;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vr7hvDh/glr30Yw4qpt5Kbr2lkI/viKC3PQIzjAY6io=;
+        b=VUTTLNk+vYiXdar5XMonDE0zKSaSvIQqBY+n06vZ8K4CFc0d2ogbaoDaOCuvVsUljf
+         mLtW/TWbuQGaIzzUM4GndcoAabdE236yxjZ30feIQSC4NSW83oA1tp5+eqEOpQ2nW0+M
+         HzqJGuAACcixRGDHGIEyfw4JoUo81a76WYLLCNjWZMC6VaK9Pg55vPFehDem6OpStsvT
+         CXlXvcVJuyC+pmI4PQldTIGhrmrGrP1TzEHu4PoZRqvtVyCjKgJxdZji+p7MmlvPdXGa
+         dBYyMKDE15HgdMLXIfeV0+MsUDmlpJDWvyPiIPIQJpwD2o/Vf9QBPMQ+Z96qr/D9xaLh
+         NitQ==
+X-Gm-Message-State: AAQBX9fvtKoXWSUla1t7W+Y5BCNCZaCZE7/NCR/hyjetmva4wHf6izGC
+	DH2pQM3r1ILGyIgKWpRnF83Vcw==
+X-Google-Smtp-Source: AKy350YOJBBOhvLdzYhTyarkDYK/pXLiXR2cWg4R6nvYfiOFuIxo3sv/hjwJhsRRoIA0DWwgZVofkQ==
+X-Received: by 2002:ac2:596b:0:b0:4e9:609c:e901 with SMTP id h11-20020ac2596b000000b004e9609ce901mr2444588lfp.21.1680782051848;
+        Thu, 06 Apr 2023 04:54:11 -0700 (PDT)
 Received: from [192.168.1.101] (abxh37.neoplus.adsl.tpnet.pl. [83.9.1.37])
-        by smtp.gmail.com with ESMTPSA id q27-20020ac246fb000000b004eb2cc16342sm237513lfo.21.2023.04.06.04.54.07
+        by smtp.gmail.com with ESMTPSA id q27-20020ac246fb000000b004eb2cc16342sm237513lfo.21.2023.04.06.04.54.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 04:54:08 -0700 (PDT)
+        Thu, 06 Apr 2023 04:54:11 -0700 (PDT)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: [PATCH v2 0/2] ATH10K YAML conversion
-Date: Thu, 06 Apr 2023 13:54:03 +0200
-Message-Id: <20230406-topic-ath10k_bindings-v2-0-557f884a65d1@linaro.org>
+Date: Thu, 06 Apr 2023 13:54:05 +0200
+Subject: [PATCH v2 2/2] arm64: dts: qcom: sdm845-polaris: Drop inexistent
+ properties
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIANuyLmQC/4WNWwqDMBBFtyLz3ZQkPrD96j6KlBgTM1QmklhpE
- ffeqRvo57ncw9kgu4Quw7XYILkVM0Zi0KcCbDA0OoEDM2ipS1nJRixxRivMEpR8PnqkAWnM4mJ
- 87U1bVrqsgd3eZCf6ZMgGtuk1TTzOyXl8H7F7xxwwLzF9jvaqfuu/zKqEFMp51Spb87W5TUgmx
- XNMI3T7vn8BIrms3tAAAAA=
+Message-Id: <20230406-topic-ath10k_bindings-v2-2-557f884a65d1@linaro.org>
+References: <20230406-topic-ath10k_bindings-v2-0-557f884a65d1@linaro.org>
+In-Reply-To: <20230406-topic-ath10k_bindings-v2-0-557f884a65d1@linaro.org>
 To: Kalle Valo <kvalo@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
  Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
@@ -82,16 +82,16 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  Konrad Dybcio <konrad.dybcio@linaro.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1680782047; l=1344;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1680782047; l=826;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=DD6FViUVUcssXUqtTtIT5cucIdZI183Y5KfYcExKX2s=;
- b=LtDRqLSySben0gRtpKCibrMbBVd8LsDQiiPxSGvgNhiosTTH0H+bs8YoXF0yI1n38dZ+Ew9Yv1mG
- tYGUwRCQCOZn8JFNK+Ceen6aJB2g91dOKePIkA+fCR5kochUpC/a
+ bh=A+cHJo96LANW/mYlLiz68VJ9kDkIsUWUlAaAZ/obM9g=;
+ b=JZKiZ4o7YkofUMsu2AgB8TAPweZ+TM2wSK7+a4qVZ4XupOfbVVCCqYRW+YkwYuRfcRV1vwF/Z5lp
+ cZVP38w6DVmxGIdjnblGj2CeL8CJgzyfVanJardNzq2u/QMMqRgn
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230406_045412_556835_2E31BE08 
-X-CRM114-Status: UNSURE (   7.13  )
+X-CRM114-CacheID: sfid-20230406_045413_812486_B8B1C644 
+X-CRM114-Status: UNSURE (   8.15  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -109,46 +109,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-v1 -> v2:
+Drop the qcom,snoc-host-cap-skip-quirk that was never introduced to
+solve schema warnings.
 
-Dropped:
-- '|' in /description
-- /properties/resets/minItems
-- Unnecessary level of 'items:' in /properties/ext-fem-name
-- reserved-memory in examples
-- status in examples
-- labels in examples
-
-Added:
-- /properties/wifi-firmware/additionalProperties: false
-- /properties/wifi-firmware/properties/iommus
-- /properties/qcom,coexist-support/enum (and reworded the description)
-- wifi-firmware and supplies in the SNoC example
-
-Patch 2 is unchanged, picked up rb.
-
-v1: https://lore.kernel.org/r/20230406-topic-ath10k_bindings-v1-0-1ef181c50236@linaro.org
-
-This is my attempt at (finally) moving ATH10K to YAML.
-One inexistent dt property came out as part of that.
-
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
-Konrad Dybcio (2):
-      dt-bindings: net: Convert ATH10K to YAML
-      arm64: dts: qcom: sdm845-polaris: Drop inexistent properties
+ arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts | 2 --
+ 1 file changed, 2 deletions(-)
 
- .../bindings/net/wireless/qcom,ath10k.txt          | 215 ------------
- .../bindings/net/wireless/qcom,ath10k.yaml         | 359 +++++++++++++++++++++
- arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts |   2 -
- 3 files changed, 359 insertions(+), 217 deletions(-)
----
-base-commit: 8417c8f5007bf4567ccffda850a3157c7d905f67
-change-id: 20230406-topic-ath10k_bindings-9af5fa834235
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
+index 1b7fdbae6a2b..56f2d855df78 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
+@@ -712,7 +712,5 @@ &wifi {
+ 	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+ 	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+ 	vdd-3.3-ch1-supply = <&vreg_l23a_3p3>;
+-
+-	qcom,snoc-host-cap-skip-quirk;
+ 	status = "okay";
+ };
 
-Best regards,
 -- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
+2.40.0
 
 
 _______________________________________________
