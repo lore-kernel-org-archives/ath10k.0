@@ -4,67 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 644A1C76196
-	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 11:30:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A214C76196
+	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 11:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K4S5lSCejtRtj62+N5NzySSaUca04JnmEHZMye1mbgQ=; b=U31ECpbu/Hiy1z
-	oXzj19NUoFWkoahruuzQeWxVu0yHP9g1uWuJN3Esa9WvPr4ouPJsAw1zXb2mafXz0AKn/oX8CkAXZ
-	+uyO0Z2qOOvABbz12g0SCMaoRakUELZC3W4npufGF/zNFnDbRZcP7qNy4HSE2tiJTDHvrI1ljeaFh
-	GY2EthS/y5B4gL3bRQNIHwaMvQaJrXxr9OZ28lb7AD1BRgZ+oTAHFUiIzLQYoQN0T3h4pGQb+z3d0
-	c/zVqPzK82mQQCWNYtI8HiauBvDSrlEOpCEsO22LVqnbgLIIkWkciyX4qXXPQTWCDq7wUaTabx0Tj
-	+qp0MDSXbwTHtNCirm0w==;
+	List-Owner; bh=kLDoop/H6dcYz5BqQgZfFhiU7n31UioBpgsjn/e66FA=; b=m+0+s/Gf38O1do
+	V+yb+SPN+38+tswmEhRnj4LyCURpsAQ926sVIeyCBjlkHLJOLykdRsNHdQQoNbRalP4n25pBNnytF
+	HZZ90S4tTae0alw0UNT+tZqP68uzdsqPMg0ujaME2tAiAwCr/82BOHdb15BeGaJBgnKz7Fxob0vKZ
+	MyJnJlVH3c86VZZVWFv0XFUdBlHpDI/BgwR/q3WMl1K/QutF/9A+uJOcAmNmVjD9iZJrQsDo1SmZp
+	5+fI13oyNQI4D5Ilu7MHJMIaEIQ+8kIj9yaTo1d9nnaYfJgUbEfihqz25ih9sbjINQA11TUxM7XLS
+	jBbMRQ7D6YzLw49YGdrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkNoE-0079jy-1g;
-	Thu, 06 Apr 2023 11:29:42 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1pkO59-007D0a-2m;
+	Thu, 06 Apr 2023 11:47:11 +0000
+Received: from mail-lf1-x131.google.com ([2a00:1450:4864:20::131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkNoB-0079jG-2a;
-	Thu, 06 Apr 2023 11:29:41 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 95BE560CF9;
-	Thu,  6 Apr 2023 11:29:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 081C9C433EF;
-	Thu,  6 Apr 2023 11:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680780578;
-	bh=u2VzX8NXGwIpE7sYmKgdhvAa1066NHln6fAaJSoi+Rg=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
-	b=MwFXFpAzX6xdbVIPd2sh7eWo9V8VtGjIxUoXrqnV+m1jRO/JvabK7XF1RFfMH4sg/
-	 MLSVAhvuMgBL1G4yJyd2kdyYB06diMU6sOZquj58EXtAKTJYQ4uEtYVrJelc7MLpM+
-	 dtMlo3p/DASShpmLvPiSgbIZcRjtIAeUVvXE9I98t65YGg1hW08GD0/DxDc4BPiy3N
-	 7fe5ZmqnDhwme0JS7kMgRS6MIQQ8OMA+sZHoYhKdz2PD3+U6eD2CCSquqt7z/dn5YB
-	 TkA+O0erHDYiIdrhiwB8QWhmzAyHXlB0ymqzdNL4OzyGih5v34YZmXTOa6vjb5JuLC
-	 LzOENAnqgdpfQ==
-Received: by mail-yb1-f178.google.com with SMTP id r187so45742097ybr.6;
-        Thu, 06 Apr 2023 04:29:37 -0700 (PDT)
-X-Gm-Message-State: AAQBX9cRQwmb3Y+LW35djVUAe7Z9dqp3y5k+3Xx1kZKbxCX0NUYccJ98
-	JsZxCeLoP4gO/ffd7sgjmfkuQm/J/QjuWWKqa44=
-X-Google-Smtp-Source: AKy350ZUb7CzOMChMvtBqAf2Ouc+5U2rsElMXaijjVDj3r0F+Lv3pwbu6YpOsXFKKAOxVVeeX6JAc6hd0ixHytAEPAE=
-X-Received: by 2002:a25:3753:0:b0:b8b:fd21:2e63 with SMTP id
- e80-20020a253753000000b00b8bfd212e63mr599755yba.2.1680780577053; Thu, 06 Apr
- 2023 04:29:37 -0700 (PDT)
+	id 1pkO55-007D09-0D
+	for ath10k@lists.infradead.org;
+	Thu, 06 Apr 2023 11:47:10 +0000
+Received: by mail-lf1-x131.google.com with SMTP id x17so50502236lfu.5
+        for <ath10k@lists.infradead.org>; Thu, 06 Apr 2023 04:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680781625;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ogJ/iJAqSaS/zSC8L1G8ImZfzxS+naCeVLjjGSutqCE=;
+        b=U8Lif6LA08RsJIxJzKr9zxmGoIkFbKs+aUv+zLd1DzZO97BSuaV3QtGayaHfoI0UmO
+         n8Kj2gFwZ7zHctV6yhYXHdzSqH9+jMEPV7oyYz4T4MKhS1GdiGML/wIP71cNWGmrLCyA
+         FXgp/JTfnnEhp/hexWhwPT7XwikLQrBoeTEYLHFr5GWKLNRsLniI6MXUx60parJS41Xe
+         mO/6B5qIzl3iMBdO8rkukEwoR6apucpDlr/KPPGSeI8oAxQVuzJmCQ8JEI9wGBw1Z+E1
+         2agnLBqV4WuW1Nc9vameX6JjO2f8YaCddLjb3PPP2X4lKrnFMHKEb+eLKp+j041qRab5
+         tAWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680781625;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ogJ/iJAqSaS/zSC8L1G8ImZfzxS+naCeVLjjGSutqCE=;
+        b=XbHiOriwnD1C4vTata2ycu0tgI5ZBS+fEv1ebBn0n/V11S1bUA+3kHH/2dQxy6Macd
+         SL1rYK+vFV8xrY99rV0Wc1PNI4aOfNJOStis9surfCbeuettLz6lr7WhVwrRGc7InRMY
+         x2SH+vU1Neswf6a4fiI9UBHGD4+ETqVO30ykPyeaSDesR6xpn9TEtwnVgVxOv8ZcG4Z/
+         ClO6J60+Qhbl7Hh+iij0RdGQ/B1nix6QHB1hx8j6Egu+3Fig/Ti03uFGbJHbQvCYVMEb
+         CshuUzJumXKMbtnQgjDoOC1oM6CBPWKt0AiRQXCpGOTIqLxqRKoCBPvkm3mbUOcvM4tK
+         UUdA==
+X-Gm-Message-State: AAQBX9fhRl4CL08woEaQnOINORy/T9SIJ8h37FqgX1+i5Otp7Hk5B+ew
+	MMi7UMEe6aCKDTWDJD8rrJkQFg==
+X-Google-Smtp-Source: AKy350Zg8IqL+dbtmvUpVIsMu3tmChZ3XbiSvQNMcWk2himJk6XxZdUDJ6r/hlzL13FYXWIsVOPZXA==
+X-Received: by 2002:a05:6512:24d:b0:4eb:b28:373e with SMTP id b13-20020a056512024d00b004eb0b28373emr2702397lfo.61.1680781625099;
+        Thu, 06 Apr 2023 04:47:05 -0700 (PDT)
+Received: from [192.168.1.101] (abxh37.neoplus.adsl.tpnet.pl. [83.9.1.37])
+        by smtp.gmail.com with ESMTPSA id 3-20020ac25683000000b004eb0d0e0207sm232426lfr.31.2023.04.06.04.47.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Apr 2023 04:47:04 -0700 (PDT)
+Message-ID: <5f7f4201-0871-00b2-be0a-fe68f5de611c@linaro.org>
+Date: Thu, 6 Apr 2023 13:47:02 +0200
 MIME-Version: 1.0
-References: <87cz4ia35m.fsf@kernel.org>
-In-Reply-To: <87cz4ia35m.fsf@kernel.org>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Thu, 6 Apr 2023 07:29:26 -0400
-X-Gmail-Original-Message-ID: <CA+5PVA6=PoB=+GiKuZMYXY=fTOxVY-SrUDyAWxzOyEP5oqxdxA@mail.gmail.com>
-Message-ID: <CA+5PVA6=PoB=+GiKuZMYXY=fTOxVY-SrUDyAWxzOyEP5oqxdxA@mail.gmail.com>
-Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20230405
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 1/2] dt-bindings: net: Convert ATH10K to YAML
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Kalle Valo <kvalo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20230406-topic-ath10k_bindings-v1-0-1ef181c50236@linaro.org>
+ <20230406-topic-ath10k_bindings-v1-1-1ef181c50236@linaro.org>
+ <48a6b0a3-b441-a84d-e321-b9a773743878@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <48a6b0a3-b441-a84d-e321-b9a773743878@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230406_042939_938811_91CC3FDF 
-X-CRM114-Status: GOOD (  20.64  )
+X-CRM114-CacheID: sfid-20230406_044707_235416_85DBE38B 
+X-CRM114-Status: GOOD (  24.47  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,93 +98,440 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBBcHIgNSwgMjAyMyBhdCA5OjA34oCvQU0gS2FsbGUgVmFsbyA8a3ZhbG9Aa2VybmVs
-Lm9yZz4gd3JvdGU6Cj4KPiBIaSwKPgo+IEhlcmUncyBhIHB1bGwgcmVxdWVzdCBmb3IgYXRoMTBr
-IGFuZCBhdGgxMWsuIEZvciBhdGgxMGsgd2UgaGF2ZSBsb3RzIG9mCj4gYm9hcmQgZmlsZSB1cGRh
-dGVzIGluIG11bHRpcGxlIGhhcmR3YXJlIGZhbWlsaWVzLiBGb3IgYXRoMTFrIHdlIGhhdmUgbmV3
-Cj4gZmlybXdhcmUgYnJhbmNoZXMgZm9yIFFDTjkwNzQsIElQUTYwMTggYW5kIElQUTgwNzQuIFdD
-TjY3NTAgYWxzbyBnb3QgYQo+IGZpcm13YXJlIHVwZGF0ZSBhbmQgV0NONjg1NSBoYXMgYm9hcmQg
-ZmlsZSB1cGRhdGVzLgo+Cj4gUGxlYXNlIGxldCBtZSBrbm93IGlmIHRoZXJlIGFyZSBhbnkgcHJv
-YmxlbXMuCj4KPiBLYWxsZQo+Cj4KPiBUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0
-IDJlOTJhNDlmOTBmNzNjOGVkYzQ0YjI1YzZlNjY5ZDVlNzA4OTNjOTA6Cj4KPiAgIG52aWRpYTog
-dXBkYXRlIFR1MTB4IGFuZCBUdTExeCBzaWduZWQgZmlybXdhcmUgdG8gc3VwcG9ydCBuZXdlciBU
-dXJpbmcgSFcgKDIwMjMtMDQtMDQgMDg6MDM6NTMgLTA0MDApCj4KPiBhcmUgYXZhaWxhYmxlIGlu
-IHRoZSBHaXQgcmVwb3NpdG9yeSBhdDoKPgo+ICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
-bS9saW51eC9rZXJuZWwvZ2l0L2t2YWxvL2xpbnV4LWZpcm13YXJlLmdpdCBhdGgxMGstMjAyMzA0
-MDUKClB1bGxlZCBhbmQgcHVzaGVkIG91dC4KCmpvc2gKCj4KPiBmb3IgeW91IHRvIGZldGNoIGNo
-YW5nZXMgdXAgdG8gZDFkYzMwNDgwZmVmNDc4YjA2ODI3YTQyODk3MGVmNWQ3NjNlZDc2ZToKPgo+
-ICAgYXRoMTFrOiBXQ042ODU1IGh3Mi4wOiB1cGRhdGUgYm9hcmQtMi5iaW4gKDIwMjMtMDQtMDUg
-MTU6NTY6MjEgKzAzMDApCj4KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gS2FsbGUgVmFsbyAoMTIpOgo+ICAgICAgIGF0
-aDEwazogUUNBNDAxOSBodzEuMDogdXBkYXRlIGJvYXJkLTIuYmluCj4gICAgICAgYXRoMTBrOiBR
-Q0E2MTc0IGh3My4wOiB1cGRhdGUgYm9hcmQtMi5iaW4KPiAgICAgICBhdGgxMGs6IFFDQTk4ODgg
-aHcyLjA6IHVwZGF0ZSBib2FyZC0yLmJpbgo+ICAgICAgIGF0aDEwazogUUNBOTk4NCBodzEuMDog
-dXBkYXRlIGJvYXJkLTIuYmluCj4gICAgICAgYXRoMTBrOiBRQ0E5OVgwIGh3Mi4wOiB1cGRhdGUg
-Ym9hcmQtMi5iaW4KPiAgICAgICBhdGgxMWs6IElQUTYwMTggaHcxLjA6IHVwZGF0ZSBib2FyZC0y
-LmJpbgo+ICAgICAgIGF0aDExazogSVBRNjAxOCBodzEuMDogdXBkYXRlIHRvIFdMQU4uSEsuMi43
-LjAuMS0wMTc0NC1RQ0FIS1NXUExfU0lMSUNPTlotMQo+ICAgICAgIGF0aDExazogSVBRODA3NCBo
-dzIuMDogdXBkYXRlIGJvYXJkLTIuYmluCj4gICAgICAgYXRoMTFrOiBJUFE4MDc0IGh3Mi4wOiB1
-cGRhdGUgdG8gV0xBTi5ISy4yLjcuMC4xLTAxNzQ0LVFDQUhLU1dQTF9TSUxJQ09OWi0xCj4gICAg
-ICAgYXRoMTFrOiBRQ045MDc0IGh3MS4wOiB1cGRhdGUgdG8gV0xBTi5ISy4yLjcuMC4xLTAxNzQ0
-LVFDQUhLU1dQTF9TSUxJQ09OWi0xCj4gICAgICAgYXRoMTFrOiBXQ042NzUwIGh3MS4wOiB1cGRh
-dGUgdG8gV0xBTi5NU0wuMS4wLjEtMDExNjAtUUNBTVNMU1dQTFotMQo+ICAgICAgIGF0aDExazog
-V0NONjg1NSBodzIuMDogdXBkYXRlIGJvYXJkLTIuYmluCj4KPiAgV0hFTkNFICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgIDggKysrLS0tLQo+ICBhdGgxMGsvUUNBNDAxOS9odzEuMC9ib2Fy
-ZC0yLmJpbiB8IEJpbiAxMTU0MDc2IC0+IDE3OTgxNDggYnl0ZXMKPiAgYXRoMTBrL1FDQTYxNzQv
-aHczLjAvYm9hcmQtMi5iaW4gfCBCaW4gNzMxODUyIC0+IDc0MDA3NiBieXRlcwo+ICBhdGgxMGsv
-UUNBOTg4OC9odzIuMC9ib2FyZC0yLmJpbiB8IEJpbiAxNDU2ODQgLT4gMjA2NDQ0IGJ5dGVzCj4g
-IGF0aDEway9RQ0E5OTg0L2h3MS4wL2JvYXJkLTIuYmluIHwgQmluIDIyMDUyOCAtPiAyODEzMTIg
-Ynl0ZXMKPiAgYXRoMTBrL1FDQTk5WDAvaHcyLjAvYm9hcmQtMi5iaW4gfCBCaW4gMTU3NjgwIC0+
-IDE2OTgyNCBieXRlcwo+ICBhdGgxMWsvSVBRNjAxOC9odzEuMC9ib2FyZC0yLmJpbiB8IEJpbiA3
-ODcyMDggLT4gNzg3MjA4IGJ5dGVzCj4gIGF0aDExay9JUFE2MDE4L2h3MS4wL20zX2Z3LmIwMSAg
-IHwgQmluIDY3MTIgLT4gNjcxMiBieXRlcwo+ICBhdGgxMWsvSVBRNjAxOC9odzEuMC9tM19mdy5i
-MDIgICB8IEJpbiAyOTQ5MTIgLT4gMjk0OTEyIGJ5dGVzCj4gIGF0aDExay9JUFE2MDE4L2h3MS4w
-L20zX2Z3Lm1kdCAgIHwgQmluIDY4NjAgLT4gNjg2MCBieXRlcwo+ICBhdGgxMWsvSVBRNjAxOC9o
-dzEuMC9xNl9mdy5iMDAgICB8IEJpbiAzNDAgLT4gMzQwIGJ5dGVzCj4gIGF0aDExay9JUFE2MDE4
-L2h3MS4wL3E2X2Z3LmIwMSAgIHwgQmluIDcwMDAgLT4gNzAwMCBieXRlcwo+ICBhdGgxMWsvSVBR
-NjAxOC9odzEuMC9xNl9mdy5iMDIgICB8IEJpbiA0Njk2IC0+IDQ2OTYgYnl0ZXMKPiAgYXRoMTFr
-L0lQUTYwMTgvaHcxLjAvcTZfZncuYjAzICAgfCBCaW4gMjU1NzEzNiAtPiAyNjAyMzIwIGJ5dGVz
-Cj4gIGF0aDExay9JUFE2MDE4L2h3MS4wL3E2X2Z3LmIwNCAgIHwgQmluIDQxMjA2NCAtPiAzODYw
-MTYgYnl0ZXMKPiAgYXRoMTFrL0lQUTYwMTgvaHcxLjAvcTZfZncuYjA1ICAgfCBCaW4gMTk4MDUy
-IC0+IDIwMjUzMiBieXRlcwo+ICBhdGgxMWsvSVBRNjAxOC9odzEuMC9xNl9mdy5iMDcgICB8IEJp
-biA5NDE2IC0+IDk5MTIgYnl0ZXMKPiAgYXRoMTFrL0lQUTYwMTgvaHcxLjAvcTZfZncuYjA4ICAg
-fCBCaW4gNDUzMzY0IC0+IDQ2NDU2NCBieXRlcwo+ICBhdGgxMWsvSVBRNjAxOC9odzEuMC9xNl9m
-dy5tZHQgICB8IEJpbiA3MzQwIC0+IDczNDAgYnl0ZXMKPiAgYXRoMTFrL0lQUTgwNzQvaHcyLjAv
-Ym9hcmQtMi5iaW4gfCBCaW4gMTMxMTM4MCAtPiAxMzExMzgwIGJ5dGVzCj4gIGF0aDExay9JUFE4
-MDc0L2h3Mi4wL20zX2Z3LmIwMSAgIHwgQmluIDEzNiAtPiAxMzYgYnl0ZXMKPiAgYXRoMTFrL0lQ
-UTgwNzQvaHcyLjAvbTNfZncuYjAyICAgfCBCaW4gMzI3NjgwIC0+IDMyNzY4MCBieXRlcwo+ICBh
-dGgxMWsvSVBRODA3NC9odzIuMC9tM19mdy5tZHQgICB8IEJpbiAyODQgLT4gMjg0IGJ5dGVzCj4g
-IGF0aDExay9JUFE4MDc0L2h3Mi4wL3E2X2Z3LmIwMCAgIHwgQmluIDM0MCAtPiAzNDAgYnl0ZXMK
-PiAgYXRoMTFrL0lQUTgwNzQvaHcyLjAvcTZfZncuYjAxICAgfCBCaW4gMzI4IC0+IDMyOCBieXRl
-cwo+ICBhdGgxMWsvSVBRODA3NC9odzIuMC9xNl9mdy5iMDIgICB8IEJpbiA0Njk2IC0+IDQ2OTYg
-Ynl0ZXMKPiAgYXRoMTFrL0lQUTgwNzQvaHcyLjAvcTZfZncuYjAzICAgfCBCaW4gMjkzNDg2NCAt
-PiAyOTc4NzA0IGJ5dGVzCj4gIGF0aDExay9JUFE4MDc0L2h3Mi4wL3E2X2Z3LmIwNCAgIHwgQmlu
-IDEwMDk4ODggLT4gOTgyOTQ0IGJ5dGVzCj4gIGF0aDExay9JUFE4MDc0L2h3Mi4wL3E2X2Z3LmIw
-NSAgIHwgQmluIDI0MzY1MiAtPiAyNDgyNjAgYnl0ZXMKPiAgYXRoMTFrL0lQUTgwNzQvaHcyLjAv
-cTZfZncuYjA3ICAgfCBCaW4gOTgxNiAtPiAxMDExMiBieXRlcwo+ICBhdGgxMWsvSVBRODA3NC9o
-dzIuMC9xNl9mdy5iMDggICB8IEJpbiA0ODY1NDYgLT4gNTA0MTA0IGJ5dGVzCj4gIGF0aDExay9J
-UFE4MDc0L2h3Mi4wL3E2X2Z3Lm1kdCAgIHwgQmluIDY2OCAtPiA2NjggYnl0ZXMKPiAgYXRoMTFr
-L1FDTjkwNzQvaHcxLjAvYW1zcy5iaW4gICAgfCBCaW4gMTE5MDU4NzIgLT4gMzk2MzMzNiBieXRl
-cwo+ICBhdGgxMWsvUUNOOTA3NC9odzEuMC9tMy5iaW4gICAgICB8IEJpbiAzNDAxMDggLT4gMzQw
-MTA4IGJ5dGVzCj4gIGF0aDExay9XQ042NzUwL2h3MS4wL05vdGljZS50eHQgIHwgIDQ4ICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLQo+ICBhdGgxMWsvV0NONjc1MC9odzEu
-MC93cHNzLmIwMCAgICB8IEJpbiAzNDAgLT4gMzQwIGJ5dGVzCj4gIGF0aDExay9XQ042NzUwL2h3
-MS4wL3dwc3MuYjAxICAgIHwgQmluIDY4NDggLT4gNjg0OCBieXRlcwo+ICBhdGgxMWsvV0NONjc1
-MC9odzEuMC93cHNzLmIwMiAgICB8IEJpbiAxMDMwMCAtPiAxMDMwMCBieXRlcwo+ICBhdGgxMWsv
-V0NONjc1MC9odzEuMC93cHNzLmIwMyAgICB8IEJpbiA0MDk2IC0+IDQwOTYgYnl0ZXMKPiAgYXRo
-MTFrL1dDTjY3NTAvaHcxLjAvd3Bzcy5iMDQgICAgfCBCaW4gNTc4MzIzMSAtPiA1ODE5OTk5IGJ5
-dGVzCj4gIGF0aDExay9XQ042NzUwL2h3MS4wL3dwc3MuYjA1ICAgIHwgQmluIDE3NTIzNiAtPiAx
-NjQzMzIgYnl0ZXMKPiAgYXRoMTFrL1dDTjY3NTAvaHcxLjAvd3Bzcy5iMDYgICAgfCBCaW4gMjY2
-Njg0IC0+IDI2NjY4NCBieXRlcwo+ICBhdGgxMWsvV0NONjc1MC9odzEuMC93cHNzLmIwNyAgICB8
-IEJpbiAxMTc2MzY4IC0+IDExNzYzNjggYnl0ZXMKPiAgYXRoMTFrL1dDTjY3NTAvaHcxLjAvd3Bz
-cy5tZHQgICAgfCBCaW4gNzE4OCAtPiA3MTg4IGJ5dGVzCj4gIGF0aDExay9XQ042ODU1L2h3Mi4w
-L2JvYXJkLTIuYmluIHwgQmluIDYxNTgxOTYgLT4gNjI3ODc3MiBieXRlcwo+ICA0NSBmaWxlcyBj
-aGFuZ2VkLCAzOSBpbnNlcnRpb25zKCspLCAxNyBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+
+
+On 6.04.2023 10:06, Krzysztof Kozlowski wrote:
+> On 06/04/2023 02:59, Konrad Dybcio wrote:
+>> Convert the ATH10K bindings to YAML.
+>>
+>> Dropped properties that are absent at the current state of mainline:
+>> - qcom,msi_addr
+>> - qcom,msi_base
+>>
+>> qcom,coexist-support and qcom,coexist-gpio-pin do very little and should
+>> be reconsidered on the driver side, especially the latter one.
+>>
+>> Somewhat based on the ath11k bindings.
+>>
+Ack to everything, thanks
+
+Konrad
+> 
+> Thank you for your patch. There is something to discuss/improve.
+> 
+>> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+>> new file mode 100644
+>> index 000000000000..2ff004e404d9
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+>> @@ -0,0 +1,357 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/net/wireless/qcom,ath10k.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm Technologies ATH10K wireless devices
+>> +
+>> +maintainers:
+>> +  - Kalle Valo <kvalo@kernel.org>
+>> +
+>> +description: |
+> 
+> Do not need '|'.
+> 
+>> +  Qualcomm Technologies, Inc. IEEE 802.11ac devices.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - qcom,ath10k # SDIO-based devices
+>> +      - qcom,ipq4019-wifi
+>> +      - qcom,wcn3990-wifi # SNoC-based devices
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  reg-names:
+>> +    items:
+>> +      - const: membase
+>> +
+>> +  interrupts:
+>> +    minItems: 12
+>> +    maxItems: 17
+>> +
+>> +  interrupt-names:
+>> +    minItems: 12
+>> +    maxItems: 17
+>> +
+>> +  memory-region:
+>> +    maxItems: 1
+>> +    description:
+>> +      Reference to the MSA memory region used by the Wi-Fi firmware
+>> +      running on the Q6 core.
+>> +
+>> +  iommus:
+>> +    minItems: 1
+>> +    maxItems: 2
+>> +
+>> +  clocks:
+>> +    minItems: 1
+>> +    maxItems: 3
+>> +
+>> +  clock-names:
+>> +    minItems: 1
+>> +    maxItems: 3
+>> +
+>> +  resets:
+>> +    minItems: 6
+> 
+> Drop minItems here.
+> 
+>> +    maxItems: 6
+>> +
+>> +  reset-names:
+>> +    items:
+>> +      - const: wifi_cpu_init
+>> +      - const: wifi_radio_srif
+>> +      - const: wifi_radio_warm
+>> +      - const: wifi_radio_cold
+>> +      - const: wifi_core_warm
+>> +      - const: wifi_core_cold
+>> +
+>> +  ext-fem-name:
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    description: Name of external front end module used.
+>> +    items:
+> 
+> Drop items (it's just enum)
+> 
+>> +      enum:
+>> +        - microsemi-lx5586
+>> +        - sky85703-11
+>> +        - sky85803
+>> +
+>> +  wifi-firmware:
+>> +    type: object
+> 
+> additionalProperties: false
+> 
+>> +    description: |
+>> +      The ATH10K Wi-Fi node can contain one optional firmware subnode.
+>> +      Firmware subnode is needed when the platform does not have Trustzone.
+> 
+> properties:
+>   iommus:
+>     maxItems: 1
+> 
+>> +    required:
+>> +      - iommus
+>> +
+>> +  qcom,ath10k-calibration-data:
+>> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+>> +    description:
+>> +      Calibration data + board-specific data as a byte array. The length
+>> +      can vary between hardware versions.
+>> +
+>> +  qcom,ath10k-calibration-variant:
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    description:
+>> +      Unique variant identifier of the calibration data in board-2.bin
+>> +      for designs with colliding bus and device specific ids
+>> +
+>> +  qcom,ath10k-pre-calibration-data:
+>> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+>> +    description:
+>> +      Pre-calibration data as a byte array. The length can vary between
+>> +      hardware versions.
+>> +
+>> +  qcom,coexist-support:
+>> +    $ref: /schemas/types.yaml#/definitions/uint8
+> 
+> enum: [0, 1]
+> 
+>> +    description:
+>> +      0 or 1 to indicate coex support by the hardware.
+>> +
+>> +  qcom,coexist-gpio-pin:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description:
+>> +      COEX GPIO number provided to the Wi-Fi firmware.
+>> +
+>> +  qcom,msa-fixed-perm:
+>> +    type: boolean
+>> +    description:
+>> +      Whether to skip executing an SCM call that reassigns the memory
+>> +      region ownership.
+>> +
+>> +  qcom,smem-states:
+>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+>> +    description: State bits used by the AP to signal the WLAN Q6.
+>> +    items:
+>> +      - description: Signal bits used to enable/disable low power mode
+>> +                     on WCN in the case of WoW (Wake on Wireless).
+>> +
+>> +  qcom,smem-state-names:
+>> +    description: The names of the state bits used for SMP2P output.
+>> +    items:
+>> +      - const: wlan-smp2p-out
+>> +
+>> +  qcom,snoc-host-cap-8bit-quirk:
+>> +    type: boolean
+>> +    description:
+>> +      Quirk specifying that the firmware expects the 8bit version
+>> +      of the host capability QMI request
+>> +
+>> +  qcom,xo-cal-data:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description:
+>> +      XO cal offset to be configured in XO trim register.
+>> +
+>> +  vdd-0.8-cx-mx-supply:
+>> +    description: Main logic power rail
+>> +
+>> +  vdd-1.8-xo-supply:
+>> +    description: Crystal oscillator supply
+>> +
+>> +  vdd-1.3-rfa-supply:
+>> +    description: RFA supply
+>> +
+>> +  vdd-3.3-ch0-supply:
+>> +    description: Primary Wi-Fi antenna supply
+>> +
+>> +  vdd-3.3-ch1-supply:
+>> +    description: Secondary Wi-Fi antenna supply
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +additionalProperties: false
+>> +
+>> +allOf:
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,ipq4019-wifi
+>> +    then:
+>> +      properties:
+>> +        interrupts:
+>> +          minItems: 17
+>> +          maxItems: 17
+>> +
+>> +        interrupt-names:
+>> +          minItems: 17
+>> +          items:
+>> +            - const: msi0
+>> +            - const: msi1
+>> +            - const: msi2
+>> +            - const: msi3
+>> +            - const: msi4
+>> +            - const: msi5
+>> +            - const: msi6
+>> +            - const: msi7
+>> +            - const: msi8
+>> +            - const: msi9
+>> +            - const: msi10
+>> +            - const: msi11
+>> +            - const: msi12
+>> +            - const: msi13
+>> +            - const: msi14
+>> +            - const: msi15
+>> +            - const: legacy
+>> +
+>> +        clocks:
+>> +          items:
+>> +            - description: Wi-Fi command clock
+>> +            - description: Wi-Fi reference clock
+>> +            - description: Wi-Fi RTC clock
+>> +
+>> +        clock-names:
+>> +          items:
+>> +            - const: wifi_wcss_cmd
+>> +            - const: wifi_wcss_ref
+>> +            - const: wifi_wcss_rtc
+>> +
+>> +      required:
+>> +        - clocks
+>> +        - clock-names
+>> +        - interrupts
+>> +        - interrupt-names
+>> +        - resets
+>> +        - reset-names
+>> +
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,wcn3990-wifi
+>> +
+>> +    then:
+>> +      properties:
+>> +        clocks:
+>> +          minItems: 1
+>> +          items:
+>> +            - description: XO reference clock
+>> +            - description: Qualcomm Debug Subsystem clock
+>> +
+>> +        clock-names:
+>> +          minItems: 1
+>> +          items:
+>> +            - const: cxo_ref_clk_pin
+>> +            - const: qdss
+>> +
+>> +        interrupts:
+>> +          items:
+>> +            - description: CE0
+>> +            - description: CE1
+>> +            - description: CE2
+>> +            - description: CE3
+>> +            - description: CE4
+>> +            - description: CE5
+>> +            - description: CE6
+>> +            - description: CE7
+>> +            - description: CE8
+>> +            - description: CE9
+>> +            - description: CE10
+>> +            - description: CE11
+>> +
+>> +      required:
+>> +        - interrupts
+>> +
+>> +examples:
+>> +  # SNoC
+>> +  - |
+>> +    #include <dt-bindings/clock/qcom,rpmcc.h>
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +
+>> +    reserved-memory {
+>> +        #address-cells = <2>;
+>> +        #size-cells = <2>;
+>> +
+>> +        wlan_msa_mem: memory@4cd000 {
+>> +            no-map;
+>> +            reg = <0x0 0x004cd000 0x0 0x1000>;
+>> +        };
+>> +    };
+> 
+> Drop the reserved memory node, it's more-or-less obvious (same everywhere).
+> 
+>> +
+>> +    wifi: wifi@18800000 {
+> 
+> Drop label.
+> 
+>> +      compatible = "qcom,wcn3990-wifi";
+>> +      reg = <0x18800000 0x800000>;
+>> +      reg-names = "membase";
+>> +      memory-region = <&wlan_msa_mem>;
+>> +      clocks = <&rpmcc RPM_SMD_RF_CLK2_PIN>;
+>> +      clock-names = "cxo_ref_clk_pin";
+>> +      interrupts = <GIC_SPI 413 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 414 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 415 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 416 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 417 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
+>> +                   <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>;
+>> +      iommus = <&anoc2_smmu 0x1900>,
+>> +               <&anoc2_smmu 0x1901>;
+>> +      qcom,snoc-host-cap-8bit-quirk;
+>> +      status = "disabled";
+> 
+> Drop status from examples.
+> 
+> The example looks a bit incomplete. Please add supplies and
+> wifi-firmware node.
+> 
+>> +    };
+>> +
+>> +  # AHB
+>> +  - |
+>> +    #include <dt-bindings/clock/qcom,gcc-ipq4019.h>
+>> +
+>> +    wifi0: wifi@a000000 {
+> 
+> Drop label.
+> 
+>> +        compatible = "qcom,ipq4019-wifi";
+>> +        reg = <0xa000000 0x200000>;
+>> +        resets = <&gcc WIFI0_CPU_INIT_RESET>,
+>> +                 <&gcc WIFI0_RADIO_SRIF_RESET>,
+>> +                 <&gcc WIFI0_RADIO_WARM_RESET>,
+>> +                 <&gcc WIFI0_RADIO_COLD_RESET>,
+>> +                 <&gcc WIFI0_CORE_WARM_RESET>,
+>> +                 <&gcc WIFI0_CORE_COLD_RESET>;
+>> +        reset-names = "wifi_cpu_init",
+>> +                      "wifi_radio_srif",
+>> +                      "wifi_radio_warm",
+>> +                      "wifi_radio_cold",
+>> +                      "wifi_core_warm",
+>> +                      "wifi_core_cold";
+>> +        clocks = <&gcc GCC_WCSS2G_CLK>,
+>> +                 <&gcc GCC_WCSS2G_REF_CLK>,
+>> +                 <&gcc GCC_WCSS2G_RTC_CLK>;
+>> +        clock-names = "wifi_wcss_cmd",
+>> +                      "wifi_wcss_ref",
+>> +                      "wifi_wcss_rtc";
+>> +        interrupts = <GIC_SPI 32 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 33 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 36 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 37 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 38 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 39 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 40 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 41 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 42 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 43 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 44 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 45 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 46 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 47 IRQ_TYPE_EDGE_RISING>,
+>> +                     <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
+>> +        interrupt-names =  "msi0",
+>> +                           "msi1",
+>> +                           "msi2",
+>> +                           "msi3",
+>> +                           "msi4",
+>> +                           "msi5",
+>> +                           "msi6",
+>> +                           "msi7",
+>> +                           "msi8",
+>> +                           "msi9",
+>> +                           "msi10",
+>> +                           "msi11",
+>> +                           "msi12",
+>> +                           "msi13",
+>> +                           "msi14",
+>> +                           "msi15",
+>> +                           "legacy";
+>> +        status = "disabled";
+> 
+> Ditto
+> 
+>> +      };
+>>
+> 
+> Best regards,
+> Krzysztof
+> 
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
