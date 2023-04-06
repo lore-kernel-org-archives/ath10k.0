@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 264F5C76196
-	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 11:54:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCB2BC7618D
+	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 11:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZSTlPqShaxxoxrZjHWSxf0kGWcn8VTI91jisvFZ2P/o=; b=ZKwG6bLWryovAF
-	utUq83daXmJW0VWJ0PtOEpk3DITELShvVjX9cuZ5986F6SMvbFSYRcMmgratDLLHI7k7qvK5MmRPH
-	0RwpkaYf+ecN+kt0GYnc3zp7lCN4MHsQlIxEF1JhcgmBjSg3hglD5qUR/DVmMPV/rxNcoW/uHFyKn
-	EkV+Ectds80CtHhhJY3NHlZ8S8ynaGh3uFOiaeMqDcB73t9g67bXt5hX9gRp2O3XZR7EP4BaNXd9Q
-	7HeGcInv3Gfzd8P82x6GLDYRPWsG3XH519bUPg09+e2Q6RMaREH3jiXmHjzZQxaDMB3WtZm//+L6Z
-	SMeZaJVTanj8luo3Y+CA==;
+	List-Owner; bh=+JJh9Cas62wL87B3L/r4u/2FGrfjywrF0iS4bc3NjsQ=; b=LaTwsSCHT3eDHf
+	4T1ACkhatjfycpkgyqs3BI9NH/1s6M7TIhKl45K0FQtW5COxOdFBGAwz+BismoOpxgk841D8THI6/
+	zPZ4scPe0eOw6qDYxUgApYnQ3+EbAI9tQfGoPjarNvhUm4mHMPQvlHLGuTe51EX9oxFPIjfTYrQyr
+	S28NYfG7M2bQSYcdLj2GtJqb+A/EAP+Xjdi0eUXrL8A3LqNU2ilEDT9tUKQTUpMaEW+tWjYpNQFHa
+	Wzh96+DICDXSQnSRbufIhBEEV61ro0Xm5+BYY2gWkbZ53cGm1TdA2UHeEBk1M5FDSnPvXQs3mMIjx
+	3jwmGrdFiSn03kjBR5yA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkOC0-007Dr6-04;
-	Thu, 06 Apr 2023 11:54:16 +0000
-Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
+	id 1pkOC1-007Drk-37;
+	Thu, 06 Apr 2023 11:54:17 +0000
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkOBx-007Dpa-2V
+	id 1pkOBx-007DpT-1F
 	for ath10k@lists.infradead.org;
-	Thu, 06 Apr 2023 11:54:15 +0000
-Received: by mail-lf1-x134.google.com with SMTP id j11so50421818lfg.13
-        for <ath10k@lists.infradead.org>; Thu, 06 Apr 2023 04:54:13 -0700 (PDT)
+	Thu, 06 Apr 2023 11:54:16 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id k18so1719491lfb.12
+        for <ath10k@lists.infradead.org>; Thu, 06 Apr 2023 04:54:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680782052;
+        d=linaro.org; s=google; t=1680782050;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vr7hvDh/glr30Yw4qpt5Kbr2lkI/viKC3PQIzjAY6io=;
-        b=NT0z1D54Jz23Qd8QBqW5y4LUgbLtaQiI1TTTYvzoNpqNjsOnHncu4tIm1w0PLSWfus
-         FcGnKVh4sD4n20MNNi8iHuadPLgpCDZy3tNxNa+3prJ768N6bKVXy5ptvrYhfmmP153M
-         nQT/Rvmq+0VrCWP7UfX/LVCU0QvOlyKPLKiaKC76p+4gyYfBcH048wCc/sJ0dGjmFB12
-         SBH7ATZwDZgnf+2p8rbb5dnINgkFDUZxaevgSsqVaCXU8PiAW0dN9GX/a9MPcCZQT9dy
-         jsjn0PO7g5uIHM+UuOO0VqtmQ9vqvErlM/XEs0HeE7HRYS2ojiPvPbuUXnSNbBXOHhoI
-         tfuQ==
+        bh=tQFF3r2qurHMQnPmOCNbD2/Cy1NgC2rwLfcVNIwkQEY=;
+        b=OnwXowY20FAMqLUTsmv39e9UzqTk4wOOpeZeDwwDkcCrWfotJl+lqAwSe3aVU1wWrY
+         X00fgfwA1ueEmyF2WdX5Sbvryn4pmgZXYMu+Gpfko7lit4rvexB8Q6emHe36uIpd1KQV
+         MLcaSuoR2fum57Q8tJLq+l8J0sBrTmHXpIJ62QH+/IKlvkC8L8ZCRYuaaUz/J1qAshAo
+         PBPptg7W05DR+toMEC0aSa4vZlh0NAtfo8OdMqLLUtGBcRM4cWkRYr0tw1wOc5A5kQnZ
+         HY20uvwfcNLR1qjrXGDkiVP+MjXH4XMICgcQX2p8PYYlPG6vBWn2HoszJzc866SILIdX
+         0gYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680782052;
+        d=1e100.net; s=20210112; t=1680782050;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vr7hvDh/glr30Yw4qpt5Kbr2lkI/viKC3PQIzjAY6io=;
-        b=VUTTLNk+vYiXdar5XMonDE0zKSaSvIQqBY+n06vZ8K4CFc0d2ogbaoDaOCuvVsUljf
-         mLtW/TWbuQGaIzzUM4GndcoAabdE236yxjZ30feIQSC4NSW83oA1tp5+eqEOpQ2nW0+M
-         HzqJGuAACcixRGDHGIEyfw4JoUo81a76WYLLCNjWZMC6VaK9Pg55vPFehDem6OpStsvT
-         CXlXvcVJuyC+pmI4PQldTIGhrmrGrP1TzEHu4PoZRqvtVyCjKgJxdZji+p7MmlvPdXGa
-         dBYyMKDE15HgdMLXIfeV0+MsUDmlpJDWvyPiIPIQJpwD2o/Vf9QBPMQ+Z96qr/D9xaLh
-         NitQ==
-X-Gm-Message-State: AAQBX9fvtKoXWSUla1t7W+Y5BCNCZaCZE7/NCR/hyjetmva4wHf6izGC
-	DH2pQM3r1ILGyIgKWpRnF83Vcw==
-X-Google-Smtp-Source: AKy350YOJBBOhvLdzYhTyarkDYK/pXLiXR2cWg4R6nvYfiOFuIxo3sv/hjwJhsRRoIA0DWwgZVofkQ==
-X-Received: by 2002:ac2:596b:0:b0:4e9:609c:e901 with SMTP id h11-20020ac2596b000000b004e9609ce901mr2444588lfp.21.1680782051848;
-        Thu, 06 Apr 2023 04:54:11 -0700 (PDT)
+        bh=tQFF3r2qurHMQnPmOCNbD2/Cy1NgC2rwLfcVNIwkQEY=;
+        b=ilxpBmIQam1eAmzuCindazw063dLDjPOLGh356fNFBdDWqGyi/gUBExJjfMo70/t0S
+         SC3xaVfgx2jVfQo05xwrGSn2l4UTfflZPhaFCvwS4XOjLQykQ5WQxRndnNV8xD3sc93R
+         nfXufuBXDBhXMvanvFRnDNa8UblI5qn0lOh7pQMyf09f7Jr4Bx3E4bkpHUJbtTO8/joc
+         9szXWFqDrTx8S69+wHdsyr7B+mQq46+ZQE4mrjoooeDGBFxmoWZj79gn5sRRhr7aGMpc
+         M1kLb8yxgHTFpZmTe/TRSy+vPYG107xIZFjzEycYc4OFzuCZyLo3NrNtvOwf7RiXJOWo
+         JvtQ==
+X-Gm-Message-State: AAQBX9crzyPZeGB/ko/XX52lE0ymDEF/ZFTAwS0+OWUA+A3PHo5IIJ1P
+	/ArRwX2EU7JKm87GOMzldZ+B2g==
+X-Google-Smtp-Source: AKy350axi/N8LuGfuGMInxiD/Y2lCbBv8SDE7cnA9FLClbUXAzWjyZtPidMGj1O7Mg4bvkgNT3DTUQ==
+X-Received: by 2002:a05:6512:12d4:b0:4eb:2b62:134f with SMTP id p20-20020a05651212d400b004eb2b62134fmr1367161lfg.16.1680782050299;
+        Thu, 06 Apr 2023 04:54:10 -0700 (PDT)
 Received: from [192.168.1.101] (abxh37.neoplus.adsl.tpnet.pl. [83.9.1.37])
-        by smtp.gmail.com with ESMTPSA id q27-20020ac246fb000000b004eb2cc16342sm237513lfo.21.2023.04.06.04.54.10
+        by smtp.gmail.com with ESMTPSA id q27-20020ac246fb000000b004eb2cc16342sm237513lfo.21.2023.04.06.04.54.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 04:54:11 -0700 (PDT)
+        Thu, 06 Apr 2023 04:54:09 -0700 (PDT)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Thu, 06 Apr 2023 13:54:05 +0200
-Subject: [PATCH v2 2/2] arm64: dts: qcom: sdm845-polaris: Drop inexistent
- properties
+Date: Thu, 06 Apr 2023 13:54:04 +0200
+Subject: [PATCH v2 1/2] dt-bindings: net: Convert ATH10K to YAML
 MIME-Version: 1.0
-Message-Id: <20230406-topic-ath10k_bindings-v2-2-557f884a65d1@linaro.org>
+Message-Id: <20230406-topic-ath10k_bindings-v2-1-557f884a65d1@linaro.org>
 References: <20230406-topic-ath10k_bindings-v2-0-557f884a65d1@linaro.org>
 In-Reply-To: <20230406-topic-ath10k_bindings-v2-0-557f884a65d1@linaro.org>
 To: Kalle Valo <kvalo@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
@@ -79,20 +78,18 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
  netdev@vger.kernel.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1680782047; l=826;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1680782047; l=19613;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=A+cHJo96LANW/mYlLiz68VJ9kDkIsUWUlAaAZ/obM9g=;
- b=JZKiZ4o7YkofUMsu2AgB8TAPweZ+TM2wSK7+a4qVZ4XupOfbVVCCqYRW+YkwYuRfcRV1vwF/Z5lp
- cZVP38w6DVmxGIdjnblGj2CeL8CJgzyfVanJardNzq2u/QMMqRgn
+ bh=zP3xUVxPpr+R9HH4UDQbpzybJokmIl3hXxMvxaUkGYA=;
+ b=LfayV1a1ERhABFfBcs3czO8b9fTiQxijSqo/9bFQI6iLRLn0tBj9LMViWfyjC6WqQ774A6pgkSJW
+ tcD6scusBWC5Cofso5WYyHyKmvmiLEWDJTRoagWyB+/iyVu6m0L9
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230406_045413_812486_B8B1C644 
-X-CRM114-Status: UNSURE (   8.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230406_045413_424316_D17C52B5 
+X-CRM114-Status: GOOD (  24.49  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,27 +106,609 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Drop the qcom,snoc-host-cap-skip-quirk that was never introduced to
-solve schema warnings.
+Convert the ATH10K bindings to YAML.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Dropped properties that are absent at the current state of mainline:
+- qcom,msi_addr
+- qcom,msi_base
+
+qcom,coexist-support and qcom,coexist-gpio-pin do very little and should
+be reconsidered on the driver side, especially the latter one.
+
+Somewhat based on the ath11k bindings.
+
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts | 2 --
- 1 file changed, 2 deletions(-)
+ .../bindings/net/wireless/qcom,ath10k.txt          | 215 ------------
+ .../bindings/net/wireless/qcom,ath10k.yaml         | 359 +++++++++++++++++++++
+ 2 files changed, 359 insertions(+), 215 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
-index 1b7fdbae6a2b..56f2d855df78 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
-@@ -712,7 +712,5 @@ &wifi {
- 	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
- 	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
- 	vdd-3.3-ch1-supply = <&vreg_l23a_3p3>;
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+deleted file mode 100644
+index b61c2d5a0ff7..000000000000
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ /dev/null
+@@ -1,215 +0,0 @@
+-* Qualcomm Atheros ath10k wireless devices
 -
--	qcom,snoc-host-cap-skip-quirk;
- 	status = "okay";
- };
+-Required properties:
+-- compatible: Should be one of the following:
+-	* "qcom,ath10k"
+-	* "qcom,ipq4019-wifi"
+-	* "qcom,wcn3990-wifi"
+-
+-PCI based devices uses compatible string "qcom,ath10k" and takes calibration
+-data along with board specific data via "qcom,ath10k-calibration-data".
+-Rest of the properties are not applicable for PCI based devices.
+-
+-AHB based devices (i.e. ipq4019) uses compatible string "qcom,ipq4019-wifi"
+-and also uses most of the properties defined in this doc (except
+-"qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-data"
+-to carry pre calibration data.
+-
+-In general, entry "qcom,ath10k-pre-calibration-data" and
+-"qcom,ath10k-calibration-data" conflict with each other and only one
+-can be provided per device.
+-
+-SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
+-
+-- reg: Address and length of the register set for the device.
+-- reg-names: Must include the list of following reg names,
+-	     "membase"
+-- interrupts: reference to the list of 17 interrupt numbers for "qcom,ipq4019-wifi"
+-	      compatible target.
+-	      reference to the list of 12 interrupt numbers for "qcom,wcn3990-wifi"
+-	      compatible target.
+-	      Must contain interrupt-names property per entry for
+-	      "qcom,ath10k", "qcom,ipq4019-wifi" compatible targets.
+-
+-- interrupt-names: Must include the entries for MSI interrupt
+-		   names ("msi0" to "msi15") and legacy interrupt
+-		   name ("legacy") for "qcom,ath10k", "qcom,ipq4019-wifi"
+-		   compatible targets.
+-
+-Optional properties:
+-- resets: Must contain an entry for each entry in reset-names.
+-          See ../reset/reseti.txt for details.
+-- reset-names: Must include the list of following reset names,
+-	       "wifi_cpu_init"
+-	       "wifi_radio_srif"
+-	       "wifi_radio_warm"
+-	       "wifi_radio_cold"
+-	       "wifi_core_warm"
+-	       "wifi_core_cold"
+-- clocks: List of clock specifiers, must contain an entry for each required
+-          entry in clock-names.
+-- clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
+-	       "wifi_wcss_rtc" for "qcom,ipq4019-wifi" compatible target and
+-	       "cxo_ref_clk_pin" and optionally "qdss" for "qcom,wcn3990-wifi"
+-	       compatible target.
+-- qcom,msi_addr: MSI interrupt address.
+-- qcom,msi_base: Base value to add before writing MSI data into
+-		MSI address register.
+-- qcom,ath10k-calibration-variant: string to search for in the board-2.bin
+-				   variant list with the same bus and device
+-				   specific ids
+-- qcom,ath10k-calibration-data : calibration data + board specific data
+-				 as an array, the length can vary between
+-				 hw versions.
+-- qcom,ath10k-pre-calibration-data : pre calibration data as an array,
+-				     the length can vary between hw versions.
+-- <supply-name>-supply: handle to the regulator device tree node
+-			   optional "supply-name" are "vdd-0.8-cx-mx",
+-			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
+-			   and "vdd-3.3-ch1".
+-- memory-region:
+-	Usage: optional
+-	Value type: <phandle>
+-	Definition: reference to the reserved-memory for the msa region
+-		    used by the wifi firmware running in Q6.
+-- iommus:
+-	Usage: optional
+-	Value type: <prop-encoded-array>
+-	Definition: A list of phandle and IOMMU specifier pairs.
+-- ext-fem-name:
+-	Usage: Optional
+-	Value type: string
+-	Definition: Name of external front end module used. Some valid FEM names
+-		    for example: "microsemi-lx5586", "sky85703-11"
+-		    and "sky85803" etc.
+-- qcom,snoc-host-cap-8bit-quirk:
+-	Usage: Optional
+-	Value type: <empty>
+-	Definition: Quirk specifying that the firmware expects the 8bit version
+-		    of the host capability QMI request
+-- qcom,xo-cal-data: xo cal offset to be configured in xo trim register.
+-
+-- qcom,msa-fixed-perm: Boolean context flag to disable SCM call for statically
+-		       mapped msa region.
+-
+-- qcom,coexist-support : should contain eithr "0" or "1" to indicate coex
+-			 support by the hardware.
+-- qcom,coexist-gpio-pin : gpio pin number  information to support coex
+-			  which will be used by wifi firmware.
+-
+-* Subnodes
+-The ath10k wifi node can contain one optional firmware subnode.
+-Firmware subnode is needed when the platform does not have TustZone.
+-The firmware subnode must have:
+-
+-- iommus:
+-	Usage: required
+-	Value type: <prop-encoded-array>
+-	Definition: A list of phandle and IOMMU specifier pairs.
+-
+-
+-Example (to supply PCI based wifi block details):
+-
+-In this example, the node is defined as child node of the PCI controller.
+-
+-pci {
+-	pcie@0 {
+-		reg = <0 0 0 0 0>;
+-		#interrupt-cells = <1>;
+-		#size-cells = <2>;
+-		#address-cells = <3>;
+-		device_type = "pci";
+-
+-		wifi@0,0 {
+-			reg = <0 0 0 0 0>;
+-			qcom,ath10k-calibration-data = [ 01 02 03 ... ];
+-			ext-fem-name = "microsemi-lx5586";
+-		};
+-	};
+-};
+-
+-Example (to supply ipq4019 SoC wifi block details):
+-
+-wifi0: wifi@a000000 {
+-	compatible = "qcom,ipq4019-wifi";
+-	reg = <0xa000000 0x200000>;
+-	resets = <&gcc WIFI0_CPU_INIT_RESET>,
+-		 <&gcc WIFI0_RADIO_SRIF_RESET>,
+-		 <&gcc WIFI0_RADIO_WARM_RESET>,
+-		 <&gcc WIFI0_RADIO_COLD_RESET>,
+-		 <&gcc WIFI0_CORE_WARM_RESET>,
+-		 <&gcc WIFI0_CORE_COLD_RESET>;
+-	reset-names = "wifi_cpu_init",
+-		      "wifi_radio_srif",
+-		      "wifi_radio_warm",
+-		      "wifi_radio_cold",
+-		      "wifi_core_warm",
+-		      "wifi_core_cold";
+-	clocks = <&gcc GCC_WCSS2G_CLK>,
+-		 <&gcc GCC_WCSS2G_REF_CLK>,
+-		 <&gcc GCC_WCSS2G_RTC_CLK>;
+-	clock-names = "wifi_wcss_cmd",
+-		      "wifi_wcss_ref",
+-		      "wifi_wcss_rtc";
+-	interrupts = <0 0x20 0x1>,
+-		     <0 0x21 0x1>,
+-		     <0 0x22 0x1>,
+-		     <0 0x23 0x1>,
+-		     <0 0x24 0x1>,
+-		     <0 0x25 0x1>,
+-		     <0 0x26 0x1>,
+-		     <0 0x27 0x1>,
+-		     <0 0x28 0x1>,
+-		     <0 0x29 0x1>,
+-		     <0 0x2a 0x1>,
+-		     <0 0x2b 0x1>,
+-		     <0 0x2c 0x1>,
+-		     <0 0x2d 0x1>,
+-		     <0 0x2e 0x1>,
+-		     <0 0x2f 0x1>,
+-		     <0 0xa8 0x0>;
+-	interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
+-			  "msi4",  "msi5",  "msi6",  "msi7",
+-			  "msi8",  "msi9",  "msi10", "msi11",
+-			  "msi12", "msi13", "msi14", "msi15",
+-			  "legacy";
+-	qcom,msi_addr = <0x0b006040>;
+-	qcom,msi_base = <0x40>;
+-	qcom,ath10k-pre-calibration-data = [ 01 02 03 ... ];
+-	qcom,coexist-support = <1>;
+-	qcom,coexist-gpio-pin = <0x33>;
+-};
+-
+-Example (to supply wcn3990 SoC wifi block details):
+-
+-wifi@18000000 {
+-		compatible = "qcom,wcn3990-wifi";
+-		reg = <0x18800000 0x800000>;
+-		reg-names = "membase";
+-		clocks = <&clock_gcc clk_rf_clk2_pin>;
+-		clock-names = "cxo_ref_clk_pin";
+-		interrupts =
+-			<GIC_SPI 414 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 415 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 416 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 417 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
+-			<GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>;
+-		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
+-		vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+-		vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+-		vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+-		vdd-3.3-ch1-supply = <&vreg_l26a_3p3>;
+-		memory-region = <&wifi_msa_mem>;
+-		iommus = <&apps_smmu 0x0040 0x1>;
+-		qcom,msa-fixed-perm;
+-		wifi-firmware {
+-			iommus = <&apps_iommu 0xc22 0x1>;
+-		};
+-};
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+new file mode 100644
+index 000000000000..8920ad3f4636
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+@@ -0,0 +1,359 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/wireless/qcom,ath10k.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies ATH10K wireless devices
++
++maintainers:
++  - Kalle Valo <kvalo@kernel.org>
++
++description:
++  Qualcomm Technologies, Inc. IEEE 802.11ac devices.
++
++properties:
++  compatible:
++    enum:
++      - qcom,ath10k # SDIO-based devices
++      - qcom,ipq4019-wifi
++      - qcom,wcn3990-wifi # SNoC-based devices
++
++  reg:
++    maxItems: 1
++
++  reg-names:
++    items:
++      - const: membase
++
++  interrupts:
++    minItems: 12
++    maxItems: 17
++
++  interrupt-names:
++    minItems: 12
++    maxItems: 17
++
++  memory-region:
++    maxItems: 1
++    description:
++      Reference to the MSA memory region used by the Wi-Fi firmware
++      running on the Q6 core.
++
++  iommus:
++    minItems: 1
++    maxItems: 2
++
++  clocks:
++    minItems: 1
++    maxItems: 3
++
++  clock-names:
++    minItems: 1
++    maxItems: 3
++
++  resets:
++    maxItems: 6
++
++  reset-names:
++    items:
++      - const: wifi_cpu_init
++      - const: wifi_radio_srif
++      - const: wifi_radio_warm
++      - const: wifi_radio_cold
++      - const: wifi_core_warm
++      - const: wifi_core_cold
++
++  ext-fem-name:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: Name of external front end module used.
++    enum:
++      - microsemi-lx5586
++      - sky85703-11
++      - sky85803
++
++  wifi-firmware:
++    type: object
++    additionalProperties: false
++    description: |
++      The ATH10K Wi-Fi node can contain one optional firmware subnode.
++      Firmware subnode is needed when the platform does not have Trustzone.
++    properties:
++      iommus:
++        maxItems: 1
++    required:
++      - iommus
++
++  qcom,ath10k-calibration-data:
++    $ref: /schemas/types.yaml#/definitions/uint8-array
++    description:
++      Calibration data + board-specific data as a byte array. The length
++      can vary between hardware versions.
++
++  qcom,ath10k-calibration-variant:
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      Unique variant identifier of the calibration data in board-2.bin
++      for designs with colliding bus and device specific ids
++
++  qcom,ath10k-pre-calibration-data:
++    $ref: /schemas/types.yaml#/definitions/uint8-array
++    description:
++      Pre-calibration data as a byte array. The length can vary between
++      hardware versions.
++
++  qcom,coexist-support:
++    $ref: /schemas/types.yaml#/definitions/uint8
++    enum: [0, 1]
++    description:
++      Indicate coex support by the hardware.
++
++  qcom,coexist-gpio-pin:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      COEX GPIO number provided to the Wi-Fi firmware.
++
++  qcom,msa-fixed-perm:
++    type: boolean
++    description:
++      Whether to skip executing an SCM call that reassigns the memory
++      region ownership.
++
++  qcom,smem-states:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: State bits used by the AP to signal the WLAN Q6.
++    items:
++      - description: Signal bits used to enable/disable low power mode
++                     on WCN in the case of WoW (Wake on Wireless).
++
++  qcom,smem-state-names:
++    description: The names of the state bits used for SMP2P output.
++    items:
++      - const: wlan-smp2p-out
++
++  qcom,snoc-host-cap-8bit-quirk:
++    type: boolean
++    description:
++      Quirk specifying that the firmware expects the 8bit version
++      of the host capability QMI request
++
++  qcom,xo-cal-data:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      XO cal offset to be configured in XO trim register.
++
++  vdd-0.8-cx-mx-supply:
++    description: Main logic power rail
++
++  vdd-1.8-xo-supply:
++    description: Crystal oscillator supply
++
++  vdd-1.3-rfa-supply:
++    description: RFA supply
++
++  vdd-3.3-ch0-supply:
++    description: Primary Wi-Fi antenna supply
++
++  vdd-3.3-ch1-supply:
++    description: Secondary Wi-Fi antenna supply
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - qcom,ipq4019-wifi
++    then:
++      properties:
++        interrupts:
++          minItems: 17
++          maxItems: 17
++
++        interrupt-names:
++          minItems: 17
++          items:
++            - const: msi0
++            - const: msi1
++            - const: msi2
++            - const: msi3
++            - const: msi4
++            - const: msi5
++            - const: msi6
++            - const: msi7
++            - const: msi8
++            - const: msi9
++            - const: msi10
++            - const: msi11
++            - const: msi12
++            - const: msi13
++            - const: msi14
++            - const: msi15
++            - const: legacy
++
++        clocks:
++          items:
++            - description: Wi-Fi command clock
++            - description: Wi-Fi reference clock
++            - description: Wi-Fi RTC clock
++
++        clock-names:
++          items:
++            - const: wifi_wcss_cmd
++            - const: wifi_wcss_ref
++            - const: wifi_wcss_rtc
++
++      required:
++        - clocks
++        - clock-names
++        - interrupts
++        - interrupt-names
++        - resets
++        - reset-names
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - qcom,wcn3990-wifi
++
++    then:
++      properties:
++        clocks:
++          minItems: 1
++          items:
++            - description: XO reference clock
++            - description: Qualcomm Debug Subsystem clock
++
++        clock-names:
++          minItems: 1
++          items:
++            - const: cxo_ref_clk_pin
++            - const: qdss
++
++        interrupts:
++          items:
++            - description: CE0
++            - description: CE1
++            - description: CE2
++            - description: CE3
++            - description: CE4
++            - description: CE5
++            - description: CE6
++            - description: CE7
++            - description: CE8
++            - description: CE9
++            - description: CE10
++            - description: CE11
++
++      required:
++        - interrupts
++
++examples:
++  # SNoC
++  - |
++    #include <dt-bindings/clock/qcom,rpmcc.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    wifi@18800000 {
++      compatible = "qcom,wcn3990-wifi";
++      reg = <0x18800000 0x800000>;
++      reg-names = "membase";
++      memory-region = <&wlan_msa_mem>;
++      clocks = <&rpmcc RPM_SMD_RF_CLK2_PIN>;
++      clock-names = "cxo_ref_clk_pin";
++      interrupts = <GIC_SPI 413 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 414 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 415 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 416 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 417 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>;
++      iommus = <&anoc2_smmu 0x1900>,
++               <&anoc2_smmu 0x1901>;
++      qcom,snoc-host-cap-8bit-quirk;
++      vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
++      vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
++      vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
++      vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
++      vdd-3.3-ch1-supply = <&vreg_l23a_3p3>;
++
++      wifi-firmware {
++        wifi-firmware {
++          iommus = <&apps_smmu 0x1c02 0x1>;
++        };
++      };
++    };
++
++  # AHB
++  - |
++    #include <dt-bindings/clock/qcom,gcc-ipq4019.h>
++
++    wifi@a000000 {
++        compatible = "qcom,ipq4019-wifi";
++        reg = <0xa000000 0x200000>;
++        resets = <&gcc WIFI0_CPU_INIT_RESET>,
++                 <&gcc WIFI0_RADIO_SRIF_RESET>,
++                 <&gcc WIFI0_RADIO_WARM_RESET>,
++                 <&gcc WIFI0_RADIO_COLD_RESET>,
++                 <&gcc WIFI0_CORE_WARM_RESET>,
++                 <&gcc WIFI0_CORE_COLD_RESET>;
++        reset-names = "wifi_cpu_init",
++                      "wifi_radio_srif",
++                      "wifi_radio_warm",
++                      "wifi_radio_cold",
++                      "wifi_core_warm",
++                      "wifi_core_cold";
++        clocks = <&gcc GCC_WCSS2G_CLK>,
++                 <&gcc GCC_WCSS2G_REF_CLK>,
++                 <&gcc GCC_WCSS2G_RTC_CLK>;
++        clock-names = "wifi_wcss_cmd",
++                      "wifi_wcss_ref",
++                      "wifi_wcss_rtc";
++        interrupts = <GIC_SPI 32 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 33 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 36 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 37 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 38 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 39 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 40 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 41 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 42 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 43 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 44 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 45 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 46 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 47 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
++        interrupt-names =  "msi0",
++                           "msi1",
++                           "msi2",
++                           "msi3",
++                           "msi4",
++                           "msi5",
++                           "msi6",
++                           "msi7",
++                           "msi8",
++                           "msi9",
++                           "msi10",
++                           "msi11",
++                           "msi12",
++                           "msi13",
++                           "msi14",
++                           "msi15",
++                           "legacy";
++      };
 
 -- 
 2.40.0
