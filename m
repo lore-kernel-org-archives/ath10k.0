@@ -4,91 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C08DC76196
-	for <ath10k@archiver.kernel.org>; Thu,  6 Apr 2023 18:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19C31C77B61
+	for <ath10k@archiver.kernel.org>; Fri,  7 Apr 2023 13:35:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TqVxdTef+zG7Yx9kWdBdjdOOt5Zr4ke5NbqYY8roWIA=; b=kjCJs32q19WPTs
-	PeyF6TzCwtzTE03QkmGMOkO94Z2yWnKqj8aDfLnLO4CulOb/ERBCX0W0f1TRq6lBXj3TUysrSA7rn
-	BeVUdOksHFCBJny/PeA7nld06v9s9wtLSKJgAgNH3sk3iHQDSejnNV4NH56brPmZXdjW6B2ex1gN/
-	b2mn+n4hJC/eFQZBFv5xFSyEf9hfWAolf/1ygXSFw773SQaTltE6dRb6oMdouGH6122ZUuFVstiq3
-	xQMPvCmsPi61lR+3JkOWR/jTcnyMcgIQxukd07gSGiwjV8X31Z2GEU18x3DndrY8xquE+nZ6ysmeY
-	i0N6ucro+060apuiat5g==;
+	List-Owner; bh=cGhK2mvZGTDuX0vWSVchurErkKtTDQNspWe2bDHtXlU=; b=O6PJwuRHr4lvTE
+	jUdQUhGyezpoMcmBBA8PsI5rfVtuoFiP0uw414bkmt9jmy7qgsbOU1Zx32yOwq7SdJQfeBJAtb53B
+	uO+H3u1AsBH4uewU1nCUVnD3wmGl0eL7hvebGX4LpRwOhBW80i1JT8zj4GQuRHS5ALc33PVp2i69c
+	z5iJHD0xNwMrishgPf9OLNN9AbzQN5HVR0IQOcsgHYsDi1OKqoXP3zrgtYwGeywkOp2k+SQdnX8Mg
+	RgnY1NuFF6e7FD3gdyhHyiIzI+shYr2Qk5F6bvM63VpLJWlgPanOCPB/uHKzUtQQpJPq9bZXj9pGD
+	sjC2D76TY/sT02ksbW/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkUW3-008HUY-1t;
-	Thu, 06 Apr 2023 18:39:23 +0000
-Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
+	id 1pkmFO-00ALq4-0f;
+	Fri, 07 Apr 2023 13:35:22 +0000
+Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkUW1-008HU5-1S
+	id 1pkmFF-00ALoA-2q
 	for ath10k@lists.infradead.org;
-	Thu, 06 Apr 2023 18:39:22 +0000
-Received: by mail-lj1-x229.google.com with SMTP id e9so26332898ljq.4
-        for <ath10k@lists.infradead.org>; Thu, 06 Apr 2023 11:39:19 -0700 (PDT)
+	Fri, 07 Apr 2023 13:35:20 +0000
+Received: by mail-lf1-x129.google.com with SMTP id g19so41416739lfr.9
+        for <ath10k@lists.infradead.org>; Fri, 07 Apr 2023 06:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680806358;
+        d=linaro.org; s=google; t=1680874509;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=DzdRb6pnkmsus+yIRwXbtWlbX60lc0X5WvMqlzQrDnw=;
-        b=X2Gjkg08dhQfvA179XoZ/xMR768GPvfiMhSriliUPS2VW6IF+caRHk3oyvVi7zwceb
-         rqYCEXyxbM47uvulQ890YxCwMio7oYiokZU2Q2jZhV26zZNSDHH9/llKN7QMvPHwijoB
-         k9EhQm1tsSNbf9P+mHF3sTpNQfqODiLXNa2JNoUVN+pORj0bkoQB9VgOokmYekFC//8T
-         ciHran2eaQcJEHjLnY3Gp0WpL++IGG6DSMQSXZ4UvxjGlhCI2gxMgvG+jL166wo+n6ir
-         SeM2dr+e68hlv6tP2zTG1o3cIlQ4PJhsocx6ilN9qs9kyYpThk0Qvjf4a8FHQo1RzQiZ
-         dm8w==
+        bh=DtaBXHMta717GpCuZ3wh1MM3SKnnue8iRo2CuX4LyJA=;
+        b=C0uULR956DWUq4yyn2ojN4NMe/JEa/qkhBvz1mLHZE6E+4OeYapJs8wBgvf5rYVHtk
+         UVurRhKyEk/mgh9qfmZ6QceyEzX0j28/3OxWegln1vq21BCdqGmGpUFXRIRX9hwx9ON6
+         AwoQND2MnjFVeaCtDTwz4U/1c/mHlwdKeQ2a3tV6UTtB8N6dOJsEPcPTJGeXmcBYY1d0
+         OjRqYk4EabZgIb01qL/Hw29ccVkBaFEwx/tkRsSLAAHEiFkAM/8warC7bd3w64WLwB8w
+         sep9+WlkXlS/dVBOHk2RBGfNW6fIvCE1ZoHCbrYJ2z81b7T1XKhwBuk2NxB1phNK5f52
+         cScQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680806358;
+        d=1e100.net; s=20210112; t=1680874509;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DzdRb6pnkmsus+yIRwXbtWlbX60lc0X5WvMqlzQrDnw=;
-        b=HZvvV218e3E6FMoTfwrOsI+RdUc+mhwNSFMC9eMeecxRHtjZML5tLxaTdeBh93neKj
-         IT4hURXzZWTGgpzZBgkMuGcLrOyDalqKNXC0eOheN6dtoVu7uIdd12ZbNOFw4LYznw5n
-         t7dMz6NjQdDlq37AT1IKBd2VyfjZiejoaX5ql0anzemoZOL+sWmx8SmIqka6N8pBjG5q
-         dWZUJxq67pWjpgiIoyivJHs2Mo8Nre4AInpOsFahMYB0VCo4wYrPlGJo/A65p3iUEtcO
-         37YWq8sd+CtwCdHclFnryvQI4Qc4TWXQRkWkP5SVkNAlcHpSA6oM+3cYJbcvqoeMP/Sa
-         lRUw==
-X-Gm-Message-State: AAQBX9djVEjwwL5nFWDzFhs72mNJRy1j4sr1nh/zhEuB9pS32yHruN+E
-	lIJc7vIX5HUENNgUoW7fGSrevQ==
-X-Google-Smtp-Source: AKy350a3OD9HVmDgKylvrWyF5U95HSWfUl8N+EQpPalZT/JEENS+L64vmodPR1w4RzfkvCnGXQavIw==
-X-Received: by 2002:a2e:3814:0:b0:295:a958:2bca with SMTP id f20-20020a2e3814000000b00295a9582bcamr3199301lja.6.1680806358396;
-        Thu, 06 Apr 2023 11:39:18 -0700 (PDT)
-Received: from [192.168.1.101] (abxh37.neoplus.adsl.tpnet.pl. [83.9.1.37])
-        by smtp.gmail.com with ESMTPSA id w12-20020a05651c102c00b0029b32a40934sm385427ljm.113.2023.04.06.11.39.14
+        bh=DtaBXHMta717GpCuZ3wh1MM3SKnnue8iRo2CuX4LyJA=;
+        b=jroEvK9gTMortFj6bvY5mXkhpuLPHKQM+j0Gy0nvvUdciAPIdm4wv8pECfkFSP/z6U
+         9pcFPXAtRMVYZ81lJe3AbZnbdGjvIuyx49+PdJsv6f7c7W/cQIjsFedT+Dw24t3vCPvE
+         IqXZeKxFnMCS7GPIVqYOVYgqdfTBeZMLND6evZpDZwI0zQaEP4+EPhb92fW22m+4gW13
+         WzXibTSKjyjpLKrzBvIs1+GsbKizy/fso3VYrAcwBmDoEsNHeNuROJf3HSyerevX6xcK
+         n81a6xWcv/0qm3SEcMCImn64yqqjTvf/40i81cF1rS6OnuFGaZ2OlyeUmgON04O22zVk
+         821A==
+X-Gm-Message-State: AAQBX9fbszzog/8juRzSLdnvLPmaWO+48NCV3G99yuxGQ3xVSt8vr3e5
+	XEy53iXoq6TBpRzNP2g1Q6xOEA==
+X-Google-Smtp-Source: AKy350aT0DmwbnnqzrraNugNo0+iMi/Li4QQ8L+y+1QlEdcYad0HE/PkOOlJ6OW+ED8Ingr9/fcD8Q==
+X-Received: by 2002:a19:f817:0:b0:4a4:68b8:f4bd with SMTP id a23-20020a19f817000000b004a468b8f4bdmr706625lff.3.1680874508840;
+        Fri, 07 Apr 2023 06:35:08 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a085:4d00::8a5? (dzccz6yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a085:4d00::8a5])
+        by smtp.gmail.com with ESMTPSA id f14-20020a2ea0ce000000b00298a81f3184sm790704ljm.100.2023.04.07.06.35.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Apr 2023 11:39:17 -0700 (PDT)
-Message-ID: <5437085b-706b-2f9a-686e-b95a9a0e6993@linaro.org>
-Date: Thu, 6 Apr 2023 20:39:11 +0200
+        Fri, 07 Apr 2023 06:35:08 -0700 (PDT)
+Message-ID: <8ceeee1e-8828-69a9-facb-20c3787207bd@linaro.org>
+Date: Fri, 7 Apr 2023 16:35:08 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v3 1/2] dt-bindings: net: Convert ATH10K to YAML
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Kalle Valo <kvalo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20230406-topic-ath10k_bindings-v3-0-00895afc7764@linaro.org>
- <20230406-topic-ath10k_bindings-v3-1-00895afc7764@linaro.org>
- <223892d0-9b1b-9459-dec1-574875f7c1c6@linaro.org>
- <8c818f95-b4a4-658f-701d-3151afdd5179@linaro.org>
- <6720f61e-550f-6e16-8860-54233a3ea069@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <6720f61e-550f-6e16-8860-54233a3ea069@linaro.org>
+ Thunderbird/102.9.0
+Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20230405
+Content-Language: en-GB
+To: Kalle Valo <kvalo@kernel.org>, linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org
+References: <87cz4ia35m.fsf@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <87cz4ia35m.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230406_113921_494942_EFF20868 
-X-CRM114-Status: GOOD (  10.55  )
+X-CRM114-CacheID: sfid-20230407_063513_953417_B15553D9 
+X-CRM114-Status: GOOD (  11.28  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,48 +89,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Hi Kalle,
 
+On 05/04/2023 16:07, Kalle Valo wrote:
+> Hi,
+> 
+> Here's a pull request for ath10k and ath11k. For ath10k we have lots of
+> board file updates in multiple hardware families. For ath11k we have new
+> firmware branches for QCN9074, IPQ6018 and IPQ8074. WCN6750 also got a
+> firmware update and WCN6855 has board file updates.
+> 
+> Please let me know if there are any problems.
+> 
+> Kalle
 
-On 6.04.2023 20:30, Krzysztof Kozlowski wrote:
-> On 06/04/2023 20:26, Konrad Dybcio wrote:
-> 
->>>> +        interrupts:
->>>> +          items:
->>>> +            - description: CE0
->>>> +            - description: CE1
->>>> +            - description: CE2
->>>> +            - description: CE3
->>>> +            - description: CE4
->>>> +            - description: CE5
->>>> +            - description: CE6
->>>> +            - description: CE7
->>>> +            - description: CE8
->>>> +            - description: CE9
->>>> +            - description: CE10
->>>> +            - description: CE11
->>>
->>> What about interrupt-names here? If they are not expected, then just
->>> interrupt-names: false
->> They obviously wouldn't hurt, but they're unused on the driver side:
->>
->> for (i = 0; i < CE_COUNT; i++) {
->> 		ret = platform_get_irq(ar_snoc->dev, i);
->>
->> So I will forbid them.
-> 
-> Assuming DTS does not have them.
-Tested locally, no warnings, so looks like nobody used them in dt.
+Excuse me, a gentle reminder regarding WCN3990 board-2.bin. It was not 
+included into this pull request.
 
-Konrad
-> 
-> Best regards,
-> Krzysztof
-> 
+> ----------------------------------------------------------------
+> Kalle Valo (12):
+>        ath10k: QCA4019 hw1.0: update board-2.bin
+>        ath10k: QCA6174 hw3.0: update board-2.bin
+>        ath10k: QCA9888 hw2.0: update board-2.bin
+>        ath10k: QCA9984 hw1.0: update board-2.bin
+>        ath10k: QCA99X0 hw2.0: update board-2.bin
+>        ath11k: IPQ6018 hw1.0: update board-2.bin
+>        ath11k: IPQ6018 hw1.0: update to WLAN.HK.2.7.0.1-01744-QCAHKSWPL_SILICONZ-1
+>        ath11k: IPQ8074 hw2.0: update board-2.bin
+>        ath11k: IPQ8074 hw2.0: update to WLAN.HK.2.7.0.1-01744-QCAHKSWPL_SILICONZ-1
+>        ath11k: QCN9074 hw1.0: update to WLAN.HK.2.7.0.1-01744-QCAHKSWPL_SILICONZ-1
+>        ath11k: WCN6750 hw1.0: update to WLAN.MSL.1.0.1-01160-QCAMSLSWPLZ-1
+>        ath11k: WCN6855 hw2.0: update board-2.bin
+
+-- 
+With best wishes
+Dmitry
+
 
 _______________________________________________
 ath10k mailing list
