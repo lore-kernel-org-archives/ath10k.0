@@ -4,88 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB57CC7619A
-	for <ath10k@archiver.kernel.org>; Wed, 12 Apr 2023 08:38:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1776CC77B72
+	for <ath10k@archiver.kernel.org>; Wed, 12 Apr 2023 09:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=crXVZETu2XgSkK4LryLffeT3pH223vapRW0iBh0dMJQ=; b=4ZCACy6r8/pBQl
-	feq+limUbEjPmSzOPicTu7pVvFclIgkttsSnylLPPIoyCJWcB2U4f3E2LaTii3Ykt33+PNoQIXEIG
-	21QQIwNF4Ile8vTRCjuO2ChMKtNwsqxsFZOCD9jNfhEs07y9C7KsXTrcXTRC+6z353GbZG1unRVIM
-	0C1CfBDt2donKFTKOnl/uArrtA3+r3GVbJ+8EhaWfQNUHul7+znlfKuqOYIEir3v4bKCI51139137
-	0UE58y5BJp6Q/qE+Es3zIcBaxOEfsFo+rPNxU8WCfhAqg20XNQtWKESVZSO50GJDqgzdRRX0hp+Oq
-	APwb1BmbQWkGccHq/2GA==;
+	List-Owner; bh=1UXE1LtYFhStzw83KMWpm1zV1SPsZSmYIgg1r/V7AHo=; b=AR+Mthnj0EuZZB
+	aDAwS15GCSIbaYJHvmCSyBTD45L90bKRF6593eSSCbdmjdqouvANbTjdGr95DDHCVw3GrN4hSPCdP
+	E5WyKB8knggfvV6U4a53NBmTiFdhNV3HwvCCLR/IqHkFljhySfViU4hNx14K1/xUA+pfvwO5LaD2I
+	pOtXgmT5oO7fLAyhwE+GR8yaO5Hbtg8x+TZVYeiBVaIgAHnhjXua9pd8wEHdRKO8tirEnX+Ev2FL8
+	ka5/7xlf6+U/gKS3IOg4C+z+9HBq/YfSiJZEJTBEJzxzyqM4dtvXCT+izbFle/MXzNOEffByP6PC9
+	HnVqjNmXYqq4AM9mibIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmVz2-002HSk-2O;
-	Wed, 12 Apr 2023 08:37:40 +0000
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+	id 1pmWuT-002PqT-0z;
+	Wed, 12 Apr 2023 09:37:01 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmVz0-002HSC-2d
-	for ath10k@lists.infradead.org;
-	Wed, 12 Apr 2023 08:37:40 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-94a9bbfe3ecso171806566b.0
-        for <ath10k@lists.infradead.org>; Wed, 12 Apr 2023 01:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1681288656;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JF3WPk1WtXSLnyqiPhKTVud46FRRu6czewRsuPqGnnA=;
-        b=ZSxAOBx1oV71IYBBZolreG5VEmcG3zApfwaekJpqpB/rFLbe14d/EZyc2f4gM4gjn5
-         66hPH7RQanNvJo9bHbC/g9qQdo2fj6N8LMo+laioykVoGdf6nakDppwWWF5XN95B4gNu
-         mz7gAQmfYPlgtCJuAmpA6itnaneNbtkzbEtZn+KurKTQeIBCJ5D2XK3ktlMkjPenisk4
-         f6YWA1U9rhY+MhgRwi4n6iD8hh69sZ+1r0UiK2U4fDB4MGNiczsXMd5yzk/UXoxZGoSo
-         feNNIQORsALodcix5fQ0VXH+6UpVXSw03ZUUGzaVX92BGy9zfcvViAqF6SoM6+Viqi+x
-         ugIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681288656;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JF3WPk1WtXSLnyqiPhKTVud46FRRu6czewRsuPqGnnA=;
-        b=xK6vi3A51u2rAg31mUNkZk9TvbOqMAHbKlhrYdRK122aP6g7klGGHSsSI0AqeT5ZYp
-         lBe15eiIlTQ2ztWGjnaqf2Knfo2FjwX+N8Wc9ZJiFSFqenJnx1tSMQUda4h6qiY/4OI8
-         SLBPbQnTZwHOAaXsYXjSF6IeqZ2y0R/G+4Alb7ev4NQll5pUfWw2Rb47V6g0is31NjgB
-         OKRVt+IHHIaR0YAUePDXckhncKz9Ro8iL8MmM66voWas8QUu82O7cfcal3J06LGHsP+J
-         ixj7pv/mQYllyKOfiB9253Vl8x1OHIKnoIuADhRlyhkWKhDEzpSNsGpi9WcNiA5nxkZA
-         lpjg==
-X-Gm-Message-State: AAQBX9dziPuFRfU/L9/vTG//h1PMHFurEReaV/+ZsvDGrb5G+mXZa0wl
-	g17gFIa9EKGLDK04Lxcu0xgnng==
-X-Google-Smtp-Source: AKy350aBwVs8SnHcaM/3pKKf00g7XCMEHYzXX/vNSI56mW4MmK0vC1Ick41N2B7PMC1esUn6k77bJQ==
-X-Received: by 2002:aa7:ca59:0:b0:505:879:b54f with SMTP id j25-20020aa7ca59000000b005050879b54fmr279118edt.37.1681288656056;
-        Wed, 12 Apr 2023 01:37:36 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:8fa0:9989:3f72:b14f? ([2a02:810d:15c0:828:8fa0:9989:3f72:b14f])
-        by smtp.gmail.com with ESMTPSA id co2-20020a0564020c0200b005049297c5d4sm3807023edb.56.2023.04.12.01.37.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Apr 2023 01:37:35 -0700 (PDT)
-Message-ID: <4e5d0efb-581e-1b2a-6173-75e5f8ba6588@linaro.org>
-Date: Wed, 12 Apr 2023 10:37:34 +0200
+	id 1pmWuQ-002Ppg-25;
+	Wed, 12 Apr 2023 09:37:00 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2DB9362888;
+	Wed, 12 Apr 2023 09:36:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 676E3C4339C;
+	Wed, 12 Apr 2023 09:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1681292217;
+	bh=59wVY3/LuZKY9TMD37GIsizY4kqoEg6quzbNKB7N/To=;
+	h=From:To:List-Id:Cc:Subject:References:Date:In-Reply-To:From;
+	b=uv8HdqXLam4ULkTjp5ZhSnbMfwlERdPjID5oxeJATNWd1JWuXSeAYydT+ktCTml4H
+	 LCXGPlUD/4uCFCahaS9GhVMXcQyvIAuC8f9ob2gSCeWmzcmlHAZIqWWRmjZAHzdFZR
+	 /bT6pwppaX2o+i+j3ZPrCmdmgSW7cf7eiAmsGOqLY5RwXlvbHhiFIwUMl/WF2dlct5
+	 pFXTBFW44EsSs/rtOKvBwpvH09uGirCNEkFyYKKR1V5UqlKhIkxF0/S50BaTw2O6IW
+	 CQXtDWcCyTM+oHZJm4tR21xjE6Xss5pCvB33aW9DUhSIi0uGpgRRIuQoP7GRtkNWTu
+	 zRyCU9Q7yQPiw==
+From: Kalle Valo <kvalo@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-firmware@kernel.org,  linux-wireless@vger.kernel.org,  ath10k@lists.infradead.org,  ath11k@lists.infradead.org
+Subject: Re: [PULL linux-firmware] ath10k & ath11k firmware 20230405
+References: <87cz4ia35m.fsf@kernel.org>
+	<8ceeee1e-8828-69a9-facb-20c3787207bd@linaro.org>
+Date: Wed, 12 Apr 2023 12:36:51 +0300
+In-Reply-To: <8ceeee1e-8828-69a9-facb-20c3787207bd@linaro.org> (Dmitry
+	Baryshkov's message of "Fri, 7 Apr 2023 16:35:08 +0300")
+Message-ID: <87jzyh8mrw.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v4] dt-bindings: net: Convert ATH10K to YAML
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, Kalle Valo <kvalo@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20230406-topic-ath10k_bindings-v4-1-9f67a6bb0d56@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230406-topic-ath10k_bindings-v4-1-9f67a6bb0d56@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230412_013738_854399_B9BDFCC1 
-X-CRM114-Status: UNSURE (   9.50  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230412_023658_722068_E7A8F64B 
+X-CRM114-Status: GOOD (  12.62  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,26 +74,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 11/04/2023 20:19, Konrad Dybcio wrote:
-> Convert the ATH10K bindings to YAML.
-> 
-> Dropped properties that are absent at the current state of mainline:
-> - qcom,msi_addr
-> - qcom,msi_base
-> 
-> qcom,coexist-support and qcom,coexist-gpio-pin do very little and should
-> be reconsidered on the driver side, especially the latter one.
-> 
-> Somewhat based on the ath11k bindings.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 
+> Hi Kalle,
+>
+> On 05/04/2023 16:07, Kalle Valo wrote:
+>> Hi,
+>>
+>> Here's a pull request for ath10k and ath11k. For ath10k we have lots of
+>> board file updates in multiple hardware families. For ath11k we have new
+>> firmware branches for QCN9074, IPQ6018 and IPQ8074. WCN6750 also got a
+>> firmware update and WCN6855 has board file updates.
+>>
+>> Please let me know if there are any problems.
+>>
+>> Kalle
+>
+> Excuse me, a gentle reminder regarding WCN3990 board-2.bin. It was not
+> included into this pull request.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Oh man, sorry about that. I guess my installation script was buggy and
+missed it somehow, I'll look at it later and make sure WCN3990 is not
+skipped anymore.
 
-Best regards,
-Krzysztof
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
