@@ -4,80 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64851C7EE22
-	for <ath10k@archiver.kernel.org>; Thu, 11 May 2023 13:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64EA3C77B75
+	for <ath10k@archiver.kernel.org>; Fri, 12 May 2023 14:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LGX0Lq5mXjjPcWG6obJafMY3ZDdlDQEpX1CTAcap+w4=; b=1SDeyWYOUrm4qA
-	m4z32mjpY2IwbWrCh+HI/p3BbXAATSbvPdRiRuNA9uO2p5cFqQWT8IKZH9C9wvc9VBPlcZpjTGZog
-	iq5IraYDdiQzVbelVq3ObC7ouivq+8nNUpB7Pri9Bg+liKQ2KLOfuZ03QU7BPJyS5a2LyWrVEvIGv
-	ihZm7NACOPl2qxfu9Ox8LrNePK7NxEPymI7EyucRfFU8+4DCfn+T/Y/8HlzDnsnRZVjqjOgqdbjzm
-	hTmKFjPmJG6VZWzLBdyCHyrwKOtPsuPi5tI2NeJC1IdXLGJVlSPiDDtwTVKlWUOErcIjrUHOte3Cm
-	dPHyGzy3sECKxcwn13PA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kTzgrWLe2Zpc8xH7ikevEbqKylw9/PCQK0KA/De9TWs=; b=uUS6YmdYJ3fxOm
+	wwneCK1XpZaPLcqit6rZIqUX2mXuM+/zI15l97ynnIigD3YSBWALaUwKtmHotqL7XVx9fIR3eN1ea
+	4Bh/qX3vTm7/8q8TWgJMEoAqWUv9qTVSo7CjOeKIVWIqN/o6/FX4hXpKJ4F1bC+AF79EQmYBY+plo
+	gakWbRUhictQcIHgNLk4cAAIOKjItx1bPTeCHbmpHBJhfjtw93bPydEjA3UxZMYxN5iwyqBU9p72t
+	/xx3VpFVJugisOzGRxNvORByuH4BZlbzkJiru32x+NBBpbB+bS36aLENO6SEyx7xAbupSnAA52aNL
+	5oPpAAqWnSpgctGgl1/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1px69S-008q9i-1o;
-	Thu, 11 May 2023 13:16:10 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1pxTjV-00CAgA-28;
+	Fri, 12 May 2023 14:26:57 +0000
+Received: from mga03.intel.com ([134.134.136.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1px69P-008q4F-2Y
+	id 1pxTjT-00CAfM-0M
 	for ath10k@lists.infradead.org;
-	Thu, 11 May 2023 13:16:08 +0000
+	Fri, 12 May 2023 14:26:56 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683810967; x=1715346967;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OrrhJ317Kw06HAPoI/hZey2W13pWMJL3yvTYoQlLmp4=;
-  b=KK0QN27UerfkqtbOpsoxkv1cqcqyQZwzBBKM/MGL5O1lYHpKvPBa1BSn
-   KpzDl/t1NZpfNSciNzOvXXSZCiQJftiKoXuMrpR+e7jwnPTHdfqob+zCs
-   303lGNq6H9i9Pu2LxDFiLfa4MPiYKj9c3EgQ50bV2k325QZEqKmvQG413
-   d+DjksTGzm97w3q1smwMy3R9FdH3OQawvsZ7fZBKROIxpKxOZdsPUO5LB
-   1rTVznje/iCHCMHkWsEMJ+f3WRV6dh5T07qVLkPaBubWLk9kdR8RTTlxU
-   ZmItO+QuNyvXoaIVv/RoGPBftVmKhl9JOjsFBnDr077FJyTm6qh7zOaOg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10706"; a="378619824"
-X-IronPort-AV: E=Sophos;i="5.99,266,1677571200"; 
-   d="scan'208";a="378619824"
+  t=1683901615; x=1715437615;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=xx5+wlf/N8+iZI9Bp4G6CTUNM1ojf6HIXWta0j61j1Y=;
+  b=SL3P8korRltLqbf2iJA8zHlyDGArPkIcmCDXhjjNUuGO0+zUJalM7pPF
+   SnnuQpsPtoAqepVVxdFbCRfW4UUiTE5Txq+a3yS7EOZV9e+fJtbY0Sg5E
+   RECkeYH2w7NhoTf+gWD+SiYwUZEJvTmpxvkJHa0TsInkNvByV0R/UNA7z
+   4lCeAxTKdBM9znU+MB0sxsAO29+fZjcLs9dGYVO1aVf4bEEtJ6CKAbJCx
+   Qff0udiSoi9nufM25P6kdNObXjoGhnjkwFVgzlFL39OaYrndcE/I83wgg
+   K2I3VLyDv+6zf95A1AvQpn2HqQ9To0fgaq6U1+h0G6cHilGsY4BdsqZyb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="353933404"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200"; 
+   d="scan'208";a="353933404"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2023 06:16:06 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2023 07:26:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10706"; a="650170218"
-X-IronPort-AV: E=Sophos;i="5.99,266,1677571200"; 
-   d="scan'208";a="650170218"
-Received: from jsanche3-mobl1.ger.corp.intel.com (HELO ijarvine-MOBL2.ger.corp.intel.com) ([10.252.39.112])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2023 06:16:02 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: linux-pci@vger.kernel.org,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Kalle Valo <kvalo@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 17/17] wifi: ath10k: Use pcie_lnkctl_clear_and_set() for changing LNKCTL
-Date: Thu, 11 May 2023 16:14:41 +0300
-Message-Id: <20230511131441.45704-18-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230511131441.45704-1-ilpo.jarvinen@linux.intel.com>
-References: <20230511131441.45704-1-ilpo.jarvinen@linux.intel.com>
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="650652032"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200"; 
+   d="scan'208";a="650652032"
+Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 12 May 2023 07:26:49 -0700
+Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1pxTjN-0004vg-0Q;
+	Fri, 12 May 2023 14:26:49 +0000
+Date: Fri, 12 May 2023 22:26:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: Govindaraj Saminathan <quic_gsaminat@quicinc.com>
+Cc: oe-kbuild-all@lists.linux.dev, Kalle Valo <kvalo@codeaurora.org>,
+	ath10k@lists.infradead.org, Kalle Valo <quic_kvalo@quicinc.com>,
+	Sowmiya Sree Elavalagan <quic_ssreeela@quicinc.com>,
+	Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>
+Subject: [kvalo-ath:pending 50/51]
+ drivers/net/wireless/ath/ath11k/testmode.h:19: multiple definition of
+ `ath11k_tm_wmi_event';
+ drivers/net/wireless/ath/ath11k/wmi.o:drivers/net/wireless/ath/ath11k/testmode.h:19:
+ first defined here
+Message-ID: <202305122213.1eOA66xV-lkp@intel.com>
 MIME-Version: 1.0
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230511_061607_851022_C86AB88B 
-X-CRM114-Status: GOOD (  13.68  )
+X-CRM114-CacheID: sfid-20230512_072655_192192_A8E00B9F 
+X-CRM114-Status: UNSURE (   9.19  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,39 +84,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-RG9uJ3QgYXNzdW1lIHRoYXQgb25seSB0aGUgZHJpdmVyIHdvdWxkIGJlIGFjY2Vzc2luZyBMTktD
-VEwuIEFTUE0KcG9saWN5IGNoYW5nZXMgY2FuIHRyaWdnZXIgd3JpdGUgdG8gTE5LQ1RMIG91dHNp
-ZGUgb2YgZHJpdmVyJ3MgY29udHJvbC4KClVzZSBwY2llX2xua2N0bF9jbGVhcl9hbmRfc2V0KCkg
-d2hpY2ggZG9lcyBwcm9wZXIgbG9ja2luZyB0byBhdm9pZApsb3NpbmcgY29uY3VycmVudCB1cGRh
-dGVzIHRvIHRoZSByZWdpc3RlciB2YWx1ZS4gQ29udmVydCBvbmUgb2YgdGhlCndyaXRlcyB0byBv
-bmx5IHRvdWNoIFBDSV9FWFBfTE5LQ1RMX0FTUE1DIGZpZWxkIHdoaWNoIHRoZSBkcml2ZXIgaXRz
-ZWxmCmhhcyBiZWVuIGNoYW5naW5nLCBsZWF2ZSB0aGUgb3RoZXIgZmllbGRzIHVudG91Y2hlZC4K
-ClN1Z2dlc3RlZC1ieTogTHVrYXMgV3VubmVyIDxsdWthc0B3dW5uZXIuZGU+ClNpZ25lZC1vZmYt
-Ynk6IElscG8gSsOkcnZpbmVuIDxpbHBvLmphcnZpbmVuQGxpbnV4LmludGVsLmNvbT4KLS0tCiBk
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jIHwgOCArKysrLS0tLQogMSBmaWxl
-IGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jIGIvZHJpdmVycy9uZXQvd2lyZWxl
-c3MvYXRoL2F0aDEway9wY2kuYwppbmRleCBhN2Y0NGY2MzM1ZmIuLmQxOGRmYjQ5NTE5NCAxMDA2
-NDQKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYworKysgYi9kcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCkBAIC0xOTYzLDggKzE5NjMsOCBAQCBz
-dGF0aWMgaW50IGF0aDEwa19wY2lfaGlmX3N0YXJ0KHN0cnVjdCBhdGgxMGsgKmFyKQogCWF0aDEw
-a19wY2lfaXJxX2VuYWJsZShhcik7CiAJYXRoMTBrX3BjaV9yeF9wb3N0KGFyKTsKIAotCXBjaWVf
-Y2FwYWJpbGl0eV93cml0ZV93b3JkKGFyX3BjaS0+cGRldiwgUENJX0VYUF9MTktDVEwsCi0JCQkJ
-ICAgYXJfcGNpLT5saW5rX2N0bCk7CisJcGNpZV9sbmtjdGxfY2xlYXJfYW5kX3NldChhcl9wY2kt
-PnBkZXYsIDAsCisJCQkJICBhcl9wY2ktPmxpbmtfY3RsICYgUENJX0VYUF9MTktDVExfQVNQTUMp
-OwogCiAJcmV0dXJuIDA7CiB9CkBAIC0yODIxLDggKzI4MjEsOCBAQCBzdGF0aWMgaW50IGF0aDEw
-a19wY2lfaGlmX3Bvd2VyX3VwKHN0cnVjdCBhdGgxMGsgKmFyLAogCiAJcGNpZV9jYXBhYmlsaXR5
-X3JlYWRfd29yZChhcl9wY2ktPnBkZXYsIFBDSV9FWFBfTE5LQ1RMLAogCQkJCSAgJmFyX3BjaS0+
-bGlua19jdGwpOwotCXBjaWVfY2FwYWJpbGl0eV93cml0ZV93b3JkKGFyX3BjaS0+cGRldiwgUENJ
-X0VYUF9MTktDVEwsCi0JCQkJICAgYXJfcGNpLT5saW5rX2N0bCAmIH5QQ0lfRVhQX0xOS0NUTF9B
-U1BNQyk7CisJcGNpZV9sbmtjdGxfY2xlYXJfYW5kX3NldChhcl9wY2ktPnBkZXYsCisJCQkJICBh
-cl9wY2ktPmxpbmtfY3RsICYgUENJX0VYUF9MTktDVExfQVNQTUMsIDApOwogCiAJLyoKIAkgKiBC
-cmluZyB0aGUgdGFyZ2V0IHVwIGNsZWFubHkuCi0tIAoyLjMwLjIKCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+head:   229ea354bdd24bf3c33c9447674fab8d609e24a2
+commit: f3d1f7ae115e12108ba7d7fa0ea6374b9e28869c [50/51] wifi: ath11k: factory test mode support
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20230512/202305122213.1eOA66xV-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=f3d1f7ae115e12108ba7d7fa0ea6374b9e28869c
+        git remote add kvalo-ath https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+        git fetch --no-tags kvalo-ath pending
+        git checkout f3d1f7ae115e12108ba7d7fa0ea6374b9e28869c
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202305122213.1eOA66xV-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   aarch64-linux-ld: drivers/net/wireless/ath/ath11k/mac.o: in function `ath11k_tm_wmi_event':
+>> drivers/net/wireless/ath/ath11k/testmode.h:19: multiple definition of `ath11k_tm_wmi_event'; drivers/net/wireless/ath/ath11k/wmi.o:drivers/net/wireless/ath/ath11k/testmode.h:19: first defined here
+--
+   In file included from drivers/net/wireless/ath/ath11k/wmi.c:22:
+>> drivers/net/wireless/ath/ath11k/testmode.h:17:6: warning: no previous prototype for 'ath11k_tm_wmi_event' [-Wmissing-prototypes]
+      17 | void ath11k_tm_wmi_event(struct ath11k_base *ab, u32 cmd_id, struct sk_buff *skb)
+         |      ^~~~~~~~~~~~~~~~~~~
+
+
+vim +19 drivers/net/wireless/ath/ath11k/testmode.h
+
+d5c65159f28953 Kalle Valo            2019-11-23  16  
+f3d1f7ae115e12 Govindaraj Saminathan 2023-05-12 @17  void ath11k_tm_wmi_event(struct ath11k_base *ab, u32 cmd_id, struct sk_buff *skb)
+d5c65159f28953 Kalle Valo            2019-11-23  18  {
+d5c65159f28953 Kalle Valo            2019-11-23 @19  }
+d5c65159f28953 Kalle Valo            2019-11-23  20  
+
+:::::: The code at line 19 was first introduced by commit
+:::::: d5c65159f2895379e11ca13f62feabe93278985d ath11k: driver for Qualcomm IEEE 802.11ax devices
+
+:::::: TO: Kalle Valo <kvalo@codeaurora.org>
+:::::: CC: Kalle Valo <kvalo@codeaurora.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
