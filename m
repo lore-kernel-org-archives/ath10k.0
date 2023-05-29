@@ -4,77 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 516A3C77B7C
-	for <ath10k@archiver.kernel.org>; Fri, 26 May 2023 22:27:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55C4BC77B7A
+	for <ath10k@archiver.kernel.org>; Mon, 29 May 2023 19:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=oaV11I+CtOMh6coE29zLJzFMpNHFHYq6u+0oVNga6XY=; b=VkhuZBttCD5AGp
-	o+wDjbRJSHcVo3+8o6TEHuZ40DCwvLG3UYSUUb0S5MC2wXU6dmGhMW5gmYU3mgoHchyP9kLW1PDQ2
-	lOEUG4jv4oMGliTwhBDQUMh2mKFuiTrGCJ8bVveuVzShmc0zTEnfMgvEFeHDL+6KeORGou1ABB0/0
-	5miiukGZPyxI8QvCt34AQWPkQx3WmiUiU3d8iy3eecjsyA4aEgGYLsLhkpPs+YiBRJO1yxqg+bJl1
-	kEhsc+KsmtcihXpzLdORoCD2ysgqrGvMGsneHPSURu7Ku1QeKNQFkU4rmrcDaLGm1K/KP/jHdwHXM
-	e4inPmTbyghfvZ4FT0rA==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=NRauOFKJEUt1D7dSFZvRDBWJbKNW33mLvm5CKvdM0Kc=; b=1xz
+	9R7xi/L4r+1oSPlj9ybQjeZ7GznSBuL3e6Ln61nLVE/4UN3Ph3rOI7eyTCFiWIOJ2lCkUcpTaBkqV
+	g6QI26CvFmyXeD1yVvJLdO3M3X/JMTDIGJ+ij1wlrhm2PB5CWOv6j5mEGg239yvFl1vRLKoEUVs+o
+	2dl78K4eATYO2utLRDDUBKUeJ3ZwpagFcM8vXeABSCefrancY4cT8vHKLfsh3C1qyDSuzQ0lISWwS
+	fOKFI1VhJhdvlhXzaQ0e2sPBhAE8SI2r2V96EI4e3jkMBUkn5Po1zdChau7x0vK5I8ewrEurNwR92
+	hm12cDGbX4ytJ59xttgyqzAPXkd34FA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q2ftk-00489k-2D;
-	Fri, 26 May 2023 22:27:00 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1q3iBY-00BTYG-1F;
+	Mon, 29 May 2023 19:05:40 +0000
+Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q2fth-00488l-2j
+	id 1q3iBV-00BTXA-1D
 	for ath10k@lists.infradead.org;
-	Fri, 26 May 2023 22:26:59 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 9A41C65459;
-	Fri, 26 May 2023 22:26:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9438C433EF;
-	Fri, 26 May 2023 22:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685140016;
-	bh=2N7vPBDGrZWXp0y+g3rhBd1SoUivmDef2YGjEGplLos=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Lx0veg/509C+VRVnYMjWKuUagvW1r22YeGjU+vkadwZuTaMGef33Ic3ipscIkU3zt
-	 nvO/p+oSZtcHaMm91wpLbNK2SRw4flzTGY7etDwQUAXWSJuz7hLkaFL+NNvqg65NUT
-	 hcTZv5mnWgDRDyGSmHzdxGZpAzpSEj4ReWgLOkWcHYtYQOwQ5+PCRG7fEAoN/SlKRB
-	 35Ui4ENXhDnW9U8ErSadwPqPjhAHUxOjDc3EH0KYKxkeBUk4Btt5IOU1nUh92zvjWY
-	 L0smsSVS/TWVoyzD28EKZ6C+s8Z29L5GyRx1m1MxC/9LQNIP62MjtzRensQYV0E+df
-	 8zcnoZrxP/68w==
-Date: Fri, 26 May 2023 17:26:53 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Lukas Wunner <lukas@wunner.de>, Kalle Valo <kvalo@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Michal Kazior <michal.kazior@tieto.com>,
-	Janusz Dziedzic <janusz.dziedzic@tieto.com>,
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-	Netdev <netdev@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Dean Luick <dean.luick@cornelisnetworks.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] wifi: ath10k: Use RMW accessors for changing
- LNKCTL
-Message-ID: <ZHEyLR6FQE7h77wp@bhelgaas>
+	Mon, 29 May 2023 19:05:38 +0000
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-25673e8c464so949995a91.3
+        for <ath10k@lists.infradead.org>; Mon, 29 May 2023 12:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685387134; x=1687979134;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7QFIUWZBeoL7aG9Csr0IkuGxae4B6Hsd+OiWuyr7BuI=;
+        b=Pep042EQ52cfHkee5giJnCQZS/BxA9eHTUmi4BlyTYDIv5MJz4JG+pjQDgJQ/ZYN/5
+         yVppJRRCmJmRJsB8ylvBu2VL8TBQjT36DDuSvC8WtME/hsPCL6fqUQHiqXcW2WRIM12H
+         yTy5k1rZDyjKGOdW4YacRu+ZbNhmr+HoY2DA0jmLXcsR7Ht4Hd2yF+9SdOcB0cHY2Cz9
+         LSNmg9mryGLyCkq+uhuepDOdlmwfWXhdxMkOJyNwfnsE3yYAXpZ5E7PW6d4G1s23s4sA
+         /+kmn+Gly6g1ZhjVH5FlIM/eNwP2Z8c5NI0bFU67/h6f9BpDOMVJ+iZbrW5fS32/abUU
+         7KNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685387134; x=1687979134;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7QFIUWZBeoL7aG9Csr0IkuGxae4B6Hsd+OiWuyr7BuI=;
+        b=K0NeG/8l0hYSBJu93ePZ6Pg1btzSsKMxPxbbATrg/U3QRzjsOsNwTtb2f0qNwiH1ZE
+         WS5CfJjZ3Yl/P4xmittOuJiMGDPKGXqvfZsvU9LUuct4qoDkEkG8KCWORO/s+zdmEQ01
+         87JK7bMH0vWX/GdleQ9LhRiGfOeTKodg1nLp83hBQF7De0lLtC9FbgbO7hE3e3g+m0QK
+         D/Z3mMR5Ua9IqONCRJWGa2A4xT+FiVckPo+g94sIAXL5CPE7EI3i1uBqDETkjDe6qMXE
+         nVpDDOAuZjwVMonMJhmNBhMMmdZeasEClfV7DGVh4p8U24aqbhdIj9qYtPkaLbI+RgN7
+         bLxw==
+X-Gm-Message-State: AC+VfDxQciXFe3q9x3tTfGa3VkSDhWhdRCDY8Le4QcefqPFTW/tv49KR
+	jsvIj52zOCFgQMqX8mIJ0IN1mkh3K+KLQ55GK7FB4QPB/6iTmw==
+X-Google-Smtp-Source: ACHHUZ6SSWrxc8C2HhmUQhdJXtHK00avVWskUSEBFI7FDenZnVEO587nYJoC+oTkSx23e+g/EtgKzarcIvQxCJR7Uzc=
+X-Received: by 2002:a17:903:2805:b0:1b0:4c20:2409 with SMTP id
+ kp5-20020a170903280500b001b04c202409mr148609plb.4.1685387134384; Mon, 29 May
+ 2023 12:05:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4a67bac-9b4c-1260-f7a-287f4c205dbb@linux.intel.com>
+From: Ednessto <dania6789@gmail.com>
+Date: Mon, 29 May 2023 23:05:26 +0400
+Message-ID: <CABCbKmupRxLtF6hjzPKh8TAVDDQ_pjid1=y9r0n3Ky8qPAOQ+w@mail.gmail.com>
+Subject: Ath10k Issues - Shifting "max_magnitude" Range, Mesh Current Channel
+ Scan, Caching
+To: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230526_152657_975946_E3803B1E 
-X-CRM114-Status: GOOD (  38.01  )
+X-CRM114-CacheID: sfid-20230529_120537_418681_50E3B865 
+X-CRM114-Status: GOOD (  18.16  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,145 +79,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, May 26, 2023 at 02:48:44PM +0300, Ilpo J=E4rvinen wrote:
-> On Thu, 25 May 2023, Ilpo J=E4rvinen wrote:
-> > On Wed, 24 May 2023, Bjorn Helgaas wrote:
-> > > On Wed, May 17, 2023 at 01:52:35PM +0300, Ilpo J=E4rvinen wrote:
-> > > > Don't assume that only the driver would be accessing LNKCTL. ASPM
-> > > > policy changes can trigger write to LNKCTL outside of driver's cont=
-rol.
-> > > > =
-
-> > > > Use RMW capability accessors which does proper locking to avoid los=
-ing
-> > > > concurrent updates to the register value. On restore, clear the ASP=
-MC
-> > > > field properly.
-> > > > =
-
-> > > > Fixes: 76d870ed09ab ("ath10k: enable ASPM")
-> > > > Suggested-by: Lukas Wunner <lukas@wunner.de>
-> > > > Signed-off-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-> > > > Cc: stable@vger.kernel.org
-> > > > ---
-> > > >  drivers/net/wireless/ath/ath10k/pci.c | 9 +++++----
-> > > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > > > =
-
-> > > > diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wi=
-reless/ath/ath10k/pci.c
-> > > > index a7f44f6335fb..9275a672f90c 100644
-> > > > --- a/drivers/net/wireless/ath/ath10k/pci.c
-> > > > +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> > > > @@ -1963,8 +1963,9 @@ static int ath10k_pci_hif_start(struct ath10k=
- *ar)
-> > > >  	ath10k_pci_irq_enable(ar);
-> > > >  	ath10k_pci_rx_post(ar);
-> > > >  =
-
-> > > > -	pcie_capability_write_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-> > > > -				   ar_pci->link_ctl);
-> > > > +	pcie_capability_clear_and_set_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-> > > > +					   PCI_EXP_LNKCTL_ASPMC,
-> > > > +					   ar_pci->link_ctl & PCI_EXP_LNKCTL_ASPMC);
-> > > >  =
-
-> > > >  	return 0;
-> > > >  }
-> > > > @@ -2821,8 +2822,8 @@ static int ath10k_pci_hif_power_up(struct ath=
-10k *ar,
-> > > >  =
-
-> > > >  	pcie_capability_read_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-> > > >  				  &ar_pci->link_ctl);
-> > > > -	pcie_capability_write_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-> > > > -				   ar_pci->link_ctl & ~PCI_EXP_LNKCTL_ASPMC);
-> > > > +	pcie_capability_clear_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-> > > > +				   PCI_EXP_LNKCTL_ASPMC);
-> > > =
-
-> > > These ath drivers all have the form:
-> > > =
-
-> > >   1) read LNKCTL
-> > >   2) save LNKCTL value in ->link_ctl
-> > >   3) write LNKCTL with "->link_ctl & ~PCI_EXP_LNKCTL_ASPMC"
-> > >      to disable ASPM
-> > >   4) write LNKCTL with ->link_ctl, presumably to re-enable ASPM
-> > > =
-
-> > > These patches close the hole between 1) and 3) where other LNKCTL
-> > > updates could interfere, which is definitely a good thing.
-> > > =
-
-> > > But the hole between 1) and 4) is much bigger and still there.  Any
-> > > update by the PCI core in that interval would be lost.
-> > =
-
-> > Any update to PCI_EXP_LNKCTL_ASPMC field in that interval is lost yes, =
-the =
-
-> > updates to _the other fields_ in LNKCTL are not lost.
-> > =
-
-> > I know this might result in drivers/pci/pcie/aspm.c disagreeing what
-> > the state of the ASPM is (as shown under sysfs) compared with LNKCTL =
-
-> > value but the cause can no longer be due racing RMW. Essentially, 4) is =
-
-> > seen as an override to what core did if it changed ASPMC in between. =
-
-> > Technically, something is still "lost" like you say but for a different =
-
-> > reason than this series is trying to fix.
-> > =
-
-> > > Straw-man proposal:
-> > > =
-
-> > >   - Change pci_disable_link_state() so it ignores aspm_disabled and
-> > >     always disables ASPM even if platform firmware hasn't granted
-> > >     ownership.  Maybe this should warn and taint the kernel.
-> > > =
-
-> > >   - Change drivers to use pci_disable_link_state() instead of writing
-> > >     LNKCTL directly.
-> =
-
-> Now that I took a deeper look into what pci_disable_link_state() and =
-
-> pci_enable_link_state() do, I realized they're not really disable/enable =
-
-> pair like I had assumed from their names. Disable adds to ->aspm_disable =
-
-> and flags are never removed from that because enable does not touch =
-
-> aspm_disable at all but has it's own flag variable. This asymmetry looks =
-
-> intentional.
-
-Yes, that's an annoying feature.  There's only one caller of
-pci_enable_link_state(), so it may be possible to make this more
-symmetric.
-
-> So if ath drivers would do pci_disable_link_state() to realize 1)-3), =
-
-> there is no way to undo it in 4). It looks as if ath drivers would =
-
-> actually want to use pci_enable_link_state() with different state =
-
-> parameters to realize what they want to do in 1)-4).
-
-Yeah, that does sound like a problem.  I don't have any great ideas.
-
-Bjorn
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVsbG8hCgpJIGhhdmUgYmVlbiB1c2luZyB0aGUgYXRoMTBrIGRyaXZlciBvdmVyIHRoZSBwYXN0
+IGZldyBtb250aHMgdG8KaW1wbGVtZW50IGEgc3BlY3RyYWwgc2Nhbm5lciBvbiBhIENvbXB1dGUg
+TW9kdWxlIDQuIFRoZSBpbnRlcmZhY2UgdXNlZAp0byBwZXJmb3JtIHRoZSBzY2FuIGlzIGEgbWVz
+aC10eXBlIGludGVyZmFjZS4gVGhlIHNwZWN0cmFsIHNjYW4gaXMKcGVyZm9ybWVkIGFzIHBlciB0
+aGUgc3RlcHMgZG9jdW1lbnRlZCBvbiB0aGUgYXRoMTBrIHdpa2kgcGFnZS4gVGhlcmUKYXJlIGEg
+ZmV3IGJlaGF2aW9ycyBJJ3ZlIG9ic2VydmVkIHRoYXQgSSBjb3VsZCBub3Qgc2VlbSB0byByZXNv
+bHZlIGFuZApzdXNwZWN0IHRoZXkgbWF5IGJlIGJ1Z3MuIEkgd291bGQgZ3JlYXRseSBhcHByZWNp
+YXRlIHlvdXIgaW5wdXQgb3IKc3VnZ2VzdGlvbnMhCgpJc3N1ZSAxOiBWYXJ5aW5nIOKAnG1heF9t
+YWduaXR1ZGXigJ0gcmFuZ2Ugb2YgdmFsdWVzIGZvciA1IEdIeiBDaGFubmVscwpOb3RlOiBUaGlz
+IGlzc3VlIGNvbmNlcm5zIHRoZSByYW5nZSBvZiBtYXhfbWFnbml0dWRlIHZhbHVlcyBmb3IKY2hh
+bm5lbHMgaW4gdGhlIDUgR0h6IGJhbmQgb25seSwgdGhpcyBpc3N1ZSBpcyBub3Qgc2VlbiBmb3Ig
+dGhlIDIuNEdIegpjaGFubmVscy4KV2hlbiBydW5uaW5nIHRoZSBzcGVjdHJhbCBzY2FubmVyLCBp
+ZiB0aGUgaXcgc2NhbiBjb21tYW5kLCBpdyBkZXYKe2ludGVyZmFjZX0gc2NhbiBmcmVxIHtmcmVx
+fSwgaXMgZXhlY3V0ZWQgYnkgcGFzc2luZyB0byBpdCBhIGxpc3Qgb2YKMi40IGFuZCA1IEdIeiBi
+YW5kcywgdGhlbiB0aGUgYXZlcmFnZSB2YWx1ZSBvZiB0aGUgIm1heF9tYWduaXR1ZGUiIGZvcgp0
+aGUgNUdIeiBjaGFubmVscyBpcyBhcm91bmQgODAwLiBJZiB0aGUgc3BlY3RyYWwgc2Nhbm5lciBp
+cyBydW4gd2l0aCBhCnN1YnNldCBvZiBmcmVxdWVuY2llcywgZm9yIGluc3RhbmNlIGJ5IHBhc3Np
+bmcgc29tZSAyLjQgZnJlcXVlbmNpZXMKYW5kIHRoZW4gNUdIeiBjaGFubmVscywgb3Igb25seSBw
+YXNzaW5nIGZyZXF1ZW5jaWVzIGZyb20gdGhlIDIuNCBiYW5kLAp0aGVuIHRoZSByYW5nZSBvZiBt
+YXhfbWFnbml0dWRlIHZhbHVlcyBpcyB+IDUwLgoKVGVzdHMgcGVyZm9ybWVkIHBhc3NpbmcgdGhl
+IGZvbGxvd2luZyBmcmVxdWVuY2llcyB0byB0aGUgc2NhbiBjb21tYW5kOgotIEFsbCAyLjQgR0h6
+IGFuZCBhbGwgNSBHSHog4oaSIGF2ZXJhZ2UgbWF4IG1hZyA4MDAKLSBBbGwgNSBHSHogYW5kIGFs
+bCAyLjRHSHog4oaSIHNjYW5uZXIgc2NhbnMgMi40IGJhbmQgdGhlbiA1IHJlZ2FyZGxlc3MsIGF2
+ZyA4MDAKLSBTdWJzZXQgb2YgMi40R0h6IGFuZCBhbGwgNUdIeiDihpIgYXZnIDgwMAotIEFsbCAy
+LjQgR0h6IGFuZCBzdWJzZXQgb2YgNUdIeiDihpIgYXZnIDgwMAotIFN1YnNldCBvZiAyLjRHSHog
+YW5kIHN1YnNldCBvZiA1R0h6IChwYXNzZWQgZmV3IG9mIGVhY2gvIG9uZSBvZgplYWNoKSDihpIg
+YXZnIDgwMAotICghKSBBbGwgb3Igc3Vic2V0IG9mIDUgR0h6IOKGkiBhdmcgNDAKLSBEbyBub3Qg
+cGFzcyBhbnkgZnJlcXVlbmN5LCBsZXQgc2NhbiBwZXJmb3JtIGRlZmF1bHQgc2NhbiDihpIgYXZn
+IDgwMAoKV2hhdCBpcyB0aGUgZXhwZWN0ZWQgIm1heF9tYWduaXR1ZGUiIHZhbHVlIHJhbmdlLyB3
+aGljaCBvZiB0aGUgNDAgb3IKODAwIHZhbHVlcyBpcyB3aGF0IGlzIGV4cGVjdGVkIHRvIHNlZT8g
+V2h5IGlzIGl0IHRoYXQgd2hlbiBwYXNzaW5nCmp1c3QgdGhlIDVHSHogY2hhbm5lbHMgdGhlIGF2
+ZXJhZ2UgIm1heF9tYWduaXR1ZGUiIHZhbHVlcyBkcm9wIHRvIDQwPwpBbnkgc3VnZ2VzdGlvbnMv
+d29ya2Fyb3VuZHMgb24gd2hhdCB0byBkbz8KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0KSXNzdWUgMjogQ2Fubm90IHNjYW4gY3VycmVudCBjaGFubmVsIG1l
+c2ggaXMgcGFya2VkCkEgbG93IGxhdGVuY3kgc3BlY3RyYWwgc2NhbiBjYW5ub3QgYmUgcGVyZm9y
+bWVkIG9uIHRoZSBjaGFubmVsIHRoYXQgYQptZXNoIGludGVyZmFjZSBpcyBwYXJrZWQgb24sIGku
+ZS4sIHRyeWluZyB0byBzY2FuIHRoZSBjdXJyZW50IGNoYW5uZWwKb2YgdGhlIG1lc2ggcmV0dXJu
+cyBub3RoaW5nLgpOb3RlOiB0aGlzIGlzc3VlIGlzIG5vdCBzZWVuIGluIGEgbm9uLW1lc2ggZW52
+aXJvbm1lbnQgc3VjaCBhcyB1c2luZwp0eXBlIEFQIGludGVyZmFjZSB3aXRoIHRoZSBhdGgxMGsg
+ZHJpdmVyLgoKRm9yIHRoZSBtZXNoIHR5cGUgaW50ZXJmYWNlLCBJIHRlc3RlZCBwZXJmb3JtaW5n
+IGEgc3BlY3RyYWwgc2NhbiBieQpzZXR0aW5nIHRoZSB7ZnJlcX0gcGFyYW1ldGVyIGluIHRoZSBp
+dyBzY2FuIGNvbW1hbmQgdG8gdGhlIGZyZXF1ZW5jeQp0aGUgbWVzaCBpcyBwYXJrZWQgYXQsIHRo
+ZSBzcGVjdHJhbCBzY2FuIHRoZW4gcmV0dXJucyBubyBvdXRwdXQgb24gYWxsCnN1YnNlcXVlbnQg
+c2NhbnMuIFNpbWlsYXJseSwgaWYgd2UgcGFzcyBhbGwgMi40R0h6IGFuZCA1R0h6IGJhbmRzLCBp
+Zgp0aGUgbWVzaCBpcyBzZXQgdG8gY2hhbm5lbCAzNiBmcmVxdWVuY3kgNTE4MCwgaXQgd2lsbCBz
+Y2FuIGFsbCB0aGUKYXZhaWxhYmxlIGNoYW5uZWxzIHRvIHNjYW4sIGlkZW50aWZpZWQgdXNpbmcg
+aXdsaXN0IHtpbnRlcmZhY2V9CmNoYW5uZWwsIGV4Y2VwdCBmb3IgY2hhbm5lbCAzNiwgdGhlIGNo
+YW5uZWwgdGhlIG1lc2ggaXMgb24uCgpJcyB0aGVyZSBhbnl0aGluZyBJJ20gbWlzc2luZyB3aXRo
+IHJlZ2FyZCB0byB0aGlzPyBBbmQgd2hhdCBjYW4gYmUKZG9uZSBhYm91dCB0aGlzIGlzc3VlPwoK
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJc3N1ZSAzOiBD
+YWNoaW5nCldoZW4gY29uZHVjdGluZyBhIHNwZWN0cmFsIHNjYW4sIHRoZXJlIGFyZSBhIGZldyBj
+YXNlcyB3aGVyZSB0aGUKc3BlY3RyYWwgc2Nhbm5lciByZXR1cm5zIHR3byBzY2FuIG91dHB1dHMs
+IGUuZyBzY2FuIHJlc3VsdHMgZm9yIDIuNApHSHogY2hhbm5lbHMsIDUsIDIuNCwgYW5kIDUsIGV2
+ZW4gdGhvdWdoIG9ubHkgb25lIHR3byBiYW5kcyB3ZXJlCnBhc3NlZCAoMi40R0h6IGFuZCA1R0h6
+KS4KVGhpcyBoYXBwZW5zIG1vc3RseSB1cG9uIGZpcnN0IHJ1bm5pbmcgdGhlIHNwZWN0cmFsIHNj
+YW5uZXIgb3IgaWYgdGhlCnNjYW5uZXIgZmFpbHM6CnJlc291cmNlIGlzIGJ1c3kgaWYgdGhlIHNj
+YW4gaW50ZXJmYWNlIGlzIGluIHVzZSBvciBvbmUgb2YgdGhlIGZmdApzcGVjdHJhbF8qIGZpbGVz
+IChtb3N0bHkgc3BlY3RyYWxfc2Nhbl9jdGwpIGZhaWxzIHJldHVybmluZzoKZXJyb3I6IC9iaW4v
+c2g6IGxpbmUgMTogZWNobzogd3JpdGUgZXJyb3I6IE5vIHN1Y2ggZGV2aWNlCmVycm9yOiAvYmlu
+L3NoOiBsaW5lIDE6IGVjaG86IHdyaXRlIGVycm9yOiBJbnZhbGlkIGFyZ3VtZW50KQoKSSdtIGFz
+c3VtaW5nIHRoaXMgbWF5IGJlIGEgY2FjaGluZyBpc3N1ZT8gSSBoYXZlIHRyaWVkIGFkZGluZyB0
+aGUKImZsdXNoIiBwYXJhbWV0ZXIgdG8gdGhlIHNjYW4gY29tbWFuZCwgaG93ZXZlciwgaXQgZGlk
+IG5vdCBoZWxwLgoKQW55IGlucHV0IG9uIHRoaXMgYmVoYXZpb3IsIGFuZCBhbHNvIG9uIHRoZSB0
+d28gZXJyb3JzIG9mdGVuIHJldHVybmVkCndoZW4gcnVubmluZyB0aGUgc3BlY3RyYWwgc2Nhbj8K
+CkxldCBtZSBrbm93IGlmIHlvdSB3b3VsZCBsaWtlIG1lIHRvIGNsYXJpZnkgYW55dGhpbmcuCgpS
+ZWdhcmRzLApEYW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
