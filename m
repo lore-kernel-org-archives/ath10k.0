@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E537FC7EE23
-	for <ath10k@archiver.kernel.org>; Thu,  1 Jun 2023 09:17:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F4C0C77B7E
+	for <ath10k@archiver.kernel.org>; Thu,  1 Jun 2023 09:31:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Cd0ZoZGNXUkblaI4J/Hsn3jJFrXNWcQIlNhlKQfi5lk=; b=F8FyDEIwxrnAE/
-	E+bcdQr+2+175lwOwyHaiZ3eN2PL7Yiw+pbxrXmDQS/h9f5TH4gvZLbC5APpQzdS3AitWuCaLCgR3
-	6ynxOt5oJq74pA2cIT9RTLiylMjkTrVGnTdQUP+kA8Yh0mq7Nmb6rkrWi5nZLOOfq0Y5EuTK0ds4c
-	XPM3hjhKW63yzb+5BgrP1NxyR3bmzBhFcehmv4d4kvzWqe/z13D2hBypotrcHR6cGLpf12xzE9Rts
-	EqrVzJIrF4MEEzFRn7/qtC65gteEKPasJZcv+FS77Og+StsuDQvjXPQ/VkXRqRUP2HuV130+292yd
-	WtZuIYPTOhsUH/MNp+nQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=eSIgEBtoaJKRXOcLMgpbBgwqDMzke2AsqVDzXXLpd/0=; b=fZlpbYpbiHKfYDGFe2Y2H30oKX
+	SvwT8PCjUgncaHU2W+Jp/CRCVMx+jvo0fDzjBuH9tLTgA8ryY2s+0xa0bReOCo1RJ2vBN5U8wUE9Q
+	dEGggV+/6CsizJrbT84PLj1bVf5EcQ18w1DSyT/bZbtZb4ge6eOUAXfYmPfflxCyCpV2Pt/glXxGl
+	1KtnTJQX9t1wMemW7SnhSrXXCFY8tzs4OjrygmBKHHu2nRu0+LXbkLzHPtG4VSwGlllZb0feM+2M3
+	SEUbR+b/gIA+5TfKohWWw9UKR1r/Fi/RsTsONU1TcQvCHmPfYWdtf4ri+ht6aUlqZVJc5ob5I5aGG
+	rru1Jnow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4eRO-002hf0-1G;
-	Thu, 01 Jun 2023 09:17:54 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1q4ee8-002jha-0K;
+	Thu, 01 Jun 2023 09:31:04 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4eRL-002hdx-0o
+	id 1q4ee5-002jh8-25
 	for ath10k@lists.infradead.org;
-	Thu, 01 Jun 2023 09:17:52 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 39D0F615A9;
-	Thu,  1 Jun 2023 09:17:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B02B0C433D2;
-	Thu,  1 Jun 2023 09:17:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685611069;
-	bh=q0CJdSwXOIJZvPvJU/z1sdvR3U3gXtkEs4k/nknZCKE=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Pu4TajYAxmVtPK8l64pTxUbVC50dU99ybV9kjG4vUZuzP1MTiXLq4ebRN9JEswJPC
-	 9gqrdWezwjMfxd3n8dW2tpct1bHWQ4u/93au/v8Ux9Tn2lMsGg9DtedCWXQrl0L6Dy
-	 70unoZ4Q5hx+1uCP5TK8MUelatzwOkP2LxASzUrk8EcPyukgPdwemfpC9dCCW9NZ+Z
-	 7BXfENmmF9ewBz4RvAlGyhE6Gzqcy9lX8vR7qfkUcC/Fx3WeoO9RGi2Op2l7NOyd09
-	 evmmFrp0BeDKZlLbqrbIBAgIRIK5LA9G73XQTjOEdbjz5+P4Vl+3A7uUQn4xvZbxrO
-	 uzmTG7QxQxGsQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,  netdev@vger.kernel.org,  kernel@pengutronix.de
-Subject: Re: [PATCH net-next 0/4] Convert to platform remove callback returning void
+	Thu, 01 Jun 2023 09:31:03 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q4ee1-0005e4-Ky; Thu, 01 Jun 2023 11:30:57 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q4ee0-004Jx2-0m; Thu, 01 Jun 2023 11:30:56 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q4edz-00A78v-6b; Thu, 01 Jun 2023 11:30:55 +0200
+Date: Thu, 1 Jun 2023 11:30:55 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+	ath10k@lists.infradead.org, Eric Dumazet <edumazet@google.com>,
+	kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next 0/4] Convert to platform remove callback
+ returning void
+Message-ID: <20230601093055.ovmhypa5jw2bq32q@pengutronix.de>
 References: <20230601082556.2738446-1-u.kleine-koenig@pengutronix.de>
-Date: Thu, 01 Jun 2023 12:17:44 +0300
-In-Reply-To: <20230601082556.2738446-1-u.kleine-koenig@pengutronix.de> ("Uwe
-	\=\?utf-8\?Q\?Kleine-K\=C3\=B6nig\=22's\?\= message of "Thu, 1 Jun 2023 10:25:52
- +0200")
-Message-ID: <87h6rrk0cn.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ <87h6rrk0cn.fsf@kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <87h6rrk0cn.fsf@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230601_021751_349223_E12A7D8E 
-X-CRM114-Status: GOOD (  13.45  )
+X-CRM114-CacheID: sfid-20230601_023101_684172_F981F214 
+X-CRM114-Status: GOOD (  20.26  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,28 +72,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2010680794020129663=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-VXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4gd3JpdGVz
-OgoKPiB0aGUgbW90aXZhdGlvbiBmb3IgdGhpcyBzZXJpZXMgaXMgcGF0Y2ggIzMsIHBhdGNoICMy
-IGlzIGEgcHJlcGFyYXRpb24gZm9yIGl0Cj4gYW5kIHBhdGNoZXMgIzEgYW5kICM0IGFyZSBqdXN0
-IGNsZWFudXBzIHRoYXQgSSBub3RpY2VkIGVuIHBhc3NhbnQuCj4KPiBCZXN0IHJlZ2FyZHMKPiBV
-d2UKPgo+IFV3ZSBLbGVpbmUtS8O2bmlnICg0KToKPiAgIGF0aDEwazogRHJvcCBjbGVhbmluZyBv
-ZiBkcml2ZXIgZGF0YSBmcm9tIHByb2JlIGVycm9yIHBhdGggYW5kIHJlbW92ZQo+ICAgYXRoMTBr
-OiBEcm9wIGNoZWNrcyB0aGF0IGFyZSBhbHdheXMgZmFsc2UKPiAgIGF0aDEwazogQ29udmVydCB0
-byBwbGF0Zm9ybSByZW1vdmUgY2FsbGJhY2sgcmV0dXJuaW5nIHZvaWQKPiAgIGF0azEwazogRG9u
-J3Qgb3BlbmNvZGUgYXRoMTBrX3BjaV9wcml2KCkgaW4gYXRoMTBrX2FoYl9wcml2KCkKPgo+ICBk
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2FoYi5jICB8IDIwICsrKy0tLS0tLS0tLS0t
-LS0tLS0tCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvc25vYy5jIHwgIDggKysr
-LS0tLS0KPiAgMiBmaWxlcyBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDIyIGRlbGV0aW9ucygt
-KQoKYXRoMTBrIHBhdGNoZXMgZ28gdG8gbXkgYXRoLmdpdCB0cmVlLCBub3QgbmV0LW5leHQuIEFs
-c28gIndpZmk6IiBpcwptaXNzaW5nIGZyb20gdGhlIHRpdGxlIGJ1dCBJIGNhbiBhZGQgdGhhdC4K
-Ck5vIG5lZWQgdG8gcmVzZW5kIGJlY2F1c2Ugb2YgdGhlc2UuCgotLSAKaHR0cHM6Ly9wYXRjaHdv
-cmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNzL2xpc3QvCgpodHRwczovL3dpcmVs
-ZXNzLndpa2kua2VybmVsLm9yZy9lbi9kZXZlbG9wZXJzL2RvY3VtZW50YXRpb24vc3VibWl0dGlu
-Z3BhdGNoZXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+
+--===============2010680794020129663==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="g4pasupk4odv3umz"
+Content-Disposition: inline
+
+
+--g4pasupk4odv3umz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Kalle,
+
+On Thu, Jun 01, 2023 at 12:17:44PM +0300, Kalle Valo wrote:
+> Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de> writes:
+>=20
+> > the motivation for this series is patch #3, patch #2 is a preparation f=
+or it
+> > and patches #1 and #4 are just cleanups that I noticed en passant.
+> >
+> > Best regards
+> > Uwe
+> >
+> > Uwe Kleine-K=F6nig (4):
+> >   ath10k: Drop cleaning of driver data from probe error path and remove
+> >   ath10k: Drop checks that are always false
+> >   ath10k: Convert to platform remove callback returning void
+> >   atk10k: Don't opencode ath10k_pci_priv() in ath10k_ahb_priv()
+> >
+> >  drivers/net/wireless/ath/ath10k/ahb.c  | 20 +++-----------------
+> >  drivers/net/wireless/ath/ath10k/snoc.c |  8 +++-----
+> >  2 files changed, 6 insertions(+), 22 deletions(-)
+>=20
+> ath10k patches go to my ath.git tree, not net-next.
+
+This isn't obvious for outsiders. Not sure what can be improved to
+make this easier to spot.
+
+> Also "wifi:" is missing from the title but I can add that.
+
+oops, I wondered about that, too, but was sure that I used the prefix
+=66rom previous commits. Now that you said it, suddenly all previous
+commits have this wifi prefix. Hmm, somebody must have tinkered with my
+source tree :-)
+
+Thanks for fixing my misdemeanors,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--g4pasupk4odv3umz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmR4ZU4ACgkQj4D7WH0S
+/k4Utwf/dhPpcpseS9x4rk209oXT1aUQ8EwAXqrNMqTSAUjG325bqhzAYUBeNqK2
+nrHzvynSDmP9BEW8zD+dcOKLZesUPgBkIuxoAz9fR4ac+KktWdUBlIRQ40cYMcyq
+hm6z9GthpphkyrEzDUv7LympX8CPnQlYBA/pTEXdtXSYMAQX4w5K3q4/rt2theCV
+4U/FIiTNrC7GBNgncXsq8YuGfaLwoNpoAg8SLipvPhdhsFLyjm+flS3NeJrhf6Yf
+h0HzJObYBEKMTmFLKhqf/LWa8DRXYiuEIk3eeTTh5NGsv9DUKx2Cd4XYq5vIB6Ro
+DeHLYMNpWlkU2sEax8AAx8wLv01Qgw==
+=gVBP
+-----END PGP SIGNATURE-----
+
+--g4pasupk4odv3umz--
+
+
+--===============2010680794020129663==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============2010680794020129663==--
+
