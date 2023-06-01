@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B972C77B73
-	for <ath10k@archiver.kernel.org>; Tue, 30 May 2023 12:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C9D3C77B7E
+	for <ath10k@archiver.kernel.org>; Thu,  1 Jun 2023 08:26:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IyP7O/bLMSMMomVg/K5YTfsN10XyYR7IrZNOA/XVmlI=; b=DJKDNQ5KLPUhjO
-	RWfPvic33qiRyHN59LwWN+ouOynMz86Au9tCbSe3kpbsL0PwD3colEe3fgyqsa878o8DVeS9qxkQq
-	e0H6YHhbSObmU/RwHoX3i5kUi/iflAVN1/HXD/0O47LrDP35OYzHIxqJkBLxsx7gxz+8eWfRqWhie
-	dyCYDCKYVOhQwJLYYFDpAg/O6yvM9EZnTWeAUHbw1Wd//OAr0lLoXGN3seghe6H323p8cIwTgLGcp
-	VlxaPb99rlHDUxuUMBjdbwY8kc/Fd09U2EQA4qMiO7x++XyOETnZhUxtyH4YDB1/CcTGKY4YxSCYI
-	Vfa/6fcbVie6G14Hkidg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZOXXF8G9itFP4SFrtguf1fm0KhqEibVVIHfhad44nAo=; b=LwsOd6wQUf180A
+	4UVZ8f22rhka09fhKbcTmpz2ZIjXjvkVzU9KthO9XXBJ0He4EJOz1GFGf0vDdkDsUAfsYhQ6CAAZo
+	nKsc1ccyOw4W3ho0L501yioznxir0tuMX9ACa7GO1mkBZBBlNjDaq5OpnRfc/VNN8OrH1D4GdqYZ4
+	yTx5zfiw4i6fCUikjDE7Y9w3mbUK+1MCNVbAIEpxQrJyVx9n4gBQ+xa2QG/NIkYx5/n8pfME+vdE6
+	zXVAElHwo9oZ1Hvy8bPEby/ctE7ZZl2r052CxJhEwxCQUjkMYM7P6xGLm68d9NaE9YW12UzcfCXPH
+	0xKw8iS3IcmwukTTPYcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q3y3V-00DlVZ-0F;
-	Tue, 30 May 2023 12:02:25 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1q4ddR-002XrX-12;
+	Thu, 01 Jun 2023 08:26:17 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q3y3S-00DlUK-0m
+	id 1q4ddO-002XoV-1S
 	for ath10k@lists.infradead.org;
-	Tue, 30 May 2023 12:02:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685448142; x=1716984142;
-  h=date:from:to:cc:subject:message-id;
-  bh=Nsxj6Q5itNGKIXUkLrrDOA+AjgVZl5raqfXufZ7XZE8=;
-  b=Y2WEv+VopRTNHM4Ob3eYCaDLroC8aqwZ2fjvdDmx0Qi0Fj9HKs/l7DGr
-   B5IXZ3Y0f+vRibaDNnYjKLnDUHl6cPGoyJVe7fpCqMjjjQyyQSCiiNJ8r
-   /OrW9dG9Hb6CDh3zAGWEnW0CCzqvsuL0XQY67P8Ut9gVehHz+cB6gYnMa
-   XqQu7pPGPmfVC8dcZ6UbPLofT56u4lEBosxndwvFYuekL55mebF/R3cps
-   aR6fAfSLcw/YU/2reGanxIWkW4vXI1wKbyR9JaI//Ewq4+zJ/NNEy1TxI
-   1YAYuPyrxowGVJMArX6Wn4FPAYqMlrHHfjoiYiXiZZDEQsDN9VhFGvP5K
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10725"; a="420654027"
-X-IronPort-AV: E=Sophos;i="6.00,204,1681196400"; 
-   d="scan'208";a="420654027"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2023 05:02:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10725"; a="1036567579"
-X-IronPort-AV: E=Sophos;i="6.00,204,1681196400"; 
-   d="scan'208";a="1036567579"
-Received: from lkp-server01.sh.intel.com (HELO fb1ced2c09fb) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 30 May 2023 05:02:19 -0700
-Received: from kbuild by fb1ced2c09fb with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1q3y3O-0000Un-1L;
-	Tue, 30 May 2023 12:02:18 +0000
-Date: Tue, 30 May 2023 20:01:21 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 27554c60828321bc7a3dce10f3262d44d18dfe27
-Message-ID: <20230530120121.LX_BC%lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Thu, 01 Jun 2023 08:26:15 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q4ddE-0002uE-GT; Thu, 01 Jun 2023 10:26:04 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q4ddD-004JKk-Kn; Thu, 01 Jun 2023 10:26:03 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q4ddC-00A5yf-KJ; Thu, 01 Jun 2023 10:26:02 +0200
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Kalle Valo <kvalo@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH net-next 4/4] atk10k: Don't opencode ath10k_pci_priv() in ath10k_ahb_priv()
+Date: Thu,  1 Jun 2023 10:25:56 +0200
+Message-Id: <20230601082556.2738446-5-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230601082556.2738446-1-u.kleine-koenig@pengutronix.de>
+References: <20230601082556.2738446-1-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=824; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=mB84wW1K4jc1xLTUjLQHhA/td0xttZYqfcR4I36/mvA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkeFYQL7s14DdzYELR1Cx2HAvAJ61K34lTqhuXN Yq/CSdxCiOJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZHhWEAAKCRCPgPtYfRL+ Tio+B/4hk7D3EVxU+bfB+uzq0dJigX32SKnyzzrImpCpKSo5DIu/Cwrm2CPNSpRyoxsJA9EG/Db rqDhS1JCk4QrSgjoYWVMOJ35wLdxVEQYKBxN8QcvtTz5+Ng88zEnXV06eoK7m3X7A6yPfdRiALT 4rpj5oY8Jis7gIyjEXXMi0/1evYR6wVFLcUOSX9mdc3cFwlKWa3u8Kd7Cvr0O/0vdWHbktCOn3G Esc9RYWUxaMLW0aC3c0dYxqV50Bthr17alGpMQvFJxxQUc4pNNShI0J+zDxNrp1NgjO9Mh3jPeR Ryk307k+z6X1zimvOzeOrKgvT3fiMqDI5/pj9O8Cf/4qXfLL
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: ath10k@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230530_050222_372381_34BA34B4 
-X-CRM114-Status: UNSURE (   4.34  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230601_012614_485761_2D7D644C 
+X-CRM114-Status: GOOD (  11.05  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,71 +76,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 27554c60828321bc7a3dce10f3262d44d18dfe27  Merge branch 'pending' into master-pending
-
-elapsed time: 5856m
-
-configs tested: 41
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sparc                               defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhpcyBpbnRyb2R1Y2VzIG5vIGNoYW5nZXMgaW4gdGhlIGNvbXBpbGVkIHJlc3VsdCAodGVzdGVk
+IGZvciBhbgpBUkNIPWFybSBhbGxtb2Rjb25maWcgYnVpbGQpLgoKU2lnbmVkLW9mZi1ieTogVXdl
+IEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4KLS0tCiBkcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2FoYi5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQs
+IDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9haGIuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvYWhiLmMKaW5kZXggNjMyZGE0YzVlNWRhLi40YTAwNmZiNGQ0MjQgMTAwNjQ0Ci0tLSBhL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvYWhiLmMKKysrIGIvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9haGIuYwpAQCAtMjcsNyArMjcsNyBAQCBNT0RVTEVfREVWSUNFX1RB
+QkxFKG9mLCBhdGgxMGtfYWhiX29mX21hdGNoKTsKIAogc3RhdGljIGlubGluZSBzdHJ1Y3QgYXRo
+MTBrX2FoYiAqYXRoMTBrX2FoYl9wcml2KHN0cnVjdCBhdGgxMGsgKmFyKQogewotCXJldHVybiAm
+KChzdHJ1Y3QgYXRoMTBrX3BjaSAqKWFyLT5kcnZfcHJpdiktPmFoYlswXTsKKwlyZXR1cm4gJmF0
+aDEwa19wY2lfcHJpdihhciktPmFoYlswXTsKIH0KIAogc3RhdGljIHZvaWQgYXRoMTBrX2FoYl93
+cml0ZTMyKHN0cnVjdCBhdGgxMGsgKmFyLCB1MzIgb2Zmc2V0LCB1MzIgdmFsdWUpCi0tIAoyLjM5
+LjIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
