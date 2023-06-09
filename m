@@ -4,64 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 892CDC7EE25
-	for <ath10k@archiver.kernel.org>; Fri,  9 Jun 2023 12:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE2F1C7EE25
+	for <ath10k@archiver.kernel.org>; Fri,  9 Jun 2023 17:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
-	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HtrGVfcgR8jANk+hTzrU3ekXpqOpFHEF7aRyci9ANwc=; b=VFCjiB41adHIlf
-	pRwUDK5NBPzElzstBKpdFVA2jPaBByeX6FG2Uqne/pHFrs5+4GF3lMtWh/kFubzFYAsCliyw25K3t
-	X83zFvzXxsIsnBmXsOUDT8BX+fjVYzv+Qiz7hngZsntqFn72XM7I9ApYN+iIS7ruYI06MPOa38Szt
-	KOdPUXqKmOWw79+RDKvglI0bkeySAvloolQQEQBjV101chUm3RzK6bTf7EKERCEYT2AI9icODchQ2
-	w7N/a1uaWhzzsvdPhydgEUymGzgx6t9fM9Rdg2j8OwivSw1GTr6qMdsKDI+/XVvJBYfXHCGOihBgj
-	yRSK9kN7XIvMBNPugFqA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=TZFRq7sw1cy3v3Fvhs7gdO8zJmsuyBWoQ4YUTMZaHsA=; b=i3BSKdsZlAOGV0
+	upYB9WR+4c3R5wmldBFF3tx7uPPsk8yvrnMdPmrqJZtXecByEG2Udfw+1ErguSD/HmFg+ec6M+Kbf
+	2MLouafIebtiYNMlmfUE3LO/yrDtioaALrPV3dv9TXJGouJITUeOReDa55N6GKjs5kyEJNO0wy+IV
+	kd0hwUQClY5bqqoxVxHS2Nxs+Hr4+cWstmjRJgQqDCG82F8oJmFU65lb1VoG0oQ6ihxmAb/uDPeor
+	dZHP6aa6E/NYUHnPbxZskQ5Bwj0NEcxb+oG6R8Cc7fp+zpr2fai0zqKX/ZRulvyX8+fHnwpe58kVy
+	c2vZgPGEUsj6NSb4gdWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7bE6-00CzJn-1R;
-	Fri, 09 Jun 2023 12:28:22 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1q7ftZ-00DjDd-2N;
+	Fri, 09 Jun 2023 17:27:29 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7bE2-00CzJQ-2l
+	id 1q7ftW-00DjDC-25
 	for ath10k@lists.infradead.org;
-	Fri, 09 Jun 2023 12:28:20 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5A9CA6104F;
-	Fri,  9 Jun 2023 12:28:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2611C433EF;
-	Fri,  9 Jun 2023 12:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686313695;
-	bh=xmQbsGpjE1ohlx+uMchWdzhzKFcj0m+A3jS6YKTfnMc=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=FL6vxUbsONT2hmbK18cIHVPbawKYk8VAgSBj7WFBSxWl84GGO7zXCfzioco6I1PZJ
-	 MN/Z6rw9uCQXfMbp1nk7tfPcNnZalT0T6gChLEBvoUlSJYyavNR6wGHxYXnuARdVit
-	 AoMqqTiNPeI1MVVqEdP3a6VW6h/TT2lYUjp9MnHwoeJYAF+0NmOlBwSAz0NE6z827c
-	 pK7zCS6feJV+Q4YfAtvrbXXTa+XfO98X7EdtRWZfcQpliA46HtsM4t5Gt8eh+xXFtj
-	 T0m7H+YgSqvAUt3opAf31cVx8jyPV0GIlCjjxvMAJhbPo3lbLDZJMNGYD4VwWTHPoL
-	 PtmdyD9WbIHaQ==
+	Fri, 09 Jun 2023 17:27:28 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51494659d49so3436031a12.3
+        for <ath10k@lists.infradead.org>; Fri, 09 Jun 2023 10:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686331645; x=1688923645;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dBlvpkapb3S5TXw3HEYTW+PcvrpF6HWECZJi4X+Mzp4=;
+        b=jwxV/JhDrE1JIYNpbRXRvZR1eNbyK/P25a726MCS7/SOEBr2f4HMFnEsw0ebCNyQJR
+         N17IGdjnrKWElfV0q5RbTjZXw29COnTMQOYmy51xn0XqAA/HP28oUsq5eiO3dOgLYe6L
+         ggXuNLh4+VXOPRH6iJ0tGv0rJDEq2fbc3Hd5Vj3r85I5dknUhdlqTtPV+GSMsuLCbvD7
+         nl8JPdUeq8FBrJ9CdLoxzT+oAelsLTyEUkyBOMp4ZJLowOHuZLJ94XKetc/G8UwJqKyp
+         V/KuYLkSZHWii4YpeEXDYxTNpvWUQBf5tS2o6BQ/lxm49M5lTkMIa3z5t3baWCvVZnPB
+         KDbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686331645; x=1688923645;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dBlvpkapb3S5TXw3HEYTW+PcvrpF6HWECZJi4X+Mzp4=;
+        b=bDiFjuF1Mplp+23ZjuQJkrySvrZLffijUdqERck1llFYaQkMwWJl0DEDVGt4KB8+LM
+         sAHs/16cBPgV6aRPK42G5wh4naxyhnpbCaWnAqOEQcmrgiMBd6R1HzJp3wbtvrlSo5tW
+         QjsTb+TImsMasR73fd2WcNAlhgghSOpk7R6bha2uCjxy+0Fjb/tSaerXERQyFg7CgTVP
+         kpz/ZmUDsux7brDDO9gdbI35V2R9InC7xe9i3CI5ktHU3gXmnOYViVe+27vpmPtMaAoI
+         ygB/8h9hvI/zj2r8py4fFeRZAGboRknVyijpmukdN/ttP3RvXtmbPrud2IiWMbTNbAqM
+         W1+g==
+X-Gm-Message-State: AC+VfDz6CTN9UZoy/AU5t1Jwa20BA/hEwfLtLVHWrkBLpGZiQH0aUQ2i
+	KHBPvTe+J+jMUdGK1YBfyoA=
+X-Google-Smtp-Source: ACHHUZ7cF5TdfCz0QzjlZXBNor2s9JlusjzWgB/1lzfd+n3faNH1UWC1izdjrIK6ae//QPBZBLjeEQ==
+X-Received: by 2002:a17:907:741:b0:958:801b:9945 with SMTP id xc1-20020a170907074100b00958801b9945mr2510182ejb.31.1686331644733;
+        Fri, 09 Jun 2023 10:27:24 -0700 (PDT)
+Received: from shift.daheim (pd9e2959c.dip0.t-ipconnect.de. [217.226.149.156])
+        by smtp.gmail.com with ESMTPSA id l15-20020a170906a40f00b0097d9e2b5f9csm11048ejz.170.2023.06.09.10.27.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jun 2023 10:27:24 -0700 (PDT)
+Received: from chuck by shift.daheim with local (Exim 4.96)
+	(envelope-from <chuck@shift.daheim>)
+	id 1q7ftT-001k9b-2Q;
+	Fri, 09 Jun 2023 19:27:23 +0200
+From: Christian Lamparter <chunkeey@gmail.com>
+To: devicetree@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	ath10k@lists.infradead.org
+Cc: kvalo@kernel.org,
+	conor+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org
+Subject: [PATCH v1] dt-bindings: net: wireless: ath10k: add ieee80211-freq-limit property
+Date: Fri,  9 Jun 2023 19:27:23 +0200
+Message-Id: <f30552d1bfdb4c56f99ca79d8fbf52d3fcf71686.1686331623.git.chunkeey@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 1/4] ath10k: Drop cleaning of driver data from
- probe
- error path and remove
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20230601082556.2738446-2-u.kleine-koenig@pengutronix.de>
-References: <20230601082556.2738446-2-u.kleine-koenig@pengutronix.de>
-To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?=  <u.kleine-koenig@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel@pengutronix.de
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <168631369188.10496.13768584046079083634.kvalo@kernel.org>
-Date: Fri,  9 Jun 2023 12:28:13 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230609_052818_939529_6B199401 
-X-CRM114-Status: UNSURE (   7.80  )
+X-CRM114-CacheID: sfid-20230609_102726_689081_69A7EA45 
+X-CRM114-Status: UNSURE (   9.14  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,27 +93,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-VXdlIEtsZWluZS1Lw7ZuaWcgIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGU+IHdyb3Rl
-OgoKPiBUaGUgZHJpdmVyIGNvcmUgY2FyZXMgZm9yIHJlc2V0dGluZyBkcml2ZXIgZGF0YSBpZiBw
-cm9iZSBmYWlscyBhbmQgYWZ0ZXIKPiByZW1vdmUuIFNvIGRyb3AgdGhlIGV4cGxpY2l0IGFuZCBk
-dXBsaWNhdGUgY2xlYW51cCBpbiB0aGUgZHJpdmVyJ3MKPiBmdW5jdGlvbnMuCj4gCj4gU2lnbmVk
-LW9mZi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5k
-ZT4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxxdWljX2t2YWxvQHF1aWNpbmMuY29tPgoK
-NCBwYXRjaGVzIGFwcGxpZWQgdG8gYXRoLW5leHQgYnJhbmNoIG9mIGF0aC5naXQsIHRoYW5rcy4K
-CmVjM2IxY2UyY2EzNCB3aWZpOiBhdGgxMGs6IERyb3AgY2xlYW5pbmcgb2YgZHJpdmVyIGRhdGEg
-ZnJvbSBwcm9iZSBlcnJvciBwYXRoIGFuZCByZW1vdmUKZmFkNWFjODBkZmE1IHdpZmk6IGF0aDEw
-azogRHJvcCBjaGVja3MgdGhhdCBhcmUgYWx3YXlzIGZhbHNlCmQ0NTdiZmYyNzYzMyB3aWZpOiBh
-dGgxMGs6IENvbnZlcnQgdG8gcGxhdGZvcm0gcmVtb3ZlIGNhbGxiYWNrIHJldHVybmluZyB2b2lk
-CjYzNThiMTAzNzE1NyB3aWZpOiBhdGsxMGs6IERvbid0IG9wZW5jb2RlIGF0aDEwa19wY2lfcHJp
-digpIGluIGF0aDEwa19haGJfcHJpdigpCgotLSAKaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9y
-Zy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNzL3BhdGNoLzIwMjMwNjAxMDgyNTU2LjI3Mzg0NDYtMi11
-LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGUvCgpodHRwczovL3dpcmVsZXNzLndpa2kua2Vy
-bmVsLm9yZy9lbi9kZXZlbG9wZXJzL2RvY3VtZW50YXRpb24vc3VibWl0dGluZ3BhdGNoZXMKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+This is an existing optional property that ieee80211.yaml/cfg80211
+provides. It's useful to further restrict supported frequencies
+for a specified device through device-tree.
+
+The driver supported this since ~2018 by
+commit 34d5629d2ca8 ("ath10k: limit available channels via DT ieee80211-freq-limit")
+
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+
+Note: this is for ath10k. The other patch is for a different driver (ath11k).
+---
+ .../devicetree/bindings/net/wireless/qcom,ath10k.yaml        | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+index c85ed330426d..99db442cef92 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+@@ -12,6 +12,9 @@ maintainers:
+ description:
+   Qualcomm Technologies, Inc. IEEE 802.11ac devices.
+ 
++allOf:
++  - $ref: ieee80211.yaml#
++
+ properties:
+   compatible:
+     enum:
+@@ -84,6 +87,8 @@ properties:
+     required:
+       - iommus
+ 
++  ieee80211-freq-limit: true
++
+   qcom,ath10k-calibration-data:
+     $ref: /schemas/types.yaml#/definitions/uint8-array
+     description:
+-- 
+2.40.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
