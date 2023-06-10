@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 530A4C7EE2E
-	for <ath10k@archiver.kernel.org>; Fri,  9 Jun 2023 20:14:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2F44C7EE29
+	for <ath10k@archiver.kernel.org>; Sat, 10 Jun 2023 04:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
-	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ykkohP9klQXfgtXJlL7oHE2dxkXIK3dTnjVQXg5KK3U=; b=sPbV0WseZPRq7X
-	BO8m3Q3YJCywLv7DzwXykibS3yb0zxOpQ1GHkGJNLBEN2+5N/Qf4PYsvSWoP5XWULcYy96DhobEfm
-	WwJGQegmGOFEiDth+dDngOPBAYxFA8Vqupsgu+FuOBQbmF08k38VnSyb+42gejOAUrMtYu4lZC7jm
-	z71JV/ktJxWn8FTMRrDBAUbvmLpwNYghYGTpHvwLmPNf6fAsW0W0uj3PcV40EoDlnmCtduF3NJyOZ
-	u0+kQtQXKkneaErq63wkFIlGYUaiFX3ad2WsDDIVOXX91lpe9WmQpnvXmfxoNGhDg7joIv6nEIXQX
-	J595oSQnPqqUurtusycQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aDjc/rFlrdubbMmK5ycuAhQ68xsMbXQJYStXOGrmEVA=; b=icWBg+RHHsSotB
+	lKc0sG1llM2liwvPVs5Z+OFJas1F56S6r0SZUwP2vheVYEiOSwUmbdV/1TIY+qYo5QATsvQ1JLJKt
+	7VJ1ejDxPeHs3Rbq/+E4t7vvin3TRFicnGT82qiBrbRhfgSAXsXXvfc7JA2zMq2Bu4uYxo8dPKq07
+	XDU8FmtWSc2CQOKE57Oj0lkLimEW76qN3YsrMk+HKxwcXjSATz3ipllqz50z1pJnXogqC7EzAWlq5
+	cAd2uub6lPprF9u3EQsZuE2RKrlgi6jRCHdt9rNKa19Wolns6347By0xvCWJCmZCt0KXH9VvIyTLh
+	p6eJ1u0egSqzpe9kwkig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7iV6-00EAPU-2f;
-	Fri, 09 Jun 2023 20:14:24 +0000
-Received: from mail-il1-f178.google.com ([209.85.166.178])
+	id 1q7pmy-00F8Gg-2p;
+	Sat, 10 Jun 2023 04:01:20 +0000
+Received: from mga02.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7iV4-00EAP3-24
+	id 1q7pmv-00F8Eg-2h
 	for ath10k@lists.infradead.org;
-	Fri, 09 Jun 2023 20:14:24 +0000
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-33b921e4e8fso8729715ab.3
-        for <ath10k@lists.infradead.org>; Fri, 09 Jun 2023 13:14:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686341660; x=1688933660;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dm3YQcYKNWwZSM4iR7CtEb9BHyaQ/m2Q8HtJl86RiRU=;
-        b=I5Bgmhm9PrdYUcj3nvmLVVqTaHV5dI1ojiXqYjPMvA22BnnuufZFh6FgFODyKmpopZ
-         VWQnAeFCxMGwF+wLVaLC1EB3C3LqMct8rr9hxZMaTMGK3ZXLoMujVyuz+4et7mdLovbT
-         6S6BkZczwc5NAkm8rvRCDtjcljtYmu+F4CpTQHCLm2G3xgAydAAoYoLOqAMe+Fm9b1wL
-         tOYwYcw7GN5QiDyUo8bZpeyGLS/w+aN5HTuk0CIxQwbIGsFSLKSBS6lJshE13R8onLnc
-         3Vt7SH5fuayH+emaOazhpA3REtAIp5x740oN4yquhhsYqUsbn4Pd3Ww7HCRe4eel8Oia
-         juoA==
-X-Gm-Message-State: AC+VfDwf2efGtNWpB2TDiX7pqgTl8aJj9EiQkzC8eC/aVtaXlMAuFKoy
-	cYDxoELJj3CnxrIfqMf33A==
-X-Google-Smtp-Source: ACHHUZ5HLQ62qVYYmTaI/TXCWHChzO0EtCriKFYSmrqmniVxwa3NdMPVMwSdaJU0phW928qsX1qZPw==
-X-Received: by 2002:a92:cd4a:0:b0:33e:8adf:17a with SMTP id v10-20020a92cd4a000000b0033e8adf017amr2321162ilq.16.1686341660462;
-        Fri, 09 Jun 2023 13:14:20 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id g9-20020a926b09000000b0033e4937640esm1257957ilc.80.2023.06.09.13.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jun 2023 13:14:19 -0700 (PDT)
-Received: (nullmailer pid 2082637 invoked by uid 1000);
-	Fri, 09 Jun 2023 20:14:18 -0000
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: krzysztof.kozlowski+dt@linaro.org, ath10k@lists.infradead.org, kvalo@kernel.org, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, robh+dt@kernel.org, conor+dt@kernel.org
-In-Reply-To: <f30552d1bfdb4c56f99ca79d8fbf52d3fcf71686.1686331623.git.chunkeey@gmail.com>
-References: <f30552d1bfdb4c56f99ca79d8fbf52d3fcf71686.1686331623.git.chunkeey@gmail.com>
-Message-Id: <168634165805.2082604.10984266765372350762.robh@kernel.org>
-Subject: Re: [PATCH v1] dt-bindings: net: wireless: ath10k: add
- ieee80211-freq-limit property
-Date: Fri, 09 Jun 2023 14:14:18 -0600
+	Sat, 10 Jun 2023 04:01:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686369677; x=1717905677;
+  h=date:from:to:cc:subject:message-id;
+  bh=Y1YtK0YYsdbXXjbwgnyxJnfcjfDof00cw95dFwUr+CA=;
+  b=LJt3HOkkBEqMVPDFiQbmjIP1Skcf77Jh0ymTye+iT4zOXzEzGsbpqEF3
+   KSlaypL30oNQmWepEm9bOZVGmn6kPIV1Pb420m6ooXqrRWmOkAw7Dv6Ht
+   g7+24Id6oJ6zoOfUKUXVsYvMjmVQxLpXhrrPS2rN007XuYIg/jpUAXdRk
+   7AGlgdJG6UIVnKDGiLRNk78voDmYcihhea8jrl9wayeGKim1g9V29IbOl
+   K7Gvq5xC9QUrYA1bOejyMTNZ+W+qdKT/POI3Rrg5vKwJZPRE+4jpUvOdP
+   K0J9/ezFE9O4harySGv5/Rd+yHba6mIo5uCr+NHBW9Ksm5bCkz8e+bXjI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10736"; a="347373578"
+X-IronPort-AV: E=Sophos;i="6.00,231,1681196400"; 
+   d="scan'208";a="347373578"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2023 21:01:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10736"; a="660975525"
+X-IronPort-AV: E=Sophos;i="6.00,231,1681196400"; 
+   d="scan'208";a="660975525"
+Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 09 Jun 2023 21:01:10 -0700
+Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1q7pmn-0009gc-1j;
+	Sat, 10 Jun 2023 04:01:09 +0000
+Date: Sat, 10 Jun 2023 12:00:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 3b3d60fff1f7ecd2966a2f4f9b20a80630b93682
+Message-ID: <202306101257.JqL8uBfO-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230609_131422_675901_CD9616AA 
-X-CRM114-Status: GOOD (  14.88  )
+X-CRM114-CacheID: sfid-20230609_210117_917967_BD418FCD 
+X-CRM114-Status: UNSURE (   6.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,71 +77,154 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 3b3d60fff1f7ecd2966a2f4f9b20a80630b93682  Add localversion-wireless-testing-ath
 
-On Fri, 09 Jun 2023 19:27:23 +0200, Christian Lamparter wrote:
-> This is an existing optional property that ieee80211.yaml/cfg80211
-> provides. It's useful to further restrict supported frequencies
-> for a specified device through device-tree.
-> 
-> The driver supported this since ~2018 by
-> commit 34d5629d2ca8 ("ath10k: limit available channels via DT ieee80211-freq-limit")
-> 
-> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
-> ---
-> 
-> Note: this is for ath10k. The other patch is for a different driver (ath11k).
-> ---
->  .../devicetree/bindings/net/wireless/qcom,ath10k.yaml        | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+elapsed time: 722m
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+configs tested: 126
+configs skipped: 5
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml:171:1: [error] duplication of key "allOf" in mapping (key-duplicates)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/net/wireless/qcom,ath10k.example.dts'
-Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml:171:1: found duplicate key "allOf" with value "[]" (original value: "[]")
-make[1]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/net/wireless/qcom,ath10k.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml:171:1: found duplicate key "allOf" with value "[]" (original value: "[]")
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-doc-validate", line 62, in <module>
-    ret |= check_doc(f)
-  File "/usr/local/bin/dt-doc-validate", line 31, in check_doc
-    for error in sorted(dtschema.DTValidator.iter_schema_errors(testtree), key=lambda e: e.linecol):
-  File "/usr/local/lib/python3.10/dist-packages/dtschema/lib.py", line 736, in iter_schema_errors
-    cls.annotate_error(error, meta_schema, error.schema_path)
-  File "/usr/local/lib/python3.10/dist-packages/dtschema/lib.py", line 712, in annotate_error
-    schema = schema[p]
-KeyError: 'type'
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml: ignoring, error parsing file
-make: *** [Makefile:1512: dt_binding_check] Error 2
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r012-20230608   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r015-20230608   gcc  
+arc                  randconfig-r043-20230609   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r001-20230608   clang
+arm                  randconfig-r005-20230608   clang
+arm                  randconfig-r006-20230608   clang
+arm                  randconfig-r033-20230609   gcc  
+arm                  randconfig-r046-20230609   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r013-20230608   clang
+csky                                defconfig   gcc  
+hexagon      buildonly-randconfig-r001-20230608   clang
+hexagon              randconfig-r041-20230609   clang
+hexagon              randconfig-r045-20230609   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230608   gcc  
+i386                 randconfig-i002-20230608   gcc  
+i386                 randconfig-i003-20230608   gcc  
+i386                 randconfig-i004-20230608   gcc  
+i386                 randconfig-i005-20230608   gcc  
+i386                 randconfig-i006-20230608   gcc  
+i386                 randconfig-i011-20230608   clang
+i386                 randconfig-i012-20230608   clang
+i386                 randconfig-i013-20230608   clang
+i386                 randconfig-i014-20230608   clang
+i386                 randconfig-i015-20230608   clang
+i386                 randconfig-i016-20230608   clang
+i386                 randconfig-i051-20230608   gcc  
+i386                 randconfig-i052-20230608   gcc  
+i386                 randconfig-i053-20230608   gcc  
+i386                 randconfig-i054-20230608   gcc  
+i386                 randconfig-i055-20230608   gcc  
+i386                 randconfig-i056-20230608   gcc  
+i386                 randconfig-i061-20230608   gcc  
+i386                 randconfig-i062-20230608   gcc  
+i386                 randconfig-i063-20230608   gcc  
+i386                 randconfig-i064-20230608   gcc  
+i386                 randconfig-i065-20230608   gcc  
+i386                 randconfig-i066-20230608   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r002-20230608   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r011-20230608   gcc  
+parisc                           allyesconfig   gcc  
+parisc       buildonly-randconfig-r006-20230608   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r004-20230608   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r042-20230609   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r032-20230609   clang
+s390                 randconfig-r044-20230609   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r003-20230608   gcc  
+sh                   randconfig-r014-20230608   gcc  
+sh                   randconfig-r025-20230608   gcc  
+sh                   randconfig-r036-20230609   gcc  
+sparc                            allyesconfig   gcc  
+sparc        buildonly-randconfig-r003-20230608   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r024-20230608   gcc  
+sparc                randconfig-r026-20230608   gcc  
+sparc                randconfig-r031-20230609   gcc  
+sparc64      buildonly-randconfig-r005-20230608   gcc  
+sparc64              randconfig-r016-20230608   gcc  
+sparc64              randconfig-r023-20230608   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230608   gcc  
+x86_64               randconfig-a002-20230608   gcc  
+x86_64               randconfig-a003-20230608   gcc  
+x86_64               randconfig-a004-20230608   gcc  
+x86_64               randconfig-a005-20230608   gcc  
+x86_64               randconfig-a006-20230608   gcc  
+x86_64               randconfig-a011-20230608   clang
+x86_64               randconfig-a012-20230608   clang
+x86_64               randconfig-a013-20230608   clang
+x86_64               randconfig-a014-20230608   clang
+x86_64               randconfig-a015-20230608   clang
+x86_64               randconfig-a016-20230608   clang
+x86_64               randconfig-r002-20230608   gcc  
+x86_64               randconfig-x051-20230608   clang
+x86_64               randconfig-x052-20230608   clang
+x86_64               randconfig-x053-20230608   clang
+x86_64               randconfig-x054-20230608   clang
+x86_64               randconfig-x055-20230608   clang
+x86_64               randconfig-x056-20230608   clang
+x86_64               randconfig-x061-20230608   clang
+x86_64               randconfig-x062-20230608   clang
+x86_64               randconfig-x063-20230608   clang
+x86_64               randconfig-x064-20230608   clang
+x86_64               randconfig-x065-20230608   clang
+x86_64               randconfig-x066-20230608   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r021-20230608   gcc  
+xtensa               randconfig-r035-20230609   gcc  
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/f30552d1bfdb4c56f99ca79d8fbf52d3fcf71686.1686331623.git.chunkeey@gmail.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 ath10k mailing list
