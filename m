@@ -4,68 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6EC9EB64DA
-	for <ath10k@archiver.kernel.org>; Tue, 13 Jun 2023 21:59:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92AB2EB64D7
+	for <ath10k@archiver.kernel.org>; Wed, 14 Jun 2023 01:16:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=egWsCWa3m+D7NbIxmK4GVOP9VJyvXuAEH/Lf62W4Teg=; b=uMAzJCs8/K99XC
-	xTUdpIlAxjUps7ozJVAz0qh76+Jv7Qha7iIGDmd5YMlFwd9+6K/jKRjp/V2xxwwyV3VT/jaQjJRa3
-	3UyafJFQXONfIKg0DGU5WGgYO47HgvUFOFY9TuUdyrylZlAa5UZSBQpwS5JtZ3RObEpNSHgaEvFof
-	Rxly3vgBjLzkUWlb5x3lik+OSc/V47PaRH9b7c5bgE996QEnQaEDg5LJPAIHxGCIfFlSYCorZ2E2L
-	ReLI9FIsJ6dWoVsBiIr37I4lRVbwXpBIv7bCs+Dq4z523hzi6LOHBMp3+VKyeaD5nGrvboEfVmm6b
-	CI4fihJm6b7n8fTAjmTA==;
+	List-Owner; bh=PtnS3nkJ8mg6e5AiIAmys+0Qe/ql/3CUkaOnF2kdDtA=; b=MIQC8yO/+ZiFQn
+	e1s4Zx9hhjpFiSbht9YvW1VjTQoRroD2bQVfwrqmLksL338pjbGXr/RyaaWpTtBMU3Qr6j5HiXVNe
+	FZKo5a4r3qANLIr7km+jzHLGemSo4NS9Sz5sIBDgU4uqTyKaV6WFU2fJl3rtfbfdaMLei4T98970v
+	x0ZaugAUoHB6fHFCxSQVrQ5aX3U9VJ91M7I9ejhZ6+oqclxjsQjAzWS2v+F/8RDimerABQ8k1yOMG
+	AkrjTh8GN5p5iIrUzBbb+amQ22FzOxXJkw7ljQVswk7EniuKILWuvfp4Hj4oPlmO7A6yCW8Hf31e/
+	s4NfnzrxOiHCr0KMp9BQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9C39-009HkD-0L;
-	Tue, 13 Jun 2023 21:59:39 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1q9F6q-009bGI-2u;
+	Wed, 14 Jun 2023 01:15:40 +0000
+Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9C31-009Hhn-1G
+	id 1q9F6j-009bEV-0y
 	for ath10k@lists.infradead.org;
-	Tue, 13 Jun 2023 21:59:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686693571; x=1718229571;
-  h=date:from:to:cc:subject:message-id;
-  bh=cHd52bkbdbA/zn+W6O7ca22WdlR73xGDlnS1u/58ODA=;
-  b=imraLFDHX3nvfJw7hlnNflzufvlLQPmApUB4U7UHC70Gp1j0sPzeiLbA
-   ym+q+Fpxfps7GHLTARkz38Ssbz3oYCoqZTYXIjUsYLJRx53h0hAu0iuRC
-   xWqId2m5bw5sqrJxw2UXfxC/PYsAVMlXKnfRzWNk/XNFLvqGgyzNTFv9y
-   lnV9RzvLzaV4YxGgwqeCXgXmgGFblVcJyA/5dJEfHZ4n0Ovc897okAdhY
-   DO7G5lEep9yEd9ZSEHvMSlKjF3RYekbehFnwjDmjOBY7Uzj+l9GklM5vL
-   5mRUkNMAo13Zngo7f8c3VIv221atR68gaHHfkrK+s+oETmWgvvv8yB8/u
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10740"; a="338815105"
-X-IronPort-AV: E=Sophos;i="6.00,240,1681196400"; 
-   d="scan'208";a="338815105"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2023 14:59:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10740"; a="958558790"
-X-IronPort-AV: E=Sophos;i="6.00,240,1681196400"; 
-   d="scan'208";a="958558790"
-Received: from lkp-server01.sh.intel.com (HELO 211f47bdb1cb) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 13 Jun 2023 14:59:25 -0700
-Received: from kbuild by 211f47bdb1cb with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1q9C2u-0001pQ-1d;
-	Tue, 13 Jun 2023 21:59:24 +0000
-Date: Wed, 14 Jun 2023 05:58:51 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 38765f952b9975f44924f3efe6270f1c00c0c53d
-Message-ID: <202306140549.wJGEtd5Y-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Wed, 14 Jun 2023 01:15:39 +0000
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-65242634690so4715197b3a.0
+        for <ath10k@lists.infradead.org>; Tue, 13 Jun 2023 18:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686705329; x=1689297329;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Qx8m0l5OukQyzZseritYmbm+wBilDwp6PVLNmtxjoI=;
+        b=H74dI4jAg+9W8MW9L/inWX8URAO7fqd24702FyhtGOpHb2DJljdLQZjw5evS087UsE
+         WNzJIJpTmAmFXj9l0mCNHNIervudP3x4Jr1JCv2vQQTdjwfiFagzaq25CsHbIVvk9MAM
+         qlGCX8Hu/933RwtSR/3LJYSFk9RVMzciR+8o7QETLBVLmepXtGwAofv/Hc3APSrdf0Oa
+         H/kjV7zykOQzTtOwfhktyXB0QvZTuRBhpiU9kvkQYbt42vyIrAqPyKSqhoowC7mIpqoH
+         MpQ+Zh+ExjUJOktFhEZMaBPSkchSH7elhUqCpslJRF8FqoPAhIrDNqHBj9vN7hS3TVKa
+         JeIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686705329; x=1689297329;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=0Qx8m0l5OukQyzZseritYmbm+wBilDwp6PVLNmtxjoI=;
+        b=UFPvxA4GXj+wQwTZqjulvxRS1JGCYwdrMUlLIcfF2Nvj9aZ/jwxwYA0yU01480EhOy
+         xTZ9hL2vUkntXZ336+AcjWM1udLzRSHQElsTJRWtNpXDwThn2beKvR6P9LA2xKGZskwG
+         sGey2CIPh/qR2btrRZJ+5vmdcK4HToc0jJ2qnGcDsuNRWLUDybLWzmZvUglLE0U4SXNI
+         N7i5CiNcmm1IuM5J9iLhi7ZOB3y49VOuWxxkn46mgkeR6s9jFvQqiP8png2rB/otG+jG
+         gzmteYoNht7YAQrU4U5Ey1Gb7LZyN40NliQqEI4iczEa1GZN97UXzF1VXWaijMIMldCp
+         J2EA==
+X-Gm-Message-State: AC+VfDwuLhvBmXizrKxvjb7KliZEaYBsBUYih8g+QKRwgovRuU+rOUfp
+	BNEiKF7vyfpGscoGdiIjQdk=
+X-Google-Smtp-Source: ACHHUZ5DBMu8zSisl8h2f9Kwp+pIiWwmyc4Hge5VKLHTWvYmyBg/a5P6Qgx96/xwdB8jnW9DzMukCw==
+X-Received: by 2002:a05:6a20:4426:b0:11a:efaa:eb3e with SMTP id ce38-20020a056a20442600b0011aefaaeb3emr362375pzb.33.1686705328722;
+        Tue, 13 Jun 2023 18:15:28 -0700 (PDT)
+Received: from [192.168.0.103] ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id a8-20020a170902b58800b001a988a71617sm10837354pls.192.2023.06.13.18.15.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jun 2023 18:15:28 -0700 (PDT)
+Message-ID: <2db51694-aa57-cbfd-096e-4925b76232b0@gmail.com>
+Date: Wed, 14 Jun 2023 08:15:24 +0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To: Kalle Valo <kvalo@kernel.org>, Thorsten Leemhuis <linux@leemhuis.info>,
+ Garry Williams <gtwilliams@gmail.com>
+Cc: Linux Atheros 10K <ath10k@lists.infradead.org>,
+ Linux Wireless <linux-wireless@vger.kernel.org>,
+ Linux Kernel Network Developers <netdev@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Regressions <regressions@lists.linux.dev>
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Dell XPS 13 ath10k_pci firmware crashed!
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230613_145931_440201_D5020352 
-X-CRM114-Status: UNSURE (   4.17  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230613_181533_364608_6B4F3646 
+X-CRM114-Status: GOOD (  11.24  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,131 +91,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 38765f952b9975f44924f3efe6270f1c00c0c53d  Merge branch 'pending' into master-pending
+Hi,
 
-elapsed time: 724m
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-configs tested: 103
-configs skipped: 4
+> Beginning with kernel 6.2.15-300.fc38.x86_64 and continuing through 6.3.7-200.fc38.x86_64, the wifi connection fails periodically with these log messages:
+> 
+> ath10k_pci 0000:02:00.0: firmware crashed! (guid 6c545da0-593c-4a0e-b5ad-3ef2b91cdebf)
+> ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:143a
+> ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
+> ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00288- api 6 features wowlan,ignore-otp,mfp crc32 bf907c7c
+> ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
+> ath10k_pci 0000:02:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> ath10k_pci 0000:02:00.0: failed to get memcpy hi address for firmware address 4: -16
+> ath10k_pci 0000:02:00.0: failed to read firmware dump area: -16
+> ath10k_pci 0000:02:00.0: Copy Engine register dump:
+> ath10k_pci 0000:02:00.0: [00]: 0x00034400  12  12   3   3
+> ath10k_pci 0000:02:00.0: [01]: 0x00034800  14  14 347 348
+> ath10k_pci 0000:02:00.0: [02]: 0x00034c00   8   2   0   1
+> ath10k_pci 0000:02:00.0: [03]: 0x00035000  16  15  16  14
+> ath10k_pci 0000:02:00.0: [04]: 0x00035400 2995 2987  22 214
+> ath10k_pci 0000:02:00.0: [05]: 0x00035800   0   0  64   0
+> ath10k_pci 0000:02:00.0: [06]: 0x00035c00   0   0  18  18
+> ath10k_pci 0000:02:00.0: [07]: 0x00036000   1   1   1   0
+> ath10k_pci 0000:02:00.0: could not request stats (-108)
+> ath10k_pci 0000:02:00.0: could not request peer stats info: -108
+> ath10k_pci 0000:02:00.0: failed to read hi_board_data address: -28
+> ieee80211 phy0: Hardware restart was requested
+> ath10k_pci 0000:02:00.0: could not request stats (-108)
+> ath10k_pci 0000:02:00.0: device successfully recovered
+> 
+> 
+> If I disconnect and reconnect using network manager, the connection is restored.  But this same failure recurs over and over after some few minutes to a few hours.
+> 
+> This is a regression.  The error was not reported with any previous kernel since 6.2.14-300.fc38.x86_64
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+See Bugzilla for the full thread.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc          buildonly-randconfig-r004-20230612   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r025-20230612   gcc  
-arc                  randconfig-r043-20230612   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r016-20230612   clang
-arm                  randconfig-r036-20230612   gcc  
-arm                  randconfig-r046-20230612   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r031-20230612   gcc  
-hexagon              randconfig-r041-20230612   clang
-hexagon              randconfig-r045-20230612   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r006-20230612   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230612   clang
-i386                 randconfig-i002-20230612   clang
-i386                 randconfig-i003-20230612   clang
-i386                 randconfig-i004-20230612   clang
-i386                 randconfig-i005-20230612   clang
-i386                 randconfig-i006-20230612   clang
-i386                 randconfig-i011-20230612   gcc  
-i386                 randconfig-i012-20230612   gcc  
-i386                 randconfig-i013-20230612   gcc  
-i386                 randconfig-i014-20230612   gcc  
-i386                 randconfig-i015-20230612   gcc  
-i386                 randconfig-i016-20230612   gcc  
-i386                 randconfig-r035-20230612   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r023-20230612   gcc  
-m68k                 randconfig-r033-20230612   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips         buildonly-randconfig-r002-20230612   gcc  
-mips                 randconfig-r001-20230612   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r022-20230612   gcc  
-openrisc     buildonly-randconfig-r003-20230612   gcc  
-openrisc             randconfig-r012-20230612   gcc  
-openrisc             randconfig-r024-20230612   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r004-20230612   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r032-20230612   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r003-20230612   clang
-riscv                randconfig-r015-20230612   gcc  
-riscv                randconfig-r042-20230612   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r026-20230612   gcc  
-s390                 randconfig-r044-20230612   gcc  
-sh                               allmodconfig   gcc  
-sh           buildonly-randconfig-r001-20230612   gcc  
-sh                   randconfig-r002-20230612   gcc  
-sh                   randconfig-r011-20230612   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64              randconfig-r021-20230612   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230612   clang
-x86_64               randconfig-a002-20230612   clang
-x86_64               randconfig-a003-20230612   clang
-x86_64               randconfig-a004-20230612   clang
-x86_64               randconfig-a005-20230612   clang
-x86_64               randconfig-a006-20230612   clang
-x86_64               randconfig-a011-20230612   gcc  
-x86_64               randconfig-a012-20230612   gcc  
-x86_64               randconfig-a013-20230612   gcc  
-x86_64               randconfig-a014-20230612   gcc  
-x86_64               randconfig-a015-20230612   gcc  
-x86_64               randconfig-a016-20230612   gcc  
-x86_64               randconfig-r005-20230612   clang
-x86_64               randconfig-r014-20230612   gcc  
-x86_64               randconfig-r034-20230612   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r005-20230612   gcc  
+Unfortunately, the reporter can't bisect this regression (he only tries
+distribution kernels instead).
+
+Anyway, I'm adding it to regzbot (as mainline regression because v6.2.x
+has already EOL):
+
+#regzbot introduced: v6.2..v6.3 https://bugzilla.kernel.org/show_bug.cgi?id=217549
+#regzbot title: ath10k_pci firmware crashed on Dell XPS 13
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217549
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+An old man doll... just what I always wanted! - Clara
 
 _______________________________________________
 ath10k mailing list
