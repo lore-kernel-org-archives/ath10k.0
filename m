@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D495EB64DA
-	for <ath10k@archiver.kernel.org>; Fri, 16 Jun 2023 01:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAF3CEB64DA
+	for <ath10k@archiver.kernel.org>; Fri, 16 Jun 2023 09:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vdx5xIaTm4V/KvovMCWnkbsJ/OB3KlWgZcuAx9UUZzY=; b=Udyq3BrryE8VZM
-	+kJGkXl4GrlRegxXdu+xPCiu1+le4O6ESpMPyafxdL+fC8/EiBX0++lFNGdL7K22LiiKsMsNwaLND
-	31UxKtma6brrvRkCjKc0SzUOlw1LcAI0jApWMP2KP8xpS9mR6uYohbczYXVzDWhZtBPQayqtDdIRM
-	rhQ0oDTYhHnnk38WdRhOhCvX/4QBlSLlja3i8Bcn87Pe5vxh4sql8hNWWeUPHirgBduzpehbJ9er7
-	GVwcVqwfXWDWgjWxdxIg9zsSSAhmLgy/bKPaKLIwGJvKLB6tPqvAEeTxZ6L/6Ho2oieCBCaosDb9i
-	7qIlw3ZPDYJc1YEBM1IQ==;
+	List-Owner; bh=AjEqjjr5i+lKxltZe5r16tGC0QBHbb1IKJaTlwNYG4g=; b=0bZoryKhA6wsy7
+	RdOqqSCoQV1FN8s8PmHgpElyKRP0MN4dMIupaIRCXL4ZNNgt/Y0COvAsG8wD74YynDKnkCpPjx4z/
+	rB0rSrPtl95/CtoFSp7SxVjb/U21Aj+iVX6p3A6AiMWwoxngKOcxpwNXQPzeL18GNm872QbZ+Y2E+
+	KkNZJZtjP8Dtw6/aEpU8uSHH3+g8jkhh7eTUJz44k7V8vNsxkLKI35P2ockFBTceO5fFQptM/GUUM
+	hccSbfc19ulO3vqHlqvCET7DrjX1rhBptOm80HgQYx46hewWeheOE8bjkKYD/n85MA3Ds5z7laMtf
+	LRGsoLmf6Sdw6y6gnDow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9ykI-00GZaK-0Q;
-	Fri, 16 Jun 2023 01:59:26 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1qA5Nw-00HPCa-1T;
+	Fri, 16 Jun 2023 09:04:48 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9ykE-00GZZW-2h
+	id 1qA5Nu-00HPBq-1T
 	for ath10k@lists.infradead.org;
-	Fri, 16 Jun 2023 01:59:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686880762; x=1718416762;
-  h=date:from:to:cc:subject:message-id;
-  bh=5X6GVcXJCZwUMnyZE3BdLkB4gJ3Ptj/sOYfPOTxZ00c=;
-  b=MSs7+zXJo9lGevDsq0fjUNflxsSFhDxFoneq0NQn+cxj4UTyUSvz+/UX
-   2XpxsO3vZdtCAtIkkPRVsGWbC24e7iIUWwqjImsDf93/3dC6o1dY9N1wC
-   nPsO38r/+0USsjGWlbKBKheXvmswMNUAfvose0fSzGKRu43S//8qzGh0e
-   7Y/qXDhNcc3HOwkPF+ciIihJP2RPAJJrmm8V+O9JGP0oE4PEMSlsWkBVO
-   T7ExX/iPZafhB5yYrMmJkcZesARCwcOSxNXxIqwXMERmdsMHlol+02NLZ
-   Ov7L8QW17C9XR2o9sryTloOGy9PwJlouakAqHE7lBsDUzRzn8p4llin1F
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="357965776"
-X-IronPort-AV: E=Sophos;i="6.00,246,1681196400"; 
-   d="scan'208";a="357965776"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2023 18:59:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="1042904223"
-X-IronPort-AV: E=Sophos;i="6.00,246,1681196400"; 
-   d="scan'208";a="1042904223"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Jun 2023 18:59:01 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1q9yjs-0000e9-2u;
-	Fri, 16 Jun 2023 01:59:00 +0000
-Date: Fri, 16 Jun 2023 09:58:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- 83878a6ffd0d86883ee3588f6d42fbd29b093e21
-Message-ID: <202306160957.liMpvEnG-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Fri, 16 Jun 2023 09:04:47 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7C49061840;
+	Fri, 16 Jun 2023 09:04:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A29AC433C8;
+	Fri, 16 Jun 2023 09:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686906284;
+	bh=ZIfwN7dOKIbw077DPRJk3QvTD8i+PX9joN3XwIVd+S4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=niagvxX+xZgRBkm7C+5UOsMAzDVNBPf2P6YfN8GJVEbuR9LLPyGBI1Ze0/8OkqPHH
+	 5Eo2SLeUs+boCURI5yINU2SZdHjASmTKRE31nhPUCf+oBHbPwXolxGkpJN/G18WPf2
+	 xr1sBtcTkFPgWblY+xRVvXHqtp5tTvd2TwjcfttzxQyJ6cy5Aqrnh67dgzVNIsL3ap
+	 0Uq4gXNrl1nl/qT2KOwe6MPKv+la4iwplFfir2ZoySdn/VixobzkILcvyaUTP07W0B
+	 nk4IikvGP5tH+pN+9Ee8QV7KEAoax2XB3PHXluqu/s675J2Rjfs7e1idrGFcLJbXWa
+	 gKas7TYDSeE0g==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH] ath10k: improve structure padding
+Date: Fri, 16 Jun 2023 11:04:21 +0200
+Message-Id: <20230616090439.2484857-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_185922_906528_94404C23 
-X-CRM114-Status: UNSURE (   4.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230616_020446_590396_2D442922 
+X-CRM114-Status: GOOD (  11.68  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,144 +76,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: 83878a6ffd0d86883ee3588f6d42fbd29b093e21  Add localversion-wireless-testing-ath
+From: Arnd Bergmann <arnd@arndb.de>
 
-elapsed time: 834m
+Including an aligned structure inside of a packed one is ambiguous
+and can lead to misaligned data, as pointed out by this clang warning:
 
-configs tested: 115
-configs skipped: 8
+drivers/net/wireless/ath/ath10k/htt.h:715:34: error: field prefix within 'struct htt_rx_indication' is less aligned than 'struct htt_rx_indication_prefix' and is usually due to 'struct htt_rx_indication' being packed, which can lead to unaligned accesses [-Werror,-Wunaligned-access]
+        struct htt_rx_indication_prefix prefix;
+                                        ^
+drivers/net/wireless/ath/ath10k/htt.h:736:34: error: field prefix within 'struct htt_rx_indication_hl' is less aligned than 'struct htt_rx_indication_prefix' and is usually due to 'struct htt_rx_indication_hl' being packed, which can lead to unaligned accesses [-Werror,-Wunaligned-access]
+        struct htt_rx_indication_prefix prefix;
+                                        ^
+drivers/net/wireless/ath/ath10k/htt.h:1564:2: error: field  within 'struct htt_tx_fetch_ind' is less aligned than 'union htt_tx_fetch_ind::(anonymous at drivers/net/wireless/ath/ath10k/htt.h:1564:2)' and is usually due to 'struct htt_tx_fetch_ind' being packed, which can lead to unaligned accesses [-Werror,-Wunaligned-access]
+        union {
+        ^
+drivers/net/wireless/ath/ath10k/htt.h:1702:2: error: field  within 'struct htt_resp' is less aligned than 'union htt_resp::(anonymous at drivers/net/wireless/ath/ath10k/htt.h:1702:2)' and is usually due to 'struct htt_resp' being packed, which can lead to unaligned accesses [-Werror,-Wunaligned-access]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+These structures appear to actually need the packing since they
+are embedded at misaligned offsets. Add even more such annotations
+here to enforce bytewise access throughout the driver.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r031-20230615   gcc  
-arc                  randconfig-r043-20230614   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         axm55xx_defconfig   gcc  
-arm          buildonly-randconfig-r001-20230614   clang
-arm                                 defconfig   gcc  
-arm                            dove_defconfig   clang
-arm                      footbridge_defconfig   gcc  
-arm                  randconfig-r046-20230614   clang
-arm                         s5pv210_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r004-20230615   clang
-hexagon              randconfig-r024-20230615   clang
-hexagon              randconfig-r025-20230615   clang
-hexagon              randconfig-r041-20230614   clang
-hexagon              randconfig-r045-20230614   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r005-20230614   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230615   gcc  
-i386                 randconfig-i002-20230615   gcc  
-i386                 randconfig-i003-20230615   gcc  
-i386                 randconfig-i004-20230615   gcc  
-i386                 randconfig-i005-20230615   gcc  
-i386                 randconfig-i006-20230615   gcc  
-i386                 randconfig-i011-20230615   clang
-i386                 randconfig-i012-20230615   clang
-i386                 randconfig-i013-20230615   clang
-i386                 randconfig-i014-20230615   clang
-i386                 randconfig-i015-20230615   clang
-i386                 randconfig-i016-20230615   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r003-20230615   gcc  
-loongarch            randconfig-r015-20230614   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r032-20230615   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           gcw0_defconfig   gcc  
-mips                           ip27_defconfig   clang
-mips                           jazz_defconfig   gcc  
-mips                      loongson3_defconfig   gcc  
-mips                 randconfig-r023-20230615   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r033-20230615   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r021-20230615   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                  iss476-smp_defconfig   gcc  
-powerpc                     mpc512x_defconfig   clang
-powerpc              randconfig-r011-20230614   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv        buildonly-randconfig-r003-20230614   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r014-20230614   gcc  
-riscv                randconfig-r042-20230614   gcc  
-riscv                          rv32_defconfig   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r002-20230614   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r012-20230614   gcc  
-s390                 randconfig-r026-20230615   clang
-s390                 randconfig-r036-20230615   gcc  
-s390                 randconfig-r044-20230614   gcc  
-sh                               allmodconfig   gcc  
-sh                                  defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                   randconfig-r034-20230615   gcc  
-sh                           se7343_defconfig   gcc  
-sh                           se7751_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64              randconfig-r001-20230615   gcc  
-sparc64              randconfig-r022-20230615   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230615   gcc  
-x86_64               randconfig-a002-20230615   gcc  
-x86_64               randconfig-a003-20230615   gcc  
-x86_64               randconfig-a004-20230615   gcc  
-x86_64               randconfig-a005-20230615   gcc  
-x86_64               randconfig-a006-20230615   gcc  
-x86_64               randconfig-a011-20230615   clang
-x86_64               randconfig-a012-20230615   clang
-x86_64               randconfig-a013-20230615   clang
-x86_64               randconfig-a014-20230615   clang
-x86_64               randconfig-a015-20230615   clang
-x86_64               randconfig-a016-20230615   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r006-20230614   gcc  
-xtensa                       common_defconfig   gcc  
-xtensa               randconfig-r016-20230614   gcc  
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/ath/ath10k/htt.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index c051a22fce145..e0c9f45e74761 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -707,7 +707,7 @@ struct htt_rx_indication_prefix {
+ 	__le16 fw_rx_desc_bytes;
+ 	u8 pad0;
+ 	u8 pad1;
+-};
++} __packed;
+ 
+ struct htt_rx_indication {
+ 	struct htt_rx_indication_hdr hdr;
+@@ -1565,7 +1565,7 @@ struct htt_tx_fetch_ind {
+ 		/* ath10k_htt_get_tx_fetch_ind_resp_ids() */
+ 		DECLARE_FLEX_ARRAY(__le32, resp_ids);
+ 		DECLARE_FLEX_ARRAY(struct htt_tx_fetch_record, records);
+-	};
++	} __packed;
+ } __packed;
+ 
+ static inline void *
+@@ -1723,7 +1723,7 @@ struct htt_resp {
+ 		struct htt_tx_mode_switch_ind tx_mode_switch_ind;
+ 		struct htt_channel_change chan_change;
+ 		struct htt_peer_tx_stats peer_tx_stats;
+-	};
++	} __packed;
+ } __packed;
+ 
+ /*** host side structures follow ***/
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
 
 _______________________________________________
 ath10k mailing list
