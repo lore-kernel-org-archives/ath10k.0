@@ -4,61 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0579EB64D8
-	for <ath10k@archiver.kernel.org>; Fri, 16 Jun 2023 17:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11ECEEB64DB
+	for <ath10k@archiver.kernel.org>; Fri, 16 Jun 2023 22:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aCDEuUsjryA4L+4ssG6E44/dbdb638BfnlEEAnW6A1M=; b=kCtBbAFgZ+fWtU
-	X4kIAsO2inmrbGFG3HDIkBOzjGANa/eOYcn8/MyESRNPCRkKSbIP2q51u7ftxknh3Qvz6SfMP0zmv
-	/WHbLGsulxowq7h2wemyZXHj4mUe4h8+ycefl9nxD7i6WREF8EmLJ6/HF5MgH+Fh8x3bgqJ9vCrZD
-	k5ihciLvsyVXC7c2cwfKD398RiMp4EbKJgO1gWuFTsPFpNvIN2F/20EwJfN424eCxq0iV0rHyhbPg
-	5qu2sOQVBl2nAfbtXKWlzQWyslmeaM1n5/V7pxQDXjLOaxNft3mTo3FnTK0NMJ6KasvJbKdj/t7pL
-	9usWxSQjjR0gYuQI5TUQ==;
+	List-Owner; bh=Pe1otm+GuyhaY84XoKEF1I54Pe9KMof7GRJUTxCNXh8=; b=G+FKA4k+SdIOb8
+	9aNpz73lYAzzYUNT7x8nxLbBchxQa7hLlmTnGdRhYfZXEdmRczXo6kPzSjuw4tig6/y6rzhQmaJas
+	xxmhcPSTLY95g2MRZLavWOoRyrIfpREJet52Qyd52+BAFDRHVXasgSwpRoJsHrOHBXZr/NyHtzIgD
+	yEH2+VO5g6tfOk5i2ZSWXy5ysxg6dc/zcUtRIY1v6UCJZvjbYNgk0a4OuYnxMzZbppxAhv2uyL0u2
+	fKf+MDj4RUFdwRNRBxzKegqsWns7eOjIK2xh1bbwlLm6Qg++3b9AH+7EZ89bCB8SQPk+bwFFQLYwa
+	3vYTDaKiwFqtlGxsoNrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qACrF-001EB3-2H;
-	Fri, 16 Jun 2023 17:03:33 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qAHi7-001zRf-0k;
+	Fri, 16 Jun 2023 22:14:27 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qACrB-001E9t-17
+	id 1qAHi2-001zQh-2H
 	for ath10k@lists.infradead.org;
-	Fri, 16 Jun 2023 17:03:31 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C79F36148F;
-	Fri, 16 Jun 2023 17:03:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 894DAC433C0;
-	Fri, 16 Jun 2023 17:03:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686935008;
-	bh=AXStpl5ukr0pjZfA+v+TDZ1tI5AAWimXjj+HdNCQLDg=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=OaEWLE5ZcI0HtHDX6XuKVwV19IfvKqsoJsiuqB79bClgWYcVM1WFl8pm+UuAbfu1I
-	 USelhXrgNWUjYwaHjBUyu3XQdfKDkna0Js9x1R5+HwSWw88Xx477WaZ/F/xVu+YUky
-	 BGo6eTBgcrma640rFZ75QHgbYRwVLb7LJGp2gMeH3nHn62Xjur+1nVnXoYcAMc4QlM
-	 G76/58Qr2VvWW2KCdCJzq+XNO3+18CODgol5NHrhGsbG0YDWaiq1Xpqw/A385Xgiu6
-	 9W7DeUb5HU3TrAYeao6n596/4NNUD8ImEzEZaznl50IC7qvB1FHg7MUI4EVu4JS1sv
-	 WlxFpzsINcgJw==
-From: Kalle Valo <kvalo@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  linux-kernel@vger.kernel.org,  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,  netdev@vger.kernel.org,  Sebastian Gottschall <s.gottschall@dd-wrt.com>,  Steve deRosier <derosier@cal-sierra.com>,  Stefan Lippers-Hollmann <s.l-h@gmx.de>
-Subject: Re: [PATCH v14] ath10k: add LED and GPIO controlling support for various chipsets
+	Fri, 16 Jun 2023 22:14:25 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3110ab7110aso970672f8f.3
+        for <ath10k@lists.infradead.org>; Fri, 16 Jun 2023 15:14:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686953660; x=1689545660;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=tT6ObQCSQqj+wxVkfoL0mcp4+39BD0tg2ud99zqanQk=;
+        b=jFtHLeHp/x6+zDJx8LT5tFnxLhYrna3jSCJKiSFKkveDkm+FDvcPIXQiAgr5DdLwX+
+         6uow5DqJUxee2fzm98kcfgYXF/G4S7MZrTSXylsga+4ruWtaJ88Vgt51BnAh6NdlyjF2
+         ADKUmyHwzWv0Hk1pP2Ry1+IeJSplsPD63l0lzD0GD9kUkfGZq47ooQpP47wVsMckfB4S
+         z4CKCuTTr1Z7wzSsxS4He67IJhZBLqT8GaWwAHpvsYPT6LVUJqM/+zPN09nECr+E0jBt
+         AKaZ5iAwdeqkBiwAktpKEtFFrrtFGbRugVC+p8R942K/eY4klFRC3jX0SX39W7o+VrCO
+         hxPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686953660; x=1689545660;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tT6ObQCSQqj+wxVkfoL0mcp4+39BD0tg2ud99zqanQk=;
+        b=F8EM7uS3Cob8dRVh6S0Mlbz3qoYf4M4q/ubeZXhHjzq7f8CX1+ek457QEyBjlz7AkB
+         6rXabJyBuFWKz7IS6Vgi+8ODpIOc1IzU/HhZTUiT2o67ckefEtmrnKf7wK485MWtluvW
+         LMTfGt7DKQOgXpRYNNz519NMRfiIl82zXeq8xiBXfDqekzwh7brXBV0I2ukl4N7lOAYq
+         CNnFwlm18hWbm2BIYPIbx3Xh0siu9z2lsCOy0YjlmyPpm/WzVBWozRySzvbbMLJDL8Is
+         h7heQvKqF1UY+S6kig8+GJIq/GuEtofi2kD0xvn4Vmwwb6Uq90TCdGsd34HzMdzarSEf
+         k4/Q==
+X-Gm-Message-State: AC+VfDzQlgy99//5MTgTUw9p/HBykx/YQ1tU5gZxgR1HKteMNN7lkuMt
+	+nVz/g8m+CpuTtV0IBNmjI0=
+X-Google-Smtp-Source: ACHHUZ443J3rJAiWjyHbG8G9CKQv+opL+1Z/scP/JsH3FhFXwZC/8XLMBg6O2u920MbvcbuIrH4mwQ==
+X-Received: by 2002:a5d:6ad1:0:b0:2f5:d3d7:7af4 with SMTP id u17-20020a5d6ad1000000b002f5d3d77af4mr2290949wrw.63.1686953660049;
+        Fri, 16 Jun 2023 15:14:20 -0700 (PDT)
+Received: from Ansuel-xps. (93-34-93-173.ip49.fastwebnet.it. [93.34.93.173])
+        by smtp.gmail.com with ESMTPSA id u9-20020a5d4349000000b003079c402762sm24550729wrr.19.2023.06.16.15.14.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jun 2023 15:14:19 -0700 (PDT)
+Message-ID: <648cdebb.5d0a0220.be7f8.a096@mx.google.com>
+X-Google-Original-Message-ID: <ZIxI6Eo0q8sbJMDs@Ansuel-xps.>
+Date: Fri, 16 Jun 2023 13:35:04 +0200
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+	Sebastian Gottschall <s.gottschall@dd-wrt.com>,
+	Steve deRosier <derosier@cal-sierra.com>,
+	Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Subject: Re: [PATCH v14] ath10k: add LED and GPIO controlling support for
+ various chipsets
 References: <20230611080505.17393-1-ansuelsmth@gmail.com>
-Date: Fri, 16 Jun 2023 20:03:23 +0300
-In-Reply-To: <20230611080505.17393-1-ansuelsmth@gmail.com> (Christian
-	Marangi's message of "Sun, 11 Jun 2023 10:05:05 +0200")
-Message-ID: <878rcjbaqs.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ <878rcjbaqs.fsf@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <878rcjbaqs.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230616_100329_463257_4A2FA738 
-X-CRM114-Status: GOOD (  33.40  )
+X-CRM114-CacheID: sfid-20230616_151422_769431_BDA001A2 
+X-CRM114-Status: GOOD (  48.18  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,134 +100,172 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Christian Marangi <ansuelsmth@gmail.com> writes:
-
-> From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+On Fri, Jun 16, 2023 at 08:03:23PM +0300, Kalle Valo wrote:
+> Christian Marangi <ansuelsmth@gmail.com> writes:
+> 
+> > From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+> >
+> > Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984
+> > based chipsets with on chipset connected led's using WMI Firmware API.
+> > The LED device will get available named as "ath10k-phyX" at sysfs and
+> > can be controlled with various triggers.
+> > Adds also debugfs interface for gpio control.
+> >
+> > Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+> > Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
+> > [kvalo: major reorg and cleanup]
+> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> > [ansuel: rebase and small cleanup]
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > Tested-by: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+> > ---
+> >
+> > Hi,
+> > this is a very old patch from 2018 that somehow was talked till 2020
+> > with Kavlo asked to rebase and resubmit and nobody did.
+> > So here we are in 2023 with me trying to finally have this upstream.
+> >
+> > A summarize of the situation.
+> > - The patch is from years in OpenWRT. Used by anything that has ath10k
+> >   card and a LED connected.
+> > - This patch is also used by the fw variant from Candela Tech with no
+> >   problem reported.
+> > - It was pointed out that this caused some problem with ipq4019 SoC
+> >   but the problem was actually caused by a different bug related to
+> >   interrupts.
+> >
+> > I honestly hope we can have this feature merged since it's really
+> > funny to have something that was so near merge and jet still not
+> > present and with devices not supporting this simple but useful
+> > feature.
+> 
+> Indeed, we should finally get this in. Thanks for working on it.
+> 
+> I did some minor changes to the patch, they are in my pending branch:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=686464864538158f22842dc49eddea6fa50e59c1
+> 
+> My comments below, please review my changes. No need to resend because
+> of these.
 >
-> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984
-> based chipsets with on chipset connected led's using WMI Firmware API.
-> The LED device will get available named as "ath10k-phyX" at sysfs and
-> can be controlled with various triggers.
-> Adds also debugfs interface for gpio control.
+
+Hi,
+very happy this is going further.
+
+> > --- a/drivers/net/wireless/ath/ath10k/Kconfig
+> > +++ b/drivers/net/wireless/ath/ath10k/Kconfig
+> > @@ -67,6 +67,23 @@ config ATH10K_DEBUGFS
+> >  
+> >  	  If unsure, say Y to make it easier to debug problems.
+> >  
+> > +config ATH10K_LEDS
+> > +	bool "Atheros ath10k LED support"
+> > +	depends on ATH10K
+> > +	select MAC80211_LEDS
+> > +	select LEDS_CLASS
+> > +	select NEW_LEDS
+> > +	default y
+> > +	help
+> > +	  This option enables LEDs support for chipset LED pins.
+> > +	  Each pin is connected via GPIO and can be controlled using
+> > +	  WMI Firmware API.
+> > +
+> > +	  The LED device will get available named as "ath10k-phyX" at sysfs and
+> > +    	  can be controlled with various triggers.
+> > +
+> > +	  Say Y, if you have LED pins connected to the ath10k wireless card.
+> 
+> I'm not sure anymore if we should ask anything from the user, better to
+> enable automatically if LED support is enabled in the kernel. So I
+> simplified this to:
+> 
+> config ATH10K_LEDS
+> 	bool
+> 	depends on ATH10K
+> 	depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211
+> 	default y
+> 
+> This follows what mt76 does:
+> 
+> config MT76_LEDS
+> 	bool
+> 	depends on MT76_CORE
+> 	depends on LEDS_CLASS=y || MT76_CORE=LEDS_CLASS
+> 	default y
+> 
+
+I remember there was the same discussion in a previous series. OK for me
+for making this by default, only concern is any buildbot error (if any)
+
+Anyway OK for the change.
+
+> > @@ -65,6 +66,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+> >  		.dev_id = QCA988X_2_0_DEVICE_ID,
+> >  		.bus = ATH10K_BUS_PCI,
+> >  		.name = "qca988x hw2.0",
+> > +		.led_pin = 1,
+> >  		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
+> >  		.uart_pin = 7,
+> >  		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
+> 
+> I prefer following the field order from struct ath10k_hw_params
+> declaration and also setting fields explicitly to zero (even though
+> there are gaps still) so I changed that for every entry.
+> 
+
+Thanks for the change, np for me.
+
+> > +int ath10k_leds_register(struct ath10k *ar)
+> > +{
+> > +	int ret;
+> > +
+> > +	if (ar->hw_params.led_pin == 0)
+> > +		/* leds not supported */
+> > +		return 0;
+> > +
+> > +	snprintf(ar->leds.label, sizeof(ar->leds.label), "ath10k-%s",
+> > +		 wiphy_name(ar->hw->wiphy));
+> > +	ar->leds.wifi_led.active_low = 1;
+> > +	ar->leds.wifi_led.gpio = ar->hw_params.led_pin;
+> > +	ar->leds.wifi_led.name = ar->leds.label;
+> > +	ar->leds.wifi_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
+> > +
+> > +	ar->leds.cdev.name = ar->leds.label;
+> > +	ar->leds.cdev.brightness_set_blocking = ath10k_leds_set_brightness_blocking;
+> > +
+> > +	/* FIXME: this assignment doesn't make sense as it's NULL, remove it? */
+> > +	ar->leds.cdev.default_trigger = ar->leds.wifi_led.default_trigger;
+> 
+> But what to do with this FIXME?
 >
-> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-> Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
-> [kvalo: major reorg and cleanup]
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> [ansuel: rebase and small cleanup]
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Tested-by: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-> ---
->
-> Hi,
-> this is a very old patch from 2018 that somehow was talked till 2020
-> with Kavlo asked to rebase and resubmit and nobody did.
-> So here we are in 2023 with me trying to finally have this upstream.
->
-> A summarize of the situation.
-> - The patch is from years in OpenWRT. Used by anything that has ath10k
->   card and a LED connected.
-> - This patch is also used by the fw variant from Candela Tech with no
->   problem reported.
-> - It was pointed out that this caused some problem with ipq4019 SoC
->   but the problem was actually caused by a different bug related to
->   interrupts.
->
-> I honestly hope we can have this feature merged since it's really
-> funny to have something that was so near merge and jet still not
-> present and with devices not supporting this simple but useful
-> feature.
 
-Indeed, we should finally get this in. Thanks for working on it.
+It was pushed by you in v13.
 
-I did some minor changes to the patch, they are in my pending branch:
+I could be wrong but your idea was to prepare for future support of
+other patch that would set the default_trigger to the mac80211 tpt.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=686464864538158f22842dc49eddea6fa50e59c1
+We might got both confused by default_trigger and default_state.
+default_trigger is actually never set and is NULL (actually it's 0)
 
-My comments below, please review my changes. No need to resend because
-of these.
+We have other 2 patch that adds tpt rates for the mac80211 LED trigger
+and set this trigger as the default one but honestly I would chose a
+different implementation than hardcoding everything.
 
-> --- a/drivers/net/wireless/ath/ath10k/Kconfig
-> +++ b/drivers/net/wireless/ath/ath10k/Kconfig
-> @@ -67,6 +67,23 @@ config ATH10K_DEBUGFS
->  
->  	  If unsure, say Y to make it easier to debug problems.
->  
-> +config ATH10K_LEDS
-> +	bool "Atheros ath10k LED support"
-> +	depends on ATH10K
-> +	select MAC80211_LEDS
-> +	select LEDS_CLASS
-> +	select NEW_LEDS
-> +	default y
-> +	help
-> +	  This option enables LEDs support for chipset LED pins.
-> +	  Each pin is connected via GPIO and can be controlled using
-> +	  WMI Firmware API.
-> +
-> +	  The LED device will get available named as "ath10k-phyX" at sysfs and
-> +    	  can be controlled with various triggers.
-> +
-> +	  Say Y, if you have LED pins connected to the ath10k wireless card.
+If it's ok for you, I would drop the comment and the default_trigger and
+I will send a follow-up patch to this adding DT support by using
+led_classdev_register_ext and defining init_data.
+(and this indirectly would permit better LED naming and defining of
+default-trigger in DT)
 
-I'm not sure anymore if we should ask anything from the user, better to
-enable automatically if LED support is enabled in the kernel. So I
-simplified this to:
+Also ideally I will also send a patch for default_state following
+standard LED implementation. (to set default_state in DT)
 
-config ATH10K_LEDS
-	bool
-	depends on ATH10K
-	depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211
-	default y
-
-This follows what mt76 does:
-
-config MT76_LEDS
-	bool
-	depends on MT76_CORE
-	depends on LEDS_CLASS=y || MT76_CORE=LEDS_CLASS
-	default y
-
-> @@ -65,6 +66,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  		.dev_id = QCA988X_2_0_DEVICE_ID,
->  		.bus = ATH10K_BUS_PCI,
->  		.name = "qca988x hw2.0",
-> +		.led_pin = 1,
->  		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
->  		.uart_pin = 7,
->  		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-
-I prefer following the field order from struct ath10k_hw_params
-declaration and also setting fields explicitly to zero (even though
-there are gaps still) so I changed that for every entry.
-
-> +int ath10k_leds_register(struct ath10k *ar)
-> +{
-> +	int ret;
-> +
-> +	if (ar->hw_params.led_pin == 0)
-> +		/* leds not supported */
-> +		return 0;
-> +
-> +	snprintf(ar->leds.label, sizeof(ar->leds.label), "ath10k-%s",
-> +		 wiphy_name(ar->hw->wiphy));
-> +	ar->leds.wifi_led.active_low = 1;
-> +	ar->leds.wifi_led.gpio = ar->hw_params.led_pin;
-> +	ar->leds.wifi_led.name = ar->leds.label;
-> +	ar->leds.wifi_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-> +
-> +	ar->leds.cdev.name = ar->leds.label;
-> +	ar->leds.cdev.brightness_set_blocking = ath10k_leds_set_brightness_blocking;
-> +
-> +	/* FIXME: this assignment doesn't make sense as it's NULL, remove it? */
-> +	ar->leds.cdev.default_trigger = ar->leds.wifi_led.default_trigger;
-
-But what to do with this FIXME?
+I would prefer this approach as the LED patch already took way too much
+time and I think it's better to merge this initial version and then
+improve it.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+	Ansuel
 
 _______________________________________________
 ath10k mailing list
