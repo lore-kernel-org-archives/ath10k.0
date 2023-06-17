@@ -4,86 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11ECEEB64DB
-	for <ath10k@archiver.kernel.org>; Fri, 16 Jun 2023 22:14:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E3FEB64D9
+	for <ath10k@archiver.kernel.org>; Sat, 17 Jun 2023 04:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Pe1otm+GuyhaY84XoKEF1I54Pe9KMof7GRJUTxCNXh8=; b=G+FKA4k+SdIOb8
-	9aNpz73lYAzzYUNT7x8nxLbBchxQa7hLlmTnGdRhYfZXEdmRczXo6kPzSjuw4tig6/y6rzhQmaJas
-	xxmhcPSTLY95g2MRZLavWOoRyrIfpREJet52Qyd52+BAFDRHVXasgSwpRoJsHrOHBXZr/NyHtzIgD
-	yEH2+VO5g6tfOk5i2ZSWXy5ysxg6dc/zcUtRIY1v6UCJZvjbYNgk0a4OuYnxMzZbppxAhv2uyL0u2
-	fKf+MDj4RUFdwRNRBxzKegqsWns7eOjIK2xh1bbwlLm6Qg++3b9AH+7EZ89bCB8SQPk+bwFFQLYwa
-	3vYTDaKiwFqtlGxsoNrA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9ZBJbvaGZjZT94Lln5k7c8R6t35GkTZdB5sKojwZlLM=; b=g38DrpS9S+EpuX
+	/pGtC5bRydsbqDp06jQ52GBM8XLB9RKtDhKteskxUcL/OmgMJJNQVBllaf6FfiCj/tjWXS6pgQiYh
+	+Cp5nMdAaP/v3ElzEYUg5llwfUJOTvB8GGW3N8D+pY9LgYOYBUnU7P8acqoDZJJlRPJ7Ugq+VV1BP
+	qbw//qciebiNhBKjAt5JeIJIgjOWK6g4zX8e1Wc6tFqC5jzI8vqUZ3IY2OJnk0jsKiwHwOc3q1haS
+	vCcSWeCWB6w18pzd2RzXgP/Epw5hd+wr82ZznKYaQJZL8POyC+Hj0/lQUh0jcrmdW6Z0qsElTTpXt
+	q/c7YYOijPUngH50pj+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qAHi7-001zRf-0k;
-	Fri, 16 Jun 2023 22:14:27 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1qANnR-002iII-1y;
+	Sat, 17 Jun 2023 04:44:21 +0000
+Received: from mga12.intel.com ([192.55.52.136])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qAHi2-001zQh-2H
+	id 1qANnO-002iHp-39
 	for ath10k@lists.infradead.org;
-	Fri, 16 Jun 2023 22:14:25 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3110ab7110aso970672f8f.3
-        for <ath10k@lists.infradead.org>; Fri, 16 Jun 2023 15:14:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686953660; x=1689545660;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=tT6ObQCSQqj+wxVkfoL0mcp4+39BD0tg2ud99zqanQk=;
-        b=jFtHLeHp/x6+zDJx8LT5tFnxLhYrna3jSCJKiSFKkveDkm+FDvcPIXQiAgr5DdLwX+
-         6uow5DqJUxee2fzm98kcfgYXF/G4S7MZrTSXylsga+4ruWtaJ88Vgt51BnAh6NdlyjF2
-         ADKUmyHwzWv0Hk1pP2Ry1+IeJSplsPD63l0lzD0GD9kUkfGZq47ooQpP47wVsMckfB4S
-         z4CKCuTTr1Z7wzSsxS4He67IJhZBLqT8GaWwAHpvsYPT6LVUJqM/+zPN09nECr+E0jBt
-         AKaZ5iAwdeqkBiwAktpKEtFFrrtFGbRugVC+p8R942K/eY4klFRC3jX0SX39W7o+VrCO
-         hxPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686953660; x=1689545660;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tT6ObQCSQqj+wxVkfoL0mcp4+39BD0tg2ud99zqanQk=;
-        b=F8EM7uS3Cob8dRVh6S0Mlbz3qoYf4M4q/ubeZXhHjzq7f8CX1+ek457QEyBjlz7AkB
-         6rXabJyBuFWKz7IS6Vgi+8ODpIOc1IzU/HhZTUiT2o67ckefEtmrnKf7wK485MWtluvW
-         LMTfGt7DKQOgXpRYNNz519NMRfiIl82zXeq8xiBXfDqekzwh7brXBV0I2ukl4N7lOAYq
-         CNnFwlm18hWbm2BIYPIbx3Xh0siu9z2lsCOy0YjlmyPpm/WzVBWozRySzvbbMLJDL8Is
-         h7heQvKqF1UY+S6kig8+GJIq/GuEtofi2kD0xvn4Vmwwb6Uq90TCdGsd34HzMdzarSEf
-         k4/Q==
-X-Gm-Message-State: AC+VfDzQlgy99//5MTgTUw9p/HBykx/YQ1tU5gZxgR1HKteMNN7lkuMt
-	+nVz/g8m+CpuTtV0IBNmjI0=
-X-Google-Smtp-Source: ACHHUZ443J3rJAiWjyHbG8G9CKQv+opL+1Z/scP/JsH3FhFXwZC/8XLMBg6O2u920MbvcbuIrH4mwQ==
-X-Received: by 2002:a5d:6ad1:0:b0:2f5:d3d7:7af4 with SMTP id u17-20020a5d6ad1000000b002f5d3d77af4mr2290949wrw.63.1686953660049;
-        Fri, 16 Jun 2023 15:14:20 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-93-173.ip49.fastwebnet.it. [93.34.93.173])
-        by smtp.gmail.com with ESMTPSA id u9-20020a5d4349000000b003079c402762sm24550729wrr.19.2023.06.16.15.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jun 2023 15:14:19 -0700 (PDT)
-Message-ID: <648cdebb.5d0a0220.be7f8.a096@mx.google.com>
-X-Google-Original-Message-ID: <ZIxI6Eo0q8sbJMDs@Ansuel-xps.>
-Date: Fri, 16 Jun 2023 13:35:04 +0200
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-	Sebastian Gottschall <s.gottschall@dd-wrt.com>,
-	Steve deRosier <derosier@cal-sierra.com>,
-	Stefan Lippers-Hollmann <s.l-h@gmx.de>
-Subject: Re: [PATCH v14] ath10k: add LED and GPIO controlling support for
- various chipsets
-References: <20230611080505.17393-1-ansuelsmth@gmail.com>
- <878rcjbaqs.fsf@kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <878rcjbaqs.fsf@kernel.org>
+	Sat, 17 Jun 2023 04:44:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686977058; x=1718513058;
+  h=date:from:to:cc:subject:message-id;
+  bh=onMfnqTvcT42mTTLNs1bNE4nTFyIkbaWwutMrgyqw90=;
+  b=UN5e6tvZVKF2wdpWNsQycJJ3//4SEH7zXWlcsMjCCrzvi6IPuNGQ4al0
+   NelKEmS8XtpPP1IEExA8M0vn7oBOli4NyRpSXxs/qeyL1T/thllQVAmqF
+   14J7XiaVmeih51aZ+rxjjES00KOAH51l/BfGu5Uki9zBKair4UvpyoCio
+   wkbU7cIX3Xk9UIIAW94RFhJrI4+sCbLbDTdCrV+SyLBVbMEFyd5QUk6w/
+   V6JVudvn91MzCuh+9LL7VdxL76LVCxeJ5Z5S62uwvUoEn2Jd8sg5mlz34
+   UrPf/KzmChRSd8lV72+qcPfZyREAAoyQWcb+mp8R/r7+K/AV2ckH4aBoe
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="338976424"
+X-IronPort-AV: E=Sophos;i="6.00,249,1681196400"; 
+   d="scan'208";a="338976424"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2023 21:44:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="778384907"
+X-IronPort-AV: E=Sophos;i="6.00,249,1681196400"; 
+   d="scan'208";a="778384907"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 16 Jun 2023 21:44:15 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qANnK-0002Hk-2n;
+	Sat, 17 Jun 2023 04:44:14 +0000
+Date: Sat, 17 Jun 2023 12:43:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 2bcba004a12466b1b76d30933d3fa5c9d777cec8
+Message-ID: <202306171254.rWi6EBZw-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230616_151422_769431_BDA001A2 
-X-CRM114-Status: GOOD (  48.18  )
+X-CRM114-CacheID: sfid-20230616_214419_120490_8DF95546 
+X-CRM114-Status: UNSURE (   3.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,177 +77,129 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 16, 2023 at 08:03:23PM +0300, Kalle Valo wrote:
-> Christian Marangi <ansuelsmth@gmail.com> writes:
-> 
-> > From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-> >
-> > Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984
-> > based chipsets with on chipset connected led's using WMI Firmware API.
-> > The LED device will get available named as "ath10k-phyX" at sysfs and
-> > can be controlled with various triggers.
-> > Adds also debugfs interface for gpio control.
-> >
-> > Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-> > Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
-> > [kvalo: major reorg and cleanup]
-> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> > [ansuel: rebase and small cleanup]
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > Tested-by: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-> > ---
-> >
-> > Hi,
-> > this is a very old patch from 2018 that somehow was talked till 2020
-> > with Kavlo asked to rebase and resubmit and nobody did.
-> > So here we are in 2023 with me trying to finally have this upstream.
-> >
-> > A summarize of the situation.
-> > - The patch is from years in OpenWRT. Used by anything that has ath10k
-> >   card and a LED connected.
-> > - This patch is also used by the fw variant from Candela Tech with no
-> >   problem reported.
-> > - It was pointed out that this caused some problem with ipq4019 SoC
-> >   but the problem was actually caused by a different bug related to
-> >   interrupts.
-> >
-> > I honestly hope we can have this feature merged since it's really
-> > funny to have something that was so near merge and jet still not
-> > present and with devices not supporting this simple but useful
-> > feature.
-> 
-> Indeed, we should finally get this in. Thanks for working on it.
-> 
-> I did some minor changes to the patch, they are in my pending branch:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=686464864538158f22842dc49eddea6fa50e59c1
-> 
-> My comments below, please review my changes. No need to resend because
-> of these.
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 2bcba004a12466b1b76d30933d3fa5c9d777cec8  Merge branch 'ath-next' into ath-qca
 
-Hi,
-very happy this is going further.
+elapsed time: 722m
 
-> > --- a/drivers/net/wireless/ath/ath10k/Kconfig
-> > +++ b/drivers/net/wireless/ath/ath10k/Kconfig
-> > @@ -67,6 +67,23 @@ config ATH10K_DEBUGFS
-> >  
-> >  	  If unsure, say Y to make it easier to debug problems.
-> >  
-> > +config ATH10K_LEDS
-> > +	bool "Atheros ath10k LED support"
-> > +	depends on ATH10K
-> > +	select MAC80211_LEDS
-> > +	select LEDS_CLASS
-> > +	select NEW_LEDS
-> > +	default y
-> > +	help
-> > +	  This option enables LEDs support for chipset LED pins.
-> > +	  Each pin is connected via GPIO and can be controlled using
-> > +	  WMI Firmware API.
-> > +
-> > +	  The LED device will get available named as "ath10k-phyX" at sysfs and
-> > +    	  can be controlled with various triggers.
-> > +
-> > +	  Say Y, if you have LED pins connected to the ath10k wireless card.
-> 
-> I'm not sure anymore if we should ask anything from the user, better to
-> enable automatically if LED support is enabled in the kernel. So I
-> simplified this to:
-> 
-> config ATH10K_LEDS
-> 	bool
-> 	depends on ATH10K
-> 	depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211
-> 	default y
-> 
-> This follows what mt76 does:
-> 
-> config MT76_LEDS
-> 	bool
-> 	depends on MT76_CORE
-> 	depends on LEDS_CLASS=y || MT76_CORE=LEDS_CLASS
-> 	default y
-> 
+configs tested: 101
+configs skipped: 7
 
-I remember there was the same discussion in a previous series. OK for me
-for making this by default, only concern is any buildbot error (if any)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Anyway OK for the change.
-
-> > @@ -65,6 +66,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
-> >  		.dev_id = QCA988X_2_0_DEVICE_ID,
-> >  		.bus = ATH10K_BUS_PCI,
-> >  		.name = "qca988x hw2.0",
-> > +		.led_pin = 1,
-> >  		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
-> >  		.uart_pin = 7,
-> >  		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-> 
-> I prefer following the field order from struct ath10k_hw_params
-> declaration and also setting fields explicitly to zero (even though
-> there are gaps still) so I changed that for every entry.
-> 
-
-Thanks for the change, np for me.
-
-> > +int ath10k_leds_register(struct ath10k *ar)
-> > +{
-> > +	int ret;
-> > +
-> > +	if (ar->hw_params.led_pin == 0)
-> > +		/* leds not supported */
-> > +		return 0;
-> > +
-> > +	snprintf(ar->leds.label, sizeof(ar->leds.label), "ath10k-%s",
-> > +		 wiphy_name(ar->hw->wiphy));
-> > +	ar->leds.wifi_led.active_low = 1;
-> > +	ar->leds.wifi_led.gpio = ar->hw_params.led_pin;
-> > +	ar->leds.wifi_led.name = ar->leds.label;
-> > +	ar->leds.wifi_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-> > +
-> > +	ar->leds.cdev.name = ar->leds.label;
-> > +	ar->leds.cdev.brightness_set_blocking = ath10k_leds_set_brightness_blocking;
-> > +
-> > +	/* FIXME: this assignment doesn't make sense as it's NULL, remove it? */
-> > +	ar->leds.cdev.default_trigger = ar->leds.wifi_led.default_trigger;
-> 
-> But what to do with this FIXME?
->
-
-It was pushed by you in v13.
-
-I could be wrong but your idea was to prepare for future support of
-other patch that would set the default_trigger to the mac80211 tpt.
-
-We might got both confused by default_trigger and default_state.
-default_trigger is actually never set and is NULL (actually it's 0)
-
-We have other 2 patch that adds tpt rates for the mac80211 LED trigger
-and set this trigger as the default one but honestly I would chose a
-different implementation than hardcoding everything.
-
-If it's ok for you, I would drop the comment and the default_trigger and
-I will send a follow-up patch to this adding DT support by using
-led_classdev_register_ext and defining init_data.
-(and this indirectly would permit better LED naming and defining of
-default-trigger in DT)
-
-Also ideally I will also send a patch for default_state following
-standard LED implementation. (to set default_state in DT)
-
-I would prefer this approach as the LED patch already took way too much
-time and I think it's better to merge this initial version and then
-improve it.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r013-20230616   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r043-20230616   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r003-20230616   gcc  
+arm                  randconfig-r033-20230616   gcc  
+arm                  randconfig-r046-20230616   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r036-20230616   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r022-20230616   gcc  
+csky                 randconfig-r034-20230616   gcc  
+hexagon              randconfig-r041-20230616   clang
+hexagon              randconfig-r045-20230616   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230616   clang
+i386         buildonly-randconfig-r005-20230616   clang
+i386         buildonly-randconfig-r006-20230616   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230616   clang
+i386                 randconfig-i002-20230616   clang
+i386                 randconfig-i003-20230616   clang
+i386                 randconfig-i004-20230616   clang
+i386                 randconfig-i005-20230616   clang
+i386                 randconfig-i006-20230616   clang
+i386                 randconfig-i011-20230616   gcc  
+i386                 randconfig-i012-20230616   gcc  
+i386                 randconfig-i013-20230616   gcc  
+i386                 randconfig-i014-20230616   gcc  
+i386                 randconfig-i015-20230616   gcc  
+i386                 randconfig-i016-20230616   gcc  
+i386                 randconfig-r005-20230616   clang
+i386                 randconfig-r006-20230616   clang
+i386                 randconfig-r011-20230616   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r004-20230616   gcc  
+loongarch            randconfig-r031-20230616   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze           randconfig-r021-20230616   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r002-20230616   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r016-20230616   gcc  
+openrisc             randconfig-r025-20230616   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r035-20230616   clang
+riscv                randconfig-r042-20230616   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230616   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r024-20230616   gcc  
+sh                   randconfig-r032-20230616   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r026-20230616   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230616   clang
+x86_64       buildonly-randconfig-r002-20230616   clang
+x86_64       buildonly-randconfig-r003-20230616   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230616   clang
+x86_64               randconfig-a002-20230616   clang
+x86_64               randconfig-a003-20230616   clang
+x86_64               randconfig-a004-20230616   clang
+x86_64               randconfig-a005-20230616   clang
+x86_64               randconfig-a006-20230616   clang
+x86_64               randconfig-a011-20230616   gcc  
+x86_64               randconfig-a012-20230616   gcc  
+x86_64               randconfig-a013-20230616   gcc  
+x86_64               randconfig-a014-20230616   gcc  
+x86_64               randconfig-a015-20230616   gcc  
+x86_64               randconfig-a016-20230616   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
 -- 
-	Ansuel
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 ath10k mailing list
