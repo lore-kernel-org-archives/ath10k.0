@@ -4,79 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3EC0EB64DC
-	for <ath10k@archiver.kernel.org>; Mon, 26 Jun 2023 02:43:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54E7FEB64DC
+	for <ath10k@archiver.kernel.org>; Tue, 27 Jun 2023 01:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jH+/b7mkM4ifgF/SJZhy/7BOo7tbEoloRcS1kOQON8Y=; b=BdcJunNiyLU9Q4
-	W/zeAmoalox9xGNfZZj+3KPDmkg5HOL7xRiL3kQ/9e+Gv+OjZ+u+WKcTUK39RPWxcCnFe8K8Lgm6Y
-	KM1kkqBpLytIDY0JfsBR4ap0St2neMw2H+Z36RULoJdpaXrCgBekIh3Ct6mMtVqn6RZMwkf7ooYWZ
-	1GVu/NTdlBjEa+RLBXzPHc0Bz36GOQprdl3voRkSuew58vJvadtYYo8z/bf8GXoFAkxTws+N8FMjQ
-	qyxJD+DNFE09XRKAAllF/HkZRVfIAUkz1XG+7lCK/ATOrUy/ZqN4AKwR+YK6OlZZuSQSokAw7nsup
-	dgvbvCtmkfk71RztPbcA==;
+	List-Owner; bh=tpwMo8GN8AGNVECsIOnvztiNJ0C3+/itB6CSC2Kpx0I=; b=wA/UvmUd2+AJo9
+	snyHjEBCae0IgvUVeB+K+5bHbeQqsoD9Osfg3mXDJKfI+Tw9NUJER69QxRqASrJDl7OztrG5D0lpj
+	i8dVdVeqYI1A3AjvLNKl3ismoC+5ORQ/fkTWjBEiwhdQqSLr1+6TT7B1LI4fSUEgmrKSuamdS9uaG
+	t6NRp3ValFIlr9joixHPopWNcx9W3e4AVCmWJomL3iqPmSOCYSMaF//et8aEZmtL59+kwFK/eCZck
+	SAB5yRYbmg0/Bw4qGfyUCwlgM8KSmlsm5huUOumFsm3JYyd3h4PLw81oTytczXK0ihxi+Q36Yk1CI
+	gBY/PgprUm/wsx9eikrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDcBx-009ASb-2a;
-	Mon, 26 Jun 2023 02:43:01 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1qDxH5-00BLMm-0w;
+	Tue, 27 Jun 2023 01:13:43 +0000
+Received: from mga04.intel.com ([192.55.52.120])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDcBu-009ARV-0z
+	id 1qDxH2-00BLLc-2G
 	for ath10k@lists.infradead.org;
-	Mon, 26 Jun 2023 02:42:59 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35Q21jSx011022;
-	Mon, 26 Jun 2023 02:42:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=YUHdgf3PzCUbbrU5PgZQ+33VeZimYf6Bv6NUP6dDX98=;
- b=UeXgh+0za+LlVHvnOql4WyhAeVrAdJtVtGM0sehK+KYnBKBjqsINNeK9YrsKQRiY+wtn
- /ko05VHapVCN9gT4t+UxpCzBG1JEOniS4e9pbYY3Puzc+RtMRYAAQEu3TxQepUeSeQDB
- siwM3R3CrPSZZuP9sK6Ihhn94FGyLrPKr2Gsav4XPtaN5I4adc3hZfnIPJ7lmRXLesGE
- VQowOgaD1sLAhSf/c13jfedoDDgCVhJztMAFoSQxuGSNtult7JCFvEqNEqjCVWB9jrAq
- lAalpx44wdHCyeOt3m2TSuWvhQCjv18zM0k2yF10UX13g+iOQWwJSlWs1prIP25V3FXy Gg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rev820bmj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Jun 2023 02:42:56 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 35Q2gtCl016684
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Jun 2023 02:42:55 GMT
-Received: from wgong-HP3-Z230-SFF-Workstation.qca.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.42; Sun, 25 Jun 2023 19:42:54 -0700
-From: Wen Gong <quic_wgong@quicinc.com>
-To: <ath10k@lists.infradead.org>
-CC: <linux-wireless@vger.kernel.org>, <quic_wgong@quicinc.com>
-Subject: [PATCH] wifi: ath10k: indicate to mac80211 scan complete with aborted flag for ATH10K_SCAN_STARTING state
-Date: Sun, 25 Jun 2023 22:42:32 -0400
-Message-ID: <20230626024232.15579-1-quic_wgong@quicinc.com>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: pXzqzKFmHNIp4bcv8swHypuYCDLMmOiL
-X-Proofpoint-GUID: pXzqzKFmHNIp4bcv8swHypuYCDLMmOiL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-06-25_16,2023-06-22_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 bulkscore=0 clxscore=1011 impostorscore=0 mlxscore=0
- spamscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2305260000 definitions=main-2306260023
+	Tue, 27 Jun 2023 01:13:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687828420; x=1719364420;
+  h=date:from:to:cc:subject:message-id;
+  bh=TapBWPTLNrbgSNCzdpQfPyPlDd4hR7fH4cshfQAXirc=;
+  b=Bm6D5DF7DJaC2hTqTR/2MAte0xljeCtQSbTQB4rPU5jW6a3Slb95HG9z
+   alFiBNAnx1dSKNNhGHWCDtxTGY8VTu+WJGCJZG+wMzlRAMaq0e6EnLsz2
+   IareeQnUcjMBe6ZrE9TAxRw/1e+J1pA10hPTGOW6J39LkbycB7WB6Scbi
+   EYfmP33jpRcKUqai3EHW+CxGFfMyGlftm9TR4ZPUhXiVgg3QeHdeguM1y
+   ATiGSNpL86j4jVXIpiYX/24rg4Agc37LFb4bktZhhIOk5PyqNFJLwHTJ2
+   V7lE5q4WDaHRjTQpxAvottv2n/jJM0BrPTquvWWPlgpWjMIFmh+3jwUT9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="360301214"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="360301214"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 18:13:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="890481456"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="890481456"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 26 Jun 2023 18:13:36 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qDxGx-000BDb-1e;
+	Tue, 27 Jun 2023 01:13:35 +0000
+Date: Tue, 27 Jun 2023 09:13:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ 12ec37be3faf9df7831ce210947f111b3417baf3
+Message-ID: <202306270910.0dRihCZq-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230625_194258_376353_E44D3AD6 
-X-CRM114-Status: GOOD (  18.25  )
+X-CRM114-CacheID: sfid-20230626_181340_749639_B36E5C9D 
+X-CRM114-Status: UNSURE (   4.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,80 +77,118 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Scan failure can not be recovered from when running a loop of the
-following steps:
-1. run scan: "iw wlan scan".
-2. run command: echo soft > /sys/kernel/debug/ieee80211/phy0/ath10k/simulate_fw_crash
-   immediately after step 1.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: 12ec37be3faf9df7831ce210947f111b3417baf3  wifi: ath10k: improve structure padding
 
-result:
-scan failed and can not recover even when wlan recovery succeeds:
-command failed: Device or resource busy (-16)
+elapsed time: 7445m
 
-reason:
-When scan arrives, WMI_START_SCAN_CMDID is sent to the firmware and
-function ath10k_hw_scan() returns, then simulate_fw_crash arrives
-and the scan started event does not arrive, and then it starts to do
-recovery of wlan. __ath10k_scan_finish() which is called from
-ath10k_halt() is one step of recovery, it will not call
-ieee80211_scan_completed() by logic currently because the scan state is
-ATH10K_SCAN_STARTING. Thus it leads the scan not being completed in
-mac80211, and leads all consecutive scans failing with -EBUSY in
-nl80211_trigger_scan even after wlan recovery success.
+configs tested: 90
+configs skipped: 6
 
-Indicate scan complete with aborted flag to mac80211 for
-ATH10K_SCAN_STARTING to allow recovery from scan failed with "Device or
-resource busy (-16)" after wlan recovery.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00174
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r004-20230622   gcc  
+arm                  randconfig-r006-20230622   gcc  
+arm                  randconfig-r036-20230621   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r013-20230621   clang
+csky                                defconfig   gcc  
+hexagon              randconfig-r005-20230622   clang
+hexagon              randconfig-r031-20230621   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230621   gcc  
+i386         buildonly-randconfig-r005-20230621   gcc  
+i386         buildonly-randconfig-r006-20230621   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230621   gcc  
+i386                 randconfig-i002-20230621   gcc  
+i386                 randconfig-i003-20230621   gcc  
+i386                 randconfig-i004-20230621   gcc  
+i386                 randconfig-i005-20230621   gcc  
+i386                 randconfig-i006-20230621   gcc  
+i386                 randconfig-i011-20230621   clang
+i386                 randconfig-i012-20230621   clang
+i386                 randconfig-i013-20230621   clang
+i386                 randconfig-i014-20230621   clang
+i386                 randconfig-i015-20230621   clang
+i386                 randconfig-i016-20230621   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r033-20230621   gcc  
+microblaze           randconfig-r003-20230622   gcc  
+microblaze           randconfig-r011-20230621   gcc  
+microblaze           randconfig-r035-20230621   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r015-20230621   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r002-20230622   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                       holly_defconfig   gcc  
+powerpc                     mpc512x_defconfig   clang
+powerpc                 mpc8315_rdb_defconfig   clang
+powerpc              randconfig-r012-20230621   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r034-20230621   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r001-20230622   gcc  
+sh                          rsk7203_defconfig   gcc  
+sh                          rsk7264_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r016-20230621   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230621   gcc  
+x86_64       buildonly-randconfig-r002-20230621   gcc  
+x86_64       buildonly-randconfig-r003-20230621   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r032-20230621   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                  audio_kc705_defconfig   gcc  
 
-Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 7675858f069b..c77837b50aa8 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4503,18 +4503,21 @@ void __ath10k_scan_finish(struct ath10k *ar)
- 		break;
- 	case ATH10K_SCAN_RUNNING:
- 	case ATH10K_SCAN_ABORTING:
-+		if (ar->scan.is_roc && ar->scan.roc_notify)
-+			ieee80211_remain_on_channel_expired(ar->hw);
-+		fallthrough;
-+	case ATH10K_SCAN_STARTING:
- 		if (!ar->scan.is_roc) {
- 			struct cfg80211_scan_info info = {
--				.aborted = (ar->scan.state ==
--					    ATH10K_SCAN_ABORTING),
-+				.aborted = ((ar->scan.state ==
-+					    ATH10K_SCAN_ABORTING) ||
-+					    (ar->scan.state ==
-+					    ATH10K_SCAN_STARTING)),
- 			};
- 
- 			ieee80211_scan_completed(ar->hw, &info);
--		} else if (ar->scan.roc_notify) {
--			ieee80211_remain_on_channel_expired(ar->hw);
- 		}
--		fallthrough;
--	case ATH10K_SCAN_STARTING:
-+
- 		ar->scan.state = ATH10K_SCAN_IDLE;
- 		ar->scan_channel = NULL;
- 		ar->scan.roc_freq = 0;
-
-base-commit: 0a00db612b6df1fad80485e3642529d1f28ea084
 -- 
-2.40.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 ath10k mailing list
