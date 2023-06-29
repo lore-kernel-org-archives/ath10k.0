@@ -4,67 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F5CFEB64D9
-	for <ath10k@archiver.kernel.org>; Tue, 27 Jun 2023 01:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBC7FEB64DD
+	for <ath10k@archiver.kernel.org>; Thu, 29 Jun 2023 03:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FqESA8PtpSjwoo7oXQxAd0mXV0YtLkD6bAWsgs0OnTE=; b=f26YxRR82/5CHx
-	brSOEIT7Ury0ZdM6OwBcJm4sbvkTL1gHD52p089l1FqrShdu3jlB2CxFBdPL3kBd3anSQYv2ONtSD
-	yuinngnkUHAx61r4a9HMXSMnwVeUMJEy7BUYFqN4oOeGF9/Qe9Vr3gp0JJpSqaLhq3SfBoI+OdQ/5
-	f5Dem/mgWpPB62v+PuQnapgnRLnRL59C+Kt6dkEaP0o/akjwY1jDYUJD7B/jnXNef/tUSBo0lim7L
-	QjNKsguq636h6ZT4GPlD5yWS3DctqpDlgQgZS3fNg3NKMeBO7QlQ/si1ZLSB/G2gRewqCnRCmcqF9
-	bTct8ocOGIhnq9ybEhFA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mHzBwr0Zb04zn7ijjIF1/1+xOBA5cpcZoxCvvZHKJJE=; b=y6LugqFC6UPxhW
+	UGf03TZCLupAPsPZYNyzYPRGu96RS07ifIR+tPdreMGYiDvX+YO31vqCI+T/6AeC77f7/iaLrq2kI
+	MyZg0amj8ew9cd77clP53OYqTR9MqKG7M4ggOFuI3D0uM5J+wI3dTXBmf/Snu8F9eCQOw894lLLR3
+	kvfXOqTZZamInWGWo81duVZckahN886J3NA+U/SQFwwYoJ/2xJJC+UgUdE1l8hJ2hZpFgXXITg7eV
+	am7zEqJkn4aiSFLOP7o//9Ye1MJgzCPAbHcWIvgMG0MwPWCdQ/XxA3AhqcZFknoK0uosW8E8lYtY8
+	oIY3u+7srqDIo+4ELL4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDxVk-00BNWT-0R;
-	Tue, 27 Jun 2023 01:28:52 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1qEijT-00HSX0-2m;
+	Thu, 29 Jun 2023 03:54:11 +0000
+Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDxVh-00BNVT-0R
+	id 1qEijR-00HSVs-0x
 	for ath10k@lists.infradead.org;
-	Tue, 27 Jun 2023 01:28:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687829329; x=1719365329;
-  h=date:from:to:cc:subject:message-id;
-  bh=pkNUw8U7Sy3VemPOFRy9cwz0bk94XrM0ek2iytxiyDc=;
-  b=RLTBeagGQj3iPDPVLA5LZCmd6N9PUjMWlFximy1ZEpJ+VoDYNNNOvVRh
-   hn4Om6GI9b/y+22EVHXOhytDKaBVjBtP3r412UALpr3ZTww5Zo6AE7WPc
-   gR/OIq96gYpYgtLMm0SzYmfLXEIOLNxC5kxuNQjRTdtBXp51BGRU18gUv
-   pkj0fGJqwUDI+n1fQmwv2ldL+gH+kCK8R2vJVF2THzYv6jvvStf+/Z1nN
-   2JnFXsHKa2Zvu1/K88n1MmVIo/J/K7ukcZcEUcd3FkLwUy4vQ/Ba/+qwq
-   5Ek1mNDg3m/UFoXANx4PYv1QMnqzzjnqojUHKYLoyTRC+GsXVwSrBDG3Q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="341779980"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="341779980"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 18:28:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="710433407"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="710433407"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 26 Jun 2023 18:28:46 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qDxVd-000BXC-31;
-	Tue, 27 Jun 2023 01:28:45 +0000
-Date: Tue, 27 Jun 2023 09:28:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- debceb36da40be09e0b6a19395a31c2408c4a645
-Message-ID: <202306270902.3Cy229dP-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Thu, 29 Jun 2023 03:54:10 +0000
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-557790487feso196381a12.0
+        for <ath10k@lists.infradead.org>; Wed, 28 Jun 2023 20:54:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1688010847; x=1690602847;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g2AHgNaBFK8JfNASOhLGds08CbGR9PY3Il9QtABWRh4=;
+        b=et3Vu15oD0I0/VTYf3k59eeXyPxFA0clBBCUdHY1eXEFWGvj23bz+/zkFatUsDfBch
+         IR+g/aHslPcC8iJreUR+tFMscRb6bLCjoLCrLTg+pc5CL/NHCvLT1Bez57oah4Kzbj9N
+         G9klaQXXF9rXjC7VFINlryTVLbGlwBCQ2vrcM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688010847; x=1690602847;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g2AHgNaBFK8JfNASOhLGds08CbGR9PY3Il9QtABWRh4=;
+        b=igePEf5TjCA8EWiVpCt2zR2a43WudlM8xMv/WoAjvuRdq8pr63ljkSCdAJV8frXo7U
+         1aadkrq0T68G94KnwYnIjP3uUMmvlih4SqZjd74qBmflM7fZ88/gw5tifsm3jmoaRYg1
+         tCB3+tfpkMVoXDcx67pQA/lCoxkD/aqTGg8ci9fIl46x+MRlTYPlekEvTaty65lNZXHK
+         vSg//gVqShTLgJLFdhFq68vfXKCGcC3EUkAmSlcuKviFhEeg6WnHYSixdKf2QZgT4g9N
+         XOF/FN3mAx6/cDoYoWQTDjzYm9b4VlOy8PWOW8VAhRuEsuO5cmG69756WbprvXi7eAQE
+         /GVQ==
+X-Gm-Message-State: AC+VfDzA0TwBvLk2ugPKU8c0oDj3W3ItCxVa/jyymnlYxaEoI41KU+wF
+	CSzLqDdXvbRhEKDKPi9wgyxLwA==
+X-Google-Smtp-Source: ACHHUZ6ERoeG3uQAKmubsGmF14KTacE2DDCjpJbY0mZaPsbsZ/WEjLnqr+/Rj0L6NaJstrbDu/M8GA==
+X-Received: by 2002:a05:6a20:7d96:b0:12b:fe14:907e with SMTP id v22-20020a056a207d9600b0012bfe14907emr5996043pzj.20.1688010847675;
+        Wed, 28 Jun 2023 20:54:07 -0700 (PDT)
+Received: from kuabhs-cdev.c.googlers.com.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
+        by smtp.gmail.com with ESMTPSA id r19-20020a634413000000b005579f12a238sm7019842pga.86.2023.06.28.20.54.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jun 2023 20:54:07 -0700 (PDT)
+From: Abhishek Kumar <kuabhs@chromium.org>
+To: johannes.berg@intel.com,
+	kvalo@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kuabhs@chromium.org,
+	netdev@vger.kernel.org,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH 2/2] ath10k: mac: enable WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON on ath10k
+Date: Thu, 29 Jun 2023 03:52:55 +0000
+Message-ID: <20230629035254.2.I23c5e51afcc6173299bb2806c8c38364ad15dd63@changeid>
+X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
+In-Reply-To: <20230629035254.1.I059fe585f9f9e896c2d51028ef804d197c8c009e@changeid>
+References: <20230629035254.1.I059fe585f9f9e896c2d51028ef804d197c8c009e@changeid>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230626_182849_186783_0C855DE2 
-X-CRM114-Status: UNSURE (   4.27  )
+X-CRM114-CacheID: sfid-20230628_205409_353337_02898D74 
+X-CRM114-Status: UNSURE (   8.96  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,163 +89,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: debceb36da40be09e0b6a19395a31c2408c4a645  Merge branch 'pending' into master-pending
+Enabling this flag, ensures that reg_call_notifier is called
+on beacon hints from handle_reg_beacon in cfg80211. This call
+propagates the channel property changes to ath10k driver, thus
+changing the channel property from passive scan to active scan
+based on beacon hints.
+Once the channels are rightly changed from passive to active,the
+connection to hidden SSID does not fail.
 
-elapsed time: 7459m
+Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+---
 
-configs tested: 135
-configs skipped: 7
+ drivers/net/wireless/ath/ath10k/mac.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r031-20230621   gcc  
-arc                  randconfig-r043-20230621   gcc  
-arc                  randconfig-r043-20230626   gcc  
-arc                           tb10x_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                        multi_v7_defconfig   gcc  
-arm                          pxa168_defconfig   clang
-arm                             pxa_defconfig   gcc  
-arm                  randconfig-r004-20230622   gcc  
-arm                  randconfig-r006-20230622   gcc  
-arm                  randconfig-r046-20230621   gcc  
-arm                  randconfig-r046-20230626   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r034-20230621   gcc  
-hexagon              randconfig-r005-20230622   clang
-hexagon              randconfig-r041-20230621   clang
-hexagon              randconfig-r041-20230626   clang
-hexagon              randconfig-r045-20230621   clang
-hexagon              randconfig-r045-20230626   clang
-i386                             alldefconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230621   gcc  
-i386         buildonly-randconfig-r004-20230626   clang
-i386         buildonly-randconfig-r005-20230621   gcc  
-i386         buildonly-randconfig-r005-20230626   clang
-i386         buildonly-randconfig-r006-20230621   gcc  
-i386         buildonly-randconfig-r006-20230626   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230621   gcc  
-i386                 randconfig-i001-20230626   clang
-i386                 randconfig-i002-20230621   gcc  
-i386                 randconfig-i002-20230626   clang
-i386                 randconfig-i003-20230621   gcc  
-i386                 randconfig-i003-20230626   clang
-i386                 randconfig-i004-20230621   gcc  
-i386                 randconfig-i004-20230626   clang
-i386                 randconfig-i005-20230621   gcc  
-i386                 randconfig-i005-20230626   clang
-i386                 randconfig-i006-20230621   gcc  
-i386                 randconfig-i006-20230626   clang
-i386                 randconfig-i011-20230621   clang
-i386                 randconfig-i012-20230621   clang
-i386                 randconfig-i013-20230621   clang
-i386                 randconfig-i014-20230621   clang
-i386                 randconfig-i015-20230621   clang
-i386                 randconfig-i016-20230621   clang
-i386                 randconfig-r026-20230621   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r023-20230621   gcc  
-m68k                             alldefconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze           randconfig-r003-20230622   gcc  
-microblaze           randconfig-r013-20230621   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip22_defconfig   clang
-mips                malta_qemu_32r6_defconfig   clang
-nios2                         3c120_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r024-20230621   gcc  
-nios2                randconfig-r025-20230621   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r002-20230622   gcc  
-parisc               randconfig-r012-20230621   gcc  
-parisc               randconfig-r016-20230621   gcc  
-parisc               randconfig-r032-20230621   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                     mpc512x_defconfig   clang
-powerpc                 mpc837x_rdb_defconfig   gcc  
-powerpc                      pcm030_defconfig   gcc  
-powerpc              randconfig-r011-20230621   clang
-powerpc              randconfig-r021-20230621   clang
-powerpc                     tqm8540_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r015-20230621   clang
-riscv                randconfig-r042-20230621   clang
-riscv                randconfig-r042-20230626   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r036-20230621   gcc  
-s390                 randconfig-r044-20230621   clang
-s390                 randconfig-r044-20230626   gcc  
-sh                               allmodconfig   gcc  
-sh                   randconfig-r001-20230622   gcc  
-sh                          rsk7201_defconfig   gcc  
-sh                          rsk7203_defconfig   gcc  
-sh                          rsk7264_defconfig   gcc  
-sh                           se7619_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r033-20230621   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r035-20230621   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230621   gcc  
-x86_64       buildonly-randconfig-r001-20230626   clang
-x86_64       buildonly-randconfig-r002-20230621   gcc  
-x86_64       buildonly-randconfig-r002-20230626   clang
-x86_64       buildonly-randconfig-r003-20230621   gcc  
-x86_64       buildonly-randconfig-r003-20230626   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                  audio_kc705_defconfig   gcc  
-xtensa                generic_kc705_defconfig   gcc  
-xtensa                         virt_defconfig   gcc  
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 7675858f069b..12df3228b120 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -10033,6 +10033,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 
+ 	ar->hw->wiphy->features |= NL80211_FEATURE_STATIC_SMPS;
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_IBSS_RSN;
++	ar->hw->wiphy->flags |= WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON;
+ 
+ 	if (ar->ht_cap_info & WMI_HT_CAP_DYNAMIC_SMPS)
+ 		ar->hw->wiphy->features |= NL80211_FEATURE_DYNAMIC_SMPS;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0.162.gfafddb0af9-goog
+
 
 _______________________________________________
 ath10k mailing list
