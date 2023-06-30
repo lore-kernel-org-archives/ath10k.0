@@ -4,81 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56F46EB64D9
-	for <ath10k@archiver.kernel.org>; Thu, 29 Jun 2023 03:54:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AC26EB64DC
+	for <ath10k@archiver.kernel.org>; Fri, 30 Jun 2023 22:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JvdoKthakGle7+0jUgEwKl8qqGg1MAyl0yg+h+qFtDA=; b=AIOCZaXENO7MKd
-	BkQsQWXbzk2DwY2/GnoY6L3b2j7EVkuHAUdSnpFfzGS5V36optd7+zmNZmgaNivVdhO9r1F6w49SJ
-	VABH2gx0iUygvG32epH5Fm1vmT/bcRa/2yX41M+NipKLWZYLVgtjPRaFGvQRtdAwSzSemBa0GB3d1
-	IlXyEYiiPx2DgEhNEOXxSPUHjY20aThttlc1g+zC85OmP1+3Dgpv/gTLf6LciHGFrGkh1OpEmjHT5
-	YwOhCGnlgLiB+E5AyCI0SD2ULUw+f377tZUdRFIBJ/emOzqacNCOUa+X3/uIkHBYVE4VbST4L5vdm
-	yQfVGZQWvUF7Tbdpluiw==;
+	List-Owner; bh=GUvRyPoQWDZOa63qeaNb2wXrnd/cs6ZRtBCXQgFBS7k=; b=QeLUBf2qO0LKeL
+	V7iAV51H3W30JYlgzIe3QWp7e3A5MZXg48NuGvYANfqsewAme6iMo38M06JdNxZC39qfN15sMbMPw
+	cJw77nfvX+P3oNakW65n/qwKFz5JnIDXW+uuFN2pi9ou1eaWYYYJHGy1j9Vd7ReIUFia9NxtoFLW6
+	JC7MLVMmb/20C+hsAgfCJlHEC046RZD4hRBlD7QFB37opx+y4qDJ2RkHmO93kGl1V6lP82s2Jzd3S
+	ry/21GpA9RguVEdYKK8X8dWK/DGvr+iY5nfOYx+nnkpXs3aZqpI9Qy1VdpDVw+nUND98rV40V7bqS
+	YWum841HKJMdlE2N7R4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qEijN-00HSVb-0T;
-	Thu, 29 Jun 2023 03:54:05 +0000
-Received: from mail-pg1-x531.google.com ([2607:f8b0:4864:20::531])
+	id 1qFMSI-004fS6-2b;
+	Fri, 30 Jun 2023 22:19:06 +0000
+Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qEijK-00HSV2-1Y
+	id 1qFMSF-004fQn-1s
 	for ath10k@lists.infradead.org;
-	Thu, 29 Jun 2023 03:54:03 +0000
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-543c692db30so192648a12.3
-        for <ath10k@lists.infradead.org>; Wed, 28 Jun 2023 20:54:00 -0700 (PDT)
+	Fri, 30 Jun 2023 22:19:05 +0000
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6689430d803so1430511b3a.0
+        for <ath10k@lists.infradead.org>; Fri, 30 Jun 2023 15:18:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1688010840; x=1690602840;
+        d=chromium.org; s=google; t=1688163536; x=1690755536;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PgRCWuAL+JILQAuJVgnpzN1VGDR5+ycwundGmuPsvAc=;
-        b=Zp7/05od1Hzmg3DamsY4xVwfn6tMykIurlQXX5Rz4Xuof4ze/XQSv561GpHeqSpoKh
-         2v+EzzaIXKRz/2+ZwPdbePYm00aj+7lpLYrNJ4hAYEhBfPYw1efyvEasC85ra7aPmZY2
-         HvVIPX6DZQ3ldkpxDKKby+eFfCylabLuTSQA0=
+        bh=c4o3ZFseb13xRGcd/vSc40J69/E/2IGFhPuLqlwM6WM=;
+        b=dKmcBva0OfXgsyn4nQpgyo+dwwZZeAnKPUA9crG7kZIxfR7ngBVv3Vysn6FqjqTuKO
+         D0egZDk+Y/RXo/h3c3qJZ7pkO7BYLkTiEx1xqfrRBsq9rYXgFhQ0dGrLbbO3ei1PVsUi
+         0YuKesC1cB2chTzjq87WlDtVOK7bVmVQ/XJkA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688010840; x=1690602840;
+        d=1e100.net; s=20221208; t=1688163536; x=1690755536;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=PgRCWuAL+JILQAuJVgnpzN1VGDR5+ycwundGmuPsvAc=;
-        b=DiqSiJF5zxpwpc8EHyr/evS1wnoBvWnbFTvcVm7AJq+WDx/cQoO9fC3InTFXZYt/Pi
-         W1q6bZj5clORWntJd0lgix4zF5DC0frdmlgt51YcOBrnbA9Orp9+etQgOKZDqdN57f1p
-         /mQMHN5IC5s6JrSxkgFWxmjY5Fa+BS1BFr7yTNzwvYryLsuj2oO9XKUwnj1DaxUxlRdM
-         gSPrPhqRI8MUHEDtBJlcx0aLmsjQs+sZ14l7Ir3/Kr0lOCwEzd+zDdQ4jwKk986T5kZX
-         F4dSGD2ni/7NKAStfy+YcbNT0u0sJb18vOrdGJdaZrq8BCTPMZo8LOP+UuUc4nPNYSpN
-         qpFA==
-X-Gm-Message-State: AC+VfDw9sMb9jU8WNhgSlYaJo1UdtHBGA6KVjeulMP+X4zHfoUoDrK35
-	J49e0x3QoLE37gspJXty9OyVTE8GT6nF0iRcYo8=
-X-Google-Smtp-Source: ACHHUZ6y8ticW17Bm2FXqsOoVj+oMchk8icLpia+Wu94tK8W+NMrPIcN6NkM7fNXF21kuk4TIlr51g==
-X-Received: by 2002:a05:6a20:1605:b0:115:83f:fce1 with SMTP id l5-20020a056a20160500b00115083ffce1mr48159642pzj.5.1688010839715;
-        Wed, 28 Jun 2023 20:53:59 -0700 (PDT)
-Received: from kuabhs-cdev.c.googlers.com.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
-        by smtp.gmail.com with ESMTPSA id r19-20020a634413000000b005579f12a238sm7019842pga.86.2023.06.28.20.53.58
+        bh=c4o3ZFseb13xRGcd/vSc40J69/E/2IGFhPuLqlwM6WM=;
+        b=khfxGJvEq4PMqsF5PQg6FO4o1GfS+zcJdHtwrIvVF06SEV3K5AO40Rei4tzJdTcgjA
+         3qok3heacj3EAigLYRzkRi6BckSZWkv7QJUgCCUbbl8FNKvmy2vzPg2ejHZKjjE2Wc8e
+         nhNf0JtWfqmqE6/aN38j4iCwmnwgPGyYkVOGr4Bz4JOrimUz1GpN559jz9HGhKOhQZB1
+         xKvFp1DIfRQSdEr1+c+gShEM8BSfgCEhWBrIMrChhm8qYOwPYNoD7I0YifcqjTNsyK7w
+         9PYNHX0pcrPolIdzQ2XPi0QdfGQWvXlqdzQbI6K78KvW22r19RsRP4rLvIbNRDxW5sK9
+         E7KA==
+X-Gm-Message-State: AC+VfDz9Cx0uNnsESd9dsLmMECaYCYd0mHa+JIVl5LiMSfpJB+HIBCZG
+	GDemMANFuDWE+dRUGztdwKi1CZLVW95olKsnDzRKPg==
+X-Google-Smtp-Source: ACHHUZ4E9KsvcvrdsLT2UhvwmcJ8MWz5jYHXp+x6WBZkfvJjVbi0TNr0D8qwKq+4v/R/D8uhAvC9+A==
+X-Received: by 2002:a05:6a20:948a:b0:12b:de8:929d with SMTP id hs10-20020a056a20948a00b0012b0de8929dmr2662683pzb.16.1688163536499;
+        Fri, 30 Jun 2023 15:18:56 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:e9c4:8375:7234:e6c2])
+        by smtp.gmail.com with ESMTPSA id u9-20020a170902e5c900b001b67a2896bdsm9653480plf.274.2023.06.30.15.18.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jun 2023 20:53:59 -0700 (PDT)
-From: Abhishek Kumar <kuabhs@chromium.org>
-To: johannes.berg@intel.com,
-	kvalo@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kuabhs@chromium.org,
-	netdev@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH 1/2] wifi: cfg80211: call reg_call_notifier on beacon hints
-Date: Thu, 29 Jun 2023 03:52:54 +0000
-Message-ID: <20230629035254.1.I059fe585f9f9e896c2d51028ef804d197c8c009e@changeid>
-X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
+        Fri, 30 Jun 2023 15:18:55 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+To: ath10k@lists.infradead.org
+Cc: Abhishek Kumar <kuabhs@chromium.org>,
+	Youghandhar Chintala <quic_youghand@quicinc.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH] ath10k: Don't touch the CE interrupt registers after power up
+Date: Fri, 30 Jun 2023 15:18:43 -0700
+Message-ID: <20230630151842.1.If764ede23c4e09a43a842771c2ddf99608f25f8e@changeid>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230628_205402_564171_F0CA783E 
-X-CRM114-Status: GOOD (  16.09  )
+X-CRM114-CacheID: sfid-20230630_151903_636798_52558DA5 
+X-CRM114-Status: GOOD (  15.25  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,98 +90,116 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Currently the channel property updates are not propagated to
-driver. This causes issues in the discovery of hidden SSIDs and
-fails to connect to them.
-This change defines a new wiphy flag which when enabled by vendor
-driver, the reg_call_notifier callback will be trigger on beacon
-hints. This ensures that the channel property changes are visible
-to the vendor driver. The vendor changes the channels for active
-scans. This fixes the discovery issue of hidden SSID.
+As talked about in commit d66d24ac300c ("ath10k: Keep track of which
+interrupts fired, don't poll them"), if we access the copy engine
+register at a bad time then ath10k can go boom. However, it's not
+necessarily easy to know when it's safe to access them.
 
-Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+The ChromeOS test labs saw a crash that looked like this at
+shutdown/reboot time (on a chromeos-5.15 kernel, but likely the
+problem could also reproduce upstream):
+
+Internal error: synchronous external abort: 96000010 [#1] PREEMPT SMP
+...
+CPU: 4 PID: 6168 Comm: reboot Not tainted 5.15.111-lockdep-19350-g1d624fe6758f #1 010b9b233ab055c27c6dc88efb0be2f4e9e86f51
+Hardware name: Google Kingoftown (DT)
+...
+pc : ath10k_snoc_read32+0x50/0x74 [ath10k_snoc]
+lr : ath10k_snoc_read32+0x24/0x74 [ath10k_snoc]
+...
+Call trace:
+ath10k_snoc_read32+0x50/0x74 [ath10k_snoc ...]
+ath10k_ce_disable_interrupt+0x190/0x65c [ath10k_core ...]
+ath10k_ce_disable_interrupts+0x8c/0x120 [ath10k_core ...]
+ath10k_snoc_hif_stop+0x78/0x660 [ath10k_snoc ...]
+ath10k_core_stop+0x13c/0x1ec [ath10k_core ...]
+ath10k_halt+0x398/0x5b0 [ath10k_core ...]
+ath10k_stop+0xfc/0x1a8 [ath10k_core ...]
+drv_stop+0x148/0x6b4 [mac80211 ...]
+ieee80211_stop_device+0x70/0x80 [mac80211 ...]
+ieee80211_do_stop+0x10d8/0x15b0 [mac80211 ...]
+ieee80211_stop+0x144/0x1a0 [mac80211 ...]
+__dev_close_many+0x1e8/0x2c0
+dev_close_many+0x198/0x33c
+dev_close+0x140/0x210
+cfg80211_shutdown_all_interfaces+0xc8/0x1e0 [cfg80211 ...]
+ieee80211_remove_interfaces+0x118/0x5c4 [mac80211 ...]
+ieee80211_unregister_hw+0x64/0x1f4 [mac80211 ...]
+ath10k_mac_unregister+0x4c/0xf0 [ath10k_core ...]
+ath10k_core_unregister+0x80/0xb0 [ath10k_core ...]
+ath10k_snoc_free_resources+0xb8/0x1ec [ath10k_snoc ...]
+ath10k_snoc_shutdown+0x98/0xd0 [ath10k_snoc ...]
+platform_shutdown+0x7c/0xa0
+device_shutdown+0x3e0/0x58c
+kernel_restart_prepare+0x68/0xa0
+kernel_restart+0x28/0x7c
+
+Though there's no known way to reproduce the problem, it makes sense
+that it would be the same issue where we're trying to access copy
+engine registers when it's not allowed.
+
+Let's fix this by changing how we "disable" the interrupts. Instead of
+tweaking the copy engine registers we'll just use disable_irq() and
+enable_irq(). Then we'll configure the interrupts once at power up
+time.
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- include/net/cfg80211.h |  3 +++
- net/wireless/reg.c     | 20 ++++++++++++--------
- 2 files changed, 15 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/snoc.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 9e04f69712b1..48e6ebcdacb3 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -4783,6 +4783,8 @@ struct cfg80211_ops {
-  * @WIPHY_FLAG_SUPPORTS_EXT_KCK_32: The device supports 32-byte KCK keys.
-  * @WIPHY_FLAG_NOTIFY_REGDOM_BY_DRIVER: The device could handle reg notify for
-  *	NL80211_REGDOM_SET_BY_DRIVER.
-+ * @WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON: reg_call_notifier() is called if driver
-+ *	set this flag to update channels on beacon hints.
-  */
- enum wiphy_flags {
- 	WIPHY_FLAG_SUPPORTS_EXT_KEK_KCK		= BIT(0),
-@@ -4809,6 +4811,7 @@ enum wiphy_flags {
- 	WIPHY_FLAG_SUPPORTS_5_10_MHZ		= BIT(22),
- 	WIPHY_FLAG_HAS_CHANNEL_SWITCH		= BIT(23),
- 	WIPHY_FLAG_NOTIFY_REGDOM_BY_DRIVER	= BIT(24),
-+	WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON     = BIT(25),
- };
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 26214c00cd0d..2c39bad7ebfb 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -828,12 +828,20 @@ static void ath10k_snoc_hif_get_default_pipe(struct ath10k *ar,
  
- /**
-diff --git a/net/wireless/reg.c b/net/wireless/reg.c
-index 26f11e4746c0..c76bfaad650b 100644
---- a/net/wireless/reg.c
-+++ b/net/wireless/reg.c
-@@ -2149,6 +2149,13 @@ static bool reg_is_world_roaming(struct wiphy *wiphy)
- 	return false;
+ static inline void ath10k_snoc_irq_disable(struct ath10k *ar)
+ {
+-	ath10k_ce_disable_interrupts(ar);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	int id;
++
++	for (id = 0; id < CE_COUNT_MAX; id++)
++		disable_irq(ar_snoc->ce_irqs[id].irq_line);
  }
  
-+static void reg_call_notifier(struct wiphy *wiphy,
-+			      struct regulatory_request *request)
-+{
-+	if (wiphy->reg_notifier)
-+		wiphy->reg_notifier(wiphy, request);
-+}
-+
- static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
- 			      struct reg_beacon *reg_beacon)
+ static inline void ath10k_snoc_irq_enable(struct ath10k *ar)
  {
-@@ -2156,6 +2163,7 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
- 	struct ieee80211_channel *chan;
- 	bool channel_changed = false;
- 	struct ieee80211_channel chan_before;
-+	struct regulatory_request *lr = get_last_request();
+-	ath10k_ce_enable_interrupts(ar);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	int id;
++
++	for (id = 0; id < CE_COUNT_MAX; id++)
++		enable_irq(ar_snoc->ce_irqs[id].irq_line);
+ }
  
- 	sband = wiphy->bands[reg_beacon->chan.band];
- 	chan = &sband->channels[chan_idx];
-@@ -2181,8 +2189,11 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
- 		channel_changed = true;
+ static void ath10k_snoc_rx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
+@@ -1090,6 +1098,8 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar,
+ 		goto err_free_rri;
  	}
  
--	if (channel_changed)
-+	if (channel_changed) {
- 		nl80211_send_beacon_hint_event(wiphy, &chan_before, chan);
-+		if (wiphy->flags & WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON)
-+			reg_call_notifier(wiphy, lr);
-+	}
- }
++	ath10k_ce_enable_interrupts(ar);
++
+ 	return 0;
  
- /*
-@@ -2325,13 +2336,6 @@ static void reg_process_ht_flags(struct wiphy *wiphy)
- 		reg_process_ht_flags_band(wiphy, wiphy->bands[band]);
- }
+ err_free_rri:
+@@ -1253,8 +1263,8 @@ static int ath10k_snoc_request_irq(struct ath10k *ar)
  
--static void reg_call_notifier(struct wiphy *wiphy,
--			      struct regulatory_request *request)
--{
--	if (wiphy->reg_notifier)
--		wiphy->reg_notifier(wiphy, request);
--}
--
- static bool reg_wdev_chan_valid(struct wiphy *wiphy, struct wireless_dev *wdev)
- {
- 	struct cfg80211_chan_def chandef = {};
+ 	for (id = 0; id < CE_COUNT_MAX; id++) {
+ 		ret = request_irq(ar_snoc->ce_irqs[id].irq_line,
+-				  ath10k_snoc_per_engine_handler, 0,
+-				  ce_name[id], ar);
++				  ath10k_snoc_per_engine_handler,
++				  IRQF_NO_AUTOEN, ce_name[id], ar);
+ 		if (ret) {
+ 			ath10k_err(ar,
+ 				   "failed to register IRQ handler for CE %d: %d\n",
 -- 
-2.41.0.162.gfafddb0af9-goog
+2.41.0.255.g8b1d071c50-goog
 
 
 _______________________________________________
