@@ -4,86 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B35DEB64DC
-	for <ath10k@archiver.kernel.org>; Mon, 17 Jul 2023 12:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE32CEB64DA
+	for <ath10k@archiver.kernel.org>; Wed, 19 Jul 2023 06:30:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tmot3EF9Zh5BLDTRLp5GrCkdhQOE5YwLsE2mHu2N2zw=; b=CN5j/Ap+J06mfc
-	++UYSMRnxeNiLBUVREscy6mmh74/CCva9j1iX3EGRizgxeup4NFKV1PY94Xb2SvqQvTRyy1G2/BS6
-	cvfCjxOLZVLF3Rz5sQIdOOdAbfRJlKKyDoo/P3ZFiO4gGDx1gCSoqw7ifyACpRYOlf96DUzi8RtcX
-	EghCUvTaaYYD+HsBDQlMAxeWqnU6eQRBrdH4MDr95P/WC20G9E4eoFz9oDky7xnT+G0ErVYq0FmiV
-	47aGcVAACr4fZyItSmhpfZZuWOjJIiAu7igy9rSECClXdY44KFxkiv+/eAAnchBx5FgKdT0ZoOnHs
-	hGLh2r38+MTu0GVRx5vQ==;
+	List-Owner; bh=Wug471Z47dzF4FGDbcWKMq5/HOsjBUUK6+5pny+byiU=; b=TfgKNelc5ln0zm
+	TRKl97BeWl/36A+oxJ0gIZQGXQrWoXu/12FBPg+9YroqlGxHiMvlMzDk8/1tEYGDuZHbrkOqDbXMD
+	kPS7ElQuGQgLA2WSkcoRWATYiGrjUQ5rfjjn8YBTk1JkDpwu/X/ADy2luCa3+eLkNpEEcR+l37It6
+	4wGeZBhpyIit50LS3liTkD1g4ICuSbHnYKAz02Jt1J1FR1UVV1Sfqra3gY4LZS54uBuReQCtp0H+A
+	C+xHS0wHfSe9o08RdXAzecHXCnYt+fbP0Gmvp5SeSPnKPgjvjvgphVavUHJ5jdPpmTHQtV5Wf14nu
+	fyYx4ksu6K0+TZXYEHtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLN0P-003wgs-1y;
-	Mon, 17 Jul 2023 12:07:09 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1qM0he-005kp0-0j;
+	Wed, 19 Jul 2023 06:30:26 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLN0H-003wfH-2k
+	id 1qM0hc-005kny-0u
+	for ath10k@bombadil.infradead.org;
+	Wed, 19 Jul 2023 06:30:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=z0vyMeOfw7fSC/qxKnZBBj+xlz8lL8pZMksMNnnuzCg=; b=AZTD5wSbQygkz8XcJEu3l7RYcv
+	hUvZjOwCxjxJ51akFSMi1ECkLFT84uUyFiolVu6mTL5QOI8OvMGRo7x/o9DCIMfzttCz4F5dxPv6X
+	TSLTRDz/5gV3xAwCelT6O7rt/e5GcOSxaMpfrOob9wkGOA0uyZmcQvSgk7E/xeKTYjbbDS+6Uefal
+	YbACpMGS/bxR9xLXCFSXGyGqPW50zVkEl48BVYF+S8Rhbp0oHprIOAQuj6k8TdRSa/RRRIJ+EDMtw
+	GUKkXYBeDikuYPGWCijZ0+m8vYKWzQgfsRFvZLe0bbiR5rdVIiplfxkgR9dpr0qvKvNf3MVmrGT4K
+	874WD2KA==;
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qLgzI-00BMJI-0t
 	for ath10k@lists.infradead.org;
-	Mon, 17 Jul 2023 12:07:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689595621; x=1721131621;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=AAJmAZ+sXj0MECM7XPTmd1pa5VhGBIS57bxBnXZUE7M=;
-  b=OzLJ3HPWHPfBvhxDyh9IvK/vLAEyMNM1LzdDyqgm5Ouspdkfqs9gIcvZ
-   rmCy8RdQpnRi+7H5t5CwKiysVVHho0AcqBTKpS+ZHq8+RAjoESdTWBPYO
-   wV4SGD368VSevEimjtjK4qD0lpaThHyZYhzaE2hLC+bAd//t9J5Ev+zXb
-   ETxfyixfCs1J1Xg1z9a4Nz1vd9yJPpjEFI28paN5zHz7NA4sHBxrU28DW
-   Je0R8WzgeEnhi+rG9NR+etq/yIaggU8OO1NNKMjTNlMF7c0b0Q6yYfbCq
-   5+wJjMAMkPwiP1VrWw95H+GZLpEiEbjwKuQS6JP5gwzgw0SCH07SBKI0w
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="432081925"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="432081925"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:07:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="752876404"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="752876404"
-Received: from dkravtso-mobl1.ccr.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.45.233])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:06:55 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: linux-pci@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Michal Kazior <michal.kazior@tieto.com>,
-	Janusz Dziedzic <janusz.dziedzic@tieto.com>,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Dean Luick <dean.luick@cornelisnetworks.com>,
-	=?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v5 10/11] wifi: ath10k: Use RMW accessors for changing LNKCTL
-Date: Mon, 17 Jul 2023 15:05:02 +0300
-Message-Id: <20230717120503.15276-11-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230717120503.15276-1-ilpo.jarvinen@linux.intel.com>
-References: <20230717120503.15276-1-ilpo.jarvinen@linux.intel.com>
+	Tue, 18 Jul 2023 09:27:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1689672437;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z0vyMeOfw7fSC/qxKnZBBj+xlz8lL8pZMksMNnnuzCg=;
+	b=Q2+7fGF0YkjJPjxBfiXUIFkyFK5IRcBIC8/xhlL+kpaCbfiCSxwWapD7JXhNS7srOtvUqS
+	idSrC9/xzjOeMZ/M8q6XgyTv9hMgFnvyY/sllrd8LeFgIm4k5nuBQ93iP4SiKvPFB6UUz+
+	ZN478OsyWDXLgMv7hDKdnoKQ5HpMCPE=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1689672438;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z0vyMeOfw7fSC/qxKnZBBj+xlz8lL8pZMksMNnnuzCg=;
+	b=K7TqF0DNUlcG9za22J4Zz7DRxNCZQ3nix1UAh2gErwSgekXMLIhPvNGwNCQqqTFyNMdwhy
+	etWVYGfmGf6QJaOGaHpOHCzwxkezWulucN8FEtJUtDoprmEn3RA4SZglG0Xt8+fe/Ddwi5
+	FG/j3EbMWqoPAJ0KlAKvKiRo6VXdn0A=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-384-O_2CdXTGPtq_XEwSN_F3Uw-1; Tue, 18 Jul 2023 05:27:16 -0400
+X-MC-Unique: O_2CdXTGPtq_XEwSN_F3Uw-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-635eb5b04e1so13842246d6.1
+        for <ath10k@lists.infradead.org>; Tue, 18 Jul 2023 02:27:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689672436; x=1690277236;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z0vyMeOfw7fSC/qxKnZBBj+xlz8lL8pZMksMNnnuzCg=;
+        b=HmZtP2tRqScyavmhHFkkzaRa94OKyrvHyYLL12NCnaQb+gRcjO0JrXYw4pwnwsglT9
+         Xo9NhgqiBJZGcM8Qpn5kXMzu7w9cXCwjBs5NEytRcck9aRT/dLjsWIdB7q4TzZJZqyFX
+         cD/8QIWqoTyeL8o03r+YWDcFWbh+rrbannOaSKKJmrHUGA2zOLIlqBbpis4i4yXVJw9U
+         YSHY2pYIPLMxSwPA4L5Pj5B2HrFTlEtVmY3fpRkaarP/EOjSxkWVSQggm5RxL0s7u/oW
+         eayEfQNrIbRBDqbn3QQCZerhmI9SXQJzbj8U5UUkWikGfRcuQyvV1n1ronLcvoEKrC6W
+         AMrw==
+X-Gm-Message-State: ABy/qLbRlLplkVLKE/zOOfvxDVWpvIn0YYnknu93X/7Co6erx4bfA/nx
+	JNwzciIdcxgu5HLdiUrcSHrjGb8N58kki0Gl2mGrgHJSMrpWbA9c7nzQVpuIX4mOVsDR4OmilS+
+	6MA1kGpOtstu6wNZQtHVM+Q==
+X-Received: by 2002:a05:6214:509d:b0:63c:7427:e7e9 with SMTP id kk29-20020a056214509d00b0063c7427e7e9mr12261356qvb.6.1689672436184;
+        Tue, 18 Jul 2023 02:27:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFYFNw7x3jThmvZICEe6iXFu0qG+zQql7vEpRKMvc0qVPxJUK7o8zW+ji84Z85dUEkIw+qD2g==
+X-Received: by 2002:a05:6214:509d:b0:63c:7427:e7e9 with SMTP id kk29-20020a056214509d00b0063c7427e7e9mr12261327qvb.6.1689672435965;
+        Tue, 18 Jul 2023 02:27:15 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-226-170.dyn.eolo.it. [146.241.226.170])
+        by smtp.gmail.com with ESMTPSA id h10-20020a0cf20a000000b00635fc10afd6sm592785qvk.70.2023.07.18.02.27.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 02:27:15 -0700 (PDT)
+Message-ID: <ee31215ededd386eba19fb62b0de8d0bad78d687.camel@redhat.com>
+Subject: Re: [PATCH] net: Explicitly include correct DT includes
+From: Paolo Abeni <pabeni@redhat.com>
+To: Alex Elder <elder@ieee.org>, Rob Herring <robh@kernel.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,  Alex Elder <elder@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-can@vger.kernel.org, 
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+ linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
+ linux-renesas-soc@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, 
+ linux-amlogic@lists.infradead.org, linux-oxnas@groups.io, 
+ linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, 
+ linux-wpan@vger.kernel.org, ath10k@lists.infradead.org, 
+ linux-wireless@vger.kernel.org, ath11k@lists.infradead.org, 
+ wcn36xx@lists.infradead.org
+Date: Tue, 18 Jul 2023 11:27:10 +0200
+In-Reply-To: <1c6175fc-496a-843c-c8c5-2173e065eaa8@ieee.org>
+References: <20230714174809.4060885-1-robh@kernel.org>
+	 <1c6175fc-496a-843c-c8c5-2173e065eaa8@ieee.org>
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37)
 MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_050703_091920_CBD2E079 
-X-CRM114-Status: UNSURE (   9.87  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230718_102720_497447_3CC8E9C1 
+X-CRM114-Status: GOOD (  14.30  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,41 +132,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-RG9uJ3QgYXNzdW1lIHRoYXQgb25seSB0aGUgZHJpdmVyIHdvdWxkIGJlIGFjY2Vzc2luZyBMTktD
-VEwuIEFTUE0KcG9saWN5IGNoYW5nZXMgY2FuIHRyaWdnZXIgd3JpdGUgdG8gTE5LQ1RMIG91dHNp
-ZGUgb2YgZHJpdmVyJ3MgY29udHJvbC4KClVzZSBSTVcgY2FwYWJpbGl0eSBhY2Nlc3NvcnMgd2hp
-Y2ggZG9lcyBwcm9wZXIgbG9ja2luZyB0byBhdm9pZCBsb3NpbmcKY29uY3VycmVudCB1cGRhdGVz
-IHRvIHRoZSByZWdpc3RlciB2YWx1ZS4gT24gcmVzdG9yZSwgY2xlYXIgdGhlIEFTUE1DCmZpZWxk
-IHByb3Blcmx5LgoKRml4ZXM6IDc2ZDg3MGVkMDlhYiAoImF0aDEwazogZW5hYmxlIEFTUE0iKQpT
-dWdnZXN0ZWQtYnk6IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPgpTaWduZWQtb2ZmLWJ5
-OiBJbHBvIErDpHJ2aW5lbiA8aWxwby5qYXJ2aW5lbkBsaW51eC5pbnRlbC5jb20+ClJldmlld2Vk
-LWJ5OiBTaW1vbiBIb3JtYW4gPHNpbW9uLmhvcm1hbkBjb3JpZ2luZS5jb20+CkFja2VkLWJ5OiBL
-YWxsZSBWYWxvIDxrdmFsb0BrZXJuZWwub3JnPgpDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwot
-LS0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMgfCA5ICsrKysrLS0tLQog
-MSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jIGIvZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYwppbmRleCBhN2Y0NGY2MzM1ZmIuLjkyNzVhNjcyZjkw
-YyAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYworKysg
-Yi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCkBAIC0xOTYzLDggKzE5NjMs
-OSBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfaGlmX3N0YXJ0KHN0cnVjdCBhdGgxMGsgKmFyKQog
-CWF0aDEwa19wY2lfaXJxX2VuYWJsZShhcik7CiAJYXRoMTBrX3BjaV9yeF9wb3N0KGFyKTsKIAot
-CXBjaWVfY2FwYWJpbGl0eV93cml0ZV93b3JkKGFyX3BjaS0+cGRldiwgUENJX0VYUF9MTktDVEws
-Ci0JCQkJICAgYXJfcGNpLT5saW5rX2N0bCk7CisJcGNpZV9jYXBhYmlsaXR5X2NsZWFyX2FuZF9z
-ZXRfd29yZChhcl9wY2ktPnBkZXYsIFBDSV9FWFBfTE5LQ1RMLAorCQkJCQkgICBQQ0lfRVhQX0xO
-S0NUTF9BU1BNQywKKwkJCQkJICAgYXJfcGNpLT5saW5rX2N0bCAmIFBDSV9FWFBfTE5LQ1RMX0FT
-UE1DKTsKIAogCXJldHVybiAwOwogfQpAQCAtMjgyMSw4ICsyODIyLDggQEAgc3RhdGljIGludCBh
-dGgxMGtfcGNpX2hpZl9wb3dlcl91cChzdHJ1Y3QgYXRoMTBrICphciwKIAogCXBjaWVfY2FwYWJp
-bGl0eV9yZWFkX3dvcmQoYXJfcGNpLT5wZGV2LCBQQ0lfRVhQX0xOS0NUTCwKIAkJCQkgICZhcl9w
-Y2ktPmxpbmtfY3RsKTsKLQlwY2llX2NhcGFiaWxpdHlfd3JpdGVfd29yZChhcl9wY2ktPnBkZXYs
-IFBDSV9FWFBfTE5LQ1RMLAotCQkJCSAgIGFyX3BjaS0+bGlua19jdGwgJiB+UENJX0VYUF9MTktD
-VExfQVNQTUMpOworCXBjaWVfY2FwYWJpbGl0eV9jbGVhcl93b3JkKGFyX3BjaS0+cGRldiwgUENJ
-X0VYUF9MTktDVEwsCisJCQkJICAgUENJX0VYUF9MTktDVExfQVNQTUMpOwogCiAJLyoKIAkgKiBC
-cmluZyB0aGUgdGFyZ2V0IHVwIGNsZWFubHkuCi0tIAoyLjMwLjIKCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+Hi,
+
+On Sat, 2023-07-15 at 10:11 -0500, Alex Elder wrote:
+> On 7/14/23 12:48 PM, Rob Herring wrote:
+> > The DT of_device.h and of_platform.h date back to the separate
+> > of_platform_bus_type before it as merged into the regular platform bus.
+> > As part of that merge prepping Arm DT support 13 years ago, they
+> > "temporarily" include each other. They also include platform_device.h
+> > and of.h. As a result, there's a pretty much random mix of those include
+> > files used throughout the tree. In order to detangle these headers and
+> > replace the implicit includes with struct declarations, users need to
+> > explicitly include the correct includes.
+> > 
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> 
+> (I significantly reduced the addressee list to permit the message
+> to be sent.)
+> 
+> For "drivers/net/ipa/ipa_main.c":
+> 
+> Acked-by: Alex Elder <elder@linaro.org>
+
+The patch does not apply cleanly to net-next. Rob, could you please re-
+spin it? While at that, have you considered splitting it in a few
+smaller patches (e.g. can, dsa, freescale, ibm, marvel, mediatek,
+stmmicro,  sun, ti, xilinx, wireless, remaining)?
+
+Thanks!
+
+Paolo
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
