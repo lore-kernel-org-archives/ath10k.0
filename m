@@ -4,65 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9B47C001B0
-	for <ath10k@archiver.kernel.org>; Wed, 19 Jul 2023 15:19:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A7D5C41513
+	for <ath10k@archiver.kernel.org>; Fri, 21 Jul 2023 23:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3xMphRGhoGA3M1RU2dqUlOZEUS84nd4jtqgPWSgriWc=; b=DIzT7z05k5ooGC
-	nqy+tV5bK1u+OVLJwG6ER5e6jSIQoXgN6OoQmwFQYMZqLzrzuRuC2GJE4mE+UJ+GnHTF3Eo0dn+sx
-	m/qCvl1Xm2H0s5cDzZ3Qca8QJx6S52A/e78ejtUULsIAAahezuj6k7PVUbTvbJfEj1dR2yTsQb8TT
-	Ebyax8LOlIAUEexkR7EmoREj7MEycImaME8B+hRC+EyqbINn1MUS9EnVDQgTGxmC7NrXXA9OgLFeN
-	L6NMGIKVQlqW2DdQxjWhlfP2eMVldWJVgM1RKmTr513P572MM7yEORJQ1HA8fXl/biPyQZL2l5T/n
-	QKpbmpZNYIcnC8TEjdeg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kGKmsd5S8dyk07S0D65SHipgV9RPyYECWl7onqhUpvc=; b=p9AzaqH2MUOFfQ
+	5k+AcTjZ2F4dccPkPWQMl5U2/OXPfJ61Z2RBY04Ta3zAqp8rJskCe3sGiO43hm6T3FxTuGH1KKoR+
+	PBt6Xb/l7FJvfR3fceZCVZwYUrw5lX/PndoDiNJDevDOoO4iu3de/Q87YKkj88HFsbKUwjhiz/vRG
+	NeHCyX8SAq2XQuuS3l75i4pXRxiOUlDmUrd2ZMfqbcNAEPexw9u1tenXglnt/w23t6K1e31HaOjIZ
+	tZUrTlG+3fE/3WsAGEdio4r++fuk2Qu6DE2lm5BjiuPyupS20Ijjwg6NIIyaBO8qr+Dwt3B/jAq2L
+	/Iu+yvuOvhRBuGm0/2Ew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM8xq-007uGe-2Q;
-	Wed, 19 Jul 2023 15:19:42 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qN015-00FOn9-2C;
+	Fri, 21 Jul 2023 23:58:35 +0000
+Received: from mga14.intel.com ([192.55.52.115])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM8xo-007uFv-0I
+	id 1qN012-00FOmE-2h
 	for ath10k@lists.infradead.org;
-	Wed, 19 Jul 2023 15:19:41 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5CAB1616DD;
-	Wed, 19 Jul 2023 15:19:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E90EC433C8;
-	Wed, 19 Jul 2023 15:19:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689779978;
-	bh=qWoqUMDK/mFdb+tf6CcZMXG/+lqonDirQpQm9CWUVv8=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=iiXsgvCkK0BZscvdBU6Hy9JwCOL7jwPLYn+Fgo+2zqtXwg2CfQVE08+4mMoOat5tj
-	 GEyIWCY67KNlKR1rqPLqCefUSa0yapJhujiMyqwZHbTwG64xUHvvUbZkICMY4h6WsB
-	 NQpDNbdL+Kgiq++DIGb79suKKbBQBUsTyGOcqUnaWHNOXlfsp8LFQb+fnoL/YgSSic
-	 jzeFA1+RIvOPTlI4U5880JtC8glevfijT0wdIuJ8EiHqdfD6JR3p42qQiWTvx4XrLw
-	 etY0MmkOSGCdKhMAnkIRQQ+xcIQiRli3vAaRHwCSQqyStt/dPjtWheB+glP7VxvqAe
-	 QfVTKjnD1g7/Q==
-From: Kalle Valo <kvalo@kernel.org>
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: Giammarco Marzano <giammarco.marzano@gmail.com>,  Georgios Kourachanis
- <geo.kourachanis@gmail.com>,  ath10k@lists.infradead.org
-Subject: Re: [v2] ath10k-firmware: QCA4019 hw1.0: Add ZTE MF289F rev.
- AT1/AT2 (2.4G/5.8G) specific BDF
-References: <CAJE2SDdBgf0FCAtT2m6Pz7xccuo7cTbPjmStskfn9iNBkYNc3Q@mail.gmail.com>
-	<878rfvlia2.fsf@kernel.org>
-	<af2f29b3-23a8-bf7f-c805-cc0563504125@gmail.com>
-Date: Wed, 19 Jul 2023 18:19:35 +0300
-In-Reply-To: <af2f29b3-23a8-bf7f-c805-cc0563504125@gmail.com> (Christian
-	Lamparter's message of "Sat, 1 Jul 2023 17:07:57 +0200")
-Message-ID: <871qh453p4.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
+	Fri, 21 Jul 2023 23:58:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689983912; x=1721519912;
+  h=date:from:to:cc:subject:message-id;
+  bh=Q6VMYrEDfv0gVU2Fsa7YmGL3Xhfg1RlT9ADB2E6VX2g=;
+  b=bnnH7kcLvXc8ln3jYOM6JcAzAZMJMykRRm6AZZOo4omety4gIfS7LPkM
+   heeX8zrhwFw/HMfLGT9bpc2FnYr1Sd20jOJztgoPw+3sV83cL8N6C3py6
+   Nn1BA5kkQ+1XAi6qXRG0oZHa6C0C+Wje3CdYiwI997bZvsyVp1xB6OWdj
+   wEO9zBHdv4sVzQ+zVVmhODCd8dwRegOyDaz9QI9zvcJa7CsUbVt6DbRue
+   YgThWs9jQzs1z1DIMscfOvZ+LWLyW20fnyM5ICgx3cp99P62ycOwnJNgC
+   jke73agPWIK5ujJMTVb6UMZnr32e/rGfd7vLCsatfIX/C4o53buNybchr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="367173284"
+X-IronPort-AV: E=Sophos;i="6.01,223,1684825200"; 
+   d="scan'208";a="367173284"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 16:58:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="838729328"
+X-IronPort-AV: E=Sophos;i="6.01,223,1684825200"; 
+   d="scan'208";a="838729328"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Jul 2023 16:58:22 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qN00q-0007mO-26;
+	Fri, 21 Jul 2023 23:58:20 +0000
+Date: Sat, 22 Jul 2023 07:57:53 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ db85b83a7ccf0c703af320292accbdf12d917d42
+Message-ID: <202307220751.MJj3GyKF-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230719_081940_219508_91FCA6C8 
-X-CRM114-Status: GOOD (  21.08  )
+X-CRM114-CacheID: sfid-20230721_165832_888320_8951A4E3 
+X-CRM114-Status: UNSURE (   6.06  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,113 +77,170 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Christian Lamparter <chunkeey@gmail.com> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: db85b83a7ccf0c703af320292accbdf12d917d42  wifi: ath6kl: Remove error checking for debugfs_create_dir()
 
-> On 3/17/23 12:38, Kalle Valo wrote:
->> Giammarco Marzano <giammarco.marzano@gmail.com> writes:
->> 
->>> this file is for add definition for ZTE MF289F.
->>>
->>> The device is currently under review as PR on OpenWRT:
->>> https://github.com/openwrt/openwrt/pull/10418
->>>
->>> Please ignore my email of 3 August, this board binary add support for
->>> 5Ghz on AT2 version with correct calibration data.
->>>
->>> * description for what hardware this is:
->>>
->>>    - it is a IPQ4019 based board
->>>    - one QCA4019 radio is used as 2.4GHz radio
->>>    - one QCA4019 radio is used as 5Ghz radio in AT2 revision
->>>    - one QCA9984 radio is used as 5GHz radio in AT1 revision
->>>
->>> * origin of the board file: taken from stock firmware image
->>>
->>> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
->>>
->>>    - QCA4019 hw1.0
->>>
->>>      + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=zte,mf289f
->>>        md5sum: 175139f44d2ae01c2b23e093d571e962
->>>      + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=zte,mf289f
->>>        md5sum: 175139f44d2ae01c2b23e093d571e962
->>>
->>>
->>> * attach the actual board file (board.bin)
->>>
->>>    - The name of the file is equal to the first id string in the board-2.bin
->>>      (minus the ".bin")
->> Note: There was only board file attached but the text listed two.
->
-> I can tell you what happen. This is thanks to the following OpenWrt
-> Pull Request: <https://github.com/openwrt/openwrt/pull/13019>
->
-> But back to Giammarco Marzano mail:
-> His bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=zte,mf289f.bin
-> contained a packed "board-2.bin". So, the board-2.bin ended up
-> within the linux-firmware's board-2.bin:
->
-> <https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/ath10k/QCA4019/hw1.0/board-2.bin>
-> See at offset 14c360. There's an QCA-ATH10K-BOARD string. I don't
-> think ath10k supports board-2.bin within board-2.bin.
+elapsed time: 720m
 
-Yeah, board-2.bin within board-2.bin is not supported :)
+configs tested: 141
+configs skipped: 12
 
-> I've added the extracted the two board files within and attached
-> them including the note to this mail after the === separator.
-> (also fixed the md5sums)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks for catching and fixing this. I should have been more careful.
-
-> ===
->
-> * description for what hardware this is:
->
->   - it is a IPQ4019 based board
->   - one QCA4019 radio is used as 2.4GHz radio
->   - one QCA4019 radio is used as 5Ghz radio in AT2 revision
->   - one QCA9984 radio is used as 5GHz radio in AT1 revision
->
-> * origin of the board file: taken from stock firmware image
->
-> * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
->
->   - QCA4019 hw1.0
->
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=zte,mf289f
->       md5sum: f0243c9d7b45bb0ffe3e58c27e71fe80
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=zte,mf289f
->       md5sum: e0fd5376d24f0c2c3c49ba2a7fc37376
->
->
-> * attach the actual board file (board.bin)
->
->   - The name of the file is equal to the first id string in the board-2.bin
->     (minus the ".bin")
-
-Thanks, added to QCA4019/hw1.0/board-2.bin:
-
-New:
-bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=zte,mf289f
-
-Changed:
-bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=zte,mf289f
-
-Deleted:
-
-1 board image(s) added, 1 changed, 0 deleted, 148 in total
-
-https://github.com/kvalo/ath10k-firmware/commit/0bf43f8decd3ae5bb9f27c3a44f54b3fa23aaa31
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r002-20230720   gcc  
+alpha                randconfig-r023-20230720   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r004-20230720   gcc  
+arc                  randconfig-r015-20230721   gcc  
+arc                  randconfig-r022-20230720   gcc  
+arc                  randconfig-r043-20230720   gcc  
+arc                           tb10x_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         assabet_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          moxart_defconfig   clang
+arm                         mv78xx0_defconfig   clang
+arm                  randconfig-r046-20230720   gcc  
+arm                           tegra_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r006-20230720   gcc  
+arm64                randconfig-r026-20230720   clang
+arm64                randconfig-r032-20230720   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r012-20230720   gcc  
+csky                 randconfig-r033-20230720   gcc  
+csky                 randconfig-r035-20230720   gcc  
+hexagon              randconfig-r041-20230720   clang
+hexagon              randconfig-r045-20230720   clang
+i386                             allyesconfig   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230720   gcc  
+i386         buildonly-randconfig-r004-20230721   clang
+i386         buildonly-randconfig-r005-20230720   gcc  
+i386         buildonly-randconfig-r005-20230721   clang
+i386         buildonly-randconfig-r006-20230720   gcc  
+i386         buildonly-randconfig-r006-20230721   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230720   gcc  
+i386                 randconfig-i002-20230720   gcc  
+i386                 randconfig-i003-20230720   gcc  
+i386                 randconfig-i004-20230720   gcc  
+i386                 randconfig-i005-20230720   gcc  
+i386                 randconfig-i006-20230720   gcc  
+i386                 randconfig-i011-20230720   clang
+i386                 randconfig-i011-20230721   gcc  
+i386                 randconfig-i012-20230720   clang
+i386                 randconfig-i012-20230721   gcc  
+i386                 randconfig-i013-20230720   clang
+i386                 randconfig-i013-20230721   gcc  
+i386                 randconfig-i014-20230720   clang
+i386                 randconfig-i014-20230721   gcc  
+i386                 randconfig-i015-20230720   clang
+i386                 randconfig-i015-20230721   gcc  
+i386                 randconfig-i016-20230720   clang
+i386                 randconfig-i016-20230721   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r034-20230720   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r014-20230720   gcc  
+m68k                           virt_defconfig   gcc  
+microblaze           randconfig-r005-20230720   gcc  
+microblaze           randconfig-r013-20230721   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                malta_qemu_32r6_defconfig   clang
+mips                 randconfig-r024-20230720   gcc  
+mips                 randconfig-r025-20230720   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r016-20230721   gcc  
+openrisc             randconfig-r024-20230720   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r002-20230720   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r042-20230720   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230720   clang
+sh                               allmodconfig   gcc  
+sh                        edosk7705_defconfig   gcc  
+sh                   randconfig-r001-20230720   gcc  
+sh                   randconfig-r011-20230720   gcc  
+sh                   randconfig-r021-20230720   gcc  
+sh                   randconfig-r026-20230720   gcc  
+sh                   secureedge5410_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r012-20230721   gcc  
+sparc64              randconfig-r001-20230720   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r021-20230720   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230720   gcc  
+x86_64       buildonly-randconfig-r001-20230721   clang
+x86_64       buildonly-randconfig-r002-20230720   gcc  
+x86_64       buildonly-randconfig-r002-20230721   clang
+x86_64       buildonly-randconfig-r003-20230720   gcc  
+x86_64       buildonly-randconfig-r003-20230721   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r013-20230720   clang
+x86_64               randconfig-x001-20230720   clang
+x86_64               randconfig-x002-20230720   clang
+x86_64               randconfig-x003-20230720   clang
+x86_64               randconfig-x004-20230720   clang
+x86_64               randconfig-x005-20230720   clang
+x86_64               randconfig-x006-20230720   clang
+x86_64               randconfig-x011-20230720   gcc  
+x86_64               randconfig-x012-20230720   gcc  
+x86_64               randconfig-x013-20230720   gcc  
+x86_64               randconfig-x014-20230720   gcc  
+x86_64               randconfig-x015-20230720   gcc  
+x86_64               randconfig-x016-20230720   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r005-20230720   gcc  
+xtensa               randconfig-r011-20230721   gcc  
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 ath10k mailing list
