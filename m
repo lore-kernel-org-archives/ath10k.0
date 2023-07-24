@@ -4,67 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3812C001B0
-	for <ath10k@archiver.kernel.org>; Sun, 23 Jul 2023 02:49:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6278DEB64DD
+	for <ath10k@archiver.kernel.org>; Mon, 24 Jul 2023 19:38:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=nb/a5WH8IxVOBWoYy8tYz9r0wf66zfeAfCcYMAi5cK4=; b=j8ielbg6S4h3DW
-	WKEWLDZm0O0bmg/LrUCxZU8VHeBjd7hqM384zPxcg4sDuTiySWYmJogbR1vX7h1NKokGDGCaKtQoK
-	u4VVANiObUy58Y0n+GTRNcX2mf1JlVYieH6zfyhQC0he62y9Q1zgaCf/SofabkqtWRe5DHyvhSWfH
-	tHpqvqeUhXQCXBqYc3M6OMBeUacXfo8Nmww6XpYa/rHRKbwZa2slBmHIG9MpDFwJCQTJpc9j4B1oA
-	M00c/KLP4XtWuhflR0rmLJlTC11AOvqQYbn1zqZPca7rNAUmJAE7OkFi8TcSGYhGNaboALN71/ism
-	kHqhfovpoGSxvWoiKIyA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:Message-ID:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=P/M6QVpEdM3uGfngcdvqBK3uujmRmUC/pixT11Zc8hM=; b=TqUcdQHglp99zqzCkzdUvhw8n4
+	PDt25QdLZndSJdAY/ZZHFl6z+N6a32ZvxA0Eopc/FTdeXrB8pYS5PgRVh8omoaru7f9wiWx1g8zA3
+	igrbSO30MHHKyq9mK8yKE3vH27lyjm3EEVsus/5UkuTN1Hoqw1tEnKq4xMc/H0oyh6GxvOKgVHrWJ
+	LuxCO8RMPGTbTDhqkqGrxNGC233KG8SuQMpgpb+xT0zx8ooDh7p0DUR5oj+iHW50Hd4rFMrXmqzej
+	Alemv2RpgWmyGPOHrnL8nhvH6G/A1F9uDiLJ77KeEVEJ6oEzhuKd8WPfTnDpKRiBku4phUgmXisNM
+	mzk9RYBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNPAO-000750-0H;
-	Sun, 23 Jul 2023 02:49:52 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1qO1Nw-005JSd-1H;
+	Mon, 24 Jul 2023 19:38:24 +0000
+Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNPAK-00074I-1q
+	id 1qO1Nt-005JS4-02
 	for ath10k@lists.infradead.org;
-	Sun, 23 Jul 2023 02:49:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690080588; x=1721616588;
-  h=date:from:to:cc:subject:message-id;
-  bh=wLD7VhOVfZO1dgMcN61kfZlmqmrqj7xpy+Wax2PclP8=;
-  b=L4n5r6nvuird79Mx4d0q+HaMV6HCOqsykv/0bPfFGqzm4552KUmjcnUv
-   l4Muk5cdhtcVkGvErXh24kLUURbWxhcuN5cOse6eYzYLNDJQBvhHgLq5h
-   tjKnc8aP/wqyWBgCiOxo7k1GD9mlf19XYUVegaqaAxmPswr5fuQ9dbdD0
-   bUV6s0McplS1WazgGL7pyP+ZeLFrbTuVDtmtncpEuzSPnE3vV/DynUuLW
-   EYbxVML4xAseogyIKR6tAJ5JLgpN0Ss0n2/Lzleotw3e+SsFytCnFRzF9
-   6Uz2MIYMbh2ifE2M1XvIRgXNevlprl9kC2VG/npzJcLgjngEnlRMTXRfq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="453619644"
-X-IronPort-AV: E=Sophos;i="6.01,226,1684825200"; 
-   d="scan'208";a="453619644"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 19:49:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="760388936"
-X-IronPort-AV: E=Sophos;i="6.01,226,1684825200"; 
-   d="scan'208";a="760388936"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 22 Jul 2023 19:49:43 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qNPAE-0008lv-2P;
-	Sun, 23 Jul 2023 02:49:42 +0000
-Date: Sun, 23 Jul 2023 10:48:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- fbda2e2abb52d885632b296e815da0f1fc90bb22
-Message-ID: <202307231044.RaApogu3-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Mon, 24 Jul 2023 19:38:22 +0000
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b700e85950so67272151fa.3
+        for <ath10k@lists.infradead.org>; Mon, 24 Jul 2023 12:38:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690227496; x=1690832296;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BWTiUez8iThFAWg0nLkMds+yVAsUycesPJt3FdOpRN0=;
+        b=YguxSR305lTNeez3fQiiu+Wiy+4ige7/AHPJMfCL5GJSNP7few/nhZRhAabzcG1c/r
+         NyRYt+hm+e6blaMBhxeRfNS9uD4xTki42dVAnaakxyQsDyom1bL+IaWl1P4lDZMDKNOT
+         B0WCSO4DspQ4pq1Irofj0AtTnYgqRZVk5uJoTdPcY04Ffj9XPD56QXaxtuawvr/fkjSr
+         IZkNhW0c3yfAyhxkDk93X66ZRb0Os07LntLA79NZMp2l4kelfxX2jrQD1t2BIxDIh+Go
+         jJldh3DNRioueDtGP2FlSe8AkVQZFs0I4D6KLgKeuP5zH6VBSQIMQ+IpkFz8EY5jPAS3
+         Thyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690227496; x=1690832296;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BWTiUez8iThFAWg0nLkMds+yVAsUycesPJt3FdOpRN0=;
+        b=ZjTmfVgaamEcUBiUqN3tSphfE5/gAH/m+Cc0fpFsTSg1CDhQdwQbbJie8d250eK7Ej
+         BVaORG2j2eSBNgMEYWNDRDR69rqh308HyvPPrmIjgbbpo+B462wtuIRoOJEv8oBTM2pa
+         Sq/1e8XSq6IZRYZnADSNb898oYTVTmgXyOvfXNqVrYR7Dj4A83Lqyxj06mY2UoxnQSQo
+         CJc2Unfh7MJ18HjLAZUGLvZh/Smm6Nggw2vnGWNtBUoCn7A/KRuyZkexKNDp12J6Heij
+         RHoLvH3BCW4mOkq/k4aRiCMJVzXC9P/nyfUD0N4Im2M4SleCcyDjr4lWvsBbTAULvQmC
+         BY7A==
+X-Gm-Message-State: ABy/qLYORapcxKqOFYEfGTPy5VX8Ne+h20+NDO7slarDc1w7+dDEzslG
+	hfFpDWEeLZ9QrXhixcQ6JN32bWfoHRtUfuZSCfe2yA==
+X-Google-Smtp-Source: APBJJlF3cp/ESYIG71PQk8ROjN8Z3rFHCG0drPHLyLA365OJoaUGhJmweFZpAlv70aWdvuyl0budPg==
+X-Received: by 2002:a2e:9649:0:b0:2b7:14d4:ce6d with SMTP id z9-20020a2e9649000000b002b714d4ce6dmr7290948ljh.48.1690227495708;
+        Mon, 24 Jul 2023 12:38:15 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id z9-20020a2e9649000000b002b69b44fd52sm3070206ljh.5.2023.07.24.12.38.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 12:38:15 -0700 (PDT)
+Message-ID: <22075892-6518-ba53-8021-9500d22e5722@linaro.org>
+Date: Mon, 24 Jul 2023 22:38:14 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-GB
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>,
+ Kalle Valo <kvalo@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: wcn3990 firmware
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230722_194948_671109_F84D5991 
-X-CRM114-Status: UNSURE (   5.36  )
+X-CRM114-CacheID: sfid-20230724_123821_093717_39DE202E 
+X-CRM114-Status: UNSURE (   5.82  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,133 +88,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: fbda2e2abb52d885632b296e815da0f1fc90bb22  Revert "wifi: ath11k: Enable threaded NAPI"
+Hello Kalle, colle
 
-elapsed time: 720m
+Yet-another firmware question (I remember the standard answer of not 
+using firmware not coming from your side). I see that for wcn3990/hw1.0 
+we have wlanmdsp.mbn with the version WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
 
-configs tested: 105
-configs skipped: 6
+We have got the newer wlanmdsp.mbn released under 
+redistribution-permissive license (LICENSE.qcom from linux-firmware). 
+The file has the version WLAN.HL.3.3.7.c2-00723-QCAHLSWMTPLZ-1. It was 
+released for the ath10k embedded into Qualcomm QRB2210 / QRB4210 SoCs.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r031-20230722   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r004-20230722   gcc  
-arc                  randconfig-r043-20230720   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r046-20230720   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r005-20230722   gcc  
-arm64                randconfig-r006-20230722   gcc  
-arm64                randconfig-r014-20230722   clang
-csky                                defconfig   gcc  
-hexagon              randconfig-r021-20230722   clang
-hexagon              randconfig-r022-20230722   clang
-hexagon              randconfig-r041-20230720   clang
-hexagon              randconfig-r045-20230720   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230722   gcc  
-i386         buildonly-randconfig-r005-20230722   gcc  
-i386         buildonly-randconfig-r006-20230722   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230722   gcc  
-i386                 randconfig-i002-20230722   gcc  
-i386                 randconfig-i003-20230722   gcc  
-i386                 randconfig-i004-20230722   gcc  
-i386                 randconfig-i005-20230722   gcc  
-i386                 randconfig-i006-20230722   gcc  
-i386                 randconfig-i011-20230720   clang
-i386                 randconfig-i012-20230720   clang
-i386                 randconfig-i013-20230720   clang
-i386                 randconfig-i014-20230720   clang
-i386                 randconfig-i015-20230720   clang
-i386                 randconfig-i016-20230720   clang
-i386                 randconfig-r001-20230722   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r015-20230722   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r013-20230722   gcc  
-nios2                randconfig-r032-20230722   gcc  
-openrisc             randconfig-r033-20230722   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r026-20230722   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r011-20230722   clang
-riscv                randconfig-r042-20230720   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230720   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r002-20230722   gcc  
-sh                   randconfig-r025-20230722   gcc  
-sh                   randconfig-r036-20230722   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r016-20230722   gcc  
-um                   randconfig-r023-20230722   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230722   gcc  
-x86_64       buildonly-randconfig-r002-20230722   gcc  
-x86_64       buildonly-randconfig-r003-20230722   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r035-20230722   gcc  
-x86_64               randconfig-x001-20230723   gcc  
-x86_64               randconfig-x002-20230723   gcc  
-x86_64               randconfig-x003-20230723   gcc  
-x86_64               randconfig-x004-20230723   gcc  
-x86_64               randconfig-x005-20230723   gcc  
-x86_64               randconfig-x006-20230723   gcc  
-x86_64               randconfig-x011-20230720   gcc  
-x86_64               randconfig-x012-20230720   gcc  
-x86_64               randconfig-x013-20230720   gcc  
-x86_64               randconfig-x014-20230720   gcc  
-x86_64               randconfig-x015-20230720   gcc  
-x86_64               randconfig-x016-20230720   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+Would you like to update and/or receive the file? Should we still stick 
+to the older wlanmdsp.mbn?
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With best wishes
+Dmitry
 
 _______________________________________________
 ath10k mailing list
