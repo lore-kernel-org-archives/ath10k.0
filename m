@@ -4,59 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 169B0EB64DD
-	for <ath10k@archiver.kernel.org>; Mon, 24 Jul 2023 21:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB027C001DE
+	for <ath10k@archiver.kernel.org>; Tue, 25 Jul 2023 00:38:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Bvk09eiBn+6t2bOK2Rk0qJJgtcpXHCZ5uTpZjJgNogM=; b=lz2Dnoo2ZyD2Rc
-	Wdx9csVytTYINweWB56+04RCGHCyRly81uhfxmRdtWmmP9S1fPX0+upm4UeDYy5APF65ihC4dJ02e
-	qFtOgLixJiTWKw7Gq+w/dxV3GNVN0JAxjTkuyyQM4klOhAj/8F/fkvv6iH2rauFSEwmxAl0X9FHpE
-	xzfbXjqdKhsx6tc9gEkPlcUOhZqlR8w5pyrYkJu6Gh/sun+VLGtQm1q2XMvfv8UNX2BXGQwxNokmL
-	cssHEVtlm7V6ZJsbbCkIop2ibKtrpNGF4Y4zji0ZO/PA7F10ud9Z4HnFjf2akct0qnaNSQENhqPr1
-	3yud/CX3RnH+D+WFrQuQ==;
+	List-Owner; bh=0BgtXYKFzc9uO1AI0dNlgeVmVJJJS53YE6GFN+RMINU=; b=SfbHdnglAhk9jZ
+	wXlR5Q8dM2IP+r9xlV1LOilSnT+TQHtkjxl6Y+OLVYACVmY1C2Ad/lKG/nrkUQ7J89seH+TkPGbsa
+	73QzAqZ6rgmWie38eH5FbTIVZNd0p99/8Rrvuncj3W2qLkQSpnGd/MponECCQNCUav1rqbzr3dXVf
+	OYnODQsmSoULHv4exbzBNUqfpw+XxUNQUCR4GzcB5qgRRe4uE6p6AHe5el7hagMRRoUfjYnc7PBKX
+	mmjcZ1nTV/S88TXjoyiMtODwzo4acT5MEu9BrAHI9V4WVAgBi68tXlE8Mbga6w7fxn/ZXlEGmBjTr
+	Qpphu8p1qvuln3o/ScJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qO2xg-005S3R-2D;
-	Mon, 24 Jul 2023 21:19:24 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qO64V-005khL-12;
+	Tue, 25 Jul 2023 00:38:39 +0000
+Received: from mga12.intel.com ([192.55.52.136])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qO2xe-005S1w-0F;
-	Mon, 24 Jul 2023 21:19:23 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7B2A561419;
-	Mon, 24 Jul 2023 21:19:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EB16C433C7;
-	Mon, 24 Jul 2023 21:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690233560;
-	bh=bSAUEcuXqTqXpKIg7Bv5PY9P3Dl95C0bkG2c+6yz6uE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=dByrJeAPcbCJsBQexUs5scUmplWaGVUp9/EPOQZt18/lsqhnGVSyumj52MG6ffBNk
-	 92lD5tebXIk0He97C5SOBgaq2nat970RKtx34vyWtIE+qPj43qYDQ+y9Nc00HQohso
-	 vaFkDBpyiAJ2+VVMYp7pigzNwRNZ4wlDgyxXt5Jt2mbShYH9/s5ruaztFr3E/psBpt
-	 +wWP8O24EqyMsDSZRDnTxvzdZWSrCrz4Qu3Ps48xZDM4qsVZy2/9xqJTpoeQVaKkAZ
-	 pzkrIfT0uHOmVjdR+Dl3gTiGq8nHjO9RvYSIa/9i57DGk5nUYqeXeQqKDrrQUbf9Dr
-	 Ie7OWZSG/YGrw==
-Received: (nullmailer pid 806011 invoked by uid 1000);
-	Mon, 24 Jul 2023 21:19:18 -0000
-From: Rob Herring <robh@kernel.org>
-To: Kalle Valo <kvalo@kernel.org>, Loic Poulain <loic.poulain@linaro.org>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= <jerome.pouiller@silabs.com>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath11k@lists.infradead.org, wcn36xx@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH v2] net: wireless: Explicitly include correct DT includes
-Date: Mon, 24 Jul 2023 15:19:13 -0600
-Message-Id: <20230724211914.805876-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
+	id 1qO64R-005kgk-38
+	for ath10k@lists.infradead.org;
+	Tue, 25 Jul 2023 00:38:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690245515; x=1721781515;
+  h=date:from:to:cc:subject:message-id;
+  bh=0X1s/obf7eEUdeui15bbc+vN2DlVuPbsdLMWroAGxwM=;
+  b=UiS5BFiw/7rN9bAyBylFYHIK4zwCNDsFvk8NdWY9z5Lgxf1OW3XOJeG5
+   hiCyzQZnKFBsln7K9qPOhjzOyq6Jj8Zt17fEDKNIQ7fvCWtjfnqyQxmUw
+   Eh8NWOLn624DHb+CHRwydGbNoJaRfAVhfWDpSzfiVnuq3N0q0+OB6phps
+   4NkpzEMgXPZRJYsVl/RGxXwPRZ1/EsQGeSegbdTS2yCa5JHWBBHfLbcS4
+   LLOry9WJ2JRhSlw1A9OGPsDZ8CgcihxfIU+7A4pih7Sui9TdAPjNLJU6n
+   PrWHceTdjCNBJHoz+X79nwJNLE5zSKj+oCBRucxGtmB13L2xCiqTpVrsk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="347192866"
+X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
+   d="scan'208";a="347192866"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 17:38:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="1056615420"
+X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
+   d="scan'208";a="1056615420"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Jul 2023 17:38:30 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qO64L-000A88-2p;
+	Tue, 25 Jul 2023 00:38:29 +0000
+Date: Tue, 25 Jul 2023 08:37:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 3ed01b8b80b9d22104ba3e2dd8413ebb5a4dfc36
+Message-ID: <202307250849.Ja8FycVd-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_141922_350187_DB9A0D7F 
-X-CRM114-Status: GOOD (  13.81  )
+X-CRM114-CacheID: sfid-20230724_173836_021623_EEED5FB7 
+X-CRM114-Status: UNSURE (   4.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,140 +77,175 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The DT of_device.h and of_platform.h date back to the separate
-of_platform_bus_type before it as merged into the regular platform bus.
-As part of that merge prepping Arm DT support 13 years ago, they
-"temporarily" include each other. They also include platform_device.h
-and of.h. As a result, there's a pretty much random mix of those include
-files used throughout the tree. In order to detangle these headers and
-replace the implicit includes with struct declarations, users need to
-explicitly include the correct includes.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 3ed01b8b80b9d22104ba3e2dd8413ebb5a4dfc36  wifi: ath9k: fix printk specifier
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v2:
- - Split out can, dsa, wireless, phy/pcs to separate patches
----
- drivers/net/wireless/ath/ath10k/ahb.c            | 2 +-
- drivers/net/wireless/ath/ath11k/qmi.c            | 1 -
- drivers/net/wireless/ath/wcn36xx/main.c          | 3 +--
- drivers/net/wireless/intersil/orinoco/airport.c  | 2 +-
- drivers/net/wireless/mediatek/mt76/mt7915/init.c | 1 +
- drivers/net/wireless/mediatek/mt76/mt7915/soc.c  | 1 -
- drivers/net/wireless/mediatek/mt76/mt7996/init.c | 1 +
- drivers/net/wireless/silabs/wfx/bus_sdio.c       | 2 +-
- 8 files changed, 6 insertions(+), 7 deletions(-)
+elapsed time: 731m
 
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index 4a006fb4d424..76efea2f1138 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -5,7 +5,7 @@
-  */
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/clk.h>
- #include <linux/reset.h>
- #include "core.h"
-diff --git a/drivers/net/wireless/ath/ath11k/qmi.c b/drivers/net/wireless/ath/ath11k/qmi.c
-index d4eaf7d2ba84..98efa0f299ca 100644
---- a/drivers/net/wireless/ath/ath11k/qmi.c
-+++ b/drivers/net/wireless/ath/ath11k/qmi.c
-@@ -13,7 +13,6 @@
- #include <linux/of_address.h>
- #include <linux/ioport.h>
- #include <linux/firmware.h>
--#include <linux/of_device.h>
- #include <linux/of_irq.h>
- 
- #define SLEEP_CLOCK_SELECT_INTERNAL_BIT	0x02
-diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
-index 8dbd115a393c..2bd1163177f0 100644
---- a/drivers/net/wireless/ath/wcn36xx/main.c
-+++ b/drivers/net/wireless/ath/wcn36xx/main.c
-@@ -19,9 +19,8 @@
- #include <linux/module.h>
- #include <linux/firmware.h>
- #include <linux/platform_device.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
- #include <linux/rpmsg.h>
- #include <linux/soc/qcom/smem_state.h>
- #include <linux/soc/qcom/wcnss_ctrl.h>
-diff --git a/drivers/net/wireless/intersil/orinoco/airport.c b/drivers/net/wireless/intersil/orinoco/airport.c
-index a890bfa0d5cc..45ac00fdafa5 100644
---- a/drivers/net/wireless/intersil/orinoco/airport.c
-+++ b/drivers/net/wireless/intersil/orinoco/airport.c
-@@ -18,7 +18,7 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
- #include <asm/pmac_feature.h>
- 
- #include "orinoco.h"
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-index ac2049f49bb3..aec47de35f53 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-@@ -4,6 +4,7 @@
- #include <linux/etherdevice.h>
- #include <linux/hwmon.h>
- #include <linux/hwmon-sysfs.h>
-+#include <linux/of.h>
- #include <linux/thermal.h>
- #include "mt7915.h"
- #include "mac.h"
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/soc.c b/drivers/net/wireless/mediatek/mt76/mt7915/soc.c
-index 32c137066e7f..701a27ffa4c2 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/soc.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/soc.c
-@@ -6,7 +6,6 @@
- #include <linux/platform_device.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_reserved_mem.h>
- #include <linux/of_gpio.h>
- #include <linux/iopoll.h>
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/init.c b/drivers/net/wireless/mediatek/mt76/mt7996/init.c
-index f1b48cdda58f..5c980534f611 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7996/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7996/init.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/etherdevice.h>
-+#include <linux/of.h>
- #include <linux/thermal.h>
- #include "mt7996.h"
- #include "mac.h"
-diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drivers/net/wireless/silabs/wfx/bus_sdio.c
-index 51a0d58a9070..909d5f346a01 100644
---- a/drivers/net/wireless/silabs/wfx/bus_sdio.c
-+++ b/drivers/net/wireless/silabs/wfx/bus_sdio.c
-@@ -10,7 +10,7 @@
- #include <linux/mmc/sdio_func.h>
- #include <linux/mmc/card.h>
- #include <linux/interrupt.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/irq.h>
- #include <linux/align.h>
+configs tested: 147
+configs skipped: 13
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r001-20230724   gcc  
+alpha                randconfig-r016-20230724   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                         haps_hs_defconfig   gcc  
+arc                  randconfig-r015-20230724   gcc  
+arc                  randconfig-r043-20230724   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         axm55xx_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                         lpc18xx_defconfig   gcc  
+arm                  randconfig-r002-20230724   clang
+arm                  randconfig-r011-20230724   gcc  
+arm                  randconfig-r046-20230724   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r023-20230724   clang
+arm64                randconfig-r031-20230724   gcc  
+csky                                defconfig   gcc  
+hexagon              randconfig-r041-20230724   clang
+hexagon              randconfig-r045-20230724   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230724   gcc  
+i386         buildonly-randconfig-r005-20230724   gcc  
+i386         buildonly-randconfig-r006-20230724   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230724   gcc  
+i386                 randconfig-i002-20230724   gcc  
+i386                 randconfig-i003-20230724   gcc  
+i386                 randconfig-i004-20230724   gcc  
+i386                 randconfig-i005-20230724   gcc  
+i386                 randconfig-i006-20230724   gcc  
+i386                 randconfig-i011-20230724   clang
+i386                 randconfig-i012-20230724   clang
+i386                 randconfig-i013-20230724   clang
+i386                 randconfig-i014-20230724   clang
+i386                 randconfig-i015-20230724   clang
+i386                 randconfig-i016-20230724   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch                 loongson3_defconfig   gcc  
+loongarch            randconfig-r012-20230724   gcc  
+loongarch            randconfig-r025-20230724   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5272c3_defconfig   gcc  
+m68k                 randconfig-r016-20230724   gcc  
+m68k                 randconfig-r023-20230724   gcc  
+m68k                 randconfig-r034-20230724   gcc  
+m68k                 randconfig-r035-20230724   gcc  
+microblaze           randconfig-r001-20230724   gcc  
+microblaze           randconfig-r004-20230724   gcc  
+microblaze           randconfig-r011-20230724   gcc  
+microblaze           randconfig-r015-20230724   gcc  
+microblaze           randconfig-r033-20230724   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                         db1xxx_defconfig   gcc  
+mips                 randconfig-r003-20230724   clang
+mips                 randconfig-r004-20230724   clang
+nios2                         3c120_defconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r001-20230724   gcc  
+nios2                randconfig-r025-20230724   gcc  
+openrisc             randconfig-r012-20230724   gcc  
+openrisc             randconfig-r014-20230724   gcc  
+openrisc             randconfig-r021-20230724   gcc  
+openrisc             randconfig-r026-20230724   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r001-20230724   gcc  
+parisc               randconfig-r005-20230724   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                      chrp32_defconfig   gcc  
+powerpc                      ppc40x_defconfig   gcc  
+powerpc              randconfig-r006-20230724   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r004-20230724   gcc  
+riscv                randconfig-r042-20230724   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r021-20230724   clang
+s390                 randconfig-r022-20230724   clang
+s390                 randconfig-r026-20230724   clang
+s390                 randconfig-r032-20230724   gcc  
+s390                 randconfig-r044-20230724   clang
+sh                               allmodconfig   gcc  
+sh                         ecovec24_defconfig   gcc  
+sh                               j2_defconfig   gcc  
+sh                   randconfig-r004-20230724   gcc  
+sh                   randconfig-r013-20230724   gcc  
+sh                   randconfig-r035-20230724   gcc  
+sh                   randconfig-r036-20230724   gcc  
+sh                            titan_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r003-20230724   gcc  
+sparc                randconfig-r005-20230724   gcc  
+sparc                randconfig-r012-20230724   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r024-20230724   gcc  
+um                   randconfig-r031-20230724   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230724   gcc  
+x86_64       buildonly-randconfig-r002-20230724   gcc  
+x86_64       buildonly-randconfig-r003-20230724   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r006-20230724   gcc  
+x86_64               randconfig-r011-20230724   clang
+x86_64               randconfig-r013-20230724   clang
+x86_64               randconfig-x001-20230724   clang
+x86_64               randconfig-x002-20230724   clang
+x86_64               randconfig-x003-20230724   clang
+x86_64               randconfig-x004-20230724   clang
+x86_64               randconfig-x005-20230724   clang
+x86_64               randconfig-x006-20230724   clang
+x86_64               randconfig-x011-20230724   gcc  
+x86_64               randconfig-x012-20230724   gcc  
+x86_64               randconfig-x013-20230724   gcc  
+x86_64               randconfig-x014-20230724   gcc  
+x86_64               randconfig-x015-20230724   gcc  
+x86_64               randconfig-x016-20230724   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                           alldefconfig   gcc  
+xtensa               randconfig-r003-20230724   gcc  
+
 -- 
-2.40.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 ath10k mailing list
