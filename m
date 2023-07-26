@@ -4,70 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5320EC001DE
-	for <ath10k@archiver.kernel.org>; Wed, 26 Jul 2023 10:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EB94C0015E
+	for <ath10k@archiver.kernel.org>; Wed, 26 Jul 2023 20:29:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HXNDs6RYc6NpF76TuewFZKlE2KrX7C4pgxlO6Ux2uSs=; b=m29/aaX/j9B3hA
-	XGCHYBFaSigAHJS+TU0s1GOC3Y3pNQvk1ZmNoZHwv8DWaGR65Mia7bNrBy4jnYQr7Tg3CLSS6Arty
-	m7twVNLc4Y1C26pstXREr34qhYfFpWCMMOwxVMdtAZCv9czn1Z4hlvF4f5SeVzZtcf+gyf51rza4o
-	I9ZdVMEBpwp42EU8rrr1nsehAiBEriGXIneAlCR/6T4GUbAOJMcshYSCYLyjCgsvkYwLngLQv41Uu
-	t/VLebiWpzdfV+DxsOlMo0Imtt0fC8Ffid6FEOdu3fXfBpZ3B/eJKQk2U1nJ8CtAHKzsCpI6Pg4qC
-	OOmGi62wLtGkfs1nuwhQ==;
+	List-Owner; bh=7lZYdsSKVqcJSez5+65XENbrMOK6pBXauXkYrHU38ho=; b=aoGKQO/xMpgHwR
+	h7PyBPuHSFa2a64LDb6UuU+jbyeFUucLVIFDqWPChgUVYyLzUd9qQuTTrNte/wJV5B6EQ/YVNORXV
+	LEioC430CU0tqPXHqBn02CZwGnWxPgcpTErnOLncrF92bD5Xz60pEBXwPtW7zHyZvwsNYFfcy0smp
+	1SbGtV6Wz4q1ir7EYEmrgWTNbTCMrODPJKAVFza1NAYl78x+941GYPfeRlwl+OcmZY9oHZxbSn2gx
+	964MV7xaiV92QL3hprYLhco5tRFoz1Dj9pNrL9j3YfiHR3BTIAPKHfZVk3jSCYjbGmpmlxs0ol7pr
+	wFnE5OvulsDEX/DFefJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qObpm-009uJ0-2v;
-	Wed, 26 Jul 2023 10:33:34 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1qOl7n-00BTwC-0y;
+	Wed, 26 Jul 2023 20:28:47 +0000
+Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qObpj-009uHO-10
+	id 1qOl7k-00BTvh-0G
 	for ath10k@lists.infradead.org;
-	Wed, 26 Jul 2023 10:33:32 +0000
+	Wed, 26 Jul 2023 20:28:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690367611; x=1721903611;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=a9My0qhwcsm4j4v87vbgAqMQPVMGCGaUaik1wE3ozvw=;
-  b=CpFeLTRpZPymMBZt1H5ldLeqq3CipCemx5yi0Mhb0qJY+p8ejtaJSlUg
-   w5EPZ0payu6lX7f2scj5K+xBgkK6GuO1zHJX3AvMSO/QXikpzOBRNLhTH
-   r1AYGexayB65HZ1f2CM70336W6svnlf2kbKYQ33hkZtYq9+3Ey8DEYFYu
-   eFLE6U68xZGiJRZTNHXiHvv+e8GoW4IFYVTrHgJHpgJaHtHcAoqPfL5gX
-   lRzV/4F1kCUGCUIjbOAqbxnffNjkwwTKpbYJOWulQwErnXHtJcGIJz6Em
-   s0sCdGy5tdehXZOnl9+vGG64ZrMJyGuL69qWRQyUXNiVmyvfCxpJ//oAI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="348255769"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="348255769"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 03:33:05 -0700
+  t=1690403324; x=1721939324;
+  h=date:from:to:cc:subject:message-id;
+  bh=C8uUMayElZka8JUUi8Duxif67m0yH0PLXYQ2DDaWONo=;
+  b=Ug7lmQYHuurecZW7jhBpywWkeNuXaWOMcSkcgNr9S3JRN93O6GWr+dYt
+   u78mqA0RtrQf321HT2I1/a7G6JCTaefTUPwyRP6Sx885ZVopmAFy4+dt0
+   IpSjC3LNa22CGrAX6dqSum99CrpaGaNLQDchOlkH/zfqdRO45cJf1FxTd
+   Ewgim0sLDZ1VINueKtX6qcxACj/r/eHswNWNEVP3woZDqiC8ZNnYtW7yi
+   i2hMZZv1EUtIYH4SnXvZSIB0WYXcqKWwX40CF0jT5pKGvsoYqmwrYPSVO
+   rq3unwVRpxQ4ttKK2bbZIx22EMaH2pn+c1DKf67c7dTC6NK1NQsNif6xw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="431922787"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="431922787"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 13:28:37 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="900367130"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="900367130"
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="676842240"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="676842240"
 Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 26 Jul 2023 03:33:04 -0700
+  by orsmga003.jf.intel.com with ESMTP; 26 Jul 2023 13:28:32 -0700
 Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qObpH-0000tb-1P;
-	Wed, 26 Jul 2023 10:33:03 +0000
-Date: Wed, 26 Jul 2023 18:32:17 +0800
+	id 1qOl7Y-0001JV-0q;
+	Wed, 26 Jul 2023 20:28:32 +0000
+Date: Thu, 27 Jul 2023 04:27:40 +0800
 From: kernel test robot <lkp@intel.com>
-To: Baochen Qiang <quic_bqiang@quicinc.com>
-Cc: oe-kbuild-all@lists.linux.dev, Kalle Valo <kvalo@codeaurora.org>,
-	ath10k@lists.infradead.org, Kalle Valo <quic_kvalo@quicinc.com>
-Subject: [kvalo-ath:ath11k-hibernation-support 4/9]
- drivers/accel/qaic/mhi_controller.c:545:9: error: too few arguments to
- function 'mhi_power_down'
-Message-ID: <202307261804.lOEj99hg-lkp@intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath11k-hibernation-support] BUILD REGRESSION
+ 2f0b0c54cf91e991ecddcdce331a741f7c55559f
+Message-ID: <202307270437.mWNfwSqZ-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230726_033331_390988_DCDBD33E 
-X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-CacheID: sfid-20230726_132844_188580_D97EAD30 
+X-CRM114-Status: UNSURE (   4.84  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,58 +77,170 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-hibernation-support
-head:   2f0b0c54cf91e991ecddcdce331a741f7c55559f
-commit: e1e2b7c6fc02d9f89f94d99e61516b1eb4cd4053 [4/9] bus: mhi: host: add destroy_device argument to mhi_power_down()
-config: openrisc-randconfig-r001-20230726 (https://download.01.org/0day-ci/archive/20230726/202307261804.lOEj99hg-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307261804.lOEj99hg-lkp@intel.com/reproduce)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-hibernation-support
+branch HEAD: 2f0b0c54cf91e991ecddcdce331a741f7c55559f  wifi: ath11k: remove MHI LOOPBACK channels
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307261804.lOEj99hg-lkp@intel.com/
+Error/Warning reports:
 
-All errors (new ones prefixed by >>):
+https://lore.kernel.org/oe-kbuild-all/202307261804.lOEj99hg-lkp@intel.com
 
-   drivers/accel/qaic/mhi_controller.c: In function 'qaic_mhi_free_controller':
->> drivers/accel/qaic/mhi_controller.c:545:9: error: too few arguments to function 'mhi_power_down'
-     545 |         mhi_power_down(mhi_cntrl, link_up);
-         |         ^~~~~~~~~~~~~~
-   In file included from drivers/accel/qaic/mhi_controller.c:9:
-   include/linux/mhi.h:647:6: note: declared here
-     647 | void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful,
-         |      ^~~~~~~~~~~~~~
-   drivers/accel/qaic/mhi_controller.c: In function 'qaic_mhi_start_reset':
-   drivers/accel/qaic/mhi_controller.c:552:9: error: too few arguments to function 'mhi_power_down'
-     552 |         mhi_power_down(mhi_cntrl, true);
-         |         ^~~~~~~~~~~~~~
-   include/linux/mhi.h:647:6: note: declared here
-     647 | void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful,
-         |      ^~~~~~~~~~~~~~
+Error/Warning: (recently discovered and may have been fixed)
 
+drivers/accel/qaic/mhi_controller.c:545:35: error: too few arguments to function call, expected 3, have 2
+drivers/accel/qaic/mhi_controller.c:545:9: error: too few arguments to function 'mhi_power_down'
 
-vim +/mhi_power_down +545 drivers/accel/qaic/mhi_controller.c
+Error/Warning ids grouped by kconfigs:
 
-a36bf7af868b4b8 Jeffrey Hugo 2023-03-27  542  
-a36bf7af868b4b8 Jeffrey Hugo 2023-03-27  543  void qaic_mhi_free_controller(struct mhi_controller *mhi_cntrl, bool link_up)
-a36bf7af868b4b8 Jeffrey Hugo 2023-03-27  544  {
-a36bf7af868b4b8 Jeffrey Hugo 2023-03-27 @545  	mhi_power_down(mhi_cntrl, link_up);
-a36bf7af868b4b8 Jeffrey Hugo 2023-03-27  546  	mhi_unprepare_after_power_down(mhi_cntrl);
-a36bf7af868b4b8 Jeffrey Hugo 2023-03-27  547  	mhi_unregister_controller(mhi_cntrl);
-a36bf7af868b4b8 Jeffrey Hugo 2023-03-27  548  }
-a36bf7af868b4b8 Jeffrey Hugo 2023-03-27  549  
+gcc_recent_errors
+|-- arc-allyesconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- arm-allmodconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- arm-allyesconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- arm-randconfig-r046-20230726
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- arm64-allyesconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- mips-allmodconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- openrisc-randconfig-r001-20230726
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- powerpc-allmodconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- riscv-allmodconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- riscv-allyesconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- s390-allyesconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+|-- sparc-allyesconfig
+|   `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+`-- x86_64-allyesconfig
+    `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-mhi_power_down
+clang_recent_errors
+`-- i386-randconfig-i014-20230726
+    `-- drivers-accel-qaic-mhi_controller.c:error:too-few-arguments-to-function-call-expected-have
 
-:::::: The code at line 545 was first introduced by commit
-:::::: a36bf7af868b4b84f026a752671df66f0809bd3d accel/qaic: Add MHI controller
+elapsed time: 727m
 
-:::::: TO: Jeffrey Hugo <quic_jhugo@quicinc.com>
-:::::: CC: Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>
+configs tested: 107
+configs skipped: 4
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r003-20230726   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r021-20230726   gcc  
+arc                  randconfig-r034-20230726   gcc  
+arc                  randconfig-r043-20230726   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r046-20230726   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r022-20230726   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r005-20230726   gcc  
+csky                 randconfig-r023-20230726   gcc  
+hexagon              randconfig-r041-20230726   clang
+hexagon              randconfig-r045-20230726   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230726   gcc  
+i386         buildonly-randconfig-r005-20230726   gcc  
+i386         buildonly-randconfig-r006-20230726   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230726   gcc  
+i386                 randconfig-i002-20230726   gcc  
+i386                 randconfig-i003-20230726   gcc  
+i386                 randconfig-i004-20230726   gcc  
+i386                 randconfig-i005-20230726   gcc  
+i386                 randconfig-i006-20230726   gcc  
+i386                 randconfig-i011-20230726   clang
+i386                 randconfig-i012-20230726   clang
+i386                 randconfig-i013-20230726   clang
+i386                 randconfig-i014-20230726   clang
+i386                 randconfig-i015-20230726   clang
+i386                 randconfig-i016-20230726   clang
+i386                 randconfig-r013-20230726   clang
+i386                 randconfig-r014-20230726   clang
+i386                 randconfig-r036-20230726   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r004-20230726   clang
+mips                 randconfig-r012-20230726   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r024-20230726   gcc  
+openrisc             randconfig-r001-20230726   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r032-20230726   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r033-20230726   gcc  
+riscv                randconfig-r042-20230726   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230726   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r025-20230726   gcc  
+sh                   randconfig-r031-20230726   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r016-20230726   gcc  
+sparc                randconfig-r035-20230726   gcc  
+sparc64              randconfig-r006-20230726   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r026-20230726   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230726   gcc  
+x86_64       buildonly-randconfig-r002-20230726   gcc  
+x86_64       buildonly-randconfig-r003-20230726   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r002-20230726   gcc  
+x86_64               randconfig-x001-20230726   clang
+x86_64               randconfig-x002-20230726   clang
+x86_64               randconfig-x003-20230726   clang
+x86_64               randconfig-x004-20230726   clang
+x86_64               randconfig-x005-20230726   clang
+x86_64               randconfig-x006-20230726   clang
+x86_64               randconfig-x011-20230726   gcc  
+x86_64               randconfig-x012-20230726   gcc  
+x86_64               randconfig-x013-20230726   gcc  
+x86_64               randconfig-x014-20230726   gcc  
+x86_64               randconfig-x015-20230726   gcc  
+x86_64               randconfig-x016-20230726   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
 -- 
 0-DAY CI Kernel Test Service
