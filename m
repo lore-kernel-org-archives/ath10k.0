@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B158C001DE
-	for <ath10k@archiver.kernel.org>; Sat, 29 Jul 2023 02:28:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2DEFC001DF
+	for <ath10k@archiver.kernel.org>; Tue,  1 Aug 2023 14:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lkj26iIgSlOcgc5vZE8DW05ULdF+6Mob3j+CFcaDQIw=; b=rKFPOgUJ64ysu1
-	o2MbduLWXcmLX/O6DTteIifTOWXqHjgo37BF0pLhe5dIU1DL7Nj2xN4QYtYAsCjvCyWEp/Sp5NVVP
-	9fbHNykTOJc9kXvGAccrsGll7DKUY2m1kJWKb3IO3VVgmZiWTJUbB8EmVpSNAxVrg+cw0EgGjCL1h
-	wfsf7q4CBQ9PAOaRRmOVTnW0snL5Yg0ywlnGhOS4IenjnzhzeXFwIqC54/CWe9Hdshhrw2lNBIzxZ
-	LQPUwn8lWCH3c0v6LOJ5c7ilfcSMHTQKUeqiwzoGZbWpYGSrxr7biHmqjZGzP1634Ot6M7eNTIODi
-	STniZABnGic4uHI8mCuw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=JhLGDftqN2bdD4c2A4sSnkBFCaOtJMvNQbhzWZPWqIk=; b=FeocGWmaav956W
+	Jsu+/VZ6SH0XgmUQ5/2R5DCe5H5MYobhWiSfjP4chpjZbq0fEUzN/8UlLH6fpqPEJ0sFJPIUKviHU
+	0hWaQWQmINrzplPPTJFzf1hfGppGQqg0aWmR8XA0qvczTQtZQMn/FmKP7y2gYVBnNDuKJ8ZpevD1c
+	4Guitjv47ASd+46//niCQskfxkgTciB5dOHnm8ypXQZ1mJEWCbwH7lN/y87WFBvu4LY6SSlmPyz+u
+	DL0kGunr3SG8RDtOpgZTIK7Gbye5l3cpfQBOyiGTBKBuiQzAw+YPANieUEIhLZNL2XQjpX/WViyVM
+	2tnbXRgMcZZsfB90S0Mw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPZh3-005wI2-2O;
-	Sat, 29 Jul 2023 02:28:33 +0000
-Received: from [134.134.136.20] (helo=mgamail.intel.com)
+	id 1qQqg9-002dq6-2b;
+	Tue, 01 Aug 2023 14:48:53 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPZh0-005wHe-1w
-	for ath10k@lists.infradead.org;
-	Sat, 29 Jul 2023 02:28:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690597710; x=1722133710;
-  h=date:from:to:cc:subject:message-id;
-  bh=Kz9EELreeKh3Ps78aoO14uar+Rhv+ddHpa44uu0e4aI=;
-  b=HNHrU/W3cmkJbQNDf9NtzWnwt2raJ2fOOFWu5zEOwas+Xy5chJZp5/dB
-   92aBVBsk6qzr6y58G9af7YPKNeWGYDQF9gpviD2ClaYq0EIDsTVlL++Gx
-   hTr2lBVutNYN/dOhyOj2FIFO7PePGHDuQd9qrht46s3GzHKoLzc8Ytjjy
-   rXWrYt6tx0ax1cBsVYfkwBEPq1zitGWVX2gooDi3qAVIAJPEQygqvq0HK
-   HcK2RV0J6y7l5SucgiDHvTcgttxo7CuN38e2k9bxfcn3zd+IjguVZRfcb
-   pP9zcFAYVrOCFR160JJlAotedixqALlwvLlx3kV+vuJI9byNcRPyLRcdF
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="358753087"
-X-IronPort-AV: E=Sophos;i="6.01,239,1684825200"; 
-   d="scan'208";a="358753087"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 19:27:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="677694011"
-X-IronPort-AV: E=Sophos;i="6.01,239,1684825200"; 
-   d="scan'208";a="677694011"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 28 Jul 2023 19:27:45 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qPZgG-0003lJ-1U;
-	Sat, 29 Jul 2023 02:27:44 +0000
-Date: Sat, 29 Jul 2023 10:26:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath11k-hibernation-support] BUILD SUCCESS
- bbdab09084e1e35fa38a9d19b90172c53a29692f
-Message-ID: <202307291054.Hv8inGuI-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1qQqg6-002dpT-2i;
+	Tue, 01 Aug 2023 14:48:52 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B2588615A9;
+	Tue,  1 Aug 2023 14:48:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BADCAC433C7;
+	Tue,  1 Aug 2023 14:48:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690901329;
+	bh=nT8gUQ6qDAmcesueSE4m0Nz7EwpMx5l0NtHDJ0UaUKc=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=YNcdFczYzaieRuS9r1BQyiKUAmTILRQLhyy9Bdhw4fY7U6RKJHISLOpTIpTQTWOWG
+	 qjpntf0uj4YT8FUENS/vE151qxVlzro8RDEMDu3Ix/i6u5DPhWQS9yj019zH+5dmb/
+	 dQbhnMlk26ZEVpJ7+Y2i5OLH8a12tjJ5q2SlvL4X1sZDHXiKzmBz0v/QRCwyzVe5T+
+	 x7I2LFOvRrXEnxy2C+T1eaqmUhXbDmAb/NbeM5Rm+XpOP+q9wJkDeq84xVWyYyrmWb
+	 gihdh3gxke8iWCdpm108MZ2XHbsc385uwa0Ejgod2lvTOgHWmCQUgT5bRbBdsmFX41
+	 IeBO6cPajX/6w==
+MIME-Version: 1.0
+Subject: Re: [v2] wifi: drivers: Explicitly include correct DT includes
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20230724211914.805876-1-robh@kernel.org>
+References: <20230724211914.805876-1-robh@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Loic Poulain <loic.poulain@linaro.org>, Felix Fietkau <nbd@nbd.name>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>,
+ Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno  <angelogioacchino.delregno@collabora.com>,
+ =?utf-8?b?SsOpcsO0bWUgUG91aWxsZXI=?=  <jerome.pouiller@silabs.com>,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+ wcn36xx@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169090132389.212423.4907787613050355047.kvalo@kernel.org>
+Date: Tue,  1 Aug 2023 14:48:45 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230728_192830_688241_B26E30CC 
-X-CRM114-Status: UNSURE (   5.22  )
+X-CRM114-CacheID: sfid-20230801_074850_964932_837041F0 
+X-CRM114-Status: UNSURE (   8.79  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,132 +78,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-hibernation-support
-branch HEAD: bbdab09084e1e35fa38a9d19b90172c53a29692f  wifi: ath11k: remove MHI LOOPBACK channels
+Rob Herring <robh@kernel.org> wrote:
 
-elapsed time: 1075m
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-configs tested: 104
-configs skipped: 7
+Patch applied to wireless-next.git, thanks.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r005-20230727   gcc  
-alpha                randconfig-r006-20230727   gcc  
-alpha                randconfig-r013-20230727   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r043-20230727   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r046-20230727   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r026-20230727   clang
-hexagon              randconfig-r041-20230727   clang
-hexagon              randconfig-r045-20230727   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230727   clang
-i386         buildonly-randconfig-r005-20230727   clang
-i386         buildonly-randconfig-r006-20230727   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230727   clang
-i386                 randconfig-i002-20230727   clang
-i386                 randconfig-i003-20230727   clang
-i386                 randconfig-i004-20230727   clang
-i386                 randconfig-i005-20230727   clang
-i386                 randconfig-i006-20230727   clang
-i386                 randconfig-i011-20230727   gcc  
-i386                 randconfig-i012-20230727   gcc  
-i386                 randconfig-i013-20230727   gcc  
-i386                 randconfig-i014-20230727   gcc  
-i386                 randconfig-i015-20230727   gcc  
-i386                 randconfig-i016-20230727   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze           randconfig-r024-20230727   gcc  
-microblaze           randconfig-r035-20230727   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r004-20230727   gcc  
-nios2                randconfig-r022-20230727   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r012-20230727   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r002-20230727   clang
-riscv                randconfig-r042-20230727   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r033-20230727   clang
-s390                 randconfig-r044-20230727   gcc  
-sh                               allmodconfig   gcc  
-sh                   randconfig-r016-20230727   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64              randconfig-r025-20230727   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r015-20230727   clang
-um                   randconfig-r023-20230727   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230727   clang
-x86_64       buildonly-randconfig-r002-20230727   clang
-x86_64       buildonly-randconfig-r003-20230727   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r001-20230727   clang
-x86_64               randconfig-r014-20230727   gcc  
-x86_64               randconfig-r034-20230727   clang
-x86_64               randconfig-x001-20230727   gcc  
-x86_64               randconfig-x002-20230727   gcc  
-x86_64               randconfig-x003-20230727   gcc  
-x86_64               randconfig-x004-20230727   gcc  
-x86_64               randconfig-x005-20230727   gcc  
-x86_64               randconfig-x006-20230727   gcc  
-x86_64               randconfig-x011-20230727   clang
-x86_64               randconfig-x012-20230727   clang
-x86_64               randconfig-x013-20230727   clang
-x86_64               randconfig-x014-20230727   clang
-x86_64               randconfig-x015-20230727   clang
-x86_64               randconfig-x016-20230727   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r021-20230727   gcc  
+e7899a90cebe wifi: drivers: Explicitly include correct DT includes
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+https://patchwork.kernel.org/project/linux-wireless/patch/20230724211914.805876-1-robh@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
