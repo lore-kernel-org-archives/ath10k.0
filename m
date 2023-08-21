@@ -4,78 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20891EE49A6
-	for <ath10k@archiver.kernel.org>; Mon, 21 Aug 2023 10:46:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDB1FEE49A6
+	for <ath10k@archiver.kernel.org>; Mon, 21 Aug 2023 11:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ejKDRFhEreJhgwLUrpvOz7AJ28HjLPKXIDkQsWvNzRg=; b=Plih/pDh3RD1pm
-	zE05/tgmWcAA8cqiJ/wgBbSO3syCqviD0WDmPi8JonP8WWy0WzJj/TyWbZ9HfFSITHMV/EaAgsBqa
-	8f0nnSdN+a+IglmQ894h29iWnKrSh2dcYqbED0FL+bcO06nUCKGBZMEsaGRXuaNrtd/oRt1ioHt4t
-	qKddCObbidcFXWczOuB0aWfVJ9T/Jcvi6Xd8APmZyEq0pfc7CkZ7G4zuC3xFmGl0wlpwKsAB1bFN+
-	/+4j85bCrhH+6ZUMZXSVXuN8GEjIGO9+ozuVB5gUbcCU02TwXq+iStP1Yl8voHQe2nx0EBaf+ouC2
-	MoBWzo9AAFP8DFQ6T7bg==;
+	List-Owner; bh=A36ndpDTqu+L8S5EOVgXF3clILE2FwakfapA3LHV2yU=; b=t9+bv4XAuMcHqf
+	rlcaDpS4vImIOFFTr3QrQvZ7hR4QSupCzjxvkEyXQgOMH0tMAYyJatxBmR3No50gN4nIK0gRmxujW
+	lt5relDHjYSsybtfaaoejzZsWswbR28ApZzuuUHJ3KU/4S7Nk0MfGzKAv5wWWnzaO9hXwXPzbdj6Z
+	hRGGAV3jQLb1yt4wzAUWSGrhPrEu2wNw3nTcFIiZRlkmLeTNOECz4VsAYfmVk9eXvwMKGfiMe1hL2
+	l/yzpzvFcfVeSPKLkn1KA6jMPx7mAktlve+j6YvNdErB4Hwgt9LthGCvcIqDk+L4ijIz8nLPBS+fi
+	j2Wu79AhqobZ/j4H4orQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qY2QM-00DoJC-0W;
-	Mon, 21 Aug 2023 10:46:18 +0000
-Received: from mail-qv1-xf2d.google.com ([2607:f8b0:4864:20::f2d])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qY2QI-00DoIA-1T
-	for ath10k@lists.infradead.org;
-	Mon, 21 Aug 2023 10:46:16 +0000
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-64b8e1c739aso18317676d6.0
-        for <ath10k@lists.infradead.org>; Mon, 21 Aug 2023 03:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692614772; x=1693219572;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=91+NJvb3XeUy21mbV0egFTNhqjvg3UgNfxu2JF/jzAs=;
-        b=iybxIAy1nVsUJ21WCTmZRj+r16uzxExYBDSin/BR3sN0NAlpR6QfOZvV9Luv2XV5Sq
-         9bRlqoRtotuBnOZY1AzI68w3mF4mrtzF0vz7OCBK4GtBkzG55zKGkN0prHFIN6G8rsKP
-         LgaGdwrm6HTP97Hj8WKuwvZRdexIfTscvlPNhT+HaE6C1gZzEIFl8dEbxZM+YnRTGA/9
-         LDGhkuISyCs9A8ozp0c2VSt85IgrtUREmsYa0rfQ06S2RFK7WG0NZQ3cW4PXvkT5Nl5/
-         Dn26VxENC8avfYTVgKNblOYPsWAaDzs5WC4dvOLbMsC3XhJpwmpCzJJppDya6WblMaqi
-         fs0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692614772; x=1693219572;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=91+NJvb3XeUy21mbV0egFTNhqjvg3UgNfxu2JF/jzAs=;
-        b=i/T0M7+GbGurCjoJmabnlbj5+hL/0r9YfAr1jAw285bVZChUE54nGc91G0gYQmCeV4
-         Sx9tVDpt6+m6IcTyBR/uselkU+I7F0CglwNswpLJu4vJKz9enh5FDBqobUJN/p8M9THv
-         kYqddgwsDcFOa5O/ZzgbSS0+nL4o5fh3K70Df2dDH6Nc42vRRalLheRPmzLGqEvpTHy/
-         iTxQcIB81o2m5qX1tCpTpiqEPU9McOH/uPwKzvEeJJrhMSFtd+7iOy24Xq4CiKd98FJ4
-         6IloAQVWqCtGun7gEeVmCtZxAWs9L5RquCzLkEHIYvpCKkPSGiLkmlLtbOMdYYdIf5EF
-         /OJg==
-X-Gm-Message-State: AOJu0YzBaSfe1x07G1k3gS4cu03qohSYKEOieihnHESzHivbsZrrV5QK
-	wBmLjVSHmkVktgbrL1xmCU7S3ank1Jw1ZuyI3zo=
-X-Google-Smtp-Source: AGHT+IF7uB7Vd8228/OsdKlUTAWtHZWG03cwsC9jguXp+IBvSvrAdw16P2M7u8CrkTRzfJNPlbLm97u0VKDH88ZvX3s=
-X-Received: by 2002:a0c:e1d4:0:b0:64d:254a:63dc with SMTP id
- v20-20020a0ce1d4000000b0064d254a63dcmr6699128qvl.19.1692614771594; Mon, 21
- Aug 2023 03:46:11 -0700 (PDT)
+	id 1qY2kQ-00Dq1y-18;
+	Mon, 21 Aug 2023 11:07:02 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
+	id 1qY2kL-00Dq0W-2l;
+	Mon, 21 Aug 2023 11:07:01 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59D942F4;
+	Mon, 21 Aug 2023 04:07:33 -0700 (PDT)
+Received: from [10.57.3.137] (unknown [10.57.3.137])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F91B3F762;
+	Mon, 21 Aug 2023 04:06:44 -0700 (PDT)
+Message-ID: <78114fd6-9b83-92ba-418f-6cc7bda9df9b@arm.com>
+Date: Mon, 21 Aug 2023 12:06:40 +0100
 MIME-Version: 1.0
-References: <20230611080505.17393-1-ansuelsmth@gmail.com> <878rcjbaqs.fsf@kernel.org>
- <648cdebb.5d0a0220.be7f8.a096@mx.google.com> <648ded2a.df0a0220.b78de.4603@mx.google.com>
-In-Reply-To: <648ded2a.df0a0220.b78de.4603@mx.google.com>
-From: Ansuel Smith <ansuelsmth@gmail.com>
-Date: Mon, 21 Aug 2023 12:46:00 +0200
-Message-ID: <CA+_ehUzzVq_sVTgVCM+r=oLp=GNn-6nJRBG=bndJjrRDhCodaw@mail.gmail.com>
-Subject: Re: [PATCH v14] ath10k: add LED and GPIO controlling support for
- various chipsets
-To: Kalle Valo <kvalo@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org, 
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, 
-	Steve deRosier <derosier@cal-sierra.com>, Stefan Lippers-Hollmann <s.l-h@gmx.de>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] iommu: Remove the device_lock_assert() from
+ __iommu_probe_device()
+Content-Language: en-GB
+To: Jason Gunthorpe <jgg@nvidia.com>, Andy Gross <agross@kernel.org>,
+ David Airlie <airlied@gmail.com>, alsa-devel@alsa-project.org,
+ Bjorn Andersson <andersson@kernel.org>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Christian Gmeiner <christian.gmeiner@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+ dmaengine@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ dri-devel@lists.freedesktop.org, Emma Anholt <emma@anholt.net>,
+ etnaviv@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+ Frank Rowand <frowand.list@gmail.com>, iommu@lists.linux.dev,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Joerg Roedel <joro@8bytes.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Kalle Valo <kvalo@kernel.org>,
+ Lucas Stach <l.stach@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>,
+ Russell King <linux+etnaviv@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-sunxi@lists.linux.dev,
+ linux-tegra@vger.kernel.org, linux-wireless@vger.kernel.org,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Mikko Perttunen <mperttunen@nvidia.com>, Maxime Ripard <mripard@kernel.org>,
+ Sinan Kaya <okaya@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>, Rob Clark <robdclark@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
+ Sean Paul <sean@poorly.run>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Will Deacon <will@kernel.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <jroedel@suse.de>,
+ Kevin Tian <kevin.tian@intel.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Chen-Yu Tsai <wenst@chromium.org>
+References: <0-v1-98d20e768c66+7-of_dma_lock_jgg@nvidia.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <0-v1-98d20e768c66+7-of_dma_lock_jgg@nvidia.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230821_034614_494200_E464F260 
-X-CRM114-Status: GOOD (  59.74  )
+X-CRM114-CacheID: sfid-20230821_040657_999488_24CBFE87 
+X-CRM114-Status: GOOD (  57.87  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,191 +94,427 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Il giorno sab 17 giu 2023 alle ore 19:28 Christian Marangi
-<ansuelsmth@gmail.com> ha scritto:
->
-> On Fri, Jun 16, 2023 at 01:35:04PM +0200, Christian Marangi wrote:
-> > On Fri, Jun 16, 2023 at 08:03:23PM +0300, Kalle Valo wrote:
-> > > Christian Marangi <ansuelsmth@gmail.com> writes:
-> > >
-> > > > From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-> > > >
-> > > > Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984
-> > > > based chipsets with on chipset connected led's using WMI Firmware API.
-> > > > The LED device will get available named as "ath10k-phyX" at sysfs and
-> > > > can be controlled with various triggers.
-> > > > Adds also debugfs interface for gpio control.
-> > > >
-> > > > Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-> > > > Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
-> > > > [kvalo: major reorg and cleanup]
-> > > > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> > > > [ansuel: rebase and small cleanup]
-> > > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > > > Tested-by: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-> > > > ---
-> > > >
-> > > > Hi,
-> > > > this is a very old patch from 2018 that somehow was talked till 2020
-> > > > with Kavlo asked to rebase and resubmit and nobody did.
-> > > > So here we are in 2023 with me trying to finally have this upstream.
-> > > >
-> > > > A summarize of the situation.
-> > > > - The patch is from years in OpenWRT. Used by anything that has ath10k
-> > > >   card and a LED connected.
-> > > > - This patch is also used by the fw variant from Candela Tech with no
-> > > >   problem reported.
-> > > > - It was pointed out that this caused some problem with ipq4019 SoC
-> > > >   but the problem was actually caused by a different bug related to
-> > > >   interrupts.
-> > > >
-> > > > I honestly hope we can have this feature merged since it's really
-> > > > funny to have something that was so near merge and jet still not
-> > > > present and with devices not supporting this simple but useful
-> > > > feature.
-> > >
-> > > Indeed, we should finally get this in. Thanks for working on it.
-> > >
-> > > I did some minor changes to the patch, they are in my pending branch:
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=686464864538158f22842dc49eddea6fa50e59c1
-> > >
-> > > My comments below, please review my changes. No need to resend because
-> > > of these.
-> > >
-> >
-> > Hi,
-> > very happy this is going further.
-> >
-> > > > --- a/drivers/net/wireless/ath/ath10k/Kconfig
-> > > > +++ b/drivers/net/wireless/ath/ath10k/Kconfig
-> > > > @@ -67,6 +67,23 @@ config ATH10K_DEBUGFS
-> > > >
-> > > >     If unsure, say Y to make it easier to debug problems.
-> > > >
-> > > > +config ATH10K_LEDS
-> > > > + bool "Atheros ath10k LED support"
-> > > > + depends on ATH10K
-> > > > + select MAC80211_LEDS
-> > > > + select LEDS_CLASS
-> > > > + select NEW_LEDS
-> > > > + default y
-> > > > + help
-> > > > +   This option enables LEDs support for chipset LED pins.
-> > > > +   Each pin is connected via GPIO and can be controlled using
-> > > > +   WMI Firmware API.
-> > > > +
-> > > > +   The LED device will get available named as "ath10k-phyX" at sysfs and
-> > > > +           can be controlled with various triggers.
-> > > > +
-> > > > +   Say Y, if you have LED pins connected to the ath10k wireless card.
-> > >
-> > > I'm not sure anymore if we should ask anything from the user, better to
-> > > enable automatically if LED support is enabled in the kernel. So I
-> > > simplified this to:
-> > >
-> > > config ATH10K_LEDS
-> > >     bool
-> > >     depends on ATH10K
-> > >     depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211
-> > >     default y
-> > >
-> > > This follows what mt76 does:
-> > >
-> > > config MT76_LEDS
-> > >     bool
-> > >     depends on MT76_CORE
-> > >     depends on LEDS_CLASS=y || MT76_CORE=LEDS_CLASS
-> > >     default y
-> > >
-> >
-> > I remember there was the same discussion in a previous series. OK for me
-> > for making this by default, only concern is any buildbot error (if any)
-> >
-> > Anyway OK for the change.
-> >
-> > > > @@ -65,6 +66,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
-> > > >           .dev_id = QCA988X_2_0_DEVICE_ID,
-> > > >           .bus = ATH10K_BUS_PCI,
-> > > >           .name = "qca988x hw2.0",
-> > > > +         .led_pin = 1,
-> > > >           .patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
-> > > >           .uart_pin = 7,
-> > > >           .cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-> > >
-> > > I prefer following the field order from struct ath10k_hw_params
-> > > declaration and also setting fields explicitly to zero (even though
-> > > there are gaps still) so I changed that for every entry.
-> > >
-> >
-> > Thanks for the change, np for me.
-> >
-> > > > +int ath10k_leds_register(struct ath10k *ar)
-> > > > +{
-> > > > + int ret;
-> > > > +
-> > > > + if (ar->hw_params.led_pin == 0)
-> > > > +         /* leds not supported */
-> > > > +         return 0;
-> > > > +
-> > > > + snprintf(ar->leds.label, sizeof(ar->leds.label), "ath10k-%s",
-> > > > +          wiphy_name(ar->hw->wiphy));
-> > > > + ar->leds.wifi_led.active_low = 1;
-> > > > + ar->leds.wifi_led.gpio = ar->hw_params.led_pin;
-> > > > + ar->leds.wifi_led.name = ar->leds.label;
-> > > > + ar->leds.wifi_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-> > > > +
-> > > > + ar->leds.cdev.name = ar->leds.label;
-> > > > + ar->leds.cdev.brightness_set_blocking = ath10k_leds_set_brightness_blocking;
-> > > > +
-> > > > + /* FIXME: this assignment doesn't make sense as it's NULL, remove it? */
-> > > > + ar->leds.cdev.default_trigger = ar->leds.wifi_led.default_trigger;
-> > >
-> > > But what to do with this FIXME?
-> > >
-> >
-> > It was pushed by you in v13.
-> >
-> > I could be wrong but your idea was to prepare for future support of
-> > other patch that would set the default_trigger to the mac80211 tpt.
-> >
-> > We might got both confused by default_trigger and default_state.
-> > default_trigger is actually never set and is NULL (actually it's 0)
-> >
-> > We have other 2 patch that adds tpt rates for the mac80211 LED trigger
-> > and set this trigger as the default one but honestly I would chose a
-> > different implementation than hardcoding everything.
-> >
-> > If it's ok for you, I would drop the comment and the default_trigger and
-> > I will send a follow-up patch to this adding DT support by using
-> > led_classdev_register_ext and defining init_data.
-> > (and this indirectly would permit better LED naming and defining of
-> > default-trigger in DT)
-> >
-> > Also ideally I will also send a patch for default_state following
-> > standard LED implementation. (to set default_state in DT)
-> >
-> > I would prefer this approach as the LED patch already took way too much
-> > time and I think it's better to merge this initial version and then
-> > improve it.
->
-> If you want to check out I attached the 2 patch (one dt-bindings and the
-> one for the code) that I will submit when this will be merged (the
-> change is with the assumption that the FIXME line is dropped)
->
-> Tested and works correctly with my use case of wifi card attached with
-> pcie. This implementation permits to declare the default trigger in DT
-> instead of hardcoding.
->
+On 2023-08-18 22:32, Jason Gunthorpe wrote:
+> It turns out several drivers are calling of_dma_configure() outside the
+> expected bus_type.dma_configure op. This ends up being mis-locked and
+> triggers a lockdep assertion, or instance:
+> 
+>    iommu_probe_device_locked+0xd4/0xe4
+>    of_iommu_configure+0x10c/0x200
+>    of_dma_configure_id+0x104/0x3b8
+>    a6xx_gmu_init+0x4c/0xccc [msm]
+>    a6xx_gpu_init+0x3ac/0x770 [msm]
+>    adreno_bind+0x174/0x2ac [msm]
+>    component_bind_all+0x118/0x24c
+>    msm_drm_bind+0x1e8/0x6c4 [msm]
+>    try_to_bring_up_aggregate_device+0x168/0x1d4
+>    __component_add+0xa8/0x170
+>    component_add+0x14/0x20
+>    dsi_dev_attach+0x20/0x2c [msm]
+>    dsi_host_attach+0x9c/0x144 [msm]
+>    devm_mipi_dsi_attach+0x34/0xb4
+>    lt9611uxc_attach_dsi.isra.0+0x84/0xfc [lontium_lt9611uxc]
+>    lt9611uxc_probe+0x5c8/0x68c [lontium_lt9611uxc]
+>    i2c_device_probe+0x14c/0x290
+>    really_probe+0x148/0x2b4
+>    __driver_probe_device+0x78/0x12c
+>    driver_probe_device+0x3c/0x160
+>    __device_attach_driver+0xb8/0x138
+>    bus_for_each_drv+0x84/0xe0
+>    __device_attach+0xa8/0x1b0
+>    device_initial_probe+0x14/0x20
+>    bus_probe_device+0xb0/0xb4
+>    deferred_probe_work_func+0x8c/0xc8
+>    process_one_work+0x1ec/0x53c
+>    worker_thread+0x298/0x408
+>    kthread+0x124/0x128
+>    ret_from_fork+0x10/0x20
+> 
+> It is subtle and was never documented or enforced, but there has always
+> been an assumption that of_dma_configure_id() is not concurrent. It makes
+> several calls into the iommu layer that require this, including
+> dev_iommu_get(). The majority of cases have been preventing concurrency
+> using the device_lock().
+> 
+> Thus the new lock debugging added exposes an existing problem in
+> drivers. On inspection this looks like a theoretical locking problem as
+> generally the cases are already assuming they are the exclusive (single
+> threaded) user of the target device.
 
-Any news with this? Did I notice the LEDs patch are still in pending...
-Since I notice the process is a bit slow I wonder if we can also queue
-the 2 patch i attached in the previous email so we can speed things up?
+Sorry to be blunt, but the only problem is that you've introduced an 
+idealistic new locking scheme which failed to take into account how 
+things currently actually work, and is broken and achieving nothing but 
+causing problems.
+
+The solution is to drop those locking patches entirely and rethink the 
+whole thing. When their sole purpose was to improve the locking and make 
+it easier to reason about, and now the latest "fix" is now to remove one 
+of the assertions which forms the fundamental basis for that reasoning, 
+then the point has clearly been lost. All we've done is churned a dodgy 
+and incomplete locking scheme into a *different* dodgy and incomplete 
+locking scheme. I do not think that continuing to dig in deeper is the 
+way out of the hole...
+
+It's now rc7, and I have little confidence that aren't still more latent 
+problems which just haven't been hit yet (e.g. acpi_dma_configure() is 
+also called in different contexts relative to the device lock, which is 
+absolutely by design and not broken).
+
+And on the subject of idealism, the fact is that doing IOMMU 
+configuration based on driver probe via bus->dma_configure is 
+*fundamentally wrong* and breaking a bunch of other IOMMU API 
+assumptions, so it is not a robust foundation to build anything upon in 
+the first place. The problem it causes with broken groups has been known 
+about for several years now, however it's needed a lot of work to get to 
+the point of being able to fix it properly (FWIW that is now #2 on my 
+priority list after getting the bus ops stuff done, which should also 
+make it easier).
+
+Thanks,
+Robin.
+
+> Sadly, there are deeper technical problems with all of the places doing
+> this. There are several problemetic patterns:
+> 
+> 1) Probe a driver on device A and then steal device B and use it as part
+>     of the driver operation.
+> 
+>     Since no driver was probed to device B it means we never called
+>     bus_type.dma_configure and thus the drivers hackily try to open code
+>     this.
+> 
+>     Unfortunately nothing prevents another driver from binding to device B
+>     and creating total chaos. eg vfio bind triggered by userspace
+> 
+> 2) Probe a driver on device A and then create a new platform driver B for a
+>     fwnode that doesn't have one, then do #1
+> 
+>     This has the same essential problem as #1, the new device is never
+>     probed so the hack call to of_dma_configure() is needed to setup DMA,
+>     and we are at risk of something else trying to use the device.
+> 
+> 3) Probe a driver on device A but the of_node was incorrect for DMA so fix
+>     it by figuring out the right node and calling of_dma_configure()
+> 
+>     This will blow up in the iommu code if the driver is unprobed because
+>     the bus_type now assumes that dma_configure and dma_cleanup are
+>     strictly paired. Since dma_configure will have done the wrong thing due
+>     to the missing of_node, dma_cleanup will be unpaired and
+>     iommu_device_unuse_default_domain() will blow up.
+> 
+>     Further the driver operating on device A will not be protected against
+>     changes to the iommu domain since it never called
+>     iommu_device_use_default_domain()
+> 
+>     At least this case will not throw a lockdep warning as probe
+>     is done under the device_lock already.
+> 
+> While it is tempting to just add a device_lock() around the few missing
+> places, this doesn't solve the above underlying problems with those
+> callers.
+> 
+> For this reason remove the locking assertion in the iommu code so that
+> theses driver problems continue to remain hidden.
+> 
+> Add a comment to all the problematic call sites to encourage fixing and
+> discourage future cut & paste expanding the problem.
+> 
+> Add documentation to of_dma_configure_id() explaining the locking.
+> 
+> Fixes: b19ca5922dff ("iommu: Do not attempt to re-lock the iommu device when probing")
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Closes: https://lore.kernel.org/all/d090f196-a5c2-b188-31bf-e42553d8d251@samsung.com/
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>   drivers/bcma/main.c                              |  4 ++++
+>   drivers/dma/qcom/hidma_mgmt.c                    |  4 ++++
+>   drivers/gpu/drm/etnaviv/etnaviv_drv.c            |  4 ++++
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c            |  8 ++++++++
+>   drivers/gpu/drm/sun4i/sun4i_backend.c            |  4 ++++
+>   drivers/gpu/drm/sun4i/sun8i_mixer.c              |  4 ++++
+>   drivers/gpu/drm/vc4/vc4_drv.c                    |  4 ++++
+>   drivers/gpu/host1x/bus.c                         |  4 ++++
+>   drivers/iommu/iommu.c                            | 12 ++++++++----
+>   drivers/media/platform/qcom/venus/firmware.c     |  4 ++++
+>   drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c |  4 ++++
+>   drivers/net/wireless/ath/ath10k/snoc.c           |  4 ++++
+>   drivers/net/wireless/ath/ath11k/ahb.c            |  4 ++++
+>   drivers/of/device.c                              |  3 +++
+>   sound/soc/bcm/bcm63xx-pcm-whistler.c             |  4 ++++
+>   15 files changed, 67 insertions(+), 4 deletions(-)
+> 
+> This is my suggestion to the issue, I don't like removing the locking
+> assertion but if we can't have debug kernels reporting existing bugs then this
+> would be the next best option.
+> 
+> I've CC'd all the driver owners, if people have better explanations for what
+> their drivers are doing please share :)
+> 
+> diff --git a/drivers/bcma/main.c b/drivers/bcma/main.c
+> index 7061d3ee836a15..4df97000d7e0a7 100644
+> --- a/drivers/bcma/main.c
+> +++ b/drivers/bcma/main.c
+> @@ -208,6 +208,10 @@ static void bcma_of_fill_device(struct device *parent,
+>   
+>   	core->irq = bcma_of_get_irq(parent, core, 0);
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(&core->dev, node, false);
+>   }
+>   
+> diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
+> index 05e96b31d87169..2efd97747d37b3 100644
+> --- a/drivers/dma/qcom/hidma_mgmt.c
+> +++ b/drivers/dma/qcom/hidma_mgmt.c
+> @@ -390,6 +390,10 @@ static int __init hidma_mgmt_of_populate_channels(struct device_node *np)
+>   			goto out;
+>   		}
+>   		new_pdev->dev.of_node = child;
+> +		/*
+> +		 * FIXME: of_dma_configure() should not be called outside
+> +		 * bus_type.dma_configure
+> +		 */
+>   		of_dma_configure(&new_pdev->dev, child, true);
+>   		/*
+>   		 * It is assumed that calling of_msi_configure is safe on
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> index 31a7f59ccb49ee..22729c66e39a65 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> @@ -635,6 +635,10 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
+>   	 * device as the GPU we found. This assumes that all Vivante
+>   	 * GPUs in the system share the same DMA constraints.
+>   	 */
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	if (first_node)
+>   		of_dma_configure(&pdev->dev, first_node, true);
+>   
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index 5deb79924897af..509bd8b7ec12ae 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -1492,6 +1492,10 @@ int a6xx_gmu_wrapper_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
+>   
+>   	gmu->dev = &pdev->dev;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(gmu->dev, node, true);
+>   
+>   	pm_runtime_enable(gmu->dev);
+> @@ -1556,6 +1560,10 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
+>   
+>   	gmu->dev = &pdev->dev;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(gmu->dev, node, true);
+>   
+>   	/* Fow now, don't do anything fancy until we get our feet under us */
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_backend.c b/drivers/gpu/drm/sun4i/sun4i_backend.c
+> index b11dbd50d73e98..30cbefb6799e51 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_backend.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_backend.c
+> @@ -800,6 +800,10 @@ static int sun4i_backend_bind(struct device *dev, struct device *master,
+>   		 * for us, and DRM doesn't do per-device allocation either, so
+>   		 * we would need to fix DRM first...
+>   		 */
+> +		/*
+> +		 * FIXME: of_dma_configure() should not be called outside
+> +		 * bus_type.dma_configure
+> +		 */
+>   		ret = of_dma_configure(drm->dev, dev->of_node, true);
+>   		if (ret)
+>   			return ret;
+> diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/sun8i_mixer.c
+> index 11d5244a5aa5fc..e26bea207599d3 100644
+> --- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
+> +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
+> @@ -399,6 +399,10 @@ static int sun8i_mixer_bind(struct device *dev, struct device *master,
+>   		 * DRM doesn't do per-device allocation either, so we
+>   		 * would need to fix DRM first...
+>   		 */
+> +		/*
+> +		 * FIXME: of_dma_configure() should not be called outside
+> +		 * bus_type.dma_configure
+> +		 */
+>   		ret = of_dma_configure(drm->dev, dev->of_node, true);
+>   		if (ret)
+>   			return ret;
+> diff --git a/drivers/gpu/drm/vc4/vc4_drv.c b/drivers/gpu/drm/vc4/vc4_drv.c
+> index 823395c23cc308..82496d8fb50f84 100644
+> --- a/drivers/gpu/drm/vc4/vc4_drv.c
+> +++ b/drivers/gpu/drm/vc4/vc4_drv.c
+> @@ -305,6 +305,10 @@ static int vc4_drm_bind(struct device *dev)
+>   	node = of_find_matching_node_and_match(NULL, vc4_dma_range_matches,
+>   					       NULL);
+>   	if (node) {
+> +		/*
+> +		 * FIXME: of_dma_configure() should not be called outside
+> +		 * bus_type.dma_configure
+> +		 */
+>   		ret = of_dma_configure(dev, node, true);
+>   		of_node_put(node);
+>   
+> diff --git a/drivers/gpu/host1x/bus.c b/drivers/gpu/host1x/bus.c
+> index 4d16a3396c4abf..5c7ef738a7d7d7 100644
+> --- a/drivers/gpu/host1x/bus.c
+> +++ b/drivers/gpu/host1x/bus.c
+> @@ -475,6 +475,10 @@ static int host1x_device_add(struct host1x *host1x,
+>   	device->dev.bus = &host1x_bus_type;
+>   	device->dev.parent = host1x->dev;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(&device->dev, host1x->dev->of_node, true);
+>   
+>   	device->dev.dma_parms = &device->dma_parms;
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 18162049bd2294..eb623a611f571d 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -458,8 +458,15 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
+>   	 * Allow __iommu_probe_device() to be safely called in parallel,
+>   	 * both dev->iommu_group and the initial setup of dev->iommu are
+>   	 * protected this way.
+> +	 *
+> +	 * We cannot have the assertion yet because of a number of drivers
+> +	 * improperly calling of_dma_configure() and expecting to attach
+> +	 * the iommu outside the bus_type.dma_configure callback. This messes
+> +	 * up our ownership tracking, does not exclude other drivers from
+> +	 * binding an operating the device, and is technically mislocked.
+> +	 *
+> +	 * device_lock_assert(dev);
+>   	 */
+> -	device_lock_assert(dev);
+>   
+>   	if (!ops)
+>   		return -ENODEV;
+> @@ -527,8 +534,6 @@ int iommu_probe_device_locked(struct device *dev)
+>   	const struct iommu_ops *ops;
+>   	int ret;
+>   
+> -	device_lock_assert(dev);
+> -
+>   	ret = __iommu_probe_device(dev, NULL);
+>   	if (ret)
+>   		return ret;
+> @@ -1202,7 +1207,6 @@ void iommu_group_remove_device(struct device *dev)
+>   		__iommu_group_remove_device(dev);
+>   	}
+>   	device_unlock(dev);
+> -
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_group_remove_device);
+>   
+> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+> index cfb11c551167ce..f70360c5534d64 100644
+> --- a/drivers/media/platform/qcom/venus/firmware.c
+> +++ b/drivers/media/platform/qcom/venus/firmware.c
+> @@ -296,6 +296,10 @@ int venus_firmware_init(struct venus_core *core)
+>   
+>   	pdev->dev.of_node = np;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	ret = of_dma_configure(&pdev->dev, np, true);
+>   	if (ret) {
+>   		dev_err(core->dev, "dma configure fail\n");
+> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
+> index e30e54935d79a9..40fa7b62545d7a 100644
+> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
+> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
+> @@ -1114,6 +1114,10 @@ static struct device *s5p_mfc_alloc_memdev(struct device *dev,
+>   	 * to be treated as valid DMA masters we need a bit of a hack to force
+>   	 * them to inherit the MFC node's DMA configuration.
+>   	 */
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(child, dev->of_node, true);
+>   
+>   	if (device_add(child) == 0) {
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index 26214c00cd0d7b..977e5c6186b131 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1614,6 +1614,10 @@ static int ath10k_fw_init(struct ath10k *ar)
+>   
+>   	pdev->dev.of_node = node;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	ret = of_dma_configure(&pdev->dev, node, true);
+>   	if (ret) {
+>   		ath10k_err(ar, "dma configure fail: %d\n", ret);
+> diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
+> index 139da578831a44..a4d2a89ab96de0 100644
+> --- a/drivers/net/wireless/ath/ath11k/ahb.c
+> +++ b/drivers/net/wireless/ath/ath11k/ahb.c
+> @@ -1012,6 +1012,10 @@ static int ath11k_ahb_fw_resources_init(struct ath11k_base *ab)
+>   		return PTR_ERR(pdev);
+>   	}
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	ret = of_dma_configure(&pdev->dev, node, true);
+>   	if (ret) {
+>   		ath11k_err(ab, "dma configure fail: %d\n", ret);
+> diff --git a/drivers/of/device.c b/drivers/of/device.c
+> index 0f00f1b8070829..bc6f62ebcbd040 100644
+> --- a/drivers/of/device.c
+> +++ b/drivers/of/device.c
+> @@ -108,6 +108,9 @@ of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
+>    * If platform code needs to use its own special DMA configuration, it
+>    * can use a platform bus notifier and handle BUS_NOTIFY_ADD_DEVICE events
+>    * to fix up DMA configuration.
+> + *
+> + * This function should only be called from the bus_type.dma_configure callback
+> + * and the driver_lock(dev) must be held.
+>    */
+>   int of_dma_configure_id(struct device *dev, struct device_node *np,
+>   			bool force_dma, const u32 *id)
+> diff --git a/sound/soc/bcm/bcm63xx-pcm-whistler.c b/sound/soc/bcm/bcm63xx-pcm-whistler.c
+> index 2c600b017524f3..d8e0520ca61155 100644
+> --- a/sound/soc/bcm/bcm63xx-pcm-whistler.c
+> +++ b/sound/soc/bcm/bcm63xx-pcm-whistler.c
+> @@ -354,6 +354,10 @@ static int bcm63xx_soc_pcm_new(struct snd_soc_component *component,
+>   
+>   	i2s_priv = dev_get_drvdata(asoc_rtd_to_cpu(rtd, 0)->dev);
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(pcm->card->dev, pcm->card->dev->of_node, 1);
+>   
+>   	ret = dma_coerce_mask_and_coherent(pcm->card->dev, DMA_BIT_MASK(32));
+> 
+> base-commit: 1bba4f1c0b4f2429e16da231a246ab4b99cc633c
 
 _______________________________________________
 ath10k mailing list
