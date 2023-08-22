@@ -4,82 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FE28EE49AA
-	for <ath10k@archiver.kernel.org>; Tue, 22 Aug 2023 14:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6B19EE49AA
+	for <ath10k@archiver.kernel.org>; Tue, 22 Aug 2023 15:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:CC:To:In-Reply-To:References:Message-ID
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KTwmgHw/0lzxxL8uCxlj6FuiXOTM2hAz2a02QCYUcoM=; b=qxIfksVSLve1K1
-	v0+LO5If3u1QJBTlgHTdG7ySS7VR/KTqdLqCTp5wLD0oKASqZrxv7ncmJCtJ3Zrb3tcW6TBV6g55F
-	0jvnn3klDXqEsB3VLcz1yB/9peC1/lY0B367pm8xhrPIg5zGQpNDgky73pGS5eaZ5eA9vjHu0gDEf
-	CncuOSAKOQzshqtATJ37qGXM8XHOl9ND59Krsjg6R0TcLFTO8xXaRiu9j6+m5z9/Pu6HVf8JedrA+
-	1hCD1Doigg5eTiZv5hKVtsn+0W8jMhe+RpfmzdaNOQrfbiLxTTCj1fukZX/8Dep1voUtDJw0Zt5k4
-	yHd0iLrUqVPlts9ATNTg==;
+	List-Owner; bh=eiYrqNI3JsXOKTW9+uXUdtIddsK1CShhLp/V9m6L3uQ=; b=evaDk6iTsShzc7
+	LasfmBMiWlP31AbeKtrumicfV4vfBCpjnlRPM+nACiJrqFjVyQoNn18WTNDpJWjE720YMpRSahKjY
+	bxot2yFH71JImCTGMxhcy1fKYdUiOHnstiI+1HE8GEAf75XWNDBpKuGwd05dv/CfpShYUrA3cgxLV
+	GaHFNN4VIsKEj+k5Ep5aF6rt/+dnOHdaYss4LJRn9BvxzakkiO0Sj9Z821LxiGf+4Nl8LV4uelzse
+	0zX8STH+cmSpA20yCV9NqdU/bVwwXho8AQbbD0/fgxk9NM4CfEkstf8l4vLny4T1VObjIma5Tf1V5
+	hY6OciXAtQU6r4Lf0uOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYSjE-00GFHr-1b;
-	Tue, 22 Aug 2023 14:51:32 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1qYTju-00GQ90-2t;
+	Tue, 22 Aug 2023 15:56:18 +0000
+Received: from forward103c.mail.yandex.net ([2a02:6b8:c03:500:1:45:d181:d103])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYSjA-00GF5l-2g;
-	Tue, 22 Aug 2023 14:51:30 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37M8KlSi002021;
-	Tue, 22 Aug 2023 14:50:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=2dl+LHrfehLIiNC5ETXJvv6T3K9bYXbgbwVsdshjTB0=;
- b=S8GUxND1XuxIskXend56x9oPsEZecQkr1HjU+94TbbjASt8PNSohfaNvi4OGhrcYF0uc
- 8/s081o04sujUz8xgdcrsXaNJQF7Mic7MPmJQH+INvwJLHpH9W3L96qb5R7LtAuOi5NE
- /sC5qBRceudTembK5ABzam1tSLh6CffPlb4GiB9wBGOx3h5yKYzjT/GHuz56vLG7YTja
- ftJLNtDl6zb/8vfr/3e8VWixEGH98DHhMxGFJw64UWbdQ5XG+HLKNhz4qu9f9Q5HoLop
- MNUNesVqthQWyk6I6Gmf+AT7Ln71w0HsywWpFzyquT4eAM3LwTPedYrzJDJfdGIoXvau ZQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smfjs9p88-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 22 Aug 2023 14:50:52 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MEopbW008793
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 22 Aug 2023 14:50:51 GMT
-Received: from hu-jjohnson-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 22 Aug 2023 07:50:51 -0700
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Tue, 22 Aug 2023 07:50:49 -0700
-Subject: [PATCH 2/3] wifi: ath11k: Fix a few spelling errors
+	id 1qYTjr-00GQ6b-2D
+	for ath10k@lists.infradead.org;
+	Tue, 22 Aug 2023 15:56:17 +0000
+Received: from mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:1d9d:0:640:49d1:0])
+	by forward103c.mail.yandex.net (Yandex) with ESMTP id 2CE2F60089;
+	Tue, 22 Aug 2023 18:56:08 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 4uL3vjKWqKo0-czQgZIdE;
+	Tue, 22 Aug 2023 18:56:07 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1692719767;
+	bh=QopfTMY6oIByo/1txuoicCgv2X2OIIw12H4G6BeLezs=;
+	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
+	b=gpnW/kTT5ZfRVYVCIcU/aTFAxfQ3GrvoGndLWnQ3TKXmzeHMa6pl2E1jCxjc7X+Do
+	 uuGGXL46fi6atUuF4bCYu/w1u0rrhyplbD4PYDi4aIVTRnuUbGJXaeioPLVb3AZcdR
+	 GDY/4MQYK2dP1zPmrke1cfG7YVu7hKKUl9d/z9gs=
+Authentication-Results: mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Dmitry Antipov <dmantipov@yandex.ru>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Kalle Valo <kvalo@kernel.org>,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Dmitry Antipov <dmantipov@yandex.ru>
+Subject: [PATCH 2/3] wifi: ath10k: simplify ath10k_peer_assoc_h_vht()
+Date: Tue, 22 Aug 2023 18:54:25 +0300
+Message-ID: <20230822155532.95983-2-dmantipov@yandex.ru>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230822155532.95983-1-dmantipov@yandex.ru>
+References: <20230822155532.95983-1-dmantipov@yandex.ru>
 MIME-Version: 1.0
-Message-ID: <20230822-ath_spelling-v1-2-8e2698759564@quicinc.com>
-References: <20230822-ath_spelling-v1-0-8e2698759564@quicinc.com>
-In-Reply-To: <20230822-ath_spelling-v1-0-8e2698759564@quicinc.com>
-To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
-CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ath11k@lists.infradead.org>,
-        <ath12k@lists.infradead.org>
-X-Mailer: b4 0.12.3
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: OaV4s_iopqYNx0M6d_lqzRxZKHrADQ-e
-X-Proofpoint-GUID: OaV4s_iopqYNx0M6d_lqzRxZKHrADQ-e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 clxscore=1015 adultscore=0 spamscore=0
- mlxscore=0 impostorscore=0 priorityscore=1501 bulkscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308220112
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230822_075128_985684_E7FF403B 
-X-CRM114-Status: GOOD (  15.11  )
+X-CRM114-CacheID: sfid-20230822_085615_978165_DA7F7629 
+X-CRM114-Status: UNSURE (   8.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,57 +74,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Fix a few issues flagged by 'codespell'.
+Commit 3db24065c2c8 ("ath10k: enable VHT160 and VHT80+80 modes")
+introduces 'get_160mhz_nss_from_maxrate()' which never returns 0,
+which means that 'ath10k_peer_assoc_h_vht()' may be simplified.
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
 ---
- drivers/net/wireless/ath/ath11k/dp.h    | 2 +-
- drivers/net/wireless/ath/ath11k/dp_rx.c | 2 +-
- drivers/net/wireless/ath/ath11k/dp_tx.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/dp.h b/drivers/net/wireless/ath/ath11k/dp.h
-index d04f78ab6b37..15815af453b2 100644
---- a/drivers/net/wireless/ath/ath11k/dp.h
-+++ b/drivers/net/wireless/ath/ath11k/dp.h
-@@ -635,7 +635,7 @@ enum htt_ppdu_stats_tag_type {
-  *          b'24    - status_swap: 1 is to swap status TLV
-  *          b'25    - pkt_swap:  1 is to swap packet TLV
-  *          b'26:31 - rsvd1:  reserved for future use
-- * dword1 - b'0:16  - ring_buffer_size: size of bufferes referenced by rx ring,
-+ * dword1 - b'0:16  - ring_buffer_size: size of buffers referenced by rx ring,
-  *                    in byte units.
-  *                    Valid only for HW_TO_SW_RING and SW_TO_HW_RING
-  *        - b'16:31 - rsvd2: Reserved for future use
-diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
-index 1e488eed282b..62bc98852f0f 100644
---- a/drivers/net/wireless/ath/ath11k/dp_rx.c
-+++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
-@@ -3423,7 +3423,7 @@ static int ath11k_dp_rx_h_defrag_reo_reinject(struct ath11k *ar, struct dp_rx_ti
- 	ath11k_hal_rx_buf_addr_info_set(msdu0, paddr, cookie,
- 					ab->hw_params.hal_params->rx_buf_rbm);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 03e7bc5b6c0b..148d0fab4418 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2631,12 +2631,8 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
+ 		u32 max_rate;
  
--	/* Fill mpdu details into reo entrace ring */
-+	/* Fill mpdu details into reo entrance ring */
- 	srng = &ab->hal.srng_list[ab->dp.reo_reinject_ring.ring_id];
+ 		max_rate = arg->peer_vht_rates.rx_max_rate;
+-		rx_nss = get_160mhz_nss_from_maxrate(max_rate);
+-
+-		if (rx_nss == 0)
+-			rx_nss = arg->peer_num_spatial_streams;
+-		else
+-			rx_nss = min(arg->peer_num_spatial_streams, rx_nss);
++		rx_nss = min(arg->peer_num_spatial_streams,
++			     get_160mhz_nss_from_maxrate(max_rate));
  
- 	spin_lock_bh(&srng->lock);
-diff --git a/drivers/net/wireless/ath/ath11k/dp_tx.c b/drivers/net/wireless/ath/ath11k/dp_tx.c
-index a34833de7c67..352e76fc4c1f 100644
---- a/drivers/net/wireless/ath/ath11k/dp_tx.c
-+++ b/drivers/net/wireless/ath/ath11k/dp_tx.c
-@@ -238,7 +238,7 @@ int ath11k_dp_tx(struct ath11k *ar, struct ath11k_vif *arvif,
- 		spin_unlock_bh(&tcl_ring->lock);
- 		ret = -ENOMEM;
- 
--		/* Checking for available tcl descritors in another ring in
-+		/* Checking for available tcl descriptors in another ring in
- 		 * case of failure due to full tcl ring now, is better than
- 		 * checking this ring earlier for each pkt tx.
- 		 * Restart ring selection if some rings are not checked yet.
-
+ 		max_rate = hw->vht160_mcs_tx_highest;
+ 		rx_nss = min(rx_nss, get_160mhz_nss_from_maxrate(max_rate));
 -- 
-2.25.1
+2.41.0
 
 
 _______________________________________________
