@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D36ABEE49A5
-	for <ath10k@archiver.kernel.org>; Wed, 23 Aug 2023 02:01:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B589EE49AB
+	for <ath10k@archiver.kernel.org>; Wed, 23 Aug 2023 07:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=am4OOnPPbubf2kfyi+JGW3Geul3wCxEUUl8cy/eDrOQ=; b=GIStUZ2DJRcMvo
-	tueD5+6+wMP+oKRgA+rNsJt2GFzv5umWJm15mouK7CEAxx9WdISoy5aJL5Szn4yRKKnZrDZkCOOTS
-	yjAqxuKAwXuKGG/1HcxTZIpM6Y1m9/G3ZnLqICffu0BtA1TC+8K0Kf0DeOaz5+ssWVGyspThy52A6
-	tPPuUQi+WcKdk6hKWrefbS/0aJku5fjXl3rmTue4cxEe+CyWc3GZxSsCk/aji2fm5kLWkhEqf8FFM
-	NRg/80l/aSuwiDpAOseAGpxwHa7gKY5ZYUR0uPsV7jzvAI0xl863B1e/VhYlCKQ08f24VywkzrKiQ
-	FRtMapuWKFK9AZyA+qeQ==;
+	List-Owner; bh=2o3s8l2YR2SdHXyD5nUbw/yRRLCVVJu2aOAU6YFH/eg=; b=Te/wWnIRcZKD0+
+	wLok5iXPZYJ+zcoPcmBK3IR7E87p0ovBQ+mM6Df4OAYonkrDwQLmeFQWt0BJy33vcEGdR26ZxCmFg
+	zV/ggXwl/0u4gzKFnuyaeBX3XNYMCnnFjb0tD4/MJnOX7uodbUlPlSnS2op1SQkpZwktKiXiJaM6F
+	l1DMe9mmiWJ8YGmXLZv6CoOwHqqXZqA+6Cg3RCf0Yk0uSOhm16g7T763hgFyZuexPlMSbdEQ3UliY
+	eBxxdLio9VZ9BmhJnIicCTYq+H6k4QNgcwiEXDVHEhzmB9gyvJVo2YQH7HES6mpBOH614RmgfQ3LM
+	p3U7D3wjX1TdajtPUcbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYdB9-00H3XA-2g;
-	Wed, 23 Aug 2023 02:01:03 +0000
+	id 1qYiOQ-00HTQH-1P;
+	Wed, 23 Aug 2023 07:35:06 +0000
 Received: from mgamail.intel.com ([192.55.52.43])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYdB5-00H3WN-1T
+	id 1qYiOK-00HTO0-0F
 	for ath10k@lists.infradead.org;
-	Wed, 23 Aug 2023 02:01:02 +0000
+	Wed, 23 Aug 2023 07:35:01 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692756059; x=1724292059;
+  t=1692776100; x=1724312100;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=yl+KEQzc4x6NHVj3CjHlnSRqdf04HRQDNwnh6bBobF4=;
-  b=Vdwh5GSt4QLxp7DErGHlTRKyzZ2n+OzrlkyN+j/mlhCH81SyiBDHk0Z8
-   cfxg4wr2W42Hw5b52dnIOBfb+E/8+L2UoeaQ2kGZhtL1Q3rT/tnjb4vLD
-   1r74hdn2jqCT3Wv4fmds0CfO10k1zzyFOE20mkIin23cIdtvwxkU7tCIk
-   Koxbp00eEBFZk39I81UKH0tLuFBsDevWfacH+zFuXQmllKeyf7+zSAln3
-   zTC0DHVSLpTZpmEU0lRDJvGahj3LOI1pqLcBasuixOZlV47mky4NF7dUv
-   qFIuVQDWcT+FnAilAvZevOUdwNrAx3PJhrVp9bGJGucHYGQrOCK6dc77j
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="460403854"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="460403854"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 19:00:30 -0700
+  bh=+WoV4tVJSCaUjsWyOMHHl7owKPLxv8Zvbh4nBhVd9LM=;
+  b=XGXZLljpNObtmzaeebPVm2aITFT6BgaY5Xphj0AX4qn/gry6nfistfR9
+   3y5adLZSBxZ4k89sOof95VIhVAxuVBD6GHRTGISAlYvC2LhDFLBNGZXro
+   Q5rOo8BUIHP0GOCg/Ty8ElBihfGwWk9rQ1622DZFQboibbbaJdx4Agqek
+   8VpGa7r8TaCX/L+YXsZmmdjbVbWmN+xSsEAb1/sP6HR4ronby0oNh4xYC
+   NhEyuLtKZuQyb1wrHwk+7JCdAQMz4bWD/b60/7NhNLkBZXb6lvlXuJj2T
+   dPbdhix4vzjTMY9plr+ul03CYAqUsbCDTNjArP/I80NqOhu6PufnokjZD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="460459188"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="460459188"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 00:34:59 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="765956470"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="765956470"
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="713476425"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="713476425"
 Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 22 Aug 2023 19:00:27 -0700
+  by orsmga006.jf.intel.com with ESMTP; 23 Aug 2023 00:34:56 -0700
 Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qYdAY-0000k8-20;
-	Wed, 23 Aug 2023 02:00:26 +0000
-Date: Wed, 23 Aug 2023 09:59:58 +0800
+	id 1qYiOF-0000y4-2F;
+	Wed, 23 Aug 2023 07:34:55 +0000
+Date: Wed, 23 Aug 2023 15:34:47 +0800
 From: kernel test robot <lkp@intel.com>
 To: Dmitry Antipov <dmantipov@yandex.ru>,
 	Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: oe-kbuild-all@lists.linux.dev, Kalle Valo <kvalo@kernel.org>,
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-	lvc-project@linuxtesting.org, Dmitry Antipov <dmantipov@yandex.ru>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Kalle Valo <kvalo@kernel.org>, ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org, lvc-project@linuxtesting.org,
+	Dmitry Antipov <dmantipov@yandex.ru>
 Subject: Re: [PATCH 1/3] wifi: ath10k: cleanup CE initialization
-Message-ID: <202308230929.vOiA1VSe-lkp@intel.com>
+Message-ID: <202308231552.qVY1nOZs-lkp@intel.com>
 References: <20230822155532.95983-1-dmantipov@yandex.ru>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20230822155532.95983-1-dmantipov@yandex.ru>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230822_190059_566397_E158C5AC 
-X-CRM114-Status: GOOD (  10.45  )
+X-CRM114-CacheID: sfid-20230823_003500_123145_EF64F51C 
+X-CRM114-Status: GOOD (  10.20  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,21 +102,21 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Dmitry-Antipov/wifi-ath10
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
 patch link:    https://lore.kernel.org/r/20230822155532.95983-1-dmantipov%40yandex.ru
 patch subject: [PATCH 1/3] wifi: ath10k: cleanup CE initialization
-config: sparc64-allyesconfig (https://download.01.org/0day-ci/archive/20230823/202308230929.vOiA1VSe-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230823/202308230929.vOiA1VSe-lkp@intel.com/reproduce)
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230823/202308231552.qVY1nOZs-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230823/202308231552.qVY1nOZs-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308230929.vOiA1VSe-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308231552.qVY1nOZs-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
-   drivers/net/wireless/ath/ath10k/snoc.c: In function 'ath10k_snoc_hif_power_up':
->> drivers/net/wireless/ath/ath10k/snoc.c:1083:1: warning: label 'err_free_rri' defined but not used [-Wunused-label]
-    1083 | err_free_rri:
-         | ^~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath10k/snoc.c:1083:1: warning: unused label 'err_free_rri' [-Wunused-label]
+   err_free_rri:
+   ^~~~~~~~~~~~~
+   1 warning generated.
 
 
 vim +/err_free_rri +1083 drivers/net/wireless/ath/ath10k/snoc.c
