@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C84A4EE49B0
-	for <ath10k@archiver.kernel.org>; Wed, 23 Aug 2023 09:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 742E2EE49B2
+	for <ath10k@archiver.kernel.org>; Wed, 23 Aug 2023 09:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=6DmKaJ+vFwA/7zUBnZ92scfM+6lcVBwnCLVPz5o+1fA=; b=QWW07jRe4f/6An
-	EcmaCtJHNgiNTBQa9+BAldV7jnjgtKTK0LP8nFORnbSqxLLVmSp9rpl4kUq1V4Mey4Kkau9ruTCQk
-	y+DQMRYZL1V8kjZ2X/VqFAvr/yM8y7HRhm1XHx4m4tZwcQQqGnptP7/MPOmmin3/Qm7p1+d4A2zNj
-	ePOWJt958P+XvSh2A/w4nIH4iOR8UpzbGpMdmquxAsD/ETryUtLEYrJ4lmIho5MFAZbG8/Z1GUB0o
-	oOjzehUWsv4wmCZaSR7rcYQd+g4VxiPOoaHg4MBB5RTZZ+CvqOVnhZkFIVd2d92ImIXivYBxQLtJ3
-	G0mj/HKgh2NhnebddhcA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=DA+mTo9OPsEE2IEmJaen6oub600ObckEdme/FpibV48=; b=ijIYa7IZtooXvq
+	ej2W+sM/aJC7uTftzUL6vUesx2f3aF2lMl3xq5WUyCxSbgvtBdGTJFIDvWpzHb4K81OLhNNvsq98J
+	8qDIMwhfkG5n4hh1qIaAvgTR2O1R0iDwH6k1Ae1VPzuXb0Qg8c+XjHpOayCmtG5ayyam5gFAiQUvo
+	Rq9IxZdUHSJg/Fqjspcld4xrH//B6TTOZrC16Y2Yb6+pqVFnUD4/p5MCrDLX85VOZDt5pE2bINa/O
+	35LxpM8LIrww+csSkY6t7U0kFQRje9+xlA6emGY3sdLq3lTBsDiQkzMj4dxZ11alQp0N9C7zaEoC7
+	NyWTT3Q6iuQFuR9LaU8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYkVa-000608-0T;
-	Wed, 23 Aug 2023 09:50:38 +0000
-Received: from forward102b.mail.yandex.net ([2a02:6b8:c02:900:1:45:d181:d102])
+	id 1qYkVX-0005ze-26;
+	Wed, 23 Aug 2023 09:50:35 +0000
+Received: from forward103b.mail.yandex.net ([178.154.239.150])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYkVT-0005yF-1X
+	id 1qYkVT-0005yB-05
 	for ath10k@lists.infradead.org;
-	Wed, 23 Aug 2023 09:50:36 +0000
+	Wed, 23 Aug 2023 09:50:33 +0000
 Received: from mail-nwsmtp-smtp-production-main-22.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-22.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:3990:0:640:62ef:0])
-	by forward102b.mail.yandex.net (Yandex) with ESMTP id 119A5600AD;
-	Wed, 23 Aug 2023 12:50:22 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-22.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id LoGi0T0DTa60-mM2RRM5c;
-	Wed, 23 Aug 2023 12:50:22 +0300
+	by forward103b.mail.yandex.net (Yandex) with ESMTP id E2B3F6010E;
+	Wed, 23 Aug 2023 12:50:26 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-22.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id LoGi0T0DTa60-yC5vvhzy;
+	Wed, 23 Aug 2023 12:50:26 +0300
 X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1692784222;
-	bh=AHxyg2buGg4i9ktGXN+yJXpIvRq865XuIpLyG1eNerQ=;
-	h=Message-ID:Date:Cc:Subject:To:From;
-	b=WIKlaRPdCBMxw24b72XlsKoALRh2MBXKfPEJyHA/QYzyX9UDM8Rew/ph56tPW8T6i
-	 kYfIjO6a8vPjNt7N8KHwJpEksVYEgdCx4FPbLEXeCMztRwsIJPtkxSeogu+n81xVbm
-	 kim6Z1N0Mu9dMGLnIgUBSA86ewp3gB2/+NQTF3V8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1692784226;
+	bh=q+qPcbN7au+g9saLrQ1D84cB6n5FhSrF4VZ0aZgeSIc=;
+	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
+	b=JyTcsDASHoWuw2Mlonae6sSJpuog9+2QCJZJg31bybBcgDM4GnejV/cUU/HINVAkU
+	 JmUTvifc13bd0poKybyD/24iVlnrCCoiKUhXi7UKYfs1VrmrIfvEEH0/ApjzbtDxxs
+	 9oiA54LnguC5MJ6ErUXvMi0iYieiWgfQZv0VA+Ok=
 Authentication-Results: mail-nwsmtp-smtp-production-main-22.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
 From: Dmitry Antipov <dmantipov@yandex.ru>
 To: Jeff Johnson <quic_jjohnson@quicinc.com>
@@ -47,14 +47,16 @@ Cc: Kalle Valo <kvalo@kernel.org>,
 	lvc-project@linuxtesting.org,
 	ath10k@lists.infradead.org,
 	Dmitry Antipov <dmantipov@yandex.ru>
-Subject: [PATCH] [v2] wifi: ath10k: cleanup CE initialization
-Date: Wed, 23 Aug 2023 12:50:03 +0300
-Message-ID: <20230823095008.50515-1-dmantipov@yandex.ru>
+Subject: [PATCH 3/3] [v2] wifi: ath10k: simplify ath10k_pci_pm_suspend()
+Date: Wed, 23 Aug 2023 12:50:05 +0300
+Message-ID: <20230823095008.50515-3-dmantipov@yandex.ru>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230823095008.50515-1-dmantipov@yandex.ru>
+References: <20230823095008.50515-1-dmantipov@yandex.ru>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230823_025031_694609_634EDAF7 
-X-CRM114-Status: GOOD (  17.32  )
+X-CRM114-CacheID: sfid-20230823_025031_525752_6D7F75D7 
+X-CRM114-Status: GOOD (  10.88  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,299 +73,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Commit 25d0dbcbd5c7 ("ath10k: split ce initialization and allocation")
-changes 'ath10k_ce_init_src_ring()' and 'ath10k_ce_init_dest_ring()'
-so these functions can't return -ENOMEM but always returns 0. This way
-both of the above may be converted to 'void' and related code may be
-simplified as well.
+Since 'ath10k_pci_suspend()' always returns 0, it may be converted to
+'void' and 'ath10k_pci_pm_suspend()' may be simplified accordingly.
 
 Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
 Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
 ---
-v2: change 'ath10k_ce_alloc_rri()' to return -ENOMEM in case
-of 'dma_alloc_coherent()' failure and fix error handling in
-'ath10k_snoc_hif_power_up()'
+v2: adjust to match series
 ---
- drivers/net/wireless/ath/ath10k/ahb.c  |  6 +---
- drivers/net/wireless/ath/ath10k/ce.c   | 50 +++++++++-----------------
- drivers/net/wireless/ath/ath10k/ce.h   |  6 ++--
- drivers/net/wireless/ath/ath10k/pci.c  | 29 ++++-----------
- drivers/net/wireless/ath/ath10k/pci.h  |  2 +-
- drivers/net/wireless/ath/ath10k/snoc.c | 30 +++++-----------
- 6 files changed, 36 insertions(+), 87 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index 76efea2f1138..c3a2eeb5542d 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -655,11 +655,7 @@ static int ath10k_ahb_hif_power_up(struct ath10k *ar,
- 		goto out;
- 	}
- 
--	ret = ath10k_pci_init_pipes(ar);
--	if (ret) {
--		ath10k_err(ar, "failed to initialize CE: %d\n", ret);
--		goto out;
--	}
-+	ath10k_pci_init_pipes(ar);
- 
- 	ret = ath10k_pci_init_config(ar);
- 	if (ret) {
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index c27b8204718a..d7275dcc1f99 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -1352,9 +1352,9 @@ void ath10k_ce_enable_interrupts(struct ath10k *ar)
- }
- EXPORT_SYMBOL(ath10k_ce_enable_interrupts);
- 
--static int ath10k_ce_init_src_ring(struct ath10k *ar,
--				   unsigned int ce_id,
--				   const struct ce_attr *attr)
-+static void ath10k_ce_init_src_ring(struct ath10k *ar,
-+				    unsigned int ce_id,
-+				    const struct ce_attr *attr)
- {
- 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
- 	struct ath10k_ce_pipe *ce_state = &ce->ce_states[ce_id];
-@@ -1389,13 +1389,11 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "boot init ce src ring id %d entries %d base_addr %pK\n",
- 		   ce_id, nentries, src_ring->base_addr_owner_space);
--
--	return 0;
- }
- 
--static int ath10k_ce_init_dest_ring(struct ath10k *ar,
--				    unsigned int ce_id,
--				    const struct ce_attr *attr)
-+static void ath10k_ce_init_dest_ring(struct ath10k *ar,
-+				     unsigned int ce_id,
-+				     const struct ce_attr *attr)
- {
- 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
- 	struct ath10k_ce_pipe *ce_state = &ce->ce_states[ce_id];
-@@ -1427,8 +1425,6 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "boot ce dest ring id %d entries %d base_addr %pK\n",
- 		   ce_id, nentries, dest_ring->base_addr_owner_space);
--
--	return 0;
- }
- 
- static int ath10k_ce_alloc_shadow_base(struct ath10k *ar,
-@@ -1659,30 +1655,14 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
-  * initialization. It may be that only one side or the other is
-  * initialized by software/firmware.
-  */
--int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
--			const struct ce_attr *attr)
-+void ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
-+			 const struct ce_attr *attr)
- {
--	int ret;
--
--	if (attr->src_nentries) {
--		ret = ath10k_ce_init_src_ring(ar, ce_id, attr);
--		if (ret) {
--			ath10k_err(ar, "Failed to initialize CE src ring for ID: %d (%d)\n",
--				   ce_id, ret);
--			return ret;
--		}
--	}
--
--	if (attr->dest_nentries) {
--		ret = ath10k_ce_init_dest_ring(ar, ce_id, attr);
--		if (ret) {
--			ath10k_err(ar, "Failed to initialize CE dest ring for ID: %d (%d)\n",
--				   ce_id, ret);
--			return ret;
--		}
--	}
-+	if (attr->src_nentries)
-+		ath10k_ce_init_src_ring(ar, ce_id, attr);
- 
--	return 0;
-+	if (attr->dest_nentries)
-+		ath10k_ce_init_dest_ring(ar, ce_id, attr);
- }
- EXPORT_SYMBOL(ath10k_ce_init_pipe);
- 
-@@ -1926,7 +1906,7 @@ int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
- }
- EXPORT_SYMBOL(ath10k_ce_alloc_pipe);
- 
--void ath10k_ce_alloc_rri(struct ath10k *ar)
-+int ath10k_ce_alloc_rri(struct ath10k *ar)
- {
- 	int i;
- 	u32 value;
-@@ -1939,7 +1919,7 @@ void ath10k_ce_alloc_rri(struct ath10k *ar)
- 					   &ce->paddr_rri, GFP_KERNEL);
- 
- 	if (!ce->vaddr_rri)
--		return;
-+		return -ENOMEM;
- 
- 	ath10k_ce_write32(ar, ar->hw_ce_regs->ce_rri_low,
- 			  lower_32_bits(ce->paddr_rri));
-@@ -1954,6 +1934,8 @@ void ath10k_ce_alloc_rri(struct ath10k *ar)
- 		value |= ar->hw_ce_regs->upd->mask;
- 		ath10k_ce_write32(ar, ce_base_addr + ctrl1_regs, value);
- 	}
-+
-+	return 0;
- }
- EXPORT_SYMBOL(ath10k_ce_alloc_rri);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 666ce384a1d8..c90c00316356 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -220,8 +220,8 @@ int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
- 
- /*==================CE Engine Initialization=======================*/
- 
--int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
--			const struct ce_attr *attr);
-+void ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
-+			 const struct ce_attr *attr);
- void ath10k_ce_deinit_pipe(struct ath10k *ar, unsigned int ce_id);
- int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
- 			 const struct ce_attr *attr);
-@@ -262,7 +262,7 @@ void ath10k_ce_enable_interrupts(struct ath10k *ar);
- void ath10k_ce_dump_registers(struct ath10k *ar,
- 			      struct ath10k_fw_crash_data *crash_data);
- 
--void ath10k_ce_alloc_rri(struct ath10k *ar);
-+int ath10k_ce_alloc_rri(struct ath10k *ar);
- void ath10k_ce_free_rri(struct ath10k *ar);
- 
- /* ce_attr.flags values */
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index a7f44f6335fb..f6988075cd83 100644
+index f6988075cd83..16037e77264b 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2524,21 +2524,13 @@ void ath10k_pci_free_pipes(struct ath10k *ar)
- 		ath10k_ce_free_pipe(ar, i);
- }
- 
--int ath10k_pci_init_pipes(struct ath10k *ar)
-+void ath10k_pci_init_pipes(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int i, ret;
--
--	for (i = 0; i < CE_COUNT; i++) {
--		ret = ath10k_ce_init_pipe(ar, i, &ar_pci->attr[i]);
--		if (ret) {
--			ath10k_err(ar, "failed to initialize copy engine pipe %d: %d\n",
--				   i, ret);
--			return ret;
--		}
--	}
-+	int i;
- 
--	return 0;
-+	for (i = 0; i < CE_COUNT; i++)
-+		ath10k_ce_init_pipe(ar, i, &ar_pci->attr[i]);
- }
- 
- static bool ath10k_pci_has_fw_crashed(struct ath10k *ar)
-@@ -2703,12 +2695,7 @@ static int ath10k_pci_qca988x_chip_reset(struct ath10k *ar)
- 		 * sufficient to verify if device is capable of booting
- 		 * firmware blob.
- 		 */
--		ret = ath10k_pci_init_pipes(ar);
--		if (ret) {
--			ath10k_warn(ar, "failed to init copy engine: %d\n",
--				    ret);
--			continue;
--		}
-+		ath10k_pci_init_pipes(ar);
- 
- 		ret = ath10k_pci_diag_read32(ar, QCA988X_HOST_INTEREST_ADDRESS,
- 					     &val);
-@@ -2846,11 +2833,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar,
- 		goto err_sleep;
- 	}
- 
--	ret = ath10k_pci_init_pipes(ar);
--	if (ret) {
--		ath10k_err(ar, "failed to initialize CE: %d\n", ret);
--		goto err_sleep;
--	}
-+	ath10k_pci_init_pipes(ar);
- 
- 	ret = ath10k_pci_init_config(ar);
- 	if (ret) {
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 480cd97ab739..3b3ded87aef9 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -238,7 +238,7 @@ void ath10k_pci_free_pipes(struct ath10k *ar);
- void ath10k_pci_rx_replenish_retry(struct timer_list *t);
- void ath10k_pci_ce_deinit(struct ath10k *ar);
- void ath10k_pci_init_napi(struct ath10k *ar);
--int ath10k_pci_init_pipes(struct ath10k *ar);
-+void ath10k_pci_init_pipes(struct ath10k *ar);
- int ath10k_pci_init_config(struct ath10k *ar);
- void ath10k_pci_rx_post(struct ath10k *ar);
- void ath10k_pci_flush(struct ath10k *ar);
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 26214c00cd0d..f41948d9eebb 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -939,20 +939,12 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
+@@ -2871,7 +2871,7 @@ static int ath10k_pci_hif_suspend(struct ath10k *ar)
  	return 0;
  }
  
--static int ath10k_snoc_init_pipes(struct ath10k *ar)
-+static void ath10k_snoc_init_pipes(struct ath10k *ar)
+-static int ath10k_pci_suspend(struct ath10k *ar)
++static void ath10k_pci_suspend(struct ath10k *ar)
  {
--	int i, ret;
+ 	/* The grace timer can still be counting down and ar->ps_awake be true.
+ 	 * It is known that the device may be asleep after resuming regardless
+@@ -2879,8 +2879,6 @@ static int ath10k_pci_suspend(struct ath10k *ar)
+ 	 * device is asleep before proceeding.
+ 	 */
+ 	ath10k_pci_sleep_sync(ar);
 -
--	for (i = 0; i < CE_COUNT; i++) {
--		ret = ath10k_ce_init_pipe(ar, i, &host_ce_config_wlan[i]);
--		if (ret) {
--			ath10k_err(ar, "failed to initialize copy engine pipe %d: %d\n",
--				   i, ret);
--			return ret;
--		}
--	}
-+	int i;
- 
 -	return 0;
-+	for (i = 0; i < CE_COUNT; i++)
-+		ath10k_ce_init_pipe(ar, i, &host_ce_config_wlan[i]);
  }
  
- static int ath10k_snoc_wlan_enable(struct ath10k *ar,
-@@ -1082,18 +1074,14 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar,
- 		goto err_hw_power_off;
- 	}
+ static int ath10k_pci_hif_resume(struct ath10k *ar)
+@@ -3734,13 +3732,9 @@ MODULE_DEVICE_TABLE(pci, ath10k_pci_id_table);
+ static __maybe_unused int ath10k_pci_pm_suspend(struct device *dev)
+ {
+ 	struct ath10k *ar = dev_get_drvdata(dev);
+-	int ret;
  
--	ath10k_ce_alloc_rri(ar);
+-	ret = ath10k_pci_suspend(ar);
+-	if (ret)
+-		ath10k_warn(ar, "failed to suspend hif: %d\n", ret);
 -
--	ret = ath10k_snoc_init_pipes(ar);
--	if (ret) {
--		ath10k_err(ar, "failed to initialize CE: %d\n", ret);
--		goto err_free_rri;
--	}
-+	ret = ath10k_ce_alloc_rri(ar);
-+	if (ret)
-+		goto err_snoc_wlan_disable;
+-	return ret;
++	ath10k_pci_suspend(ar);
++	return 0;
+ }
  
-+	ath10k_snoc_init_pipes(ar);
- 	return 0;
- 
--err_free_rri:
--	ath10k_ce_free_rri(ar);
-+err_snoc_wlan_disable:
- 	ath10k_snoc_wlan_disable(ar);
- 
- err_hw_power_off:
+ static __maybe_unused int ath10k_pci_pm_resume(struct device *dev)
 -- 
 2.41.0
 
