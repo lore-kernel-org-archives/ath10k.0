@@ -4,67 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68479EE4993
-	for <ath10k@archiver.kernel.org>; Wed, 23 Aug 2023 10:13:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3667EE4993
+	for <ath10k@archiver.kernel.org>; Wed, 23 Aug 2023 14:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qSg/qGaM9Uuye/rzrMce5tPQZgBAlPTKEz1pYUff+4o=; b=iPdBWfRWYkqiMb
-	w18z9CkouXf2lLNtOwDsvx4Ov+O7DLpaKj10UXRS4AgV8wkfA0fEBaFE8O8ZV/xtdCU4bmSMBAWB9
-	1Rb7ENngI0B4wgWiNPwdO4tz6pHFtugCCsYjiruGKDOCWxqdfAeW6Qpbtks/oRa/5KKkykWg7jKPn
-	Xja+xvDMcRDiVUnA5Lrk9EcRsnKM1vH9VM5xoXZ5SqR61u55qyHLed267hrbW+JqBjsRgM/uI66IM
-	RLmmldrlTU/fXpTIJ/x+XP54ENEoHIwwgAF0S6XY4k9Utsd2e/HWfgw+q+2NBBVMJCZnWW6luKwzl
-	IAtGTqGrajl8k6lzAViw==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=8SAcBRQyTD1TgTN/VIY4MLUqfJwLQj8GTPQRTGWRIII=; b=wWbcVFq+Velrsb
+	6AB0jsX2tq7ljndKqRUjaRAqm8ATUCZVwH2dCAQKMIEaVVPciP2WkkN3ENW89DCmycYICPs7x2kKo
+	60NZNOH98Xj0AhuoI53QRqTcjYo0WwscrQfqS8SiksGp7LujN4cmvMlNNJn+hGi+QIBHcojikEicl
+	6iBfpX2vi6/nypGH4P/ndWwK05CBhtJQuxIgbiP1BsFEZnXfUOf2WCAR0YO0efB/n1ENxvGYluObI
+	AwxyePHV5JuLL8SLaj1DTN6rLkFwqzsVDTG8ebrCNOf388xdXfFyc6TrS+dH10WgBU5T2O1AziUkO
+	qxjXLM+FR0aMySHoweiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYkrW-0008zA-0f;
-	Wed, 23 Aug 2023 10:13:18 +0000
-Received: from mailczh03.softline.com ([5.43.230.125])
+	id 1qYoUy-000o9M-25;
+	Wed, 23 Aug 2023 14:06:16 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYkrR-0008xm-1G
-	for ath10k@lists.infradead.org;
-	Wed, 23 Aug 2023 10:13:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=softline.com;
-	s=relay; t=1692785582;
-	bh=ho5GwbroPrqdyAO5X5qAzdsCtznJL8BYTYk6DLlts2k=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=TwsS13qUU9otzSgJvjCs9MyQ5/ZNEdS5k5D9AprS5dR7fkxEfOMfPQHizjOteUHa/
-	 1qKPI1uWrKqWvlN443F/F1wp1ODB0yX2OjDAyvZ8rQPAMjvsxDwT0Wip0Ms68GD2lq
-	 3Vfb/t1Hq8EOUOn4Hx1/+puZCPHK97riwLuIr/3NdIP1uRYFjNsE/WTFhMJVLZLudH
-	 Bm4SoZn9kfiZPchsPxCaGQLUWtkRkk7eroGvTIam9/dMjFph21r2IT7zXfywvnTbdO
-	 JJodgg6Y28MraATGEBfahagVTaZnKCkAtmFBI2/8DJH75g/jhgjoYGThF2z+s4icgw
-	 O+rLm5yPh+UTw==
-X-AuditID: 0a02150b-b29a1700000026cc-28-64e5dbaecb73
-From: "Antipov, Dmitriy" <Dmitriy.Antipov@softline.com>
-To: "khoroshilov@ispras.ru" <khoroshilov@ispras.ru>, "dmantipov@yandex.ru"
-	<dmantipov@yandex.ru>, "quic_jjohnson@quicinc.com"
-	<quic_jjohnson@quicinc.com>
-CC: "kvalo@kernel.org" <kvalo@kernel.org>, "linux-wireless@vger.kernel.org"
-	<linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org"
-	<ath10k@lists.infradead.org>, "lvc-project@linuxtesting.org"
-	<lvc-project@linuxtesting.org>
-Subject: Re: [lvc-project] [PATCH] [v2] wifi: ath10k: cleanup CE
- initialization
-Thread-Topic: [lvc-project] [PATCH] [v2] wifi: ath10k: cleanup CE
- initialization
-Thread-Index: AQHZ1ac/rdoMqZkRDE2ght1O8khBXK/3dGaAgAACzIA=
-Date: Wed, 23 Aug 2023 10:13:01 +0000
-Message-ID: <0eed7a68c03555cc815959b9fa32b37657f8aeda.camel@softline.com>
-References: <20230823095008.50515-1-dmantipov@yandex.ru>
-	 <fb14be76-c3af-8ede-38aa-8b88f3cea7b7@ispras.ru>
-In-Reply-To: <fb14be76-c3af-8ede-38aa-8b88f3cea7b7@ispras.ru>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-ID: <A1B4236430DD94448C63B917F4606D6D@softline.com>
+	id 1qYoUv-000o8u-37;
+	Wed, 23 Aug 2023 14:06:15 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 615EE61072;
+	Wed, 23 Aug 2023 14:06:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C310C433C8;
+	Wed, 23 Aug 2023 14:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692799572;
+	bh=wn2siE3uN6pWAkKWnir+ZgoWOBFDb8FchTv2dj6tr9E=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=p8vyoehhyovBAx/1WHouvuktyN+2LcZUAWeO0ZU5xbHKnii9KFY2i+Oyv2wl/vuNE
+	 NgC/PbRjxiGE7Uxan/r04XtjJU8falzd5iRx+qOekQ8IhIiSLXbXvAJwc/+0NiUNVg
+	 ZgQUA8Cu55c3GXuvLIHspRBFQ0G7R/e/NyXew2QNL6ahTgo89W+JQd6PMRH5sgex3Y
+	 8zFcczIHxvocs+P+lBXxJj5umKG3F7cZu8nDvnfBg86Bu/MtjpJNiWLmNgI0+U7Xhb
+	 IJKLmRh523+pvV/Fy92ExOJVtYm4hDB3ff0VVyLaYnSXPWqYbfc/XKKGvhaJMitsfB
+	 TniXGBWI6FrwA==
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/3] wifi: ath10k: Fix a few spelling errors
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20230822-ath_spelling-v1-1-8e2698759564@quicinc.com>
+References: <20230822-ath_spelling-v1-1-8e2698759564@quicinc.com>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, <ath10k@lists.infradead.org>,
+ <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169279956875.1241462.11254897741265211259.kvalo@kernel.org>
+Date: Wed, 23 Aug 2023 14:06:10 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230823_031314_164976_07967E97 
-X-CRM114-Status: UNSURE (   6.56  )
+X-CRM114-CacheID: sfid-20230823_070614_043608_DE96B4F6 
+X-CRM114-Status: UNSURE (   5.83  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,20 +76,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2023-08-23 at 13:03 +0300, Alexey Khoroshilov wrote:
+Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
 
-> > v2: adjust to match series
+> Fix a few issues flagged by 'codespell'.
 > 
-> Do mean that nothing has been changed in the patch regarding the
-> previous version?
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-Usually it is, including the cases where some patch of the series
-is changed so the following ones are applied with offsets and thus
-better to be regenerated.
+3 patches applied to ath-next branch of ath.git, thanks.
 
-And should say sorry for an inconsistent title of the first one.
+3ced39049d4d wifi: ath10k: Fix a few spelling errors
+d68a283bfc39 wifi: ath11k: Fix a few spelling errors
+4f1dbb4904c3 wifi: ath12k: Fix a few spelling errors
 
-Dmitry
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20230822-ath_spelling-v1-1-8e2698759564@quicinc.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
