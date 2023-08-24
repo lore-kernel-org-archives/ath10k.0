@@ -4,68 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0DDFC3DA6F
-	for <ath10k@archiver.kernel.org>; Thu, 24 Aug 2023 15:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62254C7EE2C
+	for <ath10k@archiver.kernel.org>; Thu, 24 Aug 2023 15:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qUvfqH5s3iyVNsX2ce5ECo6q3Bp4fV54l+y4FSVcbdU=; b=43tZ8V/gD8SK0U
-	gMftNTkfUiZfVp6ZpkonWR6LA4lYukmIXIOzqeyMg52qx18+MwrFfQ5b73pRshxdirQqwkNEnmSfw
-	WDre3S9dE9Eg6u85p6k1PoQ+worh+kz8VykvwsZumbiHGWecaZwR/83cqVKv8ZcEwRgFrZTS4Mwp7
-	m5utT9rs2boMzWssyII32PO8y9A6Py27YsKb3YfLYoQUanT/UnpQgNEcH0+hBnHrxrPDHvIvLUJOH
-	XRJaRuDDV12bvS3Kdx4DeifHb/nCbUzDsSJvE0A1+K9XTzb6ywHL4bQeVnpA8bp/EhZuuE1BeY5Tq
-	fcTnA+ZHIdmx8BYtS06w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6aL6TWks0A4mW3+cXAEXeqGJ/BtWfWWUNR7Ee8HJqw8=; b=27X3Dd27GVrVvw
+	LLdbz32JQLSqpvDwy6kpkc6K2VSCLyRAchmAqwV1D4PX2tapXlp5KFcfI8HHdo11E6xd6sVRt+RB9
+	fYJnLxIMHWN7tTVd6jyH5TFT6nL6qzQvoXzM4hmVrN8XzCgVeuZiL4YFn9QwZqi4mL+litdFxjBtC
+	kWAcYFSgarQ6ykAp/O+TvPuC7fu/brkwRRgjBgdAbJa5hCaC56Da4hmLj6umA7pXnnO11B4GQ2rBn
+	ba9of329DGsCkXMa7HgTopKF6DVCv6QR4WjGZ4H2zitaXnlpDx2O0AlmvYGVTTdSla8TWMRWYtzAc
+	c45pecTO2a/teDRoSi8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZC74-003Lp0-32;
-	Thu, 24 Aug 2023 15:19:10 +0000
-Received: from mgamail.intel.com ([192.55.52.151])
+	id 1qZCEY-003MW0-0U;
+	Thu, 24 Aug 2023 15:26:54 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZC72-003Lns-0a
+	id 1qZCET-003MUQ-2b
 	for ath10k@lists.infradead.org;
-	Thu, 24 Aug 2023 15:19:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692890348; x=1724426348;
-  h=date:from:to:cc:subject:message-id;
-  bh=mzPIGocYsE69SK4ITtFihvWkllfxkIvzdlISy6cK7oQ=;
-  b=dQLBJWzSbLbWbPL01vW28MDEGZlDXMx/z9TWEJxrH3lfjz083/JvMwgz
-   Xzalvxz0k+KYCjL3+tAifx0xxhQ+d0eIxzLzKllQvZ//RTsmbJuVVpdYU
-   eggrf6qMWXbA2ymojCoX844DXC/1hmnU3uE8Q+J0q+FfmpEgAmREa1QG6
-   +ya8I2/Pm25S3jm2QAiju/4YkBw68sGvtg5vZPumghYb8wcOXmBMUA5hK
-   /ZVapqqKI7RNjLjRIvllQrMG9tuLSipBwrdBoqKGSme/TJ0sjBUIWsHWR
-   w8zGO6MKeTkrYG8bHWOTjhRLYQA2CUn+zbfQ7YPsD+7JCtZ+YByScsS9j
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="354798318"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="354798318"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 08:19:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="860755193"
-X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="860755193"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 24 Aug 2023 08:19:02 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qZC6v-0002mx-2V;
-	Thu, 24 Aug 2023 15:19:01 +0000
-Date: Thu, 24 Aug 2023 23:18:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 41c16c0259ed11d34f0d40b9f203f81d8bcceb07
-Message-ID: <202308242306.GOGG4sF6-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Thu, 24 Aug 2023 15:26:52 +0000
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37OEZIS5001500;
+	Thu, 24 Aug 2023 15:26:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yEbqS9zhCPZYpnokmS+VjXXWNaPRQ0bmPoV5SyFrWdM=;
+ b=n2TJh8UhrGpS0ZkUn5oJ+AS4T/K5d+rP5dB51GIhXH0iMjgsFQGPljq8z2Ow6wsRAolb
+ oNqjAUTQqfbykhWDxPTefYE9rnbvxzK2DFKcoMREasdRh3eZ0n3GGpn1B0dG1FRypqcG
+ ps1+c2wKvF/7ZfrzkIfU4Y8f54GJzi8WQbUp07NXI97n8fo0wCnn3rg5x2gnYec5dk06
+ hEMiiCaSndphNSvGextrBZLVAJCsNU+uqP7Ro1KUjF2jkMiLW/7RdWgdbpwMOYpYEa11
+ EA3O1BwN/8jA6he7OFuxNwqvrsQ63U3qqqa//x/kal6hwf3FjZ4nG8bqITeImSvrOZ2a wA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sp1r3sb08-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 24 Aug 2023 15:26:38 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37OFQbYV025748
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 24 Aug 2023 15:26:37 GMT
+Received: from [10.48.247.99] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 24 Aug
+ 2023 08:26:36 -0700
+Message-ID: <11ee12c9-e851-4afe-b80e-15e9e46a51d0@quicinc.com>
+Date: Thu, 24 Aug 2023 08:26:35 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] [v3] wifi: ath10k: cleanup CE ring initialization
+Content-Language: en-US
+To: Dmitry Antipov <dmantipov@yandex.ru>
+CC: Kalle Valo <kvalo@kernel.org>, <linux-wireless@vger.kernel.org>,
+        <lvc-project@linuxtesting.org>, <ath10k@lists.infradead.org>
+References: <997f4b09-7087-4788-aa2a-ef835ce6ebb3@quicinc.com>
+ <20230824055117.42309-1-dmantipov@yandex.ru>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230824055117.42309-1-dmantipov@yandex.ru>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: nRwpgeUVGEwupxiHOAkMAhhfDKSTMsNo
+X-Proofpoint-GUID: nRwpgeUVGEwupxiHOAkMAhhfDKSTMsNo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-24_12,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1015 spamscore=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308240129
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230824_081908_250267_39465ED2 
-X-CRM114-Status: UNSURE (   4.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230824_082649_975567_ACC67534 
+X-CRM114-Status: GOOD (  21.26  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,200 +93,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 41c16c0259ed11d34f0d40b9f203f81d8bcceb07  Merge branch 'ath-next' into ath-qca
+On 8/23/2023 10:51 PM, Dmitry Antipov wrote:
+> Commit 25d0dbcbd5c7 ("ath10k: split ce initialization and allocation")
+> changes 'ath10k_ce_init_src_ring()' and 'ath10k_ce_init_dest_ring()'
+> so these functions can't return -ENOMEM but always returns 0. This way
+> both of them may be converted to 'void', and 'ath10k_ce_init_pipe()'
+> may be simplified accordingly.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
 
-elapsed time: 1447m
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-configs tested: 171
-configs skipped: 2
+> ---
+> v3: split to smaller units per Jeff's suggestion
+> v2: change 'ath10k_ce_alloc_rri()' to return -ENOMEM in case
+> of 'dma_alloc_coherent()' failure and fix error handling in
+> 'ath10k_snoc_hif_power_up()'
+> ---
+>   drivers/net/wireless/ath/ath10k/ce.c | 38 ++++++++--------------------
+>   1 file changed, 10 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+> index c27b8204718a..ace92c636733 100644
+> --- a/drivers/net/wireless/ath/ath10k/ce.c
+> +++ b/drivers/net/wireless/ath/ath10k/ce.c
+> @@ -1352,9 +1352,9 @@ void ath10k_ce_enable_interrupts(struct ath10k *ar)
+>   }
+>   EXPORT_SYMBOL(ath10k_ce_enable_interrupts);
+>   
+> -static int ath10k_ce_init_src_ring(struct ath10k *ar,
+> -				   unsigned int ce_id,
+> -				   const struct ce_attr *attr)
+> +static void ath10k_ce_init_src_ring(struct ath10k *ar,
+> +				    unsigned int ce_id,
+> +				    const struct ce_attr *attr)
+>   {
+>   	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+>   	struct ath10k_ce_pipe *ce_state = &ce->ce_states[ce_id];
+> @@ -1389,13 +1389,11 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+>   	ath10k_dbg(ar, ATH10K_DBG_BOOT,
+>   		   "boot init ce src ring id %d entries %d base_addr %pK\n",
+>   		   ce_id, nentries, src_ring->base_addr_owner_space);
+> -
+> -	return 0;
+>   }
+>   
+> -static int ath10k_ce_init_dest_ring(struct ath10k *ar,
+> -				    unsigned int ce_id,
+> -				    const struct ce_attr *attr)
+> +static void ath10k_ce_init_dest_ring(struct ath10k *ar,
+> +				     unsigned int ce_id,
+> +				     const struct ce_attr *attr)
+>   {
+>   	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+>   	struct ath10k_ce_pipe *ce_state = &ce->ce_states[ce_id];
+> @@ -1427,8 +1425,6 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
+>   	ath10k_dbg(ar, ATH10K_DBG_BOOT,
+>   		   "boot ce dest ring id %d entries %d base_addr %pK\n",
+>   		   ce_id, nentries, dest_ring->base_addr_owner_space);
+> -
+> -	return 0;
+>   }
+>   
+>   static int ath10k_ce_alloc_shadow_base(struct ath10k *ar,
+> @@ -1662,25 +1658,11 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
+>   int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
+>   			const struct ce_attr *attr)
+>   {
+> -	int ret;
+> -
+> -	if (attr->src_nentries) {
+> -		ret = ath10k_ce_init_src_ring(ar, ce_id, attr);
+> -		if (ret) {
+> -			ath10k_err(ar, "Failed to initialize CE src ring for ID: %d (%d)\n",
+> -				   ce_id, ret);
+> -			return ret;
+> -		}
+> -	}
+> +	if (attr->src_nentries)
+> +		ath10k_ce_init_src_ring(ar, ce_id, attr);
+>   
+> -	if (attr->dest_nentries) {
+> -		ret = ath10k_ce_init_dest_ring(ar, ce_id, attr);
+> -		if (ret) {
+> -			ath10k_err(ar, "Failed to initialize CE dest ring for ID: %d (%d)\n",
+> -				   ce_id, ret);
+> -			return ret;
+> -		}
+> -	}
+> +	if (attr->dest_nentries)
+> +		ath10k_ce_init_dest_ring(ar, ce_id, attr);
+>   
+>   	return 0;
+>   }
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230824   gcc  
-arc                  randconfig-r004-20230824   gcc  
-arc                  randconfig-r024-20230824   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230824   gcc  
-arm                  randconfig-r003-20230824   clang
-arm                  randconfig-r035-20230824   clang
-arm                           sunxi_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r034-20230824   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r015-20230824   gcc  
-hexagon               randconfig-001-20230824   clang
-hexagon               randconfig-002-20230824   clang
-hexagon              randconfig-r011-20230824   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230824   gcc  
-i386         buildonly-randconfig-002-20230824   gcc  
-i386         buildonly-randconfig-003-20230824   gcc  
-i386         buildonly-randconfig-004-20230824   gcc  
-i386         buildonly-randconfig-005-20230824   gcc  
-i386         buildonly-randconfig-006-20230824   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230824   gcc  
-i386                  randconfig-002-20230824   gcc  
-i386                  randconfig-003-20230824   gcc  
-i386                  randconfig-004-20230824   gcc  
-i386                  randconfig-005-20230824   gcc  
-i386                  randconfig-006-20230824   gcc  
-i386                  randconfig-011-20230824   clang
-i386                  randconfig-012-20230824   clang
-i386                  randconfig-013-20230824   clang
-i386                  randconfig-014-20230824   clang
-i386                  randconfig-015-20230824   clang
-i386                  randconfig-016-20230824   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230824   gcc  
-loongarch            randconfig-r002-20230824   gcc  
-loongarch            randconfig-r026-20230824   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        mvme16x_defconfig   gcc  
-m68k                 randconfig-r016-20230824   gcc  
-m68k                 randconfig-r032-20230824   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1000-neo_defconfig   clang
-mips                      loongson3_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r014-20230824   gcc  
-nios2                randconfig-r036-20230824   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r013-20230824   gcc  
-parisc               randconfig-r025-20230824   gcc  
-parisc64                         alldefconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                          allyesconfig   gcc  
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                      obs600_defconfig   clang
-powerpc                      pasemi_defconfig   gcc  
-powerpc              randconfig-r033-20230824   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230824   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230824   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          kfr2r09_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r012-20230824   gcc  
-sparc                randconfig-r022-20230824   gcc  
-sparc                randconfig-r031-20230824   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64              randconfig-r006-20230824   gcc  
-sparc64              randconfig-r021-20230824   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230824   gcc  
-x86_64       buildonly-randconfig-002-20230824   gcc  
-x86_64       buildonly-randconfig-003-20230824   gcc  
-x86_64       buildonly-randconfig-004-20230824   gcc  
-x86_64       buildonly-randconfig-005-20230824   gcc  
-x86_64       buildonly-randconfig-006-20230824   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230824   clang
-x86_64                randconfig-002-20230824   clang
-x86_64                randconfig-003-20230824   clang
-x86_64                randconfig-004-20230824   clang
-x86_64                randconfig-005-20230824   clang
-x86_64                randconfig-006-20230824   clang
-x86_64                randconfig-011-20230824   gcc  
-x86_64                randconfig-012-20230824   gcc  
-x86_64                randconfig-013-20230824   gcc  
-x86_64                randconfig-014-20230824   gcc  
-x86_64                randconfig-015-20230824   gcc  
-x86_64                randconfig-016-20230824   gcc  
-x86_64                randconfig-071-20230824   gcc  
-x86_64                randconfig-072-20230824   gcc  
-x86_64                randconfig-073-20230824   gcc  
-x86_64                randconfig-074-20230824   gcc  
-x86_64                randconfig-075-20230824   gcc  
-x86_64                randconfig-076-20230824   gcc  
-x86_64               randconfig-r005-20230824   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                              defconfig   gcc  
-xtensa               randconfig-r001-20230824   gcc  
-xtensa               randconfig-r023-20230824   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 ath10k mailing list
