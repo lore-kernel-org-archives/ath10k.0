@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 405CEC6FA8F
-	for <ath10k@archiver.kernel.org>; Thu, 24 Aug 2023 21:50:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0E35C6FA8F
+	for <ath10k@archiver.kernel.org>; Thu, 24 Aug 2023 21:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:Subject:
 	Message-ID:Date:From:MIME-Version:Reply-To:Cc:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=5MriMf5a8/zxYVZfeRvctl2rCQ21hz29gJOcyWM5gCA=; b=VZqp41wYgpDMjTpZcagHS00lNW
-	R6jUwWTuCICItzj1tU3A2AvSjIeetKw+Uf9f0oCQniTbN8B+QXriV1un9WOX7itTm65K6WdZL7til
-	Ou5OXl9OI+qOdluEMTrRXIi5qHhu1jgkqyrZ3L8xbkfASF/dHyQh9VJC8EICrkX8enldx0+bOBUC3
-	s3CUFEfwYmmSTnRi12xuBBxzFIn83dhjPoZqyJ4leRHAYvAe+bPQG1d85PHFLReohJb5vULhF9MaT
-	aIKmlGgy4ORmLwq98pefcCPOGGVBjv9mwH7oJ0h0Zi4HMiWushZdO6ZEKkVqJN8bLZw3Nk+vAzkp7
-	0U9mhbow==;
+	bh=rx51dj38j1H9e8gNrZqvScbhGmUX9DM3ffjz/HaljyU=; b=3EecufeIUokgVPcYlZXFIfCcuI
+	+IDZkbtgInk/No2d2xNWufI1gIMTkw7rcoI/Is3qTnI2qvqzqGbXngzkopWvCNy1X4z93jEGYAc/7
+	h2+WGDKDo0MPtl8QvANJraS2rH5QG4CkRTfHFO/4vAHMlxoqAsIi18PViDspcMLoANQZVp6vmYTnp
+	QqBg3JIni82bt38kp1aMW8o0yic+E3Vxauk4L4XWYGQIprcIuAnh7AoCoAUD7bmR5eAGSXEnHqil7
+	WplAPn2mcI26DN/8tw6nF2OP1JeTRNuXNdTPt/iQGsIpMutC45tN1sfvaOgQ9AO+RcYWNSTQZrpRt
+	Q+NdLP5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZIDe-003sjX-1Z;
-	Thu, 24 Aug 2023 21:50:22 +0000
-Received: from mail-yb1-xb31.google.com ([2607:f8b0:4864:20::b31])
+	id 1qZIFe-003sx6-2N;
+	Thu, 24 Aug 2023 21:52:26 +0000
+Received: from mail-vs1-xe34.google.com ([2607:f8b0:4864:20::e34])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZIDc-003shp-03
+	id 1qZIFc-003swO-0w
 	for ath10k@lists.infradead.org;
-	Thu, 24 Aug 2023 21:50:21 +0000
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d780bca9275so306257276.1
-        for <ath10k@lists.infradead.org>; Thu, 24 Aug 2023 14:50:16 -0700 (PDT)
+	Thu, 24 Aug 2023 21:52:25 +0000
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-44d45391e84so141607137.3
+        for <ath10k@lists.infradead.org>; Thu, 24 Aug 2023 14:52:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692913815; x=1693518615;
+        d=linaro.org; s=google; t=1692913942; x=1693518742;
         h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=8wqPr7Xguv9V/ZU1P/uDywjMTZVKNE2lCD5R1FtVax0=;
-        b=xaTvpSn3l8ptVoINXYEvurkpeqIR+Qz0H/E73btSDliDqZpQUjX4bILeG/tX4EdNYf
-         olk3f+qux1Hz8ZPyuZFgxJM42X0UqqQIdmfuDKiqpsJLpHTiYrw6yw8WiOmchUd4k0sd
-         hiS9KjNeDlV5Ba/FFicv/9K4iqYyKB5tuyZYtDqetYu5PF5OoCnP/1YO9msRbK45dbG2
-         MnwkHdq4Fu2Ht6gGyKjtMYwfmoEw/9xYE3ueARV1dALafa6T7ZUjvLELktw0HL5Y13vS
-         d2UXI8BDUKgOc7VKgLQ8Qbv+0oCR2id1CPo/sNFr/N743UkpJFlTSSsXYirFb50afhPl
-         6uVQ==
+        bh=wwgS6i1ijEJaACslsQ5LzF+NoqyFSWPDyKef9qqj2c4=;
+        b=GrmOx9VM8CIo6FYLX0uR57uteHxIjrGgfnwPVGbZ+Sf+SLjhCx3bgLROiMbpqvGnyl
+         m9rK9dBgH2QviMLbXDlsqBxlblpoYbNfYHS3BD82YzEZay7R9mgLNB0gsf8hy/Ai0iNq
+         HOonPTKCJ1+r3QKNKTnJvu3panVDG21be4vWJz+TWzx/GtzETObtIi7bApDt/0x8AEgB
+         N+2XV1Q/3qjhBUJYMkyCYZd7uKRcI9zb0PmFMvkA2iYo3JKsHru2can/HtpbVecjSo9v
+         kvbRyZDuGaauEQfTJiAASh0P4GGtoCDHWA6hH6b9fe/KErgJMx5gvQ5MpWWdfCUE8gQ0
+         F0/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692913815; x=1693518615;
+        d=1e100.net; s=20221208; t=1692913942; x=1693518742;
         h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8wqPr7Xguv9V/ZU1P/uDywjMTZVKNE2lCD5R1FtVax0=;
-        b=OXyaUb7AlpgOZu7nXNJy6uXcZ3sYiZuAXJpgd22ATHKsBuQ6E/8MTwOO4GRMO3DIXB
-         sWiGfGmeUD+ISZYuxyI5Ll9+3gAeYR6QSFIFJGv/iaw6cPXFlttrIAMuvNTycFsrzcXx
-         QgnN6+4K+myy3x+8xz3LeMPvqGc8aUik1crRvSjMYtOcGdSTCAlxZtBi3qP6j4ZoyyNm
-         nk9/UxfKcEP+0Ql+FpD9Z2EnfcxKy1HlxQ2QcxzxriCwnAFBIkJ7NS3ZN+kwN3M3AYdz
-         jcAggxIqzxTMvoqFMcOY1sIjXZca88+UulBlYGTg4mb76ftVMsOQ1P9mBKfn9LVRRBvm
-         wekA==
-X-Gm-Message-State: AOJu0YwgWvbkfPOG+YghahnSLhE++Py0e5r+4OoJyN2drRgcW8P6S51f
-	4he3xu+cfA/JlWq+GeibVDkbquVw14eIWo2BwlvJOurDcHY7UlLAj5E=
-X-Google-Smtp-Source: AGHT+IEhEzBfm7Dkv42e8YEx9gYqr9HTu3BqVmoeuwaCXTDgXpX35zXzsWiQGLlkICS36eezMyPTEy4OxDNIBlGBBkw=
-X-Received: by 2002:a25:d090:0:b0:d42:d029:ff99 with SMTP id
- h138-20020a25d090000000b00d42d029ff99mr18202107ybg.55.1692913815261; Thu, 24
- Aug 2023 14:50:15 -0700 (PDT)
+        bh=wwgS6i1ijEJaACslsQ5LzF+NoqyFSWPDyKef9qqj2c4=;
+        b=WXjtOWFDrcP2wgUsTdGUdOpk7BmAM7IaK98uPTH1ZVQ4rk8b+MqDzHgOqfFzRc2Zyo
+         1Sx7QhN5JRh/IEjBX44qBjgvVuVl+a/mYznCeZP3gxUf8S07VwfeZatN05c73KMqxTcq
+         mSCZFmtuMWW5g0QP5DBs/XUoqrpfWJFtD3Qr5AdVrAQIc6dcA2ZXw/uiWKpO0PZDO89T
+         nI9x/ntQUNPTV6nzFaiaMOSUmP+Paz8NTLekb9I/2xRprex6J7xmy48nIHCBAiYQmjBf
+         sTSy7joAHtjWdOu7KFI/+Mpjunm6lV6p5ApTc5AjHtEX2L0wUsxgAFiiGHMRclFbLXxR
+         QfOw==
+X-Gm-Message-State: AOJu0YxxtllbqlxuHz3A/ldh9H4DgRCL5qLuyEnXoSxU8oCWucQ4mk+H
+	fvKO/qO/gJ3kBOFZXuxBkU0A86G/EYZCArFUVAQbdftOK4AwZA5XPsU=
+X-Google-Smtp-Source: AGHT+IGIDYnda9WUzTIeGXrt0f+nCzxLoPqICQvbvc8mRELUai4kGkKpRIketZCc69FaiMwhfNZ5C7HYI7wrmHvvM8Q=
+X-Received: by 2002:a67:ed4b:0:b0:447:6bdc:654c with SMTP id
+ m11-20020a67ed4b000000b004476bdc654cmr13670213vsp.31.1692913941927; Thu, 24
+ Aug 2023 14:52:21 -0700 (PDT)
 MIME-Version: 1.0
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 25 Aug 2023 00:50:03 +0300
-Message-ID: <CAA8EJpoMoLTLz9UOFt4gwHcnyLVzBoUhAeRSs_Tkz=d3zzq_HA@mail.gmail.com>
+Date: Fri, 25 Aug 2023 00:52:10 +0300
+Message-ID: <CAA8EJprLZVdxfWGZhQGHN_CejD8GsRZE8i1-MFa7froWTvs5ew@mail.gmail.com>
 Subject: ath10k-firmware: WCN3990: Add board file for the Qualcomm Robotics
- RB1 platform
+ RB2 platform
 To: ath10k@lists.infradead.org, 
 	"open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="00000000000098848f0603b236ed"
+Content-Type: multipart/mixed; boundary="0000000000002560470603b23e5d"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230824_145020_135121_CC1BC511 
-X-CRM114-Status: UNSURE (   8.00  )
+X-CRM114-CacheID: sfid-20230824_145224_340203_CC1ED23C 
+X-CRM114-Status: UNSURE (   8.01  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -84,23 +84,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
---00000000000098848f0603b236ed
+--0000000000002560470603b23e5d
 Content-Type: text/plain; charset="UTF-8"
 
 Hello Kalle,
 
 We'd like to ask for inclusion of the board file for the Qualcomm
-Robotics RB1 platform. It is
-an IOT platform manufactured by Thundercomm, using the Snapdragon QRB2210 SoC.
+Robotics RB2 platform. It is
+an IOT platform manufactured by Thundercomm, using the Snapdragon QRB4210 SoC.
 
 Following the questions from the ath10k wiki page:
 
 * description for what hardware this is
-- It is an QRB2210-based platform (QRB2210)
+- It is an QRB4210-based platform (QRB4210)
 - It uses wcn3990 chip as a WiFi and BT radio
 - For the reference:
 
-ath10k_snoc c800000.wifi: qmi chip_id 0x120 chip_family 0x4007
+ath10k_snoc c800000.wifi: qmi chip_id 0x150 chip_family 0x4002
 board_id 0xff soc_id 0x40670000
 ath10k_snoc c800000.wifi: qmi fw_version 0x337302d3 fw_build_timestamp
 2023-01-06 01:50 fw_build_id
@@ -119,7 +119,7 @@ redistribution.
 
 * ids to be used with the board file
 
-bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1
+bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2
 
 Note, the device comes with the board_id not changed from 0xff.
 Following the example of existing boards we are adding the
@@ -129,24 +129,25 @@ calibration variant.
 
 $ md5sum *
 5003239259d8cb68097a941dde86dcc7
-bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1.bin
+bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2.bin
 
 $ sha256sum *
 0eeffb43040b216b0f3210b8db69e4558844dd9df52caf9c25f56a79401f442c
-bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1.bin
+bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2.bin
+
 
 -- 
 With best wishes
 Dmitry
 
---00000000000098848f0603b236ed
+--0000000000002560470603b23e5d
 Content-Type: application/octet-stream; 
-	name="bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1.bin"
+	name="bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2.bin"
 Content-Disposition: attachment; 
-	filename="bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1.bin"
+	filename="bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2.bin"
 Content-Transfer-Encoding: base64
-Content-ID: <f_llpp3lnx0>
-X-Attachment-Id: f_llpp3lnx0
+Content-ID: <f_llpp8p700>
+X-Attachment-Id: f_llpp8p700
 
 AQAEBAAAAADYZh3yJQEAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAACQAQAAAgEA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -610,7 +611,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
---00000000000098848f0603b236ed
+--0000000000002560470603b23e5d
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -621,5 +622,5 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---00000000000098848f0603b236ed--
+--0000000000002560470603b23e5d--
 
