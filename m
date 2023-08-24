@@ -4,59 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DE1DC71153
-	for <ath10k@archiver.kernel.org>; Thu, 24 Aug 2023 05:54:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4E07C6FA8F
+	for <ath10k@archiver.kernel.org>; Thu, 24 Aug 2023 11:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ikUxg+ydblgVtVGwHviaHveEYciiPd0dkeLxDniMET8=; b=bzqJZydLSCDr7g
-	tRExRawHMTKdJjf3Qo70HPUMgTkwtuGD0gkVhhKehiCD1ydPDnSzcHflIcMRYskLa9oad4/rxUefO
-	VPEtOer0uCb+af6JalJPB8m2/WwkeSX8sAyW3DpDdLNEa7tz+INO2nK3snt3SPV1t5itVP7DX3kxc
-	x7h0hVFto8OpfG1/HAV/xtrnYtu9NQecaQmkMzc+3OuJfgw2cfekJ/eKY6gGWF2kYhWHBmnkseeSp
-	Y26RGOgkR9tyJdWk4eLb+dgBhvrruUu91dWxqv+eHlz6f+9vZfMnadQwr3sLhs9FlNg0lPaP3vQKh
-	K/CJ2OnlUD1v3lIiwCng==;
+	List-Owner; bh=ADXOftkz7e+jK6ZqkAIEz13i+4jvgdYZ2g3HGmJr1UE=; b=rS54PfD8ob6k8w
+	Hz/VFqvGf+gz8DCb3Sw0GELhAzkNbmGpDOt+GUDZJ3F24SPWmi+B/qll/K18znVsajKI25e8Kmc7i
+	sxYF5/654PkvwQp1HIEUVzjPkhj2z04RqYk/ha3fPl2/dnbhj1JTvHJrZXF0poZ6UOKhe0AJblRog
+	fxGGGrf9PtpYKHAIREZE8HlSnDewzJiXOfCFRBIC5giltFNrI3wGS9TFRO6aghp8UyvGEDVvtkrUX
+	lpniPrFoMWIFYFNdzyEGw57fQOkhYL25Dh7O3odehntoz+xsy0i89Xt45nssEiXX2BcrokJ9PVmmq
+	JTwsk3kPqbKG4/Mdqqbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZ3IX-002Gxk-0Z;
-	Thu, 24 Aug 2023 05:54:25 +0000
-Received: from forward100c.mail.yandex.net ([178.154.239.211])
+	id 1qZ8k7-002zoP-2g;
+	Thu, 24 Aug 2023 11:43:15 +0000
+Received: from mail-yb1-xb2d.google.com ([2607:f8b0:4864:20::b2d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZ3IP-002Gus-2H
+	id 1qZ8k5-002znj-0M
 	for ath10k@lists.infradead.org;
-	Thu, 24 Aug 2023 05:54:21 +0000
-Received: from mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:287:0:640:7dd6:0])
-	by forward100c.mail.yandex.net (Yandex) with ESMTP id 46AE0600C2;
-	Thu, 24 Aug 2023 08:54:05 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 3sDNeg0WnqM0-akqvJSOX;
-	Thu, 24 Aug 2023 08:54:04 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1692856444;
-	bh=ViNyuKby6APPsFdcPz/t0WI7uk0vYoOjhkTYc2bDucE=;
-	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=ePc5tJz+bKJY1GRLGp7Yz35q3j+ea/ffvEN75K9PYBfEm4BjbhIUmMhjlXXoPDFzF
-	 rqyckpUrE7XWL5fmpRWZx4mL2GcUyY7xEUwkC/RihcELzuVJGvy9203KR4R+VYG5nK
-	 S4gZ4Q/vuo+BBNW+unj6LhPv/s67bczTOr5KOVNg=
-Authentication-Results: mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Dmitry Antipov <dmantipov@yandex.ru>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Kalle Valo <kvalo@kernel.org>,
-	linux-wireless@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	ath10k@lists.infradead.org,
-	Dmitry Antipov <dmantipov@yandex.ru>
-Subject: [PATCH 1/6] [v3] wifi: ath10k: cleanup CE ring initialization
-Date: Thu, 24 Aug 2023 08:51:06 +0300
-Message-ID: <20230824055117.42309-1-dmantipov@yandex.ru>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <997f4b09-7087-4788-aa2a-ef835ce6ebb3@quicinc.com>
-References: <997f4b09-7087-4788-aa2a-ef835ce6ebb3@quicinc.com>
+	Thu, 24 Aug 2023 11:43:14 +0000
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d77a4e30e97so2140033276.2
+        for <ath10k@lists.infradead.org>; Thu, 24 Aug 2023 04:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692877390; x=1693482190;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kDa317b/S5ni7PHJsPutQh8uxkD8M4beLbuLcLXbo6U=;
+        b=yulo+qTHWz1tH2zLDVugsHtlGqZuFzqPxOpI6SFqjlQHgglUmJ9dakdZ/upezIeIdc
+         xrXfD6avfihrs3k0ZRVirXPdZTE8iXFtBlCZRU5n46hXFMvnww36ic6hfJdpBwLF1iVR
+         psc7lJd0FMWD1m21p4w7PrGksBQhhJCR25g8/vc0BMT6DfmLfzIOOdf0MJ6j8nsNxktQ
+         jFEgh+cc8GAgAbDB2oo9zTaat/7aJYPq5VqClcAueJOSyBvhsxWctkDB+zF6aIXvkEn0
+         abLw3C4nxyOgXgg/1yvVUSKh1usTl5nTxwVXytjOTxRhQUY4kj0oT3B9bp9IcBFNvc9s
+         EFGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692877390; x=1693482190;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kDa317b/S5ni7PHJsPutQh8uxkD8M4beLbuLcLXbo6U=;
+        b=KYb9N7Gyg2KslDW24Wwf7+FsZ7aFZDEt/jasrSFbCP7H9O5gxSoDTtOaH0QBfXvhWH
+         23nnSuv5KtZ2s0Z7LIKItHklkp2c6u12KHB6zhWsY70PM799OmDdA3PDY+aXXKkOHJXs
+         2AQL8X915xqg7vlvHyBOx226Zng2Pg+NIj+vuVCxG5QKQwGc+Gp3cbBc1XTjvKH2BLD2
+         M1NlD/y+UDquQM1nvVOXXWX4zH5uE+cLwL28bKglT0tJqXYj1GxTJp3W9Ywsc5l7Ki68
+         XFWyuM0PCsvpcH5xoH4U3AY+J3dBOp+mgnqn9vCBz9b0JSzPfpCuhS8x/Qkj/ZXiuYGN
+         blAw==
+X-Gm-Message-State: AOJu0YxRVOW2h2Es1x9E5smuo6iuHBA0UCFj+NRAWS9geb69ijqvelPD
+	7lIAWV/rlUFB4lSP5Rf2kCdIPLvibN0dUWmedBepRw==
+X-Google-Smtp-Source: AGHT+IH5es0saTEdNqwQ4iMQ1t+ZcIvec2Q2Ka0Jj4l57Jssi2mXkY1VNgk8/B9iwiqd4WRBW7DoTYxUMsWC21Xid5k=
+X-Received: by 2002:a25:240f:0:b0:d53:f88a:dc09 with SMTP id
+ k15-20020a25240f000000b00d53f88adc09mr14917161ybk.2.1692877389946; Thu, 24
+ Aug 2023 04:43:09 -0700 (PDT)
 MIME-Version: 1.0
+References: <22075892-6518-ba53-8021-9500d22e5722@linaro.org>
+ <8990bf1c-32c8-e582-7aa1-d207eba7d7d6@linaro.org> <87cz05wxfm.fsf@kernel.org>
+ <f0ef6af9-b648-cc64-0165-eb135f0de578@linaro.org> <87il9xv1dw.fsf@kernel.org>
+In-Reply-To: <87il9xv1dw.fsf@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 24 Aug 2023 14:42:58 +0300
+Message-ID: <CAA8EJpqGR+J-Sa_H18dYWFg3+pHvns=C474V6jSnd3WeTyY97Q@mail.gmail.com>
+Subject: Re: wcn3990 firmware
+To: Kalle Valo <kvalo@kernel.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Vinod Koul <vkoul@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230823_225418_222149_D46689A6 
-X-CRM114-Status: GOOD (  10.94  )
+X-CRM114-CacheID: sfid-20230824_044313_179502_F51ABBC0 
+X-CRM114-Status: GOOD (  26.77  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,100 +88,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Commit 25d0dbcbd5c7 ("ath10k: split ce initialization and allocation")
-changes 'ath10k_ce_init_src_ring()' and 'ath10k_ce_init_dest_ring()'
-so these functions can't return -ENOMEM but always returns 0. This way
-both of them may be converted to 'void', and 'ath10k_ce_init_pipe()'
-may be simplified accordingly.
+On Wed, 2 Aug 2023 at 19:45, Kalle Valo <kvalo@kernel.org> wrote:
+>
+> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+>
+> > On 02/08/2023 13:28, Kalle Valo wrote:
+> >
+> >> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+> >>
+> >>> On 24/07/2023 22:38, Dmitry Baryshkov wrote:
+> >>>> Hello Kalle, colle
+> >>>> Yet-another firmware question (I remember the standard answer of not
+> >>>> using firmware not coming from your side). I see that for
+> >>>> wcn3990/hw1.0 we have wlanmdsp.mbn with the version
+> >>>> WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
+> >>>> We have got the newer wlanmdsp.mbn released under
+> >>>> redistribution-permissive license (LICENSE.qcom from
+> >>>> linux-firmware). The file has the version
+> >>>> WLAN.HL.3.3.7.c2-00723-QCAHLSWMTPLZ-1. It was released for the
+> >>>> ath10k embedded into Qualcomm QRB2210 / QRB4210 SoCs.
+> >>>
+> >>> Update: with the current wlanmdsp.mbn I'm getting the following error
+> >>> from the DSP:
+> >>>
+> >>> [   22.468121] qcom_q6v5_pas 6080000.remoteproc: fatal error received:
+> >>> EX:kernel:0x0:SigVerify:0x173:PC=0xc10dd460
+> >>>
+> >>> The board is not fused, but the signature format was changed (and so
+> >>> were some of the fields).
+> >>>
+> >>> It seems we will have to provide the updated file somehow to
+> >>> linux-firmware. What would be the preferred way for us to do so?
+> >> I cannot take firmware files from a 3rd party.
+> >
+> > Ack
+> >
+> >> Also I don't follow the
+> >> WCN3990 firmware development so I can't really comment how that firmware
+> >> release works with different WCN3990 hardware, board files and/or
+> >> calibration data.
+> >
+> > It seems to work pretty normal. I have pointed out the only issue we
+> > have stumbled so far in
+> > https://bugzilla.kernel.org/show_bug.cgi?id=217748 (the warning during
+> > scan).
+> >
+> >> But if you think that release should be submitted to
+> >> linux-firmware that's up to you.
+> >
+> > This obviously means that we should not push it to
+> > <linux-firmware>/ath10k/WCN3990, correct?
+>
+> That's the only directory ath10k uses, right? So how would any other
+> directory work?
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+As we are nearly ready to send a pull request to linux-firmware, I
+wanted to check if the following commit ([1]) is fine with you. An
+alternative approach would be to push wlanmdsp.mbn as
+ath10k/WCN3990/wlanmdsp-something.mbn and add two symlinks, from
+qcom/qcm2290 and qcom/qrb4210.
 
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
----
-v3: split to smaller units per Jeff's suggestion
-v2: change 'ath10k_ce_alloc_rri()' to return -ENOMEM in case
-of 'dma_alloc_coherent()' failure and fix error handling in
-'ath10k_snoc_hif_power_up()'
----
- drivers/net/wireless/ath/ath10k/ce.c | 38 ++++++++--------------------
- 1 file changed, 10 insertions(+), 28 deletions(-)
+As a reminder, the wlanmdsp.mbn is not loaded directly via remoteproc
+/ firmware loader, but instead it is loaded by the modem DSP using
+tqftp protocol (and tqftpserv will load it from the directory with
+modem.mbn).
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index c27b8204718a..ace92c636733 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -1352,9 +1352,9 @@ void ath10k_ce_enable_interrupts(struct ath10k *ar)
- }
- EXPORT_SYMBOL(ath10k_ce_enable_interrupts);
- 
--static int ath10k_ce_init_src_ring(struct ath10k *ar,
--				   unsigned int ce_id,
--				   const struct ce_attr *attr)
-+static void ath10k_ce_init_src_ring(struct ath10k *ar,
-+				    unsigned int ce_id,
-+				    const struct ce_attr *attr)
- {
- 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
- 	struct ath10k_ce_pipe *ce_state = &ce->ce_states[ce_id];
-@@ -1389,13 +1389,11 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "boot init ce src ring id %d entries %d base_addr %pK\n",
- 		   ce_id, nentries, src_ring->base_addr_owner_space);
--
--	return 0;
- }
- 
--static int ath10k_ce_init_dest_ring(struct ath10k *ar,
--				    unsigned int ce_id,
--				    const struct ce_attr *attr)
-+static void ath10k_ce_init_dest_ring(struct ath10k *ar,
-+				     unsigned int ce_id,
-+				     const struct ce_attr *attr)
- {
- 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
- 	struct ath10k_ce_pipe *ce_state = &ce->ce_states[ce_id];
-@@ -1427,8 +1425,6 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "boot ce dest ring id %d entries %d base_addr %pK\n",
- 		   ce_id, nentries, dest_ring->base_addr_owner_space);
--
--	return 0;
- }
- 
- static int ath10k_ce_alloc_shadow_base(struct ath10k *ar,
-@@ -1662,25 +1658,11 @@ ath10k_ce_alloc_dest_ring_64(struct ath10k *ar, unsigned int ce_id,
- int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
- 			const struct ce_attr *attr)
- {
--	int ret;
--
--	if (attr->src_nentries) {
--		ret = ath10k_ce_init_src_ring(ar, ce_id, attr);
--		if (ret) {
--			ath10k_err(ar, "Failed to initialize CE src ring for ID: %d (%d)\n",
--				   ce_id, ret);
--			return ret;
--		}
--	}
-+	if (attr->src_nentries)
-+		ath10k_ce_init_src_ring(ar, ce_id, attr);
- 
--	if (attr->dest_nentries) {
--		ret = ath10k_ce_init_dest_ring(ar, ce_id, attr);
--		if (ret) {
--			ath10k_err(ar, "Failed to initialize CE dest ring for ID: %d (%d)\n",
--				   ce_id, ret);
--			return ret;
--		}
--	}
-+	if (attr->dest_nentries)
-+		ath10k_ce_init_dest_ring(ar, ce_id, attr);
- 
- 	return 0;
- }
+[1] https://github.com/lumag/linux-firmware/commit/f29e3265b02430630222fb3aba8b76ebcba632be
+
 -- 
-2.41.0
-
+With best wishes
+Dmitry
 
 _______________________________________________
 ath10k mailing list
