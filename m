@@ -4,57 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D8E7CA0EF3
-	for <ath10k@archiver.kernel.org>; Thu, 14 Sep 2023 05:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3B95EEAA4F
+	for <ath10k@archiver.kernel.org>; Thu, 14 Sep 2023 14:49:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:Message-ID:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=B4sjY+o97AF+KtYIBgDdxg9iUG10qDNUYdmbDv+QAZE=; b=A/y2+sNcU2eDwv3Dav6IJWtawq
-	iMIhcwylBQ8Cxauz0cR8wwQiqrS0teAJNMThDgpTjvcoyJ9TF1vxwKIqh1qvFJOmr1cNwm0twoOAX
-	nhopKXZAC5kKXSPJksP52IZaybgUfODTU9GXZvMt22sIwQvdxyya7J4SZHL2DFy5HrFZv0cPTzToQ
-	xKJKASzhWs/V3MrvPHFmUlIQMM2hWro2hfVgDyhf1JSus3vmPRrH0tFvokTqr3ZAob3h2DiZoe0Mb
-	jRpJjg48jtg+j16r4OobKx0txGIxLxI1LGZKQwj/f9CqRTMhk4XZh4NUKKYhPoHY5FyrwTwCNmug4
-	NRNYGDOA==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1NKMDGxwcp3MFkWy9Rzsw84yOnhTLcpvpJVLW9qQRkw=; b=vYUTgyZmDHhacT
+	g7wipaRTl/AjbWWrpNZYMPTe0Tb2VRhEI0HNRS5tEjSr3YRYWkNO7vXpcuf2CgRcUxU3F2eVioLIc
+	/BvAyIZhs9pJL0WxJl8M+Df4sTjHdRtWrsCCgTimzSEpkjHnlDcrDuNCIoFIrwHCPcH48KxReqFxH
+	0meTYQWTfvGBgppSW1j9TZvVVmhCcN/zg7Cp0o+FkdSioRhn5LXZ+DSAQ4pWpQbNpyZLuROyFYOCu
+	pMBILqmfxK7o6f2aNT1ptIZRPGAn7rPYjMGSEZ6qSKimxA/1uqL5Wr1BKeJh5qU0MHtfEW2iXch3d
+	IKoaPSFoCOUUJIii7LEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgehr-007PIq-0O;
-	Thu, 14 Sep 2023 05:15:59 +0000
-Received: from forward100b.mail.yandex.net ([178.154.239.147])
+	id 1qgneV-008ggf-0M;
+	Thu, 14 Sep 2023 14:49:07 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgehm-007PGz-2z
+	id 1qgneR-008gfG-1U
 	for ath10k@lists.infradead.org;
-	Thu, 14 Sep 2023 05:15:57 +0000
-Received: from mail-nwsmtp-smtp-production-main-10.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-10.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:2481:0:640:e0:0])
-	by forward100b.mail.yandex.net (Yandex) with ESMTP id 8797360089;
-	Thu, 14 Sep 2023 08:15:42 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-10.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id fFYVPqGDTOs0-O6ZNxOco;
-	Thu, 14 Sep 2023 08:15:42 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1694668542; bh=ox8S0AYBWW2vIsLEAJrgWtPvQJNpgJyGEPJ1NUjciHo=;
-	h=Subject:From:Cc:To:Date:Message-ID;
-	b=Lty76Epb2apKoBTQgFhWLobldjUD3msG7fyvF7qCxeCAkz9Tpv8TyDrYSrQa9k/KE
-	 buwexGnydGTRmWH1/J8KH5z9DGs4whOhmVzTwvfQjIIix+OcvGDdWADku1V+LGDTgP
-	 j482wHpKHAfJsE0wkIBj3DEf/zXNamUl7LPEoeqg=
-Authentication-Results: mail-nwsmtp-smtp-production-main-10.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <9485af8e-3379-f592-0e8f-0eaebf4fbc05@yandex.ru>
-Date: Thu, 14 Sep 2023 08:15:41 +0300
+	Thu, 14 Sep 2023 14:49:05 +0000
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EE8ZlM027382;
+	Thu, 14 Sep 2023 14:48:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=aL++Hd0s2d7IrNOsxWTei1ji/pjM+JhOfFszoIJYSMA=;
+ b=Nh3IfxgSoU46L4p9ldF3wIAOzk7Fofe5fxlElC3vnWaZcPRM+z9J5kyt+Toc//f3b6kT
+ A9p2ax0nLIm2ndL+WGPeKj3OCUdn35YHrZYSbwAgo2hlaEqda51YXS3UBfJZonZ+NfPe
+ 67q2jklcWHSTcrjLcJc+gX7i+JJfdhW5TB8iArslR2IjLquqS2X8qXprjOPRsZrP5Sgg
+ YAdgEgXffFiWpEOlsJVxh36nlUC4XeAjWl4IgWcImrvdI6PccDkfLDI57bqKCHW+7MVY
+ dullUEjq/Cms3fhaxmLfFU7nF5eZutZhq52SKf5coBk1fabU+qaMr08m143EX8AGjQIY Mw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t40tart0w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Sep 2023 14:48:57 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EEmuLj018476
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Sep 2023 14:48:56 GMT
+Received: from [10.111.183.186] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
+ 2023 07:48:55 -0700
+Message-ID: <7855cee1-c554-40b7-885f-d7f8d3d90979@quicinc.com>
+Date: Thu, 14 Sep 2023 07:48:54 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH wireless-next 6/9] wifi: ath10k: Remove unnecessary
+ (void*) conversions
 Content-Language: en-US
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Kalle Valo <kvalo@kernel.org>, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org
-From: Dmitry Antipov <dmantipov@yandex.ru>
-Subject: On status handling in ath10k_htt_rx_tx_compl_ind()
+To: Wu Yunchuan <yunchuan@nfschina.com>, <kvalo@kernel.org>, <toke@toke.dk>
+CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+References: <20230914040517.1170024-1-yunchuan@nfschina.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230914040517.1170024-1-yunchuan@nfschina.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UFWaF2sTRwLgOAH9vtvK2J8JDZ4uPXlr
+X-Proofpoint-ORIG-GUID: UFWaF2sTRwLgOAH9vtvK2J8JDZ4uPXlr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1011 malwarescore=0 spamscore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=611 phishscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309140127
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230913_221555_445097_BBDA7FDD 
-X-CRM114-Status: UNSURE (   4.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230914_074903_518773_7ED536F1 
+X-CRM114-Status: GOOD (  10.68  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,19 +98,19 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-In 'ath10k_htt_rx_tx_compl_ind()',
+On 9/13/2023 9:05 PM, Wu Yunchuan wrote:
+> No need cast (void*) to (struct htt_rx_ring_setup_ring32 *),
+> (struct htt_rx_ring_setup_ring64 *), (struct ath_softc *)
+> or (struct ath_hw *).
+> 
+> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/htt_tx.c | 6 ++----
+>   drivers/net/wireless/ath/ath9k/pci.c     | 6 +++---
 
-int status = MS(resp->data_tx_completion.flags, HTT_DATA_TX_STATUS);
+ath9k change should be in a separate patch since it has a different 
+maintainer than ath10k
 
-actually is
-
-int status = (((resp->data_tx_completion.flags) & 0x07) >> 0);
-
-which can't be equal to HTT_DATA_TX_STATUS_DOWNLOAD_FAIL (128)
-regardless of the 'data_tx_completion.flags' value. This is most
-likely a weird (but I have no clue how serious it may be) bug.
-
-Dmitry
 
 _______________________________________________
 ath10k mailing list
