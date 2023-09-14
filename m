@@ -4,68 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 991A6CA0EF3
-	for <ath10k@archiver.kernel.org>; Thu, 14 Sep 2023 04:05:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AFE7CA5506
+	for <ath10k@archiver.kernel.org>; Thu, 14 Sep 2023 04:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=A+kNvtRY2Ycatz9jGqM7JaK2+75OstDU3nrr7uoNLTo=; b=u4j9K6mqDARre3
-	h1IM+D6xWztICp16IJwclORX/kkX/h+k4w24lxhBNwnK0SkNXohz8XNZ5EEzaKZ+ZNrpd0JgOWebs
-	xmX1+3kyr6159bDhE1bPivzr3DD9N16xBPU2MkVVAuWqucMVp1K5sEAfVgL+VLg40N09cn5+XyhD+
-	i2V81NmqnSUbvGWw3w1N30lGrOwSzgL9zlzpjozi3D5qJVeL37A26ynNLQ6fhMNBZu1CYMuZsw+W1
-	IBdQtutB5zVGXvDvcEexqJp7VrzDWm13c+pLLiw0kJuz0JNOLZez/RguurcqqrxPlwb2LrPbabhtR
-	0U7ToyawPDS8b6TLQUHA==;
+	List-Owner; bh=feItg2f5F2c9+vP+Y0XFnJeaBU8y9q7ATzMNcDZqYR8=; b=IOeLWZSLVjWC0P
+	wu+rWcPjkM6hjjkGUNivdMRXOgKa2FIiKs4b/8XutCbYJzMhDaD2RWV3KU1zHxlIYG11my9YtCvjD
+	SskKEc7VWqdL2t3ITKLuVehUTZDWdqbzDGg+DvH8tsDdAlXkKvylM2ThTvS6u5bhRysNTehJF42yE
+	ogYPs7gMACnvwdDUTGscBOu0cn9sRLYXKEt9ptdkBMuENqtqxBtR2iBxCic12hun4wFOtYHw3sfVK
+	m25/d6EYGtzGNUYD2KRjP1fiRqlofXUsRTIgXUvrFp82i9IKyDwgNSRlIffKFqd2qgMv8DJ2wf2GM
+	OxYvje7J2yn4edWsM3VQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgdbI-007Jac-1Q;
-	Thu, 14 Sep 2023 04:05:08 +0000
+	id 1qgdba-007Jg8-0D;
+	Thu, 14 Sep 2023 04:05:26 +0000
 Received: from [42.101.60.195] (helo=mail.nfschina.com)
 	by bombadil.infradead.org with smtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgdbE-007JXe-0D;
-	Thu, 14 Sep 2023 04:05:06 +0000
+	id 1qgdbX-007Jf2-0y
+	for ath10k@lists.infradead.org;
+	Thu, 14 Sep 2023 04:05:24 +0000
 Received: from localhost.localdomain (unknown [180.167.10.98])
-	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 2ED14606080E2;
-	Thu, 14 Sep 2023 12:04:17 +0800 (CST)
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 9B255606080EF;
+	Thu, 14 Sep 2023 12:05:18 +0800 (CST)
 X-MD-Sfrom: yunchuan@nfschina.com
 X-MD-SrcIP: 180.167.10.98
 From: Wu Yunchuan <yunchuan@nfschina.com>
 To: kvalo@kernel.org,
 	quic_jjohnson@quicinc.com,
-	jirislaby@kernel.org,
-	mickflemm@gmail.com,
-	mcgrof@kernel.org,
-	toke@toke.dk,
-	afaerber@suse.de,
-	mani@kernel.org,
-	chunkeey@googlemail.com,
-	loic.poulain@linaro.org,
-	mcoquelin.stm32@gmail.com,
-	alexandre.torgue@foss.st.com
-Cc: johannes.berg@intel.com,
-	syoshida@redhat.com,
-	alexander@wetzel-home.de,
+	toke@toke.dk
+Cc: ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	ath11k@lists.infradead.org,
-	ath12k@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-actions@lists.infradead.org,
-	wcn36xx@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
 	kernel-janitors@vger.kernel.org,
 	Wu Yunchuan <yunchuan@nfschina.com>
-Subject: [PATCH wireless-next 0/9] Remove unnecessary (void*) conversions
-Date: Thu, 14 Sep 2023 12:03:16 +0800
-Message-Id: <20230914040315.1169121-1-yunchuan@nfschina.com>
+Subject: [PATCH wireless-next 6/9] wifi: ath10k: Remove unnecessary (void*) conversions
+Date: Thu, 14 Sep 2023 12:05:17 +0800
+Message-Id: <20230914040517.1170024-1-yunchuan@nfschina.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230913_210504_315145_3660450F 
-X-CRM114-Status: UNSURE (   4.68  )
+X-CRM114-CacheID: sfid-20230913_210523_536444_0795A8E2 
+X-CRM114-Status: UNSURE (   7.21  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,53 +66,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Remove all unnecessary (void*) conversions under the directory drivers/net/wireless/ath.
+No need cast (void*) to (struct htt_rx_ring_setup_ring32 *),
+(struct htt_rx_ring_setup_ring64 *), (struct ath_softc *)
+or (struct ath_hw *).
 
-Wu Yunchuan (9):
-  wifi: ar5523: Remove unnecessary (void*) conversions
-  carl9170: remove unnecessary (void*) conversions
-  wifi: wcn36xx: remove unnecessary (void*) conversions
-  wifi: ath5k: remove unnecessary (void*) conversions
-  ath6kl: remove unnecessary (void*) conversions
-  wifi: ath10k: Remove unnecessary (void*) conversions
-  wifi: ath12k: Remove unnecessary (void*) conversions
-  wifi: ath11k: remove unnecessary (void*) conversions
-  wifi: ath9k: Remove unnecessary (void*) conversions
+Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 6 ++----
+ drivers/net/wireless/ath/ath9k/pci.c     | 6 +++---
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
- drivers/net/wireless/ath/ar5523/ar5523.c      |  2 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c      |  6 ++--
- drivers/net/wireless/ath/ath11k/dp.c          |  2 +-
- drivers/net/wireless/ath/ath11k/dp_rx.c       | 13 +++----
- drivers/net/wireless/ath/ath11k/hal.c         |  8 ++---
- drivers/net/wireless/ath/ath11k/hal_rx.c      | 17 ++++-----
- drivers/net/wireless/ath/ath11k/hal_tx.c      |  2 +-
- drivers/net/wireless/ath/ath11k/mac.c         |  4 +--
- drivers/net/wireless/ath/ath11k/spectral.c    |  2 +-
- drivers/net/wireless/ath/ath11k/wmi.c         |  6 ++--
- drivers/net/wireless/ath/ath12k/dp_mon.c      |  6 ++--
- drivers/net/wireless/ath/ath12k/dp_rx.c       |  2 +-
- drivers/net/wireless/ath/ath12k/dp_tx.c       |  2 +-
- drivers/net/wireless/ath/ath5k/base.c         |  4 +--
- drivers/net/wireless/ath/ath5k/pci.c          |  4 +--
- drivers/net/wireless/ath/ath6kl/main.c        |  4 +--
- drivers/net/wireless/ath/ath6kl/txrx.c        |  2 +-
- .../wireless/ath/ath9k/ath9k_pci_owl_loader.c |  2 +-
- drivers/net/wireless/ath/ath9k/common-init.c  |  2 +-
- .../net/wireless/ath/ath9k/common-spectral.c  |  2 +-
- drivers/net/wireless/ath/ath9k/debug.c        |  2 +-
- drivers/net/wireless/ath/ath9k/hif_usb.c      | 10 +++---
- .../net/wireless/ath/ath9k/htc_drv_debug.c    |  2 +-
- drivers/net/wireless/ath/ath9k/htc_drv_init.c | 36 +++++++++----------
- drivers/net/wireless/ath/ath9k/htc_hst.c      |  2 +-
- drivers/net/wireless/ath/ath9k/init.c         | 12 +++----
- drivers/net/wireless/ath/ath9k/link.c         |  2 +-
- drivers/net/wireless/ath/ath9k/pci.c          |  6 ++--
- drivers/net/wireless/ath/carl9170/usb.c       | 10 +++---
- drivers/net/wireless/ath/wcn36xx/dxe.c        |  6 ++--
- drivers/net/wireless/ath/wcn36xx/smd.c        | 20 +++++------
- drivers/net/wireless/ath/wcn36xx/testmode.c   |  2 +-
- 32 files changed, 95 insertions(+), 107 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index bd603feb7953..31f08db8a42f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -798,16 +798,14 @@ static int ath10k_htt_send_frag_desc_bank_cfg_64(struct ath10k_htt *htt)
+ 
+ static void ath10k_htt_fill_rx_desc_offset_32(struct ath10k_hw_params *hw, void *rx_ring)
+ {
+-	struct htt_rx_ring_setup_ring32 *ring =
+-			(struct htt_rx_ring_setup_ring32 *)rx_ring;
++	struct htt_rx_ring_setup_ring32 *ring = rx_ring;
+ 
+ 	ath10k_htt_rx_desc_get_offsets(hw, &ring->offsets);
+ }
+ 
+ static void ath10k_htt_fill_rx_desc_offset_64(struct ath10k_hw_params *hw, void *rx_ring)
+ {
+-	struct htt_rx_ring_setup_ring64 *ring =
+-			(struct htt_rx_ring_setup_ring64 *)rx_ring;
++	struct htt_rx_ring_setup_ring64 *ring = rx_ring;
+ 
+ 	ath10k_htt_rx_desc_get_offsets(hw, &ring->offsets);
+ }
+diff --git a/drivers/net/wireless/ath/ath9k/pci.c b/drivers/net/wireless/ath/ath9k/pci.c
+index 0633589b85c2..e655cd8bbf94 100644
+--- a/drivers/net/wireless/ath/ath9k/pci.c
++++ b/drivers/net/wireless/ath/ath9k/pci.c
+@@ -781,7 +781,7 @@ static const struct pci_device_id ath_pci_id_table[] = {
+ /* return bus cachesize in 4B word units */
+ static void ath_pci_read_cachesize(struct ath_common *common, int *csz)
+ {
+-	struct ath_softc *sc = (struct ath_softc *) common->priv;
++	struct ath_softc *sc = common->priv;
+ 	u8 u8tmp;
+ 
+ 	pci_read_config_byte(to_pci_dev(sc->dev), PCI_CACHE_LINE_SIZE, &u8tmp);
+@@ -799,7 +799,7 @@ static void ath_pci_read_cachesize(struct ath_common *common, int *csz)
+ 
+ static bool ath_pci_eeprom_read(struct ath_common *common, u32 off, u16 *data)
+ {
+-	struct ath_hw *ah = (struct ath_hw *) common->ah;
++	struct ath_hw *ah = common->ah;
+ 
+ 	common->ops->read(ah, AR5416_EEPROM_OFFSET + (off << AR5416_EEPROM_S));
+ 
+@@ -820,7 +820,7 @@ static bool ath_pci_eeprom_read(struct ath_common *common, u32 off, u16 *data)
+ /* Need to be called after we discover btcoex capabilities */
+ static void ath_pci_aspm_init(struct ath_common *common)
+ {
+-	struct ath_softc *sc = (struct ath_softc *) common->priv;
++	struct ath_softc *sc = common->priv;
+ 	struct ath_hw *ah = sc->sc_ah;
+ 	struct pci_dev *pdev = to_pci_dev(sc->dev);
+ 	struct pci_dev *parent;
 -- 
 2.30.2
 
