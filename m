@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3CF1EE020A
-	for <ath10k@archiver.kernel.org>; Wed, 13 Sep 2023 19:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 991A6CA0EF3
+	for <ath10k@archiver.kernel.org>; Thu, 14 Sep 2023 04:05:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=aH4mqleys+1Z/WbHYzynxu9hHtPXFxujLtVOSisg0UE=; b=BOlDft2lZGVJqx
-	Qa2spGec494Fvm0e2jZgevvphBs4xYzVnZZNI0PDppSwFrAx8502AK7/A1HTvJA84kfu9U7jvFBPd
-	hH+61toBnl+d2tdodX5Q0TKsF3nRIPP32nmdCyPqSdRnVdB/4TfhzDTmJ/ZvDtCsMOjpIBKb2NLF8
-	Yxs3N0nN5wxPr+dLh0w+QwsNsUJJffNxBst2OzAHXbrT4pSj5U16VdyupLjTeTjojG+YP+PcqQxlP
-	vbQOlyEGbeV3+G/ob4MWu0bqKxiyQUlmJoYYDsNHph8oNopGHGMyX1I2+DMa8J6JShubuwEicfH0K
-	fEiy0L9nhfMWrbFHWG0A==;
+	List-Owner; bh=A+kNvtRY2Ycatz9jGqM7JaK2+75OstDU3nrr7uoNLTo=; b=u4j9K6mqDARre3
+	h1IM+D6xWztICp16IJwclORX/kkX/h+k4w24lxhBNwnK0SkNXohz8XNZ5EEzaKZ+ZNrpd0JgOWebs
+	xmX1+3kyr6159bDhE1bPivzr3DD9N16xBPU2MkVVAuWqucMVp1K5sEAfVgL+VLg40N09cn5+XyhD+
+	i2V81NmqnSUbvGWw3w1N30lGrOwSzgL9zlzpjozi3D5qJVeL37A26ynNLQ6fhMNBZu1CYMuZsw+W1
+	IBdQtutB5zVGXvDvcEexqJp7VrzDWm13c+pLLiw0kJuz0JNOLZez/RguurcqqrxPlwb2LrPbabhtR
+	0U7ToyawPDS8b6TLQUHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgVT3-006bfb-1L;
-	Wed, 13 Sep 2023 19:24:05 +0000
-Received: from mgamail.intel.com ([192.55.52.120])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgVT0-006beK-0E
-	for ath10k@lists.infradead.org;
-	Wed, 13 Sep 2023 19:24:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694633042; x=1726169042;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=wNe9PpuREl4o1SuMhqGlMthlpYLgOoAbfNgfXgbwpIo=;
-  b=caN8gl+5UA8ANt1zT73pCyk7Xd7FlalzHxaL2PQd8xLeauHgXIsiDYca
-   ulNayuaZG9UH+hU9aDF1cKr3WKOBiWgriWhaATTuyUs0GLF9uFqfszKgn
-   SVogrdlWi2OYxzcevR/xVTfCV4nlxnn5Q6IjX2jSU6h0djiEMVbd9ywn/
-   GB8JE0huKgeM86QOnzbZZQIo4sRzdTkdZ7xojsnTjkuAIFE4Rv4R2Pmv4
-   xQhkK8EWiyHVyi6sHjLTvP8NNVl7jbu3Ejce8Viw2X+EvqD/ruYtY0jKo
-   HBB3C18ojdxoulKtqlR/LWI+IojEeBYbYzFU9jjCQObB+0P3eh19KcQqm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="377673268"
-X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="377673268"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:24:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="917962141"
-X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="917962141"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2023 12:23:58 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qgVSu-0000Vs-2M;
-	Wed, 13 Sep 2023 19:23:56 +0000
-Date: Thu, 14 Sep 2023 03:23:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: Aaradhana Sahu <quic_aarasahu@quicinc.com>
-Cc: oe-kbuild-all@lists.linux.dev, Kalle Valo <kvalo@codeaurora.org>,
-	ath10k@lists.infradead.org, Kalle Valo <quic_kvalo@quicinc.com>
-Subject: [kvalo-ath:ath11k-testmode 6/7]
- drivers/net/wireless/ath/ath12k/testmode.c:28:16: warning: no previous
- prototype for 'ath12k_tm_get_ar'
-Message-ID: <202309140338.JIMolIml-lkp@intel.com>
+	id 1qgdbI-007Jac-1Q;
+	Thu, 14 Sep 2023 04:05:08 +0000
+Received: from [42.101.60.195] (helo=mail.nfschina.com)
+	by bombadil.infradead.org with smtp (Exim 4.96 #2 (Red Hat Linux))
+	id 1qgdbE-007JXe-0D;
+	Thu, 14 Sep 2023 04:05:06 +0000
+Received: from localhost.localdomain (unknown [180.167.10.98])
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 2ED14606080E2;
+	Thu, 14 Sep 2023 12:04:17 +0800 (CST)
+X-MD-Sfrom: yunchuan@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From: Wu Yunchuan <yunchuan@nfschina.com>
+To: kvalo@kernel.org,
+	quic_jjohnson@quicinc.com,
+	jirislaby@kernel.org,
+	mickflemm@gmail.com,
+	mcgrof@kernel.org,
+	toke@toke.dk,
+	afaerber@suse.de,
+	mani@kernel.org,
+	chunkeey@googlemail.com,
+	loic.poulain@linaro.org,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com
+Cc: johannes.berg@intel.com,
+	syoshida@redhat.com,
+	alexander@wetzel-home.de,
+	linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ath10k@lists.infradead.org,
+	ath11k@lists.infradead.org,
+	ath12k@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-actions@lists.infradead.org,
+	wcn36xx@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	kernel-janitors@vger.kernel.org,
+	Wu Yunchuan <yunchuan@nfschina.com>
+Subject: [PATCH wireless-next 0/9] Remove unnecessary (void*) conversions
+Date: Thu, 14 Sep 2023 12:03:16 +0800
+Message-Id: <20230914040315.1169121-1-yunchuan@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230913_122402_116637_58BCCF70 
-X-CRM114-Status: GOOD (  10.19  )
+X-CRM114-CacheID: sfid-20230913_210504_315145_3660450F 
+X-CRM114-Status: UNSURE (   4.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,49 +83,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-testmode
-head:   ba2a7d5c57ba0703f64cf849c0299ac23eb1c1f5
-commit: b50dc57cafcdbdeab2e799fa6e3148498e7805d7 [6/7] wifi: ath12k: add factory test mode support
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230914/202309140338.JIMolIml-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140338.JIMolIml-lkp@intel.com/reproduce)
+Remove all unnecessary (void*) conversions under the directory drivers/net/wireless/ath.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309140338.JIMolIml-lkp@intel.com/
+Wu Yunchuan (9):
+  wifi: ar5523: Remove unnecessary (void*) conversions
+  carl9170: remove unnecessary (void*) conversions
+  wifi: wcn36xx: remove unnecessary (void*) conversions
+  wifi: ath5k: remove unnecessary (void*) conversions
+  ath6kl: remove unnecessary (void*) conversions
+  wifi: ath10k: Remove unnecessary (void*) conversions
+  wifi: ath12k: Remove unnecessary (void*) conversions
+  wifi: ath11k: remove unnecessary (void*) conversions
+  wifi: ath9k: Remove unnecessary (void*) conversions
 
-All warnings (new ones prefixed by >>):
-
->> drivers/net/wireless/ath/ath12k/testmode.c:28:16: warning: no previous prototype for 'ath12k_tm_get_ar' [-Wmissing-prototypes]
-      28 | struct ath12k *ath12k_tm_get_ar(struct ath12k_base *ab)
-         |                ^~~~~~~~~~~~~~~~
-
-
-vim +/ath12k_tm_get_ar +28 drivers/net/wireless/ath/ath12k/testmode.c
-
-    27	
-  > 28	struct ath12k *ath12k_tm_get_ar(struct ath12k_base *ab)
-    29	{
-    30		struct ath12k_pdev *pdev;
-    31		struct ath12k *ar;
-    32		int i;
-    33	
-    34		for (i = 0; i < ab->num_radios; i++) {
-    35			pdev = &ab->pdevs[i];
-    36			ar = pdev->ar;
-    37	
-    38			if (ar && ar->state == ATH12K_STATE_TM)
-    39				return ar;
-    40		}
-    41	
-    42		return NULL;
-    43	}
-    44	
+ drivers/net/wireless/ath/ar5523/ar5523.c      |  2 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c      |  6 ++--
+ drivers/net/wireless/ath/ath11k/dp.c          |  2 +-
+ drivers/net/wireless/ath/ath11k/dp_rx.c       | 13 +++----
+ drivers/net/wireless/ath/ath11k/hal.c         |  8 ++---
+ drivers/net/wireless/ath/ath11k/hal_rx.c      | 17 ++++-----
+ drivers/net/wireless/ath/ath11k/hal_tx.c      |  2 +-
+ drivers/net/wireless/ath/ath11k/mac.c         |  4 +--
+ drivers/net/wireless/ath/ath11k/spectral.c    |  2 +-
+ drivers/net/wireless/ath/ath11k/wmi.c         |  6 ++--
+ drivers/net/wireless/ath/ath12k/dp_mon.c      |  6 ++--
+ drivers/net/wireless/ath/ath12k/dp_rx.c       |  2 +-
+ drivers/net/wireless/ath/ath12k/dp_tx.c       |  2 +-
+ drivers/net/wireless/ath/ath5k/base.c         |  4 +--
+ drivers/net/wireless/ath/ath5k/pci.c          |  4 +--
+ drivers/net/wireless/ath/ath6kl/main.c        |  4 +--
+ drivers/net/wireless/ath/ath6kl/txrx.c        |  2 +-
+ .../wireless/ath/ath9k/ath9k_pci_owl_loader.c |  2 +-
+ drivers/net/wireless/ath/ath9k/common-init.c  |  2 +-
+ .../net/wireless/ath/ath9k/common-spectral.c  |  2 +-
+ drivers/net/wireless/ath/ath9k/debug.c        |  2 +-
+ drivers/net/wireless/ath/ath9k/hif_usb.c      | 10 +++---
+ .../net/wireless/ath/ath9k/htc_drv_debug.c    |  2 +-
+ drivers/net/wireless/ath/ath9k/htc_drv_init.c | 36 +++++++++----------
+ drivers/net/wireless/ath/ath9k/htc_hst.c      |  2 +-
+ drivers/net/wireless/ath/ath9k/init.c         | 12 +++----
+ drivers/net/wireless/ath/ath9k/link.c         |  2 +-
+ drivers/net/wireless/ath/ath9k/pci.c          |  6 ++--
+ drivers/net/wireless/ath/carl9170/usb.c       | 10 +++---
+ drivers/net/wireless/ath/wcn36xx/dxe.c        |  6 ++--
+ drivers/net/wireless/ath/wcn36xx/smd.c        | 20 +++++------
+ drivers/net/wireless/ath/wcn36xx/testmode.c   |  2 +-
+ 32 files changed, 95 insertions(+), 107 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.30.2
+
 
 _______________________________________________
 ath10k mailing list
