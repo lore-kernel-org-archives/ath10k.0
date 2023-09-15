@@ -4,95 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CC56CD37A7
-	for <ath10k@archiver.kernel.org>; Fri, 15 Sep 2023 20:07:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04546CD37A9
+	for <ath10k@archiver.kernel.org>; Fri, 15 Sep 2023 20:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wzkAQk1+2gPNAeNX0XtDl1OeqVbvy+19yboKEvNZp8k=; b=JcyOqLSARW18Dh
-	ZNYnJZLZzUpdgkTifAzQfOx9fkLMHshvnqzGb7TAPOXvH7/aonHV/5vt2n8/UZ2hnRCP0GCXef3Xm
-	8L9oSM6F1s/KN5Tcbh6MjYw8o1m7YeVz6CQAz87JRufYlMM1Rp97Lbx3X1hOnyTyHrOkElXML5H1g
-	68inqPZ0gRjY6XtHnON6pwUBDf94QimH+9XZoAhrmgz10ko9kBXdjs6nSNbYB73IbJN0B3GLet/YG
-	OTWvsUobd/Gbz5EUjJqqhuD//HYtBo4aJuJKwSzEL5X3TM0j6zXyaoTmYq6mjlbE+fBzygcmOlzgf
-	JcAXTEPUOQjjZSUPa90A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vwM+lHXpp/EX2aMPo7pUFW/ihqpikEdGa7NNUD63Qnc=; b=Uy5B57uv7AErXo
+	emvDMHPhtjktiydUm+tMc7piJwc7UcBtG9HVVB0nKBhkN80SV0axXr4GanxNP8QpvR65SnPS6RV8k
+	wfY5d1YfhWJZTVA+ZiwIAX/DVny5cEOVQPx2Yr9I3KURO/TNAKg0PiRpyPK7yVrzNsxIMawoFIA0O
+	DvBtIreeTQdVGE4ojq4PMpFbIYyAp7WaNe5ygK5nj0rskPphPgSrr7Tknu/6+vMx9+EgltQgWY9PI
+	p+OXQxeVVKfN+y0xyY9auwe+BEY5HFs9jISvnZHH7f2MaiomArCPZX3PtNsK5e7KOvHb+xjqAyqQR
+	SQMJWo2/kOk2FBWK3NDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qhF5N-00BI0P-2u;
-	Fri, 15 Sep 2023 20:06:41 +0000
-Received: from mail-ot1-x32e.google.com ([2607:f8b0:4864:20::32e])
+	id 1qhFbK-00BLOW-34;
+	Fri, 15 Sep 2023 20:39:43 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qhF5L-00BHzu-25
+	id 1qhFai-00BLLt-00
 	for ath10k@lists.infradead.org;
-	Fri, 15 Sep 2023 20:06:41 +0000
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6c0c6370e5eso1447805a34.3
-        for <ath10k@lists.infradead.org>; Fri, 15 Sep 2023 13:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694808398; x=1695413198; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jatWasS204QwZuZ1cmt7SDqxcoxRSBD/dVPK2mjyGCY=;
-        b=VGe76L2aHyyUU9TXh9U8AQJqZRklnZhdbL+oDv3urBV9BcGs4S3yDkMyxONAmMx1l4
-         Kr/6z2st5p3ohppXdk8cgGWJ/ORmn7DuqF1UhaYsUrOrLar/n2flqNkddmjEEOqbSTN1
-         +WdILnLjhn41A+KPQ84d3YyMmgmphZgGmLzGo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694808398; x=1695413198;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jatWasS204QwZuZ1cmt7SDqxcoxRSBD/dVPK2mjyGCY=;
-        b=bq5bs7+wlzWde6FjZ99YyKj/3Pk+JJJno9BYYRqw1JMcJnDChoA3n34xGoU0jW62YI
-         oELc2qGgHBcYWHvm419e+SMIku9hmF7Swc29OdOPbCMRFVc03Erj+rHwALiD8ATJ7tFJ
-         NgwSd0F/7LsAel6dglR+Tvv4UX+pff2MuA6Cb+80zVth4l7iAIDeDb2ui7e0Zn7tJcRk
-         MfO2VMU0MrJ6iPDkEIti7F9OKdSwC+Yc/4sgnYl4HkDDBnjXL9GVA1mH2+53TW0updX8
-         G4PwfvT7qcceiNqgApNz9vOb0tEBx3WdI0YFqZgSl0l0xTNo+REKC+D3s8sAtVrruYHE
-         WleA==
-X-Gm-Message-State: AOJu0YxS+E1OM3n4hI+9FzidoXjtK/sOC3fTUBdnbxS8FURqVi10ZrY7
-	3p/iZnDWHXbVR0vfFUcMmWY19Q==
-X-Google-Smtp-Source: AGHT+IGXQqiIq6S4bgOC/rczT8CEqgDpEzDp+av8eoitgJQpUO9EnGhGdKEsv8TA7BWoVjF1DIS9yQ==
-X-Received: by 2002:a05:6358:2910:b0:134:c37f:4b64 with SMTP id y16-20020a056358291000b00134c37f4b64mr3429872rwb.30.1694808398331;
-        Fri, 15 Sep 2023 13:06:38 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b127-20020a633485000000b005709b5aea02sm3039409pga.63.2023.09.15.13.06.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 13:06:37 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] wifi: ath10k: Annotate struct ath10k_ce_ring with __counted_by
-Date: Fri, 15 Sep 2023 13:06:36 -0700
-Message-Id: <20230915200636.never.762-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	Fri, 15 Sep 2023 20:39:25 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FEJ1t3024585;
+	Fri, 15 Sep 2023 20:38:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=cUJUg7Dvcc0uo1bVuElb2MqCHjygzkZYsy45Az74LTg=;
+ b=nLIiJ8X6RpRe37cPCbSzIg5DQPz7hj0Bpc1LJMIWsoVN5gsy3Ke9wSBCZS5lQ40xJCWn
+ pzz+TeQsxs0EldY6AFygKuupPH63SZbBgL+tFpRy7pfCsXvSvqi0RhCK6imHjhU+voG1
+ RXA/s8l6Qtt0QpwOlV4MAUIltwc/wILoQeh8S1c0u+fR0lhjtSVVZNnClKlBFJ62wXtP
+ AqHg2Pax+GXqfzqIIlEefAxKotbIMaXt5rGrDytJNPmo82FceLjMVhntUtqghK+zAUy3
+ yXAQtUH1gyBl3clZn5Hy7Cc4CNjBtQnAo+CeJimrGwUYOhkfeyaOV3boFw4rY00x+zfy Rw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g3na43e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Sep 2023 20:38:55 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FKcs6n015194
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Sep 2023 20:38:54 GMT
+Received: from [10.111.183.186] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
+ 2023 13:38:53 -0700
+Message-ID: <ccaf9c7e-7628-4e70-a054-246b4edfbeff@quicinc.com>
+Date: Fri, 15 Sep 2023 13:38:53 -0700
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1238; i=keescook@chromium.org;
- h=from:subject:message-id; bh=W0Z7FKEp2ozBJ5/t2fUugzUzm+3pU7NY9bmGkgl9TaQ=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlBLlMujYCGGfE+LkiGsu88vAuQpO/bsLI9ODrg
- 7qJQcqRlzGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQS5TAAKCRCJcvTf3G3A
- Jjo0D/0ZhZjM3umwDd4cScp/pX69G3PAuyE5MgO0WMxQPUuULMPhwefs2sxa4V3f11IiNVJnHtW
- soi02X7jMpU81gA0gZljCei7qMNuZza5nCUsLw/tZFEvOS7by/LWH8N8eKeC1HM/gX5nJzk87sJ
- 524wLuAgNxeE0ZKs0kE17vg/QAtRZ6AlhVxJHN7W7oZ9vFiabMcnvDOvUvhnIuCmf8H3yyepMSJ
- d6PSUEAVtDnmd2z/r+XAp2jILEyXzM6oLz4v5N01BYz3qvzxRPyleV3r9ohrfGd6QO72+Mhqytj
- XRd8Uq2Ltx/5ewjaD0vkDWzbroV8Tqj72dqgpBMXz4328EyeVueyo6mlXGorpgbPwNZSpdZP3a1
- 0454XWq12ei33x2sH7xkEJxQLtIOT2zKBbsHKbRwvZce2PQ8CJ4LxhI3H3epIf+UrS+uNI0uWhk
- jfhiAhauj9nXhsBYt0O13AerPQdVoH4ctqLYVVemaRiw/5hjYV4KGHuBBJDVUn764lRWVLTVrn9
- I1XmUF7VjpYkMj69QmvuVWq2SH9J86c7DoBPTsvhm+jnuIpGgHXpSAv4Lxn1jCzcqAnQtT1Wtsj
- nHP3/4jYzPx4uftHyuLbcVY2hdrDEZmCqB1MR+NSI/12asuT8+6iz3aZ1CejZmkYpC3UTRBOnfT
- uRisExq MWP+8iwA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: ath10k: Annotate struct ath10k_ce_ring with
+ __counted_by
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>, Kalle Valo <kvalo@kernel.org>
+CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        Nathan
+ Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>,
+        <linux-hardening@vger.kernel.org>
+References: <20230915200636.never.762-kees@kernel.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230915200636.never.762-kees@kernel.org>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: _uNb7NU9OXe3-rG86dkEMYBsSkzJYTJh
+X-Proofpoint-ORIG-GUID: _uNb7NU9OXe3-rG86dkEMYBsSkzJYTJh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_17,2023-09-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1011 mlxscore=0 mlxlogscore=912
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309150183
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230915_130639_681150_13577020 
-X-CRM114-Status: GOOD (  10.56  )
+X-CRM114-CacheID: sfid-20230915_133923_358952_65054CC8 
+X-CRM114-Status: GOOD (  18.92  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,45 +97,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On 9/15/2023 1:06 PM, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct ath10k_ce_ring.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Cc: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-As found with Coccinelle[1], add __counted_by for struct ath10k_ce_ring.
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-
-Cc: Kalle Valo <kvalo@kernel.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/wireless/ath/ath10k/ce.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 666ce384a1d8..27367bd64e95 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -110,7 +110,7 @@ struct ath10k_ce_ring {
- 	struct ce_desc_64 *shadow_base;
- 
- 	/* keep last */
--	void *per_transfer_context[];
-+	void *per_transfer_context[] __counted_by(nentries);
- };
- 
- struct ath10k_ce_pipe {
--- 
-2.34.1
+> ---
+>   drivers/net/wireless/ath/ath10k/ce.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+> index 666ce384a1d8..27367bd64e95 100644
+> --- a/drivers/net/wireless/ath/ath10k/ce.h
+> +++ b/drivers/net/wireless/ath/ath10k/ce.h
+> @@ -110,7 +110,7 @@ struct ath10k_ce_ring {
+>   	struct ce_desc_64 *shadow_base;
+>   
+>   	/* keep last */
+> -	void *per_transfer_context[];
+> +	void *per_transfer_context[] __counted_by(nentries);
+>   };
+>   
+>   struct ath10k_ce_pipe {
 
 
 _______________________________________________
