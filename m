@@ -4,86 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6251CCD13D2
-	for <ath10k@archiver.kernel.org>; Mon, 18 Sep 2023 13:21:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 918EAC46CA1
+	for <ath10k@archiver.kernel.org>; Mon, 18 Sep 2023 14:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zy0uVlK50mMH1Rgpk/TjR+75hJOJtlstU4ycbuQ9zsg=; b=TVnBmGsOTqZSKs
-	Vivsum/CA20WLKQ0CYME46RT/UBmx9RH1Susb1CMb3YYLfREjghPHjFTW8YmTqYJh/kQYH+nl7DiF
-	+QpEPBlJymCnEK4SWmudGE9R0SDpGi+iFrgFumaaRhK1Y4/yqTEa6UxA3DqH+1mdsu2k2Cdpww2ys
-	OUv+4PQGV2wFgucaxAqYrxswjpcxgRSQ8mM+cZtPg39IRVaqytCrJEnUNH5cg4ZScEdUf+qC983t5
-	eOwPFbndMAIiJusHh7jqxB/qXJfmKdQa6KHi3ToIuXVaMqqyXAX/7YqW1WtzwtOm6uMcB0H62Y33G
-	ynnKJDUrX/a5zDnp1XKg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zmujeqKhNTvD82Jqin/x0LPfXXNemVExVUPrNYIP9Sk=; b=q1eLTIe4q/zj+z
+	6Zyxad3kTpvwjt1C21C+q+Qgdl5JMYSeMEDrXVcXSenyF7Y06BmVGY7yjSFuKlA6FHxOq2xDkygCM
+	KjxuSxTbMhkPPn6L46WrsDPTShW5F/VXPloLSifpsE3prXMPZ2IKd9KGn8R6NYgYj2+GzIo69OLLN
+	vbOmZQbO+28yB3hOo1OsY5JU0d1WeNG1Is0GQiIiFx7o9Ngs78Gz2vtxcZWA+jHHDL2YFVrbxq1KQ
+	AJv3amHKMXMJ8X7tXVymYI5nATX/ARl/naR79NNcJGzyNLwqU3OA244YSODAPEdpPiTRiBKYm/8mR
+	3hHkybWzETTSOy8L/c5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiEBt-00FYKz-03;
-	Mon, 18 Sep 2023 13:21:29 +0000
-Received: from mgamail.intel.com ([134.134.136.100])
+	id 1qiFPR-00FfQR-1e;
+	Mon, 18 Sep 2023 14:39:33 +0000
+Received: from forward103a.mail.yandex.net ([178.154.239.86])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiEBV-00FXun-17;
-	Mon, 18 Sep 2023 13:21:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695043265; x=1726579265;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=/jlflr+zDO/ybJEIj9ZeNbSBAg1LjrmA0JjnTT6qqL0=;
-  b=JiwmXCqEQKdRA7Wz6HgGe3pNrxIADPe4FBx5dhiDbhqLquwu6TGs7Buu
-   G177jpP9tybJlO7jGwf8RXsGQmbq6QSBXJHNulidr4DzZGq+ilQFQf8Yn
-   QO6Zz9qZ1LtK6u8vnu4tXWgdJm2TmBDVIoSXB9tryQu3MZ5r5YIJauyx6
-   ZC7Wg+fdzhq3I1GK3yYk5oNFF1l7Qk51/GlBDYPTne2uSJIxxN3w0S36+
-   LKtIK+5Hvn/csxfAfObFayq6mi05PjoNnRbjy9sp89r9+ZBhUY1HXy1Pl
-   IZk53AJhM7XttkZKIRFMKK47BaXtWjn0nu5sd6BqP2AfHLKQ94Y6ZGfNc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="446113648"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="446113648"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 06:14:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="811343218"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="811343218"
-Received: from nprotaso-mobl1.ccr.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.49.156])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 06:13:54 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: linux-pci@vger.kernel.org,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-	linux-kernel@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ath10k@lists.infradead.org,
-	ath11k@lists.infradead.org,
-	ath12k@lists.infradead.org,
-	intel-wired-lan@lists.osuosl.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-bluetooth@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-rdma@vger.kernel.org,
+	id 1qiFPN-00FfPO-0L
+	for ath10k@lists.infradead.org;
+	Mon, 18 Sep 2023 14:39:32 +0000
+Received: from mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net [IPv6:2a02:6b8:c18:1182:0:640:88e4:0])
+	by forward103a.mail.yandex.net (Yandex) with ESMTP id 5F28A46C86;
+	Mon, 18 Sep 2023 17:39:19 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id Idl4mwFDda60-H7Kc2gh3;
+	Mon, 18 Sep 2023 17:39:18 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1695047958; bh=jsttuxtXQIlPOiO2R3RX0I/RYnNNzYqUEhVKCdtLPMs=;
+	h=Message-ID:Date:Cc:Subject:To:From;
+	b=oj7/71OdRS2Q7nEA3S703mVBGVHaPbbWLoVSNU2/9blbsk+6/M85x3DWE1JQNHmss
+	 pmW56pyLvMX+GHiBaeqTGMpN6nhW8Fo9UwUpT117Lt4zzT/c1h5xNiK5UeuYXPqE/4
+	 FgV9UykvQQWkgRuQIKLUUBoEvH5L/0JLyB9n89Hs=
+Authentication-Results: mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Dmitry Antipov <dmantipov@yandex.ru>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Kalle Valo <kvalo@kernel.org>,
 	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v2 13/13] misc: rtsx: Use pci_disable/enable_link_state()
-Date: Mon, 18 Sep 2023 16:11:03 +0300
-Message-Id: <20230918131103.24119-14-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230918131103.24119-1-ilpo.jarvinen@linux.intel.com>
-References: <20230918131103.24119-1-ilpo.jarvinen@linux.intel.com>
+	ath10k@lists.infradead.org,
+	Dmitry Antipov <dmantipov@yandex.ru>
+Subject: [PATCH] wifi: ath10k: simplify SDIO async handling
+Date: Mon, 18 Sep 2023 17:37:15 +0300
+Message-ID: <20230918143718.78259-1-dmantipov@yandex.ru>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230918_062105_449323_98E2F257 
-X-CRM114-Status: GOOD (  10.98  )
+X-CRM114-CacheID: sfid-20230918_073929_655359_5CDF8475 
+X-CRM114-Status: GOOD (  19.43  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,72 +65,296 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-cnRzeCBkcml2ZXIgYWRqdXN0cyBBU1BNIHN0YXRlIGl0c2VsZiB3aGljaCBsZWF2ZXMgQVNQTSBz
-ZXJ2aWNlCmRyaXZlciBpbiBQQ0kgY29yZSB1bmF3YXJlIG9mIHRoZSBsaW5rIHN0YXRlIGNoYW5n
-ZXMgdGhlIGRyaXZlcgppbXBsZW1lbnRlZC4KCkNhbGwgcGNpX2Rpc2FibGVfbGlua19zdGF0ZSgp
-IGFuZCBwY2lfZW5hYmxlX2xpbmtfc3RhdGUoKSBpbnN0ZWFkIG9mCmFkanVzdGluZyBBU1BNQyBm
-aWVsZCBpbiBMTktDVEwgZGlyZWN0bHkgaW4gdGhlIGRyaXZlciBhbmQgbGV0IFBDSSBjb3JlCmhh
-bmRsZSB0aGUgQVNQTSBzdGF0ZSBtYW5hZ2VtZW50LgoKU2lnbmVkLW9mZi1ieTogSWxwbyBKw6Ry
-dmluZW4gPGlscG8uamFydmluZW5AbGludXguaW50ZWwuY29tPgotLS0KIGRyaXZlcnMvbWlzYy9j
-YXJkcmVhZGVyL3J0czUyMjguYyAgfCA2ICsrLS0tLQogZHJpdmVycy9taXNjL2NhcmRyZWFkZXIv
-cnRzNTI2MS5jICB8IDYgKystLS0tCiBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5j
-IHwgOCArKysrKy0tLQogMyBmaWxlcyBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDExIGRlbGV0
-aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYyBi
-L2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYwppbmRleCBmNGFiMDk0MzlkYTcuLjhk
-MzIxNmM2NGFkMSAxMDA2NDQKLS0tIGEvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTIyOC5j
-CisrKyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYwpAQCAtNDk3LDggKzQ5Nyw3
-IEBAIHN0YXRpYyB2b2lkIHJ0czUyMjhfZW5hYmxlX2FzcG0oc3RydWN0IHJ0c3hfcGNyICpwY3Is
-IGJvb2wgZW5hYmxlKQogCXZhbCA9IEZPUkNFX0FTUE1fQ1RMMCB8IEZPUkNFX0FTUE1fQ1RMMTsK
-IAl2YWwgfD0gKHBjci0+YXNwbV9lbiAmIDB4MDIpOwogCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVy
-KHBjciwgQVNQTV9GT1JDRV9DVEwsIG1hc2ssIHZhbCk7Ci0JcGNpZV9jYXBhYmlsaXR5X2NsZWFy
-X2FuZF9zZXRfd29yZChwY3ItPnBjaSwgUENJX0VYUF9MTktDVEwsCi0JCQkJCSAgIFBDSV9FWFBf
-TE5LQ1RMX0FTUE1DLCBwY3ItPmFzcG1fZW4pOworCXBjaV9lbmFibGVfbGlua19zdGF0ZShwY3It
-PnBjaSwgcGNyLT5hc3BtX2VuKTsKIAlwY3ItPmFzcG1fZW5hYmxlZCA9IGVuYWJsZTsKIH0KIApA
-QCAtNTA5LDggKzUwOCw3IEBAIHN0YXRpYyB2b2lkIHJ0czUyMjhfZGlzYWJsZV9hc3BtKHN0cnVj
-dCBydHN4X3BjciAqcGNyLCBib29sIGVuYWJsZSkKIAlpZiAocGNyLT5hc3BtX2VuYWJsZWQgPT0g
-ZW5hYmxlKQogCQlyZXR1cm47CiAKLQlwY2llX2NhcGFiaWxpdHlfY2xlYXJfYW5kX3NldF93b3Jk
-KHBjci0+cGNpLCBQQ0lfRVhQX0xOS0NUTCwKLQkJCQkJICAgUENJX0VYUF9MTktDVExfQVNQTUMs
-IDApOworCXBjaV9kaXNhYmxlX2xpbmtfc3RhdGUocGNyLT5wY2ksIFBDSUVfTElOS19TVEFURV9M
-MFMgfCBQQ0lFX0xJTktfU1RBVEVfTDEpOwogCW1hc2sgPSBGT1JDRV9BU1BNX1ZBTF9NQVNLIHwg
-Rk9SQ0VfQVNQTV9DVEwwIHwgRk9SQ0VfQVNQTV9DVEwxOwogCXZhbCA9IEZPUkNFX0FTUE1fQ1RM
-MCB8IEZPUkNFX0FTUE1fQ1RMMTsKIAlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIEFTUE1f
-Rk9SQ0VfQ1RMLCBtYXNrLCB2YWwpOwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9taXNjL2NhcmRyZWFk
-ZXIvcnRzNTI2MS5jIGIvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2MS5jCmluZGV4IDk0
-YWY2YmY4YTI1YS4uZjFlZjE1NjgzYTJmIDEwMDY0NAotLS0gYS9kcml2ZXJzL21pc2MvY2FyZHJl
-YWRlci9ydHM1MjYxLmMKKysrIGIvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2MS5jCkBA
-IC01NzgsOCArNTc4LDcgQEAgc3RhdGljIHZvaWQgcnRzNTI2MV9lbmFibGVfYXNwbShzdHJ1Y3Qg
-cnRzeF9wY3IgKnBjciwgYm9vbCBlbmFibGUpCiAKIAl2YWwgfD0gKHBjci0+YXNwbV9lbiAmIDB4
-MDIpOwogCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgQVNQTV9GT1JDRV9DVEwsIG1hc2ss
-IHZhbCk7Ci0JcGNpZV9jYXBhYmlsaXR5X2NsZWFyX2FuZF9zZXRfd29yZChwY3ItPnBjaSwgUENJ
-X0VYUF9MTktDVEwsCi0JCQkJCSAgIFBDSV9FWFBfTE5LQ1RMX0FTUE1DLCBwY3ItPmFzcG1fZW4p
-OworCXBjaV9lbmFibGVfbGlua19zdGF0ZShwY3ItPnBjaSwgcGNyLT5hc3BtX2VuKTsKIAlwY3It
-PmFzcG1fZW5hYmxlZCA9IGVuYWJsZTsKIH0KIApAQCAtNTkxLDggKzU5MCw3IEBAIHN0YXRpYyB2
-b2lkIHJ0czUyNjFfZGlzYWJsZV9hc3BtKHN0cnVjdCBydHN4X3BjciAqcGNyLCBib29sIGVuYWJs
-ZSkKIAlpZiAocGNyLT5hc3BtX2VuYWJsZWQgPT0gZW5hYmxlKQogCQlyZXR1cm47CiAKLQlwY2ll
-X2NhcGFiaWxpdHlfY2xlYXJfYW5kX3NldF93b3JkKHBjci0+cGNpLCBQQ0lfRVhQX0xOS0NUTCwK
-LQkJCQkJICAgUENJX0VYUF9MTktDVExfQVNQTUMsIDApOworCXBjaV9kaXNhYmxlX2xpbmtfc3Rh
-dGUocGNyLT5wY2ksIFBDSUVfTElOS19TVEFURV9MMFMgfCBQQ0lFX0xJTktfU1RBVEVfTDEpOwog
-CXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgQVNQTV9GT1JDRV9DVEwsIG1hc2ssIHZhbCk7
-CiAJcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBTRF9DRkcxLCBTRF9BU1lOQ19GSUZPX05P
-VF9SU1QsIDApOwogCXVkZWxheSgxMCk7CmRpZmYgLS1naXQgYS9kcml2ZXJzL21pc2MvY2FyZHJl
-YWRlci9ydHN4X3Bjci5jIGIvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzeF9wY3IuYwppbmRl
-eCBhM2Y0YjUyYmIxNTkuLjZlZmI3OTIxNTJmMiAxMDA2NDQKLS0tIGEvZHJpdmVycy9taXNjL2Nh
-cmRyZWFkZXIvcnRzeF9wY3IuYworKysgYi9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bj
-ci5jCkBAIC04Niw5ICs4NiwxMSBAQCBzdGF0aWMgdm9pZCBydHN4X2NvbW1fc2V0X2FzcG0oc3Ry
-dWN0IHJ0c3hfcGNyICpwY3IsIGJvb2wgZW5hYmxlKQogCQlyZXR1cm47CiAKIAlpZiAocGNyLT5h
-c3BtX21vZGUgPT0gQVNQTV9NT0RFX0NGRykgewotCQlwY2llX2NhcGFiaWxpdHlfY2xlYXJfYW5k
-X3NldF93b3JkKHBjci0+cGNpLCBQQ0lfRVhQX0xOS0NUTCwKLQkJCQkJCVBDSV9FWFBfTE5LQ1RM
-X0FTUE1DLAotCQkJCQkJZW5hYmxlID8gcGNyLT5hc3BtX2VuIDogMCk7CisJCWlmIChlbmFibGUp
-CisJCQlwY2lfZW5hYmxlX2xpbmtfc3RhdGUocGNyLT5wY2ksIHBjci0+YXNwbV9lbik7CisJCWVs
-c2UKKwkJCXBjaV9kaXNhYmxlX2xpbmtfc3RhdGUocGNyLT5wY2ksIFBDSUVfTElOS19TVEFURV9M
-MFMgfAorCQkJCQkJCSBQQ0lFX0xJTktfU1RBVEVfTDEpOwogCX0gZWxzZSBpZiAocGNyLT5hc3Bt
-X21vZGUgPT0gQVNQTV9NT0RFX1JFRykgewogCQlpZiAocGNyLT5hc3BtX2VuICYgMHgwMikKIAkJ
-CXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgQVNQTV9GT1JDRV9DVEwsIEZPUkNFX0FTUE1f
-Q1RMMCB8Ci0tIAoyLjMwLjIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+This is an initial attempt to fix TODO found in SDIO bus support
+code. As original comment says, an idea is to store SDIO-specific
+'struct ath10k_sdio_bus_request' data within skb control buffer
+instead of managing (a relatively large, 1024-items for now) free
+list of the aforementioned structures.
+
+Compile tested only so TESTERS WANTED.
+
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+---
+ drivers/net/wireless/ath/ath10k/sdio.c | 104 ++++++-------------------
+ drivers/net/wireless/ath/ath10k/sdio.h |  14 +---
+ 2 files changed, 25 insertions(+), 93 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 56fbcfb80bf8..996f179206b9 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -1285,40 +1285,6 @@ static int ath10k_sdio_bmi_exchange_msg(struct ath10k *ar,
+ 
+ /* sdio async handling functions */
+ 
+-static struct ath10k_sdio_bus_request
+-*ath10k_sdio_alloc_busreq(struct ath10k *ar)
+-{
+-	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-	struct ath10k_sdio_bus_request *bus_req;
+-
+-	spin_lock_bh(&ar_sdio->lock);
+-
+-	if (list_empty(&ar_sdio->bus_req_freeq)) {
+-		bus_req = NULL;
+-		goto out;
+-	}
+-
+-	bus_req = list_first_entry(&ar_sdio->bus_req_freeq,
+-				   struct ath10k_sdio_bus_request, list);
+-	list_del(&bus_req->list);
+-
+-out:
+-	spin_unlock_bh(&ar_sdio->lock);
+-	return bus_req;
+-}
+-
+-static void ath10k_sdio_free_bus_req(struct ath10k *ar,
+-				     struct ath10k_sdio_bus_request *bus_req)
+-{
+-	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-
+-	memset(bus_req, 0, sizeof(*bus_req));
+-
+-	spin_lock_bh(&ar_sdio->lock);
+-	list_add_tail(&bus_req->list, &ar_sdio->bus_req_freeq);
+-	spin_unlock_bh(&ar_sdio->lock);
+-}
+-
+ static void __ath10k_sdio_write_async(struct ath10k *ar,
+ 				      struct ath10k_sdio_bus_request *req)
+ {
+@@ -1338,8 +1304,6 @@ static void __ath10k_sdio_write_async(struct ath10k *ar,
+ 	} else if (req->comp) {
+ 		complete(req->comp);
+ 	}
+-
+-	ath10k_sdio_free_bus_req(ar, req);
+ }
+ 
+ /* To improve throughput use workqueue to deliver packets to HTC layer,
+@@ -1457,15 +1421,16 @@ static void ath10k_sdio_write_async_work(struct work_struct *work)
+ 	struct ath10k_sdio *ar_sdio = container_of(work, struct ath10k_sdio,
+ 						   wr_async_work);
+ 	struct ath10k *ar = ar_sdio->ar;
+-	struct ath10k_sdio_bus_request *req, *tmp_req;
++	struct ath10k_sdio_bus_request *req;
+ 	struct ath10k_mbox_info *mbox_info = &ar_sdio->mbox_info;
++	struct sk_buff *skb;
+ 
+ 	spin_lock_bh(&ar_sdio->wr_async_lock);
+ 
+-	list_for_each_entry_safe(req, tmp_req, &ar_sdio->wr_asyncq, list) {
+-		list_del(&req->list);
++	while ((skb = skb_dequeue(&ar_sdio->async_head))) {
+ 		spin_unlock_bh(&ar_sdio->wr_async_lock);
+ 
++		req = (struct ath10k_sdio_bus_request *)(skb->cb);
+ 		if (req->address >= mbox_info->htc_addr &&
+ 		    ar_sdio->mbox_state == SDIO_MBOX_SLEEP_STATE) {
+ 			ath10k_sdio_set_mbox_sleep(ar, false);
+@@ -1483,23 +1448,15 @@ static void ath10k_sdio_write_async_work(struct work_struct *work)
+ 		ath10k_sdio_set_mbox_sleep(ar, true);
+ }
+ 
+-static int ath10k_sdio_prep_async_req(struct ath10k *ar, u32 addr,
+-				      struct sk_buff *skb,
+-				      struct completion *comp,
+-				      bool htc_msg, enum ath10k_htc_ep_id eid)
++static void ath10k_sdio_prep_async_req(struct ath10k *ar, u32 addr,
++				       struct sk_buff *skb,
++				       struct completion *comp,
++				       bool htc_msg, enum ath10k_htc_ep_id eid)
+ {
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-	struct ath10k_sdio_bus_request *bus_req;
++	struct ath10k_sdio_bus_request *bus_req = (void *)skb->cb;
+ 
+-	/* Allocate a bus request for the message and queue it on the
+-	 * SDIO workqueue.
+-	 */
+-	bus_req = ath10k_sdio_alloc_busreq(ar);
+-	if (!bus_req) {
+-		ath10k_warn(ar,
+-			    "unable to allocate bus request for async request\n");
+-		return -ENOMEM;
+-	}
++	BUILD_BUG_ON(sizeof(struct ath10k_sdio_bus_request) > sizeof(skb->cb));
+ 
+ 	bus_req->skb = skb;
+ 	bus_req->eid = eid;
+@@ -1508,10 +1465,8 @@ static int ath10k_sdio_prep_async_req(struct ath10k *ar, u32 addr,
+ 	bus_req->comp = comp;
+ 
+ 	spin_lock_bh(&ar_sdio->wr_async_lock);
+-	list_add_tail(&bus_req->list, &ar_sdio->wr_asyncq);
++	skb_queue_tail(&ar_sdio->async_head, skb);
+ 	spin_unlock_bh(&ar_sdio->wr_async_lock);
+-
+-	return 0;
+ }
+ 
+ /* IRQ handler */
+@@ -1648,7 +1603,7 @@ static int ath10k_sdio_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+ 	enum ath10k_htc_ep_id eid;
+ 	struct sk_buff *skb;
+-	int ret, i;
++	int i;
+ 
+ 	eid = pipe_id_to_eid(pipe_id);
+ 
+@@ -1664,10 +1619,7 @@ static int ath10k_sdio_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+ 		/* Write TX data to the end of the mbox address space */
+ 		address = ar_sdio->mbox_addr[eid] + ar_sdio->mbox_size[eid] -
+ 			  skb->len;
+-		ret = ath10k_sdio_prep_async_req(ar, address, skb,
+-						 NULL, true, eid);
+-		if (ret)
+-			return ret;
++		ath10k_sdio_prep_async_req(ar, address, skb, NULL, true, eid);
+ 	}
+ 
+ 	queue_work(ar_sdio->workqueue, &ar_sdio->wr_async_work);
+@@ -1934,10 +1886,8 @@ static void ath10k_sdio_irq_disable(struct ath10k *ar)
+ 	mutex_unlock(&irq_data->mtx);
+ 
+ 	init_completion(&irqs_disabled_comp);
+-	ret = ath10k_sdio_prep_async_req(ar, MBOX_INT_STATUS_ENABLE_ADDRESS,
+-					 skb, &irqs_disabled_comp, false, 0);
+-	if (ret)
+-		goto out;
++	ath10k_sdio_prep_async_req(ar, MBOX_INT_STATUS_ENABLE_ADDRESS,
++				   skb, &irqs_disabled_comp, false, 0);
+ 
+ 	queue_work(ar_sdio->workqueue, &ar_sdio->wr_async_work);
+ 
+@@ -1957,14 +1907,13 @@ static void ath10k_sdio_irq_disable(struct ath10k *ar)
+ 
+ 	sdio_release_host(ar_sdio->func);
+ 
+-out:
+ 	kfree_skb(skb);
+ }
+ 
+ static void ath10k_sdio_hif_stop(struct ath10k *ar)
+ {
+-	struct ath10k_sdio_bus_request *req, *tmp_req;
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
++	struct ath10k_sdio_bus_request *req;
+ 	struct sk_buff *skb;
+ 
+ 	ath10k_sdio_irq_disable(ar);
+@@ -1979,18 +1928,16 @@ static void ath10k_sdio_hif_stop(struct ath10k *ar)
+ 	spin_lock_bh(&ar_sdio->wr_async_lock);
+ 
+ 	/* Free all bus requests that have not been handled */
+-	list_for_each_entry_safe(req, tmp_req, &ar_sdio->wr_asyncq, list) {
++	while ((skb = skb_dequeue(&ar_sdio->async_head))) {
+ 		struct ath10k_htc_ep *ep;
+ 
+-		list_del(&req->list);
+-
++		req = (struct ath10k_sdio_bus_request *)(skb->cb);
+ 		if (req->htc_msg) {
+ 			ep = &ar->htc.endpoint[req->eid];
+ 			ath10k_htc_notify_tx_completion(ep, req->skb);
+-		} else if (req->skb) {
+-			kfree_skb(req->skb);
++		} else {
++			kfree_skb(skb);
+ 		}
+-		ath10k_sdio_free_bus_req(ar, req);
+ 	}
+ 
+ 	spin_unlock_bh(&ar_sdio->wr_async_lock);
+@@ -2514,7 +2461,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 	enum ath10k_hw_rev hw_rev;
+ 	u32 dev_id_base;
+ 	struct ath10k_bus_params bus_params = {};
+-	int ret, i;
++	int ret;
+ 
+ 	/* Assumption: All SDIO based chipsets (so far) are QCA6174 based.
+ 	 * If there will be newer chipsets that does not use the hw reg
+@@ -2574,13 +2521,9 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 	ar_sdio->is_disabled = true;
+ 	ar_sdio->ar = ar;
+ 
+-	spin_lock_init(&ar_sdio->lock);
+ 	spin_lock_init(&ar_sdio->wr_async_lock);
+ 	mutex_init(&ar_sdio->irq_data.mtx);
+ 
+-	INIT_LIST_HEAD(&ar_sdio->bus_req_freeq);
+-	INIT_LIST_HEAD(&ar_sdio->wr_asyncq);
+-
+ 	INIT_WORK(&ar_sdio->wr_async_work, ath10k_sdio_write_async_work);
+ 	ar_sdio->workqueue = create_singlethread_workqueue("ath10k_sdio_wq");
+ 	if (!ar_sdio->workqueue) {
+@@ -2588,10 +2531,9 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 		goto err_core_destroy;
+ 	}
+ 
+-	for (i = 0; i < ATH10K_SDIO_BUS_REQUEST_MAX_NUM; i++)
+-		ath10k_sdio_free_bus_req(ar, &ar_sdio->bus_req[i]);
+-
+ 	skb_queue_head_init(&ar_sdio->rx_head);
++	skb_queue_head_init(&ar_sdio->async_head);
++
+ 	INIT_WORK(&ar_sdio->async_work_rx, ath10k_rx_indication_async_work);
+ 
+ 	dev_id_base = (id->device & 0x0F00);
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
+index b6ac927628b1..02d951581dc7 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.h
++++ b/drivers/net/wireless/ath/ath10k/sdio.h
+@@ -29,7 +29,6 @@
+ 	(ATH10K_SDIO_MAX_BUFFER_SIZE - sizeof(struct ath10k_htc_hdr))
+ 
+ #define ATH10K_HIF_MBOX_NUM_MAX                 4
+-#define ATH10K_SDIO_BUS_REQUEST_MAX_NUM         1024
+ 
+ #define ATH10K_SDIO_HIF_COMMUNICATION_TIMEOUT_HZ (100 * HZ)
+ 
+@@ -104,10 +103,8 @@ enum sdio_mbox_state {
+ #define ATH10K_CIS_READ_RETRY			10
+ #define ATH10K_MIN_SLEEP_INACTIVITY_TIME_MS	50
+ 
+-/* TODO: remove this and use skb->cb instead, much cleaner approach */
++/* Keep this small, see ath10k_sdio_prep_async_req() to check why. */
+ struct ath10k_sdio_bus_request {
+-	struct list_head list;
+-
+ 	/* sdio address */
+ 	u32 address;
+ 
+@@ -189,15 +186,8 @@ struct ath10k_sdio {
+ 	u32 mbox_addr[ATH10K_HTC_EP_COUNT];
+ 	u32 mbox_size[ATH10K_HTC_EP_COUNT];
+ 
+-	/* available bus requests */
+-	struct ath10k_sdio_bus_request bus_req[ATH10K_SDIO_BUS_REQUEST_MAX_NUM];
+-	/* free list of bus requests */
+-	struct list_head bus_req_freeq;
+-
+ 	struct sk_buff_head rx_head;
+-
+-	/* protects access to bus_req_freeq */
+-	spinlock_t lock;
++	struct sk_buff_head async_head;
+ 
+ 	struct ath10k_sdio_rx_data rx_pkts[ATH10K_SDIO_MAX_RX_MSGS];
+ 	size_t n_rx_pkts;
+-- 
+2.41.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
