@@ -4,68 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30DE2CD3439
-	for <ath10k@archiver.kernel.org>; Tue, 19 Sep 2023 04:50:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEACBCD343A
+	for <ath10k@archiver.kernel.org>; Tue, 19 Sep 2023 04:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=7vq5k7CczYHTw2DzPlxISEfU8evkWc6YFAGNShdGhBk=; b=ti1nvtI+vurQtL
-	HzOcGyg/rrlmPpHZWLOtKJKJsLaHj2mhx4Rw3tQ2OjdTPH1InI2oZPtOWzdDrdR27c9wJh10/lwdQ
-	1E8Zx/c+Vm4gaskeu1G2LJzO5Wz9eZziLIWsvdBhQLR5UgKMkCOYB1vhTLK5d2l7o3GanedTYTVqX
-	hvxTWckoNO9bn9KrF3GLp9boVjpJnYZPx+aRjchlXfnRMTvQ9TZpp33G6FZUntasid7fwzgty+dNk
-	NgF5l0Omj4Jzkiy/ax3jjHmaC9AywxFf/j6rNdexUWltPjpUAZiVDFIMvg5r8P30FOh266Sf9jej/
-	8dK4j7WJdoWlk84gCyLQ==;
+	List-Owner; bh=r0G+vUQv2hb9w2oIJ9z6nbpRRviZBi0R3b7doebDhsk=; b=vXPCJYA6n6WVaR
+	5nZ8uCGM8oCxmLTZXTqH2LCrxLdu5MNhoYhJQH5FGX7T1WrcG68QD1hqeszvr/uRKz1SF/fytH6Mm
+	dQU1TseHUy9UtEJ9nlFKB+PGpvH6lBFLanUnq+MMJeLfPrXgt67YsEJB4unNHur6Vh8CCjIXsyJQ4
+	NObofQBPYP0bUHaD+5zP2AF1ZfhQwEivYgrRlm6NtvHBbS7qgk7NbBzhdi6rR8SzUgcfinHGiWE/y
+	gPeXxVkgTxlUyxwXiw+OZt11HDaKiL5I6YuYwtEBeILz+3+0w2ikcRgR2taOuI9Sd+j/ujboDYPy5
+	vFL6KIKUqrobxpA7C9iQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiSg0-00Gyjl-11;
-	Tue, 19 Sep 2023 04:49:32 +0000
+	id 1qiSi2-00Gz6N-0G;
+	Tue, 19 Sep 2023 04:51:38 +0000
 Received: from [42.101.60.195] (helo=mail.nfschina.com)
 	by bombadil.infradead.org with smtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiSfv-00Gyhi-2v;
-	Tue, 19 Sep 2023 04:49:31 +0000
+	id 1qiShz-00Gz5i-0N
+	for ath10k@lists.infradead.org;
+	Tue, 19 Sep 2023 04:51:36 +0000
 Received: from localhost.localdomain (unknown [180.167.10.98])
-	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 8907F602F96E1;
-	Tue, 19 Sep 2023 12:48:57 +0800 (CST)
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 3E1BD602F96CC;
+	Tue, 19 Sep 2023 12:51:32 +0800 (CST)
 X-MD-Sfrom: yunchuan@nfschina.com
 X-MD-SrcIP: 180.167.10.98
 From: Wu Yunchuan <yunchuan@nfschina.com>
 To: kvalo@kernel.org,
-	quic_jjohnson@quicinc.com,
-	jirislaby@kernel.org,
-	mickflemm@gmail.com,
-	mcgrof@kernel.org,
-	toke@toke.dk,
-	afaerber@suse.de,
-	mani@kernel.org,
-	chunkeey@googlemail.com,
-	loic.poulain@linaro.org,
-	mcoquelin.stm32@gmail.com,
-	alexandre.torgue@foss.st.com
-Cc: johannes.berg@intel.com,
-	syoshida@redhat.com,
-	alexander@wetzel-home.de,
+	quic_jjohnson@quicinc.com
+Cc: ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	ath11k@lists.infradead.org,
-	ath12k@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-actions@lists.infradead.org,
-	wcn36xx@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
 	kernel-janitors@vger.kernel.org,
 	Wu Yunchuan <yunchuan@nfschina.com>
-Subject: [PATCH v2 wireless-next 0/9] Remove unnecessary (void*) conversions
-Date: Tue, 19 Sep 2023 12:48:33 +0800
-Message-Id: <20230919044832.522947-1-yunchuan@nfschina.com>
+Subject: [PATCH v2 wireless-next 6/9] wifi: ath10k: Remove unnecessary (void*) conversions
+Date: Tue, 19 Sep 2023 12:50:56 +0800
+Message-Id: <20230919045056.523958-1-yunchuan@nfschina.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230918_214928_140795_2C156EB8 
-X-CRM114-Status: UNSURE (   6.75  )
+X-CRM114-CacheID: sfid-20230918_215135_345445_5D535D44 
+X-CRM114-Status: UNSURE (   5.96  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,59 +65,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Remove all unnecessary (void*) conversions under the directory drivers/net/wireless/ath.
+No need cast (void*) to (struct htt_rx_ring_setup_ring32 *),
+(struct htt_rx_ring_setup_ring64 *). Change the prototype to
+remove the local variable.
 
-Changes in v2:
- - fix file path error in v1 patch 
- - change the prototype to remove the local variable(Jeff Johnson's suggestion.)[1]
+Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+Suggested-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-[1] https://lore.kernel.org/all/5bb164e7-c147-64d1-031d-0ba20cfffa77@nfschina.com/
-
-Wu Yunchuan (9):
-  wifi: ar5523: Remove unnecessary (void*) conversions
-  carl9170: remove unnecessary (void*) conversions
-  wifi: wcn36xx: remove unnecessary (void*) conversions
-  wifi: ath5k: remove unnecessary (void*) conversions
-  ath6kl: remove unnecessary (void*) conversions
-  wifi: ath10k: Remove unnecessary (void*) conversions
-  wifi: ath12k: Remove unnecessary (void*) conversions
-  wifi: ath11k: remove unnecessary (void*) conversions
-  wifi: ath9k: Remove unnecessary (void*) conversions
-
- drivers/net/wireless/ath/ar5523/ar5523.c      |  2 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c      | 16 ++++-----
- drivers/net/wireless/ath/ath11k/dp.c          |  2 +-
- drivers/net/wireless/ath/ath11k/dp_rx.c       | 13 +++----
- drivers/net/wireless/ath/ath11k/hal.c         |  8 ++---
- drivers/net/wireless/ath/ath11k/hal_rx.c      | 17 ++++-----
- drivers/net/wireless/ath/ath11k/hal_tx.c      |  2 +-
- drivers/net/wireless/ath/ath11k/mac.c         |  4 +--
- drivers/net/wireless/ath/ath11k/spectral.c    |  2 +-
- drivers/net/wireless/ath/ath11k/wmi.c         |  6 ++--
- drivers/net/wireless/ath/ath12k/dp_mon.c      |  9 ++---
- drivers/net/wireless/ath/ath12k/dp_rx.c       |  2 +-
- drivers/net/wireless/ath/ath12k/dp_tx.c       |  5 ++-
- drivers/net/wireless/ath/ath5k/base.c         |  4 +--
- drivers/net/wireless/ath/ath5k/pci.c          |  4 +--
- drivers/net/wireless/ath/ath6kl/main.c        |  4 +--
- drivers/net/wireless/ath/ath6kl/txrx.c        |  2 +-
- .../wireless/ath/ath9k/ath9k_pci_owl_loader.c |  2 +-
- drivers/net/wireless/ath/ath9k/common-init.c  |  2 +-
- .../net/wireless/ath/ath9k/common-spectral.c  |  2 +-
- drivers/net/wireless/ath/ath9k/debug.c        |  2 +-
- drivers/net/wireless/ath/ath9k/hif_usb.c      | 10 +++---
- .../net/wireless/ath/ath9k/htc_drv_debug.c    |  2 +-
- drivers/net/wireless/ath/ath9k/htc_drv_init.c | 36 +++++++++----------
- drivers/net/wireless/ath/ath9k/htc_hst.c      |  2 +-
- drivers/net/wireless/ath/ath9k/init.c         | 12 +++----
- drivers/net/wireless/ath/ath9k/link.c         |  2 +-
- drivers/net/wireless/ath/ath9k/pci.c          |  6 ++--
- drivers/net/wireless/ath/carl9170/usb.c       | 10 +++---
- drivers/net/wireless/ath/wcn36xx/dxe.c        |  6 ++--
- drivers/net/wireless/ath/wcn36xx/smd.c        | 20 +++++------
- drivers/net/wireless/ath/wcn36xx/testmode.c   |  2 +-
- 32 files changed, 101 insertions(+), 117 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index bd603feb7953..be4d4536aaa8 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -796,20 +796,16 @@ static int ath10k_htt_send_frag_desc_bank_cfg_64(struct ath10k_htt *htt)
+ 	return 0;
+ }
+ 
+-static void ath10k_htt_fill_rx_desc_offset_32(struct ath10k_hw_params *hw, void *rx_ring)
++static void ath10k_htt_fill_rx_desc_offset_32(struct ath10k_hw_params *hw,
++					      struct htt_rx_ring_setup_ring32 *rx_ring)
+ {
+-	struct htt_rx_ring_setup_ring32 *ring =
+-			(struct htt_rx_ring_setup_ring32 *)rx_ring;
+-
+-	ath10k_htt_rx_desc_get_offsets(hw, &ring->offsets);
++	ath10k_htt_rx_desc_get_offsets(hw, &rx_ring->offsets);
+ }
+ 
+-static void ath10k_htt_fill_rx_desc_offset_64(struct ath10k_hw_params *hw, void *rx_ring)
++static void ath10k_htt_fill_rx_desc_offset_64(struct ath10k_hw_params *hw,
++					      struct htt_rx_ring_setup_ring64 *rx_ring)
+ {
+-	struct htt_rx_ring_setup_ring64 *ring =
+-			(struct htt_rx_ring_setup_ring64 *)rx_ring;
+-
+-	ath10k_htt_rx_desc_get_offsets(hw, &ring->offsets);
++	ath10k_htt_rx_desc_get_offsets(hw, &rx_ring->offsets);
+ }
+ 
+ static int ath10k_htt_send_rx_ring_cfg_32(struct ath10k_htt *htt)
 -- 
 2.30.2
 
