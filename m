@@ -4,108 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E045CD5BC0
-	for <ath10k@archiver.kernel.org>; Tue, 19 Sep 2023 13:37:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8268ECD5BCE
+	for <ath10k@archiver.kernel.org>; Tue, 19 Sep 2023 14:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Vyv1cA4z6IZh9CGSOrSFoABK7qkIFdeVBfm8WeKiBKA=; b=vqh+u2NMX5zlqD
-	WTTLXM6TQhMPferYCvfX/LaQfbqmLT3SA4RznMqae3yT0glDBMnlaTlhNGTr4YXnvyk1sOglGZ1nl
-	wvvCMxfM2O0QyP77Ttwsmxm4s+X9Gb99zlrpUgtq6aVurkavi11i9JVzgRiNy/N30pxc3Asd9WbE4
-	69E8rfD4ytvyHPzDtvxQWMKeMmxqjLGYkFUcFM+JnH08f5vNTYvx/Le6gHZBY70NxhhYYX0u0x3vA
-	1+jCnlga8+LUKdHlcb7qyqmJjO+J/Aie6exz3CYm/V0Stj3H2qXu0bQs0Vv4jmKU/cq8khPrsGOlE
-	fufRv01sKaK9aJsAP2Lw==;
+	List-Owner; bh=vcin9xGvCB3XFvigbQ2G72KmR0UlsxUj+Onb3GPxs1I=; b=Mr7vtsaytXBb6B
+	KIKG33aoWyHow7HJZDjutu94REjbxZNDknZl0AeHexjmPmeIZQorn/sNYmAMQzUcWDtBuII6IKLUR
+	Sq37MgSG8sSTlIE6w7jAa4CW33f5MqsHskxMo4B7WvUdf7iTHrAFqQGJCA+FuKL82oXi03dbF0LYf
+	G7PDrntAH7dvYKokhH+aTSLzdPdWSalP0K7jorgrIMepRTG8TBWsU9apQqC+IxI/sm+/uIA9ORS2W
+	CZDhgkKzl96mRiHOuZr5K219IEiiuxPHHa5H6eC9BdRbFE/mhvOSocxUYsirN+1nJhfVm1QPsqGBU
+	xw0+YrE0DVvlkD/FvOyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiauE-000Xsh-1I;
-	Tue, 19 Sep 2023 13:36:46 +0000
-Received: from out1-smtp.messagingengine.com ([66.111.4.25])
+	id 1qibwP-000gPa-2u;
+	Tue, 19 Sep 2023 14:43:05 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiauB-000Xr4-1T;
-	Tue, 19 Sep 2023 13:36:44 +0000
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 0A3D15C00A5;
-	Tue, 19 Sep 2023 09:36:34 -0400 (EDT)
-Received: from imap47 ([10.202.2.97])
-  by compute5.internal (MEProxy); Tue, 19 Sep 2023 09:36:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:sender:subject:subject:to:to;
-	 s=fm2; t=1695130594; x=1695216994; bh=G3Kkrzt0AGrrY/tjL0EyntUuI
-	Bb8mCCGj+mtTnmx+Q8=; b=UnODe/CFFm/fKyGaSWbPPfJGyccMgh1Fl4ql7J8B2
-	9jTTCbW7SBL9mmZVXktU9NHHOKE59vNmIt0/3PhYLyfB2ct9PpB2TtdW2GrTNk0N
-	p54KxQZhj60LKixvUfYSDQa4v3EbvN8Xt+LCAGQGVQ26IZGNwzMCGuce3Gghezi+
-	NDemRIJWikj5y3YJh93ZKtlx/6vlOGJnSRujwbi6RlScOarSzktohPxAwVVayDgE
-	wc1G63LzMMrc7gbgXgfjjE3fjf+QuIdkFrVuooWiII9CtYxJ0KGYCqtctLBBxlXB
-	a0MaGet4EcXXzcNEDj0hlAAITshodNu2ZUQSCM82e95IQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1695130594; x=1695216994; bh=G3Kkrzt0AGrrY/tjL0EyntUuIBb8mCCGj+m
-	tTnmx+Q8=; b=Ki98uDeNfz0jsUIT+QrBfvj6hR3UdAj0JGP0Kk0m3is6XGITVnc
-	DitfO8Z+GtWWohKTB22DWPAWKANFWZvwpnHoOdj68y6C4Z7ADQwwOPv0cl9n2b+x
-	ySjituYs4vc8wTr6657lSCf6nuZlPaevwRT+ZlC5EloYB2OJvQKrFkiBrlsDjKms
-	R/4JDdefME8w8YDPy5+wnxG2+Fya9/liDAL5qCMMKpXum+43+FmCAvT5DhfpQlfI
-	HT3jt59lJiwFge+hvLDqbVFgQ4bt7cNR/bPeevGW7CpYG9z9TksRHzzWy5ZpkhSc
-	+qvxWapAs7q7hQNor2DKBFbtWnh42FwH2mg==
-X-ME-Sender: <xms:4KMJZbW9LbqWPcHkGh_DlPuxCBkGLtv3JnsYlVzXjKzSIeeti7RIhg>
-    <xme:4KMJZTmAvH4L7z_nGaP5KdfIvqOZiks__CHr-LlmDmPx7zd2plYewMvSEyaWyUHFk
-    jKbOhCbS2QMQUW6WgU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekuddgfeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfu
-    vhgvnhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtf
-    frrghtthgvrhhnpeevhedthffgffelhedujefgueduudeutdefleevvdetudelhfeihfdv
-    ffelteeuudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:4KMJZXYmYuvL3nH0_SgD_kNdsC7XHLClfVBAmruidR-V60B6y3P-MQ>
-    <xmx:4KMJZWXQA3WzRBb5zCu-QYvcA4iZm-q-O5n5rA4kxuHe43SgaGHuSg>
-    <xmx:4KMJZVk9Oi99N4mk7qm3lIUI4afyU90X7PI_XuVzNp7f82_pACbMKw>
-    <xmx:4qMJZdNsFBGmk6guzMsje_BoEdpEh-d6HrZzup8N865hs4SPZgsPDA>
-Feedback-ID: i51094778:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 0378AA60077; Tue, 19 Sep 2023 09:36:31 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+	id 1qibwM-000gO5-0y
+	for ath10k@lists.infradead.org;
+	Tue, 19 Sep 2023 14:43:03 +0000
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JDphdP017577;
+	Tue, 19 Sep 2023 14:42:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=FB+Wv0z8e8vpyK7yXtnE9x4fXf6Rr6Oxu6k/fddRaXI=;
+ b=WGruaA/zvrV5PfiPz5EfDRnXZux4bASKgTvi1ciFKiaYmH3n1DFoCdKbpdDjtf6NtToh
+ cYNqOsbNtgqTlzrxYPlO97xCipX1WaS8k9VFCfnBzu+jDx/q5Lu67K4g1kxm+tFvQli3
+ AL7dHWfYlQ4kwkdRndvUSJanPFZnpXu1KQ4IBpidqGxg5FZA5I8GcmuqkgKV4sWVd2FZ
+ /t4tDXliOr2agP3jfcy5oFiJpQ7EHQwxMbb3pTi8Oykj+uILY6s4OSnsjxh6zJ7uu9cy
+ zH3wrODYIHTyaIJakXiHh2AMSa/qi97Ba3fv7qiLkkrXd1fpLR3+tYRkImyrRFSR8G3d Dw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t78upgku8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Sep 2023 14:42:56 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38JEguhB002542
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Sep 2023 14:42:56 GMT
+Received: from [10.48.245.144] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 19 Sep
+ 2023 07:42:55 -0700
+Message-ID: <812fef01-6b13-4a5f-bbf3-311991f74a71@quicinc.com>
+Date: Tue, 19 Sep 2023 07:42:55 -0700
 MIME-Version: 1.0
-Message-Id: <aabaa49f-8988-42c0-bf8e-2266005e2155@app.fastmail.com>
-In-Reply-To: <20230918131103.24119-7-ilpo.jarvinen@linux.intel.com>
-References: <20230918131103.24119-1-ilpo.jarvinen@linux.intel.com>
- <20230918131103.24119-7-ilpo.jarvinen@linux.intel.com>
-Date: Tue, 19 Sep 2023 15:36:10 +0200
-From: "Sven Peter" <sven@svenpeter.dev>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- linux-pci@vger.kernel.org, "Bjorn Helgaas" <helgaas@kernel.org>,
- "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
- "Rob Herring" <robh@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- "Lukas Wunner" <lukas@wunner.de>, "Rafael J. Wysocki" <rafael@kernel.org>,
- "Heiner Kallweit" <hkallweit1@gmail.com>,
- "Emmanuel Grumbach" <emmanuel.grumbach@intel.com>,
- linux-kernel@vger.kernel.org, "Hector Martin" <marcan@marcan.st>,
- "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
- "Marcel Holtmann" <marcel@holtmann.org>,
- "Johan Hedberg" <johan.hedberg@gmail.com>,
- "Luiz Augusto von Dentz" <luiz.dentz@gmail.com>,
- "Bjorn Helgaas" <bhelgaas@google.com>, asahi@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-bluetooth@vger.kernel.org
-Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
- ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
- linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
- linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 06/13] Bluetooth: hci_bcm4377: Convert aspm disable to quirk
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: ath10k: simplify SDIO async handling
+Content-Language: en-US
+To: Dmitry Antipov <dmantipov@yandex.ru>
+CC: Kalle Valo <kvalo@kernel.org>, <linux-wireless@vger.kernel.org>,
+        <ath10k@lists.infradead.org>
+References: <20230918143718.78259-1-dmantipov@yandex.ru>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230918143718.78259-1-dmantipov@yandex.ru>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ugwIaHwBT5CbchiRQ71rrYwjT23r5T73
+X-Proofpoint-ORIG-GUID: ugwIaHwBT5CbchiRQ71rrYwjT23r5T73
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-19_06,2023-09-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 phishscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ spamscore=0 clxscore=1015 adultscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309190126
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_063643_577320_1211611E 
-X-CRM114-Status: UNSURE (   7.44  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230919_074302_362225_44C66A64 
+X-CRM114-Status: GOOD (  15.46  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,20 +92,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-SGksCgpPbiBNb24sIFNlcCAxOCwgMjAyMywgYXQgMTU6MTAsIElscG8gSsOkcnZpbmVuIHdyb3Rl
-Ogo+IHBjaV9kaXNhYmxlX2xpbmtfc3RhdGUoKSB3YXMgbWFkZSByZWxpYWJsZSByZWdhcmRsZXNz
-IG9mIEFTUE0gQ09ORklHCj4gYW5kIE9TIGJlaW5nIGRpc2FsbG93ZWQgdG8gY2hhbmdlIEFTUE0g
-c3RhdGVzIHRvIGFsbG93IGRyaXZlcnMgdG8gcmVseQo+IG9uIHBjaV9kaXNhYmxlX2xpbmtfc3Rh
-dGUoKSB3b3JraW5nLgo+Cj4gUmVtb3ZlIGRyaXZlciB3b3JraW5nIGFyb3VuZCB1bnJlbGlhYmxl
-IHBjaV9kaXNhYmxlX2xpbmtfc3RhdGUoKSBmcm9tCj4gaGNpX2JjbTQzNzcgZHJpdmVyIGFuZCBh
-ZGQgYSBQQ0kgcXVpcmsgdG8gZGlzYWJsZSBBU1BNLgo+Cj4gU2lnbmVkLW9mZi1ieTogSWxwbyBK
-w6RydmluZW4gPGlscG8uamFydmluZW5AbGludXguaW50ZWwuY29tPgo+IC0tLQoKQWNrZWQtYnk6
-IFN2ZW4gUGV0ZXIgPHN2ZW5Ac3ZlbnBldGVyLmRldj4KCgpUaGFua3MsCgpTdmVuCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 9/18/2023 7:37 AM, Dmitry Antipov wrote:
+> This is an initial attempt to fix TODO found in SDIO bus support
+> code. As original comment says, an idea is to store SDIO-specific
+> 'struct ath10k_sdio_bus_request' data within skb control buffer
+> instead of managing (a relatively large, 1024-items for now) free
+> list of the aforementioned structures.
+> 
+> Compile tested only so TESTERS WANTED.
+
+While the maintainers like code to be as clean as possible, there is 
+also the "if it isn't broke, don't fix it" mantra. This is especially 
+true for older drivers that are in pure maintenance mode.
+
+So unless you can show you are fixing a problem and you can actually 
+test your patches (or recruit someone to do so), any patches to ath10k, 
+especially to SDIO, won't be accepted.
+
+Your team is doing some nice work, but I suggest you focus on drivers 
+that are under active development, and preferably ones where you 
+actually have the hardware to test.
+
+/jeff
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
