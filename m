@@ -4,56 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19461CE79CE
-	for <ath10k@archiver.kernel.org>; Wed, 20 Sep 2023 11:54:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0FCCCE79D0
+	for <ath10k@archiver.kernel.org>; Wed, 20 Sep 2023 13:23:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=KsbDGBpnDGDJZxlp/30/yJPauq19ZvzdEavQFVoKw7Y=; b=q7w+AetumVGhg4
-	Zwo5wbDG4rjE9xaovYUFzhA4lEzaIDc6zru2K4FW4JUI3lb2vyUwCl2VBx1ByNGcwxNxqAUNBO3Uk
-	TFsj44SGm2GL/iFOXmk3H9aZppJr/uobh0vEneSx2ntWPyFFkr4mWOGgIg3gWs1jHHPzSCp4dLOnV
-	izfl3vzA5Nu7YPktQ1VnzYhnGrOLxoM51UmQonh4oIfDQ6V75Q+iM0t/FTqQ4dZAdZyf1vazbf6JL
-	fijrvM7iz7PFqr4sYuMQSeBoAVX18YR9AqKy6LyJVsQYHXKEEA4bUOjP9R57liQmIiAUrfJdgXIAr
-	5nEnYrP8dg4yHr2hWpeA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=HkEgaSX213tSZgW0Adxt7hSzDkl3OK3hSidMJ8VHARw=; b=He+bhkhTgqKBFP
+	tVaCnqxKEFUoiVj/WtnFryWQeVh9bEUVSTAOkvOcUxBMgIhrfxMDvHXmcBgQqFw+B464wqF0XuHiG
+	Jwt01SN55PZj/0J4uVwghT5xpuS86rCLuJ+ArOIKGOL7kpre1JCRK7vTkVKQMkkfb9OPxQUM6uQSR
+	P5na9gQlvBQsvZDlfVy65XyktuPmJAd36HqFc2kZRlPSxWtkeGbImbxR/LpHmOowxBCD3v9LxN+Am
+	ZWS3HpJrNzzyhMkpajdvfmod2/nSBbWcNJAOyipXW4JK4Qbfien7Fe25BKqw+ZzBvuMs+OCHE0PA6
+	gFXfbNezb3NwKsyStq5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qivma-002vti-0l;
-	Wed, 20 Sep 2023 11:54:16 +0000
-Received: from forward101b.mail.yandex.net ([178.154.239.148])
+	id 1qixAq-003AU5-0N;
+	Wed, 20 Sep 2023 13:23:24 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qivmV-002vsC-0N
+	id 1qixAo-003ASV-07
 	for ath10k@lists.infradead.org;
-	Wed, 20 Sep 2023 11:54:14 +0000
-Received: from mail-nwsmtp-smtp-production-main-23.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-23.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:1af:0:640:453c:0])
-	by forward101b.mail.yandex.net (Yandex) with ESMTP id 695FA6007F;
-	Wed, 20 Sep 2023 14:54:00 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-23.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id wrH0PdCDcKo0-8hExjusI;
-	Wed, 20 Sep 2023 14:53:59 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1695210839; bh=HPbI9/Pt8V7Dib3V+d2fNiBsfrfwHHLb9L+A94xhSW0=;
-	h=Message-ID:Date:Cc:Subject:To:From;
-	b=DCByiWk9DYc3FI/qhFdUGz1H1TqnBoaLUuQ6qq9vBlbMsk11PvUr4kWN5XSKAO8d8
-	 CUa4kJttyjNduY64Xn8sHXcH8FyyDtYa2XGDTXuhRwUzjUtzOvUK4YaUMUMAt5Xfj7
-	 sEX1LOngNoZbEEkNBDqCywgZI1tynSMwzt4+ovV4=
-Authentication-Results: mail-nwsmtp-smtp-production-main-23.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Dmitry Antipov <dmantipov@yandex.ru>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Kalle Valo <kvalo@kernel.org>,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	Dmitry Antipov <dmantipov@yandex.ru>
-Subject: [PATCH] wifi: ath10k: consistently use kstrtoX_from_user() functions
-Date: Wed, 20 Sep 2023 14:52:32 +0300
-Message-ID: <20230920115249.38296-1-dmantipov@yandex.ru>
-X-Mailer: git-send-email 2.41.0
+	Wed, 20 Sep 2023 13:23:23 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 9A0EAB81D73;
+	Wed, 20 Sep 2023 13:23:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 186B1C433C8;
+	Wed, 20 Sep 2023 13:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695216199;
+	bh=2Et11YtI8kBzyLko0A2MfjzkF+6hxxDNxXxX0g0Jl8U=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=Ss+Tkz3brJULw9FCZUQKqAVU1bZUmIQwcTwz4OWfH34VkeBVKeLhkD4oWKx/Wi5Ls
+	 fV3pQTEPTWElBbIpv2Qdzb46X4t+0/UYjbX9AIx9F0RYLQ2aK9juSSLVJBdPzB4OYE
+	 +nnsazloGFtngv/0VazOi9uALgY5xrlwKviBQB5Wvqnxk8bnD9iPxQMDlWLNSLLUjA
+	 pqJcRz4LDSexgY/it52oJm7B+oHSfcYsG9hOZ6zKbCTrortk2+DgvpiO20uzzibuZo
+	 NKawn6d6io7WKg2Pgnb2pbWOU69tgCuPfKofqIyamSpe9HbyyOmvdJdSzNmuQIBp3D
+	 BmOpBkZwqJpgQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Dmitry Antipov <dmantipov@yandex.ru>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
+  linux-wireless@vger.kernel.org,  lvc-project@linuxtesting.org,
+  ath10k@lists.infradead.org
+Subject: Re: [PATCH 1/6] [v3] wifi: ath10k: cleanup CE ring initialization
+References: <997f4b09-7087-4788-aa2a-ef835ce6ebb3@quicinc.com>
+	<20230824055117.42309-1-dmantipov@yandex.ru>
+Date: Wed, 20 Sep 2023 16:23:16 +0300
+In-Reply-To: <20230824055117.42309-1-dmantipov@yandex.ru> (Dmitry Antipov's
+	message of "Thu, 24 Aug 2023 08:51:06 +0300")
+Message-ID: <874jjpashn.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_045411_664199_FCE1BB88 
-X-CRM114-Status: GOOD (  11.31  )
+X-CRM114-CacheID: sfid-20230920_062322_219851_A9C764CA 
+X-CRM114-Status: GOOD (  15.56  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,157 +78,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Use 'kstrtoul_from_user()', 'kstrtobool_from_user()' and
-'kstrtoint_from_user()' where appropriate and thus avoid
-some code duplication.
+Dmitry Antipov <dmantipov@yandex.ru> writes:
 
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
----
-Hopefully this doesn't violate "if it isn't broke, don't fix
-it" rule (the same thing was recently accepted for ath9k).
----
- drivers/net/wireless/ath/ath10k/debug.c    | 47 +++++++---------------
- drivers/net/wireless/ath/ath10k/spectral.c | 26 ++++--------
- 2 files changed, 22 insertions(+), 51 deletions(-)
+> Commit 25d0dbcbd5c7 ("ath10k: split ce initialization and allocation")
+> changes 'ath10k_ce_init_src_ring()' and 'ath10k_ce_init_dest_ring()'
+> so these functions can't return -ENOMEM but always returns 0. This way
+> both of them may be converted to 'void', and 'ath10k_ce_init_pipe()'
+> may be simplified accordingly.
+>
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>
+> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+> ---
+> v3: split to smaller units per Jeff's suggestion
+> v2: change 'ath10k_ce_alloc_rri()' to return -ENOMEM in case
+> of 'dma_alloc_coherent()' failure and fix error handling in
+> 'ath10k_snoc_hif_power_up()'
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index f9518e1c9903..ea6e0d50e933 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1964,20 +1964,13 @@ static ssize_t ath10k_write_btcoex(struct file *file,
- 				   size_t count, loff_t *ppos)
- {
- 	struct ath10k *ar = file->private_data;
--	char buf[32];
--	size_t buf_size;
--	int ret;
-+	ssize_t ret;
- 	bool val;
- 	u32 pdev_param;
- 
--	buf_size = min(count, (sizeof(buf) - 1));
--	if (copy_from_user(buf, ubuf, buf_size))
--		return -EFAULT;
--
--	buf[buf_size] = '\0';
--
--	if (kstrtobool(buf, &val) != 0)
--		return -EINVAL;
-+	ret = kstrtobool_from_user(ubuf, count, &val);
-+	if (ret)
-+		return ret;
- 
- 	if (!ar->coex_support)
- 		return -EOPNOTSUPP;
-@@ -2000,7 +1993,7 @@ static ssize_t ath10k_write_btcoex(struct file *file,
- 		     ar->running_fw->fw_file.fw_features)) {
- 		ret = ath10k_wmi_pdev_set_param(ar, pdev_param, val);
- 		if (ret) {
--			ath10k_warn(ar, "failed to enable btcoex: %d\n", ret);
-+			ath10k_warn(ar, "failed to enable btcoex: %ld\n", ret);
- 			ret = count;
- 			goto exit;
- 		}
-@@ -2103,19 +2096,12 @@ static ssize_t ath10k_write_peer_stats(struct file *file,
- 				       size_t count, loff_t *ppos)
- {
- 	struct ath10k *ar = file->private_data;
--	char buf[32];
--	size_t buf_size;
--	int ret;
-+	ssize_t ret;
- 	bool val;
- 
--	buf_size = min(count, (sizeof(buf) - 1));
--	if (copy_from_user(buf, ubuf, buf_size))
--		return -EFAULT;
--
--	buf[buf_size] = '\0';
--
--	if (kstrtobool(buf, &val) != 0)
--		return -EINVAL;
-+	ret = kstrtobool_from_user(ubuf, count, &val);
-+	if (ret)
-+		return ret;
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-@@ -2239,21 +2225,16 @@ static ssize_t ath10k_sta_tid_stats_mask_write(struct file *file,
- 					       size_t count, loff_t *ppos)
- {
- 	struct ath10k *ar = file->private_data;
--	char buf[32];
--	ssize_t len;
-+	ssize_t ret;
- 	u32 mask;
- 
--	len = min(count, sizeof(buf) - 1);
--	if (copy_from_user(buf, user_buf, len))
--		return -EFAULT;
--
--	buf[len] = '\0';
--	if (kstrtoint(buf, 0, &mask))
--		return -EINVAL;
-+	ret = kstrtoint_from_user(user_buf, count, 0, &mask);
-+	if (ret)
-+		return ret;
- 
- 	ar->sta_tid_stats_mask = mask;
- 
--	return len;
-+	return count;
- }
- 
- static const struct file_operations fops_sta_tid_stats_mask = {
-diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
-index 68254a967ccb..2240994390ed 100644
---- a/drivers/net/wireless/ath/ath10k/spectral.c
-+++ b/drivers/net/wireless/ath/ath10k/spectral.c
-@@ -384,16 +384,11 @@ static ssize_t write_file_spectral_count(struct file *file,
- {
- 	struct ath10k *ar = file->private_data;
- 	unsigned long val;
--	char buf[32];
--	ssize_t len;
--
--	len = min(count, sizeof(buf) - 1);
--	if (copy_from_user(buf, user_buf, len))
--		return -EFAULT;
-+	ssize_t ret;
- 
--	buf[len] = '\0';
--	if (kstrtoul(buf, 0, &val))
--		return -EINVAL;
-+	ret = kstrtoul_from_user(user_buf, count, 0, &val);
-+	if (ret)
-+		return ret;
- 
- 	if (val > 255)
- 		return -EINVAL;
-@@ -440,16 +435,11 @@ static ssize_t write_file_spectral_bins(struct file *file,
- {
- 	struct ath10k *ar = file->private_data;
- 	unsigned long val;
--	char buf[32];
--	ssize_t len;
--
--	len = min(count, sizeof(buf) - 1);
--	if (copy_from_user(buf, user_buf, len))
--		return -EFAULT;
-+	ssize_t ret;
- 
--	buf[len] = '\0';
--	if (kstrtoul(buf, 0, &val))
--		return -EINVAL;
-+	ret = kstrtoul_from_user(user_buf, count, 0, &val);
-+	if (ret)
-+		return ret;
- 
- 	if (val < 64 || val > SPECTRAL_ATH10K_MAX_NUM_BINS)
- 		return -EINVAL;
+[...]
+
+> -static int ath10k_ce_init_src_ring(struct ath10k *ar,
+> -				   unsigned int ce_id,
+> -				   const struct ce_attr *attr)
+> +static void ath10k_ce_init_src_ring(struct ath10k *ar,
+> +				    unsigned int ce_id,
+> +				    const struct ce_attr *attr)
+
+I have on purpose avoided to use void functions in ath10k/ath11k/ath12k.
+The problem is that if some of the functions return void and some of the
+functions return int it's much harder to review the code. If most/all of
+the functions return the same error value type as int it makes a lot
+easier to read the code.
+
+Is there a benefit from function returning void? Why do this in the
+first place?
+
 -- 
-2.41.0
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
