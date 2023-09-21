@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC931CD4954
-	for <ath10k@archiver.kernel.org>; Thu, 21 Sep 2023 05:18:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6180CCD4954
+	for <ath10k@archiver.kernel.org>; Thu, 21 Sep 2023 05:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OdN5AIcskVeeq6HYFMTh6JGIL27hul++KCzPKtOt4PE=; b=Jx2KJNCJ1qM0Ey
-	nQiOv2XJdHOM6o9LDimAhkcMwhNzfHdglTChnGHw2DSya/0S9Xa769DwaYSFCye9sI/O77H/aXF2M
-	8LOTEk8fHhZ3SVe2Xd4gJOHTbOvPu7x1/vlkvmeTvEE4U8hoFoiBMX5YflPvj+P/7bdcRm5jHkHP8
-	5sKQEi1m8r3aP6cOM6j3FUnfjibVpy0qCXHd0Bfoi6UwIU393PaJq+eSo/4J+741yDZE7chD67dcg
-	rdTZdKSSOwse3AQcIY+yhfCTQ7nhRvsZ+IzSI6uGoYcuSvab6o8U4D4B6zK0pswd7/mJkwQtX7fwq
-	dwIZQUohVuheZs1c1CDQ==;
+	List-Owner; bh=P9r4wLihKnBWjM/VwU54Vs34GE9JdhCWhw+C3KbK4Sk=; b=fDjNQs/uSEvdhI
+	ipEE0vH/qf1eOpl18DFcoM/0Z1a5I+Sm+QRnDNzZjCOrymu3u0zAFTFyiAS3BKFpMI1lQd6bU0f/M
+	QKooeokOugHSsu9+Wj2e8cSTr+971SlkhJhM1X9t+BjF+WQUOidEeW0/0z6WX3T8QgHCvwHap/FHM
+	TPGKOnZHi/XKK609lpIU/xL+sCc/k2ideez5fI9P4+o506r7vfDUkcMDHOXRgvayV5z7Eq3QDGZF4
+	k8Qm11hgptBpySqSooiqR6Cd7G9qeeiu3LuJ/asioOmGVnoDokRpDyxFeaWHqd26a72LQFORW2UFx
+	+HB3bx1FGt+DovKDLOZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjC4L-00592G-2Q;
-	Thu, 21 Sep 2023 05:17:41 +0000
-Received: from mgamail.intel.com ([134.134.136.65])
+	id 1qjC5A-0059Bl-2c;
+	Thu, 21 Sep 2023 05:18:32 +0000
+Received: from mgamail.intel.com ([192.55.52.151])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjC4J-00591V-1H
+	id 1qjC57-0059Au-2u
 	for ath10k@lists.infradead.org;
-	Thu, 21 Sep 2023 05:17:41 +0000
+	Thu, 21 Sep 2023 05:18:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695273459; x=1726809459;
+  t=1695273509; x=1726809509;
   h=date:from:to:cc:subject:message-id;
-  bh=ckle3j8UB0YeIES4mbaLX+hzbJsrHvslAxIli0UestE=;
-  b=Tt1WLbqgBqAOcHggpJmBkC5bedtHfuA8n8BM/0jGZ+Z0pGujt4SHynm6
-   n1aCWqIjNjqyjF7DtSLBK1Fz6fYFsCGvLC9GqE36cAifYSJyEyeuhJhbg
-   qf238EY4TO7lAg1to1Ab5Q+KqGcxnR0dg7iB1JEShCpU6dXms5N5tXLLB
-   vhnWGcn7iSu8cJVS0ZC4TWgnUIZyKTZUL6WHq3szaEZs399zXKzFrBT3i
-   FvcXfJeD8ARGaN9robq7PInOAA21KQ3rqSejSORJyocGcFvBSBHcuAmC7
-   jOcmB/vFLUJZ+YohF2pwFa6TLegW7DU2vUXT9I/oLP+ri2VlG2lM/5Gem
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="384264653"
+  bh=444jMz6gPJzg3kYX9lpLG5w9wp5aoPgep+LHHGM0b+E=;
+  b=NAO2MonqBEs9Q85G3VTyhNfNtS7gazCQFh1aEG53IojjICLTIFRXbbJD
+   2fSRfR/d+43LLqehxIb036z1C/SkzFbu9kah6k0lNP2vaQkW3OzTrQDkM
+   QjaFcLyOTyDzQDEhUXPTYhAjnySvXxgOBbwYOv1/qPg1ddYuzzk8A+NPX
+   Q5v1BGcZj0NVY94I25iy1Uh4AOyVGDCVdIp/b4dMJsjx+2wHBeXe/N7ZQ
+   zh6xe9K1pgqeBHisYqtG61QGBkfDcaCq0ocWHr3HstEeV6MLME4j4oI3a
+   CJL+DoqoKMuBZJfBF4dLk7V0FxJKbnFg6AyAsBuq6C5FtzcQ0eVW2U0J1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="360673959"
 X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="384264653"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 22:17:38 -0700
+   d="scan'208";a="360673959"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 22:18:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="1077765413"
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="696604935"
 X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="1077765413"
+   d="scan'208";a="696604935"
 Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 20 Sep 2023 22:17:36 -0700
+  by orsmga003.jf.intel.com with ESMTP; 20 Sep 2023 22:18:27 -0700
 Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qjC3Z-0009XH-1E;
-	Thu, 21 Sep 2023 05:17:03 +0000
-Date: Thu, 21 Sep 2023 13:13:16 +0800
+	id 1qjC4E-0009XK-2X;
+	Thu, 21 Sep 2023 05:17:47 +0000
+Date: Thu, 21 Sep 2023 13:13:26 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- cb4c132ebfeac5962f7258ffc831caa0c4dada1a
-Message-ID: <202309211314.Owl834dh-lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 928e3d18bf568970b23d53c9c7ae8d56952352ff
+Message-ID: <202309211324.SP9U9jeb-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_221739_510409_94462588 
-X-CRM114-Status: UNSURE (   4.26  )
+X-CRM114-CacheID: sfid-20230920_221829_957784_E2B2F300 
+X-CRM114-Status: UNSURE (   5.15  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,8 +83,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: cb4c132ebfeac5962f7258ffc831caa0c4dada1a  wifi: ath10k: fix clang-specific fortify warning
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 928e3d18bf568970b23d53c9c7ae8d56952352ff  Revert "PCI: Release resource invalidated by coalescing"
 
 elapsed time: 722m
 
@@ -107,7 +107,6 @@ arm                              allmodconfig   gcc
 arm                               allnoconfig   gcc  
 arm                              allyesconfig   gcc  
 arm                                 defconfig   gcc  
-arm                   randconfig-001-20230921   gcc  
 arm64                            allmodconfig   gcc  
 arm64                             allnoconfig   gcc  
 arm64                            allyesconfig   gcc  
@@ -190,6 +189,7 @@ sparc                            allmodconfig   gcc
 sparc                             allnoconfig   gcc  
 sparc                            allyesconfig   gcc  
 sparc                               defconfig   gcc  
+sparc                 randconfig-001-20230921   gcc  
 sparc64                          allmodconfig   gcc  
 sparc64                          allyesconfig   gcc  
 sparc64                             defconfig   gcc  
