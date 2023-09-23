@@ -4,77 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24C60CE7A86
-	for <ath10k@archiver.kernel.org>; Fri, 22 Sep 2023 21:00:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70514CE7A81
+	for <ath10k@archiver.kernel.org>; Sat, 23 Sep 2023 00:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:References:MIME-Version:Subject:
-	Message-ID:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:List-Owner; bh=d3F7wDxyy2zfWuxev9ADFinq87UclMqvw3BD69pnsQQ=; b=yy
-	Px4MGwu3jNPj6IPk/ZbM6H6Utpxjyd0DDvnjfRqMK1h9XrtJPT8lXrDTG0Gz8MqDHMSjAyC9J9aoD
-	Feb3sfyq6uXXNP1Ml8Anx9m0DK6KTTngUDxM3gMwH6ii5ksZ8zpWv5+OQlVBRCc2ulMixJUFs5oBH
-	dWojWuWAKdbONo+LhVsFtmowpYx5i0wdp9zNPnipXr0ikt0CM+TNtaD2S7jmb/4/gDxIY8CaiCUtu
-	NRIBznxEgtvoB5SPHJytrke6e/Rm8/9Dro1K7wa8oNM0hXe7tAsTD7P85qUBV/K8syYxelt/PV6Ip
-	OrzF1qDWVPXIGw+vPYpNqH2VyLH4XXNQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FE1gIgdCAkvanlamYrpxorRFxc/7ubkKbj+QBchEh/U=; b=g+roBDPVIMZguzH/qW3mvfZiZc
+	uA+8bnHqzbLJbMWcJteHlWRpU5ZfrvYUyJLGAOM2RCwwex/neA2HpFqFR6QS7GSahAygknjYP0dBO
+	9bCxHZBlv4b0rzdtT5dHhkPGZoZtFlNgp8hRdE3ALUPUVUJS2SdyP8rw2uiFAx8Ln7gN2fNwEX8CS
+	iTsJhUKTYHQDdZIcgz1npgASJPazS8q67UgMZLlUbzS2jTcF6px9z3gWbbihOoofKvWD+s5f6yL0L
+	d5qQ3dMFSlFqpxmYVZr/DyGNobbOlBhDjzr0lZnVSJ0iAqOjh8kMuXlkVA4qwx3pbPJDR58YrBqR/
+	WuJJPgnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjnFW-009osR-0l;
-	Fri, 22 Sep 2023 20:59:42 +0000
-Received: from sonic313-20.consmr.mail.sg3.yahoo.com ([106.10.240.79])
+	id 1qjqNo-00A29d-2i;
+	Sat, 23 Sep 2023 00:20:28 +0000
+Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjnFR-009ore-1g
+	id 1qjqNj-00A28u-32
 	for ath10k@lists.infradead.org;
-	Fri, 22 Sep 2023 20:59:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.in; s=s2048; t=1695416372; bh=RnZHeZya+zq/5f4+cd3T0yEPDLNeUsJfl2EMBOGbXKI=; h=Date:From:To:Subject:References:From:Subject:Reply-To; b=t5TueSKLKWeAd7DQ7WRqb0J8RuhaCDC192hMguBDW3XHvd0VP3X0sNi2Ort+jMR4zzhE9mYGocAbMxuBW+6yvkOiGH9ymwkgJghwyNIUzLEpoeFK0UMFt9lmTAmRSzCRdY+2l3bkIpY8JKpRwWuQWVV8QxeH/NXGHZ3XJTrlTKztyS96VZH/pYZjHESrNbeyo2BrEUmB29D9pr5ebo9xSBP64mSCnYCtXeIo/XEstt/VCaqVyPoYgNGbaXrIMT2g3St772/NSvS0V92b7s/efJbIGmiBoisoOC1JxDYFXB8OaiIFzoKY/Kb9r0WJ+Jeb/8A4pYFhg8gxwrAm0wGtpA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1695416372; bh=LAzk8KRebqC3ibB79yj73TGWz556OcB702gOx4cJMWh=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=VlwMBXw5cwiLYQdTHj6IFJarIAL59Fs3Q7frgYPZlp12CEC5Fs5d26Gde5P54sGENnj5/jujETaCriA5cfTYHN2UXohwKk353hNid/N1XjsZkhIbj0H7llrU+x1gnUwW80txVxKgLciUI5nAUaZ4qmRfczb5UWNAZISBq0TBsVRHnaO7P82lZ1ut9fFFeg7aWzpv/tH/U9Up7f+vNb94oNQC2saHIb+EA15WYc88ym91duwvA5YU7E6dY7bGwhdsAWxnvawSxOp2Vlcdu/rp7cTi1nU+uHGCv8LYrs7BMjQJ7BP5ORZPSVQFwyxF6jo62w11S6M5mJWUC3TPDaMADw==
-X-YMail-OSG: EyNynD0VM1m4gk.Mq0DnMMj4vlmTRD2FTZQp714OcoL74Vxa1aoMK7r9iDWo9p1
- djqD5.4VjsiK7XInuSpJdr8zt_bFMT7qJXMjiYI3dNjxHxBTkFkVlBmCl1aWQf5x6QSEOBHxoZts
- SI2tb7ELwgn9YwhJerqpDHdX6tYv4INt_GzgimObMh.kT482X12dYbSB51LIiA60EOhN6XOCukHd
- 9r.kQHBV1EPBiWS8NLe45d2V1hnpf.xfg0_fjU2dTU54cmN6tJsDj20yMbsMdo1hVqlBnYGKo4uR
- DHv_WZjPGQb7D5NnNgR7uqhRdoMScgyLLI23WgTyQKmtwhLuRKFTR6OG4Y0SHxDJXFp8FNEYJ0l4
- 9EtwvpFMWY_qHiDksnQPg6RzUxHxv.URS6VI7wKg0qz9ks9X1m1K4exGgKZ.aXO7qyJl5a_0yI0Y
- Xdt32w4F0saddqeqYW6ZOEUkZn1VLAJ3kECmhe_Q6_uRs8pefZwxEBLG2Xf6WBKKZgB5jLc4VIXW
- L0_okz0lbM9QtPwVKNBdq0HC9cJjPZfbXhFZ4h62gBqrTvLstDF4YPgaKqFcXcf1mF8lg1ta.MUo
- .F7XmxKHWbx4dyIrUQ.pHN2YVmvUjRDxLZgHytw6..niLiKhuZIlHJpc5T8IxqKwMjwMkUu9xTeL
- xoqW1lkUKjWkFF7aaxlzlfovj7vDgBTBv8EkEJMHeocgr3uyjyABt90kAKMqy8QBPT53y6ctVe1c
- rx8PGd_TaTeUXF3.HVVTudtiIjRE2r2PHxH5HpsPyyl6LO6Nhuui6j4hmiWjBkivc0wjOHGB0d41
- G5RJK4Qi69nFK0By4XY8HDmkqcRdb1oA_BiyL64_kqubcKNQ6Uc_L8ph3S8cVEa9hPHtXBRepTBG
- UuhkVXQGnDt7LEODsJV_FwdILZkIeGxoK1AtKntFN8341_1jIYtH3hTSSxFWqeEMc_FlDVG_cGTv
- dwWWxWDd.GmCWR5mva5l8KuKyqidrY5U6vvjR72nodtkXZNPnbZ5vFOf.PlOgAosMJNQrPnj4VCU
- E8_nw_PEQon5p3Bwp.iaYtEDoZ.9spL0zgRVNxchMyenrH1sbnMYSCLQN0TtjWhMjvzlzQGNcggS
- v9tNmlmMSgqXBFMy6Qh6wx2mIP9dCPuGKrQ_tMWWDszAY8YqlMn27PHTYdEcJBUKiepF4EKWO0Wm
- nfFyBtFwrxHe_xBZc.NY8TkF1nxo3BVumD6b5wxOMThaButvzvJQnTTdhAnIVii6Nczv5rJShYRB
- 3d.YXv8.OIgSO4e4WQhnfCe3ELgqxGmmIlHnQ9rSaxM8.Ox.Owam2PuuKw_JenD5pDzGvf2d4aP8
- 69hvmfZGIBFxvzhFedaC2Pg7NbA9mW.4JRpZIUK7qVzbrwnxQvDmO4JJFM3.zfz.BwyGUfR1hBQe
- s81EkXaiEQLAyjaVcMWgwNTuNxaUNAdkgSCgTbMgw7ejk3Q4uh4HQy4MR2LnzFWRP1CqhmtPaxDW
- YeuYwSWFX9_SteAR7ysq1I3mCm6PUMKh8mtvVH5o5W5YPQG8CthgtXykO9fpbsiUPl1fXnRXJmlJ
- K1A_q7Nstsd53OTrtVQXiLHVnB8kNNIRtQAFJyllvlwbpVHQLL7lrnWvZsS8CScQQewOek_ueVm1
- VhNBp8OIUMwattbY_xGZDbOtlh50ZwMnoeTkeajharm18__31lGGhy1AGWFM1D4dPKnJ_OCJqQ3M
- uMoqGyM16cmp0ZgGwcXxE2zne6c4kNSPJgy2gF7J_st.J5lOv8OBgIfdYlXvLYXPOHCMhq9LYOJc
- .Z7C3HsklmRiSV1HybZ9YXc4N4o6c4HACbfkGCNca43Xc4vn3WeGBZWoy5F5fdXfniX4usW1oIml
- 9rQwrqwE4lVhvjuOc0q1NxkDV6m05lNOT7CFa0m72Ek4LQCnLi3gkdjsu58esfQELGJmLRio552u
- zsGX7J9GFYjx6nyailxjH78bLEPmuJMZLavuzyjj46MPw.CW.ulXbYxQMRUHMdcggOFRhjLsa_LA
- 0DWXLLpMSC_jyWUN1fTY9yppn8GkV6shWNoyjeAklBAx5Hu5LcnnF1IZJJz.66eObBk0Je1St6Ur
- 9hqFCttsdSoFMausTIfcrO21ZzJpn0txSgt8DM.tqQOjbg1JxhQbvOMlIh0AB0RPXBggOdSJoFmu
- MLVBK7x7cwUi3IdhASJJ.KDnbgo5Y9UlW3nf03EbGDhmIi9AvCta5l100axvK5DAj3uuvTO8.0h9
- XMbe_jhHG
-X-Sonic-MF: <coolgoose54@yahoo.in>
-X-Sonic-ID: 47f51523-3612-4e14-817b-f5d53fb493c9
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.sg3.yahoo.com with HTTP; Fri, 22 Sep 2023 20:59:32 +0000
-Date: Fri, 22 Sep 2023 20:59:31 +0000 (UTC)
-From: Cool Goose <coolgoose54@yahoo.in>
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Message-ID: <1209906123.2716993.1695416371605@mail.yahoo.com>
-Subject: Atheros QCA6174 ath10k_pci fimware crashing
-MIME-Version: 1.0
+	Sat, 23 Sep 2023 00:20:26 +0000
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c328b53aeaso27569615ad.2
+        for <ath10k@lists.infradead.org>; Fri, 22 Sep 2023 17:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695428420; x=1696033220; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8NVR9veAaqzrADVHcY/0WZEoNSHI3mJUk3GO8SCf+Q4=;
+        b=XUr7gMEUva/AF/mWSULZC0qYpjlbENbH5PrXCsbG0Pg+zZfFZEq+ryRP8z/SVqkz5U
+         s48mrERnDqb5rehr2ftjptnKVVbP5Wj+UlypoRNjF7EVd6mqyrm6vEs/OIEHH+btYWNi
+         PtCHlqobfwgcCt4AyRMygzpFhNKY71eWs00l2abnmIQh2dM8BVWLiMiRVO6/P3pHgWsk
+         63LsVA5aVf8XZGtbYI0TUSJ5RXb1G4nw32kgDNnIRfKJJbtvdTu0DwRocxaXN+xVBHQs
+         6osqDcsGhwJDcsewMViOGsEevQuWEBKtQTYt6NqNBnO+5b5G8ZjT1p26ZQTR1OtzGG/X
+         jfpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695428420; x=1696033220;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8NVR9veAaqzrADVHcY/0WZEoNSHI3mJUk3GO8SCf+Q4=;
+        b=cAjDp8aZ4yk46j0iLWhFJWr367CmGMAdASqrrRP6h2dZVg/R50L7h/WeBd/iKF91kT
+         XuMrYNDiH/a5d8SPjzrR0aDsIHMyi/RGJG6278PD8sM1+CxsFUBbGsltBzg+7+25BJ8V
+         5cn8Yowhi+H2VwoNI0jWaZH/HCVRwvr237BfL6v9hJr2s6U9t8W0Smd6Hhbov44l+D3v
+         WkO4x9TdBCAUvPJV6QRkOELq/Yw/lC5DD/Kh4w26PX+eO7noE/hWZgkKRw2FCxFmEmgH
+         XvncolYOdIfsxrh986hwjx+sGYHmwnoqkWsrP7IStJPjoPPVBNaPx70MkqY/VplLGfft
+         u/tw==
+X-Gm-Message-State: AOJu0Yw5a1U8VvJklI6oNdbIltE/OYD8exKGYyAZHcUjF3MZH4mQbgNW
+	Inwslc/meqwEJPNyJmDrFf24+60gz/4=
+X-Google-Smtp-Source: AGHT+IHZZCX7Thrif+CVBWaYNRyr95EXqcYj1jhyuVZrdxZiUoqwftI/kqZQh4p7d7LvRieTUStuCQ==
+X-Received: by 2002:a17:902:bc4a:b0:1bd:aeb3:9504 with SMTP id t10-20020a170902bc4a00b001bdaeb39504mr1056894plz.15.1695428420097;
+        Fri, 22 Sep 2023 17:20:20 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id x18-20020a170902ec9200b001c1f0b3e900sm4094537plg.229.2023.09.22.17.20.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 17:20:19 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+	id A1968819448C; Sat, 23 Sep 2023 07:20:16 +0700 (WIB)
+Date: Sat, 23 Sep 2023 07:20:16 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Cool Goose <coolgoose54@yahoo.in>,
+	Linux ath10k <ath10k@lists.infradead.org>
+Cc: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
+Subject: Re: Atheros QCA6174 ath10k_pci fimware crashing
+Message-ID: <ZQ4vQNe3XsArwWQT@debian.me>
 References: <1209906123.2716993.1695416371605.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.21797 YMailNorrin
-X-Bad-Reply: References but no 'Re:' in Subject.
+ <1209906123.2716993.1695416371605@mail.yahoo.com>
+MIME-Version: 1.0
+In-Reply-To: <1209906123.2716993.1695416371605@mail.yahoo.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230922_135937_918370_CA1E9B5F 
-X-CRM114-Status: UNSURE (   0.76  )
+X-CRM114-CacheID: sfid-20230922_172024_010587_A847CDEC 
+X-CRM114-Status: UNSURE (   8.29  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,304 +89,359 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2251602339657140509=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-UmVmZXJlbmNlIGFuZCBtb3JlIGRldGFpbHMgaHR0cHM6Ly9iYnMuYXJjaGxpbnV4Lm9yZy92aWV3
-dG9waWMucGhwP2lkPTI4ODk5MQoKJCBzdWRvIGpvdXJuYWxjdGwgLWIgfCBncmVwIGF0aDEwayB8
-IG1vcmUKU2VwIDE5IDA3OjQzOjU4IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAz
-OjAwLjA6IHBjaSBpcnEgbXNpIG9wZXJfaXJxX21vZGUgMiBpcnFfbW9kZSAwIHJlc2V0X21vZGUg
-MApTZXAgMTkgMDc6NDM6NTggaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAu
-MDogcWNhNjE3NCBodzMuMiB0YXJnZXQgMHgwNTAzMDAwMCBjaGlwX2lkIDB4MDAzNDBhZmYgc3Vi
-IDE3YWE6MDgyNwpTZXAgMTkgMDc6NDM6NTggaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAw
-MDA6MDM6MDAuMDoga2NvbmZpZyBkZWJ1ZyAxIGRlYnVnZnMgMSB0cmFjaW5nIDEgZGZzIDAgdGVz
-dG1vZGUgMApTZXAgMTkgMDc6NDM6NTggaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6
-MDM6MDAuMDogZmlybXdhcmUgdmVyIFdMQU4uUk0uNC40LjEtMDAxNTctUUNBUk1TV1BaLTEgYXBp
-IDYgZmVhdHVyZXMgd293bGFuLGlnbm9yZS1vdHAsbWZwIGNyYzMyIDkwZWViZWZiClNlcCAxOSAw
-Nzo0Mzo1OSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBib2FyZF9m
-aWxlIGFwaSAyIGJtaV9pZCBOL0EgY3JjMzIgNzA2YzM5NWUKU2VwIDE5IDA3OjQzOjU5IGhvc3Ru
-YW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGh0dC12ZXIgMy42MCB3bWktb3Ag
-NCBodHQtb3AgMyBjYWwgb3RwIG1heC1zdGEgMzIgcmF3IDAgaHdjcnlwdG8gMQpTZXAgMTkgMDc6
-NDM6NTkgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMCB3bHAzczA6IHJl
-bmFtZWQgZnJvbSB3bGFuMApTZXAgMTkgMDc6NDM6NTkgaG9zdG5hbWUgTmV0d29ya01hbmFnZXJb
-NjQwXTogPGluZm8+wqDCoFsxNjk1MTIzODM5Ljg5OTFdIHJma2lsbDI6IGZvdW5kIFdpLUZpIHJh
-ZGlvIGtpbGxzd2l0Y2ggKGF0IC9zeXMvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWMuNS8w
-MDAwOjAzOjAwLjAvaWVlZTgwMjExL3BoeTAvcmZraWxsMikgKGRyaXZlciBhdGgxMGtfcGNpKQpT
-ZXAgMTkgMDg6MTE6NDIgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDog
-dGltZWQgb3V0IHdhaXRpbmcgcGVlciBzdGF0cyBpbmZvClNlcCAxOSAwODoxMTo0NyBob3N0bmFt
-ZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiB3bWkgY29tbWFuZCA5MDExMyB0aW1l
-b3V0LCByZXN0YXJ0aW5nIGhhcmR3YXJlClNlcCAxOSAwODoxMTo0NyBob3N0bmFtZSBrZXJuZWw6
-IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBjb3VsZCBub3QgcmVxdWVzdCBzdGF0cyAoLTExKQpT
-ZXAgMTkgMDg6MTE6NDcgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDog
-Y291bGQgbm90IHJlcXVlc3QgcGVlciBzdGF0cyBpbmZvOiAtMTA4ClNlcCAxOSAwODoxMTo0NyBo
-b3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBkZXZpY2Ugc3VjY2Vzc2Z1
-bGx5IHJlY292ZXJlZApTZXAgMTkgMDg6MTU6NTQgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNp
-IDAwMDA6MDM6MDAuMDogdGltZWQgb3V0IHdhaXRpbmcgcGVlciBzdGF0cyBpbmZvClNlcCAxOSAw
-ODoxNTo1OSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiB3bWkgY29t
-bWFuZCA5MDExMyB0aW1lb3V0LCByZXN0YXJ0aW5nIGhhcmR3YXJlClNlcCAxOSAwODoxNTo1OSBo
-b3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBjb3VsZCBub3QgcmVxdWVz
-dCBzdGF0cyAoLTExKQpTZXAgMTkgMDg6MTU6NTkgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNp
-IDAwMDA6MDM6MDAuMDogY291bGQgbm90IHJlcXVlc3QgcGVlciBzdGF0cyBpbmZvOiAtMTA4ClNl
-cCAxOSAwODoxNTo1OSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBm
-YWlsZWQgdG8gcmVhZCBoaV9ib2FyZF9kYXRhIGFkZHJlc3M6IC0xNgpTZXAgMTkgMDg6MTY6MDIg
-aG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHJlY2Vp
-dmUgaW5pdGlhbGl6ZWQgZXZlbnQgZnJvbSB0YXJnZXQ6IDAwMDAwMDAwClNlcCAxOSAwODoxNjow
-NSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gcmVj
-ZWl2ZSBpbml0aWFsaXplZCBldmVudCBmcm9tIHRhcmdldDogMDAwMDAwMDAKU2VwIDE5IDA4OjE2
-OjA1IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3
-YWl0IGZvciB0YXJnZXQgaW5pdDogLTExMApTZXAgMTkgMDg6MTY6MDUgaG9zdG5hbWUga2VybmVs
-OiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogY291bGQgbm90IHJlcXVlc3Qgc3RhdHMgKC0xMDgp
-ClNlcCAxOSAwODoxNjowNSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4w
-OiBkZXZpY2Ugc3VjY2Vzc2Z1bGx5IHJlY292ZXJlZApTZXAgMTkgMDg6MjA6MzAgaG9zdG5hbWUg
-a2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHJlY2VpdmUgc2NhbiBh
-Ym9ydGlvbiBjb21wbGV0aW9uOiB0aW1lZCBvdXQKU2VwIDE5IDA4OjIwOjMwIGhvc3RuYW1lIGtl
-cm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byBhYm9ydCBzY2FuOiAtMTEw
-ClNlcCAxOSAwODoyMDozNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4w
-OiB3bWkgY29tbWFuZCA5MDEyNCB0aW1lb3V0LCByZXN0YXJ0aW5nIGhhcmR3YXJlClNlcCAxOSAw
-ODoyMDozNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBjb3VsZCBu
-b3QgcmVxdWVzdCBwZWVyIHN0YXRzIGluZm86IC0xMQpTZXAgMTkgMDg6MjA6MzYgaG9zdG5hbWUg
-a2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZGV2aWNlIHN1Y2Nlc3NmdWxseSByZWNv
-dmVyZWQKU2VwIDE5IDA4OjI1OjU1IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAz
-OjAwLjA6IGZhaWxlZCB0byByZWNlaXZlIHNjYW4gYWJvcnRpb24gY29tcGxldGlvbjogdGltZWQg
-b3V0ClNlcCAxOSAwODoyNTo1NSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzow
-MC4wOiBmYWlsZWQgdG8gYWJvcnQgc2NhbjogLTExMApTZXAgMTkgMDg6MjY6MDAgaG9zdG5hbWUg
-a2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogd21pIGNvbW1hbmQgOTAxMjQgdGltZW91
-dCwgcmVzdGFydGluZyBoYXJkd2FyZQpTZXAgMTkgMDg6MjY6MDAgaG9zdG5hbWUga2VybmVsOiBh
-dGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogY291bGQgbm90IHJlcXVlc3QgcGVlciBzdGF0cyBpbmZv
-OiAtMTEKU2VwIDE5IDA4OjI2OjAwIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAz
-OjAwLjA6IGRldmljZSBzdWNjZXNzZnVsbHkgcmVjb3ZlcmVkClNlcCAxOSAwODoyODoyNCBob3N0
-bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiB0aW1lZCBvdXQgd2FpdGluZyBw
-ZWVyIHN0YXRzIGluZm8KU2VwIDE5IDA4OjI4OjI5IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3Bj
-aSAwMDAwOjAzOjAwLjA6IHdtaSBjb21tYW5kIDkwMTEzIHRpbWVvdXQsIHJlc3RhcnRpbmcgaGFy
-ZHdhcmUKU2VwIDE5IDA4OjI4OjI5IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAz
-OjAwLjA6IGNvdWxkIG5vdCByZXF1ZXN0IHN0YXRzICgtMTEpClNlcCAxOSAwODoyODoyOSBob3N0
-bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBjb3VsZCBub3QgcmVxdWVzdCBw
-ZWVyIHN0YXRzIGluZm86IC0xMDgKU2VwIDE5IDA4OjI4OjI5IGhvc3RuYW1lIGtlcm5lbDogYXRo
-MTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byByZWFkIGhpX2JvYXJkX2RhdGEgYWRkcmVz
-czogLTE2ClNlcCAxOSAwODoyODozMiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDow
-MzowMC4wOiBmYWlsZWQgdG8gcmVjZWl2ZSBpbml0aWFsaXplZCBldmVudCBmcm9tIHRhcmdldDog
-MDAwMDAwMDAKU2VwIDE5IDA4OjI4OjM1IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAw
-OjAzOjAwLjA6IGZhaWxlZCB0byByZWNlaXZlIGluaXRpYWxpemVkIGV2ZW50IGZyb20gdGFyZ2V0
-OiAwMDAwMDAwMApTZXAgMTkgMDg6Mjg6MzUgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAw
-MDA6MDM6MDAuMDogZmFpbGVkIHRvIHdhaXQgZm9yIHRhcmdldCBpbml0OiAtMTEwClNlcCAxOSAw
-ODoyODozNSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBjb3VsZCBu
-b3QgcmVxdWVzdCBzdGF0cyAoLTEwOCkKU2VwIDE5IDA4OjI4OjM1IGhvc3RuYW1lIGtlcm5lbDog
-YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGRldmljZSBzdWNjZXNzZnVsbHkgcmVjb3ZlcmVkClNl
-cCAxOSAwODozNToyNCBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiB0
-aW1lZCBvdXQgd2FpdGluZyBwZWVyIHN0YXRzIGluZm8KU2VwIDE5IDA4OjM1OjI5IGhvc3RuYW1l
-IGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IHdtaSBjb21tYW5kIDkwMTEzIHRpbWVv
-dXQsIHJlc3RhcnRpbmcgaGFyZHdhcmUKU2VwIDE5IDA4OjM1OjI5IGhvc3RuYW1lIGtlcm5lbDog
-YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGNvdWxkIG5vdCByZXF1ZXN0IHN0YXRzICgtMTEpClNl
-cCAxOSAwODozNToyOSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBj
-b3VsZCBub3QgcmVxdWVzdCBwZWVyIHN0YXRzIGluZm86IC0xMDgKU2VwIDE5IDA4OjM1OjI5IGhv
-c3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGRldmljZSBzdWNjZXNzZnVs
-bHkgcmVjb3ZlcmVkClNlcCAxOSAwODozOTo0MiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kg
-MDAwMDowMzowMC4wOiB0aW1lZCBvdXQgd2FpdGluZyBwZWVyIHN0YXRzIGluZm8KU2VwIDE5IDA4
-OjM5OjQ3IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IHdtaSBjb21t
-YW5kIDkwMTEzIHRpbWVvdXQsIHJlc3RhcnRpbmcgaGFyZHdhcmUKU2VwIDE5IDA4OjM5OjQ3IGhv
-c3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGNvdWxkIG5vdCByZXF1ZXN0
-IHN0YXRzICgtMTEpClNlcCAxOSAwODozOTo0NyBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kg
-MDAwMDowMzowMC4wOiBjb3VsZCBub3QgcmVxdWVzdCBwZWVyIHN0YXRzIGluZm86IC0xMDgKU2Vw
-IDE5IDA4OjM5OjQ3IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGRl
-dmljZSBzdWNjZXNzZnVsbHkgcmVjb3ZlcmVkClNlcCAxOSAwOTowMDozMSBob3N0bmFtZSBrZXJu
-ZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJl
-YWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAxOSAwOTowMDozMiBob3N0bmFtZSBrZXJuZWw6
-IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRl
-MzIgb2YgMHgwMDAwMDAwZSBhdCAweDAwMDM1MDNjOiAtMTEwClNlcCAxOSAwOTowMDozMiBob3N0
-bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJn
-ZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAxOSAwOTowMDozMyBob3N0bmFt
-ZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQg
-Zm9yIHdyaXRlMzIgb2YgMHgwMDAwMDAwZiBhdCAweDAwMDM1MDNjOiAtMTEwClNlcCAxOSAwOTow
-MDozNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiB0aW1lZCBvdXQg
-d2FpdGluZyBwZWVyIHN0YXRzIGluZm8KU2VwIDE5IDA5OjAwOjQxIGhvc3RuYW1lIGtlcm5lbDog
-YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IHdtaSBjb21tYW5kIDkwMTEzIHRpbWVvdXQsIHJlc3Rh
-cnRpbmcgaGFyZHdhcmUKU2VwIDE5IDA5OjAwOjQxIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3Bj
-aSAwMDAwOjAzOjAwLjA6IGNvdWxkIG5vdCByZXF1ZXN0IHN0YXRzICgtMTEpClNlcCAxOSAwOTow
-MDo0MSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBjb3VsZCBub3Qg
-cmVxdWVzdCBwZWVyIHN0YXRzIGluZm86IC0xMDgKU2VwIDE5IDA5OjAwOjQxIGhvc3RuYW1lIGtl
-cm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Ig
-cmVhZDMyIGF0IDB4MDAwM2EwMDA6IC0xMTAKU2VwIDE5IDA5OjAwOjQxIGhvc3RuYW1lIGtlcm5l
-bDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Igd3Jp
-dGUzMiBvZiAweDAwMDAwMDAwIGF0IDB4MDAwMzYwNDA6IC0xMTAKU2VwIDE5IDA5OjAwOjQxIGhv
-c3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRh
-cmdldCBmb3Igd3JpdGUzMiBvZiAweDAwMDAwMDAwIGF0IDB4MDAwMzYwM2M6IC0xMTAKU2VwIDE5
-IDA5OjAwOjQxIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxl
-ZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwMzYwNDQ6IC0xMTAKU2VwIDE5IDA5
-OjAwOjQxIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0
-byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwMzYwNDQ6IC0xMTAKU2VwIDE5IDA5OjAw
-OjQxIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3
-YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwMzYwNDQ6IC0xMTAKU2VwIDE5IDA5OjAwOjQx
-IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtl
-IHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwMzYwNDQ6IC0xMTAKU2VwIDE5IDA5OjAwOjQ2IGhv
-c3RuYW1lIGtlcm5lbDogYXRoMTBrX3dhcm46IDEzNyBjYWxsYmFja3Mgc3VwcHJlc3NlZApTZXAg
-MTkgMDk6MDA6NDYgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFp
-bGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkg
-MDk6MDA6NDYgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVk
-IHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkgMDk6
-MDA6NDYgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRv
-IHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkgMDk6MDA6
-NDYgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdh
-a2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkgMDk6MDA6NDYg
-aG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2Ug
-dGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkgMDk6MDA6NDYgaG9z
-dG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFy
-Z2V0IGZvciByZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkgMDk6MDA6NDYgaG9zdG5h
-bWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0
-IGZvciByZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkgMDk6MDA6NDYgaG9zdG5hbWUg
-a2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZv
-ciByZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkgMDk6MDA6NDYgaG9zdG5hbWUga2Vy
-bmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciBy
-ZWFkMzIgYXQgMHgwMDAzNjA0NDogLTExMApTZXAgMTkgMDk6MDA6NTEgaG9zdG5hbWUga2VybmVs
-OiBhdGgxMGtfd2FybjogMTM1IGNhbGxiYWNrcyBzdXBwcmVzc2VkClNlcCAxOSAwOTowMDo1MSBo
-b3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0
-YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHhmZmZmZmZmZSBhdCAweDAwMDM1YzJjOiAtMTEwClNlcCAx
-OSAwOTowMDo1MSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWls
-ZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDM1YzM0OiAtMTEwClNlcCAxOSAw
-OTowMDo1MSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQg
-dG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHhmZmZmZjgxZiBhdCAweDAwMDM1YzM0OiAt
-MTEwClNlcCAxOSAwOTowMDo1MSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzow
-MC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDM1YzJjOiAtMTEw
-ClNlcCAxOSAwOTowMDo1MSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4w
-OiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHhmZmZmZmZlMSBhdCAweDAw
-MDM1YzJjOiAtMTEwClNlcCAxOSAwOTowMDo1MSBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kg
-MDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHgwMDAw
-MDAwMCBhdCAweDAwMDNhMDA4OiAtMTEwClNlcCAxOSAwOTowMDo1MSBob3N0bmFtZSBrZXJuZWw6
-IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRl
-MzIgb2YgMHgwMDA3ZmMwMCBhdCAweDAwMDNhMDE0OiAtMTEwClNlcCAxOSAwOTowMDo1MSBob3N0
-bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJn
-ZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDA4OiAtMTEwClNlcCAxOSAwOTowMDo1MSBob3N0bmFt
-ZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQg
-Zm9yIHJlYWQzMiBhdCAweDAwMDNhMDAwOiAtMTEwClNlcCAxOSAwOTowMDo1MSBob3N0bmFtZSBr
-ZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9y
-IHdyaXRlMzIgb2YgMHhmZmZmZjdmZiBhdCAweDAwMDNhMDAwOiAtMTEwClNlcCAxOSAwOTowMDo1
-NiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa193YXJuOiAxMzYgY2FsbGJhY2tzIHN1cHByZXNzZWQK
-U2VwIDE5IDA5OjAwOjU2IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6
-IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2Vw
-IDE5IDA5OjAwOjU2IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZh
-aWxlZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5
-IDA5OjAwOjU2IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxl
-ZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5IDA5
-OjAwOjU2IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0
-byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5IDA5OjAw
-OjU2IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3
-YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5IDA5OjAwOjU2
-IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtl
-IHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5IDA5OjAwOjU2IGhv
-c3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRh
-cmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5IDA5OjAwOjU2IGhvc3Ru
-YW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdl
-dCBmb3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5IDA5OjAwOjU2IGhvc3RuYW1l
-IGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBm
-b3IgcmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5IDA5OjAwOjU2IGhvc3RuYW1lIGtl
-cm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Ig
-cmVhZDMyIGF0IDB4MDAwM2EwMjg6IC0xMTAKU2VwIDE5IDA5OjAwOjU3IGhvc3RuYW1lIGtlcm5l
-bDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byByZWFkIGRldmljZSByZWdpc3Rl
-ciwgZGV2aWNlIGlzIGdvbmUKU2VwIDE5IDA5OjAxOjAxIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBr
-X3dhcm46IDEzNiBjYWxsYmFja3Mgc3VwcHJlc3NlZApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUg
-a2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZv
-ciByZWFkMzIgYXQgMHgwMDAzYTAyODogLTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2Vy
-bmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciBy
-ZWFkMzIgYXQgMHgwMDAzYTAyODogLTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2VybmVs
-OiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFk
-MzIgYXQgMHgwMDAzYTAyODogLTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2VybmVsOiBh
-dGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIg
-YXQgMHgwMDAzYTAyODogLTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2VybmVsOiBhdGgx
-MGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQg
-MHgwMDAzYTAyODogLTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtf
-cGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgw
-MDAzYTAyODogLTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNp
-IDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAz
-YTAyODogLTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAw
-MDA6MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAzYTAy
-ODogLTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6
-MDM6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAzYTAyODog
-LTExMApTZXAgMTkgMDk6MDE6MDEgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6
-MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDAzYTAyODogLTEx
-MApTZXAgMTkgMDk6MDE6MDMgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAu
-MDogZmFpbGVkIHRvIHJlYWQgZGV2aWNlIHJlZ2lzdGVyLCBkZXZpY2UgaXMgZ29uZQpTZXAgMTkg
-MDk6MDE6MDYgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfd2FybjogMTQyIGNhbGxiYWNrcyBzdXBw
-cmVzc2VkClNlcCAxOSAwOTowMTowNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDow
-MzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAt
-MTEwClNlcCAxOSAwOTowMTowNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzow
-MC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEw
-ClNlcCAxOSAwOTowMTowNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4w
-OiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNl
-cCAxOSAwOTowMTowNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBm
-YWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAx
-OSAwOTowMTowNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWls
-ZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAxOSAw
-OTowMTowNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQg
-dG8gd2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAxOSAwOTow
-MTowNiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8g
-d2FrZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAxOSAwOTowMTow
-NiBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2Fr
-ZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAxOSAwOTowMTowNiBo
-b3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0
-YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAxOSAwOTowMTowNiBob3N0
-bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJn
-ZXQgZm9yIHJlYWQzMiBhdCAweDAwMDNhMDI4OiAtMTEwClNlcCAxOSAwOTowMTowNyBob3N0bmFt
-ZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gcmVhZCBkZXZpY2Ug
-cmVnaXN0ZXIsIGRldmljZSBpcyBnb25lClNlcCAxOSAwOTowMTowNyBob3N0bmFtZSBrZXJuZWw6
-IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gcmVzZXQgY2hpcDogLTUKU2VwIDE5
-IDA5OjAxOjA3IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IENvdWxk
-IG5vdCBpbml0IGhpZjogLTUKU2VwIDE5IDA5OjAxOjA3IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBr
-X3BjaSAwMDAwOjAzOjAwLjA6IGZpcm13YXJlIGNyYXNoZWQhIChndWlkIDE4MWNlYmIwLTdlZjct
-NGY0My04NjdkLWY3YzIyMGRlNWU4MykKU2VwIDE5IDA5OjAxOjA3IGhvc3RuYW1lIGtlcm5lbDog
-YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IHFjYTYxNzQgaHczLjIgdGFyZ2V0IDB4MDUwMzAwMDAg
-Y2hpcF9pZCAweDAwMzQwYWZmIHN1YiAxN2FhOjA4MjcKU2VwIDE5IDA5OjAxOjA3IGhvc3RuYW1l
-IGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGtjb25maWcgZGVidWcgMSBkZWJ1Z2Zz
-IDEgdHJhY2luZyAxIGRmcyAwIHRlc3Rtb2RlIDAKU2VwIDE5IDA5OjAxOjA3IGhvc3RuYW1lIGtl
-cm5lbDogTW9kdWxlcyBsaW5rZWQgaW46IGNjbSBkbV9jcnlwdCBjYmMgZW5jcnlwdGVkX2tleXMg
-dHJ1c3RlZCBhc24xX2VuY29kZXIgdGVlIHNlcnBlbnRfYXZ4MiBzZXJwZW50X2F2eF94ODZfNjQg
-c2VycGVudF9zc2UyX3g4Nl82NCBzZXJwZW50X2dlbmVyaWMgeHRzIGVjYiBhbGdpZl9za2NpcGhl
-ciBhZl9hbGcgc25kX3NvY19hdnMgc25kX3NvY19oZGFfY29kZWMgaW50ZWxfcmFwbF9tc3Igc25k
-X3NvY19za2wgaW50ZWxfcmFwbF9jb21tb24gc25kX2hkYV9jb2RlY19oZG1pIHNuZF9zb2NfaGRh
-Y19oZGEgaW50ZWxfdGNjX2Nvb2xpbmcgc25kX2hkYV9leHRfY29yZSB4ODZfcGtnX3RlbXBfdGhl
-cm1hbCBzbmRfc29jX3NzdF9pcGMgaW50ZWxfcG93ZXJjbGFtcCBzbmRfc29jX3NzdF9kc3Agc25k
-Cl9zb2NfYWNwaV9pbnRlbF9tYXRjaCBzbmRfc29jX2FjcGkgY29yZXRlbXAgc25kX3NvY19jb3Jl
-IHNuZF9oZGFfY29kZWNfcmVhbHRlayBrdm1faW50ZWwgc25kX2hkYV9jb2RlY19nZW5lcmljIHNu
-ZF9jb21wcmVzcyBhYzk3X2J1cyBsZWR0cmlnX2F1ZGlvIHNuZF9wY21fZG1hZW5naW5lIGt2bSBq
-b3lkZXYgaGlkX3NlbnNvcl9hY2NlbF8zZCBhdGgxMGtfcGNpIHJ0MjgwMHVzYiBoaWRfc2Vuc29y
-X3RyaWdnZXIgc25kX2hkYV9pbnRlbCBpbmR1c3RyaWFsaW9fdHJpZ2dlcmVkX2J1ZmZlciBpcnFi
-eXBhc3MgcnQyeDAwdXNiIGF0aDEwa19jb3JlIG1vdXNlZGV2IHNuZF9pbnRlbF9kc3BjZmcgY3Jj
-dDEwZGlmX3BjbG11bCBzbmRfaW50ZWxfc2R3X2FjcGkgcnQyODAwbGliIGtmaWZvX2J1ZiBjcmMz
-Ml9wY2xtdWwgcG9seXZhbF9jbG11bG5pIHdhYwpvbSBoaWRfc2Vuc29yX2lpb19jb21tb24gc25k
-X2hkYV9jb2RlYyB1dmN2aWRlbyBydDJ4MDBsaWIgYXRoIHBvbHl2YWxfZ2VuZXJpYyBpbmR1c3Ry
-aWFsaW8gaGlkX3NlbnNvcl9jdXN0b20gZ2YxMjhtdWwgc25kX2hkYV9jb3JlIHVzYmhpZCB2aWRl
-b2J1ZjJfdm1hbGxvYwpTZXAgMTkgMDk6MDE6MDcgaG9zdG5hbWUga2VybmVsOiBhdGgxMGtfcGNp
-IDAwMDA6MDM6MDAuMDogZmlybXdhcmUgdmVyIFdMQU4uUk0uNC40LjEtMDAxNTctUUNBUk1TV1Ba
-LTEgYXBpIDYgZmVhdHVyZXMgd293bGFuLGlnbm9yZS1vdHAsbWZwIGNyYzMyIDkwZWViZWZiClNl
-cCAxOSAwOTowMTowNyBob3N0bmFtZSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBi
-b2FyZF9maWxlIGFwaSAyIGJtaV9pZCBOL0EgY3JjMzIgNzA2YzM5NWUKU2VwIDE5IDA5OjAxOjA3
-IGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGh0dC12ZXIgMy42MCB3
-bWktb3AgNCBodHQtb3AgMyBjYWwgb3RwIG1heC1zdGEgMzIgcmF3IDAgaHdjcnlwdG8gMQpTZXAg
-MTkgMDk6MDE6MTEgaG9zdG5hbWUga2VybmVsOiBNb2R1bGVzIGxpbmtlZCBpbjogY2NtIGRtX2Ny
-eXB0IGNiYyBlbmNyeXB0ZWRfa2V5cyB0cnVzdGVkIGFzbjFfZW5jb2RlciB0ZWUgc2VycGVudF9h
-dngyIHNlcnBlbnRfYXZ4X3g4Nl82NCBzZXJwZW50X3NzZTJfeDg2XzY0IHNlcnBlbnRfZ2VuZXJp
-YyB4dHMgZWNiIGFsZ2lmX3NrY2lwaGVyIGFmX2FsZyBzbmRfc29jX2F2cyBzbmRfc29jX2hkYV9j
-b2RlYyBpbnRlbF9yYXBsX21zciBzbmRfc29jX3NrbCBpbnRlbF9yYXBsX2NvbW1vbiBzbmRfaGRh
-X2NvZGVjX2hkbWkgc25kX3NvY19oZGFjX2hkYSBpbnRlbF90Y2NfY29vbGluZyBzbmRfaGRhX2V4
-dF9jb3JlIHg4Nl9wa2dfdGVtcF90aGVybWFsIHNuZF9zb2Nfc3N0X2lwYyBpbnRlbF9wb3dlcmNs
-YW1wIHNuZF9zb2Nfc3N0X2RzcCBzbmQKX3NvY19hY3BpX2ludGVsX21hdGNoIHNuZF9zb2NfYWNw
-aSBjb3JldGVtcCBzbmRfc29jX2NvcmUgc25kX2hkYV9jb2RlY19yZWFsdGVrIGt2bV9pbnRlbCBz
-bmRfaGRhX2NvZGVjX2dlbmVyaWMgc25kX2NvbXByZXNzIGFjOTdfYnVzIGxlZHRyaWdfYXVkaW8g
-c25kX3BjbV9kbWFlbmdpbmUga3ZtIGpveWRldiBoaWRfc2Vuc29yX2FjY2VsXzNkIGF0aDEwa19w
-Y2kgcnQyODAwdXNiIGhpZF9zZW5zb3JfdHJpZ2dlciBzbmRfaGRhX2ludGVsIGluZHVzdHJpYWxp
-b190cmlnZ2VyZWRfYnVmZmVyIGlycWJ5cGFzcyBydDJ4MDB1c2IgYXRoMTBrX2NvcmUgbW91c2Vk
-ZXYgc25kX2ludGVsX2RzcGNmZyBjcmN0MTBkaWZfcGNsbXVsIHNuZF9pbnRlbF9zZHdfYWNwaSBy
-dDI4MDBsaWIga2ZpZm9fYnVmIGNyYzMyX3BjbG11bCBwb2x5dmFsX2NsbXVsbmkgd2FjCm9tIGhp
-ZF9zZW5zb3JfaWlvX2NvbW1vbiBzbmRfaGRhX2NvZGVjIHV2Y3ZpZGVvIHJ0MngwMGxpYiBhdGgg
-cG9seXZhbF9nZW5lcmljIGluZHVzdHJpYWxpbyBoaWRfc2Vuc29yX2N1c3RvbSBnZjEyOG11bCBz
-bmRfaGRhX2NvcmUgdXNiaGlkIHZpZGVvYnVmMl92bWFsbG9jClNlcCAxOSAwOTowMToxMSBob3N0
-bmFtZSBrZXJuZWw6IGF0aDEwa193YXJuOiAxNDkgY2FsbGJhY2tzIHN1cHByZXNzZWQKU2VwIDE5
-IDA5OjAxOjExIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxl
-ZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwMzYwNDQ6IC0xMTAKU2VwIDE5IDA5
-OjAxOjExIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0
-byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwMzYwNDQ6IC0xMTAKU2VwIDE5IDA5OjAx
-OjExIGhvc3RuYW1lIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byB3
-YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwMzYwNDQ6IC0xMTAKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+
+--===============2251602339657140509==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="q4A1k7I0McsXj8EB"
+Content-Disposition: inline
+
+
+--q4A1k7I0McsXj8EB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 22, 2023 at 08:59:31PM +0000, Cool Goose wrote:
+> Reference and more details https://bbs.archlinux.org/viewtopic.php?id=3D2=
+88991
+>=20
+> $ sudo journalctl -b | grep ath10k | more
+> Sep 19 07:43:58 hostname kernel: ath10k_pci 0000:03:00.0: pci irq msi ope=
+r_irq_mode 2 irq_mode 0 reset_mode 0
+> Sep 19 07:43:58 hostname kernel: ath10k_pci 0000:03:00.0: qca6174 hw3.2 t=
+arget 0x05030000 chip_id 0x00340aff sub 17aa:0827
+> Sep 19 07:43:58 hostname kernel: ath10k_pci 0000:03:00.0: kconfig debug 1=
+ debugfs 1 tracing 1 dfs 0 testmode 0
+> Sep 19 07:43:58 hostname kernel: ath10k_pci 0000:03:00.0: firmware ver WL=
+AN.RM.4.4.1-00157-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp crc32 90=
+eebefb
+> Sep 19 07:43:59 hostname kernel: ath10k_pci 0000:03:00.0: board_file api =
+2 bmi_id N/A crc32 706c395e
+> Sep 19 07:43:59 hostname kernel: ath10k_pci 0000:03:00.0: htt-ver 3.60 wm=
+i-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> Sep 19 07:43:59 hostname kernel: ath10k_pci 0000:03:00.0 wlp3s0: renamed =
+=66rom wlan0
+> Sep 19 07:43:59 hostname NetworkManager[640]: <info>=C2=A0=C2=A0[16951238=
+39.8991] rfkill2: found Wi-Fi radio killswitch (at /sys/devices/pci0000:00/=
+0000:00:1c.5/0000:03:00.0/ieee80211/phy0/rfkill2) (driver ath10k_pci)
+> Sep 19 08:11:42 hostname kernel: ath10k_pci 0000:03:00.0: timed out waiti=
+ng peer stats info
+> Sep 19 08:11:47 hostname kernel: ath10k_pci 0000:03:00.0: wmi command 901=
+13 timeout, restarting hardware
+> Sep 19 08:11:47 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st stats (-11)
+> Sep 19 08:11:47 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st peer stats info: -108
+> Sep 19 08:11:47 hostname kernel: ath10k_pci 0000:03:00.0: device successf=
+ully recovered
+> Sep 19 08:15:54 hostname kernel: ath10k_pci 0000:03:00.0: timed out waiti=
+ng peer stats info
+> Sep 19 08:15:59 hostname kernel: ath10k_pci 0000:03:00.0: wmi command 901=
+13 timeout, restarting hardware
+> Sep 19 08:15:59 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st stats (-11)
+> Sep 19 08:15:59 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st peer stats info: -108
+> Sep 19 08:15:59 hostname kernel: ath10k_pci 0000:03:00.0: failed to read =
+hi_board_data address: -16
+> Sep 19 08:16:02 hostname kernel: ath10k_pci 0000:03:00.0: failed to recei=
+ve initialized event from target: 00000000
+> Sep 19 08:16:05 hostname kernel: ath10k_pci 0000:03:00.0: failed to recei=
+ve initialized event from target: 00000000
+> Sep 19 08:16:05 hostname kernel: ath10k_pci 0000:03:00.0: failed to wait =
+for target init: -110
+> Sep 19 08:16:05 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st stats (-108)
+> Sep 19 08:16:05 hostname kernel: ath10k_pci 0000:03:00.0: device successf=
+ully recovered
+> Sep 19 08:20:30 hostname kernel: ath10k_pci 0000:03:00.0: failed to recei=
+ve scan abortion completion: timed out
+> Sep 19 08:20:30 hostname kernel: ath10k_pci 0000:03:00.0: failed to abort=
+ scan: -110
+> Sep 19 08:20:36 hostname kernel: ath10k_pci 0000:03:00.0: wmi command 901=
+24 timeout, restarting hardware
+> Sep 19 08:20:36 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st peer stats info: -11
+> Sep 19 08:20:36 hostname kernel: ath10k_pci 0000:03:00.0: device successf=
+ully recovered
+> Sep 19 08:25:55 hostname kernel: ath10k_pci 0000:03:00.0: failed to recei=
+ve scan abortion completion: timed out
+> Sep 19 08:25:55 hostname kernel: ath10k_pci 0000:03:00.0: failed to abort=
+ scan: -110
+> Sep 19 08:26:00 hostname kernel: ath10k_pci 0000:03:00.0: wmi command 901=
+24 timeout, restarting hardware
+> Sep 19 08:26:00 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st peer stats info: -11
+> Sep 19 08:26:00 hostname kernel: ath10k_pci 0000:03:00.0: device successf=
+ully recovered
+> Sep 19 08:28:24 hostname kernel: ath10k_pci 0000:03:00.0: timed out waiti=
+ng peer stats info
+> Sep 19 08:28:29 hostname kernel: ath10k_pci 0000:03:00.0: wmi command 901=
+13 timeout, restarting hardware
+> Sep 19 08:28:29 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st stats (-11)
+> Sep 19 08:28:29 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st peer stats info: -108
+> Sep 19 08:28:29 hostname kernel: ath10k_pci 0000:03:00.0: failed to read =
+hi_board_data address: -16
+> Sep 19 08:28:32 hostname kernel: ath10k_pci 0000:03:00.0: failed to recei=
+ve initialized event from target: 00000000
+> Sep 19 08:28:35 hostname kernel: ath10k_pci 0000:03:00.0: failed to recei=
+ve initialized event from target: 00000000
+> Sep 19 08:28:35 hostname kernel: ath10k_pci 0000:03:00.0: failed to wait =
+for target init: -110
+> Sep 19 08:28:35 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st stats (-108)
+> Sep 19 08:28:35 hostname kernel: ath10k_pci 0000:03:00.0: device successf=
+ully recovered
+> Sep 19 08:35:24 hostname kernel: ath10k_pci 0000:03:00.0: timed out waiti=
+ng peer stats info
+> Sep 19 08:35:29 hostname kernel: ath10k_pci 0000:03:00.0: wmi command 901=
+13 timeout, restarting hardware
+> Sep 19 08:35:29 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st stats (-11)
+> Sep 19 08:35:29 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st peer stats info: -108
+> Sep 19 08:35:29 hostname kernel: ath10k_pci 0000:03:00.0: device successf=
+ully recovered
+> Sep 19 08:39:42 hostname kernel: ath10k_pci 0000:03:00.0: timed out waiti=
+ng peer stats info
+> Sep 19 08:39:47 hostname kernel: ath10k_pci 0000:03:00.0: wmi command 901=
+13 timeout, restarting hardware
+> Sep 19 08:39:47 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st stats (-11)
+> Sep 19 08:39:47 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st peer stats info: -108
+> Sep 19 08:39:47 hostname kernel: ath10k_pci 0000:03:00.0: device successf=
+ully recovered
+> Sep 19 09:00:31 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:32 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0x0000000e at 0x0003503c: -110
+> Sep 19 09:00:32 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:33 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0x0000000f at 0x0003503c: -110
+> Sep 19 09:00:36 hostname kernel: ath10k_pci 0000:03:00.0: timed out waiti=
+ng peer stats info
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: wmi command 901=
+13 timeout, restarting hardware
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st stats (-11)
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: could not reque=
+st peer stats info: -108
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a000: -110
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0x00000000 at 0x00036040: -110
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0x00000000 at 0x0003603c: -110
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:41 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_warn: 137 callbacks suppressed
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:46 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_warn: 135 callbacks suppressed
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0xfffffffe at 0x00035c2c: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00035c34: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0xfffff81f at 0x00035c34: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00035c2c: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0xffffffe1 at 0x00035c2c: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0x00000000 at 0x0003a008: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0x0007fc00 at 0x0003a014: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a008: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a000: -110
+> Sep 19 09:00:51 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for write32 of 0xfffff7ff at 0x0003a000: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_warn: 136 callbacks suppressed
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:56 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:00:57 hostname kernel: ath10k_pci 0000:03:00.0: failed to read =
+device register, device is gone
+> Sep 19 09:01:01 hostname kernel: ath10k_warn: 136 callbacks suppressed
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:01 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:03 hostname kernel: ath10k_pci 0000:03:00.0: failed to read =
+device register, device is gone
+> Sep 19 09:01:06 hostname kernel: ath10k_warn: 142 callbacks suppressed
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:06 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x0003a028: -110
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: failed to read =
+device register, device is gone
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: failed to reset=
+ chip: -5
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: Could not init =
+hif: -5
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: firmware crashe=
+d! (guid 181cebb0-7ef7-4f43-867d-f7c220de5e83)
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: qca6174 hw3.2 t=
+arget 0x05030000 chip_id 0x00340aff sub 17aa:0827
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: kconfig debug 1=
+ debugfs 1 tracing 1 dfs 0 testmode 0
+> Sep 19 09:01:07 hostname kernel: Modules linked in: ccm dm_crypt cbc encr=
+ypted_keys trusted asn1_encoder tee serpent_avx2 serpent_avx_x86_64 serpent=
+_sse2_x86_64 serpent_generic xts ecb algif_skcipher af_alg snd_soc_avs snd_=
+soc_hda_codec intel_rapl_msr snd_soc_skl intel_rapl_common snd_hda_codec_hd=
+mi snd_soc_hdac_hda intel_tcc_cooling snd_hda_ext_core x86_pkg_temp_thermal=
+ snd_soc_sst_ipc intel_powerclamp snd_soc_sst_dsp snd
+> _soc_acpi_intel_match snd_soc_acpi coretemp snd_soc_core snd_hda_codec_re=
+altek kvm_intel snd_hda_codec_generic snd_compress ac97_bus ledtrig_audio s=
+nd_pcm_dmaengine kvm joydev hid_sensor_accel_3d ath10k_pci rt2800usb hid_se=
+nsor_trigger snd_hda_intel industrialio_triggered_buffer irqbypass rt2x00us=
+b ath10k_core mousedev snd_intel_dspcfg crct10dif_pclmul snd_intel_sdw_acpi=
+ rt2800lib kfifo_buf crc32_pclmul polyval_clmulni wac
+> om hid_sensor_iio_common snd_hda_codec uvcvideo rt2x00lib ath polyval_gen=
+eric industrialio hid_sensor_custom gf128mul snd_hda_core usbhid videobuf2_=
+vmalloc
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: firmware ver WL=
+AN.RM.4.4.1-00157-QCARMSWPZ-1 api 6 features wowlan,ignore-otp,mfp crc32 90=
+eebefb
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: board_file api =
+2 bmi_id N/A crc32 706c395e
+> Sep 19 09:01:07 hostname kernel: ath10k_pci 0000:03:00.0: htt-ver 3.60 wm=
+i-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> Sep 19 09:01:11 hostname kernel: Modules linked in: ccm dm_crypt cbc encr=
+ypted_keys trusted asn1_encoder tee serpent_avx2 serpent_avx_x86_64 serpent=
+_sse2_x86_64 serpent_generic xts ecb algif_skcipher af_alg snd_soc_avs snd_=
+soc_hda_codec intel_rapl_msr snd_soc_skl intel_rapl_common snd_hda_codec_hd=
+mi snd_soc_hdac_hda intel_tcc_cooling snd_hda_ext_core x86_pkg_temp_thermal=
+ snd_soc_sst_ipc intel_powerclamp snd_soc_sst_dsp snd
+> _soc_acpi_intel_match snd_soc_acpi coretemp snd_soc_core snd_hda_codec_re=
+altek kvm_intel snd_hda_codec_generic snd_compress ac97_bus ledtrig_audio s=
+nd_pcm_dmaengine kvm joydev hid_sensor_accel_3d ath10k_pci rt2800usb hid_se=
+nsor_trigger snd_hda_intel industrialio_triggered_buffer irqbypass rt2x00us=
+b ath10k_core mousedev snd_intel_dspcfg crct10dif_pclmul snd_intel_sdw_acpi=
+ rt2800lib kfifo_buf crc32_pclmul polyval_clmulni wac
+> om hid_sensor_iio_common snd_hda_codec uvcvideo rt2x00lib ath polyval_gen=
+eric industrialio hid_sensor_custom gf128mul snd_hda_core usbhid videobuf2_=
+vmalloc
+> Sep 19 09:01:11 hostname kernel: ath10k_warn: 149 callbacks suppressed
+> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake =
+target for read32 at 0x00036044: -110
+>=20
+
+Looks like hardware issue, right?
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--q4A1k7I0McsXj8EB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQ4vOwAKCRD2uYlJVVFO
+o/VaAQDmlbm+L/k51oqCIzFGWLPB0hLoER3gOrSxdxjPz3aMdgD/aKb3Ito06kNA
+PornXw3GHqVg1BtKdBXhdHOqY5WqFQ4=
+=GLGJ
+-----END PGP SIGNATURE-----
+
+--q4A1k7I0McsXj8EB--
+
+
+--===============2251602339657140509==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============2251602339657140509==--
+
