@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2BA2E784BF
-	for <ath10k@archiver.kernel.org>; Mon,  2 Oct 2023 15:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C817CE784BC
+	for <ath10k@archiver.kernel.org>; Mon,  2 Oct 2023 15:11:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=KRxZPyJPY+4OgVFFUqDEAQdf5xSAuGqL7JDAV3/0axE=; b=zcYUAW5Lzswr/I
-	G9pGFSW/UWkuXms78F98Wb4WQDyTUYuQUHp/+/T8/PgD5NiXTdWIiUR8GGcU/gUiDC/b+ReoUj46c
-	13AM09pI/yGW07MsTz+65KU58ACVAk9g8ThAlwDl5zFNplaAjZ2zHklzhVR7RwYn3ayK86sXI1/Yp
-	GEpxS4GdwAt4tSSXpcLBfeaC7mm67unIJCCET/C4L6h1jOsfcRtpYbSlCyUJuZOGWw4no7khPlYG/
-	+oycIXligvf64KTh69Icde6vatzB3csJ79SXIEBrjejDuva+05wGc8ChyOjNisyfDWMGJ93AU05sr
-	mTOD3gjxWsJt9yOM9S4w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6TAd18YRc/gIfb4ERvJbbekABJd4UFV2R0EWlZpTgX8=; b=bxiyxRpvpdWxdI
+	NBBt70BevRIxFe89SinQ9SxadApRNTXlTl8B/3sMm7kj5zUUuxtjTn1EBS+07RgJhNBC7di4q0qkk
+	WMTl+UWNtgAMOIAOoTvtZLLFIvrbC0D/ENcRDxDqT9pmE33Qf2OHPKn9PHQLmOgzuefzON9qcIN5/
+	Jv+oukQjMEq94VTklnCDUKfBILM6vDhXRjepIHZ5hmIdHCXWmHjMJB/+wR4oHOQvmXQOTFjRq4+Bk
+	Zei5g7tC8RcBHAPoRNwFxolMWjI0pxIqqPpCYlrEBntb70m8GP1EVfcZGw/UwO5vOfQ2hbT39T3oM
+	u7gRyz0yQBaPAJUBuyZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnKZH-00CwlP-0p;
-	Mon, 02 Oct 2023 15:10:43 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1qnKZJ-00CwnH-2p;
+	Mon, 02 Oct 2023 15:10:45 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnKZC-00Cwie-1N;
-	Mon, 02 Oct 2023 15:10:40 +0000
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4060b623e64so19744735e9.0;
-        Mon, 02 Oct 2023 08:10:37 -0700 (PDT)
+	id 1qnKZE-00CwjS-0a;
+	Mon, 02 Oct 2023 15:10:41 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405417465aaso158484815e9.1;
+        Mon, 02 Oct 2023 08:10:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696259435; x=1696864235; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ow78hAE0yIyUemUyYOBz3q9ywNhxcPT95anou49aj54=;
-        b=NR82s8eQn/OM25bqXOx048irJE2xiZJsjZ6zxKGrpuqvk1+94SNGAWk73MmKdFRR2z
-         u5jxqVhicD/Fu5s1pfGX6vmiJjRdsdM56cYfB2nGTqBOfD8kZmJOC84QzYPyw0d3NaVW
-         f5V9Q/hV6OPO9IYWFcaPRMdRJfbt1FW9Jq/zVfXiCJyxZHiyGg1nqLtlkLHTjo2EcQtX
-         UZ59mC815vTFjso+3ntHpktUOXrKDFS0FMcp3u7id2MN/12SGMKZ+4y+DCEdiCWHhQjX
-         EsEN4zeznZNvZOA/9HCJKlRTn1W0KMo/QmkRAp9Uawjsu+2fvegmcMbozg1VYvD4hKlV
-         grWA==
+        d=gmail.com; s=20230601; t=1696259439; x=1696864239; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0xSoAm+ROAl+uYnsbqkuF+kzUuWhCjT5vlITwi8Kq2Y=;
+        b=lXE7mTg3k5n/uLwS6W6C7Ubcl2Oh+PXtPr032W0oRbRsgT67sRzG8FIxcoKRf1YGW+
+         HwyNwwTv/HdjrlophyyOpILq5loO5A0TasWkdMz3gJD0Y8co7NRRAkGxETUhWpGHK1cs
+         +EI/892tSIK1GJRRkeQbUJIz47e4mltaOcSMGkAkTWFYTfF21q8aat8G/f1hGGsdlVHG
+         9pa6LQEK35W9nNL5Yyb2SA3ZHCXoOOuxnfNaNY2fCTMTQYrCauer6io3Cz+HMskRg5NI
+         KWgE3Oo46opgo2vCzC9S5allIzynlzW2mrjsLCKdNS1stOahJ9Gu5dkYm04K5IBPx4fZ
+         +w/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696259435; x=1696864235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ow78hAE0yIyUemUyYOBz3q9ywNhxcPT95anou49aj54=;
-        b=LuoSIglD4xCxvEYYRlJm4/ipY4zSpStMV50/xVpLLJA5rZO1Z71iPTQBYyGaaYfjDl
-         fMWHmz2W0LAj+WzNKck5ca/axCB5xYZRtWua4IbB4+6brsVnXyhzcEhvzedOj3naIYo2
-         iKzuctMrudCIOF1t6MuBGNDq3Oe19E2++55PXpLcdGSl8gGGpKR9TuMbPEK7XxeMyBfX
-         m+7n8KaUs/wm38C59ki7ZiSo+XwqV0+5zaIqXirtrsWTaYQbeuEfo+tjCjScJHNJ8Rd0
-         Gx385xGzFC/lquz0KUOEFNuBqyfJJFrd4c0c82bnPu0AXmAlRlnlbFBjh4UZXe6E1LBT
-         MfoA==
-X-Gm-Message-State: AOJu0YxM3u+imBXQ8DcaYks6lNONGJP9zGpwHIEx7Mj5ioTXlDADw1+b
-	aslbBYvib9i8vyObE93zC9M=
-X-Google-Smtp-Source: AGHT+IER54DFWa7vQIFTj6+iJgsPdY5/GDB29GHbGeIgWOfOFDfcvPSoorLgTOCTW0kTjVMyBnWZcA==
-X-Received: by 2002:a05:600c:4991:b0:401:b92f:eec5 with SMTP id h17-20020a05600c499100b00401b92feec5mr10163374wmp.9.1696259434455;
-        Mon, 02 Oct 2023 08:10:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696259439; x=1696864239;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0xSoAm+ROAl+uYnsbqkuF+kzUuWhCjT5vlITwi8Kq2Y=;
+        b=U964YGiErwEVpA2i4xbrgfMMtkF5/tJD6QU+Mb4Ciu9EkIWI8EZlnKC/yiWqoFAmDL
+         PwDlJ5mAfTbytaj7HMg+JgROZKR3fMva/21glPItqULfPNS2XqtYyV3Amyy/kC3YkLqK
+         5SwZjy0zoV3aINriVwDdxlZg0eBf49E+3v3Mim/GAcN1dyq/ZKnWWaw4VzmHHBcUgP/z
+         LR4Nx28S4WPu0ElvYFWbFDqmT2VGMszzIhPiifGUFrTu5mWf/dchdNaP7kyPaB+WIk8V
+         m9bYw2sW35OgbYC84OrLCk8qn/IBU6bPpSIeI6gs4cxE9UXYvQmA15Hg8Mad1Hhcd9lo
+         xfHA==
+X-Gm-Message-State: AOJu0Yy5NsVJTy+vJ5KvvZhbumHH6DRyZKdCwKQptNWDZRx4cc95qKra
+	dsgH7YanDZr9P5haEjdWTKo=
+X-Google-Smtp-Source: AGHT+IEEZGlFjpx8lLo9tvllSBQ9uSdgJbt7Jo8+TnnbkK3MrDUsxRAVP26IXHgFIeF3CU+ec1ay4w==
+X-Received: by 2002:a05:600c:5007:b0:405:315f:e676 with SMTP id n7-20020a05600c500700b00405315fe676mr10563085wmr.3.1696259438602;
+        Mon, 02 Oct 2023 08:10:38 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id t15-20020a1c770f000000b00406408dc788sm7421565wmi.44.2023.10.02.08.10.30
+        by smtp.googlemail.com with ESMTPSA id t15-20020a1c770f000000b00406408dc788sm7421565wmi.44.2023.10.02.08.10.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 08:10:32 -0700 (PDT)
+        Mon, 02 Oct 2023 08:10:37 -0700 (PDT)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
@@ -131,14 +133,16 @@ To: Jason Gunthorpe <jgg@ziepe.ca>,
 	linux-arm-kernel@lists.infradead.org,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org
-Subject: [net-next PATCH 1/4] netdev: replace simple napi_schedule_prep/__napi_schedule to napi_schedule
-Date: Mon,  2 Oct 2023 17:10:20 +0200
-Message-Id: <20231002151023.4054-1-ansuelsmth@gmail.com>
+Subject: [net-next PATCH 2/4] netdev: make napi_schedule return bool on NAPI successful schedule
+Date: Mon,  2 Oct 2023 17:10:21 +0200
+Message-Id: <20231002151023.4054-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231002151023.4054-1-ansuelsmth@gmail.com>
+References: <20231002151023.4054-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231002_081038_472306_88110600 
-X-CRM114-Status: GOOD (  12.35  )
+X-CRM114-CacheID: sfid-20231002_081040_226733_4009DC91 
+X-CRM114-Status: GOOD (  13.26  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,44 +159,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Replace drivers that still use napi_schedule_prep/__napi_schedule
-with napi_schedule helper as it does the same exact check and call.
+Change napi_schedule to return a bool on NAPI successful schedule. This
+might be useful for some driver to do additional step after a NAPI ahs
+been scheduled.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/ethernet/ni/nixge.c     | 3 +--
- drivers/net/ethernet/wiznet/w5100.c | 4 ++--
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ include/linux/netdevice.h | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ni/nixge.c b/drivers/net/ethernet/ni/nixge.c
-index 97f4798f4b42..f71a4f8bbb89 100644
---- a/drivers/net/ethernet/ni/nixge.c
-+++ b/drivers/net/ethernet/ni/nixge.c
-@@ -755,8 +755,7 @@ static irqreturn_t nixge_rx_irq(int irq, void *_ndev)
- 		cr &= ~(XAXIDMA_IRQ_IOC_MASK | XAXIDMA_IRQ_DELAY_MASK);
- 		nixge_dma_write_reg(priv, XAXIDMA_RX_CR_OFFSET, cr);
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 7e520c14eb8c..2bead8e2a14d 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -490,11 +490,18 @@ bool napi_schedule_prep(struct napi_struct *n);
+  *
+  * Schedule NAPI poll routine to be called if it is not already
+  * running.
++ * Return true if we schedule a NAPI or false if not.
++ * Refer to napi_schedule_prep() for additional reason on why
++ * a NAPI might not be scheduled.
+  */
+-static inline void napi_schedule(struct napi_struct *n)
++static inline bool napi_schedule(struct napi_struct *n)
+ {
+-	if (napi_schedule_prep(n))
++	if (napi_schedule_prep(n)) {
+ 		__napi_schedule(n);
++		return true;
++	}
++
++	return false;
+ }
  
--		if (napi_schedule_prep(&priv->napi))
--			__napi_schedule(&priv->napi);
-+		napi_schedule(&priv->napi);
- 		goto out;
- 	}
- 	if (!(status & XAXIDMA_IRQ_ALL_MASK)) {
-diff --git a/drivers/net/ethernet/wiznet/w5100.c b/drivers/net/ethernet/wiznet/w5100.c
-index 341ee2f249fd..5613fd6a9f0a 100644
---- a/drivers/net/ethernet/wiznet/w5100.c
-+++ b/drivers/net/ethernet/wiznet/w5100.c
-@@ -930,8 +930,8 @@ static irqreturn_t w5100_interrupt(int irq, void *ndev_instance)
- 
- 		if (priv->ops->may_sleep)
- 			queue_work(priv->xfer_wq, &priv->rx_work);
--		else if (napi_schedule_prep(&priv->napi))
--			__napi_schedule(&priv->napi);
-+		else
-+			napi_schedule(&priv->napi)
- 	}
- 
- 	return IRQ_HANDLED;
+ /**
 -- 
 2.40.1
 
