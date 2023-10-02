@@ -4,165 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA083E743C3
-	for <ath10k@archiver.kernel.org>; Mon,  2 Oct 2023 16:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64293E784AB
+	for <ath10k@archiver.kernel.org>; Mon,  2 Oct 2023 16:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Q/RAeYCHnQcJAlg1zB6DnRvlX/7NOr9s68wxSdDfFbc=; b=vrAa8PVJ5EgygtWHC171kyCdKT
-	+Fu1r2koA+ABabNHUoxtlHoH6Wk5/iLgopr1KN0Aef2+y0QEoIu4rGsmdJ5qyMBdzsTrqXSP6LWmp
-	YxiRwkvSGBzTwScjft50mo88tipj+a72FBqI0zEFrd5+ry87HAbD49Ww0GYSQ6mgVmbQ6cQjgDbrC
-	r4DYfCBvToq5WuPKUV+koFcbjQJyI97l2J04Hi7FZYxeLlrcaxy1bBCXXZUG0yfU+mqwPxV7wVi8U
-	jIOoSvUTINPHydb63ebqVIA1gR8miepOIYhi8G/O/DyvPPjwA2Y/1FhZ2v0xoNo+YxBFeAgmcSD6r
-	62ezuucA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=m7aHR+UPgWY91wJ9NXNH/JSYQHag5PBJlX/v6hY8wCc=; b=WIAnegDKa8XAtl
+	DJwL2j6sDpMKvyHRbsFgClF1/XFof++rZsAZQDTdCi3LGoq5OMfqm0wrvKRsXEfgcrpeYDARizzE7
+	8dA0fYjiRM/Px6/Q7DFrW1pIbh6Rg6+7HY4UlOFbAe143yDB4xFWCrM4EotTeTVEZp+b3Au3VjOk0
+	F0z4oFbLfTogAIx5MCoCPgBqFvG7eHc3jjuU+xVTskqHZhC0T32AVG1og9a5mucd+nJ/YZZxcIbnW
+	Ac5vDgajZfR78NQlEPT8DJFI1TH+w9x9qAm7uHQ+eLCJSH9XFTQEJflNXwH8pIOh3CWSgUgSocOcP
+	1RnqCdPCkMb3Lg8+w8Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnLXK-00D396-0Y;
-	Mon, 02 Oct 2023 16:12:46 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1qnMCH-00D6ZG-1O;
+	Mon, 02 Oct 2023 16:55:05 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnLXG-00D38g-2n
+	id 1qnMCD-00D6Yb-2n
 	for ath10k@lists.infradead.org;
-	Mon, 02 Oct 2023 16:12:44 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392Dgret007349;
-	Mon, 2 Oct 2023 16:12:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4U6I1yGXylUwoYhJHHuq9oq3NNPfZ9+VoPLpLJ7ibnI=;
- b=KsF/+a8U2akYJdmW5doJsr/I51j/zCz0l/Ob9xnFSqzsGzNWRzaYwzy7wQVXQH4WnkCX
- FR4I4WE+DID+Z52T96TUB0WYhMCJPNVyhuVVEsiGFfC2ranbQYWocqL39f6GwGIiUtae
- AFLes8D0LFiBiLc+5V1la63eH5p3bvGfNVXe7BcXPP1J6dLSTZZtOvDFo/MDwOn3kRLp
- PozHZXDEYcWl98g+vHP3zHdFp9v++8UA6jgakVOd+AXC435PtBh4+4dQZ51UIyoir1S4
- EtVAVTfYVLuTlPbiqPRptAh+mdHNfzcvuWr9Ti0atL38FvVhrg8h5ybM27N62PDgsAZ8 9A== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tec2eksy7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 02 Oct 2023 16:12:16 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 392GCEiI001194
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 2 Oct 2023 16:12:14 GMT
-Received: from [10.111.179.185] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 2 Oct
- 2023 09:12:11 -0700
-Message-ID: <5680429a-72fc-4aae-8e92-d6b31aabe205@quicinc.com>
-Date: Mon, 2 Oct 2023 09:12:11 -0700
+	Mon, 02 Oct 2023 16:55:03 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 930CCB810AC;
+	Mon,  2 Oct 2023 16:55:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC2ECC433C7;
+	Mon,  2 Oct 2023 16:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696265700;
+	bh=l6R77HZ01blh2QJJ24Cf8mBZfE1MZp3Lc/qYTwT536s=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=jRvCBWhEH/v0VmYwUbKMeNiLN2Tq7o6bVijkTG4OFg7UTj42F3CWe4mNSOwD5V8Zp
+	 9e4gSch7PWP0Jy6BaCHEpgECLQQIcj8gRhi6s2G+Ew5HFpIipcxLPTceb7S09VXWQN
+	 VsgXeUAu2YCvIvjbjw95gzRBSgEo+5mb8lKBmxnPtAMsAgSDiH7eNlqAwxXTbgMxJC
+	 OkLj/26JkK4xh7cwmYrb1satETBvSr/jaFUnmpN2Lo2F1uX8eWdgjylLkmMblg9kOn
+	 mlgd0wng8BTrzU43p4CrruKIIIDYpN9VWe+xLRHr6cV3MpAmhJLnMqJ8nMKeXMF98m
+	 CZQnB0kmpnuDg==
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH 3/4] netdev: replace napi_reschedule with
- napi_schedule
-Content-Language: en-US
-To: Christian Marangi <ansuelsmth@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Chris Snook
-	<chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst
-	<jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller
-	<dougmill@linux.ibm.com>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Michael
- Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Haren Myneni
-	<haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden
-	<danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan
-	<tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose
- Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>, Kalle Valo <kvalo@kernel.org>,
-        Gregory
- Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda
-	<chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun
-	<haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain
-	<loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes
- Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>, Wei
- Fang <wei.fang@nxp.com>,
-        Alex Elder <elder@linaro.org>, Simon Horman
-	<horms@kernel.org>,
-        Rob Herring <robh@kernel.org>, Bailey Forrest
-	<bcf@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Junfeng Guo
-	<junfeng.guo@intel.com>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Thomas Gleixner
-	<tglx@linutronix.de>,
-        Rushil Gupta <rushilg@google.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Yuri
- Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew
- Lunn <andrew@lunn.ch>, Zheng Zengkai <zhengzengkai@huawei.com>,
-        "Rafael J.
- Wysocki" <rafael.j.wysocki@intel.com>,
-        Lee Jones <lee@kernel.org>, Dawei Li
-	<set_pte_at@outlook.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Berg
-	<benjamin.berg@intel.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <ath10k@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>
-References: <20231002151023.4054-1-ansuelsmth@gmail.com>
- <20231002151023.4054-3-ansuelsmth@gmail.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20231002151023.4054-3-ansuelsmth@gmail.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8Wfs-2don1ca6uoCBQGuqrcE7ZOwJbow
-X-Proofpoint-ORIG-GUID: 8Wfs-2don1ca6uoCBQGuqrcE7ZOwJbow
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_10,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- adultscore=0 priorityscore=1501 malwarescore=0 suspectscore=0
- mlxlogscore=829 spamscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310020124
+Subject: Re: [PATCH] [v2] wifi: ath10k: consistently use kstrtoX_from_user()
+ functions
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20230920154018.48314-1-dmantipov@yandex.ru>
+References: <20230920154018.48314-1-dmantipov@yandex.ru>
+To: Dmitry Antipov <dmantipov@yandex.ru>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, Dmitry Antipov <dmantipov@yandex.ru>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169626569660.3936351.15391287849518283977.kvalo@kernel.org>
+Date: Mon,  2 Oct 2023 16:54:58 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231002_091243_023273_11B4C36A 
-X-CRM114-Status: GOOD (  11.69  )
+X-CRM114-CacheID: sfid-20231002_095502_059056_7E60DD48 
+X-CRM114-Status: UNSURE (   5.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -174,27 +69,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 10/2/2023 8:10 AM, Christian Marangi wrote:
-> Now that napi_schedule return a bool, we can drop napi_reschedule that
-> does the same exact function. The function comes from a very old commit
-> bfe13f54f502 ("ibm_emac: Convert to use napi_struct independent of struct
-> net_device") and the purpose is actually deprecated in favour of
-> different logic.
-> 
-> Convert every user of napi_reschedule to napi_schedule.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
+Dmitry Antipov <dmantipov@yandex.ru> wrote:
 
-For
->   drivers/net/wireless/ath/ath10k/pci.c                  |  2 +-
+> Use 'kstrtoul_from_user()', 'kstrtobool_from_user()' and
+> 'kstrtoint_from_user()' where appropriate and thus avoid
+> some code duplication.
+> 
+> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Patch applied to ath-next branch of ath.git, thanks.
+
+3fcb81420aca wifi: ath10k: consistently use kstrtoX_from_user() functions
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20230920154018.48314-1-dmantipov@yandex.ru/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
