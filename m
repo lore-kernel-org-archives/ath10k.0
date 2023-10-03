@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94EC1E75425
-	for <ath10k@archiver.kernel.org>; Tue,  3 Oct 2023 05:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20904E75424
+	for <ath10k@archiver.kernel.org>; Tue,  3 Oct 2023 05:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=if4Uwg40bF2012ram4LTatCLPUnWxpwe2Thg+syUYZg=; b=hBzQC9qoWTEHaR
-	5H24cV88JcKMtyyB1/iXbdo5v9ZTZJQJNaDvxMC3rgxeaWnnvfMzOVi7nRULvzmHNTh4XKnN5l0Zc
-	mDQttVNXR2v+qgo+e+y+fciGKRPL0Mtevu6mtP/k5Kx0RpZq/KTuNgW4+fKHkA3JMJ51RzOxEyxas
-	WDhx6M6IKqaplRIO0286Ihdkg34hWj76Q9nskivDfdqvW1+RoP8g58kRZDI1bwGGdvO+cfKaszrPy
-	qZILnBWPhUTnOXG2NsUNSk+lo/BgISXtJpRv2qC+KBRodOq7B5Io5bJWLOMu1AA2+q9+NUUMgFzup
-	8XYX+iADZ9TOx0FDkowQ==;
+	List-Owner; bh=2SXY72uDRRoFjlUsX8M0j9T9x/lCgO6uD3fWMHcxrBI=; b=cSvUNpsqtyq2Mr
+	L1I4kQDyt8m8cOIjuM1sQzpZgWqBRFbh/1RSMImcil6SLTDQK4XS0KLjgEdzMXZi38eesdHFT/tZj
+	NXml57zW+Ltg8wZKTNmXhDJTVcj350Q/qJs9aBDKTVVkb8nFtiQK1v6oCief4JpvF9TPqdqR+9Mya
+	O3gy4rsckP04E+3pWYmTDqCFOaOhakIRdFXeV641S5ybJ1IJfmtxrlJeeV7cXZ8R/iviwrZCLDS/W
+	piX3pk5k85RewhKwqojuKIwni8DDzoA4VXkVBFjVViM0tDxT9trPqn1aYrY+RCJeKqlREkgGSH3kg
+	m2ZMUmgE+59UrTLzEhBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnXtg-00DrVb-0A;
-	Tue, 03 Oct 2023 05:24:40 +0000
+	id 1qnXte-00DrUz-0I;
+	Tue, 03 Oct 2023 05:24:38 +0000
 Received: from mgamail.intel.com ([134.134.136.24])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnXtc-00DrTE-1O
+	id 1qnXta-00DrTE-0N
 	for ath10k@lists.infradead.org;
-	Tue, 03 Oct 2023 05:24:37 +0000
+	Tue, 03 Oct 2023 05:24:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696310676; x=1727846676;
+  t=1696310674; x=1727846674;
   h=date:from:to:cc:subject:message-id;
-  bh=UoLDrKYwZTDNV4lWv+xKUyKdo7g9rOmKEeSCWwWceDA=;
-  b=flKXrecQGopCR24VPIym10naU4+qNAUHJUikkKCO0e4Y60CpLlrBeYj+
-   LO+v7yA6GSKWZoaM4WppWZ4Ud8gWeO5Ssx68fZiLpYu89XLoeZPxRSXxA
-   8JyEj5qQMXTmMQX2ppf1hHMQ19RhwgeNwCFftp5KoeYebkii7/OS/3PeY
-   tkLESjEqkA7UhBxh7Tfc+TILg43+TfkNa6gG/ijeQ/LJaWwEZEKNnHmiO
-   UU8xLr2LSSXtdLvht0cSQAuPFaXwaSE93N4HeFBpa4Z/Ji3Mdd9V0/Cwm
-   tWn0y2bREDCBBcEc/r7lhnY5kjjxftYqVGUOiBvN/AG5jjK2B+3xlfWcb
+  bh=I9hEyjLzrhrE096B+7m3HZmuz8ZKcbAGS0Aoc/wu/nU=;
+  b=BUpjI52cpVSOJ7n5trPY/pCijMpQmt8InyVn+ASokmf8GRosskavNP8o
+   Jw8akDv5olRzIkq7AXTvOj34YVmIgA1iimMquKekQU321Y62R7mrGZHdV
+   D72awxX7Jn4fzOYnbIQKDdy1xSOebsMNSUhi3BdcQqHT0sQj8QrVxOE0h
+   fUxSnhaokQlHem81M/yFaY1RnS/c5ddtyoKLZcvtZ2g3BAuwDn8RTkJGb
+   /xiQskrdvhV88SiIVXUn+OC9a/7BPHpTjiDllxo44h7txv6zy5FMWKX+B
+   lAR4fJlf4hKa0PBWyRlCnE5PTJmgbmgePmmy4f3xc1OayjoSeCsv46VRw
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="385617710"
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="385617708"
 X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="385617710"
+   d="scan'208";a="385617708"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 22:24:30 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="744366780"
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="744366776"
 X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="744366780"
+   d="scan'208";a="744366776"
 Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
   by orsmga007.jf.intel.com with ESMTP; 02 Oct 2023 22:24:28 -0700
 Received: from kbuild by c3b01524d57c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qnXtR-0006nt-2l;
-	Tue, 03 Oct 2023 05:24:25 +0000
-Date: Tue, 03 Oct 2023 13:23:26 +0800
+	id 1qnXtS-0006o1-02;
+	Tue, 03 Oct 2023 05:24:26 +0000
+Date: Tue, 03 Oct 2023 13:23:44 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- d531fe7422a4d02443d2ea15a84039a85c62f9d7
-Message-ID: <202310031324.BLieNMCu-lkp@intel.com>
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ 2b51b76a974aa20dc899859793e630a53c9cc21f
+Message-ID: <202310031341.xisiIJz3-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231002_222436_510688_AD67F0A0 
-X-CRM114-Status: UNSURE (   4.58  )
+X-CRM114-CacheID: sfid-20231002_222434_288708_2CC6D286 
+X-CRM114-Status: UNSURE (   4.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,8 +83,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: d531fe7422a4d02443d2ea15a84039a85c62f9d7  Revert "PCI: Release resource invalidated by coalescing"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: 2b51b76a974aa20dc899859793e630a53c9cc21f  Merge branch 'pending' into master-pending
 
 elapsed time: 726m
 
