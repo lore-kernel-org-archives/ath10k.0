@@ -4,108 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B11A7E75425
-	for <ath10k@archiver.kernel.org>; Tue,  3 Oct 2023 05:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E88A4E75424
+	for <ath10k@archiver.kernel.org>; Tue,  3 Oct 2023 05:24:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZEaCPNiCsjQLSLRPl1fHYBZYUYl/4EBj8M6YU8d8w+E=; b=Y7yZnuiaUo5KIb
-	a9P+T7pxD4AUWeJyVWFgEsWRjw9c5YsR6Mw++9SDNfsDj3GWsxihvf4aNBujpjqkfBK1FWAO6Tar/
-	3QcNCoJT7nyFd7xWCCymYtgQ8NZ1Te9Q31NNnhECZOzXRFkToxJFUuv2mku9qEw7tO6p8hz181sgV
-	upm9IX1dXe7+pQ2vcppt6leyKsiMP1XvtVKccb9pbqlb2C9ZlqarKXgOd6+A64Zp1/AInUCXfBXAj
-	c6+CzvtFUqZlhyzolZ1yy2v2bzXSlIANro18mg6XmoWFN9QIG7wuBqGzmjv21/rqgy3ozycxqwtMz
-	Pb9Voa8XzgV6w9mEd4qw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aX5UceLEBAzph52P9iW7gOuh7029A3NA4G1cKh6LOos=; b=JZ7N6zwwvWW2PD
+	oVMSrsIhcv9xc4N9dKJIT88u3nt0rBNnDTuHw0EZ3K7qbSlC3cRvrlhZOXI+efv0NDsODjieL4IN5
+	ezgxJrjVjLDeqY5OhMXYxWGfei9wA6vu6mdC0OjOhZZuBuySMyneG7rkfYwXFg0xwcL5JkVgFW2sA
+	IRbEDQT1ZUYX7SOLDy+gVC7LC7TxECsOsdLMJbx8F0tSqtww7fvl8sWs0ZFUUtQYut4jzVHjzEfbb
+	AHqwtQAokPSTD6V2OqPx2h7fR/Ft+NwCjNoS5/DNLo0VSCQ/QteKwS89PMNsE/wLyktix8hEkgTVC
+	oduSvUlZoI4T4mHVT0RA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnXrM-00DrDh-2v;
-	Tue, 03 Oct 2023 05:22:16 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1qnXtg-00DrVn-1z;
+	Tue, 03 Oct 2023 05:24:40 +0000
+Received: from mgamail.intel.com ([134.134.136.24])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnXrJ-00DrAX-1h
+	id 1qnXtc-00DrUR-2D
 	for ath10k@lists.infradead.org;
-	Tue, 03 Oct 2023 05:22:16 +0000
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso8160a12.0
-        for <ath10k@lists.infradead.org>; Mon, 02 Oct 2023 22:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696310518; x=1696915318; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XqpR6B8+nR6pcymfGZfMhsWiKXO7OC+lMbowiW4LVxc=;
-        b=n/QHGCgcFMN8vYma2IqwjD+urY02zVQ05VERgIOWu3qs0wC1AtCIvCujIiF4kmFdPY
-         ISb3TsoLq6tAtrOozh+rrVDZ95Vm3sZ7dSUcZTNki8qe/ohJIPyTFykR/FdByFVSDRZL
-         xipOKzjsRNGlPM9rcoUMIsYwL7rRMBn7wCy0D9SgbB+rOne3KgMSEl6iN3aw7tR7rpjL
-         IPtjc4z7NS7e1xdrwEWVRCVwSgxZxZwEyCMJisl6yjysgZQyCiEjTMvDi2d9dm9tvpsw
-         AFKMlf6dQEtlGexf3p0J+0EPzxoU7NhuwbWKeE3Q5CJQBd5A/X8UHo6fqBRNr7RPBf9p
-         mUGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696310518; x=1696915318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XqpR6B8+nR6pcymfGZfMhsWiKXO7OC+lMbowiW4LVxc=;
-        b=w5osDcF21TJdg0jBugCAvH2iIS26Hco56rWzJjWdZpoEIDZpEidzDjJ+kHlDP9BX3/
-         ykfb1zr67YrCgKJR/1iOgH+c/xaJh+WoCWUoaoOUL+5ls2N0nGLPbKkgu63jwheNZXJy
-         DvLnVIxUy+eQ1Pmr/IiSifRbuUZM6zY361JKr0/eZxVAkgKPjKOHfMxGHj6I+bjXD6sd
-         29ZCrCzdJKjSXisl/YYtByT47gIi+5TqFhEXqy96PSOQD+wqa76DFgSJRMbesIfsE7GK
-         WnOAVzFSTAHzX4bWpgav5B01PXraDZG4Ps2eYfLCm4amKQVMYI3sPry/mLPfiQ8XFkJ2
-         JO2w==
-X-Gm-Message-State: AOJu0YyKyKy3d05yJhxuM5vnFFJeF4RZJprcqIEtj/m0uC1jlCLbC0VB
-	6X1DXVERCfvB9ZeY/2nHYnRnHnf/w235MJH+FyRGIg==
-X-Google-Smtp-Source: AGHT+IFKI0HKrYVLDl5vmsJpfAS1RFLGp2hw35YvLJzj9lzKha+Fza93n9nqgIQgLugkI+eoDblKihBS9oaXtRjP+8s=
-X-Received: by 2002:a50:d4d7:0:b0:538:1d3b:172f with SMTP id
- e23-20020a50d4d7000000b005381d3b172fmr49263edj.3.1696310517644; Mon, 02 Oct
- 2023 22:21:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231002151023.4054-1-ansuelsmth@gmail.com> <20231002151023.4054-2-ansuelsmth@gmail.com>
-In-Reply-To: <20231002151023.4054-2-ansuelsmth@gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 3 Oct 2023 07:21:46 +0200
-Message-ID: <CANn89i+eSWYuE=wE1TPJFtAS1OCfFYytC_nAjDWkizxmR9e6JQ@mail.gmail.com>
-Subject: Re: [net-next PATCH 2/4] netdev: make napi_schedule return bool on
- NAPI successful schedule
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
-	Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Chris Snook <chris.snook@gmail.com>, Raju Rangoju <rajur@chelsio.com>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
-	Shailend Chand <shailend@google.com>, Douglas Miller <dougmill@linux.ibm.com>, 
-	Nick Child <nnac123@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Haren Myneni <haren@linux.ibm.com>, Rick Lindsley <ricklind@linux.ibm.com>, 
-	Dany Madden <danymadden@us.ibm.com>, Thomas Falcon <tlfalcon@linux.ibm.com>, 
-	Tariq Toukan <tariqt@nvidia.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Krzysztof Halasa <khalasa@piap.pl>, Kalle Valo <kvalo@kernel.org>, 
-	Jeff Johnson <quic_jjohnson@quicinc.com>, Gregory Greenman <gregory.greenman@intel.com>, 
-	Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>, Intel Corporation <linuxwwan@intel.com>, 
-	Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>, Liu Haijun <haijun.liu@mediatek.com>, 
-	M Chetan Kumar <m.chetan.kumar@linux.intel.com>, 
-	Ricardo Martinez <ricardo.martinez@linux.intel.com>, Loic Poulain <loic.poulain@linaro.org>, 
-	Sergey Ryazanov <ryazanov.s.a@gmail.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Yuanjun Gong <ruc_gongyuanjun@163.com>, Wei Fang <wei.fang@nxp.com>, 
-	Alex Elder <elder@linaro.org>, Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Bailey Forrest <bcf@google.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
-	Junfeng Guo <junfeng.guo@intel.com>, Ziwei Xiao <ziweixiao@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Rushil Gupta <rushilg@google.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Yuri Karpov <YKarpov@ispras.ru>, Zhengchao Shao <shaozhengchao@huawei.com>, 
-	Andrew Lunn <andrew@lunn.ch>, Zheng Zengkai <zhengzengkai@huawei.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Lee Jones <lee@kernel.org>, 
-	Dawei Li <set_pte_at@outlook.com>, Hans de Goede <hdegoede@redhat.com>, 
-	Benjamin Berg <benjamin.berg@intel.com>, Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-can@vger.kernel.org, netdev@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org, 
-	linux-wireless@vger.kernel.org
+	Tue, 03 Oct 2023 05:24:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696310676; x=1727846676;
+  h=date:from:to:cc:subject:message-id;
+  bh=esH0Uyc+jJanLsYFQEKk9y+XA1jLDWi3yBxkHXWYZoQ=;
+  b=bI1CvU0fu4ahXgyZcGZeg/A4HVhf/xXDSZIkClzPzvC7o40mh61bK81r
+   EKMiUu7eZBKsgtAAxgwtyl6uTqOJooaxB2A4v8RRGyH8GBM6lfVifK5O0
+   9MesctW9G88WgnodVicmyoRi8dsApSLF59PDZ9p/gtVEDgwz3lJwjbiEa
+   C/haXPXoSeL2N31n34TZp7cIF/97p8iFTOovkdkW7x7yq7CBQ+fiNDHn+
+   e3MUuDliydj6zntXt781wXYUFms8ENRRtO+Xv22+RjIAhYPiXpMpBK3+U
+   /bDyA6AiIw0GcHHBoyWqrUKLEgAig8Bcd1l6mgLtj6POQUwtfIlkk3294
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="385617712"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="385617712"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 22:24:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="744366779"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="744366779"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 02 Oct 2023 22:24:28 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qnXtR-0006nz-3C;
+	Tue, 03 Oct 2023 05:24:25 +0000
+Date: Tue, 03 Oct 2023 13:23:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ d876188ab8074087b23b3d83a56c889ebb1904ae
+Message-ID: <202310031308.Qhjaaab5-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231002_222213_566075_65DF5DF2 
-X-CRM114-Status: UNSURE (   9.17  )
+X-CRM114-CacheID: sfid-20231002_222436_765031_79491992 
+X-CRM114-Status: UNSURE (   4.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -118,20 +77,137 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBPY3QgMiwgMjAyMyBhdCA1OjEw4oCvUE0gQ2hyaXN0aWFuIE1hcmFuZ2kgPGFuc3Vl
-bHNtdGhAZ21haWwuY29tPiB3cm90ZToKPgo+IENoYW5nZSBuYXBpX3NjaGVkdWxlIHRvIHJldHVy
-biBhIGJvb2wgb24gTkFQSSBzdWNjZXNzZnVsIHNjaGVkdWxlLiBUaGlzCj4gbWlnaHQgYmUgdXNl
-ZnVsIGZvciBzb21lIGRyaXZlciB0byBkbyBhZGRpdGlvbmFsIHN0ZXAgYWZ0ZXIgYSBOQVBJIGFo
-cwoKVGhpcyBtaWdodCBiZSB1c2VmdWwgZm9yIHNvbWUgZHJpdmVycyB0byBkbyBhZGRpdGlvbmFs
-IHN0ZXBzIGFmdGVyIGEKTkFQSSBoYXMgYmVlbiBzY2hlZHVsZWQuCgo+IGJlZW4gc2NoZWR1bGVk
-Lgo+Cj4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0aWFuIE1hcmFuZ2kgPGFuc3VlbHNtdGhAZ21haWwu
-Y29tPgoKWWVhaCwgSSBndWVzcyB5b3UgZm9yZ290IHRvIG1lbnRpb24gSSBzdWdnZXN0ZWQgdGhp
-cyBwYXRjaCAuLi4KClJldmlld2VkLWJ5OiBFcmljIER1bWF6ZXQgPGVkdW1hemV0QGdvb2dsZS5j
-b20+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: d876188ab8074087b23b3d83a56c889ebb1904ae  wifi: ath10k: indicate to mac80211 scan complete with aborted flag for ATH10K_SCAN_STARTING state
+
+elapsed time: 725m
+
+configs tested: 107
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231003   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231003   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231003   gcc  
+i386         buildonly-randconfig-002-20231003   gcc  
+i386         buildonly-randconfig-003-20231003   gcc  
+i386         buildonly-randconfig-004-20231003   gcc  
+i386         buildonly-randconfig-005-20231003   gcc  
+i386         buildonly-randconfig-006-20231003   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231003   gcc  
+i386                  randconfig-002-20231003   gcc  
+i386                  randconfig-003-20231003   gcc  
+i386                  randconfig-004-20231003   gcc  
+i386                  randconfig-005-20231003   gcc  
+i386                  randconfig-006-20231003   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231003   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231003   gcc  
+x86_64                randconfig-002-20231003   gcc  
+x86_64                randconfig-003-20231003   gcc  
+x86_64                randconfig-004-20231003   gcc  
+x86_64                randconfig-005-20231003   gcc  
+x86_64                randconfig-006-20231003   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
