@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 563F8E8FDCA
-	for <ath10k@archiver.kernel.org>; Wed,  4 Oct 2023 05:45:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C4F2E8FDDA
+	for <ath10k@archiver.kernel.org>; Wed,  4 Oct 2023 08:26:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VRqfGYK+cklG4dL9JH3MF6jSALHj2g7aJu6q3hjZiEY=; b=2rpxJ1VujNVb43
-	bkaKUdyXQBSnPecHYMhmgITy7uja86tJ140ZAsIpYX5Pv/xbbLSiOWyoXzbrtc6Tv0ymiE9ojp3tR
-	OIY1xtLeBct0vj7KVVVmYJFA+Gi+JuNRxEfy7TffJgXOl6tSZKKD3FwTrQ1xNyw5qGtyDc7th01T6
-	u1QC7hPovzw5bB/pEjQg/TKuhDmK7dSzAvBpV+djF/bSDzqgFoYXzmoxwCXh/bFkDilBUSrSBbmhs
-	1u1JypfBjJCPzzJf/iOZEpWSMR3GIcGTmc3OSqyoRzATPmzz24NgkhkNADHqHh5nExWGrDdGHYAwj
-	ziniCBbhdYbcWmAxj0rg==;
+	List-Owner; bh=bNQV+tmFl1f1L4fFA+9m2sDM0vy5drTW/1LmF2vYxBU=; b=C7ekpyK1rrw0i+
+	Tu58smwlabvKUP0x8bwHGoZ1+6aDkqh6xs3GsYVFBLBabxSjPvwEwVwKbm16CdZbDUjpU8+g4Rg1r
+	J+mKXZgaLgtrk7n6lztRWQngbeV97MiJ/RdtSObp96vzI1lDfRnOPy5z69HBTVuRfoEtr24CXE0SU
+	qi58cJ5MQs0oHDA8KhLIQLquvCwTzNEE7QUvRJlLkFAvSpf9PiHW/6A+baiYcQnGBYueoJzZBzQ7R
+	aQuK7h5IYU93my6pATpdDE4UoowNVEWpc8mztU/LPy+wQ2EAlaL96VbrBcPzWIWBcTiEsatVuJ6Y+
+	ZPckBJwbH0b4ikF70Hjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnugu-00GJST-0q;
-	Wed, 04 Oct 2023 05:45:00 +0000
+	id 1qnxD9-00GoGF-1c;
+	Wed, 04 Oct 2023 08:26:27 +0000
 Received: from mgamail.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnugp-00GJRR-2p
+	id 1qnxD6-00GoD4-0P
 	for ath10k@lists.infradead.org;
-	Wed, 04 Oct 2023 05:44:58 +0000
+	Wed, 04 Oct 2023 08:26:25 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696398295; x=1727934295;
+  t=1696407984; x=1727943984;
   h=date:from:to:cc:subject:message-id;
-  bh=rxgANkDGSxoOwNglleB8lbq2qROBiN+pqgpDGbuWOMQ=;
-  b=HAOESUKEKOboAX6VsIyrZEBIwXsrGbHzC5rqLNg4RVe80PVxcW8gYAUm
-   XJUn/9UEz+jGm3LAAUXfV2AWadjpq2jaso5D/ZDpd8ZEpHQPA4S4dXsxq
-   lF4yAr6Ox6wqsobaJM3N2dxEGxpHPb0AmGveBzeD29HOBLczcv0Fo8Fbe
-   4ieC+dGGXXn7eledc2HfbkHxI7JWZaGOi4rSV5Lu0i/l4oKLbEQ9HJHDY
-   bkkxckckKbLXAjSvJsSeoP38YVEBNYgaLE6AEG2+K7W7CXiyeo8o3GTGQ
-   7byNb/MM/rhaYpvi2sthuX+hwn4TrNZ2tp5BX+QPGJiNpnSFxnNBrQgdC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="373407815"
+  bh=mEWPh/3rBKBn+TEqD67a0ztw14V8F0BvWIkFNDpCY18=;
+  b=EU71WzwmQceXUC76sZrpTG6GEEJLNpVW42FljimamN29BHVu/QSszajE
+   GR4fMVDDoKyE84QSsDRe1/H73f/jq/OGkQAfph/jGe/eiGrg13glB57SB
+   /NmoLWnfs1HbrrOkDfBn4vw7BN9wc/2ZAGKzd8RF4xPOuCNbLVLsT7ZlD
+   BOrQfgkb5aOk310E5V9eCHhQ6QWqEAtwy9ixsHnGSdBsLPrvet5gyYMXb
+   y4DDndprVGINhhApefALJHpwvug0jAsUwkU/4Mkbn4kldifVaZ1RuLQn2
+   VJB+vbQ5SbpiFQVez9lZ+zGALk+we56QC4C6KYGUgfZCJcNxvhUwXak4E
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="373440891"
 X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="373407815"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 22:44:15 -0700
+   d="scan'208";a="373440891"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 01:26:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="754725157"
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="925018295"
 X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="754725157"
+   d="scan'208";a="925018295"
 Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Oct 2023 22:44:13 -0700
+  by orsmga005.jf.intel.com with ESMTP; 04 Oct 2023 01:26:17 -0700
 Received: from kbuild by c3b01524d57c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qnug7-000CfS-2U;
-	Wed, 04 Oct 2023 05:44:11 +0000
-Date: Wed, 04 Oct 2023 13:43:18 +0800
+	id 1qnxCx-000Ew2-0e;
+	Wed, 04 Oct 2023 08:26:15 +0000
+Date: Wed, 04 Oct 2023 16:25:37 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 6906c137d249a237d4bc3dd8e442e6be9709c57d
-Message-ID: <202310041315.LjLSsWSh-lkp@intel.com>
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ cd936eb7fc193d62459a253f20b4068eef672d0f
+Message-ID: <202310041635.R1E1jgZi-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231003_224455_994380_BCC1D830 
-X-CRM114-Status: UNSURE (   5.52  )
+X-CRM114-CacheID: sfid-20231004_012624_208002_53F6913A 
+X-CRM114-Status: UNSURE (   5.09  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,10 +83,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 6906c137d249a237d4bc3dd8e442e6be9709c57d  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: cd936eb7fc193d62459a253f20b4068eef672d0f  Merge branch 'pending' into master-pending
 
-elapsed time: 892m
+elapsed time: 1024m
 
 configs tested: 107
 configs skipped: 2
@@ -102,12 +102,12 @@ arc                              allmodconfig   gcc
 arc                               allnoconfig   gcc  
 arc                              allyesconfig   gcc  
 arc                                 defconfig   gcc  
-arc                   randconfig-001-20231003   gcc  
+arc                   randconfig-001-20231004   gcc  
 arm                              allmodconfig   gcc  
 arm                               allnoconfig   gcc  
 arm                              allyesconfig   gcc  
 arm                                 defconfig   gcc  
-arm                   randconfig-001-20231003   gcc  
+arm                   randconfig-001-20231004   gcc  
 arm64                            allmodconfig   gcc  
 arm64                             allnoconfig   gcc  
 arm64                            allyesconfig   gcc  
@@ -127,17 +127,17 @@ i386         buildonly-randconfig-005-20231003   gcc
 i386         buildonly-randconfig-006-20231003   gcc  
 i386                              debian-10.3   gcc  
 i386                                defconfig   gcc  
-i386                  randconfig-001-20231003   gcc  
-i386                  randconfig-002-20231003   gcc  
-i386                  randconfig-003-20231003   gcc  
-i386                  randconfig-004-20231003   gcc  
-i386                  randconfig-005-20231003   gcc  
-i386                  randconfig-006-20231003   gcc  
+i386                  randconfig-001-20231004   gcc  
+i386                  randconfig-002-20231004   gcc  
+i386                  randconfig-003-20231004   gcc  
+i386                  randconfig-004-20231004   gcc  
+i386                  randconfig-005-20231004   gcc  
+i386                  randconfig-006-20231004   gcc  
 loongarch                        allmodconfig   gcc  
 loongarch                         allnoconfig   gcc  
 loongarch                        allyesconfig   gcc  
 loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231003   gcc  
+loongarch             randconfig-001-20231004   gcc  
 m68k                             allmodconfig   gcc  
 m68k                              allnoconfig   gcc  
 m68k                             allyesconfig   gcc  
