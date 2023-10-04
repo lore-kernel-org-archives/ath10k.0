@@ -4,144 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B442E776C4
-	for <ath10k@archiver.kernel.org>; Tue,  3 Oct 2023 18:36:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C14A0E8FDC3
+	for <ath10k@archiver.kernel.org>; Wed,  4 Oct 2023 03:35:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TZBPI54r2P9QEdkaDgzGuPG+v2vgz/K6jAKfGHU66kc=; b=CNxxUIB5p1WWm8
-	AIcAxja8/tFuevKHLOuCSSaxuwA79mjzbS6GT4VXbRQ5awwTIcq6CciUu9+Sppq5SOKFAMvfRNm+m
-	OKa1loGUFZVUqmT64bRx6/Ub7tUEnook/TS0po+//fTEUH2k8e4LoPSkMzHlru76kS/acsJZx68Jk
-	9495EVCOU9+FBbNLLzd/mASg9cP5tghNBe+Ml33m7Ndk89xGu1IflLVV7d6E65kqHxqZxB+a01fU1
-	VutoqGfbf8gQXLk3uIsC5s8/RG/jd9noiQ8EBM2falp/laE/QFDsRQx1+d/KYyNVZLDd/O9+HtIJs
-	W7R7UvVIo+oyN6PWDmmg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=XoITDiUhC4m4SAN/HQDeh5D0I5uRNTtvuMhhjTYFlpo=; b=h+xjVmALuk/cNZ
+	/s2NJE0QAvJe5zm/qvpUuLf/Cnf+pT5bWcQCLP2G+svM45GYx1pEO+fQKQI0+Gs/j8WLzjxTRFYRv
+	EXZlzIEQoUOEAhe106RANaS17op6U1ruJ1jk1xtQunv95Mf9Lup0gq5mPIjw2S80ko7V6gJKdGLnB
+	Z4O9NhSW84tjoMYrNn5QAZ0G/tyeRzd84lFaLCGkhuEYoEvxR2v2HOPHdb3EoHJW5MCYTmtYxAXq9
+	29kBnkdQEMnJIVtW+qzhZeZcI78MZrSq29C2mopph3CICgyh0mKaAEJKStW7SlAYVPwUNeGQuq+CI
+	I5IjavJMmjLMPNqWb6bA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnkGL-00F84P-2f;
-	Tue, 03 Oct 2023 18:36:53 +0000
-Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
+	id 1qnsek-00FxXu-0k;
+	Wed, 04 Oct 2023 03:34:38 +0000
+Received: from mgamail.intel.com ([134.134.136.100])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnkGH-00F80M-1i;
-	Tue, 03 Oct 2023 18:36:51 +0000
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40651a72807so12648835e9.1;
-        Tue, 03 Oct 2023 11:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696358206; x=1696963006; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6gyQNJ2XnyFpWZfsSOVQ7NTvT9jbamCtiO1RkGRSocs=;
-        b=HPIRTvEzSejKsDRM64ZGVkgpUXhmzWmn9OlSP9ZHdhfeJpyUPucfnt2J5nJjNtZBrB
-         nvA2UWmjvKci2DeRur6ZJWBlHCe8Iu9H3dvyAIBlcXt6XTebYh3LylrmiZNdKoFzl1vX
-         pPVwDwAEK9nleliuf/jUFVXmrRxVZc2FOvNivIJv9qw32q1IkYDWIfrgYhFA5kXlA8z4
-         9507cjg3rfC1ryTQDS+6ei2TNQ9RMjeFiOZRWH1ThZzjbBerxUuxKRcI1QLpN67xj4ot
-         p7aG3OXcXTEs8BBcg7EdmXiwMVmAiG0a8e6oF/TarUqyqOe4bd/SbdkgsXaB9WqBn9IJ
-         T2+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696358206; x=1696963006;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6gyQNJ2XnyFpWZfsSOVQ7NTvT9jbamCtiO1RkGRSocs=;
-        b=egn97FRGc7OlaLNDQRUGgj1wQ+qsouN+qZoswCB8EVdMpIdrjJ7jgxsZrZ8rUNmHgS
-         rjoqj9xACI2VQ6SO+wcR/tEGj6Usgtw/iVSrwzHFoITVqqXgaPAbhnKQOhUcDfnIJ4hz
-         DNiwA+eAIYHa3XElWS2qpUyj5XmG0Cz+jM0wtqBwEC+SO33jtoYyXar4wx4UXSf80gdL
-         KZfpqwcvqfjDXJwkESjkpZ+P1b4JY7vwbF8SQQ3QGRKdXCXNV40XE+5Jj2XgyHDcQnhY
-         Cvom1y8XJy+rzoeUude+HEOsxuds7HDRZ5AXjM1Um2bmok/YmzhrNYR0lQ+YiHB60G9j
-         xFNg==
-X-Gm-Message-State: AOJu0YzFAJ+wOZciU9Gaeqk6ywpNXM2t8noOI0U3I6WXA8Zjhuff/mnO
-	xB9xg8RuMouY1tRtNjIwMdk=
-X-Google-Smtp-Source: AGHT+IEYiqmB3FHX80gX8tQMzI8kEwWFIYbZ3oxXBoRCokmvLgveVRe6BiL4NPRW0r5qNgswYRjDHQ==
-X-Received: by 2002:a05:600c:22ce:b0:405:4c3a:796f with SMTP id 14-20020a05600c22ce00b004054c3a796fmr308411wmg.2.1696358205305;
-        Tue, 03 Oct 2023 11:36:45 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id k15-20020a7bc40f000000b004013797efb6sm10147400wmi.9.2023.10.03.11.36.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 11:36:45 -0700 (PDT)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Wolfgang Grandegger <wg@grandegger.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Chris Snook <chris.snook@gmail.com>,
-	Raju Rangoju <rajur@chelsio.com>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>,
-	Shailend Chand <shailend@google.com>,
-	Douglas Miller <dougmill@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Nick Child <nnac123@linux.ibm.com>,
-	Haren Myneni <haren@linux.ibm.com>,
-	Rick Lindsley <ricklind@linux.ibm.com>,
-	Dany Madden <danymadden@us.ibm.com>,
-	Thomas Falcon <tlfalcon@linux.ibm.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Krzysztof Halasa <khalasa@piap.pl>,
-	Kalle Valo <kvalo@kernel.org>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-	Intel Corporation <linuxwwan@intel.com>,
-	Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-	Liu Haijun <haijun.liu@mediatek.com>,
-	M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-	Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-	Loic Poulain <loic.poulain@linaro.org>,
-	Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Yuanjun Gong <ruc_gongyuanjun@163.com>,
-	Simon Horman <horms@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Ziwei Xiao <ziweixiao@google.com>,
-	Rushil Gupta <rushilg@google.com>,
-	Coco Li <lixiaoyan@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Junfeng Guo <junfeng.guo@intel.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Wei Fang <wei.fang@nxp.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Yuri Karpov <YKarpov@ispras.ru>,
-	Zhengchao Shao <shaozhengchao@huawei.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Zheng Zengkai <zhengzengkai@huawei.com>,
-	Lee Jones <lee@kernel.org>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Dawei Li <set_pte_at@outlook.com>,
-	Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-	Benjamin Berg <benjamin.berg@intel.com>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org
-Subject: [net-next PATCH v2 4/4] netdev: use napi_schedule bool instead of napi_schedule_prep/__napi_schedule
-Date: Tue,  3 Oct 2023 16:51:50 +0200
-Message-Id: <20231003145150.2498-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231003145150.2498-1-ansuelsmth@gmail.com>
-References: <20231003145150.2498-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
+	id 1qnseh-00FxXG-35
+	for ath10k@lists.infradead.org;
+	Wed, 04 Oct 2023 03:34:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696390475; x=1727926475;
+  h=date:from:to:cc:subject:message-id;
+  bh=XL4Knr1tPnOdaCLoZZ5Ucf62QxexZhRRAFWSUICCCWU=;
+  b=ZwWb/tt+9MSZxbpzKJzc1Qrzk8PnU2XrevnKYF+D5+UbS2ohRGFhvT7P
+   PyHxyWWzjho8YFYU4qJxRk0d/Ua0XJvMe2Z9gdH/EU/Z1jl3TdjzI8uzF
+   r/4a3fQcoIZBwf8SDcc0C8zsk1OMkqP1GAI0acawCPwegH/cONpUd6PD/
+   reSnw9uxo5uE+a01rvF8rbsKm93sevDBxZwoePw5N4r3a9VOfFc+XnWOA
+   aM9ErIIj167ZfjRFP4dETuI0a+Wgt4HPdy2EKYnxeWb24vud0Wfxl3S7w
+   x/PWzRcW8EueJLF8Pnn8jUDZ0GWZhW5HgX0MPkrdYgEQ6I1p+1Dhsfntl
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="449538124"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="449538124"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 20:34:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="924892735"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="924892735"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 03 Oct 2023 20:34:31 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qnsea-000Abw-28;
+	Wed, 04 Oct 2023 03:34:28 +0000
+Date: Wed, 04 Oct 2023 11:33:47 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 1c3259f53f865808b854297989878ae84390b5e0
+Message-ID: <202310041145.jW1xGU8C-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231003_113649_567656_C2D05A37 
-X-CRM114-Status: GOOD (  16.35  )
+X-CRM114-CacheID: sfid-20231003_203436_055247_ED1D861F 
+X-CRM114-Status: UNSURE (   4.39  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -153,76 +77,135 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Replace if condition of napi_schedule_prep/__napi_schedule and use bool
-from napi_schedule directly where possible.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 1c3259f53f865808b854297989878ae84390b5e0  wifi: ath12k: fix debug messages
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/ethernet/atheros/atlx/atl1.c     | 4 +---
- drivers/net/ethernet/toshiba/tc35815.c       | 4 +---
- drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 4 +---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+elapsed time: 732m
 
-diff --git a/drivers/net/ethernet/atheros/atlx/atl1.c b/drivers/net/ethernet/atheros/atlx/atl1.c
-index 02aa6fd8ebc2..a9014d7932db 100644
---- a/drivers/net/ethernet/atheros/atlx/atl1.c
-+++ b/drivers/net/ethernet/atheros/atlx/atl1.c
-@@ -2446,7 +2446,7 @@ static int atl1_rings_clean(struct napi_struct *napi, int budget)
- 
- static inline int atl1_sched_rings_clean(struct atl1_adapter* adapter)
- {
--	if (!napi_schedule_prep(&adapter->napi))
-+	if (!napi_schedule(&adapter->napi))
- 		/* It is possible in case even the RX/TX ints are disabled via IMR
- 		 * register the ISR bits are set anyway (but do not produce IRQ).
- 		 * To handle such situation the napi functions used to check is
-@@ -2454,8 +2454,6 @@ static inline int atl1_sched_rings_clean(struct atl1_adapter* adapter)
- 		 */
- 		return 0;
- 
--	__napi_schedule(&adapter->napi);
--
- 	/*
- 	 * Disable RX/TX ints via IMR register if it is
- 	 * allowed. NAPI handler must reenable them in same
-diff --git a/drivers/net/ethernet/toshiba/tc35815.c b/drivers/net/ethernet/toshiba/tc35815.c
-index 14cf6ecf6d0d..a8b8a0e13f9a 100644
---- a/drivers/net/ethernet/toshiba/tc35815.c
-+++ b/drivers/net/ethernet/toshiba/tc35815.c
-@@ -1436,9 +1436,7 @@ static irqreturn_t tc35815_interrupt(int irq, void *dev_id)
- 	if (!(dmactl & DMA_IntMask)) {
- 		/* disable interrupts */
- 		tc_writel(dmactl | DMA_IntMask, &tr->DMA_Ctl);
--		if (napi_schedule_prep(&lp->napi))
--			__napi_schedule(&lp->napi);
--		else {
-+		if (!napi_schedule(&lp->napi)) {
- 			printk(KERN_ERR "%s: interrupt taken in poll\n",
- 			       dev->name);
- 			BUG();
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-index 23b5a0adcbd6..146bc7bd14fb 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-@@ -1660,9 +1660,7 @@ irqreturn_t iwl_pcie_irq_rx_msix_handler(int irq, void *dev_id)
- 	IWL_DEBUG_ISR(trans, "[%d] Got interrupt\n", entry->entry);
- 
- 	local_bh_disable();
--	if (napi_schedule_prep(&rxq->napi))
--		__napi_schedule(&rxq->napi);
--	else
-+	if (!napi_schedule(&rxq->napi))
- 		iwl_pcie_clear_irq(trans, entry->entry);
- 	local_bh_enable();
- 
+configs tested: 107
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231004   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231004   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231004   gcc  
+i386         buildonly-randconfig-002-20231004   gcc  
+i386         buildonly-randconfig-003-20231004   gcc  
+i386         buildonly-randconfig-004-20231004   gcc  
+i386         buildonly-randconfig-005-20231004   gcc  
+i386         buildonly-randconfig-006-20231004   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231004   gcc  
+i386                  randconfig-002-20231004   gcc  
+i386                  randconfig-003-20231004   gcc  
+i386                  randconfig-004-20231004   gcc  
+i386                  randconfig-005-20231004   gcc  
+i386                  randconfig-006-20231004   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231004   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231004   gcc  
+x86_64                randconfig-002-20231004   gcc  
+x86_64                randconfig-003-20231004   gcc  
+x86_64                randconfig-004-20231004   gcc  
+x86_64                randconfig-005-20231004   gcc  
+x86_64                randconfig-006-20231004   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
 -- 
-2.40.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 ath10k mailing list
