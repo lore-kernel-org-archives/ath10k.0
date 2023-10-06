@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CCF4E92FCD
-	for <ath10k@archiver.kernel.org>; Fri,  6 Oct 2023 04:04:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10D6BE92FE1
+	for <ath10k@archiver.kernel.org>; Fri,  6 Oct 2023 05:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=acZSZWi950KxBRrB6+ZBFF6ZFHFJJZ7cAL3iIYnb8Pc=; b=Ud4uIjQwwsDs5t
-	f2jOVJvCp8UZpRJElUC20tr3TQx7xkoZCMgLoWl0sW8sitNG6pWVWRyRv85qPfGR+m0E6JV83A0Ha
-	t/lKspPFSlsr04AXNkfdWuJ4+Jp3PImqZBHCMWwz/V0Vv1XLFF/jMi0zS5yHlBl33DpW9DF/ik5RJ
-	8oDhI+ZQ8XdmjH/CldUkO1P+CheBbN2GB797fLmqKTHR18y9Pyxvnb98ZNdAmQ7/L9bTe5GvVfmAh
-	EJA91qxThrz2ZvEt0zG8Vj9g9st3PbnCE7n11Sr2e3lHld8Ug9kfSsDnaiFb/cObIQCerp6IR3CiS
-	n9r4w6BvD5UtM/fsCRRA==;
+	List-Owner; bh=GgC54TsvyFAs6tkBIPSK+qP/8cATAddUvf9R5TtMgfk=; b=PQ8IHuphpVuaPb
+	oB8KeBBYpAse5EfxE+G2GLeKKHVFIa3TdeeTz+fSRUpvF0eackYZdRq9BrzmRhMSSgVbbj1hCe8S/
+	JdD7pSXdvRGaDc504sf7+E/3cqhrBtjvwfKdGXf4pFOMrcQ5nybkYM/JVPMaq1inB9X1hNQm+OmDJ
+	rgwb6YfNs4qYlLOVma3m0SFY2YNd9S3WddECgDYe0xkxnw/U6dHHwAuaWoQluT5nIvMLA2pn/hw5n
+	5rBM+FIGLaTSpdsDeTzwoHqRHMzCZsg3imRGMoJ9B9xHRcj0i98y9FynPYDJfUNiM3DfB9U3r20n7
+	HDWTxseJsTurhGa9pZlQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qoc4B-004skM-38;
-	Fri, 06 Oct 2023 04:03:55 +0000
-Received: from mgamail.intel.com ([198.175.65.9])
+	id 1qod6l-004yhw-0Q;
+	Fri, 06 Oct 2023 05:10:39 +0000
+Received: from mgamail.intel.com ([134.134.136.126])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qoc49-004sjr-2Y
+	id 1qod6h-004yh5-2P
 	for ath10k@lists.infradead.org;
-	Fri, 06 Oct 2023 04:03:55 +0000
+	Fri, 06 Oct 2023 05:10:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696565034; x=1728101034;
+  t=1696569035; x=1728105035;
   h=date:from:to:cc:subject:message-id;
-  bh=UnaMOul7eefZcby+muaDNk744osAQ+Spwwxv7Ty3oy0=;
-  b=WRkDyAJG1H5FyDAndH4kbezrjBdf0V3VI7oXETCDGInkZ3Fw3BjVPP1Y
-   +dfg/PSZqotsnS/tBtUhc4mGt5yR9fJIJwsL+WGMtj0aeDbcW77mfw3+o
-   OTRezixHp+a1Yzim23l9VdbYMDO0YkqahUzruRcVCBWXVbGbdBaQ6UHCt
-   25oCTjiHX3PVStR5imrMGz6xpMePF1Pc1CK1zxf/ZwHgwGFPpVIPs695U
-   7WHSVJmcEctmYABb73Yw9K1cxTWpr4hUtKUvhTvN5UON+JPc1fOrwf9U/
-   +LdsAsCkhdFXnpCmTJMryIpCHWXQTcBOfh1p/FqBUeYhVoiIUSjxgPbLa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="2276867"
+  bh=MvFbinIocUbhnhCivOlKl434ZJykibT/fBBenAqoDW8=;
+  b=GL6NgWrhNDFmVFvvoInzo+z13bG7qpHE7aU92poEB5UeutMDiBaKHCQZ
+   kbiYo5PSzb9Jq2uWDCKD6NkJt1qbH88PkwxpH1yWxxWjQ9nCxK4Ng0t+v
+   J6fCjSz9BMZCZqBFRg3V57xY+wiYdyKIUI7UG0BfexIcmLpCihSqnOE6m
+   ySlbzim2Gwqv1iQAg8Tiv8zfvmf/pvFfHVZBP6EaEc4uEZN9PNGfn03GZ
+   16LdTKuuQVQWTNpkk8IfpUBNH/gMaTfChYZZuzNvrWoI6u/4MlSfFUJtR
+   S1Ahhmtq4XrwbLtjDTmVl0OB4287P5hZFnB9xD10HDi6SbRi1gAMjXEnL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="368758910"
 X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="2276867"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 21:03:50 -0700
+   d="scan'208";a="368758910"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 22:10:20 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="781498306"
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="728716772"
 X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="781498306"
+   d="scan'208";a="728716772"
 Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 05 Oct 2023 21:03:48 -0700
+  by orsmga006.jf.intel.com with ESMTP; 05 Oct 2023 22:10:19 -0700
 Received: from kbuild by c3b01524d57c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qoc42-000MEX-0O;
-	Fri, 06 Oct 2023 04:03:46 +0000
-Date: Fri, 06 Oct 2023 12:03:10 +0800
+	id 1qod6O-000MHO-39;
+	Fri, 06 Oct 2023 05:10:16 +0000
+Date: Fri, 06 Oct 2023 13:09:38 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- 91a321a863d461b29ff95b1dd6d1a4b8ad3d425a
-Message-ID: <202310061207.0dGXxZvl-lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 2044db0f75bcf6a4845378dc948086fcd9084bf2
+Message-ID: <202310061335.xYSRIMfP-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231005_210353_900855_A47F564D 
-X-CRM114-Status: UNSURE (   3.96  )
+X-CRM114-CacheID: sfid-20231005_221035_878245_A6E7D55E 
+X-CRM114-Status: UNSURE (   4.72  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,12 +83,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: 91a321a863d461b29ff95b1dd6d1a4b8ad3d425a  Revert "PCI: Release resource invalidated by coalescing"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 2044db0f75bcf6a4845378dc948086fcd9084bf2  wifi: ath12k: Consistently use ath12k_vif_to_arvif()
 
-elapsed time: 1294m
+elapsed time: 1330m
 
-configs tested: 117
+configs tested: 119
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -109,7 +109,9 @@ arm                               allnoconfig   gcc
 arm                              allyesconfig   gcc  
 arm                         axm55xx_defconfig   gcc  
 arm                          collie_defconfig   clang
+arm                                 defconfig   clang
 arm                                 defconfig   gcc  
+arm                       imx_v6_v7_defconfig   gcc  
 arm                        multi_v5_defconfig   clang
 arm                   randconfig-001-20231005   gcc  
 arm                           u8500_defconfig   gcc  
@@ -147,6 +149,7 @@ m68k                             allmodconfig   gcc
 m68k                              allnoconfig   gcc  
 m68k                             allyesconfig   gcc  
 m68k                                defconfig   gcc  
+m68k                          multi_defconfig   gcc  
 microblaze                       allmodconfig   gcc  
 microblaze                        allnoconfig   gcc  
 microblaze                       allyesconfig   gcc  
@@ -154,6 +157,7 @@ microblaze                          defconfig   gcc
 mips                             allmodconfig   gcc  
 mips                              allnoconfig   gcc  
 mips                             allyesconfig   gcc  
+mips                        maltaup_defconfig   clang
 nios2                            allmodconfig   gcc  
 nios2                             allnoconfig   gcc  
 nios2                            allyesconfig   gcc  
@@ -171,7 +175,6 @@ parisc64                            defconfig   gcc
 powerpc                          allmodconfig   gcc  
 powerpc                           allnoconfig   gcc  
 powerpc                          allyesconfig   gcc  
-powerpc                     kmeter1_defconfig   clang
 riscv                            allmodconfig   gcc  
 riscv                             allnoconfig   gcc  
 riscv                            allyesconfig   gcc  
