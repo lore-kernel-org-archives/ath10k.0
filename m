@@ -4,68 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4AF3CD68ED
-	for <ath10k@archiver.kernel.org>; Tue, 10 Oct 2023 07:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4AC5CD68F8
+	for <ath10k@archiver.kernel.org>; Tue, 10 Oct 2023 07:54:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8V/t0zrd2sRm5V3ty2+fOSp7fH21SdNJNTwKZrVkGfw=; b=sJlaYQqu3mNd9D
-	+byZIcwDVwqNKyk7qpbtVErMmfDpUDowdznASATVaNNOmk2cmvAiZvmFunoMJSj0KinIkwAyYUUN9
-	piGX0/mqotdi5GwJN3Kk5ZxCzyHIm+h6kZ0EjewRgj7eflnJv5ANsSPd3OyAihrx0ITDM1dbeXVab
-	AfNUorWFt3Ek1EqOWZWXu9i9jdnbQzYOegZMwO4ZgcKCrs7fsiEvnaTjCDfla9GMJO24Z4AIegIRp
-	hkhJREmMdxXTSbpCjODIOJ89bY0giszAWaPJQeXjh/Q7m7ezcJq073gyXHXmDYkav8kETGHFM4Uxm
-	Bt6ZZLdel9th6/8NO8fA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=m5H4FFnpqmRVgM+VeblrmtUdVh/0Te5qLFzbcORwZXc=; b=K7tpGQ5tr5Iz5KUkXyYWd4tPay
+	28ljgSo3FkQVIaXLNG7dVjN4pLvUkTkK9ei0Y39l0nJwVx9zRrMDs25Mue+zFR7v0pKLqPwd+osbK
+	R8Y3egGNqlwrGjwJS7W4NA3FZIafEYN3fzjtYvdd5p+WvarET7JIeQd5zPbC/zDGlpx2eETBOWZBh
+	+YarIP5UTn/ESE4Dn0x6acVbSxyXU0X5Mup3C8kGQOkPJkIvx704TMLDQxwezUcVfIjWrDccmIxYD
+	OGQaShUG9aZeSVuWWXjaDr6BN6igt7fKFOjjoQ5+iXB+UCuL3GyBaRNiSSg1aKdG68mmm196E/cSF
+	5t3lf1FQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qq7FO-00CiIq-2M;
-	Tue, 10 Oct 2023 07:33:42 +0000
-Received: from mgamail.intel.com ([134.134.136.20])
+	id 1qq7Zi-00ClnM-2k;
+	Tue, 10 Oct 2023 07:54:42 +0000
+Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qq7FL-00CiGJ-17
-	for ath10k@lists.infradead.org;
-	Tue, 10 Oct 2023 07:33:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696923219; x=1728459219;
-  h=date:from:to:cc:subject:message-id;
-  bh=34aTr+tkINF0quKXR9wCPhJ206RE4b+4Q6TjwXXu+oc=;
-  b=ZRrw/2aYzwUSDAGnrQEtaJ//zE1ZTLX+zE1nSsVetjsiXuCEVBNoXoER
-   CcUqlnN+pX3zlrP8vp2e6It4qVmPyHyO6iub+BW2SCuIEr7AB5jayof0T
-   LGcp9CUWHCAQIRSCxuYZcF6N0Hb+WrnEyUMEE8HpFymtcxyGnRDNmDx32
-   AiCkS6yuogjbNaW/UHykZ0P+i0YKojk4caDY1E4vtrg7kex7QnpVWSkQM
-   3p32uarstp/g8ayKIh/Id3K/tS6lEaMJNtEunegMDbD18x65/8EAJJXvt
-   vY+nDNGc3HpOnhZ8vwRSnzVahydIbg0RpCjCuAS07D+S99y4L+XkwBbou
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="374674068"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="374674068"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 00:32:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="844015088"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="844015088"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Oct 2023 00:32:55 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qq7Ea-0000AH-0Q;
-	Tue, 10 Oct 2023 07:32:52 +0000
-Date: Tue, 10 Oct 2023 15:32:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- 4b2448d5d5095bdddb4e35ba2ccff51a2a139a09
-Message-ID: <202310101503.BKlVrLGv-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1qq7Ze-00ClmB-1Z;
+	Tue, 10 Oct 2023 07:54:39 +0000
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31f71b25a99so5318802f8f.2;
+        Tue, 10 Oct 2023 00:54:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696924476; x=1697529276; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iwwM7auPgZJMU7dH/X5o56/hwua6iH2A1QFl6/0EOd0=;
+        b=lzDAyHwJm1+zKAOeePF/mtNePQrdUXmWYRFjnqtSLWFcHgviXuMigHQCIo+zQ5GB5s
+         s47Rl/MT9VKSFKiSbnw3U+h7tSARj4lllRI1N2VDZZIz9/7I8bJYo6Cm4VumCSbZdZeH
+         FR/91ofgrsrEqmlSHheFSVQNxzzJ59As32ZwD1cDZspg/1B7F5eyR5TzKKCUGvLiAjYW
+         2wCyWkDgjsebNYnS8SAEXtLdKXHjGZfAEw3yKlgv12o7ddG0TdsT5QhREFcoll3O2GP8
+         XwySKywwdznopWM1k/fjJfn8k9hBsxKczzYi2ri67f6ceG/r87UgTv+HXM8IZICGA3pf
+         /ntA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696924476; x=1697529276;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iwwM7auPgZJMU7dH/X5o56/hwua6iH2A1QFl6/0EOd0=;
+        b=I4mHPk18mC6iNPXehFM97axe6f4QXWVTLE1MxbwcFIDLaQ9QvL9BNqUMG42nzmxJ4C
+         UldOiWpBFz4sU1sBIL901b2EO6DdHMdph5Cpq4DFNPL5zIsQCKFh1UHvnqoEufcmRXib
+         pAs+X9+1Zeyd5X5FZj29WbW9IPAL2vRXiP++yuUJ9+/KM8UdWKONcAg/xNNCYZacS2AI
+         +lpArUZNbAtc9l6vqhoffnEzKIagy+b8rH3Lb7YZmWtb7r5QzFYgHvME600Lut3MGtWV
+         P5fe/Bli/JUQukitZNcteeW1i7Fc7bp7PCYHKvUtYXbNNCzrWYv6TvA/sBDa7+JLe7Az
+         AalA==
+X-Gm-Message-State: AOJu0YxCbZgsDYLgXvyEN28N9AHbup946D8dM76FF0lGpE6LqwAX/YUm
+	cUFVHbvvv831SRG2XpxfYM4=
+X-Google-Smtp-Source: AGHT+IFoXHF3xhB1R1QbXfa6gtatnLXym3Q5nnEunh6zFeATAVA0tqJjWKSQ447yVOYMirHfwQlOJg==
+X-Received: by 2002:a5d:500b:0:b0:319:8a66:f695 with SMTP id e11-20020a5d500b000000b003198a66f695mr13345455wrt.55.1696924475419;
+        Tue, 10 Oct 2023 00:54:35 -0700 (PDT)
+Received: from [192.168.0.101] ([77.126.80.27])
+        by smtp.gmail.com with ESMTPSA id z3-20020a056000110300b0031c6581d55esm11802488wrw.91.2023.10.10.00.54.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 00:54:35 -0700 (PDT)
+Message-ID: <f288a1cd-0e15-4301-8522-d46840dd2d93@gmail.com>
+Date: Tue, 10 Oct 2023 10:54:26 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next v3 3/5] netdev: replace napi_reschedule with
+ napi_schedule
+Content-Language: en-US
+To: Christian Marangi <ansuelsmth@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>, Wolfgang Grandegger <wg@grandegger.com>,
+ Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Chris Snook <chris.snook@gmail.com>, Raju Rangoju <rajur@chelsio.com>,
+ Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
+ Shailend Chand <shailend@google.com>, Douglas Miller
+ <dougmill@linux.ibm.com>, Nick Child <nnac123@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Haren Myneni <haren@linux.ibm.com>, Rick Lindsley <ricklind@linux.ibm.com>,
+ Dany Madden <danymadden@us.ibm.com>, Thomas Falcon <tlfalcon@linux.ibm.com>,
+ Tariq Toukan <tariqt@nvidia.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Krzysztof Halasa <khalasa@piap.pl>, Kalle Valo <kvalo@kernel.org>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>,
+ Gregory Greenman <gregory.greenman@intel.com>,
+ Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+ Intel Corporation <linuxwwan@intel.com>,
+ Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+ Liu Haijun <haijun.liu@mediatek.com>,
+ M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+ Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+ Loic Poulain <loic.poulain@linaro.org>,
+ Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Yuanjun Gong <ruc_gongyuanjun@163.com>, Alex Elder <elder@linaro.org>,
+ Bhupesh Sharma <bhupesh.sharma@linaro.org>, Simon Horman <horms@kernel.org>,
+ Rob Herring <robh@kernel.org>, Bailey Forrest <bcf@google.com>,
+ Junfeng Guo <junfeng.guo@intel.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Ziwei Xiao <ziweixiao@google.com>, Rushil Gupta <rushilg@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Yuri Karpov <YKarpov@ispras.ru>, Andrew Lunn <andrew@lunn.ch>,
+ Zheng Zengkai <zhengzengkai@huawei.com>, Dawei Li <set_pte_at@outlook.com>,
+ Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
+ Benjamin Berg <benjamin.berg@intel.com>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org
+References: <20231009133754.9834-1-ansuelsmth@gmail.com>
+ <20231009133754.9834-3-ansuelsmth@gmail.com>
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20231009133754.9834-3-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231010_003339_433733_9D749F76 
-X-CRM114-Status: UNSURE (   6.18  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231010_005438_543097_D5F2EFBB 
+X-CRM114-Status: GOOD (  14.68  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,173 +134,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 4b2448d5d5095bdddb4e35ba2ccff51a2a139a09  wifi: ath11k: debugfs: fix truncation for pdev
 
-elapsed time: 1248m
 
-configs tested: 145
-configs skipped: 2
+On 09/10/2023 16:37, Christian Marangi wrote:
+> Now that napi_schedule return a bool, we can drop napi_reschedule that
+> does the same exact function. The function comes from a very old commit
+> bfe13f54f502 ("ibm_emac: Convert to use napi_struct independent of struct
+> net_device") and the purpose is actually deprecated in favour of
+> different logic.
+> 
+> Convert every user of napi_reschedule to napi_schedule.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com> # ath10k
+> Acked-by: Nick Child <nnac123@linux.ibm.com> # ibm
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for can/dev/rx-offload.c
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> ---
+> Changes v3:
+> - Add Reviewed-by tag
+> Changes v2:
+> - Add ack tag
+> ---
+>   drivers/infiniband/ulp/ipoib/ipoib_ib.c                |  4 ++--
+>   drivers/net/can/dev/rx-offload.c                       |  2 +-
+>   drivers/net/ethernet/chelsio/cxgb4/sge.c               |  2 +-
+>   drivers/net/ethernet/chelsio/cxgb4vf/sge.c             |  2 +-
+>   drivers/net/ethernet/ezchip/nps_enet.c                 |  2 +-
+>   drivers/net/ethernet/google/gve/gve_main.c             |  2 +-
+>   drivers/net/ethernet/ibm/ehea/ehea_main.c              |  2 +-
+>   drivers/net/ethernet/ibm/emac/mal.c                    |  2 +-
+>   drivers/net/ethernet/ibm/ibmveth.c                     |  2 +-
+>   drivers/net/ethernet/ibm/ibmvnic.c                     |  2 +-
+>   drivers/net/ethernet/mellanox/mlx4/en_rx.c             |  2 +-
+>   drivers/net/ethernet/ni/nixge.c                        |  2 +-
+>   drivers/net/ethernet/stmicro/stmmac/stmmac_selftests.c |  2 +-
+>   drivers/net/ethernet/xscale/ixp4xx_eth.c               |  4 ++--
+>   drivers/net/fjes/fjes_main.c                           |  2 +-
+>   drivers/net/wan/ixp4xx_hss.c                           |  4 ++--
+>   drivers/net/wireless/ath/ath10k/pci.c                  |  2 +-
+>   drivers/net/wwan/t7xx/t7xx_hif_dpmaif_rx.c             |  2 +-
+>   include/linux/netdevice.h                              | 10 ----------
+>   19 files changed, 21 insertions(+), 31 deletions(-)
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+...
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                      axs103_smp_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20231009   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231009   gcc  
-arm                   randconfig-001-20231010   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231009   gcc  
-i386         buildonly-randconfig-002-20231009   gcc  
-i386         buildonly-randconfig-003-20231009   gcc  
-i386         buildonly-randconfig-004-20231009   gcc  
-i386         buildonly-randconfig-005-20231009   gcc  
-i386         buildonly-randconfig-006-20231009   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231009   gcc  
-i386                  randconfig-002-20231009   gcc  
-i386                  randconfig-003-20231009   gcc  
-i386                  randconfig-004-20231009   gcc  
-i386                  randconfig-005-20231009   gcc  
-i386                  randconfig-006-20231009   gcc  
-i386                  randconfig-011-20231009   gcc  
-i386                  randconfig-012-20231009   gcc  
-i386                  randconfig-013-20231009   gcc  
-i386                  randconfig-014-20231009   gcc  
-i386                  randconfig-015-20231009   gcc  
-i386                  randconfig-016-20231009   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231009   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                           gcw0_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                        icon_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231009   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231009   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                          landisk_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231009   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231009   gcc  
-x86_64       buildonly-randconfig-002-20231009   gcc  
-x86_64       buildonly-randconfig-003-20231009   gcc  
-x86_64       buildonly-randconfig-004-20231009   gcc  
-x86_64       buildonly-randconfig-005-20231009   gcc  
-x86_64       buildonly-randconfig-006-20231009   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231009   gcc  
-x86_64                randconfig-002-20231009   gcc  
-x86_64                randconfig-003-20231009   gcc  
-x86_64                randconfig-004-20231009   gcc  
-x86_64                randconfig-005-20231009   gcc  
-x86_64                randconfig-006-20231009   gcc  
-x86_64                randconfig-011-20231009   gcc  
-x86_64                randconfig-012-20231009   gcc  
-x86_64                randconfig-013-20231009   gcc  
-x86_64                randconfig-014-20231009   gcc  
-x86_64                randconfig-015-20231009   gcc  
-x86_64                randconfig-016-20231009   gcc  
-x86_64                randconfig-071-20231009   gcc  
-x86_64                randconfig-072-20231009   gcc  
-x86_64                randconfig-073-20231009   gcc  
-x86_64                randconfig-074-20231009   gcc  
-x86_64                randconfig-075-20231009   gcc  
-x86_64                randconfig-076-20231009   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> index 332472fe4990..a09b6e05337d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> @@ -400,7 +400,7 @@ void mlx4_en_recover_from_oom(struct mlx4_en_priv *priv)
+>   	for (ring = 0; ring < priv->rx_ring_num; ring++) {
+>   		if (mlx4_en_is_ring_empty(priv->rx_ring[ring])) {
+>   			local_bh_disable();
+> -			napi_reschedule(&priv->rx_cq[ring]->napi);
+> +			napi_schedule(&priv->rx_cq[ring]->napi);
+>   			local_bh_enable();
+>   		}
+>   	}
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+For mlx4 part:
+Acked-by: Tariq Toukan <tariqt@nvidia.com>
+
 
 _______________________________________________
 ath10k mailing list
