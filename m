@@ -4,77 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66129CDB482
-	for <ath10k@archiver.kernel.org>; Thu, 12 Oct 2023 10:34:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDC8DCDB46E
+	for <ath10k@archiver.kernel.org>; Thu, 12 Oct 2023 10:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hkncLCFzpF5gz3N0eoI+w/+6kk7cPFzOFwSxAlcWbMU=; b=TJqLVzsObfBWZ995eP3uSeqKsY
-	peN+YrjrdrJCYx2apx+dkLNon9OwdduaiR24Nuczt8v46f6YOHy78DwvhWicIyvYSAe9G9bRAMPDd
-	mTnjK9L0YjZGb2zUJtFlLjWd0PKZOXH1C9IhTyJJS9UGQejk4Vd8CKWK5C8OJgtlE3mJeTKXsksrP
-	MiJOWbX1WlXDPULf0WfY9FNnEh8cBrRL4vPJFWMzd19aDVJHuE9VlF9nao7OwyeMSW6iB91aJIkvP
-	O1tNNwt4W6VsxFljVfuyKrdKSVbHP5epe1kp3TNN1RBYzmpqWFMcLHkrAd0nkmHJ2AtQFSP6Gj2q5
-	6YV1ErHg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yFuukx2qu2OXCnUDu13JDGrYhoAaG9L4vtPcjr9bMJE=; b=iLL5GAKw6IOAfo
+	8qSXjfDJr7I0YvdJR70YNsKUX12Ve2RtEFtle9quc6drXAoh5pFgwJrPRTR3DgIQaGpBg2SfW3+uV
+	npKURmrigN2iuCdGqyrhQY9TqQY8jq1IULQLEutAz/+er2uoqyN2mqJ0cya7kKPRFAqBUAAa/Mmtx
+	AEiyjOqhaygj7KA9q+/3odvpICUylr1Zmbpe+irlfT85IjyUW7P5QHmwWUkogMwBXb2x245OMOIPk
+	WYILSNE2Y7esf9WI+O3amjjVBXbcbQ/aAUMpdtYAqkxEBed10mSyx0j47BQ9T4Fvlq/O7yTEMTFjd
+	aSkUzGjMdJxKhBJv48YA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqt18-000fsF-22;
-	Thu, 12 Oct 2023 10:34:10 +0000
-Received: from mgamail.intel.com ([134.134.136.65])
+	id 1qqt1J-000fwY-23;
+	Thu, 12 Oct 2023 10:34:21 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqt16-000frW-0B;
-	Thu, 12 Oct 2023 10:34:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697106847; x=1728642847;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ji8x2F8u0U0ggxefEbWPL9IJWQlQGGYyAuJIBploLj8=;
-  b=OE6l4ddimoxfTTVOsME1Ja2Z6eAVv26IaC2lwruRl14aUM5heMpEg3Ak
-   CagCWlpu1rNj5EcUqEnMeR6UfLWfZUYY7YisY7dgi2dq06nUESQeOR9Cg
-   F8Jw1MAY4NJsADNMSi4ulyPEN/QRxbEXf2RgxajbM7b/up7Omw3YXK8Ga
-   6VP1raw8rj32AYbXTbu418+kyouaQvOIvycmIUllEfOIUxXzbb3hT1t2M
-   oT5EJ8FUl6nWMFRWBX/0GzdjB1Ca1phtz4viwcSdJhpEBIh/4R1C+iW17
-   llMvqFq3/KMza3RXFjbnA3+8HyAU/QrIQWu3tNKK5vHhd5RczzaxnwdxH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="388748390"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="388748390"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:34:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870527710"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="870527710"
-Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:34:00 -0700
-Date: Thu, 12 Oct 2023 13:29:49 +0300 (EEST)
-From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: linux-pci@vger.kernel.org, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
-    Rob Herring <robh@kernel.org>, 
-    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
-    Lukas Wunner <lukas@wunner.de>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-    Heiner Kallweit <hkallweit1@gmail.com>, 
-    Emmanuel Grumbach <emmanuel.grumbach@intel.com>, 
-    LKML <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-    ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
-    ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org, 
-    linux-arm-kernel@lists.infradead.org, linux-bluetooth@vger.kernel.org, 
-    linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org, 
-    linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 04/13] PCI/ASPM: Move L0S/L1/sub states mask calculation
- into a helper
-In-Reply-To: <20231011193206.GA1039708@bhelgaas>
-Message-ID: <bcecb577-bf69-e854-6f59-f4cb26c4b354@linux.intel.com>
-References: <20231011193206.GA1039708@bhelgaas>
+	id 1qqt1F-000fvR-0g
+	for ath10k@lists.infradead.org;
+	Thu, 12 Oct 2023 10:34:20 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3D54261DB8;
+	Thu, 12 Oct 2023 10:34:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 703EDC433C7;
+	Thu, 12 Oct 2023 10:34:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697106856;
+	bh=6J79pLScE17Mf/0kCZhd+fh0ru3BV447wowDqIP8+5Q=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=TddkFTgLllj4yN57Nf3n2suZmc33EHHjxPQDWvJckJb5jEARs7nPEl7e6caTBxuVc
+	 DJLbrCAVo4fnwiJ+ZTX0dU1tw/en5dquvN9VrXEFvvCfNN5jjV0zGDTJn7e4ycZDay
+	 h/96FKsNJFI/sM+OPC1GBxL/AOSN5ZfBpNXLb/AM6b7r9z6tzsYtxmma+R1Uev/huz
+	 AnpkXKZPve9b3mC1YoXyqTEIT/2IGH1wScwj23fLOUPxHEo54lyDqyx7MOsg6MYPRz
+	 M6y+wChy6nSORH4vTLsSlnzkHE/+TyaWJRxNoYWjgutgzh4udrDxEvAu0adXh3UypI
+	 anPg3MIyCmoSg==
+From: Kalle Valo <kvalo@kernel.org>
+To: "Luca Weiss" <luca.weiss@fairphone.com>
+Cc: <ath10k@lists.infradead.org>
+Subject: Re: chan info: invalid frequency 0 (idx 41 out of bounds)
+References: <CT83B4WXR0TL.3OREBDGKBT2IM@otso>
+	<CW5HOU3XBPS7.1KO9C3VGQCX12@fairphone.com>
+Date: Thu, 12 Oct 2023 13:34:13 +0300
+In-Reply-To: <CW5HOU3XBPS7.1KO9C3VGQCX12@fairphone.com> (Luca Weiss's message
+	of "Wed, 11 Oct 2023 11:07:01 +0200")
+Message-ID: <87wmvs2kpm.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1380828921-1697106845=:1692"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231012_033408_156430_889AE8E8 
-X-CRM114-Status: GOOD (  23.16  )
+X-CRM114-CacheID: sfid-20231012_033417_291914_FCBEEFB3 
+X-CRM114-Status: UNSURE (   6.99  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,105 +69,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+"Luca Weiss" <luca.weiss@fairphone.com> writes:
 
---8323329-1380828921-1697106845=:1692
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+> Anybody have an idea about the issue I sent a few months ago?
 
-On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
-
-> On Mon, Sep 18, 2023 at 04:10:54PM +0300, Ilpo Järvinen wrote:
-> > ASPM service driver does the same L0S / L1S / sub states allowed
-> > calculation in __pci_disable_link_state() and
-> > pci_set_default_link_state().
-> 
-> Is there a typo or something here?  This patch only adds a call to
-> __pci_disable_link_state(), not to pci_set_default_link_state().
-
-This was because one of the changes that got included in the meantime made 
-the state handling in those two functions to differ so I removed the call 
-from the code but forgot to update the changelog to match the code. I'll 
-fix the changelog.
+I don't recall anyone reporting anything similar before. As the ath10k
+firmware can be different on devices it is a possibility that's
+something specific with your firmware version. Unfortunately I don't
+have any tips how to try solve this.
 
 -- 
- i.
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-
-> > Create a helper to calculate the mask for the allowed states.
-> > 
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  drivers/pci/pcie/aspm.c | 33 +++++++++++++++++++++------------
-> >  1 file changed, 21 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> > index ec6d7a092ac1..91dc95aca90f 100644
-> > --- a/drivers/pci/pcie/aspm.c
-> > +++ b/drivers/pci/pcie/aspm.c
-> > @@ -1034,6 +1034,26 @@ static struct pcie_link_state *pcie_aspm_get_link(struct pci_dev *pdev)
-> >  	return bridge->link_state;
-> >  }
-> >  
-> > +static u8 pci_link_state_mask(int state)
-> > +{
-> > +	u8 result = 0;
-> > +
-> > +	if (state & PCIE_LINK_STATE_L0S)
-> > +		result |= ASPM_STATE_L0S;
-> > +	if (state & PCIE_LINK_STATE_L1)
-> > +		result |= ASPM_STATE_L1;
-> > +	if (state & PCIE_LINK_STATE_L1_1)
-> > +		result |= ASPM_STATE_L1_1;
-> > +	if (state & PCIE_LINK_STATE_L1_2)
-> > +		result |= ASPM_STATE_L1_2;
-> > +	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
-> > +		result |= ASPM_STATE_L1_1_PCIPM;
-> > +	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
-> > +		result |= ASPM_STATE_L1_2_PCIPM;
-> > +
-> > +	return result;
-> > +}
-> > +
-> >  static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
-> >  {
-> >  	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
-> > @@ -1063,18 +1083,7 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
-> >  	if (sem)
-> >  		down_read(&pci_bus_sem);
-> >  	mutex_lock(&aspm_lock);
-> > -	if (state & PCIE_LINK_STATE_L0S)
-> > -		link->aspm_disable |= ASPM_STATE_L0S;
-> > -	if (state & PCIE_LINK_STATE_L1)
-> > -		link->aspm_disable |= ASPM_STATE_L1;
-> > -	if (state & PCIE_LINK_STATE_L1_1)
-> > -		link->aspm_disable |= ASPM_STATE_L1_1;
-> > -	if (state & PCIE_LINK_STATE_L1_2)
-> > -		link->aspm_disable |= ASPM_STATE_L1_2;
-> > -	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
-> > -		link->aspm_disable |= ASPM_STATE_L1_1_PCIPM;
-> > -	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
-> > -		link->aspm_disable |= ASPM_STATE_L1_2_PCIPM;
-> > +	link->aspm_disable |= pci_link_state_mask(state);
-> >  	pcie_config_aspm_link(link, policy_to_aspm_state(link));
-> >  
-> >  	if (state & PCIE_LINK_STATE_CLKPM)
-
-
---8323329-1380828921-1697106845=:1692
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---8323329-1380828921-1697106845=:1692--
-
