@@ -4,85 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97ED5CDB465
-	for <ath10k@archiver.kernel.org>; Thu, 12 Oct 2023 00:40:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66129CDB482
+	for <ath10k@archiver.kernel.org>; Thu, 12 Oct 2023 10:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Date:
-	Message-Id:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MaXgmnfI7hTRQrdDCj3UO0BwLwB/WHcUg1DY0ZK521I=; b=16SnqVmb+z2WVz
-	v9Pc6tDKn+nho2P8RwYAiAO9NhMFULtzw2nIFIQNAvtpt0J2KDqFlKWypX7q6HM2MWzhcslMtjbGz
-	1ThsYRjYJN61VqDL73KzFpEhaAFrMRyxlquZW6G36XSt2M3w5Kq+RV/so8djqGjYdBovnHvm+STwA
-	F6w0fC+qIkExa9ftVC/pwDowHgQf12HR6JypZQDdmwhCEmrFzzbfl1O+9cid8Hox/lHNkFb4UnCRK
-	++/2LO7igp6H3hfmvrkFVUdLCsX94z/eqMYkYusysbENoQNb4M/IqcIcaBLjK0lNmlC2YS1pNe9cF
-	h56IUp2/i75nyzYrw1KQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=hkncLCFzpF5gz3N0eoI+w/+6kk7cPFzOFwSxAlcWbMU=; b=TJqLVzsObfBWZ995eP3uSeqKsY
+	peN+YrjrdrJCYx2apx+dkLNon9OwdduaiR24Nuczt8v46f6YOHy78DwvhWicIyvYSAe9G9bRAMPDd
+	mTnjK9L0YjZGb2zUJtFlLjWd0PKZOXH1C9IhTyJJS9UGQejk4Vd8CKWK5C8OJgtlE3mJeTKXsksrP
+	MiJOWbX1WlXDPULf0WfY9FNnEh8cBrRL4vPJFWMzd19aDVJHuE9VlF9nao7OwyeMSW6iB91aJIkvP
+	O1tNNwt4W6VsxFljVfuyKrdKSVbHP5epe1kp3TNN1RBYzmpqWFMcLHkrAd0nkmHJ2AtQFSP6Gj2q5
+	6YV1ErHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqjkg-00H4Ey-02;
-	Thu, 12 Oct 2023 00:40:34 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qqt18-000fsF-22;
+	Thu, 12 Oct 2023 10:34:10 +0000
+Received: from mgamail.intel.com ([134.134.136.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqjkc-00H4Ds-2j;
-	Thu, 12 Oct 2023 00:40:32 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id C88A761B46;
-	Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 83E1DC43391;
-	Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697071229;
-	bh=wGHJyiALp3GFYTvWaoHxyso+f2Vuj4QGs+ejJHlDf/k=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=VE5CUTDPsvYyqkldEDqOEXMVmFtYsTPZSIVSOrPhdqUiu+qC0gTSFu6e4mo37ejhQ
-	 /nJHSRLR/5Uq37Vk7V8G+nOXlNvk8vH6E7h/jFJuVqHPRQONGS0TzuyWGyPhojUAH7
-	 Y4urAQ4NY7DQHqZIv7DL90hwQTF8/SrBLn8tcK2EKIaO4+tESHK8SoJsiMlOStfslk
-	 O/7RUIjozO0FXUzHR0diff2R+Z5LRSigjR9sS4lydG4rj6L1lOXawWzS/iyDrc3/8u
-	 ubZ2+bqVueHFdmEqJE9Vi1b+9kyKU6EIaNcULLSEz66GZICCGoNPjSU3dE+Xj/HwlZ
-	 8gXY0TDIzUzzA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5A538E21ED9;
-	Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
+	id 1qqt16-000frW-0B;
+	Thu, 12 Oct 2023 10:34:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697106847; x=1728642847;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ji8x2F8u0U0ggxefEbWPL9IJWQlQGGYyAuJIBploLj8=;
+  b=OE6l4ddimoxfTTVOsME1Ja2Z6eAVv26IaC2lwruRl14aUM5heMpEg3Ak
+   CagCWlpu1rNj5EcUqEnMeR6UfLWfZUYY7YisY7dgi2dq06nUESQeOR9Cg
+   F8Jw1MAY4NJsADNMSi4ulyPEN/QRxbEXf2RgxajbM7b/up7Omw3YXK8Ga
+   6VP1raw8rj32AYbXTbu418+kyouaQvOIvycmIUllEfOIUxXzbb3hT1t2M
+   oT5EJ8FUl6nWMFRWBX/0GzdjB1Ca1phtz4viwcSdJhpEBIh/4R1C+iW17
+   llMvqFq3/KMza3RXFjbnA3+8HyAU/QrIQWu3tNKK5vHhd5RczzaxnwdxH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="388748390"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="388748390"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:34:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870527710"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="870527710"
+Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:34:00 -0700
+Date: Thu, 12 Oct 2023 13:29:49 +0300 (EEST)
+From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+cc: linux-pci@vger.kernel.org, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
+    Rob Herring <robh@kernel.org>, 
+    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
+    Lukas Wunner <lukas@wunner.de>, "Rafael J . Wysocki" <rafael@kernel.org>, 
+    Heiner Kallweit <hkallweit1@gmail.com>, 
+    Emmanuel Grumbach <emmanuel.grumbach@intel.com>, 
+    LKML <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+    ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
+    ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org, 
+    linux-arm-kernel@lists.infradead.org, linux-bluetooth@vger.kernel.org, 
+    linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org, 
+    linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 04/13] PCI/ASPM: Move L0S/L1/sub states mask calculation
+ into a helper
+In-Reply-To: <20231011193206.GA1039708@bhelgaas>
+Message-ID: <bcecb577-bf69-e854-6f59-f4cb26c4b354@linux.intel.com>
+References: <20231011193206.GA1039708@bhelgaas>
 MIME-Version: 1.0
-Subject: Re: [net-next v3 1/5] netdev: replace simple
- napi_schedule_prep/__napi_schedule to napi_schedule
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169707122936.23011.6924255297609142862.git-patchwork-notify@kernel.org>
-Date: Thu, 12 Oct 2023 00:40:29 +0000
-References: <20231009133754.9834-1-ansuelsmth@gmail.com>
-In-Reply-To: <20231009133754.9834-1-ansuelsmth@gmail.com>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: jgg@ziepe.ca, leon@kernel.org, wg@grandegger.com, mkl@pengutronix.de,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- chris.snook@gmail.com, rajur@chelsio.com, jeroendb@google.com,
- pkaligineedi@google.com, shailend@google.com, dougmill@linux.ibm.com,
- nnac123@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com,
- christophe.leroy@csgroup.eu, haren@linux.ibm.com, ricklind@linux.ibm.com,
- danymadden@us.ibm.com, tlfalcon@linux.ibm.com, tariqt@nvidia.com,
- alexandre.torgue@foss.st.com, joabreu@synopsys.com,
- mcoquelin.stm32@gmail.com, khalasa@piap.pl, kvalo@kernel.org,
- quic_jjohnson@quicinc.com, gregory.greenman@intel.com,
- chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
- chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
- m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
- loic.poulain@linaro.org, ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
- ruc_gongyuanjun@163.com, elder@linaro.org, bhupesh.sharma@linaro.org,
- horms@kernel.org, robh@kernel.org, bcf@google.com, junfeng.guo@intel.com,
- gustavoars@kernel.org, ziweixiao@google.com, rushilg@google.com,
- tglx@linutronix.de, u.kleine-koenig@pengutronix.de,
- krzysztof.kozlowski@linaro.org, YKarpov@ispras.ru, andrew@lunn.ch,
- zhengzengkai@huawei.com, set_pte_at@outlook.com,
- pagadala.yesu.anjaneyulu@intel.com, benjamin.berg@intel.com,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org
+Content-Type: multipart/mixed; boundary="8323329-1380828921-1697106845=:1692"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231011_174030_971680_AE952E47 
-X-CRM114-Status: UNSURE (   8.18  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231012_033408_156430_889AE8E8 
+X-CRM114-Status: GOOD (  23.16  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,50 +86,105 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+--8323329-1380828921-1697106845=:1692
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
-On Mon,  9 Oct 2023 15:37:50 +0200 you wrote:
-> Replace drivers that still use napi_schedule_prep/__napi_schedule
-> with napi_schedule helper as it does the same exact check and call.
+On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
+
+> On Mon, Sep 18, 2023 at 04:10:54PM +0300, Ilpo Järvinen wrote:
+> > ASPM service driver does the same L0S / L1S / sub states allowed
+> > calculation in __pci_disable_link_state() and
+> > pci_set_default_link_state().
 > 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
-> ---
-> Changes v3:
-> - Add Reviewed-by tag
-> Changes v2:
-> - Add missing semicolon
-> 
-> [...]
+> Is there a typo or something here?  This patch only adds a call to
+> __pci_disable_link_state(), not to pci_set_default_link_state().
 
-Here is the summary with links:
-  - [net-next,v3,1/5] netdev: replace simple napi_schedule_prep/__napi_schedule to napi_schedule
-    https://git.kernel.org/netdev/net-next/c/ef724517b596
-  - [net-next,v3,2/5] netdev: make napi_schedule return bool on NAPI successful schedule
-    https://git.kernel.org/netdev/net-next/c/0a779003213b
-  - [net-next,v3,3/5] netdev: replace napi_reschedule with napi_schedule
-    https://git.kernel.org/netdev/net-next/c/73382e919f3d
-  - [net-next,v3,4/5] net: tc35815: rework network interface interrupt logic
-    https://git.kernel.org/netdev/net-next/c/be176234d0a8
-  - [net-next,v3,5/5] netdev: use napi_schedule bool instead of napi_schedule_prep/__napi_schedule
-    https://git.kernel.org/netdev/net-next/c/d1fea38f01ac
+This was because one of the changes that got included in the meantime made 
+the state handling in those two functions to differ so I removed the call 
+from the code but forgot to update the changelog to match the code. I'll 
+fix the changelog.
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ i.
 
 
+> > Create a helper to calculate the mask for the allowed states.
+> > 
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  drivers/pci/pcie/aspm.c | 33 +++++++++++++++++++++------------
+> >  1 file changed, 21 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> > index ec6d7a092ac1..91dc95aca90f 100644
+> > --- a/drivers/pci/pcie/aspm.c
+> > +++ b/drivers/pci/pcie/aspm.c
+> > @@ -1034,6 +1034,26 @@ static struct pcie_link_state *pcie_aspm_get_link(struct pci_dev *pdev)
+> >  	return bridge->link_state;
+> >  }
+> >  
+> > +static u8 pci_link_state_mask(int state)
+> > +{
+> > +	u8 result = 0;
+> > +
+> > +	if (state & PCIE_LINK_STATE_L0S)
+> > +		result |= ASPM_STATE_L0S;
+> > +	if (state & PCIE_LINK_STATE_L1)
+> > +		result |= ASPM_STATE_L1;
+> > +	if (state & PCIE_LINK_STATE_L1_1)
+> > +		result |= ASPM_STATE_L1_1;
+> > +	if (state & PCIE_LINK_STATE_L1_2)
+> > +		result |= ASPM_STATE_L1_2;
+> > +	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
+> > +		result |= ASPM_STATE_L1_1_PCIPM;
+> > +	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
+> > +		result |= ASPM_STATE_L1_2_PCIPM;
+> > +
+> > +	return result;
+> > +}
+> > +
+> >  static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
+> >  {
+> >  	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
+> > @@ -1063,18 +1083,7 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
+> >  	if (sem)
+> >  		down_read(&pci_bus_sem);
+> >  	mutex_lock(&aspm_lock);
+> > -	if (state & PCIE_LINK_STATE_L0S)
+> > -		link->aspm_disable |= ASPM_STATE_L0S;
+> > -	if (state & PCIE_LINK_STATE_L1)
+> > -		link->aspm_disable |= ASPM_STATE_L1;
+> > -	if (state & PCIE_LINK_STATE_L1_1)
+> > -		link->aspm_disable |= ASPM_STATE_L1_1;
+> > -	if (state & PCIE_LINK_STATE_L1_2)
+> > -		link->aspm_disable |= ASPM_STATE_L1_2;
+> > -	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
+> > -		link->aspm_disable |= ASPM_STATE_L1_1_PCIPM;
+> > -	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
+> > -		link->aspm_disable |= ASPM_STATE_L1_2_PCIPM;
+> > +	link->aspm_disable |= pci_link_state_mask(state);
+> >  	pcie_config_aspm_link(link, policy_to_aspm_state(link));
+> >  
+> >  	if (state & PCIE_LINK_STATE_CLKPM)
+
+
+--8323329-1380828921-1697106845=:1692
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--8323329-1380828921-1697106845=:1692--
+
