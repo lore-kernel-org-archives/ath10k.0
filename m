@@ -4,69 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FE82CDB486
-	for <ath10k@archiver.kernel.org>; Wed, 11 Oct 2023 21:53:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97ED5CDB465
+	for <ath10k@archiver.kernel.org>; Thu, 12 Oct 2023 00:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=dhqgQ8xQO02C5B9khGCwhDbvq8kVskgTa3TNTo475AI=; b=1/vPkX+oRmQLuk
-	iJq58nHmEJ+JxcsueObYAyUFLihwOMHIUeBIHwUEb2V3fctmTtbk/uiU6ICu5mAogwjs5x+2d70QF
-	Ci2Slyx+qM3funf97JxXDKTlHvtuJbSxQ1d0gy7NNFBu5Sk7WRcncsSxMXjFoYaPAkoo7jhzm+a7d
-	P5p16SD/cdsQ+1g8o0PvPAjRCnvlOTCupgEZkhNUmfkd9TEV6vHZDSuSOTyXuHEI4qkWmKslDbCZ4
-	lueXTb12j3qQLpJjsFbVLWqPPiwrgn6NV5yvW+xeZDOO0v/fKufA5ZmZ8oAmTgPS1On4V/Nb75SbH
-	f4wHILsZpiOOdym5o6bQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Date:
+	Message-Id:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MaXgmnfI7hTRQrdDCj3UO0BwLwB/WHcUg1DY0ZK521I=; b=16SnqVmb+z2WVz
+	v9Pc6tDKn+nho2P8RwYAiAO9NhMFULtzw2nIFIQNAvtpt0J2KDqFlKWypX7q6HM2MWzhcslMtjbGz
+	1ThsYRjYJN61VqDL73KzFpEhaAFrMRyxlquZW6G36XSt2M3w5Kq+RV/so8djqGjYdBovnHvm+STwA
+	F6w0fC+qIkExa9ftVC/pwDowHgQf12HR6JypZQDdmwhCEmrFzzbfl1O+9cid8Hox/lHNkFb4UnCRK
+	++/2LO7igp6H3hfmvrkFVUdLCsX94z/eqMYkYusysbENoQNb4M/IqcIcaBLjK0lNmlC2YS1pNe9cF
+	h56IUp2/i75nyzYrw1KQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqh94-00GmOT-3C;
-	Wed, 11 Oct 2023 21:53:34 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1qqjkg-00H4Ey-02;
+	Thu, 12 Oct 2023 00:40:34 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqh92-00GmMv-09;
-	Wed, 11 Oct 2023 21:53:34 +0000
+	id 1qqjkc-00H4Ds-2j;
+	Thu, 12 Oct 2023 00:40:32 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 8399AB8201E;
-	Wed, 11 Oct 2023 21:53:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87540C433C9;
-	Wed, 11 Oct 2023 21:53:29 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id C88A761B46;
+	Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 83E1DC43391;
+	Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697061209;
-	bh=qY9Rp5zkRIt2DsQivgERNNESbVTGEul4kS5s7/dIoho=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=EAwNFrclnTWEuXdB+Z8mt3u3kuEAAoUwY82PbS8J18XDNC6E3OiHHHxAFbbd17IOO
-	 T6KemaFOH4w9WVID23kFc5vCnMeXYebhs7yahyg9gnbxexaaSqR+KOEgoCrxijFWyG
-	 dnCiAysL1ttbyJnzXZGaT8aqz/DwQbEhhDfWR38iscslUEL9bLiDHhVjMYSwKPoaYH
-	 vE7EY6dncxhXQ4FluROOjHz7swY5mrWHaRm0x+YRj0w+mEnls2n/6+o4Mg69zLynhg
-	 wf5HljSZ4OwbmmK2VZKj4KXyrtee/VgZ11v8Vna96PUYyaJ2T6vmKgYUE3ho/7KBKo
-	 bDWaoqyCH5pFQ==
-Date: Wed, 11 Oct 2023 16:53:27 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc: linux-pci@vger.kernel.org,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-	linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-	ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-bluetooth@vger.kernel.org, linux-mediatek@lists.infradead.org,
-	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v2 05/13] PCI/ASPM: Add pci_enable_link_state()
-Message-ID: <20231011215327.GA1043654@bhelgaas>
+	s=k20201202; t=1697071229;
+	bh=wGHJyiALp3GFYTvWaoHxyso+f2Vuj4QGs+ejJHlDf/k=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=VE5CUTDPsvYyqkldEDqOEXMVmFtYsTPZSIVSOrPhdqUiu+qC0gTSFu6e4mo37ejhQ
+	 /nJHSRLR/5Uq37Vk7V8G+nOXlNvk8vH6E7h/jFJuVqHPRQONGS0TzuyWGyPhojUAH7
+	 Y4urAQ4NY7DQHqZIv7DL90hwQTF8/SrBLn8tcK2EKIaO4+tESHK8SoJsiMlOStfslk
+	 O/7RUIjozO0FXUzHR0diff2R+Z5LRSigjR9sS4lydG4rj6L1lOXawWzS/iyDrc3/8u
+	 ubZ2+bqVueHFdmEqJE9Vi1b+9kyKU6EIaNcULLSEz66GZICCGoNPjSU3dE+Xj/HwlZ
+	 8gXY0TDIzUzzA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5A538E21ED9;
+	Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230918131103.24119-6-ilpo.jarvinen@linux.intel.com>
+Subject: Re: [net-next v3 1/5] netdev: replace simple
+ napi_schedule_prep/__napi_schedule to napi_schedule
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169707122936.23011.6924255297609142862.git-patchwork-notify@kernel.org>
+Date: Thu, 12 Oct 2023 00:40:29 +0000
+References: <20231009133754.9834-1-ansuelsmth@gmail.com>
+In-Reply-To: <20231009133754.9834-1-ansuelsmth@gmail.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: jgg@ziepe.ca, leon@kernel.org, wg@grandegger.com, mkl@pengutronix.de,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ chris.snook@gmail.com, rajur@chelsio.com, jeroendb@google.com,
+ pkaligineedi@google.com, shailend@google.com, dougmill@linux.ibm.com,
+ nnac123@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com,
+ christophe.leroy@csgroup.eu, haren@linux.ibm.com, ricklind@linux.ibm.com,
+ danymadden@us.ibm.com, tlfalcon@linux.ibm.com, tariqt@nvidia.com,
+ alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+ mcoquelin.stm32@gmail.com, khalasa@piap.pl, kvalo@kernel.org,
+ quic_jjohnson@quicinc.com, gregory.greenman@intel.com,
+ chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
+ chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
+ m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
+ loic.poulain@linaro.org, ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
+ ruc_gongyuanjun@163.com, elder@linaro.org, bhupesh.sharma@linaro.org,
+ horms@kernel.org, robh@kernel.org, bcf@google.com, junfeng.guo@intel.com,
+ gustavoars@kernel.org, ziweixiao@google.com, rushilg@google.com,
+ tglx@linutronix.de, u.kleine-koenig@pengutronix.de,
+ krzysztof.kozlowski@linaro.org, YKarpov@ispras.ru, andrew@lunn.ch,
+ zhengzengkai@huawei.com, set_pte_at@outlook.com,
+ pagadala.yesu.anjaneyulu@intel.com, benjamin.berg@intel.com,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231011_145332_354395_3D1F5816 
-X-CRM114-Status: GOOD (  30.80  )
+X-CRM114-CacheID: sfid-20231011_174030_971680_AE952E47 
+X-CRM114-Status: UNSURE (   8.18  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,91 +94,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBTZXAgMTgsIDIwMjMgYXQgMDQ6MTA6NTVQTSArMDMwMCwgSWxwbyBKw6RydmluZW4g
-d3JvdGU6Cj4gcGNpX2Rpc2FibGVfbGlua19zdGF0ZSgpIGxhY2tzIGEgc3ltbWV0cmljIHBhaXIu
-IFNvbWUgZHJpdmVycyB3YW50IHRvCj4gZGlzYWJsZSBBU1BNIGR1cmluZyBjZXJ0YWluIHBoYXNl
-cyBvZiB0aGVpciBvcGVyYXRpb24gYnV0IHRoZW4KPiByZS1lbmFibGUgaXQgbGF0ZXIgb24uIElm
-IHBjaV9kaXNhYmxlX2xpbmtfc3RhdGUoKSBpcyBtYWRlIGZvciB0aGUKPiBkZXZpY2UsIHRoZXJl
-IGlzIGN1cnJlbnRseSBubyB3YXkgdG8gcmUtZW5hYmxlIHRoZSBzdGF0ZXMgdGhhdCB3ZXJlCj4g
-ZGlzYWJsZWQuCgpwY2lfZGlzYWJsZV9saW5rX3N0YXRlKCkgZ2l2ZXMgZHJpdmVycyBhIHdheSB0
-byBkaXNhYmxlIHNwZWNpZmllZCBBU1BNCnN0YXRlcyB1c2luZyBhIGJpdG1hc2sgKFBDSUVfTElO
-S19TVEFURV9MMFMsIFBDSUVfTElOS19TVEFURV9MMSwKUENJRV9MSU5LX1NUQVRFX0wxXzEsIGV0
-YyksIGJ1dCBJSVVDIHRoZSBkcml2ZXIgY2FuJ3QgdGVsbCBleGFjdGx5CndoYXQgY2hhbmdlZCBh
-bmQgY2FuJ3QgZGlyZWN0bHkgcmVzdG9yZSB0aGUgb3JpZ2luYWwgc3RhdGUsIGUuZy4sCgogIC0g
-UENJRV9MSU5LX1NUQVRFX0wxIGVuYWJsZWQgaW5pdGlhbGx5CiAgLSBkcml2ZXIgY2FsbHMgcGNp
-X2Rpc2FibGVfbGlua19zdGF0ZShQQ0lFX0xJTktfU1RBVEVfTDBTKQogIC0gZHJpdmVyIGNhbGxz
-IHBjaV9lbmFibGVfbGlua19zdGF0ZShQQ0lFX0xJTktfU1RBVEVfTDBTKQogIC0gUENJRV9MSU5L
-X1NUQVRFX0wwUyBhbmQgUENJRV9MSU5LX1NUQVRFX0wxIGFyZSBlbmFibGVkIG5vdwoKTm93IFBD
-SUVfTElOS19TVEFURV9MMFMgaXMgZW5hYmxlZCBldmVuIHRob3VnaCBpdCB3YXMgbm90IGluaXRp
-YWxseQplbmFibGVkLiAgTWF5YmUgdGhhdCdzIHdoYXQgd2Ugd2FudDsgSSBkdW5uby4KCnBjaV9k
-aXNhYmxlX2xpbmtfc3RhdGUoKSBjdXJyZW50bHkgcmV0dXJucyBzdWNjZXNzL2ZhaWx1cmUsIGJ1
-dCBvbmx5CnI4MTY5IGFuZCBtdDc2IGV2ZW4gY2hlY2ssIGFuZCBvbmx5IHJ0bF9pbml0X29uZSgp
-IChyODE2OSkgaGFzIGEKbm9uLXRyaXZpYWwgcmVhc29uLCBzbyBpdCdzIGNvbmNlaXZhYmxlIHRo
-YXQgaXQgY291bGQgcmV0dXJuIGEgYml0bWFzawppbnN0ZWFkLgoKPiBBZGQgcGNpX2VuYWJsZV9s
-aW5rX3N0YXRlKCkgdG8gcmVtb3ZlIEFTUE0gc3RhdGVzIGZyb20gdGhlIHN0YXRlCj4gZGlzYWJs
-ZSBtYXNrLgo+IAo+IFNpZ25lZC1vZmYtYnk6IElscG8gSsOkcnZpbmVuIDxpbHBvLmphcnZpbmVu
-QGxpbnV4LmludGVsLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9wY2kvcGNpZS9hc3BtLmMgfCA0MiAr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICBpbmNsdWRlL2xpbnV4
-L3BjaS5oICAgICB8ICAyICsrCj4gIDIgZmlsZXMgY2hhbmdlZCwgNDQgaW5zZXJ0aW9ucygrKQo+
-IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2llL2FzcG0uYyBiL2RyaXZlcnMvcGNpL3Bj
-aWUvYXNwbS5jCj4gaW5kZXggOTFkYzk1YWNhOTBmLi5mNDVkMThkNDdjMjAgMTAwNjQ0Cj4gLS0t
-IGEvZHJpdmVycy9wY2kvcGNpZS9hc3BtLmMKPiArKysgYi9kcml2ZXJzL3BjaS9wY2llL2FzcG0u
-Ywo+IEBAIC0xMTE3LDYgKzExMTcsNDggQEAgaW50IHBjaV9kaXNhYmxlX2xpbmtfc3RhdGUoc3Ry
-dWN0IHBjaV9kZXYgKnBkZXYsIGludCBzdGF0ZSkKPiAgfQo+ICBFWFBPUlRfU1lNQk9MKHBjaV9k
-aXNhYmxlX2xpbmtfc3RhdGUpOwo+ICAKPiArLyoqCj4gKyAqIHBjaV9lbmFibGVfbGlua19zdGF0
-ZSAtIFJlLWVuYWJsZSBkZXZpY2UncyBsaW5rIHN0YXRlCj4gKyAqIEBwZGV2OiBQQ0kgZGV2aWNl
-Cj4gKyAqIEBzdGF0ZTogQVNQTSBsaW5rIHN0YXRlcyB0byByZS1lbmFibGUKPiArICoKPiArICog
-RW5hYmxlIGRldmljZSdzIGxpbmsgc3RhdGUgdGhhdCB3ZXJlIHByZXZpb3VzbHkgZGlzYWJsZSBz
-byB0aGUgbGluayBpcwoKInN0YXRlW3NdIHRoYXQgd2VyZSBwcmV2aW91c2x5IGRpc2FibGVbZF0i
-IGFsbHVkZXMgdG8gdGhlIHVzZSBjYXNlIHlvdQpoYXZlIGluIG1pbmQsIGJ1dCBJIGRvbid0IHRo
-aW5rIGl0IGRlc2NyaWJlcyBob3cgdGhpcyBmdW5jdGlvbgphY3R1YWxseSB3b3Jrcy4gIFRoaXMg
-ZnVuY3Rpb24ganVzdCBtYWtlcyBpdCBwb3NzaWJsZSB0byBlbmFibGUgdGhlCnNwZWNpZmllZCBz
-dGF0ZXMuICBUaGUgQHN0YXRlIHBhcmFtZXRlciBtYXkgaGF2ZSBub3RoaW5nIHRvIGRvIHdpdGgK
-YW55IHByZXZpb3VzbHkgZGlzYWJsZWQgc3RhdGVzLgoKPiArICogYWxsb3dlZCB0byBlbnRlciB0
-aGUgc3BlY2lmaWMgc3RhdGVzLiBOb3RlIHRoYXQgaWYgdGhlIEJJT1MgZGlkbid0IGdyYW50Cj4g
-KyAqIEFTUE0gY29udHJvbCB0byB0aGUgT1MsIHRoaXMgZG9lcyBub3RoaW5nIGJlY2F1c2Ugd2Ug
-Y2FuJ3QgdG91Y2ggdGhlCj4gKyAqIExOS0NUTCByZWdpc3Rlci4KPiArICoKPiArICogUmV0dXJu
-OiAwIG9yIGEgbmVnYXRpdmUgZXJybm8uCj4gKyAqLwo+ICtpbnQgcGNpX2VuYWJsZV9saW5rX3N0
-YXRlKHN0cnVjdCBwY2lfZGV2ICpwZGV2LCBpbnQgc3RhdGUpCj4gK3sKPiArCXN0cnVjdCBwY2ll
-X2xpbmtfc3RhdGUgKmxpbmsgPSBwY2llX2FzcG1fZ2V0X2xpbmsocGRldik7Cj4gKwo+ICsJaWYg
-KCFsaW5rKQo+ICsJCXJldHVybiAtRUlOVkFMOwo+ICsJLyoKPiArCSAqIEEgZHJpdmVyIHJlcXVl
-c3RlZCB0aGF0IEFTUE0gYmUgZW5hYmxlZCBvbiB0aGlzIGRldmljZSwgYnV0Cj4gKwkgKiBpZiB3
-ZSBkb24ndCBoYXZlIHBlcm1pc3Npb24gdG8gbWFuYWdlIEFTUE0gKGUuZy4sIG9uIEFDUEkKPiAr
-CSAqIHN5c3RlbXMgd2UgaGF2ZSB0byBvYnNlcnZlIHRoZSBGQURUIEFDUElfRkFEVF9OT19BU1BN
-IGJpdCBhbmQKPiArCSAqIHRoZSBfT1NDIG1ldGhvZCksIHdlIGNhbid0IGhvbm9yIHRoYXQgcmVx
-dWVzdC4KPiArCSAqLwo+ICsJaWYgKGFzcG1fZGlzYWJsZWQpIHsKPiArCQlwY2lfd2FybihwZGV2
-LCAiY2FuJ3QgZW5hYmxlIEFTUE07IE9TIGRvZXNuJ3QgaGF2ZSBBU1BNIGNvbnRyb2xcbiIpOwo+
-ICsJCXJldHVybiAtRVBFUk07Cj4gKwl9Cj4gKwo+ICsJbXV0ZXhfbG9jaygmYXNwbV9sb2NrKTsK
-PiArCWxpbmstPmFzcG1fZGlzYWJsZSAmPSB+cGNpX2xpbmtfc3RhdGVfbWFzayhzdGF0ZSk7Cj4g
-KwlwY2llX2NvbmZpZ19hc3BtX2xpbmsobGluaywgcG9saWN5X3RvX2FzcG1fc3RhdGUobGluaykp
-Owo+ICsKPiArCWlmIChzdGF0ZSAmIFBDSUVfTElOS19TVEFURV9DTEtQTSkKPiArCQlsaW5rLT5j
-bGtwbV9kaXNhYmxlID0gMDsKPiArCXBjaWVfc2V0X2Nsa3BtKGxpbmssIHBvbGljeV90b19jbGtw
-bV9zdGF0ZShsaW5rKSk7Cj4gKwltdXRleF91bmxvY2soJmFzcG1fbG9jayk7Cj4gKwo+ICsJcmV0
-dXJuIDA7Cj4gK30KPiArRVhQT1JUX1NZTUJPTChwY2lfZW5hYmxlX2xpbmtfc3RhdGUpOwo+ICsK
-PiAgLyoqCj4gICAqIHBjaV9zZXRfZGVmYXVsdF9saW5rX3N0YXRlIC0gU2V0IHRoZSBkZWZhdWx0
-IGRldmljZSBsaW5rIHN0YXRlCj4gICAqIEBwZGV2OiBQQ0kgZGV2aWNlCj4gZGlmZiAtLWdpdCBh
-L2luY2x1ZGUvbGludXgvcGNpLmggYi9pbmNsdWRlL2xpbnV4L3BjaS5oCj4gaW5kZXggM2MyNGNh
-MTY0MTA0Li44NDRkMDkyMzAyNjQgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC9wY2kuaAo+
-ICsrKyBiL2luY2x1ZGUvbGludXgvcGNpLmgKPiBAQCAtMTc3NiwxMSArMTc3NiwxMyBAQCBleHRl
-cm4gYm9vbCBwY2llX3BvcnRzX25hdGl2ZTsKPiAgaW50IHBjaV9kaXNhYmxlX2xpbmtfc3RhdGUo
-c3RydWN0IHBjaV9kZXYgKnBkZXYsIGludCBzdGF0ZSk7Cj4gIGludCBwY2lfZGlzYWJsZV9saW5r
-X3N0YXRlX2xvY2tlZChzdHJ1Y3QgcGNpX2RldiAqcGRldiwgaW50IHN0YXRlKTsKPiAgI2lmZGVm
-IENPTkZJR19QQ0lFQVNQTQo+ICtpbnQgcGNpX2VuYWJsZV9saW5rX3N0YXRlKHN0cnVjdCBwY2lf
-ZGV2ICpwZGV2LCBpbnQgc3RhdGUpOwo+ICBpbnQgcGNpX3NldF9kZWZhdWx0X2xpbmtfc3RhdGUo
-c3RydWN0IHBjaV9kZXYgKnBkZXYsIGludCBzdGF0ZSk7Cj4gIHZvaWQgcGNpZV9ub19hc3BtKHZv
-aWQpOwo+ICBib29sIHBjaWVfYXNwbV9zdXBwb3J0X2VuYWJsZWQodm9pZCk7Cj4gIGJvb2wgcGNp
-ZV9hc3BtX2VuYWJsZWQoc3RydWN0IHBjaV9kZXYgKnBkZXYpOwo+ICAjZWxzZQo+ICtzdGF0aWMg
-aW5saW5lIGludCBwY2lfZW5hYmxlX2xpbmtfc3RhdGUoc3RydWN0IHBjaV9kZXYgKnBkZXYsIGlu
-dCBzdGF0ZSkgeyByZXR1cm4gLUVPUE5PVFNVUFA7IH0KPiAgc3RhdGljIGlubGluZSBpbnQgcGNp
-X3NldF9kZWZhdWx0X2xpbmtfc3RhdGUoc3RydWN0IHBjaV9kZXYgKnBkZXYsIGludCBzdGF0ZSkK
-PiAgeyByZXR1cm4gMDsgfQo+ICBzdGF0aWMgaW5saW5lIHZvaWQgcGNpZV9ub19hc3BtKHZvaWQp
-IHsgfQo+IC0tIAo+IDIuMzAuMgo+IAo+IAo+IC0tIAo+IGF0aDEyayBtYWlsaW5nIGxpc3QKPiBh
-dGgxMmtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHBzOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEyawoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon,  9 Oct 2023 15:37:50 +0200 you wrote:
+> Replace drivers that still use napi_schedule_prep/__napi_schedule
+> with napi_schedule helper as it does the same exact check and call.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> ---
+> Changes v3:
+> - Add Reviewed-by tag
+> Changes v2:
+> - Add missing semicolon
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v3,1/5] netdev: replace simple napi_schedule_prep/__napi_schedule to napi_schedule
+    https://git.kernel.org/netdev/net-next/c/ef724517b596
+  - [net-next,v3,2/5] netdev: make napi_schedule return bool on NAPI successful schedule
+    https://git.kernel.org/netdev/net-next/c/0a779003213b
+  - [net-next,v3,3/5] netdev: replace napi_reschedule with napi_schedule
+    https://git.kernel.org/netdev/net-next/c/73382e919f3d
+  - [net-next,v3,4/5] net: tc35815: rework network interface interrupt logic
+    https://git.kernel.org/netdev/net-next/c/be176234d0a8
+  - [net-next,v3,5/5] netdev: use napi_schedule bool instead of napi_schedule_prep/__napi_schedule
+    https://git.kernel.org/netdev/net-next/c/d1fea38f01ac
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
