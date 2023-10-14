@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFFC7CDB47E
-	for <ath10k@archiver.kernel.org>; Fri, 13 Oct 2023 20:34:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58E59CDB483
+	for <ath10k@archiver.kernel.org>; Sat, 14 Oct 2023 00:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
-	Mime-Version:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=hSWRicnGr9tFtaxRprAv5XAbHhXvdo1NB8RY7uaqnbk=; b=2SN
-	HJm+HY6VBNFo0fZ9amiAUpdn9XoR3Az1wkm4Mcn2NLiNeW//KQz/4Mo4z+Vkowtk736iPKHJ/4ZnI
-	ez3+u1C820TcEi1vK/E/PReob3Jej92C1YwYuLYQ6g4G6UxakAUwwvy/zPAUG10M/sh3GaaINNBsO
-	SKioqE6AvPkjPON7XccKTMzwZfk88HtLSHpb6K8TPiEySIiY6CUr3SZJfP19GscIg6YkXRT4iVINd
-	zcxlvOrJqOj/+SBUOV0Gk6IGz8oFp05XxtakAIBGGyZTgAOg8SZLyXtlKsuZ9G/p0Hgh9ZBYDbYt+
-	wHqKfuJ+/HwIApX2PHJEAHrLr7Jg1ww==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gpzn8Z+1CVal7yzYmctN/ta8edFGJ6s/6vWBWbMqKCg=; b=BuNa/1BStSx3p6
+	BQ57Hj9xk9ElWf/69cLdZfIMBqUiv5TP4LmJ6/MX2H1MDKZuVPlxS+5i3l1LAjJtygFg6mC+v7HG1
+	1UAla2Vn1HqOvIgAHD+CtHrD4a1DOqECnjQ9xoAqnV1850WTGIvav2DkU7y3bxPP0jTcKVigWijYu
+	IPg+hAwJQjDU2CJ/6D9bVEOE0fMNvjqNKgljhBGkhBlcULBf4eVrEwoXSNifbtTQdFGzBlydMWW69
+	NUzGti7BIwZMhY3NTUN0kPaPDKDRphOPRPU56SR2ssxRqhvmL+QBwaqj9zXo4slEEkHBA4uhFrwPl
+	5RDdi2Utsp+gxlt7RZfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qrOr5-004EPF-2g;
-	Fri, 13 Oct 2023 20:33:55 +0000
-Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
+	id 1qrSz5-004YZK-1F;
+	Sat, 14 Oct 2023 00:58:27 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qrOr2-004EOi-2C
+	id 1qrSz1-004YYd-1s
 	for ath10k@lists.infradead.org;
-	Fri, 13 Oct 2023 20:33:54 +0000
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d86dac81f8fso3614878276.1
-        for <ath10k@lists.infradead.org>; Fri, 13 Oct 2023 13:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697229228; x=1697834028; darn=lists.infradead.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=eG6A8LXGdf5DishXidGUjCut3MBs3ddn444r7C+ElXE=;
-        b=vocSKoJgPMBKc4mJvbBBvhz0gYBXrWEzKQlaZuThtEIdZstn4hQNdEIlAV7d7xn86U
-         rMvqWky5YJxMA7ps22mjDo5riUbwvdWDAPd8NV69O4G4We3na9nLZB1E58viDpWMMY12
-         1bCwGwrFZrgYL9A+R40n4fJJ8AMGiRNnQfMZ3pcuE1mXNaeIWIYo4e7WNBo0biFtMftT
-         jIppO9RHTKcqPDhorX3ma6E9UueLdlA/jClu9K7yJFzME6zhE2mDx8ZxfwcDFRMTAbq2
-         izPEuEwY8FPg4WxY/N60JIn4a1HMV8Acp8p3VuId4OYQWs6bUu/gxT5bkjL80IiugzK8
-         Nnzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697229228; x=1697834028;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eG6A8LXGdf5DishXidGUjCut3MBs3ddn444r7C+ElXE=;
-        b=Gu9/bigcJRkXy13M7cPj4SHaDnpJLT9uK3M8HeveBnrBzpJ2GDpODQnyEe3Qu0LBlX
-         xFO5yYFEBlcXy116QiZpK/fbnx7m3UZcec7fmb1g9UOHZ2wOLZh2AXKNZAkSMbefPSgV
-         SRGOYTv67LIxgpt/2Ogy3e3bMjnTYy6SEDEWGALNRD27qWYsjcPX6nEffnKXzKAc9Iz+
-         /mP3jdrxRIZp/UDzRvepZZamXJZj3Gh7FBDy0pbDcijwssljTGoHbkQoCKkUCT+q8bLL
-         NSm/3ZmxHZ9iMd3vg9IkikmynA3ZIywByo8T+lF3KIQyCl7QnWlMISv1ORpsay5sdU84
-         NCiQ==
-X-Gm-Message-State: AOJu0YzcxJcwDWkKhno2+nm/6X8M86Lq64bkKcx0wfI9vXLjeDR+klqh
-	Jj3xCozwHqVOp3B9oq/XgUxK14vXyTAj/8OZ/w==
-X-Google-Smtp-Source: AGHT+IE1DLGODvnUeOyBO95DQWbeWAG3EQH/FQzqvAHpAtiVubf5eiiRi9rEMF1X30r6/tRVippKDNEtWmsLOAHylw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:5056:0:b0:d9a:3dac:6c1a with SMTP
- id e83-20020a255056000000b00d9a3dac6c1amr284177ybb.11.1697229228652; Fri, 13
- Oct 2023 13:33:48 -0700 (PDT)
-Date: Fri, 13 Oct 2023 20:33:48 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAKupKWUC/x2NQQrCMBBFr1Jm7UDS0AheRVyE9GsHNZaZ0Cqld
- zfK4y/e5r+NDCowOnUbKRYxeZUm/tBRnlK5gWVsTr3rg3c+sFUtef7wqLJAjQsqr6J4wIxTnX7 z7s7PlLlxDGkYYoyIidrnrLjK+987X/b9C0V4zo5/AAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697229227; l=2804;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=bIMAUwS6tKmB9c3Rk81R/5V5UUFo1cBwPXaV7yFWMoA=; b=CMqSCYBAwjGQ8NqCJLEe3oWu/b2U+C4UYTWSlc/PUeeYHnfx5MQOccK4vtSKlHLLgk37gUzWa
- wuqPSkQzuGcBq8W/yBQzKG3d3WsDrMe0sr4hx8u6ZKodNLkDgwsgk/2
-X-Mailer: b4 0.12.3
-Message-ID: <20231013-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v1-1-24e40201afa3@google.com>
-Subject: [PATCH] ath10k: replace deprecated strncpy with strtomem_pad
-From: Justin Stitt <justinstitt@google.com>
-To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Justin Stitt <justinstitt@google.com>
+	Sat, 14 Oct 2023 00:58:25 +0000
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39E0aN6V031312;
+	Sat, 14 Oct 2023 00:58:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=2Mn/sALuAGncO7Zfs3mDJhQdbV4y5KH35BwJzbtCZAM=;
+ b=WhiUNd5a0vuOSUpe4BF+G9ZmBVZm6akp4HHGKJZ8zjmCzHVdOZiN4PUP7VBIBFBbla4G
+ 7mFJ4GPoSDzJLTfzRsnoE1z4Nh6J8CiFsJWu6lJvSd3FylZLCGwBdo5kLzH/UNsCVOAu
+ ZWhvP5Vsbz4vHwmEvJN06wLz3a1iAss3sK2XLcj2G1eK7CXEbir00SBLiVJpEZICrfm9
+ bQgTbE/xrZvtoXiBEjTeg/tHO+kSvCWA/ryAw7QbTLAfYM5NcpvS3MO36qYLMD88WaVo
+ UB/Id4N3mgoqF+4EHHEl1hQ+jstQwTpOy0slAAMqKk0PVYLkC1Ljy7fF/yDsuJQxGtqC kg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tq5101f85-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 14 Oct 2023 00:58:05 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39E0w48k025410
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 14 Oct 2023 00:58:04 GMT
+Received: from [10.48.240.22] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 13 Oct
+ 2023 17:58:03 -0700
+Message-ID: <1cfc7c64-439c-437e-af82-7fce1202242d@quicinc.com>
+Date: Fri, 13 Oct 2023 17:58:03 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ath10k: replace deprecated strncpy with strtomem_pad
+Content-Language: en-US
+To: Justin Stitt <justinstitt@google.com>, Kalle Valo <kvalo@kernel.org>
+CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
+References: <20231013-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v1-1-24e40201afa3@google.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20231013-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v1-1-24e40201afa3@google.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: D4pQm2n1GAZ-B8U95Qc8FjHAJ3n19PkZ
+X-Proofpoint-GUID: D4pQm2n1GAZ-B8U95Qc8FjHAJ3n19PkZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_12,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=751 spamscore=0 clxscore=1011 adultscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310140006
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231013_133352_720668_2C9C4560 
-X-CRM114-Status: GOOD (  12.53  )
+X-CRM114-CacheID: sfid-20231013_175823_737564_D4D83075 
+X-CRM114-Status: GOOD (  16.10  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,83 +92,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-strncpy() is deprecated [1] and we should prefer less ambiguous
-interfaces.
+On 10/13/2023 1:33 PM, Justin Stitt wrote:
+> strncpy() is deprecated [1] and we should prefer less ambiguous
+> interfaces.
+> 
+> In this case, arvif->u.ap.ssid has its length maintained by
+> arvif->u.ap.ssid_len which indicates it may not need to be
+> NUL-terminated, although by virtue of using strtomem_pad (with NUL-byte
+> pad character) and having a destination size larger than the source,
+> ssid will, incidentally, be NUL-terminated here.
+> 
+> As strtomem_pad() docs say:
+>   * @dest: Pointer of destination character array (marked as __nonstring)
+>   * @src: Pointer to NUL-terminated string
+>   * @pad: Padding character to fill any remaining bytes of @dest after copy
+>   *
+>   * This is a replacement for strncpy() uses where the destination is not
+>   * a NUL-terminated string, but with bounds checking on the source size, and
+>   * an explicit padding character. If padding is not required, use strtomem().
+> 
+> Let's also mark ath10k_vif.u.ap.ssid as __nonstring.
 
-In this case, arvif->u.ap.ssid has its length maintained by
-arvif->u.ap.ssid_len which indicates it may not need to be
-NUL-terminated, although by virtue of using strtomem_pad (with NUL-byte
-pad character) and having a destination size larger than the source,
-ssid will, incidentally, be NUL-terminated here.
+what criteria is used to determine whether or not to use __nonstring?
+doesn't the use of u8 vs char already communicate that distinction?
+just want to know what other u8 arrays might require this.
+FWIW the documentation referenced by the __nonstring macro explicitly 
+refers to "type array of char, signed char, or unsigned char"
 
-As strtomem_pad() docs say:
- * @dest: Pointer of destination character array (marked as __nonstring)
- * @src: Pointer to NUL-terminated string
- * @pad: Padding character to fill any remaining bytes of @dest after copy
- *
- * This is a replacement for strncpy() uses where the destination is not
- * a NUL-terminated string, but with bounds checking on the source size, and
- * an explicit padding character. If padding is not required, use strtomem().
+> 
+> It is unclear to me whether padding is strictly necessary. Perhaps we
+> should opt for just strtomem() -- padding certainly doesn't hurt,
+> though.
 
-Let's also mark ath10k_vif.u.ap.ssid as __nonstring.
+concur that padding probably isn't necessary but doesn't hurt, and will 
+prevent confusion if looking at this member in a crashdump
 
-It is unclear to me whether padding is strictly necessary. Perhaps we
-should opt for just strtomem() -- padding certainly doesn't hurt,
-though.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/net/wireless/ath/ath10k/core.h | 2 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 4b5239de4018..ba9795a8378a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -607,7 +607,7 @@ struct ath10k_vif {
- 			u8 tim_bitmap[64];
- 			u8 tim_len;
- 			u32 ssid_len;
--			u8 ssid[IEEE80211_MAX_SSID_LEN];
-+			u8 ssid[IEEE80211_MAX_SSID_LEN] __nonstring;
- 			bool hidden_ssid;
- 			/* P2P_IE with NoA attribute for P2P_GO case */
- 			u32 noa_len;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 03e7bc5b6c0b..7daa007bd8b3 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6125,8 +6125,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 
- 		if (ieee80211_vif_is_mesh(vif)) {
- 			/* mesh doesn't use SSID but firmware needs it */
--			strncpy(arvif->u.ap.ssid, "mesh",
--				sizeof(arvif->u.ap.ssid));
-+			strtomem_pad(arvif->u.ap.ssid, "mesh", '\0');
- 			arvif->u.ap.ssid_len = 4;
- 		}
- 	}
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231013-strncpy-drivers-net-wireless-ath-ath10k-mac-c-c73a55666e6a
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+Either with or without the __nonstring...
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
 
 _______________________________________________
