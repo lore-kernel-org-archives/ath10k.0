@@ -4,68 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A420ECDB47E
-	for <ath10k@archiver.kernel.org>; Sun, 15 Oct 2023 15:40:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08F84CDB465
+	for <ath10k@archiver.kernel.org>; Mon, 16 Oct 2023 12:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9J9MqtdqjN2nwYLuG8JPwDV7B6GA7LO43+lTHOS5zoc=; b=t599zh1kFR507w
-	ssOluMOQIXUU2e03RIWqMVvjDU3sS06e0HDCZSkk6/l44B1QdigsehhK8iNH5NOyJVjWzXMKpm2rB
-	OBM5PwwtMfmXaklwLO/7TNv2nWg7ldZyIvcNcWGYyz0fzMgBRcGyEGg5OWwekhQZTwCg/BPGoIZl6
-	vrL+B0i++qghGOZzK/Nj/BA6DdBExu7i3ERckRLq6Q758jahddKFXbSLMYrKvhhZmI4zx3sRa4+H1
-	Nfac0B2UEwzlFQqeD+dWk9kEZVGCyFpQ8bNamPlT2bEZweGF2wtNnfLeeyUwnZDT1DDdOKW9eOcW6
-	09uQAYk0EoqgPyWtD69w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=6Oq8xs4S7PB/+m3pCWz36sxz5z91fVzoe/KG9XMBVyQ=; b=q7U7O/AmofLGNKnor+4StMGriR
+	664qI1qEiDzXX2kUtPKJwrSAcWlEKtre5Q2VwrMSVBGXfk06GRZcQ2ULt0YHvIpabGSh77d5yMYjR
+	60YNuPYUHKPmo5UeKIUO7CrSGlRfx1wLD6aHH3jDSbnk2tyfPR86ahR1raS3HcWpCvVtqNGVIhXzd
+	YWRA+kgWW14AypXmolltpWm40RPL2auZmptnAROT0bCYNlKgBVsnLnzOEp8OxtRciG3ghirnOI2nG
+	2wfj6jRBT3lYR9hCrdF9yaapMKz9dtc2WmqOlYJodmf8/pwDtZeoCKlRLwfTf1aGi8U7T23wHp2Yh
+	jo5YroCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qs3EA-007O9M-2Z;
-	Sun, 15 Oct 2023 15:40:26 +0000
-Received: from mgamail.intel.com ([134.134.136.31])
+	id 1qsN9p-009evC-1p;
+	Mon, 16 Oct 2023 12:57:17 +0000
+Received: from mgamail.intel.com ([198.175.65.9])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qs3E7-007O8y-2a
-	for ath10k@lists.infradead.org;
-	Sun, 15 Oct 2023 15:40:25 +0000
+	id 1qsN9m-009euW-1l;
+	Mon, 16 Oct 2023 12:57:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697384423; x=1728920423;
-  h=date:from:to:cc:subject:message-id;
-  bh=lVdyGZl28Vza8mKeW4jC8FH8RM4GxWH60QIl8+/9+5M=;
-  b=TT2qkWAEYvRRdMFAPvchSIhwKD5D68jLQxXAf57DtqkWeV/XqicAbSrf
-   n7x0K/gVroAvvcdQKLqQmg9P6TcNhwfjDDAWpaSKFlG0n7XnNiqMsFznE
-   WX2kyHDFE0uIzV4U1GQlvVZPTYRaCn0sQLOx7uE1ERmJ67x89oOov8X6K
-   5PbOKhRsDyvHVmEelAoKU9zVir2LHDeGZPe80fRi4lJJC8ltTzaWxK85c
-   y90kBN+Ujx96amPPSaj68PdL8UMLLhFdBbOgWjPdR4MeLD11jLCB1hjvS
-   oLfpn5tfP9rDxDthz8PvyUpGFnOAnMFYGBbft5XmzvpG1ex9tyc8RCpaS
+  t=1697461035; x=1728997035;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=33VN831uWAKG7f4eIn44PpDJgWUV0McuEtJM+oSWIh4=;
+  b=lp+N0iDegos1KqT0YHUk8zJeCMUF891HPeNecMLT7Z88naTNfHsSkcgx
+   QxsDd2OdH3NF6sY33CXGJ4W+CGAtBN77FUNwqpiuOt87MfgdZkxRN9Bet
+   RFydGD5hSKrn3dlXzv3QToJkFQYsOY3JgFlyLabT2FGG2lDaFscvR9Jkj
+   +2CDwF9J9ZAqUy/r21UPBBeql4cOU2JxUlKDVIdLMrB+C5+Hszkz+1P5/
+   ErO19JsuND5+5Y1ETsrzEzVJLcoUFVaRi7yVk5ahk0RznzNH82YU9Bn+H
+   uRMz7/OESAn0Ioe7hyo4wV0qlPQZ/AMsLSvgfPGb32Xu+fssy3JVhbOQF
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="449598709"
-X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="449598709"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 08:40:20 -0700
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="4130584"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="4130584"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:57:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="790524577"
-X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="790524577"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 15 Oct 2023 08:40:19 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qs3E1-0007Wa-02;
-	Sun, 15 Oct 2023 15:40:17 +0000
-Date: Sun, 15 Oct 2023 23:39:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- fb679e9434d94a3bf3569e32ed34468ec7a01a6a
-Message-ID: <202310152326.94oBQbPB-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="1087063948"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="1087063948"
+Received: from rhaeussl-mobl.ger.corp.intel.com (HELO bhoerz-mobl1.ger.corp.intel.com) ([10.252.59.103])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:57:07 -0700
+Date: Mon, 16 Oct 2023 15:57:05 +0300 (EEST)
+From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+cc: linux-pci@vger.kernel.org, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
+    Rob Herring <robh@kernel.org>, 
+    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
+    Lukas Wunner <lukas@wunner.de>, "Rafael J . Wysocki" <rafael@kernel.org>, 
+    Heiner Kallweit <hkallweit1@gmail.com>, 
+    Emmanuel Grumbach <emmanuel.grumbach@intel.com>, 
+    LKML <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+    ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
+    ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org, 
+    linux-arm-kernel@lists.infradead.org, linux-bluetooth@vger.kernel.org, 
+    linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org, 
+    linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 05/13] PCI/ASPM: Add pci_enable_link_state()
+In-Reply-To: <20231013164850.GA1118214@bhelgaas>
+Message-ID: <9da430a3-9336-8e75-7385-3d5ddcb6cb7@linux.intel.com>
+References: <20231013164850.GA1118214@bhelgaas>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323329-1750157713-1697461032=:1986"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231015_084023_887604_4465C6DA 
-X-CRM114-Status: UNSURE (   5.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231016_055714_652251_7F6BD44E 
+X-CRM114-Status: GOOD (  43.65  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,132 +85,123 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: fb679e9434d94a3bf3569e32ed34468ec7a01a6a  wifi: ath6kl: replace deprecated strncpy with memcpy
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-elapsed time: 1935m
+--8323329-1750157713-1697461032=:1986
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
-configs tested: 102
-configs skipped: 2
+On Fri, 13 Oct 2023, Bjorn Helgaas wrote:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> On Thu, Oct 12, 2023 at 03:53:39PM +0300, Ilpo Järvinen wrote:
+> > On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
+> > > On Mon, Sep 18, 2023 at 04:10:55PM +0300, Ilpo Järvinen wrote:
+> > > > pci_disable_link_state() lacks a symmetric pair. Some drivers want to
+> > > > disable ASPM during certain phases of their operation but then
+> > > > re-enable it later on. If pci_disable_link_state() is made for the
+> > > > device, there is currently no way to re-enable the states that were
+> > > > disabled.
+> > > 
+> > > pci_disable_link_state() gives drivers a way to disable specified ASPM
+> > > states using a bitmask (PCIE_LINK_STATE_L0S, PCIE_LINK_STATE_L1,
+> > > PCIE_LINK_STATE_L1_1, etc), but IIUC the driver can't tell exactly
+> > > what changed and can't directly restore the original state, e.g.,
+> > > 
+> > >   - PCIE_LINK_STATE_L1 enabled initially
+> > >   - driver calls pci_disable_link_state(PCIE_LINK_STATE_L0S)
+> > >   - driver calls pci_enable_link_state(PCIE_LINK_STATE_L0S)
+> > >   - PCIE_LINK_STATE_L0S and PCIE_LINK_STATE_L1 are enabled now
+> > > 
+> > > Now PCIE_LINK_STATE_L0S is enabled even though it was not initially
+> > > enabled.  Maybe that's what we want; I dunno.
+> > > 
+> > > pci_disable_link_state() currently returns success/failure, but only
+> > > r8169 and mt76 even check, and only rtl_init_one() (r8169) has a
+> > > non-trivial reason, so it's conceivable that it could return a bitmask
+> > > instead.
+> > 
+> > It's great that you suggested this since it's actually what also I've been 
+> > started to think should be done instead of this straightforward approach
+> > I used in V2. 
+> > 
+> > That is, don't have the drivers to get anything directly from LNKCTL
+> > but they should get everything through the API provided by the 
+> > disable/enable calls which makes it easy for the driver to pass the same
+> > value back into the enable call.
+> > 
+> > > > Add pci_enable_link_state() to remove ASPM states from the state
+> > > > disable mask.
+> > > > 
+> > > > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > > > ---
+> > > >  drivers/pci/pcie/aspm.c | 42 +++++++++++++++++++++++++++++++++++++++++
+> > > >  include/linux/pci.h     |  2 ++
+> > > >  2 files changed, 44 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> > > > index 91dc95aca90f..f45d18d47c20 100644
+> > > > --- a/drivers/pci/pcie/aspm.c
+> > > > +++ b/drivers/pci/pcie/aspm.c
+> > > > @@ -1117,6 +1117,48 @@ int pci_disable_link_state(struct pci_dev *pdev, int state)
+> > > >  }
+> > > >  EXPORT_SYMBOL(pci_disable_link_state);
+> > > >  
+> > > > +/**
+> > > > + * pci_enable_link_state - Re-enable device's link state
+> > > > + * @pdev: PCI device
+> > > > + * @state: ASPM link states to re-enable
+> > > > + *
+> > > > + * Enable device's link state that were previously disable so the link is
+> > > 
+> > > "state[s] that were previously disable[d]" alludes to the use case you
+> > > have in mind, but I don't think it describes how this function
+> > > actually works.  This function just makes it possible to enable the
+> > > specified states.  The @state parameter may have nothing to do with
+> > > any previously disabled states.
+> > 
+> > Yes, it's what I've been thinking between the lines. But I see your point 
+> > that this API didn't make it easy/obvious as is.
+> > 
+> > Would you want me to enforce it too besides altering the API such that the 
+> > states are actually returned from disable call? (I don't personally find
+> > that necessary as long as the API pair itself makes it obvious what the 
+> > driver is expect to pass there.)
+> 
+> This was just a comment about the doc not matching the function
+> behavior.
+> 
+> I think we have to support pci_enable_link_state() even if the driver
+> hasn't previously called pci_disable_link_state(), so drivers have to
+> be able to specify the pci_enable_link_state() @state from scratch.
+> 
+> Does that answer the enforcement question?
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231014   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231014   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231014   gcc  
-i386                  randconfig-002-20231014   gcc  
-i386                  randconfig-003-20231014   gcc  
-i386                  randconfig-004-20231014   gcc  
-i386                  randconfig-005-20231014   gcc  
-i386                  randconfig-006-20231014   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231014   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231014   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231014   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231014   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231014   gcc  
-x86_64                randconfig-002-20231014   gcc  
-x86_64                randconfig-003-20231014   gcc  
-x86_64                randconfig-004-20231014   gcc  
-x86_64                randconfig-005-20231014   gcc  
-x86_64                randconfig-006-20231014   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+Yes.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ i.
+
+> I don't think we can
+> really enforce anything other than that @state specifies valid ASPM
+> states.
+> 
+> Bjorn
+> 
+
+--8323329-1750157713-1697461032=:1986
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--8323329-1750157713-1697461032=:1986--
+
