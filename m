@@ -4,68 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDAB4CDB474
-	for <ath10k@archiver.kernel.org>; Wed, 18 Oct 2023 02:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70887CDB47E
+	for <ath10k@archiver.kernel.org>; Wed, 18 Oct 2023 23:35:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iGc8r5TPGi6mr01SvzX/do6iknJiyY+I4RfUcWDoT/o=; b=4VZLo6P/hRtKNu
-	KTUZ7uLUQt7Vb6E9q8lv5koAy4xD5EhnXY/P9OyOhEz8mMHwQfq15af+JdBsOe+iIzw1vIQL7/lgG
-	ejwy9PJwp7+M4XwgVttByx0iQ33t3iSXG6d/6QMuk19GhPLDO3b+L3Lrgulo2tV6m2zzTkXKBoVVR
-	V4aiZAt/Ytuv4KyESkfRgqDdek5Ps6fAnIU+Gzval0HQ0Zc68jctuJrlTbsdcp8GE1DPdZq22JP6a
-	IvyNHDJr/RtCLASjSuMJ60vEA2UTX05+0wHqsLp7/q4SzUSGpxXBHO+j94yoRU2arhEFnj02jnCGq
-	z4SpoikKSoH/O/pbYpwA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yn2OwjxlAiihKj9AoATe5l2+5n83/mQy1vpJxCBgaww=; b=VjKiucN8R22v5v
+	KbFFxxWYiagzh0bStTgx8FJODkaUL5TpaxHrY6Zqyy2gAOpmoKnOdgkYWA553HpAX/w2j9/6/QRQm
+	d/nPmURkPQpXgC8dn+kN/pzRccbH8QgSoXOMmTW7L8r46wq4LYt4mdRXLaKZcEfDFx+F2JEZ4SwUm
+	h8lnv3swIUdewzyK8416EL86YhAGXsU7I/IwmCirt+x1ZONTjjIpSxE34vajGUyM2aCjB2eqfMAX3
+	K2iB4FFtEqEuU/RW+3CzXlS9bhzquTBOmGVgr7hFHU/JYzJqZnQL/ZeJl5ulEgK8m26cdJ3nDubip
+	1lhKYaQloFQi6t4ZXqHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qswMO-00Daul-2o;
-	Wed, 18 Oct 2023 02:32:36 +0000
-Received: from mgamail.intel.com ([192.55.52.115])
+	id 1qtG4K-00Fw3h-1P;
+	Wed, 18 Oct 2023 23:35:16 +0000
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qswML-00DauJ-0a
+	id 1qtG4E-00Fw1g-1p
 	for ath10k@lists.infradead.org;
-	Wed, 18 Oct 2023 02:32:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697596353; x=1729132353;
-  h=date:from:to:cc:subject:message-id;
-  bh=8RCnFb+UxCXsor0NeXPL7b/HmBugipo9gqpZuFOyHQo=;
-  b=lAA5piNaEFSnMsbFi/yPlvm4RPfs8MjCy3fxPgF/2Sl4faPdafdC8jlc
-   OuwQ+XUIuA0CL2A6Zr5oj1Ed6BScN4TVjZQIGxogF0Fvx4FAtLzXmZyjb
-   wmWPqecKtw25SxG2JuBeWhvRlaccpRKpFDo7C4+pvULf6KS1pb4kNA/6K
-   wXccdpCTC//OvcyYrAghiqBZ/qMZsezZ+OZswIkttvglw+LGiyioZzUh5
-   csNpyx/CdFxUcb9X1opjXttOtg6WC+ZVLnkckBU4o50Vr2H2a1dR4iZo2
-   vcyDTPb+WgMdb8CRZ3zmxQZ2gB1Sd9lsI/jkrWPJA5FOhgyfOgdPB5Tnw
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="385756820"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="385756820"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 19:32:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="706252747"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="706252747"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 17 Oct 2023 19:32:25 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qswM9-000AOl-1b;
-	Wed, 18 Oct 2023 02:32:21 +0000
-Date: Wed, 18 Oct 2023 10:31:15 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- ebf13b97e6f1aabc87c880d572f297ea9bc77a12
-Message-ID: <202310181013.SFdnm53E-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Wed, 18 Oct 2023 23:35:14 +0000
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1ca72f8ff3aso28391015ad.0
+        for <ath10k@lists.infradead.org>; Wed, 18 Oct 2023 16:35:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697672109; x=1698276909; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xxRMOhkHfqF2Yz4cAD/a2m3hMjCZwz0gsRF0WfVLtiE=;
+        b=ZSngdcsiRFrUvAMLv8Sg7t2Qa+KriifFYgNRx/8Tf+mHypZ62IG8plm0gWqlWrHmd4
+         MjcXHEJ5Qv+yY9FwINPtE1mB66qnholhWj+h6anOEIf3ZqwRa3uhiqbW0AnGE2ttOEJZ
+         kJBXNs2XuPVLUbKWYkzq3LD/MEe1rk1J4h0Xw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697672109; x=1698276909;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xxRMOhkHfqF2Yz4cAD/a2m3hMjCZwz0gsRF0WfVLtiE=;
+        b=gAiwMcyDwReQjVfn0V/jV2aD4ggzM3v83V7Tv6POnV6SIYMrnrYF+ZXtfdGzMrguBT
+         sJzxQyd/UkABkfH9v/S8kYXIeGyVISmDL+dqOOGCUx4UN1bfGrZcbCqSgVI2nxu5sbwj
+         A/KNmNFwvwlVN5ndTZn8epD1IVREXyi7vT72CK5qux7lrAHaBtSHBornnFlzVvUFGvcJ
+         LXM9xuF/flyQHr+kpLxdPz5oDONK6WDTcOCVbZDhiK1bRxjP6KIJuCJL6scoUyYR6oU8
+         Im3YEfnoeZjR7aMH2SyWGLGamiEAWEdkuGC2aECbJ4fUlD1DyTTLslokPiFvFeOv3ZLU
+         y8Bw==
+X-Gm-Message-State: AOJu0YwFEJOWMl7pTyNMHKJsoccN8a61zKeS1i6+bx9ASCLOTGtsHvih
+	PGjjLOERecusLSBgbbm9AHlHOA==
+X-Google-Smtp-Source: AGHT+IFLUHDsJM96lu+Gr9hzdtzNvixg1+XlD/7STZUI8C4D6K92Q/4/Tg+mC7mHeCFcak1NFFEC+Q==
+X-Received: by 2002:a17:902:ec87:b0:1c5:d063:b70e with SMTP id x7-20020a170902ec8700b001c5d063b70emr1020318plg.53.1697672108702;
+        Wed, 18 Oct 2023 16:35:08 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id f18-20020a170902ce9200b001bc18e579aesm480575plg.101.2023.10.18.16.35.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 16:35:08 -0700 (PDT)
+Date: Wed, 18 Oct 2023 16:35:07 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Justin Stitt <justinstitt@google.com>, Kalle Valo <kvalo@kernel.org>,
+	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ath10k: replace deprecated strncpy with strtomem_pad
+Message-ID: <202310181626.C5BE0C21F@keescook>
+References: <20231013-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v1-1-24e40201afa3@google.com>
+ <1cfc7c64-439c-437e-af82-7fce1202242d@quicinc.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1cfc7c64-439c-437e-af82-7fce1202242d@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231017_193233_257197_099A846E 
-X-CRM114-Status: UNSURE (   5.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231018_163510_965090_A0370C46 
+X-CRM114-Status: GOOD (  21.43  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,156 +85,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: ebf13b97e6f1aabc87c880d572f297ea9bc77a12  Merge branch 'pending' into master-pending
+On Fri, Oct 13, 2023 at 05:58:03PM -0700, Jeff Johnson wrote:
+> On 10/13/2023 1:33 PM, Justin Stitt wrote:
+> > strncpy() is deprecated [1] and we should prefer less ambiguous
+> > interfaces.
+> > 
+> > In this case, arvif->u.ap.ssid has its length maintained by
+> > arvif->u.ap.ssid_len which indicates it may not need to be
+> > NUL-terminated, although by virtue of using strtomem_pad (with NUL-byte
+> > pad character) and having a destination size larger than the source,
+> > ssid will, incidentally, be NUL-terminated here.
+> > 
+> > As strtomem_pad() docs say:
+> >   * @dest: Pointer of destination character array (marked as __nonstring)
+> >   * @src: Pointer to NUL-terminated string
+> >   * @pad: Padding character to fill any remaining bytes of @dest after copy
+> >   *
+> >   * This is a replacement for strncpy() uses where the destination is not
+> >   * a NUL-terminated string, but with bounds checking on the source size, and
+> >   * an explicit padding character. If padding is not required, use strtomem().
+> > 
+> > Let's also mark ath10k_vif.u.ap.ssid as __nonstring.
+> 
+> what criteria is used to determine whether or not to use __nonstring?
+> doesn't the use of u8 vs char already communicate that distinction?
+> just want to know what other u8 arrays might require this.
+> FWIW the documentation referenced by the __nonstring macro explicitly refers
+> to "type array of char, signed char, or unsigned char"
 
-elapsed time: 1918m
+The use of __nonstring is for byte arrays that are _not_ expected to be
+%NUL terminated. Unfortunately "char" vs "u8" isn't distinguished by the
+compiler. All byte arrays are treated as C strings unless __nonstring is
+used.
 
-configs tested: 128
-configs skipped: 2
+> > It is unclear to me whether padding is strictly necessary. Perhaps we
+> > should opt for just strtomem() -- padding certainly doesn't hurt,
+> > though.
+> 
+> concur that padding probably isn't necessary but doesn't hurt, and will
+> prevent confusion if looking at this member in a crashdump
+> 
+> > 
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> 
+> Either with or without the __nonstring...
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Yup, it looks like the ssid member is passed around with memcpy()
+everywhere else.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231017   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231017   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231018   gcc  
-i386         buildonly-randconfig-002-20231018   gcc  
-i386         buildonly-randconfig-003-20231018   gcc  
-i386         buildonly-randconfig-004-20231018   gcc  
-i386         buildonly-randconfig-005-20231018   gcc  
-i386         buildonly-randconfig-006-20231018   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231017   gcc  
-i386                  randconfig-002-20231017   gcc  
-i386                  randconfig-003-20231017   gcc  
-i386                  randconfig-004-20231017   gcc  
-i386                  randconfig-005-20231017   gcc  
-i386                  randconfig-006-20231017   gcc  
-i386                  randconfig-011-20231018   gcc  
-i386                  randconfig-012-20231018   gcc  
-i386                  randconfig-013-20231018   gcc  
-i386                  randconfig-014-20231018   gcc  
-i386                  randconfig-015-20231018   gcc  
-i386                  randconfig-016-20231018   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231017   gcc  
-loongarch             randconfig-001-20231018   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231017   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231017   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231017   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231018   gcc  
-x86_64       buildonly-randconfig-002-20231018   gcc  
-x86_64       buildonly-randconfig-003-20231018   gcc  
-x86_64       buildonly-randconfig-004-20231018   gcc  
-x86_64       buildonly-randconfig-005-20231018   gcc  
-x86_64       buildonly-randconfig-006-20231018   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231017   gcc  
-x86_64                randconfig-002-20231017   gcc  
-x86_64                randconfig-003-20231017   gcc  
-x86_64                randconfig-004-20231017   gcc  
-x86_64                randconfig-005-20231017   gcc  
-x86_64                randconfig-006-20231017   gcc  
-x86_64                randconfig-011-20231018   gcc  
-x86_64                randconfig-012-20231018   gcc  
-x86_64                randconfig-013-20231018   gcc  
-x86_64                randconfig-014-20231018   gcc  
-x86_64                randconfig-015-20231018   gcc  
-x86_64                randconfig-016-20231018   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Kees Cook
 
 _______________________________________________
 ath10k mailing list
