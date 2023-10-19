@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BE8DCDB465
-	for <ath10k@archiver.kernel.org>; Thu, 19 Oct 2023 08:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F00BECDB465
+	for <ath10k@archiver.kernel.org>; Thu, 19 Oct 2023 19:31:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Oksw2FUATa2U3w9efoZDccLXUxsB/PoJYYB1HLizszc=; b=dBJobekkgvPmVi
-	qw4Bn+UzuwbAMChG4Nlx1I3lWPUrlrfWAs7pEUV89eDd5DEYD8Dxi2Atla6740swDs/tNYe0y9Uk3
-	rcl0BTZRMy64exh2pFkOAwOtPiaPJWSHJTIsQJBCDSVBjpkFh3Yu5rxShtHYawkZnJEp5YBQWviIh
-	uhC95/VAK0cPRkL1cPo+gWgLRPDJK6xlJcB2mnENsJ7B9N48497KBtK80BMz/FpNqG21REjU+ZUnE
-	XJmkrx6fqTfGg+CgXR3D2yQMPo1tEXBgZMzhZ6a6L75b8riWeKKW709ZS0zL5ChLQVuLCSIQlOhfB
-	QYDeGD+qK/L2lbyvZp0Q==;
+	List-Owner; bh=6YHjj/JZiO0ioH01JZ4IZZv9Cw0Uovvv0NuoD4GlGB8=; b=t9g+zuuOLLX79u
+	xLEpNucOu+zOJpGSzGQXTN05nouPLK5EEee2LQ2f2a7aY4rby6Zfycqt7OKQBR6j5/VmLZWyGIKVE
+	c9d17cAY9Xr/XHUHDOlEErEyuRIwONXxkoyia6uRtMQf0x3me++tXJG/GMaSqhZOPOT0el0ITZ+j+
+	vftNcDP2Isc10GL5gEBpsRdAdW8ugSeAz4yGp6VmbEodIMMQznUY92P45Ue27qpJggMEAD3hiV98V
+	6Kk31XP2JaRStJe+8bOG7DKR1awekEjVfUpTfZmonx5ttXnYNuG7TIIIfDxFWl5kFgrDnka/gL8/t
+	QD94kMoSAaw4Jbriei5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtOO0-00GiFb-2a;
-	Thu, 19 Oct 2023 08:28:08 +0000
-Received: from mgamail.intel.com ([198.175.65.9])
+	id 1qtYjS-000bJY-3A;
+	Thu, 19 Oct 2023 19:30:59 +0000
+Received: from mgamail.intel.com ([192.55.52.93])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtONx-00GiEt-2M
+	id 1qtYjQ-000bJ3-0s
 	for ath10k@lists.infradead.org;
-	Thu, 19 Oct 2023 08:28:07 +0000
+	Thu, 19 Oct 2023 19:30:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697704085; x=1729240085;
+  t=1697743856; x=1729279856;
   h=date:from:to:cc:subject:message-id;
-  bh=FXUnv8v1bIVKyIT/UrzrGY1BqmIQFH9pGhz3ZMDyaQA=;
-  b=Y5AbKPpqsc5jL+ZbYKiBuNwnWg+CcPuqVsielhg5GVHjzO180RoavUwC
-   9L2V//oxv+4Wqhi21fLIZzcfhDzvajElr1gXVDZmbe4rGGFZdnU/o2AtO
-   /xHXdZ7JnMKe16f9/jOghHFAFS/Nl9vSVBcnq7cZ4q/IKil5/yG393eoM
-   nAEJ4JScjlqH33QLTE89Nk2/eRuMcM5kTyJEktVrUMRYJJ7LAY9ynUJHK
-   SANNLWgj2Cf3c5leZ0fGZb30ip/GZLnsaOa9rhfkewgOfkaVdXaGpwMF1
-   HafYcFvgpHqefW4d5PfUkhQNRosmF4xROrn/lItkij8cbo1j/FConhEgU
+  bh=sBfdAEim2Zuo3WYs17apYAJXEbTzZcDpmYj6b2nwjig=;
+  b=hbDoYuz7P8kTEyd9yvk+mX/U+HS2z0WN2tNcs50eVnkQ1x0768Ll8+Z2
+   Z5cuo/yJ7QbjTtNHtuP0WITUULcTVF193r8AQzwTiG1zcXaGxcIQHtPN4
+   Y1boeB7p9dvhcR0hwvy0PB6SKNwauLPV+y+C9MoyC+zRIO0DgZrvDi7d7
+   Yc3bBZ1kQfe6txtXZYJjjBUIhyqvD2m4S+5vuOklVkGRj5vJ6ycrQ4Bku
+   6mbtN3c16nAOJkkzrFu7M8bpS/hk9wJf/aI3szH679KXtz3G1sBgUHdG9
+   SueizIyhZYdTMoDpoOFcB3GNfBy97hn5KPTD/+MzfJkpfyezGgCN+9S4d
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="4795959"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="4795959"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 01:28:02 -0700
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="383565654"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="383565654"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 12:30:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756929777"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="756929777"
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="760761230"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="760761230"
 Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 19 Oct 2023 01:28:00 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 19 Oct 2023 12:30:27 -0700
 Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qtONq-0001rb-1y;
-	Thu, 19 Oct 2023 08:27:58 +0000
-Date: Thu, 19 Oct 2023 16:27:06 +0800
+	id 1qtYiu-0002WN-2e;
+	Thu, 19 Oct 2023 19:30:24 +0000
+Date: Fri, 20 Oct 2023 03:29:27 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 91bc2f15a1b8c38ddbc1ea400dcd4bbd3639d22b
-Message-ID: <202310191603.ywmVXNu1-lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 5b6e11406d5c198c402e8b7f7085a8c229198ba4
+Message-ID: <202310200324.nNwDE0VY-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231019_012805_806694_19F4B91F 
-X-CRM114-Status: UNSURE (   5.62  )
+X-CRM114-CacheID: sfid-20231019_123056_365249_12CEE226 
+X-CRM114-Status: UNSURE (   5.18  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,12 +83,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 91bc2f15a1b8c38ddbc1ea400dcd4bbd3639d22b  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 5b6e11406d5c198c402e8b7f7085a8c229198ba4  Add localversion-wireless-testing-ath
 
-elapsed time: 1429m
+elapsed time: 2091m
 
-configs tested: 135
+configs tested: 127
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -103,14 +103,8 @@ arc                               allnoconfig   gcc
 arc                              allyesconfig   gcc  
 arc                                 defconfig   gcc  
 arc                   randconfig-001-20231018   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
 arm                                 defconfig   gcc  
-arm                   randconfig-001-20231018   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
+arm                   randconfig-001-20231019   gcc  
 arm64                               defconfig   gcc  
 csky                             allmodconfig   gcc  
 csky                              allnoconfig   gcc  
@@ -164,9 +158,7 @@ openrisc                         allmodconfig   gcc
 openrisc                          allnoconfig   gcc  
 openrisc                         allyesconfig   gcc  
 openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
 parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
 parisc                              defconfig   gcc  
 parisc64                            defconfig   gcc  
 powerpc                          allmodconfig   gcc  
@@ -203,12 +195,12 @@ um                             i386_defconfig   gcc
 um                           x86_64_defconfig   gcc  
 x86_64                            allnoconfig   gcc  
 x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231018   gcc  
-x86_64       buildonly-randconfig-002-20231018   gcc  
-x86_64       buildonly-randconfig-003-20231018   gcc  
-x86_64       buildonly-randconfig-004-20231018   gcc  
-x86_64       buildonly-randconfig-005-20231018   gcc  
-x86_64       buildonly-randconfig-006-20231018   gcc  
+x86_64       buildonly-randconfig-001-20231019   gcc  
+x86_64       buildonly-randconfig-002-20231019   gcc  
+x86_64       buildonly-randconfig-003-20231019   gcc  
+x86_64       buildonly-randconfig-004-20231019   gcc  
+x86_64       buildonly-randconfig-005-20231019   gcc  
+x86_64       buildonly-randconfig-006-20231019   gcc  
 x86_64                              defconfig   gcc  
 x86_64                randconfig-001-20231018   gcc  
 x86_64                randconfig-002-20231018   gcc  
