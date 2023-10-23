@@ -4,68 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05273C001E0
-	for <ath10k@archiver.kernel.org>; Mon, 23 Oct 2023 15:51:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B09CC00A8F
+	for <ath10k@archiver.kernel.org>; Mon, 23 Oct 2023 23:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FjBpGWUebtj4u5OmE7lsFpp3RfiEapqD55eS5chjouE=; b=gWEa2UBuZDf+3N
-	LLBI0B7IbcUGRBQYr545NAm7vscMDyMIY1VgB8QS020kHYMTVw/GpLAHIlB8hWBTPGGBBfkUYkYJ9
-	fFpGWfSUsBK12CRpRAmB0Ek0kXzetv3NMO+9da00LdH4lliG8PFkk3sQPSdqOOy1VM2dlu8CaV+jh
-	bTPRbyMd2KGiJA6lPCZUY+fcVv7GnjFTwCUM8uxFFhN93uGQv10Ym6Hu252U71CmBTfKAkwkE6V1J
-	yePQvClipXZfgMJrUHt7Za7/iFoMHnLrFzPT+DYRBOdSGEGhOgIlnVu2juErA/Xo9w096PNVuoqKn
-	wgkqPHuMI2u3oACvAjvQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=tzLzPsURnHrSTp5fhOzVPRnl9ldVCZrPG+zJ5Q7iEnk=; b=Oa4K/eJ9jXtMSO
+	46ggHEPuc+PWTGbZs2wr+9Ts+0pgadIVxPUbZ6fK6a7GCmWoMuirHGtSXUxSi0/2t6SEsjZJVB982
+	kytKk11WpDqo2WkgNS6Ui0bhGizJSfCXoMZgHCYVFOpwi8xwlS1zW67FS8+ubis5xn1Emro+szOsq
+	6CQC/bY3i6T41GVa8sJHno4FbkRy7yyaxeTuc+gAH6lDa0+m1BfGfhPA0kRShFjugDLLWBb/kzz3F
+	ghMblQ6Wu+XDU00KYV1vr1LFXXxdxvJfxqsJbxZ0S/qe63k6LFeREFjLzuJYV9syhD/QWx7sm70Qx
+	SKI/J8uKHozlQ4uTEqiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1quxD3-007kd1-0Z;
-	Mon, 23 Oct 2023 15:51:17 +0000
-Received: from mgamail.intel.com ([192.55.52.93])
+	id 1qv4Xj-008TUu-04;
+	Mon, 23 Oct 2023 23:41:07 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1quxCt-007kYA-0g
+	id 1qv4Xg-008TUR-1p
 	for ath10k@lists.infradead.org;
-	Mon, 23 Oct 2023 15:51:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698076267; x=1729612267;
-  h=date:from:to:cc:subject:message-id;
-  bh=yVs+KUpsZCRPx+yJGyM8krQG0BqVaYhZs70DFDr2Jn0=;
-  b=JbvJRFQNDr1ZJNV1YmzySNicP0ZXuwj35w7JEuxUAFcdmsaK1krtuiay
-   ZJgQIJVcP0QZ4wI3iRPXckEQoY6F5JbOo669y6OA+AmX8QtjpFBeR314h
-   /WAYCn+7jO7E3EDEA4T6MfHWX4wmGs1goo97IR9ERtipJtNTtQz4NYI+d
-   o3ZJ9IjYSxkpDBQY6twdwQAr5pIyNRgo2mAIa6/X/TmQ1lSL8Xi8dz2r4
-   bzUXXZGYttSbrm4fdoZE+JuWAb9STJ7EIqBa8AGiG9/IHnVjUqsW3I7j4
-   U8sqrWLQq/ptm6gPkDAr1kz6xWsHxhYLH68RTaA6HrbkeiyBo35p5dEmu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384069145"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="384069145"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:51:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="787488442"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="787488442"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 23 Oct 2023 08:50:59 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1quxCj-00072X-01;
-	Mon, 23 Oct 2023 15:50:57 +0000
-Date: Mon, 23 Oct 2023 23:50:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending-deferred] BUILD SUCCESS
- a3cfdc79c4a8fc1096676e4b68da8ae1f84fbefd
-Message-ID: <202310232349.Ut0L5tNo-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Mon, 23 Oct 2023 23:41:06 +0000
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NMOBLW023733;
+	Mon, 23 Oct 2023 23:40:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=j7FVUJkCTJZmDebRwT+dehweCjUOAjdNji6l4GnsWBs=;
+ b=brAceV1jasEnCZMlO88OAGAE6lmAwNH6WI1nNWOkE2ZhhJs2QLPIB9qdl5zOEbXsNr/s
+ hUTHy+QWbkfgYY+sIb662LY+dWdSqEYE7ESScv1zhiJ5q59ug0PbD5b7tU5vDbFXrM7h
+ 46Av9r7FSgjC8nFFlLWDXXyTK6Mj8iTdEX/02EjUKvVWN7P84N1S5jYtN2OZ32iD1dfb
+ Ae4f+3wMInLJT/Q2SFjLMGOPO9ka031g+dRJR7w4O6z8lQ4JuzBj14A4MjcBUOJCywhl
+ PuoFCRlJvWf6qYgQPkteDnLwYdwXs/yZ7oYcwLALClGkO45f+z6hqiaLFgbWFDnEwZU3 /w== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3twxa0ghns-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 23 Oct 2023 23:40:56 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39NNetaK006422
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 23 Oct 2023 23:40:55 GMT
+Received: from [10.48.243.236] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
+ 2023 16:40:55 -0700
+Message-ID: <2f407e7c-9bc7-4915-a043-5a7cec2cb2b1@quicinc.com>
+Date: Mon, 23 Oct 2023 16:40:54 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ath10k: replace deprecated strncpy with strtomem_pad
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>
+CC: Justin Stitt <justinstitt@google.com>, Kalle Valo <kvalo@kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
+References: <20231013-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v1-1-24e40201afa3@google.com>
+ <1cfc7c64-439c-437e-af82-7fce1202242d@quicinc.com>
+ <202310181626.C5BE0C21F@keescook>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <202310181626.C5BE0C21F@keescook>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: izofka88cARvIfp8FMQHlje-5qAtYmxL
+X-Proofpoint-ORIG-GUID: izofka88cARvIfp8FMQHlje-5qAtYmxL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_21,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 phishscore=0 mlxlogscore=477 impostorscore=0 clxscore=1015
+ bulkscore=0 adultscore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310230208
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231023_085107_291228_3DCAEFFA 
-X-CRM114-Status: UNSURE (   4.45  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231023_164104_612245_1539695A 
+X-CRM114-Status: GOOD (  14.07  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,161 +95,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-deferred
-branch HEAD: a3cfdc79c4a8fc1096676e4b68da8ae1f84fbefd  wifi: ath10k: mac: enable WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON on ath10k
+On 10/18/2023 4:35 PM, Kees Cook wrote:
+> On Fri, Oct 13, 2023 at 05:58:03PM -0700, Jeff Johnson wrote:
+>>> Let's also mark ath10k_vif.u.ap.ssid as __nonstring.
+>>
+>> what criteria is used to determine whether or not to use __nonstring?
+>> doesn't the use of u8 vs char already communicate that distinction?
+>> just want to know what other u8 arrays might require this.
+>> FWIW the documentation referenced by the __nonstring macro explicitly refers
+>> to "type array of char, signed char, or unsigned char"
+> 
+> The use of __nonstring is for byte arrays that are _not_ expected to be
+> %NUL terminated. Unfortunately "char" vs "u8" isn't distinguished by the
+> compiler. All byte arrays are treated as C strings unless __nonstring is
+> used.
 
-elapsed time: 6072m
+So is the plan to annotate every single binary blob array in the kernel 
+as __nonstring? I suspect those outnumber string arrays.
 
-configs tested: 133
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231020   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231021   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386         buildonly-randconfig-001-20231021   gcc  
-i386         buildonly-randconfig-002-20231021   gcc  
-i386         buildonly-randconfig-003-20231021   gcc  
-i386         buildonly-randconfig-004-20231021   gcc  
-i386         buildonly-randconfig-005-20231021   gcc  
-i386         buildonly-randconfig-006-20231021   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231021   gcc  
-i386                  randconfig-002-20231021   gcc  
-i386                  randconfig-003-20231021   gcc  
-i386                  randconfig-004-20231021   gcc  
-i386                  randconfig-005-20231021   gcc  
-i386                  randconfig-006-20231021   gcc  
-i386                  randconfig-011-20231021   gcc  
-i386                  randconfig-012-20231021   gcc  
-i386                  randconfig-013-20231021   gcc  
-i386                  randconfig-014-20231021   gcc  
-i386                  randconfig-015-20231021   gcc  
-i386                  randconfig-016-20231021   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231020   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231020   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231020   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231021   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231021   gcc  
-x86_64       buildonly-randconfig-002-20231021   gcc  
-x86_64       buildonly-randconfig-003-20231021   gcc  
-x86_64       buildonly-randconfig-004-20231021   gcc  
-x86_64       buildonly-randconfig-005-20231021   gcc  
-x86_64       buildonly-randconfig-006-20231021   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231021   gcc  
-x86_64                randconfig-002-20231021   gcc  
-x86_64                randconfig-003-20231021   gcc  
-x86_64                randconfig-004-20231021   gcc  
-x86_64                randconfig-005-20231021   gcc  
-x86_64                randconfig-006-20231021   gcc  
-x86_64                randconfig-011-20231022   gcc  
-x86_64                randconfig-012-20231022   gcc  
-x86_64                randconfig-013-20231022   gcc  
-x86_64                randconfig-014-20231022   gcc  
-x86_64                randconfig-015-20231022   gcc  
-x86_64                randconfig-016-20231022   gcc  
-x86_64                randconfig-071-20231021   gcc  
-x86_64                randconfig-072-20231021   gcc  
-x86_64                randconfig-073-20231021   gcc  
-x86_64                randconfig-074-20231021   gcc  
-x86_64                randconfig-075-20231021   gcc  
-x86_64                randconfig-076-20231021   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 ath10k mailing list
