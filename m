@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53AAAC25B70
-	for <ath10k@archiver.kernel.org>; Thu, 26 Oct 2023 22:02:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6A46C25B6B
+	for <ath10k@archiver.kernel.org>; Fri, 27 Oct 2023 02:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=oKI8Mc8Mn4ePmW6oKvC5CDT8/8DKN4K+jptBCaJn2lo=; b=r6PMFowuuhNVg6
-	y4xqWj4n5u++UUC0eftd7/gROXiFkDKxG9P/thknRdKrAnhcTzJkxUMvRVAYupk9aqsgRBZYowR9C
-	pjhz8j5vkBig5Vn3VGx1Gg85RlXwlH8wuJRTKt6Le3p5HjEz6yHGPNe0EKd2H7mZ3ACDOmGeSpZDb
-	5Aw2dMwIeYwHVNi0Ymz+9r7YtqyxCCoCvvBRocYkaetlnbi+fig5E5t17CEMJl+0ykzNtHGQxZuCN
-	G5aGCW3ZJaQUXRh7jB3FjjXEYFgexLBsiubQQl+ebhB4j/g/aC7VoQhb9tOYUpXwDYyjU7Ajmm57o
-	BLUBxqClQgHRevtp31rQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JojdEQqrs6CPuRUzhK5Y+ueEOlSunI/jTxn4EC7RcXQ=; b=n4O3q53oUTPCPk
+	y9DLBqjlXF377Jg36YZeB+cL0ql2IItHmfCUi2B9Yty3H6Oh1q/kceZcrhhTy85ScLygbdy14hTtZ
+	o96Oti2cqRJggeOMhdOHgV7t/SxM+vSTJ9rUTp8drbGkWDneQEAMUkRA3+peVzKzTE7yzhdc1xqKf
+	NW6IQ1cxBNUwrJyyoztFeRuVRb8mDOEiAm9kqqKUYePADq0hL2LVxJXtVLR0AAXxL7fPw18eWEOm3
+	xj4w9bt5dyjQjRu3bc6A77B93bv5BT4mIwK9okcFI3L9GnxSg52eXc47AyQZKQOmOpJBaZ87Itlm1
+	NoQaakgLK3C5FapgNjkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qw8Qp-00FDRv-14;
-	Thu, 26 Oct 2023 22:02:23 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qwC9q-00FQFd-18;
+	Fri, 27 Oct 2023 02:01:06 +0000
+Received: from mgamail.intel.com ([192.55.52.88])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qw8Qm-00FDRF-0q;
-	Thu, 26 Oct 2023 22:02:21 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 98C59611F5;
-	Thu, 26 Oct 2023 22:02:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA825C433C8;
-	Thu, 26 Oct 2023 22:02:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698357739;
-	bh=v+OwCPCkufkei1OkZ0IK7OBnZIyQ/k2CAv18GMp5ECU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=n78Q8MakmY6S/n69Ux03t5U9WUOopOaUt6nDKsoVSQ7EwfcRn4luVSqYv4gLpBVda
-	 DrKIa1h7StitkkRiy4EE1uZV9ATfMIOdG1LH7fry+wsdgg7K0o8FZyDL0K8lk1O1cV
-	 t8tCIDdZoIwRLbl3rrSWnJxwraxqaVw/Gir1EFKFtZzjPUiogtA2KbpA/GPnWVFE75
-	 vFVT+iMPgWVgs1VDlgs/RGVAxhV9lLfl6E7IGtKj2DkZ2fYHoCBfSJQ4yR5Uj+vsRQ
-	 d1R5iC/0IUud8PHKgG7cpchJEmznQsL2QPpfVhJQJ4HgyUhDYk2WkITTtzPLdgWmQ9
-	 XkdZf2GExUM1w==
-Date: Thu, 26 Oct 2023 17:02:16 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, linux-pci@vger.kernel.org,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, ath10k@lists.infradead.org,
-	ath11k@lists.infradead.org, ath12k@lists.infradead.org,
-	intel-wired-lan@lists.osuosl.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-bluetooth@vger.kernel.org, linux-mediatek@lists.infradead.org,
-	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-	Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 03/13] PCI/ASPM: Disable ASPM when driver requests it
-Message-ID: <20231026220216.GA1752508@bhelgaas>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a434d9f-48ec-cfe5-900-8923361798a9@linux.intel.com>
+	id 1qwC9k-00FQEx-2u
+	for ath10k@lists.infradead.org;
+	Fri, 27 Oct 2023 02:01:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698372060; x=1729908060;
+  h=date:from:to:cc:subject:message-id;
+  bh=1oyZnc8YI2wMd+pynxAdyy5RYqq974Uo0ssqYMd2x4E=;
+  b=H1MEnjsZN0gejXwgnC2QLEUH2AHVWNvUb0dqul+XaIUgkoNWDSgW8YpB
+   gV8fX4p0hIgme/C5tZATNr+wnEk2p3oNsLE06XRL/YsCdVcTBimEogBw3
+   h7zNsTTqNQyHDP5I8FesMwVhjiLYwlXy5Etu82VqHscvYJ856W2/IE/20
+   9xFNppDxVzLBNpfb8VOSLiEJ2ZU7kjBKV/MvZTVCMiT0VYlmo4V86JO3+
+   JKPKEPJPBoSLrYxb2/CbU01ePXZvY1oEbRuGogATUfOoHdbOsh7gl/z/H
+   XSu9qrnD0GGA3eK6PSvTyIj6xVmjRO245RbcPerprrn9TLZHa65JfvnWB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="418801321"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
+   d="scan'208";a="418801321"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 19:00:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="788691247"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
+   d="scan'208";a="788691247"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 26 Oct 2023 19:00:54 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qwC9c-000AKF-1z;
+	Fri, 27 Oct 2023 02:00:52 +0000
+Date: Fri, 27 Oct 2023 10:00:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ b4a4c89a679779e9f2511edf11f9ca2676c1e0bb
+Message-ID: <202310271007.XqFijdjt-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231026_150220_382721_C048918B 
-X-CRM114-Status: GOOD (  43.35  )
+X-CRM114-CacheID: sfid-20231026_190101_016751_387586EC 
+X-CRM114-Status: UNSURE (   5.04  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,84 +77,192 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBPY3QgMTYsIDIwMjMgYXQgMDU6Mjc6MzdQTSArMDMwMCwgSWxwbyBKw6RydmluZW4g
-d3JvdGU6Cj4gT24gRnJpLCAxMyBPY3QgMjAyMywgQmpvcm4gSGVsZ2FhcyB3cm90ZToKPiA+IE9u
-IFRodSwgT2N0IDEyLCAyMDIzIGF0IDAxOjU2OjE2UE0gKzAzMDAsIElscG8gSsOkcnZpbmVuIHdy
-b3RlOgo+ID4gPiBPbiBXZWQsIDExIE9jdCAyMDIzLCBCam9ybiBIZWxnYWFzIHdyb3RlOgo+ID4g
-PiA+IE9uIE1vbiwgU2VwIDE4LCAyMDIzIGF0IDA0OjEwOjUzUE0gKzAzMDAsIElscG8gSsOkcnZp
-bmVuIHdyb3RlOgo+ID4gPiA+ID4gUENJIGNvcmUvQVNQTSBzZXJ2aWNlIGRyaXZlciBhbGxvd3Mg
-Y29udHJvbGxpbmcgQVNQTSBzdGF0ZQo+ID4gPiA+ID4gdGhyb3VnaCBwY2lfZGlzYWJsZV9saW5r
-X3N0YXRlKCkgYW5kIHBjaV9lbmFibGVfbGlua19zdGF0ZSgpCj4gPiA+ID4gPiBBUEkuIEl0IHdh
-cyBkZWNpZGVkIGVhcmxpZXIgKHNlZSB0aGUgTGluayBiZWxvdyksIHRvIG5vdAo+ID4gPiA+ID4g
-YWxsb3cgQVNQTSBjaGFuZ2VzIHdoZW4gT1MgZG9lcyBub3QgaGF2ZSBjb250cm9sIG92ZXIgaXQg
-YnV0Cj4gPiA+ID4gPiBvbmx5IGxvZyBhIHdhcm5pbmcgYWJvdXQgdGhlIHByb2JsZW0gKGNvbW1p
-dCAyYWRkMGVjMTRjMjUKPiA+ID4gPiA+ICgiUENJL0FTUE06IFdhcm4gd2hlbiBkcml2ZXIgYXNr
-cyB0byBkaXNhYmxlIEFTUE0sIGJ1dCB3ZQo+ID4gPiA+ID4gY2FuJ3QgZG8gaXQiKSkuIFNpbWls
-YXJseSwgaWYgQVNQTSBpcyBub3QgZW5hYmxlZCB0aHJvdWdoCj4gPiA+ID4gPiBjb25maWcsIEFT
-UE0gY2Fubm90IGJlIGRpc2FibGVkLgo+ID4gPiAuLi4KPiA+IAo+ID4gPiA+IFRoaXMgZGlzYWJs
-ZXMgKmFsbCogQVNQTSBzdGF0ZXMsIHVubGlrZSB0aGUgdmVyc2lvbiB3aGVuCj4gPiA+ID4gQ09O
-RklHX1BDSUVBU1BNIGlzIGVuYWJsZWQuICBJIHN1cHBvc2UgdGhlcmUncyBhIHJlYXNvbiwgYW5k
-Cj4gPiA+ID4gbWF5YmUgYSBjb21tZW50IGNvdWxkIGVsYWJvcmF0ZSBvbiBpdD8KPiA+ID4gPgo+
-ID4gPiA+IFdoZW4gQ09ORklHX1BDSUVBU1BNIGlzIG5vdCBlbmFibGVkLCBJIGRvbid0IHRoaW5r
-IHdlIGFjdGl2ZWx5Cj4gPiA+ID4gKmRpc2FibGUqIEFTUE0gaW4gdGhlIGhhcmR3YXJlOyB3ZSBq
-dXN0IGxlYXZlIGl0IGFzLWlzLCBzbwo+ID4gPiA+IGZpcm13YXJlIG1pZ2h0IGhhdmUgbGVmdCBp
-dCBlbmFibGVkLgo+ID4gPiAKPiA+ID4gVGhpcyB3aG9sZSB0cmlja2VyeSBpcyBpbnRlbmRlZCBm
-b3IgZHJpdmVycyB0aGF0IGRvIG5vdCB3YW50IHRvCj4gPiA+IGhhdmUgQVNQTSBiZWNhdXNlIHRo
-ZSBkZXZpY2VzIGFyZSBicm9rZW4gd2l0aCBpdC4gU28gbGVhdmluZyBpdAo+ID4gPiBhcy1pcyBp
-cyBub3QgcmVhbGx5IGFuIG9wdGlvbiAoYXMgZGVtb25zdHJhdGVkIGJ5IHRoZSBjdXN0b20KPiA+
-ID4gd29ya2Fyb3VuZHMpLgo+ID4gCj4gPiBSaWdodC4KPiA+IAo+ID4gPiA+IENvbmNlcHR1YWxs
-eSBpdCBzZWVtcyBsaWtlIHRoZSBMTktDVEwgdXBkYXRlcyBoZXJlIHNob3VsZCBiZQo+ID4gPiA+
-IHRoZSBzYW1lIHdoZXRoZXIgQ09ORklHX1BDSUVBU1BNIGlzIGVuYWJsZWQgb3Igbm90IChzdWJq
-ZWN0IHRvCj4gPiA+ID4gdGhlIHF1ZXN0aW9uIGFib3ZlKS4KPiA+ID4gPiAKPiA+ID4gPiBXaGVu
-IENPTkZJR19QQ0lFQVNQTSBpcyBlbmFibGVkLCB3ZSBtaWdodCBuZWVkIHRvIGRvIG1vcmUKPiA+
-ID4gPiBzdHVmZiwgYnV0IGl0IHNlZW1zIGxpa2UgdGhlIGNvcmUgc2hvdWxkIGJlIHRoZSBzYW1l
-Lgo+ID4gPiAKPiA+ID4gU28geW91IHRoaW5rIGl0J3Mgc2FmZXIgdG8gcGFydGlhbGx5IGRpc2Fi
-bGUgQVNQTSAoYXMgcGVyCj4gPiA+IGRyaXZlcidzIHJlcXVlc3QpIHJhdGhlciB0aGFuIGRpc2Fi
-bGUgaXQgY29tcGxldGVseT8gSSBnb3QgdGhlCj4gPiA+IGltcHJlc3Npb24gdGhhdCB0aGUgbGF0
-dGVyIG1pZ2h0IGJlIHNhZmVyIGZyb20gd2hhdCBSYWZhZWwgc2FpZAo+ID4gPiBlYXJsaWVyIGJ1
-dCBJIHN1cHBvc2UgSSBtaWdodCBoYXZlIG1pc2ludGVycHJldGVkIGhpbSBzaW5jZSBoZQo+ID4g
-PiBkaWRuJ3QgZXhhY3RseSBzYXkgdGhhdCBpdCBtaWdodCBiZSBzYWZlciB0byBfY29tcGxldGVs
-eV8KPiA+ID4gZGlzYWJsZSBpdC4KPiA+IAo+ID4gTXkgcXVlc3Rpb24gaXMgd2hldGhlciB0aGUg
-c3RhdGUgb2YgdGhlIGRldmljZSBzaG91bGQgZGVwZW5kIG9uCj4gPiBDT05GSUdfUENJRUFTUE0u
-ICBJZiB0aGUgZHJpdmVyIGRvZXMgdGhpczoKPiA+IAo+ID4gICBwY2lfZGlzYWJsZV9saW5rX3N0
-YXRlKFBDSUVfTElOS19TVEFURV9MMFMpCj4gPiAKPiA+IGRvIHdlIHdhbnQgdG8gbGVhdmUgTDEg
-ZW5hYmxlZCB3aGVuIENPTkZJR19QQ0lFQVNQTT15IGJ1dCBkaXNhYmxlIEwxCj4gPiB3aGVuIENP
-TkZJR19QQ0lFQVNQTSBpcyB1bnNldD8KPiA+IAo+ID4gSSBjYW4gc2VlIGFyZ3VtZW50cyBib3Ro
-IHdheXMuICBNeSB0aG91Z2h0IHdhcyB0aGF0IGl0IHdvdWxkIGJlIG5pY2UKPiA+IHRvIGVuZCB1
-cCB3aXRoIGEgc2luZ2xlIGltcGxlbWVudGF0aW9uIG9mIHBjaV9kaXNhYmxlX2xpbmtfc3RhdGUo
-KQo+ID4gd2l0aCBhbiAjaWZkZWYgYXJvdW5kIHRoZSBDT05GSUdfUENJRUFTUE0tZW5hYmxlZCBz
-dHVmZiBiZWNhdXNlIGl0Cj4gPiBtYWtlcyB0aGUgY29kZSBlYXNpZXIgdG8gcmVhZC4KClJlc3Bv
-bmRpbmcgdG8gbXlzZWxmIGhlcmUsIEkgdGhpbmsgd2Ugc2hvdWxkIGRvIHRoZSBwYXJ0aWFsIGRp
-c2FibGVzCmJlY2F1c2UgaXQgbWF0Y2hlcyB3aGF0IHRoZSBkcml2ZXJzIGRpZCBwcmV2aW91c2x5
-IGJ5IGhhbmQsIHdlIGNhbgpyZWR1Y2UgdGhlIG51bWJlciBvZiBjb2RlIHBhdGhzLCBhbmQgdGhl
-IHJlc3VsdGluZyBkZXZpY2Ugc3RhdGUgd2lsbApiZSB0aGUgc2FtZSByZWdhcmRsZXNzIG9mIENP
-TkZJR19QQ0lFQVNQTS4KCj4gSSB0aGluayB0aGVyZSdzIHN0aWxsIG9uZSBpbXBvcnRhbnQgdGhp
-bmcgdG8gZGlzY3VzcyBhbmQgbm9uZSBvZiB0aGUKPiBjb21tZW50cyBoYXZlIGNvdmVyZWQgdGhh
-dCBhcmVhIHNvIGZhci4KPiAKPiBUaGUgZHJpdmVycyB0aGF0IGhhdmUgd29ya2Fyb3VuZCBhcmUg
-bm90IGdvaW5nIHRvIHR1cm4gbW9yZQo+IGRhbmdlcm91cyB0aGFuIHRoZXkncmUgYWxyZWFkeSB3
-aXRob3V0IHRoaXMgY2hhbmdlLCBzbyB3ZSdyZSBtb3N0bHkKPiB3aXRoaW4gY2hhcnRlZCB3YXRl
-cnMgdGhlcmUgZXZlbiB3aXRoIHdoYXQgeW91IHByb3Bvc2UuIEhvd2V2ZXIsIEkKPiB0aGluayB0
-aGUgYmlnZ2VyIGNhdGNoIGFuZCBwb3RlbnRpYWwgc291cmNlIG9mIHByb2JsZW1zLCB3aXRoIGJv
-dGgKPiB0aGlzIHYyIGFuZCB5b3VyIGFsdGVybmF0aXZlLCBhcmUgdGhlIGRyaXZlcnMgdGhhdCBk
-byBub3QgaGF2ZSB0aGUKPiB3b3JrYXJvdW5kcyBhcm91bmQgQ09ORklHX1BDSUVBU1BNPW4gYW5k
-L29yIF9PU0MgcGVybWlzc2lvbnMuIFRob3NlCj4gY29kZSBwYXRocyBqdXN0IGNhbGwgcGNpX2Rp
-c2FibGVfbGlua19zdGF0ZSgpIGFuZCBkbyBub3RoaW5nIGVsc2UuCj4gCj4gRG8geW91IHRoaW5r
-IGl0J3Mgb2theSB0byBhbHRlciB0aGUgYmVoYXZpb3IgZm9yIHRob3NlIGRyaXZlcnMgdG9vCj4g
-KGRpc2FibGUgQVNQTSB3aGVyZSBpdCBwcmV2aW91c2x5IHdhcyBhIG5vLW9wKT8KClllcy4gIEkg
-YXNzdW1lIHRoZSByZWFzb24gdGhvc2UgZHJpdmVycyBjYWxsIHBjaV9kaXNhYmxlX2xpbmtfc3Rh
-dGUoKQppcyBiZWNhdXNlIHNvbWUgaGFyZHdhcmUgZGVmZWN0IG1lYW5zIEFTUE0gZG9lc24ndCB3
-b3JrIGNvcnJlY3RseS4KClRoaXMgY2hhbmdlIG1lYW5zIHBjaV9kaXNhYmxlX2xpbmtfc3RhdGUo
-KSB3aWxsIGRpc2FibGUgQVNQTSBldmVuIHdoZW4KdGhlIE9TIGRvZXNuJ3Qgb3duIEFTUE0gb3Ig
-Q09ORklHX1BDSUVBU1BNIGlzIHVuc2V0LiAgSSB0aGluayB0aG9zZQpjYXNlcyBhcmUgdW51c3Vh
-bCBhbmQgcHJvYmFibHkgbm90IHdlbGwgdGVzdGVkLCBhbmQgSSBzdXNwZWN0IHRoYXQgaWYKd2Ug
-KmRpZCogdGVzdCB0aGVtLCB3ZSdkIGZpbmQgdGhhdCBBU1BNIGRvZXNuJ3Qgd29yayB3aXRoIHRo
-ZSBjdXJyZW50Cmtlcm5lbC4KClNvIEkgdGhpbmsgdGhpcyBpcyBtb3JlIGxpa2VseSB0byAqZml4
-KiBzb21ldGhpbmcgdGhhbiB0byBicmVhayBpdC4KCkJqb3JuCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: b4a4c89a679779e9f2511edf11f9ca2676c1e0bb  Merge branch 'ath-next' into ath-qca
+
+elapsed time: 2346m
+
+configs tested: 162
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231025   gcc  
+arc                   randconfig-001-20231026   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231026   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231025   gcc  
+i386         buildonly-randconfig-001-20231026   gcc  
+i386         buildonly-randconfig-002-20231025   gcc  
+i386         buildonly-randconfig-002-20231026   gcc  
+i386         buildonly-randconfig-003-20231025   gcc  
+i386         buildonly-randconfig-003-20231026   gcc  
+i386         buildonly-randconfig-004-20231025   gcc  
+i386         buildonly-randconfig-004-20231026   gcc  
+i386         buildonly-randconfig-005-20231025   gcc  
+i386         buildonly-randconfig-005-20231026   gcc  
+i386         buildonly-randconfig-006-20231025   gcc  
+i386         buildonly-randconfig-006-20231026   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231025   gcc  
+i386                  randconfig-001-20231026   gcc  
+i386                  randconfig-002-20231025   gcc  
+i386                  randconfig-002-20231026   gcc  
+i386                  randconfig-003-20231025   gcc  
+i386                  randconfig-003-20231026   gcc  
+i386                  randconfig-004-20231025   gcc  
+i386                  randconfig-004-20231026   gcc  
+i386                  randconfig-005-20231025   gcc  
+i386                  randconfig-005-20231026   gcc  
+i386                  randconfig-006-20231025   gcc  
+i386                  randconfig-006-20231026   gcc  
+i386                  randconfig-011-20231026   gcc  
+i386                  randconfig-012-20231026   gcc  
+i386                  randconfig-013-20231026   gcc  
+i386                  randconfig-014-20231026   gcc  
+i386                  randconfig-015-20231026   gcc  
+i386                  randconfig-016-20231026   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231025   gcc  
+loongarch             randconfig-001-20231026   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231025   gcc  
+riscv                 randconfig-001-20231026   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231025   gcc  
+s390                  randconfig-001-20231026   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231025   gcc  
+sparc                 randconfig-001-20231026   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231025   gcc  
+x86_64       buildonly-randconfig-001-20231026   gcc  
+x86_64       buildonly-randconfig-002-20231025   gcc  
+x86_64       buildonly-randconfig-002-20231026   gcc  
+x86_64       buildonly-randconfig-003-20231025   gcc  
+x86_64       buildonly-randconfig-003-20231026   gcc  
+x86_64       buildonly-randconfig-004-20231025   gcc  
+x86_64       buildonly-randconfig-004-20231026   gcc  
+x86_64       buildonly-randconfig-005-20231025   gcc  
+x86_64       buildonly-randconfig-005-20231026   gcc  
+x86_64       buildonly-randconfig-006-20231025   gcc  
+x86_64       buildonly-randconfig-006-20231026   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231025   gcc  
+x86_64                randconfig-001-20231026   gcc  
+x86_64                randconfig-002-20231025   gcc  
+x86_64                randconfig-002-20231026   gcc  
+x86_64                randconfig-003-20231025   gcc  
+x86_64                randconfig-003-20231026   gcc  
+x86_64                randconfig-004-20231025   gcc  
+x86_64                randconfig-004-20231026   gcc  
+x86_64                randconfig-005-20231025   gcc  
+x86_64                randconfig-005-20231026   gcc  
+x86_64                randconfig-006-20231025   gcc  
+x86_64                randconfig-006-20231026   gcc  
+x86_64                randconfig-011-20231026   gcc  
+x86_64                randconfig-012-20231026   gcc  
+x86_64                randconfig-013-20231026   gcc  
+x86_64                randconfig-014-20231026   gcc  
+x86_64                randconfig-015-20231026   gcc  
+x86_64                randconfig-016-20231026   gcc  
+x86_64                randconfig-071-20231026   gcc  
+x86_64                randconfig-072-20231026   gcc  
+x86_64                randconfig-073-20231026   gcc  
+x86_64                randconfig-074-20231026   gcc  
+x86_64                randconfig-075-20231026   gcc  
+x86_64                randconfig-076-20231026   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
