@@ -4,56 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E06DFC25B67
-	for <ath10k@archiver.kernel.org>; Fri, 27 Oct 2023 08:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECC8BC25B67
+	for <ath10k@archiver.kernel.org>; Fri, 27 Oct 2023 09:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=v7OI1CAyysKoa52Y2xN6pMrKQNgGG5QJTJfGTfNmoM4=; b=PS1F05naupXmss
-	oo8OY2/1yCq3wSvJU/gp51C1s7h5iKuOYUh7UiZMZxTtimtJm9XV/t1KMKN8+6OJjNWBsmVDcEVNZ
-	JxbEa7GcKdQAzkxzaNj38jEQVHPAB14jqX00otlOJigsRv5xOj5eG3OFWAmocua21rhFC/sPV0i2M
-	njPUTVYnk7nyf4b/TzNae9o9h6p47JjJJIDaw4TmLL0VyGS6Sg/tXM92NNk/MMtIFalyLvOMkX24g
-	JXyymDyViDo7hJllTPbZRE/HkNM7pWpsDRf/cbutsQIkAVd6cVC6mU0LpWEE2PYGFznGTdLkKOphf
-	jsyAlJ6WY2IGGtTwpC7g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=xByKuBhLWsf6v+cYyqtn1S46ukOu5pkdhrAU4GMtedI=; b=Nms7Yv/+bJ5WLK
+	PUEvNQkWD9eUsgWAXIdjX9c9fFj7tZcK+aiNWtE1I0/62li2kfQ3zH2Rai6I334Y85Wpe1JNB1rBJ
+	5mBOVHlDX8pUtj8jrV0p/nJ3sKfkAohmQ6VyZqAV6TndJ47geIViJtYHD94jRacKnE0IzrOFohyyA
+	70wZ/0WUnhP8mVJ9vnO+YsS0eLIEKcz44b/v4HACe+8tM4NVktGWlmVxz92eYGRTL7/2hwm8qYYOj
+	Br4+ZunF4SQEdxsxCr9cUK5cJAoBBmjQj+N1BEVw8egal8PYo3XyL+NmTvqvhrCcnvkihkmRw0htG
+	9giorFHoCcO7loe3P20g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qwI8o-00Fvf9-3B;
-	Fri, 27 Oct 2023 08:24:26 +0000
-Received: from forward103c.mail.yandex.net ([2a02:6b8:c03:500:1:45:d181:d103])
+	id 1qwIpD-00Fzeq-1G;
+	Fri, 27 Oct 2023 09:08:15 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qwI8l-00FveC-2V
+	id 1qwIpB-00FzdH-0s
 	for ath10k@lists.infradead.org;
-	Fri, 27 Oct 2023 08:24:26 +0000
-Received: from mail-nwsmtp-smtp-production-main-57.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-57.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:112b:0:640:c113:0])
-	by forward103c.mail.yandex.net (Yandex) with ESMTP id 6C6C760A63;
-	Fri, 27 Oct 2023 11:24:16 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-57.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id FOMODfGDeW20-2KZyRIKD;
-	Fri, 27 Oct 2023 11:24:16 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1698395056; bh=6e2Y33FImmTf0qn7VHbP3LsSLfAcPTpja1q7ddEwKJk=;
-	h=Message-ID:Date:Cc:Subject:To:From;
-	b=llN2U4SzGzpnXml93k5Z+dSiLUBqGUHKI0pwlmFQtEBXlka6smAdzA5MnXEYEQwPA
-	 vpIaSU88KGdLcLT+rDobo7aYV8Y2sPRDihlO1udgh7sGWfEGwEWBvLtiqUEg03QtL3
-	 rchbDETmdWzp44OkqP3f/J+NkYyKtRi2CyeRp0Dk=
-Authentication-Results: mail-nwsmtp-smtp-production-main-57.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Dmitry Antipov <dmantipov@yandex.ru>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Kalle Valo <kvalo@kernel.org>,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	Dmitry Antipov <dmantipov@yandex.ru>
-Subject: [PATCH] wifi: ath10k: prefer stack-allocated __le32 variables
-Date: Fri, 27 Oct 2023 11:23:21 +0300
-Message-ID: <20231027082325.126606-1-dmantipov@yandex.ru>
-X-Mailer: git-send-email 2.41.0
+	Fri, 27 Oct 2023 09:08:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=5Z5Wi+b9/KqswyyexFwwBfjoKXdVSYrsaCKW/5XNS4w=;
+	t=1698397690; x=1699607290; b=VgmKgEsRUkxKj6k4XC0ANOJfeDo578K2XFaf6ZSJ6l/4220
+	0H1B2M399LK9tdP8JXMC2fjD779wthNRYws91z2P8ostA29cX3nWrnD5BRL9TV2tZUwmFpi8K1iTV
+	eqjg2qpKQVXK9pVWhT00wxkjV12pMPP9raA6x6+NnLhMgLf+Cr2JxGV3lqH3UZbw3T7ZS1Rsnum/g
+	rvEVCzI9ywdU9hy9lKn5omfAG/mYwrKjnkTz2aSkVjtNS8Y+0hDmY+Cl8D197F4HIhLnmeRyrEkNK
+	OEB/E9m9C8a/GcNXLVikW4rnTZjn0fDlf+P33FNGA2F9KsqLWHRojPNTwhZs3S1w==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97-RC1)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1qwIp4-00000004fD2-3NTA;
+	Fri, 27 Oct 2023 11:08:07 +0200
+Message-ID: <f26cee40e10be4fa91862d85a1c3054e1da909ce.camel@sipsolutions.net>
+Subject: Re: [PATCH] wifi: ath10k: prefer stack-allocated __le32 variables
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Dmitry Antipov <dmantipov@yandex.ru>, Jeff Johnson
+	 <quic_jjohnson@quicinc.com>
+Cc: Kalle Valo <kvalo@kernel.org>, ath10k@lists.infradead.org, 
+	linux-wireless@vger.kernel.org
+Date: Fri, 27 Oct 2023 11:08:05 +0200
+In-Reply-To: <20231027082325.126606-1-dmantipov@yandex.ru>
+References: <20231027082325.126606-1-dmantipov@yandex.ru>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231027_012424_305429_8AEBA125 
-X-CRM114-Status: UNSURE (   9.99  )
+X-CRM114-CacheID: sfid-20231027_020813_438951_855EB237 
+X-CRM114-Status: UNSURE (   4.52  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -71,98 +75,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-There isn't too much sense to 'kzalloc()' buffer for the only
-__le32 value which is going to be freed in the same function,
-so switch to stack-allocated one in 'ath10k_sdio_writesb32()'
-and 'ath10k_sdio_diag_read32()'. Compile tested only.
+On Fri, 2023-10-27 at 11:23 +0300, Dmitry Antipov wrote:
+> There isn't too much sense to 'kzalloc()' buffer
 
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 47 +++++++-------------------
- 1 file changed, 13 insertions(+), 34 deletions(-)
+Actually, there is. Consider what's done with it.
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 56fbcfb80bf8..5ce1bad417cd 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -238,36 +238,25 @@ static int ath10k_sdio_write32(struct ath10k *ar, u32 addr, u32 val)
- 	return ret;
- }
- 
--static int ath10k_sdio_writesb32(struct ath10k *ar, u32 addr, u32 val)
-+static int ath10k_sdio_writesb32(struct ath10k *ar, u32 addr, u32 value)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
- 	struct sdio_func *func = ar_sdio->func;
--	__le32 *buf;
-+	__le32 val = __cpu_to_le32(value);
- 	int ret;
- 
--	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
--	*buf = cpu_to_le32(val);
--
- 	sdio_claim_host(func);
- 
--	ret = sdio_writesb(func, addr, buf, sizeof(*buf));
--	if (ret) {
-+	ret = sdio_writesb(func, addr, &val, sizeof(val));
-+	if (ret)
- 		ath10k_warn(ar, "failed to write value 0x%x to fixed sb address 0x%x: %d\n",
--			    val, addr, ret);
--		goto out;
--	}
--
--	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio writesb32 addr 0x%x val 0x%x\n",
--		   addr, val);
-+			    value, addr, ret);
-+	else
-+		ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio writesb32 addr 0x%x val 0x%x\n",
-+			   addr, value);
- 
--out:
- 	sdio_release_host(func);
- 
--	kfree(buf);
--
- 	return ret;
- }
- 
-@@ -1758,24 +1747,14 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
- 	return ret;
- }
- 
--static int ath10k_sdio_diag_read32(struct ath10k *ar, u32 address,
--				   u32 *value)
-+static int ath10k_sdio_diag_read32(struct ath10k *ar, u32 address, u32 *value)
- {
--	__le32 *val;
-+	__le32 val;
- 	int ret;
- 
--	val = kzalloc(sizeof(*val), GFP_KERNEL);
--	if (!val)
--		return -ENOMEM;
--
--	ret = ath10k_sdio_hif_diag_read(ar, address, val, sizeof(*val));
--	if (ret)
--		goto out;
--
--	*value = __le32_to_cpu(*val);
--
--out:
--	kfree(val);
-+	ret = ath10k_sdio_hif_diag_read(ar, address, &val, sizeof(val));
-+	if (!ret)
-+		*value = __le32_to_cpu(val);
- 
- 	return ret;
- }
--- 
-2.41.0
-
+johannes
 
 _______________________________________________
 ath10k mailing list
