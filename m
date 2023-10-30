@@ -4,68 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32038C25B47
-	for <ath10k@archiver.kernel.org>; Fri, 27 Oct 2023 18:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51020C4332F
+	for <ath10k@archiver.kernel.org>; Mon, 30 Oct 2023 14:38:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ktNV1/fnKwCarcvZ5ZhZP7908T/EMHFBdNRoN01gAXU=; b=aQLhbNtAysc2Zn
-	4NDkwwDnLoVYCd/gJ7muVEAV6jDArxfRfxc2tNAK+Vv8tYG8JqINwOL05v1lKfG7xZsgwmHmUxP4j
-	nPESGBUOxtwHDIrmj3Zab2gJJLYX0bsHLM6q+J9tsexd8LnD424A3RcBrgR7csia7B0lA0i1n3dky
-	0qtod3ly9fLsuTzLc5lPfBghDefgQRy9Oi6SJfIoNV2BuP3Q1ATj0BVuQ0AjaMR7t0f+H27+YdSFi
-	EEZIH8nAeFAufk7FHlPjPWAf9br2sZA3xOygifSgEVaaASZeidOiqcDQ2Doatf/cbxJwAzM73bqg8
-	1nvWutrCyqZmojD9YzVA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=kawdN6gcyClh6y4qx/scY9A2J9dykH5jG3f1GcES3uI=; b=rJASNVVFxnhf7X0gGbpWWx8JQg
+	gcZST0k4L698zEJdONIvDx04hQAwh2gnJfLuXjKC11sBISa1HGFInJuwqvf3uTX0qqpxYbMTii/ji
+	orbUSUl2GbGJRdHJO8KG72pa8d+XrTzDzOLuBxYH1xhkeWTISCcs7VKq/rosfaNXLflfRydyXnCoo
+	g0hD22xlVhjHN7DQAaKmA3n/sIZ5tUqS/BHMHV2yzpsaasmPjDA/e3IRfAdQbo2cb7ZaLBp6mcEQu
+	gGc/J7wVWwormRdWDdcc+UmEsymh015Gyij+11muVtHAIhT8+40zqunRdOo9kArMnn4Gv54L53o6R
+	toGQOxwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qwROQ-00Gvl5-0x;
-	Fri, 27 Oct 2023 18:17:10 +0000
-Received: from mgamail.intel.com ([198.175.65.10])
+	id 1qxTPO-003Uqq-13;
+	Mon, 30 Oct 2023 14:38:26 +0000
+Received: from sonic313-19.consmr.mail.sg3.yahoo.com ([106.10.240.78])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qwROM-00Gviv-1y
+	id 1qxTPK-003Upe-1f
 	for ath10k@lists.infradead.org;
-	Fri, 27 Oct 2023 18:17:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698430627; x=1729966627;
-  h=date:from:to:cc:subject:message-id;
-  bh=V6Kh/gD+/PPJdtO+veyNu0/iIB87yJgWfk1NGEIzKCU=;
-  b=QaZN5kfccv3V/jjQksvzSIWQzcLKxtfWcAeC+g83V+PRr6WayVvq4dXr
-   AmfQ+2LEJOKWFx3X6/CElvq7E5LmN85PcucqG1gazdEqutoGfP4y53eEJ
-   /lBzJ+20KtnRquqM072/LCHYDBPkPAFANtKifJuLv8ApYsVsRC6ZO1krN
-   42xGRzaZuN/be3uOVrIWuFZsEjVLujIZ5E+/i9msXu/n5gtNuXQo5GJVF
-   1gK0cyKqxHZYqo4mB3wst8xu0qotH3jndjOWd3HPhz7zR+nsq/A4pQttx
-   viByfEQEF88u7ZXss/VZ2HxNDyF4EozC9FuiVqrd7W2KJ95z/6Fx1TEjE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="654308"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="654308"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 11:16:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="763303990"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="763303990"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 27 Oct 2023 11:16:54 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qwRO7-000B6z-27;
-	Fri, 27 Oct 2023 18:16:51 +0000
-Date: Sat, 28 Oct 2023 02:16:19 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- c1ec235b8e81f283e1c0aa2824dcb43c4c628d56
-Message-ID: <202310280216.sqPEZm5G-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Mon, 30 Oct 2023 14:38:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.in; s=s2048; t=1698676695; bh=z6S/Rs40qfHcv0FOZ990q0uOWmhbpZabeyMWApTv4D8=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=LlOi3dclzL3Ij9HocV9AhH0bRcROaeIxoVHQB0rKblYgW9eemnjCAHAvudGgDS2HiI4UkZP4FN42whLB89bc4HwnaLBoWVel7otQRZJhpXvGgwN5v2nVva1/xrcsqf74Wz+PzjUACuZHScw919+ymYafxhgS6IzfCCTp478Wzd46Hg5o7wp5QrMltEyHYxAy1I3VFQcHW47/EARaLtk+0WcWorxANznJKO6F1av9xJsjm7LaeeCIu0Svh1BWpVk3PpRjgiBSUT80FS7YrJPjcai/EYpuNcn/H/Os9OODPX7Ez3zFs2gqrqvFoSqL8+HFtdW+W4n67ivvrQ6LfhR4xA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1698676695; bh=+/kspEJeOfvPYwQNRU2lkLjVEOS8tnHFOctROJay1NT=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=iJWPWaBKmUkkxfod8IgKeqPx1Cpx2RoioO7J7fK5u2vJFOHyar1vkAJVV7zPbGCx6NUMLc84sp8kafFmqDEBETpMQTerj4jzy2ibtiPi3R5PxIJLTWK+VKOmBXh2a4oDcuBenO0ZbSXjl4BlIJfF9BtjS4AE5JSZ6N+1ntezW8AZJFf6Lf06pxTWgb6o6qoH2IwIrJ7yqocLltGDEfD059uGuj94L1yLkANKTdBO2EhNqKuAIZDUSUDhH1iR2uAcPsMKU+sIAufbxDWAcJP5y1pbfdYNegvFw/ruveLspb4dbKdo69dsvpohnV8YMjhZiGoJPUZQEBM9SlnYg1xAhg==
+X-YMail-OSG: NIR1aasVM1m1F10ISjLrLw.U1cxV08kf5FY4n64.JkH3MXukbil.03__PWo_hOl
+ ZSAVll.FhzKbi_49vzUJvqUzswVAverXPQVK6_zl1jUav6MGDgzwTcSc3N86sNtqqTpi9BmXIM2Q
+ uHjyT_N9elY93RtAu.3mTKNGZO8ZbsB7IAmaz7CTTSB6zYIXGOoCd9tDgvmPL6y9YQqPf1_5I.nG
+ nJ8esUB30iZBVivf9oWfUVbUQHNFxZJje9TI.b4P0BTWhoRXgrHGRuQRZwq7JFjB46ih3yNnUY4.
+ Vmdsy_VbZIttqF69_dMzTBN84xHSxiTyDK0W6g3R9ripkJE_wBRENH5ikT.OalQ3vbUTjkWyHFbr
+ bTZWn7eDWWYRmhj20yq2HVqiYsghyl_5qmoQtVF7P.tU95gynqVpi_6bK9pSbe0XeJSZhG7vmcM5
+ c3ZVOvVTeOWRN.aTOzkmrePenE0YIPF6T8JDkP8UAa_4ylKZKK9v9ho._Dn5EF7ospt0gGfraP4U
+ tg9DfvjyoyQkmdx23O20u.YDlyjCX6m5oxa_gV7F2u9pGu4f_aSjRNcJjVbpvjZ3I3W0lyDPWAeG
+ 7vE1ZzxkaR7i4ISoqVCDn21F2ksCCPNmPcNiGLh_mswCwY7rTeZdsCCiEsfwYe6dQuZ2mtcfFQhR
+ aqlcTPgt2MVoPI8jXFzDnfu5RAdKDho4iJT0MxPjngkK3inTNjTaOq.uoz8d0.zqEGg_3C1COU2H
+ MqZXWQpilrTgSTydxeWLcFoTkOTBYe5laeZXIyT.iqZTINQrjC0dOVLk_rA8_zd_gOc7LzzWQCuq
+ vjTrVnfTMYeqgi7YTwSSXKjBoNwQ8bkMUf3rV8N_oSx0LNS2ieToQGw1P5Bi_OloaqsOUiIxpMQG
+ 6Tc1.F4TAMM7m7ClKU1WK5PO6JrfQ2sZW8Ru8.7gPydy1pn3Kz8HMQTAIa1DtKt_3MhgarMR202P
+ 3TtAVfDEZZs_oDinHVwdJpJR2T80Lj3ImEIu707bz.BstQoK10sV_d6Ow78ICHzxq0D4CneTUJIO
+ kR24zDaVNv4rSiH37GFyz_yM.LBMqwAZ56tzfdJgsXnfXS_Dc64RZXp505fXUiDE30LJ5PuoWNMd
+ X5wM3KvBKtwoMOo9IqjV4iHNXo63s4ImggjtmlMCYG27B.WeX_KtNyI3ixyjKMDF6BIBd4wUad.1
+ PkcyEsJ5h4msvas9Tl2uW1agBoT0eqy26xJ76C5HHFP3qDX35Wr1zqTz.EKkyWX18tazPLTx23iL
+ p4VWhGX8Zta3W3NUf5hPtDe7hFEdlJYSZCjIwRSuKjNk4MrlLZAAH3Zs_b149NGIbg_RqXkJOka5
+ 0EE3.l2OV8Gfd25_.RBx_LJmgGMvSDIfkreP_IOibhcKg5EDVl9eapbx4_vSy2hEjJea0dya3IV5
+ 39j2fmcnYxZXZbKuCYJdUZ6sX9XaLDNLOQC5InpNYFOQK1i_188PfvhR0YOc_SMxkTR8WE2nXRWv
+ r4KiQQaXhv9OpAIVH30jRkzA.ryK2E5FGAqg0f77080ubHyGGpPugRUGe4bjQYfjTRgVrI_ZEqlM
+ 7jH3CHuiXOnSRJx.jdzQ0MSj1JYRwSYyPixvaVwLLGUr3eySMygTi96BicvPYFsOJe1PymtkDsqa
+ iGFaNYQKpFyXoDmQ4mLD95bpZS7jh663zHdfHWB6ac2BC9WDUjyCiqFjoCP5iJohSc6C8WWprDSn
+ frnZJCCZtvjLPTLWTAXQ9lYD9gnwUjLs25hEhrd7bnnt9bQM2aUoXHjSCLvd5rYTYU4cNEnqLPrp
+ OdXa8DNG6zdcPgjRNyMR.K0qgF3Jj6HonaOo.Vu1.9ZFON0luEvJtJ_DQ..jseIyboAlVW6ARJoS
+ zYK4LlWlji2kuuLzOiYVv7YWGRnEwN94i1UJZU7hn6IWumS5ECyZNR8dzxXmNPQkKPxQvw.byn7U
+ doExtLjxOcPwnG4PFuem8vCaDaT53JSk1saaav6Lgnzf0I4biTWY1pWy8xGetgP6UmPwNs5tIJAc
+ nSWOXMB22LZdENbbv1UYQ44Kzh0Oedo.sX04cpVAhuOYnqoPtNz8XPwkzZ_t6NV04beZDcGMwQZG
+ ckVq4s946lgRjj76nMKY_S3EOJ5yiylcaqH69FRa.i0Av_D.NOj4ZBNFUufuwL6SggYLZzA9HBoG
+ S6i_YHztsNWsM18gZNZ4XNfLeVOIoEgNrzAA2jgdgGOx2eoPRGsjNcNtGa5qWqHRKYPzVa3e6HS0
+ HfI0nvVL9wOAngqJATHjom6VbI7uLPA27wcYQjyu0pkW2eAka3Q--
+X-Sonic-MF: <coolgoose54@yahoo.in>
+X-Sonic-ID: 1d444252-8d78-4368-8a3f-db12921b4529
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.sg3.yahoo.com with HTTP; Mon, 30 Oct 2023 14:38:15 +0000
+Date: Mon, 30 Oct 2023 14:38:14 +0000 (UTC)
+From: Cool Goose <coolgoose54@yahoo.in>
+To: Kalle Valo <kvalo@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Linux ath10k <ath10k@lists.infradead.org>, 
+	Jeff Johnson <quic_jjohnson@quicinc.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <2072544843.546737.1698676694520@mail.yahoo.com>
+In-Reply-To: <1242733089.791333.1695658442201@mail.yahoo.com>
+References: <1209906123.2716993.1695416371605.ref@mail.yahoo.com> <1209906123.2716993.1695416371605@mail.yahoo.com> <ZQ4vQNe3XsArwWQT@debian.me> <87a5taa7lp.fsf@kernel.org> <cafad11a-d7c7-4b68-880a-d6e05578fa5c@gmail.com> <1242733089.791333.1695658442201@mail.yahoo.com>
+Subject: Re: Atheros QCA6174 ath10k_pci fimware crashing
+MIME-Version: 1.0
+X-Mailer: WebService/1.1.21890 YMailNorrin
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231027_111706_721145_AFF6FEB5 
-X-CRM114-Status: UNSURE (   3.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231030_073822_828716_C14E78AB 
+X-CRM114-Status: GOOD (  10.82  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,159 +90,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: c1ec235b8e81f283e1c0aa2824dcb43c4c628d56  Merge branch 'pending' into master-pending
+It does feel like a hardware issue, either the bus or the card. I had Windows dual boot on the laptop and even Windows is complaining of network issues.
 
-elapsed time: 2891m
 
-configs tested: 131
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231026   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231026   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231026   gcc  
-i386         buildonly-randconfig-002-20231026   gcc  
-i386         buildonly-randconfig-003-20231026   gcc  
-i386         buildonly-randconfig-004-20231026   gcc  
-i386         buildonly-randconfig-005-20231026   gcc  
-i386         buildonly-randconfig-006-20231026   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231026   gcc  
-i386                  randconfig-002-20231026   gcc  
-i386                  randconfig-003-20231026   gcc  
-i386                  randconfig-004-20231026   gcc  
-i386                  randconfig-005-20231026   gcc  
-i386                  randconfig-006-20231026   gcc  
-i386                  randconfig-011-20231026   gcc  
-i386                  randconfig-012-20231026   gcc  
-i386                  randconfig-013-20231026   gcc  
-i386                  randconfig-014-20231026   gcc  
-i386                  randconfig-015-20231026   gcc  
-i386                  randconfig-016-20231026   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231026   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231026   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231026   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231026   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231026   gcc  
-x86_64       buildonly-randconfig-002-20231026   gcc  
-x86_64       buildonly-randconfig-003-20231026   gcc  
-x86_64       buildonly-randconfig-004-20231026   gcc  
-x86_64       buildonly-randconfig-005-20231026   gcc  
-x86_64       buildonly-randconfig-006-20231026   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231026   gcc  
-x86_64                randconfig-002-20231026   gcc  
-x86_64                randconfig-003-20231026   gcc  
-x86_64                randconfig-004-20231026   gcc  
-x86_64                randconfig-005-20231026   gcc  
-x86_64                randconfig-006-20231026   gcc  
-x86_64                randconfig-011-20231026   gcc  
-x86_64                randconfig-012-20231026   gcc  
-x86_64                randconfig-013-20231026   gcc  
-x86_64                randconfig-014-20231026   gcc  
-x86_64                randconfig-015-20231026   gcc  
-x86_64                randconfig-016-20231026   gcc  
-x86_64                randconfig-071-20231026   gcc  
-x86_64                randconfig-072-20231026   gcc  
-x86_64                randconfig-073-20231026   gcc  
-x86_64                randconfig-074-20231026   gcc  
-x86_64                randconfig-075-20231026   gcc  
-x86_64                randconfig-076-20231026   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+
+
+On Monday, 25 September, 2023 at 12:14:02 pm GMT-4, Cool Goose <coolgoose54@yahoo.in> wrote: 
+
+
+
+
+
+Laptop model : Lenovo Flex 5, running Arch Linux since Dec 2019. No issues til around late 2022 when I would just disable wireless and reenable from GNOME system tray NetworkManager applet and then things would work fine. But for almost a couple of months, constant firmware crashes and device cannot be recovered even after disable-renabling wireless. If I remember correctly the transition to constant crashes coincided with me upgrading system, thus I am reporting here.
+
+Just in case it helps, I tried looking for a small system journal from the laptop where the firmware crash was included, and posted that here. http://ix.io/4Hpr
+
+I am trying to find out if this actually looks like a hardware failure becuase in that case I can call it non-recoverable issue and look for a wifi adapter.
+If it is hardware failure, I am trying to find out if there are any card settings I can tweak in may be BIOS that would make it work in say a restricted mode.
+
+Thanks.
+
+
+On Monday, 25 September, 2023 at 06:15:27 am GMT-4, Bagas Sanjaya <bagasdotme@gmail.com> wrote: 
+
+
+
+
+
+On 25/09/2023 17:08, Kalle Valo wrote:
+
+> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+> 
+>>> Sep 19 09:01:11 hostname kernel: ath10k_warn: 149 callbacks suppressed
+>>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
+>>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
+>>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
+>>>
+>>
+>> Looks like hardware issue, right?
+> 
+> It could be a hardware issue (for example a problem with the PCI bus
+> communication) but also simply a firmware crash. These kind of reports
+> come time to time but root cause is unknown.
+
+> 
+
+The reporter said on Arch Linux forum (see TS) that trying older
+linux-firmware package doesn't help, so I suspect this as hardware issue.
+
+Cool Goose, what is your laptop model?
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+An old man doll... just what I always wanted! - Clara
+
+
 
 _______________________________________________
 ath10k mailing list
