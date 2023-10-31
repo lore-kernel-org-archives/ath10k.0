@@ -4,81 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51020C4332F
-	for <ath10k@archiver.kernel.org>; Mon, 30 Oct 2023 14:38:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01F2CC4332F
+	for <ath10k@archiver.kernel.org>; Tue, 31 Oct 2023 07:46:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=kawdN6gcyClh6y4qx/scY9A2J9dykH5jG3f1GcES3uI=; b=rJASNVVFxnhf7X0gGbpWWx8JQg
-	gcZST0k4L698zEJdONIvDx04hQAwh2gnJfLuXjKC11sBISa1HGFInJuwqvf3uTX0qqpxYbMTii/ji
-	orbUSUl2GbGJRdHJO8KG72pa8d+XrTzDzOLuBxYH1xhkeWTISCcs7VKq/rosfaNXLflfRydyXnCoo
-	g0hD22xlVhjHN7DQAaKmA3n/sIZ5tUqS/BHMHV2yzpsaasmPjDA/e3IRfAdQbo2cb7ZaLBp6mcEQu
-	gGc/J7wVWwormRdWDdcc+UmEsymh015Gyij+11muVtHAIhT8+40zqunRdOo9kArMnn4Gv54L53o6R
-	toGQOxwg==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ou6EATBNdZjc9oMcPWEAec4WfRiMm+uYuXs9T9AGJ+4=; b=2+NXBr947wUgiE
+	B69xFfTTEJOprfa2Vvye9cPjhj/f8Lzx2SNL3iYu26Y2Hjg08ev+9DY3XsJxiEFxiQ6LBoniexKys
+	1qCLoyVUERULQDO4KvEBEf0y0jgzd83C+0LCzujJYv7xwsAokQ1nVQkXCqHO0xVB3tuFcHRZuBh2N
+	FxQnQrLfuUdyE9iPU+G4m61h7TL5Kr8gk+0gfr7bBnp5j81nmBr6pTTi9wUfficMc652YQ4bte3Ou
+	theW4JgKHL2VHgUXTBaOytn3U7yV9vbeJjNoE6gtPMhZe14wzzkFG5Yw07h29/6MNwVYk6cM8ZAr0
+	bHTREDy3Wzdw+LRuAR8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxTPO-003Uqq-13;
-	Mon, 30 Oct 2023 14:38:26 +0000
-Received: from sonic313-19.consmr.mail.sg3.yahoo.com ([106.10.240.78])
+	id 1qxjSO-004iR1-2R;
+	Tue, 31 Oct 2023 07:46:36 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxTPK-003Upe-1f
+	id 1qxjSL-004iQN-1C
 	for ath10k@lists.infradead.org;
-	Mon, 30 Oct 2023 14:38:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.in; s=s2048; t=1698676695; bh=z6S/Rs40qfHcv0FOZ990q0uOWmhbpZabeyMWApTv4D8=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=LlOi3dclzL3Ij9HocV9AhH0bRcROaeIxoVHQB0rKblYgW9eemnjCAHAvudGgDS2HiI4UkZP4FN42whLB89bc4HwnaLBoWVel7otQRZJhpXvGgwN5v2nVva1/xrcsqf74Wz+PzjUACuZHScw919+ymYafxhgS6IzfCCTp478Wzd46Hg5o7wp5QrMltEyHYxAy1I3VFQcHW47/EARaLtk+0WcWorxANznJKO6F1av9xJsjm7LaeeCIu0Svh1BWpVk3PpRjgiBSUT80FS7YrJPjcai/EYpuNcn/H/Os9OODPX7Ez3zFs2gqrqvFoSqL8+HFtdW+W4n67ivvrQ6LfhR4xA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1698676695; bh=+/kspEJeOfvPYwQNRU2lkLjVEOS8tnHFOctROJay1NT=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=iJWPWaBKmUkkxfod8IgKeqPx1Cpx2RoioO7J7fK5u2vJFOHyar1vkAJVV7zPbGCx6NUMLc84sp8kafFmqDEBETpMQTerj4jzy2ibtiPi3R5PxIJLTWK+VKOmBXh2a4oDcuBenO0ZbSXjl4BlIJfF9BtjS4AE5JSZ6N+1ntezW8AZJFf6Lf06pxTWgb6o6qoH2IwIrJ7yqocLltGDEfD059uGuj94L1yLkANKTdBO2EhNqKuAIZDUSUDhH1iR2uAcPsMKU+sIAufbxDWAcJP5y1pbfdYNegvFw/ruveLspb4dbKdo69dsvpohnV8YMjhZiGoJPUZQEBM9SlnYg1xAhg==
-X-YMail-OSG: NIR1aasVM1m1F10ISjLrLw.U1cxV08kf5FY4n64.JkH3MXukbil.03__PWo_hOl
- ZSAVll.FhzKbi_49vzUJvqUzswVAverXPQVK6_zl1jUav6MGDgzwTcSc3N86sNtqqTpi9BmXIM2Q
- uHjyT_N9elY93RtAu.3mTKNGZO8ZbsB7IAmaz7CTTSB6zYIXGOoCd9tDgvmPL6y9YQqPf1_5I.nG
- nJ8esUB30iZBVivf9oWfUVbUQHNFxZJje9TI.b4P0BTWhoRXgrHGRuQRZwq7JFjB46ih3yNnUY4.
- Vmdsy_VbZIttqF69_dMzTBN84xHSxiTyDK0W6g3R9ripkJE_wBRENH5ikT.OalQ3vbUTjkWyHFbr
- bTZWn7eDWWYRmhj20yq2HVqiYsghyl_5qmoQtVF7P.tU95gynqVpi_6bK9pSbe0XeJSZhG7vmcM5
- c3ZVOvVTeOWRN.aTOzkmrePenE0YIPF6T8JDkP8UAa_4ylKZKK9v9ho._Dn5EF7ospt0gGfraP4U
- tg9DfvjyoyQkmdx23O20u.YDlyjCX6m5oxa_gV7F2u9pGu4f_aSjRNcJjVbpvjZ3I3W0lyDPWAeG
- 7vE1ZzxkaR7i4ISoqVCDn21F2ksCCPNmPcNiGLh_mswCwY7rTeZdsCCiEsfwYe6dQuZ2mtcfFQhR
- aqlcTPgt2MVoPI8jXFzDnfu5RAdKDho4iJT0MxPjngkK3inTNjTaOq.uoz8d0.zqEGg_3C1COU2H
- MqZXWQpilrTgSTydxeWLcFoTkOTBYe5laeZXIyT.iqZTINQrjC0dOVLk_rA8_zd_gOc7LzzWQCuq
- vjTrVnfTMYeqgi7YTwSSXKjBoNwQ8bkMUf3rV8N_oSx0LNS2ieToQGw1P5Bi_OloaqsOUiIxpMQG
- 6Tc1.F4TAMM7m7ClKU1WK5PO6JrfQ2sZW8Ru8.7gPydy1pn3Kz8HMQTAIa1DtKt_3MhgarMR202P
- 3TtAVfDEZZs_oDinHVwdJpJR2T80Lj3ImEIu707bz.BstQoK10sV_d6Ow78ICHzxq0D4CneTUJIO
- kR24zDaVNv4rSiH37GFyz_yM.LBMqwAZ56tzfdJgsXnfXS_Dc64RZXp505fXUiDE30LJ5PuoWNMd
- X5wM3KvBKtwoMOo9IqjV4iHNXo63s4ImggjtmlMCYG27B.WeX_KtNyI3ixyjKMDF6BIBd4wUad.1
- PkcyEsJ5h4msvas9Tl2uW1agBoT0eqy26xJ76C5HHFP3qDX35Wr1zqTz.EKkyWX18tazPLTx23iL
- p4VWhGX8Zta3W3NUf5hPtDe7hFEdlJYSZCjIwRSuKjNk4MrlLZAAH3Zs_b149NGIbg_RqXkJOka5
- 0EE3.l2OV8Gfd25_.RBx_LJmgGMvSDIfkreP_IOibhcKg5EDVl9eapbx4_vSy2hEjJea0dya3IV5
- 39j2fmcnYxZXZbKuCYJdUZ6sX9XaLDNLOQC5InpNYFOQK1i_188PfvhR0YOc_SMxkTR8WE2nXRWv
- r4KiQQaXhv9OpAIVH30jRkzA.ryK2E5FGAqg0f77080ubHyGGpPugRUGe4bjQYfjTRgVrI_ZEqlM
- 7jH3CHuiXOnSRJx.jdzQ0MSj1JYRwSYyPixvaVwLLGUr3eySMygTi96BicvPYFsOJe1PymtkDsqa
- iGFaNYQKpFyXoDmQ4mLD95bpZS7jh663zHdfHWB6ac2BC9WDUjyCiqFjoCP5iJohSc6C8WWprDSn
- frnZJCCZtvjLPTLWTAXQ9lYD9gnwUjLs25hEhrd7bnnt9bQM2aUoXHjSCLvd5rYTYU4cNEnqLPrp
- OdXa8DNG6zdcPgjRNyMR.K0qgF3Jj6HonaOo.Vu1.9ZFON0luEvJtJ_DQ..jseIyboAlVW6ARJoS
- zYK4LlWlji2kuuLzOiYVv7YWGRnEwN94i1UJZU7hn6IWumS5ECyZNR8dzxXmNPQkKPxQvw.byn7U
- doExtLjxOcPwnG4PFuem8vCaDaT53JSk1saaav6Lgnzf0I4biTWY1pWy8xGetgP6UmPwNs5tIJAc
- nSWOXMB22LZdENbbv1UYQ44Kzh0Oedo.sX04cpVAhuOYnqoPtNz8XPwkzZ_t6NV04beZDcGMwQZG
- ckVq4s946lgRjj76nMKY_S3EOJ5yiylcaqH69FRa.i0Av_D.NOj4ZBNFUufuwL6SggYLZzA9HBoG
- S6i_YHztsNWsM18gZNZ4XNfLeVOIoEgNrzAA2jgdgGOx2eoPRGsjNcNtGa5qWqHRKYPzVa3e6HS0
- HfI0nvVL9wOAngqJATHjom6VbI7uLPA27wcYQjyu0pkW2eAka3Q--
-X-Sonic-MF: <coolgoose54@yahoo.in>
-X-Sonic-ID: 1d444252-8d78-4368-8a3f-db12921b4529
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.sg3.yahoo.com with HTTP; Mon, 30 Oct 2023 14:38:15 +0000
-Date: Mon, 30 Oct 2023 14:38:14 +0000 (UTC)
-From: Cool Goose <coolgoose54@yahoo.in>
-To: Kalle Valo <kvalo@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Linux ath10k <ath10k@lists.infradead.org>, 
-	Jeff Johnson <quic_jjohnson@quicinc.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <2072544843.546737.1698676694520@mail.yahoo.com>
-In-Reply-To: <1242733089.791333.1695658442201@mail.yahoo.com>
-References: <1209906123.2716993.1695416371605.ref@mail.yahoo.com> <1209906123.2716993.1695416371605@mail.yahoo.com> <ZQ4vQNe3XsArwWQT@debian.me> <87a5taa7lp.fsf@kernel.org> <cafad11a-d7c7-4b68-880a-d6e05578fa5c@gmail.com> <1242733089.791333.1695658442201@mail.yahoo.com>
-Subject: Re: Atheros QCA6174 ath10k_pci fimware crashing
+	Tue, 31 Oct 2023 07:46:34 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2F09A60D54;
+	Tue, 31 Oct 2023 07:46:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F32C433C7;
+	Tue, 31 Oct 2023 07:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1698738392;
+	bh=g2XziSccx+MTDgQb4k51PyXlsNg5Uj2V1xR5ZbJYWag=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=WGcrOe5ObTvGcRZ6pX6hkz+aPhA7kHHm0mt4/hIdYnyiW2UVQ/9FZqh3qiSEr1J7F
+	 zGxm8fgALAca4sN4K4RV3P367XQeqTSHIYgGYCwB91RArrx76cGmP5dAC1S2rCldW9
+	 9OtRU/CNsRDOqPUcqb7jwOheo7yDrvhAWQ0wkbpH6l6j7pmQEB4DNaDWa4VbH9xf8w
+	 OhbK4idB2x5uuiZSnjtu8b0BDBBjlHnO7B8p9isuy5AfUFmFiqmnnX6HOZg3Nc7dmK
+	 AluiO7zIYnKFcBxAVYHwJk2xMDIOy9Zv1P7UvzeZzWLa76iOoeeLWt14dPsNWBiSAZ
+	 WZ0IwQibD8GkA==
 MIME-Version: 1.0
-X-Mailer: WebService/1.1.21890 YMailNorrin
+Subject: Re: [PATCH v2] wifi: ath10k: replace deprecated strncpy with memcpy
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20231024-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v2-1-4c1f4cd4b4df@google.com>
+References: <20231024-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v2-1-4c1f4cd4b4df@google.com>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169873838825.2137176.1962660661621825377.kvalo@kernel.org>
+Date: Tue, 31 Oct 2023 07:46:30 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231030_073822_828716_C14E78AB 
-X-CRM114-Status: GOOD (  10.82  )
+X-CRM114-CacheID: sfid-20231031_004633_455150_4D440B16 
+X-CRM114-Status: UNSURE (   8.01  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,61 +74,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-It does feel like a hardware issue, either the bus or the card. I had Windows dual boot on the laptop and even Windows is complaining of network issues.
+Justin Stitt <justinstitt@google.com> wrote:
 
-
-
-
-
-
-On Monday, 25 September, 2023 at 12:14:02 pm GMT-4, Cool Goose <coolgoose54@yahoo.in> wrote: 
-
-
-
-
-
-Laptop model : Lenovo Flex 5, running Arch Linux since Dec 2019. No issues til around late 2022 when I would just disable wireless and reenable from GNOME system tray NetworkManager applet and then things would work fine. But for almost a couple of months, constant firmware crashes and device cannot be recovered even after disable-renabling wireless. If I remember correctly the transition to constant crashes coincided with me upgrading system, thus I am reporting here.
-
-Just in case it helps, I tried looking for a small system journal from the laptop where the firmware crash was included, and posted that here. http://ix.io/4Hpr
-
-I am trying to find out if this actually looks like a hardware failure becuase in that case I can call it non-recoverable issue and look for a wifi adapter.
-If it is hardware failure, I am trying to find out if there are any card settings I can tweak in may be BIOS that would make it work in say a restricted mode.
-
-Thanks.
-
-
-On Monday, 25 September, 2023 at 06:15:27 am GMT-4, Bagas Sanjaya <bagasdotme@gmail.com> wrote: 
-
-
-
-
-
-On 25/09/2023 17:08, Kalle Valo wrote:
-
-> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+> strncpy() is deprecated [1] and we should prefer less ambiguous
+> interfaces.
 > 
->>> Sep 19 09:01:11 hostname kernel: ath10k_warn: 149 callbacks suppressed
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>>
->>
->> Looks like hardware issue, right?
+> In this case, arvif->u.ap.ssid has its length maintained by
+> arvif->u.ap.ssid_len which indicates it may not need to be
+> NUL-terminated. Make this explicit with __nonstring and use a plain old
+> memcpy.
 > 
-> It could be a hardware issue (for example a problem with the PCI bus
-> communication) but also simply a firmware crash. These kind of reports
-> come time to time but root cause is unknown.
-
+> This is also consistent with future copies into arvif->u.ap.ssid:
 > 
+>         if (changed & BSS_CHANGED_SSID &&
+>             vif->type == NL80211_IFTYPE_AP) {
+>                 arvif->u.ap.ssid_len = vif->cfg.ssid_len;
+>                 if (vif->cfg.ssid_len)
+>                         memcpy(arvif->u.ap.ssid, vif->cfg.ssid,
+>                                vif->cfg.ssid_len);
+>                 arvif->u.ap.hidden_ssid = info->hidden_ssid;
+>         }
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-The reporter said on Arch Linux forum (see TS) that trying older
-linux-firmware package doesn't help, so I suspect this as hardware issue.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Cool Goose, what is your laptop model?
+ac2f43d3d34e wifi: ath10k: replace deprecated strncpy with memcpy
 
 -- 
-An old man doll... just what I always wanted! - Clara
+https://patchwork.kernel.org/project/linux-wireless/patch/20231024-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v2-1-4c1f4cd4b4df@google.com/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
