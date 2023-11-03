@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67B60C4332F
-	for <ath10k@archiver.kernel.org>; Thu,  2 Nov 2023 15:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EC6BC4167B
+	for <ath10k@archiver.kernel.org>; Fri,  3 Nov 2023 22:06:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OEW/HqJsKsmsScl4lCMuH8NMji20jBBiHDi4pBycqK4=; b=cXth70m9XImm02
-	BJ8ibN2fcRSg9d5VuRWdvz8rpWQ7nZiNyUmsiqACpEw4ns+tnNRE5iLXNEOuuxGEYvSmpho4BgRlb
-	PGrBWwbQyPEqcjy8nUhKC3y048gledLM9smO3QsmhGdf7eaFmXkx2mWzP86ElxfaPJlhTasn42Bn4
-	3pIwtgJZhuya9j8kmY5+TpcdiDdLCMlSloWmWBqcHTpjp8XItzM6dcmAqFuC4hNEw67pz38/QW0Af
-	ZYKEJTISPTvdyrdcXS7CNWJu3RVLBR0JbHM0Nmgq2moCdvLN/72Tm5sdAu9ncrITHuLicLY91zGWO
-	Mz6sijlhZNOuh3ZudrOg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=qIL41qnYGT7t2qhwwKtcr5yu97agKxadFIQWJWFe8ww=; b=mp3SBV10r5W+k5
+	njHjOFXXsGE8FkqjhFRqLac04givs0vC+fJkR+XStjM21qkkp6hOyXzD8phlv3vS5vKP3uhAFM0Pd
+	/WJAYJ94x0XFE3uucLde0GimiA/MYq7VsRXT5P5x4UujdWoYR0gDppbtLe8ECR17Wk8v2Q0Ntat35
+	USKTQ00VR4DeQ/aREc3WfiaYqHofWtRpSikKctulBmb+SEDIU3oxXXhSAcfd6PJYw2do0LEgrk5hI
+	aZTCB45D6iu54M84b1VYNj0H5m9L1R4etni1bIe++SIDKMqnKY+O0czR+BKMHuisM1yxRsdaciV1k
+	GDc8T1FAmqmhqvfcyAjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyZDN-009i4N-2c;
-	Thu, 02 Nov 2023 15:02:33 +0000
+	id 1qz2Ie-00CEeN-26;
+	Fri, 03 Nov 2023 22:05:56 +0000
 Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyZDJ-009i3v-0W
+	id 1qz2Ib-00CEdb-1v
 	for ath10k@lists.infradead.org;
-	Thu, 02 Nov 2023 15:02:33 +0000
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2CtjcZ019322;
-	Thu, 2 Nov 2023 15:02:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=i8bu6OzOOokKbxYJkmLoobVMCZTR7aocliOXz74c27k=;
- b=KjlrNpL/qkClJeY/Mh8TCVL+iQYbWgZgdkl5FCWESPs35Q9/uZfD46fhbBDWr/ysOUuZ
- 4lI5NLPBnDV0vlokrL6vZ/RPWfLKaONYspiM8iFUDciJsoipMRnlsvl5asIxZY6nNdto
- hofeKmTu6SR1X89xq2GOOA3EI6zr1zYqAHwrYnTpSqlMfisZeRAyJFnd2MPlBZM114Oh
- dfONl4fOArju99wqin2o0aD1qMMUJhIdcx40uYB2AcyIjNI+tnMUhOtcK8HtXP4VR+U5
- 3dcqteqyZLaZPtN19UyOdVaq5IaA9yKEickoFVytN866FPtP8OJtwd9xFZieb3aiZk9u WA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u47d50u4c-1
+	Fri, 03 Nov 2023 22:05:55 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3LunVt010061;
+	Fri, 3 Nov 2023 22:05:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=NqUTEFbJ5nq8FmahHI75LFuipe+tD6i+E3bAsGInr5k=;
+ b=DULFBaHq3SIQkrzSbiqcLHPxtRiMDk/rNhL/b9+cG4Wgr4PdG6j4VC6AX6hsZil7PGu3
+ deFXkqFhzWNqvK2GE0K7JNcT4cNdE5g32mQyQ0FgtVRL7bLIJgLGRhqEo4GsUNlgAhAY
+ V1KfiB+X/eaZQejBLXkT8w2qoqn0qXgohtCSPVeEBTp6xXhYRzt7iPxgw/nZ8rS8F7Qz
+ lJZCr4sROl/pC7iBQ3vj5bQQjtrESVP1K6DgnvoxnI+ddmaoJZi7WmK1qBB+OcsK2zN5
+ iUrkyYSW8ed3nUEixbKlzlN670DjhYfmrEABkRO4QLmCKTQn+8f7OtylCt08MAYkZj8L gA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u533j8wcs-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 Nov 2023 15:02:16 +0000
+	Fri, 03 Nov 2023 22:05:49 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A2F2FJW015062
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3M5c67021096
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 2 Nov 2023 15:02:15 GMT
-Received: from [10.227.110.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 2 Nov
- 2023 08:02:14 -0700
-Message-ID: <f2f09cac-d364-46eb-9dbd-ca90ddea32f8@quicinc.com>
-Date: Thu, 2 Nov 2023 08:02:14 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: ath10k: simplify __ath10k_htt_tx_txq_recalc()
-Content-Language: en-US
-To: Dmitry Antipov <dmantipov@yandex.ru>
-CC: Kalle Valo <kvalo@kernel.org>, <ath10k@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>
-References: <20231102115459.69791-1-dmantipov@yandex.ru>
+	Fri, 3 Nov 2023 22:05:38 GMT
+Received: from hu-jjohnson-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 3 Nov 2023 15:05:37 -0700
 From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20231102115459.69791-1-dmantipov@yandex.ru>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+Date: Fri, 3 Nov 2023 15:05:36 -0700
+Subject: [PATCH] wifi: ath10k: Remove unused struct ath10k_htc_frame
+MIME-Version: 1.0
+Message-ID: <20231103-ath10k_htc_frame-v1-1-ff00b38a9630@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAK9uRWUC/32NQQ6CMBBFr0JmbU2nVEBX3sMQUsvUTgygbSUaw
+ t2tHMDle8l/f4FIgSnCqVgg0MyRpzED7gqw3ow3EtxnBiVViVIdhEke5b3zyXYumIEEVn1DunT
+ 1seohzx6BHL+35KXN7DmmKXy2hxl/9k9sRoFCNgq1Kmttrvr8fLHl0e7tNEC7rusXLp8pWbIAA
+ AA=
+To: Kalle Valo <kvalo@kernel.org>
+CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+X-Mailer: b4 0.12.3
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: QlkItmYuzlJ9bw7LUcS_z8gS3cugohJN
-X-Proofpoint-ORIG-GUID: QlkItmYuzlJ9bw7LUcS_z8gS3cugohJN
+X-Proofpoint-GUID: 8yDxnvN3hX6ED0uM-r3Or87iMcaGtgww
+X-Proofpoint-ORIG-GUID: 8yDxnvN3hX6ED0uM-r3Or87iMcaGtgww
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-02_04,2023-11-02_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxlogscore=456 bulkscore=0 adultscore=0 mlxscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311020121
+ definitions=2023-11-03_21,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=713 clxscore=1015
+ priorityscore=1501 adultscore=0 impostorscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311030187
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231102_080229_344355_C1C3983C 
-X-CRM114-Status: UNSURE (   9.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231103_150553_752758_EB86D10D 
+X-CRM114-Status: GOOD (  12.70  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,18 +94,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 11/2/2023 4:54 AM, Dmitry Antipov wrote:
-> Since 'ieee80211_txq_get_depth()' allows NULL for 2nd and
-> 3rd arguments, simplify '__ath10k_htt_tx_txq_recalc()' by
-> dropping unused 'frame_cnt'. Compile tested only.
-> 
-> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+struct ath10k_htc_frame is unused, and since it illogically contains
+two consecutive flexible arrays, it could never be used, so remove it.
+
+No functional changes, compile tested only.
+
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+---
+ drivers/net/wireless/ath/ath10k/htc.h | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index 0d180faf3b77..0eaa21ad86ac 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -253,19 +253,6 @@ struct ath10k_htc_record {
+ 	};
+ } __packed __aligned(4);
+ 
+-/*
+- * note: the trailer offset is dynamic depending
+- * on payload length. this is only a struct layout draft
+- */
+-struct ath10k_htc_frame {
+-	struct ath10k_htc_hdr hdr;
+-	union {
+-		struct ath10k_htc_msg msg;
+-		u8 payload[0];
+-	};
+-	struct ath10k_htc_record trailer[0];
+-} __packed __aligned(4);
+-
+ /*******************/
+ /* Host-side stuff */
+ /*******************/
+
+---
+base-commit: ac2f43d3d34e52b0d388b4c573ff6bbac90235b9
+change-id: 20231025-ath10k_htc_frame-16d8e43f796d
 
 
 _______________________________________________
