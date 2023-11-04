@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30989C4167B
-	for <ath10k@archiver.kernel.org>; Sat,  4 Nov 2023 11:43:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3C83C4332F
+	for <ath10k@archiver.kernel.org>; Sat,  4 Nov 2023 11:47:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=1wtl85EJkk32d9tZxihwQYQJF3NjKUcrWYPD3j8J7T0=; b=rho3FkzjUpII8+
-	IxBj5bfWHiBZ0YduHLyD/Zu8zYzDZkHAGH8nrtlH9gt24YiMGx3QtRCefO5yvlD6L7pS8A6x1sHca
-	VobDH+KUIoGmwZwBABaWQefEHmLeDu9ssnvaeA9YkpdVmjD5HpmWsJDL9nd3uabaZiJM5ywVFUH0/
-	jfvG2XCLpcZ2k8LbxZ317WYmYC+qvpfcKmaQ3j1G8SxIGu4ECTNiGCn8AY7EzeEvIr2p36gLzsP4f
-	xBKESeUGuRBOFPasbRDQQQa2NP6BZaUxfWXufjCknrk881Nj6LRR1O4JYYe7J/eM751knMflzKgBt
-	vM/hJWETdV3L+ezP6Esg==;
+	List-Owner; bh=O7EITIbEgOxNb5M9sZilUG5xznwuxB1DRgq4h+GdbpA=; b=q0PgOJ9Z3zcjnS
+	DKwAnVL95AdQ8iOW7YDP6kbCElOaTxhvsd6Nt1scVyYKlTYZ2sNxIJH5HKbKxAB53Hx27WmRgihd2
+	WJ2SpPUu0irXS/uFV34HBey0WwsQa1EHJraznLcYlv8cx5QOZhV9nugRm9J8nP/D6WWby5W0dLMkm
+	stPxXm/9FqAMwpm+dJPAaVTDMxOHKQpC3t4D8IigidHynomRiM+DHfUGmPTHIMayzF13+IZxFZtwC
+	O4/d1O4E84MmeL2DLWGbFEzNJZqbQDLg7Wn+Ri/Qt6g1iqJ7/mLjtjXIMqYQ8rV3a6NtjRGDpERWm
+	hlPIKdVQb3oOqHccENlg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qzF3d-00DMoc-33;
-	Sat, 04 Nov 2023 11:43:17 +0000
-Received: from mgamail.intel.com ([192.55.52.120])
+	id 1qzF7u-00DN49-0E;
+	Sat, 04 Nov 2023 11:47:42 +0000
+Received: from mgamail.intel.com ([134.134.136.31])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qzF3b-00DMoI-0P
+	id 1qzF7q-00DN3N-0O
 	for ath10k@lists.infradead.org;
-	Sat, 04 Nov 2023 11:43:17 +0000
+	Sat, 04 Nov 2023 11:47:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699098195; x=1730634195;
+  t=1699098458; x=1730634458;
   h=date:from:to:cc:subject:message-id;
-  bh=92mA5nE1Z4RjLYHBh788dT82NUsWcZ5O/plxkSe2pQ4=;
-  b=gzxAbCs6yuDtuG9UZf2s9B4bjAeD+UgTaMCY0fh5LZq2CmqLs5+7YJXr
-   mGPuByumyWRKRnKYxsUj0RJkM/3rCO6Dkiki+nNJ9u4/zYFcOA1Tzsr/3
-   NOXmUYMVMmYrolZTNgNkvm1rSRCPmLN2VezhNMqX4kY7nSZjtjcTHz6LJ
-   m/Gr9WsObYu563vPU/R/hmoa07SuVrlk1+TVTwOFM0D3HgC0tT1zfVtod
-   ato38nh9IUNKiNBjvpPcqK62JfQM1yds4FYFlxNnMXPNw9bTE/FWXzozG
-   3uSUnSsI1Hy6md9YreYaQyRK2TaCVnKJaShpn1X79F1mXGM5p8cNW5gJY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="387967728"
+  bh=0FlajTZkKtBohAAHXiY5ax0dxJ22qWB1gbG3OEnzI98=;
+  b=kT/M4jo92k1JmC4pAFtmnH2o0xO7mpWsTkga6pv5PlCcGSUDoaBsUNkn
+   vvTdUuG5Qsxko1l/o/u9JkuaHZI0eDveFtrNVabMwyzCP1Mi5LzYZ+k9h
+   fXed3irq2s6Lfddd93ad5tw9TX3CX3XGWAKLQynSwAuAxBV3Fg+z6qMBI
+   3hmSmSWMhR7XL7oGqzIrMHTyzjroJW5vaNMDyjwpz4mXdQFIh7rqpmpXJ
+   Uxp6smdVyMXPRjA9+nhtlYB/ZV2orCIUc861C7uGejH4P85nP3UmaMwtT
+   2s6ef7XH/pewED14I4c267yTBxeYXxUGRUz0gafHHtoRTFVFGMAJ5Fojo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="453381027"
 X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="387967728"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 04:43:14 -0700
+   d="scan'208";a="453381027"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 04:47:37 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="765514860"
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="852524938"
 X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="765514860"
+   d="scan'208";a="852524938"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 04 Nov 2023 04:43:12 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Nov 2023 04:47:35 -0700
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qzF3W-0004EJ-1i;
-	Sat, 04 Nov 2023 11:43:10 +0000
-Date: Sat, 04 Nov 2023 19:43:05 +0800
+	id 1qzF7l-0004HT-32;
+	Sat, 04 Nov 2023 11:47:33 +0000
+Date: Sat, 04 Nov 2023 19:46:13 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- 31d11ebb225eee82e35278ae9f8249d77ba3572e
-Message-ID: <202311041903.TWWaqmcm-lkp@intel.com>
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ 1dc1ef6e5d66d2c690950c0335073d2941de7488
+Message-ID: <202311041912.4PwdFHMc-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231104_044315_203722_E7047153 
-X-CRM114-Status: UNSURE (   4.22  )
+X-CRM114-CacheID: sfid-20231104_044738_293764_C04F4709 
+X-CRM114-Status: UNSURE (   4.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,10 +83,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 31d11ebb225eee82e35278ae9f8249d77ba3572e  wifi: ath11k: Remove unneeded semicolon
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: 1dc1ef6e5d66d2c690950c0335073d2941de7488  Merge branch 'pending' into master-pending
 
-elapsed time: 5963m
+elapsed time: 5967m
 
 configs tested: 251
 configs skipped: 2
