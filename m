@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B7CCC4332F
-	for <ath10k@archiver.kernel.org>; Sat,  4 Nov 2023 11:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 196CDC4332F
+	for <ath10k@archiver.kernel.org>; Sat,  4 Nov 2023 11:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=aZXRNEIQEzkZB7KF3Nf2sFAzpyGFIkwFjfqAejmJe70=; b=RfUwCFi0+m2tmX
-	s/m/Gmek7zDSw4HszpE97OhsG4le0mjFg8QODMXbumJSFeliHednnzk5vPJcwRxnhsGSfPU6d1g5f
-	Xhkcr1bJSfTxKgwNykIZYUpE0LUmNuMqn9LxHaUElv+UYDyvxRYZsARx3JeredQ86adwYrs31bNEW
-	yRQLiySBKjgbDGLgdsplzCNLJbW/kY4jU/UzdMvIedgS1pbVQMMNGSGyWS8MRNamKHRpDtujchhcw
-	FCD8dvkddHQ2Gu29fElSIbHCgP/bfv47IweCHU/f/upmYvXOSBpgA3bVgfeXM9ulOIJKAimbbnTCy
-	1aGhP0aUL5snHlkw507g==;
+	List-Owner; bh=My9vW9/UR5zfmEfo2T94zsZpvgWm/mhg9TFPZY6Nkew=; b=kqaiI9AoRqoxo9
+	TtNUHtC4+ouRx7bc/WQS7JzpZpofHIK13kWEkOknECiu7dCrIuy4PcZBe5VETh5CKJGc162Ov/40Y
+	K3AKjrnBBRhJ8kK05R9p2t2w5I29U6kf7ZDEa02hEyoDkiUe8I83HFA+28rpkkKahghW+JqJ1OTOi
+	V9Ml9fRJBLmGPFPbbE7zwsSlHDbxWNG3Z3NF6/qIHNPVP2ClKCR7cFeHgNzfzhUPMRk6VVrxuFG+A
+	Iqk4aX5jjn5515Xq3BLm86TjYYNLdZHEJkw5k18IobpD/opaqgbZNJfTFYv0g7U3I+B5qDRNxRwlp
+	n3q4KUvf5yFefiMxyKDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qzEr6-00DLyz-2j;
-	Sat, 04 Nov 2023 11:30:20 +0000
-Received: from mgamail.intel.com ([134.134.136.126])
+	id 1qzEsC-00DM92-2V;
+	Sat, 04 Nov 2023 11:31:28 +0000
+Received: from mgamail.intel.com ([134.134.136.31])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qzEr2-00DLyM-2b
+	id 1qzEs9-00DM7y-2a
 	for ath10k@lists.infradead.org;
-	Sat, 04 Nov 2023 11:30:18 +0000
+	Sat, 04 Nov 2023 11:31:27 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699097416; x=1730633416;
+  t=1699097483; x=1730633483;
   h=date:from:to:cc:subject:message-id;
-  bh=vqq5K1ak0mU0D6vBcIDmfAPCih+TOapp5TFfglUGGlU=;
-  b=WGRRVZ+46XH9JSHJhYwSjC6RIVTZrbAJmyXn21JFyaGxmOBrJGlQGq6v
-   +XCw6Slpe0Y/dyt9ysZSclgJhy7makfmeyfVMFpZ/dOCtbYyU6/fGLJom
-   zJMAi+3EOD8xk7XnXphwW1VodMRE3ZD+iG+pVutaIg7t3EwUJBT8vbKSN
-   ywDcwdhjZIAkxqkgAQXdeVdqBregJaFXztUsbjAF5zi6Ez5c0LnQX4XEu
-   THC94pI0cai1OX2f5qxmp2QjA6N0uqrgWP9W93MWkj03EgC5gwB0NEeKl
-   6Wfwaxum/Ss8B44SG/YwoYaeE9cfo8icQFmACTDRkJSGDAGZAzTm+pxwo
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="374112082"
+  bh=GYbA+AW0r0AnfBnOV7x7HCE0KYXNlAtjQcbMTNnHiEc=;
+  b=TFGw4KU+Fldl7/hCi0yalIpcduffskHEhTc1gBYJ4wKszwzTmMtUs/1U
+   hOsIFxn+Hyu5/htBpRzNM3nOlU/9TxEVsvLmhh5RD2BkE2sIvv/kcwmTK
+   x0o5GGKOtDamBdASDhvg1UC659n1cufF6q1qleAUN45/eSiaFCUbuNoyx
+   t5BiDQ28ZJQ85Af/jlJIL+mTRASH/fruj2ngvgP3Yif9P0mQ1ZHF3BOgh
+   1mXKcbaa27J1s5lKHVbxsR9oUiJq44myTckwY67linlDSKE/JriYscsLo
+   2wPOLXE3T2k7oKkd43zNMO1nyNEvKQunzNW40SY8GR2XeRFAkdB8Z/z+J
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="453380532"
 X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="374112082"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 04:30:12 -0700
+   d="scan'208";a="453380532"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 04:31:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="852522640"
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="755410858"
 X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="852522640"
+   d="scan'208";a="755410858"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 04 Nov 2023 04:30:11 -0700
+  by orsmga007.jf.intel.com with ESMTP; 04 Nov 2023 04:31:23 -0700
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qzEqu-00046I-2t;
-	Sat, 04 Nov 2023 11:30:08 +0000
-Date: Sat, 04 Nov 2023 19:29:17 +0800
+	id 1qzEs4-00047Q-2m;
+	Sat, 04 Nov 2023 11:31:20 +0000
+Date: Sat, 04 Nov 2023 19:30:12 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- f24dee89bb8a7ef33c28e31632b1f3dd4e196413
-Message-ID: <202311041915.OunfVKmV-lkp@intel.com>
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 553d0057523dc1d6935160613f1fbf9bb8db88f6
+Message-ID: <202311041911.OVckKTx5-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231104_043016_903170_6FD8CCC7 
-X-CRM114-Status: UNSURE (   5.41  )
+X-CRM114-CacheID: sfid-20231104_043125_883966_D92EF7EC 
+X-CRM114-Status: UNSURE (   3.83  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,12 +83,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: f24dee89bb8a7ef33c28e31632b1f3dd4e196413  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 553d0057523dc1d6935160613f1fbf9bb8db88f6  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 5950m
+elapsed time: 5951m
 
-configs tested: 251
+configs tested: 164
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -106,77 +106,46 @@ arc                   randconfig-001-20231031   gcc
 arc                   randconfig-002-20231031   gcc  
 arm                              allmodconfig   gcc  
 arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
 arm                                 defconfig   gcc  
-arm                         lpc18xx_defconfig   gcc  
-arm                        multi_v7_defconfig   gcc  
 arm                   randconfig-001-20231031   gcc  
-arm                   randconfig-001-20231101   gcc  
 arm                   randconfig-002-20231031   gcc  
-arm                   randconfig-002-20231101   gcc  
 arm                   randconfig-003-20231031   gcc  
-arm                   randconfig-003-20231101   gcc  
 arm                   randconfig-004-20231031   gcc  
-arm                   randconfig-004-20231101   gcc  
 arm64                            allmodconfig   gcc  
 arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
 arm64                               defconfig   gcc  
 arm64                 randconfig-001-20231031   gcc  
-arm64                 randconfig-001-20231101   gcc  
 arm64                 randconfig-002-20231031   gcc  
-arm64                 randconfig-002-20231101   gcc  
 arm64                 randconfig-003-20231031   gcc  
-arm64                 randconfig-003-20231101   gcc  
 arm64                 randconfig-004-20231031   gcc  
-arm64                 randconfig-004-20231101   gcc  
 csky                             allmodconfig   gcc  
 csky                              allnoconfig   gcc  
 csky                             allyesconfig   gcc  
 csky                                defconfig   gcc  
 csky                  randconfig-001-20231031   gcc  
 csky                  randconfig-002-20231031   gcc  
-i386                             allmodconfig   gcc  
 i386                              allnoconfig   gcc  
 i386                             allyesconfig   gcc  
 i386         buildonly-randconfig-001-20231031   gcc  
-i386         buildonly-randconfig-001-20231101   gcc  
 i386         buildonly-randconfig-002-20231031   gcc  
-i386         buildonly-randconfig-002-20231101   gcc  
 i386         buildonly-randconfig-003-20231031   gcc  
-i386         buildonly-randconfig-003-20231101   gcc  
 i386         buildonly-randconfig-004-20231031   gcc  
-i386         buildonly-randconfig-004-20231101   gcc  
 i386         buildonly-randconfig-005-20231031   gcc  
-i386         buildonly-randconfig-005-20231101   gcc  
 i386         buildonly-randconfig-006-20231031   gcc  
-i386         buildonly-randconfig-006-20231101   gcc  
 i386                              debian-10.3   gcc  
 i386                                defconfig   gcc  
 i386                  randconfig-001-20231031   gcc  
-i386                  randconfig-001-20231101   gcc  
 i386                  randconfig-002-20231031   gcc  
-i386                  randconfig-002-20231101   gcc  
 i386                  randconfig-003-20231031   gcc  
-i386                  randconfig-003-20231101   gcc  
 i386                  randconfig-004-20231031   gcc  
-i386                  randconfig-004-20231101   gcc  
 i386                  randconfig-005-20231031   gcc  
-i386                  randconfig-005-20231101   gcc  
 i386                  randconfig-006-20231031   gcc  
-i386                  randconfig-006-20231101   gcc  
 i386                  randconfig-011-20231031   gcc  
-i386                  randconfig-011-20231101   gcc  
 i386                  randconfig-012-20231031   gcc  
-i386                  randconfig-012-20231101   gcc  
 i386                  randconfig-013-20231031   gcc  
-i386                  randconfig-013-20231101   gcc  
 i386                  randconfig-014-20231031   gcc  
-i386                  randconfig-014-20231101   gcc  
 i386                  randconfig-015-20231031   gcc  
-i386                  randconfig-015-20231101   gcc  
 i386                  randconfig-016-20231031   gcc  
-i386                  randconfig-016-20231101   gcc  
 loongarch                        allmodconfig   gcc  
 loongarch                         allnoconfig   gcc  
 loongarch                        allyesconfig   gcc  
@@ -187,7 +156,6 @@ m68k                             allmodconfig   gcc
 m68k                              allnoconfig   gcc  
 m68k                             allyesconfig   gcc  
 m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
 microblaze                       allmodconfig   gcc  
 microblaze                        allnoconfig   gcc  
 microblaze                       allyesconfig   gcc  
@@ -195,16 +163,12 @@ microblaze                          defconfig   gcc
 mips                             allmodconfig   gcc  
 mips                              allnoconfig   gcc  
 mips                             allyesconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-mips                         db1xxx_defconfig   gcc  
 nios2                            allmodconfig   gcc  
 nios2                             allnoconfig   gcc  
 nios2                            allyesconfig   gcc  
 nios2                               defconfig   gcc  
 nios2                 randconfig-001-20231031   gcc  
-nios2                 randconfig-001-20231101   gcc  
 nios2                 randconfig-002-20231031   gcc  
-nios2                 randconfig-002-20231101   gcc  
 openrisc                         allmodconfig   gcc  
 openrisc                          allnoconfig   gcc  
 openrisc                         allyesconfig   gcc  
@@ -214,55 +178,36 @@ parisc                            allnoconfig   gcc
 parisc                           allyesconfig   gcc  
 parisc                              defconfig   gcc  
 parisc                randconfig-001-20231031   gcc  
-parisc                randconfig-001-20231101   gcc  
 parisc                randconfig-002-20231031   gcc  
-parisc                randconfig-002-20231101   gcc  
 parisc64                            defconfig   gcc  
 powerpc                          allmodconfig   gcc  
 powerpc                           allnoconfig   gcc  
 powerpc                          allyesconfig   gcc  
-powerpc                    klondike_defconfig   gcc  
-powerpc                   lite5200b_defconfig   clang
-powerpc               mpc834x_itxgp_defconfig   clang
 powerpc               randconfig-001-20231031   gcc  
-powerpc               randconfig-001-20231101   gcc  
 powerpc               randconfig-002-20231031   gcc  
-powerpc               randconfig-002-20231101   gcc  
 powerpc               randconfig-003-20231031   gcc  
-powerpc               randconfig-003-20231101   gcc  
 powerpc64             randconfig-001-20231031   gcc  
-powerpc64             randconfig-001-20231101   gcc  
 powerpc64             randconfig-002-20231031   gcc  
-powerpc64             randconfig-002-20231101   gcc  
 powerpc64             randconfig-003-20231031   gcc  
-powerpc64             randconfig-003-20231101   gcc  
 riscv                            allmodconfig   gcc  
 riscv                             allnoconfig   gcc  
 riscv                            allyesconfig   gcc  
 riscv                               defconfig   gcc  
 riscv                 randconfig-001-20231031   gcc  
-riscv                 randconfig-001-20231101   gcc  
 riscv                 randconfig-002-20231031   gcc  
-riscv                 randconfig-002-20231101   gcc  
 riscv                          rv32_defconfig   gcc  
 s390                             allmodconfig   gcc  
 s390                              allnoconfig   gcc  
 s390                             allyesconfig   gcc  
 s390                                defconfig   gcc  
 s390                  randconfig-001-20231031   gcc  
-s390                  randconfig-001-20231101   gcc  
 s390                  randconfig-002-20231031   gcc  
-s390                  randconfig-002-20231101   gcc  
 sh                               allmodconfig   gcc  
 sh                                allnoconfig   gcc  
 sh                               allyesconfig   gcc  
 sh                                  defconfig   gcc  
-sh                          polaris_defconfig   gcc  
 sh                    randconfig-001-20231101   gcc  
 sh                    randconfig-002-20231101   gcc  
-sh                   secureedge5410_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
 sparc                            allmodconfig   gcc  
 sparc                             allnoconfig   gcc  
 sparc                            allyesconfig   gcc  
@@ -282,67 +227,35 @@ um                             i386_defconfig   gcc
 um                    randconfig-001-20231101   gcc  
 um                    randconfig-002-20231101   gcc  
 um                           x86_64_defconfig   gcc  
-x86_64                           alldefconfig   gcc  
 x86_64                            allnoconfig   gcc  
 x86_64                           allyesconfig   gcc  
 x86_64       buildonly-randconfig-001-20231031   gcc  
-x86_64       buildonly-randconfig-001-20231101   gcc  
 x86_64       buildonly-randconfig-002-20231031   gcc  
-x86_64       buildonly-randconfig-002-20231101   gcc  
 x86_64       buildonly-randconfig-003-20231031   gcc  
-x86_64       buildonly-randconfig-003-20231101   gcc  
 x86_64       buildonly-randconfig-004-20231031   gcc  
-x86_64       buildonly-randconfig-004-20231101   gcc  
 x86_64       buildonly-randconfig-005-20231031   gcc  
-x86_64       buildonly-randconfig-005-20231101   gcc  
 x86_64       buildonly-randconfig-006-20231031   gcc  
-x86_64       buildonly-randconfig-006-20231101   gcc  
 x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
 x86_64                randconfig-001-20231031   gcc  
-x86_64                randconfig-001-20231101   gcc  
 x86_64                randconfig-002-20231031   gcc  
-x86_64                randconfig-002-20231101   gcc  
 x86_64                randconfig-003-20231031   gcc  
-x86_64                randconfig-003-20231101   gcc  
 x86_64                randconfig-004-20231031   gcc  
-x86_64                randconfig-004-20231101   gcc  
 x86_64                randconfig-005-20231031   gcc  
-x86_64                randconfig-005-20231101   gcc  
 x86_64                randconfig-006-20231031   gcc  
-x86_64                randconfig-006-20231101   gcc  
 x86_64                randconfig-011-20231031   gcc  
-x86_64                randconfig-011-20231101   gcc  
 x86_64                randconfig-012-20231031   gcc  
-x86_64                randconfig-012-20231101   gcc  
 x86_64                randconfig-013-20231031   gcc  
-x86_64                randconfig-013-20231101   gcc  
 x86_64                randconfig-014-20231031   gcc  
-x86_64                randconfig-014-20231101   gcc  
 x86_64                randconfig-015-20231031   gcc  
-x86_64                randconfig-015-20231101   gcc  
 x86_64                randconfig-016-20231031   gcc  
-x86_64                randconfig-016-20231101   gcc  
 x86_64                randconfig-071-20231031   gcc  
-x86_64                randconfig-071-20231101   gcc  
 x86_64                randconfig-072-20231031   gcc  
-x86_64                randconfig-072-20231101   gcc  
 x86_64                randconfig-073-20231031   gcc  
-x86_64                randconfig-073-20231101   gcc  
 x86_64                randconfig-074-20231031   gcc  
-x86_64                randconfig-074-20231101   gcc  
 x86_64                randconfig-075-20231031   gcc  
-x86_64                randconfig-075-20231101   gcc  
 x86_64                randconfig-076-20231031   gcc  
-x86_64                randconfig-076-20231101   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
 x86_64                          rhel-8.3-rust   clang
 x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
 xtensa                           allyesconfig   gcc  
 xtensa                randconfig-001-20231101   gcc  
 xtensa                randconfig-002-20231101   gcc  
