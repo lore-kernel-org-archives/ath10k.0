@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FEA2C4332F
-	for <ath10k@archiver.kernel.org>; Sat,  4 Nov 2023 11:13:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B7CCC4332F
+	for <ath10k@archiver.kernel.org>; Sat,  4 Nov 2023 11:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
 	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wV1DJ/xwtxSlVCHCVMuWRnL2JpMYPnBTRwtQ9NMsaGE=; b=1ORDJsSL98uPtB
-	4OPwo+VtVj0ICuHKUxXb2FOqaDy7KRBAKhHzy5rBNsS4GvOxnXGja411fsGCcSe2C7SJPbxSecRGh
-	O14tZCm+6w+M6Wcd/XTK9xwVvbsEHLkt0gjeG7hycn+44c42N27OSlSdETxzUksx3Y6GNprIQIVrB
-	/x9smM2aG+MHqpF9uvhLEL1q3KNbZs/ybmZVfBBW+TAaOExeAtRUfHj5+4a09stWWNOi/PUPfyMCH
-	08vOPGtP0PyXHwdVVZU1B/gdRxVj0vu7JfeWJpL6c+B7sTsKj7WHz3MfZigEkxnU35mBAWIA16Xfh
-	5fyTUscjC28HMFjEOAkw==;
+	List-Owner; bh=aZXRNEIQEzkZB7KF3Nf2sFAzpyGFIkwFjfqAejmJe70=; b=RfUwCFi0+m2tmX
+	s/m/Gmek7zDSw4HszpE97OhsG4le0mjFg8QODMXbumJSFeliHednnzk5vPJcwRxnhsGSfPU6d1g5f
+	Xhkcr1bJSfTxKgwNykIZYUpE0LUmNuMqn9LxHaUElv+UYDyvxRYZsARx3JeredQ86adwYrs31bNEW
+	yRQLiySBKjgbDGLgdsplzCNLJbW/kY4jU/UzdMvIedgS1pbVQMMNGSGyWS8MRNamKHRpDtujchhcw
+	FCD8dvkddHQ2Gu29fElSIbHCgP/bfv47IweCHU/f/upmYvXOSBpgA3bVgfeXM9ulOIJKAimbbnTCy
+	1aGhP0aUL5snHlkw507g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qzEae-00DLCT-3A;
-	Sat, 04 Nov 2023 11:13:20 +0000
-Received: from mgamail.intel.com ([192.198.163.8])
+	id 1qzEr6-00DLyz-2j;
+	Sat, 04 Nov 2023 11:30:20 +0000
+Received: from mgamail.intel.com ([134.134.136.126])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qzEab-00DLBu-0d
+	id 1qzEr2-00DLyM-2b
 	for ath10k@lists.infradead.org;
-	Sat, 04 Nov 2023 11:13:19 +0000
+	Sat, 04 Nov 2023 11:30:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699096397; x=1730632397;
+  t=1699097416; x=1730633416;
   h=date:from:to:cc:subject:message-id;
-  bh=zEvgCnWHtUDY3hB9Qi2XoIjlNgeeIcAyGxR2uImuK1c=;
-  b=M7Uf2q7Def5LM7XwRrEL9DXvbVTDZc26Y7mY5b5rROcqozHHpZGdx+mU
-   diBrTeom9gm7ykek89pX63ULEK+YF5sv68j6/LLfp/upFccGbQjthyWO8
-   FD1cAhS/t5FHVQXtlG7gCfMzOp8McWh5BXw0Rjp4JmM7likSKWQCLR3sM
-   elCKWq2PWLYw+SswLLnJaTeBBrLJUZoLFh62htAf50NM5LACW81pLQkRp
-   s5KRAWrr3CKcEcAVy34dgFJ0CTRGd+VsYDgekb6+Fgj3Cgv+ZUm6GZ7Cf
-   UbOiKD+/aeVmV8iht7x+AdghajuT9apPFZS6e4zRsKvFg3Xcm/REhb9/b
+  bh=vqq5K1ak0mU0D6vBcIDmfAPCih+TOapp5TFfglUGGlU=;
+  b=WGRRVZ+46XH9JSHJhYwSjC6RIVTZrbAJmyXn21JFyaGxmOBrJGlQGq6v
+   +XCw6Slpe0Y/dyt9ysZSclgJhy7makfmeyfVMFpZ/dOCtbYyU6/fGLJom
+   zJMAi+3EOD8xk7XnXphwW1VodMRE3ZD+iG+pVutaIg7t3EwUJBT8vbKSN
+   ywDcwdhjZIAkxqkgAQXdeVdqBregJaFXztUsbjAF5zi6Ez5c0LnQX4XEu
+   THC94pI0cai1OX2f5qxmp2QjA6N0uqrgWP9W93MWkj03EgC5gwB0NEeKl
+   6Wfwaxum/Ss8B44SG/YwoYaeE9cfo8icQFmACTDRkJSGDAGZAzTm+pxwo
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="1970447"
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="374112082"
 X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="1970447"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 04:13:15 -0700
+   d="scan'208";a="374112082"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 04:30:12 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="711766147"
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="852522640"
 X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="711766147"
+   d="scan'208";a="852522640"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 04 Nov 2023 04:13:14 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Nov 2023 04:30:11 -0700
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qzEaV-0003xN-2T;
-	Sat, 04 Nov 2023 11:13:11 +0000
-Date: Sat, 04 Nov 2023 19:12:26 +0800
+	id 1qzEqu-00046I-2t;
+	Sat, 04 Nov 2023 11:30:08 +0000
+Date: Sat, 04 Nov 2023 19:29:17 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD REGRESSION
- ac2f43d3d34e52b0d388b4c573ff6bbac90235b9
-Message-ID: <202311041924.ELiyRpD5-lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ f24dee89bb8a7ef33c28e31632b1f3dd4e196413
+Message-ID: <202311041915.OunfVKmV-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231104_041317_265740_D4E3EC4E 
-X-CRM114-Status: UNSURE (   3.66  )
+X-CRM114-CacheID: sfid-20231104_043016_903170_6FD8CCC7 
+X-CRM114-Status: UNSURE (   5.41  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,19 +83,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: ac2f43d3d34e52b0d388b4c573ff6bbac90235b9  wifi: ath10k: replace deprecated strncpy with memcpy
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: f24dee89bb8a7ef33c28e31632b1f3dd4e196413  Add localversion-wireless-testing-ath
 
-Error/Warning ids grouped by kconfigs:
+elapsed time: 5950m
 
-gcc_recent_errors
-`-- sparc-allmodconfig
-    `-- arch-sparc-kernel-pci_sun4v.c:error:no-previous-prototype-for-dma_4v_iotsb_bind
-
-elapsed time: 5933m
-
-configs tested: 246
+configs tested: 251
 configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
 tested configs:
 alpha                             allnoconfig   gcc  
@@ -314,10 +311,15 @@ x86_64                randconfig-005-20231031   gcc
 x86_64                randconfig-005-20231101   gcc  
 x86_64                randconfig-006-20231031   gcc  
 x86_64                randconfig-006-20231101   gcc  
+x86_64                randconfig-011-20231031   gcc  
 x86_64                randconfig-011-20231101   gcc  
+x86_64                randconfig-012-20231031   gcc  
 x86_64                randconfig-012-20231101   gcc  
+x86_64                randconfig-013-20231031   gcc  
 x86_64                randconfig-013-20231101   gcc  
+x86_64                randconfig-014-20231031   gcc  
 x86_64                randconfig-014-20231101   gcc  
+x86_64                randconfig-015-20231031   gcc  
 x86_64                randconfig-015-20231101   gcc  
 x86_64                randconfig-016-20231031   gcc  
 x86_64                randconfig-016-20231101   gcc  
