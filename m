@@ -4,70 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63A82C4332F
-	for <ath10k@archiver.kernel.org>; Tue,  7 Nov 2023 12:13:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 580CFC4332F
+	for <ath10k@archiver.kernel.org>; Tue,  7 Nov 2023 12:33:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:Cc:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8x+QPtFH5GAj/ssZHvK7dQ+vjyiWB5nxg5EGQHM3xKU=; b=dTwhNeFs1k2Ncg
-	SB0osa17sTRBLP/CF1EAOMoFZ+tvUg1dz55bfOnPuWjNanyREt9SJMeifhv0GyRdst8w6/HgKY3nu
-	28BVldWueJcCFYtXlP74fMmmrap+RvyfxBFfUiemjv08ZKI2dadOgU9Bc41uI12nxqRY17Kh+bAf/
-	k/Cz7Pworr0do3VVSa6Z6orAwM37o5DNlY8Dim55P2HJy+TySLGnsufvrHUZ1rdY7jMELA3jtV5PJ
-	cYI+/64YtEDdMWj05QwhTe2bb1H5E/FUHPUJvl95UuC6U9+YTuOgF9RPyMOtc+iD7sNiP3lrVX3Dt
-	7YA4TXOA6Gb/fNX+t5bA==;
+	List-Owner; bh=yYYCVCSPrNySt7WsKK6KpmOMZ12fyRF7V83kV1u2Whg=; b=wkcYQLzOt5f6zJ
+	O6jf3W7I6Out5h2wdIAOqSWRX7o38MZQQb0Ar6jR9S6wkj2fO9wLw8NlwzY7OojcTEc+xvcQ3u1QU
+	e2/QwOjSMuwbGPc5E9TEitRNG+mkHanD2OE+aPw2EO+8s0KNOj7GcpelcZyrgfapK4lr0u6O79J2T
+	JL/L6QN2fPEWFapOdjQo+qKTz+7ZqkNXi7E6gtPnJcoWgtmYfUyNUzDFY4SHuPhVmAOzkOTT3h5/i
+	/yFYiuP2Ht43HmJZvUvgmDX8lfpezYW/2VdHV9wkPD4WgX87RMoBg1vkjxshaBW2p99orHsRm2Vl8
+	nNTIzpx0gibCfx+Djo4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0Kxo-001RgT-24;
-	Tue, 07 Nov 2023 12:13:48 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1r0LHI-001Vyi-1K;
+	Tue, 07 Nov 2023 12:33:56 +0000
+Received: from mail-qv1-xf2c.google.com ([2607:f8b0:4864:20::f2c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0Kxk-001Reu-2x
+	id 1r0LHC-001Vxv-0J
 	for ath10k@lists.infradead.org;
-	Tue, 07 Nov 2023 12:13:46 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 31326611E0;
-	Tue,  7 Nov 2023 12:13:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D1FEC43395;
-	Tue,  7 Nov 2023 12:13:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699359223;
-	bh=2KCPMisBXDU4LoMU8mGqNJX9Y0yd8sOSrc0b5LukUqs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NPsd3O93UTCUeuXNW2hpxcPicWp1iij0OHHMdQRMdE7PKpmQ8Y1K1BJkEOzw922aC
-	 5gIZnA04cXTX7yoheftP67pU1EFaIK96LL8wpQA2LBp+E8Mq1K6rMRCN3UvXds75kh
-	 icucHJIqxGTgUByCn27eP4/dUChcsf+KsRN7Rp7Z4+ewUcc71shBj103nipcC9zSeV
-	 HnpEiNvgLHM8lebyV6GesxWvlkl58qm32x6wASogNtHZXoMSfrqhJLhX31k9Ib/hEw
-	 IrDzmp5prRSNQ+LGnoHA0s8MJnNAXb63Vf/vRjmQHs5PqeDtYFiZI1YkC90Vis7Kxd
-	 ZlrFjVlqpetLg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Dmitry Antipov <dmantipov@yandex.ru>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
-	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	nathan@kernel.org,
-	ndesaulniers@google.com,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 4.14 3/4] wifi: ath10k: fix clang-specific fortify warning
-Date: Tue,  7 Nov 2023 07:13:33 -0500
-Message-ID: <20231107121337.3759240-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107121337.3759240-1-sashal@kernel.org>
-References: <20231107121337.3759240-1-sashal@kernel.org>
+	Tue, 07 Nov 2023 12:33:54 +0000
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-6707401e22eso36408096d6.2
+        for <ath10k@lists.infradead.org>; Tue, 07 Nov 2023 04:33:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699360426; x=1699965226; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OBeH66RqA4binssm1/YZiUv+TJC+gxK19gaHjgxqkzM=;
+        b=e8UuaVCXgKXwdZtCCSxYGvxrGpjLWOhyKdS4aRt72W53sxNtxgQ1DNMMZBCbglwbNq
+         aVONH0uKirBXPuPj2YEfnOIsg9fTnwRuoM0tQ3CScHda0bKsKrC0f63P0BupRkKPGWaF
+         jq/IwMpQv2nOWs/NW4NagqxiOzCXOFGUMDTectEaByKQ3qyVZvQyA+QkLJuGXSvOEryi
+         lp5eaNm+7HI+NrQMfsgStscYP+DjDumThcqzGz97TxZMvp1FNrBWKdEkq+aK26o9twHG
+         D+j/09qHIy3IkwDk6TO8LQOFWUGXMXfAmMQzYlF1EmZ/F/Chp2TlOSn9XYLPngF0b1yf
+         86bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699360426; x=1699965226;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OBeH66RqA4binssm1/YZiUv+TJC+gxK19gaHjgxqkzM=;
+        b=ZhfyczyrYUUDyDeq14nLUZNuQD8xvQ461Dj+9JegiAMgMcdxFMKp/drHe88lR79tyv
+         XUI+sOE0zpIkqviQIcUolEcLPVYoKGylZZgUV3WAtQ8cR3Zv9KpjYFUIwT+sTlsSVZaa
+         tD9LByXHzSygPn6uyK1nI8V05ptmoWLbF6ttEigHl8AmaWVj57qsmmaRdloSZ49RZF7j
+         XYawVFETn5ypxO1blnFFl7tnozja8HJBVot+b0m5oTSkF1ijAjpggXa216fKnH27/Cyx
+         dzW0LEBtwBwFBBn7lAcY6FMuHdF03T4M/XUti7j//FBOTS0LDZprgbOyAmhmV/2Nd9Bn
+         Fg2Q==
+X-Gm-Message-State: AOJu0Yxb9xtZL9n+BAdLzireS0XqmM4hwHXPIYwq3eJJrd6LJhNec3PM
+	iEfmsIEyT6CXSTlOZRGgrWc=
+X-Google-Smtp-Source: AGHT+IGxTpcW3HDGq7ZoXTKUwf3NXYiQ++fssfXabnLIu393CsWKFaMYyJo002ZL6ASGNrp/zbQkPA==
+X-Received: by 2002:a05:6214:21cf:b0:66c:fc2d:80a3 with SMTP id d15-20020a05621421cf00b0066cfc2d80a3mr35210411qvh.33.1699360426283;
+        Tue, 07 Nov 2023 04:33:46 -0800 (PST)
+Received: from [10.102.4.159] (50-78-19-50-static.hfc.comcastbusiness.net. [50.78.19.50])
+        by smtp.gmail.com with ESMTPSA id e7-20020a0cf747000000b0066db33eeeb7sm4331901qvo.131.2023.11.07.04.33.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 04:33:46 -0800 (PST)
+Message-ID: <93d905b4-3c64-470c-8a40-60b8547855a2@gmail.com>
+Date: Tue, 7 Nov 2023 04:33:42 -0800
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.328
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: ath10k: add support to allow broadcast action from
+ RX
+Content-Language: en-US
+To: linux-wireless@vger.kernel.org
+References: <20231017165306.118779-1-prestwoj@gmail.com>
+Cc: ath10k@lists.infradead.org, quic_jjohnson@quicinc.com
+From: James Prestwood <prestwoj@gmail.com>
+In-Reply-To: <20231017165306.118779-1-prestwoj@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231107_041345_038308_389ED2FB 
-X-CRM114-Status: GOOD (  12.57  )
+X-CRM114-CacheID: sfid-20231107_043350_154971_EE5260DE 
+X-CRM114-Status: GOOD (  14.51  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,68 +88,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Dmitry Antipov <dmantipov@yandex.ru>
+Re-sending as its been a few weeks, thanks Jeff for adding the ath10k CC.
 
-[ Upstream commit cb4c132ebfeac5962f7258ffc831caa0c4dada1a ]
-
-When compiling with clang 16.0.6 and CONFIG_FORTIFY_SOURCE=y, I've
-noticed the following (somewhat confusing due to absence of an actual
-source code location):
-
-In file included from drivers/net/wireless/ath/ath10k/debug.c:8:
-In file included from ./include/linux/module.h:13:
-In file included from ./include/linux/stat.h:19:
-In file included from ./include/linux/time.h:60:
-In file included from ./include/linux/time32.h:13:
-In file included from ./include/linux/timex.h:67:
-In file included from ./arch/x86/include/asm/timex.h:5:
-In file included from ./arch/x86/include/asm/processor.h:23:
-In file included from ./arch/x86/include/asm/msr.h:11:
-In file included from ./arch/x86/include/asm/cpumask.h:5:
-In file included from ./include/linux/cpumask.h:12:
-In file included from ./include/linux/bitmap.h:11:
-In file included from ./include/linux/string.h:254:
-./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
-declared with 'warning' attribute: detected read beyond size of field (2nd
-parameter); maybe use struct_group()? [-Wattribute-warning]
-                        __read_overflow2_field(q_size_field, size);
-
-The compiler actually complains on 'ath10k_debug_get_et_strings()' where
-fortification logic inteprets call to 'memcpy()' as an attempt to copy
-the whole 'ath10k_gstrings_stats' array from it's first member and so
-issues an overread warning. This warning may be silenced by passing
-an address of the whole array and not the first member to 'memcpy()'.
-
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20230829093652.234537-1-dmantipov@yandex.ru
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/ath/ath10k/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 22003895f8548..591d0b9c0be3c 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1411,7 +1411,7 @@ void ath10k_debug_get_et_strings(struct ieee80211_hw *hw,
- 				 u32 sset, u8 *data)
- {
- 	if (sset == ETH_SS_STATS)
--		memcpy(data, *ath10k_gstrings_stats,
-+		memcpy(data, ath10k_gstrings_stats,
- 		       sizeof(ath10k_gstrings_stats));
- }
- 
--- 
-2.42.0
-
+On 10/17/23 9:53 AM, James Prestwood wrote:
+> Advertise support for multicast frame registration and update the RX
+> filter with FIF_MCAST_ACTION to allow broadcast action frames to be
+> received. Broadcast action frames are needed for the Device
+> Provisioning Protocol (DPP) for Presence and PKEX Exchange requests.
+> 
+> Signed-off-by: James Prestwood <prestwoj@gmail.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/mac.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 03e7bc5b6c0b..932ace5b900b 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -1249,7 +1249,7 @@ static bool ath10k_mac_monitor_vdev_is_needed(struct ath10k *ar)
+>   	return ar->monitor ||
+>   	       (!test_bit(ATH10K_FW_FEATURE_ALLOWS_MESH_BCAST,
+>   			  ar->running_fw->fw_file.fw_features) &&
+> -		(ar->filter_flags & FIF_OTHER_BSS)) ||
+> +		(ar->filter_flags & (FIF_OTHER_BSS | FIF_MCAST_ACTION))) ||
+>   	       test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
+>   }
+>   
+> @@ -6020,6 +6020,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+>   	FIF_OTHER_BSS |				\
+>   	FIF_BCN_PRBRESP_PROMISC |		\
+>   	FIF_PROBE_REQ |				\
+> +	FIF_MCAST_ACTION |			\
+>   	FIF_FCSFAIL)
+>   
+>   static void ath10k_configure_filter(struct ieee80211_hw *hw,
+> @@ -10121,6 +10122,8 @@ int ath10k_mac_register(struct ath10k *ar)
+>   	wiphy_ext_feature_set(ar->hw->wiphy,
+>   			      NL80211_EXT_FEATURE_SET_SCAN_DWELL);
+>   	wiphy_ext_feature_set(ar->hw->wiphy, NL80211_EXT_FEATURE_AQL);
+> +	wiphy_ext_feature_set(ar->hw->wiphy,
+> +			      NL80211_EXT_FEATURE_MULTICAST_REGISTRATIONS);
+>   
+>   	if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map) ||
+>   	    test_bit(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, ar->wmi.svc_map))
 
 _______________________________________________
 ath10k mailing list
