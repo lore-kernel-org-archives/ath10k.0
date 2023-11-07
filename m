@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D67E5C4332F
-	for <ath10k@archiver.kernel.org>; Tue,  7 Nov 2023 12:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2372C41535
+	for <ath10k@archiver.kernel.org>; Tue,  7 Nov 2023 12:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=r1oMVyUwFDXeXNxYf7IjAQEPIOqi0PTFID/vAKKu9vA=; b=mIB0AFw/XCWqSJ
-	w2K8teU5G01RVjLoc8c3Vvy4V+ecJQAhABJfS/O3IJVlXGgP7SMUmQR0M2LeSdkq3/xNd4kVORyf3
-	9jqyVKg/GQPi8Zq1z9KNx2yrpJhkrnogMQ9rwzNWRP1hPFv9c6qe/tEauVog5J2LlnJG4wF7Nw8uC
-	sH0bVP0iiHbgCvcu2LXb9RLGaxpJsgsTbiAKRrEGOMoF7e+JpFOsgPrx0yzkTAqy3HkTMw9pV7FN/
-	Rf3x73OMsohpUK1W+u2kkXZ4NwajdGoUyjNAb9QUbgqMKMawI8AWi/gm+BBlkV19KeMBBTU9NK5GV
-	WFs5XSj7TwgXV7UEuXvg==;
+	List-Owner; bh=DJxqM4gJBhCVVqCgrR6NHqBXP2gAClGNLH4DWXysDuI=; b=BNt9A7Pmz7fDoa
+	bkPU8q75E+Hw/HLKcNyBjBci9RERhzv4cn2ofURd7pU8xOqhQgIadr7hG3KF4JrRZ4t50f0+TpXeA
+	7gSAAU9CRX9l7p6zOG2xgbzopv8t1TwPSyj3cytGJTEuKrhh+fX7E2OkS9qfwpydi6nIsQkdiYDME
+	sUlOiNJNNeevVbaAzCbN7OenFUoT5CxFT+YEe59nXfbJDquMnJolzOTQ7R4ogCBtuAFmF2wSOm/SE
+	wPFkfPMU1bnciBYQzGihXywVEPwDrA0gA6NKfaPswsn7C7jJZWDKcf9EpmiIAodAiVO/xbirBHjaj
+	lmXePfhgvGZVxSQwYOaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0Kve-001Qkr-1p;
-	Tue, 07 Nov 2023 12:11:34 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1r0KwM-001Qyp-1Y;
+	Tue, 07 Nov 2023 12:12:18 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0Kva-001Qid-2i
+	id 1r0KwJ-001Qxr-1W
 	for ath10k@lists.infradead.org;
-	Tue, 07 Nov 2023 12:11:32 +0000
+	Tue, 07 Nov 2023 12:12:17 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 7274DB8165B;
-	Tue,  7 Nov 2023 12:11:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 206F8C433C7;
-	Tue,  7 Nov 2023 12:11:28 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id F0AE3611C2;
+	Tue,  7 Nov 2023 12:12:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70873C433CA;
+	Tue,  7 Nov 2023 12:12:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699359089;
-	bh=u9Nx2Lpd5454v2/6uEP88AzQsvzXhzgx/RCy4Po3eQM=;
+	s=k20201202; t=1699359134;
+	bh=nWhG2E+mi+dHrDH1P3PZFl5jlohnhwTU3pTqF65MXlI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Hv0jIy+8bxE/t3WY3kDT31gE32/TPdTqbuxdHrEULwZPeNePLnpN2i25Z/PSuW3No
-	 UYQI7YWHr1vDgisMf4WsGgy/FV/vEFX1BGt/0QKn5TgReKYmURVRS/BSEw22tp45Eg
-	 kdAkpfkZUV6U3YFBwcLlQwiau87v5QAIhSuSlX79fkh+yw9f9zKWcU1ySXOtcfmwhM
-	 Gmj4YD28ZPEar8QAbOB2pRJrY7YHuKV8DTSB4Np2EA8kgmx8b/b2oUhJyWbrG+D01I
-	 /J5ezl0NY0Ox7Dl/5EPMJX3tI0DaY9zi16gJcqCRhs/oKgezDW3n7dHx+cLYoUNT2L
-	 JPtGWQSvsYwHQ==
+	b=N79kvBsdfvI85/Nb1vCFtQG0/U/7+3ACzSffZePvcVowjifN4eRobFUGwJZB7Oa+s
+	 cO+bENB9+J/CKwA6zyzzK6WsVVTYw+fwuJD8G74u1GqPtjoAgnidhv5KWE0mxRhSPS
+	 Q9FUUtj674wCIfor/GfENG4uwmgtFSSJXtu1VSCwnND2UohCMFV5UmqnIffLpMv7qX
+	 ZaXfshdXem31tUGkbjS6PhGclZlySG765+tyklzlxMPyg8veTmi8FtAn2jW7stZ4EX
+	 tTjm1V85t2g/WzA5lD2HIOp1khTEo3HLF8UfdKT+WDP8ChWZ6yvDBZ5R9yB0fwzeFW
+	 w1Ooh1TxZ2gbw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Douglas Anderson <dianders@chromium.org>,
+Cc: Dmitry Antipov <dmantipov@yandex.ru>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
 	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>,
 	kvalo@kernel.org,
-	quic_jjohnson@quicinc.com,
+	nathan@kernel.org,
+	ndesaulniers@google.com,
 	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 10/18] wifi: ath10k: Don't touch the CE interrupt registers after power up
-Date: Tue,  7 Nov 2023 07:10:40 -0500
-Message-ID: <20231107121104.3757943-10-sashal@kernel.org>
+	linux-wireless@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.15 06/12] wifi: ath10k: fix clang-specific fortify warning
+Date: Tue,  7 Nov 2023 07:11:43 -0500
+Message-ID: <20231107121158.3758348-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107121104.3757943-1-sashal@kernel.org>
-References: <20231107121104.3757943-1-sashal@kernel.org>
+In-Reply-To: <20231107121158.3758348-1-sashal@kernel.org>
+References: <20231107121158.3758348-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.61
+X-stable-base: Linux 5.15.137
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231107_041131_163251_C3A07624 
-X-CRM114-Status: GOOD (  14.48  )
+X-CRM114-CacheID: sfid-20231107_041215_591368_5C36087C 
+X-CRM114-Status: GOOD (  12.64  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,120 +84,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit 170c75d43a77dc937c58f07ecf847ba1b42ab74e ]
+[ Upstream commit cb4c132ebfeac5962f7258ffc831caa0c4dada1a ]
 
-As talked about in commit d66d24ac300c ("ath10k: Keep track of which
-interrupts fired, don't poll them"), if we access the copy engine
-register at a bad time then ath10k can go boom. However, it's not
-necessarily easy to know when it's safe to access them.
+When compiling with clang 16.0.6 and CONFIG_FORTIFY_SOURCE=y, I've
+noticed the following (somewhat confusing due to absence of an actual
+source code location):
 
-The ChromeOS test labs saw a crash that looked like this at
-shutdown/reboot time (on a chromeos-5.15 kernel, but likely the
-problem could also reproduce upstream):
+In file included from drivers/net/wireless/ath/ath10k/debug.c:8:
+In file included from ./include/linux/module.h:13:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:60:
+In file included from ./include/linux/time32.h:13:
+In file included from ./include/linux/timex.h:67:
+In file included from ./arch/x86/include/asm/timex.h:5:
+In file included from ./arch/x86/include/asm/processor.h:23:
+In file included from ./arch/x86/include/asm/msr.h:11:
+In file included from ./arch/x86/include/asm/cpumask.h:5:
+In file included from ./include/linux/cpumask.h:12:
+In file included from ./include/linux/bitmap.h:11:
+In file included from ./include/linux/string.h:254:
+./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
+declared with 'warning' attribute: detected read beyond size of field (2nd
+parameter); maybe use struct_group()? [-Wattribute-warning]
+                        __read_overflow2_field(q_size_field, size);
 
-Internal error: synchronous external abort: 96000010 [#1] PREEMPT SMP
-...
-CPU: 4 PID: 6168 Comm: reboot Not tainted 5.15.111-lockdep-19350-g1d624fe6758f #1 010b9b233ab055c27c6dc88efb0be2f4e9e86f51
-Hardware name: Google Kingoftown (DT)
-...
-pc : ath10k_snoc_read32+0x50/0x74 [ath10k_snoc]
-lr : ath10k_snoc_read32+0x24/0x74 [ath10k_snoc]
-...
-Call trace:
-ath10k_snoc_read32+0x50/0x74 [ath10k_snoc ...]
-ath10k_ce_disable_interrupt+0x190/0x65c [ath10k_core ...]
-ath10k_ce_disable_interrupts+0x8c/0x120 [ath10k_core ...]
-ath10k_snoc_hif_stop+0x78/0x660 [ath10k_snoc ...]
-ath10k_core_stop+0x13c/0x1ec [ath10k_core ...]
-ath10k_halt+0x398/0x5b0 [ath10k_core ...]
-ath10k_stop+0xfc/0x1a8 [ath10k_core ...]
-drv_stop+0x148/0x6b4 [mac80211 ...]
-ieee80211_stop_device+0x70/0x80 [mac80211 ...]
-ieee80211_do_stop+0x10d8/0x15b0 [mac80211 ...]
-ieee80211_stop+0x144/0x1a0 [mac80211 ...]
-__dev_close_many+0x1e8/0x2c0
-dev_close_many+0x198/0x33c
-dev_close+0x140/0x210
-cfg80211_shutdown_all_interfaces+0xc8/0x1e0 [cfg80211 ...]
-ieee80211_remove_interfaces+0x118/0x5c4 [mac80211 ...]
-ieee80211_unregister_hw+0x64/0x1f4 [mac80211 ...]
-ath10k_mac_unregister+0x4c/0xf0 [ath10k_core ...]
-ath10k_core_unregister+0x80/0xb0 [ath10k_core ...]
-ath10k_snoc_free_resources+0xb8/0x1ec [ath10k_snoc ...]
-ath10k_snoc_shutdown+0x98/0xd0 [ath10k_snoc ...]
-platform_shutdown+0x7c/0xa0
-device_shutdown+0x3e0/0x58c
-kernel_restart_prepare+0x68/0xa0
-kernel_restart+0x28/0x7c
+The compiler actually complains on 'ath10k_debug_get_et_strings()' where
+fortification logic inteprets call to 'memcpy()' as an attempt to copy
+the whole 'ath10k_gstrings_stats' array from it's first member and so
+issues an overread warning. This warning may be silenced by passing
+an address of the whole array and not the first member to 'memcpy()'.
 
-Though there's no known way to reproduce the problem, it makes sense
-that it would be the same issue where we're trying to access copy
-engine registers when it's not allowed.
-
-Let's fix this by changing how we "disable" the interrupts. Instead of
-tweaking the copy engine registers we'll just use disable_irq() and
-enable_irq(). Then we'll configure the interrupts once at power up
-time.
-
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20230630151842.1.If764ede23c4e09a43a842771c2ddf99608f25f8e@changeid
+Link: https://lore.kernel.org/r/20230829093652.234537-1-dmantipov@yandex.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index cfcb759a87dea..4b7266d928470 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -828,12 +828,20 @@ static void ath10k_snoc_hif_get_default_pipe(struct ath10k *ar,
- 
- static inline void ath10k_snoc_irq_disable(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 39378e3f9b2bb..6e1b65b8ae656 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1139,7 +1139,7 @@ void ath10k_debug_get_et_strings(struct ieee80211_hw *hw,
+ 				 u32 sset, u8 *data)
  {
--	ath10k_ce_disable_interrupts(ar);
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	int id;
-+
-+	for (id = 0; id < CE_COUNT_MAX; id++)
-+		disable_irq(ar_snoc->ce_irqs[id].irq_line);
+ 	if (sset == ETH_SS_STATS)
+-		memcpy(data, *ath10k_gstrings_stats,
++		memcpy(data, ath10k_gstrings_stats,
+ 		       sizeof(ath10k_gstrings_stats));
  }
  
- static inline void ath10k_snoc_irq_enable(struct ath10k *ar)
- {
--	ath10k_ce_enable_interrupts(ar);
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	int id;
-+
-+	for (id = 0; id < CE_COUNT_MAX; id++)
-+		enable_irq(ar_snoc->ce_irqs[id].irq_line);
- }
- 
- static void ath10k_snoc_rx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
-@@ -1089,6 +1097,8 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar,
- 		goto err_free_rri;
- 	}
- 
-+	ath10k_ce_enable_interrupts(ar);
-+
- 	return 0;
- 
- err_free_rri:
-@@ -1252,8 +1262,8 @@ static int ath10k_snoc_request_irq(struct ath10k *ar)
- 
- 	for (id = 0; id < CE_COUNT_MAX; id++) {
- 		ret = request_irq(ar_snoc->ce_irqs[id].irq_line,
--				  ath10k_snoc_per_engine_handler, 0,
--				  ce_name[id], ar);
-+				  ath10k_snoc_per_engine_handler,
-+				  IRQF_NO_AUTOEN, ce_name[id], ar);
- 		if (ret) {
- 			ath10k_err(ar,
- 				   "failed to register IRQ handler for CE %d: %d\n",
 -- 
 2.42.0
 
