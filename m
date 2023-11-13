@@ -4,67 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5814C4332F
-	for <ath10k@archiver.kernel.org>; Sat, 11 Nov 2023 10:46:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A91C4332F
+	for <ath10k@archiver.kernel.org>; Mon, 13 Nov 2023 15:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=kPMVVvWOVogUceA4SzpN469f1rUV3UyXDvFFadKmWSQ=; b=V8sPG/MWYWAmV/
-	mBGCQfQxh7LB3DG5PqOz3AOhGiO3TUAmjBc5B6ijan0Pv3mvdRt61RFqCoY30VWCH/7vVEV9v1nt5
-	7pgi7iE3fsBKBJgs83a5U6UgeWGUVi1Q2zk49SWCG7TgdWhzCgenEMFXaZUNqPnCPXGvYflOOJpX4
-	iQCC+zaWLr3+YKtsU0h/t70y/edvHl/vOUaNgBnZa+orZrysefKEr3DJHazKf9wyrFrX6Sb0UdBG+
-	g11P6ghshKZqPMNK2HaSfjLVwKm6PR+6kShx0htbjEUqaEPm1CMu1GGwp4i7pAfUzcFYH2WtQZ5S0
-	+WA+HoUaFaeoU6ld6RNQ==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:References:
+	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MJkDpLfa/FViBhIiyVOhGPSnmlWBF1p3iyDdf1xbjbo=; b=yolQOg/MDMTH5b
+	ruy/0js2k0k0Skxdf0SScfkRXJvuVjXe0gV5yNoDqd9TkZvjmApvVnds6Q+vxRqzq/ncWknq7R5c5
+	ZWSIMbyhzE3LYNgY/0bSWqC8SvBFdhLFxMcOPt8wkKth4DzDa8nIJoqg3NpOCgLnmK0eprvh5KHjS
+	JtavUFyCXsj2lbn3mnTFAzKBEgjX3FIt6eNV+VQZdX7W6oB56oo0p5Pa8gk8ne5PkgnZLknvyaXE2
+	W301ca0t2iRubD292JytBSmmnzoLgml7WhU2wNnI40u8lzbrcdTheMo+ONr0KkZq0yWi23R1b4Kku
+	tViRw4uBW9SSfHJQacWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1lVT-00AN9H-1b;
-	Sat, 11 Nov 2023 10:46:27 +0000
-Received: from mgamail.intel.com ([134.134.136.20])
+	id 1r2ZCr-00EGsS-01;
+	Mon, 13 Nov 2023 15:50:33 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1lVP-00AN8u-0c
+	id 1r2ZCo-00EGs8-0m
 	for ath10k@lists.infradead.org;
-	Sat, 11 Nov 2023 10:46:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699699583; x=1731235583;
-  h=date:from:to:cc:subject:message-id;
-  bh=a0DpFkOtH3/dkLsEaURjgUJZ2kiSZi4y6XFES0KA0pM=;
-  b=afk+FT0d5DQhDp1+RDR+7ZW9+t+nGjxwx5xla2iEZ6/jHJjc4W2q788D
-   KM7nx+BpErh3wOmjmN+08K1HShcl9NmpgqgdZYeu0zswDcdmuQ7mIAz4E
-   Tyxenx2C5L3D/SRFzP6D6JVi8xtXMGyHTj4o0V7cbwt84lke1150hTCPQ
-   PdMmS5DflbVHcYmHVf4WX4wCC23Bq12EZVFYFJtH+bAcj/E2UUddRZDgL
-   7J1LqSAjzRU2vc2BbRXymbSOU44uIMHLNRXrHeIA8y97+we8HFWfuFc7C
-   4fM7i4D2oci7YYNU8VNrokUJekckcS+Pz3sXkGJCurcDTCl1TNxVhML/J
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="380655373"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="380655373"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 02:46:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="1011134127"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="1011134127"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Nov 2023 02:46:19 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r1lVJ-000ANs-0g;
-	Sat, 11 Nov 2023 10:46:17 +0000
-Date: Sat, 11 Nov 2023 18:45:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath11k-hibernation-support] BUILD SUCCESS
- 2658a2553c605e680cbb81b230e7f636eb103a07
-Message-ID: <202311111824.P7A8nJZs-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Mon, 13 Nov 2023 15:50:31 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8C84C60F8B;
+	Mon, 13 Nov 2023 15:50:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F4A5C433C8;
+	Mon, 13 Nov 2023 15:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699890629;
+	bh=1RionFtnSpOWW7o/YkL7qWHsAndOMy/fEzDSsI29GyY=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=l14qTkClnv23z7dwoUV0IrByBgqhpqmRjvktjRHdbOQd5mAojRYtndqHbyEYei7h8
+	 s1l/2qF7LXzNvrAjLkbFY5fJpaUmtRwgPcz9MND73EfpXs+LnW9sNVXO62yZvGN/XF
+	 GNU9qIp7SUHwC1uYjKjv3MAzNI7iuFqeqIAe7SK30mfdgmk+6qPz7XDBISyuPi0Pfn
+	 8PIV/tM2oqNaEKKu3bzXFqsqGR73koq+Z4hKZd1f3zOUD+YxhQSA+UyXBw6+8odf5S
+	 7KNV3Ob5/ZLQ9NUcjmuZvmn/wOmrd/jwoASUbMlPIsM3/tQ+ufYQz+97oK2+D2gJ1y
+	 k/a7TRu/KqhHA==
+MIME-Version: 1.0
+Subject: Re: [PATCH] wifi: ath10k: add support to allow broadcast action from
+ RX
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20231017165306.118779-1-prestwoj@gmail.com>
+References: <20231017165306.118779-1-prestwoj@gmail.com>
+To: James Prestwood <prestwoj@gmail.com>
+Cc: linux-wireless@vger.kernel.org, James Prestwood <prestwoj@gmail.com>,
+ ath10k@lists.infradead.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169989062657.3473659.188127753057713210.kvalo@kernel.org>
+Date: Mon, 13 Nov 2023 15:50:28 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231111_024624_302505_71CEEBEB 
-X-CRM114-Status: UNSURE (   4.98  )
+X-CRM114-CacheID: sfid-20231113_075030_341324_4C1120BA 
+X-CRM114-Status: UNSURE (   6.04  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,279 +69,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath11k-hibernation-support
-branch HEAD: 2658a2553c605e680cbb81b230e7f636eb103a07  wifi: ath11k: support hibernation
+James Prestwood <prestwoj@gmail.com> wrote:
 
-elapsed time: 1449m
+> Advertise support for multicast frame registration and update the RX
+> filter with FIF_MCAST_ACTION to allow broadcast action frames to be
+> received. Broadcast action frames are needed for the Device
+> Provisioning Protocol (DPP) for Presence and PKEX Exchange requests.
+> 
+> Signed-off-by: James Prestwood <prestwoj@gmail.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-configs tested: 250
-configs skipped: 2
+On what hardware and firmware did you test with this? As there's so many
+different combinations in ath10k we use Tested-on tag to document that.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#tested-on_tag
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231110   gcc  
-arc                   randconfig-002-20231110   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                        multi_v5_defconfig   clang
-arm                           omap1_defconfig   clang
-arm                   randconfig-001-20231110   gcc  
-arm                   randconfig-001-20231111   gcc  
-arm                   randconfig-002-20231110   gcc  
-arm                   randconfig-002-20231111   gcc  
-arm                   randconfig-003-20231110   gcc  
-arm                   randconfig-003-20231111   gcc  
-arm                   randconfig-004-20231110   gcc  
-arm                   randconfig-004-20231111   gcc  
-arm                          sp7021_defconfig   clang
-arm                        vexpress_defconfig   clang
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231110   gcc  
-arm64                 randconfig-001-20231111   gcc  
-arm64                 randconfig-002-20231110   gcc  
-arm64                 randconfig-002-20231111   gcc  
-arm64                 randconfig-003-20231110   gcc  
-arm64                 randconfig-003-20231111   gcc  
-arm64                 randconfig-004-20231110   gcc  
-arm64                 randconfig-004-20231111   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231110   gcc  
-csky                  randconfig-002-20231110   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231110   gcc  
-i386         buildonly-randconfig-001-20231111   gcc  
-i386         buildonly-randconfig-002-20231110   gcc  
-i386         buildonly-randconfig-002-20231111   gcc  
-i386         buildonly-randconfig-003-20231110   gcc  
-i386         buildonly-randconfig-003-20231111   gcc  
-i386         buildonly-randconfig-004-20231110   gcc  
-i386         buildonly-randconfig-004-20231111   gcc  
-i386         buildonly-randconfig-005-20231110   gcc  
-i386         buildonly-randconfig-005-20231111   gcc  
-i386         buildonly-randconfig-006-20231110   gcc  
-i386         buildonly-randconfig-006-20231111   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231110   gcc  
-i386                  randconfig-001-20231111   gcc  
-i386                  randconfig-002-20231110   gcc  
-i386                  randconfig-002-20231111   gcc  
-i386                  randconfig-003-20231110   gcc  
-i386                  randconfig-003-20231111   gcc  
-i386                  randconfig-004-20231110   gcc  
-i386                  randconfig-004-20231111   gcc  
-i386                  randconfig-005-20231110   gcc  
-i386                  randconfig-005-20231111   gcc  
-i386                  randconfig-006-20231110   gcc  
-i386                  randconfig-006-20231111   gcc  
-i386                  randconfig-011-20231110   gcc  
-i386                  randconfig-012-20231110   gcc  
-i386                  randconfig-013-20231110   gcc  
-i386                  randconfig-014-20231110   gcc  
-i386                  randconfig-015-20231110   gcc  
-i386                  randconfig-016-20231110   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231110   gcc  
-loongarch             randconfig-002-20231110   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   clang
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                            ar7_defconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-mips                     cu1830-neo_defconfig   clang
-mips                           jazz_defconfig   gcc  
-mips                           mtx1_defconfig   clang
-mips                        qi_lb60_defconfig   clang
-mips                        vocore2_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231110   gcc  
-nios2                 randconfig-002-20231110   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231110   gcc  
-parisc                randconfig-002-20231110   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                          g5_defconfig   clang
-powerpc                    klondike_defconfig   gcc  
-powerpc                   lite5200b_defconfig   clang
-powerpc                   microwatt_defconfig   clang
-powerpc                 mpc8315_rdb_defconfig   clang
-powerpc                  mpc866_ads_defconfig   clang
-powerpc                  mpc885_ads_defconfig   clang
-powerpc                     powernv_defconfig   clang
-powerpc               randconfig-001-20231110   gcc  
-powerpc               randconfig-001-20231111   gcc  
-powerpc               randconfig-002-20231110   gcc  
-powerpc               randconfig-002-20231111   gcc  
-powerpc               randconfig-003-20231110   gcc  
-powerpc               randconfig-003-20231111   gcc  
-powerpc                     skiroot_defconfig   clang
-powerpc                     tqm5200_defconfig   clang
-powerpc64             randconfig-001-20231110   gcc  
-powerpc64             randconfig-001-20231111   gcc  
-powerpc64             randconfig-002-20231110   gcc  
-powerpc64             randconfig-002-20231111   gcc  
-powerpc64             randconfig-003-20231110   gcc  
-powerpc64             randconfig-003-20231111   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231110   gcc  
-riscv                 randconfig-002-20231110   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231110   gcc  
-s390                  randconfig-002-20231110   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                    randconfig-001-20231110   gcc  
-sh                    randconfig-001-20231111   gcc  
-sh                    randconfig-002-20231110   gcc  
-sh                    randconfig-002-20231111   gcc  
-sparc                            alldefconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231110   gcc  
-sparc                 randconfig-001-20231111   gcc  
-sparc                 randconfig-002-20231110   gcc  
-sparc                 randconfig-002-20231111   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231110   gcc  
-sparc64               randconfig-001-20231111   gcc  
-sparc64               randconfig-002-20231110   gcc  
-sparc64               randconfig-002-20231111   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231110   gcc  
-um                    randconfig-001-20231111   gcc  
-um                    randconfig-002-20231110   gcc  
-um                    randconfig-002-20231111   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231110   gcc  
-x86_64       buildonly-randconfig-001-20231111   gcc  
-x86_64       buildonly-randconfig-002-20231110   gcc  
-x86_64       buildonly-randconfig-002-20231111   gcc  
-x86_64       buildonly-randconfig-003-20231110   gcc  
-x86_64       buildonly-randconfig-003-20231111   gcc  
-x86_64       buildonly-randconfig-004-20231110   gcc  
-x86_64       buildonly-randconfig-004-20231111   gcc  
-x86_64       buildonly-randconfig-005-20231110   gcc  
-x86_64       buildonly-randconfig-005-20231111   gcc  
-x86_64       buildonly-randconfig-006-20231110   gcc  
-x86_64       buildonly-randconfig-006-20231111   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231110   gcc  
-x86_64                randconfig-001-20231111   gcc  
-x86_64                randconfig-002-20231110   gcc  
-x86_64                randconfig-002-20231111   gcc  
-x86_64                randconfig-003-20231110   gcc  
-x86_64                randconfig-003-20231111   gcc  
-x86_64                randconfig-004-20231110   gcc  
-x86_64                randconfig-004-20231111   gcc  
-x86_64                randconfig-005-20231110   gcc  
-x86_64                randconfig-005-20231111   gcc  
-x86_64                randconfig-006-20231110   gcc  
-x86_64                randconfig-006-20231111   gcc  
-x86_64                randconfig-011-20231110   gcc  
-x86_64                randconfig-012-20231110   gcc  
-x86_64                randconfig-013-20231110   gcc  
-x86_64                randconfig-014-20231110   gcc  
-x86_64                randconfig-015-20231110   gcc  
-x86_64                randconfig-016-20231110   gcc  
-x86_64                randconfig-071-20231110   gcc  
-x86_64                randconfig-071-20231111   gcc  
-x86_64                randconfig-072-20231110   gcc  
-x86_64                randconfig-072-20231111   gcc  
-x86_64                randconfig-073-20231110   gcc  
-x86_64                randconfig-073-20231111   gcc  
-x86_64                randconfig-074-20231110   gcc  
-x86_64                randconfig-074-20231111   gcc  
-x86_64                randconfig-075-20231110   gcc  
-x86_64                randconfig-075-20231111   gcc  
-x86_64                randconfig-076-20231110   gcc  
-x86_64                randconfig-076-20231111   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20231110   gcc  
-xtensa                randconfig-001-20231111   gcc  
-xtensa                randconfig-002-20231110   gcc  
-xtensa                randconfig-002-20231111   gcc  
+As ath10k hardware and firmware can work very differently from each other I'm
+suspicious if this feature really work in all of them.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+https://patchwork.kernel.org/project/linux-wireless/patch/20231017165306.118779-1-prestwoj@gmail.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
