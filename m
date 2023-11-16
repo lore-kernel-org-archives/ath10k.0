@@ -4,60 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B49A0C4332F
-	for <ath10k@archiver.kernel.org>; Tue, 14 Nov 2023 21:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25BCBC197A0
+	for <ath10k@archiver.kernel.org>; Thu, 16 Nov 2023 20:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HMiFYBTrn4c8s42Uh7bAYgTZ2pTsjoVCcxyI2v2ZIuQ=; b=cdvtIV3HrA8wZEipBa3cILKEoW
-	CHR5nkzbu9R4y5RfWOLE8tD3uh2t0rue1UYRGCsrLXIJZtZFGNwmOLGAR69fwrdRIUiuaXjDgKtgC
-	7IJblyM5dH/V0sNsGsVfGTmeTsl1OGnNBt4xHz8eCywdPltqldV2rvCB8FFohCIssVX/BHl3IUrls
-	2NkUI+eZx/hvjdtwgW4702yoHz+bOsMtP6LZ08HT97v+qGB2e1tBmV0ZQX3CK0SZZn9C6bWs9aubI
-	1iDR3VIrfsk3C4SC4YRzfIHsHCWtiUNBlJXY7Z2iukKT1njc1VG/5wiOInkeT9BPLI9tV3wDdPVnS
-	JgY9rz8g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:CC:References:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+vSD0A7UGxfNYFmJnOeMM4vWw2H+xiiot1G92M7Sobs=; b=CcWCBXlZ3hwCJX
+	xX7+gHeTP5aIA7u1Wh4XcTFjC+2YqbC07qC4cmXFZGaeJbnKcfb8NiOCcEpZAuMePlZmjMJgkGKVM
+	N/gCmyq8hjvRZ+8q6EnG37dr4zFmqYEYSlMnGIi+v1qTAKt4+lvDvARhuvI2/L2p3/oi0asa617aT
+	EGTAn9c7g4YcatM8BJiVJXaSZGDaDeQjELa5/3KZTwQOtpsGFwv+qVaXs4W65wrN6MzwgrESI8h8f
+	sUTHgoT3JajeurynDkugWhMHvQG5jSpznxtpYE0BGnKmfIpHB8pw4g0P//JQEcVJi/38vWDUuqf1A
+	mkxkOUKKUbI2K5MguclQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r31IS-00Gs5s-0E;
-	Tue, 14 Nov 2023 21:50:12 +0000
-Received: from out-186.mta1.migadu.com ([95.215.58.186])
+	id 1r3ick-004fdA-1q;
+	Thu, 16 Nov 2023 20:06:02 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r31IO-00Gs5Q-38
+	id 1r3ich-004fc7-13
 	for ath10k@lists.infradead.org;
-	Tue, 14 Nov 2023 21:50:11 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cknow.org; s=key1;
-	t=1699998601;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZFb1YUmP4PlD7cm7heieX6s0LPelSFaQRLcm3e9dz4g=;
-	b=QtSRvO/wGtINt13M+YQyuNDK7xWRKsty2mDJvMHCBiORnfZPpBuJ7ZBR3QWtEuX8NYwe8g
-	5DuNkQ3dOQfdVSR7rMJwYjD/2TjN9RZ3PqL5+aPO0R4SzmBhk236cBgZhU8FOZp0VBAomz
-	Pjirdoi5RzVXkMYRf/JKrNr1gWop9P6hCITTw0iIZPPLVI4rOme4ZPmci1PSiULJfjOM7E
-	sRnptivoDhpj+nImxQuxC32rI1cC/AP6m3oxd/BS7kq22MoTycGM9If66w24X2x3V1BUer
-	YsMJ9PPrvi4eC7/nwk/mPE8XTiWg/YpzpC6wUBAacrgBuRpJbiNZiOO6hrRahA==
-From: Diederik de Haas <didi.debian@cknow.org>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, debian-kernel@lists.debian.org,
- Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org,
- Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: ath10k_pci logs errors about missing pre-cal and cal firmware on a laptop
-Date: Tue, 14 Nov 2023 22:49:50 +0100
-Message-ID: <73921857.09T0xDi13r@bagend>
-Organization: Connecting Knowledge
-In-Reply-To: <58d017a1-cae6-46d8-9cee-515dbf607051@molgen.mpg.de>
-References: <7158e5e9-8bdc-4660-ac5d-5e3f81cf6158@molgen.mpg.de>
- <2e4be606-68a9-455b-a43d-20b8375efc49@quicinc.com>
- <58d017a1-cae6-46d8-9cee-515dbf607051@molgen.mpg.de>
+	Thu, 16 Nov 2023 20:06:01 +0000
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGGYntV019192;
+	Thu, 16 Nov 2023 20:05:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : cc : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=M/iI/ckBzunr78QgEyTITE1lZ2tYJOXK7Vo0WxyVB/E=;
+ b=arlxtnX09QU9WqW3MsXJ7JfGcpoxr14FuXAl4gIOY06r9P4n+2gqpnL1LemoGEEHq+HO
+ ER2hBKkkfS72nf2ZyeTGBNp6QbyD/E4rmyV7FYzCn33ggRzhZsfQfj4p3tJ+BwghGByk
+ jHvtuXLd+odZ6f9sk744XI5suntXMnuDwjtK5xFD+KntHWSzoCq1YAS2t0eaWqE89Byg
+ npburXaXo96F5F+DA09pnKmAMzd6W1XkcqGOqnGCy48BVH5eI+iRs8oOOPJgWgJNrcjB
+ PJjMfbaikHKhOnYwq/lqYj0v5dDr3t6SQNkX9IJeYIvD9Ng191OW/EiSpj0kJA3q1JYp sQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udpqq0gb1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 16 Nov 2023 20:05:55 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGK5WNN031996
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 16 Nov 2023 20:05:32 GMT
+Received: from [10.110.1.143] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
+ 2023 12:05:32 -0800
+Message-ID: <be472f3f-c1fc-4ab4-acca-1b1357c8b407@quicinc.com>
+Date: Thu, 16 Nov 2023 12:05:31 -0800
 MIME-Version: 1.0
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] wifi: ath10k: add support to allow broadcast action
+ frame RX
+Content-Language: en-US
+To: James Prestwood <prestwoj@gmail.com>, <linux-wireless@vger.kernel.org>
+References: <20231116173246.40458-1-prestwoj@gmail.com>
+CC: <ath10k@lists.infradead.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20231116173246.40458-1-prestwoj@gmail.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 31LZ-vS3QtGdRvdZzJ1IFtYnxLC3pfZ4
+X-Proofpoint-ORIG-GUID: 31LZ-vS3QtGdRvdZzJ1IFtYnxLC3pfZ4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_21,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 phishscore=0 spamscore=0 bulkscore=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311160157
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231114_135009_440462_A639DE56 
-X-CRM114-Status: GOOD (  19.49  )
+X-CRM114-CacheID: sfid-20231116_120559_539911_6DF351E6 
+X-CRM114-Status: GOOD (  27.10  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,90 +92,114 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8377438208163516815=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
---===============8377438208163516815==
-Content-Type: multipart/signed; boundary="nextPart10502693.KXfdfZlzAl";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-
---nextPart10502693.KXfdfZlzAl
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Diederik de Haas <didi.debian@cknow.org>
-Date: Tue, 14 Nov 2023 22:49:50 +0100
-Message-ID: <73921857.09T0xDi13r@bagend>
-Organization: Connecting Knowledge
-In-Reply-To: <58d017a1-cae6-46d8-9cee-515dbf607051@molgen.mpg.de>
-MIME-Version: 1.0
-
-FTR: I do NOT speak on behalf of the Debian kernel team.
-
-On Tuesday, 14 November 2023 20:58:58 CET Paul Menzel wrote:
-> > Based upon the message:
-> > [   14.401143] firmware_class: See https://wiki.debian.org/Firmware
-> > for information about missing firmware
-> > 
-> > it seems you are not running a stock kernel. So perhaps Debian has
-> > modified the firmware loading such that it ignores the FW_OPT_NO_WARN
-> > flag and warns even when told not to do so? This does not appear to be
-> > an upstream kernel issue.
+On 11/16/2023 9:32 AM, James Prestwood wrote:
+> Broadcast action frames are needed for the Device Provisioning
+> Protocol (DPP) for Presence and PKEX Exchange requests. Currently
+> just ath9k has this capability so this is being enabled for
+> ath10k (for at least one hardware variant).
 > 
-> Thank you very much for the analysis. It seems to be indeed a Debian
-> specific patch [1].
+> Add a new capability flag in ath10k_hw_params to indicate support
+> for receiving multicast action frames. This bit is then checked
+> when configuring the RX filter and (if set) multicast action frame
+> registration is enabled.
 > 
-> Dear Debian Linux kernel team, is my observation about the error log a
-> result of the patch and intended?
+> Until more hardware can be tested only the "qca6174 hw3.2" variant
+> is enabling this feature.
 > 
-> [1]:
-> debian/patches/debian/firmware_class-refer-to-debian-wiki-firmware-page.patch
+> Note: I went ahead and removed the 'changed_flags' mask operation
+> since it had no effect, that parameter was not being used anywhere.
+> 
+> Tested-on: QCA6174 hw3.2 WLAN.RM.4.4.1-00288-
+> 
+> Signed-off-by: James Prestwood <prestwoj@gmail.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c |  1 +
+>  drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
+>  drivers/net/wireless/ath/ath10k/mac.c  | 14 +++++++++++---
+>  3 files changed, 15 insertions(+), 3 deletions(-)
+> 
+> v2:
+>  * Add flag in ath10k_hw_params and only set FIF_MCAST_ACTION
+>    if that hardware allows it.
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 5eb131ab916f..f2077756ffdf 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -381,6 +381,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>  		.hw_restart_disconnect = false,
+>  		.use_fw_tx_credits = true,
+>  		.delay_unmap_buffer = false,
+> +		.mcast_frame_registration = true,
+>  	},
+>  	{
+>  		.id = QCA99X0_HW_2_0_DEV_VERSION,
+> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+> index 9643031a4427..2aeb52c7f189 100644
+> --- a/drivers/net/wireless/ath/ath10k/hw.h
+> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+> @@ -639,6 +639,9 @@ struct ath10k_hw_params {
+>  	bool use_fw_tx_credits;
+>  
+>  	bool delay_unmap_buffer;
+> +
+> +	/* The hardware support multicast frame registrations */
+> +	bool mcast_frame_registration;
+>  };
+>  
+>  struct htt_resp;
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index ec8d5b29bc72..0d0de3646d31 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -1249,7 +1249,7 @@ static bool ath10k_mac_monitor_vdev_is_needed(struct ath10k *ar)
+>  	return ar->monitor ||
+>  	       (!test_bit(ATH10K_FW_FEATURE_ALLOWS_MESH_BCAST,
+>  			  ar->running_fw->fw_file.fw_features) &&
+> -		(ar->filter_flags & FIF_OTHER_BSS)) ||
+> +		(ar->filter_flags & (FIF_OTHER_BSS | FIF_MCAST_ACTION))) ||
+>  	       test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
+>  }
+>  
+> @@ -6027,11 +6027,15 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
+>  {
+>  	struct ath10k *ar = hw->priv;
+>  	int ret;
+> +	unsigned int supported = SUPPORTED_FILTERS;
+>  
+>  	mutex_lock(&ar->conf_mutex);
+>  
+> -	changed_flags &= SUPPORTED_FILTERS;
+> -	*total_flags &= SUPPORTED_FILTERS;
+> +	if (ar->hw_params.mcast_frame_registration)
+> +		supported |= FIF_MCAST_ACTION;
+> +
+> +	*total_flags &= supported;
+> +
+>  	ar->filter_flags = *total_flags;
+>  
+>  	ret = ath10k_monitor_recalc(ar);
+> @@ -10114,6 +10118,10 @@ int ath10k_mac_register(struct ath10k *ar)
+>  			      NL80211_EXT_FEATURE_SET_SCAN_DWELL);
+>  	wiphy_ext_feature_set(ar->hw->wiphy, NL80211_EXT_FEATURE_AQL);
+>  
+> +	if (ar->hw_params.mcast_frame_registration)
+> +		wiphy_ext_feature_set(ar->hw->wiphy,
+> +				      NL80211_EXT_FEATURE_MULTICAST_REGISTRATIONS);
+> +
+>  	if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map) ||
+>  	    test_bit(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, ar->wmi.svc_map))
+>  		wiphy_ext_feature_set(ar->hw->wiphy,
 
-There are a number of Debian patches wrt firmware and *I* think they should get 
-a (serious) review. In https://bugs.debian.org/1040738 I requested a review of 
-the firmware related patches and described one of the issues I encountered 
-myself. I've also been involved in triaging Debian kernel bug issues and there 
-I've encountered several more such cases.
+Actually add the ath10k list this time.  Sigh.
 
-AFAIK quite a bit of work has happened upstream to make the firmware messages 
-more appropriate and I think the Debian patches haven't been (properly) 
-adjusted for those changes.
-
-So they are (very) likely caused by the Debian patches and thus expected, but 
-I'm hesitant to call them intended ;-)
---nextPart10502693.KXfdfZlzAl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQT1sUPBYsyGmi4usy/XblvOeH7bbgUCZVPrfgAKCRDXblvOeH7b
-boiXAQDA1uG7ZfQM5AYj9rUiuH0ukanafGQ2IiEA/RJJ4CiqrQD+LQCWZ+QZJF2n
-ZI0Wzz8jlYnQUxCwRfbYW9pRT6Oo9go=
-=ZsyL
------END PGP SIGNATURE-----
-
---nextPart10502693.KXfdfZlzAl--
-
-
-
-
-
---===============8377438208163516815==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============8377438208163516815==--
-
-
-
-
