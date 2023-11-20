@@ -4,139 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B35A0C54E76
-	for <ath10k@archiver.kernel.org>; Sat, 18 Nov 2023 19:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75D62C197A0
+	for <ath10k@archiver.kernel.org>; Mon, 20 Nov 2023 17:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=42HFTkyyS0XED28F9eo9iYFNFphqzHvMRECeD/kE7Xk=; b=uodT5LBB/8Q0CBYjWvb7Uu+ovl
-	NRu8oabpe8E/qaIiYH1oOQAu1yVPrQJNtCY5/7w0+tY8l3M6Wr9RGVcNM4d/RT7F/SCxJsWNZXzUg
-	lE8Yh29LJU2OjOX1kmnvqNsA0vckXHbJiCJvHZSTvuM/q6BXooy5WJczZB7RgcGvOJtlQviYEElyZ
-	1tBSU0X6DMnWFORrKoZSO5XnK/Y7HpO0M28cQQY02lnP1t/nTztK4fLxuD9MOjBsfKJCnumVLpvWZ
-	7ZDyjW+Blvi1srrgjepuimjdA+6xQlyBGXBtlG25/oloTOGK9DXgntgDXyowAuSRlWLWX1BEtICRx
-	9aKotZQw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:Message-ID:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=bq71v+XoXC9X6KPlisbDizXFitGk5MCYbVxxVEzwmSI=; b=ZH7YmX9iL8GiGSQJQ49poV6zcu
+	F9PGOe1sTujFjhEzpyGxcadd/o74aszNWRHFatT+/IZbby4eJJcmSOMsqk3yHuE8sHw/m708J4MN0
+	prPF/Jb+BdkyCf/46CtvTg2jCRtRAxwO3Tlfn8j0c9Jh+KmX5LDA70fdELYFo4TWdHpDEEtSBibxN
+	h65wFoJF6sw47d5arKOmruG3QjcxVrKzB8W15vouuHZCj8WfEgSzImOCKzh/i/BjNwVT4mgQxZbZY
+	JCAm6wkefM3t4DL5CDAQoPvNgMzDkEjMM+dlSXXZ2CCsJGL34pAol00D35gTgq1wQQAhXKIpFSVHH
+	8i0YBP6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r4QeM-00924P-0P;
-	Sat, 18 Nov 2023 19:06:38 +0000
-Received: from mx01.omp.ru ([90.154.21.10])
+	id 1r57s1-00DgMR-2g;
+	Mon, 20 Nov 2023 17:15:37 +0000
+Received: from mail-oi1-x22a.google.com ([2607:f8b0:4864:20::22a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r4QeJ-00922q-0q;
-	Sat, 18 Nov 2023 19:06:37 +0000
-Received: from [192.168.1.103] (31.173.87.19) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 18 Nov
- 2023 22:06:15 +0300
-Subject: Re: [PATCH 00/34] biops: add atomig find_bit() operations
-To: Bart Van Assche <bvanassche@acm.org>, Yury Norov <yury.norov@gmail.com>,
-	<linux-kernel@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, "H.
- Peter Anvin" <hpa@zytor.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>, "Md. Haris Iqbal"
-	<haris.iqbal@ionos.com>, Akinobu Mita <akinobu.mita@gmail.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Bjorn Andersson <andersson@kernel.org>, Borislav
- Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>, Christian Brauner
-	<brauner@kernel.org>, Damien Le Moal <damien.lemoal@opensource.wdc.com>, Dave
- Hansen <dave.hansen@linux.intel.com>, David Disseldorp <ddiss@suse.de>,
-	Edward Cree <ecree.xilinx@gmail.com>, Eric Dumazet <edumazet@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gregory Greenman
-	<gregory.greenman@intel.com>, Hans Verkuil <hverkuil@xs4all.nl>, Hans de
- Goede <hdegoede@redhat.com>, Hugh Dickins <hughd@google.com>, Ingo Molnar
-	<mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela
-	<perex@perex.cz>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe
-	<axboe@kernel.dk>, Jiri Pirko <jiri@resnulli.us>, Jiri Slaby
-	<jirislaby@kernel.org>, Kalle Valo <kvalo@kernel.org>, Karsten Graul
-	<kgraul@linux.ibm.com>, Karsten Keil <isdn@linux-pingi.de>, Kees Cook
-	<keescook@chromium.org>, Leon Romanovsky <leon@kernel.org>, Mark Rutland
-	<mark.rutland@arm.com>, Martin Habets <habetsm.xilinx@gmail.com>, Mauro
- Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Nicholas Piggin <npiggin@gmail.com>, Oliver
- Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>, Paolo Bonzini
-	<pbonzini@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ping-Ke Shih
-	<pkshih@realtek.com>, Rich Felker <dalias@libc.org>, Rob Herring
-	<robh@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Sathya Prakash
- Veerichetty <sathya.prakash@broadcom.com>, Sean Christopherson
-	<seanjc@google.com>, Shuai Xue <xueshuai@linux.alibaba.com>, Stanislaw
- Gruszka <stf_xl@wp.pl>, Steven Rostedt <rostedt@goodmis.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner
-	<tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, Vitaly
- Kuznetsov <vkuznets@redhat.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Will
- Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>,
-	<GR-QLogic-Storage-Upstream@marvell.com>, <alsa-devel@alsa-project.org>,
-	<ath10k@lists.infradead.org>, <dmaengine@vger.kernel.org>,
-	<iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-	<linux-block@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
-	<linux-hyperv@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
-	<linux-media@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-	<linux-net-drivers@amd.com>, <linux-pci@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-	<linux-scsi@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-	<linux-sh@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-	<linux-usb@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <mpi3mr-linuxdrv.pdl@broadcom.com>,
-	<netdev@vger.kernel.org>, <sparclinux@vger.kernel.org>, <x86@kernel.org>
-CC: Jan Kara <jack@suse.cz>, Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Matthew Wilcox <willy@infradead.org>, Rasmus Villemoes
-	<linux@rasmusvillemoes.dk>, Andy Shevchenko
-	<andriy.shevchenko@linux.intel.com>, Maxim Kuvyrkov
-	<maxim.kuvyrkov@linaro.org>, Alexey Klimov <klimov.linux@gmail.com>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
- <792fc3d8-6834-48f8-9737-f1531459d245@acm.org>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <cb01a8af-d62b-27b4-f6fc-d1f3fbf676ee@omp.ru>
-Date: Sat, 18 Nov 2023 22:06:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	id 1r57ry-00DgIj-1Y
+	for ath10k@lists.infradead.org;
+	Mon, 20 Nov 2023 17:15:35 +0000
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b6d88dbaa3so3071927b6e.1
+        for <ath10k@lists.infradead.org>; Mon, 20 Nov 2023 09:15:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700500531; x=1701105331; darn=lists.infradead.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ql0g3tzh+gqE/f9mnzNJDTzWt5oirUW3agwQcz0Uqj8=;
+        b=PsSkm5pCz8UOtwpkiGNbBmeBlRIFHNM1N2u98ltklGtO/kcHhrxUlrDr9VUWHLgx0U
+         oO9SWypAyLuyE40+4qPQ2/057LchB9RZIxJjwxc69+fj56Z3I+ZHlcMEpSYwIg4MRGvL
+         H+WVXqgOk2PrqtobEPPtSY6pY6niWK6n6hhbjrBVUSO6ns6ERcKigK1FBr4AuSXoEj8o
+         g/s5Vus/+VQLIP35caockU0BXdFeO8YrJrLpS5CetKseMd1mr2N2DlTY89M/NDaTtuzw
+         qsU/zGQ5Wc2ywqsDMenkFcMAe3ifBlwdupGmMxP9671bi5uumvAcxAoFNMn5U+Qi4NL2
+         +UWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700500531; x=1701105331;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ql0g3tzh+gqE/f9mnzNJDTzWt5oirUW3agwQcz0Uqj8=;
+        b=uen2msNgVgP42cTaz8HIvLGhkAPdbPiYfLroBJY6hyLLSm24GB97+ep/UQ7qVKpG6L
+         HBLStq6J3hgH+zylc/fcfzDFW4ziGRLEOfg/dh+eOFe7Aq1fertaNmgOZ6yzFHEHe8ky
+         yPyYnzL807R0iKUElU/KZTTPcinSPkqr7n15lwF86eLirb1J10pOTmADslcjhBEq0TX5
+         ReYzlJJum5QRv5GYInV2x48Ht1EW71yOJCEIH8R1AnMJA1gf0+6/3sm+2v2A3UH8m181
+         eVfg0AhFRRaafO7D0IU4blWfEdEil0TNq79AG15SpLC/qETHX2IuTu8M75qd3+irpEqJ
+         xwsw==
+X-Gm-Message-State: AOJu0Yyg0Ae50Fu4jJWEa5d+JLy8TG2mSGBCuuBip8hQstDyZzKZIh3o
+	lCmExClSV8B84IFBLLza+3dKiEiS124=
+X-Google-Smtp-Source: AGHT+IEFMyChMtM4klEjCNMbFimxh5/PdhKrcJEqKBRt5zRU8b+XiodB67OGO+kwN/5uLCYe6pS/og==
+X-Received: by 2002:a05:6808:de7:b0:3a9:bb08:d468 with SMTP id g39-20020a0568080de700b003a9bb08d468mr8982453oic.55.1700500530928;
+        Mon, 20 Nov 2023 09:15:30 -0800 (PST)
+Received: from [10.102.4.159] (50-78-19-50-static.hfc.comcastbusiness.net. [50.78.19.50])
+        by smtp.gmail.com with ESMTPSA id ka8-20020a05622a440800b0041b7f007546sm2762384qtb.82.2023.11.20.09.15.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 09:15:30 -0800 (PST)
+Message-ID: <304ce305-fbe6-420e-ac2a-d61ae5e6ca1a@gmail.com>
+Date: Mon, 20 Nov 2023 09:15:28 -0800
 MIME-Version: 1.0
-In-Reply-To: <792fc3d8-6834-48f8-9737-f1531459d245@acm.org>
+User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-X-Originating-IP: [31.173.87.19]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/18/2023 18:50:09
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181454 [Nov 18 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_arrow_text}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.19 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.19 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.87.19
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/18/2023 18:54:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/18/2023 3:15:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+To: linux-wireless@vger.kernel.org
+Cc: ath10k@lists.infradead.org
+From: James Prestwood <prestwoj@gmail.com>
+Subject: Power save setting while interface is down
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231118_110635_323532_F3480919 
-X-CRM114-Status: GOOD (  11.54  )
+X-CRM114-CacheID: sfid-20231120_091534_618440_F7F34AA7 
+X-CRM114-Status: UNSURE (   6.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,26 +86,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 11/18/23 7:18 PM, Bart Van Assche wrote:
-[...]
->> Add helpers around test_and_{set,clear}_bit() that allow to search for
->> clear or set bits and flip them atomically.
-> 
-> There is a typo in the subject: shouldn't "atomig" be changed
-> into "atomic"?
+Hi,
 
-   And "biops" to "bitops"? :-)
+I've noticed a somewhat rare behavior (<1% of the time) where bringing 
+an interface up fails after disabling power save. This is done by IWD 
+when a user-option is enabled, and follows an interface 
+removal/creation. The sequence is:
 
-> Thanks,
-> 
-> Bart.
+1. Remove default interface
 
-MBR, Sergey
+2. Create new interface
+
+3. Disable power save on new interface
+
+4. Bring up new interface (rarely fails with -110).
+
+iwd[1286641]: src/netdev.c:netdev_disable_ps_cb() Disabled power save 
+for ifindex 54
+kernel: ath10k_pci 0000:02:00.0: wmi service ready event not received
+iwd[1286641]: Error bringing interface 54 up: Connection timed out
+kernel: ath10k_pci 0000:02:00.0: Could not init core: -110
+
+I'm thinking maybe there is a race between creating the fresh interface 
+and disabling PS, then bringing the interface back up?
+
+Setting PS after the interface is up (so far) seems to be 100% reliable 
+and have not yet seen this behavior. Regardless of any kernel fixes I'll 
+need to reorder the command sequence in IWD to support existing kernels, 
+but before I work around this issue I wanted to point it out so its not 
+hidden from view.
+
+Thanks,
+
+James
+
 
 _______________________________________________
 ath10k mailing list
