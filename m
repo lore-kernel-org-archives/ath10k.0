@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3153C61DF4
-	for <ath10k@archiver.kernel.org>; Fri, 24 Nov 2023 13:04:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B619C61DF4
+	for <ath10k@archiver.kernel.org>; Sat, 25 Nov 2023 03:23:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=7f37hMuGwgAiVQvXJ+YGGN93jX7XAtKvGUaQ1Pgo3EE=; b=z+4yXAji6SWwV3
-	2Q7PwjeJ/3FNOS2ooul4vxUo0JKijTyBdKJZLK7UJZRH2DxBB8FMF02yV0eLczVb1fhtM0S+wkyz5
-	XOFl4oByB6k+sS+yOXWneu/DfDgljstF91dOQR3R4X1tDdpbNqw0ZLleycHOxJVgoPmgWD7la3t/s
-	sKbWxummt/vlhmqLZEYPICb1WihQ42/n0mKQ5IKWGfZjeqH9UhNvYqzxZy7J0o2P5xRSdIN+96cvn
-	xFo+nxG0BkVJoAyRpG93XlbC3a+yjyLcbZh8XFfVd8lvqeknCYZzp/F1O9AxNxuQD4sw5MtM5rUAf
-	jRYsPEEk5th0sPzvWQSA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=kHHrpZArcyIueA8+V0Jn8XJClawfnUXlDUyH3kOHAog=; b=ll5
+	ypvVrxYHlxbUej2xEHyvBEvYIZoqLo6uUn645qsYIniaDMhKOmdF0vQbq4wY1ENOKS5QjW+LHh1xZ
+	ExQshYQKI1fGM7KXuw415u27mHU9T9hTiOe6lPBGUg/WOBn0vL0Y57SJ/iegms5eGoytI30LTOBwI
+	g0LtnTsbuThbkVtYfeJp2iHDfSpdPGGYFy+B4urMkgxA/QxRI2FHWYVcuVAWmn7CAlVUZW6rfauGo
+	nMLZvPCRe+4pnkAcB9z8SnPCahmOyx1BWYsesd7XIHoQ0crhXzC8DmZEPwV5T9eKcVNLwSkALQpJk
+	mOYAWoyah85EhMloIfRVYN/Czq6E86w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6Vr8-007GXr-2c;
-	Fri, 24 Nov 2023 13:04:26 +0000
-Received: from mgamail.intel.com ([134.134.136.31])
+	id 1r6jGb-008TkC-01;
+	Sat, 25 Nov 2023 03:23:37 +0000
+Received: from mail-yw1-x1135.google.com ([2607:f8b0:4864:20::1135])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6Vr5-007GXN-2c
+	id 1r6jGX-008Tjk-2T
 	for ath10k@lists.infradead.org;
-	Fri, 24 Nov 2023 13:04:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700831063; x=1732367063;
-  h=date:from:to:cc:subject:message-id;
-  bh=z3GsAdr4hgN6ksObbnFPKDNJWFElQjM8zkqs9TTf03Y=;
-  b=H5Of6YaHiV7UWI0gV3IFyEnPA+snfGNxm77z8YIK5yrAchcvQstqkY75
-   WVrC3oHeSq0ulHF3uzeqisg+KDDCmSTMjD/JMZvMTW9NZ0rfeT/cOP3Ph
-   ZerGBHVgmGfiv60ZFq6llVXhX2bGJliRwozLiOXok8L26MoPnaEW6gYdQ
-   VoGvohS43b3NegfLoWcDPusI6qM9r2ET6CQe/8pbTeMKsVkvWCH6wLy5z
-   PxiuXNVUXxE9vZC5BxKw+NcYhqN1zIjcvvk0yLM8RA132i7cekYj03bVI
-   tqK0RVPtDHERbn659/bhtzWQSZkvhPP/SjSiNqgYA/JOFdMZGUXO61ff5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456762863"
-X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="456762863"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 05:04:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="9132559"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 24 Nov 2023 05:04:21 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r6Vr1-0002mB-1S;
-	Fri, 24 Nov 2023 13:04:19 +0000
-Date: Fri, 24 Nov 2023 21:03:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 51516d9842a35809cb8b9238d61b07355a61f0ec
-Message-ID: <202311242138.ZsogO9Kj-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Sat, 25 Nov 2023 03:23:35 +0000
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5b383b4184fso24723537b3.1
+        for <ath10k@lists.infradead.org>; Fri, 24 Nov 2023 19:23:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700882611; x=1701487411; darn=lists.infradead.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sjL81e6YDLfv+wrtlijj62WmZNGcc6e+Qo6poqFVcLQ=;
+        b=HdrDJYKvk0+jAz+kLpIkUPyosJBviwKkn7YhS3MRIBIPUCChN0oaHKaAtBHYUfh1kv
+         felst5l+ijq0zkNTU6PWoFvNRYU92jKBcb5sOafCLEXYFIdXLsyUDUP3JxgmKKa47uaI
+         xWQLhcQnTH35SEjSSBQHQ4c5tGdwgBoFJW0MfI9hsNaGkhULPeFKH3/rfxlmmrLf+MWP
+         jGfWZrNHibQRuk6SL7XmV+xjyK071k5bG9f6oYafXy1Vz4jmce0CS6UvFumkATuD09xD
+         gWbHQWtqvWm3d0OE0eRdmp/PHlfZP08wPCxE835P7fkgVkaKOuRcYey7AnpkFghW83Un
+         LHMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700882611; x=1701487411;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sjL81e6YDLfv+wrtlijj62WmZNGcc6e+Qo6poqFVcLQ=;
+        b=QO1/FmR12OQXURJgThEonFbcVYFSYZaEB1MpvdU/JpEfrQ6agUjx8bKp4Hlp7EXA1p
+         SLOXMFP1QuQJmu6H3Zbc8FQ2SDWHpUrOpTK2Tj5Y7OaXBQg/bbYhFgnljfr4NSwCyj1R
+         g6d8UMj28DftMSSyxd8TlB9a9TbzDt8cw78y0RBT2Ibt5ivG06bGxi/f6aPDuXbjreQL
+         0CEYvAHc7AUB8DHpH0mcHU/PNxNag4rcApgT3jyufCPdDEcy63P6FPqhL90h5JXlzMaa
+         n+g3u4JJTfN8w2GfwFVORUXSqUfXx5kGHO/SUKIPj/BkMJmyUN+PNDVBka8A+mu4WIZ1
+         UpyQ==
+X-Gm-Message-State: AOJu0Yzr0e6yGRevkrqlz/Y+C6U4wQDUkBHtTeAiv4bGhlTqFdBAcl0E
+	dB5yCJKJFhWlzX/o/yo3kMRoq0/gYBAKU2LXD9LVrxczDD5iJgu2cNk=
+X-Google-Smtp-Source: AGHT+IECgmqQabDFGiv1Tx6rmpVoGPwGawGaCeEnfzbzdw1qqpZZSxq93SjSW4z8fe7uLB+2cJsZ4dWTT7tVNYKe6dI=
+X-Received: by 2002:a0d:d40f:0:b0:5cc:7431:871 with SMTP id
+ w15-20020a0dd40f000000b005cc74310871mr5188552ywd.25.1700882611622; Fri, 24
+ Nov 2023 19:23:31 -0800 (PST)
+MIME-Version: 1.0
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 25 Nov 2023 05:23:20 +0200
+Message-ID: <CAA8EJpp+SJpX4FFmcTm133KNtztTJH0ovTLRm0bftahPT8a1kw@mail.gmail.com>
+Subject: ath10k / WCN3990: firmware-5.bin and wlanmdsp.mbn being out of sync
+To: ath10k@lists.infradead.org, 
+	"open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231124_050423_894412_A8D864AA 
-X-CRM114-Status: UNSURE (   4.27  )
+X-CRM114-CacheID: sfid-20231124_192333_831368_4B772816 
+X-CRM114-Status: UNSURE (   8.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,110 +79,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 51516d9842a35809cb8b9238d61b07355a61f0ec  wifi: ath12k: Consolidate WMI peer flags
+Hello,
 
-elapsed time: 2537m
+I wanted to ask your opinion regarding one of the issues we stumbled
+upon on the Qualcomm RB1 and RB2 platforms. These platforms use ath10k
+snoc (WCN3990) WiFi "card". We noticed the following messages being
+spawned on the console, which I traced it to the
+ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL feature:
 
-configs tested: 82
-configs skipped: 0
+ath10k_snoc c800000.wifi: chan info: invalid frequency 0 (idx 41 out of bounds)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+As a reminder, on this platform the wlan firmware and firmware-N.bin
+files come separately.
+The wlanmdsp.mbn is downloaded by the onboard modem DSP via the
+tqftpserv request (which is served from the board-specific folder
+qcom/qcm2210). The firmware-N.bin file is loaded by the WiFi driver
+itself from the generic folder, ath10k/WCN3990/hw1.0. Current
+firmware-5.bin file was provided with the sdm845's wlanmdsp.mbn, which
+is older than qcm2210/qrb4210's wlanmdsp.mbn.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                                 defconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                           allnoconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231123   gcc  
-i386         buildonly-randconfig-002-20231123   gcc  
-i386         buildonly-randconfig-003-20231123   gcc  
-i386         buildonly-randconfig-004-20231123   gcc  
-i386         buildonly-randconfig-005-20231123   gcc  
-i386         buildonly-randconfig-006-20231123   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231123   gcc  
-i386                  randconfig-002-20231123   gcc  
-i386                  randconfig-003-20231123   gcc  
-i386                  randconfig-004-20231123   gcc  
-i386                  randconfig-005-20231123   gcc  
-i386                  randconfig-006-20231123   gcc  
-i386                  randconfig-011-20231123   clang
-i386                  randconfig-012-20231123   clang
-i386                  randconfig-013-20231123   clang
-i386                  randconfig-014-20231123   clang
-i386                  randconfig-015-20231123   clang
-i386                  randconfig-016-20231123   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                       allyesconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                            allyesconfig   gcc  
-openrisc                         allyesconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                           allyesconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                          allyesconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-sh                               allmodconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231123   gcc  
-x86_64       buildonly-randconfig-002-20231123   gcc  
-x86_64       buildonly-randconfig-003-20231123   gcc  
-x86_64       buildonly-randconfig-004-20231123   gcc  
-x86_64       buildonly-randconfig-005-20231123   gcc  
-x86_64       buildonly-randconfig-006-20231123   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231123   clang
-x86_64                randconfig-002-20231123   clang
-x86_64                randconfig-003-20231123   clang
-x86_64                randconfig-004-20231123   clang
-x86_64                randconfig-005-20231123   clang
-x86_64                randconfig-006-20231123   clang
-x86_64                randconfig-011-20231123   gcc  
-x86_64                randconfig-012-20231123   gcc  
-x86_64                randconfig-013-20231123   gcc  
-x86_64                randconfig-014-20231123   gcc  
-x86_64                randconfig-015-20231123   gcc  
-x86_64                randconfig-016-20231123   gcc  
-x86_64                randconfig-071-20231123   gcc  
-x86_64                randconfig-072-20231123   gcc  
-x86_64                randconfig-073-20231123   gcc  
-x86_64                randconfig-074-20231123   gcc  
-x86_64                randconfig-075-20231123   gcc  
-x86_64                randconfig-076-20231123   gcc  
-x86_64                          rhel-8.3-rust   clang
+I'm looking for suggestions on how to make ath10k driver load
+firmware-N.bin file which corresponds to the board-specific
+wlanmdsp.mbn.
+
+In particular I'd like to hear your opinion on the following proposal:
+
+Add the  optional property to the board DT, that specifies:
+firmware-name = "path/to/wlanmdsp.mbn".  The property, if present,
+will be used as an override for the firmware directory. So, while the
+ath10k driver will not load wlanmdsp.mbn on its own, it will still
+look for the firmware-N files in the specified directory.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With best wishes
+Dmitry
 
 _______________________________________________
 ath10k mailing list
