@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3832C07CA9
-	for <ath10k@archiver.kernel.org>; Thu, 30 Nov 2023 12:35:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF367C10DC1
+	for <ath10k@archiver.kernel.org>; Thu, 30 Nov 2023 12:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Rx0xnJ8VTUqSoXOMvNR7kKTrm3WF1qH2lWIsanIEWD0=; b=zQCZO92owzF+KM9DU706+xJECF
-	dWq5VygAwY1iaUI/1y9Dbwcy042krPfff5ukmvchulISDcZ3DzTpoe5U78A4mFOpZrX5Xhyzmrdb9
-	GzX1n2oLQcr7lg8BBhhnzoiiACMyUI4lqkOro7PHpQ6ZIYzJ0fo4zQnW5cEvNbe89OWBZQBUhdXXn
-	QymhwxbC+x+8FGasJ0uGNOSqip0x7hWRWD5TD3P+EzZzL57+UwlcWWteiL8wQ6ZD4uKNT76JN81LY
-	/n9UT2EoUvbQ8ofAbHvWxxqMTBcDKpQJRg2ge9ThECPMEo0aBQSVReEj8QuFuFjG4eelNGtTBr5g5
-	PgNuskzg==;
+	bh=0/J7eyGqx2uOsfNxd8WWthoIV9d6AcTCY1wobL9w4DI=; b=jtqJKWqK0tyLh2CBShVu4T9mIS
+	Q1Ef8ev78c+mQ8fjGGGPEqH16zSsu57ugxy6sHqbSnj5NJ3TmA9GOV9+x0hoe2EA/CMGoQoDL6Mfz
+	KtzoJuwp09qhe6Ep1jwCjwByKnb5YdwbiipCUd5MtsyfQV5P0sIEJlcV1C0aM0Va+AiIjCbT39sSE
+	/85nSMPipgpYLTjkqVbZrJlqPkoOcc+mqZ/6OlsqKO2PKXtbq/Jjw9GLYww0OF7e64bU8znM16zaZ
+	kr5xzIJ0JzSjzXo85wkJDxxIoRt4Np7kTl4hSpAzIStoQI1Asrq32/RrWBQBxhHi6Hd7ClM6ufTIY
+	QBmRZCdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8gGE-00AsAs-1P;
-	Thu, 30 Nov 2023 12:35:18 +0000
-Received: from mgamail.intel.com ([192.198.163.7])
+	id 1r8gHC-00AsO3-24;
+	Thu, 30 Nov 2023 12:36:18 +0000
+Received: from mgamail.intel.com ([134.134.136.24])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8gGA-00As95-2w
+	id 1r8gH8-00AsLD-36
 	for ath10k@lists.infradead.org;
-	Thu, 30 Nov 2023 12:35:16 +0000
+	Thu, 30 Nov 2023 12:36:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701347715; x=1732883715;
+  t=1701347774; x=1732883774;
   h=date:from:to:cc:subject:message-id;
-  bh=3PAmqHMpsDGL7SinuGDrGQbkJriJpehMnhNXgz9WwhM=;
-  b=UO5/hSG7Y0D+0bJ2o7aLyHy0okRySmavMggdF4GEK0Q/YyiW78dc57OA
-   TfV59C07SyYK5wCpE/DSY4+6q2qeB8kdZX1iYTuFR+GLUs8eH+8zT3cdc
-   5ZXTAgdQpE6Cj4hjjcTi83HNS2oH2fnlV89v7NJYGGXlt65gVv/uy4ql1
-   5AqWzp7u46RuNGyVgN7/UgU6AUHOof5TasiVWPv86v4XI3LzMAB51Dtzb
-   1FUsXydBaFmHuorSVSUmYH+/UN48mvc+lCp44hSphvkMrcqSurPx10M5p
-   rMjy7w12nf5l+GGRXjhs0sy2vfQD+YfzZ6YEA5aYyoeEplxFIqe7tOfrK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="14867147"
+  bh=gZiwqxT8yaFr83shAZ4vpnojawhG4WU/ePVPIWC1Pa4=;
+  b=QwpEmmOAZCQaNb4rvXjevQdN6jZOhr75uVgKagZJJRHRfEewP23H/PxC
+   krFPkxXcalOs/tU+r2vGm6v5s34AqXHZRSSXjJqZln5NC+JZsHrI9BPhZ
+   DDvzImkpezLlxL1+jS4tjdIqWXNhWZ2rqkNAsbR9Y9X/oF5MyJMft8Iwt
+   kbEZZjD93xE70rX0qBhYo5KIrW3mjxAcCpsS+iFH79NKeOZ/9u0fwdEWS
+   vtDajMEeK71pflSJfTRGsmlxRlCiKB5ddEZR5XcR+zhQq7/G2yiltg7T2
+   FVzWrx1UoWzeg0P4mAOzMOsskBgRplmYHuftIFix7P6+xZ/JY7+l+0fBe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="396124440"
 X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="14867147"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:35:13 -0800
+   d="scan'208";a="396124440"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:36:11 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="798270263"
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="719112393"
 X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="798270263"
+   d="scan'208";a="719112393"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 30 Nov 2023 04:35:09 -0800
+  by orsmga003.jf.intel.com with ESMTP; 30 Nov 2023 04:36:10 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1r8gG3-0001v6-1m;
-	Thu, 30 Nov 2023 12:35:07 +0000
-Date: Thu, 30 Nov 2023 20:34:57 +0800
+	id 1r8gH2-0001vd-0C;
+	Thu, 30 Nov 2023 12:36:08 +0000
+Date: Thu, 30 Nov 2023 20:36:04 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 612679e4e9fe3f6ba9f89f35ea2fe9ac58df02e4
-Message-ID: <202311302055.6wuQZ0J5-lkp@intel.com>
+Subject: [kvalo-ath:pending-deferred] BUILD SUCCESS
+ 409dfc56631834cc2c0262799a537098b75807a1
+Message-ID: <202311302001.ubqGYzLJ-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231130_043514_963168_6329F1F4 
-X-CRM114-Status: UNSURE (   4.67  )
+X-CRM114-CacheID: sfid-20231130_043615_062832_36E04178 
+X-CRM114-Status: UNSURE (   5.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,8 +80,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 612679e4e9fe3f6ba9f89f35ea2fe9ac58df02e4  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-deferred
+branch HEAD: 409dfc56631834cc2c0262799a537098b75807a1  wifi: ath10k: mac: enable WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON on ath10k
 
 elapsed time: 1472m
 
