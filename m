@@ -4,68 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF367C10DC1
-	for <ath10k@archiver.kernel.org>; Thu, 30 Nov 2023 12:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0ACAC4167B
+	for <ath10k@archiver.kernel.org>; Thu, 30 Nov 2023 15:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Subject:From:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=0/J7eyGqx2uOsfNxd8WWthoIV9d6AcTCY1wobL9w4DI=; b=jtqJKWqK0tyLh2CBShVu4T9mIS
-	Q1Ef8ev78c+mQ8fjGGGPEqH16zSsu57ugxy6sHqbSnj5NJ3TmA9GOV9+x0hoe2EA/CMGoQoDL6Mfz
-	KtzoJuwp09qhe6Ep1jwCjwByKnb5YdwbiipCUd5MtsyfQV5P0sIEJlcV1C0aM0Va+AiIjCbT39sSE
-	/85nSMPipgpYLTjkqVbZrJlqPkoOcc+mqZ/6OlsqKO2PKXtbq/Jjw9GLYww0OF7e64bU8znM16zaZ
-	kr5xzIJ0JzSjzXo85wkJDxxIoRt4Np7kTl4hSpAzIStoQI1Asrq32/RrWBQBxhHi6Hd7ClM6ufTIY
-	QBmRZCdQ==;
+	bh=xYxQGcpqvZSnTdrcZYKUf6MgQycD5OfPTFYBGRzJOrw=; b=QQ7uAh9FlfQDY5Ip9iomuJasC+
+	/hMBNmjgZ9EugTH7jySW4+GTDfz6nVxmxoLo6vGAi/8ofRE9Ek/WDVZ4BMRZhBsLm1A71vfMT1PaS
+	cedHFyPrXU7/JHiys0cbKjl862MoEtNPcwPPkKgAe+t8hqaOxJYr7zJjJSlJ/bTU9AHKHdOyRMuNk
+	OPNC4nZkmOYLU2nmBnd9OZBySPn0r5RvaZcOgS7rcjAi1BwP8kQL1IPPjy4lqNWCh4/5OxdjMUiTB
+	eqo5bTyRqX8/92ys6Tbu+f6gL8m5froZZissOnDjySFAR9h3pAm0QokR4Uy4295ePd74FIwr/EtGv
+	FSt7UOrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8gHC-00AsO3-24;
-	Thu, 30 Nov 2023 12:36:18 +0000
-Received: from mgamail.intel.com ([134.134.136.24])
+	id 1r8il6-00BBB0-2X;
+	Thu, 30 Nov 2023 15:15:20 +0000
+Received: from mail-ot1-x32f.google.com ([2607:f8b0:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8gH8-00AsLD-36
+	id 1r8il3-00BBAZ-20
 	for ath10k@lists.infradead.org;
-	Thu, 30 Nov 2023 12:36:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701347774; x=1732883774;
-  h=date:from:to:cc:subject:message-id;
-  bh=gZiwqxT8yaFr83shAZ4vpnojawhG4WU/ePVPIWC1Pa4=;
-  b=QwpEmmOAZCQaNb4rvXjevQdN6jZOhr75uVgKagZJJRHRfEewP23H/PxC
-   krFPkxXcalOs/tU+r2vGm6v5s34AqXHZRSSXjJqZln5NC+JZsHrI9BPhZ
-   DDvzImkpezLlxL1+jS4tjdIqWXNhWZ2rqkNAsbR9Y9X/oF5MyJMft8Iwt
-   kbEZZjD93xE70rX0qBhYo5KIrW3mjxAcCpsS+iFH79NKeOZ/9u0fwdEWS
-   vtDajMEeK71pflSJfTRGsmlxRlCiKB5ddEZR5XcR+zhQq7/G2yiltg7T2
-   FVzWrx1UoWzeg0P4mAOzMOsskBgRplmYHuftIFix7P6+xZ/JY7+l+0fBe
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="396124440"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="396124440"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:36:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="719112393"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="719112393"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 30 Nov 2023 04:36:10 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r8gH2-0001vd-0C;
-	Thu, 30 Nov 2023 12:36:08 +0000
-Date: Thu, 30 Nov 2023 20:36:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
+	Thu, 30 Nov 2023 15:15:19 +0000
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d817ccaa6dso607381a34.2
+        for <ath10k@lists.infradead.org>; Thu, 30 Nov 2023 07:15:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701357313; x=1701962113; darn=lists.infradead.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xYxQGcpqvZSnTdrcZYKUf6MgQycD5OfPTFYBGRzJOrw=;
+        b=KVxZrLV5cd7RraxMyC6rseDxLWfX3AnN/UySgSz1DSb+u8sOLJLR6tI4xDX2zD1r1E
+         o8P8If1wZsxeJpxl03pqvg5ckYEx0qlrBd04s/5TxeIQ/BO0o2+koAKxU0V9WRxDRev+
+         QR29PXNoXFYtqyhqJP+VooApVuQSsldscBSV9TyHY4VE/WPaFLU0PuKPdsN/zCOuc8h1
+         QHiW4W4SQu6IylIF5QwvQ9vyQDfnEdt37KXzjksxZs3MXGIvwCQ7l0RdJC46hjjGm0m+
+         WJkAsrCUq5sFa/ZJEDiI2u/TlJgV6Xv3OsHOXXOi1HYRel1UpQwcvu54b0vIpWvDq5x6
+         UEQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701357313; x=1701962113;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xYxQGcpqvZSnTdrcZYKUf6MgQycD5OfPTFYBGRzJOrw=;
+        b=HeHjvP5v8M7ErgkVu4TFuBQ8Q7+Y3OkYES+PEiz67UxOh5R30JPeisOBAAl9VWl15X
+         ZjhkAnIEjmmfHHi0mua7PYSJ+Jqj40b6AySxmtxJiXpUppWyCgZMEK7Fc6G08ZdbUYTB
+         duHEvh3Vep41Efbk583eIEwIVJRy9KIytcE1kD/9Srg7nHnDGDU7lDgK5cVrxwF+vkiL
+         2xxK2i/rndAgTzpvsgGVUl8lXVXWSfNXTlRvs0M3wirJkZlMU+vj+g5LpDmIRse12xqh
+         9Nl+YzhsKXHByJ6b8RjHXwhcjtyS0x2uysSw8G3aTwI5VxbPAB01Us57fWN4Mjs/T868
+         C2pA==
+X-Gm-Message-State: AOJu0Yy8RG6+Xz9LgzxqJVqlNACWrb8xgh79IhhQRynzvmZqA6ANyVEc
+	MJA5niaiGRaF+Gwxd0icsgO0vylywF4=
+X-Google-Smtp-Source: AGHT+IEai8Tld1vj5hVV4wJzYu+GSLDgLCyYtvTxx8tyPc23vfH9xk48vWnkxyzijpKSnYTynDE4kg==
+X-Received: by 2002:a05:6830:1245:b0:6bf:3f4:3edc with SMTP id s5-20020a056830124500b006bf03f43edcmr23607904otp.22.1701357313036;
+        Thu, 30 Nov 2023 07:15:13 -0800 (PST)
+Received: from [10.102.4.159] (50-78-19-50-static.hfc.comcastbusiness.net. [50.78.19.50])
+        by smtp.gmail.com with ESMTPSA id bs44-20020a05620a472c00b0077d7eaefc08sm565423qkb.87.2023.11.30.07.15.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 07:15:12 -0800 (PST)
+Message-ID: <2515fe0a-107e-40dc-800f-6ca3d65a291a@gmail.com>
+Date: Thu, 30 Nov 2023 07:15:10 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-wireless@vger.kernel.org
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending-deferred] BUILD SUCCESS
- 409dfc56631834cc2c0262799a537098b75807a1
-Message-ID: <202311302001.ubqGYzLJ-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+From: James Prestwood <prestwoj@gmail.com>
+Subject: Ping/IP network loss post-roam
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231130_043615_062832_36E04178 
-X-CRM114-Status: UNSURE (   5.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231130_071517_661229_FDE8B98E 
+X-CRM114-Status: GOOD (  13.71  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,300 +90,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending-deferred
-branch HEAD: 409dfc56631834cc2c0262799a537098b75807a1  wifi: ath10k: mac: enable WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON on ath10k
+Hi,
 
-elapsed time: 1472m
+We have noticed a sporadic problem that seems to come and go. It was 
+first noticed only on a specific AP manufacturer but more recently seen 
+on another which is why I'm revisiting the problem.
 
-configs tested: 280
-configs skipped: 2
+The client is using ath10k QCA6174 hw 3.2 hardware. The network is WPA2, 
+configured with FT. This has been seen both with over-Air and over-DS.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The client will always roam using FT without a problem. No indication of 
+failed FT (ft-auth/ft-action and assoc are both successful). Sometimes 
+though, after the roam, the client seems to lose all IP networking 
+capabilities (pings, tcp/udp all fail).
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs101_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arc                 nsimosci_hs_smp_defconfig   gcc  
-arc                   randconfig-001-20231129   gcc  
-arc                   randconfig-001-20231130   gcc  
-arc                   randconfig-002-20231129   gcc  
-arc                   randconfig-002-20231130   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                         assabet_defconfig   gcc  
-arm                                 defconfig   clang
-arm                          exynos_defconfig   gcc  
-arm                          gemini_defconfig   gcc  
-arm                           imxrt_defconfig   gcc  
-arm                        keystone_defconfig   gcc  
-arm                       multi_v4t_defconfig   gcc  
-arm                   randconfig-001-20231129   gcc  
-arm                   randconfig-001-20231130   gcc  
-arm                   randconfig-002-20231129   gcc  
-arm                   randconfig-002-20231130   gcc  
-arm                   randconfig-003-20231129   gcc  
-arm                   randconfig-003-20231130   gcc  
-arm                   randconfig-004-20231129   gcc  
-arm                   randconfig-004-20231130   gcc  
-arm                        realview_defconfig   gcc  
-arm                       spear13xx_defconfig   clang
-arm                           stm32_defconfig   gcc  
-arm                           sunxi_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231129   gcc  
-arm64                 randconfig-001-20231130   gcc  
-arm64                 randconfig-002-20231129   gcc  
-arm64                 randconfig-002-20231130   gcc  
-arm64                 randconfig-003-20231129   gcc  
-arm64                 randconfig-003-20231130   gcc  
-arm64                 randconfig-004-20231129   gcc  
-arm64                 randconfig-004-20231130   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231129   gcc  
-csky                  randconfig-001-20231130   gcc  
-csky                  randconfig-002-20231129   gcc  
-csky                  randconfig-002-20231130   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386                                defconfig   gcc  
-i386                  randconfig-011-20231129   clang
-i386                  randconfig-011-20231130   clang
-i386                  randconfig-012-20231129   clang
-i386                  randconfig-012-20231130   clang
-i386                  randconfig-013-20231129   clang
-i386                  randconfig-013-20231130   clang
-i386                  randconfig-014-20231129   clang
-i386                  randconfig-014-20231130   clang
-i386                  randconfig-015-20231129   clang
-i386                  randconfig-015-20231130   clang
-i386                  randconfig-016-20231129   clang
-i386                  randconfig-016-20231130   clang
-loongarch                        alldefconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231129   gcc  
-loongarch             randconfig-001-20231130   gcc  
-loongarch             randconfig-002-20231129   gcc  
-loongarch             randconfig-002-20231130   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         amcore_defconfig   gcc  
-m68k                       bvme6000_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          hp300_defconfig   gcc  
-m68k                       m5208evb_defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-m68k                        m5272c3_defconfig   gcc  
-m68k                        m5407c3_defconfig   gcc  
-m68k                        mvme16x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                         bigsur_defconfig   gcc  
-mips                       bmips_be_defconfig   gcc  
-mips                         db1xxx_defconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                     loongson1c_defconfig   clang
-mips                      loongson3_defconfig   gcc  
-mips                          rb532_defconfig   gcc  
-mips                           rs90_defconfig   clang
-nios2                         3c120_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231129   gcc  
-nios2                 randconfig-001-20231130   gcc  
-nios2                 randconfig-002-20231129   gcc  
-nios2                 randconfig-002-20231130   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-openrisc                       virt_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-32bit_defconfig   gcc  
-parisc                randconfig-001-20231129   gcc  
-parisc                randconfig-001-20231130   gcc  
-parisc                randconfig-002-20231129   gcc  
-parisc                randconfig-002-20231130   gcc  
-parisc64                            defconfig   gcc  
-powerpc                      acadia_defconfig   clang
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     asp8347_defconfig   gcc  
-powerpc                      bamboo_defconfig   gcc  
-powerpc                       ebony_defconfig   clang
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                       holly_defconfig   gcc  
-powerpc                    klondike_defconfig   gcc  
-powerpc                       maple_defconfig   gcc  
-powerpc                   microwatt_defconfig   clang
-powerpc                   motionpro_defconfig   gcc  
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                 mpc837x_rdb_defconfig   gcc  
-powerpc                     mpc83xx_defconfig   gcc  
-powerpc                     powernv_defconfig   clang
-powerpc                      ppc6xx_defconfig   gcc  
-powerpc               randconfig-001-20231129   gcc  
-powerpc               randconfig-001-20231130   gcc  
-powerpc               randconfig-002-20231129   gcc  
-powerpc               randconfig-002-20231130   gcc  
-powerpc               randconfig-003-20231129   gcc  
-powerpc               randconfig-003-20231130   gcc  
-powerpc                    sam440ep_defconfig   gcc  
-powerpc                     tqm8548_defconfig   gcc  
-powerpc                        warp_defconfig   gcc  
-powerpc64             randconfig-001-20231129   gcc  
-powerpc64             randconfig-001-20231130   gcc  
-powerpc64             randconfig-002-20231129   gcc  
-powerpc64             randconfig-002-20231130   gcc  
-powerpc64             randconfig-003-20231129   gcc  
-powerpc64             randconfig-003-20231130   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                    nommu_k210_defconfig   gcc  
-riscv                 randconfig-001-20231129   gcc  
-riscv                 randconfig-001-20231130   gcc  
-riscv                 randconfig-002-20231129   gcc  
-riscv                 randconfig-002-20231130   gcc  
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                        apsh4ad0a_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                        edosk7705_defconfig   gcc  
-sh                          polaris_defconfig   gcc  
-sh                          r7780mp_defconfig   gcc  
-sh                    randconfig-001-20231129   gcc  
-sh                    randconfig-001-20231130   gcc  
-sh                    randconfig-002-20231129   gcc  
-sh                    randconfig-002-20231130   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sh                           se7751_defconfig   gcc  
-sh                   secureedge5410_defconfig   gcc  
-sh                     sh7710voipgw_defconfig   gcc  
-sh                   sh7724_generic_defconfig   gcc  
-sh                        sh7757lcr_defconfig   gcc  
-sh                  sh7785lcr_32bit_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231129   gcc  
-sparc64               randconfig-001-20231130   gcc  
-sparc64               randconfig-002-20231129   gcc  
-sparc64               randconfig-002-20231130   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231129   gcc  
-um                    randconfig-001-20231130   gcc  
-um                    randconfig-002-20231129   gcc  
-um                    randconfig-002-20231130   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231129   gcc  
-x86_64       buildonly-randconfig-001-20231130   gcc  
-x86_64       buildonly-randconfig-002-20231129   gcc  
-x86_64       buildonly-randconfig-002-20231130   gcc  
-x86_64       buildonly-randconfig-003-20231129   gcc  
-x86_64       buildonly-randconfig-003-20231130   gcc  
-x86_64       buildonly-randconfig-004-20231129   gcc  
-x86_64       buildonly-randconfig-004-20231130   gcc  
-x86_64       buildonly-randconfig-005-20231129   gcc  
-x86_64       buildonly-randconfig-005-20231130   gcc  
-x86_64       buildonly-randconfig-006-20231129   gcc  
-x86_64       buildonly-randconfig-006-20231130   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20231129   gcc  
-x86_64                randconfig-011-20231130   gcc  
-x86_64                randconfig-012-20231129   gcc  
-x86_64                randconfig-012-20231130   gcc  
-x86_64                randconfig-013-20231129   gcc  
-x86_64                randconfig-013-20231130   gcc  
-x86_64                randconfig-014-20231129   gcc  
-x86_64                randconfig-014-20231130   gcc  
-x86_64                randconfig-015-20231129   gcc  
-x86_64                randconfig-015-20231130   gcc  
-x86_64                randconfig-016-20231129   gcc  
-x86_64                randconfig-016-20231130   gcc  
-x86_64                randconfig-071-20231129   gcc  
-x86_64                randconfig-071-20231130   gcc  
-x86_64                randconfig-072-20231129   gcc  
-x86_64                randconfig-072-20231130   gcc  
-x86_64                randconfig-073-20231129   gcc  
-x86_64                randconfig-073-20231130   gcc  
-x86_64                randconfig-074-20231129   gcc  
-x86_64                randconfig-074-20231130   gcc  
-x86_64                randconfig-075-20231129   gcc  
-x86_64                randconfig-075-20231130   gcc  
-x86_64                randconfig-076-20231129   gcc  
-x86_64                randconfig-076-20231130   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                  cadence_csp_defconfig   gcc  
-xtensa                randconfig-001-20231129   gcc  
-xtensa                randconfig-001-20231130   gcc  
-xtensa                randconfig-002-20231129   gcc  
-xtensa                randconfig-002-20231130   gcc  
-xtensa                    smp_lx200_defconfig   gcc  
+IWD is getting zero indication there there is a problem after the roam. 
+No packet/beacon loss CQM events, no deauths. On the AP side (if we even 
+get any indication of a problem) we see "client not responding". It 
+appears there is some disconnect between the clients state and the state 
+the AP thinks the client is in. The client thinks its connected, the AP 
+thinks the client has disappeared.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+After noticing this problem a watchdog was implemented which starts 
+pinging post-roam and if enough pings fail it triggers a deauth and 
+authenticates again. This at least gets the client back on the network, 
+but obviously isn't great because the client loses networking for an 
+extended period waiting for pings to fail, then deauth/reauthing, doing 
+DHCP etc. We hadn't gotten any traction trying to explain the issue to 
+the AP vendor. Its always a client issue...
+
+These are production devices and ath10k debugging is not built in to the 
+module. All I have is kernel/IWD logs which just shows the roam was 
+successful, and we deauthed later. Not particularly useful.
+
+I'm trying to determine where the problem is, is it client side or 
+infrastructure, and if there is anything that can be done either from an 
+ath10k driver or supplicant (IWD) perspective. Getting ath10k logs is 
+something I'd like to eventually do but its easier said than done. These 
+devices are always running and customers generally don't want them 
+messed with. I have ssh access so if there is any additional info I can 
+get without kernel changes I'm happy to try.
+
+Nov 30 13:33:11 kernel: wlan0: disconnect from AP xx:xx:xx:xx:xx:xx for 
+new assoc to yy:yy:yy:yy:yy:yy
+Nov 30 13:33:11 kernel: wlan0: associate with yy:yy:yy:yy:yy:yy (try 1/3)
+Nov 30 13:33:11 kernel: wlan0: RX ReassocResp from yy:yy:yy:yy:yy:yy 
+(capab=0x411 status=0 aid=6)
+Nov 30 13:33:11 kernel: wlan0: associated
+Nov 30 13:33:11 kernel: ath: EEPROM regdomain: 0x809c
+Nov 30 13:33:11 kernel: ath: EEPROM indicates we should expect a country 
+code
+Nov 30 13:33:11 kernel: ath: doing EEPROM country->regdmn map search
+Nov 30 13:33:11 kernel: ath: country maps to regdmn code: 0x52
+Nov 30 13:33:11 kernel: ath: Country alpha2 being used: CN
+Nov 30 13:33:11 kernel: ath: Regpair used: 0x52
+Nov 30 13:33:11 kernel: ath: regdomain 0x809c dynamically updated by 
+country element
+
+# This condition is detected by watchdog, and we deauth
+
+Nov 30 13:33:34 kernel: wlan0: deauthenticating from yy:yy:yy:yy:yy:yy 
+by local choice (Reason: 3=DEAUTH_LEAVING)
+
+# We then auth to the very same BSS, successfully and have no problems 
+(until it happens sometime later)
+
+Nov 30 13:33:36 kernel: wlan0: authenticate with yy:yy:yy:yy:yy:yy
+Nov 30 13:33:36 kernel: wlan0: send auth to yy:yy:yy:yy:yy:yy (try 1/3)
+Nov 30 13:33:36 kernel: wlan0: authenticated
+Nov 30 13:33:36 kernel: wlan0: associate with yy:yy:yy:yy:yy:yy (try 1/3)
+Nov 30 13:33:36 kernel: wlan0: RX AssocResp from yy:yy:yy:yy:yy:yy 
+(capab=0x411 status=0 aid=6)
+Nov 30 13:33:36 kernel: wlan0: associated
+
+Thanks,
+
+James
+
 
