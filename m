@@ -4,68 +4,172 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9507C4167B
-	for <ath10k@archiver.kernel.org>; Sat,  2 Dec 2023 17:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CAB5C4167B
+	for <ath10k@archiver.kernel.org>; Sun,  3 Dec 2023 19:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ztSZjx85MRqQ8iB/2VEUbYp7eXuysN06DEZfMVYTjZg=; b=sDUdfNKQZn1nLsyUbU4IRRvzJY
-	eTEi5fmNAtgmO6pL71tr2T6rKfnn6NSwGGB0Unov16iAqDGi0f/0ShP/LoRC3qAcfXI7aHR29fo9O
-	EdpRyvSqGmPvVJj1pCAZ9Uem3IR8C78FYSAe7/NqYYEW5e8ANbSYHf6I5pIwjn5hnz72H2vZ0dpK7
-	2Xb6Xt4xiCYqebv2h+2kvSs1JSibr6ViHrkzYk72PIT3D6WKWY0Nixw/QZgCfNeiSr9nmurhk67Sy
-	9AWkEtBAqRqkY2189Dw61ye2UWuye1USn3f/IynNKiH1yoC6tm2sLc1qTfGyyAnQLv68wMqghtdet
-	lhuTQ3Nw==;
+	bh=1nWfzgURTGtt75w4dP8mSFcskypLkgCfSwsONcOlJ4g=; b=CsnebsKn+jv5rzANFqVDt0y42N
+	1ZIrZf8+syUSFhVYqzcAHsu/SHMWEiNGG6BzWSSxrS9TPc48aTnK+x/CiJnOnXGGyrVpZBmyHg6g9
+	UaVOyB1NsltQ5+eSVKew+haYjqnN7HV9fNihrnJRf1GHRFR+N+bIljFoHMYDOwXhEM4XpjrS39lkh
+	k/9JfN1GiYNIebbG9GNyA9agdTakwqiF0qVjNAoAUbECd5qc4hJR+6TiQqfZRl6i6Vjjewnml1NjX
+	Oylv0hUMAB7U+71Eua8fQ2zdZd+NSRqdQYff23H2uClTfp868LWvT8JAYdS/cvc/Jnq0l+HlSF7yi
+	U+0tIfIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r9TOw-00Fvfy-2z;
-	Sat, 02 Dec 2023 17:03:34 +0000
-Received: from mgamail.intel.com ([192.198.163.8])
+	id 1r9s4u-002VM3-23;
+	Sun, 03 Dec 2023 19:24:32 +0000
+Received: from mail-yw1-x1132.google.com ([2607:f8b0:4864:20::1132])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r9TOt-00FvfM-11
-	for ath10k@lists.infradead.org;
-	Sat, 02 Dec 2023 17:03:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701536611; x=1733072611;
-  h=date:from:to:cc:subject:message-id;
-  bh=3vUahqSHmJEPdGJ0to5xF1Hywb6dSCwvY09GKqqflmA=;
-  b=b6m4SeU69DoJmGM8EA9Ksapd+iJUUMxmYEQ4oK7cR3llOTTu8x3E6FBZ
-   MsnkAGRW5H0pgGcPznj3nhBHSqcNDVBr/HeR8nU/sLCNmjtv1so1l0uSE
-   KaCbwHjv7PuaUr3Tj0hJ5vMMtzkDQw8vWForxF9bQbMfOX1SjndTFHZth
-   TG/MQFDy2ayWYIJh1yo/tW9OgdYde+EP7hNDoxQU9qPJo7jnSuIiar+fr
-   hln8ptSd8ilnmKLK2cTG3gWuTStvuZId2cQVmiPelOTFMaWCLqEzNHeLD
-   Vhqaug3znIeS67xXDKDdrapRJqekCUVr64e+/GMr0hCmizxFolOKanVRj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="6873521"
-X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="6873521"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 09:03:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="770049737"
-X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="770049737"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 02 Dec 2023 09:03:28 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r9TOn-0005XC-2i;
-	Sat, 02 Dec 2023 17:03:25 +0000
-Date: Sun, 03 Dec 2023 01:02:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 0dbdc9383054fd3ecbcacfeb364aace3db744314
-Message-ID: <202312030152.TuBqUGGx-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1r9s4q-002VKo-0w;
+	Sun, 03 Dec 2023 19:24:30 +0000
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5d3efc071e2so27835947b3.0;
+        Sun, 03 Dec 2023 11:24:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701631465; x=1702236265; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1nWfzgURTGtt75w4dP8mSFcskypLkgCfSwsONcOlJ4g=;
+        b=WJ4AJOySWU8P38i7G2UaWc7JKpGRqiok4TA7+gxvPilocf3sEQN4yJG9aFaoZraim5
+         Z/vhdEtS8QItgZ94OmBhCUkFy+bqo1cMHIUt6IOteFMhTQAe5QmycSyA70Tm+fpPMo1w
+         RJ0IU+Dko2UEFePvcF1o/EGieo2IoeIoR1JIFAKss04476yFhKBzOKJ072LrHB1ww2qG
+         A7okuoR6yn2MGh0rhuGY2T8eQP3ODhpXkTfn9FV5YGdgSATLnZWceTjBQsdVaZMJaEh5
+         3y4uj4FdLs+rVmQHAPsm03YyHHTSpDlgEeeMlbH4H6tfKIR51nWSBnL166mCQoeyOXP5
+         XomA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701631465; x=1702236265;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1nWfzgURTGtt75w4dP8mSFcskypLkgCfSwsONcOlJ4g=;
+        b=RgIcaR4KIuJY3qeC8GFDMEYxP/9MAk3THSYG3/zqTi/U+vBDpofk3QKkuhsfseVWEe
+         Ty8HHIS1RaxZJfH+XDNU9QOqOJ/2bHCGhR4WgjTRBPA1ZP8Ra/RLc9YjalDw/QGAP9mR
+         pZ7syi01R/0g2bdBcukLHDPEImwhmYWzwFfyF49ucJho4MNe2a/wn+Upfuo81SqDcwL5
+         SB2QEY6UULZBhU/+euTwp4Rk442cIvydY3qinzlNupljJl6xo6gQTDzUBRZkhBHUY5PM
+         H4Cvog2WFP7S9EEkLn8Che3+hW0+NQU32l1EjtW9LDLJL75dZgdgohiKd/pGVSLfKtGb
+         1dLA==
+X-Gm-Message-State: AOJu0YzknaYf3u8l4FVPBUGDVXomOuhKe6NyEiXjjBtaxHM41r2kCDKx
+	LaoDk9nnq7UBm26OZ2f9soM=
+X-Google-Smtp-Source: AGHT+IEg2kLnAuyhggdL3cVe4WpdM9rW+n2mVmMYjFUgPYcn1MOaP0Gt5Q6CzY6AfDTMwD33c5FMKw==
+X-Received: by 2002:a81:984c:0:b0:5d7:1941:2c2a with SMTP id p73-20020a81984c000000b005d719412c2amr2115940ywg.87.1701631465118;
+        Sun, 03 Dec 2023 11:24:25 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
+        by smtp.gmail.com with ESMTPSA id z83-20020a814c56000000b005d3c950160csm2377207ywa.4.2023.12.03.11.24.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 11:24:24 -0800 (PST)
+From: Yury Norov <yury.norov@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Disseldorp <ddiss@suse.de>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jens Axboe <axboe@kernel.dk>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	Karsten Graul <kgraul@linux.ibm.com>,
+	Karsten Keil <isdn@linux-pingi.de>,
+	Kees Cook <keescook@chromium.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oliver Neukum <oneukum@suse.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ping-Ke Shih <pkshih@realtek.com>,
+	Rich Felker <dalias@libc.org>,
+	Rob Herring <robh@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	GR-QLogic-Storage-Upstream@marvell.com,
+	alsa-devel@alsa-project.org,
+	ath10k@lists.infradead.org,
+	dmaengine@vger.kernel.org,
+	iommu@lists.linux.dev,
+	kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-bluetooth@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-media@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-net-drivers@amd.com,
+	linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	mpi3mr-linuxdrv.pdl@broadcom.com,
+	netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>,
+	Jan Kara <jack@suse.cz>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+	Alexey Klimov <klimov.linux@gmail.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: [PATCH v2 00/35] bitops: add atomic find_bit() operations
+Date: Sun,  3 Dec 2023 11:23:47 -0800
+Message-Id: <20231203192422.539300-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231202_090331_364793_BB38F539 
-X-CRM114-Status: UNSURE (   5.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231203_112428_437933_15E15040 
+X-CRM114-Status: GOOD (  23.29  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,196 +184,230 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 0dbdc9383054fd3ecbcacfeb364aace3db744314  Merge branch 'pending' into master-pending
+Add helpers around test_and_{set,clear}_bit() that allow to search for
+clear or set bits and flip them atomically.
 
-elapsed time: 1462m
+The target patterns may look like this:
 
-configs tested: 176
-configs skipped: 2
+	for (idx = 0; idx < nbits; idx++)
+		if (test_and_clear_bit(idx, bitmap))
+			do_something(idx);
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Or like this:
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231202   gcc  
-arc                   randconfig-002-20231202   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                           h3600_defconfig   gcc  
-arm                        mvebu_v5_defconfig   clang
-arm                           omap1_defconfig   clang
-arm                         orion5x_defconfig   clang
-arm                   randconfig-001-20231202   clang
-arm                   randconfig-002-20231202   clang
-arm                   randconfig-003-20231202   clang
-arm                   randconfig-004-20231202   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231202   clang
-arm64                 randconfig-002-20231202   clang
-arm64                 randconfig-003-20231202   clang
-arm64                 randconfig-004-20231202   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231202   gcc  
-csky                  randconfig-002-20231202   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20231202   clang
-hexagon               randconfig-002-20231202   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231202   clang
-i386         buildonly-randconfig-002-20231202   clang
-i386         buildonly-randconfig-003-20231202   clang
-i386         buildonly-randconfig-004-20231202   clang
-i386         buildonly-randconfig-005-20231202   clang
-i386         buildonly-randconfig-006-20231202   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231202   clang
-i386                  randconfig-002-20231202   clang
-i386                  randconfig-003-20231202   clang
-i386                  randconfig-004-20231202   clang
-i386                  randconfig-005-20231202   clang
-i386                  randconfig-006-20231202   clang
-i386                  randconfig-011-20231202   gcc  
-i386                  randconfig-012-20231202   gcc  
-i386                  randconfig-013-20231202   gcc  
-i386                  randconfig-014-20231202   gcc  
-i386                  randconfig-015-20231202   gcc  
-i386                  randconfig-016-20231202   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch                 loongson3_defconfig   gcc  
-loongarch             randconfig-001-20231202   gcc  
-loongarch             randconfig-002-20231202   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        mvme16x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                        bcm47xx_defconfig   gcc  
-mips                     loongson1c_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231202   gcc  
-nios2                 randconfig-002-20231202   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231202   gcc  
-parisc                randconfig-002-20231202   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      cm5200_defconfig   gcc  
-powerpc                     ksi8560_defconfig   clang
-powerpc                   microwatt_defconfig   clang
-powerpc               randconfig-001-20231202   clang
-powerpc               randconfig-002-20231202   clang
-powerpc               randconfig-003-20231202   clang
-powerpc64             randconfig-001-20231202   clang
-powerpc64             randconfig-002-20231202   clang
-powerpc64             randconfig-003-20231202   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231202   clang
-riscv                 randconfig-002-20231202   clang
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231202   gcc  
-s390                  randconfig-002-20231202   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          lboxre2_defconfig   gcc  
-sh                    randconfig-001-20231202   gcc  
-sh                    randconfig-002-20231202   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sh                           se7206_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231202   gcc  
-sparc64               randconfig-002-20231202   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231202   clang
-um                    randconfig-002-20231202   clang
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231202   clang
-x86_64       buildonly-randconfig-002-20231202   clang
-x86_64       buildonly-randconfig-003-20231202   clang
-x86_64       buildonly-randconfig-004-20231202   clang
-x86_64       buildonly-randconfig-005-20231202   clang
-x86_64       buildonly-randconfig-006-20231202   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231202   gcc  
-x86_64                randconfig-002-20231202   gcc  
-x86_64                randconfig-003-20231202   gcc  
-x86_64                randconfig-004-20231202   gcc  
-x86_64                randconfig-005-20231202   gcc  
-x86_64                randconfig-006-20231202   gcc  
-x86_64                randconfig-011-20231202   clang
-x86_64                randconfig-012-20231202   clang
-x86_64                randconfig-013-20231202   clang
-x86_64                randconfig-014-20231202   clang
-x86_64                randconfig-015-20231202   clang
-x86_64                randconfig-016-20231202   clang
-x86_64                randconfig-071-20231202   clang
-x86_64                randconfig-072-20231202   clang
-x86_64                randconfig-073-20231202   clang
-x86_64                randconfig-074-20231202   clang
-x86_64                randconfig-075-20231202   clang
-x86_64                randconfig-076-20231202   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20231202   gcc  
-xtensa                randconfig-002-20231202   gcc  
+	do {
+		bit = find_first_bit(bitmap, nbits);
+		if (bit >= nbits)
+			return nbits;
+	} while (!test_and_clear_bit(bit, bitmap));
+	return bit;
+
+In both cases, the opencoded loop may be converted to a single function
+or iterator call. Correspondingly:
+
+	for_each_test_and_clear_bit(idx, bitmap, nbits)
+		do_something(idx);
+
+Or:
+	return find_and_clear_bit(bitmap, nbits);
+
+Obviously, the less routine code people have to write themself, the
+less probability to make a mistake.
+
+Those are not only handy helpers but also resolve a non-trivial
+issue of using non-atomic find_bit() together with atomic
+test_and_{set,clear)_bit().
+
+The trick is that find_bit() implies that the bitmap is a regular
+non-volatile piece of memory, and compiler is allowed to use such
+optimization techniques like re-fetching memory instead of caching it.
+
+For example, find_first_bit() is implemented like this:
+
+      for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
+              val = addr[idx];
+              if (val) {
+                      sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
+                      break;
+              }
+      }
+
+On register-memory architectures, like x86, compiler may decide to
+access memory twice - first time to compare against 0, and second time
+to fetch its value to pass it to __ffs().
+
+When running find_first_bit() on volatile memory, the memory may get
+changed in-between, and for instance, it may lead to passing 0 to
+__ffs(), which is undefined. This is a potentially dangerous call.
+
+find_and_clear_bit() as a wrapper around test_and_clear_bit()
+naturally treats underlying bitmap as a volatile memory and prevents
+compiler from such optimizations.
+
+Now that KCSAN is catching exactly this type of situations and warns on
+undercover memory modifications. We can use it to reveal improper usage
+of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
+
+The 1st patch of the series adds the following atomic primitives:
+
+	find_and_set_bit(addr, nbits);
+	find_and_set_next_bit(addr, nbits, start);
+	...
+
+Here find_and_{set,clear} part refers to the corresponding
+test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
+derive their semantics from corresponding find() or test() functions.
+
+For brevity, the naming omits the fact that we search for zero bit in
+find_and_set, and correspondingly search for set bit in find_and_clear
+functions.
+
+The patch also adds iterators with atomic semantics, like
+for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
+corresponding atomic operation with 'for_each'.
+
+This series is a result of discussion [1]. All find_bit() functions imply
+exclusive access to the bitmaps. However, KCSAN reports quite a number
+of warnings related to find_bit() API. Some of them are not pointing
+to real bugs because in many situations people intentionally allow
+concurrent bitmap operations.
+
+If so, find_bit() can be annotated such that KCSAN will ignore it:
+
+        bit = data_race(find_first_bit(bitmap, nbits));
+
+This series addresses the other important case where people really need
+atomic find ops. As the following patches show, the resulting code
+looks safer and more verbose comparing to opencoded loops followed by
+atomic bit flips.
+
+In [1] Mirsad reported 2% slowdown in a single-thread search test when
+switching find_bit() function to treat bitmaps as volatile arrays. On
+the other hand, kernel robot in the same thread reported +3.7% to the
+performance of will-it-scale.per_thread_ops test.
+
+Assuming that our compilers are sane and generate better code against
+properly annotated data, the above discrepancy doesn't look weird. When
+running on non-volatile bitmaps, plain find_bit() outperforms atomic
+find_and_bit(), and vice-versa.
+
+So, all users of find_bit() API, where heavy concurrency is expected,
+are encouraged to switch to atomic find_and_bit() as appropriate.
+
+The 1st patch of this series adds atomic find_and_bit() API, 2nd adds
+a basic test for new API, and all the following patches spread it over
+the kernel.
+
+They can be applied separately from each other on per-subsystems basis,
+or I can pull them in bitmap tree, as appropriate.
+
+[1] https://lore.kernel.org/lkml/634f5fdf-e236-42cf-be8d-48a581c21660@alu.unizg.hr/T/#m3e7341eb3571753f3acf8fe166f3fb5b2c12e615
+---
+v1: https://lore.kernel.org/netdev/20231118155105.25678-29-yury.norov@gmail.com/T/
+v2:
+ - Add a basic test for the new API # Bart Van Assche;
+ - Add collected reviewers' tags. Thank you guys!
+ - Fix typos where found/pointed by;
+ - Drop erroneous patch #v1-31 ("drivers/perf: optimize m1_pmu_get_event_idx()...") @ Marc Zyngier;
+ - Drop unneeded patch #v1-12 ("wifi: intel: use atomic find_bit() API...") @ Johannes Berg;
+ - Patch #v1-15: split SCSI changes per subsystems @ Bart Van Assche;
+ - Patch  #5: keep changes inside __mm_cid_try_get() @ Mathieu Desnoyers;
+ - Patch  #8: use find_and_set_next_bit() @ Will Deacon;
+ - Patch #13: keep test against stimer->config.enable @ Vitaly Kuznetsov;
+ - Patch #15: use find_and_set_next_bit @ Bart Van Assche;
+ - Patch #31: edit commit message @ Tony Lu, Alexandra Winter;
+ - Patch #35: edit tag @ John Paul Adrian Glaubitz;
+
+Yury Norov (35):
+  lib/find: add atomic find_bit() primitives
+  lib/find: add test for atomic find_bit() ops
+  lib/sbitmap; make __sbitmap_get_word() using find_and_set_bit()
+  watch_queue: use atomic find_bit() in post_one_notification()
+  sched: add cpumask_find_and_set() and use it in __mm_cid_get()
+  mips: sgi-ip30: rework heart_alloc_int()
+  sparc: fix opencoded find_and_set_bit() in alloc_msi()
+  perf/arm: optimize opencoded atomic find_bit() API
+  drivers/perf: optimize ali_drw_get_counter_idx() by using find_bit()
+  dmaengine: idxd: optimize perfmon_assign_event()
+  ath10k: optimize ath10k_snoc_napi_poll() by using find_bit()
+  wifi: rtw88: optimize rtw_pci_tx_kick_off() by using find_bit()
+  KVM: x86: hyper-v: optimize and cleanup kvm_hv_process_stimers()
+  PCI: hv: switch hv_get_dom_num() to use atomic find_bit()
+  scsi: core: use atomic find_bit() API where appropriate
+  scsi: mpi3mr: switch to using atomic find_and_set_bit()
+  scsi: qedi: rework qedi_get_task_idx()
+  powerpc: use atomic find_bit() API where appropriate
+  iommu: use atomic find_bit() API where appropriate
+  media: radio-shark: use atomic find_bit() API where appropriate
+  sfc: switch to using atomic find_bit() API where appropriate
+  tty: nozomi: optimize interrupt_handler()
+  usb: cdc-acm: optimize acm_softint()
+  block: null_blk: fix opencoded find_and_set_bit() in get_tag()
+  RDMA/rtrs: fix opencoded find_and_set_bit_lock() in
+    __rtrs_get_permit()
+  mISDN: optimize get_free_devid()
+  media: em28xx: cx231xx: fix opencoded find_and_set_bit()
+  ethernet: rocker: optimize ofdpa_port_internal_vlan_id_get()
+  serial: sc12is7xx: optimize sc16is7xx_alloc_line()
+  bluetooth: optimize cmtp_alloc_block_id()
+  net: smc:  use find_and_set_bit() in smc_wr_tx_get_free_slot_index()
+  ALSA: use atomic find_bit() functions where applicable
+  m68k: rework get_mmu_context()
+  microblaze: rework get_mmu_context()
+  sh: mach-x3proto: rework ilsel_enable()
+
+ arch/m68k/include/asm/mmu_context.h          |  11 +-
+ arch/microblaze/include/asm/mmu_context_mm.h |  11 +-
+ arch/mips/sgi-ip30/ip30-irq.c                |  12 +-
+ arch/powerpc/mm/book3s32/mmu_context.c       |  10 +-
+ arch/powerpc/platforms/pasemi/dma_lib.c      |  45 +--
+ arch/powerpc/platforms/powernv/pci-sriov.c   |  12 +-
+ arch/sh/boards/mach-x3proto/ilsel.c          |   4 +-
+ arch/sparc/kernel/pci_msi.c                  |   9 +-
+ arch/x86/kvm/hyperv.c                        |  39 ++-
+ drivers/block/null_blk/main.c                |  41 +--
+ drivers/dma/idxd/perfmon.c                   |   8 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c       |  15 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h        |  10 +-
+ drivers/iommu/msm_iommu.c                    |  18 +-
+ drivers/isdn/mISDN/core.c                    |   9 +-
+ drivers/media/radio/radio-shark.c            |   5 +-
+ drivers/media/radio/radio-shark2.c           |   5 +-
+ drivers/media/usb/cx231xx/cx231xx-cards.c    |  16 +-
+ drivers/media/usb/em28xx/em28xx-cards.c      |  37 +--
+ drivers/net/ethernet/rocker/rocker_ofdpa.c   |  11 +-
+ drivers/net/ethernet/sfc/rx_common.c         |   4 +-
+ drivers/net/ethernet/sfc/siena/rx_common.c   |   4 +-
+ drivers/net/ethernet/sfc/siena/siena_sriov.c |  14 +-
+ drivers/net/wireless/ath/ath10k/snoc.c       |   9 +-
+ drivers/net/wireless/realtek/rtw88/pci.c     |   5 +-
+ drivers/net/wireless/realtek/rtw89/pci.c     |   5 +-
+ drivers/pci/controller/pci-hyperv.c          |   7 +-
+ drivers/perf/alibaba_uncore_drw_pmu.c        |  10 +-
+ drivers/perf/arm-cci.c                       |  24 +-
+ drivers/perf/arm-ccn.c                       |  10 +-
+ drivers/perf/arm_dmc620_pmu.c                |   9 +-
+ drivers/perf/arm_pmuv3.c                     |   8 +-
+ drivers/scsi/mpi3mr/mpi3mr_os.c              |  21 +-
+ drivers/scsi/qedi/qedi_main.c                |   9 +-
+ drivers/scsi/scsi_lib.c                      |   7 +-
+ drivers/tty/nozomi.c                         |   5 +-
+ drivers/tty/serial/sc16is7xx.c               |   8 +-
+ drivers/usb/class/cdc-acm.c                  |   5 +-
+ include/linux/cpumask.h                      |  12 +
+ include/linux/find.h                         | 293 +++++++++++++++++++
+ kernel/sched/sched.h                         |  14 +-
+ kernel/watch_queue.c                         |   6 +-
+ lib/find_bit.c                               |  85 ++++++
+ lib/sbitmap.c                                |  46 +--
+ lib/test_bitmap.c                            |  61 ++++
+ net/bluetooth/cmtp/core.c                    |  10 +-
+ net/smc/smc_wr.c                             |  10 +-
+ sound/pci/hda/hda_codec.c                    |   7 +-
+ sound/usb/caiaq/audio.c                      |  13 +-
+ 49 files changed, 629 insertions(+), 420 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
 
