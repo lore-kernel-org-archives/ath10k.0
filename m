@@ -4,76 +4,169 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1DF9C4167B
-	for <ath10k@archiver.kernel.org>; Mon,  4 Dec 2023 16:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B2BC4167B
+	for <ath10k@archiver.kernel.org>; Mon,  4 Dec 2023 18:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uNOR5hPbxSi6oOJtDcDO/9t8S2G/RM9x8pzeEdejC9g=; b=rEfzs/fAHZt4n/5rFBGH572AQ3
-	X04TmKO+xWby7BP6fq42RSKA/ct1FVg7QHE0eiHAap9wxGitr0MxqWPKiwyIxT8Ji+4AwRlwLCD/E
-	Q00rebHn9ifWPOiclLpppmi0qbfFjy6BVqYsiIAl0PedHwh9SPoI1zTFz8JiT1tLt93DMzbP5NVyn
-	LgSWZEQeNN0RdU/lMtJhYrhkzqdEJSPDaH16juteugPtst3Q+SPkFRmUclNfNkPoIKOFktp09XIoC
-	g6N3mzYAVKyv8YY944Ax+whLsYv8zgrA4ciFRm8Nk8PoCFQCrR+7Hjcgg2n8u3CwRa4qKFeuoxwB6
-	PVk+bYBw==;
+	bh=irUnd9FLl+EUyGzI1qEoZWcYrjl3IwQklkC+h2BTDz0=; b=HYtSiFxxyRNlW65VqvTAbZaESX
+	CzwRcMuilabC0pMHiMa062Ahbh05i1EklEaD2pHs8adpsmHVKmKIDc40uPUBP/oq3VvOQHTJ0X4qf
+	v678LbxR9fogF0HlD+LS1Yu5BfyyAYfDQIhXZxhjnfM+j+yx1pz5elO4VjtWCqjfElVdod4O2d6Uh
+	ipwWU+I/k8b/Ts//KNQW7fImruiujky6IpUjBjZL/DJDEUhu2a2b5L4Q0cJ5SIN723cylXYPoZv86
+	AnsGmBczf+O2gDnPAJfQ3X+c6chilWy4g0HGErTfaY5jgZ/xGUE/bOI1t/TmWWHKbb5cag+UP95us
+	hz6XyHhQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAC8F-0058DH-2w;
-	Mon, 04 Dec 2023 16:49:20 +0000
-Received: from mail-yw1-x1131.google.com ([2607:f8b0:4864:20::1131])
+	id 1rAE28-005MWz-2Y;
+	Mon, 04 Dec 2023 18:51:08 +0000
+Received: from smtp-out2.suse.de ([195.135.223.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAC8A-0058Be-1h
-	for ath10k@lists.infradead.org;
-	Mon, 04 Dec 2023 16:49:16 +0000
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5d8a772157fso10113777b3.3
-        for <ath10k@lists.infradead.org>; Mon, 04 Dec 2023 08:49:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701708551; x=1702313351; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uNOR5hPbxSi6oOJtDcDO/9t8S2G/RM9x8pzeEdejC9g=;
-        b=hItW0x47y/1l7nP+ePiKEcEQ1KUSkErxWWtuTrfYJJU9LDwjFceUzomx1zMmAqtSEw
-         watOKCB3qMi7Gam5N4rXongYiCRG/4GOpCP+GJZP85bc6Nci5Jfa5iHdcx6Jv4wozf7l
-         3HQskaTd8ucGFahjmHU8D2Sm7N7tdpzpoBo49TCIFfoDW7YbHdmpACu3H1P6hl7Ztmp1
-         fbOUain1akh3BIyAXu1AWOwhEOG9LqFzAGUmxmNPaIgOklNJTrHa6Mk9ga4pE/RA3f0q
-         9LxtFlLEgh+RpvmOE+eLu1BbYaEsvjI/KjK4I1RYIcT8yNOqlxnUfMHlMekb4dAbJeXy
-         7uNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701708551; x=1702313351;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uNOR5hPbxSi6oOJtDcDO/9t8S2G/RM9x8pzeEdejC9g=;
-        b=K/zx2jwzVxY+sqQthcILDk/7BRYoysl/err+j/IyfW3xbE1JCKp5G+hkj75YNrscHI
-         xNTekydPkxVk6qlnnlz9Y6tSvU/yr+M34Gr/0RjQ8Ke2zTG9CkVDRRDS7lysZSxuCQlP
-         Jzi6mMz7tjy16vhEmpA6ngMulWQZhPaZmr/1TkKJFs/v1rHgl5ZUWqgcnlkFNTJKqFwK
-         x0Jr7h3OAnvRSaZw3k2nzv/rXpnjhvI84SZbH0LhtzvNIoLgrpWV2voQjYH/Kk8ZNnt7
-         dUPE4LWZXzepA5XPXGmwvREaALe/AvQM+XQ2WId05tQ1AXltYgGahOv6qDzgZeuwKO9B
-         UU9A==
-X-Gm-Message-State: AOJu0Yw3FBA++xC+1a8uBdR9lptrqU1s6MnVyydJFRpZFTtkbv1gTFt5
-	ko+mdyMv2AsI09B1+IbuCXquMqbntVBnJZd/ejFJfcAM/M0jm7JT
-X-Google-Smtp-Source: AGHT+IFHh6JHzSU9qHaDuUKxHyO45txUlNPSX7zn38qqp5CrYHqcA3g2fJfazOckxp3XQ/bZY+vFQOjhCpU8XvUebG4=
-X-Received: by 2002:a81:9a4f:0:b0:5d7:1941:aac with SMTP id
- r76-20020a819a4f000000b005d719410aacmr3444165ywg.71.1701708551653; Mon, 04
- Dec 2023 08:49:11 -0800 (PST)
+	id 1rAE23-005MVf-2l;
+	Mon, 04 Dec 2023 18:51:06 +0000
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 14A361FE6A;
+	Mon,  4 Dec 2023 18:51:02 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F113513B65;
+	Mon,  4 Dec 2023 18:51:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id dGqaOpUfbmXlYQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 04 Dec 2023 18:51:01 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 6870FA07DB; Mon,  4 Dec 2023 19:51:01 +0100 (CET)
+Date: Mon, 4 Dec 2023 19:51:01 +0100
+From: Jan Kara <jack@suse.cz>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Disseldorp <ddiss@suse.de>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>, Karsten Graul <kgraul@linux.ibm.com>,
+	Karsten Keil <isdn@linux-pingi.de>,
+	Kees Cook <keescook@chromium.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>,
+	Rob Herring <robh@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>, Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org,
+	ath10k@lists.infradead.org, dmaengine@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-net-drivers@amd.com, linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, mpi3mr-linuxdrv.pdl@broadcom.com,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org,
+	Jan Kara <jack@suse.cz>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+	Alexey Klimov <klimov.linux@gmail.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: Re: [PATCH v2 00/35] bitops: add atomic find_bit() operations
+Message-ID: <20231204185101.ddmkvsr2xxsmoh2u@quack3>
+References: <20231203192422.539300-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-References: <CAA8EJpp+SJpX4FFmcTm133KNtztTJH0ovTLRm0bftahPT8a1kw@mail.gmail.com>
- <87leaaqg7a.fsf@kernel.org> <CAA8EJpomDw0sBOT_t5F33Uqn4FeWRBewv_=_4q4OzvU+JzXH-g@mail.gmail.com>
- <878r6aq71z.fsf@kernel.org>
-In-Reply-To: <878r6aq71z.fsf@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 4 Dec 2023 18:49:00 +0200
-Message-ID: <CAA8EJpoeozL_Vo0ivV6Gc3sPvANjz69e9jLrSgiegbv5LJUFXw@mail.gmail.com>
-Subject: Re: ath10k / WCN3990: firmware-5.bin and wlanmdsp.mbn being out of sync
-To: Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org, 
-	"open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231203192422.539300-1-yury.norov@gmail.com>
+X-Spamd-Bar: ++++++++++++++
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none;
+	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz;
+	dmarc=none
+X-Rspamd-Queue-Id: 14A361FE6A
+X-Spamd-Result: default: False [14.88 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 R_SPF_SOFTFAIL(4.60)[~all];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[100];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FORGED_RECIPIENTS(2.00)[m:yury.norov@gmail.com,m:davem@davemloft.net,m:jejb@linux.ibm.com,m:haris.iqbal@ionos.com,m:akinobu.mita@gmail.com,m:akpm@linux-foundation.org,m:andersson@kernel.org,m:bp@alien8.de,m:brauner@kernel.org,m:dave.hansen@linux.intel.com,m:ecree.xilinx@gmail.com,m:edumazet@google.com,m:fenghua.yu@intel.com,m:geert@linux-m68k.org,m:gregory.greenman@intel.com,m:hughd@google.com,m:kuba@kernel.org,m:axboe@kernel.dk,m:jirislaby@kernel.org,m:kvalo@kernel.org,m:kgraul@linux.ibm.com,m:isdn@linux-pingi.de,m:keescook@chromium.org,m:leon@kernel.org,m:mark.rutland@arm.com,m:habetsm.xilinx@gmail.com,m:mchehab@kernel.org,m:mpe@ellerman.id.au,m:npiggin@gmail.com,m:peterz@infradead.org,m:dalias@libc.org,m:robh@kernel.org,m:robin.murphy@arm.com,m:seanjc@google.com,m:xueshuai@linux.alibaba.com,m:rostedt@goodmis.org,m:tsbogend@alpha.franken.de,m:tglx@linutronix.de,m:wenjia@linux.ibm.com,m:will@kernel.org,m:alsa-devel@alsa-project.org,m:linux-net-drivers@amd.com,m:mpi3mr-linuxdrv.pdl
+ @broadcom.com,m:x86@kernel.org,m:mirsad.todorovac@alu.unizg.hr,m:willy@infradead.org,m:andriy.shevchenko@linux.intel.com,m:maxim.kuvyrkov@linaro.org,m:klimov.linux@gmail.com,m:bvanassche@acm.org,s:s.shtylyov@omp.ru];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[wp.pl,xs4all.nl];
+	 NEURAL_SPAM_SHORT(2.49)[0.832];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DMARC_NA(1.20)[suse.cz];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,davemloft.net,zytor.com,linux.ibm.com,microsoft.com,ionos.com,gmail.com,linux-foundation.org,kernel.org,alien8.de,nvidia.com,opensource.wdc.com,linux.intel.com,suse.de,google.com,intel.com,linux-m68k.org,linuxfoundation.org,xs4all.nl,redhat.com,perex.cz,ziepe.ca,kernel.dk,resnulli.us,linux-pingi.de,chromium.org,arm.com,ellerman.id.au,monstr.eu,suse.com,infradead.org,realtek.com,libc.org,linux.alibaba.com,wp.pl,goodmis.org,alpha.franken.de,linutronix.de,users.sourceforge.jp,marvell.com,alsa-project.org,lists.infradead.org,lists.linux.dev,lists.linux-m68k.org,amd.com,lists.ozlabs.org,broadcom.com,suse.cz,alu.unizg.hr,rasmusvillemoes.dk,linaro.org,acm.org,omp.ru];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231204_084914_912450_6DC05C1A 
-X-CRM114-Status: GOOD (  38.01  )
+X-CRM114-CacheID: sfid-20231204_105104_952811_214214D7 
+X-CRM114-Status: GOOD (  27.22  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,106 +181,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, 4 Dec 2023 at 18:14, Kalle Valo <kvalo@kernel.org> wrote:
->
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
->
-> > On Mon, 4 Dec 2023 at 14:56, Kalle Valo <kvalo@kernel.org> wrote:
-> >
-> >>
-> >> Hi Dmitry,
-> >>
-> >> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
-> >>
-> >> > I wanted to ask your opinion regarding one of the issues we stumbled
-> >> > upon on the Qualcomm RB1 and RB2 platforms. These platforms use ath10k
-> >> > snoc (WCN3990) WiFi "card". We noticed the following messages being
-> >> > spawned on the console, which I traced it to the
-> >> > ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL feature:
-> >> >
-> >> > ath10k_snoc c800000.wifi: chan info: invalid frequency 0 (idx 41 out of bounds)
-> >> >
-> >> > As a reminder, on this platform the wlan firmware and firmware-N.bin
-> >> > files come separately.
-> >> > The wlanmdsp.mbn is downloaded by the onboard modem DSP via the
-> >> > tqftpserv request (which is served from the board-specific folder
-> >> > qcom/qcm2210). The firmware-N.bin file is loaded by the WiFi driver
-> >> > itself from the generic folder, ath10k/WCN3990/hw1.0. Current
-> >> > firmware-5.bin file was provided with the sdm845's wlanmdsp.mbn, which
-> >> > is older than qcm2210/qrb4210's wlanmdsp.mbn.
-> >> >
-> >> > I'm looking for suggestions on how to make ath10k driver load
-> >> > firmware-N.bin file which corresponds to the board-specific
-> >> > wlanmdsp.mbn.
-> >>
-> >> We have had similar discussions in the past but it didn't go very far.
-> >> It would be so nice if you could finally fix this :) At one point we
-> >> even had a discussion that we might need something similar for ath11k
-> >> but it didn't go anywhere.
-> >>
-> >> > In particular I'd like to hear your opinion on the following proposal:
-> >> >
-> >> > Add the  optional property to the board DT, that specifies:
-> >> > firmware-name = "path/to/wlanmdsp.mbn".  The property, if present,
-> >> > will be used as an override for the firmware directory. So, while the
-> >> > ath10k driver will not load wlanmdsp.mbn on its own, it will still
-> >> > look for the firmware-N files in the specified directory.
-> >>
-> >> Back in the day I was thinking something like below, please let me know
-> >> what you think.
-> >>
-> >> So the normal firmware path for WCN3990 is:
-> >>
-> >> ath10k/WCN3990/hw1.0/
-> >>
-> >> My idea was that if we could extend it for different "platforms" (not
-> >> sure what's the proper term for this) by having platform specific
-> >> directories:
-> >>
-> >> ath10k/WCN3990/hw1.0-platform/
-> >>
-> >> (Replace "platform" with a unique name for the platform, for example
-> >> "acme-kv7" for a product from Acme with model name kv7.)
-> >>
-> >> Then DT could inform ath10k about this "platform" string and ath10k
-> >> would then download boath firmware-N.bin and board-2.bin from the
-> >> platform specific directory.
-> >>
-> >> And even cleaner if we could have the *.mbn firmware files in the same
-> >> directory, even if ath10k doesn't access them directly.
-> >
-> > We can, and a symlink from qcom/SoC/.../dir to that subdir.
-> >
-> > So, for example, for Pixel-3, using your schema we will have:
-> >
-> > ath10k/WCN3990/hw1.0-blueline/wlanmdsp.mbn
-> > ath10k/WCN3990/hw1.0-blueline/firmware-5.bin
-> > ath10k/WCN3990/hw1.0-blueline/board-2.bin
-> >
-> > qcom/sdm845/Google/blueline/wlanmdsp.mbn ->
-> > ../../../../ath10k/WCN3990/hw1.0-blueline/wlanmdsp.mbn
-> >
-> > This sounds mostly fine to me. My only suggestions is to change it as following:
-> >
-> > ath10k/WCN3990/hw1.0/board-2.bin
-> >
-> > ath10k/WCN3990/hw1.0/blueline/wlanmdsp.mbn
-> > ath10k/WCN3990/hw1.0/blueline/firmware-5.bin
-> > ath10k/WCN3990/hw1.0/blueline/board-2.bin
-> >
-> > qcom/sdm845/Google/blueline/wlanmdsp.mbn ->
-> > ../../../../ath10k/WCN3990/hw1.0/blueline/wlanmdsp.mbn
->
-> Is there a specific reason why you propose adding a new subdirectory?
-> Personally I find it confusing that hw1.0 directory contains the
-> firmware files and then there's a subdirectory which also contains
-> similar firmware files.
+Hello Yury!
 
-My main idea was to allow fallback at least for board-2.bin. I don't
-think we should have 10 instances of the file (or load it from the
-platform-specific location).
+On Sun 03-12-23 11:23:47, Yury Norov wrote:
+> Add helpers around test_and_{set,clear}_bit() that allow to search for
+> clear or set bits and flip them atomically.
+> 
+> The target patterns may look like this:
+> 
+> 	for (idx = 0; idx < nbits; idx++)
+> 		if (test_and_clear_bit(idx, bitmap))
+> 			do_something(idx);
+> 
+> Or like this:
+> 
+> 	do {
+> 		bit = find_first_bit(bitmap, nbits);
+> 		if (bit >= nbits)
+> 			return nbits;
+> 	} while (!test_and_clear_bit(bit, bitmap));
+> 	return bit;
+> 
+> In both cases, the opencoded loop may be converted to a single function
+> or iterator call. Correspondingly:
+> 
+> 	for_each_test_and_clear_bit(idx, bitmap, nbits)
+> 		do_something(idx);
+> 
+> Or:
+> 	return find_and_clear_bit(bitmap, nbits);
 
+These are fine cleanups but they actually don't address the case that has
+triggered all these changes - namely the xarray use of find_next_bit() in
+xas_find_chunk().
+
+...
+> This series is a result of discussion [1]. All find_bit() functions imply
+> exclusive access to the bitmaps. However, KCSAN reports quite a number
+> of warnings related to find_bit() API. Some of them are not pointing
+> to real bugs because in many situations people intentionally allow
+> concurrent bitmap operations.
+> 
+> If so, find_bit() can be annotated such that KCSAN will ignore it:
+> 
+>         bit = data_race(find_first_bit(bitmap, nbits));
+
+No, this is not a correct thing to do. If concurrent bitmap changes can
+happen, find_first_bit() as it is currently implemented isn't ever a safe
+choice because it can call __ffs(0) which is dangerous as you properly note
+above. I proposed adding READ_ONCE() into find_first_bit() / find_next_bit()
+implementation to fix this issue but you disliked that. So other option we
+have is adding find_first_bit() and find_next_bit() variants that take
+volatile 'addr' and we have to use these in code like xas_find_chunk()
+which cannot be converted to your new helpers.
+
+> This series addresses the other important case where people really need
+> atomic find ops. As the following patches show, the resulting code
+> looks safer and more verbose comparing to opencoded loops followed by
+> atomic bit flips.
+> 
+> In [1] Mirsad reported 2% slowdown in a single-thread search test when
+> switching find_bit() function to treat bitmaps as volatile arrays. On
+> the other hand, kernel robot in the same thread reported +3.7% to the
+> performance of will-it-scale.per_thread_ops test.
+
+It was actually me who reported the regression here [2] but whatever :)
+
+[2] https://lore.kernel.org/all/20231011150252.32737-1-jack@suse.cz
+
+> Assuming that our compilers are sane and generate better code against
+> properly annotated data, the above discrepancy doesn't look weird. When
+> running on non-volatile bitmaps, plain find_bit() outperforms atomic
+> find_and_bit(), and vice-versa.
+> 
+> So, all users of find_bit() API, where heavy concurrency is expected,
+> are encouraged to switch to atomic find_and_bit() as appropriate.
+
+Well, all users where any concurrency can happen should switch. Otherwise
+they are prone to the (admittedly mostly theoretical) data race issue.
+
+								Honza
 -- 
-With best wishes
-Dmitry
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
