@@ -4,142 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F13EC10DC1
-	for <ath10k@archiver.kernel.org>; Mon,  4 Dec 2023 13:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9BC9C4167B
+	for <ath10k@archiver.kernel.org>; Mon,  4 Dec 2023 13:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NBKOM2SEOqPWSARms1FZqo3HG0Jzuf9SBsrSvQ47fPc=; b=TlpkkEU3tnEixTpx00zG2wH4sn
-	1U1Y9Wx46rSku1pH5wkwjOyevoFNW1Wp6feNuQlfmD4a2EZ4yAlTV6vYjvTRfqQfprEw+tkFSWtrV
-	hhTG0DOeOhvI9TWyoTkiJNVFDVAeRDileAAShMAtKc3YeaTJPeBzjlZtnkVHY7aErt1CTJtI36DIF
-	LQlQQ/GvtW7CuYzu7iMjfLLUPssYMQiEeQGt2SlNtRxCvVR/o3syeqMYuioTpbaLd1ZwZ5Vp1fSm5
-	BtT8X4vasAO/zY2W3xnpWSQ6z7qVE5aU+7eJoL68L0zQ4CUk07iOrYY5DnTQmUaTgCXbtFrPzfbva
-	iKov9qmg==;
+	bh=2fW3mjZFFzwIx8dmT9JEHvadR6/J6k7n4MRMrtMRyEY=; b=LXLjp1kW24Fxpp+Kbna71tJ42m
+	WxCPGMfV1rOuPT5iqeK2PViKgyPe8sWzh17J/Absc60/+WBqFQgRUU+jZxFGH4AtCVavdktJ7kClY
+	AjrIOPZQ1rVD7pwixzFLyLF5e0bxZPC0REo+aNfxe7hV/g1UDdoo/lAVGecgjf8rvIuhWXVzIiS98
+	2yMg1ZmwvwQ1fy4pnzXiyYFWv7kTd+XPg2X+DbITaRbg921vhkBW4xKp9ASTZJfYCFyOXrz4So5+s
+	znhm0y625V4qXJ+FdGprYKA7zhiM0cgwp+zdaFRqd8Jc44uOamBNoOyrntOjGPcDfvAhHMgK2uvPk
+	iNOv/vwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rA8fq-004OeJ-1s;
-	Mon, 04 Dec 2023 13:07:46 +0000
-Received: from mgamail.intel.com ([192.198.163.7])
+	id 1rA8zS-004bxv-02;
+	Mon, 04 Dec 2023 13:28:02 +0000
+Received: from mail-yw1-x1135.google.com ([2607:f8b0:4864:20::1135])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rA8fn-004Oc4-0t;
-	Mon, 04 Dec 2023 13:07:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701695263; x=1733231263;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UpKiTiLV03HLrMK8OyY7m+bGEMtR9L95NOiQzYClrhU=;
-  b=mL/AhxG2cRyV76hoGRxaT6HIRQLBi4jQ0t6ExwrwYbjBdt5wmQrXynbn
-   GTBdVCnZGZZHbYefM2soFbW0jhVDrMI4/JQ5g97pRCXahcsXnikEQAheL
-   +LKVG3zEJ4S4eu66Ema6Nc1cYzFAIUlychxJUCmzDWJLS4z6dwiboDXvj
-   eEm4R+Hed4mL4CHYbQHrdq3jpXjkmx6ExOoYtLVnhieYUSIKHQmgY5NUY
-   n1zZW1AxKeq2CZmXc3z9Q/kxJY7MEElU3zGkq4v2s1erUYoLrgEGvtAFY
-   UBeDSVp1egdwxuzGz5+ahLU5lCbjULVAb5z064zgm9DXXW5IhPX75kCje
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="15275166"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="15275166"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:07:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="763935696"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="763935696"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:07:13 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rA8fA-00000001kqj-2oCl;
-	Mon, 04 Dec 2023 15:07:04 +0200
-Date: Mon, 4 Dec 2023 15:07:04 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Disseldorp <ddiss@suse.de>,
-	Edward Cree <ecree.xilinx@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>,
-	Kalle Valo <kvalo@kernel.org>, Karsten Graul <kgraul@linux.ibm.com>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Kees Cook <keescook@chromium.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>,
-	Rob Herring <robh@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Stanislaw Gruszka <stf_xl@wp.pl>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>, Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org,
-	ath10k@lists.infradead.org, dmaengine@vger.kernel.org,
-	iommu@lists.linux.dev, kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-net-drivers@amd.com, linux-pci@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-sound@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, mpi3mr-linuxdrv.pdl@broadcom.com,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org,
-	Jan Kara <jack@suse.cz>,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-	Alexey Klimov <klimov.linux@gmail.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: Re: [PATCH v2 00/35] bitops: add atomic find_bit() operations
-Message-ID: <ZW3O-P_98eubKxMU@smile.fi.intel.com>
-References: <20231203192422.539300-1-yury.norov@gmail.com>
+	id 1rA8zO-004btd-2L
+	for ath10k@lists.infradead.org;
+	Mon, 04 Dec 2023 13:28:00 +0000
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d33574f64eso48010207b3.3
+        for <ath10k@lists.infradead.org>; Mon, 04 Dec 2023 05:27:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701696477; x=1702301277; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2fW3mjZFFzwIx8dmT9JEHvadR6/J6k7n4MRMrtMRyEY=;
+        b=SDZ+yovDu48YjvcwVIh00b3kzrI+v4Qv2ZPAKcEXJfZV/wQ5U/Kne8G/lmdwAiB5nu
+         xZaoBhUAVo56f1HzZvsz500PFbVdsegsSc8cgk6LNM+t6XEeyWyOp7MY0eywl9E++Yes
+         9W0Sl2rKQACPw4XQ5z2m0BFKN8qY67KpaJbzJyMA+Jp086Y94QfKrm7gwR5Np18qj2Mc
+         1SidKPI/ax0mLF3B46fl4krZSi7kOINCE4sG3+R0565Kr7fS8hz19lR10NARXE1yXHbC
+         g1XzhJ6wSDmKAf1+Pl/M5IxpNjoYiqh88KRnzXf1ocRJLpGastK6YEdlgdUVQuCtQt2n
+         c5jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701696477; x=1702301277;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2fW3mjZFFzwIx8dmT9JEHvadR6/J6k7n4MRMrtMRyEY=;
+        b=V+Y5fe5y9VM7vjdvtQLn6PDjDx2BS9GguEYG9er5ir/8QdTCje147vBIbZBNebq8ZF
+         mFHVx77XANP7ceXf3x41A9TVUZyV7dOlUJkykhVAKZNkeNHG6Qv1NFTOVDjHBNu7umBR
+         QMJULBLuR1Mcb1zzRTT+9ycEnHgqqHYR/D//jAl45JX0lmJr9m5GfCnb/LJKSzbinK+a
+         yhm4XjXvGJwh7oqNr3YLhfTSzXXOjps7xMpoMfclsXXh6X/QfiSHKdMo4NKoXVi5vV69
+         4YcOzphTfZVWF5AfNFEsEQasShrsf6Y8OemMRuwnnpIf/mgM5PoJUSnYdtERKv5yANXt
+         /3qg==
+X-Gm-Message-State: AOJu0YwDw0bLpuNNQfO7GtMyoPS/6npAZjKSJMsDC1uw4IOvTD/pIMKP
+	Us3c2/caRZfvnfPdr2yaGE1vTtJZDnKe8oRk7trftlTl3C7QkbnXdvo=
+X-Google-Smtp-Source: AGHT+IFT5Ekm/eux4m2CPF+K2InPLFR37b/4dxO3Ja+TBOqMeMVzDBImq2SVkNPbb6g1r6wIiJTMB7rV1scXEx5//MU=
+X-Received: by 2002:a81:af14:0:b0:5d7:1940:b373 with SMTP id
+ n20-20020a81af14000000b005d71940b373mr3543896ywh.63.1701696477097; Mon, 04
+ Dec 2023 05:27:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231203192422.539300-1-yury.norov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <CAA8EJpp+SJpX4FFmcTm133KNtztTJH0ovTLRm0bftahPT8a1kw@mail.gmail.com>
+ <87leaaqg7a.fsf@kernel.org>
+In-Reply-To: <87leaaqg7a.fsf@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 4 Dec 2023 15:27:46 +0200
+Message-ID: <CAA8EJpomDw0sBOT_t5F33Uqn4FeWRBewv_=_4q4OzvU+JzXH-g@mail.gmail.com>
+Subject: Re: ath10k / WCN3990: firmware-5.bin and wlanmdsp.mbn being out of sync
+To: Kalle Valo <kvalo@kernel.org>
+Cc: ath10k@lists.infradead.org, 
+	"open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231204_050743_356741_7BCAF0B7 
-X-CRM114-Status: GOOD (  37.07  )
+X-CRM114-CacheID: sfid-20231204_052758_803963_F62138F3 
+X-CRM114-Status: GOOD (  31.85  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,122 +87,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Sun, Dec 03, 2023 at 11:23:47AM -0800, Yury Norov wrote:
-> Add helpers around test_and_{set,clear}_bit() that allow to search for
-> clear or set bits and flip them atomically.
-> 
-> The target patterns may look like this:
-> 
-> 	for (idx = 0; idx < nbits; idx++)
-> 		if (test_and_clear_bit(idx, bitmap))
-> 			do_something(idx);
-> 
-> Or like this:
-> 
-> 	do {
-> 		bit = find_first_bit(bitmap, nbits);
-> 		if (bit >= nbits)
-> 			return nbits;
-> 	} while (!test_and_clear_bit(bit, bitmap));
-> 	return bit;
-> 
-> In both cases, the opencoded loop may be converted to a single function
-> or iterator call. Correspondingly:
-> 
-> 	for_each_test_and_clear_bit(idx, bitmap, nbits)
-> 		do_something(idx);
-> 
-> Or:
-> 	return find_and_clear_bit(bitmap, nbits);
-> 
-> Obviously, the less routine code people have to write themself, the
-> less probability to make a mistake.
-> 
-> Those are not only handy helpers but also resolve a non-trivial
-> issue of using non-atomic find_bit() together with atomic
-> test_and_{set,clear)_bit().
-> 
-> The trick is that find_bit() implies that the bitmap is a regular
-> non-volatile piece of memory, and compiler is allowed to use such
-> optimization techniques like re-fetching memory instead of caching it.
-> 
-> For example, find_first_bit() is implemented like this:
-> 
->       for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
->               val = addr[idx];
->               if (val) {
->                       sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
->                       break;
->               }
->       }
-> 
-> On register-memory architectures, like x86, compiler may decide to
-> access memory twice - first time to compare against 0, and second time
-> to fetch its value to pass it to __ffs().
-> 
-> When running find_first_bit() on volatile memory, the memory may get
-> changed in-between, and for instance, it may lead to passing 0 to
-> __ffs(), which is undefined. This is a potentially dangerous call.
-> 
-> find_and_clear_bit() as a wrapper around test_and_clear_bit()
-> naturally treats underlying bitmap as a volatile memory and prevents
-> compiler from such optimizations.
-> 
-> Now that KCSAN is catching exactly this type of situations and warns on
-> undercover memory modifications. We can use it to reveal improper usage
-> of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
-> 
-> The 1st patch of the series adds the following atomic primitives:
-> 
-> 	find_and_set_bit(addr, nbits);
-> 	find_and_set_next_bit(addr, nbits, start);
-> 	...
-> 
-> Here find_and_{set,clear} part refers to the corresponding
-> test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
-> derive their semantics from corresponding find() or test() functions.
-> 
-> For brevity, the naming omits the fact that we search for zero bit in
-> find_and_set, and correspondingly search for set bit in find_and_clear
-> functions.
-> 
-> The patch also adds iterators with atomic semantics, like
-> for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
-> corresponding atomic operation with 'for_each'.
-> 
-> This series is a result of discussion [1]. All find_bit() functions imply
-> exclusive access to the bitmaps. However, KCSAN reports quite a number
-> of warnings related to find_bit() API. Some of them are not pointing
-> to real bugs because in many situations people intentionally allow
-> concurrent bitmap operations.
-> 
-> If so, find_bit() can be annotated such that KCSAN will ignore it:
-> 
->         bit = data_race(find_first_bit(bitmap, nbits));
-> 
-> This series addresses the other important case where people really need
-> atomic find ops. As the following patches show, the resulting code
-> looks safer and more verbose comparing to opencoded loops followed by
-> atomic bit flips.
-> 
-> In [1] Mirsad reported 2% slowdown in a single-thread search test when
-> switching find_bit() function to treat bitmaps as volatile arrays. On
-> the other hand, kernel robot in the same thread reported +3.7% to the
-> performance of will-it-scale.per_thread_ops test.
-> 
-> Assuming that our compilers are sane and generate better code against
-> properly annotated data, the above discrepancy doesn't look weird. When
-> running on non-volatile bitmaps, plain find_bit() outperforms atomic
-> find_and_bit(), and vice-versa.
+On Mon, 4 Dec 2023 at 14:56, Kalle Valo <kvalo@kernel.org> wrote:
+>
+> Hi Dmitry,
+>
+> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+>
+> > I wanted to ask your opinion regarding one of the issues we stumbled
+> > upon on the Qualcomm RB1 and RB2 platforms. These platforms use ath10k
+> > snoc (WCN3990) WiFi "card". We noticed the following messages being
+> > spawned on the console, which I traced it to the
+> > ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL feature:
+> >
+> > ath10k_snoc c800000.wifi: chan info: invalid frequency 0 (idx 41 out of bounds)
+> >
+> > As a reminder, on this platform the wlan firmware and firmware-N.bin
+> > files come separately.
+> > The wlanmdsp.mbn is downloaded by the onboard modem DSP via the
+> > tqftpserv request (which is served from the board-specific folder
+> > qcom/qcm2210). The firmware-N.bin file is loaded by the WiFi driver
+> > itself from the generic folder, ath10k/WCN3990/hw1.0. Current
+> > firmware-5.bin file was provided with the sdm845's wlanmdsp.mbn, which
+> > is older than qcm2210/qrb4210's wlanmdsp.mbn.
+> >
+> > I'm looking for suggestions on how to make ath10k driver load
+> > firmware-N.bin file which corresponds to the board-specific
+> > wlanmdsp.mbn.
+>
+> We have had similar discussions in the past but it didn't go very far.
+> It would be so nice if you could finally fix this :) At one point we
+> even had a discussion that we might need something similar for ath11k
+> but it didn't go anywhere.
+>
+> > In particular I'd like to hear your opinion on the following proposal:
+> >
+> > Add the  optional property to the board DT, that specifies:
+> > firmware-name = "path/to/wlanmdsp.mbn".  The property, if present,
+> > will be used as an override for the firmware directory. So, while the
+> > ath10k driver will not load wlanmdsp.mbn on its own, it will still
+> > look for the firmware-N files in the specified directory.
+>
+> Back in the day I was thinking something like below, please let me know
+> what you think.
+>
+> So the normal firmware path for WCN3990 is:
+>
+> ath10k/WCN3990/hw1.0/
+>
+> My idea was that if we could extend it for different "platforms" (not
+> sure what's the proper term for this) by having platform specific
+> directories:
+>
+> ath10k/WCN3990/hw1.0-platform/
+>
+> (Replace "platform" with a unique name for the platform, for example
+> "acme-kv7" for a product from Acme with model name kv7.)
+>
+> Then DT could inform ath10k about this "platform" string and ath10k
+> would then download boath firmware-N.bin and board-2.bin from the
+> platform specific directory.
+>
+> And even cleaner if we could have the *.mbn firmware files in the same
+> directory, even if ath10k doesn't access them directly.
 
-...
+We can, and a symlink from qcom/SoC/.../dir to that subdir.
 
-In some cases the better improvements can be achieved by switching
-the (very) old code to utilise IDA framework.
+So, for example, for Pixel-3, using your schema we will have:
+
+ath10k/WCN3990/hw1.0-blueline/wlanmdsp.mbn
+ath10k/WCN3990/hw1.0-blueline/firmware-5.bin
+ath10k/WCN3990/hw1.0-blueline/board-2.bin
+
+qcom/sdm845/Google/blueline/wlanmdsp.mbn ->
+../../../../ath10k/WCN3990/hw1.0-blueline/wlanmdsp.mbn
+
+This sounds mostly fine to me. My only suggestions is to change it as following:
+
+ath10k/WCN3990/hw1.0/board-2.bin
+
+ath10k/WCN3990/hw1.0/blueline/wlanmdsp.mbn
+ath10k/WCN3990/hw1.0/blueline/firmware-5.bin
+ath10k/WCN3990/hw1.0/blueline/board-2.bin
+
+qcom/sdm845/Google/blueline/wlanmdsp.mbn ->
+../../../../ath10k/WCN3990/hw1.0/blueline/wlanmdsp.mbn
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+With best wishes
+Dmitry
 
