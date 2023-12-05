@@ -4,62 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CBEEC4167B
-	for <ath10k@archiver.kernel.org>; Tue,  5 Dec 2023 15:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C2B7C4167B
+	for <ath10k@archiver.kernel.org>; Tue,  5 Dec 2023 15:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=x9UitNIdbrhGwooOt/QBvSOh+P1TAzgKbuijAIGnWKA=; b=YvgaH6y94lWxWyz5Fws3+YGQJR
-	jow0+PInupiAPZS5HbcauQ7EkDcp5l5WQGFwa4jLKoehvn27VcKjRJ8LlIl+3cCbCWNutI7q2jCuz
-	Q7DHh1p3sdVs9dUXedKqVO2GRoeuQOS9d2XWq/6F8BlRaAYL+SdqU+b5nqNj6yE5AFq0rcidwvzbz
-	MHW7TpZfkry2AHFsjrqFHSKgNE7eDbTjPyjKc17Y11+i/t4eVWuKa7c0Zfkb5OI2+NtOo4z0eEVR8
-	cyNhd1UrXhkXYQRw33LRR+cdaGztYpJ92EquVxIup6RblJ5pFnnNBXXn5XW0a1jhmv1iEgUxAwYU7
-	C0aY4iaw==;
+	bh=3fSE5VIhzeCzBFsihDlHNch9Cj0Fh+f/AyIZZwlemTg=; b=kVXuBfPuAPRTiek2gaNAVHWf0w
+	NaXLIpufexbKaYZjiTW1azKmhTOfPaolVpAW0ouPJ2f+ExLjVrHow/EckYBAt5S3rbRn5E6BPZqZu
+	xqiVS4cYH+tELkbn9G3bdjh3sjIROz878jtm1KqauOXl9SvwK+LB0CnPwPkG0J3dsPirfltgqssia
+	pKcnto3jOFbLsSya5wcSq/BIgLFx9Daafify5iuyUNlL461ka2to7D0Y2lqPr9JoB2xzYekAkmQwK
+	/dGu635T2zvBlUK57HjJJifTaRt/dD9fYpE5aD1X3Ywmc74a8hUvDxYbouUD5Hin6wXYwh8UvyiR6
+	DCi/Uonw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAXL4-007l3f-1R;
-	Tue, 05 Dec 2023 15:27:58 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1rAXMM-007lH1-19;
+	Tue, 05 Dec 2023 15:29:18 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAXL1-007l1u-0T
-	for ath10k@lists.infradead.org;
-	Tue, 05 Dec 2023 15:27:56 +0000
+	id 1rAXMK-007lGL-00;
+	Tue, 05 Dec 2023 15:29:17 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 8EF27B81AAA;
-	Tue,  5 Dec 2023 15:27:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07BC4C433C7;
-	Tue,  5 Dec 2023 15:27:51 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 136F0CE114D;
+	Tue,  5 Dec 2023 15:29:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A90DC433C9;
+	Tue,  5 Dec 2023 15:29:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701790072;
-	bh=ombZDzMaoX08v30FB7mD3sP1qHxKoXQdX0hgGl58V3o=;
+	s=k20201202; t=1701790152;
+	bh=MfLafCfcRaDpmdszQrVQWn7XO/mPGu2x0vw5QhEpwMU=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=nfpLwMkvO1AI8LVy2HHXeKsPX1NZW5gb1gnM37n+x1pDoZA8pAYJCZBj5qJqnXFzZ
-	 VhZS5Ck7+FxpY/SpYLZ1PuJDrvM1/UDi6YircYs//rU4PiO2mxioymfXQmONMZyCqe
-	 IxJ6x8kSASxIyQlTwc9AOnpYlEHO70Xj8iiDo+FjkoMbFsQjmC1uV5iNSZy9htyrpU
-	 xWdjRFuumqphqdUG2BIqsldMt4pijojFvMgjpd0NTXzX95gnc95k26vpHbd7HJVfd3
-	 lbZAzjbtL2o2gwaDLynWa/CdKUWoXIyqCTW8lrVWdaC7aclqhLi7zSBgNp9oQPHmL5
-	 vCW0YT+k/aOOQ==
+	b=hUkDezEB4Iwi6LnBU9YZQVH/Z3YCUHfzhbNV5af7LhhqlzL0gSQPDaiLyjeP/KkKr
+	 529hiF43YIwRbaELj0t2q9r2MbylgnOGoPzn2e+cdTIksEkwHCQ9a4GS1q/gpjRPsM
+	 msDyp2mexulTyX3XHpruoKphejmCACcFV2QYVQNvM2TiAAT4P3ek9swSkoGYUoJE9X
+	 EUxuE55TQuqxMqcUcmHK7jXBkH9JIJCoqUx8tH0KLyCYRUgrTJP2WyP3qj0WPWrp2I
+	 Hy1+kqUUG5WtYuzqJWC7PTdDpFiuJaHQH1MyTPRQWGh8pARz2EkIVoxEEpF1L763he
+	 g/qK06yXDCOYg==
 From: Kalle Valo <kvalo@kernel.org>
 To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: James Prestwood <prestwoj@gmail.com>,  <linux-wireless@vger.kernel.org>,
-  <ath10k@lists.infradead.org>
-Subject: Re: [PATCH v2] wifi: ath10k: add support to allow broadcast action
- frame RX
-References: <20231116173246.40458-1-prestwoj@gmail.com>
-	<be472f3f-c1fc-4ab4-acca-1b1357c8b407@quicinc.com>
-Date: Tue, 05 Dec 2023 17:27:50 +0200
-In-Reply-To: <be472f3f-c1fc-4ab4-acca-1b1357c8b407@quicinc.com> (Jeff
-	Johnson's message of "Thu, 16 Nov 2023 12:05:31 -0800")
-Message-ID: <87il5cpt3d.fsf@kernel.org>
+Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,  "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>,  Kees Cook <keescook@chromium.org>,
+  <ath10k@lists.infradead.org>,  <ath11k@lists.infradead.org>,
+  <linux-wireless@vger.kernel.org>,  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] wifi: ath11k: Use DECLARE_FLEX_ARRAY() for
+ ath11k_htc_record
+References: <20231127-flexarray-htc_record-v1-0-6be1f36126fd@quicinc.com>
+	<20231127-flexarray-htc_record-v1-4-6be1f36126fd@quicinc.com>
+	<4f2a486c-c6de-43e4-8bb6-bdd3f819b0a9@embeddedor.com>
+	<c5555ad6-6991-4fca-864f-355d2fae9ae1@quicinc.com>
+Date: Tue, 05 Dec 2023 17:29:08 +0200
+In-Reply-To: <c5555ad6-6991-4fca-864f-355d2fae9ae1@quicinc.com> (Jeff
+	Johnson's message of "Mon, 27 Nov 2023 08:32:51 -0800")
+Message-ID: <87edg0pt17.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_072755_328406_6571668A 
-X-CRM114-Status: GOOD (  11.88  )
+X-CRM114-CacheID: sfid-20231205_072916_234640_E1C5E5FB 
+X-CRM114-Status: GOOD (  13.06  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,42 +79,43 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 Jeff Johnson <quic_jjohnson@quicinc.com> writes:
 
-> On 11/16/2023 9:32 AM, James Prestwood wrote:
+> On 11/27/2023 8:23 AM, Gustavo A. R. Silva wrote:
 >
->> Broadcast action frames are needed for the Device Provisioning
->> Protocol (DPP) for Presence and PKEX Exchange requests. Currently
->> just ath9k has this capability so this is being enabled for
->> ath10k (for at least one hardware variant).
 >> 
->> Add a new capability flag in ath10k_hw_params to indicate support
->> for receiving multicast action frames. This bit is then checked
->> when configuring the RX filter and (if set) multicast action frame
->> registration is enabled.
 >> 
->> Until more hardware can be tested only the "qca6174 hw3.2" variant
->> is enabling this feature.
+>> On 11/27/23 10:14, Jeff Johnson wrote:
+>>> Transform the zero-length array in ath11k_htc_record into a proper
+>>> flexible array via the DECLARE_FLEX_ARRAY() macro. This helps with
+>>> ongoing efforts to globally enable -Warray-bounds.
+>>>
+>>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>>> ---
+>>>   drivers/net/wireless/ath/ath11k/htc.h | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/wireless/ath/ath11k/htc.h b/drivers/net/wireless/ath/ath11k/htc.h
+>>> index 84971cc9251c..e0434b29df70 100644
+>>> --- a/drivers/net/wireless/ath/ath11k/htc.h
+>>> +++ b/drivers/net/wireless/ath/ath11k/htc.h
+>>> @@ -151,7 +151,7 @@ struct ath11k_htc_credit_report {
+>>>   struct ath11k_htc_record {
+>>>   	struct ath11k_htc_record_hdr hdr;
+>>>   	union {
+>>> -		struct ath11k_htc_credit_report credit_report[0];
+>>> +		DECLARE_FLEX_ARRAY(struct ath11k_htc_credit_report, credit_report);
+>>>   	};
 >> 
->> Note: I went ahead and removed the 'changed_flags' mask operation
->> since it had no effect, that parameter was not being used anywhere.
->> 
->> Tested-on: QCA6174 hw3.2 WLAN.RM.4.4.1-00288-
->> 
->> Signed-off-by: James Prestwood <prestwoj@gmail.com>
+>> Why not removing the `union` and just do a direct transformation [0] -> [ ] ?
+>
+> No reason other than staying consistent with ath10k.
+> Will see if Kalle has an opinion on this.
 
-[...]
+Yeah, I don't see the need for the union and I removed it in the pending
+branch:
 
->> --- a/drivers/net/wireless/ath/ath10k/core.c
->> +++ b/drivers/net/wireless/ath/ath10k/core.c
->> @@ -381,6 +381,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->>  		.hw_restart_disconnect = false,
->>  		.use_fw_tx_credits = true,
->>  		.delay_unmap_buffer = false,
->> +		.mcast_frame_registration = true,
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=a2faeea1fe0635563187e7821a6d0baf7b40f2c6
 
-I forgot to mention that I prefer explicitly setting the false cases as
-well so I added those in the pending branch:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=51daeadfbecc13b2ce8a9a4b7697e4056cbb358f
+Does it look ok?
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
