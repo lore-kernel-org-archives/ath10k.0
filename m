@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF6EBC4167B
-	for <ath10k@archiver.kernel.org>; Thu,  7 Dec 2023 14:53:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E477FC4167B
+	for <ath10k@archiver.kernel.org>; Thu,  7 Dec 2023 14:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YANcq6jL7UDJw9T4yp94MGPeD8628spT3GnT1iMtS8g=; b=ZOWc/6GiwdN8GbliC7oemGjMj2
-	NZH11TSNoL1R3F46enhLFDdZWt+USSv5sTCDzCiDHWbYa/Ad0lYpX6UIz7CcYEbDq6q5RjtpTXM6Y
-	yPo8vRsnH+27FT7kAPNxk519n/THMQ1yDadUUUboQp1ZeboSbUX6G7Uwda4ehY0cYXpsqW4AjALl2
-	jYQdVPtJ0e10DhjPR7lo6TGYuo47M5Fm8pt4f6YYiVK7D1lLKz7mEXzOSXVeWzkK3iB7LStcOzte1
-	iRyVXGvnX57zFIVdsNehbeKmCs68SJ+zP2C6xU8f1VKrvkGaIm4juGBvEUnvp+7oa4BL12cF0Wcvp
-	aiza2UEg==;
+	bh=ylTNE3LEA6n8XsYxTH3V6moQw3yv5J5esMXpSJ7tjco=; b=xsTlecT5e6N2eWi/sB3yR0cIvI
+	Xo0ZWk/x7Z4UwaS87ZmqMSH5TZUyJU5jBidtZCUXTrgo7ihsNfkDKTbVYPAq1iJUoCTwWFokPWGAB
+	muCHD+1gejZdcGo9UP9W+i4hLrhYYLiNQawMrYyljKjLzn3rAJdMtzVpm/oGrE6XLqCmx/4Cxxn02
+	q7WJFgYMe0rygh4G8oJQ3gU+zy97wPS47rJSUnGKW7eUBNEROWgDl/SNotrtt7a5sGiTUD3uJHrYy
+	bMvsI0lSLOYqmCeWu9E2A99es0GD/w6zllEc8ufHHK8++vaolmRh8gHfYCSfY0231CP+aaJOgZVfi
+	buo4mf5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBFkP-00D4tJ-2U;
-	Thu, 07 Dec 2023 14:53:05 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rBFln-00D53U-02;
+	Thu, 07 Dec 2023 14:54:31 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBFkM-00D4sv-10
+	id 1rBFlk-00D52s-2f
 	for ath10k@lists.infradead.org;
-	Thu, 07 Dec 2023 14:53:03 +0000
+	Thu, 07 Dec 2023 14:54:30 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id BD37662003;
-	Thu,  7 Dec 2023 14:53:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3766C433C7;
-	Thu,  7 Dec 2023 14:53:00 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 4FD79CE21C9;
+	Thu,  7 Dec 2023 14:54:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6238C433C8;
+	Thu,  7 Dec 2023 14:54:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701960781;
-	bh=LXSs+8RJL1znQ6oY9ZxWI0HONEsynqIj/M/NtbC+bsQ=;
+	s=k20201202; t=1701960865;
+	bh=CxIdohRv9UZtivNiBrUGey9rAm5WPxTs1mLv0AuDN84=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=AkJvStpkNbiCVcZG57zBkoP+C9BhLHF6WoB/YA22wpO11n9v0FeQOfAj89VAls3o0
-	 oskhmfy1CubkTHkESeQF6u/GHinYDfE8JwlqLqVyx9aWYOgmTUGlX9/o461nh84qK4
-	 y/9s+1y6NbhUw6dhXIqN0pQ4rNMdcj/ARrA2bC4D8jtwfXzc/vmJZK9md7Z3LDS+kZ
-	 98Po47udv7sJLCkemxKHq2d95864AUf84mO2fv2TgEKEWVBoZ1EC4cITh7sHFr2z0a
-	 UvKr3iSf+KmR6+m9LtuhQFhVYFgtI1rrdWy8hOiv2HGgsA27KhAPQ2PtIAqj6fAgRi
-	 q7Giw7P1mtGcw==
+	b=W38QkOnokdVaXUS5nlqLGGHPRKM4SN0BOzdHmFFLBGcYEVn9k6hdxZVxrNwsETd0K
+	 Gv82ueV5YcCRRz5S2j2Z5lZ4CJcKxprOQX8TcyH84T1WcSigSvv/PKIm8f50wvdovh
+	 5ssM7EaLBUEqglYbKbWJ9FIapwEUmQjzeYCI8u49mtTehTdwncwYwRM0dwn7cxO4vm
+	 VA1Mw5qY5JwgTQhPCymR6m5lTSsG3c5Kr0oJOJyQ3WNKxPv8PsIzEyakyAYD6L//9K
+	 4hIz58+Q1iFCTDEf4wJWuxgk6fiMt5oq0/t6MtsElvIIPpr2vr5GrSS+3un3vK3JGK
+	 KYGe7kDfbhm5w==
 From: Kalle Valo <kvalo@kernel.org>
 To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Cc: ath10k@lists.infradead.org,  "open list:DRM DRIVER FOR MSM ADRENO GPU"
  <linux-arm-msm@vger.kernel.org>
 Subject: Re: ath10k-firmware: WCN3990: Add board file for the Qualcomm
- Robotics RB1 platform
-References: <CAA8EJpoMoLTLz9UOFt4gwHcnyLVzBoUhAeRSs_Tkz=d3zzq_HA@mail.gmail.com>
-Date: Thu, 07 Dec 2023 16:52:58 +0200
-In-Reply-To: <CAA8EJpoMoLTLz9UOFt4gwHcnyLVzBoUhAeRSs_Tkz=d3zzq_HA@mail.gmail.com>
-	(Dmitry Baryshkov's message of "Fri, 25 Aug 2023 00:50:03 +0300")
-Message-ID: <87o7f2njxx.fsf@kernel.org>
+ Robotics RB2 platform
+References: <CAA8EJprLZVdxfWGZhQGHN_CejD8GsRZE8i1-MFa7froWTvs5ew@mail.gmail.com>
+Date: Thu, 07 Dec 2023 16:54:22 +0200
+In-Reply-To: <CAA8EJprLZVdxfWGZhQGHN_CejD8GsRZE8i1-MFa7froWTvs5ew@mail.gmail.com>
+	(Dmitry Baryshkov's message of "Fri, 25 Aug 2023 00:52:10 +0300")
+Message-ID: <87jzpqnjvl.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231207_065302_413487_D019D07C 
-X-CRM114-Status: GOOD (  15.25  )
+X-CRM114-CacheID: sfid-20231207_065429_034656_CA17E6BE 
+X-CRM114-Status: GOOD (  15.48  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,20 +75,18 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 
-> Hello Kalle,
->
 > We'd like to ask for inclusion of the board file for the Qualcomm
-> Robotics RB1 platform. It is
-> an IOT platform manufactured by Thundercomm, using the Snapdragon QRB2210 SoC.
+> Robotics RB2 platform. It is
+> an IOT platform manufactured by Thundercomm, using the Snapdragon QRB4210 SoC.
 >
 > Following the questions from the ath10k wiki page:
 >
 > * description for what hardware this is
-> - It is an QRB2210-based platform (QRB2210)
+> - It is an QRB4210-based platform (QRB4210)
 > - It uses wcn3990 chip as a WiFi and BT radio
 > - For the reference:
 >
-> ath10k_snoc c800000.wifi: qmi chip_id 0x120 chip_family 0x4007
+> ath10k_snoc c800000.wifi: qmi chip_id 0x150 chip_family 0x4002
 > board_id 0xff soc_id 0x40670000
 > ath10k_snoc c800000.wifi: qmi fw_version 0x337302d3 fw_build_timestamp
 > 2023-01-06 01:50 fw_build_id
@@ -107,7 +105,7 @@ Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 >
 > * ids to be used with the board file
 >
-> bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2
 >
 > Note, the device comes with the board_id not changed from 0xff.
 > Following the example of existing boards we are adding the
@@ -117,25 +115,27 @@ Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 >
 > $ md5sum *
 > 5003239259d8cb68097a941dde86dcc7
-> bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1.bin
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2.bin
 >
 > $ sha256sum *
 > 0eeffb43040b216b0f3210b8db69e4558844dd9df52caf9c25f56a79401f442c
-> bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1.bin
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2.bin
 
 Thanks, added to WCN3990/hw1.0/board-2.bin:
 
 New:
-bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1
+bus=snoc,qmi-board-id=ff,qmi-chip-id=150,variant=Thundercomm_RB2
 
 Changed:
 
 
 Deleted:
 
-1 board image(s) added, 0 changed, 0 deleted, 22 in total
+1 board image(s) added, 0 changed, 0 deleted, 23 in total
 
-https://github.com/kvalo/ath10k-firmware/commit/7d5e852d125d4ca3feba6a3fff9d04a0e488e584
+https://github.com/kvalo/ath10k-firmware/commit/7435e1eeeeea4b065634071d21ba691597f345bb
+
+
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
