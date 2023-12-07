@@ -4,59 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51313C4167B
-	for <ath10k@archiver.kernel.org>; Thu,  7 Dec 2023 14:51:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF6EBC4167B
+	for <ath10k@archiver.kernel.org>; Thu,  7 Dec 2023 14:53:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FzGXqLCVjaoY1ayR+sG7poYrOI63cywaobE3iT31AYY=; b=bQdStbJId5E/zobHhTE5H12n2f
-	HANdYZLm2UqzFY50t4fzDO3Yuje55mHdnK6yVHewqB2TNaGBz2fSoykHT8cW1VCdVWFD/oWiwStHx
-	2ucjdpdHYnk5bwptRJumVSxj6zHNcwask49qgaM8R2YAqqUCXgmJSum0FV+sLjkFLFZ1mUzC71m9m
-	YNCrkInjsyQktvFlE53lhZw4FbCKV+LHi3qOZnaRr8Ebcjdc4V7aOkxb9djI0biFLvkQOtLj2h8h2
-	p7znqCwJnEWsfzs+rGDAocEJq+NC2XXYiJHRssB/1N919NmSt9eqsmAz/myYLG8hV17/QN07cxUSf
-	TSoGS25Q==;
+	bh=YANcq6jL7UDJw9T4yp94MGPeD8628spT3GnT1iMtS8g=; b=ZOWc/6GiwdN8GbliC7oemGjMj2
+	NZH11TSNoL1R3F46enhLFDdZWt+USSv5sTCDzCiDHWbYa/Ad0lYpX6UIz7CcYEbDq6q5RjtpTXM6Y
+	yPo8vRsnH+27FT7kAPNxk519n/THMQ1yDadUUUboQp1ZeboSbUX6G7Uwda4ehY0cYXpsqW4AjALl2
+	jYQdVPtJ0e10DhjPR7lo6TGYuo47M5Fm8pt4f6YYiVK7D1lLKz7mEXzOSXVeWzkK3iB7LStcOzte1
+	iRyVXGvnX57zFIVdsNehbeKmCs68SJ+zP2C6xU8f1VKrvkGaIm4juGBvEUnvp+7oa4BL12cF0Wcvp
+	aiza2UEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBFio-00D4dD-1I;
-	Thu, 07 Dec 2023 14:51:26 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1rBFkP-00D4tJ-2U;
+	Thu, 07 Dec 2023 14:53:05 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBFil-00D4ab-1J
+	id 1rBFkM-00D4sv-10
 	for ath10k@lists.infradead.org;
-	Thu, 07 Dec 2023 14:51:24 +0000
+	Thu, 07 Dec 2023 14:53:03 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id EC06BB81C1D;
-	Thu,  7 Dec 2023 14:51:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C04F9C433C7;
-	Thu,  7 Dec 2023 14:51:16 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id BD37662003;
+	Thu,  7 Dec 2023 14:53:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3766C433C7;
+	Thu,  7 Dec 2023 14:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701960677;
-	bh=07LfC31X1JJK4ebKP0aqrZNByVpypDPDmuHT5/5EWyY=;
+	s=k20201202; t=1701960781;
+	bh=LXSs+8RJL1znQ6oY9ZxWI0HONEsynqIj/M/NtbC+bsQ=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=PHONMMyIiEEzWUrmIXMzEs0wMy2VB0F9VKVbNqgDuMkPVNLwd/RO1zLvzyqGwL11U
-	 qmczsR1tv6Fq2n30DpsaC9oNvSgd45dcGtQOlh+DDH6HLFQ5KToKHZOJgv36XixywK
-	 5/LnJ0+uxbVnVyegnoA1F0xt7YUOj8Uoiuz4FuXvwapDT9gM5/rVU0T7WqG/1rFiUq
-	 vzmt0uYx/lkdR897fwh3ron0C1IXdXt4RtsuP/l9JYA7mBDQGlAcoxLcKfu8XHVMUm
-	 0YUw8ER7VqDVip5S5HFA5Ol0WBaBrfGr0eZgaCjNlP+WE1IgICMAw7ZFkl1bPEk57u
-	 uASgcAMRKdgTg==
+	b=AkJvStpkNbiCVcZG57zBkoP+C9BhLHF6WoB/YA22wpO11n9v0FeQOfAj89VAls3o0
+	 oskhmfy1CubkTHkESeQF6u/GHinYDfE8JwlqLqVyx9aWYOgmTUGlX9/o461nh84qK4
+	 y/9s+1y6NbhUw6dhXIqN0pQ4rNMdcj/ARrA2bC4D8jtwfXzc/vmJZK9md7Z3LDS+kZ
+	 98Po47udv7sJLCkemxKHq2d95864AUf84mO2fv2TgEKEWVBoZ1EC4cITh7sHFr2z0a
+	 UvKr3iSf+KmR6+m9LtuhQFhVYFgtI1rrdWy8hOiv2HGgsA27KhAPQ2PtIAqj6fAgRi
+	 q7Giw7P1mtGcw==
 From: Kalle Valo <kvalo@kernel.org>
-To: "Connor Northway" <contact@cnorthway.com>
-Cc: <ath10k@lists.infradead.org>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Eero Cento specific BDFs
-References: <CRMGV3H8ML7D.1GG8IDXBQGVY9@sff-f33>
-Date: Thu, 07 Dec 2023 16:51:14 +0200
-In-Reply-To: <CRMGV3H8ML7D.1GG8IDXBQGVY9@sff-f33> (Connor Northway's message
-	of "Sun, 02 Apr 2023 14:03:37 -0400")
-Message-ID: <87sf4enk0t.fsf@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: ath10k@lists.infradead.org,  "open list:DRM DRIVER FOR MSM ADRENO GPU"
+ <linux-arm-msm@vger.kernel.org>
+Subject: Re: ath10k-firmware: WCN3990: Add board file for the Qualcomm
+ Robotics RB1 platform
+References: <CAA8EJpoMoLTLz9UOFt4gwHcnyLVzBoUhAeRSs_Tkz=d3zzq_HA@mail.gmail.com>
+Date: Thu, 07 Dec 2023 16:52:58 +0200
+In-Reply-To: <CAA8EJpoMoLTLz9UOFt4gwHcnyLVzBoUhAeRSs_Tkz=d3zzq_HA@mail.gmail.com>
+	(Dmitry Baryshkov's message of "Fri, 25 Aug 2023 00:50:03 +0300")
+Message-ID: <87o7f2njxx.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231207_065123_594141_95AD2032 
-X-CRM114-Status: GOOD (  14.66  )
+X-CRM114-CacheID: sfid-20231207_065302_413487_D019D07C 
+X-CRM114-Status: GOOD (  15.25  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,54 +73,69 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-"Connor Northway" <contact@cnorthway.com> writes:
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 
-> Hello,
+> Hello Kalle,
 >
-> I am preparing a commit to port OpenWrt to the Eero Cento, and would
-> like to provide its board files for inclusion in the official file.
+> We'd like to ask for inclusion of the board file for the Qualcomm
+> Robotics RB1 platform. It is
+> an IOT platform manufactured by Thundercomm, using the Snapdragon QRB2210 SoC.
 >
-> Following the wiki's form:
+> Following the questions from the ath10k wiki page:
 >
-> description for what hardware this is:
+> * description for what hardware this is
+> - It is an QRB2210-based platform (QRB2210)
+> - It uses wcn3990 chip as a WiFi and BT radio
+> - For the reference:
 >
->    - the Eero Cento (model no. J010001) is an IPQ4019 based router
->    - one QCA40xx radio is used as 2.4GHz radio
->    - one QCA40xx radio is used as 5GHz radio
+> ath10k_snoc c800000.wifi: qmi chip_id 0x120 chip_family 0x4007
+> board_id 0xff soc_id 0x40670000
+> ath10k_snoc c800000.wifi: qmi fw_version 0x337302d3 fw_build_timestamp
+> 2023-01-06 01:50 fw_build_id
+> QC_IMAGE_VERSION_STRING=WLAN.HL.3.3.7.c2-00723-QCAHLSWMTPLZ-1
+> ath10k_snoc c800000.wifi: wcn3990 hw1.0 target 0x00000008 chip_id
+> 0x00000000 sub 0000:0000
+> ath10k_snoc c800000.wifi: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+> ath10k_snoc c800000.wifi: firmware ver  api 5 features
+> wowlan,mgmt-tx-by-reference,non-bmi crc32 b3d4b790
+> ath10k_snoc c800000.wifi: htt-ver 3.114 wmi-op 4 htt-op 3 cal file
+> max-sta 32 raw 0 hwcrypto 1
 >
-> origin of the board file (did you create it yourself or where you
-> downloaded):
+> * origin of the board file
+>   - It comes from the firmware package provided by Thundercomm for
+> redistribution.
 >
->    Found in root filesystem of device at
->    "/lib/firmware/ath10k/QCA4019/hw1.0/board-2.bin.cento"
->    and extracted to two files. Added variant string of "Eero-Cento" to
->    each.
+> * ids to be used with the board file
 >
-> ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k):
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1
 >
->    bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Eero-Cento
->    md5sum: 8bb585b9badf0e270585329e9bda83e2
+> Note, the device comes with the board_id not changed from 0xff.
+> Following the example of existing boards we are adding the
+> calibration variant.
 >
->    bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Eero-Cento
->    md5sum: 714c291e5bbbeed34d19fe17bb80a36f
+> * md5sum of each new board file to add
 >
+> $ md5sum *
+> 5003239259d8cb68097a941dde86dcc7
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1.bin
 >
-> files are attached, named by their id + ".bin"
+> $ sha256sum *
+> 0eeffb43040b216b0f3210b8db69e4558844dd9df52caf9c25f56a79401f442c
+> bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1.bin
 
-Thanks, added to QCA4019/hw1.0/board-2.bin:
+Thanks, added to WCN3990/hw1.0/board-2.bin:
 
 New:
-bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Eero-Cento
-bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Eero-Cento
+bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1
 
 Changed:
 
 
 Deleted:
 
-2 board image(s) added, 0 changed, 0 deleted, 150 in total
+1 board image(s) added, 0 changed, 0 deleted, 22 in total
 
-https://github.com/kvalo/ath10k-firmware/commit/9df38db1950db73c75c0ae38d1022ab864ce655e
+https://github.com/kvalo/ath10k-firmware/commit/7d5e852d125d4ca3feba6a3fff9d04a0e488e584
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
