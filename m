@@ -4,77 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87A64C4167B
-	for <ath10k@archiver.kernel.org>; Thu,  7 Dec 2023 15:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D91F0C4167B
+	for <ath10k@archiver.kernel.org>; Thu,  7 Dec 2023 16:49:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=el4KRznzVU5IlewCKT4pxzzQ73Z3gnpPLuO51EUCaHk=; b=aNYz8ClZevuf0wQNfaPrM3LzAN
-	ekHu8ET4FvfwgnnmCCJHdhDKoJNN5bglxluRAJNRwjl/8AdDkWzYVhOQiUEvNeSzSiwdlLBQq+5/T
-	LNnyTIvgvRhBSW5unebnTFPZ3iAQHAO3agHgHDvrX0DwF6yMi/u2c1yeXBBmWLFb6LQ8P2xG5WuxY
-	R7AaStbJcazXMcG0bL7ZlpwxH6lsqZHZcSv0FCXQEVW9pufLTG9MiS+jHTiq3tIx3+KJBRluY39mn
-	3ipzBdU23/OtgiyTN8dnU8MMnH+XoP62kdXjZzoTure1dmYpTRDTIgt1rRqAC74gdKtcBHuHydbYh
-	nx3VesoQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Lyhxrpfp+75Q27I2sJ7iqWke8b01A5JKGENoBisxmEg=; b=k+/hbQKHUl0vThHF9Gr3MuoJpJ
+	b9bI17k0jM3XUyFkaotFPBe/uijKntQqqXtnuVdXNREWIMi+eXyAdU/LOdg/ABL36LoQd4JAqcdcd
+	hWAHsDNaDSzzjv4PPabYC/mG7Gl1T853qSq833/M7942D5J7UUzJM0MmO7bp28h92xcGkuS7pUzw/
+	uT64fw8MCcSifTwjyBwoIJdNXKW8nxdTG1CNLJFGHAgQX9uAW/sZLzaU7jeTqMf4f92FE/BpkTyh9
+	YOK1GcAIqBTlYcZi8z91qClBT49nTBxnoSRkM73Izb4dzY/QK+ggoIOdnFYTV11WL60vkCo4DEVPZ
+	CZuN828Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBGkq-00DLAh-0p;
-	Thu, 07 Dec 2023 15:57:36 +0000
-Received: from mail-yb1-xb32.google.com ([2607:f8b0:4864:20::b32])
+	id 1rBHZE-00DS14-1y;
+	Thu, 07 Dec 2023 16:49:40 +0000
+Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBGkm-00DL9Y-1o
+	id 1rBHZB-00DS0i-0L
 	for ath10k@lists.infradead.org;
-	Thu, 07 Dec 2023 15:57:34 +0000
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-dbc38f3fbc7so733122276.3
-        for <ath10k@lists.infradead.org>; Thu, 07 Dec 2023 07:57:31 -0800 (PST)
+	Thu, 07 Dec 2023 16:49:38 +0000
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a1e7971db2aso126876066b.3
+        for <ath10k@lists.infradead.org>; Thu, 07 Dec 2023 08:49:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701964650; x=1702569450; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=el4KRznzVU5IlewCKT4pxzzQ73Z3gnpPLuO51EUCaHk=;
-        b=r5Jy9iZSaVHcgRoqocpkgFL/vHBcLzff9dc6Eh1r/3cspuu1xYR+U2v+fpMVpP4kM6
-         yDKkCmxZ82cekzp7441Q7RBkDK5BuBo0fqmHBxw4dVpYkyPeKu44epd0G5WW7OY4957v
-         nt1Lr3I3+3q8ql2N26ng1RkxcWWEm1RH5a0ht/+zuMs0SMdhHvtfimeqjbgRdyxAJI9J
-         cKLKq8X777O6nRbhbB09u/QB/RMPQYmKcDrv4dOJgxTSXoDz8nUauP7WjkgERE4+Pq9Z
-         4KsixPLnI0s6GQLo6WViOMbt76U4lW1S5n24nXDqdK9nY8lMYl8qw2zorE3MkrBBL8dA
-         uOSQ==
+        d=chromium.org; s=google; t=1701967773; x=1702572573; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lyhxrpfp+75Q27I2sJ7iqWke8b01A5JKGENoBisxmEg=;
+        b=IkrO+scncaVsM6WFIFP6Jzq80Meboclv+Bsx1THEtttQoNQpXlTCOpFZeIUmUE0qP1
+         H0SwOn/8IqOrPvbjpFByETFj1H6HHUMa+Ay3jR8iHEQHns8MzvpDVgLIhinjBoyFR7fF
+         llLCC6sf8FOjU6PbWLvYYzMdTbp8qE371if1A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701964650; x=1702569450;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=el4KRznzVU5IlewCKT4pxzzQ73Z3gnpPLuO51EUCaHk=;
-        b=sLwYH768qJjnkbBrFO6jPhrr8gPmA3WUlKDJHNbpYFfQOtVE4ACHlgTL0VLPAGIXQh
-         MQa8OiM+jc5GRfSRAd/UIvPs02FhMCVR+kF8/RC/kkmOEBasg0mk9uQGpH/pno4IWmkI
-         vuaCLWJVhjRCfIuhPOcIxMiIq7S7OJ2MrgNw5cPY59NcPb555tYeIH+bND5oCp+Tspo3
-         BwkY2mS6XBcV+rZGF9TfjW1vIwO9EzJn5emRYp0DG/tnCr5x0YLERqrYXBm3jttrh2nZ
-         NlYe/pHBD7ciaMPpZPbZBHlyVs3cm4oipBjR6EOc5UXz8YEiHIZscdarEQBt2+SuIqM5
-         H2Iw==
-X-Gm-Message-State: AOJu0YxUk38pcyYDm3RE4tb5a9iVtKQ6ztrTlp13YryAqN6UT5jeMeJF
-	nJPThvU/sn+mOOCgnF8IVz94FrC7wGxcEqgJnlGXpQ==
-X-Google-Smtp-Source: AGHT+IG9r4TtcMNcv43vr160Du4eCcoL2z6SGity1U+65JMKznfVphViB/nGW5INoL0z0okFG84CnjiYfCvR/DgIFGA=
-X-Received: by 2002:a25:2cb:0:b0:db7:dacf:3fc9 with SMTP id
- 194-20020a2502cb000000b00db7dacf3fc9mr2323879ybc.118.1701964650372; Thu, 07
- Dec 2023 07:57:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701967773; x=1702572573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lyhxrpfp+75Q27I2sJ7iqWke8b01A5JKGENoBisxmEg=;
+        b=jvJVoHYRZCtih05JiFdrQWXYlSc8QeVMWQWSfYSekQLyJIbzP4nNqn67FVufjyoapO
+         Zh/RxNFubEEynwuhV8pHXzkWSSkvD7DORvzMuxyZdNBnz0CjbkpuEaqAfTeNEpNpGoh7
+         jBVpzeUbWlGC4zd4VYRyPixH8cE2r3zNqSZKZR/dkke14o2YDty6KExn3Nl1xfKVyKHb
+         X5C+NJquP/XGwhD/eZaA3o7tQqkUQUhUvEJiz9YgKY2SoJVBMDUDr21nGgfo78BX1yjU
+         kpbOD2T8n+5+em8mUXO7U/ms8NZwaVL1jYyg38Fbgvkzch9Em3/yrZIO5LBzYVNI83pb
+         ldHw==
+X-Gm-Message-State: AOJu0YxaPQUvvnAplKzz/5dfzSB/XeRBO4on12JGyIwV3ALT/6C692wZ
+	g5L6GvD5bpgCR/geZBUwCKL61gpAjCrkYosYJczJO/mQ
+X-Google-Smtp-Source: AGHT+IGQgu5igoHsMqpxf/C9y8jSRdWQL80W6RZR0pJWWIiRP37VmAnkxgDeeBXtgHBmBx0sanLhHw==
+X-Received: by 2002:a17:906:20dd:b0:a1e:437c:6a6a with SMTP id c29-20020a17090620dd00b00a1e437c6a6amr1047258ejc.78.1701967773084;
+        Thu, 07 Dec 2023 08:49:33 -0800 (PST)
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
+        by smtp.gmail.com with ESMTPSA id m12-20020a1709066d0c00b00a1ca6f5f189sm1049634ejr.179.2023.12.07.08.49.32
+        for <ath10k@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 08:49:32 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so67275e9.1
+        for <ath10k@lists.infradead.org>; Thu, 07 Dec 2023 08:49:32 -0800 (PST)
+X-Received: by 2002:a05:600c:22d8:b0:40b:4221:4085 with SMTP id
+ 24-20020a05600c22d800b0040b42214085mr206272wmg.1.1701967772109; Thu, 07 Dec
+ 2023 08:49:32 -0800 (PST)
 MIME-Version: 1.0
-References: <CAA8EJpqg-CrbzpSqO9W6W2c=V6TN0Yx5mfih3j4cYeOLNRz+Ng@mail.gmail.com>
- <87wmtqm536.fsf@kernel.org>
-In-Reply-To: <87wmtqm536.fsf@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 7 Dec 2023 17:57:19 +0200
-Message-ID: <CAA8EJpr5WUN81qezPx0t8H+AZSHt98Uq78kJJ7wqayAZy0NhYA@mail.gmail.com>
-Subject: Re: ath10k-firmware: WCN3990: Add board file for the Qualcomm SDM845
- MTP platform
+References: <20230630151842.1.If764ede23c4e09a43a842771c2ddf99608f25f8e@changeid>
+ <CAMSo37XcwAn9znSQ8202LUTdBKLDz94QJ9i43aXya5LHs-4GiQ@mail.gmail.com> <87wmtqnk3y.fsf@kernel.org>
+In-Reply-To: <87wmtqnk3y.fsf@kernel.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 7 Dec 2023 08:49:16 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VHHCsjJmVWDXN4g3U=-_SLWc2iWqbAdZPOykn+QMQojw@mail.gmail.com>
+Message-ID: <CAD=FV=VHHCsjJmVWDXN4g3U=-_SLWc2iWqbAdZPOykn+QMQojw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Don't touch the CE interrupt registers after
+ power up
 To: Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org, 
-	"open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>
+Cc: Yongqin Liu <yongqin.liu@linaro.org>, ath10k@lists.infradead.org, 
+	Abhishek Kumar <kuabhs@chromium.org>, Youghandhar Chintala <quic_youghand@quicinc.com>, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	John Stultz <jstultz@google.com>, Viktor Martensson <vmartensson@google.com>, 
+	Amit Pundir <amit.pundir@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231207_075732_596415_54C52053 
-X-CRM114-Status: UNSURE (   6.22  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231207_084937_187984_BCB17893 
+X-CRM114-Status: GOOD (  26.66  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,17 +101,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, 7 Dec 2023 at 16:59, Kalle Valo <kvalo@kernel.org> wrote:
+Hi,
+
+On Thu, Dec 7, 2023 at 6:49=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wrote:
 >
+> > Recently during our Android build test on the Dragonboard 845c board,
+> > with the Android Common Kernel android11-5.4-lts and android12-5.4-lts =
+branches,
+> >
+> > we found there are some ufshcd related changes printed,
+> > and the serial console gets stuck, no response for input,
+> > and the Android boot is stuck at the animation window.
+> >
+> > The problem is reported here
+> >     https://issuetracker.google.com/issues/314366682
+> > You could check there for more log details.
+> >
+> > And with some bisection, I found it's related to this commit,
+> > when I revert this commit, the problem is gone.
+> >
+> > So replied here, not sure if you have any idea about it,
+> > or any suggestions on what we should do next to resolve the problem?
 >
-> I don't see any attachments, forgot to attach to it? Please resend the
-> whole file.
+> FWIW we don't support Android kernels, only kernel.org releases.
 
-Oops. Done.
+Right. If the problem also reproduces on mainline Linux then that
+would be interesting to know. I think db845c is at least somewhat well
+supported by mainline so it should be possible to test it there.
 
+If I had to guess, I'd think that probably the CE interrupts are
+firing nonstop for you and not getting handled. Then those constant
+interrupts are (presumably) causing the UFS controller to timeout. If
+this is true, the question is: why? Maybe you could use ftrace to
+confirm this by adding some traces to
+ath10k_snoc_per_engine_handler()? There's a way to get ftrace buffers
+dumped on panic (or, if you use kdb, it has a command for it).
 
+If this reproduces on mainline and it's not obvious how to fix this, I
+don't object to a revert. As per the description of the original
+patch, the problem being fixed was fairly rare and I didn't have a way
+to reproduce it. The fix seemed safe to me and we've been using it on
+Chromebooks based on sc7180, but if it had to get reverted it wouldn't
+be the end of the world.
 
--- 
-With best wishes
-Dmitry
+-Doug
 
