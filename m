@@ -4,175 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74DEBC4167D
-	for <ath10k@archiver.kernel.org>; Tue, 12 Dec 2023 02:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DACADC4332F
+	for <ath10k@archiver.kernel.org>; Tue, 12 Dec 2023 23:27:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:References:CC:To:From:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=; b=44P6hjjgNkZyFU8L2VxOwAQMNP
-	1rzOJk+Nj9cNWIukSR8PDyMjOiqH9F/F8zvFxQmgXZOQW0FqlFTf7L0r8uOYRtvJVbKO4t5bL20Ok
-	Gc/NLMeoF0aknMoOxcLamcMqWAXvSIZ7KNIurJjK+oGA0CuzVlXkwuQHNY1qvhWtSsXLboPbtEhs9
-	7GCwEHBDW3MtGi0++DNprRty6204WwCWThTI9NeNYKUgMQSzPSD6Rn/J+Os1Q6xHylKIxoZTI3Ipn
-	s3rZv66uEdlFeWqLaJaBgMIprUHdoagOmyK0TUR4s9ROROpHStIoQAG3g4YL5vevHJbCr6ovqW821
-	NeoswUeQ==;
+	bh=SWhMvNaoYsP+58utWELVB8tF6xTUlOKZmRPgNdYB/MM=; b=k95Bwm/zUGvR5wOkaGFpqAGjl5
+	fDg+o9/PPzby0cgFyDGebUotirWBw0DqSPf9UHqmDYyHF37XKNlbJTRAyO8b3pm8cc52rKuvYvaKm
+	mel71qit5Gpd8+vVsk7YUTlU2EI46Kf+QpUjixcDIve2VspJh/2fzHr4bPYQ0ghOZJH/OEfDyLEYV
+	Dy9n7k3ABxPkNL0fVhdAEygBMVNi3xCXY6Sj6mm7vHNXJbg4KJG2xOqYXe69mC9+3lZGBTUTi0vls
+	A2Tr0eppoDXx/TZxnZkQP5hLY20ZRxmYdweCA7ZLCUxpdwZyKtK1QOsB2BCGt7DuHcpG/4C19f8qB
+	uqqgptnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCsVH-00AWUb-2O;
-	Tue, 12 Dec 2023 02:28:11 +0000
-Received: from mail-yw1-x112b.google.com ([2607:f8b0:4864:20::112b])
+	id 1rDC9t-00D1gU-30;
+	Tue, 12 Dec 2023 23:27:25 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCsV8-00AWKJ-1E;
-	Tue, 12 Dec 2023 02:28:06 +0000
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5d747dbf81eso44773707b3.1;
-        Mon, 11 Dec 2023 18:27:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702348076; x=1702952876; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=;
-        b=JoyVPRigCJ1RfVcpB2yAE9w6it8r+pBWGDESapr4EwPnq0EqoSHis6i4KQA8vBXh4T
-         AyHWiLEKaftNCBwEHXx8QkCD8DXr6oOiZym6NQcCnqhztun5bkUBXmxvMOwBrnYYXD/n
-         lQrCEuKQ/NCY9LSnWCX0JthVW3LWAllfa0z6BPbF/OzQI80MlvNm/c1KPnMYe7oW5rkw
-         mlw9u3sb88gdL956jqt44zYxR8f2gUmZbup9X1FM49MD/CnD6ZmFjKu++c+lrFlNa18Q
-         QLMnLMb/E/D9XdfbrZgzdrJGnIYaCXEOC4x7pJSh4HeJN+D0Me1VY8FolgkQ1zKfQvZp
-         la0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702348076; x=1702952876;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=;
-        b=RD9ATo4nXSU+yduO0mBGa1LCgERrWwNfDJ/uG890kbpjJKwUlGHzsAjgR3aob4z7On
-         AtL75N4X8MGq8MzemHQp4frfe0fgw43aCVZptE31bL+41+pnuBwQP4zxyCekLpf4pYon
-         9td5Wbv19aa9tqBJOHFY6uoVaps4QhfBu/JVmwOf2qXthsMl4WgjSShonJCoiHGmgNF7
-         jEFy2sywIYZEeWuc00pyOFj6ywILmR8PPJgZzf8rfrfPFYFUvezRC0t9wh8mr0+Ni9eQ
-         NdWAicSSEytk5pHGa78/NcLyXFkKgPh6jDsXsx+tiGn+zZubf8V0nyM3eZC1kROkW4hS
-         wnRA==
-X-Gm-Message-State: AOJu0YwFfCXybEo6ikDJ0wa4pFFcIJNuwxNywF6Gv0jNnP2vbqmDvr/9
-	DQ9Klg52iMdZphPPR8EH8do=
-X-Google-Smtp-Source: AGHT+IFPs4AvQxtYv4UrJlD5lGh/BMqsDvh12ZnXOoQbI3s9B0hPdqcJ7FPe01OhhQlwKaBiv0CCJg==
-X-Received: by 2002:a81:a505:0:b0:5d7:1941:aa7 with SMTP id u5-20020a81a505000000b005d719410aa7mr4037805ywg.66.1702348076388;
-        Mon, 11 Dec 2023 18:27:56 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:38aa:1c88:df05:9b73])
-        by smtp.gmail.com with ESMTPSA id a200-20020a0dd8d1000000b005d35a952324sm3448999ywe.56.2023.12.11.18.27.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 18:27:55 -0800 (PST)
-From: Yury Norov <yury.norov@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Disseldorp <ddiss@suse.de>,
-	Edward Cree <ecree.xilinx@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Jens Axboe <axboe@kernel.dk>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	Karsten Graul <kgraul@linux.ibm.com>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Kees Cook <keescook@chromium.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Oliver Neukum <oneukum@suse.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ping-Ke Shih <pkshih@realtek.com>,
-	Rich Felker <dalias@libc.org>,
-	Rob Herring <robh@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Stanislaw Gruszka <stf_xl@wp.pl>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	alsa-devel@alsa-project.org,
-	ath10k@lists.infradead.org,
-	dmaengine@vger.kernel.org,
-	iommu@lists.linux.dev,
-	kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-bluetooth@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-media@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-net-drivers@amd.com,
-	linux-pci@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	mpi3mr-linuxdrv.pdl@broadcom.com,
-	netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	x86@kernel.org
-Cc: Yury Norov <yury.norov@gmail.com>,
-	Jan Kara <jack@suse.cz>,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-	Alexey Klimov <klimov.linux@gmail.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v3 02/35] lib/find: add test for atomic find_bit() ops
-Date: Mon, 11 Dec 2023 18:27:16 -0800
-Message-Id: <20231212022749.625238-3-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231212022749.625238-1-yury.norov@gmail.com>
-References: <20231212022749.625238-1-yury.norov@gmail.com>
+	id 1rDC9q-00D1dr-01
+	for ath10k@lists.infradead.org;
+	Tue, 12 Dec 2023 23:27:24 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCH5n9c013622;
+	Tue, 12 Dec 2023 23:27:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=SWhMvNaoYsP+58utWELVB8tF6xTUlOKZmRPgNdYB/MM=; b=Cd
+	w8Bx7J27a3PIgZ4Ea88ItRJ5WCvxIj5nSccJKHeTsVu4XmD3MOPJ2LjaZriSb7yV
+	iQ6ryUW/I4N+6jBRCzS5IX9hGhh5+IeJJ9WVsMsEKrJwOt8/sn8QB/v4T8Kpggqx
+	fwIrYC9fWCmdTCMvryB2DbEsdj32GN4aOy5L4b6UZJmsXlvgocCcANbP2pvfuxNR
+	9EY/5yCH6msj43h9w9RlrfRpWSnn0D8NUwCpRrKunzPa+x87wU3/09sk66XfEDM8
+	iAHpQ3LmiDMRyIc2siukc+zOfCuFAUf0J7Tby33lSgbBJUOSKggOID8TORraEC4J
+	FUI+epEv7MhrcDQCOqsw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxctatx5g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Dec 2023 23:27:02 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCNR1VO024896
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Dec 2023 23:27:01 GMT
+Received: from [10.110.106.103] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Dec
+ 2023 15:27:00 -0800
+Message-ID: <ada88ef1-d290-441a-b6f1-97d7f478cccc@quicinc.com>
+Date: Tue, 12 Dec 2023 15:26:59 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC - is this a bug?] wifi: ath10k: Asking for some light on
+ this, please :)
+Content-Language: en-US
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Johannes Berg
+	<johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@kernel.org>
+CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva"
+	<gustavoars@kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com>
+ <26b15f4702cef17fe70b496a62f03735874bd16a.camel@sipsolutions.net>
+ <07e9bb04-f9fc-46d5-bfb9-a00a63a707c0@embeddedor.com>
+ <f8daa53ee8a8019e4fd2b823c1fcb85a6cc4d806.camel@sipsolutions.net>
+ <8219c79e-0359-4136-afa4-fba76fde191a@embeddedor.com>
+ <afaadf5e-556c-4fd6-bfd3-9c486a35a08f@quicinc.com>
+In-Reply-To: <afaadf5e-556c-4fd6-bfd3-9c486a35a08f@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5ea7PuvC2gPKd5hS6zoaxzmbgueU3cQu
+X-Proofpoint-ORIG-GUID: 5ea7PuvC2gPKd5hS6zoaxzmbgueU3cQu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1011
+ mlxlogscore=789 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312120183
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_182802_444358_118AF559 
-X-CRM114-Status: GOOD (  14.19  )
+X-CRM114-CacheID: sfid-20231212_152722_054810_8EECDAF8 
+X-CRM114-Status: GOOD (  17.56  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -187,93 +110,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Add basic functionality test for new API.
+On 10/25/2023 8:52 AM, Jeff Johnson wrote:
+> On 10/24/2023 7:37 PM, Gustavo A. R. Silva wrote:
+>>
+>>
+>> On 10/24/23 14:49, Johannes Berg wrote:
+>>> On Tue, 2023-10-24 at 14:41 -0600, Gustavo A. R. Silva wrote:
+>>>>
+>>>> It seems we run into the same issue in the function below, even in the
+>>>> case this `memset()` is unnecessary (which it seems it's not):
+>>>>
+>>>>     8920         memset(skb->data, 0, sizeof(*cmd));
+>>>>
+>>>> Notice that if `cap->peer_chan_len == 0` or `cap->peer_chan_len == 1`,
+>>>> in the original code, we have `len == sizeof(*cmd) == 128`:
+>>>
+>>> Right.
+>>>
+>>>> -       /* tdls peer update cmd has place holder for one channel*/
+>>>> -       chan_len = cap->peer_chan_len ? (cap->peer_chan_len - 1) : 0;
+>>>> -
+>>>> -       len = sizeof(*cmd) + chan_len * sizeof(*chan);
+>>>> +       len = struct_size(cmd, peer_capab.peer_chan_list, 
+>>>> cap->peer_chan_len);
+>>>>
+>>>>           skb = ath10k_wmi_alloc_skb(ar, len);
+>>>>           if (!skb)
+>>>>
+>>>> which makes `round_len == roundup(len, 4) == struct_size(cmd,...,...) 
+>>>> == 104`
+>>>> when `cap->peer_chan_len == 0`
+>>>
+>>> And yeah, that's really the issue, it only matters for ==0. For a moment
+>>> there I thought that doesn't even make sense, but it looks like it never
+>>> even becomes non-zero.
+>>>
+>>> No idea then, sorry. You'd hope firmware doesn't care about the actual
+>>> message size if the inner data says "0 entries", but who knows? And how
+>>> many firmware versions are there? :)
+>>>
+>>> So I guess you'd want to stay compatible, even if it means having a
+>>>
+>>>     chan_len = min(cap->peer_chan_len, 1);
+>>>
+>>> for the struct_size()?
+>>
+>> Yeah, that's an alternative.
+>>
+>> I'll wait for the maintainers to chime in and see if they have a different
+>> opinion.
+> 
+> I'm seeing clarification from the development team.
+> 
+> /jeff
+> 
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- lib/test_bitmap.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+I was not able to get a response from the firmware team.
 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 65f22c2578b0..277e1ca9fd28 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -221,6 +221,65 @@ static void __init test_zero_clear(void)
- 	expect_eq_pbl("", bmap, 1024);
- }
- 
-+static void __init test_find_and_bit(void)
-+{
-+	unsigned long w, w_part, bit, cnt = 0;
-+	DECLARE_BITMAP(bmap, EXP1_IN_BITS);
-+
-+	/*
-+	 * Test find_and_clear{_next}_bit() and corresponding
-+	 * iterators
-+	 */
-+	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
-+	w = bitmap_weight(bmap, EXP1_IN_BITS);
-+
-+	for_each_test_and_clear_bit(bit, bmap, EXP1_IN_BITS)
-+		cnt++;
-+
-+	expect_eq_uint(w, cnt);
-+	expect_eq_uint(0, bitmap_weight(bmap, EXP1_IN_BITS));
-+
-+	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
-+	w = bitmap_weight(bmap, EXP1_IN_BITS);
-+	w_part = bitmap_weight(bmap, EXP1_IN_BITS / 3);
-+
-+	cnt = 0;
-+	bit = EXP1_IN_BITS / 3;
-+	for_each_test_and_clear_bit_from(bit, bmap, EXP1_IN_BITS)
-+		cnt++;
-+
-+	expect_eq_uint(bitmap_weight(bmap, EXP1_IN_BITS), bitmap_weight(bmap, EXP1_IN_BITS / 3));
-+	expect_eq_uint(w_part, bitmap_weight(bmap, EXP1_IN_BITS));
-+	expect_eq_uint(w - w_part, cnt);
-+
-+	/*
-+	 * Test find_and_set{_next}_bit() and corresponding
-+	 * iterators
-+	 */
-+	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
-+	w = bitmap_weight(bmap, EXP1_IN_BITS);
-+	cnt = 0;
-+
-+	for_each_test_and_set_bit(bit, bmap, EXP1_IN_BITS)
-+		cnt++;
-+
-+	expect_eq_uint(EXP1_IN_BITS - w, cnt);
-+	expect_eq_uint(EXP1_IN_BITS, bitmap_weight(bmap, EXP1_IN_BITS));
-+
-+	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
-+	w = bitmap_weight(bmap, EXP1_IN_BITS);
-+	w_part = bitmap_weight(bmap, EXP1_IN_BITS / 3);
-+	cnt = 0;
-+
-+	bit = EXP1_IN_BITS / 3;
-+	for_each_test_and_set_bit_from(bit, bmap, EXP1_IN_BITS)
-+		cnt++;
-+
-+	expect_eq_uint(EXP1_IN_BITS - bitmap_weight(bmap, EXP1_IN_BITS),
-+			EXP1_IN_BITS / 3 - bitmap_weight(bmap, EXP1_IN_BITS / 3));
-+	expect_eq_uint(EXP1_IN_BITS * 2 / 3 - (w - w_part), cnt);
-+}
-+
- static void __init test_find_nth_bit(void)
- {
- 	unsigned long b, bit, cnt = 0;
-@@ -1273,6 +1332,8 @@ static void __init selftest(void)
- 	test_for_each_clear_bitrange_from();
- 	test_for_each_set_clump8();
- 	test_for_each_set_bit_wrap();
-+
-+	test_find_and_bit();
- }
- 
- KSTM_MODULE_LOADERS(test_bitmap);
--- 
-2.40.1
+I have gone ahead and created a series of patches to fix the remaining
+flexible array issues in ath10k including the one discussed here. I
+should be able to post those sometime this week.
 
+/jeff
 
