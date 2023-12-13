@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0BE1C4332F
-	for <ath10k@archiver.kernel.org>; Wed, 13 Dec 2023 17:07:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D494FC4167B
+	for <ath10k@archiver.kernel.org>; Wed, 13 Dec 2023 17:07:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:CC:To:In-Reply-To:References
 	:Message-ID:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yknmZA9L7qBJRQzXVQxSgoAamyNM1yoUA+KHW7sh2e4=; b=z/u7G3DX0CCGNfFAS1H3yPcfzm
-	wW3rX+Cg4XYn65bbTQgsyq4AFwQVG5k0TvYhFhzppYbhJFw/aVDkS8Ep3m3gaD24fH1TOZCLaDfWd
-	mcFV4uZVvoytFayXP69jXS/+ORiH83TzLytIa54ftbCDjMZSRBAP4ewpUXrEn2fq/i5NqxX+uROzj
-	pJKYRIh9j9MgcV/hhaJHM8PjGan4Yx5u1zFSe8k4akVnxjfFPtp4s3gvwy5C8fllbxoinmlCbe7gA
-	SdwBUbidEhQ3bbl5ok+szbupfM/gHKYhSZvgFofUY/PdnjyXDbH5QZznFrrAcAx9j0dw2TCA1JCZs
-	TM3PjivA==;
+	bh=1AcIyhIoIAYJEtYsTXVyARk5rQvUQbVh1Ib4zg2TLCE=; b=Th7xsQh2K1iPBewDxk60sXH0k6
+	G56eeypR/PBev2PVjV7MsnXPu9rY8pzYmhdrsv5Rd6nvmRZSpQR9ohZgAQTGlWskYrkSTJPXPVRiw
+	3sI6guKOLmLxKlIu+5iDIBCf/angdN9AklgQKOXIN7KQBNmrcGoC8C3y+ItCeWMDSJRY8MrECX/65
+	wly2nn+UlvhJaTdIIFyZyaBcx5HNmQihSFjOCuAcyzWiP/PK8FK3Enibr+zpKMFdW5X+KDYAv4jrs
+	+d89eXYHSUqNoD1i4gSY6wiBvocYYT6VBI04mD6Dv6yuPwkyNPICWlZ99Rj+hFWFt+dPR+vUgNzuO
+	VdBbrqQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDShb-00FXL4-1a;
-	Wed, 13 Dec 2023 17:07:19 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1rDShf-00FXNN-1h;
+	Wed, 13 Dec 2023 17:07:23 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDShY-00FXHQ-0N
+	id 1rDSha-00FXHM-0r
 	for ath10k@lists.infradead.org;
-	Wed, 13 Dec 2023 17:07:17 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDEUHTZ006018;
-	Wed, 13 Dec 2023 17:06:42 GMT
+	Wed, 13 Dec 2023 17:07:21 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDEPklS014035;
+	Wed, 13 Dec 2023 17:06:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:date:subject:mime-version:content-type
 	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=yknmZA9L7qBJRQzXVQxSgoAamyNM1yoUA+KHW7sh2e4
-	=; b=K5Tcqv4jZJvSMRR/c4gYjgl5hI1HsROtYhFZTHJP0+UpvQWR9TXSLDKlbXn
-	wkdJ3TfF3ARG6i5NpTR2nCxaiuLttvYBHh3cMLpoRakb++AVIGpvtIBfR5F1Y+/P
-	SS0jtpRMbCUk/C4Udck3MhNFb/5HT7pfBtPuA3M7yHqFVeIQghV9h0fAX4Apz1bZ
-	CN1nJlf7jREh0xb4A1zewe6A+TYdNt/QYHc9E1JlfvuT/yqyVBF8CpJa1sqb22x2
-	rC9SQW3AFX7/5conMqyvmIonWCkrFEIpjFDgDbWZEZ5olKX6O9U9oOddLMyTVJei
-	xrtOczqj4PVeyKLSESkj01GoGUA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyahy8yk6-1
+	:cc; s=qcppdkim1; bh=1AcIyhIoIAYJEtYsTXVyARk5rQvUQbVh1Ib4zg2TLCE
+	=; b=dsPfN0hSWYs1sLKCm2AmjvcLvn+LO7gg6JnUc0xvnsrE+rR+g5L+J0qzCcv
+	8wT5veZNZMxs7dynQ+CmbgenCaPOQq7iYptql35iG0f2HlSjh1xS/Td8Sx4kgZOH
+	bgTfl1s2ftDPe+pOXx+HGebMUKuWHRn2mrQcUYDxQKs67BAwlqoE7dwveaEEFJA3
+	SFJXrtWnpWYqLYLfB8SLONJxlLhAyB3eH5fKfEER3cKs8nPE8p/J4uFb0mLleS8n
+	kUD7v/ec9obubrB4hQFotKAXObffwyoHHMnmrqADpuCAggO2AIfCts8tlY3t4Jbr
+	TthV0LlTItdPgJbGscNny45d6hg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyec5rdh3-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Dec 2023 17:06:41 +0000 (GMT)
+	Wed, 13 Dec 2023 17:06:42 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDH6fa9031587
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDH6fPC024419
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 13 Dec 2023 17:06:41 GMT
 Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 09:06:40 -0800
+ 2023 09:06:41 -0800
 From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Wed, 13 Dec 2023 09:06:40 -0800
-Subject: [PATCH 2/6] wifi: ath10k: use flexible arrays for WMI start scan
- TLVs
+Date: Wed, 13 Dec 2023 09:06:42 -0800
+Subject: [PATCH 4/6] wifi: ath10k: remove unused template structs
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20231213-wmi_host_mem_chunks_flexarray-v1-2-92922d92fa2c@quicinc.com>
+Message-ID: <20231213-wmi_host_mem_chunks_flexarray-v1-4-92922d92fa2c@quicinc.com>
 References: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
 In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
 To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
@@ -74,19 +73,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: B2Fi_ThWEObeB8ZqTMnrjEZJdSDefExK
-X-Proofpoint-GUID: B2Fi_ThWEObeB8ZqTMnrjEZJdSDefExK
+X-Proofpoint-ORIG-GUID: PFG6XjTlsqLAs94-J63S1rJBZS3WW0s2
+X-Proofpoint-GUID: PFG6XjTlsqLAs94-J63S1rJBZS3WW0s2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 adultscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
- bulkscore=0 impostorscore=0 phishscore=0 suspectscore=0 mlxlogscore=724
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312130122
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 adultscore=0 phishscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312130122
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231213_090716_162433_3D742918 
-X-CRM114-Status: GOOD (  12.69  )
+X-CRM114-CacheID: sfid-20231213_090718_429928_6F722076 
+X-CRM114-Status: GOOD (  11.74  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,21 +100,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Currently ath10k defines the following struct:
-	struct wmi_start_scan_tlvs {
-		u8 tlvs[0];
-	} __packed;
+Currently both the wmi_bcn_tmpl_cmd and wmi_prb_tmpl_cmd structs
+define:
+	  u8 data[1];
 
-Per the guidance in [1] this should be a flexible array. However, a
-direct replace to u8 tlvs[] results in the compilation error:
-       flexible array member in a struct with no named members
-
-This is because C99 6.7.2.1 (16) requires that a structure containing
-a flexible array member must have more than one named member.
-
-So rather than defining a separate struct wmi_start_scan_tlvs which
-contains the flexible tlvs[] array, just define the tlvs[] array where
-struct wmi_start_scan_tlvs is being used.
+Per the guidance in [1] both instances of this should be flexible
+arrays. However during conversion it was discovered that neither of
+these structs are actually used, so just remove them.
 
 No functional changes, compile tested only.
 
@@ -123,79 +114,44 @@ No functional changes, compile tested only.
 
 Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |  8 ++++----
- drivers/net/wireless/ath/ath10k/wmi.h | 11 ++---------
- 2 files changed, 6 insertions(+), 13 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.h | 24 ------------------------
+ 1 file changed, 24 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 88befe92f95d..4d5aadbc7159 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -6927,14 +6927,14 @@ void ath10k_wmi_put_start_scan_common(struct wmi_start_scan_common *cmn,
- }
- 
- static void
--ath10k_wmi_put_start_scan_tlvs(struct wmi_start_scan_tlvs *tlvs,
-+ath10k_wmi_put_start_scan_tlvs(u8 *tlvs,
- 			       const struct wmi_start_scan_arg *arg)
- {
- 	struct wmi_ie_data *ie;
- 	struct wmi_chan_list *channels;
- 	struct wmi_ssid_list *ssids;
- 	struct wmi_bssid_list *bssids;
--	void *ptr = tlvs->tlvs;
-+	void *ptr = tlvs;
- 	int i;
- 
- 	if (arg->n_channels) {
-@@ -7012,7 +7012,7 @@ ath10k_wmi_op_gen_start_scan(struct ath10k *ar,
- 	cmd = (struct wmi_start_scan_cmd *)skb->data;
- 
- 	ath10k_wmi_put_start_scan_common(&cmd->common, arg);
--	ath10k_wmi_put_start_scan_tlvs(&cmd->tlvs, arg);
-+	ath10k_wmi_put_start_scan_tlvs(cmd->tlvs, arg);
- 
- 	cmd->burst_duration_ms = __cpu_to_le32(0);
- 
-@@ -7041,7 +7041,7 @@ ath10k_wmi_10x_op_gen_start_scan(struct ath10k *ar,
- 	cmd = (struct wmi_10x_start_scan_cmd *)skb->data;
- 
- 	ath10k_wmi_put_start_scan_common(&cmd->common, arg);
--	ath10k_wmi_put_start_scan_tlvs(&cmd->tlvs, arg);
-+	ath10k_wmi_put_start_scan_tlvs(cmd->tlvs, arg);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi 10x start scan\n");
- 	return skb;
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 833ce0251a2c..52a409ff94e7 100644
+index 37a7d421bd86..e16410e348ca 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3218,23 +3218,16 @@ struct wmi_start_scan_common {
- 	__le32 scan_ctrl_flags;
+@@ -5782,30 +5782,6 @@ struct wmi_bcn_prb_info {
+ 	/* app IE */
  } __packed;
  
--struct wmi_start_scan_tlvs {
--	/* TLV parameters. These includes channel list, ssid list, bssid list,
--	 * extra ies.
--	 */
--	u8 tlvs[0];
+-struct wmi_bcn_tmpl_cmd {
+-	/* unique id identifying the VDEV, generated by the caller */
+-	__le32 vdev_id;
+-	/* TIM IE offset from the beginning of the template. */
+-	__le32 tim_ie_offset;
+-	/* beacon probe capabilities and IEs */
+-	struct wmi_bcn_prb_info bcn_prb_info;
+-	/* beacon buffer length */
+-	__le32 buf_len;
+-	/* variable length data */
+-	u8 data[1];
 -} __packed;
 -
- struct wmi_start_scan_cmd {
- 	struct wmi_start_scan_common common;
- 	__le32 burst_duration_ms;
--	struct wmi_start_scan_tlvs tlvs;
-+	u8 tlvs[];
- } __packed;
- 
- /* This is the definition from 10.X firmware branch */
- struct wmi_10x_start_scan_cmd {
- 	struct wmi_start_scan_common common;
--	struct wmi_start_scan_tlvs tlvs;
-+	u8 tlvs[];
- } __packed;
- 
- struct wmi_ssid_arg {
+-struct wmi_prb_tmpl_cmd {
+-	/* unique id identifying the VDEV, generated by the caller */
+-	__le32 vdev_id;
+-	/* beacon probe capabilities and IEs */
+-	struct wmi_bcn_prb_info bcn_prb_info;
+-	/* beacon buffer length */
+-	__le32 buf_len;
+-	/* Variable length data */
+-	u8 data[1];
+-} __packed;
+-
+ enum wmi_sta_ps_mode {
+ 	/* enable power save for the given STA VDEV */
+ 	WMI_STA_PS_MODE_DISABLED = 0,
 
 -- 
 2.42.0
