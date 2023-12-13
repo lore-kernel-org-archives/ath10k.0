@@ -4,75 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6CEAC4332F
-	for <ath10k@archiver.kernel.org>; Wed, 13 Dec 2023 14:12:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0BE1C4332F
+	for <ath10k@archiver.kernel.org>; Wed, 13 Dec 2023 17:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ZC2wQ4h4rIr8MyRqomwE1kesmwyZ6DE9/fbuVAEnKMg=; b=CF3C4GZgr2eZ6MIqd/E58YhpFp
-	XvxWN2ZmdRwtAAPo6ee1vpE1rQhNFSdkisR0Fe+W9eTqkSel+J5m4EJATyNLbnYYrIG2a2u32CplI
-	d3ns4ou/sIWh/OmXlmGhXlZR7wqNiVTZPNrJA5LAxrW4ql6ZII+eL8No83zr9wTNGTFwABMzmUdU5
-	+Bzeys+6ukc7ujqViFAuqlaNOS0D22K4Ff6TPdCH4Pi4hgWxbfO6xXmiXEekNsf49UgmIHh8ecGb+
-	3IgVk/HuhrKmMvuzkPo99+P6Q/YemlhuN6QcsvN6MmPTPHqmOpcrqY2Z4M7LG7aeSczjomYnZLkMZ
-	Vuu0EkUQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:CC:To:In-Reply-To:References
+	:Message-ID:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=yknmZA9L7qBJRQzXVQxSgoAamyNM1yoUA+KHW7sh2e4=; b=z/u7G3DX0CCGNfFAS1H3yPcfzm
+	wW3rX+Cg4XYn65bbTQgsyq4AFwQVG5k0TvYhFhzppYbhJFw/aVDkS8Ep3m3gaD24fH1TOZCLaDfWd
+	mcFV4uZVvoytFayXP69jXS/+ORiH83TzLytIa54ftbCDjMZSRBAP4ewpUXrEn2fq/i5NqxX+uROzj
+	pJKYRIh9j9MgcV/hhaJHM8PjGan4Yx5u1zFSe8k4akVnxjfFPtp4s3gvwy5C8fllbxoinmlCbe7gA
+	SdwBUbidEhQ3bbl5ok+szbupfM/gHKYhSZvgFofUY/PdnjyXDbH5QZznFrrAcAx9j0dw2TCA1JCZs
+	TM3PjivA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDPxy-00F08l-2F;
-	Wed, 13 Dec 2023 14:12:02 +0000
-Received: from mail-yw1-x112a.google.com ([2607:f8b0:4864:20::112a])
+	id 1rDShb-00FXL4-1a;
+	Wed, 13 Dec 2023 17:07:19 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDPxv-00F07M-11
+	id 1rDShY-00FXHQ-0N
 	for ath10k@lists.infradead.org;
-	Wed, 13 Dec 2023 14:12:00 +0000
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5e2f9e9a2e8so4024657b3.3
-        for <ath10k@lists.infradead.org>; Wed, 13 Dec 2023 06:11:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702476715; x=1703081515; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZC2wQ4h4rIr8MyRqomwE1kesmwyZ6DE9/fbuVAEnKMg=;
-        b=J+fljcdTvYIBMtU5sb0JnGNH5msxRrLrhApJHBRYvsF7uWV3zQJZsFKBL7aMk+UQZJ
-         y+C+lWq4J39yL70AluYyRdz0auC1o8Dhk+kWG97Dw7d6o8SGp+Wb820mCHu5N4pQF7cE
-         xXy8UHayBfqw4iVLa6woRE99vei5EymiQZKEe8yLEG2K4AuInxuSscDiVnsJVQ1L3mFS
-         nKuw09WUQTdltk7hbGTLnIzfzAzxtSUWDG6ZHsCmcUgNFNAXeKYvwCXnoXQSSagawcUk
-         WWg0d2LLGhg6kqA4fyESAHaKRVkMMtt4hUi36tOczAVnn3GbKr82P43NFdRiblyEYqnA
-         pJjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702476715; x=1703081515;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZC2wQ4h4rIr8MyRqomwE1kesmwyZ6DE9/fbuVAEnKMg=;
-        b=Aa3T8QXsMwtHZuvk8XzG2iy1gzENMFm9/JXRprzKxGPTwqY1MrwB9y+/776QrCmUHL
-         3OEZEhSlaKY6Mx3mTrAS6aavS0THN4RC4z5YcjCxJcxs0vkCzj1oBljFDkKINy/5znOY
-         FWRBuKHopGU5rdDmUrXikSkexZzIJRxkci+tw6OCogjjDVJX8stHQEnQ1wgouUnyJRTr
-         +dtflMz8p9mSMV2oSGfH6SClENZqMQFRCFG+sQVvw05QM1igooGBpWgTtM5GX/PbVS03
-         4OqTgtqJYuhpL2CvwomeEQDvDsHMQoNGEnG8QSNPQicCJntDUZoQEwKp3SeI97qpKd8M
-         4O8A==
-X-Gm-Message-State: AOJu0Yy7MKzqXX+fjaxdnF6KfPxHWrGL0St106/xYzhJ7XpJxnwXj0iD
-	P/C4pQBSqGxrfnWVlfE6NCp+r0zKmaWn/vpqtKB5Rg==
-X-Google-Smtp-Source: AGHT+IEStZahJbLAE9wiGrGVosTa2iy+JuDcsIDEI314IOcxMdF49R08VMvTSTOlqvlhGfpPawPs9FyV7a4jnsVmxt4=
-X-Received: by 2002:a81:df0b:0:b0:5cd:fd7c:274f with SMTP id
- c11-20020a81df0b000000b005cdfd7c274fmr6877248ywn.26.1702476715591; Wed, 13
- Dec 2023 06:11:55 -0800 (PST)
+	Wed, 13 Dec 2023 17:07:17 +0000
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDEUHTZ006018;
+	Wed, 13 Dec 2023 17:06:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:references:in-reply-to:to
+	:cc; s=qcppdkim1; bh=yknmZA9L7qBJRQzXVQxSgoAamyNM1yoUA+KHW7sh2e4
+	=; b=K5Tcqv4jZJvSMRR/c4gYjgl5hI1HsROtYhFZTHJP0+UpvQWR9TXSLDKlbXn
+	wkdJ3TfF3ARG6i5NpTR2nCxaiuLttvYBHh3cMLpoRakb++AVIGpvtIBfR5F1Y+/P
+	SS0jtpRMbCUk/C4Udck3MhNFb/5HT7pfBtPuA3M7yHqFVeIQghV9h0fAX4Apz1bZ
+	CN1nJlf7jREh0xb4A1zewe6A+TYdNt/QYHc9E1JlfvuT/yqyVBF8CpJa1sqb22x2
+	rC9SQW3AFX7/5conMqyvmIonWCkrFEIpjFDgDbWZEZ5olKX6O9U9oOddLMyTVJei
+	xrtOczqj4PVeyKLSESkj01GoGUA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyahy8yk6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Dec 2023 17:06:41 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDH6fa9031587
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Dec 2023 17:06:41 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
+ 2023 09:06:40 -0800
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+Date: Wed, 13 Dec 2023 09:06:40 -0800
+Subject: [PATCH 2/6] wifi: ath10k: use flexible arrays for WMI start scan
+ TLVs
 MIME-Version: 1.0
-References: <CAA8EJpqcWHQ7ri8M8Whby96RSpB8GNpcq+H0R0b2KzUvtq_qzg@mail.gmail.com>
- <87zfyemc08.fsf@kernel.org>
-In-Reply-To: <87zfyemc08.fsf@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 13 Dec 2023 16:11:44 +0200
-Message-ID: <CAA8EJpq6RFQU8+J834ZJus+C=nVwr8W-XJ3QcYC-ZM2f9NLPrQ@mail.gmail.com>
-Subject: Re: ath10k-firmware: WCN3990: Add board file for the Qualcomm SDM845
- MTP platform
-To: Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20231213-wmi_host_mem_chunks_flexarray-v1-2-92922d92fa2c@quicinc.com>
+References: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
+In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
+To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
+CC: Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva"
+	<gustavo@embeddedor.com>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+X-Mailer: b4 0.12.3
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: B2Fi_ThWEObeB8ZqTMnrjEZJdSDefExK
+X-Proofpoint-GUID: B2Fi_ThWEObeB8ZqTMnrjEZJdSDefExK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ spamscore=0 adultscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
+ bulkscore=0 impostorscore=0 phishscore=0 suspectscore=0 mlxlogscore=724
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312130122
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231213_061159_357038_1E7B0A34 
-X-CRM114-Status: GOOD (  19.37  )
+X-CRM114-CacheID: sfid-20231213_090716_162433_3D742918 
+X-CRM114-Status: GOOD (  12.69  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,83 +101,103 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, 13 Dec 2023 at 16:07, Kalle Valo <kvalo@kernel.org> wrote:
->
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
->
-> > We'd like to ask for inclusion of the board file for the Qualcomm
-> > SDM845 MTP board. It is a hardware development kit manufactured by
-> > Qualcomm, using the Snapdragon SDM845 SoC and a variant of wcn3990
-> > BT/WiFi chip.
-> >
-> > Following the questions from the ath10k wiki page:
-> >
-> > * description for what hardware this is
-> > - It is SDM845-based platform
-> > - It uses wcn3990 chip as a WiFi and BT radio
-> > - For the reference:
-> >
-> > ath10k_snoc 18800000.wifi: qmi chip_id 0x30214 chip_family 0x4001
-> > board_id 0x3f soc_id 0x40030001
-> > ath10k_snoc 18800000.wifi: qmi fw_version 0x2009856b
-> > fw_build_timestamp 2018-07-19 12:28 fw_build_id
-> > QC_IMAGE_VERSION_STRING=WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
-> > ath10k_snoc 18800000.wifi: failed to fetch board data for
-> > bus=snoc,qmi-board-id=3f,qmi-chip-id=30214,variant=Qualcomm_sdm845mtp
-> > from ath10k/WCN3990/hw1.0/board-2.bin
-> > ath10k_snoc 18800000.wifi: wcn3990 hw1.0 target 0x00000008 chip_id
-> > 0x00000000 sub 0000:0000
-> > ath10k_snoc 18800000.wifi: kconfig debug 1 debugfs 0 tracing 0 dfs 0 testmode 0
-> > ath10k_snoc 18800000.wifi: firmware ver  api 5 features
-> > wowlan,mgmt-tx-by-reference,non-bmi crc32 b3d4b790
-> > ath10k_snoc 18800000.wifi: htt-ver 3.53 wmi-op 4 htt-op 3 cal file
-> > max-sta 32 raw 0 hwcrypto 1
-> > ath10k_snoc 18800000.wifi: invalid MAC address; choosing random
-> >
-> > * origin of the board file
-> >   - This file comes from the firmware package provided by Thundercomm for
-> > the RB3 platform (also sdm845-based), cross-checked to be the same as
-> > the file provided together with the sdm845-mtp board.
-> >
-> > * ids to be used with the board file
-> >
-> > bus=snoc,qmi-board-id=3f,qmi-chip-id=30214,variant=Qualcomm_sdm845mtp
-> >
-> > Note, the device comes with the board_id not changed from 0xff.
-> > Following the example of existing boards we are adding the
-> > calibration variant.
-> >
-> > * md5sum of each new board file to add
-> >
-> > $ md5sum *
-> > c1f5ff1660cf6dcd74bff7b41c9e693f
-> > bus=snoc,qmi-board-id=3f,qmi-chip-id=30214,variant=Qualcomm_sdm845mtp.bin
-> >
-> > $ sha256sum *
-> > 8b250ac1bea81825cc6f4a70105dea89b0952340a9c77a8ab37e99cbfa63e53d
-> > bus=snoc,qmi-board-id=3f,qmi-chip-id=30214,variant=Qualcomm_sdm845mtp.bin
->
-> Thanks. The attachment filename was wrong so I added it manually, please
-> check:
->
-> https://github.com/kvalo/ath10k-firmware/commit/77c5345a8420d002de9ee6b7180d465f94535186
+Currently ath10k defines the following struct:
+	struct wmi_start_scan_tlvs {
+		u8 tlvs[0];
+	} __packed;
 
-Looks correct, thank you! Please excuse me, I completely forgot about
-the file name.
+Per the guidance in [1] this should be a flexible array. However, a
+direct replace to u8 tlvs[] results in the compilation error:
+       flexible array member in a struct with no named members
 
->
-> New:
-> bus=snoc,qmi-board-id=3f,qmi-chip-id=30214,variant=Qualcomm_sdm845mtp
->
-> Changed:
->
->
-> Deleted:
->
-> 1 board image(s) added, 0 changed, 0 deleted, 27 in total
+This is because C99 6.7.2.1 (16) requires that a structure containing
+a flexible array member must have more than one named member.
 
+So rather than defining a separate struct wmi_start_scan_tlvs which
+contains the flexible tlvs[] array, just define the tlvs[] array where
+struct wmi_start_scan_tlvs is being used.
+
+No functional changes, compile tested only.
+
+[1] https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c |  8 ++++----
+ drivers/net/wireless/ath/ath10k/wmi.h | 11 ++---------
+ 2 files changed, 6 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 88befe92f95d..4d5aadbc7159 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -6927,14 +6927,14 @@ void ath10k_wmi_put_start_scan_common(struct wmi_start_scan_common *cmn,
+ }
+ 
+ static void
+-ath10k_wmi_put_start_scan_tlvs(struct wmi_start_scan_tlvs *tlvs,
++ath10k_wmi_put_start_scan_tlvs(u8 *tlvs,
+ 			       const struct wmi_start_scan_arg *arg)
+ {
+ 	struct wmi_ie_data *ie;
+ 	struct wmi_chan_list *channels;
+ 	struct wmi_ssid_list *ssids;
+ 	struct wmi_bssid_list *bssids;
+-	void *ptr = tlvs->tlvs;
++	void *ptr = tlvs;
+ 	int i;
+ 
+ 	if (arg->n_channels) {
+@@ -7012,7 +7012,7 @@ ath10k_wmi_op_gen_start_scan(struct ath10k *ar,
+ 	cmd = (struct wmi_start_scan_cmd *)skb->data;
+ 
+ 	ath10k_wmi_put_start_scan_common(&cmd->common, arg);
+-	ath10k_wmi_put_start_scan_tlvs(&cmd->tlvs, arg);
++	ath10k_wmi_put_start_scan_tlvs(cmd->tlvs, arg);
+ 
+ 	cmd->burst_duration_ms = __cpu_to_le32(0);
+ 
+@@ -7041,7 +7041,7 @@ ath10k_wmi_10x_op_gen_start_scan(struct ath10k *ar,
+ 	cmd = (struct wmi_10x_start_scan_cmd *)skb->data;
+ 
+ 	ath10k_wmi_put_start_scan_common(&cmd->common, arg);
+-	ath10k_wmi_put_start_scan_tlvs(&cmd->tlvs, arg);
++	ath10k_wmi_put_start_scan_tlvs(cmd->tlvs, arg);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi 10x start scan\n");
+ 	return skb;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 833ce0251a2c..52a409ff94e7 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3218,23 +3218,16 @@ struct wmi_start_scan_common {
+ 	__le32 scan_ctrl_flags;
+ } __packed;
+ 
+-struct wmi_start_scan_tlvs {
+-	/* TLV parameters. These includes channel list, ssid list, bssid list,
+-	 * extra ies.
+-	 */
+-	u8 tlvs[0];
+-} __packed;
+-
+ struct wmi_start_scan_cmd {
+ 	struct wmi_start_scan_common common;
+ 	__le32 burst_duration_ms;
+-	struct wmi_start_scan_tlvs tlvs;
++	u8 tlvs[];
+ } __packed;
+ 
+ /* This is the definition from 10.X firmware branch */
+ struct wmi_10x_start_scan_cmd {
+ 	struct wmi_start_scan_common common;
+-	struct wmi_start_scan_tlvs tlvs;
++	u8 tlvs[];
+ } __packed;
+ 
+ struct wmi_ssid_arg {
 
 -- 
-With best wishes
-Dmitry
+2.42.0
+
 
