@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B56C4C4332F
-	for <ath10k@archiver.kernel.org>; Wed, 13 Dec 2023 20:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A24BC4332F
+	for <ath10k@archiver.kernel.org>; Wed, 13 Dec 2023 20:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MNKjR+nK7XAlYd1Revlfq3lvgfnQG7K4VqUh9Q42Zkw=; b=AiyxzXj0SIZSGiHTHelnX3uLDz
-	zfISob87aQYJE4HQpOXayX84AG4tU+gFkj7ZooWLUjLePZOkhTsRNaN09XHL1RtOYmeJfPIj1hs4L
-	q/Opt4OAmIHRwsId/DTWykjSofluFf2qDZRFU7kF5srMZhWHWKJ0FiYxMfnEZg/WaB6WpJwpS8HwS
-	3XqnKpv+Lt1khUQBC+7vNN+Sb9vBWNClL0pux0yhSuqOst3OQFYXyJjJIcvJmBbq1I6X6HnktkjcD
-	GkRIt/hRxELL8wilDVlYmp4jKh4iTPNytMgg4CMiapgPqK9Jht1dk+DQy+KC6iiUnlB2FsQXhW8oD
-	MfYC7R3A==;
+	bh=98lukoNBw6fhWNDa2SxpMcydjo1sjKiYLT9wVXM3PxE=; b=i5SEohDAbEF1mms51Xv+nO/hud
+	lktmWA6sBW+fNL3OQOAaCrqKg3rgGDjnAFsb+N35BZ9/+HW+bJzzFejYgCwzmBFxuJ7CNZfBmgbTd
+	splNQAqmXBMKaiytdwQ2jj3ydu5JmXXR13usNWdkmz/UJear9JiAn4QqjAoZqR5JdPUVxh057iOFX
+	uO6HP/ibPzVgMLN97qogcIrkMyb6/0WOJ+WfCDMyl4hwuXIh2Z6qhi5JAa1FatW6pG62kv15eWU4H
+	W9vjyPcs4u35Y9RXGiYRpWN7InSxfYB1JkHVFTJT82kUqlqDVzLLScGD+MgI1vIwtiSmgmuGs4Psx
+	4dnptoYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDVhN-00FwxA-0J;
-	Wed, 13 Dec 2023 20:19:17 +0000
-Received: from omta036.useast.a.cloudfilter.net ([44.202.169.35])
+	id 1rDVhu-00Fx2u-2u;
+	Wed, 13 Dec 2023 20:19:50 +0000
+Received: from omta36.uswest2.a.cloudfilter.net ([35.89.44.35])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDVhK-00Fwwd-0u
+	id 1rDVhr-00Fx25-3A
 	for ath10k@lists.infradead.org;
-	Wed, 13 Dec 2023 20:19:15 +0000
-Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+	Wed, 13 Dec 2023 20:19:49 +0000
+Received: from eig-obgw-6003a.ext.cloudfilter.net ([10.0.30.151])
 	by cmsmtp with ESMTPS
-	id DTwsrBEDfgpyEDVhHrdTGX; Wed, 13 Dec 2023 20:19:11 +0000
+	id DSfirWqoxhqFdDVhprzB0A; Wed, 13 Dec 2023 20:19:45 +0000
 Received: from gator4166.hostgator.com ([108.167.133.22])
 	by cmsmtp with ESMTPS
-	id DVhGrNWTKnCfvDVhHrbYlx; Wed, 13 Dec 2023 20:19:11 +0000
-X-Authority-Analysis: v=2.4 cv=KKpJsXJo c=1 sm=1 tr=0 ts=657a11bf
+	id DVhorCb0hAKScDVhorHCHR; Wed, 13 Dec 2023 20:19:44 +0000
+X-Authority-Analysis: v=2.4 cv=N6w6qkxB c=1 sm=1 tr=0 ts=657a11e0
  a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
  a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
  a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=COk6AnOGAAAA:8 a=djptEZvh-aCtj6NnK-4A:9 a=QEXdDO2ut3YA:10 a=phs4urI-Bf8A:10
- a=AjGcO6oz07-iQ99wixmX:22 a=TjNXssC_j7lpFel5tvFf:22
+ a=_Wotqz80AAAA:8 a=COk6AnOGAAAA:8 a=1Esk1x17uEsZNe3dHhQA:9 a=QEXdDO2ut3YA:10
+ a=phs4urI-Bf8A:10 a=AjGcO6oz07-iQ99wixmX:22 a=buJP51TR1BpY-zbLSsyS:22
+ a=TjNXssC_j7lpFel5tvFf:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=MNKjR+nK7XAlYd1Revlfq3lvgfnQG7K4VqUh9Q42Zkw=; b=i/zlG+7rBUFg3HiC7AaC7BkSrL
-	dvm5MV6SWrR+n6B3+30hllQlXABFs7tFcC+Sy9F/MPR/yfYoZSQqYusra36mx79NX4DA+ZGdppozY
-	YhUJMZaLqOHGlSx9mEKj4LiIAXkU8q90l9/MeSf1y3mH5OfufR1kra60xIFdpJY1DzYf47RaGhTqa
-	q07ctrvqI9sL++WtDAf1euCA5Sn7yierFNfNjJH6GL3L5Qd50jxsYhGFnNwLZVSK6MtG2qTIOE5B7
-	hwW0p/Z4Ibqpb8fSLP+eyIkWNAqvdtkcJc3UiAeRUVW5e4gRLvv/pkta7MNkgLhL8QG9RS1cCIbbl
-	Ps+3TrUA==;
+	bh=98lukoNBw6fhWNDa2SxpMcydjo1sjKiYLT9wVXM3PxE=; b=tm6zPjg1Djc4DWouBDS8NxqlFl
+	+MTPv0p8Ypf3qJyaUufJApz7iOB3u+VyBzoojFmt/Tfrikqe6Ira0WeJ9Zv3w16hPDVHuXyNzsEbR
+	/j3+nbLr2zsgDph8Cjo6kfEfr8qaRgrz8rvZn/92qiSWVvMqqNYp8QmaNceHD4BpBhDCOT6SvIkNH
+	kHQac7WZsHpalfetvivcbjDJWK2x16vtBmFEGzpt0gvSU0pyG+ylxEEMX50Vt6TATJoncz9ylhAfW
+	mrYrB0trAeJcxi/9VF1KlDzLrh1Ul4kI9HHMoL3zagfUAWIcDkNYfTWTSgIR27JLDgsCG2MijIivk
+	k/bJv5WA==;
 Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:36860 helo=[192.168.15.10])
 	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 	(Exim 4.96.2)
 	(envelope-from <gustavo@embeddedor.com>)
-	id 1rDVhG-003Rqk-1B;
-	Wed, 13 Dec 2023 14:19:10 -0600
-Message-ID: <2741782c-48b1-474f-bb89-97a7a6358ed6@embeddedor.com>
-Date: Wed, 13 Dec 2023 14:19:09 -0600
+	id 1rDVhn-003Rqk-2r;
+	Wed, 13 Dec 2023 14:19:43 -0600
+Message-ID: <a015d185-ece0-4608-821d-061d1296d4e7@embeddedor.com>
+Date: Wed, 13 Dec 2023 14:19:43 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] wifi: ath10k: remove unused template structs
+Subject: Re: [PATCH 5/6] wifi: ath10k: use flexible array in struct
+ wmi_tdls_peer_capabilities
 Content-Language: en-US
 To: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>
 Cc: Kees Cook <keescook@chromium.org>, ath10k@lists.infradead.org,
  linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
- <20231213-wmi_host_mem_chunks_flexarray-v1-4-92922d92fa2c@quicinc.com>
+ <20231213-wmi_host_mem_chunks_flexarray-v1-5-92922d92fa2c@quicinc.com>
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-4-92922d92fa2c@quicinc.com>
+In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-5-92922d92fa2c@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
@@ -80,21 +82,21 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 187.162.21.192
 X-Source-L: No
-X-Exim-ID: 1rDVhG-003Rqk-1B
+X-Exim-ID: 1rDVhn-003Rqk-2r
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
 X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:36860
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 21
+X-Email-Count: 27
 X-Org: HG=hgshared;ORG=hostgator;
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfGX9gVy0vI8HelAdCIAR8xua9KnIC0J4kYdl9eIGPs0CFysIPyfjdgqLNc8Y+4dp/kAJiNtIQPGLtFcrrk9YGo+SSOcuLEu8BWnyHjm0JKPCU7H1ybyA
- eQZSpJC6iZpTTlnpUT278iMP8NHKShXUwX3+BbF68n0fCigLSTg9J7T58iKvvDVTSbVPldveGt1sB/KaUIhQLpeNj1olO4YYsbGTv5bCuTPEe5Q2tK5LxPpB
+X-CMAE-Envelope: MS4xfGTerYACd4LRIA58qUGM5sQC6qIjAaI6MNcut4Xkr38LCv1soJAL3VPPTFkhGRfj+6SEmrS3CVpY+8VorEM5dLSd4CkzK467A/QveHgKtVWT4MR6MUay
+ q0qm9r9FtmopsIlLQPaaDGtLraOYvismV+2NU1TDKkgEx2hPWiBQ4PHNsjTLU5/tAMg8xIvdiyXeu0MZoXoa85gSUaqbdy9NMlLH5Sc9oC2eIFVjccMasIJ8
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231213_121914_386913_B97F2398 
-X-CRM114-Status: GOOD (  10.18  )
+X-CRM114-CacheID: sfid-20231213_121948_040597_67E380F6 
+X-CRM114-Status: GOOD (  16.22  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,17 +114,26 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 
 On 12/13/23 11:06, Jeff Johnson wrote:
-> Currently both the wmi_bcn_tmpl_cmd and wmi_prb_tmpl_cmd structs
-> define:
-> 	  u8 data[1];
+> Currently struct wmi_tdls_peer_capabilities defines:
+> 	struct wmi_channel peer_chan_list[1];
 > 
-> Per the guidance in [1] both instances of this should be flexible
-> arrays. However during conversion it was discovered that neither of
-> these structs are actually used, so just remove them.
+> Per the guidance in [1] this should be a flexible array, and at one
+> point Gustavo was trying to fix this [2], but had questions about the
+> correct behavior when the associated peer_chan_len is 0.
+> 
+> I have been unable to determine if firmware requires that at least one
+> record be present even if peer_chan_len is 0. But since that is the
+> current behavior, follow the example from [3] and replace the
+> one-element array with a union that contains both a flexible array and
+> a single instance of the array element. This results in a struct that
+> has the same footprint as the original, so no other driver changes are
+> required.
 > 
 > No functional changes, compile tested only.
 > 
 > [1] https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+> [2] https://lore.kernel.org/linux-wireless/626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com/
+> [3] https://lore.kernel.org/linux-wireless/202308301529.AC90A9EF98@keescook/
 > 
 > Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
@@ -133,43 +144,27 @@ Thanks!
 Gustavo
 
 > ---
->   drivers/net/wireless/ath/ath10k/wmi.h | 24 ------------------------
->   1 file changed, 24 deletions(-)
+>   drivers/net/wireless/ath/ath10k/wmi.h | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
 > 
 > diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-> index 37a7d421bd86..e16410e348ca 100644
+> index e16410e348ca..b64b6e214bae 100644
 > --- a/drivers/net/wireless/ath/ath10k/wmi.h
 > +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-> @@ -5782,30 +5782,6 @@ struct wmi_bcn_prb_info {
->   	/* app IE */
+> @@ -7162,7 +7162,13 @@ struct wmi_tdls_peer_capabilities {
+>   	__le32 is_peer_responder;
+>   	__le32 pref_offchan_num;
+>   	__le32 pref_offchan_bw;
+> -	struct wmi_channel peer_chan_list[1];
+> +	union {
+> +		/* to match legacy implementation allocate room for
+> +		 * at least one record even if peer_chan_len is 0
+> +		 */
+> +		struct wmi_channel peer_chan_min_allocation;
+> +		DECLARE_FLEX_ARRAY(struct wmi_channel, peer_chan_list);
+> +	};
 >   } __packed;
 >   
-> -struct wmi_bcn_tmpl_cmd {
-> -	/* unique id identifying the VDEV, generated by the caller */
-> -	__le32 vdev_id;
-> -	/* TIM IE offset from the beginning of the template. */
-> -	__le32 tim_ie_offset;
-> -	/* beacon probe capabilities and IEs */
-> -	struct wmi_bcn_prb_info bcn_prb_info;
-> -	/* beacon buffer length */
-> -	__le32 buf_len;
-> -	/* variable length data */
-> -	u8 data[1];
-> -} __packed;
-> -
-> -struct wmi_prb_tmpl_cmd {
-> -	/* unique id identifying the VDEV, generated by the caller */
-> -	__le32 vdev_id;
-> -	/* beacon probe capabilities and IEs */
-> -	struct wmi_bcn_prb_info bcn_prb_info;
-> -	/* beacon buffer length */
-> -	__le32 buf_len;
-> -	/* Variable length data */
-> -	u8 data[1];
-> -} __packed;
-> -
->   enum wmi_sta_ps_mode {
->   	/* enable power save for the given STA VDEV */
->   	WMI_STA_PS_MODE_DISABLED = 0,
+>   struct wmi_10_4_tdls_peer_update_cmd {
 > 
 
