@@ -4,90 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B72CC4332F
-	for <ath10k@archiver.kernel.org>; Wed, 13 Dec 2023 17:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F037C4167B
+	for <ath10k@archiver.kernel.org>; Wed, 13 Dec 2023 19:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:CC:To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=kN410wwRUNkyfPB7ahiFKEuZhRz6mV89Ym+9lK+dfNQ=; b=iUijIbS7ggzM/b
-	5lGTsJ4pZMAj9HIg1yXT9abedVSdmPE2Aw5z++Z5oTXzuK6C8oFE0PQrIVzjAR08/hkghVvw4pomU
-	K6UgGyKDIsQhl8rxVlXohwerGKjvo8gg7fZTPjUWjy3tGR+0eSbCNvYn7e38VdgR5pRxm/d0N7Mzz
-	IU6hVrtEteiLFoH/nf+U6OMbhncKy9DQ24QDJbZ0rzFEeqSCUwhb2viLQe9o/dhVcKIurC2CCNnBV
-	uKBzoXh2/1oxWPfjxDM4WGoQC+CQakqV9A9OHv94TNlLU2QuQs8QyR/B/bcapTHFVbLIadxlvtOT1
-	z1HN3jftf+WGTnXWbmWw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=QqkTY1D+Z0smSuBPziSXpfoIkBBzL9zSOCOQ3/VwzV8=; b=LbnoyLcmZaQeiYp6qCdqF8Bp73
+	5/mY6RfhtOXp7SWSglopQsOTSTiOfEVA4TRZvOp+HqqaAWsNxkstoZ4U6hbIy6o7KmRsQn2j0fX3Q
+	+oENOtmJcnkmxlRAw/XYzZd7h/u1BnMpP+XYmN8sKlXgzxsWB8WMeXESOtuJNMfffeL2idZgXrC90
+	EcPgUJy4cJnNsCASS9QYd/W9mDkAp33acyc+H3vPJgdUHKABtaah0JvahsPIdVFjh+ZkmSzasHkKm
+	f6DW2hWzIj91+jq18iArKmTxTSbC83pZPP+NFWtTegsKZmQz2kUnzYm5PVJT+/HM0gUgqo8KU2vO6
+	T7+YqStQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDShk-00FXPj-22;
-	Wed, 13 Dec 2023 17:07:28 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1rDUcp-00FnQY-0r;
+	Wed, 13 Dec 2023 19:10:31 +0000
+Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDShh-00FXO8-11
+	id 1rDUcm-00FnQ0-1R
 	for ath10k@lists.infradead.org;
-	Wed, 13 Dec 2023 17:07:26 +0000
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDGd2JP030010;
-	Wed, 13 Dec 2023 17:06:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:subject:date:message-id:mime-version:content-type
-	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=kN410wwRUNkyfP
-	B7ahiFKEuZhRz6mV89Ym+9lK+dfNQ=; b=U2BFaeSVEh4jQX0pbjz/c1bRKiSRNR
-	cKg83IDMph3fuNpeMFtBzfsFkTiyymvHnb2icXcM3NRTWpzlvzFQwC7sgSgu1Ly+
-	IlXwOkYcbt9z5mxAHUwdnQSNr6lVPOblEUEyv49zq+J7mg77O1q7k0W3oocGmr7F
-	U/e9S+7cE0J8bRv/7fFho/CyVzWJZ2yDH2/BZ9nVNx5me2WGwBv6M0Wy5Jjp2Z7E
-	sKK5RKfJOx8hAWspFtP/q/lVYYi1613ArYmwlwagycg9GKIO7z47ezRKDzDGEPcr
-	u4GCmcHhuskGb0kF0JHpUsGJjCAVixXLSHHA87qQp+ShVUwoA09ca65g==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy5tvhpv3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Dec 2023 17:06:41 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDH6eVM031494
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Dec 2023 17:06:40 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 09:06:40 -0800
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Subject: [PATCH 0/6] wifi: ath10k: use flexible arrays
-Date: Wed, 13 Dec 2023 09:06:38 -0800
-Message-ID: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
+	Wed, 13 Dec 2023 19:10:30 +0000
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d3448937ddso12639595ad.2
+        for <ath10k@lists.infradead.org>; Wed, 13 Dec 2023 11:10:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702494623; x=1703099423; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QqkTY1D+Z0smSuBPziSXpfoIkBBzL9zSOCOQ3/VwzV8=;
+        b=Jqt9J5upoIGluevpfjJ63VqJgUiB55BSN7xVHsr5zIUuNEZuRty9d56+uJf28dvVL8
+         FwMhrHO6oy+LWy5qND+CArfx8Si0wIzYaxNtR/AbCCgx8uhng2/qRdK1DDqkd7TgVGok
+         bTm0Hf9kbPzmeBy8CetT5MABqxXNHsZtzPx4Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702494623; x=1703099423;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QqkTY1D+Z0smSuBPziSXpfoIkBBzL9zSOCOQ3/VwzV8=;
+        b=mv4I/2QOCBf8HLcF/EAcMbwX8wXU9wXyBqnFbYQIK+LAYRxvCDaCBVpGKTbUk4oe2k
+         yxX5F0I+L7tNOauZkTww2KSFkVm6C/TcQ9QbXqvuXhpLylxpZ0SNOQMSm6QUNkYK//ee
+         HXMIdqxGEL3//Y6bizhLrGMk/3Hfs/Oy7RmkhfoVMhD4C4IFfwME0VcHiCngZhE3AKQD
+         2BqNGAhEGPhRpPH8v8EKYzwa5v6m3gIG1tlmhp2NW9veYsvFMZBBvvuUhhgdDAup+GE/
+         vYqsP6b6/DcgV4DoJBo807ZGZvW4XwoMH7V0uDVEb1SH8YFYZowUXlZHcZHiCA7egQzA
+         1V8w==
+X-Gm-Message-State: AOJu0YxsAsy7R3QW1LdAm3GL9GDPMJHIem716aVsVbS+5PtpRZHqfMO1
+	b4Fh58WBHqULtsZTNafrTYkeIw==
+X-Google-Smtp-Source: AGHT+IGgfljpT76KBPui5MmTR6g8xbaYQw4KFDi5WWuN30o04xnbXoheBZ2WDSfB+ilvt/xURB8IDw==
+X-Received: by 2002:a17:903:98c:b0:1d3:4316:68d3 with SMTP id mb12-20020a170903098c00b001d3431668d3mr2259140plb.76.1702494623547;
+        Wed, 13 Dec 2023 11:10:23 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id f11-20020a170902ce8b00b001cc307bcdbdsm10950629plg.211.2023.12.13.11.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 11:10:23 -0800 (PST)
+Date: Wed, 13 Dec 2023 11:10:22 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Kalle Valo <kvalo@kernel.org>,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] wifi: ath10k: use flexible array in struct
+ wmi_host_mem_chunks
+Message-ID: <202312131110.F94BC3427@keescook>
+References: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
+ <20231213-wmi_host_mem_chunks_flexarray-v1-1-92922d92fa2c@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAJ/keWUC/5XNyw6CMBCF4VchXVvjDDd15XsYQ2qZ2okC2kKFE
- N5dYOdOl/9ZfGcUnhyTF8doFI4Ce27qOWATCW1VfSPJ5dwCdxgDAsp3xYVtfFtUVBXadvXdF+Z
- BvXJODTLfY5YQJFkeg5iNpyPD/eqfL3Nb9m3jhvUuwLL+KgeQIFON6aFUKWUGTq+ONdd6q5tKL
- HbAvzyUO2nwmua6NACgvr1pmj4ibXffHAEAAA==
-To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
-CC: Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva"
-	<gustavo@embeddedor.com>,
-        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-X-Mailer: b4 0.12.3
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: lRec6QprZZ2S4zgOuvxWwXKHU4hYWDQ3
-X-Proofpoint-GUID: lRec6QprZZ2S4zgOuvxWwXKHU4hYWDQ3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- priorityscore=1501 impostorscore=0 mlxscore=0 clxscore=1015
- mlxlogscore=600 bulkscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312130122
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-1-92922d92fa2c@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231213_090725_364603_543268B2 
-X-CRM114-Status: UNSURE (   7.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231213_111028_913725_127A11F7 
+X-CRM114-Status: GOOD (  10.50  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,27 +91,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Clean up the last remaining zero-length and one-element arrays in
-ath10k to comply with:
-https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+On Wed, Dec 13, 2023 at 09:06:39AM -0800, Jeff Johnson wrote:
+> Currently struct wmi_host_mem_chunks defines:
+> 	struct host_memory_chunk items[1];
+> 
+> Per the guidance in [1] this should be a flexible array. However there
+> is a documented requirement:
+> 	some fw revisions require at least 1 chunk regardless of count
+> 
+> To satisfy this requirement, follow the guidance from [2] and wrap the
+> array in a union which contains both the flexible array and a single
+> instance of the underlying struct. Since the footprint of the struct
+> is unchanged, no additional driver changes are required.
+> 
+> No functional changes, compile tested only.
+> 
+> [1] https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+> [2] https://lore.kernel.org/linux-wireless/202308301529.AC90A9EF98@keescook/
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-With these cleanups done the ath10k-check script no longer reports any
-issues.
+This looks like the right approach here.
 
----
-Jeff Johnson (6):
-      wifi: ath10k: use flexible array in struct wmi_host_mem_chunks
-      wifi: ath10k: use flexible arrays for WMI start scan TLVs
-      wifi: ath10k: remove struct wmi_pdev_chanlist_update_event
-      wifi: ath10k: remove unused template structs
-      wifi: ath10k: use flexible array in struct wmi_tdls_peer_capabilities
-      wifi: ath10k: remove duplicate memset() in 10.4 TDLS peer update
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
- drivers/net/wireless/ath/ath10k/wmi.c | 10 +++----
- drivers/net/wireless/ath/ath10k/wmi.h | 55 +++++++++--------------------------
- 2 files changed, 17 insertions(+), 48 deletions(-)
----
-base-commit: 7133b072dfbfac8763ffb017642c9c894894c50d
-change-id: 20231212-wmi_host_mem_chunks_flexarray-78264e146731
-
+-- 
+Kees Cook
 
