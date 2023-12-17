@@ -4,147 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6F35C46CA2
-	for <ath10k@archiver.kernel.org>; Sat, 16 Dec 2023 21:48:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 791A4C3DA6E
+	for <ath10k@archiver.kernel.org>; Sun, 17 Dec 2023 11:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NUQpZPD/c05+/8BhIN1J/cQeLxUmIOzSz7QCay9VzCE=; b=GKoqctLuX8CKAUlvlrvAkUZ/jX
-	8ro3yheO69CbENyxNaX+QXgDQqKauM7XGpD9xMUBFIq4zEDMiAsf+6717pG/KJZjh2qgdspieNPfx
-	LQegbuP9IkU2awog0xD6LB/9SiFLFKAx39Vle6WZwZXxjsKb4sHksbTXiOC/K/icXuC8OlFsNWj0O
-	Z8kM/WyN84rJz9wBeNzZRUT3FQdrdBZcG60VfzNUiYJeE/iBDnAj4fhK8pqZ/tDp0g/3qa8sYNZ5q
-	bsy62/VychuC2YuFIKWfwvCsxX7dP7d3rJHHLQu6ohUs3lzbScwQ4ulsWHegxRiNo7z9r26rrKh+F
-	9snq0oUg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
+	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=1Qm8YcfHLeTw+DtBx9XkV5NQox7QxR8mkxyOZVBuyUo=; b=W5apfi7ORRxKIWxD3TGRsYsQ5z
+	1tf7+csQnpH3BXBxioYQUY4Nhq8HolQop57UmiP3jNa26JnfOeBGOLPrTO+qq+M8WQU3cR/5KVVm5
+	DnkxxA6uAQzUycalrcvL9CBSUfFb/XJ5miQYFOkqNYaY/u92c5SGjrpYLDiQ1o9b+ezfohnvRAopB
+	zs4zs5E3cx7LauBW2orGhHroYENEDEI0ABh/DKlPja+W3dBZkuCH4yjfdJuatIOcVTLta/rR/5iOF
+	x9GHo+a1Fc+sTTRNfkRc6dgkpPZubCrQIbsDsOi7bHZ3Eb5Ou0Zk1K9cWtJxW0TtMEdjKUUGFl8sW
+	RZHc3aXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEcWI-006lUO-0c;
-	Sat, 16 Dec 2023 21:48:26 +0000
-Received: from mail-ot1-x32a.google.com ([2607:f8b0:4864:20::32a])
+	id 1rEpCo-007cOD-1I;
+	Sun, 17 Dec 2023 11:21:10 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEcWE-006lTO-1v;
-	Sat, 16 Dec 2023 21:48:24 +0000
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6d9fdbcec6eso1498757a34.1;
-        Sat, 16 Dec 2023 13:48:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702763300; x=1703368100; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NUQpZPD/c05+/8BhIN1J/cQeLxUmIOzSz7QCay9VzCE=;
-        b=UBF+zPakrOwpU0T6fo2HPp3H50i5wqFv6141YtyaXd+jvE8Wl4sJF868rOAt4byX9o
-         tt8oq2DjLBX+5CSB3I/3n2lCe+NQUAiVOllV2ztX3YmWGElFhXMJy5Ap/PD0t026uMPM
-         x+TCsHgHJybA/RGPydNpiKGZDPT4GRihX6p1fUKaMqhb1xtNp2xoRh0mlEuaDX9KCV1+
-         Mu3GGVK7Dt/HoXE90+TA79OFuTrNBUso4ac74hm1csLolJUJCRSe4t6lAcVrnXHqtcrw
-         VIuTuCPJ4r3JBZmLTlpGoZLFXYYTrYByIAkfSxbGqSXB+/6bqlo9a1cWGJ5ZhUmVD3An
-         psBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702763300; x=1703368100;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NUQpZPD/c05+/8BhIN1J/cQeLxUmIOzSz7QCay9VzCE=;
-        b=Vf4Yo8r7J9Wdx74X5Nh/F6ei2EI5Xzf+vo5b37TMz0Ygtg9LQxY7nSkS9SFUkvKcgo
-         PIvJZZbTi6oL15lDAFY/q2iT7n0wSXy5Jb7zd5fYbWHF7utPxWYOOJLmHRsOVd2ZT2a5
-         ++rcMGV+bhzco7DcCNJgvXkEbpP4z3XpO35gpsIYjcajnUPijDoGg5RAITzQrCWs+CKb
-         obLOeRlc2rPJag8Bk0S2NueLPAm0et9SRG0xZ4dF4onH79un8MFw0h2H8PoNDhqKmdxg
-         MsixWZUB6Gmwdh13gIEeFPpNb1f2Kr/uTUmXsesvZxaapK7dR2I2hQIosfQBdKtGC9Oe
-         oCrA==
-X-Gm-Message-State: AOJu0Yw2VU6ybIA02ozX6qs+88Qectma0qt+wReXievPlUbFicel8wI+
-	93hzjQ0s92bmyn3cLO6fkD8=
-X-Google-Smtp-Source: AGHT+IFAZquuH097Av+/ztaIvHAct5BHBdf+5D2NTKxYyfNfNcV2HR26lQ0bCSd6CXKBysIoEd8l8w==
-X-Received: by 2002:a05:6808:1819:b0:3b8:b063:6658 with SMTP id bh25-20020a056808181900b003b8b0636658mr13429212oib.79.1702763299744;
-        Sat, 16 Dec 2023 13:48:19 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:4a5e:2f67:f6d1:4a98])
-        by smtp.gmail.com with ESMTPSA id l6-20020a25bcc6000000b00dbd22a3eb4fsm60955ybm.51.2023.12.16.13.48.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Dec 2023 13:48:19 -0800 (PST)
-Date: Sat, 16 Dec 2023 13:48:18 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Disseldorp <ddiss@suse.de>,
-	Edward Cree <ecree.xilinx@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>,
-	Kalle Valo <kvalo@kernel.org>, Karsten Graul <kgraul@linux.ibm.com>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Kees Cook <keescook@chromium.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>,
-	Rob Herring <robh@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Stanislaw Gruszka <stf_xl@wp.pl>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>, Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org,
-	ath10k@lists.infradead.org, dmaengine@vger.kernel.org,
-	iommu@lists.linux.dev, kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-net-drivers@amd.com, linux-pci@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-sound@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, mpi3mr-linuxdrv.pdl@broadcom.com,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Cc: Jan Kara <jack@suse.cz>,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-	Alexey Klimov <klimov.linux@gmail.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: Re: [PATCH v3 00/35] bitops: add atomic find_bit() operations
-Message-ID: <ZX4bIisLzpW8c4WM@yury-ThinkPad>
-References: <20231212022749.625238-1-yury.norov@gmail.com>
+	id 1rEpCk-007cJQ-1k;
+	Sun, 17 Dec 2023 11:21:08 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1E0AE60B77;
+	Sun, 17 Dec 2023 11:21:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A031C433C8;
+	Sun, 17 Dec 2023 11:20:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702812061;
+	bh=wLVFpI53MqYbd+G88ERBzzeozmYx5ivNuWkb8el4Fyo=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=fwFyiBCyld7Vm5L98NgUixOmWnUX59r2BHV8gdxbmwOfE6Zg2E9acP7/DlRb8F49v
+	 t23GHZl5sFztehQ7GblfrMDLB3c/KnvYOH0jp3S/+cizjWim9DI0oT3pLrIy0aq43b
+	 9ajF4mruXGQKIboxX47dVWGdX0YdwQnLrjfZH1zEZICAKWTpDb16PX661HuD3y6Scc
+	 9st/uZouZqKagyGnJNnG/sEArqaVrUhwE+wYB7PuflQg1cjvxKd+kONxjyn/zGiLLP
+	 CTLI2XplaOMbvuqZ4XBC+Uqw6w1vWeSy1htcKiCtHPxTiB49XeOVTUJXiIeKaEZrJd
+	 AzdCJvDwEmVsw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212022749.625238-1-yury.norov@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: ath-next-20231215
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <87r0jnl1rd.fsf@kernel.org>
+References: <87r0jnl1rd.fsf@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org, ath12k@lists.infradead.org,
+ quic_jjohnson@quicinc.com
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170281205709.2255653.14254163145030258747.kvalo@kernel.org>
+Date: Sun, 17 Dec 2023 11:20:59 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231216_134822_634288_1C7A0D5A 
-X-CRM114-Status: GOOD (  40.24  )
+X-CRM114-CacheID: sfid-20231217_032106_690656_C7BC29BF 
+X-CRM114-Status: GOOD (  20.30  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -159,134 +72,268 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 11, 2023 at 06:27:14PM -0800, Yury Norov wrote:
-> Add helpers around test_and_{set,clear}_bit() that allow to search for
-> clear or set bits and flip them atomically.
-> 
-> The target patterns may look like this:
-> 
-> 	for (idx = 0; idx < nbits; idx++)
-> 		if (test_and_clear_bit(idx, bitmap))
-> 			do_something(idx);
-> 
-> Or like this:
-> 
-> 	do {
-> 		bit = find_first_bit(bitmap, nbits);
-> 		if (bit >= nbits)
-> 			return nbits;
-> 	} while (!test_and_clear_bit(bit, bitmap));
-> 	return bit;
-> 
-> In both cases, the opencoded loop may be converted to a single function
-> or iterator call. Correspondingly:
-> 
-> 	for_each_test_and_clear_bit(idx, bitmap, nbits)
-> 		do_something(idx);
-> 
-> Or:
-> 	return find_and_clear_bit(bitmap, nbits);
-> 
-> Obviously, the less routine code people have to write themself, the
-> less probability to make a mistake.
-> 
-> Those are not only handy helpers but also resolve a non-trivial
-> issue of using non-atomic find_bit() together with atomic
-> test_and_{set,clear)_bit().
-> 
-> The trick is that find_bit() implies that the bitmap is a regular
-> non-volatile piece of memory, and compiler is allowed to use such
-> optimization techniques like re-fetching memory instead of caching it.
-> 
-> For example, find_first_bit() is implemented like this:
-> 
->       for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
->               val = addr[idx];
->               if (val) {
->                       sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
->                       break;
->               }
->       }
-> 
-> On register-memory architectures, like x86, compiler may decide to
-> access memory twice - first time to compare against 0, and second time
-> to fetch its value to pass it to __ffs().
-> 
-> When running find_first_bit() on volatile memory, the memory may get
-> changed in-between, and for instance, it may lead to passing 0 to
-> __ffs(), which is undefined. This is a potentially dangerous call.
-> 
-> find_and_clear_bit() as a wrapper around test_and_clear_bit()
-> naturally treats underlying bitmap as a volatile memory and prevents
-> compiler from such optimizations.
-> 
-> Now that KCSAN is catching exactly this type of situations and warns on
-> undercover memory modifications. We can use it to reveal improper usage
-> of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
-> 
-> In some cases concurrent operations with plain find_bit() are acceptable.
-> For example:
-> 
->  - two threads running find_*_bit(): safe wrt ffs(0) and returns correct
->    value, because underlying bitmap is unchanged;
->  - find_next_bit() in parallel with set or clear_bit(), when modifying
->    a bit prior to the start bit to search: safe and correct;
->  - find_first_bit() in parallel with set_bit(): safe, but may return wrong
->    bit number;
->  - find_first_zero_bit() in parallel with clear_bit(): same as above.
-> 
-> In last 2 cases find_bit() may not return a correct bit number, but
-> it may be OK if caller requires any (not exactly the first) set or clear
-> bit, correspondingly.
-> 
-> In such cases, KCSAN may be safely silenced with data_race(). But in most
-> cases where KCSAN detects concurrency people should carefully review their
-> code and likely protect critical sections or switch to atomic
-> find_and_bit(), as appropriate.
-> 
-> The 1st patch of the series adds the following atomic primitives:
-> 
-> 	find_and_set_bit(addr, nbits);
-> 	find_and_set_next_bit(addr, nbits, start);
-> 	...
-> 
-> Here find_and_{set,clear} part refers to the corresponding
-> test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
-> derive their semantics from corresponding find() or test() functions.
-> 
-> For brevity, the naming omits the fact that we search for zero bit in
-> find_and_set, and correspondingly search for set bit in find_and_clear
-> functions.
-> 
-> The patch also adds iterators with atomic semantics, like
-> for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
-> corresponding atomic operation with 'for_each'.
-> 
-> In [1] Jan reported 2% slowdown in a single-thread search test when
-> switching find_bit() function to treat bitmaps as volatile arrays. On
-> the other hand, kernel robot in the same thread reported +3.7% to the
-> performance of will-it-scale.per_thread_ops test.
-> 
-> Assuming that our compilers are sane and generate better code against
-> properly annotated data, the above discrepancy doesn't look weird. When
-> running on non-volatile bitmaps, plain find_bit() outperforms atomic
-> find_and_bit(), and vice-versa.
-> 
-> So, all users of find_bit() API, where heavy concurrency is expected,
-> are encouraged to switch to atomic find_and_bit() as appropriate.
-> 
-> The 1st patch of this series adds atomic find_and_bit() API, 2nd adds
-> a basic test for new API, and all the following patches spread it over
-> the kernel.
-> 
-> They can be applied separately from each other on per-subsystems basis,
-> or I can pull them in bitmap tree, as appropriate.
-> 
-> [1] https://lore.kernel.org/lkml/634f5fdf-e236-42cf-be8d-48a581c21660@alu.unizg.hr/T/#m3e7341eb3571753f3acf8fe166f3fb5b2c12e615
- 
-Thank you all for reviews and comments. Now moving the series to
-bitmap-for-next for testing.
+Kalle Valo <kvalo@kernel.org> wrote:
 
-Thanks,
-Yury
+> Hi,
+> 
+> Now that Jeff is also the ath maintainer we decided to start doing
+> proper pull requests. Earlier I was just merging ath-next directly to
+> wireless-next. So here's our first pull request, let's see if we got it
+> right :)
+> 
+> Kalle
+> 
+> The following changes since commit 1002f8171d966f73e3d97b05fc0178e115fb5dca:
+> 
+>   wifi: ray_cs: Remove unnecessary (void*) conversions (2023-10-25 20:44:40 +0300)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git tags/ath-next-20231215
+> 
+> for you to fetch changes up to fd6ed1772b2c639370b7b41602d4c925dbd003d4:
+> 
+>   wifi: ath11k: workaround too long expansion sparse warnings (2023-12-15 17:58:51 +0200)
+> 
+> ----------------------------------------------------------------
+> ath.git patches for v6.8.
+> 
+> We have new features only for ath12k but lots of small cleanup for
+> ath10k, ath11k and ath12k. And of course smaller fixes to several
+> drivers.
+> 
+> Major changes:
+> 
+> ath12k
+> 
+> * support one MSI vector
+> 
+> * WCN7850: support AP mode
+> 
+> ----------------------------------------------------------------
+> Baochen Qiang (1):
+>       wifi: ath11k: fix race due to setting ATH11K_FLAG_EXT_IRQ_ENABLED too early
+> 
+> Dmitry Antipov (1):
+>       wifi: ath10k: simplify __ath10k_htt_tx_txq_recalc()
+> 
+> Hancheng Yang (1):
+>       wifi: ath9k: reset survey of current channel after a scan started
+> 
+> James Prestwood (3):
+>       wifi: ath11k: use select for CRYPTO_MICHAEL_MIC
+>       wifi: ath12k: use select for CRYPTO_MICHAEL_MIC
+>       wifi: ath10k: add support to allow broadcast action frame RX
+> 
+> Jeff Johnson (14):
+>       wifi: ath10k: Remove unused struct ath10k_htc_frame
+>       wifi: ath11k: Remove struct ath11k::ops
+>       wifi: ath12k: Remove struct ath12k::ops
+>       wifi: ath11k: Remove obsolete struct wmi_peer_flags_map *peer_flags
+>       wifi: ath12k: Remove obsolete struct wmi_peer_flags_map *peer_flags
+>       wifi: ath11k: Consolidate WMI peer flags
+>       wifi: ath12k: Consolidate WMI peer flags
+>       wifi: ath12k: Update Qualcomm Innovation Center, Inc. copyrights
+>       wifi: ath11k: Update Qualcomm Innovation Center, Inc. copyrights
+>       wifi: ath10k: Update Qualcomm Innovation Center, Inc. copyrights
+>       wifi: ath10k: remove ath10k_htc_record::pauload[]
+>       wifi: ath10k: Use DECLARE_FLEX_ARRAY() for ath10k_htc_record
+>       wifi: ath11k: remove ath11k_htc_record::pauload[]
+>       wifi: ath11k: Fix ath11k_htc_record flexible record
+> 
+> Jiri Slaby (SUSE) (1):
+>       wifi: ath5k: remove unused ath5k_eeprom_info::ee_antenna
+> 
+> Justin Stitt (1):
+>       wifi: ath10k: replace deprecated strncpy with memcpy
+> 
+> Kalle Valo (1):
+>       wifi: ath11k: workaround too long expansion sparse warnings
+> 
+> Kang Yang (8):
+>       wifi: ath12k: get msi_data again after request_irq is called
+>       wifi: ath12k: add CE and ext IRQ flag to indicate irq_handler
+>       wifi: ath12k: use ATH12K_PCI_IRQ_DP_OFFSET for DP IRQ
+>       wifi: ath12k: refactor multiple MSI vector implementation
+>       wifi: ath12k: add support one MSI vector
+>       wifi: ath12k: do not restore ASPM in case of single MSI vector
+>       wifi: ath12k: set IRQ affinity to CPU0 in case of one MSI vector
+>       wifi: ath12k: fix and enable AP mode for WCN7850
+> 
+> Karthikeyan Periyasamy (9):
+>       wifi: ath12k: fix the error handler of rfkill config
+>       wifi: ath12k: avoid explicit mac id argument in Rxdma replenish
+>       wifi: ath12k: avoid explicit RBM id argument in Rxdma replenish
+>       wifi: ath12k: avoid explicit HW conversion argument in Rxdma replenish
+>       wifi: ath12k: refactor DP Rxdma ring structure
+>       wifi: ath12k: Optimize the mac80211 hw data access
+>       wifi: ath12k: avoid repeated hw access from ar
+>       wifi: ath12k: avoid repeated wiphy access from hw
+>       Revert "wifi: ath12k: use ATH12K_PCI_IRQ_DP_OFFSET for DP IRQ"
+> 
+> Lingbo Kong (1):
+>       wifi: ath12k: fix the issue that the multicast/broadcast indicator is not read correctly for WCN7850
+> 
+> Luca Weiss (1):
+>       wifi: ath11k: Defer on rproc_get failure
+> 
+> Ma Ke (1):
+>       wifi: ath12k: drop NULL pointer check in ath12k_update_per_peer_tx_stats()
+> 
+> Minsuk Kang (1):
+>       wifi: ath9k: Fix potential array-index-out-of-bounds read in ath9k_htc_txstatus()
+> 
+> Muna Sinada (1):
+>       wifi: ath12k: add 320 MHz bandwidth enums
+> 
+> Uwe Kleine-König (3):
+>       wifi: ath11k: Convert to platform remove callback returning void
+>       wifi: ath5k: Convert to platform remove callback returning void
+>       wifi: wcn36xx: Convert to platform remove callback returning void
+> 
+> Wu Yunchuan (1):
+>       wifi: ath9k: Remove unnecessary (void*) conversions
+> 
+> Yang Li (1):
+>       wifi: ath11k: Remove unneeded semicolon
+> 
+>  drivers/net/wireless/ath/ath10k/bmi.c              |   1 +
+>  drivers/net/wireless/ath/ath10k/ce.c               |   1 +
+>  drivers/net/wireless/ath/ath10k/core.c             |  17 ++
+>  drivers/net/wireless/ath/ath10k/core.h             |   3 +-
+>  drivers/net/wireless/ath/ath10k/coredump.c         |   1 +
+>  drivers/net/wireless/ath/ath10k/coredump.h         |   1 +
+>  drivers/net/wireless/ath/ath10k/debug.c            |   1 +
+>  drivers/net/wireless/ath/ath10k/debugfs_sta.c      |   1 +
+>  drivers/net/wireless/ath/ath10k/htc.c              |   1 +
+>  drivers/net/wireless/ath/ath10k/htc.h              |  20 +--
+>  drivers/net/wireless/ath/ath10k/htt.h              |   1 +
+>  drivers/net/wireless/ath/ath10k/htt_rx.c           |   1 +
+>  drivers/net/wireless/ath/ath10k/htt_tx.c           |   4 +-
+>  drivers/net/wireless/ath/ath10k/hw.c               |   1 +
+>  drivers/net/wireless/ath/ath10k/hw.h               |   4 +
+>  drivers/net/wireless/ath/ath10k/mac.c              |  17 +-
+>  drivers/net/wireless/ath/ath10k/pci.c              |   1 +
+>  drivers/net/wireless/ath/ath10k/pci.h              |   1 +
+>  drivers/net/wireless/ath/ath10k/qmi.c              |   1 +
+>  drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c     |   1 +
+>  drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h     |   1 +
+>  drivers/net/wireless/ath/ath10k/rx_desc.h          |   1 +
+>  drivers/net/wireless/ath/ath10k/sdio.c             |   1 +
+>  drivers/net/wireless/ath/ath10k/thermal.c          |   1 +
+>  drivers/net/wireless/ath/ath10k/usb.h              |   1 +
+>  drivers/net/wireless/ath/ath10k/wmi-tlv.h          |   1 +
+>  drivers/net/wireless/ath/ath10k/wmi.c              |   1 +
+>  drivers/net/wireless/ath/ath10k/wmi.h              |   1 +
+>  drivers/net/wireless/ath/ath10k/wow.c              |   1 +
+>  drivers/net/wireless/ath/ath11k/Kconfig            |   2 +-
+>  drivers/net/wireless/ath/ath11k/ahb.c              |  10 +-
+>  drivers/net/wireless/ath/ath11k/ce.c               |   2 +-
+>  drivers/net/wireless/ath/ath11k/ce.h               |   1 +
+>  drivers/net/wireless/ath/ath11k/core.h             |   1 -
+>  drivers/net/wireless/ath/ath11k/dbring.c           |   1 +
+>  drivers/net/wireless/ath/ath11k/dbring.h           |   1 +
+>  drivers/net/wireless/ath/ath11k/debug.c            |   1 +
+>  drivers/net/wireless/ath/ath11k/debug.h            |   2 +-
+>  drivers/net/wireless/ath/ath11k/debugfs.c          |   1 +
+>  drivers/net/wireless/ath/ath11k/debugfs.h          |   1 +
+>  .../net/wireless/ath/ath11k/debugfs_htt_stats.c    |   2 +-
+>  .../net/wireless/ath/ath11k/debugfs_htt_stats.h    |   2 +-
+>  drivers/net/wireless/ath/ath11k/debugfs_sta.c      |   1 +
+>  drivers/net/wireless/ath/ath11k/debugfs_sta.h      |   1 +
+>  drivers/net/wireless/ath/ath11k/dp.c               |   2 +-
+>  drivers/net/wireless/ath/ath11k/dp.h               |   2 +-
+>  drivers/net/wireless/ath/ath11k/dp_rx.c            |   1 +
+>  drivers/net/wireless/ath/ath11k/dp_tx.c            |   2 +-
+>  drivers/net/wireless/ath/ath11k/dp_tx.h            |   1 +
+>  drivers/net/wireless/ath/ath11k/fw.c               |   2 +-
+>  drivers/net/wireless/ath/ath11k/hal.c              |   2 +-
+>  drivers/net/wireless/ath/ath11k/hal.h              |   2 +-
+>  drivers/net/wireless/ath/ath11k/hal_desc.h         |   1 +
+>  drivers/net/wireless/ath/ath11k/hal_rx.c           |   1 +
+>  drivers/net/wireless/ath/ath11k/hal_rx.h           |   1 +
+>  drivers/net/wireless/ath/ath11k/hif.h              |   1 +
+>  drivers/net/wireless/ath/ath11k/htc.c              |   1 +
+>  drivers/net/wireless/ath/ath11k/htc.h              |   6 +-
+>  drivers/net/wireless/ath/ath11k/hw.c               |   2 +-
+>  drivers/net/wireless/ath/ath11k/hw.h               |   2 +-
+>  drivers/net/wireless/ath/ath11k/mac.c              |  16 +-
+>  drivers/net/wireless/ath/ath11k/mac.h              |   1 +
+>  drivers/net/wireless/ath/ath11k/mhi.c              |   2 +-
+>  drivers/net/wireless/ath/ath11k/mhi.h              |   1 +
+>  drivers/net/wireless/ath/ath11k/pcic.c             |   6 +-
+>  drivers/net/wireless/ath/ath11k/peer.c             |   2 +-
+>  drivers/net/wireless/ath/ath11k/peer.h             |   2 +-
+>  drivers/net/wireless/ath/ath11k/qmi.c              |   2 +-
+>  drivers/net/wireless/ath/ath11k/qmi.h              |   2 +-
+>  drivers/net/wireless/ath/ath11k/reg.c              |   1 +
+>  drivers/net/wireless/ath/ath11k/reg.h              |   1 +
+>  drivers/net/wireless/ath/ath11k/rx_desc.h          |   1 +
+>  drivers/net/wireless/ath/ath11k/spectral.c         |   1 +
+>  drivers/net/wireless/ath/ath11k/spectral.h         |   1 +
+>  drivers/net/wireless/ath/ath11k/thermal.c          |   1 +
+>  drivers/net/wireless/ath/ath11k/thermal.h          |   1 +
+>  drivers/net/wireless/ath/ath11k/trace.h            |   1 +
+>  drivers/net/wireless/ath/ath11k/wmi.c              |   2 +-
+>  drivers/net/wireless/ath/ath11k/wmi.h              |  63 +++----
+>  drivers/net/wireless/ath/ath11k/wow.h              |   1 +
+>  drivers/net/wireless/ath/ath12k/Kconfig            |   2 +-
+>  drivers/net/wireless/ath/ath12k/core.c             |   6 +-
+>  drivers/net/wireless/ath/ath12k/core.h             |   5 +-
+>  drivers/net/wireless/ath/ath12k/dbring.c           |   2 +-
+>  drivers/net/wireless/ath/ath12k/debug.c            |   2 +-
+>  drivers/net/wireless/ath/ath12k/dp.c               |   6 +-
+>  drivers/net/wireless/ath/ath12k/dp.h               |  13 +-
+>  drivers/net/wireless/ath/ath12k/dp_mon.c           |  15 +-
+>  drivers/net/wireless/ath/ath12k/dp_mon.h           |   4 +-
+>  drivers/net/wireless/ath/ath12k/dp_rx.c            | 153 +++++++----------
+>  drivers/net/wireless/ath/ath12k/dp_rx.h            |   8 +-
+>  drivers/net/wireless/ath/ath12k/dp_tx.c            |   2 +-
+>  drivers/net/wireless/ath/ath12k/hal.c              |   6 +-
+>  drivers/net/wireless/ath/ath12k/hal.h              |   2 +-
+>  drivers/net/wireless/ath/ath12k/hal_rx.c           |   2 +-
+>  drivers/net/wireless/ath/ath12k/hal_rx.h           |   3 +-
+>  drivers/net/wireless/ath/ath12k/hif.h              |   2 +-
+>  drivers/net/wireless/ath/ath12k/hw.c               |   5 +-
+>  drivers/net/wireless/ath/ath12k/hw.h               |   2 +-
+>  drivers/net/wireless/ath/ath12k/mac.c              | 190 +++++++++++----------
+>  drivers/net/wireless/ath/ath12k/mac.h              |   3 +-
+>  drivers/net/wireless/ath/ath12k/mhi.c              |  18 +-
+>  drivers/net/wireless/ath/ath12k/pci.c              | 174 ++++++++++++++++---
+>  drivers/net/wireless/ath/ath12k/pci.h              |   4 +-
+>  drivers/net/wireless/ath/ath12k/peer.h             |   2 +-
+>  drivers/net/wireless/ath/ath12k/qmi.c              |   2 +-
+>  drivers/net/wireless/ath/ath12k/qmi.h              |   2 +-
+>  drivers/net/wireless/ath/ath12k/reg.c              |  21 +--
+>  drivers/net/wireless/ath/ath12k/reg.h              |   4 +-
+>  drivers/net/wireless/ath/ath12k/rx_desc.h          |   2 +-
+>  drivers/net/wireless/ath/ath12k/wmi.c              |   2 +-
+>  drivers/net/wireless/ath/ath12k/wmi.h              |  64 +++----
+>  drivers/net/wireless/ath/ath5k/ahb.c               |   8 +-
+>  drivers/net/wireless/ath/ath5k/eeprom.h            |   3 -
+>  .../net/wireless/ath/ath9k/ath9k_pci_owl_loader.c  |   2 +-
+>  drivers/net/wireless/ath/ath9k/common-init.c       |   2 +-
+>  drivers/net/wireless/ath/ath9k/common-spectral.c   |   2 +-
+>  drivers/net/wireless/ath/ath9k/debug.c             |   2 +-
+>  drivers/net/wireless/ath/ath9k/hif_usb.c           |  10 +-
+>  drivers/net/wireless/ath/ath9k/htc_drv_debug.c     |   2 +-
+>  drivers/net/wireless/ath/ath9k/htc_drv_init.c      |  36 ++--
+>  drivers/net/wireless/ath/ath9k/htc_drv_txrx.c      |   5 +-
+>  drivers/net/wireless/ath/ath9k/htc_hst.c           |   2 +-
+>  drivers/net/wireless/ath/ath9k/init.c              |  12 +-
+>  drivers/net/wireless/ath/ath9k/link.c              |   2 +-
+>  drivers/net/wireless/ath/ath9k/main.c              |  15 ++
+>  drivers/net/wireless/ath/ath9k/pci.c               |   6 +-
+>  drivers/net/wireless/ath/wcn36xx/main.c            |   6 +-
+>  128 files changed, 631 insertions(+), 466 deletions(-)
+
+Pulled, thanks.
+
+c5a3f56fcdb0 Merge tag 'ath-next-20231215' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/87r0jnl1rd.fsf@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
