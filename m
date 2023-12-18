@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19A07C3DA6E
-	for <ath10k@archiver.kernel.org>; Sun, 17 Dec 2023 12:48:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50089C35274
+	for <ath10k@archiver.kernel.org>; Mon, 18 Dec 2023 12:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=+ekaxDT+LtszaF02FuhOaxUmaTXI9Knr/jMUm5ORTGE=; b=a4LP+1zTpZushVnqYRwSlBHxFZ
-	KMm4+zHaOjJP8JnZPc0LrIWx985ARHqXM6BJPwUPdSVbCV52Yax3snN3niObx0mwZ8HvVcCys26bH
-	I3GF3PCwj6c92JYvVYUFLa4FC7NbbPPdad3ZDdyzdZ6z4CHUmoVqesuDjGV2kJ4natTG1ix4J7Fwr
-	XhNURLxKbouM3If6f6Nz7RwKb7dKPpGF/EY42/WjpMYBgvNUUKzAGinSaqDeo+JcKwBySTCTwBDMQ
-	TqbeKpE5QNZhNjtwfQdV4/pC5FN7Y7AAixJko/jvN27War9EVNMVKQWfOvWzAFaFmzI4u3dKjpEq8
-	qpUEyW1g==;
+	bh=e81wXWaWNeiivSIBlXCA07XpV2OpvIUy1vd/Q2YJV8c=; b=p1MavHaEXwOkN/Di62OBuz3gTx
+	VtGtWVyBp/tVlBVqu9WDNv5rScuWAr1Cl3q9fdx9xqVfx5WAc4wZB9W+xZmN5bbFIccUW9IBC7PXB
+	lF/O5e2LW1WR6unMdKi2cmoqQatoV0Iy9f9i4FkCTRJFqwKbiRp5AWMrUvBXLf4gO7VAp82Wu4Z9Y
+	sn3fWiO3vkyhgyuuDkBa2rcGhzKLUXuYmvII77TWhqNb8MIDPpCnfLdXfam5Y4TOB/VDqUUwBgy/d
+	6jT1q395+FXAjCFppDEyEsd3WXJzJ1KzI/ujJDcKag0Mbin9HLdpy+7gyvNl/9jeKWPC3z6NlVzQm
+	JacTXBrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEqZ5-007on7-31;
-	Sun, 17 Dec 2023 12:48:15 +0000
-Received: from mgamail.intel.com ([192.55.52.120])
+	id 1rFCr0-00Achz-0Y;
+	Mon, 18 Dec 2023 12:36:14 +0000
+Received: from mgamail.intel.com ([192.55.52.151])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEqZ3-007omj-1e
+	id 1rFCqw-00Acgf-2w
 	for ath10k@lists.infradead.org;
-	Sun, 17 Dec 2023 12:48:14 +0000
+	Mon, 18 Dec 2023 12:36:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702817293; x=1734353293;
+  t=1702902970; x=1734438970;
   h=date:from:to:cc:subject:message-id;
-  bh=c8e/PNPqq6MHVssxnghf6/+7Ih3Fq+mpz6UhqdA/D9o=;
-  b=k10jlzp6rwEBb9Y6/I/v3h+1WF+En9msH3auumvHpH6MNkf2GH/XLmJ2
-   m7u6SXOq9qD4nnDcwehefFIN3W5hqIKfWg44eVkjk4aS2rUWTIKlplVtq
-   3GxIBH6dwYQ2/P15Cx0tYp5qNSghbb9k6gfxWvpvJ6amEY6leC5Xr8Z0F
-   VsFs86oM1JEWYWAzfn2THbigi9mRMIzK6DE9pNRFU+H4CoRMmllJYmuf+
-   uhSjALj2zcKcJyvcaSBVykzwu/KP6N7oFwygdk7XAI/qu3rT48HRLqUaD
-   vt4Yohn04OkA1Ef4b0WXCLjK5CsGYipVoWuNyPl1HSusGW+XFonrz/t8a
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="394289969"
-X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
-   d="scan'208";a="394289969"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2023 04:48:10 -0800
+  bh=CBNap+pBplt6jgnSImYoMsTucRB1rEbA4oTpC20oM2M=;
+  b=WxRp6Py0TCWs+z1XMKFtu9vfCOl9qQxvnWHBzRu4TxJDtWwIqQe1teMk
+   3CThJNVszCU53DTvaktkh13UZI2SKHpF0AP9XMIjszLiwK/FEASQDdxOf
+   u0YXwwahftzFIS/gY7nItswg3TWhA35w6XIhQi5crlXrYY+jXaDkqQwZY
+   fcc/1H7lBccjYJLbuplRynU6Q1BW6Jv+I3KWXA1PyjlE4oz0DX46gYma9
+   WRZDp/Nepvol3ItDLBuQG90hk1HDwK8QjjC1WrIZQDD+EKzH0vlJ0mXFw
+   AC4dcbrXD5Kt0sr1yEU/CrFp9I9WHpUoOJ746RM/CpQbzTnU2Tx7ZNwY9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="375650002"
+X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
+   d="scan'208";a="375650002"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 04:36:06 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10926"; a="724986277"
-X-IronPort-AV: E=Sophos;i="6.04,283,1695711600"; 
-   d="scan'208";a="724986277"
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="948762700"
+X-IronPort-AV: E=Sophos;i="6.04,285,1695711600"; 
+   d="scan'208";a="948762700"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 17 Dec 2023 04:48:09 -0800
+  by orsmga005.jf.intel.com with ESMTP; 18 Dec 2023 04:36:05 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rEqYx-00032m-0I;
-	Sun, 17 Dec 2023 12:48:07 +0000
-Date: Sun, 17 Dec 2023 20:47:50 +0800
+	id 1rFCqo-000445-2j;
+	Mon, 18 Dec 2023 12:36:02 +0000
+Date: Mon, 18 Dec 2023 20:35:49 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 052b68b74ebe9023e71908cb4f2a215cee87d8c7
-Message-ID: <202312172047.JJZTSiWQ-lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 6c4f0b0146c7c9c7791dc1a55e13e317897e91ac
+Message-ID: <202312182046.NsVZSc9D-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231217_044813_568777_C7D6D4C8 
-X-CRM114-Status: UNSURE (   4.32  )
+X-CRM114-CacheID: sfid-20231218_043610_968686_FD1FE941 
+X-CRM114-Status: UNSURE (   3.93  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,12 +80,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 052b68b74ebe9023e71908cb4f2a215cee87d8c7  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 6c4f0b0146c7c9c7791dc1a55e13e317897e91ac  Add localversion-wireless-testing-ath
 
-elapsed time: 1757m
+Warning ids grouped by kconfigs:
 
-configs tested: 76
+clang_recent_errors
+`-- x86_64-rhel-8.3-rust
+    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-int34_thermal-processor_thermal_power_floor.o
+    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-int34_thermal-processor_thermal_wt_hint.o
+    `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-int34_thermal-processor_thermal_wt_req.o
+
+elapsed time: 1473m
+
+configs tested: 145
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -94,80 +102,149 @@ More configs may be tested in the coming days.
 tested configs:
 alpha                             allnoconfig   gcc  
 alpha                               defconfig   gcc  
+arc                              alldefconfig   gcc  
 arc                               allnoconfig   gcc  
+arc                          axs103_defconfig   gcc  
 arc                                 defconfig   gcc  
-arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arc                        vdk_hs38_defconfig   gcc  
 arm                               allnoconfig   gcc  
 arm                                 defconfig   clang
-arm                          moxart_defconfig   clang
+arm                           h3600_defconfig   gcc  
 arm64                             allnoconfig   gcc  
 arm64                               defconfig   gcc  
 csky                              allnoconfig   gcc  
 csky                                defconfig   gcc  
 hexagon                           allnoconfig   clang
 hexagon                             defconfig   clang
-i386                             alldefconfig   gcc  
 i386                             allmodconfig   clang
 i386                              allnoconfig   clang
 i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231216   gcc  
-i386         buildonly-randconfig-002-20231216   gcc  
-i386         buildonly-randconfig-003-20231216   gcc  
-i386         buildonly-randconfig-004-20231216   gcc  
-i386         buildonly-randconfig-005-20231216   gcc  
-i386         buildonly-randconfig-006-20231216   gcc  
+i386         buildonly-randconfig-001-20231217   clang
+i386         buildonly-randconfig-002-20231217   clang
+i386         buildonly-randconfig-003-20231217   clang
+i386         buildonly-randconfig-004-20231217   clang
+i386         buildonly-randconfig-005-20231217   clang
+i386         buildonly-randconfig-006-20231217   clang
 i386                                defconfig   gcc  
-i386                  randconfig-001-20231216   gcc  
-i386                  randconfig-002-20231216   gcc  
-i386                  randconfig-003-20231216   gcc  
-i386                  randconfig-004-20231216   gcc  
-i386                  randconfig-005-20231216   gcc  
-i386                  randconfig-006-20231216   gcc  
-i386                  randconfig-011-20231216   clang
-i386                  randconfig-012-20231216   clang
-i386                  randconfig-013-20231216   clang
-i386                  randconfig-014-20231216   clang
-i386                  randconfig-015-20231216   clang
-i386                  randconfig-016-20231216   clang
+i386                  randconfig-001-20231217   clang
+i386                  randconfig-002-20231217   clang
+i386                  randconfig-003-20231217   clang
+i386                  randconfig-004-20231217   clang
+i386                  randconfig-005-20231217   clang
+i386                  randconfig-006-20231217   clang
+i386                  randconfig-011-20231217   gcc  
+i386                  randconfig-012-20231217   gcc  
+i386                  randconfig-013-20231217   gcc  
+i386                  randconfig-014-20231217   gcc  
+i386                  randconfig-015-20231217   gcc  
+i386                  randconfig-016-20231217   gcc  
 loongarch                        allmodconfig   gcc  
 loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
 loongarch                           defconfig   gcc  
 m68k                             allmodconfig   gcc  
 m68k                              allnoconfig   gcc  
 m68k                             allyesconfig   gcc  
 m68k                                defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+m68k                        m5407c3_defconfig   gcc  
+m68k                          sun3x_defconfig   gcc  
 microblaze                       allmodconfig   gcc  
 microblaze                        allnoconfig   gcc  
 microblaze                       allyesconfig   gcc  
 microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
 mips                              allnoconfig   clang
 mips                             allyesconfig   gcc  
+mips                      loongson3_defconfig   gcc  
+mips                           mtx1_defconfig   clang
 nios2                            allmodconfig   gcc  
 nios2                             allnoconfig   gcc  
 nios2                            allyesconfig   gcc  
 nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
 openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
 openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
 parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
 parisc                              defconfig   gcc  
+parisc                generic-32bit_defconfig   gcc  
 parisc64                            defconfig   gcc  
 powerpc                           allnoconfig   gcc  
+powerpc                   bluestone_defconfig   clang
+powerpc                        cell_defconfig   gcc  
+powerpc                    ge_imp3a_defconfig   gcc  
+powerpc                        icon_defconfig   clang
+powerpc                    klondike_defconfig   gcc  
+powerpc                   lite5200b_defconfig   clang
+powerpc                 mpc834x_itx_defconfig   gcc  
+powerpc                      ppc6xx_defconfig   gcc  
+riscv                            allmodconfig   gcc  
 riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
 riscv                               defconfig   gcc  
+riscv             nommu_k210_sdcard_defconfig   gcc  
+s390                             allmodconfig   gcc  
 s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
 s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
 sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         ap325rxa_defconfig   gcc  
 sh                                  defconfig   gcc  
+sh                     magicpanelr2_defconfig   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                   secureedge5410_defconfig   gcc  
+sh                        sh7785lcr_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
 sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
 um                                allnoconfig   clang
+um                               allyesconfig   clang
 um                                  defconfig   gcc  
 um                             i386_defconfig   gcc  
 um                           x86_64_defconfig   gcc  
 x86_64                            allnoconfig   gcc  
 x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231218   gcc  
+x86_64       buildonly-randconfig-002-20231218   gcc  
+x86_64       buildonly-randconfig-003-20231218   gcc  
+x86_64       buildonly-randconfig-004-20231218   gcc  
+x86_64       buildonly-randconfig-005-20231218   gcc  
+x86_64       buildonly-randconfig-006-20231218   gcc  
 x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20231218   clang
+x86_64                randconfig-002-20231218   clang
+x86_64                randconfig-003-20231218   clang
+x86_64                randconfig-004-20231218   clang
+x86_64                randconfig-005-20231218   clang
+x86_64                randconfig-006-20231218   clang
+x86_64                randconfig-011-20231218   gcc  
+x86_64                randconfig-012-20231218   gcc  
+x86_64                randconfig-013-20231218   gcc  
+x86_64                randconfig-014-20231218   gcc  
+x86_64                randconfig-015-20231218   gcc  
+x86_64                randconfig-016-20231218   gcc  
+x86_64                randconfig-071-20231218   gcc  
+x86_64                randconfig-072-20231218   gcc  
+x86_64                randconfig-073-20231218   gcc  
+x86_64                randconfig-074-20231218   gcc  
+x86_64                randconfig-075-20231218   gcc  
+x86_64                randconfig-076-20231218   gcc  
 x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                  audio_kc705_defconfig   gcc  
+xtensa                       common_defconfig   gcc  
 
 -- 
 0-DAY CI Kernel Test Service
