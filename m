@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D208C46CA2
-	for <ath10k@archiver.kernel.org>; Tue, 19 Dec 2023 19:45:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8498C46CA2
+	for <ath10k@archiver.kernel.org>; Tue, 19 Dec 2023 19:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=g7sCqINCdIOWOeE/kLMbhPs7vjRQnEuXIrWIAgBswJE=; b=R7pRbnilwqHWEYPTPRlxr5Bx2L
-	MjoChrEGBdtvufkheDpmMH1cydpo8boA+Zi80MfYiF657whWiGemvu6PEVLJdqShmLgdQBB9QHSye
-	nWZgOD4PF9whh9YMrmjxWyfLJHOpdTERp7vABBiMaF8lQXFSAfOOJLgmCH4cdBXpKCm/GW3c3oRGF
-	5gXlDSorJIQ5CqiXdwABhgof53hRJH+TVQPmALD4GnB5T3eEwG4Yv9XbRXEaQI2DPOhF0K+xwlSSN
-	KtayB/n00h0RFdCHpGn8AQgR6nlC1Qe5fhcHmojL/4pmQ1/Xs1zRKBpgc0GUvhUfqMC7qPuHiGE1B
-	gJ6llx9Q==;
+	bh=XYROEJATyxRO8qkNhk6qA+4hM9tprMvHfqkFq1TGB3o=; b=rOk1TcUkjAJZa0+TOGaseaS/S2
+	gCfXCoQbWgSsvLLcVs/EcM/v7Z7QKb7kMNVxoXSdm7uav4xnRCx3dvCOktpGMerakTI/zsfzHqlvX
+	rOmXCyqNUPfkQoHKRhd4whSnJo0lHWkqYTQs0slKw3WMsONMAskXdkKCFybaRxsOTm3kurFJh8zTj
+	r+9S1NUUg/lsqPebWhELFzeFhNkHskm9oSylqIOfmTC2nyyL3Yb7yvkvxmeDHRLm0KQGcHbi0+i0a
+	+E+App0Yehm3Lm3on7X6a63Hi2qPaSYfiYp2d6vyW5lufbJ0ijpyalg6N3cEasHbqG+Kp1jtJW/Zg
+	HOvLlMEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFg2P-00FLdn-1T;
-	Tue, 19 Dec 2023 19:45:57 +0000
-Received: from mgamail.intel.com ([192.55.52.93])
+	id 1rFg4E-00FLuv-0E;
+	Tue, 19 Dec 2023 19:47:50 +0000
+Received: from mgamail.intel.com ([134.134.136.31])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFg2L-00FLd3-2Z
+	id 1rFg4A-00FLuU-1C
 	for ath10k@lists.infradead.org;
-	Tue, 19 Dec 2023 19:45:55 +0000
+	Tue, 19 Dec 2023 19:47:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703015153; x=1734551153;
+  t=1703015266; x=1734551266;
   h=date:from:to:cc:subject:message-id;
-  bh=WVqMy/JHZcCiAZa0LreX1nl2SgyGOoB4UWKWD5Cw6iY=;
-  b=geJIyJWV24hfwd7hkvsM4/SU6sAkqZXsFCPmsu550eX7g1Qg3WqRQsY8
-   1KzqQ5sS4dOLFi3F+DbTbfv7UPv4xL9OyB+J0gDcC2H7Px9f03BX6GDqL
-   SA/BSQt1EMSkxJ2zsmGxwj+BpzaTdXsypbdjQ3TWRA/QcTRcHOxfx1DpS
-   qqNNtplzQWJz/TfvT4yu1mau61vRPE7PleEL8sMKb5pVpxzgsWETv+X7R
-   NY5SK4wSyqAizd/7MrpvU+tiXjPsQftfU3dpGRpt/MDq1sUAe69O726kt
-   08jmgji7TMlJC+J8mMojREY98kx1UW8DqDce7/BM1F3of497X1ntEcokJ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="392880447"
+  bh=7eWOnM3PivCNb3jmpvOJN9CDPdfkGAQygdu2y2vTlGU=;
+  b=kHTgwXkgvrFUEmpBlgyMnttVW38fil8roRp0Z423YKF98lngQFJjyvyB
+   SPt63yMgcq2HaKS/bkcAhU37acioGC3z+XiMhIW/TXMeLBU2duzTUuisI
+   mTdVFQ4FtV4ohG4ohdCX7MpUEW4hoZbKaP858YKkHpqvciHVpkA9zhkk9
+   0khBcACj9keDgqb6FhJfmARtDQIr5oocxTOQWM9YvfDZRdjjEQ8qtTP64
+   mO32tQ/EnLmsvRWlvb74JMGZySg6uwdz1pbLvlHnLnzfs4e6mAoC8/dzK
+   WMKFkY/qfAWP/XjWOjc2HvGpwnPq+Ze7WSVaFT0vltVHKlLdW6/mO9TaF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="460057388"
 X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="392880447"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 11:45:43 -0800
+   d="scan'208";a="460057388"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 11:47:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="805015422"
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="899483867"
 X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="805015422"
+   d="scan'208";a="899483867"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 19 Dec 2023 11:45:41 -0800
+  by orsmga004.jf.intel.com with ESMTP; 19 Dec 2023 11:47:42 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rFg26-0005sT-2K;
-	Tue, 19 Dec 2023 19:45:38 +0000
-Date: Wed, 20 Dec 2023 03:45:28 +0800
+	id 1rFg44-0005sj-1J;
+	Tue, 19 Dec 2023 19:47:40 +0000
+Date: Wed, 20 Dec 2023 03:47:13 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 68518adc8760d2c514d8588ef6bbb45f9bc8b18f
-Message-ID: <202312200324.xa4zUr2i-lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 5b9b62e679c1f8410b8145edc576e53ba7824528
+Message-ID: <202312200308.CCMR51z5-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231219_114553_847810_07DE4323 
-X-CRM114-Status: UNSURE (   4.84  )
+X-CRM114-CacheID: sfid-20231219_114746_473793_EF529F44 
+X-CRM114-Status: UNSURE (   3.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,68 +80,246 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 68518adc8760d2c514d8588ef6bbb45f9bc8b18f  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 5b9b62e679c1f8410b8145edc576e53ba7824528  wifi: ath12k: Make QMI message rules const
 
 Warning ids grouped by kconfigs:
 
 gcc_recent_errors
-|-- arm-s3c6400_defconfig
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-base-regmap-regmap-spi.o
+|-- alpha-defconfig
+|   `-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arc-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arc-defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arc-nsimosci_hs_defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arc-randconfig-001-20231220
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arc-randconfig-002-20231220
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arm-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arm-shmobile_defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arm-tegra_defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arm64-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- arm64-defconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-soc-qcom-qcom_aoss.c:warning:function-qmp_send-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- csky-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- csky-defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- i386-randconfig-011-20231219
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- i386-randconfig-012-20231219
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- i386-randconfig-013-20231219
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- i386-randconfig-014-20231219
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
 |-- i386-randconfig-015-20231219
-|   |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-classmate-laptop.o
-|   |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-intel-rst.o
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-pmc-intel_pmc_core_pltdrv.o
-|-- x86_64-buildonly-randconfig-001-20231220
-|   |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-acpi-nfit-nfit.o
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-intel-hid.o
-|-- x86_64-buildonly-randconfig-005-20231220
-|   |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-arch-x86-kvm-kvm-intel.o
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-nvdimm-nd_e820.o
-|-- x86_64-randconfig-072-20231220
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-arch-x86-kvm-kvm-intel.o
-`-- x86_64-randconfig-073-20231220
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-classmate-laptop.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-intel-hid.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-pmc-intel_pmc_core_pltdrv.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-int34_thermal-processor_thermal_mbox.o
-    `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-int34_thermal-processor_thermal_rfim.o
-clang_recent_errors
-|-- i386-buildonly-randconfig-003-20231219
-|   |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-amilo-rfkill.o
-|   |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-classmate-laptop.o
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-intel-vbtn.o
-|-- i386-buildonly-randconfig-004-20231219
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-intel-rst.o
-|-- x86_64-randconfig-002-20231220
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-arch-x86-kernel-cpu-mce-mce-inject.o
-|-- x86_64-randconfig-003-20231220
-|   `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-nvdimm-nd_e820.o
-`-- x86_64-rhel-8.3-rust
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-arch-x86-events-rapl.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-arch-x86-kernel-cpu-mce-mce-inject.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-arch-x86-kvm-kvm-intel.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-acpi-nfit-nfit.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-base-regmap-regmap-spi.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-dax-dax_pmem.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-gpu-drm-i915-kvmgt.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-hid-intel-ish-hid-intel-ishtp.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-nvdimm-nd_e820.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-amilo-rfkill.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-classmate-laptop.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-intel-hid.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-intel-rst.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-intel-vbtn.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-platform-x86-intel-pmc-intel_pmc_core_pltdrv.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-int34_thermal-processor_thermal_mbox.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-int34_thermal-processor_thermal_rapl.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-int34_thermal-processor_thermal_rfim.o
-    |-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-drivers-thermal-intel-intel_soc_dts_iosf.o
-    `-- WARNING:modpost:missing-MODULE_DESCRIPTION()-in-mm-hwpoison-inject.o
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- i386-randconfig-016-20231219
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- i386-randconfig-061-20231220
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- i386-randconfig-062-20231220
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- i386-randconfig-063-20231220
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- loongarch-allmodconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-soc-qcom-qcom_aoss.c:warning:function-qmp_send-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- loongarch-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- loongarch-defconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- loongarch-randconfig-r133-20231220
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- m68k-allmodconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- m68k-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- m68k-allyesconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- m68k-defconfig
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- m68k-m5307c3_defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- m68k-randconfig-r132-20231220
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- microblaze-allmodconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- microblaze-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- microblaze-allyesconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- microblaze-defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- mips-allyesconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-soc-qcom-qcom_aoss.c:warning:function-qmp_send-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- mips-decstation_r4k_defconfig
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- nios2-allmodconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- nios2-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- nios2-allyesconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- nios2-defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- openrisc-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- openrisc-defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- riscv-defconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- s390-allmodconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- s390-allyesconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- s390-defconfig
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- sh-allmodconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- sh-allnoconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- sh-allyesconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- sh-defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- sh-titan_defconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- sparc-allmodconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-soc-qcom-qcom_aoss.c:warning:function-qmp_send-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- sparc64-allmodconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-soc-qcom-qcom_aoss.c:warning:function-qmp_send-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- sparc64-allyesconfig
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-soc-qcom-qcom_aoss.c:warning:function-qmp_send-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- um-defconfig
+|   `-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- um-i386_defconfig
+|   `-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- x86_64-randconfig-001-20231219
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- x86_64-randconfig-003-20231219
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- x86_64-randconfig-004-20231219
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- x86_64-randconfig-005-20231219
+|   |-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- drivers-isdn-capi-capiutil.c:warning:function-bufprint-might-be-a-candidate-for-gnu_printf-format-attribute
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- x86_64-randconfig-006-20231219
+|   |-- kernel-bpf-btf.c:warning:function-btf_seq_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|   `-- kernel-bpf-btf.c:warning:function-btf_snprintf_show-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- x86_64-randconfig-r112-20231220
+|   `-- fs-reiserfs-prints.c:warning:function-prepare_error_buf-might-be-a-candidate-for-gnu_printf-format-attribute
+|-- xtensa-generic_kc705_defconfig
+|   `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
+`-- xtensa-iss_defconfig
+    `-- drivers-clk-clkdev.c:warning:function-vclkdev_alloc-might-be-a-candidate-for-gnu_printf-format-attribute
 
-elapsed time: 1487m
+elapsed time: 1479m
 
-configs tested: 124
+configs tested: 119
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -152,21 +330,20 @@ alpha                             allnoconfig   gcc
 alpha                               defconfig   gcc  
 arc                               allnoconfig   gcc  
 arc                                 defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
 arc                   randconfig-001-20231220   gcc  
 arc                   randconfig-002-20231220   gcc  
 arm                               allnoconfig   gcc  
 arm                                 defconfig   clang
-arm                        multi_v5_defconfig   clang
-arm                   randconfig-001-20231220   gcc  
-arm                   randconfig-002-20231220   gcc  
-arm                         s3c6400_defconfig   gcc  
+arm                            mmp2_defconfig   clang
+arm                        shmobile_defconfig   gcc  
+arm                           tegra_defconfig   gcc  
 arm64                             allnoconfig   gcc  
 arm64                               defconfig   gcc  
 csky                              allnoconfig   gcc  
 csky                                defconfig   gcc  
 hexagon                           allnoconfig   clang
 hexagon                             defconfig   clang
-i386                             alldefconfig   gcc  
 i386                             allmodconfig   clang
 i386                              allnoconfig   clang
 i386                             allyesconfig   clang
@@ -196,16 +373,17 @@ m68k                             allmodconfig   gcc
 m68k                              allnoconfig   gcc  
 m68k                             allyesconfig   gcc  
 m68k                                defconfig   gcc  
-m68k                          multi_defconfig   gcc  
+m68k                        m5307c3_defconfig   gcc  
 microblaze                       allmodconfig   gcc  
 microblaze                        allnoconfig   gcc  
 microblaze                       allyesconfig   gcc  
 microblaze                          defconfig   gcc  
 mips                              allnoconfig   clang
 mips                             allyesconfig   gcc  
+mips                  cavium_octeon_defconfig   clang
+mips                     cu1830-neo_defconfig   clang
+mips                 decstation_r4k_defconfig   gcc  
 mips                           ip27_defconfig   gcc  
-mips                           ip32_defconfig   gcc  
-mips                       lemote2f_defconfig   gcc  
 nios2                            allmodconfig   gcc  
 nios2                             allnoconfig   gcc  
 nios2                            allyesconfig   gcc  
@@ -214,17 +392,14 @@ openrisc                          allnoconfig   gcc
 openrisc                            defconfig   gcc  
 parisc                            allnoconfig   gcc  
 parisc                              defconfig   gcc  
-parisc                generic-32bit_defconfig   gcc  
 parisc64                            defconfig   gcc  
+powerpc                      acadia_defconfig   clang
+powerpc                    adder875_defconfig   gcc  
 powerpc                           allnoconfig   gcc  
-powerpc                          g5_defconfig   clang
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                  mpc866_ads_defconfig   clang
-powerpc                      ppc6xx_defconfig   gcc  
-powerpc                     redwood_defconfig   gcc  
+powerpc                        fsp2_defconfig   clang
+powerpc                      ppc40x_defconfig   gcc  
 riscv                             allnoconfig   clang
 riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   clang
 s390                             allmodconfig   gcc  
 s390                              allnoconfig   gcc  
 s390                             allyesconfig   gcc  
@@ -233,7 +408,7 @@ sh                               allmodconfig   gcc
 sh                                allnoconfig   gcc  
 sh                               allyesconfig   gcc  
 sh                                  defconfig   gcc  
-sh                            hp6xx_defconfig   gcc  
+sh                            titan_defconfig   gcc  
 sparc                            allmodconfig   gcc  
 sparc64                          allmodconfig   gcc  
 sparc64                          allyesconfig   gcc  
@@ -243,35 +418,33 @@ um                                allnoconfig   clang
 um                               allyesconfig   clang
 um                                  defconfig   gcc  
 um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
 x86_64                            allnoconfig   gcc  
 x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231220   gcc  
-x86_64       buildonly-randconfig-002-20231220   gcc  
-x86_64       buildonly-randconfig-003-20231220   gcc  
-x86_64       buildonly-randconfig-004-20231220   gcc  
-x86_64       buildonly-randconfig-005-20231220   gcc  
-x86_64       buildonly-randconfig-006-20231220   gcc  
+x86_64       buildonly-randconfig-001-20231219   clang
+x86_64       buildonly-randconfig-002-20231219   clang
+x86_64       buildonly-randconfig-003-20231219   clang
+x86_64       buildonly-randconfig-004-20231219   clang
+x86_64       buildonly-randconfig-005-20231219   clang
+x86_64       buildonly-randconfig-006-20231219   clang
 x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231220   clang
-x86_64                randconfig-002-20231220   clang
-x86_64                randconfig-003-20231220   clang
-x86_64                randconfig-004-20231220   clang
-x86_64                randconfig-005-20231220   clang
-x86_64                randconfig-006-20231220   clang
-x86_64                randconfig-011-20231220   gcc  
-x86_64                randconfig-012-20231220   gcc  
-x86_64                randconfig-013-20231220   gcc  
-x86_64                randconfig-014-20231220   gcc  
-x86_64                randconfig-015-20231220   gcc  
-x86_64                randconfig-016-20231220   gcc  
-x86_64                randconfig-071-20231220   gcc  
-x86_64                randconfig-072-20231220   gcc  
-x86_64                randconfig-073-20231220   gcc  
+x86_64                randconfig-001-20231219   gcc  
+x86_64                randconfig-002-20231219   gcc  
+x86_64                randconfig-003-20231219   gcc  
+x86_64                randconfig-004-20231219   gcc  
+x86_64                randconfig-005-20231219   gcc  
+x86_64                randconfig-006-20231219   gcc  
+x86_64                randconfig-011-20231219   clang
+x86_64                randconfig-012-20231219   clang
+x86_64                randconfig-013-20231219   clang
+x86_64                randconfig-014-20231219   clang
+x86_64                randconfig-015-20231219   clang
+x86_64                randconfig-016-20231219   clang
+x86_64                randconfig-071-20231219   clang
+x86_64                randconfig-072-20231219   clang
+x86_64                randconfig-073-20231219   clang
 x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                  audio_kc705_defconfig   gcc  
 xtensa                generic_kc705_defconfig   gcc  
+xtensa                          iss_defconfig   gcc  
 
 -- 
 0-DAY CI Kernel Test Service
