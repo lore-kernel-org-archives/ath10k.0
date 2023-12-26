@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69154C41535
-	for <ath10k@archiver.kernel.org>; Fri, 22 Dec 2023 06:05:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BC4BC46CD3
+	for <ath10k@archiver.kernel.org>; Tue, 26 Dec 2023 19:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=PptGfnDjU8IQh2YHhf0Mz7Auf6hpdBOytpCVDURytz8=; b=0UixA4gD7V7cYsgtyu01rMHFWw
-	7dhXKCdq0azQYMHAJA1G3GOZFVJRgG9FUoqIzRc3Lmvsc8ABlXZV1jjxaQ5hXOZfKCx1hWPq4Wj2x
-	q0+Ln2HqEefudWpaPfTq66b90RI35zetSgx8WYj0U3zLrQr/v2vR9hX/dXGT0NWf9tu6P07X4PBpb
-	lGhuncGiZ9pDpM5WyOIz4D7rWcZYCjs+YDAZFol/2FrQX5N3VPs8pRrfYEfxCFOSEllo/rj9+byju
-	cuBstJG517u3ocPTmy0rvcYHWnT5UekP9qNYgvXijBjAsg86/vJL6dUhE2XVqvrm0uVf7A2Ot40X0
-	NyGLuRVg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Lc0ZZS9raYFTuzTAjY2HbHAifM/5aEZ7LhNbefE+rA0=; b=j68uq9PaBCB0uz7cQYqjclqj1J
+	eQa6NCBsNy7y4UsiyUFgrQV401+bLBJJ6N88blUtEx4kwhLhGbmYsifQn+/bvhSefhf1LdW80c4YD
+	CexbK25S2Sm5mBQIV9n8joA/sslxB8eKEX0JoGYqJ/eI6DQ2tJuGKBTW/8UKgZ8A6jscARvtHHVZ6
+	xaKNeu0L8ELODGpwgdGkkMViuftBQlYKjFdEtN46NCsUymH0OpPw/dElrwuU6A0hBpXEiVjKa1XGh
+	YZUum3SfHo4TRy3r1XzrJZEN/TdoFveT1T/TfAswTBJUnXmjuHNRNeAU/H/uK9ksyYEq0CVBeu5WR
+	1KPlN1gw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGYf5-0052iX-2c;
-	Fri, 22 Dec 2023 06:05:31 +0000
-Received: from mgamail.intel.com ([198.175.65.11])
+	id 1rIDJe-00DSNy-0P;
+	Tue, 26 Dec 2023 19:42:14 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGYf3-0052hC-0A
-	for ath10k@lists.infradead.org;
-	Fri, 22 Dec 2023 06:05:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703225129; x=1734761129;
-  h=date:from:to:cc:subject:message-id;
-  bh=MZISBVxiABY5n47eVlo2SFPKVTkdCadCRzeEwkIpJ9g=;
-  b=Df4ol60BQU4xaZDsv+tiBsMUIchP4TLXpI3xA7YVJDEhTeqVngEwIS0a
-   Ufr3mxRplSfIagpM45Yd+Uk74m5Yp5xbFpManpwizR0akHnX+RrExf9Ce
-   8fY4BVAeouSaR9cTJ2gC9qQTRfonvfbDDOgYXRifoTUVx8ChvP5uv60F2
-   7UiD20mDwleh9QWhCg/Fq0cwdfdO2HovFNTzgz+pWstOToqzKPHKCXMsT
-   6D93xG/VOJIZM1zGNF34ZVYm26y9lPE2Ku5RW6gJydwtCipxPPeI/+SfM
-   h3VNmVnhbO2e7HPT9VL1sSyAJ0/ZTfPyqof85e9sPONZV0y0ef8u+rcTC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="2908717"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="2908717"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 22:05:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="776960962"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="776960962"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 21 Dec 2023 22:05:26 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rGYey-00097b-0t;
-	Fri, 22 Dec 2023 06:05:24 +0000
-Date: Fri, 22 Dec 2023 14:04:36 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- e7ab40b733094dfc50dad58bbce81f544af1d8cc
-Message-ID: <202312221433.3BeF2tS3-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1rIDJb-00DSNF-0d;
+	Tue, 26 Dec 2023 19:42:13 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id DBE64B80945;
+	Tue, 26 Dec 2023 19:42:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EC57C433C8;
+	Tue, 26 Dec 2023 19:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703619729;
+	bh=yGkxVhUKDayFNUEMyL0TaOj2LLfx+FpjFxb7WILnJbY=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
+	b=iwfI6OsJ0OSxBbcvHbcN4T0NHFQfRqMgnKIX0Ccsw8L4R+erCnvUyZoRYgRJcZIvs
+	 1COiuDN02x1HsjoHI/JFPmnmVj1XVgHvQYbCSQMg5ZfWkQxhB+CJg/B23hlVHwx1ki
+	 Rz2DFM2DqfyYJJjrnahFvePUdSAv57S7olZwQpfIQxSAM7JYVbAhsOTj8pyTfRXDdh
+	 5NqRTgaVdSdYanhwgF0JhDlQ9tloZXWIUeaJt7KAWCdt6p7IOmJq0i+4jIr2LzTKCc
+	 CiTjs+Kit+VvOSyeu5aLMqI+WEk/akp9+3gNa8pk1FiK0xieCctuBNr/hI3nMgTfyk
+	 dmjOqFxm+aDDQ==
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbdbe917d39so3622028276.2;
+        Tue, 26 Dec 2023 11:42:09 -0800 (PST)
+X-Gm-Message-State: AOJu0YwxT7WDz/J1tdzKsMIM9Oa/2cs1iv05AiLO7JIEz130w8/krU07
+	Jc6PihgMEmG8ZWvu0K4U1lEr3TpvNCyeScv+4tE=
+X-Google-Smtp-Source: AGHT+IFo/cnUZqxRCUv6aDluCoe4zPRLbzZCTXYsyfOwSZNJkt8jQ+OdNEVJMSTHLE0aGXkcw+bftFtMW163Y8A/HDM=
+X-Received: by 2002:a25:8583:0:b0:d9a:cd62:410c with SMTP id
+ x3-20020a258583000000b00d9acd62410cmr2895754ybk.4.1703619728414; Tue, 26 Dec
+ 2023 11:42:08 -0800 (PST)
+MIME-Version: 1.0
+References: <878r5nprch.fsf@kernel.org>
+In-Reply-To: <878r5nprch.fsf@kernel.org>
+From: Josh Boyer <jwboyer@kernel.org>
+Date: Tue, 26 Dec 2023 14:41:57 -0500
+X-Gmail-Original-Message-ID: <CA+5PVA5CAbLESXMZY-b7j2A4P2fjeH6upxQkStw_VTDyok-V2g@mail.gmail.com>
+Message-ID: <CA+5PVA5CAbLESXMZY-b7j2A4P2fjeH6upxQkStw_VTDyok-V2g@mail.gmail.com>
+Subject: Re: [PULL linux-firmware] ath10k, ath11k and ath12k firmware 2023-12-21
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
+	ath12k@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_220529_127174_940DDA02 
-X-CRM114-Status: UNSURE (   5.01  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231226_114211_509378_88E4DD92 
+X-CRM114-Status: GOOD (  18.15  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,117 +80,73 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: e7ab40b733094dfc50dad58bbce81f544af1d8cc  wifi: ath12k: Make QMI message rules const
+On Thu, Dec 21, 2023 at 9:23=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wrote=
+:
+>
+> Hi,
+>
+> Here's a new pull request for ath10k, ath11k and ath12k. We have a new
+> driver ath12k and the first firmware for WCN7850. And as usual firmware
+> and board files to other hardware.
+>
+> Please let me know if there are any problems.
+>
+> Kalle
+>
+> The following changes since commit c156e6be6d4a0a2290e7059bc74fb0612aa196=
+93:
+>
+>   Merge branch 'robot/pr-0-1702625169' into 'main' (2023-12-15 12:16:57 +=
+0000)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git =
+ath10k-20231221
 
-elapsed time: 2113m
+Pulled and pushed out.
 
-configs tested: 97
-configs skipped: 0
+https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/103
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+josh
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231222   gcc  
-arc                   randconfig-002-20231222   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20231222   gcc  
-arm                   randconfig-002-20231222   gcc  
-arm                   randconfig-003-20231222   gcc  
-arm                   randconfig-004-20231222   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231222   gcc  
-arm64                 randconfig-002-20231222   gcc  
-arm64                 randconfig-003-20231222   gcc  
-arm64                 randconfig-004-20231222   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                  randconfig-001-20231222   gcc  
-csky                  randconfig-002-20231222   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-hexagon               randconfig-001-20231222   clang
-hexagon               randconfig-002-20231222   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231222   gcc  
-i386         buildonly-randconfig-002-20231222   gcc  
-i386         buildonly-randconfig-003-20231222   gcc  
-i386         buildonly-randconfig-004-20231222   gcc  
-i386         buildonly-randconfig-005-20231222   gcc  
-i386         buildonly-randconfig-006-20231222   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231222   gcc  
-i386                  randconfig-002-20231222   gcc  
-i386                  randconfig-003-20231222   gcc  
-i386                  randconfig-004-20231222   gcc  
-i386                  randconfig-005-20231222   gcc  
-i386                  randconfig-006-20231222   gcc  
-i386                  randconfig-011-20231222   clang
-i386                  randconfig-012-20231222   clang
-i386                  randconfig-013-20231222   clang
-i386                  randconfig-014-20231222   clang
-i386                  randconfig-015-20231222   clang
-i386                  randconfig-016-20231222   clang
-loongarch             randconfig-001-20231222   gcc  
-loongarch             randconfig-002-20231222   gcc  
-nios2                 randconfig-001-20231222   gcc  
-nios2                 randconfig-002-20231222   gcc  
-openrisc                         allyesconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                randconfig-001-20231222   gcc  
-parisc                randconfig-002-20231222   gcc  
-powerpc                          allmodconfig   clang
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20231222   gcc  
-powerpc               randconfig-002-20231222   gcc  
-powerpc               randconfig-003-20231222   gcc  
-powerpc64             randconfig-001-20231222   gcc  
-powerpc64             randconfig-002-20231222   gcc  
-powerpc64             randconfig-003-20231222   gcc  
-riscv                            allmodconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                 randconfig-001-20231222   gcc  
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231222   gcc  
-x86_64       buildonly-randconfig-002-20231222   gcc  
-x86_64       buildonly-randconfig-003-20231222   gcc  
-x86_64       buildonly-randconfig-004-20231222   gcc  
-x86_64       buildonly-randconfig-005-20231222   gcc  
-x86_64       buildonly-randconfig-006-20231222   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231222   clang
-x86_64                randconfig-002-20231222   clang
-x86_64                randconfig-003-20231222   clang
-x86_64                          rhel-8.3-rust   clang
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> for you to fetch changes up to 17509e53b97baaefeb287b98d3358da8a6e1c199:
+>
+>   ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SI=
+LICONZ_LITE-3.6510.36 (2023-12-21 16:13:58 +0200)
+>
+> ----------------------------------------------------------------
+> Kalle Valo (9):
+>       ath12k: add new driver and firmware for WCN7850
+>       ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00309=
+-
+>       ath10k: QCA4019 hw1.0: update board-2.bin
+>       ath10k: QCA9888 hw2.0: update board-2.bin
+>       ath10k: WCN3990 hw1.0: update board-2.bin
+>       ath11k: IPQ8074 hw2.0: update board-2.bin
+>       ath11k: WCN6750 hw1.0: update board-2.bin
+>       ath11k: WCN6855 hw2.0: update board-2.bin
+>       ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V=
+2_SILICONZ_LITE-3.6510.36
+>
+>  WHENCE                              |   16 +-
+>  ath10k/QCA4019/hw1.0/board-2.bin    |  Bin 1798148 -> 1822336 bytes
+>  ath10k/QCA6174/hw3.0/firmware-6.bin |  Bin 706004 -> 706360 bytes
+>  ath10k/QCA9888/hw2.0/board-2.bin    |  Bin 206444 -> 218596 bytes
+>  ath10k/WCN3990/hw1.0/board-2.bin    |  Bin 513892 -> 670116 bytes
+>  ath11k/IPQ8074/hw2.0/board-2.bin    |  Bin 1311380 -> 1442536 bytes
+>  ath11k/WCN6750/hw1.0/board-2.bin    |  Bin 843548 -> 843548 bytes
+>  ath11k/WCN6855/hw2.0/amss.bin       |  Bin 4980736 -> 4988928 bytes
+>  ath11k/WCN6855/hw2.0/board-2.bin    |  Bin 6278772 -> 6308684 bytes
+>  ath12k/WCN7850/hw2.0/Notice.txt     | 3386 +++++++++++++++++++++++++++++=
+++++++
+>  ath12k/WCN7850/hw2.0/amss.bin       |  Bin 0 -> 6000704 bytes
+>  ath12k/WCN7850/hw2.0/board-2.bin    |  Bin 0 -> 382856 bytes
+>  ath12k/WCN7850/hw2.0/m3.bin         |  Bin 0 -> 299660 bytes
+>  13 files changed, 3400 insertions(+), 2 deletions(-)
+>  create mode 100644 ath12k/WCN7850/hw2.0/Notice.txt
+>  create mode 100644 ath12k/WCN7850/hw2.0/amss.bin
+>  create mode 100644 ath12k/WCN7850/hw2.0/board-2.bin
+>  create mode 100644 ath12k/WCN7850/hw2.0/m3.bin
 
