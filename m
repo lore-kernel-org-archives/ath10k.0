@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BC4BC46CD3
-	for <ath10k@archiver.kernel.org>; Tue, 26 Dec 2023 19:42:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8D4EC46CD2
+	for <ath10k@archiver.kernel.org>; Tue,  2 Jan 2024 17:30:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Lc0ZZS9raYFTuzTAjY2HbHAifM/5aEZ7LhNbefE+rA0=; b=j68uq9PaBCB0uz7cQYqjclqj1J
-	eQa6NCBsNy7y4UsiyUFgrQV401+bLBJJ6N88blUtEx4kwhLhGbmYsifQn+/bvhSefhf1LdW80c4YD
-	CexbK25S2Sm5mBQIV9n8joA/sslxB8eKEX0JoGYqJ/eI6DQ2tJuGKBTW/8UKgZ8A6jscARvtHHVZ6
-	xaKNeu0L8ELODGpwgdGkkMViuftBQlYKjFdEtN46NCsUymH0OpPw/dElrwuU6A0hBpXEiVjKa1XGh
-	YZUum3SfHo4TRy3r1XzrJZEN/TdoFveT1T/TfAswTBJUnXmjuHNRNeAU/H/uK9ksyYEq0CVBeu5WR
-	1KPlN1gw==;
+	Content-Type:Mime-Version:Message-Id:Date:Subject:To:From:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=VPqVL0dmRjTnHtTSRbX4H2e8aFz/9nWPxdm6mZwDmT0=; b=pyzI7XF3jx7vL6cKpRzx75h7F2
+	NsnSxfEfTB88No2Zm3NsomXIVvjFzGvEkDAMV3xF30zeZnGfd7rhdCEUtz7fkunzzKU8Cf4P4PcMP
+	vhAN252FYtPA+2t295Ia2eBmZJ4NkUnzW0I3brW+/hz3d+hQ8ouYqMbhH/l9j03lF2tYeXYUoRFlY
+	hznK/JyifYf74i/VX6mcxhRUODVTM12vWHV4wuLyK5j6skqz2/cY143yhehtB++YTQiCo5H6qsFIv
+	ph8LtQ4a1Zb9Hv88fjOvrSnr0rUOhaX6etv29bXfXqK35W/fd6g+pGZAkxvLIz7sy8F8YR+N1m5M8
+	Ym4A3Ybg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIDJe-00DSNy-0P;
-	Tue, 26 Dec 2023 19:42:14 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1rKib4-008bmD-2f;
+	Tue, 02 Jan 2024 17:30:34 +0000
+Received: from mxe-2-563.seznam.cz ([2a02:598:64:8a00::1000:563])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIDJb-00DSNF-0d;
-	Tue, 26 Dec 2023 19:42:13 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id DBE64B80945;
-	Tue, 26 Dec 2023 19:42:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EC57C433C8;
-	Tue, 26 Dec 2023 19:42:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703619729;
-	bh=yGkxVhUKDayFNUEMyL0TaOj2LLfx+FpjFxb7WILnJbY=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
-	b=iwfI6OsJ0OSxBbcvHbcN4T0NHFQfRqMgnKIX0Ccsw8L4R+erCnvUyZoRYgRJcZIvs
-	 1COiuDN02x1HsjoHI/JFPmnmVj1XVgHvQYbCSQMg5ZfWkQxhB+CJg/B23hlVHwx1ki
-	 Rz2DFM2DqfyYJJjrnahFvePUdSAv57S7olZwQpfIQxSAM7JYVbAhsOTj8pyTfRXDdh
-	 5NqRTgaVdSdYanhwgF0JhDlQ9tloZXWIUeaJt7KAWCdt6p7IOmJq0i+4jIr2LzTKCc
-	 CiTjs+Kit+VvOSyeu5aLMqI+WEk/akp9+3gNa8pk1FiK0xieCctuBNr/hI3nMgTfyk
-	 dmjOqFxm+aDDQ==
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbdbe917d39so3622028276.2;
-        Tue, 26 Dec 2023 11:42:09 -0800 (PST)
-X-Gm-Message-State: AOJu0YwxT7WDz/J1tdzKsMIM9Oa/2cs1iv05AiLO7JIEz130w8/krU07
-	Jc6PihgMEmG8ZWvu0K4U1lEr3TpvNCyeScv+4tE=
-X-Google-Smtp-Source: AGHT+IFo/cnUZqxRCUv6aDluCoe4zPRLbzZCTXYsyfOwSZNJkt8jQ+OdNEVJMSTHLE0aGXkcw+bftFtMW163Y8A/HDM=
-X-Received: by 2002:a25:8583:0:b0:d9a:cd62:410c with SMTP id
- x3-20020a258583000000b00d9acd62410cmr2895754ybk.4.1703619728414; Tue, 26 Dec
- 2023 11:42:08 -0800 (PST)
-MIME-Version: 1.0
-References: <878r5nprch.fsf@kernel.org>
-In-Reply-To: <878r5nprch.fsf@kernel.org>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Tue, 26 Dec 2023 14:41:57 -0500
-X-Gmail-Original-Message-ID: <CA+5PVA5CAbLESXMZY-b7j2A4P2fjeH6upxQkStw_VTDyok-V2g@mail.gmail.com>
-Message-ID: <CA+5PVA5CAbLESXMZY-b7j2A4P2fjeH6upxQkStw_VTDyok-V2g@mail.gmail.com>
-Subject: Re: [PULL linux-firmware] ath10k, ath11k and ath12k firmware 2023-12-21
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
-	ath12k@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+	id 1rKiaw-008bkJ-0j
+	for ath10k@lists.infradead.org;
+	Tue, 02 Jan 2024 17:30:32 +0000
+Received: from email.seznam.cz
+	by smtpc-mxe-54579945bb-28bjw
+	(smtpc-mxe-54579945bb-28bjw [2a02:598:64:8a00::1000:563])
+	id 3b43b0dfc5b702753bcd3ec7;
+	Tue, 02 Jan 2024 18:30:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz;
+	s=szn20221014; t=1704216602;
+	bh=VPqVL0dmRjTnHtTSRbX4H2e8aFz/9nWPxdm6mZwDmT0=;
+	h=Received:From:To:Subject:Date:Message-Id:Mime-Version:X-Mailer:
+	 Content-Type:Content-Transfer-Encoding;
+	b=wrXjOfb4x5RK7T+P7s8YQRNkq2K3A6yELYOgF7kuKeHGVqmRRVVBY9aRaU6Xl/YxU
+	 kIOGWxMkuzld15M2I/AC8eqOnnQkjr2LVTid8st7nqIyAiew9fvh+nyNpQ7iK90m2I
+	 Vo+cov0QJqhJtuMi9WidCm9f014+W6phCjGGTGRaCiipIHztMyZWlc1/o5iRjO5Ct7
+	 TrAl7Xo8TWmWkCqnJPttRNogbnsgZlH2ZlLPmhEQcUFZP+4F0B4IyhXXv31287DUTY
+	 lT+dsd7Opp0Od4GfN8ZZjuaAKK7q25t6auXU7lKMOJr8FFWNVRdioWEB812N8l4Fi1
+	 IklourK28e4kg==
+Received: from 184-143.gtt-net.cz (184-143.gtt-net.cz [82.144.143.184])
+	by email.seznam.cz (szn-UNKNOWN-unknown) with HTTP;
+	Tue, 02 Jan 2024 18:29:59 +0100 (CET)
+From: "Tomas Paukrt" <tomaspaukrt@email.cz>
+To: "Kalle Valo" <kvalo@kernel.org>,
+	"Jeff Johnson" <quic_jjohnson@quicinc.com>,
+	<ath10k@lists.infradead.org>,
+	<linux-wireless@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: ath10k: add USB device ID for Atheros QCA9377-7
+Date: Tue, 02 Jan 2024 18:29:59 +0100 (CET)
+Message-Id: <BBh.ZZQj.57mzV1Mb9h2.1bb4WN@seznam.cz>
+Mime-Version: 1.0 (szn-mime-2.1.33)
+X-Mailer: szn-UNKNOWN-unknown
+Content-Type: text/plain;
+	charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231226_114211_509378_88E4DD92 
-X-CRM114-Status: GOOD (  18.15  )
+X-CRM114-CacheID: sfid-20240102_093027_043607_78EEE0E9 
+X-CRM114-Status: UNSURE (   7.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,73 +78,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 21, 2023 at 9:23=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wrote=
-:
->
-> Hi,
->
-> Here's a new pull request for ath10k, ath11k and ath12k. We have a new
-> driver ath12k and the first firmware for WCN7850. And as usual firmware
-> and board files to other hardware.
->
-> Please let me know if there are any problems.
->
-> Kalle
->
-> The following changes since commit c156e6be6d4a0a2290e7059bc74fb0612aa196=
-93:
->
->   Merge branch 'robot/pr-0-1702625169' into 'main' (2023-12-15 12:16:57 +=
-0000)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git =
-ath10k-20231221
+Add USB device ID for modules based of Atheros QCA9377-7 chipset.
 
-Pulled and pushed out.
+Signed-off-by: Tomas Paukrt <tomaspaukrt@email.cz>
+---
+ drivers/net/wireless/ath/ath10k/usb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/103
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/=
+ath/ath10k/usb.c
+index 3c482ba..5d5cc0c 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -1106,6 +1106,7 @@ static int ath10k_usb_pm_resume(struct usb_interface=
+ *interface)
+ 
+ /* table of devices that work with this driver */
+ static struct usb_device_id ath10k_usb_ids[] =3D {
++	{USB_DEVICE(0x0cf3, 0x9378)}, /* Atheros QCA9377-7 */
+ 	{USB_DEVICE(0x13b1, 0x0042)}, /* Linksys WUSB6100M */
+ 	{ /* Terminating entry */ },
+ };
+-- 
+2.7.4
 
-josh
-
->
-> for you to fetch changes up to 17509e53b97baaefeb287b98d3358da8a6e1c199:
->
->   ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SI=
-LICONZ_LITE-3.6510.36 (2023-12-21 16:13:58 +0200)
->
-> ----------------------------------------------------------------
-> Kalle Valo (9):
->       ath12k: add new driver and firmware for WCN7850
->       ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00309=
--
->       ath10k: QCA4019 hw1.0: update board-2.bin
->       ath10k: QCA9888 hw2.0: update board-2.bin
->       ath10k: WCN3990 hw1.0: update board-2.bin
->       ath11k: IPQ8074 hw2.0: update board-2.bin
->       ath11k: WCN6750 hw1.0: update board-2.bin
->       ath11k: WCN6855 hw2.0: update board-2.bin
->       ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V=
-2_SILICONZ_LITE-3.6510.36
->
->  WHENCE                              |   16 +-
->  ath10k/QCA4019/hw1.0/board-2.bin    |  Bin 1798148 -> 1822336 bytes
->  ath10k/QCA6174/hw3.0/firmware-6.bin |  Bin 706004 -> 706360 bytes
->  ath10k/QCA9888/hw2.0/board-2.bin    |  Bin 206444 -> 218596 bytes
->  ath10k/WCN3990/hw1.0/board-2.bin    |  Bin 513892 -> 670116 bytes
->  ath11k/IPQ8074/hw2.0/board-2.bin    |  Bin 1311380 -> 1442536 bytes
->  ath11k/WCN6750/hw1.0/board-2.bin    |  Bin 843548 -> 843548 bytes
->  ath11k/WCN6855/hw2.0/amss.bin       |  Bin 4980736 -> 4988928 bytes
->  ath11k/WCN6855/hw2.0/board-2.bin    |  Bin 6278772 -> 6308684 bytes
->  ath12k/WCN7850/hw2.0/Notice.txt     | 3386 +++++++++++++++++++++++++++++=
-++++++
->  ath12k/WCN7850/hw2.0/amss.bin       |  Bin 0 -> 6000704 bytes
->  ath12k/WCN7850/hw2.0/board-2.bin    |  Bin 0 -> 382856 bytes
->  ath12k/WCN7850/hw2.0/m3.bin         |  Bin 0 -> 299660 bytes
->  13 files changed, 3400 insertions(+), 2 deletions(-)
->  create mode 100644 ath12k/WCN7850/hw2.0/Notice.txt
->  create mode 100644 ath12k/WCN7850/hw2.0/amss.bin
->  create mode 100644 ath12k/WCN7850/hw2.0/board-2.bin
->  create mode 100644 ath12k/WCN7850/hw2.0/m3.bin
 
