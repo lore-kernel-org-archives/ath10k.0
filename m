@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DEEEC47258
-	for <ath10k@archiver.kernel.org>; Fri, 12 Jan 2024 15:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A24AC4706C
+	for <ath10k@archiver.kernel.org>; Fri, 12 Jan 2024 15:06:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ZusQwreEMnV9UuhjpMZoAz5OkU91RhGBD+0K9WQSSZE=; b=m0aLiQYmIueeJCm4fs+HJDe0rQ
-	6xuhnV3SUaWA6bNXhst/RcrQG8EyinWif+rFnhg1EdbaQ3fyfvk+XjJysfLYNHpyLsezI+jmuO3pL
-	xCThmgRiGfoG1XQbnHhNjRms+kZaNxdG+aU+4jCRhV/V6Tu6FXgt7bT+3qkWCKv8EwUUIGaB10jOP
-	jDS2NZwFVZFHUCwV5CgGw1GolPqZkLLLbS274lX9RK4WYfFVw9J5w/DwnyKwkFUib/f5hIErI+fBU
-	L+QCh4Vbs6rJkxlur23n4NPzCm7p0Q+nzHj0yha2twRqd2q5vpApeFZ6zHQd2tGguoT4v30b8aenv
-	PaW+EnUA==;
+	bh=C1ARjdD17Zk4pEksSLciivZo64It4T5dn7x+YsUAGXc=; b=K7bbtTbZmtre3SodaJNtp7j8ni
+	a1ZbQEawcFsXp1bXcAeXCtn9iRNwXbNQ7yvg1Ygg+d836SxCQar24p5DvOCyKrripT6qhZlJDaNjV
+	6iovydBwbu9BPbq7EO2xPqaJ87hVu9XNOC4DsHToIkj74i+Omc5qYmHXvvAbE41fpzdX0rxaaSmfU
+	iIxN5vOe06W7aQM+d/hp+aA4hMCXASmQ4NbIAqYUSqUUlVw9Tyiyz2JNLjkA/2qcCI3Kr2s/qlHjL
+	xBzQGUjQHYSynMb1qAGo/YjNMPqDJkgQmhQEKJT8M8M8lILxBepuYFq09MCIR5Lb2efnZoSW0XCQH
+	ADgPIeuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOJ2c-0036V0-0G;
-	Fri, 12 Jan 2024 15:01:50 +0000
-Received: from mgamail.intel.com ([134.134.136.31])
+	id 1rOJ6r-0037FP-0R;
+	Fri, 12 Jan 2024 15:06:13 +0000
+Received: from mgamail.intel.com ([192.198.163.10])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOJ2Z-0036UL-0B
+	id 1rOJ6n-0037EY-1q
 	for ath10k@lists.infradead.org;
-	Fri, 12 Jan 2024 15:01:48 +0000
+	Fri, 12 Jan 2024 15:06:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705071707; x=1736607707;
+  t=1705071970; x=1736607970;
   h=date:from:to:cc:subject:message-id;
-  bh=x3h1vN/BW+qFsRJrfS88/zxYCa8mfI/9GQMAKKjqXCc=;
-  b=n/p0DLubzNXJKomf/lRzDl+Lc6Eggoj+fSrFZ7zf6cGK/x5oarWGWVb6
-   zB7MXpkunSD1NU+ohBZwIG6+Je70W5Hiu0pg082dRhD5egW8RZhzocltc
-   x0eefqC9Aci5dHpKNSSy3ZBuUmjHLFhKXaI8uOZa4y9mc0c1DA5E63Ymq
-   BnIWm+hhlpOF52fwSD1n/stH3IS7cWPWdC8x7CHamyWL/wwjQyKYXBd02
-   0YfKWT5qyEP6kUc9QILDxEYuRJ6jg/OzvE4SLoN9qeg38JLe3ObNA4rRq
-   ST361JtQOPukdLO7an/eD0jDDd6uoTE9S1qInfwhfMY308zI5y6HnceXs
+  bh=DAWaCZiEzh/Xt+AVMI4CgGAMD4le+NJPm8EYDgzjOME=;
+  b=g/wLAZ9KX+DrHlbKy6YulmBWeoIHv+CREc6zDiu05c2Xb2Ib43zkEqmH
+   MdNUCONdsr06+qPQPwTI2uq5RWGlhFpxVMQ9uphhPoIMq/fp+jOZk0Zax
+   GaZRT9To8YEDsWsnMOY7iv7K63vJtdCW3MIAJ+vtkH/BxtmfJMs41eD1B
+   k4Aysrqh8d8mZKPmHC7EHRioFr/vMt6HQ5aDDSGylEcUUw/94pWLbWitY
+   g18PkcOAVUYsuLReoYDRCNoWAz3BaOKY0Ptyj1YBT/CuIPiOceMObFBOp
+   esyMt9LQuc1CMC9vaVbqN8EnhkGNPWsMSQzwyJdaNJ1GOtPRefePSem0x
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="463475190"
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="6553810"
 X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="463475190"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 07:01:39 -0800
+   d="scan'208";a="6553810"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 07:06:06 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="853312944"
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="786371176"
 X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="853312944"
+   d="scan'208";a="786371176"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Jan 2024 07:01:38 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 12 Jan 2024 07:05:39 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rOJ2O-0009aO-1e;
-	Fri, 12 Jan 2024 15:01:36 +0000
-Date: Fri, 12 Jan 2024 23:01:10 +0800
+	id 1rOJ6G-0009aa-29;
+	Fri, 12 Jan 2024 15:05:36 +0000
+Date: Fri, 12 Jan 2024 23:04:56 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- fba97a777dcb90896ab1dc32e796d85bb7bbcd69
-Message-ID: <202401122308.N4wfseQO-lkp@intel.com>
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 9e358cebe8246809f2332a2ad7f7e7b7ad3a185b
+Message-ID: <202401122354.bQc7OUWr-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240112_070147_144289_D59E4D20 
-X-CRM114-Status: UNSURE (   5.95  )
+X-CRM114-CacheID: sfid-20240112_070609_629262_4BFA89AD 
+X-CRM114-Status: UNSURE (   4.77  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,10 +80,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: fba97a777dcb90896ab1dc32e796d85bb7bbcd69  wifi: ath12k: refactor ath12k_wmi_tlv_parse_alloc()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 9e358cebe8246809f2332a2ad7f7e7b7ad3a185b  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 1485m
+elapsed time: 1489m
 
 configs tested: 125
 configs skipped: 1
