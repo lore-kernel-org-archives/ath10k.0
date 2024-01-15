@@ -4,67 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27D95C4706C
-	for <ath10k@archiver.kernel.org>; Fri, 12 Jan 2024 18:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E418C3DA79
+	for <ath10k@archiver.kernel.org>; Mon, 15 Jan 2024 08:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=rJIZiYW9JbFsZmgioNTJ57INM4MEkEHzGjDI0tpSp3A=; b=q/bvbFcwC8JptqB9cvLctlq3r0
-	DiO1171741Dne1bJ4A4rkM9vfIgp4cqUe5Ldisn73yP1keC0wHzj8yR1oMsHOEFQaRgV0DmoIiE3b
-	0br7Yjm44+LIt81upIQ1RL0Hp8WSsePDyO/+Hp+R5P9whq5RaK5D+aV1n67VxjvdZuK+PA3qKuUS1
-	019oFn0jzsKMVvdKpFetE7d4fAxyV1jUAyNSOWGTuUkz37ULLI1cqb1Wso9FaNxfUtMxnoVbIpPUI
-	2kQhcrWKjou4mAbDMOPYMY4AVh+KNa/HqNYdLq+AxBbp62nWyX3ZoDZgpiCAxHzXul8oxSwApg+HR
-	TwRvjJ2g==;
+	bh=vDlezXcLpYFrR5uCXE65tBnPyAaMWemlLOaCVHLLXHk=; b=seBwBToCAuoyKgS3AeRS0OSG/1
+	fQ1mHs36AjUE+D3M/Y0O8AWI5JW5IH5CTswccsIiwLqgY9dDE9lziSHx0CWilXJZqHFSYa6owrihL
+	01fH8DFM8cVwNiSnYb5t28OVfqVDNWafbOuRpj9oFuc+8SN88Q8BEuF5uilLKdMbbb+ykasZqIBJE
+	5GQLzjQQwkraOyi4EdnKoIpayDsB23JgDhuVUygz85jeZyevm0xU5SO7VtwNZLZe138ZF/S6zQlfA
+	YWfDceYIA4BFb8e3g88ZdySer9l4I/7LIbban0f4ICCXwMgjf9gnjqTaRyKPybCbJ8sfABN8sKHVg
+	dqTFeIkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOMVF-003dSy-2s;
-	Fri, 12 Jan 2024 18:43:37 +0000
-Received: from mgamail.intel.com ([198.175.65.10])
+	id 1rPIfL-008JJc-0T;
+	Mon, 15 Jan 2024 08:49:55 +0000
+Received: from mail.nexusstride.com ([54.38.156.137])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOMVC-003dRy-0k
+	id 1rPIfI-008JIf-0M
 	for ath10k@lists.infradead.org;
-	Fri, 12 Jan 2024 18:43:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705085014; x=1736621014;
-  h=date:from:to:cc:subject:message-id;
-  bh=l96ldPidXd5jDocSY/yybmJVPB+mRq5nk+jO/BoiNXc=;
-  b=HHDimcNZNLgUJQR1gzmmIOxP+UHiSk1ODa9YfylD5AavwIWB+mdfqvZq
-   lABrhG1qF+6Y+SoNaRmfGN2EW5j9z1JbE8wX5bd7iNcuw3RrVnjvcWtvx
-   Ph7HVyovB+4XssrT15yJEPE957McIK0+UPuyjGr0u+rVGahmskMu0zjwE
-   m6g443c17bT1Wo1JiQ4yrSTF6QQRvE3U7uYhCthyjbGlEVo4d5mTV5zTt
-   UAlA/C5Vw4KySe8kO6K65t4yXDjPWhDVALqdd90RNA22QXPuW6vSsGchD
-   BKqGMXZb5UJ8OSXLDElcKyqTZ6DH02l6R3eaLi/0mpfl9xFL64hkkDM8f
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="12614174"
-X-IronPort-AV: E=Sophos;i="6.04,190,1695711600"; 
-   d="scan'208";a="12614174"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 10:43:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="873454167"
-X-IronPort-AV: E=Sophos;i="6.04,190,1695711600"; 
-   d="scan'208";a="873454167"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 12 Jan 2024 10:43:31 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rOMV7-0009lB-0u;
-	Fri, 12 Jan 2024 18:43:29 +0000
-Date: Sat, 13 Jan 2024 02:42:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- dc1702f7b1340dd741bca1005ab52a2c92cc6c84
-Message-ID: <202401130244.tEk5gIFW-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Mon, 15 Jan 2024 08:49:53 +0000
+Received: by mail.nexusstride.com (Postfix, from userid 1002)
+	id 62B832149F; Mon, 15 Jan 2024 08:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nexusstride.com;
+	s=mail; t=1705308059;
+	bh=vDlezXcLpYFrR5uCXE65tBnPyAaMWemlLOaCVHLLXHk=;
+	h=Date:From:To:Subject:From;
+	b=Y3aN8mUJBvClNTONY9hPvRVhfAQF97s3t4XGWSgnhOCYkk0gZmEQTTLR8k5qn53EI
+	 QXd86si25q+SpM+uCbU006NrtOUJgPsZFdEYOd1SsCuqCu9BKpTk9/is2DmRPm1HmP
+	 aVWW2g59lksDJCPPqP2EekXw2P/IB7I1Lhj22hiw2nKv3cUgz8PtqbNMWCRFhHUzOj
+	 Ygu6q6DLxlSKKRRp/vy6G8aeqStyiKK+9AKyAstvSBcwzIQ0jxygBMYdCt6u93Lyqh
+	 i/ul4hYfL8E6Yb+RrhGrFwQmc+VedybMy4RYfa1oZlAk4j+ynqhwvNG5tkUAHrtfxn
+	 /+lVfar10qNuQ==
+Received: by mail.nexusstride.com for <ath10k@lists.infradead.org>; Mon, 15 Jan 2024 08:40:57 GMT
+Message-ID: <20240115074500-0.1.a.ax0.0.kmbbxmhtmn@nexusstride.com>
+Date: Mon, 15 Jan 2024 08:40:57 GMT
+From: "Harry Russell" <harry.russell@nexusstride.com>
+To: <ath10k@lists.infradead.org>
+Subject: Order for springs
+X-Mailer: mail.nexusstride.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240112_104334_370221_8B19A174 
-X-CRM114-Status: UNSURE (   5.13  )
+X-CRM114-CacheID: sfid-20240115_004952_300940_C822367E 
+X-CRM114-Status: UNSURE (   1.03  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,138 +67,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: dc1702f7b1340dd741bca1005ab52a2c92cc6c84  Add localversion-wireless-testing-ath
+Good morning,
 
-elapsed time: 1706m
+Do you currently have a need for springs?
 
-configs tested: 118
-configs skipped: 2
+We make all types of springs from patented wire in the wire diameter rang=
+e of 0.2=C3=B7 16.0 mm, from stainless spring wires, from elastic bands a=
+nd other materials - depending on your needs.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+We offer a wide range of products, competitive terms of cooperation leadi=
+ng to cost optimization and quick execution of production orders.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240112   gcc  
-arc                   randconfig-002-20240112   gcc  
-arm                               allnoconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240112   clang
-arm                   randconfig-002-20240112   clang
-arm                   randconfig-003-20240112   clang
-arm                   randconfig-004-20240112   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240112   clang
-arm64                 randconfig-002-20240112   clang
-arm64                 randconfig-003-20240112   clang
-arm64                 randconfig-004-20240112   clang
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240112   gcc  
-csky                  randconfig-002-20240112   gcc  
-hexagon                           allnoconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240112   clang
-hexagon               randconfig-002-20240112   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20240112   clang
-i386         buildonly-randconfig-002-20240112   clang
-i386         buildonly-randconfig-003-20240112   clang
-i386         buildonly-randconfig-004-20240112   clang
-i386         buildonly-randconfig-005-20240112   clang
-i386         buildonly-randconfig-006-20240112   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20240112   clang
-i386                  randconfig-002-20240112   clang
-i386                  randconfig-003-20240112   clang
-i386                  randconfig-004-20240112   clang
-i386                  randconfig-005-20240112   clang
-i386                  randconfig-006-20240112   clang
-i386                  randconfig-011-20240112   gcc  
-i386                  randconfig-012-20240112   gcc  
-i386                  randconfig-013-20240112   gcc  
-i386                  randconfig-014-20240112   gcc  
-i386                  randconfig-015-20240112   gcc  
-i386                  randconfig-016-20240112   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240112   gcc  
-loongarch             randconfig-002-20240112   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240112   gcc  
-nios2                 randconfig-002-20240112   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240112   gcc  
-parisc                randconfig-002-20240112   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc               randconfig-001-20240112   clang
-powerpc               randconfig-002-20240112   clang
-powerpc               randconfig-003-20240112   clang
-powerpc64             randconfig-001-20240112   clang
-powerpc64             randconfig-002-20240112   clang
-powerpc64             randconfig-003-20240112   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20240112   clang
-riscv                 randconfig-002-20240112   clang
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20240112   gcc  
-s390                  randconfig-002-20240112   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240112   gcc  
-sh                    randconfig-002-20240112   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64               randconfig-001-20240112   gcc  
-sparc64               randconfig-002-20240112   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                    randconfig-001-20240112   clang
-um                    randconfig-002-20240112   clang
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                randconfig-001-20240112   gcc  
-xtensa                randconfig-002-20240112   gcc  
+Would you like to know our offer?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+Best regards
+Harry Russell
 
