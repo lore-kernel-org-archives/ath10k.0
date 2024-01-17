@@ -4,68 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00DEEC4706C
-	for <ath10k@archiver.kernel.org>; Tue, 16 Jan 2024 12:58:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12303C47422
+	for <ath10k@archiver.kernel.org>; Wed, 17 Jan 2024 08:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=pjqa9dzabtvpMJsvyrlsQ0Mr1y1Y6ulo2yq3zEdeDBA=; b=QYbUFS0A18YlqxNtO0bnBX5h6Q
-	F9/gwXDLl4UHGzoR00eNUsrxiopBgKO2CCLgEReNXY1NI9CkGJBnUFsMdcrpZb8FT+GuVfBue0M3R
-	PCgo+jAhxjzCgCPkflF+adzmrgN7YLZoVk04+TI6MCbKhsTFJTUOm++5aAPLT6nKYUg0pjTDMxgQM
-	lnTJfZ7bD/EJB8vMMKChbjTK1gujVK36j/V2L2fMV88UbtwaZtqjoVpDFFiY43gTKWfXCvbUBxUFm
-	XpSVoOmOGqmkw9R28ZOEhmxD3f+SLg/LQdXBh1PVCx/p42uQESEYUew3NKsVUQCq6pa2Y2n39aiO6
-	G6ylN0iQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
+	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
+	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=yp1GrzFAhJmTEfF0DH8+vf/AoRSU8H2Ic5Gx8W+xIB0=; b=bA5Ho2dSbekl5k/9VICEOWrkqw
+	AVGltoXc6srvyDZbX8sc9SXzjmqjVQVVjtWHUIDi4W2i5+0APyyb6oFWCOqDaqfJS6GFvUX9rseeQ
+	6qCy7bwtntX7ADgf9EdGJdoKVZPTuMejWqc6AttEf73ilY/h67Az0d4nHR51CT8n+ObGf7rRfCd0H
+	4KVY55c0L5uCbPPGUrrJ9IQJPC+8KM32cKYeYJ4QP0/Od7nkRUEsjfd54+T6hv2xIkMbFlZdUVxFN
+	s2IabmW5cvEWo2+ptVvvdrnroexV5TFl0Sf5T9daTskqm3kQ6SjOkxGeJjos2ZxdMHpRxs6r+1CmR
+	ne2QPGsw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPj1F-00C7An-0T;
-	Tue, 16 Jan 2024 12:58:17 +0000
-Received: from mgamail.intel.com ([192.55.52.43])
+	id 1rQ0uu-00EngQ-39;
+	Wed, 17 Jan 2024 08:04:57 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPj1B-00C79j-2g
-	for ath10k@lists.infradead.org;
-	Tue, 16 Jan 2024 12:58:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705409893; x=1736945893;
-  h=date:from:to:cc:subject:message-id;
-  bh=Mvfm/mULE4jWLI58q3YUQxvQURvojXjplEbF32pHemg=;
-  b=mJ8K4VbTdODC2sNwcQuF62MbQwt2ISAJtmjRpAYc6yFVPRwfrxIEixfw
-   xMd4OZS6yAmUUW3KnFFaBWyuE/m/dwRjuagu6/GdvkJ1/dGBEPdjJXOgg
-   3Ji3nxyFszA9S+0Wj4H+iwDAf+l6enXwcSgaPAF3BJpnc//JW+FIVN+bY
-   sJNXJYSQZ/cNAIyLX8W0/ScxnFNu9EsFjhAgQ12zDo1epI7AiiTJrfqn4
-   gX9sUfbpDX0FUGC1SwzmPAdUm64tlmAfZr9ibm0vy/kCE4y5ZgV1TE/rU
-   ta45Rg2pi2PYQeyZRNshsIVjq945A0mCZ59EkUG080UzddGbDYinOLBwz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="486009091"
-X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
-   d="scan'208";a="486009091"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 04:58:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="818170648"
-X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
-   d="scan'208";a="818170648"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 16 Jan 2024 04:58:07 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rPj13-0000i0-16;
-	Tue, 16 Jan 2024 12:58:05 +0000
-Date: Tue, 16 Jan 2024 20:57:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- b7e181d8d8483ade26ce3b15b957ca5bf9653b72
-Message-ID: <202401162035.fdhDiQ7j-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1rQ0uq-00EneM-0i;
+	Wed, 17 Jan 2024 08:04:54 +0000
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H4dQc6014350;
+	Wed, 17 Jan 2024 08:04:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=yp1GrzFAhJmTEfF0DH8+vf/AoRSU8H2Ic5Gx8W+xIB0=; b=EK
+	gse0hNXzBMv6eyFwCNVVIoemrcYIO0vTHnyFeIJr/FlC5PDBwQaSxdFMisZXl36R
+	d7l2izsefrspcnf24CIKLKg7qlvGnqGU78daZCjHZ6BP4z/xh22wCD4VrpV2kXzQ
+	b2PLm6zAwitZNmNnY9g9XG8PuK+zZpU/+ZPg1AyJDKYptlwmxbZ9Z9ilDyd8qx3n
+	ojQDYt0oWtQkgltTfFEj6Ro8WZS1iLXmZOjeMFZy0JaYAS4qDQGx71KAK8MvxSKy
+	gU3qDn/a7Z2E8Ahb1coCuKJ32D4JXWbHfJgPDt+RpXGFwOYDE/2P9PGfsMggpR0R
+	0RC97AL5OO8guJaPzaew==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnrndaq3j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 08:04:51 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40H84p6t009700
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 08:04:51 GMT
+Received: from hu-periyasa-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 17 Jan 2024 00:04:48 -0800
+From: Karthikeyan Periyasamy <quic_periyasa@quicinc.com>
+To: <ath12k@lists.infradead.org>, <ath11k@lists.infradead.org>,
+        <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>,
+        Karthikeyan Periyasamy
+	<quic_periyasa@quicinc.com>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+Subject: [PATCH v3 1/3] wifi: ath12k: replace ENOTSUPP with EOPNOTSUPP
+Date: Wed, 17 Jan 2024 13:34:29 +0530
+Message-ID: <20240117080431.2907471-2-quic_periyasa@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240117080431.2907471-1-quic_periyasa@quicinc.com>
+References: <20240117080431.2907471-1-quic_periyasa@quicinc.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: PX4OCgmr2p07Rvn7yK2RoGjsOdpgSssh
+X-Proofpoint-ORIG-GUID: PX4OCgmr2p07Rvn7yK2RoGjsOdpgSssh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_04,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015
+ adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401170054
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240116_045813_875273_854AA65F 
-X-CRM114-Status: UNSURE (   5.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240117_000452_266755_DA1A719D 
+X-CRM114-Status: GOOD (  16.61  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,100 +99,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: b7e181d8d8483ade26ce3b15b957ca5bf9653b72  Add localversion-wireless-testing-ath
+ENOTSUPP is not a standard error code, don't use it. Replace with
+EOPNOTSUPP instead.
 
-elapsed time: 2732m
+No functional changes, compile tested only.
 
-configs tested: 80
-configs skipped: 1
+Signed-off-by: Karthikeyan Periyasamy <quic_periyasa@quicinc.com>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+---
+ drivers/net/wireless/ath/ath12k/dp_tx.c  | 6 +++---
+ drivers/net/wireless/ath/ath12k/hal_rx.c | 4 ++--
+ drivers/net/wireless/ath/ath12k/mac.c    | 8 ++++----
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240116   gcc  
-arc                   randconfig-002-20240116   gcc  
-arm                               allnoconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240116   clang
-arm                   randconfig-002-20240116   clang
-arm                   randconfig-003-20240116   clang
-arm                   randconfig-004-20240116   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240116   clang
-arm64                 randconfig-002-20240116   clang
-arm64                 randconfig-003-20240116   clang
-arm64                 randconfig-004-20240116   clang
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240116   gcc  
-csky                  randconfig-002-20240116   gcc  
-hexagon                           allnoconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240116   clang
-hexagon               randconfig-002-20240116   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20240115   gcc  
-i386         buildonly-randconfig-002-20240115   gcc  
-i386         buildonly-randconfig-003-20240115   gcc  
-i386         buildonly-randconfig-004-20240115   gcc  
-i386         buildonly-randconfig-005-20240115   gcc  
-i386         buildonly-randconfig-006-20240115   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20240115   gcc  
-i386                  randconfig-002-20240115   gcc  
-i386                  randconfig-003-20240115   gcc  
-i386                  randconfig-004-20240115   gcc  
-i386                  randconfig-005-20240115   gcc  
-i386                  randconfig-006-20240115   gcc  
-i386                  randconfig-011-20240115   clang
-i386                  randconfig-012-20240115   clang
-i386                  randconfig-013-20240115   clang
-i386                  randconfig-014-20240115   clang
-i386                  randconfig-015-20240115   clang
-i386                  randconfig-016-20240115   clang
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240116   gcc  
-loongarch             randconfig-002-20240116   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-nios2                             allnoconfig   gcc  
-nios2                 randconfig-001-20240116   gcc  
-nios2                 randconfig-002-20240116   gcc  
-openrisc                         allyesconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                randconfig-001-20240116   gcc  
-parisc                randconfig-002-20240116   gcc  
-powerpc                          allmodconfig   clang
-powerpc                          allyesconfig   clang
-riscv                            allmodconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-
+diff --git a/drivers/net/wireless/ath/ath12k/dp_tx.c b/drivers/net/wireless/ath/ath12k/dp_tx.c
+index 62f9cdbb811c..05d5f14cdfa1 100644
+--- a/drivers/net/wireless/ath/ath12k/dp_tx.c
++++ b/drivers/net/wireless/ath/ath12k/dp_tx.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: BSD-3-Clause-Clear
+ /*
+  * Copyright (c) 2018-2021 The Linux Foundation. All rights reserved.
+- * Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ 
+ #include "core.h"
+@@ -151,7 +151,7 @@ int ath12k_dp_tx(struct ath12k *ar, struct ath12k_vif *arvif,
+ 
+ 	if (!(info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP) &&
+ 	    !ieee80211_is_data(hdr->frame_control))
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	pool_id = skb_get_queue_mapping(skb) & (ATH12K_HW_MAX_QUEUES - 1);
+ 
+@@ -837,7 +837,7 @@ int ath12k_dp_tx_htt_h2t_ver_req_msg(struct ath12k_base *ab)
+ 	if (dp->htt_tgt_ver_major != HTT_TARGET_VERSION_MAJOR) {
+ 		ath12k_err(ab, "unsupported htt major version %d supported version is %d\n",
+ 			   dp->htt_tgt_ver_major, HTT_TARGET_VERSION_MAJOR);
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/net/wireless/ath/ath12k/hal_rx.c b/drivers/net/wireless/ath/ath12k/hal_rx.c
+index 4f25eb9f7745..4fc08d4f85b5 100644
+--- a/drivers/net/wireless/ath/ath12k/hal_rx.c
++++ b/drivers/net/wireless/ath/ath12k/hal_rx.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: BSD-3-Clause-Clear
+ /*
+  * Copyright (c) 2018-2021 The Linux Foundation. All rights reserved.
+- * Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ 
+ #include "debug.h"
+@@ -247,7 +247,7 @@ int ath12k_hal_reo_cmd_send(struct ath12k_base *ab, struct hal_srng *srng,
+ 	case HAL_REO_CMD_UNBLOCK_CACHE:
+ 	case HAL_REO_CMD_FLUSH_TIMEOUT_LIST:
+ 		ath12k_warn(ab, "Unsupported reo command %d\n", type);
+-		ret = -ENOTSUPP;
++		ret = -EOPNOTSUPP;
+ 		break;
+ 	default:
+ 		ath12k_warn(ab, "Unknown reo command %d\n", type);
+diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
+index a90c0309230a..d453e4165228 100644
+--- a/drivers/net/wireless/ath/ath12k/mac.c
++++ b/drivers/net/wireless/ath/ath12k/mac.c
+@@ -5055,7 +5055,7 @@ void ath12k_mac_drain_tx(struct ath12k *ar)
+ 
+ static int ath12k_mac_config_mon_status_default(struct ath12k *ar, bool enable)
+ {
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ 	/* TODO: Need to support new monitor mode */
+ }
+ 
+@@ -5165,13 +5165,13 @@ static int ath12k_mac_start(struct ath12k *ar)
+ 	 * such as rssi, rx_duration.
+ 	 */
+ 	ret = ath12k_mac_config_mon_status_default(ar, true);
+-	if (ret && (ret != -ENOTSUPP)) {
++	if (ret && (ret != -EOPNOTSUPP)) {
+ 		ath12k_err(ab, "failed to configure monitor status ring with default rx_filter: (%d)\n",
+ 			   ret);
+ 		goto err;
+ 	}
+ 
+-	if (ret == -ENOTSUPP)
++	if (ret == -EOPNOTSUPP)
+ 		ath12k_dbg(ab, ATH12K_DBG_MAC,
+ 			   "monitor status config is not yet supported");
+ 
+@@ -5283,7 +5283,7 @@ static void ath12k_mac_stop(struct ath12k *ar)
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 	ret = ath12k_mac_config_mon_status_default(ar, false);
+-	if (ret && (ret != -ENOTSUPP))
++	if (ret && (ret != -EOPNOTSUPP))
+ 		ath12k_err(ar->ab, "failed to clear rx_filter for monitor status ring: (%d)\n",
+ 			   ret);
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
