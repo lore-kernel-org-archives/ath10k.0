@@ -4,61 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23D5EC47077
-	for <ath10k@archiver.kernel.org>; Thu, 18 Jan 2024 05:51:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCFACC4707B
+	for <ath10k@archiver.kernel.org>; Thu, 18 Jan 2024 08:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
-	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bI7S13dLvScpYt097p/seBLpK4gBnSOGtbWLjxE67LQ=; b=FgF5HdCdUwWpTktowWOYVNsMqZ
-	WXa5iOHz+wm0Mq3wnVHKeTWibq8zUGF/gGVi7HHp0RMonAzYKVV7ap6s81ElpVWyS9khU3gF7rgD7
-	lnNvRlKQ/nT+XemBAalgcPVp5HYWkIIPj3h1H36kL/gDpZ2R0rTj129Mi1o7QOCA6fIL/R0Zk6nVY
-	GKINZM0wBAq/QOU//GeegIkgg8yAi1/4m23/ofrgP7eiYYEn2UR6YPf7CdoZ6/OqtYKxs2T+7dDy8
-	P27oOoFDvTlxZoitZ+J+VabQjZUUKVigBT9B31OOzD9kXqBBnrD1uFoLfaQVJbxdJURHolsmN1RG4
-	tDEo1TBw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=M9k2lPRvhlCI3aV1pBXwlT5gBaDEgRBSrVeWasDDZ3M=; b=XKIhoRQSRaaIjdaVstFU9F6ONk
+	WalXpky4N+Fe27Rv62HdesprtYH7v5ZOWSGLrRK9V1xB7ptjl5ecgHWxj/p/jamSmQeJqc8D4gAQW
+	wDBI1l39vfaZ4SkGpZyYiso5Q/esUeL9Zh8hFpWiaEs5+zMIm1yfpW4IQpcbVp3aReSrfiD4aaFJw
+	VeNEYk4tiGMpYW/BA/qZgrQNKVQ5p9gbLSXE5XydB5EA+9X+ZR8nZtilWOx/NPN1pdEk0LZ3IBM+h
+	GeaIq0LoEbplGY1cOvfzoUGSEN+AnfIr+K/Q0rMwkzglmBzDrN2g2GQY1aYX9C1hiDC3xtDVwyZhZ
+	ioq0qyjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQLJ8-001kBl-2C;
-	Thu, 18 Jan 2024 05:51:18 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rQOC7-002C8U-0a;
+	Thu, 18 Jan 2024 08:56:15 +0000
+Received: from mail.kasaioranje.com ([135.125.203.239])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQLJ3-001k8w-2z;
-	Thu, 18 Jan 2024 05:51:16 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 50705610A2;
-	Thu, 18 Jan 2024 05:50:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 666E5C43390;
-	Thu, 18 Jan 2024 05:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705557043;
-	bh=mjwx3WCbvWDQ4H30ScARB1J9Rfuf6sNrNVOFpJlAQhQ=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=nhhEF4x4zmL5ReCojrNUX5hWGpWwUU0HqnTuPFZyZj7MviVQXy7xCcG1J/8AbqRP+
-	 xonO7OKntqGOTBzHMLnbuh3KviUqWKe+yraapI4ZTKUZkJ3O/JZcMOsaa2H4wuQ5n0
-	 /hLkzD5LaL3x3TCfQNvdx1dGsRPGsaDB6Bd80z/DXGdhgknvOhCPTyzQsTRvntqhdQ
-	 fJSMzEU7TYJGGuT2buGBFf9iI2jAghRiViXnixPB6wjCfAM9VyyDnrNLtDBtM6981s
-	 bMG82ifMQmJxYu4QitR4yaF/qC4ZSkesxcdv7JN7XH9s8Z5soTFivTHN1tE9Tt+9KG
-	 P1xIXqltBeKZA==
-Content-Type: text/plain; charset="utf-8"
+	id 1rQOC1-002C7T-1t
+	for ath10k@lists.infradead.org;
+	Thu, 18 Jan 2024 08:56:13 +0000
+Received: by mail.kasaioranje.com (Postfix, from userid 1002)
+	id 6184BA31D8; Thu, 18 Jan 2024 08:55:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kasaioranje.com;
+	s=mail; t=1705568142;
+	bh=M9k2lPRvhlCI3aV1pBXwlT5gBaDEgRBSrVeWasDDZ3M=;
+	h=Date:From:To:Subject:From;
+	b=FnuLrwa8n+lDcz+r5fwh6FFEt7OoSftYVDA9hOofKWPcyvQ/WkV4HpocJCx4hxJUg
+	 EuNTMRu9avhnpDeCeooSNh2mZmPbFBU9+MMd0uxv+QAFB44cmsZqXb3uCOt6joiQuz
+	 RtvpS6b+oNoj4YM4eIHnu7/8r/BbPG++aACiAa5N+ormeHbYOTFc1X3CRWbENIWx47
+	 TEPI1p9Re/O3FMarXt0Km2vYR4ERYHCbdDZ/Q4w1aMR0X3YGhcPMmFpVspCTXD0oGr
+	 IeSaIjFPBnn9PnueqZ7qEILELqk5kYcG6m6bPR2EvBY8OghTZzSmzQBOLu1YyTQ8Nz
+	 ptkymbQsHCmEA==
+Received: by mail.kasaioranje.com for <ath10k@lists.infradead.org>; Thu, 18 Jan 2024 08:55:33 GMT
+Message-ID: <20240118074500-0.1.be.144yt.0.2ofi7u6qrw@kasaioranje.com>
+Date: Thu, 18 Jan 2024 08:55:33 GMT
+From: =?UTF-8?Q?"Stanislav_Kov=C3=A1=C4=8D"?= <stanislav.kovac@kasaioranje.com>
+To: <ath10k@lists.infradead.org>
+Subject: New parts in stock/offering
+X-Mailer: mail.kasaioranje.com
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v3 1/3] wifi: ath12k: replace ENOTSUPP with EOPNOTSUPP
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240117080431.2907471-2-quic_periyasa@quicinc.com>
-References: <20240117080431.2907471-2-quic_periyasa@quicinc.com>
-To: Karthikeyan Periyasamy <quic_periyasa@quicinc.com>
-Cc: <ath12k@lists.infradead.org>, <ath11k@lists.infradead.org>,
- <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
- Karthikeyan Periyasamy
-	<quic_periyasa@quicinc.com>, Jeff Johnson <quic_jjohnson@quicinc.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170555703932.2637903.971806943065664355.kvalo@kernel.org>
-Date: Thu, 18 Jan 2024 05:50:41 +0000 (UTC)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240117_215114_018577_458DB7F6 
-X-CRM114-Status: UNSURE (   5.65  )
+X-CRM114-CacheID: sfid-20240118_005610_383040_F03505C9 
+X-CRM114-Status: UNSURE (  -0.43  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,26 +67,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Karthikeyan Periyasamy <quic_periyasa@quicinc.com> wrote:
+Hi,
 
-> ENOTSUPP is not a standard error code, don't use it. Replace with
-> EOPNOTSUPP instead.
-> 
-> No functional changes, compile tested only.
-> 
-> Signed-off-by: Karthikeyan Periyasamy <quic_periyasa@quicinc.com>
-> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+We are interested in collaborating with your company.
 
-3 patches applied to ath-next branch of ath.git, thanks.
+I am writing to you because we supply high-quality metal parts for sports=
+ cars to wholesalers and distribution networks worldwide, which could enr=
+ich your offerings.
 
-49b88e5f3fa1 wifi: ath12k: replace ENOTSUPP with EOPNOTSUPP
-3422402bacd0 wifi: ath11k: replace ENOTSUPP with EOPNOTSUPP
-bc2ef64931c2 wifi: ath10k: replace ENOTSUPP with EOPNOTSUPP
+Whether you need engine components, suspension systems, body modification=
+ kits, or interior enhancements, we offer a wide range of products that c=
+an meet your customers' needs.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240117080431.2907471-2-quic_periyasa@quicinc.com/
+Let us know if you're interested in additional profit while maintaining c=
+ompetitive prices and attractive margins.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
+Best regards
+Stanislav Kov=C3=A1=C4=8D
 
