@@ -4,87 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA8C5C47DA7
-	for <ath10k@archiver.kernel.org>; Wed, 17 Jan 2024 08:05:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23D5EC47077
+	for <ath10k@archiver.kernel.org>; Thu, 18 Jan 2024 05:51:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
-	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jgrlDuvh6Ngyi/GJTm8MM2sQ2v9YxC97VGIK16ztQ9Y=; b=YMr2ayQky4X5QZp/Jf8HvHwgS5
-	xFhAIC0HhX/enlfUFr+9PZepDIYzIbocupSVPUAIJZQILmYZs5jBvZtu+3trN3BVpRzuBxKa6fyDF
-	uzERDS1s3CB+Cnn0/RZretlBvqLkJDf7LTuicatLhel0q71HoHWv9M55PL2NM9vXVHEo5ynOdfu7I
-	xovocugc6AHqbqGkYR2UvSdR/9FoH/BaDKkN46SqeafauNwj4nHO0wketR1NU9DtF609Imd4BTtFA
-	GJSdjzJnUqxxPdmJBC/8Cc4LLZSEO6OYILf2/w0qtfkALOFZBgdz65zA6b509E9Q2TDljHzFkqy2I
-	uRqoqovg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
+	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bI7S13dLvScpYt097p/seBLpK4gBnSOGtbWLjxE67LQ=; b=FgF5HdCdUwWpTktowWOYVNsMqZ
+	WXa5iOHz+wm0Mq3wnVHKeTWibq8zUGF/gGVi7HHp0RMonAzYKVV7ap6s81ElpVWyS9khU3gF7rgD7
+	lnNvRlKQ/nT+XemBAalgcPVp5HYWkIIPj3h1H36kL/gDpZ2R0rTj129Mi1o7QOCA6fIL/R0Zk6nVY
+	GKINZM0wBAq/QOU//GeegIkgg8yAi1/4m23/ofrgP7eiYYEn2UR6YPf7CdoZ6/OqtYKxs2T+7dDy8
+	P27oOoFDvTlxZoitZ+J+VabQjZUUKVigBT9B31OOzD9kXqBBnrD1uFoLfaQVJbxdJURHolsmN1RG4
+	tDEo1TBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQ0ux-00Eni0-0y;
-	Wed, 17 Jan 2024 08:04:59 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1rQLJ8-001kBl-2C;
+	Thu, 18 Jan 2024 05:51:18 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQ0ut-00EnfT-02;
-	Wed, 17 Jan 2024 08:04:56 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H7x4qr006503;
-	Wed, 17 Jan 2024 08:04:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=jgrlDuvh6Ngyi/GJTm8MM2sQ2v9YxC97VGIK16ztQ9Y=; b=YN
-	wmB4Id+bL8/T1uBe9n5sLiU0i/dWNNGXk0voyTC/YnfFwVTRi0M1KKymoCwQSVF2
-	UEsodwUzFTGULzTKBTwiLPKXzGAkyAAHjDp26O+osqyGM5DMDocb30PnJ541XvjL
-	h5UyvS8FTaNCUlQyqYH8LpoOSjQv5PD7TLvXgFltE4ogV6+PIHFNLDcuyT3/P0h2
-	LKwHxJ7oZIj+rm29Nd5W3sjtdRvi07TR87Fx0J0konxYt9HpvSH4gFL1oeIH3a32
-	oHf4U9Zy4X+3q3hIp9yDMeqzTBJovBN/ZmTXxSfvhBtrJxlkRr6hjj5+OHXpu8N1
-	nAfvUodpuQZfLE/5KPHA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vp4ak0sa1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 08:04:54 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40H84r3a024525
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 08:04:53 GMT
-Received: from hu-periyasa-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 00:04:51 -0800
-From: Karthikeyan Periyasamy <quic_periyasa@quicinc.com>
-To: <ath12k@lists.infradead.org>, <ath11k@lists.infradead.org>,
-        <ath10k@lists.infradead.org>
-CC: <linux-wireless@vger.kernel.org>,
-        Karthikeyan Periyasamy
-	<quic_periyasa@quicinc.com>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-Subject: [PATCH v3 2/3] wifi: ath11k: replace ENOTSUPP with EOPNOTSUPP
-Date: Wed, 17 Jan 2024 13:34:30 +0530
-Message-ID: <20240117080431.2907471-3-quic_periyasa@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240117080431.2907471-1-quic_periyasa@quicinc.com>
-References: <20240117080431.2907471-1-quic_periyasa@quicinc.com>
+	id 1rQLJ3-001k8w-2z;
+	Thu, 18 Jan 2024 05:51:16 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 50705610A2;
+	Thu, 18 Jan 2024 05:50:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 666E5C43390;
+	Thu, 18 Jan 2024 05:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705557043;
+	bh=mjwx3WCbvWDQ4H30ScARB1J9Rfuf6sNrNVOFpJlAQhQ=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=nhhEF4x4zmL5ReCojrNUX5hWGpWwUU0HqnTuPFZyZj7MviVQXy7xCcG1J/8AbqRP+
+	 xonO7OKntqGOTBzHMLnbuh3KviUqWKe+yraapI4ZTKUZkJ3O/JZcMOsaa2H4wuQ5n0
+	 /hLkzD5LaL3x3TCfQNvdx1dGsRPGsaDB6Bd80z/DXGdhgknvOhCPTyzQsTRvntqhdQ
+	 fJSMzEU7TYJGGuT2buGBFf9iI2jAghRiViXnixPB6wjCfAM9VyyDnrNLtDBtM6981s
+	 bMG82ifMQmJxYu4QitR4yaF/qC4ZSkesxcdv7JN7XH9s8Z5soTFivTHN1tE9Tt+9KG
+	 P1xIXqltBeKZA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: xuO_wD5QcD1AAAOEi2oW04a3Wq5gMZ89
-X-Proofpoint-GUID: xuO_wD5QcD1AAAOEi2oW04a3Wq5gMZ89
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_04,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- mlxlogscore=836 mlxscore=0 impostorscore=0 phishscore=0 adultscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401170054
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v3 1/3] wifi: ath12k: replace ENOTSUPP with EOPNOTSUPP
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240117080431.2907471-2-quic_periyasa@quicinc.com>
+References: <20240117080431.2907471-2-quic_periyasa@quicinc.com>
+To: Karthikeyan Periyasamy <quic_periyasa@quicinc.com>
+Cc: <ath12k@lists.infradead.org>, <ath11k@lists.infradead.org>,
+ <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+ Karthikeyan Periyasamy
+	<quic_periyasa@quicinc.com>, Jeff Johnson <quic_jjohnson@quicinc.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170555703932.2637903.971806943065664355.kvalo@kernel.org>
+Date: Thu, 18 Jan 2024 05:50:41 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240117_000455_056748_074642E0 
-X-CRM114-Status: GOOD (  14.23  )
+X-CRM114-CacheID: sfid-20240117_215114_018577_458DB7F6 
+X-CRM114-Status: UNSURE (   5.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,72 +74,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-ENOTSUPP is not a standard error code, don't use it. Replace with
-EOPNOTSUPP instead.
+Karthikeyan Periyasamy <quic_periyasa@quicinc.com> wrote:
 
-No functional changes, compile tested only.
+> ENOTSUPP is not a standard error code, don't use it. Replace with
+> EOPNOTSUPP instead.
+> 
+> No functional changes, compile tested only.
+> 
+> Signed-off-by: Karthikeyan Periyasamy <quic_periyasa@quicinc.com>
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-Signed-off-by: Karthikeyan Periyasamy <quic_periyasa@quicinc.com>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- drivers/net/wireless/ath/ath11k/dp_tx.c  | 6 +++---
- drivers/net/wireless/ath/ath11k/hal_rx.c | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+3 patches applied to ath-next branch of ath.git, thanks.
 
-diff --git a/drivers/net/wireless/ath/ath11k/dp_tx.c b/drivers/net/wireless/ath/ath11k/dp_tx.c
-index c1072e66e3e8..272b1c35f98d 100644
---- a/drivers/net/wireless/ath/ath11k/dp_tx.c
-+++ b/drivers/net/wireless/ath/ath11k/dp_tx.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: BSD-3-Clause-Clear
- /*
-  * Copyright (c) 2018-2019 The Linux Foundation. All rights reserved.
-- * Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-  */
- 
- #include "core.h"
-@@ -103,7 +103,7 @@ int ath11k_dp_tx(struct ath11k *ar, struct ath11k_vif *arvif,
- 
- 	if (unlikely(!(info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP) &&
- 		     !ieee80211_is_data(hdr->frame_control)))
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 
- 	pool_id = skb_get_queue_mapping(skb) & (ATH11K_HW_MAX_QUEUES - 1);
- 
-@@ -1018,7 +1018,7 @@ int ath11k_dp_tx_htt_h2t_ver_req_msg(struct ath11k_base *ab)
- 	if (dp->htt_tgt_ver_major != HTT_TARGET_VERSION_MAJOR) {
- 		ath11k_err(ab, "unsupported htt major version %d supported version is %d\n",
- 			   dp->htt_tgt_ver_major, HTT_TARGET_VERSION_MAJOR);
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 	}
- 
- 	return 0;
-diff --git a/drivers/net/wireless/ath/ath11k/hal_rx.c b/drivers/net/wireless/ath/ath11k/hal_rx.c
-index e758ee8e17c9..8f7dd43dc1bd 100644
---- a/drivers/net/wireless/ath/ath11k/hal_rx.c
-+++ b/drivers/net/wireless/ath/ath11k/hal_rx.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: BSD-3-Clause-Clear
- /*
-  * Copyright (c) 2018-2019 The Linux Foundation. All rights reserved.
-- * Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-  */
- 
- #include "debug.h"
-@@ -246,7 +246,7 @@ int ath11k_hal_reo_cmd_send(struct ath11k_base *ab, struct hal_srng *srng,
- 	case HAL_REO_CMD_UNBLOCK_CACHE:
- 	case HAL_REO_CMD_FLUSH_TIMEOUT_LIST:
- 		ath11k_warn(ab, "Unsupported reo command %d\n", type);
--		ret = -ENOTSUPP;
-+		ret = -EOPNOTSUPP;
- 		break;
- 	default:
- 		ath11k_warn(ab, "Unknown reo command %d\n", type);
+49b88e5f3fa1 wifi: ath12k: replace ENOTSUPP with EOPNOTSUPP
+3422402bacd0 wifi: ath11k: replace ENOTSUPP with EOPNOTSUPP
+bc2ef64931c2 wifi: ath10k: replace ENOTSUPP with EOPNOTSUPP
+
 -- 
-2.34.1
+https://patchwork.kernel.org/project/linux-wireless/patch/20240117080431.2907471-2-quic_periyasa@quicinc.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
