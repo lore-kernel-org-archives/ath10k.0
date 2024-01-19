@@ -4,44 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22384C47DB3
-	for <ath10k@archiver.kernel.org>; Thu, 18 Jan 2024 17:20:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 106CDC4725D
+	for <ath10k@archiver.kernel.org>; Fri, 19 Jan 2024 17:43:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
+	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=utuWuDjXoRldKpL3sc8RaeRaG0cDdvSyns5k11OdnWo=; b=4P7IwxjJqko4mMDygH+m4T4zba
-	xhsETPPhxTs1BU/MhnkZcL4SThm3zslnnMB/cPcFPhWIooerWUzq4cexo9nZt7txnq8I9RD/aYQqZ
-	r93wV3aJ7QlyXD0COw4jxeeKcpzC3xUVOVYDkMhSrLTPH7KMhYsI+qupUTUxFjxfmMigf2kxry2ev
-	INYP017uQnfa0vSyzuy+eaVjpuwYZSYXOikjEkYxR8ay/lgvhD1mBqsvGiT1BW1E5LuSvtwjz4APy
-	jajMT6n6OXb9/CM4ZIrbzZjbA9Ygc+QTm8ens8LohtqHfrZWGOuJFYAYdJTgYVL26nJwfx+oWw7dX
-	wyxEwrtA==;
+	bh=WCl/xszbOO1jhRdppwpv6KUZfnbA9ts5eu5zCfGCetc=; b=eSFEr/1M+mhPMDE8NlhlwTKRuP
+	7TxLu9X8M5V7t/LcXZtIwO6SDHzSVQJr6x1RZkqPSvbFytkN55CBug4pU0mtkSVIzc4dsZUlHgt9V
+	psEJ9RhstQCT+BEWMrAD+O4KuiHCCvU6ku7pQAQGzUeTRC6+FKm3Rmms5g/a//g6/xYYspYodBV9x
+	ZSMukOLjaJ9ZKIWDJSzaFXlHAVE5QNVvLSJDlGDd07gu+E9Y8uFD24Sl/KVVIDwdBj88eNfM9wmop
+	3Jhh655g/sBMWOMZP0qC0RavdQo4gB1cjhjx9tQHUAR9yALQDvE5Pu0IXliL80Mc/DwxsgePvv8W2
+	2Ftw40Pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQW42-003Ndk-0M;
-	Thu, 18 Jan 2024 17:20:26 +0000
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQW40-003NJm-0m;
-	Thu, 18 Jan 2024 17:20:24 +0000
-Message-ID: <663ad3f4-f877-4817-8f31-dce1ff12ff40@infradead.org>
-Date: Thu, 18 Jan 2024 09:20:24 -0800
+	id 1rQsu3-006IKo-3B;
+	Fri, 19 Jan 2024 17:43:39 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1rQsu1-006IKS-1p
+	for ath10k@lists.infradead.org;
+	Fri, 19 Jan 2024 17:43:39 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id C10EDCE22C1;
+	Fri, 19 Jan 2024 17:43:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5BBAC433C7;
+	Fri, 19 Jan 2024 17:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705686215;
+	bh=8eib39R3f1kc8kZCT64S7x3ik4cRTqlb2P5ftC04SY0=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=fLQGOxdf0pd1ILAovZrADoSukz1u0fMOgHcOvR2D0IaQZB/vsFSZGuX6sc2WVA618
+	 iFkFWomAN8lfPQgG2QpQzPUYqU1L4Bp75diIbL46zygESfJX+iSKqe5F19dwvlH8I/
+	 TvMddAMfwC5IaA+gHyro/WPhYpb6krnppGISim+IzMnVVKVNQ5M3Qc6HOLhjUn1noX
+	 p3y35GfQFKlfzuVC9ycXRuYe6cYLw/WQmgvsrhH/YTRtfLwEgnjgx5vPO8WA9E+qpO
+	 VsGXYpVSo2UcohIg8uiTaOzIJMlbkQQHXOj/BSpuMKxsd8PV33/XD4anmR/soCp1t1
+	 O9sXKSzEO7tYQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] wifi: ath10k: Fix enum ath10k_fw_crash_dump_type
- kernel-doc
-Content-Language: en-US
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240118-ath10k-kerneldoc-v1-0-99c7e8d95aad@quicinc.com>
- <20240118-ath10k-kerneldoc-v1-5-99c7e8d95aad@quicinc.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240118-ath10k-kerneldoc-v1-5-99c7e8d95aad@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/5] wifi: ath10k: add missing wmi_10_4_feature_mask
+ documentation
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240118-ath10k-kerneldoc-v1-1-99c7e8d95aad@quicinc.com>
+References: <20240118-ath10k-kerneldoc-v1-1-99c7e8d95aad@quicinc.com>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, <ath10k@lists.infradead.org>,
+ <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170568621204.3238594.1557348320781318513.kvalo@kernel.org>
+Date: Fri, 19 Jan 2024 17:43:33 +0000 (UTC)
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240119_094337_799788_873235BE 
+X-CRM114-Status: UNSURE (   6.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -56,58 +74,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
 
-
-On 1/18/24 08:12, Jeff Johnson wrote:
-> The kernel-doc script currently reports:
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_REGISTERS' not described in enum 'ath10k_fw_crash_dump_type'
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_CE_DATA' not described in enum 'ath10k_fw_crash_dump_type'
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_RAM_DATA' not described in enum 'ath10k_fw_crash_dump_type'
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_MAX' not described in enum 'ath10k_fw_crash_dump_type'
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Excess enum value 'ATH10K_FW_CRASH_DUMP_REGDUMP' description in 'ath10k_fw_crash_dump_type'
+> Currently kernel-doc reports the following issues:
+> drivers/net/wireless/ath/ath10k/wmi.h:3033: warning: Enum value 'WMI_10_4_EXT_PEER_TID_CONFIGS_SUPPORT' not described in enum 'wmi_10_4_feature_mask'
+> drivers/net/wireless/ath/ath10k/wmi.h:3033: warning: Enum value 'WMI_10_4_REPORT_AIRTIME' not described in enum 'wmi_10_4_feature_mask'
 > 
-> Fix these issues with the enum ath10k_fw_crash_dump_type kernel-doc.
+> Update the kernel-doc for enum wmi_10_4_feature_mask to add the
+> missing documentation.
 > 
 > No functional changes, compile tested only.
 > 
 > Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+5 patches applied to ath-next branch of ath.git, thanks.
 
-Thanks.
-
-> ---
->  drivers/net/wireless/ath/ath10k/coredump.h | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
-> index e5ef0352e319..8d274e0f374b 100644
-> --- a/drivers/net/wireless/ath/ath10k/coredump.h
-> +++ b/drivers/net/wireless/ath/ath10k/coredump.h
-> @@ -1,7 +1,7 @@
->  /* SPDX-License-Identifier: ISC */
->  /*
->   * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-> - * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
-> + * Copyright (c) 2022, 2024 Qualcomm Innovation Center, Inc. All rights reserved.
->   */
->  
->  #ifndef _COREDUMP_H_
-> @@ -13,7 +13,11 @@
->  
->  /**
->   * enum ath10k_fw_crash_dump_type - types of data in the dump file
-> - * @ATH10K_FW_CRASH_DUMP_REGDUMP: Register crash dump in binary format
-> + * @ATH10K_FW_CRASH_DUMP_REGISTERS: Register crash dump in binary format
-> + * @ATH10K_FW_CRASH_DUMP_CE_DATA: Copy Engine crash dump data
-> + * @ATH10K_FW_CRASH_DUMP_RAM_DATA: RAM crash dump data, contains multiple
-> + *				   struct ath10k_dump_ram_data_hdr
-> + * @ATH10K_FW_CRASH_DUMP_MAX: Maximum enumeration
->   */
->  enum ath10k_fw_crash_dump_type {
->  	ATH10K_FW_CRASH_DUMP_REGISTERS = 0,
-> 
+1779487e72e0 wifi: ath10k: add missing wmi_10_4_feature_mask documentation
+5f813b0447fe wifi: ath10k: correctly document enum wmi_tlv_tx_pause_id
+75dd17fdef11 wifi: ath10k: fix htt_q_state_conf & htt_q_state kernel-doc
+c80cc5cfefba wifi: ath10k: Fix htt_data_tx_completion kernel-doc warning
+f020c3029932 wifi: ath10k: Fix enum ath10k_fw_crash_dump_type kernel-doc
 
 -- 
-#Randy
+https://patchwork.kernel.org/project/linux-wireless/patch/20240118-ath10k-kerneldoc-v1-1-99c7e8d95aad@quicinc.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
