@@ -4,73 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A968C46CD2
-	for <ath10k@archiver.kernel.org>; Tue, 30 Jan 2024 11:01:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3C9DC46CD2
+	for <ath10k@archiver.kernel.org>; Tue, 30 Jan 2024 13:21:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:Cc:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TFT/i/iHuITAuan8rrY5c8uLUuq2YDQWhslSypEO3gw=; b=d6f65nRb4BXDt+I+caheTAc/b1
-	9l+F2HbwBIvCetGUjxtLEXHOwhnFXQIvL7mS5xb3+JD2cFl5gcIea3/7umANvecEErq+CN/o8QVfo
-	3abRrnuOUGQ3k32SGBujmKKCFBdHGnXc3eI5mqbgHbL4TAo91pAeOnThlcVMcqb+TLK/9z82x5sSj
-	EsY0xd0x2MKDnOt8oOyNZnJrySx+Z5iaXJkZTPaZBlmeYLTpMevf8mLRArwDhi7R4n0XOx9z9GN0q
-	E5pkuEV3YN67FaBJ0Ax3c/GCY+cmqU96iGsHE4br9LtVdrZeJR2xAcPuAsImtgyc02twJAoaDitOi
-	tNnAqoNw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=y0Ztx+TEl4oYQ8hrUYWG5QXCw5icAgY8J3zjGFbgd/I=; b=kRX+f/3XzVd9Af8nDtAUv7wKDs
+	G0EcX0Go7tpDCUg163RCxaF3mkkctNRzBa6i3XqfGbM5J09lFC3vjwvLMgHopxzozARNKOJRfBvyx
+	Ad7/POvPbMYLYh3YSIxROilXAw8Bmab5Sv4CstPMW4eNRkxOlUAk7S67WbTc8xfTImvtl0X57RTfS
+	GurmACOJLfOiy6q++vCtFNU/PHpqFp+osbnGjiUjfiQ0wqNBoEgIuuErzeY1qtjJotGhEYOPkOE71
+	6WR79fIHaKC60X/6KdGt5IyHMVSzMV7kZVvKvFGp5XZVdszvEAsklNplHk5vcDCQ4ybllhWsn/AP7
+	FI7TdENQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUlsK-0000000GJYD-2hdC;
-	Tue, 30 Jan 2024 11:01:56 +0000
-Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+	id 1rUo34-0000000Gpfy-1B6A;
+	Tue, 30 Jan 2024 13:21:10 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUlsI-0000000GJXE-2unZ
-	for ath10k@lists.infradead.org;
-	Tue, 30 Jan 2024 11:01:55 +0000
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a35d0764076so226102166b.1
-        for <ath10k@lists.infradead.org>; Tue, 30 Jan 2024 03:01:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706612513; x=1707217313; darn=lists.infradead.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TFT/i/iHuITAuan8rrY5c8uLUuq2YDQWhslSypEO3gw=;
-        b=aV8h/7an/klqG8S06LQZ4QGS/mT8uhsZiD5zgF4JwM7i7G56g5roUz1RXpKUGgYqU4
-         nYYlFw56F0XfSDHmbN+s1vyre4l5QeJuOovbG3jSNz7KgsARZ3MiRBF8CxVnSBCjuM7C
-         tqK8tkkMW8hZjWSE3btpizS+1sAN71xwSjFQhKLUHNcvqqWEah8mq37T8gPL9POykh+C
-         mguJ/VQJAoDm367VFWpJKxmtijqnCFJGgnK0Olh8SOB8inq2CrPULQRw4gBBKRB8G74g
-         MUHb0GiHjFt5Giod2dRzYNpU/aJ0MlA7CLMG87txwOh1JKCdhnLb9I2+BoveeQfVmnsG
-         F+wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706612513; x=1707217313;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TFT/i/iHuITAuan8rrY5c8uLUuq2YDQWhslSypEO3gw=;
-        b=p0zlR3qRwYRCoZeHIUro4GVeVoS7H26j9lPHrv9trlUa2LsAcFPdxpAWbmnZYI6g3p
-         RklCuqNtAC29yR1RkPijAi0LCQ/tpZm0LyYavITh4n9xoP7k3eZN1WNVxjyGK6tEXSVZ
-         AeLWzs5EVuhwhTLFpshm/8Dx7enslpCNQ1klo2uYeJHjnsW7BEw4WNZsw27l2Y8UM8+N
-         vxgpUsWKNYQVkXKSSEJshqO6d6Nfewj0eV5ZNapWQmzz5OvIklSslYmoCAVMXMIqoAml
-         Fl1g6zlxU97RebdksL/SX4bFEaeG1kkfmpu0piSnPxzxtpZ5cBnnlSJCIPhfPez+7uuE
-         8Evw==
-X-Gm-Message-State: AOJu0YwAm4ynZDe/dJ2TtT4IBXeW1A4F6FC23PoPToJAtLTmz4SAk3Kp
-	3MPRNo3HipLAoa4O2qznIRpml0wRPGFxfVcrsKq0Y4WmgmYR9r1FghHIQ0xc0QjMEsE6YBGC4ha
-	9R019cH3VlmqSPB6YUsg68z5X2CRkzw43o9uPtQ==
-X-Google-Smtp-Source: AGHT+IGzi0ZRDUc8P0TQmnQjD2HbSS/nzwnY66AP8LUVZbYB7XMk5F4PSAgwiHim8kz0NUnyndH3cXW0McpMkevYoGw=
-X-Received: by 2002:a17:906:298d:b0:a31:7aca:a429 with SMTP id
- x13-20020a170906298d00b00a317acaa429mr6162291eje.4.1706612512868; Tue, 30 Jan
- 2024 03:01:52 -0800 (PST)
+	id 1rUo31-0000000GpfR-3iiW;
+	Tue, 30 Jan 2024 13:21:09 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 17E75CE18E3;
+	Tue, 30 Jan 2024 13:21:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15ED0C433F1;
+	Tue, 30 Jan 2024 13:21:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706620864;
+	bh=E6opCYNDJ0WPrN3PjCl83P29TptoonpsG80tHmzXzc8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=UYfv+YHczPjxd0MZeKo7/GG4vh3wDbofag3qtTUsOrM1s/V6M6PgyHsUfcMv4YpIM
+	 iZntHJDOXOeEZl6OY0ahmZ8PXpJXdBydoXIdGXelBFR2LpOE50i8llaf6TxzapEA8a
+	 s67VoSM0ofqIQqsQ+38RE/PKYdk73moz9ZCMu/mbQRSU3abcxPicw42XARzwg01n9g
+	 S2cEHTMrFhdrXrtTcyuVrPG+tirVAmp/xiQemM/FzJPgQBPmw2SUc3kjCoAY7gTs4l
+	 +juenl/jxaimQA8Y3l5F9wN8F6+u1Cq1rPA8G7hG3rtuDI8iUcojT/nSEfI75xj+xr
+	 n0Dxt7ZNaOHFA==
+From: Kalle Valo <kvalo@kernel.org>
+To: linux-wireless@vger.kernel.org
+Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+ ath12k@lists.infradead.org, quic_jjohnson@quicinc.com
+Subject: pull-request: ath-next-20240130
+Date: Tue, 30 Jan 2024 15:21:00 +0200
+Message-ID: <87bk93vtxf.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <CAMwxiB41sDWgg94U0AckehzuwC1drdRiD19aJsdWJHPRU6TKfQ@mail.gmail.com>
-In-Reply-To: <CAMwxiB41sDWgg94U0AckehzuwC1drdRiD19aJsdWJHPRU6TKfQ@mail.gmail.com>
-From: Marcin Gajda <marcingajda@gmail.com>
-Date: Tue, 30 Jan 2024 12:01:41 +0100
-Message-ID: <CAMwxiB4iYrgfv4rUCcNLqr-x7cyoWb-UFX=yf-f33j9cbK=v+w@mail.gmail.com>
-Subject: Fwd: ath10k-firmware: QCA9888 hw2.0: Add Netgear LBR20 specific BDFs
-To: ath10k@lists.infradead.org
-Content-Type: multipart/mixed; boundary="0000000000009980eb061027b059"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240130_030154_764322_657CCD34 
-X-CRM114-Status: UNSURE (   7.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240130_052108_303980_DCEB59E0 
+X-CRM114-Status: GOOD (  12.66  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,260 +69,200 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
---0000000000009980eb061027b059
-Content-Type: text/plain; charset="UTF-8"
+Hi,
 
-Dear Team,
+Our ath-next pull request for wireless-next.
 
-The support for Netgear LBR20 will be added hopfully to OpenWrt ,
-work-in-process and testing.. This AP requires
-two special BDFs to get the Wi-Fi PHYs working (correctly).
+Kalle
 
-* description for what hardware this is:
+The following changes since commit c5a3f56fcdb0a48a20772e4c9b8adc6c7256a461:
 
-  - it is a QCA9888 based board used as 5GHz radio
+  Merge tag 'ath-next-20231215' of git://git.kernel.org/pub/scm/linux/kerne=
+l/git/kvalo/ath (2023-12-17 13:20:18 +0200)
 
-* origin of the board file (did you create it yourself or where you
-  downloaded)
+are available in the Git repository at:
 
-  - It is copied from orginal fw. povided by Netgear.
+  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git tags/ath-next=
+-20240130
 
-* ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
+for you to fetch changes up to 9d5f28c1366f48efae7b1df0f622285519e74dce:
 
-  - QCA9888 hw2.0
+  wifi: ath11k: fix connection failure due to unexpected peer delete (2024-=
+01-25 18:44:02 +0200)
 
-    + bus=pci,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-LBR20
-      sha256sum:
-      6D66B242D88EC8ED8FCBE31C5C9DF32A48B00B98B44E5E0BD4C5463E867F91CD
+----------------------------------------------------------------
+ath.git patches for v6.9
 
-* attach the actual board file (board.bin)
+We have new features for both ath11k and ath12k. ath12k is now under
+heavy refactoring in preparation for MLO support.
 
-  - The name of the files are equal to the id string in the board-2.bin
-    (minus the ".bin")
+Major changes:
 
-Kind regards,
-        Marcin Gajda
+ath12k
 
---0000000000009980eb061027b059
-Content-Type: application/octet-stream; 
-	name="bus=pci,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-LBR20.bin"
-Content-Disposition: attachment; 
-	filename="bus=pci,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-LBR20.bin"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lrxk1dib0>
-X-Attachment-Id: f_lrxk1dib0
+* refactoring in preparation for Multi-Link Operation (MLO) support
 
-IC9+lwEBAAN/JRQlAAAgABXhAAAAYCAAdXcCAAAAAAARAAALMwAAAAACBQMAAAAAAAAAAAAAAAAA
-AAAAAAAAAGNjEQEAAAAAADMzM/Ty8gEyFAcA+OOPP/jjjz/4448/AxQAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDAAAAAAAAAAABAAAAAAAA
-AJABAAAAAAEA/////wAAAAAAAAAAAAAABAMA+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8A
-gCAAIEFEBAAAAAAAAAAAAAAAABEAAAAA+OOPPwAAAAAZDQAAAAAAAAAZCgAAAD8ACgoKCQkJBwcH
-BwcHBQUFBAQEAAC2/wAARmoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAoAKQIJAJmZCQBQAVABUAFQAQAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAD8UAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAYAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAKAUgBYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAACwsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALq6uqsA
-oAwM//////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACljwEA
-CAEBAgQIAgQICAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATGBkjJDQ1NgA
-AAAA2P+w/wAAuv8UALr/uv+6/wAAAAAAAAAAdP9C/87/YP8KALQAoACgAAAAAAAAAAAACgCw/5YA
-sP9W/7r/pv+S/wAAAAAAAAAAkJB2WlRUTEY4ABAQCAAAAAAAAAA4KSUjIiIfAAAA9uHd+P7+FQAA
-ADgpJSMiIiIfAAD45d4CBAT9AAAABwABAJCQdmBUVExGOAAMDAQAAAAAAAAAZmZaVlRUTEY4APz8
-8QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAAsLCwsLCwsLCsr
-KigmJCMiIBwrKyooJiQjHh4aKysqKCYkIyIgHCsrKigmJCMeHhorKyooJiQjIiAcKysqKCYkIx4e
-GisrKigmJCMiIBwrKyooJiQjHh4aKioqJyUkIiEfHioqKiclJCIeHRwqKionJSQiIR8eKioqJyUk
-Ih4dHCoqKiclJCIhHx4qKionJSQiHh0cKioqJyUkIiEfHioqKiclJCIeHRwAAAAAAAAAAAAAAAAA
-AAAAAAAAABEeERFBHkERMR4xEXB1en+EiY6TonB1en+EiY6TrHB1en+EiY6TrAArrKysrKysrKwr
-rKysrKysrKwgoKCgoKCgoKAgoKCgoKCgoKAfn5+fn5+fnx8fn5+fn5+fnx8SHhIuEswSERoeGi4a
-TBAeEBEYHkIeQi5CzEIRSh5KLkpMQB5AEUgeMh4yLjLMMhE6HjouOkwwHjAROB5wdXp/hImOk5id
-onB1en+EiY6TmJ2icHV6f4SJjpOYnaIAIaurq6urq6urqyIhq6urq6urq6urIiGrq6urq6urq6si
-Iaurq6urq6urqyIhq6urq6urq6urIiGrq6urq6urq6siIaurq6urq6urqyIiq6urq6urq6urIiKr
-q6urq6urq6siIqurq6urq6urqyIkpKSkpKSkpKSkpCSkpKSkpKSkpKSkJKSkpKSkpKSkpKQkpKSk
-pKSkpKSkpCSkpKSkpKSkpKSkJKSkpKSkpKSkpKQkpKSkpKSkpKSkpCSkpKSkpKSkpKSkJKSkpKSk
-pKSkpKQkpKSkpKSkpKSkpCOjo6Ojo6Ojo6OjI6Ojo6Ojo6Ojo6Mjo6Ojo6Ojo6OjoyOjo6Ojo6Oj
-o6OjHp6enp6enp6enp4jo6Ojo6Ojo6OjoyOjo6Ojo6Ojo6OjI6Ojo6Ojo6Ojo6Mjo6Ojo6Ojo6Oj
-oyOjo6Ojo6Ojo6OjEx4T7hMRGx4bLhtMQx5D7kMRSx5LLktMMx4z7jMROx47LjtMen+EiZOYen+E
-iZOien+EiZOiIKKioqIfIKKioqIfIKKioqIfIKKioqIfIKKioqIfIKKioqIfJKSkpKSkJKSkpKSk
-JKSkpKSkJKSkpKSkJKSkpKSkJKSkpKSkI6Ojo6MjI6Ojo6MjI6Ojo6MjHp6enp6eI6Ojo6MjI6Oj
-o6MjAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATFRYXGRo////////////////////////////
-//////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ2cjI1ZZFlkOEydnnuBWWVZZThL
-jKhqiFlsOEooMZ2re4lqe0hSOEAAAAAAop8oJwCdn3uBWWZZZihBnaB7gllmWWY4TYytao1ZbzhL
-KDCMonuPaoFIVDhCAAAAAKWgKCcAnZyMjVlkWWQ4TJ2djI5ZZFlkOEuMqmqMWXM4UCg1na17imp8
-SFM4QgAAAACloCcoAJ2ajIxZY1ljOEqdnnuAWWVZZThLjKJqiVlvOE0oMq6wjI5qb1lUODMAAAAA
-paAoJwCuo4yHamxZXjhFnZyMjFliWWI4SJ2oe4hqekhPOD2uoZ2Ne2hqWkguAAAAAKWgJyoArpyd
-j2pkWVZZVq6jjIVqaVlbWVuuqoyMam5ZVTgyv6OdhYx0alRIKAAAAACloCcnAK6ZnYxqYFlSWVKu
-oYyEamdZWllarqWMhmppWVA4MM6srpGMbGpNWTIAAAAApaAqKAC/n52Ge2hqWllNrpydj2piWVRZ
-VL+inYl7bGpfSDjOpa6JjGpqS1kwAAAAAKWgKCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////wAAAAD+
-/v7+/v4AAP8A////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgpZXiChsGV0OSpqcXIlCex1hFVIAAAAA
-AAAAAAAAAAAAAAAAAAAAAKSca40ubxxeEEu6om6PSYEgZRRUAAAAAAAAAAAAAAAAAAAAAAAAAACw
-mnyMOnMkYhVQlZ5aij98HGMSUwAAAAAAAAAAAAAAAAAAAAAAAAAAw6JdiS1vHF8RTciweZ1Oji99
-D1QAAAAAAAAAAAAAAAAAAAAAAAAAAJSaWYg9ehxfEU/DrU6NL3sbaBJaAAAAAAAAAAAAAAAAAAAA
-AAAAAACZm2SMQHsrbhVVubJ5oy+FHnQQYgAAAAAAAAAAAAAAAAAAAAAAAAAAh5VYhjh1KGkTULus
-d50wfR5sElsAAAAAAAAAAAAAAAAAAAAAAAAAALSZdolOezJsEkePlWuJQXoqahlZAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQcLDQ8RExUXGP//////////
-///////////////////09PT09PT09PT0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAqJB4WDjIfVAyHiUlJCUlJCMiISAjISEiIVYACAABAAA4QFho
-eIiYoKCgoKCg/////////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAXMhcRHxJHMkcRTxI3MjcRPxIICAgICAgICAgAUmKSorLDUmKSorLDUmKS
-orLDPDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-FzIXER8SRzJHEU8SNzI3ET8SCQkJCQkJCQkJAFJikqKyw1JikqKyw1JikqKywzw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADz8/Pz8/Pz8/Pz8/Pz8/Pz8/MAAAAAAAAAAAAA
-AAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMXGiMtM0AAExcaHiMoLTNTFxo
-eIygtM1MXGh4jKC0zSkpKScnJCIgHhwpKSknJiIgHBoYKSkpJyckIiAeHCkpKScmIiAcGhgnJycn
-JiIgHhwaJycnJyYgHhoYGDAwMC4tLCopKCQwMDAuLSwqJSQgMDAwLi0sKikoJDAwMC4tLColJCAw
-MDAuLSwqKSgkMDAwLi0sKiUkIDAwMC4tLCopKCQwMDAuLSwqJSQgMDAwLi0sKikoJDAwMC4tLCol
-JCApKSknJiQiIB4cKSkpJyYiIBwaGCkpKScmJCIgHhwpKSknJiIgHBoYJycnJiYkIiAeHCcnJyYm
-IiAcGhgwMDAuLCwqKSgmMDAwLiwsKiUkIjAwMC4sLCopKCYwMDAuLCwqJSQiMDAwLiwsKikoJjAw
-MC4sLColJCIwMDAuLCwqKSgmMDAwLiwsKiUkIjAwMC4sLCopKCYwMDAuLCwqJSQiJiYmJSQkIiAe
-GyYmJiUkIiAcGhcmJiYlJCQiIB4bJiYmJSQiIBwaFyYmJiQiIiAeHBkmJiYkIiAeGhgWLi4uLSws
-KigoJi4uLi0sLCokJCIuLi4tLCwqKCgmLi4uLSwsKiQkIi4uLi0sLCooKCYuLi4tLCwqJCQiLi4u
-LSwsKigoJi4uLi0sLCokJCIuLi4tLCwqKCgmLi4uLSwsKiQkIgAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC4BREBAQAAACAAEQG2A2wKHAARAZx/ehkUABEBXmBx
-AJAAEQELbJAxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/7AMFAQCZABMWFxoAQIAAJeXl5ehoaGhAAAAAAAAAAC4uLi4
-l5eXl6GhoaEAAAAAAAAAALi4uLiXl5eXoaGhoQAAAAAAAAAAuLi4uJeXl5ehoaGhAAAAAAAAAAC4
-uLi4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATFhcaIygtMlMWFxojKC0
-yUxYXGiMoLTJTFhcaIygtMnr/+PV6//j1ev/49Xr/+PQ6//c0Ov/3NDr/9zK6//cyubm4+Pm5uPj
-5ubj4+bm49vr+uPb6/rj2+v649rr+uPaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAeEBEYHkAeQBFIHjAeMBE4HkxQVFhcYGRo
-jJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNTFBUWFxgZGiMkJSYnKCk
-qKywtLi9wcXJzQCpqampqKiop6ioqKioqKioqKioqrCwsLCwqampqaioqKeoqKioqKioqKioqKqw
-sLCwsKmpqamoqKinqKioqKioqKioqKiqsLCwsLAdnZ2dnZ2dnaampqampqampqamPDw8PDw8HZ2d
-nZ2dnZ2mpqampqampqampjw8PDw8PB2dnZ2dnZ2dpqampqampqampqY8PDw8PDynp6enp6enp6+v
-r6+vr6+vr6+vr7CwsLCwp6enp6enp6evr6+vr6+vr6+vr6+wsLCwsKenp6enp6enr6+vr6+vr6+v
-r6+vsLCwsLAAEh4SLhJMEogSERoeGi4aTEIeQi5CTEKIQhFKHkouSkwyHjIuMkwyiDIROh46LjpM
-TFBUWFxgZGiMkJSYnKCkqKywtLi9wcXJzUxQVFhcYGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBk
-aIyQlJicoKSorLC0uL3BxcnNAKmpqamoqKinqKioqKioqKioqKiqsLCwsLCpqampqKiop6ioqKio
-qKioqKioqrCwsLCwqampqaioqKeoqKioqKioqKioqKqwsLCwsKmpqamoqKinqKioqKioqKioqKiq
-sLCwsLCpqampqKiop6ioqKioqKioqKioqrCwsLCwqampqaioqKaoqKioqKioqKioqKqwsLCwsKmp
-qamoqKimqKioqKioqKioqKiqsLCwsLCpqampqKiopqioqKioqKioqKioqrCwsLCwHZ2dnZ2dnZ0l
-JSUlJSUlJSUlJTw8PDw8PB2dnZ2dnZ2dJSUlJSUlJSUlJSU8PDw8PDwdnZ2dnZ2dnaWlpaWlpaWl
-paWlPDw8PDw8HZ2dnZ2dnZ2lpaWlpaWlpaWlpTw8PDw8PB2dnZ2dnZ2dpaWlpaWlpaWlpaU8PDw8
-PDwdnZ2dnZ2dnaWlpaWlpaWlpaWlPDw8PDw8HZ2dnZ2dnZ2lpaWlpaWlpaWlpTw8PDw8PB2dnZ2d
-nZ2dpaWlpaWlpaWlpaU8PDw8PDynp6enp6enp6+vr6+vr6+vr6+vr7CwsLCvp6enp6enp6evr6+v
-r6+vr6+vr6+wsLCwr6enp6enp6enr6+vr6+vr6+vr6+vsLCwsK+np6enp6enp6+vr6+vr6+vr6+v
-r7CwsLCvp6enp6enp6evr6+vr6+vr6+vr6+wsLCwr6KioqKioqKhq6urq6urq6urq6ursLCwsK+n
-p6enp6enp6+vr6+vr6+vr6+vr7CwsLCvp6enp6enp6evr6+vr6+vr6+vr6+wsLCwrxMeE+4TERse
-Gy4bTEMeQ+5DEUseSy5LTDMeM+4zETseOy47TE5WXmaOlp6mrra/x05WXmaOlp6mrra/x05WXmaO
-lp6mrra/x52pqKapqampqKmwsJ2pqKapqampqKmwsJ2pqKapqampqKmwsJ2pqKWpqampqKmwsJ2p
-qKWpqampqKmwsJ2pqKWpqampqKmwsCCgoKCoqKioqDw8PCCgoKCoqKioqDw8PCCgoKCoqKioqDw8
-PCCgoKCoqKioqDw8PCCgoKCoqKioqDw8PCCgoKCoqKioqDw8PKampqawsLCwsLCwsKampqawsLCw
-sLCwsKampqawsLCwsLCwsKGhoaGrq6urq6uwsKampqawsLCwsLCwsKampqawsLCwsLCwsBT+FBEc
-HhwuHEwUAET+RBFMHkwuTExEADT+NBE8HjwuPEw0AFJikqKyw1JikqKyw1JikqKyw5ufp6mprZuf
-p6mprZufp6mprZufp6mprZufp6mprZufp6mpraCgqak8PKCgqak8PKCgqak8PKCgqak8PKCgqak8
-PKCgqak8PKamrq6urqamrq6urqGhrKysrqamrq6urqamrq6urqamrq6urhYyFhEeEkYyRhFOEjYy
-NhE+ElqaWppamjw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---0000000000009980eb061027b059--
+* 1024 Block Ack window size support
+
+* provide firmware wmi logs via a trace event
+
+ath11k
+
+* 36 bit DMA mask support
+
+* support 6 GHz station power modes: Low Power Indoor (LPI), Standard
+  Power) SP and Very Low Power (VLP)
+
+----------------------------------------------------------------
+Baochen Qiang (11):
+      wifi: ath12k: support default regdb while searching board-2.bin for W=
+CN7850
+      wifi: ath11k: fix a possible dead lock caused by ab->base_lock
+      wifi: ath12k: fix wrong definitions of hal_reo_update_rx_queue
+      wifi: ath12k: add support for BA1024
+      wifi: ath12k: change MAC buffer ring size to 2048
+      wifi: ath12k: add support for collecting firmware log
+      wifi: ath11k: enable 36 bit mask for stream DMA
+      wifi: ath11k: remove invalid peer create logic
+      wifi: ath11k: rename ath11k_start_vdev_delay()
+      wifi: ath11k: avoid forward declaration of ath11k_mac_start_vdev_dela=
+y()
+      wifi: ath11k: fix connection failure due to unexpected peer delete
+
+Dmitry Antipov (3):
+      wifi: ath11k: refactor ath11k_wmi_tlv_parse_alloc()
+      wifi: ath9k: fix LNA selection in ath_ant_try_scan()
+      wifi: ath12k: refactor ath12k_wmi_tlv_parse_alloc()
+
+Jeff Johnson (16):
+      wifi: ath10k: use flexible array in struct wmi_host_mem_chunks
+      wifi: ath10k: use flexible arrays for WMI start scan TLVs
+      wifi: ath10k: remove struct wmi_pdev_chanlist_update_event
+      wifi: ath10k: remove unused template structs
+      wifi: ath10k: use flexible array in struct wmi_tdls_peer_capabilities
+      wifi: ath10k: remove duplicate memset() in 10.4 TDLS peer update
+      wifi: ath12k: Make QMI message rules const
+      wifi: ath12k: Remove unnecessary struct qmi_txn initializers
+      wifi: ath12k: Add missing qmi_txn_cancel() calls
+      wifi: ath12k: Use initializers for QMI message buffers
+      wifi: ath11k: document HAL_RX_BUF_RBM_SW4_BM
+      wifi: ath10k: add missing wmi_10_4_feature_mask documentation
+      wifi: ath10k: correctly document enum wmi_tlv_tx_pause_id
+      wifi: ath10k: fix htt_q_state_conf & htt_q_state kernel-doc
+      wifi: ath10k: Fix htt_data_tx_completion kernel-doc warning
+      wifi: ath10k: Fix enum ath10k_fw_crash_dump_type kernel-doc
+
+Karthikeyan Periyasamy (21):
+      wifi: ath12k: relocate ath12k_dp_pdev_pre_alloc() call
+      wifi: ath12k: refactor ath12k_mac_allocate() and ath12k_mac_destroy()
+      wifi: ath12k: refactor ath12k_mac_setup_channels_rates()
+      wifi: ath12k: refactor ath12k_mac_register() and ath12k_mac_unregiste=
+r()
+      wifi: ath12k: refactor ath12k_mac_op_config()
+      wifi: ath12k: refactor ath12k_bss_assoc()
+      wifi: ath12k: refactor ath12k_mac_op_conf_tx()
+      wifi: ath12k: refactor ath12k_mac_op_start()
+      wifi: ath12k: refactor ath12k_mac_op_stop()
+      wifi: ath12k: refactor ath12k_mac_op_update_vif_offload()
+      wifi: ath12k: refactor ath12k_mac_op_configure_filter()
+      wifi: ath12k: refactor ath12k_mac_op_ampdu_action()
+      wifi: ath12k: refactor ath12k_mac_op_flush()
+      wifi: ath12k: ath12k_start_vdev_delay(): convert to use ar
+      wifi: ath12k: refactor QMI MLO host capability helper function
+      wifi: ath12k: add QMI PHY capability learn support
+      wifi: ath12k: replace ENOTSUPP with EOPNOTSUPP
+      wifi: ath11k: replace ENOTSUPP with EOPNOTSUPP
+      wifi: ath10k: replace ENOTSUPP with EOPNOTSUPP
+      wifi: ath12k: Refactor the mac80211 hw access from link/radio
+      wifi: ath12k: Introduce the container for mac80211 hw
+
+Sriram R (1):
+      wifi: ath12k: Fix issues in channel list update
+
+Uwe Kleine-K=C3=B6nig (1):
+      wifi: ath9k: Convert to platform remove callback returning void
+
+Wen Gong (15):
+      wifi: ath12k: add string type to search board data in board-2.bin for=
+ WCN7850
+      wifi: ath12k: add fallback board name without variant while searching=
+ board-2.bin
+      wifi: ath12k: remove unused ATH12K_BD_IE_BOARD_EXT
+      wifi: ath12k: add support to search regdb data in board-2.bin for WCN=
+7850
+      wifi: ath11k: add support to select 6 GHz regulatory type
+      wifi: ath11k: store cur_regulatory_info for each radio
+      wifi: ath11k: update regulatory rules when interface added
+      wifi: ath11k: update regulatory rules when connect to AP on 6 GHz ban=
+d for station
+      wifi: ath11k: save power spectral density(PSD) of regulatory rule
+      wifi: ath11k: add parse of transmit power envelope element
+      wifi: ath11k: save max transmit power in vdev start response event fr=
+om firmware
+      wifi: ath11k: fill parameters for vdev set tpc power WMI command
+      wifi: ath11k: add WMI_TLV_SERVICE_EXT_TPC_REG_SUPPORT service bit
+      wifi: ath11k: add handler for WMI_VDEV_SET_TPC_POWER_CMDID
+      wifi: ath11k: use WMI_VDEV_SET_TPC_POWER_CMDID when EXT_TPC_REG_SUPPO=
+RT for 6 GHz
+
+Wenli Looi (1):
+      wifi: ath9k: delete some unused/duplicate macros
+
+Xingyuan Mo (1):
+      wifi: ath10k: fix NULL pointer dereference in ath10k_wmi_tlv_op_pull_=
+mgmt_tx_compl_ev()
+
+Zhenghao Gu (1):
+      wifi: ath11k: fix IOMMU errors on buffer rings
+
+ drivers/net/wireless/ath/ath10k/core.c      |    4 +-
+ drivers/net/wireless/ath/ath10k/coredump.h  |    8 +-
+ drivers/net/wireless/ath/ath10k/htt.c       |    3 +-
+ drivers/net/wireless/ath/ath10k/htt.h       |   12 +-
+ drivers/net/wireless/ath/ath10k/mac.c       |    6 +-
+ drivers/net/wireless/ath/ath10k/pci.c       |   10 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c   |   11 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h   |    4 +-
+ drivers/net/wireless/ath/ath10k/wmi.c       |   22 +-
+ drivers/net/wireless/ath/ath10k/wmi.h       |   62 +-
+ drivers/net/wireless/ath/ath11k/core.h      |   41 +
+ drivers/net/wireless/ath/ath11k/dp.c        |   20 +-
+ drivers/net/wireless/ath/ath11k/dp_tx.c     |    6 +-
+ drivers/net/wireless/ath/ath11k/hal.c       |   19 +-
+ drivers/net/wireless/ath/ath11k/hal.h       |    3 +-
+ drivers/net/wireless/ath/ath11k/hal_rx.c    |    4 +-
+ drivers/net/wireless/ath/ath11k/mac.c       | 1086 ++++++++++++++++++++---=
+----
+ drivers/net/wireless/ath/ath11k/mac.h       |    5 +-
+ drivers/net/wireless/ath/ath11k/mhi.c       |    4 +-
+ drivers/net/wireless/ath/ath11k/pci.c       |   19 +-
+ drivers/net/wireless/ath/ath11k/pci.h       |    3 +-
+ drivers/net/wireless/ath/ath11k/reg.c       |  267 ++++++-
+ drivers/net/wireless/ath/ath11k/reg.h       |   11 +-
+ drivers/net/wireless/ath/ath11k/testmode.c  |    2 +-
+ drivers/net/wireless/ath/ath11k/wmi.c       |  293 ++++----
+ drivers/net/wireless/ath/ath11k/wmi.h       |   65 +-
+ drivers/net/wireless/ath/ath12k/core.c      |  217 ++++--
+ drivers/net/wireless/ath/ath12k/core.h      |   57 +-
+ drivers/net/wireless/ath/ath12k/dp.h        |    3 +-
+ drivers/net/wireless/ath/ath12k/dp_mon.c    |    4 +-
+ drivers/net/wireless/ath/ath12k/dp_rx.c     |    8 +-
+ drivers/net/wireless/ath/ath12k/dp_tx.c     |   10 +-
+ drivers/net/wireless/ath/ath12k/hal_desc.h  |   20 +-
+ drivers/net/wireless/ath/ath12k/hal_rx.c    |   15 +-
+ drivers/net/wireless/ath/ath12k/hw.c        |    9 +
+ drivers/net/wireless/ath/ath12k/hw.h        |   23 +-
+ drivers/net/wireless/ath/ath12k/mac.c       |  860 ++++++++++++++-------
+ drivers/net/wireless/ath/ath12k/mac.h       |    4 +-
+ drivers/net/wireless/ath/ath12k/pci.c       |   10 +
+ drivers/net/wireless/ath/ath12k/qmi.c       |  377 ++++++++--
+ drivers/net/wireless/ath/ath12k/qmi.h       |   34 +-
+ drivers/net/wireless/ath/ath12k/reg.c       |   13 +-
+ drivers/net/wireless/ath/ath12k/trace.h     |   29 +-
+ drivers/net/wireless/ath/ath12k/wmi.c       |   95 +--
+ drivers/net/wireless/ath/ath9k/ahb.c        |    6 +-
+ drivers/net/wireless/ath/ath9k/antenna.c    |    2 +-
+ drivers/net/wireless/ath/ath9k/ar9003_phy.h |    9 -
+ drivers/net/wireless/ath/ath9k/reg_aic.h    |    4 -
+ 48 files changed, 2739 insertions(+), 1060 deletions(-)
 
