@@ -4,71 +4,136 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24949C47258
-	for <ath10k@archiver.kernel.org>; Wed, 31 Jan 2024 05:02:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7442C47DDF
+	for <ath10k@archiver.kernel.org>; Wed, 31 Jan 2024 09:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=HvstsPIhqvTXHlt91X4M9ps5Z4HjkXa6fG5XSAafI6k=; b=fXrQ44b+cVsbdt/kPulOm1Qd3a
-	ugQIXWFjprvupSN4q9f0iRq3SbjX/1tBQmy8hQbYHQFaPPUlYdhzKClwXfNCn1dXNCJd1dRj6nK0L
-	HeCtCU4DuN/r3rHvsoDRY9TA4XsTzkIOchF66zQX6YD46oo873lWaF5geCdjD6EK/y4IMyfAnbPM6
-	EXom5hpwjJmq7VSjeB3736trG6JHt6hfUUZ9byvkpUljHygbVzBe8GGf1ZrOZfhvZKedIUCmzKH5A
-	7VgifM0kuYTYtfys4zxONx4mjAR9N9zyaaSNq7pOBpQ/LCPfrvJixE0aQfGqQqyibPyewvyuVtUAK
-	PxJFeOTA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=jSyq8T0dgaUi5zrT7v/7kxWNYaOkrtZjbuuR7I5khSc=; b=wOuT/YW2mQiDaN8yvgFUl9xAqN
+	9Hg+65CCO0s9a7PFh5o7KF4Ijzs7RlDCqn5GJ/KjOVH18o+1i6bjtJrlwKInzQIGCzENrKXz0kPHF
+	IaghoPBgh3GKxhypcKlEBdEj0dN3gU1BAixFZXWz17gciFiBeWzuKif9R5zu7h7zZU2nIRRRwjBxu
+	zNFizEMeAK5O+zGRsWUZieEoAdqjDisa0NwLfm49xEEmy8tbp9My7MH6njldI1GHL+W7T17Vi0geT
+	MAf0msYS48EOgLo/e+5KCoF3JrnP9+vpmsc3YCCyqryVkAozAcvDKiQUR7M6GMjPGlWeP1Q4TrKg1
+	WTaFsSpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV2ju-00000001TsD-2BEs;
-	Wed, 31 Jan 2024 05:02:22 +0000
-Received: from mgamail.intel.com ([192.198.163.13])
+	id 1rV6wR-00000002TJF-1LHq;
+	Wed, 31 Jan 2024 09:31:35 +0000
+Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV2jr-00000001Trt-3Gtb
+	id 1rV5wx-000000026h4-3Jju
 	for ath10k@lists.infradead.org;
-	Wed, 31 Jan 2024 05:02:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706677340; x=1738213340;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=VLfEwLMqRn6Ny2FJaqR3MH2BRxkoUKNkC0vdjFthH/U=;
-  b=jpFWtVjNf60RVEP8toAOKhYAgXDv98nE6rTQS1SMaWO0v7DWQDluAlhJ
-   PqXRwIOzyb7zEriqibn/Y+5N7fbF/NwrLoSfXPcPjkWb+RQr1/Z2YZ7In
-   jk709CViugrifXRFQOWtT2Xfps2y3YyedoEQ+EFdtUvbpAcaoYldUBUMK
-   yYfBe7d8FP7uJMC+BRasvEfHexzTEKpYDz3cxtgA1/BM0OwDrgnWXtp9H
-   dM8EQ0anHs2bVFsL1ews8xiMhNc/vc3b4+Tvi/sPRLMLSEpjT43Sw8dkG
-   ICyRS7yaCOgoa6K2mMa264Gr4rW1XYA35n8BFtDQAyVYMJl4AW3b/xaC2
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="2429839"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="2429839"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 21:02:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="30366743"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 30 Jan 2024 21:02:10 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rV2jf-00019g-2f;
-	Wed, 31 Jan 2024 05:02:07 +0000
-Date: Wed, 31 Jan 2024 13:01:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Wen Gong <quic_wgong@quicinc.com>
-Cc: oe-kbuild-all@lists.linux.dev, Kalle Valo <kvalo@codeaurora.org>,
-	ath10k@lists.infradead.org, Kalle Valo <quic_kvalo@quicinc.com>,
-	Baochen Qiang <quic_bqiang@quicinc.com>
-Subject: [kvalo-ath:pending 47/100]
- drivers/net/wireless/ath/ath11k/mac.c:7949 ath11k_mac_fill_reg_tpc_info()
- error: uninitialized symbol 'eirp_power'.
-Message-ID: <202401311243.NyXwWZxP-lkp@intel.com>
+	Wed, 31 Jan 2024 08:28:05 +0000
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-55f1102b300so3350203a12.2
+        for <ath10k@lists.infradead.org>; Wed, 31 Jan 2024 00:27:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706689673; x=1707294473; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jSyq8T0dgaUi5zrT7v/7kxWNYaOkrtZjbuuR7I5khSc=;
+        b=X/JjbhOoWm7aTNMjuFdYW2x+EfxsgCzZk2Z/n5uSHeSA1KeEarqBbOKGwLD9YijVFY
+         9HfFnBFp8k51JSib6HgJos5OSwEBBlNHrPE6rTHIGxFMFV2b3lapf7a+CC1Ci4YPGBGp
+         iOfdqScy3LDShn9TCeCTVIwRVroahxALkW3VcqeknOlDw7p+g3i29c0gDpCY7L7eKL0m
+         eL+M3JCSZQTCoeNBbwiOPqw/1MmLXHpNuxyOE0y6IWxKmWf5eBIXlKBWvLXcigF8NIun
+         /6mtP7kZWhiXfkzLUSMzD1VLejxcnmVQv0WPl7yhEmH92k6gKhPf9sKXdP9ND0hkNz7Z
+         0Fyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706689673; x=1707294473;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jSyq8T0dgaUi5zrT7v/7kxWNYaOkrtZjbuuR7I5khSc=;
+        b=VtPiZrwikNEsg/U38z39zYHdpOxj4e+DbEjJM8f/W0D833seUIMTJhheQb0ObmOV1y
+         UK5uOz48StFDAS7tk5PxGezeFoBhm0GpSnnFq9kjRTeOPw4wc42qUl86Fj0sgB0eIW3C
+         qG2sK1WWcuwwMWyigkggYGW4wKYhUuzBiZjOKKaAZTZP/7uhZQGI+eK9wHI6lwXACAfP
+         dTJbSfbNGYNh5GmQgaEkyL8paNfJ8V5DYenCD8DPE0Gai8sfWS2Y3kiz3RwwH6bpUBgu
+         qrJb36Vpca9adOCd/d6FkSVXhrhNjEEPj6upIiTDlmxNpc+4PoKAfhz08430XbpUbJ/H
+         LbIA==
+X-Gm-Message-State: AOJu0YxCs5r8M1hCfMK2WLwG9Hq9fMLfwkYYFHG/U1p+jF6tjBdnvFGu
+	poKhmzn9VpNa2xqSFN8W1ekUiHGWHbbilVFJttaVn+MSlhFAQwkRoCEOIBDHBzY=
+X-Google-Smtp-Source: AGHT+IELjYRIc3zYE0j0jPirvie0a03AwJKzNe6ScjTg0S9BDZYPz9H0ESnHsbPbuzr/vd+kofGQbg==
+X-Received: by 2002:aa7:c2cc:0:b0:55f:314:6890 with SMTP id m12-20020aa7c2cc000000b0055f03146890mr580405edp.22.1706689673084;
+        Wed, 31 Jan 2024 00:27:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWts5SGByEezZ9xzA8RTu72RZOePLNR39WdTnddJ5XM+N/q+2c5XWBt8goBlk/BLIbgaRudJSYf8AfMLwzgPvaQQ2jI0kyioxLoIp1zqe0HK2zVHEt/4kh+0Mjo1fawrAmwItsvhvf0NB8YS3s4cZU7i6DUqiiRY+FBOFZiN5Qg/Uss7GcpUOFC2qLpRQh3uZQpOcfufsGmSfIWeZJKJ82VeYzX2udbXp+ZegcTGuDE8yFKRzvoRirMm1fnqmp2D3wiKsJ5QH/mFVlN0TZK8pQN8dnaqWIzIoJPxqD9hGGav0wAqnnTtdk3Vui/F1I7oVIxf5HJ06I6hDPFBOMSoS4/ZQW62KZvfIY6UGxKTnCR3Woer5MOE+Qmu1434FI5MqV9Np4agZM2Q64SbuVCn1/my6fsFfnCT1WP06+xvMgv9ApfZFtXbVnKT+EXRooH5tp7IbBWKbWX2tVnyk1CT7BQRPfSin1v2PN0CqO101HSjNot8Gbx0x4tlBaxOAgwHl/XWpOm3TLsa2/ZsA/Li1WeFeHWGZhjBks=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id x6-20020a056402414600b0055d36e6f1a7sm5442819eda.82.2024.01.31.00.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 00:27:52 -0800 (PST)
+Message-ID: <f5d3cf5b-9e3b-4904-8edd-fa1e18652990@linaro.org>
+Date: Wed, 31 Jan 2024 09:27:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/4] dt-bindings: net: wireless: ath10k: describe
+ firmware-name property
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240130-wcn3990-firmware-path-v1-0-826b93202964@linaro.org>
+ <20240130-wcn3990-firmware-path-v1-1-826b93202964@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240130-wcn3990-firmware-path-v1-1-826b93202964@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240130_210219_898569_B4A827DC 
-X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-CacheID: sfid-20240131_002803_882582_657AFB4A 
+X-CRM114-Status: UNSURE (   9.06  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -84,203 +149,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-head:   2c471f31297856be56f60ef29f2565dea1470800
-commit: 92425f788feede9bf152ecf3fb7a264942ee7719 [47/100] wifi: ath11k: fill parameters for vdev set tpc power WMI command
-config: i386-randconfig-141-20240129 (https://download.01.org/0day-ci/archive/20240131/202401311243.NyXwWZxP-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+On 30/01/2024 17:38, Dmitry Baryshkov wrote:
+> For WCN3990 platforms we need to look for the platform / board specific
+> firmware-N.mbn file which corresponds to the wlanmdsp.mbn loaded to the
+> modem DSP via the TQFTPserv. Add firmware-name property describing this
+> classifier.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401311243.NyXwWZxP-lkp@intel.com/
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-New smatch warnings:
-drivers/net/wireless/ath/ath11k/mac.c:7949 ath11k_mac_fill_reg_tpc_info() error: uninitialized symbol 'eirp_power'.
+Best regards,
+Krzysztof
 
-Old smatch warnings:
-drivers/net/wireless/ath/ath11k/mac.c:2321 ath11k_peer_assoc_h_he() error: uninitialized symbol 'rx_mcs_80'.
-drivers/net/wireless/ath/ath11k/mac.c:2321 ath11k_peer_assoc_h_he() error: uninitialized symbol 'rx_mcs_160'.
-drivers/net/wireless/ath/ath11k/mac.c:2323 ath11k_peer_assoc_h_he() error: uninitialized symbol 'rx_mcs_80'.
-
-vim +/eirp_power +7949 drivers/net/wireless/ath/ath11k/mac.c
-
-  7780	
-  7781	void ath11k_mac_fill_reg_tpc_info(struct ath11k *ar,
-  7782					  struct ieee80211_vif *vif,
-  7783					  struct ieee80211_chanctx_conf *ctx)
-  7784	{
-  7785		struct ath11k_base *ab = ar->ab;
-  7786		struct ath11k_vif *arvif = (void *)vif->drv_priv;
-  7787		struct ieee80211_bss_conf *bss_conf = &vif->bss_conf;
-  7788		struct ath11k_reg_tpc_power_info *reg_tpc_info = &arvif->reg_tpc_info;
-  7789		struct ieee80211_channel *chan, *temp_chan;
-  7790		u8 pwr_lvl_idx, num_pwr_levels, pwr_reduction;
-  7791		bool is_psd_power = false, is_tpe_present = false;
-  7792		s8 max_tx_power[IEEE80211_MAX_NUM_PWR_LEVEL],
-  7793			psd_power, tx_power, eirp_power;
-  7794		u16 start_freq, center_freq;
-  7795	
-  7796		chan = ctx->def.chan;
-  7797		start_freq = ath11k_mac_get_6ghz_start_frequency(&ctx->def);
-  7798		pwr_reduction = bss_conf->pwr_reduction;
-  7799	
-  7800		if (arvif->reg_tpc_info.num_pwr_levels) {
-  7801			is_tpe_present = true;
-  7802			num_pwr_levels = arvif->reg_tpc_info.num_pwr_levels;
-  7803		} else {
-  7804			num_pwr_levels = ath11k_mac_get_num_pwr_levels(&ctx->def);
-  7805		}
-  7806	
-  7807		for (pwr_lvl_idx = 0; pwr_lvl_idx < num_pwr_levels; pwr_lvl_idx++) {
-  7808			/* STA received TPE IE*/
-  7809			if (is_tpe_present) {
-  7810				/* local power is PSD power*/
-  7811				if (chan->flags & IEEE80211_CHAN_PSD) {
-  7812					/* Connecting AP is psd power */
-  7813					if (reg_tpc_info->is_psd_power) {
-  7814						is_psd_power = true;
-  7815						ath11k_mac_get_psd_channel(ar, 20,
-  7816									   &start_freq,
-  7817									   &center_freq,
-  7818									   pwr_lvl_idx,
-  7819									   &temp_chan,
-  7820									   &tx_power);
-  7821						psd_power = temp_chan->psd;
-  7822						eirp_power = tx_power;
-  7823						max_tx_power[pwr_lvl_idx] =
-  7824							min_t(s8,
-  7825							      psd_power,
-  7826							      reg_tpc_info->tpe[pwr_lvl_idx]);
-  7827					/* Connecting AP is not psd power */
-  7828					} else {
-  7829						ath11k_mac_get_eirp_power(ar,
-  7830									  &start_freq,
-  7831									  &center_freq,
-  7832									  pwr_lvl_idx,
-  7833									  &temp_chan,
-  7834									  &ctx->def,
-  7835									  &tx_power);
-  7836						psd_power = temp_chan->psd;
-  7837						/* convert psd power to EIRP power based
-  7838						 * on channel width
-  7839						 */
-  7840						tx_power =
-  7841							min_t(s8, tx_power,
-  7842							      psd_power + 13 + pwr_lvl_idx * 3);
-  7843						max_tx_power[pwr_lvl_idx] =
-  7844							min_t(s8,
-  7845							      tx_power,
-  7846							      reg_tpc_info->tpe[pwr_lvl_idx]);
-  7847					}
-  7848				/* local power is not PSD power */
-  7849				} else {
-  7850					/* Connecting AP is psd power */
-  7851					if (reg_tpc_info->is_psd_power) {
-  7852						is_psd_power = true;
-  7853						ath11k_mac_get_psd_channel(ar, 20,
-  7854									   &start_freq,
-  7855									   &center_freq,
-  7856									   pwr_lvl_idx,
-  7857									   &temp_chan,
-  7858									   &tx_power);
-  7859						eirp_power = tx_power;
-  7860						max_tx_power[pwr_lvl_idx] =
-  7861							reg_tpc_info->tpe[pwr_lvl_idx];
-  7862					/* Connecting AP is not psd power */
-  7863					} else {
-  7864						ath11k_mac_get_eirp_power(ar,
-  7865									  &start_freq,
-  7866									  &center_freq,
-  7867									  pwr_lvl_idx,
-  7868									  &temp_chan,
-  7869									  &ctx->def,
-  7870									  &tx_power);
-  7871						max_tx_power[pwr_lvl_idx] =
-  7872							min_t(s8,
-  7873							      tx_power,
-  7874							      reg_tpc_info->tpe[pwr_lvl_idx]);
-  7875					}
-  7876				}
-  7877			/* STA not received TPE IE */
-  7878			} else {
-  7879				/* local power is PSD power*/
-  7880				if (chan->flags & IEEE80211_CHAN_PSD) {
-  7881					is_psd_power = true;
-  7882					ath11k_mac_get_psd_channel(ar, 20,
-  7883								   &start_freq,
-  7884								   &center_freq,
-  7885								   pwr_lvl_idx,
-  7886								   &temp_chan,
-  7887								   &tx_power);
-  7888					psd_power = temp_chan->psd;
-  7889					eirp_power = tx_power;
-  7890					max_tx_power[pwr_lvl_idx] = psd_power;
-  7891				} else {
-  7892					ath11k_mac_get_eirp_power(ar,
-  7893								  &start_freq,
-  7894								  &center_freq,
-  7895								  pwr_lvl_idx,
-  7896								  &temp_chan,
-  7897								  &ctx->def,
-  7898								  &tx_power);
-  7899					max_tx_power[pwr_lvl_idx] = tx_power;
-  7900				}
-  7901			}
-  7902	
-  7903			if (is_psd_power) {
-  7904				/* If AP local power constraint is present */
-  7905				if (pwr_reduction)
-  7906					eirp_power = eirp_power - pwr_reduction;
-  7907	
-  7908				/* If firmware updated max tx power is non zero, then take
-  7909				 * the min of firmware updated ap tx power
-  7910				 * and max power derived from above mentioned parameters.
-  7911				 */
-  7912				ath11k_dbg(ab, ATH11K_DBG_MAC,
-  7913					   "eirp power : %d firmware report power : %d\n",
-  7914					   eirp_power, ar->max_allowed_tx_power);
-  7915				/* Firmware reports lower max_allowed_tx_power during vdev
-  7916				 * start response. In case of 6 GHz, firmware is not aware
-  7917				 * of EIRP power unless driver sets EIRP power through WMI
-  7918				 * TPC command. So radio which does not support idle power
-  7919				 * save can set maximum calculated EIRP power directly to
-  7920				 * firmware through TPC command without min comparison with
-  7921				 * vdev start response's max_allowed_tx_power.
-  7922				 */
-  7923				if (ar->max_allowed_tx_power && ab->hw_params.idle_ps)
-  7924					eirp_power = min_t(s8,
-  7925							   eirp_power,
-  7926							   ar->max_allowed_tx_power);
-  7927			} else {
-  7928				/* If AP local power constraint is present */
-  7929				if (pwr_reduction)
-  7930					max_tx_power[pwr_lvl_idx] =
-  7931						max_tx_power[pwr_lvl_idx] - pwr_reduction;
-  7932				/* If firmware updated max tx power is non zero, then take
-  7933				 * the min of firmware updated ap tx power
-  7934				 * and max power derived from above mentioned parameters.
-  7935				 */
-  7936				if (ar->max_allowed_tx_power && ab->hw_params.idle_ps)
-  7937					max_tx_power[pwr_lvl_idx] =
-  7938						min_t(s8,
-  7939						      max_tx_power[pwr_lvl_idx],
-  7940						      ar->max_allowed_tx_power);
-  7941			}
-  7942			reg_tpc_info->chan_power_info[pwr_lvl_idx].chan_cfreq = center_freq;
-  7943			reg_tpc_info->chan_power_info[pwr_lvl_idx].tx_power =
-  7944				max_tx_power[pwr_lvl_idx];
-  7945		}
-  7946	
-  7947		reg_tpc_info->num_pwr_levels = num_pwr_levels;
-  7948		reg_tpc_info->is_psd_power = is_psd_power;
-> 7949		reg_tpc_info->eirp_power = eirp_power;
-  7950		reg_tpc_info->ap_power_type =
-  7951			ath11k_reg_ap_pwr_convert(vif->bss_conf.power_type);
-  7952	}
-  7953	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
