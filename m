@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7060BC48297
-	for <ath10k@archiver.kernel.org>; Mon, 12 Feb 2024 11:12:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC091C48297
+	for <ath10k@archiver.kernel.org>; Mon, 12 Feb 2024 11:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lHBVPTLCCK1K07+ATMZqLBCAfy1jkjgoH7L1BwVKMB4=; b=jD+KOc+E+iJTbB/TU7xSF4beJX
-	eVhpEluJSBJKJUnWOkxdepbuqQciWih8FiPfcE36G1P/2pzLU3TBBo4CZJm2fnqi/jMFYu3OqFgGc
-	9KHE9qoq5IkHikIEjIxECD0mA4mMFU3UpmHHTX/BitUfWgCq2SmB3cw/jalj4JXn8+rkkhOU/EE+A
-	/LB2eVqqN0My389VChSjioWubGX98O3Qcts/ympomroB6vK/Glq10OO4VoG5YlQe4X4zpNxPpKoT8
-	/OzX31E70GtsVLKRsRmwto2G7oXxh6E2HrRNyxJrOOnJU9ehs5sEWJKKgVZfkZZCZMFw4JlfGpgU3
-	9X8aKkiQ==;
+	bh=6igGhHE0Wmh8X+D47XGNFybq2+vq3ZSP8U8DuXuJZOc=; b=Ih4zpHGxPqCqxYh6JuxrtFv8Jg
+	AfT/a1zXOlmS+B1R2YZVRbJuLULGFUBsMQcOcvR9ug0E5AMrt0L7eT8/JZgUyAlW/q1vGmXvNKnld
+	Hj/oCzANyezZdAaC6agIuTj7Ro75tD0hFABkTnAzzVNOH5W8oBiAKJuZ7nGCIviO5XuuFdRMMH20n
+	hDgJyd4tcn3EC85QOJHbdpmdi/E1uXPimFgoE5LcBtjv9YHmU/v9fqlUYBp/Oo3UDum6R/zvRI2nK
+	5AA27tLNuK2dJxuYwHgPm5U6PZQNq9BMzRM5PtBnWAFMhaF197qOwrcHZ1IIQdE8a3VhiW9MTSAjd
+	wYmbR30w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZUF4-0000000534I-1rKp;
-	Mon, 12 Feb 2024 11:12:54 +0000
-Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
+	id 1rZUlx-000000057zh-2JPt;
+	Mon, 12 Feb 2024 11:46:53 +0000
+Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZUF2-0000000533q-1GxI
+	id 1rZUlv-000000057ya-154N
 	for ath10k@lists.infradead.org;
-	Mon, 12 Feb 2024 11:12:53 +0000
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2d09bdddfc9so39025131fa.2
-        for <ath10k@lists.infradead.org>; Mon, 12 Feb 2024 03:12:51 -0800 (PST)
+	Mon, 12 Feb 2024 11:46:52 +0000
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a3c2efff32aso178070366b.0
+        for <ath10k@lists.infradead.org>; Mon, 12 Feb 2024 03:46:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707736370; x=1708341170; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1707738408; x=1708343208; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lHBVPTLCCK1K07+ATMZqLBCAfy1jkjgoH7L1BwVKMB4=;
-        b=D2FRVrEW0hSJYViqIKT0bSHhV5hyVzGufx3u9FvPkfx8ZH0EuJiJ04hsQTiDHr8krD
-         ZItm+p6c99cTjAnj0V5+v0oTRpNJWU6+wqF1T83LB7B+o8gdiW4DhrGpuWLv1H1qg1JE
-         6mRPDmlyYEXJhp2IIDUJ2i5A6CDqI4ZtTjfn+mkL/KSMnCDaWBwyi+LxS8fVVqZAqrqd
-         zqMKSfoh9OCXbPOcQRMXiyUMKdP9EjdviOXGL7ms7y0+wxGUeKKUK9Fdz07+Mq6QWZWK
-         qmiXDapUnRphFN7II/64IJhZeABJTGrfme/g7k2L22w/1QxYlONhiWJptChiBToIdFWH
-         1iXg==
+        bh=6igGhHE0Wmh8X+D47XGNFybq2+vq3ZSP8U8DuXuJZOc=;
+        b=wZ8pCX/BjPW566YMgeTPybDs5vMo8TeKkWIHsBhHDx9a7a5/LdnOH6P/OvZmjeSBxh
+         JZWRTsKCWKc2aUsS8nJrczXVcImQjW2UmxoG9Vc7jmK9Lz7x4vjngMsiP0tSGiBWGJDt
+         QYpqNuUWz75XdtXhxWUwMYOPt+tE465oi9oFSXrS8porhgldIB2keS/9PXuw4zZA3S/4
+         1byQ+2YLFrnjatSGwxRq1o2m5M7kb0ilgc8QW1cvFyueZH2agPWIho2D/5hFAY/kYk0h
+         e+opvomr5YpcU4iUZEuKdRxdplOX+qJK78iMo1FfhDKhr0hTdtLb7SOrXdwKQMixvKNS
+         WDvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707736370; x=1708341170;
+        d=1e100.net; s=20230601; t=1707738408; x=1708343208;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lHBVPTLCCK1K07+ATMZqLBCAfy1jkjgoH7L1BwVKMB4=;
-        b=ANE/zUBQML0+3gv0rpX7DEfkR9hWtpGKlfZTfYjToGkkcLLutufnUKTjRKJJPNAaxP
-         9pasFHb7NQnRTf4nFAQO62gCa/dsr4oQJCMshkHPx8FP2b1J49RPK6oB5J1ubAoPfpzo
-         nMMQmYMxyvuLlFaICnF97NWutp3pm//UDO4AMnCYwtIgmoQL0XyGn+PgwpPW43Dp0Ut4
-         QJTONL9GqGLzdznZvfTI/wQUjIhN93WqC0ZRGF0w2VyL8yRz8e8Ae+NTn0rvQ+ksZpaR
-         RszGTWKmvqhzPtjP5T+kmSBLCqePojtMjEvhopn5/cDFFj+b80+C4lVjoInYDieblOPB
-         pf9A==
-X-Gm-Message-State: AOJu0Yzl5bNXz8r3F2xvEIijN/HjK+I7B5UnAQxcRWyuAVOnJAqD4Ioq
-	Fr8QasmiSSwzzL+J0n6xg1obT9ebBP4Mu7EFmHA6RLjN6Lr4MAA1vzrddgFh2MQ=
-X-Google-Smtp-Source: AGHT+IEa4vK0/xkbABkqYgx6sLNT5sOa2wgD+dsbTeY5TgLxQcqEaEq90er8k3ZLOVrmr08VnFablA==
-X-Received: by 2002:a2e:9659:0:b0:2d0:b336:e0f1 with SMTP id z25-20020a2e9659000000b002d0b336e0f1mr4052361ljh.14.1707736370294;
-        Mon, 12 Feb 2024 03:12:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVDK3TNDg+4YUkz3ICxegjKKt8gvtMHZKqOC9wcNHxu2Boe8zFK/MZ+eq+BxsNdK0sRGOkG+uFCpaJUCOMNJ5i1fkF05cTUSEY7TuwX8eicCHhWEq63Ah4/fmdDaoG8teSSpRKu6LIp70MdAiq3VFbU19o04uvgz2twSFTkO4mdAquB88ItWcQcdZkCaFXP86mxUs18/pqF8+FaGgVDzuvE++XLDrG5E3e58JmA52HZY6I2sDR4bMywgsdOt4A+4886RDImfAl/2m8M7dsH59i7+qlawfcNqhWx4uiE9aiFpYqAHip5huRGMZzlqtwfmpHyEJHRY7pecAyPItkI2xcEUfBI8VfYyr+fOxOltghQMkHMg7zjd6vwzqUzATd3OS4ryjGxhZXZcAcJGdkpBbRWd0yQjCzdN2fb6D6RWSa0SKxRgF/sKJxEXl9ykgVHXjnDS5Wd3yTseo2AyNylvGMDRFQxrhJXvyQ4j65xbQf1floFdLQjOYHMe6HpduJX
+        bh=6igGhHE0Wmh8X+D47XGNFybq2+vq3ZSP8U8DuXuJZOc=;
+        b=MAqKzXMVip2zgooKXKTp6ZFOhhXj7GSgNABOhVfEgu3/EYSUYD6LMgvrH68LxzX+cj
+         FYFoYT4gpDys/pzS9E6mcUpD9XPOktwGLmGEdhc0Z3RofyKIHpgmqQ20S6GZOWkHslsl
+         kDazpsVcQu5jEysF1kAqnBmh5XBhee9wqcwQjWYlNLeQ5OQZEVm4fXnNzpDbXCPf8Llf
+         P3sT6s+NzZXb+v9A7uz20FFrcyAc6FHFEK1Ep7ROmF6RLONydwwVN0Ef4jXmGkd0gYVc
+         QzkAgWzdEO/o8Nb3gQFDB9PdpmaGBJ4yKapUPU0vOAbcMqjd7Gzo/QGiJkxVMDkFxY2W
+         si7A==
+X-Gm-Message-State: AOJu0Yw/luVwi5G0W/6+Qd80pTxFg7EX08ZAKmd7k51cmAOTPE8KjFsA
+	DLbwo0Xj79qC6jPfO2KAULwa+G/w49l+awNMlocCaSx4Gs07HX+MbU04vPUeNe4=
+X-Google-Smtp-Source: AGHT+IHtMO/k7BQoK4cFgFlk4EAZ+OtEN24JAjUYza+tSEgNVW+iUAxv4YEHSUvFdsrBYJxx0+EjlA==
+X-Received: by 2002:a17:906:46c3:b0:a37:2bb1:7517 with SMTP id k3-20020a17090646c300b00a372bb17517mr4477352ejs.45.1707738408616;
+        Mon, 12 Feb 2024 03:46:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXmdlD4KAro5iEc1Dr31HuIN4wk6LEz6e3kSziAz1hQ9NyQk1cdScqmB8JnycEV/4aRK2lP0ug8ho26cKPWBmAbgNK4TCs32ts4W+u7m3j+b0V1DJzCYhuv2XM96rBMFUy5fAo+Fj1Wnesw3KvBx0FXphgcajzpJBux4hJ0A38Pih44RzZWPZ/vPH+AGqIYQPSZ4/DV0ucix0Z8+SFYLbvfGbJbwo4kinntjvjW9m8sUnSKHT1lts7Li2WLXMLzpR6YNq3vtjTJrVNAlaqWcXHqIEqLgGmFYMp/FHOuo8SyL9uQY7Xo2O2wDfW8tz9cip5fiD19wmGWWQtV2CqmXwdwcpChYAydTZuSjz9j7xKgkl3OpodD/RCH3l74Ml8NoDQbVyDkZdXaNzssexbdh3+91cGzgm6Njw+eEEmY9xZGy1ILDPJ34WUd7QInVpo2D92LHfqYUo5kq1k2D/cDyoVLl7dp2ZSHOVGlBD/DVGDGxvJSk1+zEaGkqTW3sIpC
 Received: from [192.168.192.135] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id a23-20020a05640233d700b0055ff708dee3sm2618622edc.11.2024.02.12.03.12.48
+        by smtp.gmail.com with ESMTPSA id f17-20020a1709067f9100b00a3c89e226f7sm123069ejr.181.2024.02.12.03.46.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 03:12:49 -0800 (PST)
-Message-ID: <03d5d556-9477-4f2e-a737-c2f6a96d97a4@linaro.org>
-Date: Mon, 12 Feb 2024 12:12:47 +0100
+        Mon, 12 Feb 2024 03:46:48 -0800 (PST)
+Message-ID: <bfce2357-129d-4eab-ba7e-99f96f79ade1@linaro.org>
+Date: Mon, 12 Feb 2024 12:46:46 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 2/4] wifi: ath10k: support board-specific firmware
- overrides
+Subject: Re: [PATCH RFC 4/4] arm64: dts: qcom: qrb4210-rb1: add firmware-name
+ qualifier to WiFi node
 Content-Language: en-US
 To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
  Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>,
@@ -81,7 +81,7 @@ Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
  netdev@vger.kernel.org, devicetree@vger.kernel.org,
  linux-arm-msm@vger.kernel.org
 References: <20240130-wcn3990-firmware-path-v1-0-826b93202964@linaro.org>
- <20240130-wcn3990-firmware-path-v1-2-826b93202964@linaro.org>
+ <20240130-wcn3990-firmware-path-v1-4-826b93202964@linaro.org>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -118,12 +118,13 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20240130-wcn3990-firmware-path-v1-2-826b93202964@linaro.org>
+In-Reply-To: <20240130-wcn3990-firmware-path-v1-4-826b93202964@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240212_031252_387396_97AA87B0 
-X-CRM114-Status: GOOD (  14.64  )
+X-CRM114-CacheID: sfid-20240212_034651_307611_AB9938DC 
+X-CRM114-Status: UNSURE (   5.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -139,36 +140,13 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 On 30.01.2024 17:38, Dmitry Baryshkov wrote:
-> Different Qualcomm platforms using WCN3990 WiFI chip use SoC-specific
-> firmware versions with different features. For example firmware for
-> SDM845 doesn't use single-chan-info-per-channel feature, while firmware
-> for QRB2210 / QRB4210 requires that feature. Allow board DT files to
-> override the subdir of the fw dir used to lookup the firmware-N.bin file
-> decribing corresponding WiFi firmware.
+> Add firmware-name property to the WiFi device tree node to specify
+> board-specific lookup directory.
 > 
 > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->  drivers/net/wireless/ath/ath10k/core.c | 11 ++++++++++-
->  drivers/net/wireless/ath/ath10k/core.h |  2 ++
->  drivers/net/wireless/ath/ath10k/snoc.c |  3 +++
->  3 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 0032f8aa892f..ef7ce8b3f8fb 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -942,11 +942,20 @@ static const struct firmware *ath10k_fetch_fw_file(struct ath10k *ar,
->  	if (dir == NULL)
->  		dir = ".";
->  
-> +	if (ar->board_name) {
-> +		snprintf(filename, sizeof(filename), "%s/%s/%s",
-> +			 dir, ar->board_name, file);
-> +		ret = firmware_request_nowarn(&fw, filename, ar->dev);
-> +		ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot fw request '%s': %d\n",
-> +			   filename, ret);
 
-Perhaps it'd be useful to move to a more noisy loglevel
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
 
