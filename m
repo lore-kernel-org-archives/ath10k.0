@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C281C48BF3
-	for <ath10k@archiver.kernel.org>; Fri, 16 Feb 2024 12:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B25B1C48BEB
+	for <ath10k@archiver.kernel.org>; Fri, 16 Feb 2024 12:09:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Zhab3oVSn/jqB7KsHz0ex5q1i5QjXuWWm2CqCeLUnYc=; b=AlPSVofy4H40JyZA1DaQzuo2Fx
-	iQ93V5tJoBYrFmGI/skBoki9GXUKWRTDdSdJ4AUUMzW6xHaPcRVUb+L9zvFSUoNgx2aNA4SIX+v7T
-	2UQ+26+2O57jE4qPMmqS5Q1WqLO4duu+aq0xdVX26j4Ob3ONmaNUmlvr/poePXp1sN0VThz5V5gDf
-	YyPNsKq2fRplwgK32GHptKfe9Jzonf51ijxbeNrwHCP+l5UKmiUpfy2sfF8YkqC9V/mnOVvqKk+4c
-	czYE9dB0Ibz6RULO2Kr7B+3uV0UAJZW8HFPukQwnZOh6ZnWUDgLn24ReFQ6rJ15ybslOPy8/UVsaQ
-	Pdyl9AZg==;
+	bh=dBmjcWVSLWThRhx4+GTcGWiE+cTdtzwt/N7FtiHe1HI=; b=iSLxSdNcPla/o7NkZRDG74RQ+G
+	SquOQQEufjGNZoC2ACKdn+aWm8SiJqghK4K+Aidq6liafV6eRizfvCXsR3p6RVTA+PCagQyefbwnA
+	FDiOWi8vcgIF8+7IHSg2RBenCufT4jk4x1ozqGkjn7Oo30rR17VKPGiAhT1PtVVj7q/duTcv5bO4s
+	CpVcKoiSe/QnUQTPxHdC4mVyXTVjrdxuh/UHzBqQ3/X87yLfByOOr6cZoTDM8IWSgr60nHmffJfe9
+	CaowGSD04zKLwzhpt4OpIWb66dPKYXqlS0f8WKeulbgLzvZHBwkFR/DUdDIRn/JcdoATWF1Gy9k0k
+	g0LfLOaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rax1T-00000002FRT-388f;
-	Fri, 16 Feb 2024 12:08:55 +0000
+	id 1rax2P-00000002FfX-1PKt;
+	Fri, 16 Feb 2024 12:09:53 +0000
 Received: from mgamail.intel.com ([198.175.65.21])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rax1N-00000002FQg-2ZYK
+	id 1rax2M-00000002Fej-30iJ
 	for ath10k@lists.infradead.org;
-	Fri, 16 Feb 2024 12:08:53 +0000
+	Fri, 16 Feb 2024 12:09:52 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708085329; x=1739621329;
+  t=1708085391; x=1739621391;
   h=date:from:to:cc:subject:message-id;
-  bh=3I+blAtqEXlOsZ8zXX2duOwjsaCB/RfMZLobGXm5Kvk=;
-  b=QCFQLOCI4SiUq1cwUmnCYr/zN5W67sBCp4duf9onyeEqTrgtXpDg0Sk7
-   rnthqDhDmjHlbmnkqEJUT+sMBvvj0Ak7a8hBuW0Q5ioXsI2WgUNRk3Uqo
-   XmE/+oMUC0o/wn+w6uh1cfER5NvcmSvH42pIBwqKgqoFCeI0y8xjWB7wB
-   Y9N4r3IfMxfQYTNlk3+GhhtLaXgXl4lN+dl0z0XXCZd7e5oJSx44pvE5d
-   k02wgebeR9MC04ri7w9V28IqA+lY6X1ViFrvXw8w9TwGCZywPpoQdCunq
-   C4P8adiowJZqFMln0nxLIxk7UIWO9HKAt4PB0oPB1WCby509bSo3tbe3o
+  bh=2r9ZGyAR2ZU0++TT2ESYUS4yPxSUAi+hJ9jurmHE8/Q=;
+  b=ePwMtlVDim5OxqXGNtxp1fLevKDv9tNO+vSGeOnqFCyjTnQKmkh9yZis
+   ab7V1meOr6uZmZnUKbQ6vsgck1s4P17MCASHa2mlO60Jkz5Kk23U+gCu2
+   FUKK6JuePlR0uswVrgR1jtt4k3upOcEBbob4rmR8TGsFY8KH1WMZ+JKs0
+   0WZGzsldcGbCxkxTkGe/1YB1AsgBTpRfvYQbN6/FErV4lWrVjsbK3cUBE
+   XjxuoTtAvnoOrcEH687L5ZnX0tMgROPsA5TvW2mSTeYsbwFpniqKk91gt
+   ibtPqwaptJNDBJW7dFI0J9RnEa57OlSBztfvIAW/d8Phon2beu248gki+
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2117018"
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2117151"
 X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="2117018"
+   d="scan'208";a="2117151"
 Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 04:08:47 -0800
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 04:09:50 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="3901575"
+   d="scan'208";a="3901626"
 Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 16 Feb 2024 04:08:47 -0800
+  by orviesa010.jf.intel.com with ESMTP; 16 Feb 2024 04:09:50 -0800
 Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rax1I-0001Eq-0C;
-	Fri, 16 Feb 2024 12:08:44 +0000
-Date: Fri, 16 Feb 2024 20:08:04 +0800
+	id 1rax2I-0001F4-0N;
+	Fri, 16 Feb 2024 12:09:46 +0000
+Date: Fri, 16 Feb 2024 20:09:17 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5
-Message-ID: <202402162002.9x3TxWjP-lkp@intel.com>
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 4eaefee964eb9bfc01794b41bbef88b2b848e6bc
+Message-ID: <202402162014.FKA2gqjZ-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240216_040852_507218_F2C85DD7 
-X-CRM114-Status: UNSURE (   4.27  )
+X-CRM114-CacheID: sfid-20240216_040950_859721_5CFC0B4C 
+X-CRM114-Status: UNSURE (   3.98  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,13 +79,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5  wifi: ath11k: remove unused scan_events from struct scan_req_params
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 4eaefee964eb9bfc01794b41bbef88b2b848e6bc  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 1456m
+elapsed time: 1457m
 
-configs tested: 159
-configs skipped: 5
+configs tested: 168
+configs skipped: 6
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -130,6 +130,8 @@ hexagon                          allmodconfig   clang
 hexagon                           allnoconfig   clang
 hexagon                          allyesconfig   clang
 hexagon                             defconfig   clang
+hexagon               randconfig-001-20240216   clang
+hexagon               randconfig-002-20240216   clang
 i386                             allmodconfig   gcc  
 i386                              allnoconfig   gcc  
 i386                             allyesconfig   gcc  
@@ -193,12 +195,18 @@ powerpc                          allmodconfig   gcc
 powerpc                           allnoconfig   gcc  
 powerpc                          allyesconfig   clang
 powerpc                    klondike_defconfig   gcc  
+powerpc               randconfig-001-20240216   clang
+powerpc               randconfig-002-20240216   clang
+powerpc               randconfig-003-20240216   clang
+powerpc64             randconfig-001-20240216   clang
+powerpc64             randconfig-002-20240216   clang
 powerpc64             randconfig-003-20240216   gcc  
 riscv                            allmodconfig   clang
 riscv                             allnoconfig   gcc  
 riscv                            allyesconfig   clang
 riscv                               defconfig   clang
 riscv                 randconfig-001-20240216   gcc  
+riscv                 randconfig-002-20240216   clang
 s390                             allmodconfig   clang
 s390                              allnoconfig   clang
 s390                             allyesconfig   gcc  
@@ -230,6 +238,7 @@ um                    randconfig-001-20240216   gcc
 um                    randconfig-002-20240216   gcc  
 um                           x86_64_defconfig   clang
 x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
 x86_64       buildonly-randconfig-001-20240216   clang
 x86_64       buildonly-randconfig-002-20240216   clang
 x86_64       buildonly-randconfig-003-20240216   clang
