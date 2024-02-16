@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B25B1C48BEB
-	for <ath10k@archiver.kernel.org>; Fri, 16 Feb 2024 12:09:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C90A9C48BEB
+	for <ath10k@archiver.kernel.org>; Fri, 16 Feb 2024 12:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=dBmjcWVSLWThRhx4+GTcGWiE+cTdtzwt/N7FtiHe1HI=; b=iSLxSdNcPla/o7NkZRDG74RQ+G
-	SquOQQEufjGNZoC2ACKdn+aWm8SiJqghK4K+Aidq6liafV6eRizfvCXsR3p6RVTA+PCagQyefbwnA
-	FDiOWi8vcgIF8+7IHSg2RBenCufT4jk4x1ozqGkjn7Oo30rR17VKPGiAhT1PtVVj7q/duTcv5bO4s
-	CpVcKoiSe/QnUQTPxHdC4mVyXTVjrdxuh/UHzBqQ3/X87yLfByOOr6cZoTDM8IWSgr60nHmffJfe9
-	CaowGSD04zKLwzhpt4OpIWb66dPKYXqlS0f8WKeulbgLzvZHBwkFR/DUdDIRn/JcdoATWF1Gy9k0k
-	g0LfLOaQ==;
+	bh=9RWhVulQ1OPykPsPk7Q/IDEfOwV8TjToPUBY5ailamg=; b=kWi8Q7bluAAqFSEewgjvk/zQKu
+	bCigbwHzpK00+qYNwE0ZEkogivzkGQI9CmUQt+oZbiQU4EfLNjijA2UoaTIoa4pzSnzHEsDPXD+jd
+	jg26qQ2RoDxEA1wc9sxbjKCCMLq9SL4BkewVtG/m081ZnIjihyly1TMNbdIl/y41a9yXbA/c5JZ/M
+	gFqr4zRgaQTR/Z1jlTrO1qC/JNRV8Bsva0Z155fWqGcafZc0DpSPvZfnfH6dm8Ttng/Oy+CBznVGm
+	nTtKEFZwYL3j0f2hAe9NaDutDrnmtPawdGSWCMiaoA5MhUBgKuK86aYrAZZiKSHUNOAACCXLDkBfH
+	/lH1ttoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rax2P-00000002FfX-1PKt;
-	Fri, 16 Feb 2024 12:09:53 +0000
-Received: from mgamail.intel.com ([198.175.65.21])
+	id 1rax2S-00000002Fgd-1Rux;
+	Fri, 16 Feb 2024 12:09:56 +0000
+Received: from mgamail.intel.com ([192.198.163.14])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rax2M-00000002Fej-30iJ
+	id 1rax2P-00000002FfO-0wBa
 	for ath10k@lists.infradead.org;
-	Fri, 16 Feb 2024 12:09:52 +0000
+	Fri, 16 Feb 2024 12:09:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708085391; x=1739621391;
+  t=1708085393; x=1739621393;
   h=date:from:to:cc:subject:message-id;
-  bh=2r9ZGyAR2ZU0++TT2ESYUS4yPxSUAi+hJ9jurmHE8/Q=;
-  b=ePwMtlVDim5OxqXGNtxp1fLevKDv9tNO+vSGeOnqFCyjTnQKmkh9yZis
-   ab7V1meOr6uZmZnUKbQ6vsgck1s4P17MCASHa2mlO60Jkz5Kk23U+gCu2
-   FUKK6JuePlR0uswVrgR1jtt4k3upOcEBbob4rmR8TGsFY8KH1WMZ+JKs0
-   0WZGzsldcGbCxkxTkGe/1YB1AsgBTpRfvYQbN6/FErV4lWrVjsbK3cUBE
-   XjxuoTtAvnoOrcEH687L5ZnX0tMgROPsA5TvW2mSTeYsbwFpniqKk91gt
-   ibtPqwaptJNDBJW7dFI0J9RnEa57OlSBztfvIAW/d8Phon2beu248gki+
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2117151"
+  bh=7JAaRTw4mka0zAE24Hzrn160n/QvGjJSx4YKdK7eyxU=;
+  b=Mak9l9zP9HfHqb77Z8eLZyz7ZoAp/hHJJj6n5Cg/op4NAv7jzOg0YyKW
+   0I7hXSKREtxDKYuXc8qqoKIxl1QOQGFVuQKjhXRq+M/g4gHcJaz377D9u
+   xIY3HwU1qPEWolwcBHfpOxPNAFByBU4j7Wre7mOj7hrNnFBggCJbrhZcV
+   4Hk8aWguLoYf1EDgRvboO06luQKsZmn7Vd4Xg/ug8GIKi+TTz/OXBW5PL
+   IRSZQ1pYhXalFyyfJb8JB0E/UMa6yCHzJhSZtYGP6YQmX//Bb5UuDqtQe
+   R/EC81MdUXY/UXYVT3xvnYL/Y5ztWnixd37o30nZqwjdPn5Foifg06L0h
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2361046"
 X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="2117151"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 04:09:50 -0800
+   d="scan'208";a="2361046"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 04:09:53 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="3901626"
+   d="scan'208";a="4114799"
 Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 16 Feb 2024 04:09:50 -0800
+  by fmviesa006.fm.intel.com with ESMTP; 16 Feb 2024 04:09:51 -0800
 Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rax2I-0001F4-0N;
-	Fri, 16 Feb 2024 12:09:46 +0000
-Date: Fri, 16 Feb 2024 20:09:17 +0800
+	id 1rax2K-0001FD-1K;
+	Fri, 16 Feb 2024 12:09:48 +0000
+Date: Fri, 16 Feb 2024 20:09:04 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 4eaefee964eb9bfc01794b41bbef88b2b848e6bc
-Message-ID: <202402162014.FKA2gqjZ-lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 707e306f3573fa321ae197d77366578e4566cff5
+Message-ID: <202402162001.mavIVrqo-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240216_040950_859721_5CFC0B4C 
-X-CRM114-Status: UNSURE (   3.98  )
+X-CRM114-CacheID: sfid-20240216_040953_335916_9258C4AE 
+X-CRM114-Status: UNSURE (   4.07  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,13 +79,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 4eaefee964eb9bfc01794b41bbef88b2b848e6bc  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 707e306f3573fa321ae197d77366578e4566cff5  Add localversion-wireless-testing-ath
 
-elapsed time: 1457m
+elapsed time: 1456m
 
-configs tested: 168
-configs skipped: 6
+configs tested: 159
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -136,22 +136,14 @@ i386                             allmodconfig   gcc
 i386                              allnoconfig   gcc  
 i386                             allyesconfig   gcc  
 i386         buildonly-randconfig-001-20240216   gcc  
-i386         buildonly-randconfig-002-20240216   clang
-i386         buildonly-randconfig-003-20240216   clang
 i386         buildonly-randconfig-004-20240216   gcc  
 i386         buildonly-randconfig-005-20240216   gcc  
-i386         buildonly-randconfig-006-20240216   clang
 i386                                defconfig   clang
-i386                  randconfig-001-20240216   clang
-i386                  randconfig-002-20240216   clang
 i386                  randconfig-003-20240216   gcc  
-i386                  randconfig-004-20240216   clang
 i386                  randconfig-005-20240216   gcc  
-i386                  randconfig-006-20240216   clang
 i386                  randconfig-011-20240216   gcc  
 i386                  randconfig-012-20240216   gcc  
 i386                  randconfig-013-20240216   gcc  
-i386                  randconfig-014-20240216   clang
 i386                  randconfig-015-20240216   gcc  
 i386                  randconfig-016-20240216   gcc  
 loongarch                        allmodconfig   gcc  
@@ -207,7 +199,6 @@ riscv                            allyesconfig   clang
 riscv                               defconfig   clang
 riscv                 randconfig-001-20240216   gcc  
 riscv                 randconfig-002-20240216   clang
-s390                             allmodconfig   clang
 s390                              allnoconfig   clang
 s390                             allyesconfig   gcc  
 s390                                defconfig   clang
