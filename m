@@ -4,81 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BE56C48BC3
-	for <ath10k@archiver.kernel.org>; Mon, 19 Feb 2024 22:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9CDCC48BC4
+	for <ath10k@archiver.kernel.org>; Tue, 20 Feb 2024 10:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OzrnpRRkFvIZstOU4+rXZ++bwzZ4/ZEkkWA4xAuIZiQ=; b=AD8nJNyU9m2W1+IFWmCITYpnt4
-	1i3xXpy9gM66nPf0G84LCuiWFWiv8Y2WKCz0DBKUKJXg4X25wM31/qJ6sbq4Udgt8rXWCLGtiiG97
-	rQVA+Saml1kDk3qsTPJ94vh4A58cpRKws7+XRiNSjT3heOQnemL0w2Jyo5+pxVdjQNPOR8LwLyanm
-	YkOo2MlcsB/qRp7I1G7iP4OwJT2ML5EER6d94e/UDwQ1hUKlTu3b8ZoJYQFxkht8AC/aZtFMVPVkz
-	05nxItqcQ3dp48K+9LhEBJqWdXXT1OtrzZKKoWW43lH0AXPB3vpuvsFpDKCR6urOn07miSTl7tRoW
-	FjWwYMFw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=OkchbsZxGOhljr94oe0JbGL0thIi/eckxczpaAhfho4=; b=bpjVgy5BCpS01n2xjLLerBgTlE
+	FBPcBbq4JoR+XGIirrtN5YNeqapvsK0efLoocko9qWBiB66AQAx6UAbPqD3/w1suA5uP8Mv4n+3X/
+	J1NDfGuRb5in4U6sbGsxSXAGFapxIId9fo1IbkG51gLzFIZ3PY7rJTpikRPBDvrdQdAtMwKfGJVeY
+	i+jKJRRW52dKTKqLebp18qtK/fGENxqkoB33Gl+wxxRj53MiBtIsRkRxi2lo/ykXUi5Xo1bPqcV3s
+	j72ko+sfCmoCLM21p3PtHHnzBrkysVyBrq6SbcnONlBkrgR41gOQY8dYk7weyUvBaHe9X0cPkSCNd
+	GGdEGH+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcC3a-0000000CN1P-21yP;
-	Mon, 19 Feb 2024 22:24:14 +0000
-Received: from mail-yb1-xb2e.google.com ([2607:f8b0:4864:20::b2e])
+	id 1rcN1J-0000000EAte-05Mq;
+	Tue, 20 Feb 2024 10:06:37 +0000
+Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcC3X-0000000CN0e-2uyM
+	id 1rcN1G-0000000EAsl-3Bxd
 	for ath10k@lists.infradead.org;
-	Mon, 19 Feb 2024 22:24:12 +0000
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so4145308276.0
-        for <ath10k@lists.infradead.org>; Mon, 19 Feb 2024 14:24:10 -0800 (PST)
+	Tue, 20 Feb 2024 10:06:36 +0000
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2d0a4e1789cso62834721fa.3
+        for <ath10k@lists.infradead.org>; Tue, 20 Feb 2024 02:06:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708381449; x=1708986249; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OzrnpRRkFvIZstOU4+rXZ++bwzZ4/ZEkkWA4xAuIZiQ=;
-        b=s2roQkxV9VZXUxsDiH9wRLyUqizdUU6JC9+4waCZ3Hhiuuj+/dkXlSZKJxW9ipRjCJ
-         FegJuJNfXgjB8Cr9K5MHmBe8uwaIWnhPiop3aJiTSfOli1YAJD9LyVHKtM1pXQ7WXklo
-         y9nwKyNnxQB3kK+AOlCg1x8qTcd0CVEjUH+s2tN3Ilgv/xIwBKnzi9Ejlqfwuj+YV12y
-         b/sOrIxkM5eQrf5/T1oXHFfzu3A7MPGtCMbMQcvpHTxyW8fZgFWk8vVMJLMx+GF0ljWb
-         uqh3fXtYZ5DGHBGMJ4RlkGZqcYYnePyiS7yN/UlzAYv114G4XF+PazfygJE6RrZZHAZy
-         hCjw==
+        d=linaro.org; s=google; t=1708423592; x=1709028392; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OkchbsZxGOhljr94oe0JbGL0thIi/eckxczpaAhfho4=;
+        b=OkbRokBdFgNb9+GiW/PieXogrX9tFvHflNGCgLFQqzZsSrV3OH/Y5YIbm3tGGE1JNE
+         UzTWjZ5MF/IfMoHFOESQ1fxwndL9vQpD/46GRwD5YBIoeYu2iQMqcup64Gh1807jhnb9
+         KbHn5FR1G9fpF1xcXdBPWc5vmHD/u683qoN/B4WiljUbEZJin24uvffw9mjwu2PhzFr9
+         2mDOVVV3V1k/y+trQfDJSdE2GKKMljiWRZtUSdCDYBI3C3dVR37Aefdc34PWMGqPUma8
+         EitUaZcNohVNV6S0/+pq9ibvOu9i4hA7CotkCinLQ5aYLSJffLdRXI+DfpZQlW9fV0mY
+         nC1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708381449; x=1708986249;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OzrnpRRkFvIZstOU4+rXZ++bwzZ4/ZEkkWA4xAuIZiQ=;
-        b=WXeDb/T11lou7s2WqYKOf3swxHeUYImpoOpVAfazYh+NyENncUyI3/gAulFHBuMxmE
-         Bo78zNCMtEQz4ujs2XDIEa6ROJSWZxnZkG5cPGr842aB9LCrD4XuTXjABf9bSq+bOnXN
-         1OvXRUnvYZw3AUChknq5bjSUlqfMK7cvpklJg3VWJdFBc/Hhljyo+4cu2DUBSV3vc5nF
-         885QZkSfzKC5VC9IMLmBre55pXPKSAkVfWy1bN4jElj3U0C/BFsGAuqEpgH+NJMGze+J
-         cnz4t8JJb2PTrB3cMSxmaNwZ6Gw2MvIOtzloRn3wOpJvqgZwL7D/vhXmhDG8SY27u3yi
-         uNYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXY5KaD8rAISLCdS213rNbbFMLe8LXBKWV+dtij8VRJijgivg2t+Gdeuaboq0jwV/BjzGDx01RFQLdVzi5HwqUsaq1KcpTVY+Wmxg==
-X-Gm-Message-State: AOJu0YwUZAWPxOmcex8/uOkm5hrmtD75IEa1spu546NGZwi5LnACQVot
-	jdwDI0uqqjFk3FEsrPG94pTXoISbtTou5HgzitA2yBDzhehLnVub7HLqb6M1/Q/9ie4Y7Ibyc7C
-	6JOBmTlv69PGgAHRVirwAaTQ1+vmb9vBFZ1RlrQ==
-X-Google-Smtp-Source: AGHT+IGC2SHUpgIeiRanQrH9qLO1ovUw3m2HxObJFK2it7sg4bghpkXlhep6npR0xO7Xf+MsMOgjnP6VfQwj68oLYTw=
-X-Received: by 2002:a25:adc9:0:b0:dcd:63f8:ba32 with SMTP id
- d9-20020a25adc9000000b00dcd63f8ba32mr11579688ybe.65.1708381449555; Mon, 19
- Feb 2024 14:24:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708423592; x=1709028392;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OkchbsZxGOhljr94oe0JbGL0thIi/eckxczpaAhfho4=;
+        b=C32VgnrB9uQy0bl2gCGthLU8IV5F9Q55dlqMVFF7WmHpZseOZPAJIwFQzbDG7jnPC7
+         XzZrI00bxo052QXfAGZUg3cA5Csi9vga51FvSN8GWI+WSbHMI6cVtKGpA8DtFazAOhYQ
+         nD5vyIZoIaVWqqypVCCmO3lo2l7okuUHxoOMTOyvgC7dAf/zUSXl64CqosoM1XV1F1V4
+         6JmRKkkQF0WyEKCz+ZIfiiPdoU6cSslHQYYHIkRYpTjvrPlRaIFOiDMHX8UYyMMKcXBc
+         y/uu2lZ3CTlu88DfowbgW3Y7nplxjXlu47K1XwmWxaEDGVE08r1Qkb5fAVVC7qD18b9F
+         Iw+g==
+X-Forwarded-Encrypted: i=1; AJvYcCVHhD3+X/DjyhKpKsZaLOndCtyOcURb6sjBhky2RfgP+pUSX02YwcVW7OrzugPIPMDzTnc+N37autpbT65t3x/750cxWz4zdgX+Lw==
+X-Gm-Message-State: AOJu0Yz0hm8ZfIx/IS2oB9JApBnvPWIa2A0bYHeNh1IeOf/myauyR5ee
+	Va4lWNIrmsYOawy6iYegoJ1D3U0r4yzEoUVug51v9qxPNBpOl83xHk5c9ahcAds=
+X-Google-Smtp-Source: AGHT+IEKfiYlW6oMAe4WVdRoHVpic4US6QNAohcexgMfawSDVCg00TcQ3jPEsIUlcJJs8NsgqrGwiw==
+X-Received: by 2002:a2e:80ca:0:b0:2d2:2dec:8f5b with SMTP id r10-20020a2e80ca000000b002d22dec8f5bmr5492256ljg.30.1708423592566;
+        Tue, 20 Feb 2024 02:06:32 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id az19-20020adfe193000000b0033d6ff7f9edsm839756wrb.95.2024.02.20.02.06.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 02:06:32 -0800 (PST)
+Message-ID: <81506f26-d7c3-4b65-b47a-ca3ea3e4b5d6@linaro.org>
+Date: Tue, 20 Feb 2024 11:06:30 +0100
 MIME-Version: 1.0
-References: <20240130-wcn3990-firmware-path-v1-0-826b93202964@linaro.org> <08c312f4-f3d3-4980-b998-b28026b5180f@quicinc.com>
-In-Reply-To: <08c312f4-f3d3-4980-b998-b28026b5180f@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 20 Feb 2024 00:23:58 +0200
-Message-ID: <CAA8EJprXguHxzYxC2W_HQ8u4MExSWs0o71Lyp6OhpWNYXWw79w@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/4] wifi: ath10k: support board-specific firmware overrides
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: net: wireless: qcom: Update maintainers
+Content-Language: en-US
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Jeff Johnson <jjohnson@kernel.org>, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ath11k@lists.infradead.org
+References: <20240217-ath1xk-maintainer-v1-1-9f7ff5fb6bf4@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240217-ath1xk-maintainer-v1-1-9f7ff5fb6bf4@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240219_142411_761398_614B4670 
-X-CRM114-Status: GOOD (  21.34  )
+X-CRM114-CacheID: sfid-20240220_020634_845512_57419A3B 
+X-CRM114-Status: UNSURE (   5.54  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,51 +146,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, 12 Feb 2024 at 22:56, Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
->
-> On 1/30/2024 8:38 AM, Dmitry Baryshkov wrote:
-> > On WCN3990 platforms actual firmware, wlanmdsp.mbn, is sideloaded to the
-> > modem DSP via the TQFTPserv. These MBN files are signed by the device
-> > vendor, can only be used with the particular SoC or device.
-> >
-> > Unfortunately different firmware versions come with different features.
-> > For example firmware for SDM845 doesn't use single-chan-info-per-channel
-> > feature, while firmware for QRB2210 / QRB4210 requires that feature.
-> >
-> > Allow board DT files to override the subdir of the fw dir used to lookup
-> > the firmware-N.bin file decribing corresponding WiFi firmware.
-> > For example, adding firmware-name = "qrb4210" property will make the
-> > driver look for the firmware-N.bin first in ath10k/WCN3990/hw1.0/qrb4210
-> > directory and then fallback to the default ath10k/WCN3990/hw1.0 dir.
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> > Dmitry Baryshkov (4):
-> >       dt-bindings: net: wireless: ath10k: describe firmware-name property
-> >       wifi: ath10k: support board-specific firmware overrides
-> >       arm64: dts: qcom: qrb2210-rb1: add firmware-name qualifier to WiFi node
-> >       arm64: dts: qcom: qrb4210-rb1: add firmware-name qualifier to WiFi node
-> >
-> >  .../devicetree/bindings/net/wireless/qcom,ath10k.yaml         |  6 ++++++
-> >  arch/arm64/boot/dts/qcom/qrb2210-rb1.dts                      |  1 +
-> >  arch/arm64/boot/dts/qcom/qrb4210-rb2.dts                      |  1 +
-> >  drivers/net/wireless/ath/ath10k/core.c                        | 11 ++++++++++-
-> >  drivers/net/wireless/ath/ath10k/core.h                        |  2 ++
-> >  drivers/net/wireless/ath/ath10k/snoc.c                        |  3 +++
-> >  6 files changed, 23 insertions(+), 1 deletion(-)
-> > ---
-> > base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
-> > change-id: 20240130-wcn3990-firmware-path-7a05a0cf8107
-> >
-> > Best regards,
-> This series looks OK to me, but would like Kalle to review as well
+On 17/02/2024 22:30, Jeff Johnson wrote:
+> Add Jeff Johnson as a maintainer of the qcom,ath1*k.yaml files.
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> ---
 
-Kalle, gracious ping. This is my proposal to fix the issue that we
-have discussed at some point, wlanmdsp.mbn for sdm845 and for qcm2290
-/ sm6115 have different features, resulting in kernel log being
-spammed on the RB1 / RB2 boards.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
--- 
-With best wishes
-Dmitry
+Best regards,
+Krzysztof
+
 
