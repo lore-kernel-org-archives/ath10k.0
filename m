@@ -4,67 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EACBC48BF8
-	for <ath10k@archiver.kernel.org>; Thu, 22 Feb 2024 05:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DEC7C48BF8
+	for <ath10k@archiver.kernel.org>; Thu, 22 Feb 2024 08:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=qrB32Bq3tGGp5p8uoVYa7lTJnBwNh0Y0E0/4agkxQ4g=; b=RIG88WW/HM/4+GwjQPOcB2Pcxx
-	Tp0ItliPPnSapd586CH1s6KHHNwY8VEyGWQxFX3/XudxW6XyFzTCfkYgS4yz61O1aqpoz/pxwcXQi
-	2ruMJ4V5uRxbEmR9+mMWp2A0Mi2ltsVFsuhUt9ffAKv07nyt6MpA5XWbDeTy8Lhkz/qQXw12neiAQ
-	RT1ifhncdtJK/0Hi6qD1XxzuaPLT8q9OZNViwENek4uBkdemmbcMwEAEpXZu4IrPuzdU8Gasxr++H
-	1AueK6zybtPCAGmeoNkNYh4ZjT0UhOs66iBt27E+lE89y/LVUH2T5yqojktwiGdUkhr6e8L0xdPKX
-	bEGYXxwA==;
+	bh=MnOGdMh0iyMca94aHByyq2RLP1AvWyGMT/MDG+67vwc=; b=liplZtqvmJuBuLol9NsLnLnaRX
+	LLrmVmMeHZUq6vGorvi/Ya1cKelMfHyLgJJxwLy5o+5z0D7LXULGKBdg+gg/dcqrGHspiM3Trd6Pz
+	1zSpmJj7a+YFn+g2GNL1wUbqtF2zCEhm0hhrCchmxFJ+bvLMpV0FrX/qi2CCnBiaGxBJwqGVGAzUW
+	vpiyznlVqK54DJkwNHpMWvos254CqF25CyOKFpyXFOryHaRZZ72/BadCLXAolRu/lcxuh3/KRoMT/
+	zWUaw0Oe/GG530TAQretGqBBSM8nXSfb6Ybn7FRnknki2FOWvq2kYDgqh0cvhu9RwzrUoz1MEiEqo
+	DsdkcdGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd1Sp-00000003ZRQ-3HFk;
-	Thu, 22 Feb 2024 05:17:43 +0000
-Received: from mgamail.intel.com ([192.198.163.13])
+	id 1rd4Tz-000000042ZI-09i1;
+	Thu, 22 Feb 2024 08:31:07 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd1Sm-00000003ZQi-34Lj
-	for ath10k@lists.infradead.org;
-	Thu, 22 Feb 2024 05:17:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708579060; x=1740115060;
-  h=date:from:to:cc:subject:message-id;
-  bh=bOWOvuk4zWFlxAIWjIxJXwv5dVL86RtTkrnjO4WHC+A=;
-  b=ElH/DTwnsc8S7XIUTRiAW1HNRe717kWzRk1gw6+YVfSqqCoMrZxM6kO2
-   bTMwe4CqxNrHo4GaUYXjzB6g3uY6QVWcxXW0+Nb2bG4PFlnQKkocCDnlo
-   lasww06jp6DsoEnHJKTaGQqY9spr4+8LZ51ywiUOnGFRjM6yj4nUPM3Lt
-   P02D4LTb7eXA1kUN9g/eDZuS2NCkSNe4HieYtzeIRPOrh8njnlGxjj+Wn
-   AqPTdO88RXy/Lr5pWVxGbFexvdwRS2/W/YOQjauSWA41Mzg9lCR8g6Fao
-   QKADOJU+k73EYbQq8yXSdYQeeRmZAOu4MK2SiKGMobOzmyTlY6J0ySK4j
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="5733273"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="5733273"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 21:17:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="10008968"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa005.fm.intel.com with ESMTP; 21 Feb 2024 21:17:39 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rd1Si-00060q-2X;
-	Thu, 22 Feb 2024 05:17:36 +0000
-Date: Thu, 22 Feb 2024 13:17:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- 84057cea76d4ec43b43c94f702a20b9c044634d7
-Message-ID: <202402221319.uIjYdcnq-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1rd4Tw-000000042Xh-3sf8;
+	Thu, 22 Feb 2024 08:31:06 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0BE54616D6;
+	Thu, 22 Feb 2024 08:31:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 646F3C433F1;
+	Thu, 22 Feb 2024 08:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708590663;
+	bh=k0DEzDQSLa5M/GLDTtBEZ67yVwcDnrxRQUYOAgzB1Ug=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FXs0MxblGlWpyZkACaFxHffYijg8Ly2azPuFldNHW4UMoAF59GNmxQGUPsMtrFtug
+	 XFRPmmLobQklBcC54D6h2RqQCXNLc2NrpiTH9q4o1svWp/2LP7vkvt7Nv962Lu0U4K
+	 AqgvUsgAiUGPfyspjFpDA6os1OYQyQznJ5yU2ZNS/JX+2lPotFJ31+4MGXSedHNM8x
+	 e1m5zj/MFXRLvDZvS17/X2Gspcz0iBgayp2gZFLtlGkYBj8ow8xqAWDYFmNMTIu0ZE
+	 7Gyt6NyIqWr95qIc8dmJR4vilFi2f46KSFsNNfsmYmJmGLVru2O7arJVuT4WQK3shJ
+	 CwtcKR/Nlnrhw==
+From: Kalle Valo <kvalo@kernel.org>
+To: linux-wireless@vger.kernel.org
+Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+ ath12k@lists.infradead.org, quic_jjohnson@quicinc.com
+Subject: pull-request: ath-next-20240222
+Date: Thu, 22 Feb 2024 10:31:00 +0200
+Message-ID: <87plwolx2z.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240221_211740_814785_D2B40B2D 
-X-CRM114-Status: UNSURE (   4.35  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240222_003105_069665_92D97851 
+X-CRM114-Status: GOOD (  13.65  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,180 +69,190 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 84057cea76d4ec43b43c94f702a20b9c044634d7  wifi: ath10k: poll service ready message before failing
+Hi,
 
-elapsed time: 1122m
+Here's an ath-next pull request to wireless-next. More info below.
 
-configs tested: 160
-configs skipped: 3
+Kalle
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The following changes since commit 2a71528427c635f0a8bff704b2e62ce81c641d6f:
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240222   gcc  
-arc                   randconfig-002-20240222   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                                 defconfig   clang
-arm                        neponset_defconfig   gcc  
-arm                       omap2plus_defconfig   gcc  
-arm                   randconfig-001-20240222   gcc  
-arm                   randconfig-002-20240222   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-002-20240222   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240222   gcc  
-csky                  randconfig-002-20240222   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240221   gcc  
-i386         buildonly-randconfig-001-20240222   gcc  
-i386         buildonly-randconfig-002-20240221   clang
-i386         buildonly-randconfig-003-20240221   gcc  
-i386         buildonly-randconfig-004-20240221   gcc  
-i386         buildonly-randconfig-004-20240222   gcc  
-i386         buildonly-randconfig-005-20240221   gcc  
-i386         buildonly-randconfig-006-20240221   gcc  
-i386         buildonly-randconfig-006-20240222   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240221   gcc  
-i386                  randconfig-002-20240221   clang
-i386                  randconfig-003-20240221   clang
-i386                  randconfig-003-20240222   gcc  
-i386                  randconfig-004-20240221   gcc  
-i386                  randconfig-005-20240221   gcc  
-i386                  randconfig-005-20240222   gcc  
-i386                  randconfig-006-20240221   clang
-i386                  randconfig-011-20240221   gcc  
-i386                  randconfig-011-20240222   gcc  
-i386                  randconfig-012-20240221   clang
-i386                  randconfig-013-20240221   gcc  
-i386                  randconfig-013-20240222   gcc  
-i386                  randconfig-014-20240221   clang
-i386                  randconfig-014-20240222   gcc  
-i386                  randconfig-015-20240221   gcc  
-i386                  randconfig-016-20240221   clang
-i386                  randconfig-016-20240222   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240222   gcc  
-loongarch             randconfig-002-20240222   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240222   gcc  
-nios2                 randconfig-002-20240222   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           alldefconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240222   gcc  
-parisc                randconfig-002-20240222   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      ppc64e_defconfig   gcc  
-powerpc                         wii_defconfig   gcc  
-powerpc64             randconfig-003-20240222   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-002-20240222   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240222   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sh                          polaris_defconfig   gcc  
-sh                    randconfig-001-20240222   gcc  
-sh                    randconfig-002-20240222   gcc  
-sh                          sdk7780_defconfig   gcc  
-sh                           se7705_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240222   gcc  
-sparc64               randconfig-002-20240222   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-003-20240222   gcc  
-x86_64       buildonly-randconfig-005-20240222   gcc  
-x86_64       buildonly-randconfig-006-20240222   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-005-20240222   gcc  
-x86_64                randconfig-006-20240222   gcc  
-x86_64                randconfig-012-20240222   gcc  
-x86_64                randconfig-014-20240222   gcc  
-x86_64                randconfig-074-20240222   gcc  
-x86_64                randconfig-075-20240222   gcc  
-x86_64                randconfig-076-20240222   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240222   gcc  
-xtensa                randconfig-002-20240222   gcc  
+  wifi: brcmfmac: fix copyright year mentioned in platform_data header (202=
+4-01-31 18:48:06 +0200)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git tags/ath-next=
+-20240222
+
+for you to fetch changes up to 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5:
+
+  wifi: ath11k: remove unused scan_events from struct scan_req_params (2024=
+-02-15 13:24:18 +0200)
+
+----------------------------------------------------------------
+ath.git patches for v6.9
+
+We have support for QCA2066 now and also several new features in ath12k.
+
+Major changes:
+
+ath12k
+
+* firmware-2.bin support
+
+* support having multiple identical PCI devices (firmware needs to
+  have ATH12K_FW_FEATURE_MULTI_QRTR_ID)
+
+* QCN9274: support split-PHY devices
+
+* WCN7850: enable Power Save Mode in station mode
+
+* WCN7850: P2P support
+
+ath11k:
+
+* QCA6390 & WCN6855: support 2 concurrent station interfaces
+
+* QCA2066 support
+
+----------------------------------------------------------------
+Aaradhana Sahu (1):
+      wifi: ath12k: fix firmware assert during insmod in memory segment mode
+
+Baochen Qiang (5):
+      wifi: ath12k: enable 802.11 power save mode in station mode
+      wifi: ath11k: initialize rx_mcs_80 and rx_mcs_160 before use
+      wifi: ath11k: initialize eirp_power before use
+      wifi: ath11k: move pci.ops registration ahead
+      wifi: ath11k: add support for QCA2066
+
+Carl Huang (2):
+      wifi: ath11k: support 2 station interfaces
+      wifi: ath11k: provide address list if chip supports 2 stations
+
+Colin Ian King (2):
+      wifi: ath9k:  remove redundant assignment to variable ret
+      wifi: carl9170: Remove redundant assignment to pointer super
+
+Ganesh Babu Jothiram (1):
+      wifi: ath12k: Read board id to support split-PHY QCN9274
+
+Harshitha Prem (1):
+      wifi: ath12k: add support for peer meta data version
+
+Jeff Johnson (1):
+      wifi: ath11k: Really consistently use ath11k_vif_to_arvif()
+
+Kang Yang (11):
+      wifi: ath12k: fix broken structure wmi_vdev_create_cmd
+      wifi: ath12k: fix incorrect logic of calculating vdev_stats_id
+      wifi: ath12k: change interface combination for P2P mode
+      wifi: ath12k: add P2P IE in beacon template
+      wifi: ath12k: implement handling of P2P NoA event
+      wifi: ath12k: implement remain on channel for P2P mode
+      wifi: ath12k: change WLAN_SCAN_PARAMS_MAX_IE_LEN from 256 to 512
+      wifi: ath12k: allow specific mgmt frame tx while vdev is not up
+      wifi: ath12k: move peer delete after vdev stop of station for WCN7850
+      wifi: ath12k: designating channel frequency for ROC scan
+      wifi: ath12k: advertise P2P dev support for WCN7850
+
+Karthikeyan Kathirvel (1):
+      wifi: ath12k: subscribe required word mask from rx tlv
+
+Karthikeyan Periyasamy (2):
+      wifi: ath12k: add MAC id support in WBM error path
+      wifi: ath12k: refactor the rfkill worker
+
+Lingbo Kong (2):
+      wifi: ath12k: add processing for TWT enable event
+      wifi: ath12k: add processing for TWT disable event
+
+Nathan Chancellor (1):
+      wifi: ath12k: Fix uninitialized use of ret in ath12k_mac_allocate()
+
+Nicolas Escande (6):
+      wifi: ath11k: Do not directly use scan_flags in struct scan_req_params
+      wifi: ath11k: Remove scan_flags union from struct scan_req_params
+      wifi: ath12k: Do not use scan_flags from struct ath12k_wmi_scan_req_a=
+rg
+      wifi: ath12k: Remove unused scan_flags from struct ath12k_wmi_scan_re=
+q_arg
+      wifi: ath12k: remove the unused scan_events from ath12k_wmi_scan_req_=
+arg
+      wifi: ath11k: remove unused scan_events from struct scan_req_params
+
+P Praneesh (2):
+      wifi: ath12k: Add logic to write QRTR node id to scratch
+      wifi: ath12k: fix PCI read and write
+
+Raj Kumar Bhagat (5):
+      wifi: ath12k: add firmware-2.bin support
+      wifi: ath12k: fix fetching MCBC flag for QCN9274
+      wifi: ath12k: split hal_ops to support RX TLVs word mask compaction
+      wifi: ath12k: remove hal_desc_sz from hw params
+      wifi: ath12k: disable QMI PHY capability learn in split-phy QCN9274
+
+Sowmiya Sree Elavalagan (1):
+      wifi: ath12k: fetch correct pdev id from WMI_SERVICE_READY_EXT_EVENTID
+
+Sriram R (1):
+      wifi: ath12k: indicate NON MBSSID vdev by default during vdev start
+
+Toke H=C3=B8iland-J=C3=B8rgensen (1):
+      wifi: ath9k: delay all of ath9k_wmi_event_tasklet() until init is com=
+plete
+
+Wen Gong (1):
+      wifi: ath11k: change to move WMI_VDEV_PARAM_SET_HEMU_MODE before WMI_=
+PEER_ASSOC_CMDID
+
+ drivers/net/wireless/ath/ath11k/core.c        | 100 +++++-
+ drivers/net/wireless/ath/ath11k/core.h        |   1 +
+ drivers/net/wireless/ath/ath11k/hw.c          |   2 +-
+ drivers/net/wireless/ath/ath11k/hw.h          |   1 +
+ drivers/net/wireless/ath/ath11k/mac.c         | 116 +++++--
+ drivers/net/wireless/ath/ath11k/mhi.c         |   1 +
+ drivers/net/wireless/ath/ath11k/pci.c         |  43 ++-
+ drivers/net/wireless/ath/ath11k/pcic.c        |  11 +
+ drivers/net/wireless/ath/ath11k/wmi.c         |   2 +-
+ drivers/net/wireless/ath/ath11k/wmi.h         |  86 +++--
+ drivers/net/wireless/ath/ath12k/Makefile      |   4 +-
+ drivers/net/wireless/ath/ath12k/core.c        |  55 +++-
+ drivers/net/wireless/ath/ath12k/core.h        |  27 ++
+ drivers/net/wireless/ath/ath12k/dp.c          |  25 +-
+ drivers/net/wireless/ath/ath12k/dp.h          |  17 +-
+ drivers/net/wireless/ath/ath12k/dp_mon.c      |   5 +-
+ drivers/net/wireless/ath/ath12k/dp_rx.c       | 158 ++++-----
+ drivers/net/wireless/ath/ath12k/dp_tx.c       |  20 ++
+ drivers/net/wireless/ath/ath12k/fw.c          | 171 ++++++++++
+ drivers/net/wireless/ath/ath12k/fw.h          |  33 ++
+ drivers/net/wireless/ath/ath12k/hal.c         | 415 ++++++++++++++++++++++=
++-
+ drivers/net/wireless/ath/ath12k/hal.h         |  20 +-
+ drivers/net/wireless/ath/ath12k/hw.c          |  24 +-
+ drivers/net/wireless/ath/ath12k/hw.h          |  32 +-
+ drivers/net/wireless/ath/ath12k/mac.c         | 443 ++++++++++++++++++++++=
+----
+ drivers/net/wireless/ath/ath12k/mhi.c         |  52 ++-
+ drivers/net/wireless/ath/ath12k/p2p.c         | 142 +++++++++
+ drivers/net/wireless/ath/ath12k/p2p.h         |  23 ++
+ drivers/net/wireless/ath/ath12k/pci.c         |  84 +++--
+ drivers/net/wireless/ath/ath12k/pci.h         |   6 +-
+ drivers/net/wireless/ath/ath12k/qmi.c         |  52 ++-
+ drivers/net/wireless/ath/ath12k/qmi.h         |   1 -
+ drivers/net/wireless/ath/ath12k/rx_desc.h     | 116 ++++++-
+ drivers/net/wireless/ath/ath12k/wmi.c         | 230 +++++++++++--
+ drivers/net/wireless/ath/ath12k/wmi.h         | 202 ++++++++----
+ drivers/net/wireless/ath/ath9k/htc.h          |   2 +-
+ drivers/net/wireless/ath/ath9k/htc_drv_init.c |   4 +
+ drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |   4 -
+ drivers/net/wireless/ath/ath9k/wmi.c          |  10 +-
+ drivers/net/wireless/ath/ath9k/xmit.c         |   3 +-
+ drivers/net/wireless/ath/carl9170/tx.c        |   2 +-
+ 41 files changed, 2334 insertions(+), 411 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath12k/fw.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/fw.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/p2p.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/p2p.h
 
