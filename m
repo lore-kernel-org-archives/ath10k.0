@@ -4,67 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 955A7C48BEB
-	for <ath10k@archiver.kernel.org>; Thu, 22 Feb 2024 02:10:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C30BC48BEB
+	for <ath10k@archiver.kernel.org>; Thu, 22 Feb 2024 02:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=4KdTduw+LUFDsBTR5Ej8xpZ2ObZEbNOc6VD/iGnblwk=; b=4hMoIBJkXrituQjtw47N/HmVqK
-	Ozy3LZ5jy5Kqbb0hILmEnNGcQ2mQulEumzgP00FBKj3dLxJxiHT/DHHIxBa8wMlI+AP2vPyUPWeHG
-	Txu1f2DniaIE4T30/FzC0/TbE+LpDT/MI/TmzsGXveR0OL04b/nDXgu5OYoKjdRXXKT8vOs1SPP74
-	dClvzc7dd4g3cR6bMLwzCGSRZNVngoGXra3VuDom9YkxLrLqKO2BZ7I0J2G6wukuv9ACDFisCjQd9
-	Z9sMpRhLm83yW75zAUfvSozp1FEtgdeUvkbd2R5uvLBooEPk/Cg5bUeEx0rxVPB9QfoY/K6aNDc3C
-	AP1PajLA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Ql9ttM3rKe6EnnK/aKnq7HzPNy/fJQHcEhzfXSLmaJs=; b=U+Tpyr+iB89tgV8fRq7hiEoCxz
+	R6mvN9Q2lrOBIs9nVM0QZF8ZzVu3YAJpvC7o19VoWuvPLEMtt8CZ/M/wGuY8Z5sds/AwBFVx6gvVb
+	4CmWm6ie/5sUzYPrCd/Bg7y9crMNrYcuLMjjO5ja8Lp6RH66Wso0IqI2eYqYM1PsNbWblQ4wUQeav
+	FLl8/Gmc1cisgKklIyLXwBNt53ayVF3DuFdh8W+OD7zWDUlvM+2vjw/ieV80xnvaXffGI/fJ+9ZD6
+	x1aLBZYKKCFqAk4RS7apsV6HgqKfhYg+Fite/WG2Kdx4yFuVVYj93eEa058h3bfxVnkDm1DmYwO1I
+	4VypM+2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcyXb-00000003DMV-2PkG;
-	Thu, 22 Feb 2024 02:10:27 +0000
-Received: from mgamail.intel.com ([192.198.163.8])
+	id 1rcyfx-00000003EJ8-1p1q;
+	Thu, 22 Feb 2024 02:19:05 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcyXY-00000003DM9-37UX
+	id 1rcyfu-00000003EIh-0gaE
 	for ath10k@lists.infradead.org;
-	Thu, 22 Feb 2024 02:10:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708567824; x=1740103824;
-  h=date:from:to:cc:subject:message-id;
-  bh=MLyjQ9VfBvlfiqz4v+tesgIxmN9Ms3PEcB4HdKJqslI=;
-  b=TLOdm8N1JtG+du6Mh7tfIaZ6FSAMUKmJyVH14EK52YVuDfAnNDEasF5m
-   btrbmIdfRFmJlKl7Rca88E7RbJcwarCAicAJtpci0io3jKqAtNHXW/X49
-   RI+JWm0p4FCd/BpHblnwp7QCPprd4yr3QgLswbZm1RGlG9AIOdVQuZWOn
-   7qWStL2A8Eld1aOpQKOC/Bp+ZAOWORMZmW2FKuvpjzHB+3w5CwR11wsYC
-   7Z4bIwaaX5RsSqNHjGFWysIlsUe0JjXXCth8PMSdewd+j7bgd83CLZwVh
-   SpbhhZDWhKcrjOQQQ1rxRaF8aXYlqETLlxLPkz9wCbLAN2TcVzX7JimGJ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="20318234"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="20318234"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 18:10:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="9959420"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa005.fm.intel.com with ESMTP; 21 Feb 2024 18:10:16 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rcyXO-0005tB-1B;
-	Thu, 22 Feb 2024 02:10:14 +0000
-Date: Thu, 22 Feb 2024 10:09:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 984ddf848a07823f70dca5dd00e78e56fd940db0
-Message-ID: <202402221052.9cLpPrxT-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Thu, 22 Feb 2024 02:19:04 +0000
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M2GZAd014672;
+	Thu, 22 Feb 2024 02:19:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Ql9ttM3rKe6EnnK/aKnq7HzPNy/fJQHcEhzfXSLmaJs=; b=Ig
+	T2pGFLRk0iumy2/nyUODef6Pc80M8wt3d4JlGwCr5EcPiivODyWHaBTwWf1Q36kn
+	q9HveJ1KsMrTSmvZfFoNlSNhtQDCmfD/0pY7YfP8ZfTFKF+gko0lZqZrkGalsMYr
+	HHnXzsM1Cx4qRe6p9CF8fFWzTJJsxuy+furLA7T9wshJYeNoNNMhlZrD2wDCiQUL
+	KrYKGtHCqZ1WiKH2yMAMfcSi2Ya3TdD+S8paN9hscqwkq9tbP3lYgjU/9geIa5PP
+	Wqj19/x090CCoriPeycClcfUNyVUBPlFgkLPmDAuPSFVVJ5eXwmoxmZTlInpx2ch
+	4VKwPgFDu/mkJR+zCrpQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdvseg266-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 02:18:59 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41M2Ixd5016364
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 02:18:59 GMT
+Received: from [10.231.195.68] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
+ 2024 18:18:57 -0800
+Message-ID: <0ee7ae2f-8034-4908-b6e3-fa17a995c661@quicinc.com>
+Date: Thu, 22 Feb 2024 10:18:55 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: ath10k: poll service ready message before failing
+Content-Language: en-US
+To: James Prestwood <prestwoj@gmail.com>, <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>
+References: <20240221031729.2707-1-quic_bqiang@quicinc.com>
+ <d67fb4f4-aea2-4668-aac4-6e7eca8db4fa@gmail.com>
+From: Baochen Qiang <quic_bqiang@quicinc.com>
+In-Reply-To: <d67fb4f4-aea2-4668-aac4-6e7eca8db4fa@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: vBaF4_VFcJRNW6blg8bGEQGS1q-u2-aL
+X-Proofpoint-GUID: vBaF4_VFcJRNW6blg8bGEQGS1q-u2-aL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-21_10,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 clxscore=1015
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2402220015
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240221_181024_824418_17F17934 
-X-CRM114-Status: UNSURE (   4.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240221_181902_381981_C337FA77 
+X-CRM114-Status: GOOD (  31.32  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,149 +98,114 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 984ddf848a07823f70dca5dd00e78e56fd940db0  Merge branch 'pending' into master-pending
 
-elapsed time: 935m
 
-configs tested: 129
-configs skipped: 3
+On 2/21/2024 8:38 PM, James Prestwood wrote:
+> Hi Baochen,
+> 
+> On 2/20/24 7:17 PM, Baochen Qiang wrote:
+>> Currently host relies on CE interrupts to get notified that
+>> the service ready message is ready. This results in timeout
+>> issue if the interrupt is not fired, due to some unknown
+>> reasons. See below logs:
+>>
+>> [76321.937866] ath10k_pci 0000:02:00.0: wmi service ready event not 
+>> received
+>> ...
+>> [76322.016738] ath10k_pci 0000:02:00.0: Could not init core: -110
+>>
+>> And finally it causes WLAN interface bring up failure.
+>>
+>> Change to give it one more chance here by polling CE rings,
+>> before failing directly.
+>>
+>> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+>>
+>> Fixes: 5e3dd157d7e7 ("ath10k: mac80211 driver for Qualcomm Atheros 
+>> 802.11ac CQA98xx devices")
+>> Reported-by: James Prestwood <prestwoj@gmail.com>
+>> Link: 
+>> https://lore.kernel.org/linux-wireless/304ce305-fbe6-420e-ac2a-d61ae5e6ca1a@gmail.com/
+>> Signed-off-by: Baochen Qiang <quic_bqiang@quicinc.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/wmi.c | 22 +++++++++++++++++++---
+>>   1 file changed, 19 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c 
+>> b/drivers/net/wireless/ath/ath10k/wmi.c
+>> index ddf15717d504..bf6cb2c73128 100644
+>> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+>> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+>> @@ -1763,12 +1763,28 @@ void ath10k_wmi_put_wmi_channel(struct ath10k 
+>> *ar, struct wmi_channel *ch,
+>>   int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
+>>   {
+>> -    unsigned long time_left;
+>> +    unsigned long time_left, i;
+>>       time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
+>>                           WMI_SERVICE_READY_TIMEOUT_HZ);
+>> -    if (!time_left)
+>> -        return -ETIMEDOUT;
+>> +    if (!time_left) {
+>> +        /* Sometimes the PCI HIF doesn't receive interrupt
+>> +         * for the service ready message even if the buffer
+>> +         * was completed. PCIe sniffer shows that it's
+>> +         * because the corresponding CE ring doesn't fires
+>> +         * it. Workaround here by polling CE rings once.
+>> +         */
+>> +        ath10k_warn(ar, "failed to receive service ready completion, 
+>> polling..\n");
+>> +
+>> +        for (i = 0; i < CE_COUNT; i++)
+>> +            ath10k_hif_send_complete_check(ar, i, 1);
+>> +
+>> +        time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
+>> +                            WMI_SERVICE_READY_TIMEOUT_HZ);
+>> +        if (!time_left)
+>> +            return -ETIMEDOUT;
+>> +    }
+>> +
+>>       return 0;
+>>   }
+>>
+>> base-commit: 707e306f3573fa321ae197d77366578e4566cff5
+> 
+> Thank you for looking at this I will test this and see if it resolves 
+> the problem we're seeing but since its somewhat rare it may take me a 
+> bit to validate.
+> 
+> Is this any different than just trying to bring up the interface again 
+> from userspace? I could be wrong, but my concern with this is that when 
+> I retried in userspace things got into a very odd state:
+> 
+>   - IWD starts
+> 
+>   - ifdown interface
+> 
+>   - ifup interface, timeout -110
+> 
+>   - Retry ifup, success
+> 
+>   - Authenticate/associate succeed
+> 
+>   - 4-way handshake fails because the device never received the 1/4 frame.
+> 
+Don't get time to look into this case, but I suppose there might be some 
+issues in error handling when interface up fails, kind of incorrect irq 
+enable/disable or something else impacting data path, so no data frame 
+received even after a second interface up retry succeeds,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Anyway please test this patch, which is supposed to be the right fix to 
+this issue.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                                 defconfig   clang
-arm                        neponset_defconfig   gcc  
-arm                       omap2plus_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240221   gcc  
-i386         buildonly-randconfig-002-20240221   clang
-i386         buildonly-randconfig-003-20240221   gcc  
-i386         buildonly-randconfig-004-20240221   gcc  
-i386         buildonly-randconfig-005-20240221   gcc  
-i386         buildonly-randconfig-006-20240221   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240221   gcc  
-i386                  randconfig-002-20240221   clang
-i386                  randconfig-003-20240221   clang
-i386                  randconfig-004-20240221   gcc  
-i386                  randconfig-005-20240221   gcc  
-i386                  randconfig-006-20240221   clang
-i386                  randconfig-011-20240221   gcc  
-i386                  randconfig-012-20240221   clang
-i386                  randconfig-013-20240221   gcc  
-i386                  randconfig-014-20240221   clang
-i386                  randconfig-015-20240221   gcc  
-i386                  randconfig-016-20240221   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           alldefconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      ppc64e_defconfig   gcc  
-powerpc                         wii_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sh                          polaris_defconfig   gcc  
-sh                          sdk7780_defconfig   gcc  
-sh                           se7705_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-003-20240222   gcc  
-x86_64       buildonly-randconfig-005-20240222   gcc  
-x86_64       buildonly-randconfig-006-20240222   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-005-20240222   gcc  
-x86_64                randconfig-006-20240222   gcc  
-x86_64                randconfig-012-20240222   gcc  
-x86_64                randconfig-014-20240222   gcc  
-x86_64                randconfig-074-20240222   gcc  
-x86_64                randconfig-075-20240222   gcc  
-x86_64                randconfig-076-20240222   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> IWD would then retry indefinitely with auth/assoc succeeding but never 
+> receiving any 4-way handshake frames. The only way to get things working 
+> again was reloading the ath10k driver/reboot. Maybe this patch is 
+> different because its waiting for the initial request and no issuing a 
+> second one? Just wanted to point that out in case it sheds any light.
+> 
+> Thanks,
+> 
+> James
+> 
 
