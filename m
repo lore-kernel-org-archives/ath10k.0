@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DF22C5478C
-	for <ath10k@archiver.kernel.org>; Fri, 23 Feb 2024 18:46:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08D46C54798
+	for <ath10k@archiver.kernel.org>; Fri, 23 Feb 2024 19:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8EX5DyLLgT3KvmZlOZYE3EMTr2abrgesZfw6MHEUJYY=; b=0sVOXgSAHAyUyUHFSMdUaPH5aF
-	Z0S1qd2yHjM1gcesUO8tVaISJ544ryBXdwjhGJJS5A36uJYSVrW91LVmb/wTk3jOjohNNtKTSrIRJ
-	6UM/xb0zIyUXpYRbVOcVB1C+XCUIRa86nZYd6GAXVjGJce5jNl4Xu1LatzES+PMf2McBQFMNPzt1k
-	ULFsWs3M35F5oK3crGBzOxjZYc9K+So46FsXDPneHO0y2YCKR6Vv8PimNtnedaIrrGALFhKx5u9qa
-	pI/EAxgupEJQsdF1Z5mOToORPNaebHvqmbF02+k9j5L6DoQ7Ps2VPCfFh2fX+dm/+eT5sUuu2bYyZ
-	6m+Yv+eA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=G9nEEkfFGj8WFYt7yvHDxsoouHxXt+6aC7E5xhimc9A=; b=WHsC2/mSj1w+kAOG1E+zm9a26e
+	d0JjfvNIm3WMHINNCEDJD6tUOZ72n6QyptFKchRaiCI0lZUSyuGo8VgTRHK8rBRLZrdpmAWnvXxAW
+	PPsfHuP4ZdjfAPvHSZd6WY27Ezv2fSLMudy2gy0H9LjuI7NhM7sDMhwSKY+GOt8F0O0Hi89vDa/ed
+	TT26eGXmvQ/Zb4g9irOhTweX/eOWGNDkAVmTYYV4epGsEahTUmkry/T2zY39GxeQNAp5A2otZItFC
+	suERJT3Oz8mKyj5xCzYNAbciVdAO8yBoiXONYCBDURD4T1VCD3cRgnw+/RIqRRCOC7A4qYVVN7Uqt
+	cZSyAAMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdaYS-0000000Au4k-1STx;
-	Fri, 23 Feb 2024 18:45:53 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rdbZi-0000000B4nM-1Iss;
+	Fri, 23 Feb 2024 19:51:14 +0000
+Received: from out-183.mta1.migadu.com ([95.215.58.183])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdaXx-0000000Atud-0CF4;
-	Fri, 23 Feb 2024 18:45:35 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id EF93861654;
-	Fri, 23 Feb 2024 18:45:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C3ACC433C7;
-	Fri, 23 Feb 2024 18:45:01 +0000 (UTC)
-Date: Fri, 23 Feb 2024 13:46:53 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- <linuxppc-dev@lists.ozlabs.org>, <kvm@vger.kernel.org>,
- <linux-block@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
- <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <amd-gfx@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
- <intel-xe@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
- <freedreno@lists.freedesktop.org>, <virtualization@lists.linux.dev>,
- <linux-rdma@vger.kernel.org>, <linux-pm@vger.kernel.org>,
- <iommu@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
- <netdev@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
- <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
- <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>,
- <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>,
- <linux-usb@vger.kernel.org>, <linux-bcachefs@vger.kernel.org>,
- <linux-nfs@vger.kernel.org>, <ocfs2-devel@lists.linux.dev>,
- <linux-cifs@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
- <linux-edac@vger.kernel.org>, <selinux@vger.kernel.org>,
- <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
- <linux-f2fs-devel@lists.sourceforge.net>, <linux-hwmon@vger.kernel.org>,
- <io-uring@vger.kernel.org>, <linux-sound@vger.kernel.org>,
- <bpf@vger.kernel.org>, <linux-wpan@vger.kernel.org>, <dev@openvswitch.org>,
- <linux-s390@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
- Julia Lawall <Julia.Lawall@inria.fr>
+	id 1rdbZc-0000000B4km-3YIP
+	for ath10k@lists.infradead.org;
+	Fri, 23 Feb 2024 19:51:12 +0000
+Date: Fri, 23 Feb 2024 14:50:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708717865;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G9nEEkfFGj8WFYt7yvHDxsoouHxXt+6aC7E5xhimc9A=;
+	b=uWxPu15jxbBy5Qv8sUU4/FKz9vhwMVdq24ex7AxwdBDTkpdTty7N4oFt5H+WpItVhn5h2q
+	QhDNbk6QMiXNrrlkBl7kMfsoV81d2NhOFvXWC0sVWqoHMtRJN5Tm42Zzvb2Qci9w4QIV6Q
+	wpkGE4FwRbb7rZDimmKQkBl02FYhYXk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, 
+	LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-cxl@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
+	intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org, 
+	virtualization@lists.linux.dev, linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-tegra@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
+	ath11k@lists.infradead.org, ath12k@lists.infradead.org, brcm80211@lists.linux.dev, 
+	brcm80211-dev-list.pdl@broadcom.com, linux-usb@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-edac@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-hwmon@vger.kernel.org, io-uring@vger.kernel.org, 
+	linux-sound@vger.kernel.org, bpf@vger.kernel.org, linux-wpan@vger.kernel.org, 
+	dev@openvswitch.org, linux-s390@vger.kernel.org, 
+	tipc-discussion@lists.sourceforge.net, Julia Lawall <Julia.Lawall@inria.fr>
 Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
  __assign_str()
-Message-ID: <20240223134653.524a5c9e@gandalf.local.home>
-In-Reply-To: <0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
+Message-ID: <qsksxrdinia3cxr52tfe4p3pafsy4biktnodlfn4vyzud73p2j@6ycnhrhzwsv6>
 References: <20240223125634.2888c973@gandalf.local.home>
-	<0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
+ <20240223134653.524a5c9e@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223134653.524a5c9e@gandalf.local.home>
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240223_104521_954352_99C4E29E 
-X-CRM114-Status: GOOD (  22.40  )
+X-CRM114-CacheID: sfid-20240223_115109_329495_CC2C12F1 
+X-CRM114-Status: GOOD (  24.19  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,48 +87,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, 23 Feb 2024 10:30:45 -0800
-Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
-
-> On 2/23/2024 9:56 AM, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > [
-> >    This is a treewide change. I will likely re-create this patch again in
-> >    the second week of the merge window of v6.9 and submit it then. Hoping
-> >    to keep the conflicts that it will cause to a minimum.
-> > ]
-> > 
-> > With the rework of how the __string() handles dynamic strings where it
-> > saves off the source string in field in the helper structure[1], the
-> > assignment of that value to the trace event field is stored in the helper
-> > value and does not need to be passed in again.  
+On Fri, Feb 23, 2024 at 01:46:53PM -0500, Steven Rostedt wrote:
+> On Fri, 23 Feb 2024 10:30:45 -0800
+> Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
 > 
-> Just curious if this could be done piecemeal by first changing the
-> macros to be variadic macros which allows you to ignore the extra
-> argument. The callers could then be modified in their separate trees.
-> And then once all the callers have be merged, the macros could be
-> changed to no longer be variadic.
+> > On 2/23/2024 9:56 AM, Steven Rostedt wrote:
+> > > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > > 
+> > > [
+> > >    This is a treewide change. I will likely re-create this patch again in
+> > >    the second week of the merge window of v6.9 and submit it then. Hoping
+> > >    to keep the conflicts that it will cause to a minimum.
+> > > ]
+> > > 
+> > > With the rework of how the __string() handles dynamic strings where it
+> > > saves off the source string in field in the helper structure[1], the
+> > > assignment of that value to the trace event field is stored in the helper
+> > > value and does not need to be passed in again.  
+> > 
+> > Just curious if this could be done piecemeal by first changing the
+> > macros to be variadic macros which allows you to ignore the extra
+> > argument. The callers could then be modified in their separate trees.
+> > And then once all the callers have be merged, the macros could be
+> > changed to no longer be variadic.
+> 
+> I weighed doing that, but I think ripping off the band-aid is a better
+> approach. One thing I found is that leaving unused parameters in the macros
+> can cause bugs itself. I found one case doing my clean up, where an unused
+> parameter in one of the macros was bogus, and when I made it a used
+> parameter, it broke the build.
+> 
+> I think for tree-wide changes, the preferred approach is to do one big
+> patch at once. And since this only affects TRACE_EVENT() macros, it
+> hopefully would not be too much of a burden (although out of tree users may
+> suffer from this, but do we care?)
 
-I weighed doing that, but I think ripping off the band-aid is a better
-approach. One thing I found is that leaving unused parameters in the macros
-can cause bugs itself. I found one case doing my clean up, where an unused
-parameter in one of the macros was bogus, and when I made it a used
-parameter, it broke the build.
+Agreed on doing it all at once, it'll be way less spam for people to
+deal with.
 
-I think for tree-wide changes, the preferred approach is to do one big
-patch at once. And since this only affects TRACE_EVENT() macros, it
-hopefully would not be too much of a burden (although out of tree users may
-suffer from this, but do we care?)
-
-Now one thing I could do is to not remove the parameter, but just add:
-
-	WARN_ON_ONCE((src) != __data_offsets->item##_ptr_);
-
-in the __assign_str() macro to make sure that it's still the same that is
-assigned. But I'm not sure how useful that is, and still causes burden to
-have it. I never really liked the passing of the string in two places to
-begin with.
-
--- Steve
+Tangentially related though, what would make me really happy is if we
+could create the string with in the TP__fast_assign() section. I have to
+have a bunch of annoying wrappers right now because the string length
+has to be known when we invoke the tracepoint.
 
