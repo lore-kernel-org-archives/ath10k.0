@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FD69C54798
-	for <ath10k@archiver.kernel.org>; Tue, 27 Feb 2024 11:45:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 290CBC54798
+	for <ath10k@archiver.kernel.org>; Tue, 27 Feb 2024 18:22:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=fqdrcNUlXVw7RjSWbSeuTP2vslMoxabHy+i86uSBrtY=; b=pb7R+zxt05LazIy0KCQ88Yt0vJ
-	39qKotg2qAFmDtvYSowykeeaSnWSUyBrL/Y8pzpTQi1HUNYiHAuYp4fEQ+jb6+S48eUVolfEFOyNL
-	mO782Ae3m8jWHRSGQZh1xi1g5VSu8JXaLqNLEkj0FordrJuAyPjSBlmVbemrYQhwsxN1MjNXdw0yT
-	DyDCS1NWxwA3tyqk7G4AyMxHF7apXb+TMxlF+8mp2B2xxOoirBQ84jnkThMyBYzG3i5uPkq0/+ZCj
-	5gBE1/1EIPDIIQNPuTyHlwYjQX51GOXYb8SBdsHhBas11LEpH6dK7U7OV5+7tZZ5rSpemd5NohmcH
-	nvN/DAcw==;
+	bh=3KJRUbSZX7F1iU+cDh6uXUYQNFEyg+FF+vkW2gvHQmw=; b=gnQBeJH1PTcX57jgjBLif+NAHy
+	BkKUJqTJugjxqxpukPCczdwZZT1zF3DcAoBFUO76D3HW4TaHzOCDGH8fb57nBBG7ran/tDOXCV/MN
+	OKrOI0okHMyzwiwBkUN+H0qYZ9Em/3OdRZvy401kj2AMYMRyTNQLeJrWPPtHw0sg3OGX2fjVxcpxj
+	8lTalJfWD5hzXIAryu7LWZCxbiThKlOI1XO5AItyLyuCYvVXqtR75zkQIk/eQJEV90vZGk0GttiHY
+	C7AaQz2jEXdSShdeCvBGISp4odMv+l91ZfA3vIiAbdwHlHIEd64wPnOvYekDbR8SmauZS0tujonYm
+	Bn0IxNSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1revtd-00000004zNI-0YRz;
-	Tue, 27 Feb 2024 11:45:17 +0000
-Received: from mgamail.intel.com ([198.175.65.13])
+	id 1rf25m-00000006QUQ-0jXD;
+	Tue, 27 Feb 2024 18:22:14 +0000
+Received: from mgamail.intel.com ([192.198.163.10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1revta-00000004zLQ-2p3i
+	id 1rf25j-00000006QTt-2eYl
 	for ath10k@lists.infradead.org;
-	Tue, 27 Feb 2024 11:45:16 +0000
+	Tue, 27 Feb 2024 18:22:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709034315; x=1740570315;
+  t=1709058131; x=1740594131;
   h=date:from:to:cc:subject:message-id;
-  bh=RNMgnl4+TCXu+LQP8PwvOU15Z0r/esjy42q6kHflVck=;
-  b=U1EVVFFv8kJXWBJc8Y+X90HrhjuDnOOe5cxzXPffxj8k7of0xcvDeYd5
-   mvElX4SK01Ep46B6ixTJ8UaQZrE+S1FRCVHBQBG1uHFAqf7q2CEQsoKj3
-   zoO01J8t6fiwpZRzVsc/udLDjSrerMdFZ/0TAH5ZYzyaUS+W7Qoc8rodV
-   5kcy23y4YsLDePeQ59X+kqlROgNwX3VE/dejM56Ht5+2ZzcgT7RRpvy3M
-   rAR0ssPrXCZTr0GL4lUhCjyaojzK9N6v/ll87TiX+3MaWJ7CCzJGtEP1X
-   0yYxQtvJd1JZrB8vyfoNc5aB2C7D9mEQt/9XFosT1m30rj7q+B5UYLXYf
+  bh=bkt3zD9a2RpDyub/o/EBU6NAf0uIuSj4RqzR3gHTVRE=;
+  b=n6s/DvEdJheuJPWPfRTG2ALyLPWNwDUsK6NpwwDmw6xEeDpDTrXwhI26
+   gGAuuQ8UjlUH+qkWF/U2B0zcL0pqi0imCa9cHETymJFG9xZMenmJMujbM
+   mLO9RGmo2kiaTdKXKpDMDg7+7xIN14TTW/ZLcPhhJbuZO0Xc7fuj/KkAL
+   grGU6wsefouIbiTTOUzrZiwcifCKXoxq6hHCuePE+yzJjGQ2rtfKdvMSR
+   JQc1C97/QtoBRDsSTZsTsP/YklDWa5hBlWIEAI2IcuTrItbJ3RHYyce+4
+   KcvC5mgCGn0N7VEJFLmXSfrGvSpcWnDfDJKG5fbNUnJDqOMucjMBCdrbo
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14517527"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="14517527"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 03:45:12 -0800
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14842179"
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="14842179"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 10:22:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="6994738"
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="7494676"
 Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 27 Feb 2024 03:45:10 -0800
+  by orviesa007.jf.intel.com with ESMTP; 27 Feb 2024 10:22:09 -0800
 Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1revtU-000BBZ-10;
-	Tue, 27 Feb 2024 11:45:08 +0000
-Date: Tue, 27 Feb 2024 19:44:29 +0800
+	id 1rf25e-000BRX-2I;
+	Tue, 27 Feb 2024 18:22:06 +0000
+Date: Wed, 28 Feb 2024 02:21:32 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:pending] BUILD SUCCESS
- 9d26e48b475334732e56414976f1921b819eff56
-Message-ID: <202402271926.kJFBtN6A-lkp@intel.com>
+Subject: [kvalo-ath:master-pending] BUILD SUCCESS
+ c9d0feaf2a19a8d82dca708fc6589f8ed0d7d38a
+Message-ID: <202402280229.IZ2t9VUo-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240227_034514_827581_A972FC9E 
-X-CRM114-Status: UNSURE (   4.42  )
+X-CRM114-CacheID: sfid-20240227_102211_730572_AD12A046 
+X-CRM114-Status: UNSURE (   4.12  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,12 +79,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-branch HEAD: 9d26e48b475334732e56414976f1921b819eff56  wifi: ath12k: fix license in p2p.c and p2p.h
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+branch HEAD: c9d0feaf2a19a8d82dca708fc6589f8ed0d7d38a  Merge branch 'pending' into master-pending
 
-elapsed time: 1048m
+elapsed time: 1445m
 
-configs tested: 147
+configs tested: 159
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -132,7 +132,23 @@ i386                              allnoconfig   gcc
 i386                             allyesconfig   gcc  
 i386         buildonly-randconfig-001-20240227   gcc  
 i386         buildonly-randconfig-002-20240227   gcc  
+i386         buildonly-randconfig-003-20240227   clang
+i386         buildonly-randconfig-004-20240227   gcc  
+i386         buildonly-randconfig-005-20240227   gcc  
+i386         buildonly-randconfig-006-20240227   gcc  
 i386                                defconfig   clang
+i386                  randconfig-001-20240227   gcc  
+i386                  randconfig-002-20240227   gcc  
+i386                  randconfig-003-20240227   clang
+i386                  randconfig-004-20240227   clang
+i386                  randconfig-005-20240227   clang
+i386                  randconfig-006-20240227   gcc  
+i386                  randconfig-011-20240227   clang
+i386                  randconfig-012-20240227   clang
+i386                  randconfig-013-20240227   clang
+i386                  randconfig-014-20240227   clang
+i386                  randconfig-015-20240227   clang
+i386                  randconfig-016-20240227   gcc  
 loongarch                        allmodconfig   gcc  
 loongarch                         allnoconfig   gcc  
 loongarch                           defconfig   gcc  
@@ -164,18 +180,14 @@ parisc                              defconfig   gcc
 parisc                randconfig-001-20240227   gcc  
 parisc                randconfig-002-20240227   gcc  
 parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
 powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
 powerpc               randconfig-001-20240227   clang
 powerpc               randconfig-002-20240227   gcc  
 powerpc               randconfig-003-20240227   clang
 powerpc64             randconfig-001-20240227   clang
 powerpc64             randconfig-002-20240227   gcc  
 powerpc64             randconfig-003-20240227   gcc  
-riscv                            allmodconfig   clang
 riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
 riscv                               defconfig   clang
 riscv                 randconfig-001-20240227   gcc  
 riscv                 randconfig-002-20240227   clang
