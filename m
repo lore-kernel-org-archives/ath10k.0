@@ -4,65 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF867C47DD9
-	for <ath10k@archiver.kernel.org>; Wed, 28 Feb 2024 14:03:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D3B3C47DD9
+	for <ath10k@archiver.kernel.org>; Wed, 28 Feb 2024 15:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IjayELEBRpKyDC00t4UYX7vYTmJ6xN+vTtkQ0ppenww=; b=zRKN3jswtZtvMrylX9wA9JvgOl
-	pDZaFf9LQ3pmM+EcMz1xu/XVHb4OYA+CJPUJmp9OasJzAdiKnAH8LDiCnrLuhY+mNhsyBDR4/6Ftl
-	A3h7zK3/5enw30hfgh3Gz7pMb26IPxUmwmOOmuEk0YHbkxCCQJCtIRu0nxdOJ799DnhXOeLye2IfY
-	IT80YgcZOEp3rvde1p1LCwhuy7ZgQeEmFz+iHie6wNnYOCFVojbcU+AFwv9PXm14TYpAyEj/R9tiz
-	jerE9XGmU3LfycwScMiPlAL8THWfo/s/4F2FPO4m77Nlgc9SIu55rSfKq45QUNnN4WSfSxciTrW65
-	x9czOi8Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LolsVB0Zf2W7CZjOv+Yh7zbYkWss1NhXLWb8MwxRpDI=; b=eA4EhHyQMMGt/PlQYn5qg1DEu/
+	mYgvGzQgyvgNibMtRZF5t5J9b3HHeFQA1dWBD5FGLBJpQdOTV4S+WZU5s84TLCoOB9pGA5l1GBD3l
+	3pOFa1kSX12eLsXps5unaPX1MOQV9i/bbjI0SfpdfjbtWkxNPco2E8D5psJjS37kZqUaKTWvcGYDt
+	RuB9N0dlORmnGLTO6vYbL/UMsOXU9RugXaKX5MatYpHOAHNcq7VGej3RoBX3UnDpckkKs5DVd64Xe
+	YrFuOqKUwM83YJhjig4aU7GZ+q+eOS7PV/QPsler/+xbn0ZshfI4Fh23eqTawgztTVi5lY9UNAlUU
+	Wo2z+PiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfKX2-00000009cEU-1vtL;
-	Wed, 28 Feb 2024 14:03:36 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rfLPh-00000009nd9-35QW;
+	Wed, 28 Feb 2024 15:00:05 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfKWw-00000009cB6-3KBr
+	id 1rfLPe-00000009nb5-3jJ2
 	for ath10k@lists.infradead.org;
-	Wed, 28 Feb 2024 14:03:34 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id B2917CE2195;
-	Wed, 28 Feb 2024 14:03:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1CDBC433C7;
-	Wed, 28 Feb 2024 14:03:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709129008;
-	bh=+29q9XzaWHOI+KXDSu5A9D/Iw9UMYbaTgyR8nbq20I4=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=DVtQg5dqjYxmDNhXd1PlqiQowWozLs8nLHUUZ9Kcg/3L+meJar1UQ2Yneuhe6h25N
-	 OygDcReVGMLOzpc/p5LMSubHHZHNxdyLsLggaEoQgPdemlYoXgjV84xUmI8PDgifeI
-	 EhlBr89wLuQQSP3/zZ9Zmj3QN+ZAsCoVHX7+nUl5MIvCtpzSmpLmAMG/frDFWkCOdk
-	 CmkQNZf6D6NLQElejh1YTYZE12uvavAnVfX+ci+UEKVm2aBD13sT79oDK26D/H+qJK
-	 vxtj3vR6L81P3xwRku6/NNOtONDVbsuJeRSggwNMkwv7ppei0RrKf8E3f7XF/hdgrw
-	 3D5ayFU5ru/2w==
-From: Kalle Valo <kvalo@kernel.org>
-To: Marc Gonzalez <mgonzalez@freebox.fr>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,  ath10k
- <ath10k@lists.infradead.org>,  wireless <linux-wireless@vger.kernel.org>,
-  DT <devicetree@vger.kernel.org>,  Rob Herring <robh+dt@kernel.org>,
-  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley
- <conor+dt@kernel.org>,  Pierre-Hugues Husson <phhusson@freebox.fr>
+	Wed, 28 Feb 2024 15:00:04 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S6uAST011443;
+	Wed, 28 Feb 2024 14:59:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=LolsVB0Zf2W7CZjOv+Yh7zbYkWss1NhXLWb8MwxRpDI=; b=az
+	5Z+rvCYSDxZUoUJ1smPh5SJxULsMYpVAg4QzAlRejJx7guKxaTEFISZJWQaNWZgm
+	vqdnsRf+M5gQugBhX9U19wpocIlLlOjZ0kXMWcemCS91oyGfLCk3oo0ospIbJrDA
+	3n41ywyq9cFM1d/oPTe7JU+5Uo7JU9/nNc+TK7bbQMHQbGy5tW5vXS4UGdpCf9LV
+	OQnwZLNBhAAHMp4vEIjzod9hiWVuOxV/mdk35r+LTqaw9K7zIoXQ+RdCsq/VYvHB
+	jT1KLo50qLt6769dQtlMSlxQURxIpmVwD8OiFypEcxg0yhKDJRcfjTwjXj0ynSE2
+	8LNouOZlXNdqLkjgTcag==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whw3f1dyn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 14:59:57 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SExuIa018876
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 14:59:56 GMT
+Received: from [10.110.113.97] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 06:59:56 -0800
+Message-ID: <d8c90f33-d0ab-4d73-9580-2547446671a0@quicinc.com>
+Date: Wed, 28 Feb 2024 06:59:55 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
  qcom,no-msa-ready-indicator prop
+Content-Language: en-US
+To: Marc Gonzalez <mgonzalez@freebox.fr>, Kalle Valo <kvalo@kernel.org>,
+        ath10k <ath10k@lists.infradead.org>
+CC: wireless <linux-wireless@vger.kernel.org>,
+        DT
+	<devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Pierre-Hugues Husson <phhusson@freebox.fr>
 References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
-	<b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr>
-Date: Wed, 28 Feb 2024 16:03:24 +0200
-In-Reply-To: <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> (Marc
-	Gonzalez's message of "Wed, 28 Feb 2024 14:24:12 +0100")
-Message-ID: <871q8wk7o3.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+ <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: eQA6F6l0b66UTTMGn5Y3RbOoHFn92Bkk
+X-Proofpoint-GUID: eQA6F6l0b66UTTMGn5Y3RbOoHFn92Bkk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_07,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=789 spamscore=0
+ suspectscore=0 adultscore=0 impostorscore=0 priorityscore=1501 bulkscore=0
+ mlxscore=0 clxscore=1011 malwarescore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402280118
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240228_060331_252213_AC38214A 
-X-CRM114-Status: GOOD (  15.39  )
+X-CRM114-CacheID: sfid-20240228_070002_987306_2271E9B6 
+X-CRM114-Status: UNSURE (   8.54  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,40 +108,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Marc Gonzalez <mgonzalez@freebox.fr> writes:
-
+On 2/28/2024 5:24 AM, Marc Gonzalez wrote:
 > The driver waits for this indicator before proceeding,
 > yet some WCNSS firmwares apparently do not send it.
 > On those devices, it seems safe to ignore the indicator,
 > and continue loading the firmware.
->
-> Signed-off-by: Pierre-Hugues Husson <phhusson@freebox.fr>
-> Signed-off-by: Marc Gonzalez <mgonzalez@freebox.fr>
-> ---
->  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
-> index 7758a55dd3286..145fa1a3c1c6a 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
-> @@ -121,6 +121,14 @@ properties:
->        Whether to skip executing an SCM call that reassigns the memory
->        region ownership.
->  
-> +  qcom,no-msa-ready-indicator:
-> +    type: boolean
-> +    description:
-> +      The driver waits for this indicator before proceeding,
-> +      yet some WCNSS firmwares apparently do not send it.
-> +      On those devices, it seems safe to ignore the indicator,
-> +      and continue loading the firmware.
 
-This sounds more like a firmware feature, not a hardware feature. What
-about having a flag in enum ath10k_fw_features in firmware-2.bin?
+Can you list the product/hardware/firmware where this is observed?
+Would prefer to fix the firmware if the issue is there
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
