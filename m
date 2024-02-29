@@ -4,52 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8C91C5475B
-	for <ath10k@archiver.kernel.org>; Thu, 29 Feb 2024 03:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FD36C48BF6
+	for <ath10k@archiver.kernel.org>; Thu, 29 Feb 2024 05:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:To:From:Reply-To:
-	Cc:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ZckEXqrOjxn0koqiB/6wfRPJyR0DoXpMrLNFVSetg1w=; b=JqdUhHPlgYluYLkVMNTvIDby8j
-	X548X1j2kjbHeqlaAHpuXeakG7Y00yA3VHxWMLmzLOfzxMlXWcZdEfWbhZkO0mkI43q2/Avfis/qZ
-	l0YQaJq3nC5kE4h5cxn0PgCreWsITr5o9MtT4nGgcUFjoftOLUpjT8dXpuzn8kUyeA7bNbiia3hVh
-	QRhXXDI2BuauaQKlJJthw920jJ/Rfd4n/n2/k/uW/X/t9XNvGfN71xl3qHxhidcYvZzd7Alq1V8Z4
-	qk+ELkk/GK8UdxvN1CMNhdXc6tOEJGFvIHwz2peqPWwvn4cNkdLLEiD0u4GbzlEVyI/x2hvM003DD
-	4x+M5e3Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=vP0k83F+luS0HjFLbslAiRhsJs+C7FswJ2TYg1TLt0k=; b=lcw7cWQy7AzgPqqBkQTC1WH23j
+	MbY4sgLPP4EcrmbPnVRMNGbToBK0XeE074vkYs7wUCnSleIouajKyZUyX5an25kYc1xZqqS5ZJu6Q
+	FaX4GfyZV4p69we1JqeJ72eWeiKXS8p6iQ2DG/BgIwiSe0QresTmVKinCVmMWAo5lMY+f7H+PedDl
+	g14NICYxNogU3GGfFNhJ81iuvoegtP9J/szYc0ujAUHjRCl+25djIuGNmb9wBkUy5iS5s4FhP6ri1
+	DbueTTnDxF7qhq8Svn+YybFCMuI5ii215uHmoOmitICD1K1tZJUShVgmc0GdkaEK6TKbWt5dHSEpJ
+	F/mSA/Zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfX4j-0000000Bt8A-2nf5;
-	Thu, 29 Feb 2024 03:27:13 +0000
-Received: from mail.kaechele.ca ([2607:5300:60:7a38::25:1])
+	id 1rfYXk-0000000C7SF-3PST;
+	Thu, 29 Feb 2024 05:01:16 +0000
+Received: from mgamail.intel.com ([192.198.163.16])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfX4g-0000000Bt6U-2ZKt
+	id 1rfYXh-0000000C7RQ-2pX3
 	for ath10k@lists.infradead.org;
-	Thu, 29 Feb 2024 03:27:12 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 289A3C006E
-	for <ath10k@lists.infradead.org>; Wed, 28 Feb 2024 22:33:04 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaechele.ca; s=201907;
-	t=1709177584; h=from:subject:date:message-id:to:mime-version:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=ZckEXqrOjxn0koqiB/6wfRPJyR0DoXpMrLNFVSetg1w=;
-	b=kN3JdVMQgE2lGrHFn9mJn17x6q3WimNEbSSF3PV8GnNF3cRT0xvtxC0uNLHRnIZ06xOos3
-	oCZ4Nh2rH3MMFuC1Rn2+yZH3u4sBCEqFEx+2iDF3zgxnL4k4yu6QDB5avbO5TbIT5fxxez
-	Osv6wvIddNDwtJESsBkMiZCte7d8XLY=
-From: Felix Kaechele <felix@kaechele.ca>
-To: ath10k@lists.infradead.org
-Subject: [RFC PATCH 1/1] wifi: ath10k: add support for QCA9379 hw1.0 SDIO
-Date: Wed, 28 Feb 2024 22:27:00 -0500
-Message-ID: <20240229032700.414415-2-felix@kaechele.ca>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240229032700.414415-1-felix@kaechele.ca>
-References: <20240229032700.414415-1-felix@kaechele.ca>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+	Thu, 29 Feb 2024 05:01:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709182874; x=1740718874;
+  h=date:from:to:cc:subject:message-id;
+  bh=XvhxRAvdgIyPbTJ1RZI1zChf5Ow9DJkVeLA2e7EmMxs=;
+  b=TLQCENoOidJ3pr4Dg6j3/4NJ/+uPRh3zxkNN94f/YOK9sVUElWsjPmLg
+   IkBxTlZJw6tL028dVNZmOhuWfbxu+2N+6sqnsHPQonnq3i9hEodGk1CCT
+   UUp03WzdKx21TIwyTC9BKFJa7g+28zD05Jvzek93Hmpa/IiVBL1BjRghz
+   P3EBtJsp2/lenQmeLN2K4l/ABo8UX8RabeS2V1GMkIuns+3ZfPoHoPvzB
+   Sq5Rz3//ouQX8hayOW+5/z6Rd2M4M7v/iozooiKU5Y0T31nWD3TzG0rIN
+   xMex89vAFw08/vylw2mskgLFMWJxzgn4xh/oXV0kqaTIsUkla9J3q39xD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="4212746"
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="4212746"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 21:01:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="12386206"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa003.jf.intel.com with ESMTP; 28 Feb 2024 21:01:00 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rfYVk-000Cez-0h;
+	Thu, 29 Feb 2024 04:59:27 +0000
+Date: Thu, 29 Feb 2024 12:58:14 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ 776c9c93bb0511d04e6222546499e5ea20ad51b0
+Message-ID: <202402291211.WxP42ywc-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240228_192711_010650_874A8C4C 
-X-CRM114-Status: GOOD (  16.18  )
+X-CRM114-CacheID: sfid-20240228_210113_767281_DD27D41A 
+X-CRM114-Status: UNSURE (   4.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,207 +79,174 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Add support for the QCA9379 chipset. Analogous to the vendor qcacld driver
-this change treats the QCA9379 family the same as the QCA9377 family.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: 776c9c93bb0511d04e6222546499e5ea20ad51b0  wifi: ath12k: fix license in p2p.c and p2p.h
 
-The card generally works and connects to a variety of networks (open,
-WPA2-PSK, WPA3 Personal) but currently does not roam cleanly and will
-reauthenticate, causing intermittent loss of connectivity.
+elapsed time: 871m
 
-This change was tested on a device that uses a LITE-ON WCBN3510A card.
+configs tested: 154
+configs skipped: 3
 
-Tested-on: QCA9379 hw1.0 SDIO WLAN.NPL.1.6-00163-QCANPLSWPZ-1
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Felix Kaechele <felix@kaechele.ca>
----
- drivers/net/wireless/ath/ath10k/core.c      | 35 +++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h        | 11 +++++++
- drivers/net/wireless/ath/ath10k/pci.c       |  2 ++
- drivers/net/wireless/ath/ath10k/sdio.c      |  5 ++-
- drivers/net/wireless/ath/ath10k/targaddrs.h |  3 ++
- include/linux/mmc/sdio_ids.h                |  1 +
- 6 files changed, 56 insertions(+), 1 deletion(-)
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                      axs103_smp_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                        nsimosci_defconfig   gcc  
+arc                   randconfig-001-20240229   gcc  
+arc                   randconfig-002-20240229   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                            dove_defconfig   gcc  
+arm                   randconfig-001-20240229   gcc  
+arm                   randconfig-002-20240229   gcc  
+arm                   randconfig-004-20240229   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-002-20240229   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240229   gcc  
+csky                  randconfig-002-20240229   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240229   clang
+i386         buildonly-randconfig-002-20240229   gcc  
+i386         buildonly-randconfig-003-20240229   gcc  
+i386         buildonly-randconfig-004-20240229   clang
+i386         buildonly-randconfig-005-20240229   gcc  
+i386         buildonly-randconfig-006-20240229   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240229   clang
+i386                  randconfig-002-20240229   gcc  
+i386                  randconfig-003-20240229   clang
+i386                  randconfig-004-20240229   gcc  
+i386                  randconfig-005-20240229   gcc  
+i386                  randconfig-006-20240229   gcc  
+i386                  randconfig-011-20240229   gcc  
+i386                  randconfig-012-20240229   gcc  
+i386                  randconfig-013-20240229   clang
+i386                  randconfig-014-20240229   clang
+i386                  randconfig-015-20240229   clang
+i386                  randconfig-016-20240229   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240229   gcc  
+loongarch             randconfig-002-20240229   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                           virt_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  cavium_octeon_defconfig   gcc  
+mips                malta_qemu_32r6_defconfig   gcc  
+mips                       rbtx49xx_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240229   gcc  
+nios2                 randconfig-002-20240229   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240229   gcc  
+parisc                randconfig-002-20240229   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-002-20240229   gcc  
+powerpc64             randconfig-001-20240229   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-002-20240229   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          kfr2r09_defconfig   gcc  
+sh                    randconfig-001-20240229   gcc  
+sh                    randconfig-002-20240229   gcc  
+sh                           se7705_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                       sparc32_defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240229   gcc  
+sparc64               randconfig-002-20240229   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240229   gcc  
+um                    randconfig-002-20240229   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-002-20240229   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240229   clang
+x86_64                randconfig-002-20240229   clang
+x86_64                randconfig-003-20240229   clang
+x86_64                randconfig-004-20240229   clang
+x86_64                randconfig-005-20240229   clang
+x86_64                randconfig-006-20240229   clang
+x86_64                randconfig-071-20240229   clang
+x86_64                randconfig-072-20240229   clang
+x86_64                randconfig-073-20240229   clang
+x86_64                randconfig-074-20240229   clang
+x86_64                randconfig-076-20240229   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20240229   gcc  
+xtensa                randconfig-002-20240229   gcc  
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 9ce6f49ab261..6daf26d06885 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -661,6 +661,40 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.delay_unmap_buffer = false,
- 		.mcast_frame_registration = false,
- 	},
-+	{
-+		.id = QCA9379_HW_1_0_DEV_VERSION,
-+		.dev_id = QCA9379_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_SDIO,
-+		.name = "qca9379 hw1.0 sdio",
-+		.patch_load_addr = QCA9379_HW_1_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 19,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 8124,
-+		.fw = {
-+			.dir = QCA9379_HW_1_0_FW_DIR,
-+			.board = QCA9379_HW_1_0_BOARD_DATA_FILE,
-+			.board_size = QCA9379_BOARD_DATA_SZ,
-+			.board_ext_size = QCA9379_BOARD_EXT_DATA_SZ,
-+		},
-+		.rx_desc_ops = &qca988x_rx_desc_ops,
-+		.hw_ops = &qca6174_ops,
-+		.hw_clk = qca6174_clk,
-+		.target_cpu_freq = 176000000,
-+		.decap_align_bytes = 4,
-+		.n_cipher_suites = 8,
-+		.num_peers = TARGET_HL_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
-+		.uart_pin_workaround = true,
-+		.credit_size_workaround = true,
-+		.dynamic_sar_support = false,
-+		.hw_restart_disconnect = false,
-+		.use_fw_tx_credits = true,
-+		.delay_unmap_buffer = false,
-+		.mcast_frame_registration = false,
-+	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
-@@ -3585,6 +3619,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 		break;
- 	case ATH10K_HW_QCA6174:
- 	case ATH10K_HW_QCA9377:
-+	case ATH10K_HW_QCA9379:
- 		ar->regs = &qca6174_regs;
- 		ar->hw_ce_regs = &qcax_ce_regs;
- 		ar->hw_values = &qca6174_values;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 93c073091996..8f52695b46db 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -30,6 +30,7 @@ enum ath10k_bus {
- #define QCA9888_2_0_DEVICE_ID	(0x0056)
- #define QCA9984_1_0_DEVICE_ID	(0x0046)
- #define QCA9377_1_0_DEVICE_ID   (0x0042)
-+#define QCA9379_1_0_DEVICE_ID   (0x0042)
- #define QCA9887_1_0_DEVICE_ID   (0x0050)
- 
- /* QCA988X 1.0 definitions (unsupported) */
-@@ -61,6 +62,9 @@ enum ath10k_bus {
- #define QCA9377_HW_1_0_DEV_VERSION	0x05020000
- #define QCA9377_HW_1_1_DEV_VERSION	0x05020001
- 
-+/* QCA9379 target BMI version signatures */
-+#define QCA9379_HW_1_0_DEV_VERSION	0x05040000
-+
- enum qca6174_pci_rev {
- 	QCA6174_PCI_REV_1_1 = 0x11,
- 	QCA6174_PCI_REV_1_3 = 0x13,
-@@ -124,6 +128,11 @@ enum qca9377_chip_id_rev {
- #define QCA9377_HW_1_0_BOARD_DATA_FILE "board.bin"
- #define QCA9377_HW_1_0_PATCH_LOAD_ADDR	0x1234
- 
-+/* QCA9379 1.0 definitions */
-+#define QCA9379_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9379/hw1.0"
-+#define QCA9379_HW_1_0_BOARD_DATA_FILE "board.bin"
-+#define QCA9379_HW_1_0_PATCH_LOAD_ADDR	0x1234
-+
- /* QCA4019 1.0 definitions */
- #define QCA4019_HW_1_0_DEV_VERSION     0x01000000
- #define QCA4019_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA4019/hw1.0"
-@@ -238,6 +247,7 @@ enum ath10k_hw_rev {
- 	ATH10K_HW_QCA9888,
- 	ATH10K_HW_QCA9984,
- 	ATH10K_HW_QCA9377,
-+	ATH10K_HW_QCA9379,
- 	ATH10K_HW_QCA4019,
- 	ATH10K_HW_QCA9887,
- 	ATH10K_HW_WCN3990,
-@@ -409,6 +419,7 @@ int ath10k_hw_diag_fast_download(struct ath10k *ar,
- #define QCA_REV_9888(ar) ((ar)->hw_rev == ATH10K_HW_QCA9888)
- #define QCA_REV_9984(ar) ((ar)->hw_rev == ATH10K_HW_QCA9984)
- #define QCA_REV_9377(ar) ((ar)->hw_rev == ATH10K_HW_QCA9377)
-+#define QCA_REV_9379(ar) ((ar)->hw_rev == ATH10K_HW_QCA9379)
- #define QCA_REV_40XX(ar) ((ar)->hw_rev == ATH10K_HW_QCA4019)
- #define QCA_REV_WCN3990(ar) ((ar)->hw_rev == ATH10K_HW_WCN3990)
- 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 5c34b156b4ff..903224fdac15 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1899,6 +1899,7 @@ void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
- 		 *  to mask irq/MSI.
- 		 */
- 		break;
-+	case ATH10K_HW_QCA9379:
- 	case ATH10K_HW_WCN3990:
- 		break;
- 	}
-@@ -1927,6 +1928,7 @@ static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
- 		 *  to unmask irq/MSI.
- 		 */
- 		break;
-+	case ATH10K_HW_QCA9379:
- 	case ATH10K_HW_WCN3990:
- 		break;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 0ab5433f6cf6..a1e8f9783b5d 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1105,6 +1105,7 @@ static void ath10k_sdio_set_mbox_info(struct ath10k *ar)
- 				ATH10K_HIF_MBOX0_EXT_WIDTH_ROME_2_0;
- 		break;
- 	case (SDIO_DEVICE_ID_ATHEROS_QCA9377 & 0x0F00):
-+	case (SDIO_DEVICE_ID_ATHEROS_QCA9379 & 0x0F00):
- 		mbox_info->ext_info[0].htc_ext_sz =
- 			ATH10K_HIF_MBOX0_EXT_WIDTH_ROME_2_0;
- 		break;
-@@ -2597,7 +2598,8 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 
- 	dev_id_base = (id->device & 0x0F00);
- 	if (dev_id_base != (SDIO_DEVICE_ID_ATHEROS_AR6005 & 0x0F00) &&
--	    dev_id_base != (SDIO_DEVICE_ID_ATHEROS_QCA9377 & 0x0F00)) {
-+	    dev_id_base != (SDIO_DEVICE_ID_ATHEROS_QCA9377 & 0x0F00) &&
-+	    dev_id_base != (SDIO_DEVICE_ID_ATHEROS_QCA9379 & 0x0F00)) {
- 		ret = -ENODEV;
- 		ath10k_err(ar, "unsupported device id %u (0x%x)\n",
- 			   dev_id_base, id->device);
-@@ -2656,6 +2658,7 @@ static void ath10k_sdio_remove(struct sdio_func *func)
- static const struct sdio_device_id ath10k_sdio_devices[] = {
- 	{SDIO_DEVICE(SDIO_VENDOR_ID_ATHEROS, SDIO_DEVICE_ID_ATHEROS_AR6005)},
- 	{SDIO_DEVICE(SDIO_VENDOR_ID_ATHEROS, SDIO_DEVICE_ID_ATHEROS_QCA9377)},
-+	{SDIO_DEVICE(SDIO_VENDOR_ID_ATHEROS, SDIO_DEVICE_ID_ATHEROS_QCA9379)},
- 	{},
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
-index ec556bb88d65..71782b153e75 100644
---- a/drivers/net/wireless/ath/ath10k/targaddrs.h
-+++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
-@@ -481,6 +481,9 @@ struct host_interest {
- #define QCA9377_BOARD_DATA_SZ     QCA6174_BOARD_DATA_SZ
- #define QCA9377_BOARD_EXT_DATA_SZ 0
- 
-+#define QCA9379_BOARD_DATA_SZ     QCA6174_BOARD_DATA_SZ
-+#define QCA9379_BOARD_EXT_DATA_SZ 0
-+
- #define QCA99X0_BOARD_DATA_SZ	  12288
- #define QCA99X0_BOARD_EXT_DATA_SZ 0
- 
-diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 7fada7a714fe..181a284862d0 100644
---- a/include/linux/mmc/sdio_ids.h
-+++ b/include/linux/mmc/sdio_ids.h
-@@ -52,6 +52,7 @@
- #define SDIO_DEVICE_ID_ATHEROS_AR6004_19	0x0419
- #define SDIO_DEVICE_ID_ATHEROS_AR6005		0x050A
- #define SDIO_DEVICE_ID_ATHEROS_QCA9377		0x0701
-+#define SDIO_DEVICE_ID_ATHEROS_QCA9379		0x0801
- 
- #define SDIO_VENDOR_ID_BROADCOM			0x02d0
- #define SDIO_DEVICE_ID_BROADCOM_NINTENDO_WII	0x044b
 -- 
-2.44.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
