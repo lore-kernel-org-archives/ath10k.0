@@ -4,98 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48BDEC54798
-	for <ath10k@archiver.kernel.org>; Thu, 29 Feb 2024 19:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B7FDC5478C
+	for <ath10k@archiver.kernel.org>; Fri,  1 Mar 2024 08:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+KelDty0wxWhCzXHAyYD6vlvmk+OW6Qo5uQybSHnaZM=; b=2QQVxW7rBx4VHcjPpMJ4c8ffW/
-	VoX5+9Lib3bzQ/yHZMbHm4rgKFhtZOvpYccPejdgJ3Zd4Hd3PPRaaitxKrjqLKgJ+7BiWF5IbxQDM
-	pRMGU75iHuLVX/9oOeVyGtMgz0KeElUkfa1H3vJiYmjweRii1kx+z17Z0nPMVCAm4mDRiLo6/OxX5
-	lYT8A2eYPrC3KbFvkTOX2RhIxMzw96SjJVB7x2vBg4+iujwDOC/q8KYupfqB05h6+Fo4zMCzq36bF
-	ZsN1Ys5XFph5HYDnebbmrnj6R4Tx3DC8QGvuZJ8fRyUgRGqrnZIl1/cAJpRtCAiPxQO38D+2w+QBE
-	xaVM1eCA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+eCFlHdIvNvfrRhZX8RsRh0OFIGsCFWMFdLP70FLjRs=; b=V9Bc+VnnV1gCvYKvf3Gzi+eM4x
+	9UNcK99ddUBDLk3YKXG3ZHH1hDPPZvnDqFt0lnFGT6HCN/ejgg2Whl+82sMeJsm4QwJ7VVzEK5IkE
+	+/Sjbd1EfkOjhlHeNALWs7uXWto4Uh/2VGKTzz/oSva55UhoZfTtwlQNyNYmhJEYCotPRiKkf8wtQ
+	I9DKdxGF8sgbmTDkMBEnq4cUq5f6u01EFhKxDDmY2ItrpDyxMKGcs/Z2wxoFm7orRmxsFF08q1aES
+	0TeRcyEPwvrLijLAJbB0mJkdYp9KQxjYhNB12RkOWuaCZau/mZTSRGK1iRm2qzTsbaL5uaWn5IwfS
+	qDX7yBtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfmMZ-0000000ExLh-0oM0;
-	Thu, 29 Feb 2024 19:46:39 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1rfxpe-0000000Gp3M-3umD;
+	Fri, 01 Mar 2024 08:01:26 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfmMM-0000000ExEq-0iRp
+	id 1rfxpb-0000000Gp1Y-3ohC
 	for ath10k@lists.infradead.org;
-	Thu, 29 Feb 2024 19:46:28 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41TIdBlV005591;
-	Thu, 29 Feb 2024 19:46:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=+KelDty0wxWhCzXHAyYD6vlvmk+OW6Qo5uQybSHnaZM=; b=H9
-	Yc8el075J3+8d4GD+nXf4h14nKsA1sR2Ht+4v97h1Y9nh2MZQP7f8uDDYY+SwYgd
-	FYBiZiggDpApdRzW3WS94fUn/USZruUOzS/JDb12jnU2G5cfsexhpGvA9B+sXS1c
-	nmywECm/q2iiNv2PdVhZVpLuNZzLCEk8P+Z0b07SO2ZFEES9UDkla5ZX0bLHgQKs
-	hU2uSQld01PLQT6dNV70RbUcg+yTln/N+IT8Y7MK6c+oGo3tXsfSo4VHUqiv8NUX
-	O80TzPNEnU69LMGaGr1lZkzjjpvLn6wGY0N3Ge/iZX4R17DdVIEdcvZ9Q9sWt4u8
-	drifnT32MVK1g/gcfLiw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjkkqabgk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 19:46:19 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41TJkIqn018607
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 19:46:18 GMT
-Received: from [10.110.42.209] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
- 2024 11:46:17 -0800
-Message-ID: <c48ead11-0e2a-4066-b324-84f802215c9a@quicinc.com>
-Date: Thu, 29 Feb 2024 11:46:16 -0800
+	Fri, 01 Mar 2024 08:01:25 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4DA6261647;
+	Fri,  1 Mar 2024 08:01:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06746C433C7;
+	Fri,  1 Mar 2024 08:01:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709280082;
+	bh=jMRWjjBb3WoG96heiGE+SbBHlPWqedM9ZSLpfueiMU8=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=NYXOROiiPwwVhYxx1fbNDxcpy1ncuwsxP3IJmfH3QY4e9lqXC5mcmHEFwLekftNje
+	 HdPvpXFl6MuYkRR+Dfj6GtbgTEKlYB9UH3l/RbRuSX/0okn+jTeVDtHyODc8LX/3Gd
+	 AMQelHir1f7Nh0yNghqmyI1UhM6pXRNUEqQPlumhjtthx8wh8D2LDcu0etWNaUhNnc
+	 h/PYPpr43thxVRBRjuPZ0DgbPuDlNfDGqOdclU4s6Ikxm3oOULyAMLohqdtohzALz/
+	 Yjb8O3lflw7vPwKeej6m09O5t2iFHNoHj8yLsi6swrrIwx6xZXLk/NUgtli0Yob3zp
+	 GbGLT+UfGyS7A==
+From: Kalle Valo <kvalo@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,  "David S. Miller"
+ <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub
+ Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  Rob Herring
+ <robh+dt@kernel.org>,  Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
+  Bjorn Andersson <andersson@kernel.org>,  Konrad Dybcio
+ <konrad.dybcio@linaro.org>,  ath10k@lists.infradead.org,
+  linux-wireless@vger.kernel.org,  netdev@vger.kernel.org,
+  devicetree@vger.kernel.org,  linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH RFC 2/4] wifi: ath10k: support board-specific firmware
+ overrides
+References: <20240130-wcn3990-firmware-path-v1-0-826b93202964@linaro.org>
+	<20240130-wcn3990-firmware-path-v1-2-826b93202964@linaro.org>
+Date: Fri, 01 Mar 2024 10:01:17 +0200
+In-Reply-To: <20240130-wcn3990-firmware-path-v1-2-826b93202964@linaro.org>
+	(Dmitry Baryshkov's message of "Tue, 30 Jan 2024 18:38:38 +0200")
+Message-ID: <87h6hq8joy.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
- qcom,no-msa-ready-indicator prop
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>, Kalle Valo <kvalo@kernel.org>
-CC: Marc Gonzalez <mgonzalez@freebox.fr>, ath10k <ath10k@lists.infradead.org>,
-        wireless <linux-wireless@vger.kernel.org>,
-        DT <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Pierre-Hugues Husson <phhusson@freebox.fr>,
-        Jami Kettunen
-	<jamipkettunen@gmail.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>
-References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
- <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
- <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
- <20240229-ageless-primal-7a0544420949@spud>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240229-ageless-primal-7a0544420949@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Ra0XPkIMN5IYWwSyBqp93GD6FLSAijgU
-X-Proofpoint-GUID: Ra0XPkIMN5IYWwSyBqp93GD6FLSAijgU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_05,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- spamscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=709
- lowpriorityscore=0 suspectscore=0 adultscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402290153
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240229_114626_495821_6BBA6790 
-X-CRM114-Status: GOOD (  18.28  )
+X-CRM114-CacheID: sfid-20240301_000124_060048_558B1C17 
+X-CRM114-Status: GOOD (  18.89  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,33 +81,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 2/29/2024 10:40 AM, Conor Dooley wrote:
-> On Wed, Feb 28, 2024 at 06:37:08PM +0200, Kalle Valo wrote:
->> Marc Gonzalez <mgonzalez@freebox.fr> writes:
-> 
->>> As mentioned in my other reply, there are several msm8998-based
->>> devices affected by this issue. Is it not appropriate to consider
->>> a kernel-based work-around?
->>
->> Sorry, not following you here. But I'll try to answer anyway:
->>
->> I have understood that Device Tree is supposed to describe hardware, not
->> software. This is why having this property in DT does not look right
->> place for this. For example, if the ath10k firmware is fixed then DT
->> would have to be changed even though nothing changed in hardware. But of
->> course DT maintainers have the final say.
-> 
-> I dunno, if the firmware affects the functionality of the hardware in a
-> way that cannot be detected from the operating system at runtime how
-> else is it supposed to deal with that?
-> The devicetree is supposed to describe hardware, yes, but at a certain
-> point the line between firmware and hardware is invisible :)
-> Not describing software is mostly about not using it to determine
-> software policy in the operating system.
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 
-FWIW I've compared ath10k to the out-of-tree Android driver and there
-are discrepancies in this area. I've asked the development team that
-supports ath10k to provide a recommendation.
+> Different Qualcomm platforms using WCN3990 WiFI chip use SoC-specific
+> firmware versions with different features. For example firmware for
+> SDM845 doesn't use single-chan-info-per-channel feature, while firmware
+> for QRB2210 / QRB4210 requires that feature. Allow board DT files to
+> override the subdir of the fw dir used to lookup the firmware-N.bin file
+> decribing corresponding WiFi firmware.
+>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-/jeff
+Sorry for the delay, too many drivers... But this looks good to me, few
+small comments.
+
+In the commit message it would it would be good to have an example of
+the new firmware path. And also mention that board file (board-2.bin)
+handling is not affected, at least that's how understood from reading
+the code.
+
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -942,11 +942,20 @@ static const struct firmware *ath10k_fetch_fw_file(struct ath10k *ar,
+>  	if (dir == NULL)
+>  		dir = ".";
+>  
+> +	if (ar->board_name) {
+> +		snprintf(filename, sizeof(filename), "%s/%s/%s",
+> +			 dir, ar->board_name, file);
+> +		ret = firmware_request_nowarn(&fw, filename, ar->dev);
+> +		ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot fw request '%s': %d\n",
+> +			   filename, ret);
+> +		if (!ret)
+> +			return fw;
+> +	}
+
+So here you test if ar->board_name is NULL.
+
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1337,6 +1337,9 @@ static void ath10k_snoc_quirks_init(struct ath10k *ar)
+>  	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+>  	struct device *dev = &ar_snoc->dev->dev;
+>  
+> +	/* ignore errors, default to empty string */
+> +	of_property_read_string(dev->of_node, "firmware-name", &ar->board_name);
+
+What do you mean with empty string in this case, "\n" (with length of 1)
+or NULL? Should we also test for strlen(0) in ath10k_fetch_fw_file()?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
