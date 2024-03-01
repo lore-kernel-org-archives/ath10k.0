@@ -4,70 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C879C5475B
-	for <ath10k@archiver.kernel.org>; Fri,  1 Mar 2024 08:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F4A9C5478C
+	for <ath10k@archiver.kernel.org>; Fri,  1 Mar 2024 14:44:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fKepha/jX1ZniHttNKLse1SAbC+yOgtDNlN9Q72sK+E=; b=t/k9armoRrnycILjlQQwuvfblI
-	3kx4j5Q1cmw9Qzn8ISu1MJsf3yhSjkneO7x5u3Cq0I1P3EXc850UucxA+vVR2TweR3+03SjXT4ppk
-	NU4W2fcJIg/qtPmLWgO2q1XrN9qNOHzW8VZpTYdCbtWUl/bbaAQ8cszitO3dnc3j9sL9gH40O0NCh
-	Dwj16lkdf+lcHmAHVBsqOOkhNdqJ07+QYs7MkcT0BJ8SsxCAqUDbnxdQkQbqVDTys4+tASHrl/wWV
-	LtbAO9r3SDjIww5kF/eGAKutsxzDuHiXzjlx2DIn0kG09/AfhWFISL4AZU3ROngv6K1xWPLHG8V/p
-	K8QnStxw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=e6klA8BA/OmzSHSgkOhFG3aplfNwuTlW6Huig6QFISg=; b=ICl7mHUJuSQy3FuYSATdwUWmlM
+	/ONXYXz4w4V0Oz2KxVOcrduVJSVyDvSxfRxWCHHLDCJ50VZLM8XNkpGp5CQZlr/4dnQ9ew3eykwuY
+	3d38rWo59abyp17we0aCmXOFqexrGIbr5TrcwoOmk8RGrRjRAM4VFipnodW6T2DBCUG8snXD1LY1/
+	hfKd7aHtuMXf9c2Q5pDaba8QnirV9naAWSw3UIiVibJXw0P11DzWboe9nymBQxO8NNPijuuAB7IqF
+	CsBY8CiAajycj9jdGdTf+jmPW9GEcufQ+XULlP2/fyWATVUZSELAMaiqxX5RvMdz28UrJJC6ZOw5Z
+	QXcnSZbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfxya-0000000GqZ3-3Ubj;
-	Fri, 01 Mar 2024 08:10:40 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rg47t-00000000lVS-2qpz;
+	Fri, 01 Mar 2024 14:44:41 +0000
+Received: from mail-yw1-x1133.google.com ([2607:f8b0:4864:20::1133])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfxyX-0000000GqYE-0sD0
+	id 1rg47h-00000000lIh-2otU
 	for ath10k@lists.infradead.org;
-	Fri, 01 Mar 2024 08:10:38 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 5FD16CE24C9;
-	Fri,  1 Mar 2024 08:10:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82F44C433F1;
-	Fri,  1 Mar 2024 08:10:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709280633;
-	bh=X72NJCeGEpyO5TljCIfKuVss8NrQT972LEnQW9Au8jM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Q1dp3Nk59WBXj18jqNBXspTsq5n0O4AOx0Og1H93g0tbsS+tbBCzrVB+pjBRHSE4g
-	 9IHoheYQ6qlctQ+vd9fsnFDXQyr6OHSi6J+zttT/c3C5oZ9+zG+HLFeHRzsAWAqyw/
-	 RslBzZcW+LJmGH74iLKKYXK1ddG5eizTYw9jorCkKEiXBqrs2OwlziLQEggpSZWmwc
-	 HFahnW+dpjO4+AQCBkVO70s9VDffgevfO1Q/X5AlYreZGjz7VZ5uObFt7hhR55F0gg
-	 LUjpdfO4qkKlsjfwPh9YdqYFhrbzI9wuKofxuRzHU6AnJ7ZYRVCbDq+tj+NToO/MyF
-	 hQFY+Cog5LBUg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Marc Gonzalez <mgonzalez@freebox.fr>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,  ath10k
- <ath10k@lists.infradead.org>,  wireless <linux-wireless@vger.kernel.org>,
-  DT <devicetree@vger.kernel.org>,  Rob Herring <robh+dt@kernel.org>,
-  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley
- <conor+dt@kernel.org>,  Pierre-Hugues Husson <phhusson@freebox.fr>,  Jami
- Kettunen <jamipkettunen@gmail.com>,  Jeffrey Hugo <quic_jhugo@quicinc.com>
-Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
- qcom,no-msa-ready-indicator prop
-References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
-	<b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr>
-	<871q8wk7o3.fsf@kernel.org>
-	<3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr>
-	<87wmqoilzf.fsf@kernel.org>
-	<c58e67e6-6a7f-4963-86b9-580165bf05ba@freebox.fr>
-Date: Fri, 01 Mar 2024 10:10:29 +0200
-In-Reply-To: <c58e67e6-6a7f-4963-86b9-580165bf05ba@freebox.fr> (Marc
-	Gonzalez's message of "Wed, 28 Feb 2024 18:19:03 +0100")
-Message-ID: <87cyse8j9m.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	Fri, 01 Mar 2024 14:44:32 +0000
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-6098b9ed2a3so1422287b3.0
+        for <ath10k@lists.infradead.org>; Fri, 01 Mar 2024 06:44:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709304267; x=1709909067; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=e6klA8BA/OmzSHSgkOhFG3aplfNwuTlW6Huig6QFISg=;
+        b=ds4LSOM241YqJSytWSRIfLRl6gOWMM3nmUe7mRC3LpxbuZAANtJCJoAyR0H0261g8B
+         n1Fxpm+/fyZRZn4w4rhJ0W9pIBcooIaJWkb2sM8NmTUaaVw0cxt/EPOZeh198ZZVFB6u
+         YXK6djPH3phyUVObjQoRGDVxX1NukLWz6yPTEt51WkznlKXG7YxG8lq17H96z6XLxhqB
+         ZcHjiOxGrHQj6L3PF3nfLoyCmbJJhSrDW0vAU8yAWSKh/74OExxEr4cRn561pnQUuBEZ
+         ISVEqUX6Vu+j8GAE7YE3JtUFYAT82Pwsqxk1X99nC8oQwIl24r+8XAZ6gii6dlCudp8R
+         e2Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709304267; x=1709909067;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e6klA8BA/OmzSHSgkOhFG3aplfNwuTlW6Huig6QFISg=;
+        b=ODJhhZ7AeuNIFpb/Wg4sXzL5irzT1sFp/Mq5QOcku3CrXS5GRexxlI5r90ehjRPmNB
+         +4mTf5htaNfTQCnTcD0TY/WrtKSUUHgPxxzw0cfyH40H89SSJ/d3jjRQiPGVmBCPrJI6
+         k5EEX/2u8LBzo+u+hdPJln2J7eX539REecIhQyGXaBouPFI2y1IUZHDUOhN8kUJW4mcK
+         Qrs1dJc4AnrYZtM5DS5Ib6vcrgLZu98FZpZsLpuB3w4UGatApQ6GmqiBIbS6uKWN11Kv
+         8BmzJmQz10fatW/Vw8L7btqPWgHUCwMGcYZGc1cNx02h1VrN2xU8Fb8IH6X66nJg4ff7
+         oLUg==
+X-Gm-Message-State: AOJu0YxRzaZaD5K8CVYTooDIlyzBSWBnD0Kh6LkIs86QXdEG9ALLTUTH
+	vHYM2royz4Gj2et03DrkpxlX9NE3/QnJJZ11zAP9QJ8qAWDl+ajST9/6sghW
+X-Google-Smtp-Source: AGHT+IFu6//nzYmK4BaMXm+A8VfbPO1jC9ll4agCgx5T6cmsIRh08mhO6N1gfs9TBCCRTMgoMMsnYQ==
+X-Received: by 2002:a81:5b8a:0:b0:608:cda9:b735 with SMTP id p132-20020a815b8a000000b00608cda9b735mr2069572ywb.39.1709304267560;
+        Fri, 01 Mar 2024 06:44:27 -0800 (PST)
+Received: from [10.102.4.159] ([208.195.13.130])
+        by smtp.gmail.com with ESMTPSA id dn9-20020a05622a470900b0042eb68d81ffsm1753635qtb.53.2024.03.01.06.44.26
+        for <ath10k@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 06:44:27 -0800 (PST)
+Message-ID: <45b4127c-14de-4fc7-8fbe-9d735f0f6669@gmail.com>
+Date: Fri, 1 Mar 2024 06:44:25 -0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: ath10k driver crashing occasionally on dell xps laptop with
+ QCA6174 802.11ac adapter
+To: ath10k@lists.infradead.org
+References: <74898fb4-9332-416d-9d92-7812416a0116@stimulussoft.com>
+Content-Language: en-US
+From: James Prestwood <prestwoj@gmail.com>
+In-Reply-To: <74898fb4-9332-416d-9d92-7812416a0116@stimulussoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240301_001037_620582_2445378C 
-X-CRM114-Status: GOOD (  18.14  )
+X-CRM114-CacheID: sfid-20240301_064429_932582_749630EE 
+X-CRM114-Status: UNSURE (   8.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,57 +94,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Marc Gonzalez <mgonzalez@freebox.fr> writes:
+Purely circumstantial but I've had great luck with firmware:
 
->> Here's one example where in ath10k we use a feature bit as a workaround:
->> 
->> 	/* Don't trust error code from otp.bin */
->> 	ATH10K_FW_FEATURE_IGNORE_OTP_RESULT = 7,
->> 
->>         ....
->> 
->> 	if (!(skip_otp || test_bit(ATH10K_FW_FEATURE_IGNORE_OTP_RESULT,
->> 				   ar->running_fw->fw_file.fw_features)) &&
->> 	    result != 0) {
->> 		ath10k_err(ar, "otp calibration failed: %d", result);
->> 		return -EINVAL;
->> 	}
->> 
->> BTW for modifying firmware-N.bin files we have a script here:
->> 
->> https://github.com/qca/qca-swiss-army-knife/blob/master/tools/scripts/ath10k/ath10k-fwencoder
+firmware-6.bin_WLAN.RM.4.4.1-00288-QCARMSWPZ-1
+
+I've tried the latest firmware you are using and noticed no problems but 
+we have many devices running the above FW, kernel 6.2 and things are 
+quite stable on the 6174.
+
+On 2/29/24 6:00 AM, Jamie wrote:
+> Hello
 >
-> If I understand correctly, you are saying that there is
-> (maybe... probably) a bug in the FW, so it makes sense to
-> tag that specific FW file with a special bit which the kernel
-> will interpret as "this FW is broken in a specific way;
-> and here's how to work around the issue."
+> The ath10k wifi driver crashes occasionallyon Fedora 39 (latest 
+> version with all updates applied) on a Dell XPS 9570 laptop with 
+> QCA6174 802.11ac Wireless Network Adapter.  The machine needs to be 
+> rebooted to access the network again.
 >
-> So this bit would serve the same purpose as my proposed
-> "qcom,no-msa-ready-indicator" bit (that bit existed instead
-> in my board's device tree).
+> See attached debug info & hw info.
 >
-> The problem I see is that the firmware files are signed.
-> Thus, changing a single bit breaks the verification...
-> UNLESS the FW format allows for a signed section ALONG-SIDE
-> an unsigned section?
-
-firmware-N.bin is ath10k specific container file format and we (the
-Linux community) have full access to it using ath10k-fwencoder, there's
-no signing or anything like that. One of the major reasons why it was
-designed was to handle differences between firmware branches, just like
-in this case.
-
-Of course plan A should be to fix the firmware but if that doesn't work
-out then plan B could be using the feature bit in firmware-N.bin.
-
-BTW related to this Dmitry is extending firmware-N.bin handling for
-WCN3990, you will most likely need to use that:
-
-https://patchwork.kernel.org/project/linux-wireless/cover/20240130-wcn3990-firmware-path-v1-0-826b93202964@linaro.org/
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> Thanks in advance
+>
+> Jamie
 
