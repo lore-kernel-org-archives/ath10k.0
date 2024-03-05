@@ -4,73 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C07C3C54E49
-	for <ath10k@archiver.kernel.org>; Tue,  5 Mar 2024 15:02:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AC89C54798
+	for <ath10k@archiver.kernel.org>; Tue,  5 Mar 2024 17:32:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TIgk/fWxkbG/W3dnorJOueaBMCH9fMaFXwo7W7yWN24=; b=j5BMoD0e+YvpL91uzQM6Xuwnv0
-	3rvSIjT+rhKWemHjYNcyxZ/Qmq3QJitP586F6rk1eqx2qz+0KHy1P/GTeY0cKzOrmvCq53rUugON4
-	HJi3Pz21B6cJZp/VHaTDXtCeHZsRNbVmqfm75KNWTfzxm1YJneRdpQPZQQdDm2LTfm+a+CjrOJGYZ
-	nxXHmP5KDxpGWn4Qgcwd42SMowasJV5AnhGXOgh4qOQaOKQY610a7jV05u5oaTkgOFSEMmkodWzqX
-	mmqb+qNJOANxYWXSl/2w+YiXq2wDkxoq5B5V8Q2/CVAgU6InOxbqu4ofras9wkE5iXYwlOehD+n5e
-	s7AZZW1w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=RHGCjxaUPDbJWBPK3hLyM4vR5pB66bSx5oKjgwP2aPM=; b=yJBnrtNbRX4hxRHtGaFWFGmebk
+	Y8HGJXfVhrA4halewWHAspr5U0fnirtEr2pznFwBl1Nwr2XpI/jRi+N5v2DzyMjBly7Iiuf42sdY0
+	74d6VHr1waUtGg/KyAIej2JWjsV8m438sLqT5Be5wHDSBz06JNk/YuVYOpkxmEYVNqklrlJGSLw0K
+	vz0gWG+pZdwnZDpKvy2NP7khncGBDgQf0HKomFQJcad4sShtaWWUrC8/Xs2drYj9RgSqHqVnWk27t
+	WDEfv8UuebENe5z7NTywRGQi14magxbujZqbG0VXkjU3f2GwuJT2yfJpK9tNs0eCpVJSbKxxycpdo
+	1gUZqbuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhWJI-0000000EBVu-1XWs;
-	Tue, 05 Mar 2024 15:02:28 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rhYeT-0000000EhQ8-1eO6;
+	Tue, 05 Mar 2024 17:32:29 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhWJF-0000000EBUT-2rnh
+	id 1rhYeP-0000000EhOs-0cFs
 	for ath10k@lists.infradead.org;
-	Tue, 05 Mar 2024 15:02:27 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 1A37D61423;
-	Tue,  5 Mar 2024 15:02:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 000C3C43390;
-	Tue,  5 Mar 2024 15:02:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709650944;
-	bh=0rbnt5WowyAgoXkHNQgR9IcAjCdySQfxwlKA/O2YA8E=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=oe4RaEmwb56V9aJZVSGYFBa8921haPfL81eYTBT0JngbFSd2vVVXet1O19s1DAOTQ
-	 cExOm4VRyJF2m26HLsUd7VjTWYJ5PFuruxatgrsz7KvO+BzWzodyhhVwuoISUD4m8U
-	 w3ucNaXYkiISv5BLTs4IHlLg3sK/kdOvxN1uytHidirFBzyYg7p5Blt7fdyKt2s67B
-	 EwElCO9iukHboXHf3Wk0d+hcjOpM0LBSshIRG17vjehk6lD64IKxM1UogK1NlIpguB
-	 6C6NF/sSwQhtFCvGcV1BcXCdoLT1Oq5/yq0csLC8xrMuIc20pqPDr4kwDAVkY1Y0tX
-	 Hd/chwUWiyVqw==
-From: Kalle Valo <kvalo@kernel.org>
-To: Marc Gonzalez <mgonzalez@freebox.fr>
-Cc: Conor Dooley <conor@kernel.org>,  Jeff Johnson
- <quic_jjohnson@quicinc.com>,  ath10k <ath10k@lists.infradead.org>,
-  wireless <linux-wireless@vger.kernel.org>,  DT
- <devicetree@vger.kernel.org>,  Rob Herring <robh+dt@kernel.org>,
-  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley
- <conor+dt@kernel.org>,  Pierre-Hugues Husson <phhusson@freebox.fr>,  Jami
- Kettunen <jamipkettunen@gmail.com>,  Jeffrey Hugo
- <quic_jhugo@quicinc.com>,  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+	Tue, 05 Mar 2024 17:32:28 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-412e8c63f23so13178805e9.0
+        for <ath10k@lists.infradead.org>; Tue, 05 Mar 2024 09:32:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1709659942; x=1710264742; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RHGCjxaUPDbJWBPK3hLyM4vR5pB66bSx5oKjgwP2aPM=;
+        b=cWc78hJndsm8Ul+/Xx+Y4mhKTCM9Vw5bCHlh9VcTgTwageNRTrd2dQr2x4FArs981C
+         d3xQ1rEJ0JTOrRngCZyqxpPoRGwrqObAmKDJsGKsZmbtXJv58NW3FGTePZar46+3aMu0
+         X16DojPQ5Mp1nOC6wRmv+9ofQfSuWk0wXcpaZCOZmJsUDPQ88Ql8t85kFVOar0Ff3ItD
+         8PQH+mV1sRSmSshHNC1KO82MuOQTh81iWXDNlx85O35KWiHtddDU+z50AycL0xLtdXD0
+         19jv5cmIVowEIGZY6HMZgvNa78fwPzM1RhqFc2khWlENTEx7TjCvJG/bxApxif1veeVV
+         VCbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709659942; x=1710264742;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHGCjxaUPDbJWBPK3hLyM4vR5pB66bSx5oKjgwP2aPM=;
+        b=uBBWwzIXl6qUkDPVwl2puHDT9pvYE6lckzrohxhd1MkKB/5n4Cmho50ETNnUBihno8
+         BmBV+Yk+OvEqYLJbja9qrLnziZBnrx+toQr54feX66ULeuO50At4cdaKVCUqpeDmzQEb
+         S06bulrtq6lQwS0E8y1Oug/IQkrhIAnkjd1Tbuj3/rzhdYjSatuPM9MeYX0dva69lVnE
+         TYsuCcR626shdqVdDnR9g1am+H624GRyANT1wgK+u20AECqFcpa7LmYiBjnAyZY+dPdf
+         fF545zWjjOTqz9P3BhS8w4RmkTOU7YCIdZaF44h4JYBTND+td3jOVVN+RGL3Un9GXJOB
+         eWKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVMeAMu30RJBDIJaY+mbdNS5+1JmuiufJFnNhPFucaBllGULzoNgatbah5TiczRgDvek5HCl57u73b1+ajriTeMaC9kI4x95D5EHg==
+X-Gm-Message-State: AOJu0YwBQud3wnPe43ivOfNhkfjju68WVNvELTchzbLfzqteTbOWDnF4
+	0Lm/KxTf129vsKnBErUwAEZAS1yt7ps62vOD4DryH8gsBBgtlZeS9sB2WQye23k=
+X-Google-Smtp-Source: AGHT+IFUWWu6brcU5Z3h34Cf83caanSuxe11qXyds41BJD+kSKbWTuLmI4UzT/Lk46RQ0AtgdDlaRw==
+X-Received: by 2002:a5d:4f07:0:b0:33e:11c3:7ebf with SMTP id c7-20020a5d4f07000000b0033e11c37ebfmr9315331wru.62.1709659941681;
+        Tue, 05 Mar 2024 09:32:21 -0800 (PST)
+Received: from [192.168.108.81] (freebox.vlq16.iliad.fr. [213.36.7.13])
+        by smtp.gmail.com with ESMTPSA id q16-20020a5d6590000000b0033d56aa4f45sm15484527wru.112.2024.03.05.09.32.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 09:32:21 -0800 (PST)
+Message-ID: <0816f7bb-3c97-4b90-8e19-191552ea6e26@freebox.fr>
+Date: Tue, 5 Mar 2024 18:32:20 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
  qcom,no-msa-ready-indicator prop
+Content-Language: en-US
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
+ ath10k <ath10k@lists.infradead.org>,
+ wireless <linux-wireless@vger.kernel.org>, DT <devicetree@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Pierre-Hugues Husson <phhusson@freebox.fr>,
+ Jami Kettunen <jamipkettunen@gmail.com>,
+ Jeffrey Hugo <quic_jhugo@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
-	<b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr>
-	<871q8wk7o3.fsf@kernel.org>
-	<3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr>
-	<87wmqoilzf.fsf@kernel.org>
-	<20240229-ageless-primal-7a0544420949@spud>
-	<68a49964-7c05-4575-a4f3-35848c08fefc@freebox.fr>
-Date: Tue, 05 Mar 2024 17:02:19 +0200
-In-Reply-To: <68a49964-7c05-4575-a4f3-35848c08fefc@freebox.fr> (Marc
-	Gonzalez's message of "Mon, 4 Mar 2024 17:21:37 +0100")
-Message-ID: <877cigiux0.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+ <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
+ <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
+ <c58e67e6-6a7f-4963-86b9-580165bf05ba@freebox.fr> <87cyse8j9m.fsf@kernel.org>
+ <6d4b1381-c121-4cda-a8c9-9ccac56bd447@freebox.fr> <87plw87nsc.fsf@kernel.org>
+From: Marc Gonzalez <mgonzalez@freebox.fr>
+In-Reply-To: <87plw87nsc.fsf@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240305_070225_849440_4389D4FD 
-X-CRM114-Status: GOOD (  27.38  )
+X-CRM114-CacheID: sfid-20240305_093225_583694_08282893 
+X-CRM114-Status: GOOD (  11.56  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,72 +107,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Marc Gonzalez <mgonzalez@freebox.fr> writes:
+On 05/03/2024 15:31, Kalle Valo wrote:
 
-> On 29/02/2024 19:40, Conor Dooley wrote:
->
->> On Wed, Feb 28, 2024 at 06:37:08PM +0200, Kalle Valo wrote:
->>
->>> Marc Gonzalez wrote:
->>> 
->>>> As mentioned in my other reply, there are several msm8998-based
->>>> devices affected by this issue. Is it not appropriate to consider
->>>> a kernel-based work-around?
->>>
->>> Sorry, not following you here. But I'll try to answer anyway:
->>>
->>> I have understood that Device Tree is supposed to describe hardware, not
->>> software. This is why having this property in DT does not look right
->>> place for this. For example, if the ath10k firmware is fixed then DT
->>> would have to be changed even though nothing changed in hardware. But of
->>> course DT maintainers have the final say.
->> 
->> I dunno, if the firmware affects the functionality of the hardware in a
->> way that cannot be detected from the operating system at runtime how
->> else is it supposed to deal with that?
->> The devicetree is supposed to describe hardware, yes, but at a certain
->> point the line between firmware and hardware is invisible :)
->> Not describing software is mostly about not using it to determine
->> software policy in the operating system.
->
-> Recording here what was discussed a few days ago on IRC:
->
-> If all msm8998 boards are affected, then it /might/ make sense
-> to work around the issue for ALL msm8998 boards:
->
-> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-> index 0776e79b25f3a..9da06da518fb6 100644
-> --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> @@ -1076,6 +1076,9 @@ int ath10k_qmi_init(struct ath10k *ar, u32 msa_size)
->  	qmi->ar = ar;
->  	ar_snoc->qmi = qmi;
->  
-> +	if (of_device_is_compatible(of_root, "qcom,msm8998")
-> +		qmi->no_point_in_waiting_for_msa_ready_indicator = true;
-> +
->  	if (of_property_read_bool(dev->of_node, "qcom,msa-fixed-perm"))
->  		qmi->msa_fixed_perm = true;
->  
->
-> Thus, anyone porting an msm8998 board to mainline would automatically
-> get the work-around, without having to hunt down the feature bit,
-> and tweak the FW files.
+> Thanks, this is exactly what I'm proposing.
 
-The point with firmware-N.bin file is that NO tweaking or hunting down
-firmware files is necessary. All the files would be in
-linux-firmware.git and ath10k would automatically choose the correct
-firmware-N file. From ath10k side all is needed is Dmitry's patchset[1]
-and your (Marc) patch adding the feature bit check to ath10k.
+With your suggestions, the patch becomes much simpler:
 
-And if later the firmware is fixed, we will update the firmware-N.bin
-file at the same time in linux-firmware.git and the user doesn't notice
-anything.
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 0032f8aa892ff..18d0abcf6f693 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -769,6 +769,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
+ 	[ATH10K_FW_FEATURE_SINGLE_CHAN_INFO_PER_CHANNEL] = "single-chan-info-per-channel",
+ 	[ATH10K_FW_FEATURE_PEER_FIXED_RATE] = "peer-fixed-rate",
+ 	[ATH10K_FW_FEATURE_IRAM_RECOVERY] = "iram-recovery",
++	[ATH10K_FW_FEATURE_NO_MSA_READY] = "no-msa-ready",
+ };
+ 
+ static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index c110d15528bd0..1ac8ea02cc088 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -835,6 +835,9 @@ enum ath10k_fw_features {
+ 	/* Firmware support IRAM recovery */
+ 	ATH10K_FW_FEATURE_IRAM_RECOVERY = 22,
+ 
++	/* Firmware does not send MSA_READY indicator */
++	ATH10K_FW_FEATURE_NO_MSA_READY = 23,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 38e939f572a9e..7e408fd63cdb8 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -1040,6 +1040,8 @@ static void ath10k_qmi_driver_event_work(struct work_struct *work)
+ 		switch (event->type) {
+ 		case ATH10K_QMI_EVENT_SERVER_ARRIVE:
+ 			ath10k_qmi_event_server_arrive(qmi);
++			if (test_bit(ATH10K_FW_FEATURE_NO_MSA_READY, ar->running_fw->fw_file.fw_features))
++				ath10k_qmi_event_msa_ready(qmi);
+ 			break;
+ 		case ATH10K_QMI_EVENT_SERVER_EXIT:
+ 			ath10k_qmi_event_server_exit(qmi);
 
-[1] https://patchwork.kernel.org/project/linux-wireless/cover/20240130-wcn3990-firmware-path-v1-0-826b93202964@linaro.org/
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+I need to build a kernel + rootfs + FW to test the proposed solution,
+then I can spin a formal submission.
+
+(I didn't understand why this patch requires Dmitry's series?)
+
+Do I need to submit a symmetric patch to linux-firmware to define bit 23?
+And also a patch to add the bit to some firmwares? (All msm8998 FWs?)
+
+Regards
+
 
