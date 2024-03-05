@@ -4,60 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD734C54E41
-	for <ath10k@archiver.kernel.org>; Tue,  5 Mar 2024 18:58:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30474C54798
+	for <ath10k@archiver.kernel.org>; Tue,  5 Mar 2024 19:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
-	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wlDKxbR41RHpafnkeoIXHYJzElj6gfNZseg/jVQU1qM=; b=Uafd5J8axRw9YA9z78C+0FPE8C
-	Fki4QIYDPgTHWdxOdpEEn56QHpMoDyHf37NsOKQzZaNRDCrWiJp4IzUKmrPgrAHb9CnG3lME000km
-	iIirGe7frXljIrBEQmOxs3OBt50JZ8U+wb2ZVaxx2nU+VjPaJpThMwAVOQArqXudiTcC0j/X8JaJa
-	T1IzzTrbhmEcXJKUzmKTemzSRWgrGLV/1eO//vN4KJnMcGgRNu54WiSKOT85D0P5BUG61AC7K0XgA
-	yE92Z7dloQUUNV+mgL9QR4DyFyyeG9P797yXs6tHUligc7WVmLPvv2JZVq+ZbKAR2fVdm9QiI92uX
-	QAlaYUXw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=H41GTseSiIkWKpaVXadUAwV6MxZYWMtmkQtIU0X3sKQ=; b=dhIBQixEviFcfseplMbSGD88g6
+	qyy2BjyMMMMPDOUjm+Y4u7hjOiVpgADAJ6nU+XhNt9LnfsmIf5tN7S4Vf1ml+BpL7yvyAe0b7VWmh
+	b9Ixk+r7XyPNsFXHeK7KlYV/aXx+9nqeT3DAUapSpiUMMz+2TpnJJ09+sw7OMekwJbGvzN/lpwVts
+	1phUcY9ou3Rza4jERPZYsEcGws0DNeb+SxmK2/DwG8XRd5QmSa+A6Ll5C/yzMhiSaQeFrMjMnPMOP
+	/juUAYmCXGPk3BZ2e+PwnLjl3at0OgNU4/VT+g1CVt8NXH47nCj+u6rLGHATwlAGe8cPwOzCJI2Se
+	zsB+LS6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhZzJ-0000000EwOr-1yQS;
-	Tue, 05 Mar 2024 18:58:05 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rhaLZ-0000000Ezon-0hD8;
+	Tue, 05 Mar 2024 19:21:05 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhZzF-0000000EwMa-3hK8;
-	Tue, 05 Mar 2024 18:58:04 +0000
+	id 1rhaLW-0000000EzoG-0bee
+	for ath10k@lists.infradead.org;
+	Tue, 05 Mar 2024 19:21:03 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id CE2EBCE1DF9;
-	Tue,  5 Mar 2024 18:57:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C184AC433C7;
-	Tue,  5 Mar 2024 18:57:57 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9527F6172D;
+	Tue,  5 Mar 2024 19:21:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03ED8C433C7;
+	Tue,  5 Mar 2024 19:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709665079;
-	bh=h+7wf7RO/SXTi2xMW6pf3osdjV68Mp9fLkZgtd5hih4=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=LKU15OYndlqoUpe+hKbrfJ+mvdmFeEfKbMIH2ClOwkKJuKlBXYCS7evt4I4h4iluW
-	 x9V8B2ML55oWp3wsx1J85622naSoN2ulNMWAuCZojtCtPOSXHed17mjJrqnsUcozuo
-	 12u/OOjR+nVThUMzmVOaVpbHtZNwpUoNF8wzJbDsKmmN/ZQRoxaQ4VSFULd3SS/TtY
-	 eVs8sVrGwQ/fkXTmUb2sVMAC8FYgPTskbQc4Dr8UEaCkoS1U7DYFx85oaOfFzkFElJ
-	 uwQcsv3YwPWGDuPD9KGAAE++OIBikYYBWSwQjGrAqkN3oZ2bpbl0ak+clYN8rNFX9i
-	 1J5HV0NAwB8tg==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: pull-request: ath-next-20240305
+	s=k20201202; t=1709666461;
+	bh=jG8PjPDjHjrzDu50mfZQbgkQ+cDwgQ7Iq6c6nCmgzwY=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=kmbEN/QdufeshqadsHgjXE85SU3L0z8KHYggPny+2OevlwR1rTVgV4izDZkSg7jDy
+	 AvLvND/kK6D2n7r8ZKDdUfPmZeZQSZUId0sIvZmHnUMHtklpj+b71cwtdL8Ao0IpWN
+	 1lSEmghmvIMKt3osl/fCUkBO3UYwlY1Jo/yVJHIMJgr8xoFQWXH7pQVc6lK/Pj2sFK
+	 WhsHrSEa01JM59SjumY/bwDWuhNggOdhwGQZdLpGtSBSC9MgdBG/c0FEs599QjWb1b
+	 5hJifFFcfbXErF3xU4fwoHxjy0OHuqjEYjrLxlM7YVM9MX+AO1HOi33rP8XAjW+8bg
+	 iyZfVC9hXj6Qg==
 From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <87y1awh8kj.fsf@kernel.org>
-References: <87y1awh8kj.fsf@kernel.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- ath11k@lists.infradead.org, ath12k@lists.infradead.org,
- quic_jjohnson@quicinc.com
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170966507585.424347.4426290600622256900.kvalo@kernel.org>
-Date: Tue,  5 Mar 2024 18:57:57 +0000 (UTC)
+To: Marc Gonzalez <mgonzalez@freebox.fr>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,  ath10k
+ <ath10k@lists.infradead.org>,  wireless <linux-wireless@vger.kernel.org>,
+  DT <devicetree@vger.kernel.org>,  Rob Herring <robh+dt@kernel.org>,
+  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley
+ <conor+dt@kernel.org>,  Pierre-Hugues Husson <phhusson@freebox.fr>,  Jami
+ Kettunen <jamipkettunen@gmail.com>,  Jeffrey Hugo
+ <quic_jhugo@quicinc.com>,  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
+ qcom,no-msa-ready-indicator prop
+References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
+	<b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr>
+	<871q8wk7o3.fsf@kernel.org>
+	<3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr>
+	<87wmqoilzf.fsf@kernel.org>
+	<c58e67e6-6a7f-4963-86b9-580165bf05ba@freebox.fr>
+	<87cyse8j9m.fsf@kernel.org>
+	<6d4b1381-c121-4cda-a8c9-9ccac56bd447@freebox.fr>
+	<87plw87nsc.fsf@kernel.org>
+	<0816f7bb-3c97-4b90-8e19-191552ea6e26@freebox.fr>
+Date: Tue, 05 Mar 2024 21:20:57 +0200
+In-Reply-To: <0816f7bb-3c97-4b90-8e19-191552ea6e26@freebox.fr> (Marc
+	Gonzalez's message of "Tue, 5 Mar 2024 18:32:20 +0100")
+Message-ID: <87h6hk7aee.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240305_105802_307696_33A8A3A1 
-X-CRM114-Status: GOOD (  12.17  )
+X-CRM114-CacheID: sfid-20240305_112102_315220_996967A1 
+X-CRM114-Status: GOOD (  14.15  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,72 +87,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Kalle Valo <kvalo@kernel.org> wrote:
+Marc Gonzalez <mgonzalez@freebox.fr> writes:
 
-> Hi,
-> 
-> Please pull, more information in the tag below.
-> 
-> Kalle
-> 
-> 
-> The following changes since commit a4634aa71fee11f5e3e13bf7d80ee1480a64ce70:
-> 
->   bonding: rate-limit bonding driver inspect messages (2024-02-22 19:13:18 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git tags/ath-next-20240305
-> 
-> for you to fetch changes up to 776c9c93bb0511d04e6222546499e5ea20ad51b0:
-> 
->   wifi: ath12k: fix license in p2p.c and p2p.h (2024-02-28 16:09:29 +0200)
-> 
-> ----------------------------------------------------------------
-> ath.git patches for v6.9
-> 
-> Only some minor cleanup in ath11k and ath12k. Adding Jeff as the
-> maintainer for ath10k, ath11k and ath12k DT bindings.
-> 
-> ----------------------------------------------------------------
-> Baochen Qiang (5):
->       wifi: ath11k: rearrange IRQ enable/disable in reset path
->       wifi: ath11k: remove MHI LOOPBACK channels
->       wifi: ath11k: do not dump SRNG statistics during resume
->       wifi: ath11k: fix warning on DMA ring capabilities event
->       wifi: ath11k: decrease MHI channel buffer length to 8KB
-> 
-> Jeff Johnson (2):
->       dt-bindings: net: wireless: qcom: Update maintainers
->       wifi: ath11k: constify MHI channel and controller configs
-> 
-> Kalle Valo (2):
->       wifi: ath11k: thermal: don't try to register multiple times
->       wifi: ath12k: fix license in p2p.c and p2p.h
-> 
-> Kang Yang (1):
->       wifi: ath12k: add rcu lock for ath12k_wmi_p2p_noa_event()
-> 
->  .../bindings/net/wireless/qcom,ath10k.yaml         |  1 +
->  .../bindings/net/wireless/qcom,ath11k-pci.yaml     |  1 +
->  .../bindings/net/wireless/qcom,ath11k.yaml         |  1 +
->  drivers/net/wireless/ath/ath11k/core.c             |  8 ++-
->  drivers/net/wireless/ath/ath11k/mhi.c              | 68 ++--------------------
->  drivers/net/wireless/ath/ath11k/qmi.c              |  5 +-
->  drivers/net/wireless/ath/ath11k/thermal.c          |  5 +-
->  drivers/net/wireless/ath/ath11k/wmi.c              |  3 +-
->  drivers/net/wireless/ath/ath12k/p2p.c              |  2 +-
->  drivers/net/wireless/ath/ath12k/p2p.h              |  2 +-
->  drivers/net/wireless/ath/ath12k/wmi.c              |  5 +-
->  11 files changed, 29 insertions(+), 72 deletions(-)
+> On 05/03/2024 15:31, Kalle Valo wrote:
+>
+>> Thanks, this is exactly what I'm proposing.
+>
+> With your suggestions, the patch becomes much simpler:
 
-Pulled, thanks.
+Nice, looks good to me.
 
-f654e228ed6b Merge tag 'ath-next-20240305' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath
+> I need to build a kernel + rootfs + FW to test the proposed solution,
+> then I can spin a formal submission.
+
+Yeah, please do test this to make sure we are not missing anything :)
+
+> (I didn't understand why this patch requires Dmitry's series?)
+
+Dmitry's patchset is needed so that we can have board specific
+firmware-N.bin files. At the moment there can be only one firmware-N.bin
+(ath10k/WCN3990/hw1.0/firmware-5.bin) for all boards with WCN3990.
+
+Your patch can be applied to ath.git independently from Dmitry's
+patchset but we need Dmitry's patchset applied before updating
+linux-firmware.git.
+
+> Do I need to submit a symmetric patch to linux-firmware to define bit 23?
+> And also a patch to add the bit to some firmwares? (All msm8998 FWs?)
+
+Me and Jeff can handle linux-firmware.git submission. We will also add
+the new bit to ath10k-fwencoder.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/87y1awh8kj.fsf@kernel.org/
+https://patchwork.kernel.org/project/linux-wireless/list/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
 
