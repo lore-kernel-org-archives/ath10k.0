@@ -4,86 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15F1EC48BF6
-	for <ath10k@archiver.kernel.org>; Thu,  7 Mar 2024 08:23:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E09AC48BF6
+	for <ath10k@archiver.kernel.org>; Thu,  7 Mar 2024 08:39:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BTCDlQMgEr5UEnpV5mDn3dJxhyjjt0R5yPNztDHuRWA=; b=Q5ThwT84PdKaf4CIMfXV65DrLB
-	ojQIQ6BERo40ZGZf0uK6MPCYmaVTov4zkdR5tj0OfOfY5mJsFwUzWqRsOFzyfwJr+lpuYAoI+N/yX
-	whcM0/2FVO6ItFpoAJJrgrO3HWWa7jdL4Gk4gyyZ9hlMqNyv9udk6+k4gr3+ls+VsJNyb3GcdG5ZP
-	iY+kjUoBCX7ofRhP+0gy7os4qkSdK/1KwehLOJOmSZPA8ZJMpREKf6vWRjTIH5KVvx/R9XMXj6hyl
-	BtyHmq6DiG2iXyQZUC6yRjXP8ZCP+DtKahp5J9quwZlPjEUIuyJXQznOhPJ8yejcqXV9jI4H0HnhJ
-	PH5kAu7Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=hS8zu4sRYSZWgtYsgxH06GASLmu07y/0dobyT5SPg6U=; b=diBmb7XPC5l3ugNxyoSdsGYwpl
+	ElnWc1TLkpUBn8pCbS1TRxMMbuHihNdDBuHXo4ZaEsWmR30WonURXWjR2CyJRCDOgsHeItiFSrjKB
+	sL2Y8NsFig5BASvNLIBqQE4WA4bZpYET1b7FI96Iqp5ojuokzagOR5x07cKFNAuNjDngcgI5iLgmd
+	eDlilOEmBRb4gqvbJMxbOoOBRJ9AvhlU3PsNRceQ6EPmpM5OiIJFiZtITQvbEtV/oFsSB7YPv0QUy
+	BJNdiHkQGoNwlTRGhVDkedBjDE2ENnd/MwX3OZ++65ZCSGjGlseqoQqhAftFj5T+c+lEVpKg7jrSh
+	PPHdIiAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ri91w-00000003bc5-3UTm;
-	Thu, 07 Mar 2024 08:23:08 +0000
-Received: from mail-yw1-x112e.google.com ([2607:f8b0:4864:20::112e])
+	id 1ri9I3-00000003g01-1OOz;
+	Thu, 07 Mar 2024 08:39:47 +0000
+Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ri91u-00000003baw-1Lxe
+	id 1ri9Hy-00000003fug-08mM
 	for ath10k@lists.infradead.org;
-	Thu, 07 Mar 2024 08:23:08 +0000
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-609ed7ca444so5186017b3.1
-        for <ath10k@lists.infradead.org>; Thu, 07 Mar 2024 00:23:05 -0800 (PST)
+	Thu, 07 Mar 2024 08:39:45 +0000
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-29954bb87b4so351934a91.2
+        for <ath10k@lists.infradead.org>; Thu, 07 Mar 2024 00:39:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709799784; x=1710404584; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BTCDlQMgEr5UEnpV5mDn3dJxhyjjt0R5yPNztDHuRWA=;
-        b=t/S5uEacD6yNZgg9M431LLCtxH0EL8tHYJRhj2VHTeMOTSFOuuzRx5K8H3j5YKzt0K
-         +ED4cl+cvputIgClT6OrYSRYlW/aJWLpXGLdsxTFQp9HqGQVVoBO+qkYHTDBL0l4aJwF
-         lsB/9Zqnwg4qse8CzDtT7d9cTkGu5l+sXeBYw62o62F/pepX+4N3RR/PXCLlFO6JHimg
-         Uf1wUDN8SJwSN2zekFbI+CFbnWVHaPTRufbYZwCU4XcOFL5G0erRbQAohIfxU+2+IoBT
-         IG5Tu2GZHb5CtQwPVdStYPkn98eliQkHU2vPo2xCp34QVP0xzmhPA+EOkep91cW6GZVW
-         Lwkw==
+        d=sartura.hr; s=sartura; t=1709800777; x=1710405577; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hS8zu4sRYSZWgtYsgxH06GASLmu07y/0dobyT5SPg6U=;
+        b=z5EiG5Mq0lq8UGHnfrMqW4ho0okN8NmRb49Z4buhbFK44YcYF2JhhgcelDTtfWxJAW
+         /4myXWJilF8BLblNPIrlmNA7JiShGyxtxkyjYIUBCRyLY/2UpR4MFPoqipiWjIHfQyjV
+         aITcoKD+DInXaCxU8sUUnKpxqTE7sCbzNCZMO4t+BXzRoGdF3l4x+/mnmJR9LR6agTiE
+         iabeX+74YKFfo+oesqpSLbZhAB5sNa1ChNOBwAdlhv50V8UHAK8JuaKm8zwrU2NGt1MO
+         7+dDwCavhxISK3mG0SJwhZD0BnuFojcGCv2wZ29WNguLSk09ispmKxHdbvvV1JIfQLOt
+         mybA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709799784; x=1710404584;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BTCDlQMgEr5UEnpV5mDn3dJxhyjjt0R5yPNztDHuRWA=;
-        b=mBlPj+SiCl40ygSQqXhUayy9onVnVCjryP+H0IldblSGdhceyN5ue5WfpkQt/XGU5s
-         O4q/fGwTOOePfaSDT6wmbl6va4Etg1CVTN65ilwD/ac4LpHMqoOCG8hee8IuAoIbXNeq
-         xwR8qo0q8IdbrWa61dQwZxhKW3s3j38rujvKy20pVErir6macP0a2VVBfHXsjClG14PZ
-         uJCNaFA5ytsug/1Uij1mU/IuSQuKmHBnT/qw3c77l/z0xse253ekbg0d5/a4MgaAxEAl
-         2o+OZVrFFc5aZnwnany0eK8RTZqvfKDcA+NC48A2EUxfIWUcNGunjoQGmYso6MlEouZE
-         MV6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUWQj/obaJQnCer27PDMynWZ0SGze/QmxPTad4jZBpQBPncPM0EwB0uqodmmDwybKnIP6ea/FkwL9ENDtwmFwAgfq7PtmhzrpZHxw==
-X-Gm-Message-State: AOJu0YwXqKvOKImNW+v6B+Hb0zBY7vq5Rjsg+HPcml0uVAIqHt0ix4Yy
-	A51KANTq1YwZfxGkiSMu3V4xwTRJm8OJEpIAhRSyLJHdEV7Av7LyaJ9XvEkpEDIPXejppYTfb5C
-	3wdsnAyW33gWJwjGp7hNqs6nNFNG96BSj3iM3Fg==
-X-Google-Smtp-Source: AGHT+IGtlINLMOBpnSyCH2ZmpwWY+N46YIj+jpgvXOKi2Jcaj1+sVPOFaJ/lVWVfwLTv+DvW59tvQrS42RXoxx6CtmY=
-X-Received: by 2002:a0d:d882:0:b0:607:834f:b4c4 with SMTP id
- a124-20020a0dd882000000b00607834fb4c4mr1560071ywe.29.1709799784322; Thu, 07
- Mar 2024 00:23:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709800777; x=1710405577;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hS8zu4sRYSZWgtYsgxH06GASLmu07y/0dobyT5SPg6U=;
+        b=nvDzePpqv+OwrzOaEybryI8R6QYJ2kZMWGDqwCIzrVvGapb1kWbBhiZMIPTJ19pMhg
+         ihV0yd7NA9LP8xBuvO5/r95MvZfD3lfQNvhqRknx+jB0zhx6/29w1GINR7y7FxlkIViW
+         lelGfo/FIWnasRQs+m1fR5q82IBuaR+vXvO8E8Sn5DeF6Tl0vOXVMFUJ0YgINE+xFqfY
+         /81jBEGUSUBrJoG2+5GobZtrFlMd1z4ftbVqDX8wW2Yz9i2YhdVIls62PURtpYfAuuaQ
+         o0RFsRmS3kz9zl8mfOJ/WDimbFfZf0JKzsVapJ/E6gIPdQRZGNSb3UasL5oNkH3ve/YP
+         sNiQ==
+X-Gm-Message-State: AOJu0YwDCdKYviJjRq4mutDH3o+kuY9gE4wUp/B4yczn874rzkJem1yN
+	wB2TkTpGLtSewevPjeGslG9xHyDFGZEIr9iM0sCAKoOM6TwAfau/khJD+ZYytx/iiQZl4CKqju6
+	vOigqxvPNNe+/Gkxt2Kh6/JsfZZTU1POYzAGxmw==
+X-Google-Smtp-Source: AGHT+IFtYoz85x+BrsyL3WDeniAwghS6EjRoEeJUdL1XSOqljGL47ACIuTJtfbK74x/u65ZmTCLctG2MbKAUjQXLWiY=
+X-Received: by 2002:a17:90a:9b02:b0:299:2807:1eb1 with SMTP id
+ f2-20020a17090a9b0200b0029928071eb1mr16879947pjp.34.1709800777227; Thu, 07
+ Mar 2024 00:39:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20240306-wcn3990-firmware-path-v2-0-f89e98e71a57@linaro.org>
- <87plw7hgt4.fsf@kernel.org> <CAA8EJpr6fRfY5pNz6cXVTaNashqffy5_qLv9c35nkgjaDuSgyQ@mail.gmail.com>
- <87cys7hard.fsf@kernel.org> <CAA8EJpowyEEbXQ4YK-GQ63wZSkJDy04qJsC2uuYCXt+aJ1HSOQ@mail.gmail.com>
- <baa7a017-ee4b-4e8f-9bb8-1e3857e18855@quicinc.com>
-In-Reply-To: <baa7a017-ee4b-4e8f-9bb8-1e3857e18855@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 7 Mar 2024 10:22:53 +0200
-Message-ID: <CAA8EJpq780+=b-XEShsS4ixtpOJxwigvR-E0nPJ1Xz0CV_eO4Q@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 0/4] wifi: ath10k: support board-specific firmware overrides
+References: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
+In-Reply-To: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
+From: Robert Marko <robert.marko@sartura.hr>
+Date: Thu, 7 Mar 2024 09:39:26 +0100
+Message-ID: <CA+HBbNFQ+25u_PK2j3vYtiCZwv+shVAVeAHKqQCwhyCopORt4Q@mail.gmail.com>
+Subject: Re: New staging repos for ath1*k firmware
 To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Kalle Valo <kvalo@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: ath10k <ath10k@lists.infradead.org>, ath11k <ath11k@lists.infradead.org>, 
+	ath12k <ath12k@lists.infradead.org>, 
+	linux-wireless <linux-wireless@vger.kernel.org>, Kalle Valo <quic_kvalo@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240307_002306_623235_0D8BCEC3 
-X-CRM114-Status: GOOD (  13.47  )
+X-CRM114-CacheID: sfid-20240307_003942_159356_99BCCF60 
+X-CRM114-Status: GOOD (  18.71  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,33 +90,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, 7 Mar 2024 at 00:25, Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
+On Wed, Mar 6, 2024 at 8:23=E2=80=AFPM Jeff Johnson <quic_jjohnson@quicinc.=
+com> wrote:
 >
-> On 3/6/2024 6:23 AM, Dmitry Baryshkov wrote:
-> > After some thought, I'd suggest to follow approach taken by the rest
-> > of qcom firmware:
-> > put a default (accepted by non-secured hardware) firmware to SoC dir
-> > and then put a vendor-specific firmware into subdir. If any of such
-> > vendors appear, we might even implement structural fallback: first
-> > look into sdm845/Google/blueline, then in sdm845/Google, sdm845/ and
-> > finally just under hw1.0.
+> Historically, prior to being incorporated into the linux-firmware
+> project, firmware for kernel.org ath1*k drivers has been first published
+> to Kalle's GitHub:
+> https://github.com/kvalo/ath10k-firmware
+> https://github.com/kvalo/ath11k-firmware
+> (ath12k firmware was pushed to the ath11k-firmware repo on a temporary
+> basis in anticipation of this move)
 >
-> are there existing examples in linux-firmware?
+> But in order to have repos with multiple maintainers, as well as to have
+> a hosting platform with more control, we have moved to CodeLinaro:
+> https://git.codelinaro.org/clo/ath-firmware/ath10k-firmware
+> https://git.codelinaro.org/clo/ath-firmware/ath11k-firmware
+> https://git.codelinaro.org/clo/ath-firmware/ath12k-firmware
+>
+> Note that most people should not care about this -- normally you should
+> use the firmware that is in the official linux-firmware repo:
+> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/
+>
+> You should only need to access the staging repos if you need a previous
+> version to work around an issue, or if you are testing new firmware that
+> is supposed to fix a problem that you've reported.
+>
+> Please let Kalle & I know if you have any issues with these new repos!
 
-Yes. QCM2290 / QRB4210 platforms have "updated" wlanmdsp.mbn file,
-which actually prompted us to work on these overrides. I have opened
-the MR against linux-firmware, marked as draft for now, until all
-discussions are finished:
+Can I please ask for IPQ6018 firmware to be updated to 2.9.0.1 as well?
 
-https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/165
+We have added IPQ6018 support to OpenWrt but we are forced to use the old 2=
+.4
+firmware since anything newer is crashing on IPQ6018, we had the same issue=
+ on
+IPQ8074 but it was fixed with 2.9.0.1 firmware.
 
-> or is the whole point being only the default firmware is in
-> linux-firmware and vendors would follow this pattern if they add their
-> own firmware?
+Even for IPQ8074, there is newer 2.9.0.1 firmware that is only
+available as part of
+QSDK and the community would benefit from being able to use it.
 
-Unfortunately not.
+Ideally, ath11k-firmware would at least contain the same blobs as the QUIC =
+repo:
+https://github.com/quic/upstream-wifi-fw.git
 
--- 
-With best wishes
-Dmitry
+Regards,
+Robert
+>
+> /jeff
+>
+
+
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
 
