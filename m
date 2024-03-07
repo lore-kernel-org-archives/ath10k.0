@@ -4,78 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E09AC48BF6
-	for <ath10k@archiver.kernel.org>; Thu,  7 Mar 2024 08:39:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4815C48BF6
+	for <ath10k@archiver.kernel.org>; Thu,  7 Mar 2024 15:29:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hS8zu4sRYSZWgtYsgxH06GASLmu07y/0dobyT5SPg6U=; b=diBmb7XPC5l3ugNxyoSdsGYwpl
-	ElnWc1TLkpUBn8pCbS1TRxMMbuHihNdDBuHXo4ZaEsWmR30WonURXWjR2CyJRCDOgsHeItiFSrjKB
-	sL2Y8NsFig5BASvNLIBqQE4WA4bZpYET1b7FI96Iqp5ojuokzagOR5x07cKFNAuNjDngcgI5iLgmd
-	eDlilOEmBRb4gqvbJMxbOoOBRJ9AvhlU3PsNRceQ6EPmpM5OiIJFiZtITQvbEtV/oFsSB7YPv0QUy
-	BJNdiHkQGoNwlTRGhVDkedBjDE2ENnd/MwX3OZ++65ZCSGjGlseqoQqhAftFj5T+c+lEVpKg7jrSh
-	PPHdIiAw==;
+	bh=X4rA7glPrCrKwr981a28u15ca/pzff2LojpS0g84uXI=; b=S735u6xM5+oI3Zw4fvUtdSRo2A
+	NeAc2rNPjvEKpsC1UyXoati0DZuv9rTkrasP1SX5JrmvtjyhWMC65BOpTbsSg8V1GWka3KGAFI+to
+	JoRPdmdAN+LqnHzzMdlm14pvHsnyXVV50MSGGiZ7iLFBh/YdGs0hvEQdgkRXpmgUJ460EXwTQd3Ny
+	AjhDPS4edor7hEX9TywIFEE80btO3ElgDRVCbfCHyOXnpmzsMLtrua8H6D1XnslORyd6uoLFe/aN4
+	PdGPIm/zBUPuwNJd8KZ3uj+FMRzXunQccIFlXWa58Psdm1wL6nCyjgpLSWqkfbH3JQAdR3VwXL70w
+	h7mYo++A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ri9I3-00000003g01-1OOz;
-	Thu, 07 Mar 2024 08:39:47 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+	id 1riFgf-00000005HOv-339s;
+	Thu, 07 Mar 2024 15:29:37 +0000
+Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ri9Hy-00000003fug-08mM
+	id 1riFga-00000005HN1-0pL9
 	for ath10k@lists.infradead.org;
-	Thu, 07 Mar 2024 08:39:45 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-29954bb87b4so351934a91.2
-        for <ath10k@lists.infradead.org>; Thu, 07 Mar 2024 00:39:37 -0800 (PST)
+	Thu, 07 Mar 2024 15:29:36 +0000
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-412fc5f5152so7953295e9.0
+        for <ath10k@lists.infradead.org>; Thu, 07 Mar 2024 07:29:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1709800777; x=1710405577; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hS8zu4sRYSZWgtYsgxH06GASLmu07y/0dobyT5SPg6U=;
-        b=z5EiG5Mq0lq8UGHnfrMqW4ho0okN8NmRb49Z4buhbFK44YcYF2JhhgcelDTtfWxJAW
-         /4myXWJilF8BLblNPIrlmNA7JiShGyxtxkyjYIUBCRyLY/2UpR4MFPoqipiWjIHfQyjV
-         aITcoKD+DInXaCxU8sUUnKpxqTE7sCbzNCZMO4t+BXzRoGdF3l4x+/mnmJR9LR6agTiE
-         iabeX+74YKFfo+oesqpSLbZhAB5sNa1ChNOBwAdlhv50V8UHAK8JuaKm8zwrU2NGt1MO
-         7+dDwCavhxISK3mG0SJwhZD0BnuFojcGCv2wZ29WNguLSk09ispmKxHdbvvV1JIfQLOt
-         mybA==
+        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1709825368; x=1710430168; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X4rA7glPrCrKwr981a28u15ca/pzff2LojpS0g84uXI=;
+        b=V/RqiF2IrRD5k1AMPjFbJGYWRRMS+5y37Nv89/R8RHYDM0zHVMfHpE9ddnQ0kY+cEw
+         IyCK5wHR5UcH7FMz736JL8wqP2jmTm7eDQjWfyHmuq2kwgj1uOPQsukQoRS0fH6c//QE
+         yo40uhbss+l57x0fmZBsplv/dtI44TB0zQU9K4ID+C9wsLNKWtCN2jgkv3VtscYTtMF5
+         MgIro/1Vdl/86FQKjCxFWldObvBWanr/OYQjd6yMylvfpg/yxY3NWOIrdQYQ09XyJuzS
+         vRCB4jsQPjcu2WPYgz4Fa2SoIcdDvJgVE2VQAEF1mf44vfdwtv25NelVBrUEBHdt8u4T
+         jgzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709800777; x=1710405577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hS8zu4sRYSZWgtYsgxH06GASLmu07y/0dobyT5SPg6U=;
-        b=nvDzePpqv+OwrzOaEybryI8R6QYJ2kZMWGDqwCIzrVvGapb1kWbBhiZMIPTJ19pMhg
-         ihV0yd7NA9LP8xBuvO5/r95MvZfD3lfQNvhqRknx+jB0zhx6/29w1GINR7y7FxlkIViW
-         lelGfo/FIWnasRQs+m1fR5q82IBuaR+vXvO8E8Sn5DeF6Tl0vOXVMFUJ0YgINE+xFqfY
-         /81jBEGUSUBrJoG2+5GobZtrFlMd1z4ftbVqDX8wW2Yz9i2YhdVIls62PURtpYfAuuaQ
-         o0RFsRmS3kz9zl8mfOJ/WDimbFfZf0JKzsVapJ/E6gIPdQRZGNSb3UasL5oNkH3ve/YP
-         sNiQ==
-X-Gm-Message-State: AOJu0YwDCdKYviJjRq4mutDH3o+kuY9gE4wUp/B4yczn874rzkJem1yN
-	wB2TkTpGLtSewevPjeGslG9xHyDFGZEIr9iM0sCAKoOM6TwAfau/khJD+ZYytx/iiQZl4CKqju6
-	vOigqxvPNNe+/Gkxt2Kh6/JsfZZTU1POYzAGxmw==
-X-Google-Smtp-Source: AGHT+IFtYoz85x+BrsyL3WDeniAwghS6EjRoEeJUdL1XSOqljGL47ACIuTJtfbK74x/u65ZmTCLctG2MbKAUjQXLWiY=
-X-Received: by 2002:a17:90a:9b02:b0:299:2807:1eb1 with SMTP id
- f2-20020a17090a9b0200b0029928071eb1mr16879947pjp.34.1709800777227; Thu, 07
- Mar 2024 00:39:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709825368; x=1710430168;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X4rA7glPrCrKwr981a28u15ca/pzff2LojpS0g84uXI=;
+        b=QJck0GamZgKFZQPBy87beZcuFEJdBG22iSNZyLXXtGO2ou8x5jAVcP8YBStvjPbnbH
+         bc+dys5lJPyikMLwLnAjeHTA7td/+h7wNfswfFNdYAcLu3A4Xh7DwTOyyiww1CA34Z72
+         NbsQ35qqq7g2q6alPQ9WUWSKnGWYVpHG8u61QFtFcbGHBBDjF0QvFLGCEAbRTe5FoARA
+         mNdcF4jtdXp9rJwoVlQ7p7flHokaZwV7P7ykcxScGmZZ3RL5JYCrVIYkOTcFcI34jlbP
+         AJ9IVnMNeDYkWvwln28oEzkRS0Gara8KFJfqB7sMPvHeyY+aQhkcLQa/SZAo9t5CuvnY
+         rkMw==
+X-Gm-Message-State: AOJu0YyEVzW4oYrO5vNzZU2tPzu66jE9e5XkVCIyyZnAnzkO6tzDTgQV
+	kfCEvSXmAIoGHBk84DEnjDzkM5TjIDYAx7DQsQRTRvCz1s8CO7NqJm/Zvc5mk1Y=
+X-Google-Smtp-Source: AGHT+IGEMjZrwSX4KlE3+S4Mx14JfUgPt2iuZklnN3V5j7oUm9gfxTUCLTshjWeoxPKz1UsSxB7+iA==
+X-Received: by 2002:a05:600c:450e:b0:413:1013:cc7f with SMTP id t14-20020a05600c450e00b004131013cc7fmr1576665wmo.29.1709825368172;
+        Thu, 07 Mar 2024 07:29:28 -0800 (PST)
+Received: from [192.168.108.81] (freebox.vlq16.iliad.fr. [213.36.7.13])
+        by smtp.gmail.com with ESMTPSA id w14-20020a05600c474e00b004131310a29fsm1366528wmo.15.2024.03.07.07.29.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 07:29:27 -0800 (PST)
+Message-ID: <2f588948-0261-4985-91e8-d5060e673cd9@freebox.fr>
+Date: Thu, 7 Mar 2024 16:29:27 +0100
 MIME-Version: 1.0
-References: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
-In-Reply-To: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
-From: Robert Marko <robert.marko@sartura.hr>
-Date: Thu, 7 Mar 2024 09:39:26 +0100
-Message-ID: <CA+HBbNFQ+25u_PK2j3vYtiCZwv+shVAVeAHKqQCwhyCopORt4Q@mail.gmail.com>
-Subject: Re: New staging repos for ath1*k firmware
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: ath10k <ath10k@lists.infradead.org>, ath11k <ath11k@lists.infradead.org>, 
-	ath12k <ath12k@lists.infradead.org>, 
-	linux-wireless <linux-wireless@vger.kernel.org>, Kalle Valo <quic_kvalo@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
+ qcom,no-msa-ready-indicator prop
+Content-Language: en-US
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, Conor Dooley
+ <conor@kernel.org>, Kalle Valo <kvalo@kernel.org>
+Cc: ath10k <ath10k@lists.infradead.org>,
+ wireless <linux-wireless@vger.kernel.org>, DT <devicetree@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Pierre-Hugues Husson <phhusson@freebox.fr>,
+ Jami Kettunen <jamipkettunen@gmail.com>,
+ Jeffrey Hugo <quic_jhugo@quicinc.com>
+References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
+ <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
+ <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
+ <20240229-ageless-primal-7a0544420949@spud>
+ <c48ead11-0e2a-4066-b324-84f802215c9a@quicinc.com>
+From: Marc Gonzalez <mgonzalez@freebox.fr>
+In-Reply-To: <c48ead11-0e2a-4066-b324-84f802215c9a@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240307_003942_159356_99BCCF60 
-X-CRM114-Status: GOOD (  18.71  )
+X-CRM114-CacheID: sfid-20240307_072932_390991_ABD1DEFC 
+X-CRM114-Status: GOOD (  16.88  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,62 +105,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 6, 2024 at 8:23=E2=80=AFPM Jeff Johnson <quic_jjohnson@quicinc.=
-com> wrote:
->
-> Historically, prior to being incorporated into the linux-firmware
-> project, firmware for kernel.org ath1*k drivers has been first published
-> to Kalle's GitHub:
-> https://github.com/kvalo/ath10k-firmware
-> https://github.com/kvalo/ath11k-firmware
-> (ath12k firmware was pushed to the ath11k-firmware repo on a temporary
-> basis in anticipation of this move)
->
-> But in order to have repos with multiple maintainers, as well as to have
-> a hosting platform with more control, we have moved to CodeLinaro:
-> https://git.codelinaro.org/clo/ath-firmware/ath10k-firmware
-> https://git.codelinaro.org/clo/ath-firmware/ath11k-firmware
-> https://git.codelinaro.org/clo/ath-firmware/ath12k-firmware
->
-> Note that most people should not care about this -- normally you should
-> use the firmware that is in the official linux-firmware repo:
-> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/
->
-> You should only need to access the staging repos if you need a previous
-> version to work around an issue, or if you are testing new firmware that
-> is supposed to fix a problem that you've reported.
->
-> Please let Kalle & I know if you have any issues with these new repos!
+On 29/02/2024 20:46, Jeff Johnson wrote:
 
-Can I please ask for IPQ6018 firmware to be updated to 2.9.0.1 as well?
-
-We have added IPQ6018 support to OpenWrt but we are forced to use the old 2=
-.4
-firmware since anything newer is crashing on IPQ6018, we had the same issue=
- on
-IPQ8074 but it was fixed with 2.9.0.1 firmware.
-
-Even for IPQ8074, there is newer 2.9.0.1 firmware that is only
-available as part of
-QSDK and the community would benefit from being able to use it.
-
-Ideally, ath11k-firmware would at least contain the same blobs as the QUIC =
-repo:
-https://github.com/quic/upstream-wifi-fw.git
-
-Regards,
-Robert
+> On 2/29/2024 10:40 AM, Conor Dooley wrote:
 >
-> /jeff
->
+>> On Wed, Feb 28, 2024 at 06:37:08PM +0200, Kalle Valo wrote:
+>>
+>>> Marc Gonzalez writes:
+>>
+>>>> As mentioned in my other reply, there are several msm8998-based
+>>>> devices affected by this issue. Is it not appropriate to consider
+>>>> a kernel-based work-around?
+>>>
+>>> Sorry, not following you here. But I'll try to answer anyway:
+>>>
+>>> I have understood that Device Tree is supposed to describe hardware, not
+>>> software. This is why having this property in DT does not look right
+>>> place for this. For example, if the ath10k firmware is fixed then DT
+>>> would have to be changed even though nothing changed in hardware. But of
+>>> course DT maintainers have the final say.
+>>
+>> I dunno, if the firmware affects the functionality of the hardware in a
+>> way that cannot be detected from the operating system at runtime how
+>> else is it supposed to deal with that?
+>> The devicetree is supposed to describe hardware, yes, but at a certain
+>> point the line between firmware and hardware is invisible :)
+>> Not describing software is mostly about not using it to determine
+>> software policy in the operating system.
+> 
+> FWIW I've compared ath10k to the out-of-tree Android driver and there
+> are discrepancies in this area. I've asked the development team that
+> supports ath10k to provide a recommendation.
+
+Hello Jeff,
+
+Have you heard back from the dev team?
+
+Do they confirm that an issue involving missing MSA_READY notifications
+was ever noticed?
+
+What devices were affected? (All msm8998? A subset of msm8998?)
+
+Was the issue eventually fixed?
+(Probably fixed, otherwise newer devices would be affected)
+
+-- 
+Regards.
 
 
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
 
