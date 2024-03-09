@@ -4,73 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5131DC54E4A
-	for <ath10k@archiver.kernel.org>; Fri,  8 Mar 2024 15:19:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 725E3C54E5C
+	for <ath10k@archiver.kernel.org>; Sat,  9 Mar 2024 04:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1JG7lawVO31Gwqx/ULSezAn2GCILIMLcMVh8ddUVruo=; b=yoezcJBUZlr1EpCA/RRS6Aot1I
-	8Tchot59q/3pFKvjTtEOkvtvhn8Q22DRLxN7ENiMJIdmvGpzwrcCIZa3duzi5EZyGs8JkFqENwbg9
-	Txr0XVMsIEu4Vz0M1jZsvFsiQDWI9jCVRWNaNHuemKevyWq7Qatc1gbHlRXd1inXJG697MBnBMX2d
-	x5AfS8eS1S8m03D1iRGd/60jyyZstBmE3L/WvnVrzZfloUXGdy7pyfHyVTm5Oe7nX5UR3bwA9AL6f
-	7PK4S6HGbS0Beyuz7rzvgVVjOUznsHUZLSOoIYhgRKHsPzZJYsVynZW9WE41x0TEg9xIkGuGsb6VF
-	+IYwHN7A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=95r56RiCwXCOX91DTU9UG52WLr7IyICLD5bKzNPvUXs=; b=rKo4UohZw3OfV5PdsBZnadVs9f
+	kgMl8f5B4lHpAaxov8n4F4bD7Y6TIybanyF1BcXidkZPKcQWXlUU6sT3d+NEArlTnwiT4/RcYgF8a
+	taq722Ix8DFGgnNQBSTcMkjur4chfCJ6xOMjE1v2Pjp56qkuU1U7EQ3m9nd4L2LP6FnwE6s7G+4Il
+	SRv5ru8mxBH+NyrD+XkUvAXmmHGX9QwZ3A55mxulWO94xqksYqP6A+saZbRCj0UtFG/tmuN2ggBXW
+	IvwJ6eGb8z+MdeEfNOT7q1g5pQbic9GsDmkBy08+WTDZ7dMcqo8OBcZJbP9ILMSsRPKO5aZn14XFA
+	yrEy9J+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ric0D-00000009oUf-2sSp;
-	Fri, 08 Mar 2024 15:19:17 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rinsi-0000000CM3f-26Oo;
+	Sat, 09 Mar 2024 04:00:20 +0000
+Received: from mgamail.intel.com ([198.175.65.18])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ric07-00000009oTI-3SzG
+	id 1rinsf-0000000CM2i-0gIw
 	for ath10k@lists.infradead.org;
-	Fri, 08 Mar 2024 15:19:15 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id C622060686;
-	Fri,  8 Mar 2024 15:19:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1DDDC433C7;
-	Fri,  8 Mar 2024 15:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709911150;
-	bh=2aEWrJvvukoPuyYJLD9Zn0ge1MPAdinGfbWVtaTvHp4=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=e1a/ZMv9W69wCrDHRgkvlZIa4zoUJ8J8Q3ymIbKisGFKt85jmdi8rfigpLWuxyFVV
-	 0NMyFXtGSPpANaWp4n+9q7gax4lJv6/l/ymG2gcd8wjKVcn2OYjQ1nlW0pHBvhwvlu
-	 1WSi0bGr3izdfGytW1OtnQXfBWA/rRrzf3KgYRsKCyT9k2R1DLweSj4xcahwGjiTPS
-	 LCNlE5MKl+CpM8Enh+hZWwiAnV0G67ryNjl5C8rOiWaT6dXdIidkWXKtNY5hduirgp
-	 y/3xoHrWixGF2LDAur5awj7cBiaNBTUXF9V3bqbfjuerY2BtKIJku2z3U6hBDIDv92
-	 lL4q8dkNZ2MbA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,  "David S. Miller"
- <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub
- Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  Rob Herring
- <robh+dt@kernel.org>,  Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
-  Bjorn Andersson <andersson@kernel.org>,  Konrad Dybcio
- <konrad.dybcio@linaro.org>,  ath10k@lists.infradead.org,
-  linux-wireless@vger.kernel.org,  netdev@vger.kernel.org,
-  devicetree@vger.kernel.org,  linux-arm-msm@vger.kernel.org,  Krzysztof
- Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH RFC v2 0/4] wifi: ath10k: support board-specific
- firmware overrides
-References: <20240306-wcn3990-firmware-path-v2-0-f89e98e71a57@linaro.org>
-	<87plw7hgt4.fsf@kernel.org>
-	<CAA8EJpr6fRfY5pNz6cXVTaNashqffy5_qLv9c35nkgjaDuSgyQ@mail.gmail.com>
-	<87cys7hard.fsf@kernel.org>
-	<CAA8EJpowyEEbXQ4YK-GQ63wZSkJDy04qJsC2uuYCXt+aJ1HSOQ@mail.gmail.com>
-Date: Fri, 08 Mar 2024 17:19:05 +0200
-In-Reply-To: <CAA8EJpowyEEbXQ4YK-GQ63wZSkJDy04qJsC2uuYCXt+aJ1HSOQ@mail.gmail.com>
-	(Dmitry Baryshkov's message of "Wed, 6 Mar 2024 16:23:55 +0200")
-Message-ID: <87v85wg39y.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+	Sat, 09 Mar 2024 04:00:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709956817; x=1741492817;
+  h=date:from:to:cc:subject:message-id;
+  bh=b+jc1RMz0Po2bLDvi0Rzf3YLI2MXlWMvxRnMeHWHs4o=;
+  b=n1vRAWjDGh7xjar+pWvYaEwU5F83ytLQmE+A1jd0h9a3SsJMCYazWDdm
+   HQlCHmpe41aNdoRkHLlwfzj68+xs2/jcHllMtEqdKW+DI0YvwswusODcN
+   4HUf5Bt6ErpQ+SqZqijfB1Mvhij2GwkVVoLeajkVeiEOFLVlJ5It4PU3H
+   XjZUVJi6BF8ibYK1Brk2yJtcmvQ/6fSkFurMyV9NNn/kkwQJHb4OvMpwF
+   /gdfuAtWuqsaW9dHcOs6qI1hlGrbyCED4fRrMFcbMVV3IMQhtt9zN9HLu
+   pDt0FAueB3d5iCjH/H7C7Y723llkZThl2Lns4W9lyTkroZIOFk50vc+w8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11007"; a="4819670"
+X-IronPort-AV: E=Sophos;i="6.07,111,1708416000"; 
+   d="scan'208";a="4819670"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 20:00:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,111,1708416000"; 
+   d="scan'208";a="10715031"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa009.jf.intel.com with ESMTP; 08 Mar 2024 20:00:12 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rinsX-0006xB-2M;
+	Sat, 09 Mar 2024 04:00:09 +0000
+Date: Sat, 09 Mar 2024 12:00:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 6e723d2df5ce8b7cf260d812db2f852b32bcba57
+Message-ID: <202403091203.WyRZtRDs-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240308_071912_071306_43509FC6 
-X-CRM114-Status: GOOD (  14.98  )
+X-CRM114-CacheID: sfid-20240308_200017_321350_67503D80 
+X-CRM114-Status: UNSURE (   3.84  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,39 +79,148 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 6e723d2df5ce8b7cf260d812db2f852b32bcba57  Merge branch 'ath-next' into ath-qca
 
->> To be on the safe side using 'qcom-rb1' makes sense but on the other
->> hand that means we need to update linux-firmware (basically add a new
->> symlink) everytime a new product is added. But are there going to be
->> that many new ath10k based products?
->>
->> Using 'qcm2290' is easier because for a new product then there only
->> needs to be a change in DTS and no need to change anything
->> linux-firmware. But here the risk is that if there's actually two
->> different ath10k firmware branches for 'qcm2290'. If that ever happens
->> (I hope not) I guess we could solve that by adding new 'qcm2290-foo'
->> directory?
->>
->> But I don't really know, thoughts?
->
-> After some thought, I'd suggest to follow approach taken by the rest
-> of qcom firmware:
+elapsed time: 743m
 
-Can you provide pointers to those cases?
+configs tested: 128
+configs skipped: 4
 
-> put a default (accepted by non-secured hardware) firmware to SoC dir
-> and then put a vendor-specific firmware into subdir. If any of such
-> vendors appear, we might even implement structural fallback: first
-> look into sdm845/Google/blueline, then in sdm845/Google, sdm845/ and
-> finally just under hw1.0.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Honestly that looks quite compilicated compared to having just one
-sub-directory. How will ath10k find the directory names (or I vendor and
-model names) like 'Google' or 'blueline' in this example?
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                          collie_defconfig   gcc  
+arm                                 defconfig   clang
+arm                       omap2plus_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240309   clang
+i386         buildonly-randconfig-002-20240309   clang
+i386         buildonly-randconfig-003-20240309   gcc  
+i386         buildonly-randconfig-004-20240309   gcc  
+i386         buildonly-randconfig-005-20240309   gcc  
+i386         buildonly-randconfig-006-20240309   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240309   gcc  
+i386                  randconfig-002-20240309   gcc  
+i386                  randconfig-003-20240309   clang
+i386                  randconfig-004-20240309   clang
+i386                  randconfig-005-20240309   clang
+i386                  randconfig-006-20240309   gcc  
+i386                  randconfig-011-20240309   gcc  
+i386                  randconfig-012-20240309   gcc  
+i386                  randconfig-013-20240309   clang
+i386                  randconfig-014-20240309   clang
+i386                  randconfig-015-20240309   clang
+i386                  randconfig-016-20240309   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                       bmips_be_defconfig   gcc  
+mips                     cu1000-neo_defconfig   gcc  
+mips                      pic32mzda_defconfig   gcc  
+nios2                         3c120_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    ge_imp3a_defconfig   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv             nommu_k210_sdcard_defconfig   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                            migor_defconfig   gcc  
+sh                          rsk7269_defconfig   gcc  
+sh                             sh03_defconfig   gcc  
+sh                             shx3_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240309   clang
+x86_64       buildonly-randconfig-003-20240309   clang
+x86_64       buildonly-randconfig-006-20240309   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-002-20240309   clang
+x86_64                randconfig-003-20240309   clang
+x86_64                randconfig-005-20240309   clang
+x86_64                randconfig-011-20240309   clang
+x86_64                randconfig-012-20240309   clang
+x86_64                randconfig-013-20240309   clang
+x86_64                randconfig-076-20240309   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
