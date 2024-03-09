@@ -4,86 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8F55C54798
-	for <ath10k@archiver.kernel.org>; Sat,  9 Mar 2024 15:08:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B86C7C54798
+	for <ath10k@archiver.kernel.org>; Sat,  9 Mar 2024 15:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bsRsreksVUwY3JxwOHcn4AH1bjEDIW9wxkCIfNiLooU=; b=Eq+j8yIHtNdX6eb9PfrD13Sh60
-	jHtcnZywRJ3HVatDkNmU5IQtNlPaPRGkrRWu1shmOvQ/Eec0emIK8+kcQlpJOu2oMa6aTfC+FGTFJ
-	YdalYCiKsQHLVdk68AZqB3+pQ67Uj3gzh1/8GM1RemNkqBThwM2pnvGoAknOaqGM8lyUOxHOuPfvy
-	8ahMlhxoYTYFiwnFpPEylonGl4k5SsuKUFoDbSPfW7jAz54w+73Zx3WfSeV19vKJZKJhc8qIayn0c
-	ZqE2T5JHmPJfyNuCReVcK8jvrTeE/9xLryS/M3nyHCZfxTtrjr4qmcElyMbV8+Hu/dUFSd2yIuM6K
-	1nRzBAfQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Subject:From:To:MIME-Version:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=V/e3qto2HSLY4xIuukvZBf3OiJKu+xQWXeL1N/YPVas=; b=PrLHRXjihktgbu7LGQ2EZ9AMUX
+	xOQVbLIa6HEeXZ08TaQQVMyxlSQ+lWVh0/txHVvUFEaR2GO7pcQJBerfhEARUJt9a2rtkxp7rprdX
+	xZvE3zXXVc3BGz2RUK8pColGwuUOaWBDlBoro5KS2OkUnBNfod/TUhhWmmD7BX/weQbTVT2WbdjPN
+	4p50lAjoFhltBwAqYBvlypuAyzC4V8er66yJb492AElRUTHN0767c1sZmak0vCKZWrTtRp0RS79g0
+	kSHht02BSQ9ccj/vmc3sQVQZsqzJQnqW4fF7eawWzqI1/kk7Qn59ZhslMjYmZ4BeOoon744n7Fz6L
+	SD3yYR0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riyIv-0000000Datf-0Tgi;
-	Sat, 09 Mar 2024 15:08:05 +0000
-Received: from mail-yb1-xb36.google.com ([2607:f8b0:4864:20::b36])
+	id 1riyJX-0000000Db1m-18wP;
+	Sat, 09 Mar 2024 15:08:43 +0000
+Received: from mail-108-mta218.mxroute.com ([136.175.108.218])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riyIr-0000000Dasy-1gc5
+	id 1riyJT-0000000Db0M-49Rg
 	for ath10k@lists.infradead.org;
-	Sat, 09 Mar 2024 15:08:03 +0000
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-dc742543119so1804741276.0
-        for <ath10k@lists.infradead.org>; Sat, 09 Mar 2024 07:07:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709996878; x=1710601678; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bsRsreksVUwY3JxwOHcn4AH1bjEDIW9wxkCIfNiLooU=;
-        b=WNK13UJiR+aJj0kcBVwrIk2b/thXWZWc0Bf0SXwkOKJa7/80Y/Ku1R9Gi3djw8A+LT
-         EAd8P9D4Gsz09bJXG/apL5Pylmv45gjo43oDDHAaS6rTxNpcQ7efTg3lWOztkfXDotu1
-         XeEgeDJRLzjVCze+maWwgzptt97bHxmYqCcz7QQ1Z+llz2Xa6LGKotxY5bCBbwPch9fi
-         iEXQ+wBBkr1R4in7k6PKi0RPnW8oR3+Nwaqmc2h7qtSAe/WPalaBnOheZj6ALkS8qwyV
-         EvkweQs0Lbbfu6CFdV+UlPKVJBuNdPcqajNw00h2RTzWpy1asFUFfuknaSalXZsXLH1V
-         1E/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709996878; x=1710601678;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bsRsreksVUwY3JxwOHcn4AH1bjEDIW9wxkCIfNiLooU=;
-        b=hI9Mgw1U9qLpPj/6Ea0gJNS/7c5ltBIV3au9lTULdFN7VqLW9Zbzr3KXAlCeIOrIKK
-         Rywt5meuKhv7i2qAMHZJPczcbMFuuOm+ObC/WAULsCCbAnxyahAyPoeD35S2bZIMAIta
-         TS45+dV4Zs02bV4ZpT4l+IjY2lnilB+Gvy4Q5ccLirDI1daygJIl9o8NHyLD/aQdUfrt
-         fh8fhCijrVGFueevONLVM0i0GumcoYdFk97wlTmveMLIwR2FE68r1bFCqUto4a6+b9yM
-         +TIk4SVRJ6EUHk4DHS4O9iY/xPfH5Rz8GXGEAi1GJVigroExYPdQguoJTtZleM79glOG
-         Ofdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWcepTXdUzaOk1x0pWk84Wcow1fMSxgKDDharNQ5V0spf9ARKtFkxOfeRa/7cNehZGRB82nZkPXd2j18a4n//5oE3FRNdpLj+B5vQ==
-X-Gm-Message-State: AOJu0Yy7VeDDwPXA8xT2bUxQ0HdyxGULcukPeNVcb7R0vMNzJtXN+cRx
-	zeb5kRfafCOtAIUueKWDg6XNMD5OrKkjgwEJp4YLzloVqwi5v9QRRq9F+F6zlX6y+p9w1Qz2Lis
-	ZeRdCWxsnLFWac8UxmjKxphqIHkljIxIztzQi+Q==
-X-Google-Smtp-Source: AGHT+IF0IfT5MeJdtuGLAxcGUPTzOLwhQqEBQY+xRVBBT6xtNAXgDJlcofP3guSftIG+E5LI1hh+Y6ALeP+yMak/1A0=
-X-Received: by 2002:a25:6c09:0:b0:dd0:453b:485e with SMTP id
- h9-20020a256c09000000b00dd0453b485emr859326ybc.58.1709996877891; Sat, 09 Mar
- 2024 07:07:57 -0800 (PST)
+	Sat, 09 Mar 2024 15:08:41 +0000
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta218.mxroute.com (ZoneMTA) with ESMTPSA id 18e23c22f990003bea.001
+ for <ath10k@lists.infradead.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Sat, 09 Mar 2024 15:08:32 +0000
+X-Zone-Loop: fc658cd1566b564c7412b99941f59a2ec7ffdffcd34c
+X-Originating-IP: [136.175.111.2]
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=ericswpark.com; s=x; h=Content-Transfer-Encoding:Content-Type:Subject:From:
+	To:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=V/e3qto2HSLY4xIuukvZBf3OiJKu+xQWXeL1N/YPVas=; b=P3Uclg7yDY/wuHKtc9v389h3Wz
+	7wrfUgXT2F/topJojSOoPRIJtVV0rL+1OUWuuAFhM54buJv/B3PsnOfYRr+0BiKryOd/PDPWJeB+0
+	Mhbb/Pj/Y3Sbxcz2moflOooeYRhkQ956Uw9dbsmT9CmcJvu7C6GLyIemMgN2mRi9/yBWRGYRQRkJZ
+	gyzwY+Wb9MMdXV0YzGVjQeMc7JN1Y2jYvfnsvQxGfFoB8wLbHTNB6iEGjIHTjPZqoTbOq/JAlELlv
+	jmh8vKXHSHEUNtZe4qqL0J1WcKLn6FRARMlvjSzL2TFfga7lfhp8MfLAVjiqjKLZw+ine5XNbWGpt
+	5MAWtAUQ==;
+Message-ID: <2b4e20fa-3c76-4800-b872-f5d20b0cfe95@ericswpark.com>
+Date: Sat, 9 Mar 2024 10:08:28 -0500
 MIME-Version: 1.0
-References: <20240306-wcn3990-firmware-path-v2-0-f89e98e71a57@linaro.org>
- <87plw7hgt4.fsf@kernel.org> <CAA8EJpr6fRfY5pNz6cXVTaNashqffy5_qLv9c35nkgjaDuSgyQ@mail.gmail.com>
- <87cys7hard.fsf@kernel.org> <CAA8EJpowyEEbXQ4YK-GQ63wZSkJDy04qJsC2uuYCXt+aJ1HSOQ@mail.gmail.com>
- <87v85wg39y.fsf@kernel.org>
-In-Reply-To: <87v85wg39y.fsf@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 9 Mar 2024 17:07:46 +0200
-Message-ID: <CAA8EJpq_XLUEMC67ck2tZRjqS0PazCkQWWMGmwydeWxTETHwcg@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 0/4] wifi: ath10k: support board-specific firmware overrides
-To: Kalle Valo <kvalo@kernel.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: ath10k@lists.infradead.org
+Content-Language: en-CA
+From: Eric Park <me@ericswpark.com>
+Subject: QCA6174 showing terrible performance when connecting via WPA3-SAE
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Id: me@ericswpark.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240309_070801_492557_B2E627F5 
-X-CRM114-Status: GOOD (  20.83  )
+X-CRM114-CacheID: sfid-20240309_070840_273663_3A9903AB 
+X-CRM114-Status: UNSURE (   5.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,50 +76,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, 8 Mar 2024 at 17:19, Kalle Valo <kvalo@kernel.org> wrote:
->
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
->
-> >> To be on the safe side using 'qcom-rb1' makes sense but on the other
-> >> hand that means we need to update linux-firmware (basically add a new
-> >> symlink) everytime a new product is added. But are there going to be
-> >> that many new ath10k based products?
-> >>
-> >> Using 'qcm2290' is easier because for a new product then there only
-> >> needs to be a change in DTS and no need to change anything
-> >> linux-firmware. But here the risk is that if there's actually two
-> >> different ath10k firmware branches for 'qcm2290'. If that ever happens
-> >> (I hope not) I guess we could solve that by adding new 'qcm2290-foo'
-> >> directory?
-> >>
-> >> But I don't really know, thoughts?
-> >
-> > After some thought, I'd suggest to follow approach taken by the rest
-> > of qcom firmware:
->
-> Can you provide pointers to those cases?
+Hello! I have a Samsung NT500R5H-Y53L with the QCA6174 card, and I 
+noticed I was getting terrible performance (around 20-30 Mbps) compared 
+to other devices on the network (600-700 Mbps), when running a speedtest.
 
-https://gitlab.com/kernel-firmware/linux-firmware/-/tree/main/qcom/sc8280xp/LENOVO/21BX
+I tried modifying some settings and discovered that I can get around 
+500-600 Mbps on the speedtest if I limited the router settings to 
+WPA2-PSK, but once I set the setting to allow for both WPA2 and WPA3, 
+the card connects using WPA3-SAE but then has terrible performance as a 
+result.
 
->
-> > put a default (accepted by non-secured hardware) firmware to SoC dir
-> > and then put a vendor-specific firmware into subdir. If any of such
-> > vendors appear, we might even implement structural fallback: first
-> > look into sdm845/Google/blueline, then in sdm845/Google, sdm845/ and
-> > finally just under hw1.0.
->
-> Honestly that looks quite compilicated compared to having just one
-> sub-directory. How will ath10k find the directory names (or I vendor and
-> model names) like 'Google' or 'blueline' in this example?
+Is this a driver bug, or a limitation of the hardware? Is there a way to 
+force the card to connect over WPA2-PSK?
 
-I was thinking about the firmware-name = "sdm845/Google/blueline". But
-this can be really simpler, firmware-name = "blueline" or
-"sdm845/blueline" with no need for fallbacks.
-
-My point is that the firmware-name provides the possibility to handle
-that in different ways.
-
--- 
-With best wishes
-Dmitry
+- Eric
 
