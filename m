@@ -4,110 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32ED2C54E41
-	for <ath10k@archiver.kernel.org>; Sat,  9 Mar 2024 17:59:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 230C4C5475B
+	for <ath10k@archiver.kernel.org>; Mon, 11 Mar 2024 10:21:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RfEPUE/s2ovA9Fjpc51gZmR3vhNMiXC763Bj0mwC0dY=; b=djr/UiAwGGwqCOQttwOsazkXqK
-	zlbn55CZ/a/yNlxB8GRSf+5HWuqJ7ZyDzoLL/NCvRzJEFw/FB07jDJKBvI9prmUGugI9p6vrEbDw/
-	KcGJJyxI0ZwGuKBrDGwtdnNDNrv3TcGAAfMqkmy2wviwkCXm9Da/Tict17AS55nd6NR1feWcWkhId
-	wBTXH6r+vQQB3aGYZDPbwczBGNbxVYnLJ1JYSDJf1sHpB0PkfD0ggoX9CAlfJOib+kjBJPJZxIOvh
-	FLMJzznG7J5XNUl9w2dQbNa3i7rJLrVP9Zb7SYSBgsNgZWjxVZT+DIXbmsRFzODjux+TIdj312U4c
-	2MHwfDHQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=5KwHV1lakRgdoar2rayIzSQQ2aoPdH7AEPoLWacMr80=; b=tuopEVbfqhfu85FiOqgHbZ7LjF
+	tWbDvDg5paqDZ/P2nkOj1oNOH6AYoAmzufTP/xlk+uQujmZ/4WhBhpn4gkDGL1VMO63D8tTyM/X2/
+	FURCvGNqPFND9yu4E0AO7x30CJiM3wyk/PaGOM5/hVG4SaIBv0dX2rraP4BPEnQpABSj+5/vfINHz
+	LWkwyqcXeSxO4Hd/fT8jx9JCu1OxcDDbXpAknsIhx1EPZDwOY2duvlBxvrUnMCsAe2t9lX5xpHKSe
+	gZkht4ae1ulJnZn+L22tq9ddYDQXlQOJbOksrdrIGLd2d6Piesc6yf7Vs+5akOoWn94xpwZs1plhP
+	XMh+t8jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rj0yk-0000000Du86-2oHD;
-	Sat, 09 Mar 2024 17:59:26 +0000
-Received: from mail.as201155.net ([185.84.6.188])
+	id 1rjcmQ-000000014cu-2BkT;
+	Mon, 11 Mar 2024 10:21:14 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rj0yh-0000000Du5q-2kT3
+	id 1rjcmO-000000014cN-0eqi
 	for ath10k@lists.infradead.org;
-	Sat, 09 Mar 2024 17:59:25 +0000
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]:57564 helo=webmail.newmedia-net.de)
-	by mail.as201155.net with esmtps  (TLS1) tls TLS_RSA_WITH_AES_256_CBC_SHA
-	(Exim 4.96)
-	(envelope-from <s.gottschall@dd-wrt.com>)
-	id 1rj0yY-0002s4-1t;
-	Sat, 09 Mar 2024 18:59:15 +0100
-X-SASI-Hits: BODYTEXTP_SIZE_3000_LESS 0.000000, BODY_SIZE_2000_2999 0.000000,
-	BODY_SIZE_5000_LESS 0.000000, BODY_SIZE_7000_LESS 0.000000,
-	CTE_8BIT 0.000000, DKIM_ALIGNS 0.000000, DKIM_SIGNATURE 0.000000,
-	HTML_00_01 0.050000, HTML_00_10 0.050000, IN_REP_TO 0.000000,
-	LEGITIMATE_SIGNS 0.000000, MSGID_SAMEAS_FROM_HEX_844412 0.100000,
-	MSG_THREAD 0.000000, MULTIPLE_RCPTS 0.100000, MULTIPLE_REAL_RCPTS 0.000000,
-	NO_FUR_HEADER 0.000000, OUTBOUND 0.000000, OUTBOUND_SOPHOS 0.000000,
-	REFERENCES 0.000000, SENDER_NO_AUTH 0.000000, SUSP_DH_NEG 0.000000,
-	URI_WITH_PATH_ONLY 0.000000, __ANY_URI 0.000000, __BODY_NO_MAILTO 0.000000,
-	__BOUNCE_CHALLENGE_SUBJ 0.000000, __BOUNCE_NDR_SUBJ_EXEMPT 0.000000,
-	__BULK_NEGATE 0.000000, __CC_NAME 0.000000, __CC_NAME_DIFF_FROM_ACC 0.000000,
-	__CC_REAL_NAMES 0.000000, __CP_URI_IN_BODY 0.000000, __CT 0.000000,
-	__CTE 0.000000, __CT_TEXT_PLAIN 0.000000, __DKIM_ALIGNS_1 0.000000,
-	__DKIM_ALIGNS_2 0.000000, __DQ_NEG_DOMAIN 0.000000, __DQ_NEG_HEUR 0.000000,
-	__DQ_NEG_IP 0.000000, __FORWARDED_MSG 0.000000, __FRAUD_PARTNERSHIP 0.000000,
-	__FROM_DOMAIN_NOT_IN_BODY 0.000000, __FROM_NAME_NOT_IN_BODY 0.000000,
-	__FUR_RDNS_SOPHOS 0.000000, __HAS_CC_HDR 0.000000, __HAS_FROM 0.000000,
-	__HAS_MSGID 0.000000, __HAS_REFERENCES 0.000000,
-	__HEADER_ORDER_FROM 0.000000, __HIGHBIT_ASCII_MIX 0.000000,
-	__HTTPS_URI 0.000000, __IN_REP_TO 0.000000, __MAIL_CHAIN 0.000000,
-	__MIME_BOUND_CHARSET 0.000000, __MIME_TEXT_ONLY 0.000000,
-	__MIME_TEXT_P 0.000000, __MIME_TEXT_P1 0.000000, __MIME_VERSION 0.000000,
-	__MOZILLA_USER_AGENT 0.000000, __MSGID_HEX_844412 0.000000,
-	__MULTIPLE_RCPTS_CC_X2 0.000000, __MULTIPLE_RCPTS_TO_X2 0.000000,
-	__MULTIPLE_URI_TEXT 0.000000, __NO_HTML_TAG_RAW 0.000000,
-	__OUTBOUND_SOPHOS_FUR 0.000000, __OUTBOUND_SOPHOS_FUR_IP 0.000000,
-	__OUTBOUND_SOPHOS_FUR_RDNS 0.000000, __RCVD_PASS 0.000000,
-	__REFERENCES 0.000000, __SANE_MSGID 0.000000, __SCAN_D_NEG 0.000000,
-	__SCAN_D_NEG2 0.000000, __SCAN_D_NEG_HEUR 0.000000,
-	__SCAN_D_NEG_HEUR2 0.000000, __SUBJ_ALPHA_END 0.000000,
-	__SUBJ_ALPHA_NEGATE 0.000000, __SUBJ_REPLY 0.000000,
-	__TO_MALFORMED_2 0.000000, __TO_NAME 0.000000,
-	__TO_NAME_DIFF_FROM_ACC 0.000000, __TO_REAL_NAMES 0.000000,
-	__URI_ENDS_IN_SLASH 0.000000, __URI_HAS_HYPHEN_USC 0.000000,
-	__URI_IN_BODY 0.000000, __URI_MAILTO 0.000000, __URI_NOT_IMG 0.000000,
-	__URI_NO_WWW 0.000000, __URI_NS 0.000000, __URI_WITH_PATH 0.000000,
-	__USER_AGENT 0.000000, __X_MAILSCANNER 0.000000
-X-SASI-Probability: 8%
-X-SASI-RCODE: 200
-X-SASI-Version: Antispam-Engine: 5.1.4, AntispamData: 2024.3.9.173017
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=dd-wrt.com; s=mikd;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID; bh=RfEPUE/s2ovA9Fjpc51gZmR3vhNMiXC763Bj0mwC0dY=;
-	b=Q/Eu5PgnXLQwMSES/d9nQ2JI7Flke2Sqa7KXKzVVIhJRf/fQMghpO9E1iIyejOBRY40V7H2b+bthUWYbumHEIkmos8UgQNNiw6rC9ENP6BYUmLgMSrwCZlJ15nCUTsrdcWViSQ+xmdQ2SxWQnvwmwTLhEUSuCzD65iB9pHyDd0Y=;
-Message-ID: <3b57d932-0848-40f4-ab2d-a8d4afe11df1@dd-wrt.com>
-Date: Sat, 9 Mar 2024 18:58:47 +0100
+	Mon, 11 Mar 2024 10:21:13 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8367860D42;
+	Mon, 11 Mar 2024 10:21:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F75DC433F1;
+	Mon, 11 Mar 2024 10:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710152470;
+	bh=1npVSXSTw49oMcFt8zp8fWg5xGsRApwVhZDvn6RXbcw=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=QiQLVx1vGytj+cXGUY9rIV4OpZ6dQt1h2SA06QnnA2VJGtq5+NSEOYHIrjsm3eLgu
+	 1cS6Kp6JfKw/4Y2TbAXahvoYEUh2nK96rSrZb/HEWWLRYLoWhUkGyYQ5WuFSmL5vGZ
+	 KvDxpSCMHX1WvLuWLF6wLEHAh8CUo3jDtd+HiyIG7Z4h8AC67KwX9zlFlDk2BNhcj5
+	 K1ZlrvyXdzikNXI8+jiHCjWNPyG370kQYC1dIpvUr4f19jJaykWp0jXCEOYS93Kxov
+	 F3lLca90vdpTcgvCWJV+VOSc2B7t44qf/O+3nDeHlSipcgMJ1tWyFBMNbwCSL7LDA2
+	 tXZE7UkQhKALQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Eric Park <me@ericswpark.com>
+Cc: ath10k@lists.infradead.org
+Subject: Re: QCA6174 showing terrible performance when connecting via WPA3-SAE
+References: <2b4e20fa-3c76-4800-b872-f5d20b0cfe95@ericswpark.com>
+Date: Mon, 11 Mar 2024 12:21:07 +0200
+In-Reply-To: <2b4e20fa-3c76-4800-b872-f5d20b0cfe95@ericswpark.com> (Eric
+	Park's message of "Sat, 9 Mar 2024 10:08:28 -0500")
+Message-ID: <87r0ghf4rw.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: New staging repos for ath1*k firmware
-To: Kalle Valo <kvalo@kernel.org>, Robert Marko <robert.marko@sartura.hr>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
- ath10k <ath10k@lists.infradead.org>, ath11k <ath11k@lists.infradead.org>,
- ath12k <ath12k@lists.infradead.org>,
- linux-wireless <linux-wireless@vger.kernel.org>
-References: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
- <CA+HBbNFQ+25u_PK2j3vYtiCZwv+shVAVeAHKqQCwhyCopORt4Q@mail.gmail.com>
- <874jdigf76.fsf@kernel.org>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-In-Reply-To: <874jdigf76.fsf@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Received-SPF: pass (webmail.newmedia-net.de: localhost is always allowed.) client-ip=127.0.0.1; envelope-from=s.gottschall@dd-wrt.com; helo=webmail.newmedia-net.de;
-X-SA-Exim-Connect-IP: 127.0.0.1
-X-SA-Exim-Mail-From: s.gottschall@dd-wrt.com
-X-SA-Exim-Scanned: No (on webmail.newmedia-net.de); SAEximRunCond expanded to false
-X-NMN-MailScanner-Information: Please contact the ISP for more information
-X-NMN-MailScanner-ID: 1rj0yD-000FpE-At
-X-NMN-MailScanner: Found to be clean
-X-NMN-MailScanner-From: s.gottschall@dd-wrt.com
-X-Received: from localhost.localdomain ([127.0.0.1] helo=webmail.newmedia-net.de)
-	by webmail.newmedia-net.de with esmtp (Exim 4.72)
-	(envelope-from <s.gottschall@dd-wrt.com>)
-	id 1rj0yD-000FpE-At; Sat, 09 Mar 2024 18:58:53 +0100
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240309_095923_891949_698644A2 
-X-CRM114-Status: GOOD (  15.70  )
+X-CRM114-CacheID: sfid-20240311_032112_272185_806A9A8F 
+X-CRM114-Status: GOOD (  16.06  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,49 +71,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Eric Park <me@ericswpark.com> writes:
 
-Am 07.03.2024 um 17:49 schrieb Kalle Valo:
-> Robert Marko <robert.marko@sartura.hr> writes:
+> Hello! I have a Samsung NT500R5H-Y53L with the QCA6174 card, and I
+> noticed I was getting terrible performance (around 20-30 Mbps)
+> compared to other devices on the network (600-700 Mbps), when running
+> a speedtest.
 >
->> On Wed, Mar 6, 2024 at 8:23 PM Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
->>
->>> Historically, prior to being incorporated into the linux-firmware
->>> project, firmware for kernel.org ath1*k drivers has been first published
->>> to Kalle's GitHub:
->>> https://github.com/kvalo/ath10k-firmware
->>> https://github.com/kvalo/ath11k-firmware
->>> (ath12k firmware was pushed to the ath11k-firmware repo on a temporary
->>> basis in anticipation of this move)
->>>
->>> But in order to have repos with multiple maintainers, as well as to have
->>> a hosting platform with more control, we have moved to CodeLinaro:
->>> https://git.codelinaro.org/clo/ath-firmware/ath10k-firmware
->>> https://git.codelinaro.org/clo/ath-firmware/ath11k-firmware
->>> https://git.codelinaro.org/clo/ath-firmware/ath12k-firmware
->>>
->>> Note that most people should not care about this -- normally you should
->>> use the firmware that is in the official linux-firmware repo:
->>> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/
->>>
->>> You should only need to access the staging repos if you need a previous
->>> version to work around an issue, or if you are testing new firmware that
->>> is supposed to fix a problem that you've reported.
->>>
->>> Please let Kalle & I know if you have any issues with these new repos!
->> Can I please ask for IPQ6018 firmware to be updated to 2.9.0.1 as well?
->>
->> We have added IPQ6018 support to OpenWrt but we are forced to use the old 2.4
->> firmware since anything newer is crashing on IPQ6018, we had the same issue on
->> IPQ8074 but it was fixed with 2.9.0.1 firmware.
->>
->> Even for IPQ8074, there is newer 2.9.0.1 firmware that is only
->> available as part of
->> QSDK and the community would benefit from being able to use it.
-> We are working on getting the AP chipset firmwares updated but
-> unfortunately no news yet.
-why isnt qca releasing the latest firmwares at all. i mean we all know 
-that the qca networking tree contains way newer firmwares for all 
-chipsets since a long time
+> I tried modifying some settings and discovered that I can get around
+> 500-600 Mbps on the speedtest if I limited the router settings to
+> WPA2-PSK, but once I set the setting to allow for both WPA2 and WPA3,
+> the card connects using WPA3-SAE but then has terrible performance as
+> a result.
+>
+> Is this a driver bug, or a limitation of the hardware?
 
->
+My first guess it's because of software encryption with these cipher
+suites (from ath10k_set_key()):
+
+	/* this one needs to be done in software */
+	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC ||
+	    key->cipher == WLAN_CIPHER_SUITE_BIP_GMAC_128 ||
+	    key->cipher == WLAN_CIPHER_SUITE_BIP_GMAC_256 ||
+	    key->cipher == WLAN_CIPHER_SUITE_BIP_CMAC_256)
+		return 1;
+
+But with modern CPUs I would have still expected software encryption to
+be faster than 20 Mbps so the chances are it can be something else as
+well.
+
+> Is there a way to force the card to connect over WPA2-PSK?
+
+That's a user space decision and depends on what connection manager you
+use. For example, here's some info how to setup key management with
+Network Manager:
+
+https://askubuntu.com/questions/1290589/how-to-use-wpa3-with-ubuntu-20-04
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
