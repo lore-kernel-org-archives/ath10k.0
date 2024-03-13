@@ -4,84 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79EF0C54791
-	for <ath10k@archiver.kernel.org>; Wed, 13 Mar 2024 15:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFE71C54791
+	for <ath10k@archiver.kernel.org>; Wed, 13 Mar 2024 19:32:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6AzBQ+tLW2d59aDgYBNh01xhjYL/4GzcjrgAxlnqiSI=; b=MNGecHmMJAqI60s3sDUCwS27vG
-	KB96fH0MGwrL+nWQLmybhpcy9teroLyn/I3w9+kOW1lYQ7zkKL3/bcgq7n9/b6SAZOjM6yecVGyff
-	IRmQ9+phEOnzzj0uI8PhYILHzcqMxIOKpNmQ6CNCu/xiW9gyiUQCGDv34XF1V5NHiPFaT4t7jje2/
-	6QREiZj83AkK8DDMinEGK/HwAxeFUuFWCCfU8lLNg6xBLrIrmNDx4KqeFNSKsG6Wj4CgETfSoVkFj
-	6N1fgHZugDqbMNVGNLzWzTWZZDRl9tu61675ATRNNdnYAynyOpZyI55LSz8casfEkfTiPVKQafKML
-	1ByQFoNg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CdpApk3S4HSr0CiXYnW6tPkH4TA5GMk3//SIt+Nkpgw=; b=lAlrgRInGZK4T20KkRfci6ijH2
+	Ub35lVG6xZlyC7NvdDX6DH4rII1vzqQOq0PWt/NhCoDSCNiwyyy5KsBU4qRnyhB1XwsXDS0acXYpR
+	8xlta7s/KwuX2q2ojlSzIEOK/Tx8DmcqigrGIMDBxd/DMoDwGnZAvejwDcl9PlYtRVVIIgk8sP3ue
+	r1PqwYIg7fAUz5G1cFHqmPJ0DKAhzOo/KgEHLpHFN219r6FPG72T7d9ZYaMIW+yrFkD7Sj/sr5T5Z
+	RNxa6GNv4PWosBQ6z0rVwacfTKx4MDBbUOTv/7UgiVjqPlftdE/6GxM2XeFsD72ni/vTSURq3zcRQ
+	rBFwXjGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkQvI-0000000Afxd-3mGx;
-	Wed, 13 Mar 2024 15:53:45 +0000
-Received: from mail-yb1-xb36.google.com ([2607:f8b0:4864:20::b36])
+	id 1rkUL4-0000000Be4v-3d4T;
+	Wed, 13 Mar 2024 19:32:34 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkQvF-0000000AfxC-45OU
-	for ath10k@lists.infradead.org;
-	Wed, 13 Mar 2024 15:53:43 +0000
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso6496587276.0
-        for <ath10k@lists.infradead.org>; Wed, 13 Mar 2024 08:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710345218; x=1710950018; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6AzBQ+tLW2d59aDgYBNh01xhjYL/4GzcjrgAxlnqiSI=;
-        b=PXM3mTwLnZjO0G3eObtYTIgwJmQmpLBKPxk/XFKzQ6NTDy7goxLkUfDuZYfRU4zXk0
-         cGDuxzP4hzC8xvSeURNIK8+D9YRTV8Qwj7Zubwh3w5lft+dzvdDhbdcZ2T9VkV7EXFBU
-         Pm3KOuikMuifWmYA5uWJDQ3SzPcNpdxgI5ym4G36E/QY53IcHyTV/54lqBSu0znFGQgF
-         MbCKgRkY29iKpKkZJ3PbCir0HA6JSH5j15LPZmxy2ISQ21E8bADvPDkfJODdQw15I62l
-         +mXVKoQurE3W+fKU0T8Jh6zBDEqYnJMgC5xB7oaSdwum5D/2551l7875cZ8m3izQfEj9
-         M9qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710345218; x=1710950018;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6AzBQ+tLW2d59aDgYBNh01xhjYL/4GzcjrgAxlnqiSI=;
-        b=V/OeP3ys04pEZEs6owYSpsVfCCd9ZlQZfmStRoArogNl7zh0Zlxellu2w1/OMgH5fW
-         WoFG+8LSzcZEM0YuBWqhJ1jEAASMT7OOmiQnYFqXW0heneEiGVOWItjb8CZ6VcOq63VN
-         Jr88h9FBdJglF7/AH2qgfD+Cct6/WvOroq/aOUT39zOQc8tBIOrwZ7x4JWztfdR2RnY5
-         rEa9lUBSEBSXuRwE4XiK0XXa41b19llT+i7pEVEYwybQkN7WHCWo1TUyG2C4ic2pV0UJ
-         9MqHu6YGLkqE8DUKKmmuBfMUkIy84OW6UMoFeXlAc/RM8IMnenJcUYtSBj8xBGTxjVLZ
-         Ex4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWZ+UGhwyLU9M3wBl+Cw6ahS/FQvT0Ifk4PjZHx3jrZFyrhDJ/T/q9rBV6wLvnziUYSpxNAHeisu5hNEY6GTD/8ywVCqThcqh5YPQ==
-X-Gm-Message-State: AOJu0YydkWFuQ3JhY8RYXzzfpnNPGdAvcg2dNZp9yBGaYuCxhqBzv2/l
-	9xvXHtJ4ORjImhPam6+gde2ltNv/nY1r71beS7rIqusn7axtnzdCViQ3jP634BoHikW+laQtnqY
-	pk/3VBP3x6VAWYN1c+IXzhrQkdsK7Zj7pAoqMRA==
-X-Google-Smtp-Source: AGHT+IFEXBYea2H7akvOYLZnU0E8yFk/kdMNNhRxZzxlLPLFxZd9tmb0mKfs/cS05ZdYc2wWKixhp6fXP1k2h0BiDjw=
-X-Received: by 2002:a25:db85:0:b0:dd0:129f:16 with SMTP id g127-20020a25db85000000b00dd0129f0016mr3097478ybf.11.1710345217678;
- Wed, 13 Mar 2024 08:53:37 -0700 (PDT)
+	id 1rkUL1-0000000Be44-3vqT;
+	Wed, 13 Mar 2024 19:32:33 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42DHbiiu007534;
+	Wed, 13 Mar 2024 19:32:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=CdpApk3S4HSr0CiXYnW6tPkH4TA5GMk3//SIt+Nkpgw=; b=jT
+	KiTusy1bseVrSEeBryccPpfUHWFiW+wGluyOTj8dTHj6Jhw8vUqIbkTqlHRtCDV+
+	pXrhC8fAui3I0PX+JadDnn8DnG8qxY7U16LvkRpA2xxu8URCocwrrdl3vdviFUXu
+	ygBz6TUMk0Seugn5Db5w49gCz6x1aWk9urMqbJCNbhUu0NtDifEgsyBHWjnL1lSn
+	d77hz7ZYs30W7abD5RYwsoiiNK9y8r+p5JD4EcDAkOkK8YMnj2xlemn5o59BMHI5
+	TubTlg4ggwibVM9Ex3JvDIpijwTSECEpejKhclSum/0gX9BlZlxVecDq1Jw5NOaB
+	EHKWCkXc3u4YqOP9V8qA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wugq18bhc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 19:32:24 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42DJWNIK014930
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Mar 2024 19:32:23 GMT
+Received: from [10.110.27.195] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Mar
+ 2024 12:32:22 -0700
+Message-ID: <e1c3ba7e-b358-42a3-a8db-f9c098132350@quicinc.com>
+Date: Wed, 13 Mar 2024 12:32:22 -0700
 MIME-Version: 1.0
-References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
- <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
- <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
- <c58e67e6-6a7f-4963-86b9-580165bf05ba@freebox.fr> <87cyse8j9m.fsf@kernel.org>
- <6d4b1381-c121-4cda-a8c9-9ccac56bd447@freebox.fr> <87plw87nsc.fsf@kernel.org>
- <0816f7bb-3c97-4b90-8e19-191552ea6e26@freebox.fr> <87h6hk7aee.fsf@kernel.org> <fb0ffdd9-923a-4191-8304-583243ad528b@freebox.fr>
-In-Reply-To: <fb0ffdd9-923a-4191-8304-583243ad528b@freebox.fr>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 13 Mar 2024 17:53:26 +0200
-Message-ID: <CAA8EJppHa=qEkKbSVs9hMCBXfhiC9MyAQO+v+6TCWhg==4CpOQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
- qcom,no-msa-ready-indicator prop
-To: Marc Gonzalez <mgonzalez@freebox.fr>
-Cc: Jeffrey Hugo <quic_jhugo@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Kalle Valo <kvalo@kernel.org>, 
-	Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k <ath10k@lists.infradead.org>, 
-	wireless <linux-wireless@vger.kernel.org>, DT <devicetree@vger.kernel.org>, 
-	Pierre-Hugues Husson <phhusson@freebox.fr>, Jami Kettunen <jamipkettunen@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: New staging repos for ath1*k firmware
+Content-Language: en-US
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>,
+        Kalle Valo
+	<kvalo@kernel.org>, Robert Marko <robert.marko@sartura.hr>
+CC: ath10k <ath10k@lists.infradead.org>, ath11k <ath11k@lists.infradead.org>,
+        ath12k <ath12k@lists.infradead.org>,
+        linux-wireless
+	<linux-wireless@vger.kernel.org>
+References: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
+ <CA+HBbNFQ+25u_PK2j3vYtiCZwv+shVAVeAHKqQCwhyCopORt4Q@mail.gmail.com>
+ <874jdigf76.fsf@kernel.org> <3b57d932-0848-40f4-ab2d-a8d4afe11df1@dd-wrt.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <3b57d932-0848-40f4-ab2d-a8d4afe11df1@dd-wrt.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LFvmZHV3EDeKWzJ-DWG_dWLH8e1zC7UF
+X-Proofpoint-GUID: LFvmZHV3EDeKWzJ-DWG_dWLH8e1zC7UF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-13_09,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 adultscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403130149
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240313_085342_047402_57DB479C 
-X-CRM114-Status: GOOD (  22.46  )
+X-CRM114-CacheID: sfid-20240313_123232_116933_1EE33579 
+X-CRM114-Status: GOOD (  16.39  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,84 +103,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, 13 Mar 2024 at 17:09, Marc Gonzalez <mgonzalez@freebox.fr> wrote:
->
-> [ Dropping the DT fellows ]
->
-> On 05/03/2024 20:20, Kalle Valo wrote:
->
-> > Marc Gonzalez wrote:
-> >
-> >> I need to build a kernel + rootfs + FW to test the proposed solution,
-> >> then I can spin a formal submission.
-> >
-> > Yeah, please do test this to make sure we are not missing anything :)
->
-> I used buildroot ( https://buildroot.org ) to generate a kernel + rootfs
-> for my board (a variation of qcom/msm8998-mtp.dts)
->
-> Not sure if I must use the vendor FW blobs? Or if I can use the blobs
-> from linux-firmware-20240115.tar.xz (as supported by BR2).
->
->
-> All I see from the ath10k driver (with debugging cranked to the max) is:
->
-> [    0.539801] ath10k_snoc 18800000.wifi: Adding to iommu group 0
-> [    0.541941] ath10k_snoc 18800000.wifi: snoc xo-cal-data return -22
-> [    0.543633] ath10k_snoc 18800000.wifi: supply vdd-3.3-ch1 not found, using dummy regulator
-> [    0.544002] ath10k_snoc 18800000.wifi: qmi msa.paddr: 0x0000000094400000 , msa.vaddr: 0x(____ptrval____)
-> [    0.544271] ath10k_snoc 18800000.wifi: snoc probe
->
->
-> # ip link
-> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1000
->     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-> 2: enp1s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
->     link/ether 34:27:92:82:48:ec brd ff:ff:ff:ff:ff:ff
->
-> No wlan device at this point.
+On 3/9/2024 9:58 AM, Sebastian Gottschall wrote:
+> 
+> Am 07.03.2024 um 17:49 schrieb Kalle Valo:
+>> Robert Marko <robert.marko@sartura.hr> writes:
+>>
+>>> On Wed, Mar 6, 2024 at 8:23 PM Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
+>>>
+>>>> Historically, prior to being incorporated into the linux-firmware
+>>>> project, firmware for kernel.org ath1*k drivers has been first published
+>>>> to Kalle's GitHub:
+>>>> https://github.com/kvalo/ath10k-firmware
+>>>> https://github.com/kvalo/ath11k-firmware
+>>>> (ath12k firmware was pushed to the ath11k-firmware repo on a temporary
+>>>> basis in anticipation of this move)
+>>>>
+>>>> But in order to have repos with multiple maintainers, as well as to have
+>>>> a hosting platform with more control, we have moved to CodeLinaro:
+>>>> https://git.codelinaro.org/clo/ath-firmware/ath10k-firmware
+>>>> https://git.codelinaro.org/clo/ath-firmware/ath11k-firmware
+>>>> https://git.codelinaro.org/clo/ath-firmware/ath12k-firmware
+>>>>
+>>>> Note that most people should not care about this -- normally you should
+>>>> use the firmware that is in the official linux-firmware repo:
+>>>> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/
+>>>>
+>>>> You should only need to access the staging repos if you need a previous
+>>>> version to work around an issue, or if you are testing new firmware that
+>>>> is supposed to fix a problem that you've reported.
+>>>>
+>>>> Please let Kalle & I know if you have any issues with these new repos!
+>>> Can I please ask for IPQ6018 firmware to be updated to 2.9.0.1 as well?
+>>>
+>>> We have added IPQ6018 support to OpenWrt but we are forced to use the old 2.4
+>>> firmware since anything newer is crashing on IPQ6018, we had the same issue on
+>>> IPQ8074 but it was fixed with 2.9.0.1 firmware.
+>>>
+>>> Even for IPQ8074, there is newer 2.9.0.1 firmware that is only
+>>> available as part of
+>>> QSDK and the community would benefit from being able to use it.
+>> We are working on getting the AP chipset firmwares updated but
+>> unfortunately no news yet.
+> why isnt qca releasing the latest firmwares at all. i mean we all know 
+> that the qca networking tree contains way newer firmwares for all 
+> chipsets since a long time
 
-Do you have pd-mapper, rmtfs and tqftpserv running? You also need to
-have wlanmdsp.mbn in the same directory as modem.mbn for your platform
-(see how this is handled for sdm845).
-If these points are implemented and you still don't have the wlan,
-please check for tqftpserv messages in syslog.
+Kalle & I are just the conduit, but I've relayed this thread to the folks
+responsible for feeding us the firmware releases.
 
->
-> I got shell-shock from reading these setup steps:
->
-> https://wiki.postmarketos.org/wiki/Qualcomm_Snapdragon_835_(MSM8998)#WLAN
-> https://github.com/jhugo/linux/blob/5.5rc2_wifi/README
-
-These readmes are mostly correct. You don't need qrtr now, it is
-provided by the kernel.  pd-mapper (protection-domain-mapper),
-tqftpserv and rmtfs usually can be installed from your distro.
-
-You can mostly ignore the part for board.bin / board-2.bin for now.
-You'll get to that point later, when the driver complains about
-missing board data.
-
-Also, if you pick up series at [1], you can put your bdwlan.XXX file
-as ath10k/WCN3990/hw1.0/board.bin and skip all the json and stuff.
-This will work for the bringup, then you can follow the process at [2]
-and submit your file for inclusion into board-2.bin.
-
-[1] https://lore.kernel.org/ath10k/20240130-wcn3990-board-fw-v1-0-738f7c19a8c8@linaro.org/
-[2] https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
-
->
->
-> Jeffrey, Bjorn, Konrad,
-> Has someone written idiot-proof (such as myself) steps to enable
-> the ath10k core on a msm8998 board?
->
-> I'm still not quite sure where linux-firmware.git fits into all this.
->
-> Regards
->
+/jeff
 
 
--- 
-With best wishes
-Dmitry
 
