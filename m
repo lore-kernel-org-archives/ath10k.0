@@ -4,102 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69955C54E5D
-	for <ath10k@archiver.kernel.org>; Thu, 14 Mar 2024 19:28:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 751CAC54E60
+	for <ath10k@archiver.kernel.org>; Thu, 14 Mar 2024 22:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=nIji4b2JeI41GT7wexHROmx9KAP8DekVDJtbPMjgATE=; b=bFD+ivQuK7TgytV4gMqnlM3J+J
-	/eou/FnFW8zO8QMb1bjhoRqA9wIWNhzboA4utfF52yj7z92I+tYi/wUT4R/O9FwpCG93wymWLloaM
-	W7JWUir0MYFqf/EM8ylOO73X4MZohxdLJxqYQ7pSZmNUPov+SGyCshQ+nRUyhaMyK772UcnJbHKKw
-	Zr/+VmWDiYsRAM+zHB2X073b9QPD6iBiXyNRNFCw91EDpHFKuHn0QDrueH0D7BQB+sFNcOaNRVZkD
-	a7FmzcP0L7Tfgg1+w6E+kxKedlDXYqnKBpxCMiJyP9vuvnAqZ3X/4Cn1xShs/2EJ4bBx/V6E8WXv1
-	BUOPmBJQ==;
+	bh=l1cRCI2TQl2E06OSsyRtxrdsvwE91Cf5bQYoFPWyo4E=; b=gBOUoctvl/SxrbN7ySvpvaTc0p
+	zTcw5/Ra9dDBL1RPvXTnFclGDAoxb64g19R/plDkX5wrTDMWOt6kkXmu3n1HN5XIjKuQldXktpYLE
+	P424BOCeK7c6FUaUazE1OyhgA3d/JggR4SYI/4AzS3xP/4K3dn2MEzu6XBmrRIOOhtjhz0Y7N0Sve
+	xDpgjuZgSdasKDFko+rimaHFIv0APUNbUPbj31BVurxKaTjkC77Bf0fdUrrj1W4aSg/lDFahz7NCp
+	aSck/Xwa2GQBIxQTGEXsFUnVeuBHYsdSDROatTi0PcaAe2FbI4HjDn+6QMA/5yeQpMizpX40jKR6l
+	gnYsxLgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkqkO-0000000FUa5-3ltF;
-	Thu, 14 Mar 2024 19:28:12 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1rktY9-0000000Fq9e-2KkS;
+	Thu, 14 Mar 2024 22:27:45 +0000
+Received: from mail.kaechele.ca ([2607:5300:60:7a38::25:1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkqkL-0000000FUZg-2Ljz
-	for ath10k@lists.infradead.org;
-	Thu, 14 Mar 2024 19:28:11 +0000
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42ECtWlT021812;
-	Thu, 14 Mar 2024 19:28:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=nIji4b2JeI41GT7wexHROmx9KAP8DekVDJtbPMjgATE=; b=Cb
-	erFUkZi8WHB6CJn+ypoGMJQhVVZHTnW6g2XRsRNpaRPYlUj2v89ryLSySuwyFQWQ
-	56FCxZSWvVcmwXXLb+XlrQIEfqsdEW+NY/14Nt/kYkT1Saeagxs8sQoGhYJNxrzn
-	YrO04EveDnnFfFzOmgex7/Rxpd6mWQGw3IqiZx/Y2ehAhb1/EGReR11DwrKkuLh1
-	9Fy/Ez3jaryxGTXyYAvf15UZUZDOWOTbUaHpkEhGkLqXrM2B3/2a0f3Wk4ALXo9v
-	bqnobWxoEItBlu3pYNBdIfM+PGQrpLBOKgXXXutPXLc03pvMW3PyeptKKTTcXpLp
-	W7kbKbZELKxuhY0PdxoA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wv1njrvs2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 19:28:03 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42EJS2EF030663
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Mar 2024 19:28:02 GMT
-Received: from [10.110.27.195] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Mar
- 2024 12:28:02 -0700
-Message-ID: <03b7f82d-531b-4d7f-a13e-a05713939050@quicinc.com>
-Date: Thu, 14 Mar 2024 12:28:02 -0700
+	id 1rktY5-0000000Fq8T-2Hul;
+	Thu, 14 Mar 2024 22:27:43 +0000
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 28650C005F;
+	Thu, 14 Mar 2024 18:27:33 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaechele.ca; s=201907;
+	t=1710455262; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=l1cRCI2TQl2E06OSsyRtxrdsvwE91Cf5bQYoFPWyo4E=;
+	b=lQkgvg/PB+EdEmzpxMq+fIlWl6rJ6NWKM0OPcF9Akv7UBMcfOynJhFDp52c20fMaGvAR2y
+	owWLGJ6YcjOmbGhQXfuZixLWrzks2nYpNyC6/TXiFuMM4m1/bXeV7yzifrLQpxu8XEdT3g
+	gQ0WqGDRmFAhvRwKcPepF1mm2mmPOhI=
+Message-ID: <96597f1d-5072-4915-be5a-e685dc85614a@kaechele.ca>
+Date: Thu, 14 Mar 2024 18:27:25 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
- qcom,no-msa-ready-indicator prop
+Subject: Re: New staging repos for ath1*k firmware
+To: Jeff Johnson <quic_jjohnson@quicinc.com>,
+ Sebastian Gottschall <s.gottschall@dd-wrt.com>, Kalle Valo
+ <kvalo@kernel.org>, Robert Marko <robert.marko@sartura.hr>
+Cc: ath10k <ath10k@lists.infradead.org>, ath11k <ath11k@lists.infradead.org>,
+ ath12k <ath12k@lists.infradead.org>,
+ linux-wireless <linux-wireless@vger.kernel.org>
+References: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
+ <CA+HBbNFQ+25u_PK2j3vYtiCZwv+shVAVeAHKqQCwhyCopORt4Q@mail.gmail.com>
+ <874jdigf76.fsf@kernel.org> <3b57d932-0848-40f4-ab2d-a8d4afe11df1@dd-wrt.com>
+ <e1c3ba7e-b358-42a3-a8db-f9c098132350@quicinc.com>
 Content-Language: en-US
-To: Marc Gonzalez <mgonzalez@freebox.fr>, Kalle Valo <kvalo@kernel.org>
-CC: ath10k <ath10k@lists.infradead.org>,
-        wireless
-	<linux-wireless@vger.kernel.org>,
-        DT <devicetree@vger.kernel.org>,
-        Pierre-Hugues Husson <phhusson@freebox.fr>,
-        Jami Kettunen
-	<jamipkettunen@gmail.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>
-References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
- <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
- <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
- <20240229-ageless-primal-7a0544420949@spud>
- <c48ead11-0e2a-4066-b324-84f802215c9a@quicinc.com>
- <2f588948-0261-4985-91e8-d5060e673cd9@freebox.fr>
- <15db6593-c474-43a5-ad20-b0e108137713@quicinc.com>
- <cbedb60c-c849-4b7e-a00e-c75ec8429adb@quicinc.com>
- <150c9705-e5ed-4d4a-b935-c0101a27795e@freebox.fr>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <150c9705-e5ed-4d4a-b935-c0101a27795e@freebox.fr>
-Content-Type: text/plain; charset="UTF-8"
+From: Felix Kaechele <felix@kaechele.ca>
+In-Reply-To: <e1c3ba7e-b358-42a3-a8db-f9c098132350@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6dzbbwoS5jRQAKWo5LCmEvv8htzXk0m-
-X-Proofpoint-GUID: 6dzbbwoS5jRQAKWo5LCmEvv8htzXk0m-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_13,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0 phishscore=0
- mlxlogscore=850 spamscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2403140150
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240314_122809_702408_CE243B2D 
-X-CRM114-Status: UNSURE (   8.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240314_152741_812340_B49B5CFC 
+X-CRM114-Status: GOOD (  10.20  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,16 +73,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 3/14/2024 10:52 AM, Marc Gonzalez wrote:
-> Is this the line you're after:
-> [   32.367011] ath10k_snoc 18800000.wifi: qmi fw_version 0x100204b2 fw_build_timestamp 2019-09-04 03:01 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.1.0-01202-QCAHLSWMTPLZ-1.221523.2
+Hi Jeff,
 
-perfect
+On 2024-03-13 15:32, Jeff Johnson wrote:
 
-> Is it legal for my company to publish our versions of qcom firmwares on linux-firmware?
-> (Perhaps a generic set of FWs would work; but AFAIU, there is some kind
-> of signature verification at some point)
+> Kalle & I are just the conduit, but I've relayed this thread to the folks
+> responsible for feeding us the firmware releases.
 
-I'll let Kalle respond to that since he has more expertise.
+Thank you for providing that service to the community. It's much 
+appreciated.
 
+Is there a chance you could ask the team for the most recent firmware 
+for QCA9379 hw1.0 SDIO (Naples)? Branch name would be WLAN.NPL.
+There are currently no public releases of this firmware outside of 
+what's included in the vendor blobs from some Android devices.
+I'm still doing some testing on the patch I sent to support this card on 
+February 28 to this list and I'd like to see if some of the issues I'm 
+seeing might be a firmware issue.
+
+Thanks!
+
+Regards,
+Felix
 
