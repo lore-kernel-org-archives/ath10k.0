@@ -4,92 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B66B5C54E5D
-	for <ath10k@archiver.kernel.org>; Thu, 14 Mar 2024 17:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF05AC54E60
+	for <ath10k@archiver.kernel.org>; Thu, 14 Mar 2024 18:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ydOw5fr/AFZUtVGxJCncGRnX7kcC+G1b69vGaI6Rc7o=; b=S+efDYRbdE5bPvd/kex3H6DfFt
-	K+k0CJYusa7+76IJJJ/KgkN0Dgy5tQcP0WS9cGZFACvYC7ZY5nKdbOFdC+FqKQg3p4KujaVSA0KeS
-	97/W+Pg+FM1WBUuKJibjtn6pdz9qUoT8i4OaECgtlb/7q9SuZ2UxLBRp0qjNg0udxp5vAccXEk3kK
-	36+OPeJWoSzQ+wp+20Wpw3/FmOAf5toApCxrx791hkwUyy6UPT9RZYOnKZAMQClbbBdM7o2yuKZ3k
-	kbagVVtcvRLh2h3mVpXuQz87QdhankD1Y85LSHk6nZIVPaz02rM2zzp5GWG6benDRoKORn8jDh9dv
-	0tdkGu4w==;
+	bh=ZI7IlN9dL2SCg7IRLTZDFQQpUE0qPe64yvdIHej8xpI=; b=I59qy0bUSxMfhUQZFK2zXSrf/5
+	jQXd5apx5Qz9JDZKr96M0lQc0cPpt02vEwLCzNG8GYxUg8WzMp0mOY0yyfPq9EFj+UDjrFO0kDIUU
+	UPFFkpTKLwD5cyEyj0bniTXJm7uoPof8VHavV+ZlSknvJLp1UmppNEdFEDVzT7009TXKeKDLD45M9
+	4d2GidCiP8FXKyRHECAZB+mkf9G5BsJjmCNkYbaQIPMPtv44D55ty5BeeEzHOw9o5jLdnPvZRpdaG
+	mxEq8SbhHYnX6wb/KkvxhmVpXRKL8ckINK0y7GzOvgmy16P3ECXTUTeI2Vy+2tOKF4UgpRMuba7Rj
+	ZvYRybRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkpFm-0000000FBGO-1ZRj;
-	Thu, 14 Mar 2024 17:52:30 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1rkps5-0000000FJar-1xej;
+	Thu, 14 Mar 2024 18:32:05 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkpFi-0000000FBFS-3xLu
-	for ath10k@lists.infradead.org;
-	Thu, 14 Mar 2024 17:52:28 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-33e76d653b5so1110841f8f.3
-        for <ath10k@lists.infradead.org>; Thu, 14 Mar 2024 10:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1710438742; x=1711043542; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ydOw5fr/AFZUtVGxJCncGRnX7kcC+G1b69vGaI6Rc7o=;
-        b=OuNuy3fA6l4vRd0x7WDKS0bWUVFBoa/j+hH9RGr1kyNBBMwAdPL09/iw91Z1xWQiZF
-         XJ36iLE6Jld3ivmdlKYd6YPXYB0213RckNUhEYV9san1S+lU7LIgPu6s/19/zVUxuFh8
-         IKsMM6z+5BAjQLAPjxFCyb8oyPMIplvJiG34BJdRY0BvenG4Fj+62M0ikVqByYwkedWj
-         +yfvxP6g5uMRKdE2finj9q2XhnGXBq5Wu0Wsi+ERtamHlJohMVim4VPwUPRMS8TOcmhJ
-         b983JFachAMUpQ4KqmenzYE04luvh1X+o1x0Tw2LXpW0ieRxhjmebXByjuZzpzJqC9F3
-         A6kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710438742; x=1711043542;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ydOw5fr/AFZUtVGxJCncGRnX7kcC+G1b69vGaI6Rc7o=;
-        b=J5hBAhNMwyKkclzKZKN19wYZrJXwGlbkpCpTftWoRgUHp3mnoRlCuMjbCrVqQkdn2D
-         yvPEGR3pJIzCOkYOpFD/+UV94TryuKxRWWzIs7wwpaNWG4cNHt7hnaTRkR23LxMALQeS
-         /QBbuyyyQVxqWuBZ00/Pe7FTnWkvbmA5dXIeh3kYwiceaf9j92YYIX8yqv376jYPdMKJ
-         6F+PtapF3tBmWRxD4ZVqAmkzqOK9J+nGQdfat6s5cidK8afi5VkfPTKNbqdcWWtf3xcX
-         s1FEVTntPvlKhhU8uFKY2HaktaC/Qiz0rQHss/Nyya6L+/3d/RhTsc5+tZW7H3OmwLBd
-         HgKA==
-X-Gm-Message-State: AOJu0Yx/1+CqJgALyvzt+o37GGPlKu2tOnlphVzeWgg13hkC+rpOLU53
-	2Yi4ehw3pHrltrDI6P08SOhJ32LZx8wOI8tcLwaTD59QXCRR48YXbBQkQWYvG7E=
-X-Google-Smtp-Source: AGHT+IEOyhXOB1aioQMfsxpLm0S1khFSThiLIjiZsbb+aHejkjcjgWgHwFtSf1gI/HfTM8GLlmW6jA==
-X-Received: by 2002:adf:e3c4:0:b0:33e:7650:24c8 with SMTP id k4-20020adfe3c4000000b0033e765024c8mr2049164wrm.12.1710438742240;
-        Thu, 14 Mar 2024 10:52:22 -0700 (PDT)
-Received: from [192.168.108.81] (freebox.vlq16.iliad.fr. [213.36.7.13])
-        by smtp.gmail.com with ESMTPSA id bt14-20020a056000080e00b0033e2777f313sm1270176wrb.72.2024.03.14.10.52.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Mar 2024 10:52:21 -0700 (PDT)
-Message-ID: <150c9705-e5ed-4d4a-b935-c0101a27795e@freebox.fr>
-Date: Thu, 14 Mar 2024 18:52:21 +0100
+	id 1rkps1-0000000FJYx-3HOj;
+	Thu, 14 Mar 2024 18:32:04 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id E3C8C6150D;
+	Thu, 14 Mar 2024 18:32:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A243FC43390;
+	Thu, 14 Mar 2024 18:31:55 +0000 (UTC)
+Date: Thu, 14 Mar 2024 14:34:06 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Alison Schofield <alison.schofield@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-cxl@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+ intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+ freedreno@lists.freedesktop.org, virtualization@lists.linux.dev,
+ linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org,
+ iommu@lists.linux.dev, linux-tegra@vger.kernel.org, netdev@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
+ ath12k@lists.infradead.org, brcm80211@lists.linux.dev,
+ brcm80211-dev-list.pdl@broadcom.com, linux-usb@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-nfs@vger.kernel.org,
+ ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-edac@vger.kernel.org,
+ selinux@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-hwmon@vger.kernel.org, io-uring@vger.kernel.org,
+ linux-sound@vger.kernel.org, bpf@vger.kernel.org,
+ linux-wpan@vger.kernel.org, dev@openvswitch.org,
+ linux-s390@vger.kernel.org, tipc-discussion@lists.sourceforge.net, Julia
+ Lawall <Julia.Lawall@inria.fr>
+Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
+ __assign_str()
+Message-ID: <20240314143406.6289a060@gandalf.local.home>
+In-Reply-To: <ZfMslbCmCtyEaEWN@aschofie-mobl2>
+References: <20240223125634.2888c973@gandalf.local.home>
+	<ZfMslbCmCtyEaEWN@aschofie-mobl2>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
- qcom,no-msa-ready-indicator prop
-Content-Language: en-US
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>
-Cc: ath10k <ath10k@lists.infradead.org>,
- wireless <linux-wireless@vger.kernel.org>, DT <devicetree@vger.kernel.org>,
- Pierre-Hugues Husson <phhusson@freebox.fr>,
- Jami Kettunen <jamipkettunen@gmail.com>,
- Jeffrey Hugo <quic_jhugo@quicinc.com>
-References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
- <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
- <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
- <20240229-ageless-primal-7a0544420949@spud>
- <c48ead11-0e2a-4066-b324-84f802215c9a@quicinc.com>
- <2f588948-0261-4985-91e8-d5060e673cd9@freebox.fr>
- <15db6593-c474-43a5-ad20-b0e108137713@quicinc.com>
- <cbedb60c-c849-4b7e-a00e-c75ec8429adb@quicinc.com>
-From: Marc Gonzalez <mgonzalez@freebox.fr>
-In-Reply-To: <cbedb60c-c849-4b7e-a00e-c75ec8429adb@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240314_105227_130936_AE5CBE4A 
-X-CRM114-Status: GOOD (  14.55  )
+X-CRM114-CacheID: sfid-20240314_113201_973615_88823618 
+X-CRM114-Status: GOOD (  28.49  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,52 +87,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 14/03/2024 15:33, Jeff Johnson wrote:
+On Thu, 14 Mar 2024 09:57:57 -0700
+Alison Schofield <alison.schofield@intel.com> wrote:
 
-> On 3/7/2024 8:46 AM, Jeff Johnson wrote:
->
->> On 3/7/2024 7:29 AM, Marc Gonzalez wrote:
->>
->>> Have you heard back from the dev team?
->>>
->>> Do they confirm that an issue involving missing MSA_READY notifications
->>> was ever noticed?
->>>
->>> What devices were affected? (All msm8998? A subset of msm8998?)
->>>
->>> Was the issue eventually fixed?
->>> (Probably fixed, otherwise newer devices would be affected)
->>
->> The feedback I received was "it might be ok to change all ath10k qmi to
->> skip waiting for msa_ready", and it was pointed out that ath11k (and
->> ath12k) do not wait for it.
->>
->> However with so many deployed devices, "might be ok" isn't a strong
->> argument for changing the default behavior.
->>
->> So my preference would be to use the firmware capability in the board
->> file that Kalle has recommended.
+> On Fri, Feb 23, 2024 at 12:56:34PM -0500, Steven Rostedt wrote:
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > [
+> >    This is a treewide change. I will likely re-create this patch again in
+> >    the second week of the merge window of v6.9 and submit it then. Hoping
+> >    to keep the conflicts that it will cause to a minimum.
+> > ]
+
+Note, change of plans. I plan on sending this in the next merge window, as
+this merge window I have this patch:
+
+  https://lore.kernel.org/linux-trace-kernel/20240312113002.00031668@gandalf.local.home/
+
+That will warn if the source string of __string() is different than the
+source string of __assign_str(). I want to make sure they are identical
+before just dropping one of them.
+
+
 > 
-> Marc,
-> I finally have an engineer who wants to research this further.
-> Can you provide the kernel log that shows the firmware version being used?
+> > diff --git a/drivers/cxl/core/trace.h b/drivers/cxl/core/trace.h
+> > index bdf117a33744..07ba4e033347 100644
+> > --- a/drivers/cxl/core/trace.h
+> > +++ b/drivers/cxl/core/trace.h  
+> 
+> snip to poison
+> 
+> > @@ -668,8 +668,8 @@ TRACE_EVENT(cxl_poison,
+> >  	    ),
+> >  
+> >  	TP_fast_assign(
+> > -		__assign_str(memdev, dev_name(&cxlmd->dev));
+> > -		__assign_str(host, dev_name(cxlmd->dev.parent));
+> > +		__assign_str(memdev);
+> > +		__assign_str(host);  
+> 
+> I think I get that the above changes work because the TP_STRUCT__entry for
+> these did:
+> 	__string(memdev, dev_name(&cxlmd->dev))
+> 	__string(host, dev_name(cxlmd->dev.parent))
 
-Hello Jeff,
+That's the point. They have to be identical or you will likely bug.
 
-Is this the line you're after:
+The __string(name, src) is used to find the string length of src which
+allocates the necessary length on the ring buffer. The __assign_str(name, src)
+will copy src into the ring buffer.
 
-[   32.367011] ath10k_snoc 18800000.wifi: qmi fw_version 0x100204b2 fw_build_timestamp 2019-09-04 03:01 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.1.0-01202-QCAHLSWMTPLZ-1.221523.2
+Similar to:
 
-Hopefully, my Debian setup will soon be 100% functional
-so I can easily tweak the kernel, and add more logs.
+	len = strlen(src);
+	buf = malloc(len);
+	strcpy(buf, str);
 
+Where __string() is strlen() and __assign_str() is strcpy(). It doesn't
+make sense to use two different strings, and if you did, it would likely be
+a bug.
 
-Bonus question:
-Is it legal for my company to publish our versions of qcom firmwares on linux-firmware?
-(Perhaps a generic set of FWs would work; but AFAIU, there is some kind
-of signature verification at some point)
+But the magic behind __string() does much more than just get the length of
+the string, and it could easily save the pointer to the string (along with
+its length) and have it copy that in the __assign_str() call, making the
+src parameter of __assign_str() useless.
 
+> 
+> >  		__entry->serial = cxlmd->cxlds->serial;
+> >  		__entry->overflow_ts = cxl_poison_overflow(flags, overflow_ts);
+> >  		__entry->dpa = cxl_poison_record_dpa(record);
+> > @@ -678,12 +678,12 @@ TRACE_EVENT(cxl_poison,
+> >  		__entry->trace_type = trace_type;
+> >  		__entry->flags = flags;
+> >  		if (region) {
+> > -			__assign_str(region, dev_name(&region->dev));
+> > +			__assign_str(region);
+> >  			memcpy(__entry->uuid, &region->params.uuid, 16);
+> >  			__entry->hpa = cxl_trace_hpa(region, cxlmd,
+> >  						     __entry->dpa);
+> >  		} else {
+> > -			__assign_str(region, "");
+> > +			__assign_str(region);
+> >  			memset(__entry->uuid, 0, 16);
+> >  			__entry->hpa = ULLONG_MAX;  
+> 
+> For the above 2, there was no helper in TP_STRUCT__entry. A recently
+> posted patch is fixing that up to be __string(region, NULL) See [1],
+> with the actual assignment still happening in TP_fast_assign.
 
-Regards
+__string(region, NULL) doesn't make sense. It's like:
 
+	len = strlen(NULL);
+	buf = malloc(len);
+	strcpy(buf, NULL);
+
+??
+
+I'll reply to that email.
+
+-- Steve
+
+> 
+> Does that assign logic need to move to the TP_STRUCT__entry definition
+> when you merge these changes? I'm not clear how much logic is able to be
+> included, ie like 'C' style code in the TP_STRUCT__entry.
+> 
+> [1]
+> https://lore.kernel.org/linux-cxl/20240314044301.2108650-1-alison.schofield@intel.com/
 
