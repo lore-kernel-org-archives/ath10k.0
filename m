@@ -4,67 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88C81C54E58
-	for <ath10k@archiver.kernel.org>; Fri, 15 Mar 2024 05:24:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2F23C54E58
+	for <ath10k@archiver.kernel.org>; Fri, 15 Mar 2024 05:52:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=zA3zYdQzHVZkZf6zvzeV1jWDJcTmK4YmJafI3yvI3fA=; b=GIeS0a6QEbOcz/4cxtn3OXSAnI
-	KkgNRcjGVUqLeeSLm7zeu3LDsRS/zE+JEZFWU/B0o9MYasIXGLyS0Ey0QgkCtazsFbrZngQu1VlhT
-	816iR0uCGZBLk6Ek7Ri0rEgsWitxSsKWw6Un4di5ljUQ09Cmlb6tOoOj4Fn6ic6he+k+U7jCOsoNg
-	HZa11uhkDMzFNRc/LyG+ZOxQF57fFDc8uPD7sEBE0WoevONnKWPG1mw1etDN5O56hB/W6gQgYwVTg
-	OEWRwkoQd7RLI2AWqXRQ04+bCqj0mpV/IRWoLbMKhKtMu65rWFS9dh/Aho4F0kOfi3ckuAPxpgqPp
-	FrW5+WUA==;
+	bh=I3M2FQXA24ojL/+FyY3k102AJ+AonKYH0KtBD1aMntM=; b=grYJVoZOp/yGqi5mCUfE38Or4w
+	fUUhP8c9CX6W+zqAi3ja5LqZ36GanZWjUztnLFCCQ7sYFjnqAW7jOrvTgnDuvaNTBO3VIFcEWnwlw
+	SHrQCtNjapynowyDi7SsOI0RHyLUvUSn5pNqaq+g2BtefeC/vbzsMn+HhZMcLXNiCZUsf3sGUmozF
+	14rOE74gjNmymq1GM+XVPcNvTkdMJ0kx7YTQcbkdPee2+9Y0tDqUNwMFkWOhtSLxi161dyZlrgu1Q
+	07QcoKwbPFTSqWQCd3ngAk6vLL/9flos00/o3hw0a4uufGZI+fEizL6u1+f0rmIXwoF/hQrbRkPMb
+	TDbfOsew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rl034-0000000Gj0j-02Dk;
-	Fri, 15 Mar 2024 05:24:06 +0000
-Received: from mgamail.intel.com ([192.198.163.17])
+	id 1rl0Uf-0000000Glcj-4AJM;
+	Fri, 15 Mar 2024 05:52:37 +0000
+Received: from esa2.hc1455-7.c3s2.iphmx.com ([207.54.90.48])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rl02y-0000000Giys-3mUK
-	for ath10k@lists.infradead.org;
-	Fri, 15 Mar 2024 05:24:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710480241; x=1742016241;
-  h=date:from:to:cc:subject:message-id;
-  bh=G1XKaJXvjSJP8udHapt1yG9u5qF9KWCO7XnwXZrSiKE=;
-  b=fiTc1F/Myn2Y7+ZEvypjOevNbgjuQz1bCurEn966Ain3FvYqGaPaGQPo
-   9QQ7s4gldvwlzih7VRy1AwrNPjpQCEGN/pOKg9JHdc2AeYgl4ciuE7RKO
-   5SgMVDL0C6ciuoSEFpuJXMSQLzXxr7xDYTU6sAqgm6xLGoAEjPeiowkdj
-   Dfu3D/dGtBCKl0cEDqIHzLevzbteyHzto7dbENee7TnY2xtfTfxgX1P95
-   f1vunxnBoiRc53bI0GAOMTFw9n+A/qJc6cHkIFnWZ4Afsbcbf75lcLjKf
-   AZ8vUo31BfKicJ/pPVkgz2m1vnXC/Vcnhdi1bUima8YlIeSLeWp1BPu92
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5190012"
-X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="5190012"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 22:23:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="17272564"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 14 Mar 2024 22:23:58 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rl02s-000E8j-37;
-	Fri, 15 Mar 2024 05:23:54 +0000
-Date: Fri, 15 Mar 2024 13:23:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 10526d294663057a53888aecb2d4d24e099da313
-Message-ID: <202403151337.FyjJDA4P-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1rl0Uc-0000000Glbb-0RBY;
+	Fri, 15 Mar 2024 05:52:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1710481954; x=1742017954;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Qv6phc/4FuyjqrfYPdqCTnpCxBNfhp35atRySiUpzR8=;
+  b=FLSW6a5bgYrfbozk/al6jEX8zXfmqCp/KXmwpSCZLLxE3y7kll0Qa15/
+   nK1sSzrICbYdaQDyTNtp9W57tX7+TYrykXTi4VBnIK4vM1IVxu2HMmoqa
+   ndy0UWQdGJp7njg/b2dELfVHmNSqKLIBqHH3coFgqUI/MVvkS8deib5nn
+   eA58e8aLGtQWpnwKGOSR25yuo5nuQ1yk4Q9reqbp2fVR6wB+wdtF/b5YE
+   2r+kZ6CH7pJRTM9MFH8x7kYswnTjgPRKIsVpd8+AjPSx3ibT6B+o4nJFA
+   6C1rQ1TbNMS25VMuGkYCS93vBxnZuVd0hM6qGei0v7JEWIQPFXEZLG26q
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="152383414"
+X-IronPort-AV: E=Sophos;i="6.07,127,1708354800"; 
+   d="scan'208";a="152383414"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+  by esa2.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 14:52:29 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+	by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 3E1A9141205;
+	Fri, 15 Mar 2024 14:52:27 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 64DC214D22;
+	Fri, 15 Mar 2024 14:52:26 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id E1A0A200A7E3A;
+	Fri, 15 Mar 2024 14:52:25 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 1A9A31A006B;
+	Fri, 15 Mar 2024 13:52:24 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Jeff Johnson <jjohnson@kernel.org>,
+	linux-wireless@vger.kernel.org,
+	ath11k@lists.infradead.org,
+	ath10k@lists.infradead.org
+Subject: [PATCH v2 1/3] wifi: ath: Convert sprintf/snprintf to sysfs_emit
+Date: Fri, 15 Mar 2024 13:52:09 +0800
+Message-Id: <20240315055211.1347548-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28252.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28252.004
+X-TMASE-Result: 10--3.370400-10.000000
+X-TMASE-MatchedRID: /mcjwogdDrk4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfDqO6/8R69QE8U
+	roFNOGp7a6aAZTOwtJmRloiW1Kgftd2ZdKe8BPbSrMZ+BqQt2Nps/NNpVQ666hXsn8ikX6Gtzv0
+	+UmYCZcMPNxz2EvpSIAhBeNJICtc+zK2lwdvrNt2qH6mIBejVf2ItZ2e1geixEd+K6O5Nt53oKE
+	r2irJf5CL637QCIVpi8vc3EUpCmrV8M8QL/JCA9N9JA2lmQRNUrzl8sNiWClKbKItl61J/yZ+in
+	TK0bC9eKrauXd3MZDXdPm6Zo4+L6rfjitlkYmpJaIu8tbWsF6z9+jPt2YyIEwSvEMdfhO/82WMg
+	P9XH4iW61V4Xac0M7FrnjD0+bxg0N7Br+Gphn4yMa1PejsZJrBXFEH92Kf64nTtPxlIuIBW9Hzj
+	86YHXBCnifx5AGfCL
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240314_222401_030777_DABC9309 
-X-CRM114-Status: UNSURE (   3.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240314_225234_623422_2F9270A0 
+X-CRM114-Status: GOOD (  10.74  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,174 +100,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 10526d294663057a53888aecb2d4d24e099da313  Merge branch 'ath-next' into ath-qca
+Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+or sysfs_emit_at() when formatting the value to be returned to user space.
 
-elapsed time: 722m
+coccinelle complains that there are still a couple of functions that use
+snprintf(). Convert them to sysfs_emit().
 
-configs tested: 154
-configs skipped: 4
+sprintf() will be converted as weel if they have.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Generally, this patch is generated by
+make coccicheck M=<path/to/file> MODE=patch \
+COCCI=scripts/coccinelle/api/device_attr_show.cocci
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                   randconfig-001-20240315   gcc  
-arc                   randconfig-002-20240315   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                        clps711x_defconfig   clang
-arm                                 defconfig   clang
-arm                          ixp4xx_defconfig   gcc  
-arm                         lpc18xx_defconfig   clang
-arm                        neponset_defconfig   gcc  
-arm                   randconfig-001-20240315   clang
-arm                   randconfig-002-20240315   gcc  
-arm                   randconfig-003-20240315   gcc  
-arm                   randconfig-004-20240315   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240315   gcc  
-arm64                 randconfig-002-20240315   gcc  
-arm64                 randconfig-003-20240315   gcc  
-arm64                 randconfig-004-20240315   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240315   gcc  
-csky                  randconfig-002-20240315   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240315   clang
-hexagon               randconfig-002-20240315   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240315   clang
-i386         buildonly-randconfig-002-20240315   clang
-i386         buildonly-randconfig-003-20240315   gcc  
-i386         buildonly-randconfig-004-20240315   clang
-i386         buildonly-randconfig-005-20240315   gcc  
-i386         buildonly-randconfig-006-20240315   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240315   gcc  
-i386                  randconfig-002-20240315   clang
-i386                  randconfig-003-20240315   clang
-i386                  randconfig-004-20240315   clang
-i386                  randconfig-005-20240315   gcc  
-i386                  randconfig-006-20240315   clang
-i386                  randconfig-011-20240315   clang
-i386                  randconfig-012-20240315   gcc  
-i386                  randconfig-013-20240315   gcc  
-i386                  randconfig-014-20240315   clang
-i386                  randconfig-015-20240315   gcc  
-i386                  randconfig-016-20240315   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240315   gcc  
-loongarch             randconfig-002-20240315   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip28_defconfig   gcc  
-mips                          rb532_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240315   gcc  
-nios2                 randconfig-002-20240315   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                  or1klitex_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240315   gcc  
-parisc                randconfig-002-20240315   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                    amigaone_defconfig   gcc  
-powerpc                      cm5200_defconfig   clang
-powerpc                       eiger_defconfig   clang
-powerpc                        fsp2_defconfig   gcc  
-powerpc                     mpc5200_defconfig   clang
-powerpc               randconfig-001-20240315   clang
-powerpc               randconfig-002-20240315   gcc  
-powerpc               randconfig-003-20240315   clang
-powerpc64             randconfig-001-20240315   clang
-powerpc64             randconfig-002-20240315   gcc  
-powerpc64             randconfig-003-20240315   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240315   clang
-riscv                 randconfig-002-20240315   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240315   gcc  
-s390                  randconfig-002-20240315   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240315   gcc  
-sh                    randconfig-002-20240315   gcc  
-sh                              ul2_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240315   gcc  
-sparc64               randconfig-002-20240315   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240315   gcc  
-um                    randconfig-002-20240315   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                  cadence_csp_defconfig   gcc  
-xtensa                randconfig-001-20240315   gcc  
-xtensa                randconfig-002-20240315   gcc  
+No functional change intended
 
+CC: Kalle Valo <kvalo@kernel.org>
+CC: Jeff Johnson <jjohnson@kernel.org>
+CC: linux-wireless@vger.kernel.org
+CC: ath11k@lists.infradead.org
+CC: ath10k@lists.infradead.org
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+V2: subject updated
+
+This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
+Split them per subsystem so that the maintainer can review it easily
+[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+---
+ drivers/net/wireless/ath/ath10k/thermal.c | 2 +-
+ drivers/net/wireless/ath/ath11k/thermal.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
+index 31c8d7fbb095..8b15ec07b107 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.c
++++ b/drivers/net/wireless/ath/ath10k/thermal.c
+@@ -100,7 +100,7 @@ static ssize_t ath10k_thermal_show_temp(struct device *dev,
+ 	spin_unlock_bh(&ar->data_lock);
+ 
+ 	/* display in millidegree celsius */
+-	ret = snprintf(buf, PAGE_SIZE, "%d\n", temperature * 1000);
++	ret = sysfs_emit(buf, "%d\n", temperature * 1000);
+ out:
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return ret;
+diff --git a/drivers/net/wireless/ath/ath11k/thermal.c b/drivers/net/wireless/ath/ath11k/thermal.c
+index 41e7499f075f..18d6eab5cce3 100644
+--- a/drivers/net/wireless/ath/ath11k/thermal.c
++++ b/drivers/net/wireless/ath/ath11k/thermal.c
+@@ -101,7 +101,7 @@ static ssize_t ath11k_thermal_show_temp(struct device *dev,
+ 	spin_unlock_bh(&ar->data_lock);
+ 
+ 	/* display in millidegree Celsius */
+-	ret = snprintf(buf, PAGE_SIZE, "%d\n", temperature * 1000);
++	ret = sysfs_emit(buf, "%d\n", temperature * 1000);
+ out:
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return ret;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.29.2
+
 
