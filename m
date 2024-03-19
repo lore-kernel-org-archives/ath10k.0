@@ -4,99 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D2CCC54E71
-	for <ath10k@archiver.kernel.org>; Tue, 19 Mar 2024 17:06:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B43B0C6FD1F
+	for <ath10k@archiver.kernel.org>; Tue, 19 Mar 2024 17:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vhV6zUtmAfy/vNP17fIk9V9xTd/09f0QdrKRBGrKG64=; b=QIq9aCWDxkT4mPJ6nhSd1lIOPH
-	TIiS4je8MkUKG4j7YXEFqlTM9DyEj4fcVarFWRpTd8A/stLP8QE2hpZAgeUmKZT5KPpK82fKPBijj
-	jSY0PHvq8vKbajmj6xi0t8CvHYVdSYnQDZBRpnuMsrzUix9HTDTqBUlsg6m/wKYw950IAiBsoRHtp
-	PL2zGlGJSOuB5yvbyfIf71wPFqjbuipPwx8fIcfGho53+lJANLAoahWk+4xvhIqe033llCBWoJ+eJ
-	Qz/dea2vVoUIQ9QBWwkJj0Py9O77pXbodPuVvAmtbSz7LfFUOn7FcIk2UtskQ1huvd/IKeKgBFGtw
-	EMVntzsg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=OmXgZZ6GaxcwZLA1WFIg0B/+xgHaSvLSd69ytRYOKx4=; b=qv9qM+a9i2Xm+E8vEhNWYUDSkn
+	48OEx12T7ZWfvUNAeJUcMJNVWs/OXSMEsHS4RpdtScRNlDz0fbcwQJpc9HhYPvY1GdTFkIytVSanu
+	RBVc1GfGaUpxxPhE3/1DXl9Hzt7Zp/U4yMtX5sJY1w8PaOaDxNZYAX8fDl4bZClnUgYJu/jVCeuxI
+	kWFjZ6Ll02fc9ddn7OpwclIjp2O3FEgSaozBnf0Es1qHnD2gkqrIcjTA6vHsNhMeIKoF8PurcvfJs
+	/ehCOFoIVZmKzIhcb+mAx4rW9lkeBi0zgs+NslNHu1fZmYMMdh/wGItWsai5kN7Yyp1BNcodfHj3H
+	ohm5IKwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmcui-0000000DXC2-34eS;
-	Tue, 19 Mar 2024 17:06:12 +0000
-Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
+	id 1rmd3m-0000000DZ6O-1v8L;
+	Tue, 19 Mar 2024 17:15:34 +0000
+Received: from mail-ed1-f54.google.com ([209.85.208.54])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmcue-0000000DX9n-1aIN
+	id 1rmd3j-0000000DZ55-1qIu
 	for ath10k@lists.infradead.org;
-	Tue, 19 Mar 2024 17:06:11 +0000
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2d476d7972aso85830641fa.1
-        for <ath10k@lists.infradead.org>; Tue, 19 Mar 2024 10:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1710867960; x=1711472760; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vhV6zUtmAfy/vNP17fIk9V9xTd/09f0QdrKRBGrKG64=;
-        b=BEiXyYOtzFIJsKDPl3u6kPwJwWaPQEOTgc/Tqw6Ax7rvqb9rrj1NZ7rAgiudC1gnoo
-         dtVfrSTNp/dnDVHJ+ns8xYKmCoXTA9DOIxkUbl63aBbV75NpoWFl6czuGuU0fNLEWDOf
-         uY0RfiXIF/CAIfUGuOIpy46Ip0VoswgeO1oGi1yJw9QGu1myafJpjygkXvBOgE8/b9cz
-         m8ad5LhPJDM7M5n6qmOOK5Pp3/uaVxJh255YLqEPlxafE0aQG0e2irYv9y6ojeXJLZYc
-         WXa4Br25vlfZAgCLE5fmDH8E87Oa6ASC+x0neXTrk93rN7KQsFgq13ta0PERhMjb4cq4
-         SmKg==
+	Tue, 19 Mar 2024 17:15:32 +0000
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56890b533aaso6613397a12.3
+        for <ath10k@lists.infradead.org>; Tue, 19 Mar 2024 10:15:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710867960; x=1711472760;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vhV6zUtmAfy/vNP17fIk9V9xTd/09f0QdrKRBGrKG64=;
-        b=hbpgld2iu12p7GD5D689ZdEsQf7jBIsYP5nOvKjoD1eTrFWuxQjXCTONt2Q7drwLfU
-         9hdz417vFAr1EsELe9bzxSMzLQQHyYeNsmpr24PG5t2JR7fUAJrKvxBYd1gGU0eaTlNj
-         5cj6zIbh+ydrPdC2/Rmgjco2cu+7ryHdy61xEi2cJ0LY+3V/CzgG/qZJoYc1c9r9fwW6
-         ONpWa0kt23MiQlo0AH93jEJhXu2N4ubbfuvfOusynQPK85PSmShuwDcO5G8bTdTCAWtl
-         yLZsPJ3nnEkY4f3r31WiwlqBsYy/MIvWq5FENHZmkrOpqEmDrDAQKlrDl81wfdnUU3Ba
-         ZSfA==
-X-Forwarded-Encrypted: i=1; AJvYcCVZFHA5NNf58VySjpa83BJubuPOwDrAtVT3RDHefqin24zrSzXgltBxeo3crhuekJ9KtS15O5G+LZD5dsb0VB1lP77s/6UeoX9O1w==
-X-Gm-Message-State: AOJu0Yyo9DMNbwOJtm2a8d/gRdeaU5XvfFkkZ5tPBuQioAbomyDSgJfd
-	sQmvM9azTdmwyToWA4DEAUfx2Mh75LQ7AJrbkNNyHfuq06dyh+XbuwpLHzgMYOM=
-X-Google-Smtp-Source: AGHT+IHEtmX+QarKHP/fHEiIdq3PIxiOyRbGltyD0iu6IZMQAyPpmgbHVNBWPPYKrEZlewbLrYHffg==
-X-Received: by 2002:a05:651c:1a23:b0:2d4:a8cf:e798 with SMTP id by35-20020a05651c1a2300b002d4a8cfe798mr2972250ljb.14.1710867959880;
-        Tue, 19 Mar 2024 10:05:59 -0700 (PDT)
-Received: from [192.168.108.81] (freebox.vlq16.iliad.fr. [213.36.7.13])
-        by smtp.gmail.com with ESMTPSA id t6-20020a05600c450600b004133365bbc6sm21924692wmo.19.2024.03.19.10.05.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 10:05:59 -0700 (PDT)
-Message-ID: <e04b8086-ab76-4921-921a-fa01bfa4f312@freebox.fr>
-Date: Tue, 19 Mar 2024 18:05:58 +0100
+        d=1e100.net; s=20230601; t=1710868528; x=1711473328;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OmXgZZ6GaxcwZLA1WFIg0B/+xgHaSvLSd69ytRYOKx4=;
+        b=Cwq8M69Gq0muls3VP+ks7z8mBNdLz8qgPKbehv6ekSbUYMHkUGLdt8eEXZjZFTryVt
+         I5Mrd8x8ZewonMl+cFICOZjkfCIRC3k3XFx/4ytCLnQo6MvTexsJfpg+F9tTaRcTHL8r
+         2OmqTp+T+kfmdbLg95QFvcEmc793iLHn6LJlf+bMS0KlrhR/yN7f7DSDnC/QorzSy8AA
+         jMtAmcdBKaxf5qx8s2A3sQjVK+254QTJeYVpTWh1L4d4Da5eWFX1bwUXuV+wVORk9TX7
+         kdMa1ZUQ1AloZBVQKXe5C4c6jItNbsKzwiQWCAzoHvvUx9iEpp9ZHrYe7CrrmeJRDgrV
+         4o1g==
+X-Forwarded-Encrypted: i=1; AJvYcCXaisZRrLbrk0W3OL3f6X1iLI7B7Rb+uqWxXqmxTCoWjCqmkWCAab6IO2eqiY4Q3rqzoRc74GgyCmBE+ncJPztZHB5ruL9tXoBkHA==
+X-Gm-Message-State: AOJu0YxtF5MMcptBsofCiJUem8c7p815yXG9JrtLquCX6DHs9OljBGbR
+	g+DxHLlth2ZtNRI+7AVZtXihN6euueqkDn9s94U7lRyaJRHpAxDs
+X-Google-Smtp-Source: AGHT+IFm+ZPcuLTEBvsUGrK5gK3tb7P/G5UH9t7dK0EWm87J9RHQQ6XGn0irQ9hNFMsqFrQ7wzLo4g==
+X-Received: by 2002:a05:6402:31bb:b0:564:7921:37c3 with SMTP id dj27-20020a05640231bb00b00564792137c3mr1836242edb.19.1710868527534;
+        Tue, 19 Mar 2024 10:15:27 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id cb4-20020a0564020b6400b005663b0d7243sm5996664edb.83.2024.03.19.10.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 10:15:27 -0700 (PDT)
+Date: Tue, 19 Mar 2024 10:15:25 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+	kuba@kernel.org, keescook@chromium.org,
+	"open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>,
+	"open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
+Message-ID: <ZfnILSPBiqk8JdJ4@gmail.com>
+References: <20240319104754.2535294-1-leitao@debian.org>
+ <8771e856-3d9f-41c6-88c8-3c75e77b2aab@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
- qcom,no-msa-ready-indicator prop
-Content-Language: en-US
-From: Marc Gonzalez <mgonzalez@freebox.fr>
-To: wireless <linux-wireless@vger.kernel.org>,
- ath10k <ath10k@lists.infradead.org>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Jeffrey Hugo <quic_jhugo@quicinc.com>, Bjorn Andersson
- <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
- Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>,
- DT <devicetree@vger.kernel.org>, Pierre-Hugues Husson <phhusson@freebox.fr>,
- Jami Kettunen <jamipkettunen@gmail.com>
-References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
- <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
- <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
- <c58e67e6-6a7f-4963-86b9-580165bf05ba@freebox.fr> <87cyse8j9m.fsf@kernel.org>
- <6d4b1381-c121-4cda-a8c9-9ccac56bd447@freebox.fr> <87plw87nsc.fsf@kernel.org>
- <0816f7bb-3c97-4b90-8e19-191552ea6e26@freebox.fr> <87h6hk7aee.fsf@kernel.org>
- <fb0ffdd9-923a-4191-8304-583243ad528b@freebox.fr>
- <CAA8EJppHa=qEkKbSVs9hMCBXfhiC9MyAQO+v+6TCWhg==4CpOQ@mail.gmail.com>
- <f26dfcc6-5fd3-486d-b0f2-80168eb213c7@freebox.fr>
- <880e016a-d4d2-4bc9-8c75-bbe4848515ad@freebox.fr>
- <a1dd2944-5d20-4fbe-84f3-b03a0cd5835d@freebox.fr>
-In-Reply-To: <a1dd2944-5d20-4fbe-84f3-b03a0cd5835d@freebox.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8771e856-3d9f-41c6-88c8-3c75e77b2aab@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240319_100609_041108_1C6C5F23 
-X-CRM114-Status: UNSURE (   7.58  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240319_101531_701138_1E30D4AE 
+X-CRM114-Status: GOOD (  11.46  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,15 +84,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 19/03/2024 15:39, Marc Gonzalez wrote:
+On Tue, Mar 19, 2024 at 09:05:24AM -0700, Jeff Johnson wrote:
+> On 3/19/2024 3:47 AM, Breno Leitao wrote:
+> > @@ -3687,6 +3690,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+> >  
+> >  err_free_coredump:
+> >  	ath10k_coredump_destroy(ar);
+> > +err_free_netdev:
+> > +	free_netdev(ar->napi_dev);
+> >  err_free_tx_complete:
+> >  	destroy_workqueue(ar->workqueue_tx_complete);
+> >  err_free_aux_wq:
+> > @@ -3708,6 +3713,7 @@ void ath10k_core_destroy(struct ath10k *ar)
+> >  
+> >  	destroy_workqueue(ar->workqueue_tx_complete);
+> >  
+> > +	free_netdev(ar->napi_dev);
+> >  	ath10k_debug_destroy(ar);
+> >  	ath10k_coredump_destroy(ar);
+> >  	ath10k_htt_tx_destroy(&ar->htt);
+> 
+> looks like there is a pre-existing issue that the order of operations in
+> _destroy() doesn't match the order of operations in the _create() error path.
 
-> What a dweeb... bitten by the very bug I'm supposed to fix :(
+Right. I found it weird as well. Basically "ath10k_coredump" and
+"ath10k_debug" operations are swapped between ath10k_core_create() and
+ath10k_core_destroy().
 
-Is there a kernel bootcmd to force the kernel to probe devices sequentially,
-in order to get (roughly) deterministic kernel logs I can run diff on?
-(Even if it slows down boot by a factor of 10)
+If you wish, I can submit a patch ordering it properly.
 
-Regards
+> but the placement of your changes looks ok to me
 
+Right. It is done in-between the workqueues and the coredump/debug
+creation/destroy.
 
+Thanks for the review.
 
