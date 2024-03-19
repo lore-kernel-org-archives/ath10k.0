@@ -4,70 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72EC3C54E60
-	for <ath10k@archiver.kernel.org>; Tue, 19 Mar 2024 10:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4F6CC54E60
+	for <ath10k@archiver.kernel.org>; Tue, 19 Mar 2024 10:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=2Pf9ToHTFBlUcNvi0ccDec6bsbZdFOYxpbDdlfC2TV8=; b=nFsdR49Dx8qLmmt35UYPcZ9QWz
-	oSge3Dxwj3ePD0S0us2hjGA5TRI3dTtOJhlWQ09VWJOQ8stkA6Xa3mFiym7OX16bnA0L1nu2f0f5q
-	HPJuB/7It4Lw91vrHbPL0lstPlNGFi8BF5jc7MayTR9fU20X6HNkMQuSMoajUQiInU8FxpFU/vzJO
-	7NPcIZP599na2wZ4J/9umXmwkB4AzXjxFsU4hb3yhcmY7xsYl4Wl5o2CD21KOO+Yl93YGPcV2C+eZ
-	JbGozhe3JSxfJxYNqY6+zOXk/FHUDkS+M9rJc+Vzfb9axhurXmX4gqNVgGuuSGIfCdBSkfkbrX+E8
-	3duaUMrA==;
+	bh=PfnlJ1rqvQQnhOjS9++O3B8RXTWEeU94QT4khC0jGC8=; b=40vpWJZaRUckUTiDl9WNgo/NDs
+	ux07ULjFkfz75QM++IKi0fSekt4tcqKmYg2RNxHIwBDTDurv8UCuWnjxk0ct4JFQqKMK2V2g2VvQc
+	Sk4AwrAtZljzHz1oFdkhsYdRtwmdx3f9kjyh9fpnLfkfwvXrKsDBPw5nZr8efQn0yfSAGQHPMswdG
+	Hp9Orm1Rw3U9h8WlBKbjREOaBqiJqs3+WjY7mMBnfzbBPOaI3X5fvS8AmDrPycr3TePxRDvQ9hJrV
+	4ANqyp1zfo8Lo/wUR2ulGBrALs12ofLQdCoxtTiFGqP4rCvPS3h2lMfTTt9KduXFaQ+SvPUpwy9cT
+	XdNLfvQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmX1V-0000000CMQG-0Rjm;
-	Tue, 19 Mar 2024 10:48:49 +0000
-Received: from mail-ed1-f47.google.com ([209.85.208.47])
+	id 1rmXBy-0000000COwG-3KDU;
+	Tue, 19 Mar 2024 10:59:38 +0000
+Received: from mgamail.intel.com ([198.175.65.19])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmX1R-0000000CMPA-1rkm
+	id 1rmXBv-0000000COvW-31xZ
 	for ath10k@lists.infradead.org;
-	Tue, 19 Mar 2024 10:48:47 +0000
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso2028720a12.1
-        for <ath10k@lists.infradead.org>; Tue, 19 Mar 2024 03:48:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710845321; x=1711450121;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2Pf9ToHTFBlUcNvi0ccDec6bsbZdFOYxpbDdlfC2TV8=;
-        b=tSnQfkOjdaaptAcejCaaE5rlHRsAhpiYEHPxbnDH/O75mx0XuvamJyoPxSxSLVLFw8
-         vXxKGmlqQlcEWdPaGOCjY8E3UyJJJqAKIGi4pi08g6fF6VOuGXNfFLdylfrFeEMz3s+Z
-         x6g6DxANLBnshbhyulZSK3P7IqC8iS3pyC03W4d78p5g0ZPx+caPL2fylSfoOjDI+YCa
-         hALvHzdaS65MJcMYLIkXdAOd3Q6NlRNaflKFlCa328la1Vimcs5/SVBBoZkS5YYntlys
-         CB5Nb4tSGsaL0tEP8s+WQqKeZT1KbdIlN9sn4/jxqc6bKt4AOnyBXKC0fh6OzskJWGww
-         tcQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXVbt45u+qFQJkHNuzzR0CGeFaqPmBYkuy/gbsKnaoR6MDC3eJnG0kZHy6osy5fMTfhH6szNK/BRB4uNiZbAdzm90SN7fVQkTTP5w==
-X-Gm-Message-State: AOJu0YzKvGNRWAomrnbVP7YUPbalC/DHkCcOa2bZUXL6kHe3Bs8etYFx
-	97ftzA8PyA3ZaZcJ24vYYfJBOHzCl6prWwBC6OWhFMBffvCuzHDKn1giZg+1
-X-Google-Smtp-Source: AGHT+IGuKBcD2QQQjVeFlvXngOSVaEvkMXfwiDGw4QgZ/UrAY/EfPNIFca1MM4+xo+QpvUeaIEoosw==
-X-Received: by 2002:a17:906:3e47:b0:a46:a71d:323a with SMTP id t7-20020a1709063e4700b00a46a71d323amr1396399eji.72.1710845321329;
-        Tue, 19 Mar 2024 03:48:41 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id l22-20020a1709067d5600b00a469e550472sm4108087ejp.60.2024.03.19.03.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 03:48:40 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: Kalle Valo <kvalo@kernel.org>,
-	Jeff Johnson <jjohnson@kernel.org>
-Cc: kuba@kernel.org,
-	keescook@chromium.org,
-	linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
-	ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ath10k: allocate dummy net_device dynamically
-Date: Tue, 19 Mar 2024 03:47:52 -0700
-Message-ID: <20240319104754.2535294-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	Tue, 19 Mar 2024 10:59:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710845975; x=1742381975;
+  h=date:from:to:cc:subject:message-id;
+  bh=fRug8na6XhJbh+0ELMfyqTiBYbOfxByvWkSafSaxnrI=;
+  b=mlv0MilkRxM3uRDq+NZiJaO9QFYPJD1L92bsZU00a/yLjtH2FDFRUh0H
+   w/IgTkHF8Lj8bJimanag3oBYtQU2EqPrNByZHGW0SYVY6XWSEcP849E2D
+   P2aIgkzSmPt9THjPPmiNsH1w38trt6WKyEuQrswDjC22rq7FmJuld5OKv
+   VH2IA6o8km1GhbC3STyAveczZ4bb8lDM42y8vdveP+kbe1KKRX++5VP2F
+   42lfwdxd2EDriCzNYGYf3nATiCAMlL8ite7Btd89i8woicQjTwUKuwYlu
+   Cj30PSPu+gQRT5xAVH457uJRN8MdkeVfGmT7yALbXad8KE71x1StunnD0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5572105"
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="5572105"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 03:59:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="14156261"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 19 Mar 2024 03:59:33 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rmXBp-000Hhx-1A;
+	Tue, 19 Mar 2024 10:59:29 +0000
+Date: Tue, 19 Mar 2024 18:58:32 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ c4ade6bdf3d1a2d9d05606a85431f154559d5a80
+Message-ID: <202403191828.u4UogFe7-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240319_034845_530167_48653C52 
-X-CRM114-Status: GOOD (  12.76  )
+X-CRM114-CacheID: sfid-20240319_035935_848643_AB170F7D 
+X-CRM114-Status: UNSURE (   4.01  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,140 +79,195 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: c4ade6bdf3d1a2d9d05606a85431f154559d5a80  wifi: ath12k: use correct flag field for 320 MHz channels
 
-Un-embed the net_device from struct ath10k by converting it
-into a pointer. Then use the leverage alloc_netdev() to allocate the
-net_device object at ath10k_core_create(). The free of the device occurs
-at ath10k_core_destroy().
+elapsed time: 956m
 
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+configs tested: 175
+configs skipped: 5
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 10 ++++++++--
- drivers/net/wireless/ath/ath10k/core.h |  2 +-
- drivers/net/wireless/ath/ath10k/pci.c  |  2 +-
- drivers/net/wireless/ath/ath10k/sdio.c |  2 +-
- drivers/net/wireless/ath/ath10k/snoc.c |  4 ++--
- drivers/net/wireless/ath/ath10k/usb.c  |  2 +-
- 6 files changed, 14 insertions(+), 8 deletions(-)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 9ce6f49ab261..3736517002f6 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -3673,11 +3673,14 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	INIT_WORK(&ar->set_coverage_class_work,
- 		  ath10k_core_set_coverage_class_work);
- 
--	init_dummy_netdev(&ar->napi_dev);
-+	ar->napi_dev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
-+				    init_dummy_netdev);
-+	if (!ar->napi_dev)
-+		goto err_free_tx_complete;
- 
- 	ret = ath10k_coredump_create(ar);
- 	if (ret)
--		goto err_free_tx_complete;
-+		goto err_free_netdev;
- 
- 	ret = ath10k_debug_create(ar);
- 	if (ret)
-@@ -3687,6 +3690,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 
- err_free_coredump:
- 	ath10k_coredump_destroy(ar);
-+err_free_netdev:
-+	free_netdev(ar->napi_dev);
- err_free_tx_complete:
- 	destroy_workqueue(ar->workqueue_tx_complete);
- err_free_aux_wq:
-@@ -3708,6 +3713,7 @@ void ath10k_core_destroy(struct ath10k *ar)
- 
- 	destroy_workqueue(ar->workqueue_tx_complete);
- 
-+	free_netdev(ar->napi_dev);
- 	ath10k_debug_destroy(ar);
- 	ath10k_coredump_destroy(ar);
- 	ath10k_htt_tx_destroy(&ar->htt);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c110d15528bd..26003b519574 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1269,7 +1269,7 @@ struct ath10k {
- 	struct ath10k_per_peer_tx_stats peer_tx_stats;
- 
- 	/* NAPI */
--	struct net_device napi_dev;
-+	struct net_device *napi_dev;
- 	struct napi_struct napi;
- 
- 	struct work_struct set_coverage_class_work;
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 5c34b156b4ff..558bec96ae40 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3217,7 +3217,7 @@ static void ath10k_pci_free_irq(struct ath10k *ar)
- 
- void ath10k_pci_init_napi(struct ath10k *ar)
- {
--	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_pci_napi_poll);
-+	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_pci_napi_poll);
- }
- 
- static int ath10k_pci_init_irq(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 0ab5433f6cf6..e28f2fe1101b 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2532,7 +2532,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		return -ENOMEM;
- 	}
- 
--	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll);
-+	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "sdio new func %d vendor 0x%x device 0x%x block 0x%x/0x%x\n",
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 2c39bad7ebfb..0449b9ffc32d 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -935,7 +935,7 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
- 
- 	bitmap_clear(ar_snoc->pending_ce_irqs, 0, CE_COUNT_MAX);
- 
--	dev_set_threaded(&ar->napi_dev, true);
-+	dev_set_threaded(ar->napi_dev, true);
- 	ath10k_core_napi_enable(ar);
- 	ath10k_snoc_irq_enable(ar);
- 	ath10k_snoc_rx_post(ar);
-@@ -1253,7 +1253,7 @@ static int ath10k_snoc_napi_poll(struct napi_struct *ctx, int budget)
- 
- static void ath10k_snoc_init_napi(struct ath10k *ar)
- {
--	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_snoc_napi_poll);
-+	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_snoc_napi_poll);
- }
- 
- static int ath10k_snoc_request_irq(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index 3c482baacec1..3b51b7f52130 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -1014,7 +1014,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 		return -ENOMEM;
- 	}
- 
--	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_usb_napi_poll);
-+	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_usb_napi_poll);
- 
- 	usb_get_dev(dev);
- 	vendor_id = le16_to_cpu(dev->descriptor.idVendor);
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240319   gcc  
+arc                   randconfig-002-20240319   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                       multi_v4t_defconfig   clang
+arm                       omap2plus_defconfig   gcc  
+arm                   randconfig-001-20240319   clang
+arm                   randconfig-002-20240319   gcc  
+arm                   randconfig-003-20240319   clang
+arm                   randconfig-004-20240319   clang
+arm                        realview_defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240319   gcc  
+arm64                 randconfig-002-20240319   clang
+arm64                 randconfig-003-20240319   clang
+arm64                 randconfig-004-20240319   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240319   gcc  
+csky                  randconfig-002-20240319   gcc  
+hexagon                          alldefconfig   clang
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240319   clang
+hexagon               randconfig-002-20240319   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240319   clang
+i386         buildonly-randconfig-002-20240319   clang
+i386         buildonly-randconfig-003-20240319   clang
+i386         buildonly-randconfig-004-20240319   clang
+i386         buildonly-randconfig-005-20240319   gcc  
+i386         buildonly-randconfig-006-20240319   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240319   clang
+i386                  randconfig-002-20240319   clang
+i386                  randconfig-003-20240319   clang
+i386                  randconfig-004-20240319   clang
+i386                  randconfig-005-20240319   clang
+i386                  randconfig-006-20240319   gcc  
+i386                  randconfig-011-20240319   gcc  
+i386                  randconfig-012-20240319   clang
+i386                  randconfig-013-20240319   gcc  
+i386                  randconfig-016-20240319   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240319   gcc  
+loongarch             randconfig-002-20240319   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                            q40_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          ath25_defconfig   clang
+mips                  decstation_64_defconfig   gcc  
+mips                            gpr_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240319   gcc  
+nios2                 randconfig-002-20240319   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240319   gcc  
+parisc                randconfig-002-20240319   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240319   gcc  
+powerpc               randconfig-002-20240319   clang
+powerpc               randconfig-003-20240319   clang
+powerpc                 xes_mpc85xx_defconfig   gcc  
+powerpc64             randconfig-001-20240319   gcc  
+powerpc64             randconfig-002-20240319   clang
+powerpc64             randconfig-003-20240319   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240319   gcc  
+riscv                 randconfig-002-20240319   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240319   gcc  
+s390                  randconfig-002-20240319   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        dreamcast_defconfig   gcc  
+sh                     magicpanelr2_defconfig   gcc  
+sh                            migor_defconfig   gcc  
+sh                          polaris_defconfig   gcc  
+sh                    randconfig-001-20240319   gcc  
+sh                    randconfig-002-20240319   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240319   gcc  
+sparc64               randconfig-002-20240319   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240319   gcc  
+um                    randconfig-002-20240319   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240319   clang
+x86_64       buildonly-randconfig-002-20240319   clang
+x86_64       buildonly-randconfig-003-20240319   clang
+x86_64       buildonly-randconfig-004-20240319   clang
+x86_64       buildonly-randconfig-005-20240319   clang
+x86_64       buildonly-randconfig-006-20240319   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240319   clang
+x86_64                randconfig-002-20240319   clang
+x86_64                randconfig-003-20240319   clang
+x86_64                randconfig-004-20240319   gcc  
+x86_64                randconfig-005-20240319   gcc  
+x86_64                randconfig-006-20240319   gcc  
+x86_64                randconfig-011-20240319   clang
+x86_64                randconfig-012-20240319   clang
+x86_64                randconfig-013-20240319   gcc  
+x86_64                randconfig-014-20240319   gcc  
+x86_64                randconfig-015-20240319   clang
+x86_64                randconfig-016-20240319   clang
+x86_64                randconfig-071-20240319   gcc  
+x86_64                randconfig-072-20240319   clang
+x86_64                randconfig-073-20240319   gcc  
+x86_64                randconfig-074-20240319   clang
+x86_64                randconfig-075-20240319   clang
+x86_64                randconfig-076-20240319   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240319   gcc  
+xtensa                randconfig-002-20240319   gcc  
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
