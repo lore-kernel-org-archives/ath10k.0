@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F21F0C54E67
-	for <ath10k@archiver.kernel.org>; Wed, 20 Mar 2024 22:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C233C54E67
+	for <ath10k@archiver.kernel.org>; Wed, 20 Mar 2024 22:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=E0duFfPXO4SfM5myJSWtijNc6R3r/4VJLEoFYSWi1nU=; b=IdzeXaiatkrz+3i8qWtGrssaJN
-	duxsT+rN0lAe+AJxST/8DnPSo2irAzbQhbr8bAC/ymRj8ayX0MPubyQmbAPA0CrSv1gvAcAuz78Ab
-	/PGtMpv6WmR69xzTuPI8VU7xiB9Ni89WMo5Oqkkhm+obRBu9Xw+lxoHkSxf5IPcLQXist+hH653e6
-	9utOOQhhw9L5RJ2bbJOuQPE8pH2U13UvTP3ONu4JpKIcjZqSejQmanEDCqVV44Q0tXVMNaH0CS8W/
-	Hk5qMkyMbS50pkHKp8XyjQzjgwsEeVdx+Hs0l5OamiRgQ+H1ipyaa0vtjtGfC5gj1j25kgFTaN1w5
-	gYeCkzpQ==;
+	bh=6kngunjAYqz7/hpmAzZzEkvtfC772Xt2x31Z55e4h1g=; b=K32/R1kvnElX6Oqb2yK/e9rTg1
+	I2DpkUrkQ4v8nP3ai1jH1zDCkErhRNkMHyez99bEwRRwuFh38zD2PImaWAKhFjq9Ur3D7M+pbB+jL
+	UXriIWnxWnIT1ie9I3h7msO5E7YQ3FvSxaQnlQ4qT1bPkyqx1hCSRUNBioP+zpkFrpfv0MsGM0qYn
+	S19WVFVbxPIv5g+Zw293p3NkxeOaXgn/OrloXIqZQ6E4XvZBijLDDL3MI3DLu3CimZHBru/2UNRSS
+	zMH5aeAunnZ/BaDtBv+ygSDYnqtgtTdfb1Uqe170fk7eGFhk4DsOQOmcjobNLDV8YZtcSc6d+xmkl
+	Nj0XVLuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rn4QA-000000017rK-26PY;
-	Wed, 20 Mar 2024 22:28:30 +0000
-Received: from mgamail.intel.com ([198.175.65.18])
+	id 1rn4QB-000000017re-0VYf;
+	Wed, 20 Mar 2024 22:28:31 +0000
+Received: from mgamail.intel.com ([198.175.65.16])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rn4Q7-000000017qI-1PsM
+	id 1rn4Q7-000000017qL-2LA9
 	for ath10k@lists.infradead.org;
-	Wed, 20 Mar 2024 22:28:28 +0000
+	Wed, 20 Mar 2024 22:28:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1710973708; x=1742509708;
   h=date:from:to:cc:subject:message-id;
-  bh=4q/16ZiEPs6Z70u3EkqrC13G1f1DZBYtjDSn3TxLetU=;
-  b=fFJ4iKvsNgDWuNLwGfRWnofbr+55YWutTI+6wK7kTsg56fkRm6vl7Rtd
-   x9riG5VDa6puem57vTyBTFl7IGFHDDKvlt7HnUYcN0jhOBWTLJyD/vLxv
-   eHsMRXdFmtJXGcdUUFn/u8jlVKVLGNz9wqqP7RT5TvgjycQL93Xhsw7Ui
-   0oN4W18bt+o/Kbt9ICr5MVeZVL13cxe723reMO1cIQw7TEvqNzQHGMw+C
-   ciLDY30BJ0kWV8xTpdZ2+t+obCLH1D3GTL3vN6+q8KQww12iRF/H+mQ/+
-   Wy86Lg7IFjAvDVv3D+6BkPKzqN4Us0DLhHhWDdabt+ypjxVrmu1PHvMRR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6062326"
+  bh=ur4SIl5H4EQy1woIwmsr7BEmZvwv7a0VyiZF1coDE8Q=;
+  b=EUJqPi8r2NnvPVkti51uNxx+8XfUdzZJ7NWt+tBmQgbYvneOlLblRwaC
+   81iZPTA+1jrJhEh1SLkJi4t0hdaRMmK6UOjKpALpqNFRsDyy6aeetbd/e
+   ZtBxY6KLcf0/hg/xNvDzSpkiVo9h3hcDMAznTYeDDBF7KPzDHjxCTVyEw
+   zUBG5HH+vRw+kjbxTX6bBsP/9q5hFLAtw79ubLML0FBjoGiS6JQUxXPrt
+   uAqSeuvSA76I04bupg9YurFiaNJXV2PP4BVXP6DsGSPsmamWOVeNHjJ2H
+   zvB+7O8g3yl65AcK3rsrZYwL7nLFSp3mb7WcfambVKyJSHFMfUttEy6Kn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6049536"
 X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="6062326"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 15:28:27 -0700
+   d="scan'208";a="6049536"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 15:28:27 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="14367991"
+   d="scan'208";a="14376071"
 Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 20 Mar 2024 15:28:25 -0700
+  by fmviesa006.fm.intel.com with ESMTP; 20 Mar 2024 15:28:23 -0700
 Received: from kbuild by b21307750695 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rn4Q2-000IxJ-2j;
+	id 1rn4Q2-000IxX-37;
 	Wed, 20 Mar 2024 22:28:22 +0000
-Date: Thu, 21 Mar 2024 06:27:41 +0800
+Date: Thu, 21 Mar 2024 06:27:56 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- 4b2f0ce6f2fe0fd906d408a01e494b85c272c7d7
-Message-ID: <202403210637.WT2JNrNV-lkp@intel.com>
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ cc62eafaa125b3211929f9aeee0705a85d6082d4
+Message-ID: <202403210652.Q7tr4o4q-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240320_152827_448952_0A3D1FBC 
+X-CRM114-CacheID: sfid-20240320_152827_681357_CF9A4E74 
 X-CRM114-Status: UNSURE (   3.85  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
@@ -79,12 +79,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: 4b2f0ce6f2fe0fd906d408a01e494b85c272c7d7  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: cc62eafaa125b3211929f9aeee0705a85d6082d4  Merge branch 'ath-next' into ath-qca
 
-elapsed time: 733m
+elapsed time: 734m
 
-configs tested: 180
+configs tested: 179
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -98,6 +98,7 @@ arc                              allmodconfig   gcc
 arc                               allnoconfig   gcc  
 arc                              allyesconfig   gcc  
 arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
 arc                   randconfig-001-20240320   gcc  
 arc                   randconfig-002-20240320   gcc  
 arc                    vdk_hs38_smp_defconfig   gcc  
@@ -105,14 +106,12 @@ arm                              allmodconfig   gcc
 arm                               allnoconfig   clang
 arm                              allyesconfig   gcc  
 arm                                 defconfig   clang
-arm                         lpc18xx_defconfig   clang
-arm                         mv78xx0_defconfig   clang
-arm                          pxa910_defconfig   gcc  
+arm                            mmp2_defconfig   gcc  
 arm                   randconfig-001-20240320   gcc  
 arm                   randconfig-002-20240320   gcc  
 arm                   randconfig-003-20240320   gcc  
 arm                   randconfig-004-20240320   gcc  
-arm                         vf610m4_defconfig   gcc  
+arm                             rpc_defconfig   clang
 arm64                            allmodconfig   clang
 arm64                             allnoconfig   gcc  
 arm64                               defconfig   gcc  
@@ -163,16 +162,16 @@ m68k                             allmodconfig   gcc
 m68k                              allnoconfig   gcc  
 m68k                             allyesconfig   gcc  
 m68k                                defconfig   gcc  
-m68k                       m5275evb_defconfig   gcc  
 microblaze                       allmodconfig   gcc  
 microblaze                        allnoconfig   gcc  
 microblaze                       allyesconfig   gcc  
 microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
 mips                              allnoconfig   gcc  
 mips                             allyesconfig   gcc  
-mips                      maltasmvp_defconfig   gcc  
-nios2                         3c120_defconfig   gcc  
+mips                     cu1830-neo_defconfig   gcc  
+mips                  decstation_64_defconfig   gcc  
+mips                           ip28_defconfig   gcc  
+mips                      maltaaprp_defconfig   clang
 nios2                            allmodconfig   gcc  
 nios2                             allnoconfig   gcc  
 nios2                            allyesconfig   gcc  
@@ -192,13 +191,14 @@ parisc64                            defconfig   gcc
 powerpc                          allmodconfig   gcc  
 powerpc                           allnoconfig   gcc  
 powerpc                          allyesconfig   clang
-powerpc                      chrp32_defconfig   clang
-powerpc                  iss476-smp_defconfig   gcc  
+powerpc                   motionpro_defconfig   clang
 powerpc               randconfig-001-20240320   gcc  
 powerpc               randconfig-002-20240320   clang
 powerpc               randconfig-003-20240320   gcc  
-powerpc                    sam440ep_defconfig   gcc  
-powerpc                      walnut_defconfig   gcc  
+powerpc                    socrates_defconfig   gcc  
+powerpc                     tqm8541_defconfig   clang
+powerpc                         wii_defconfig   gcc  
+powerpc                 xes_mpc85xx_defconfig   gcc  
 powerpc64             randconfig-001-20240320   gcc  
 powerpc64             randconfig-002-20240320   gcc  
 powerpc64             randconfig-003-20240320   gcc  
@@ -218,11 +218,9 @@ sh                               allmodconfig   gcc
 sh                                allnoconfig   gcc  
 sh                               allyesconfig   gcc  
 sh                                  defconfig   gcc  
-sh                               j2_defconfig   gcc  
 sh                    randconfig-001-20240320   gcc  
 sh                    randconfig-002-20240320   gcc  
-sh                          rsk7201_defconfig   gcc  
-sh                        sh7757lcr_defconfig   gcc  
+sh                      rts7751r2d1_defconfig   gcc  
 sparc                            allmodconfig   gcc  
 sparc                             allnoconfig   gcc  
 sparc                               defconfig   gcc  
@@ -268,7 +266,8 @@ x86_64                randconfig-075-20240320   gcc
 x86_64                randconfig-076-20240320   clang
 x86_64                          rhel-8.3-rust   clang
 xtensa                            allnoconfig   gcc  
-xtensa                       common_defconfig   gcc  
+xtensa                  cadence_csp_defconfig   gcc  
+xtensa                  nommu_kc705_defconfig   gcc  
 xtensa                randconfig-001-20240320   gcc  
 xtensa                randconfig-002-20240320   gcc  
 
