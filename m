@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9A8AC47DD9
-	for <ath10k@archiver.kernel.org>; Fri, 22 Mar 2024 06:59:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EA17C47DD9
+	for <ath10k@archiver.kernel.org>; Fri, 22 Mar 2024 07:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=JHP3tTLJfTCxyPJ3YRVvmA9GRgC00eeOnRuDT4YTZMI=; b=3gcTc+kWYcOzhOhhZDA8QKAHIP
-	nOrF0tgOVDxCbDRtEbNrFtazfe5kJmLscCxwapcZ8xbsVkza2HiTAIfAnrbxGdfqCDDeuaj4/LF5I
-	wLFvu2+J/MI+be/vGJAQbYbbGqI0si7Rhl+voBtx7jUAPzzUpGaAXsNbtKsmOS62POi3MngfGDbEt
-	ls5i5oX8F9hwlcsytyj8qBDr6GM1+zBXkZTImYMCeGm8Fhjvi9borOVtyvMyIfBLA96sbqquYfC0y
-	D3wy20yJPQ0bF3KQY5gVdl4XMRPmooJ/GW9TKijv4jvtJAYRchlpJrAiT5G4MSzHGHMYCC9hFOKJS
-	9Bpx+jNw==;
+	bh=l+Wv/XkDxnyoXFGhcyCP/X14edg3+hl3zE5SjSNyoPk=; b=LudT+VdYGbb9WdMxN6E74oorWs
+	H2ni/d12/l9dNAeNLYeIpG8iThVivPDBsYfZgN3hFzPZ95hmtTXIkhvkOWVMY6mTlZpkG7IxQiq3H
+	zecsJCYb0ORMDDUGiYhK9poeicFL8ci2lggM8iF7g36q7LHs4Rn2sokLQVGMShksXMbaMkVBlx6oh
+	cmm+zccyGj+bU+0TTxDqK6exC6dNDUoEswUJMmu2YD6t1aT5ltUFcBRxcUPYNQL3/T/bWQRi/W3Xt
+	n1xnWqt8QqJiARdMqj7oRYoHRgh1BOePClM9peFOYSWmTv7AJ/J4k4yVl4PpxLyfV8bjZgEc6Tm4z
+	l+4aOU9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnYs6-000000066mA-2YRU;
-	Fri, 22 Mar 2024 06:59:22 +0000
-Received: from mgamail.intel.com ([198.175.65.11])
+	id 1rnZfS-00000006FeD-2ICZ;
+	Fri, 22 Mar 2024 07:50:22 +0000
+Received: from mgamail.intel.com ([198.175.65.10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnYs4-000000066lH-2LnN
+	id 1rnZfP-00000006Fdh-2Qu1
 	for ath10k@lists.infradead.org;
-	Fri, 22 Mar 2024 06:59:21 +0000
+	Fri, 22 Mar 2024 07:50:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711090761; x=1742626761;
+  t=1711093820; x=1742629820;
   h=date:from:to:cc:subject:message-id;
-  bh=TK6MeNFMFDlBv1Otdje7A+HebwTIAlEBM8VFzu1WBaQ=;
-  b=X6HOIJg4JVQd84zub4TJDUDUpDEOiDGQ+xSTXU25lIwPFMSyfg7RHZUa
-   OGPd3Kg1nSjUgbXIla81A9OWga1MheP0M9q4X57PAVznspUILj5Yabj1Q
-   JphiIHY3SpEtSsGNffxtZNrALTMr0feY7oTfP5M0aHqktQnMSI6I5z4mL
-   HIRf6buy0UETpWcI2698zorCtc0jfS+dXeKebMp9TrXx3biXCwVEFUvq4
-   Bj4zl5vIpaixpv34gpHuJGNQJSSlw3FyrfA4x9zFZRT3uAnywkJZK4HLG
-   O33cx57Icb504pVWThRxpA6zugBXPW1xTKSfwWM2asGbukUVoDX5wjjXe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="16673225"
+  bh=uDmBfiClc8tZsLw/FGKHeJYeYvAU041iDaqxNvsWFRE=;
+  b=CiOqxFcJyf8b/xwlm9xxHhzosLoXG82h3+jtzDw2WiFaBBKSBsd3qIlf
+   iBYARBIf9HChRvkQwjZlz9aBq4PNfUpbi30cVvRWr1YEkysXdPr/wJXSy
+   Q5Qz+nF5xFSi/9fms0+dTl5tL18oRQzz8Kw5V910wTdE0NSV/GdtEPooj
+   G8t/DQRVJ0MBeTGpAaDixNT34fKnvxRGFZH9kvhJ8mmoMeXMKjXU4Z4vu
+   izFdVzwYZkqc+76SR6p5yXGExbu1ujwR8OK1gnOljeAKE1xbvriWKYF6T
+   AEaZLqxrq+jHHqFqvshrorDc6qycueQ5rB+6FVZHjuMyinpXCEEx0AYqS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="23581805"
 X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="16673225"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 23:59:16 -0700
+   d="scan'208";a="23581805"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 00:50:18 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="15198778"
+   d="scan'208";a="14773985"
 Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 21 Mar 2024 23:59:16 -0700
+  by fmviesa007.fm.intel.com with ESMTP; 22 Mar 2024 00:50:16 -0700
 Received: from kbuild by b21307750695 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rnYrw-000K6D-2F;
-	Fri, 22 Mar 2024 06:59:12 +0000
-Date: Fri, 22 Mar 2024 14:58:15 +0800
+	id 1rnZfK-000K8L-03;
+	Fri, 22 Mar 2024 07:50:14 +0000
+Date: Fri, 22 Mar 2024 15:50:02 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- 8027a466a77a288eccd2d11868f504e24231f3b7
-Message-ID: <202403221411.3K3ypYDg-lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 3fb519a1be9579cb669cc638204b959dd085f980
+Message-ID: <202403221558.ZLwlcaiV-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240321_235920_661205_AD5BE7AB 
-X-CRM114-Status: UNSURE (   4.28  )
+X-CRM114-CacheID: sfid-20240322_005019_690447_94FD336F 
+X-CRM114-Status: UNSURE (   4.34  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,10 +79,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: 8027a466a77a288eccd2d11868f504e24231f3b7  Add localversion-wireless-testing-ath
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 3fb519a1be9579cb669cc638204b959dd085f980  wifi: ath12k: debugfs: radar simulation support
 
-elapsed time: 1145m
+elapsed time: 1168m
 
 configs tested: 101
 configs skipped: 3
