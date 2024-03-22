@@ -4,75 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDC93C54E71
-	for <ath10k@archiver.kernel.org>; Fri, 22 Mar 2024 14:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72FDBC47DD9
+	for <ath10k@archiver.kernel.org>; Fri, 22 Mar 2024 15:23:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=avF4Td+5sDoAM4wZ/tsgIe8phCBwKRX1SbsfID3iEnY=; b=jv5TqY+SQ29lADVMjVeP329sKv
-	IoYTS6euXAR5Eb39/EiO1l32Hcfim1YHWe0ocYQgjI2OM5x7odHAUwLfjRne0LjOJt9xVmGMi2uIf
-	6P7WL1O7Z4dZAcSDp7NTIEWHuYti5BZjKcRZzHRSc9i6DVHYi2wUtzmaC+ahWF0Q7qE+rdRNKFKKr
-	cvx2NFPfPONVyT9Jct6TYPjjcZaNIUy30jh1Y9h0NhsY49u8QlZJZVyJZtD7vIUgn/jBs+KvBIhkp
-	6dFg0LcGT447TYl0qh4tmd9vgCqizPE2gU9GAqfTy7BIc3vE+yfeQMdM0Wo+n3bIwjFLNhfxc1/+4
-	ExduhL9g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4RKRFNoMapxI3JJylCmWQ23Hlyixg87XxgLdaz5wdsQ=; b=UGlySoXWeknrL6sYPKtYYi8I41
+	qKyRl7shvqFRdEEiezK1KWawbR74bCrhclTvZ7PIl5RNvpG1nqRQNR9EbbVM7E1HG8A3t8f/Yy8RU
+	0DYSEu/oJXzhaRCril6VzHvFCuJlb8ibYtN/N1EhjvcGJvtmTtnxVcumGU9agWcahhFyR6IutDZ+d
+	5ae3dptRYVsJNQpyKHzx178m4DCOIzT4Z2S1cXOypynwB6OMyViimO8uMUb2UnUiI3aI54ySDHUm6
+	hEiTSeGjU7K3Q7DrMRcGI4SPOkodX9VloBDpzzjL/VIqj2ENsE4wKxnU5u/qIknysDjfyxWKP9Vf8
+	I29QTeXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rngLV-00000007dyM-2Xj7;
-	Fri, 22 Mar 2024 14:58:13 +0000
-Received: from mail-lf1-f41.google.com ([209.85.167.41])
+	id 1rngkA-00000007k6I-0u9t;
+	Fri, 22 Mar 2024 15:23:42 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rngLS-00000007dvW-0FKB
+	id 1rngk7-00000007k4M-3a2c
 	for ath10k@lists.infradead.org;
-	Fri, 22 Mar 2024 14:58:11 +0000
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512ed314881so1715127e87.2
-        for <ath10k@lists.infradead.org>; Fri, 22 Mar 2024 07:58:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711119485; x=1711724285;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=avF4Td+5sDoAM4wZ/tsgIe8phCBwKRX1SbsfID3iEnY=;
-        b=TfK2caaoNv2UXBk5JHsYV50V6qNeGFzJqpBajpOKWAvfxH3qmCZMfLirVNFYU1/Nf7
-         RrbXLiOboXZE97MfLzhLzF7vbc/R/oKVQac+pVoH+FXdR9mjuUunJgUHbCCPTEuMQyLs
-         vymAPrSJmv6A8utbS5FCXZJc3W1coEtdsQ8BULW8OkZSDvwQ3AZfvYE8Co7E7pSHuXAG
-         aj4uvl4OA6eOf+U8UqeG8oTfdFLWa7DE52FFdsm6q/l2eODrYQqxuhy2SUrJbQVDIucC
-         fFUWlcd88YSyuET1p7GqYtDKxjhPeenx/j3MeGeHesHpZ0ZEWW+3vyu4jWcE9U3uB7jc
-         dnHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXxGA0G2u+1TKBKWUKJJZ1gdmB/ZMrci77fAWVYgndHLEw1v7Vgddur0wt6rXi9/az75BdeOIConpxUf7PwWZ2RepcIEi5NyKl1JA==
-X-Gm-Message-State: AOJu0YzD/fJHcxHnjwS2Rd7sOwlM87Ri2AjAnPzJAGZeMVljtNedsCkk
-	PvaTi8t/tx8TLVxQAcDSZWxFBwulccbgtQgr2YGkiZOEaNTaya7BUeusJvIO
-X-Google-Smtp-Source: AGHT+IGMJBLo25QPNpSET5oDNLsq0cOYHxH7EFzxe+KeRHX7TPHuh19xx4qN1EKC/FYZuU9cxgRfaA==
-X-Received: by 2002:ac2:546d:0:b0:513:cab1:354b with SMTP id e13-20020ac2546d000000b00513cab1354bmr1898523lfn.41.1711119485063;
-        Fri, 22 Mar 2024 07:58:05 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-120.fbsv.net. [2a03:2880:30ff:78::face:b00c])
-        by smtp.gmail.com with ESMTPSA id r16-20020a170906351000b00a46cddf1efbsm1092197eja.29.2024.03.22.07.58.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 07:58:04 -0700 (PDT)
-Date: Fri, 22 Mar 2024 07:58:02 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Jakub Kicinski <kuba@kernel.org>
+	Fri, 22 Mar 2024 15:23:41 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 96C1F61361;
+	Fri, 22 Mar 2024 15:23:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE20C433F1;
+	Fri, 22 Mar 2024 15:23:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711121018;
+	bh=2jKs8iXhSIhZoCfrPfcc8CMFgCUmi/F0p3tI20DDC8s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=phXk55hei4tv1d33xGsvZp2FCn8mCM1trm3kDZfQZdICDrEPJDLhK13MkrfHTJ3F+
+	 bgnkYMAXoZsVDL0KFaNrewQEizN9ZhjUIakwhcOqCu9h7AtLMmYPmstvKhReuXKU6A
+	 PNYisq/fQ0BFHUMNi4Vt8/1EWLXcjYeasaFYl2FKLaDuaBJhEIiSuNGBMxfu13fovx
+	 B/ul9ZNN5Buz40ja9e+w+KnF57OBIjoKx4QmjCgZLBwHhmQOkAp4hd8HYzf80xaoi3
+	 ZhAFHXouRrw3NeaETACnYVW3/DkQqpnuW1+UuopVNDj4REwqeESiG0E0KfnEuvLu1a
+	 A1jG1pzvo5rFg==
+Date: Fri, 22 Mar 2024 08:23:36 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Breno Leitao <leitao@debian.org>
 Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>,
-	Jeff Johnson <jjohnson@kernel.org>, keescook@chromium.org,
-	"open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>,
-	"open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>
+ Jeff Johnson <jjohnson@kernel.org>, keescook@chromium.org, "open
+ list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, "open
+ list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
-Message-ID: <Zf2ceu2O47lLbKU3@gmail.com>
+Message-ID: <20240322082336.49f110cc@kernel.org>
+In-Reply-To: <Zf2ceu2O47lLbKU3@gmail.com>
 References: <20240319104754.2535294-1-leitao@debian.org>
- <9fcdb857-da62-4832-ae11-043fe993e4ad@quicinc.com>
- <20240321072821.59f56757@kernel.org>
- <5039256c-03eb-4cda-8d11-49e4561cf1ef@quicinc.com>
- <20240321151744.246ce2d0@kernel.org>
+	<9fcdb857-da62-4832-ae11-043fe993e4ad@quicinc.com>
+	<20240321072821.59f56757@kernel.org>
+	<5039256c-03eb-4cda-8d11-49e4561cf1ef@quicinc.com>
+	<20240321151744.246ce2d0@kernel.org>
+	<Zf2ceu2O47lLbKU3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321151744.246ce2d0@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240322_075810_122930_BA4ABA07 
-X-CRM114-Status: GOOD (  14.96  )
+X-CRM114-CacheID: sfid-20240322_082339_976089_34C26567 
+X-CRM114-Status: GOOD (  14.62  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,40 +79,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello Jakub,
-
-On Thu, Mar 21, 2024 at 03:17:44PM -0700, Jakub Kicinski wrote:
-> On Thu, 21 Mar 2024 15:02:39 -0700 Jeff Johnson wrote:
-> > >> As suggested there we should just use kmalloc/kfree to match the existing logic.  
-> > > 
-> > > Please no. There is no magic here. alloc + free must match whether
-> > > you're using magic object alloc wrapper (alloc_netdev()) or straight
-> > > up kzalloc().  
-> > 
-> > Based upon the ath11k patch there must be something going on with
-> > alloc_netdev()/free_netdev() that doesn't occur when these aren't used.
+On Fri, 22 Mar 2024 07:58:02 -0700 Breno Leitao wrote:
+> > Looks like init_dummy_netdev wipes the netdev structure clean, so I
+> > don't think we can use it directly as the setup function, Breno :(  
 > 
-> Looks like init_dummy_netdev wipes the netdev structure clean, so I
-> don't think we can use it directly as the setup function, Breno :(
+> Before my patch,  init_dummy_netdev was being also used. The patch was
+> basically replacing the init_dummy_netdev by alloc_netdev() with will
+> call "setup(dev);" later. 
+> 
+> -               init_dummy_netdev(&irq_grp->napi_ndev);
+> +               irq_grp->napi_ndev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
+> +                                                 init_dummy_netdev);
+> 
+> I am wondering if alloc_netdev() is messing with something instead of
+> init_dummy_netdev().
 
-Before my patch,  init_dummy_netdev was being also used. The patch was
-basically replacing the init_dummy_netdev by alloc_netdev() with will
-call "setup(dev);" later. 
+alloc_netdev() allocates some memory and initializes lists which
+free_netdev() wants to free, basically. But init_dummy_netdev() does:
 
--               init_dummy_netdev(&irq_grp->napi_ndev);
-+               irq_grp->napi_ndev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
-+                                                 init_dummy_netdev);
+	/* Clear everything. Note we don't initialize spinlocks
+	 * are they aren't supposed to be taken by any of the
+	 * NAPI code and this dummy netdev is supposed to be
+	 * only ever used for NAPI polls
+	 */
+	memset(dev, 0, sizeof(struct net_device));
 
-I am wondering if alloc_netdev() is messing with something instead of
-init_dummy_netdev().
+so all those pointers and init alloc_netdev() did before calling setup
+will get wiped.
 
-Also, Kalle's crash is during rmmod, and not during initialization.
-getting NULL after free_netdev() is called.
+> Also, Kalle's crash is during rmmod, and not during initialization.
+> getting NULL after free_netdev() is called.
+> 
+> > Maybe we should add a new helper to "alloc dummy netdev" which can
+> > call alloc_netdev() with right arguments and do necessary init?  
+> 
+> What are the right arguments in this case?
 
-> Maybe we should add a new helper to "alloc dummy netdev" which can
-> call alloc_netdev() with right arguments and do necessary init?
-
-What are the right arguments in this case?
-
-Thanks!
+I'm not sure we have a noop setup() callback today. If you define a
+wrapper to allocate a dummy netdev you can define a new empty function
+next to it and pass that as init? Hope I got the question right.
 
