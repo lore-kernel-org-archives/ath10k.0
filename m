@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72FDBC47DD9
-	for <ath10k@archiver.kernel.org>; Fri, 22 Mar 2024 15:23:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC69AC47DD9
+	for <ath10k@archiver.kernel.org>; Fri, 22 Mar 2024 21:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4RKRFNoMapxI3JJylCmWQ23Hlyixg87XxgLdaz5wdsQ=; b=UGlySoXWeknrL6sYPKtYYi8I41
-	qKyRl7shvqFRdEEiezK1KWawbR74bCrhclTvZ7PIl5RNvpG1nqRQNR9EbbVM7E1HG8A3t8f/Yy8RU
-	0DYSEu/oJXzhaRCril6VzHvFCuJlb8ibYtN/N1EhjvcGJvtmTtnxVcumGU9agWcahhFyR6IutDZ+d
-	5ae3dptRYVsJNQpyKHzx178m4DCOIzT4Z2S1cXOypynwB6OMyViimO8uMUb2UnUiI3aI54ySDHUm6
-	hEiTSeGjU7K3Q7DrMRcGI4SPOkodX9VloBDpzzjL/VIqj2ENsE4wKxnU5u/qIknysDjfyxWKP9Vf8
-	I29QTeXQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=jhhTnaYUooWSHLip8crc6NoIiB5NiKAM3xjxS3l5NCE=; b=BdapCXhVqDe2MQpQauGMiVWUve
+	7G3sW5G39w0ihBMXp5FtlEuBvEg1ny0u94Xqb2eCMPREDm76mcblV12QgcU6J0t/VhuXX3dgWZAbl
+	c9hjrPf071nhTFsJ1waoZrRUDKD203tLiwfc9UM4o3t54wqqJUaPconb59oNiMyGsyP5zGS4JmZ90
+	NWmQhQAFSy1Og8leCai3xsK5e67KS/PukNXfsoyo4mOLfTDR5CoRC8o7Z0jAFWIJTMMI2xJRU1zLB
+	O55IXJDO+5YbEOOQ2qtAgBtEjEmr23sLaYJ1Xw5gqvQQYBRCfz0dFDR8s8n7VOrDy3OUVRgUUwgDs
+	0xmeLL9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rngkA-00000007k6I-0u9t;
-	Fri, 22 Mar 2024 15:23:42 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rnmkm-00000008kHe-2TWZ;
+	Fri, 22 Mar 2024 21:48:44 +0000
+Received: from mgamail.intel.com ([198.175.65.14])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rngk7-00000007k4M-3a2c
+	id 1rnmkj-00000008kFH-0hXd
 	for ath10k@lists.infradead.org;
-	Fri, 22 Mar 2024 15:23:41 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 96C1F61361;
-	Fri, 22 Mar 2024 15:23:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE20C433F1;
-	Fri, 22 Mar 2024 15:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711121018;
-	bh=2jKs8iXhSIhZoCfrPfcc8CMFgCUmi/F0p3tI20DDC8s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=phXk55hei4tv1d33xGsvZp2FCn8mCM1trm3kDZfQZdICDrEPJDLhK13MkrfHTJ3F+
-	 bgnkYMAXoZsVDL0KFaNrewQEizN9ZhjUIakwhcOqCu9h7AtLMmYPmstvKhReuXKU6A
-	 PNYisq/fQ0BFHUMNi4Vt8/1EWLXcjYeasaFYl2FKLaDuaBJhEIiSuNGBMxfu13fovx
-	 B/ul9ZNN5Buz40ja9e+w+KnF57OBIjoKx4QmjCgZLBwHhmQOkAp4hd8HYzf80xaoi3
-	 ZhAFHXouRrw3NeaETACnYVW3/DkQqpnuW1+UuopVNDj4REwqeESiG0E0KfnEuvLu1a
-	 A1jG1pzvo5rFg==
-Date: Fri, 22 Mar 2024 08:23:36 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>,
- Jeff Johnson <jjohnson@kernel.org>, keescook@chromium.org, "open
- list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, "open
- list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
-Message-ID: <20240322082336.49f110cc@kernel.org>
-In-Reply-To: <Zf2ceu2O47lLbKU3@gmail.com>
-References: <20240319104754.2535294-1-leitao@debian.org>
-	<9fcdb857-da62-4832-ae11-043fe993e4ad@quicinc.com>
-	<20240321072821.59f56757@kernel.org>
-	<5039256c-03eb-4cda-8d11-49e4561cf1ef@quicinc.com>
-	<20240321151744.246ce2d0@kernel.org>
-	<Zf2ceu2O47lLbKU3@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+	Fri, 22 Mar 2024 21:48:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711144121; x=1742680121;
+  h=date:from:to:cc:subject:message-id;
+  bh=hmRJmLQBtrRAWOIkl2XAWV2bvk07l5Bpv6cgxnj5TJY=;
+  b=TeSdikHDrV40hrkKXfvxyQ7mq0b3U55vpyw2I0zwL2WrXSstJrWGKWBc
+   uhHJKZkEnEmNPJyIiBVtq82o/mGBZsfWZWScvi2rwNUt8PkgNl2K401Rc
+   fiYbXZcZMpnHcoOGu4ZrTEEvn5zpKilFLLu8YEUw+N0zKKt11CagrGVjZ
+   Dy2LiCmqXupreZmOLjdaahoktu3icWm0zGmTgXQ//7hwe0b0b1jqGUo95
+   hqCmENrfKnb96/vCFNsKKPpquwHcLQra1JaDGuxZm3H7xwloMxT4foZsx
+   herc5PEwCF97yH0mFOAPRughSbGnVJeVWZEurz0l/2R6qGUKRvP0xn+H8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="10013766"
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="10013766"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 14:48:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="15099541"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 22 Mar 2024 14:48:38 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rnmkd-000Kdz-2P;
+	Fri, 22 Mar 2024 21:48:35 +0000
+Date: Sat, 23 Mar 2024 05:47:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 3e6de976468d4d33022bff7a5588403517f6341a
+Message-ID: <202403230551.6khvSfHc-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240322_082339_976089_34C26567 
-X-CRM114-Status: GOOD (  14.62  )
+X-CRM114-CacheID: sfid-20240322_144841_324144_D2DB0695 
+X-CRM114-Status: UNSURE (   4.22  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,43 +79,143 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, 22 Mar 2024 07:58:02 -0700 Breno Leitao wrote:
-> > Looks like init_dummy_netdev wipes the netdev structure clean, so I
-> > don't think we can use it directly as the setup function, Breno :(  
-> 
-> Before my patch,  init_dummy_netdev was being also used. The patch was
-> basically replacing the init_dummy_netdev by alloc_netdev() with will
-> call "setup(dev);" later. 
-> 
-> -               init_dummy_netdev(&irq_grp->napi_ndev);
-> +               irq_grp->napi_ndev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
-> +                                                 init_dummy_netdev);
-> 
-> I am wondering if alloc_netdev() is messing with something instead of
-> init_dummy_netdev().
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 3e6de976468d4d33022bff7a5588403517f6341a  wifi: ath9k: eeprom: fix sparse endian warnings
 
-alloc_netdev() allocates some memory and initializes lists which
-free_netdev() wants to free, basically. But init_dummy_netdev() does:
+elapsed time: 728m
 
-	/* Clear everything. Note we don't initialize spinlocks
-	 * are they aren't supposed to be taken by any of the
-	 * NAPI code and this dummy netdev is supposed to be
-	 * only ever used for NAPI polls
-	 */
-	memset(dev, 0, sizeof(struct net_device));
+configs tested: 123
+configs skipped: 3
 
-so all those pointers and init alloc_netdev() did before calling setup
-will get wiped.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Also, Kalle's crash is during rmmod, and not during initialization.
-> getting NULL after free_netdev() is called.
-> 
-> > Maybe we should add a new helper to "alloc dummy netdev" which can
-> > call alloc_netdev() with right arguments and do necessary init?  
-> 
-> What are the right arguments in this case?
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20240323   gcc  
+arc                   randconfig-002-20240323   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                         bcm2835_defconfig   clang
+arm                                 defconfig   clang
+arm                          moxart_defconfig   gcc  
+arm                          pxa168_defconfig   clang
+arm                   randconfig-001-20240323   clang
+arm                   randconfig-002-20240323   clang
+arm                   randconfig-003-20240323   clang
+arm                   randconfig-004-20240323   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240323   gcc  
+arm64                 randconfig-002-20240323   gcc  
+csky                             alldefconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240322   gcc  
+i386         buildonly-randconfig-002-20240322   gcc  
+i386         buildonly-randconfig-003-20240322   clang
+i386         buildonly-randconfig-004-20240322   clang
+i386         buildonly-randconfig-005-20240322   gcc  
+i386         buildonly-randconfig-006-20240322   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240322   clang
+i386                  randconfig-002-20240322   clang
+i386                  randconfig-003-20240322   gcc  
+i386                  randconfig-004-20240322   gcc  
+i386                  randconfig-005-20240322   clang
+i386                  randconfig-006-20240322   clang
+i386                  randconfig-011-20240322   gcc  
+i386                  randconfig-012-20240322   clang
+i386                  randconfig-013-20240322   clang
+i386                  randconfig-014-20240322   clang
+i386                  randconfig-015-20240322   gcc  
+i386                  randconfig-016-20240322   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          ath25_defconfig   clang
+mips                 decstation_r4k_defconfig   gcc  
+mips                           rs90_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      tqm8xx_defconfig   clang
+powerpc                 xes_mpc85xx_defconfig   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                    nommu_k210_defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                   sh7724_generic_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
 
-I'm not sure we have a noop setup() callback today. If you define a
-wrapper to allocate a dummy netdev you can define a new empty function
-next to it and pass that as init? Hope I got the question right.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
