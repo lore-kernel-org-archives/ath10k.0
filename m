@@ -4,107 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87C59C54E67
-	for <ath10k@archiver.kernel.org>; Tue, 26 Mar 2024 20:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27B46C54E67
+	for <ath10k@archiver.kernel.org>; Wed, 27 Mar 2024 14:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=arEoGTCZUWCWxutFceAE4m0rRT/rHcBdAsYFinq5huc=; b=nUUt+OkK8eAJxHGr5ve770tO+H
-	6dEneWil2i6KuuoLJqURU0vvWbEs1mnhSjiEeofKukhc+Q1lEhQ1cfT8/HSwszFtuw0+2XrJ40wyY
-	AdBhXiRPCL9e6FW8Bo+7Zb89YZ5PxSeoExWVW3wiLikvUHALwzoVd053z1kHiJaLB6PDXB/9bwCp7
-	t2j/poK1N4i9KO5ko5yumJIPGuGQ0aeFFhAXGKPf6yw54lmzz3bzD2IR4kDOTpfDn1+sQHSSgcDE/
-	Y3MedR+7+gqi0pHj3bHC2iNerxKrrsz+Z3HmWCRL3We56qHmo3fNPqjLJDwAgBiCYMlzcvL8eftQG
-	+FJziNEQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=XHLS+yjkto2+nMleZ8grHPnFghQaTySqd33/PIFTa3E=; b=YpbcTawcsPxNskbi0VF87ybLI8
+	YfIeN30oD8kPVMrcih1Qvtcnc7aYb49y1tcnJFs5rA9TYLexHi4lg/JOyan4dhpDWjV14houiM5AH
+	yAsRB+UOmsJUbxHTBCu+OnSgnM++DwSr2dVFqdybIdhasTVTpTPoMx59WkliUAAUFhpEgvAy0dvN1
+	4KjV+Kj7ict+RaP4Khja65ePu5pgKc0u0IQtYsCp8M7Yf8bDIuGk2DXhgmJY8Ok2izKa8hMf56pRa
+	78ivfXGu5zs54rmuo1b0Ckvns4RfMgWp0sJPNKi6urpKCWPaEo+HmFnLCaxYITNNyr31wtBu3Ybmd
+	IFz/E2lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpDIh-00000006JQe-1NAI;
-	Tue, 26 Mar 2024 20:21:39 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1rpUQG-00000009Wjj-1FCJ;
+	Wed, 27 Mar 2024 14:38:36 +0000
+Received: from mail-lf1-f46.google.com ([209.85.167.46])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpDId-00000006JN4-3iV6
+	id 1rpUPz-00000009Wad-05w1
 	for ath10k@lists.infradead.org;
-	Tue, 26 Mar 2024 20:21:37 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42QJk031030462;
-	Tue, 26 Mar 2024 20:21:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=arEoGTCZUWCWxutFceAE4m0rRT/rHcBdAsYFinq5huc=; b=iL
-	cGReCm1lly3g04MpHOt5KRGF4FYqket/bQKauEHCn38nZGrmbHRmsfffw+xzsq//
-	IdwmrUQopEO8WUKYE6bAviAuQwLlSLi5U4qKnMTwFjLGfqXvHxZ7KUwopEWWH2oa
-	TLJ4sic+WGlf5GrVzyJIdhLqCyM29x+NmBGyjIdi6jE1/YwUla3KBdgHzKYibmFD
-	mt7zbY7xUBs0bQMnVqOmlVTNK1ySGb8Lh0M53iSlBikOg+7r4i1aUGF+ke6636p6
-	ZPZflfkOY1dZWNYTMdsd8YfyYfLBbcIeFD/4DlHHm3LLDC2SVP2OB3Zw6y1kbG0J
-	J+dHcZ6hiEsqHB02OWcQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x3q0n2ngn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 20:21:23 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42QKLMrt011298
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 20:21:22 GMT
-Received: from [10.110.28.48] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Mar
- 2024 13:21:21 -0700
-Message-ID: <4b7bf7cc-ede6-4c2a-983c-da4c8c09c5d1@quicinc.com>
-Date: Tue, 26 Mar 2024 13:21:20 -0700
+	Wed, 27 Mar 2024 14:38:32 +0000
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-515a68d45faso4556609e87.3
+        for <ath10k@lists.infradead.org>; Wed, 27 Mar 2024 07:38:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711550288; x=1712155088;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XHLS+yjkto2+nMleZ8grHPnFghQaTySqd33/PIFTa3E=;
+        b=SvyA7eJW9w9nW1uU2ecqyTSee1CbtMAvtiaRHpWBolVcUnSdwVldViWG2CjD69PheB
+         x16gnlAJVmoqRi9ZkB9HpuTyN3MZX28bMsr2Sd/l5R/TBFga86WjCEC3O1MdcfHrYLxl
+         VE1NXdYxGRcXQh5W1r3ORZabwuc3UAw7zlAWn2ZiPyqJ173Px6/TYBDxy5htuL1jH8Zu
+         QAU+Jm2qDMiy2CiXWmqUlgYolqFJbU+gNVFACsbXmv8muAcYjUY3IRbnpIuODA2LoZm/
+         X8gXa9thgASLuvD5TDDdLltCqPh0jLYj6m8Q70dU5TZ1V6cwTp0x6FyySDhknIfuZy5R
+         cqcw==
+X-Forwarded-Encrypted: i=1; AJvYcCWEZ8jO+r9Aou8SczBWEs74ZfJTP6lBm4hu1d2ZP4pAqT2vCYr34F0xWHomSVICFDj8VQUQxsqGPgX5weQ5xTXLpBDMMkBjDbjUaw==
+X-Gm-Message-State: AOJu0YwBkg68NLURBpX0JuDXI50xROz2RGv4q4ZxI23J/YjZdfmt/yQF
+	vyiTFBtFrIajeurSHngregHvdMWdvXbvbFFk6wW1LIw7C0PxDFNMopM2oZz9
+X-Google-Smtp-Source: AGHT+IES0d/otFDGydKDRmqo9wlgMp2zSraYoybu3fR4X81qxCRc+daWncgKBaKZFHeZwGdozoKHlg==
+X-Received: by 2002:a05:6512:2e8:b0:515:a417:334 with SMTP id m8-20020a05651202e800b00515a4170334mr1007582lfq.46.1711550288177;
+        Wed, 27 Mar 2024 07:38:08 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-008.fbsv.net. [2a03:2880:30ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id t2-20020a1709067c0200b00a47090964casm2285717ejo.184.2024.03.27.07.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 07:38:07 -0700 (PDT)
+Date: Wed, 27 Mar 2024 07:38:05 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>,
+	Jeff Johnson <jjohnson@kernel.org>, keescook@chromium.org,
+	"open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>,
+	"open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
+Message-ID: <ZgQvTTnMoBn2oG1K@gmail.com>
+References: <20240319104754.2535294-1-leitao@debian.org>
+ <9fcdb857-da62-4832-ae11-043fe993e4ad@quicinc.com>
+ <20240321072821.59f56757@kernel.org>
+ <5039256c-03eb-4cda-8d11-49e4561cf1ef@quicinc.com>
+ <20240321151744.246ce2d0@kernel.org>
+ <Zf2ceu2O47lLbKU3@gmail.com>
+ <20240322082336.49f110cc@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
- qcom,no-msa-ready-indicator prop
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Marc Gonzalez
-	<mgonzalez@freebox.fr>
-CC: Kalle Valo <kvalo@kernel.org>, ath10k <ath10k@lists.infradead.org>,
-        wireless <linux-wireless@vger.kernel.org>,
-        DT <devicetree@vger.kernel.org>,
-        Pierre-Hugues Husson <phhusson@freebox.fr>,
-        Arnaud Vrac <avrac@freebox.fr>,
-        Jami Kettunen <jamipkettunen@gmail.com>,
-        Jeffrey Hugo
-	<quic_jhugo@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad
- Dybcio" <konrad.dybcio@linaro.org>
-References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
- <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
- <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
- <c58e67e6-6a7f-4963-86b9-580165bf05ba@freebox.fr> <87cyse8j9m.fsf@kernel.org>
- <6d4b1381-c121-4cda-a8c9-9ccac56bd447@freebox.fr> <87plw87nsc.fsf@kernel.org>
- <0816f7bb-3c97-4b90-8e19-191552ea6e26@freebox.fr> <87h6hk7aee.fsf@kernel.org>
- <fb0ffdd9-923a-4191-8304-583243ad528b@freebox.fr>
- <243a97b7-c298-4307-9f06-8b3a7c3e24fd@freebox.fr>
- <9293793d-00e8-42ce-87b2-05abc3b49387@freebox.fr>
- <CAA8EJppn6M9dpzyu9d283AUtaeN-i-L=-aM5P9BEELXPLFS8YQ@mail.gmail.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <CAA8EJppn6M9dpzyu9d283AUtaeN-i-L=-aM5P9BEELXPLFS8YQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _qISA-bD4TD7kdEs3Ay_IX7kYusR7aIm
-X-Proofpoint-ORIG-GUID: _qISA-bD4TD7kdEs3Ay_IX7kYusR7aIm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-26_08,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- malwarescore=0 phishscore=0 bulkscore=0 spamscore=0 impostorscore=0
- priorityscore=1501 clxscore=1011 mlxscore=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2403210001 definitions=main-2403260146
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322082336.49f110cc@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240326_132136_097033_1438ED67 
-X-CRM114-Status: GOOD (  13.20  )
+X-CRM114-CacheID: sfid-20240327_073819_170021_8F3EBD98 
+X-CRM114-Status: GOOD (  23.19  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,38 +89,168 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 3/26/2024 10:51 AM, Dmitry Baryshkov wrote:
-> On Tue, 26 Mar 2024 at 19:45, Marc Gonzalez <mgonzalez@freebox.fr> wrote:
->>
->> [ It has been pointed out to me that the previous message was unclear. ]
->> [ Below is my 2nd attempt at a clearer message. ]
->>
->> Problem: firmware-5.bin has not been parsed yet when we have to handle
->> the ATH10K_QMI_EVENT_SERVER_ARRIVE case, so we can't rely on feature bits
->> to work around the lack of MSA_READY indicator.
+Hello Jakub,
+
+On Fri, Mar 22, 2024 at 08:23:36AM -0700, Jakub Kicinski wrote:
+> > > Maybe we should add a new helper to "alloc dummy netdev" which can
+> > > call alloc_netdev() with right arguments and do necessary init?  
+> > 
+> > What are the right arguments in this case?
 > 
-> Then, I'd say, we have to resort to the DT property, unless Kalle or
-> Jeff have other proposals.
+> I'm not sure we have a noop setup() callback today. If you define a
+> wrapper to allocate a dummy netdev you can define a new empty function
+> next to it and pass that as init? Hope I got the question right.
 
-Another option is to follow the downstream driver model and only expect this
-based upon static configuration within the driver.
+Thanks for the explanation, it is clear now. I've been working on it,
+and this is what I came up with. This is compile-tested by now, and, if
+this is what you had in mind, I will do more extensive testing.
 
-Downstream driver has:
-	if (priv->device_id == ADRASTEA_DEVICE_ID) {
-		ret = wlfw_msa_mem_info_send_sync_msg(priv);
-		ret = wlfw_msa_ready_send_sync_msg(priv);
-	}
-
-https://git.codelinaro.org/clo/la/platform/vendor/qcom-opensource/wlan/platform/-/blob/wlan-platform.lnx.1.0.r4-rel/icnss2/main.c?ref_type=heads#L968
-
-The downstream MSA logic (including some other code that populates MSA-related
-fields in the QMI messages) is only invoked for ADRASTEA_DEVICE_ID.
-
-We could introduce a new hw_params parameter to have the same semantics.
-
-But I'm OK with the DT option as well.
-
-Kalle?
-
-/jeff
+  commit db794d99950f68731884a67d911094d94179c522
+  Author: Breno Leitao <leitao@debian.org>
+  Date:   Wed Mar 27 07:20:03 2024 -0700
+  
+      net: Create net_device allocator for dummy
+      
+      Create a helper to allocate and initialize dummy netdevices. This
+      function basically simplify the allocation of dummy devices, by
+      allocating and initializing it.
+      
+      Suggested-by: Jakub Kicinski <kuba@kernel.org>
+      Signed-off-by: Breno Leitao <leitao@debian.org>
+  
+  diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+  index 643d2b469c49..9d1a5383c23f 100644
+  --- a/include/linux/netdevice.h
+  +++ b/include/linux/netdevice.h
+  @@ -4546,6 +4546,9 @@ static inline void netif_addr_unlock_bh(struct net_device *dev)
+   
+   void ether_setup(struct net_device *dev);
+   
+  +/* Allocate dummy net_device */
+  +struct net_device *alloc_netdev_dummy(int sizeof_priv, const char *name);
+  +
+   /* Support for loadable net-drivers */
+   struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+   				    unsigned char name_assign_type,
+  diff --git a/net/core/dev.c b/net/core/dev.c
+  index a08d698fe45c..628f35c3cfa2 100644
+  --- a/net/core/dev.c
+  +++ b/net/core/dev.c
+  @@ -10998,6 +10998,13 @@ void free_netdev(struct net_device *dev)
+   }
+   EXPORT_SYMBOL(free_netdev);
+   
+  +struct net_device *alloc_netdev_dummy(int sizeof_priv, const char *name)
+  +{
+  +	return alloc_netdev(sizeof_priv, name, NET_NAME_UNKNOWN,
+  +			    init_dummy_netdev_core);
+  +}
+  +EXPORT_SYMBOL_GPL(alloc_netdev_dummy);
+  +
+   /**
+    *	synchronize_net -  Synchronize with packet receive processing
+    *
+  
+  commit 35500cd6a5db0bbdedbc1067758948769c7ce57e
+  Author: Breno Leitao <leitao@debian.org>
+  Date:   Wed Mar 27 07:07:40 2024 -0700
+  
+      net: Split init_dummy_netdev
+      
+      It is impossible to use init_dummy_netdev together with alloc_netdev()
+      as the 'setup' argument.
+      
+      This is because alloc_netdev() initializes some fields in the net_device
+      structure, and later init_dummy_netdev() memzero them all. This casues
+      some problems as reported here:
+      
+              https://lore.kernel.org/all/20240322082336.49f110cc@kernel.org/
+      
+      Split the function in two. Create a new function called
+      init_dummy_netdev_core() that does not memset the net_device structure.
+      Then have init_dummy_netdev() memseting and calling
+      init_dummy_netdev_core().
+      
+      init_dummy_netdev_core() will be the function that could be called as
+      an argument for alloc_netdev().
+      
+      Signed-off-by: Breno Leitao <leitao@debian.org>
+  
+  diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+  index c6f6ac779b34..643d2b469c49 100644
+  --- a/include/linux/netdevice.h
+  +++ b/include/linux/netdevice.h
+  @@ -3119,6 +3119,7 @@ int netdev_refcnt_read(const struct net_device *dev);
+   void free_netdev(struct net_device *dev);
+   void netdev_freemem(struct net_device *dev);
+   void init_dummy_netdev(struct net_device *dev);
+  +void init_dummy_netdev_core(struct net_device *dev);
+   
+   struct net_device *netdev_get_xmit_slave(struct net_device *dev,
+   					 struct sk_buff *skb,
+  diff --git a/net/core/dev.c b/net/core/dev.c
+  index 0766a245816b..a08d698fe45c 100644
+  --- a/net/core/dev.c
+  +++ b/net/core/dev.c
+  @@ -10340,25 +10340,11 @@ int register_netdevice(struct net_device *dev)
+   }
+   EXPORT_SYMBOL(register_netdevice);
+   
+  -/**
+  - *	init_dummy_netdev	- init a dummy network device for NAPI
+  - *	@dev: device to init
+  - *
+  - *	This takes a network device structure and initialize the minimum
+  - *	amount of fields so it can be used to schedule NAPI polls without
+  - *	registering a full blown interface. This is to be used by drivers
+  - *	that need to tie several hardware interfaces to a single NAPI
+  - *	poll scheduler due to HW limitations.
+  +/* Same as init_dummy_netdev, but, basically do not call memset.
+  + * This is useful if you are calling this function after alloc_netdev()
+    */
+  -void init_dummy_netdev(struct net_device *dev)
+  +void init_dummy_netdev_core(struct net_device *dev)
+   {
+  -	/* Clear everything. Note we don't initialize spinlocks
+  -	 * are they aren't supposed to be taken by any of the
+  -	 * NAPI code and this dummy netdev is supposed to be
+  -	 * only ever used for NAPI polls
+  -	 */
+  -	memset(dev, 0, sizeof(struct net_device));
+  -
+   	/* make sure we BUG if trying to hit standard
+   	 * register/unregister code path
+   	 */
+  @@ -10379,8 +10365,29 @@ void init_dummy_netdev(struct net_device *dev)
+   	 * its refcount.
+   	 */
+   }
+  -EXPORT_SYMBOL_GPL(init_dummy_netdev);
+  +EXPORT_SYMBOL_GPL(init_dummy_netdev_core);
+   
+  +/**
+  + *	init_dummy_netdev	- init a dummy network device for NAPI
+  + *	@dev: device to init
+  + *
+  + *	This takes a network device structure and initialize the minimum
+  + *	amount of fields so it can be used to schedule NAPI polls without
+  + *	registering a full blown interface. This is to be used by drivers
+  + *	that need to tie several hardware interfaces to a single NAPI
+  + *	poll scheduler due to HW limitations.
+  + */
+  +void init_dummy_netdev(struct net_device *dev)
+  +{
+  +	/* Clear everything. Note we don't initialize spinlocks
+  +	 * are they aren't supposed to be taken by any of the
+  +	 * NAPI code and this dummy netdev is supposed to be
+  +	 * only ever used for NAPI polls
+  +	 */
+  +	memset(dev, 0, sizeof(struct net_device));
+  +	init_dummy_netdev_core(dev);
+  +}
+  +EXPORT_SYMBOL_GPL(init_dummy_netdev);
+   
+   /**
+    *	register_netdev	- register a network device
+  
 
