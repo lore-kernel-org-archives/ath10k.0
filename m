@@ -4,99 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 204CBCD1280
-	for <ath10k@archiver.kernel.org>; Wed, 27 Mar 2024 16:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12355CD1283
+	for <ath10k@archiver.kernel.org>; Thu, 28 Mar 2024 17:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8DoMiz8HpEkPB1xE3p2eeM8oOzoz/X+6OQFWHtIe7wY=; b=YUYgFL5LYapuGFud9C+H4bkJcg
-	DYwYrX90VV1fOFwoRfwXqlNkacPmKi1zKO44r2avMVQOTVaWhpOkVPAev1Qa/jL8f14E3/EYM40aZ
-	GLGLKDzyw/NCbBq3YEBhFFce1kglJuEYc7397mof9SQdEq2376/Y1gGc+RyXdw16gp8t04CiQT9bt
-	zA97Bx+YbPjF7UtYjiQ5GauQJiBJaD0FRGfheZBFSi2bB+Y3fEE+iizyIxx3a8K4SwTSVjeqHTBmP
-	8TxjMqx++UWjzaLvvLxtB3eXYq7vDwyAQmy4VhcqlXlJCREMf6bHcncF5yNteddgtYfXG8dHbLV6p
-	WisUM+UQ==;
+	bh=y8/g+cHkPSXhHlEKcSVfgwp5KAJjPgctuVitEMx931o=; b=tflVpA0oE9wXN1y1LG7cDvW4HZ
+	G/yHU8vL+vj9LM8f68r82k9+kncIj6ItQILTVfLdZBP0NDTcCpKeSRqEMAPGoVQ+Z4XHRQLguh8yr
+	SzQSKBQJRlhbxntseiuBbM1l5L0NK0Fi5THibcOpU+TB0alFj+8HZWmvjFttoVoS1xiJXGnKA3WqU
+	5Y8fKRtibQM1iIAci+zZ/3dwhNcCqHmwEivKQZ0CnQwv1Hg+o91y2wcw1dYYAj9djaKVGBHIoBC5z
+	QPDjPrFNZtDwTAdvjP8QDzs+h0sc81t6XjMOkFdCFmDM7VQ+QVoGlazr4mBX5F2ITQ8htPjzcjxsp
+	ygcK3Xtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpWRn-0000000A8re-3aKJ;
-	Wed, 27 Mar 2024 16:48:19 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1rptGL-0000000EvmR-0hrR;
+	Thu, 28 Mar 2024 17:10:01 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpVS7-00000009t1P-2Wpt
+	id 1rptGG-0000000EviX-0LXi
 	for ath10k@lists.infradead.org;
-	Wed, 27 Mar 2024 15:44:38 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42RAQv8N021075;
-	Wed, 27 Mar 2024 15:42:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=8DoMiz8HpEkPB1xE3p2eeM8oOzoz/X+6OQFWHtIe7wY=; b=iz
-	9Gw0BZH1FCzh/4v+cjUrBF3yu2dGmd6sCW2zGkJcdN++RmMIgqUfCnsYEabQvpOp
-	spjRvN7LNJKyXd3/1sbNdZUZDh0LF0xSvpWK8FOBlmNhG6EoK+G/ScQ95C0NAfBM
-	6o6dETSN7ylfYeZeuRhJ69sJd9Td3sFVrQXt2hCSG07ekvOmjGBsKCWUlkfZ1H3P
-	djK51e4W6ywekm69jkbNb8s6rlWuAY81DYXraYrdz+eUoW/VmsYP4EW2UJhz6em2
-	YZ1I9WxzUvXOPuzVoMxAm23mwapO4p9BJRVgMkQlnhcMWTaWvJH2wf9YoKHqZJ8G
-	mKlxItByWUJxwu8dZh6A==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4etk9atv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 15:42:57 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42RFgucx017852
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 15:42:56 GMT
-Received: from [10.110.28.48] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 27 Mar
- 2024 08:42:56 -0700
-Message-ID: <00b1703a-47d7-4dc1-a3cd-f07f1a24db92@quicinc.com>
-Date: Wed, 27 Mar 2024 08:42:55 -0700
+	Thu, 28 Mar 2024 17:09:59 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-41488e17e1cso7575645e9.0
+        for <ath10k@lists.infradead.org>; Thu, 28 Mar 2024 10:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1711645788; x=1712250588; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y8/g+cHkPSXhHlEKcSVfgwp5KAJjPgctuVitEMx931o=;
+        b=qAaaownyIu4VaBdPC/U0UPOyMmxbb8qYxn0ghR+zM6Vc4Ugskjrtz2xqyp9RpFOMcT
+         BhpUE8BMblcDfrsiU270FOmxsrNwq0jHUT+3hmowdOep/qjPM+xKAB0Kjujavm5z84f/
+         ce/3r16PQKtM6OkEiJgkMMGmQyIeoD9rZd0ZTJmMJhjFoPlMNmlNg8Qvr05vzsduGUFR
+         yssYZa3P+P9T6gwI742MvSK+maIXwJYe93YxCZB4QN+ur8nWCrnz/pqbuM2lJ41lhWgc
+         rKh2gT/adAlBjyJq3XQ9vbAfHUcHX2/Ho6YhgpmnUDgnMk9iuwm9zH9QR5xp4YzPghmi
+         +qiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711645788; x=1712250588;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y8/g+cHkPSXhHlEKcSVfgwp5KAJjPgctuVitEMx931o=;
+        b=IyrNzsP2TUQkF3gTEoUaA65I6yI0AaNGdRJR/zh9zm7/oTvwjgCXbsWM3gLthhdyMl
+         Gxh+JXo0ZbBtX4Ue/M14UbdYB/Pcg6uwpjCeLM00s3/pdCIwuzbuM5UDr1dkWBPRb37G
+         ZEPfZxbZV03gdknrPqdiToYvGVcJWltFF98262p55OwCGIjSX+geZqDAepMRNO/gKYml
+         gFhveqLB0P6WOBMUJgmjGRt4fHlploFxA+eDuNsgFq2S7q3WnMM8O9RMcxkQeIoqSJIY
+         VYbaIiwBGUxv2/XpG40MjQ7E8uyrssXcRE+qSSD6W2BW628qmSC4Re+mq7E7vJvKX5WF
+         tS/g==
+X-Gm-Message-State: AOJu0YwQIrWvht9lad6ojKi11hdyjg33Q3p2OGkKUvcv3tWkRBA1SKd4
+	0gHQGfMAGdBRmY8+3UDaYleHnHBHZSuHCVeV+nNwvd/3wt9p9Ouwbs3hFLqSX5JPlr5EtEzTtQf
+	u
+X-Google-Smtp-Source: AGHT+IHOl+8pLp638KlWCuohcoJcoPfMOHatFiZG43JVDO7VUY/xCGKW1oVbaGfCkvHbEXNELOF7jw==
+X-Received: by 2002:a05:600c:3ba6:b0:415:43f2:332b with SMTP id n38-20020a05600c3ba600b0041543f2332bmr2148445wms.2.1711645788367;
+        Thu, 28 Mar 2024 10:09:48 -0700 (PDT)
+Received: from [192.168.108.81] (freebox.vlq16.iliad.fr. [213.36.7.13])
+        by smtp.gmail.com with ESMTPSA id o10-20020a05600c510a00b004148a5e3188sm5997405wms.25.2024.03.28.10.09.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 10:09:47 -0700 (PDT)
+Message-ID: <c908125e-84fb-42f3-bbb5-3d4a909038d8@freebox.fr>
+Date: Thu, 28 Mar 2024 18:09:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
+Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath10k: add
+ qcom,no-msa-ready-indicator prop
 Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>, Breno Leitao <leitao@debian.org>
-CC: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        <keescook@chromium.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)"
-	<linux-wireless@vger.kernel.org>,
-        "open list:QUALCOMM ATHEROS ATH10K WIRELESS
- DRIVER" <ath10k@lists.infradead.org>,
-        open list
-	<linux-kernel@vger.kernel.org>
-References: <20240319104754.2535294-1-leitao@debian.org>
- <9fcdb857-da62-4832-ae11-043fe993e4ad@quicinc.com>
- <20240321072821.59f56757@kernel.org>
- <5039256c-03eb-4cda-8d11-49e4561cf1ef@quicinc.com>
- <20240321151744.246ce2d0@kernel.org> <Zf2ceu2O47lLbKU3@gmail.com>
- <20240322082336.49f110cc@kernel.org> <ZgQvTTnMoBn2oG1K@gmail.com>
- <20240327074516.624b7ecf@kernel.org>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240327074516.624b7ecf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: ath10k <ath10k@lists.infradead.org>,
+ wireless <linux-wireless@vger.kernel.org>, DT <devicetree@vger.kernel.org>,
+ Pierre-Hugues Husson <phhusson@freebox.fr>, Arnaud Vrac <avrac@freebox.fr>,
+ Jami Kettunen <jamipkettunen@gmail.com>,
+ Jeffrey Hugo <quic_jhugo@quicinc.com>, Bjorn Andersson
+ <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>
+References: <14daa98e-7fd3-4ebb-87bb-5d2c1fba679f@freebox.fr>
+ <b8de96c7-cbb6-4a09-a4d4-2c11b3ab3e01@freebox.fr> <871q8wk7o3.fsf@kernel.org>
+ <3392f356-7b19-483d-b9f8-3bd84068fa52@freebox.fr> <87wmqoilzf.fsf@kernel.org>
+ <c58e67e6-6a7f-4963-86b9-580165bf05ba@freebox.fr> <87cyse8j9m.fsf@kernel.org>
+ <6d4b1381-c121-4cda-a8c9-9ccac56bd447@freebox.fr> <87plw87nsc.fsf@kernel.org>
+ <0816f7bb-3c97-4b90-8e19-191552ea6e26@freebox.fr> <87h6hk7aee.fsf@kernel.org>
+ <fb0ffdd9-923a-4191-8304-583243ad528b@freebox.fr>
+ <243a97b7-c298-4307-9f06-8b3a7c3e24fd@freebox.fr>
+ <9293793d-00e8-42ce-87b2-05abc3b49387@freebox.fr>
+ <CAA8EJppn6M9dpzyu9d283AUtaeN-i-L=-aM5P9BEELXPLFS8YQ@mail.gmail.com>
+ <4b7bf7cc-ede6-4c2a-983c-da4c8c09c5d1@quicinc.com>
+From: Marc Gonzalez <mgonzalez@freebox.fr>
+In-Reply-To: <4b7bf7cc-ede6-4c2a-983c-da4c8c09c5d1@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 9t0qFKztIXR9CV8_LmGTXfCo6DyZLgh_
-X-Proofpoint-ORIG-GUID: 9t0qFKztIXR9CV8_LmGTXfCo6DyZLgh_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_12,2024-03-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- bulkscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxlogscore=882
- priorityscore=1501 clxscore=1015 suspectscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2403270108
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240327_084437_073255_B8E0997F 
-X-CRM114-Status: UNSURE (   7.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240328_100956_342934_4B4D5680 
+X-CRM114-Status: GOOD (  15.96  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,19 +110,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 3/27/2024 7:45 AM, Jakub Kicinski wrote:
-> On Wed, 27 Mar 2024 07:38:05 -0700 Breno Leitao wrote:
->>   -void init_dummy_netdev(struct net_device *dev)
->>   +void init_dummy_netdev_core(struct net_device *dev)
-> 
-> Can init_dummy_netdev_core() be a static function (and no export)?
-> alloc_netdev_dummy() is probably going to be the only user.
-> 
-> I'd also lean towards squashing the two commits into one.
+On 26/03/2024 21:21, Jeff Johnson wrote:
 
-And once all of the conversions are complete, won't init_dummy_netdev() no
-longer be used and can be removed?
+> On 3/26/2024 10:51 AM, Dmitry Baryshkov wrote:
+> 
+>> On Tue, 26 Mar 2024 at 19:45, Marc Gonzalez wrote:
+>>> 
+>>> [ It has been pointed out to me that the previous message was unclear. ]
+>>> [ Below is my 2nd attempt at a clearer message. ]
+>>> 
+>>> Problem: firmware-5.bin has not been parsed yet when we have to handle
+>>> the ATH10K_QMI_EVENT_SERVER_ARRIVE case, so we can't rely on feature bits
+>>> to work around the lack of MSA_READY indicator.
+>> 
+>> Then, I'd say, we have to resort to the DT property, unless Kalle or
+>> Jeff have other proposals.
+> 
+> Another option is to follow the downstream driver model and only expect this
+> based upon static configuration within the driver.
+> 
+> Downstream driver has:
+> 	if (priv->device_id == ADRASTEA_DEVICE_ID) {
+> 		ret = wlfw_msa_mem_info_send_sync_msg(priv);
+> 		ret = wlfw_msa_ready_send_sync_msg(priv);
+> 	}
+> 
+> https://git.codelinaro.org/clo/la/platform/vendor/qcom-opensource/wlan/platform/-/blob/wlan-platform.lnx.1.0.r4-rel/icnss2/main.c?ref_type=heads#L968
+> 
+> The downstream MSA logic (including some other code that populates MSA-related
+> fields in the QMI messages) is only invoked for ADRASTEA_DEVICE_ID.
+> 
+> We could introduce a new hw_params parameter to have the same semantics.
+> 
+> But I'm OK with the DT option as well.
+> 
+> Kalle?
 
+I'll send a v2 series with the DT option + setting the quirk flag for
+all msm8998 devices. I'll include msm8998 board maintainers for feedback.
+
+Regards
 
 
 
