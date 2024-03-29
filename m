@@ -4,110 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D05C6FD1F
-	for <ath10k@archiver.kernel.org>; Fri, 29 Mar 2024 18:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E1ADC6FD1F
+	for <ath10k@archiver.kernel.org>; Fri, 29 Mar 2024 23:23:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=g8BmwG7Q6jYnzmtteAjttsKel77uSlwfKjjKo/sXHv8=; b=srou61Oc0bLex7Vr4c9KuMK8x9
-	+x8vqQzSl1H05pmSVrK+GbNzLyYEdL8EojcpibfFTfpOMNxx0FKG5G4KEJRIZOhgIvMYw3Fit2JeP
-	V2lNLC8XD6g7y4wW8XexwifEHVwy77XRQ88kHyegc+MNPWNAjx+NlUuAB1JkxQmdZdelhHvmJWaRB
-	Oq28rNB6PzoAiyPh7I+W3uHs+P8k03q3KK5tOOISZeXzsFWVvftRjVcfF5viV3drwttIDaVeBsexn
-	tzGnusaWR7mIgACgcQU7c+LMHhmiuFO9HF2EFhdDhP3eVeqGCrxHB36ICz42soX5SqBthzBK1PCqk
-	HbTFiRww==;
+	bh=7UwDx5OuW8FtPG7iPK+HFKmVAJuPi5oZKhU7vXS9aS4=; b=Uc8cerucUHBblg22jL8zIfZNMp
+	8IkI0VbCOGekA4iB+jXyqJoUEirrFNpFzsCQDJJHf0jYkHc/ecvyyKhX1IunUDcVxWrspFEQnayET
+	P+lXc6etdqkTNslcg+G4N0MhndT6c9Srm2NtlrtGLD+Fy2Cbs9BzToYzQoNBlflClA+M5HBoGPFy3
+	+HAFCRDovE+9yc031dZVXptUUJgkMg3jX1UXrECJMTMn35IpFseezxjt8f3h/XWi/nVICjAT6dtIt
+	W9aD5LpbcYhtj+NBdeJPm62fH9VhCofVcf65pXbOfsYV7N760qj86fZX8tF4HJ0KGrTWd6/XEp5NA
+	qhmDsbtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqH3c-00000001cFQ-3u8z;
-	Fri, 29 Mar 2024 18:34:28 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1rqLYf-00000002I3T-46c4;
+	Fri, 29 Mar 2024 23:22:49 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqFyN-00000001SbE-1ty2
-	for ath10k@lists.infradead.org;
-	Fri, 29 Mar 2024 17:25:02 +0000
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-41494c040a1so14879165e9.2
-        for <ath10k@lists.infradead.org>; Fri, 29 Mar 2024 10:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711733096; x=1712337896; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g8BmwG7Q6jYnzmtteAjttsKel77uSlwfKjjKo/sXHv8=;
-        b=LJ9acMZBvgjbe/KewIBCZPB61L8UDQopkxb9gtiV/Jq3+7XhuHj43h/k5RzHxT2r0p
-         JoB9+1RCllTYEYZnIwlL7mgwER2jiOKS+CKg15HJCIwf/49JFndbO1wfqKGR/e2Xy3U+
-         57hWFqBBA43yPJHtfP2dX0ocO0WWrnVDI8sjuSTgWMaS1UCIpOSTmNwbcRjgbTxtlcPT
-         kMRDdGIfyG2+Av8Am0O9/AmHU8DE/eSH9JjPWhqIw5ETtMyADDEmqKFXlGViq5QaGWS8
-         f425B0VfZg16mDlq3XcJD7/wcVuinzyOVA7jOzO7pCc6fAY9nGms1L3ec5DmMaC7pc/r
-         6G8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711733096; x=1712337896;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g8BmwG7Q6jYnzmtteAjttsKel77uSlwfKjjKo/sXHv8=;
-        b=JSAHCx1bPtdXKbJqvmfOrM8YNP8JclCdIbYLI4Bfy4zz4fzw+dCIk8LIs8aK5hr0rA
-         6Mmrxgs04eHSv1Z+EKJp3cYInWqoO7y/1h8PJacr/04QUSFqj9T6S5gVtsAnMiRNI6mw
-         O+CQQgaq/RMKcJqH/pXHToLKMCvINXm1keY1GgCrSbNUAt4G4x9PadHBpxVRMuT5uzvi
-         BAMqoKIWNQ+jluAdzaq3PqRPOzcRX5Y7CaiffgtNu47ydbDoy15bR6DqDCBG1AHrOQG1
-         5FKFkqZeomViG7wv+WtllosdiBQuIVp/8S+9ilem4ZUyAoCjT3Uki1swl/zxSBbYZKmf
-         tP5A==
-X-Forwarded-Encrypted: i=1; AJvYcCUELUA3BjBRYJNjxPIOoMlKMH33LtS1/8htQeJNzoWOBDHbRLMr263DaCtknA5CRjls3uCHTMuw2bAcF9DZq1SPwoDeVdmgyMcuTQ==
-X-Gm-Message-State: AOJu0YxWgDPD3jRv/DC3hzdkE5cvIK9WpwnvtalWx6hTUHz0G0ELIxMc
-	YuVX6HrhBoT0kfvZT13ukWOlXnTo3HaGFmzFug3ALu0s73jo/iBPmlCpLEjnulk=
-X-Google-Smtp-Source: AGHT+IGkMQKZmBwfysAyXcTOIdEaETGLP8XC6UQptvkkNiT6RrRdfIxr4AefhOFV8q8KgXAsCgTSLA==
-X-Received: by 2002:a05:600c:4f44:b0:413:2c4b:35d1 with SMTP id m4-20020a05600c4f4400b004132c4b35d1mr2416556wmq.31.1711733096290;
-        Fri, 29 Mar 2024 10:24:56 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id v8-20020a05600c470800b004149543c82fsm8491069wmo.39.2024.03.29.10.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 10:24:55 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Fri, 29 Mar 2024 18:24:35 +0100
-Subject: [PATCH 5/7] wifi: brcm80211: drop driver owner initialization
+	id 1rqLYc-00000002I2F-34xH;
+	Fri, 29 Mar 2024 23:22:48 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TLQSj5013426;
+	Fri, 29 Mar 2024 23:22:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=7UwDx5OuW8FtPG7iPK+HFKmVAJuPi5oZKhU7vXS9aS4=; b=mT
+	cIVgYmE4vn+1WKdCBKVvcGY9JpVQgjzMVAqLZ+1qHySgkRDqdScgPph+XSqVvOgd
+	l6yggGX8sisnfUgUXH3Vj3/QyHyb3K8MOhCeRdayW5pgmekSkoXU4zi1mbJ1Jzxt
+	P+1U3mgoKCWPZaNbEBuzLTNyMLkiig0x1jc88aMmEpmJryuvkz6L8ain01FN2Uvc
+	IgaLKzmraIvOv6LxShxYk3V2qayP/Qv67DdjsjrDazoQjgWkUfadtWc+FVqKYhjo
+	kvLGgLc4o9NJoLlPPLAeAl6yLaZfHNUpl6zcfwh/G7H/jMDaYO1lZ/DjIOMntWa8
+	Lpg6rNlqt9WCbM4SY2tg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5sm6j50r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 23:22:35 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TNMYfx000427
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 23:22:34 GMT
+Received: from [10.110.124.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Mar
+ 2024 16:22:33 -0700
+Message-ID: <8ba398c9-b71c-4447-a1d0-bd560e41f39f@quicinc.com>
+Date: Fri, 29 Mar 2024 16:22:32 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240329-module-owner-sdio-v1-5-e4010b11ccaa@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/7] wifi: ath10k: sdio: drop driver owner initialization
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Ulf Hansson
+	<ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto
+ von Dentz <luiz.dentz@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+        Kalle
+ Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+        Arend van Spriel
+	<arend.vanspriel@broadcom.com>,
+        Brian Norris <briannorris@chromium.org>,
+        =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+CC: <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-bluetooth@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <brcm80211@lists.linux.dev>,
+        <brcm80211-dev-list.pdl@broadcom.com>
 References: <20240329-module-owner-sdio-v1-0-e4010b11ccaa@linaro.org>
-In-Reply-To: <20240329-module-owner-sdio-v1-0-e4010b11ccaa@linaro.org>
-To: Ulf Hansson <ulf.hansson@linaro.org>, 
- Marcel Holtmann <marcel@holtmann.org>, 
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>, 
- Arend van Spriel <arend.vanspriel@broadcom.com>, 
- Brian Norris <briannorris@chromium.org>, 
- =?utf-8?q?J=C3=A9r=C3=B4me_Pouiller?= <jerome.pouiller@silabs.com>
-Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-bluetooth@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, linux-wireless@vger.kernel.org, 
- ath10k@lists.infradead.org, brcm80211@lists.linux.dev, 
- brcm80211-dev-list.pdl@broadcom.com, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=873;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=wDiiPdIToMYXQU5+yRee3/V3ANx19Hr4dGWjE2WOnus=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBvlbWI+uz/9YwUaNlefiHsHpsoaQewqU+4KoC
- 5vsAyo/lEyJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgb5WwAKCRDBN2bmhouD
- 17wwD/wJZQBJuomWoovMyFzif8oMaN6Puy7t9a5St5yy/oTFPoU3mqYzYEazstQewmxHvQUC57q
- 12gVOI3lkjSN7jECNwwVrruhMnyzAPJX2Mj363zHzxxFAIWv02+1K2uoYMSiT3tboYo13zUUKAf
- bL2FV8El6mxFZoLTjYq+j+BQVkVDUxHH3vDDj5Gb6s5/CDQaSXMbzmJV3JM59LwxwkIRXOkDkp1
- 6r4wkWH5vTAefQZbKuKd0GY+kaQ80eHpOhz5R+QbBiAWJ4KJoEKLXHFeXZJErpRRfi9vQgl1E/k
- Nds/H3lTLJ/HIIZv3545bPWIl7uWDabBQpm+o75gegBXRaW7DOP50XRPktxUF3cdtxXqz4IP6/n
- f2Ef/MKjS3MVCOlVsVThZS9RaoNQKbuM3yhDETpqBOv6Xv98szOYEkYtr5EQmMMkqydFE3FS50D
- 30FIFa8pX2wUEu45dM3tEsXtoJn/CwiaDctGHRJfVHlBDC2pTeMT8eVp8SeRSEGIMmm4KNX4eHB
- PkQFlm9RMpykklRbyAQenHDshwl1WuDToLRkFW53XltZd8xXR4B5bYqMuV3Wdp8KN50y+1bUUxB
- Z5KPesX3r313jcBNZv7LfYa8aob+hVnPATZeEuObcXJCmEIndjEz5WZGaPdhbniutXm9FOlcdOm
- vozlrq6EJIGUBwA==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+ <20240329-module-owner-sdio-v1-4-e4010b11ccaa@linaro.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240329-module-owner-sdio-v1-4-e4010b11ccaa@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pj5BXDPNqd-BazKf3WC1xlwtDGjZg8-7
+X-Proofpoint-GUID: pj5BXDPNqd-BazKf3WC1xlwtDGjZg8-7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=928 suspectscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403290208
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240329_102459_679734_FE985AD1 
-X-CRM114-Status: GOOD (  10.54  )
+X-CRM114-CacheID: sfid-20240329_162246_972928_DA2EFFC1 
+X-CRM114-Status: GOOD (  17.31  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,32 +115,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Core in sdio_register_driver() already sets the .owner, so driver does
-not need to.
+On 3/29/2024 10:24 AM, Krzysztof Kozlowski wrote:
+> Core in sdio_register_driver() already sets the .owner, so driver does
+> not need to.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
----
-
-Depends on the first patch.
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-index 00679a990e3d..13391c2d82aa 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-@@ -1238,7 +1238,6 @@ static struct sdio_driver brcmf_sdmmc_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = brcmf_sdmmc_ids,
- 	.drv = {
--		.owner = THIS_MODULE,
- 		.pm = pm_sleep_ptr(&brcmf_sdio_pm_ops),
- 		.coredump = brcmf_dev_coredump,
- 	},
-
--- 
-2.34.1
+> 
+> ---
+> 
+> Depends on the first patch.
+> ---
+>  drivers/net/wireless/ath/ath10k/sdio.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index 1acb9fba9a8e..cddd9e3010ee 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -2667,7 +2667,6 @@ static struct sdio_driver ath10k_sdio_driver = {
+>  	.probe = ath10k_sdio_probe,
+>  	.remove = ath10k_sdio_remove,
+>  	.drv = {
+> -		.owner = THIS_MODULE,
+>  		.pm = ATH10K_SDIO_PM_OPS,
+>  	},
+>  };
+> 
 
 
