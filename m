@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2050CD1288
-	for <ath10k@archiver.kernel.org>; Sat, 30 Mar 2024 18:20:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67249C6FD1F
+	for <ath10k@archiver.kernel.org>; Sat, 30 Mar 2024 18:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BprUUVg1fU6jJ/GEGPbOksdY3kkfFu6n4Yk2rAaYkcI=; b=hjmwBKrKnLjdrYRzfInvgiiNSQ
-	r/w3iLVW0Lc0EtZg1SW1S6lvk/V4hpslVSJ2Y65SGGRabj7v7IVK9G6oOpMMHFnTpjuwmyMOz+WHn
-	igU6MxW/rBcKRs2S916pV6gJsm5wMWaHgW6+im9OA8apbgELeTmHsjIvF1W48K/dDLPq04TCiTbAo
-	g8UXxhCsfNuRmG8A/v4TnuyDE+uxL41IGCGouIYVu7QUBkTSiZUDCs44emm3RERrw41QMdebKiZ/D
-	RvJobDoPa6av55NI5PEMy0AafZ41bJBpL2+GGOSmm9h9E6h5dh2z2WT88ICFdzExzQT79VxNrlzZu
-	SkmyRKGw==;
+	bh=XWw0ZP7kBFk0KoFs8ftkXTic4hSGa1QLT0sqvHHSYPs=; b=B0E2Kv9GX1cqvaxLP6nPGmqz0q
+	VEBQkprrfokCQyOc4IpQQ8JxeKjfzrQ/MsT3RoHz+s3hz5zrp5o9x3k/N8HfXwc5W3IY/twzTtuwq
+	3cWqa28bWpp8V991g/jIMEPz3y/wy5npFQYVKUeenXlIzL487mJBzv70w0ExqThEpclX7Tb0N+fA9
+	p8ImdrXizhk0CQvM27pZ6HP7sijmQd167IczWdoabR+yrTAJUx+m9H2HmBMjN69Z8sPXOgGtW5/kD
+	HM4/uvFMSQWGWncN3JJYxD7PDgWhEC5b+FFOYQJNu8iNakU2j3WcEB5cfgnW+9Scn4L0A/2mxFUrH
+	z9gl2dHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqdJu-00000003wfT-2VYL;
-	Sat, 30 Mar 2024 18:20:46 +0000
-Received: from mail-lj1-x236.google.com ([2a00:1450:4864:20::236])
+	id 1rqdML-00000003wst-1lg9;
+	Sat, 30 Mar 2024 18:23:17 +0000
+Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqdJr-00000003wf1-04fH
+	id 1rqdMH-00000003wrU-2WJF
 	for ath10k@lists.infradead.org;
-	Sat, 30 Mar 2024 18:20:44 +0000
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2d6ee81bc87so25780031fa.1
-        for <ath10k@lists.infradead.org>; Sat, 30 Mar 2024 11:20:39 -0700 (PDT)
+	Sat, 30 Mar 2024 18:23:15 +0000
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3417a3151c5so1898867f8f.1
+        for <ath10k@lists.infradead.org>; Sat, 30 Mar 2024 11:23:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711822838; x=1712427638; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=BprUUVg1fU6jJ/GEGPbOksdY3kkfFu6n4Yk2rAaYkcI=;
-        b=oB/L5kPAJW6hOvPGYhcOZZ5sojQJq/q/GBUun0C0x+MTi2fUwu4b3aIDbDxi65HEOi
-         yv9Oa8gp6wKV087SmW0eq9zYBzWVOxgusURVOIaTSJMwtfC71n4izfzRmZaT3HekM7Ni
-         Yh3/XUhmLbbSTutG/o2IHrA4Mu24z8/ja1AkVkvJ80VLJ11s1I6jlWJBciBD/QMIfMgd
-         k/37+av9Q1U6r8zVWNF4qNB4Zk2MLsY12E5TnpbVRgCfZvqp7l1PkvNyVdqRF07trAjm
-         l/Zfjpw2JqAZmf94wxXo3wcrrz1SAEkXMXIDGG6HZrMR3VjFc3615AVBq+bNMMfS+q+S
-         mOFA==
+        d=linaro.org; s=google; t=1711822991; x=1712427791; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=XWw0ZP7kBFk0KoFs8ftkXTic4hSGa1QLT0sqvHHSYPs=;
+        b=Tw/bRODOZZ8zn7WR3SpUu0RdPvtZEcHIeeY2xVLbnIa6JkP2rvjRwpDgKrhh/LvM6w
+         Y1ubhv/NXva3/pBT426ysrWHy2XO7WGBXG4BsNasJxvobVHILGzZr66MF+dlHe9ASpeo
+         9TM0jqPpSWX0L4CJ/GePCrCsfmCzTDZqjP5xh81qTI2PoF6sNmRtSRKm+Mf/91LTyE72
+         Aq+fyoOuHrQWExfgxQgFjPAP/ZHduFGz7QvetBHac7/j0TwkV53E0iPtGKlPSKiczqla
+         oBAmEfbYObNG4rzvXCaFTJlLNLCUaNcpPtCi7VEHdqNo+wKMlKFhzjIrcv+xW1DtbUsw
+         CTiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711822838; x=1712427638;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BprUUVg1fU6jJ/GEGPbOksdY3kkfFu6n4Yk2rAaYkcI=;
-        b=wV4yqrcSWFevXsNRB7k1CVxVQxfVtf15EFXtPaQefMIXlpVh/0BWJhocrBtxw4T8ns
-         cUv0Ozdh3h+ky1Mx5PWlz0p6AVmeP7O97rkif4grqoMs4ZrhfD1UGfzO80BwPZYBK21B
-         g+wGpeLCAo123mHYuVkm8XhFBNzQWWsBXKYE4D3IGd1KxOVSpnZYt4Q0OJis7NYJdOVo
-         jMRHsrylKifk3azhfCxb5OUouVx51S1JVrWQzLeKSdEWzckZkbTyE2mXb2WJ77IP+Ups
-         jdvWmzXtxgoGHCpF8MyXDnnevC97fKAT7x24GoonpCmjlzjOTfG45yXUtcxnpHXhqL3J
-         rhpw==
-X-Forwarded-Encrypted: i=1; AJvYcCWO4HNpNO6qD73s/8NDkUwMycJwsr/qcgg1T8UTt0hm4buUTaV8dk8JYF/m5d7H164nBsjtdf9cLn42OspRaJ2npSFQegkF5WQA6Q==
-X-Gm-Message-State: AOJu0YzsGbaPipkIWs0fom5xrTW75ZSd06yz2jJ/MMkaoDaFnyBjb/C8
-	N0E4OXJ6XWd1zhoXXCAebjtBeNDIbYkELK2Ut87/D6q9i2q6FpQozXRsds7h5nc=
-X-Google-Smtp-Source: AGHT+IEzyvThCaBaeMRRwfrtv2z/vxb/zVg57/dM9GTavbvcYcBPB6yuHiIk8KAPT6bZBiQ6LZwvQg==
-X-Received: by 2002:a2e:a455:0:b0:2d4:5f50:1fa with SMTP id v21-20020a2ea455000000b002d45f5001famr3089501ljn.41.1711822837746;
-        Sat, 30 Mar 2024 11:20:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711822991; x=1712427791;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XWw0ZP7kBFk0KoFs8ftkXTic4hSGa1QLT0sqvHHSYPs=;
+        b=ZKjMNaPxON3/8sTtBoquj4t8Hog6qfqfAmivt2/UJdsCcpohQxMssYevSjyRNvqovV
+         +QRXVgc9zApBOdgVjqwNQIRCmZVi4WOApIrZ/0fX7EY/5Di3l+KXrbkkv97AgUDD9U6F
+         fg9cPfku02d/AXpvHZPuVrkMvbM5nGhjCeb1FkojOMoVZuiV92zzaEii14DcMDoiab/k
+         UUcOksg6PwMuMlu2EWO80GQZxpOESERkD0kQWnwqPrC6SPNTGzlxPXQ3ulQPsJ2NVsaK
+         QtJqSqgvnfwA375aFDPi3qHL10vF7nFdHrv9qN1+CBBrQS1imQpEr6W9wvcTslmvlUf8
+         9LwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVROM2Bi2RrkRCU4uPUfBTIb7+hq8Lvxq+QbSjyDHDE3amencD6XuLjBcKatK/SMxCP7Os70ZtnwF31FVoQ5cyhpBUVEs0oSr9a4A==
+X-Gm-Message-State: AOJu0YxjR79fEwWVMdbXlQOz8v36bEybPDesyE7af9ep9sMLugSwK6wp
+	e2R8TVXGWxdLHZ+krf+oQCc5ZjQdnJ0Tr4YVE+G2iQOrYs2BZGCveSC2/P6H8GA=
+X-Google-Smtp-Source: AGHT+IGdAY5ScaZx1aVnvKHNMZiMDx+Uiiu9YBiOw0GIR9m2Q0k+cx1tZrLYMWlRMTQiMUCky+BQhQ==
+X-Received: by 2002:a5d:484c:0:b0:33e:75d9:75cf with SMTP id n12-20020a5d484c000000b0033e75d975cfmr3405876wrs.52.1711822991293;
+        Sat, 30 Mar 2024 11:23:11 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id ay8-20020a05600c1e0800b0041559c59ee3sm2361398wmb.12.2024.03.30.11.20.36
+        by smtp.gmail.com with ESMTPSA id x14-20020adfdd8e000000b00341b451a31asm6968812wrl.36.2024.03.30.11.23.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 11:20:37 -0700 (PDT)
-Message-ID: <72c162cc-45e0-48b6-8d90-d59fac299375@linaro.org>
-Date: Sat, 30 Mar 2024 19:20:35 +0100
+        Sat, 30 Mar 2024 11:23:10 -0700 (PDT)
+Message-ID: <6bd3db0f-2e18-4ad1-abc2-f59c6acc8037@linaro.org>
+Date: Sat, 30 Mar 2024 19:23:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 1/3] dt-bindings: net: wireless: ath10k: add
  qcom,no-msa-ready-indicator prop
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Marc Gonzalez <mgonzalez@freebox.fr>, Kalle Valo <kvalo@kernel.org>,
  Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k <ath10k@lists.infradead.org>
 Cc: wireless <linux-wireless@vger.kernel.org>, DT
@@ -84,8 +85,8 @@ Cc: wireless <linux-wireless@vger.kernel.org>, DT
  Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 References: <fd26ce4a-a9f3-4ada-8d46-ed36fb2456ca@freebox.fr>
  <84f20fb5-5d48-419c-8eff-d7044afb81c0@freebox.fr>
+ <72c162cc-45e0-48b6-8d90-d59fac299375@linaro.org>
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -130,13 +131,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <84f20fb5-5d48-419c-8eff-d7044afb81c0@freebox.fr>
+In-Reply-To: <72c162cc-45e0-48b6-8d90-d59fac299375@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240330_112043_102140_A930B23C 
-X-CRM114-Status: UNSURE (   9.04  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240330_112313_698652_B7BA6544 
+X-CRM114-Status: GOOD (  10.27  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -151,19 +151,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 28/03/2024 18:36, Marc Gonzalez wrote:
-> The ath10k driver waits for an "MSA_READY" indicator
-> to complete initialization. If the indicator is not
-> received, then the device remains unusable.
+On 30/03/2024 19:20, Krzysztof Kozlowski wrote:
+> On 28/03/2024 18:36, Marc Gonzalez wrote:
+>> The ath10k driver waits for an "MSA_READY" indicator
+>> to complete initialization. If the indicator is not
+>> received, then the device remains unusable.
+>>
+>> cf. ath10k_qmi_driver_event_work()
+>>
+>> Several msm8998-based devices are affected by this issue.
+>> Oddly, it seems safe to NOT wait for the indicator, and
+>> proceed immediately when QMI_EVENT_SERVER_ARRIVE.
+>>
 > 
-> cf. ath10k_qmi_driver_event_work()
-> 
-> Several msm8998-based devices are affected by this issue.
-> Oddly, it seems safe to NOT wait for the indicator, and
-> proceed immediately when QMI_EVENT_SERVER_ARRIVE.
-> 
+> This is v2, so where is the changelog?
 
-This is v2, so where is the changelog?
+Expecting reviewer to dig previous discussions will not help your case.
+It helps reviewers if you provide necessary information, like resolution
+of previous discussion in the changelog.
+
+I dig the previous discussion, since you did not mention it here, and it
+seems you entirely ignored its outcome. That's not a DT property.
+
+NAK, sorry. Please go back to v1 and read the comments you got there.
 
 Best regards,
 Krzysztof
