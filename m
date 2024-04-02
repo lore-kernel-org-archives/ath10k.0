@@ -4,86 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DAB1C6FD1F
-	for <ath10k@archiver.kernel.org>; Tue,  2 Apr 2024 15:56:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A69C5CD1284
+	for <ath10k@archiver.kernel.org>; Tue,  2 Apr 2024 17:04:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xeV/0olw1/tQOoEzRbn7wneEZCNZI4OAG5EO13F9t/U=; b=T81oL+Fy/ELnf3W2iXPOghWPJx
-	YcbdRPJhSbH/aG7H8T2yDEVcpFJ7eDDZchZuB9X7bEHPdI9FS6XQSnj/NYIUflTI2hkn2LAHbeM/W
-	k8KvBKdUnsNkfbYSd3siKpULlg3aE5gD4j6dIPeWTJsL9Z733Ef79MPsDaqo9HuoOtZudn4TWusll
-	ts5N7ndKLRrtL2do6B2hlf2CKq34I9a8pjaCe/2sJsnphmSriSB88+644ZfZsQNyjAV/c3NoSaQyI
-	7gZg1TWugJJlSEiGrG+oR3YiZkby9JDux+L3iyXoKtVLamhPt0TdmLE0BhXAmmTVZlSwcawr6JDBb
-	5zS37+ZQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=/EPR/zPhGtFXo8IdK46edA1QvJVzhMRj6OW4MboqvsI=; b=AYsJPhNiCEv5Q+kWY5Flcg1XoY
+	9tzwe36HF9UHRFKwHGE5/1+GI0HjZr1ED2wvS1VDCBMcr7m6xRVcqARvXAcpGg2cWbM1QwoWyuPcu
+	aeX2K6gouFNgMUJ/wHoECoF09ojjzNuixWKwPtl8hUZQPMnZkycbxhmlEH1O7BoEyqsNbCgejVwS1
+	Up3QwYfOLV+LZeP/ig32/PQd7A7xqm4g/2IyTOX+2KOqTyP1XWfvGt/ZuDODaQ41oxq5kpynTQQvR
+	dAdlBn1547bsqERbR6QO+YlaPS3YTYyjfrLWywg2fL9C6S9B49TpRhcopi4aZHwQRFD2H8vrxuCnV
+	M6OGGqow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rrgUo-0000000BuvH-290C;
-	Tue, 02 Apr 2024 15:56:22 +0000
-Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
+	id 1rrhY7-0000000C906-3MGR;
+	Tue, 02 Apr 2024 17:03:51 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rrgUb-0000000But8-1uRG
-	for ath10k@lists.infradead.org;
-	Tue, 02 Apr 2024 15:56:11 +0000
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6e6fb9a494aso4302971b3a.0
-        for <ath10k@lists.infradead.org>; Tue, 02 Apr 2024 08:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712073368; x=1712678168; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xeV/0olw1/tQOoEzRbn7wneEZCNZI4OAG5EO13F9t/U=;
-        b=DrKFU4260H299WiKwyLpCjXQGypnRNbfvGOEGfKd/FNhFWQjTrzYpG9X6zi9uLjyd9
-         MBpZ4XSCjjSjbnYhNip2utzbirpcQY6rvmJTivycTPFgm22DPmpRpVeAwoqVNq0EZBBk
-         q+sNoxpof+j3qfhAcuym9S5DS83b+pnTwA2sWYnlXh8nOVYZUEDlAH2II7CMZACq3o8y
-         fywlWXskUlVDHne32LONDYcr9nvuIn/ripxjPaC5nmOu1+YpKSp3QH7DKZDdlyvMRSi2
-         h+YgzRJxC8CK1tIjuRsNjHzuAjF/H9zR2DYbwE5LaFdf2kTVAr8jfgbhHkHxcgiFfvMe
-         kWZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712073368; x=1712678168;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xeV/0olw1/tQOoEzRbn7wneEZCNZI4OAG5EO13F9t/U=;
-        b=n3UsJTynk8kLkldIRL+pP4x9kH4x9h1kPEMyvYIy73Cx5yMbJ5hQVCPElZLVJ6Eolo
-         XmRsvRDthP3fOyWczWleDq5lTCZhxVd/TQ4LOZZnPITpNVOjmbNPwNLdkiw/NWgWzw39
-         cQaAgLSSRbpzKpcEhgni12omUWUKVSTuroP5m1GGa1MbduWP07FAVgqVJz5MGkKHyD+O
-         BrDLeFKgI4cULtnwj2TpQYUR4ZO1bPXpFU06jAzG06wUkXE2I2ccdZ166mYSyGfZ7g1D
-         BaqYLmTOfV0zSxlOB811DsEv6zg7Z6OybxcfIvl9g/Sryp1wzwJwwCfbyrxMawxDnZTz
-         5BWw==
-X-Forwarded-Encrypted: i=1; AJvYcCWdGSTCbclEaL9E4wxPjBz8rbzFI13EL7ypBKeLnfl3LzlqEe0OLMJgdfkX/N5fgeLAFfRnuumzEZ0WGgPmD6v6udGXTk632Opf4w==
-X-Gm-Message-State: AOJu0Yxz4Ah/3Lc0xLLtcNJEGrVGKnME89EC/yMhjhojFLE3h5amQC7s
-	Zkb785El+L5WXwFz4a8QW7R+KFBhEz4Ic5j6XZGGyg7VdfvBd0YkAmamZUNA4dziOjTJgIJI+13
-	0b2h5XOTvlys8a4eK0xTkDH6sWFxyIqXd0DijSg==
-X-Google-Smtp-Source: AGHT+IH6biaoyoyXGVcuVSEJ64ktCWPrzGD+BguHOuhX547CoHoNCMxaDcDjufoVG68y80EXUw7JQLAEWOsngyWHeXo=
-X-Received: by 2002:a05:6a21:9992:b0:1a3:6ee9:305 with SMTP id
- ve18-20020a056a21999200b001a36ee90305mr12284409pzb.2.1712073368128; Tue, 02
- Apr 2024 08:56:08 -0700 (PDT)
+	id 1rrhY2-0000000C8xi-43E7;
+	Tue, 02 Apr 2024 17:03:48 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id DFC1BCE1B77;
+	Tue,  2 Apr 2024 17:03:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D13C0C433F1;
+	Tue,  2 Apr 2024 17:03:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712077424;
+	bh=eYpHvBXQKHnalmjN0yRkFSw4QRrwOjnbjUl+OVrJZYA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=B0v41h2rdmOoYpvJGSY28fummQpWBc+huTkxb+b0GxWmgArlc7Ge0lN/yRkFJEe7m
+	 Dh4ZAG3taJPDqh25byMFrf1Y6laADcC+1DAQsh1FcZ4Dzvn3XIKNW7AjhI5yuaN0ob
+	 YK7kOxdo5ihFAJd8EN/b5ImBAkxLJEujMtS2nWTsY2TXdFNqVo2d33H0DMmKy0ixKW
+	 vkybe4++gnfN9VQj0okJGVztA8NyRTN8S2fCk4smNJxTeV/+471wPb5wFL0CrwBe0+
+	 cy2b0PC9+kzAmK2BFseUtEsvpHoALrufgXxp2kG9ECSEJ/Jh5dcUqOH4mNmM/bYj8H
+	 gWhmQ3dfATcYQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: linux-wireless@vger.kernel.org
+Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+ ath12k@lists.infradead.org, quic_jjohnson@quicinc.com
+Subject: pull-request: ath-next-20240402
+Date: Tue, 02 Apr 2024 20:03:41 +0300
+Message-ID: <87sf0366j6.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <fd26ce4a-a9f3-4ada-8d46-ed36fb2456ca@freebox.fr>
- <5cdad89c-282a-4df5-a286-b8404bc4dd81@freebox.fr> <252618e8-9e80-4774-a96c-caa7f838ef01@linaro.org>
- <502322f1-4f66-4922-bc4e-46bacac23410@linaro.org> <0ca1221b-b707-450f-877d-ca07a601624d@freebox.fr>
-In-Reply-To: <0ca1221b-b707-450f-877d-ca07a601624d@freebox.fr>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 2 Apr 2024 18:55:56 +0300
-Message-ID: <CAA8EJppeREj-0g9oGCzzKx5ywhg1mgmJR1q8yvXKN7N45do1Xg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: msm8998: set qcom,no-msa-ready-indicator
- for wifi
-To: Marc Gonzalez <mgonzalez@freebox.fr>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Kalle Valo <kvalo@kernel.org>, 
-	Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k <ath10k@lists.infradead.org>, 
-	wireless <linux-wireless@vger.kernel.org>, DT <devicetree@vger.kernel.org>, 
-	MSM <linux-arm-msm@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Pierre-Hugues Husson <phhusson@freebox.fr>, Arnaud Vrac <avrac@freebox.fr>, 
-	Bjorn Andersson <andersson@kernel.org>, Jami Kettunen <jamipkettunen@gmail.com>, 
-	Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240402_085610_014580_5C65CBB1 
-X-CRM114-Status: GOOD (  34.79  )
+X-CRM114-CacheID: sfid-20240402_100347_370939_1DAB3F81 
+X-CRM114-Status: GOOD (  10.66  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,95 +68,117 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2 Apr 2024 at 18:31, Marc Gonzalez <mgonzalez@freebox.fr> wrote:
->
-> On 02/04/2024 16:34, Konrad Dybcio wrote:
->
-> > On 30.03.2024 7:25 PM, Krzysztof Kozlowski wrote:
-> >
-> >> On 28/03/2024 18:39, Marc Gonzalez wrote:
-> >>
-> >>> The ath10k driver waits for an "MSA_READY" indicator
-> >>> to complete initialization. If the indicator is not
-> >>> received, then the device remains unusable.
-> >>>
-> >>> cf. ath10k_qmi_driver_event_work()
-> >>>
-> >>> Several msm8998-based devices are affected by this issue.
-> >>> Oddly, it seems safe to NOT wait for the indicator, and
-> >>> proceed immediately when QMI_EVENT_SERVER_ARRIVE.
-> >>>
-> >>> Jeff Johnson wrote:
-> >>>
-> >>>   The feedback I received was "it might be ok to change all ath10k qmi
-> >>>   to skip waiting for msa_ready", and it was pointed out that ath11k
-> >>>   (and ath12k) do not wait for it.
-> >>>
-> >>>   However with so many deployed devices, "might be ok" isn't a strong
-> >>>   argument for changing the default behavior.
-> >>
-> >> I think you got pretty clear comments:
-> >>
-> >> "This sounds more like a firmware feature, not a hardware feature."
-> >>
-> >> "This is why having this property in DT does not look right
-> >> place for this."
-> >
-> > Translating from dt maintainer speak to English, a functionally-equivalent
-> > resolution of adding an of_machine_is_compatible("qcom,msm8998") is more
-> > in line with the guidelines of not sprinkling firmware specifics in DTs
->
-> I'm not so sure about that, as I had proposed
->
-> +       if (of_device_is_compatible(of_root, "qcom,msm8998")
-> +               qmi->no_point_in_waiting_for_msa_ready_indicator = true;
-> +
->
-> To which Conor replied:
->
-> > How come the root node comes into this, don't you have a soc-specific
-> > compatible for the integration on this SoC?
-> > (I am assuming that this is not the SDIO variant, given then it'd not be
-> > fixed to this particular implementation)
->
->
-> Then added:
->
-> > A SoC-specific compatible sounds like it would be suitable in that case
-> > then, to deal with integration quirks for that specific SoC? I usually
-> > leave the ins and outs of these qcom SoCs to Krzysztof, but I can't help
-> > but wanna know what the justification is here for not using one.
->
->
-> Then Krzysztof added:
->
-> > The WiFi+BT chips are separate products, so they are not usually
-> > considered part of the SoC, even though they can be integrated into the
-> > SoC like here. I guess correct approach would be to add SoC-specific
-> > compatible for them.
->
->
-> So, if I understand correctly, I take this to mean that I should:
->
-> 1) DELETE the qcom,no-msa-ready-indicator boolean property,
-> 2) ADD a "qcom,msm8998-wifi" (name OK?) compatible,
+Hi,
 
-I'd say, this is not correct. There is no "msm8998-wifi".
+Please pull, more information in the tag below.
 
-> 3) ADD that compatible to the wifi node in msm8998.dtsi
->    compatible = "qcom,wcn3990-wifi", "qcom,msm8998-wifi";
-> 4) In the driver, set qmi->fake_msa_ready_indicator to true if we detect "qcom,msm8998-wifi"
->
-> And this approach would be acceptable to both ath10k & DT maintainers?
-
-I'd say, we should take a step back and actually verify how this was
-handled in the vendor kernel.
-
->
-> Bjarne, Konrad: is it OK to apply the work-around for all msm8998 boards?
+Kalle
 
 
--- 
-With best wishes
-Dmitry
+The following changes since commit f654e228ed6b822e87e6e6ad8e889bedccae2e16:
+
+  Merge tag 'ath-next-20240305' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath (2024-03-05 20:57:28 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git tags/ath-next-20240402
+
+for you to fetch changes up to f09e3b774fe806ee0b1f2bb69771e8c29961e40a:
+
+  wifi: ath9k: eeprom: fix sparse endian warnings (2024-03-25 12:51:37 +0200)
+
+----------------------------------------------------------------
+ath.git patches for v6.10
+
+ath drivers now have no remaining sparse warnings, otherwise smaller
+fixes and some refactoring.
+
+ath11k
+
+* P2P support for QCA6390, WCN6855 and QCA2066
+
+----------------------------------------------------------------
+Aloka Dixit (1):
+      wifi: ath12k: use correct flag field for 320 MHz channels
+
+Baochen Qiang (3):
+      wifi: ath10k: poll service ready message before failing
+      wifi: ath11k: don't force enable power save on non-running vdevs
+      wifi: ath11k: do not process consecutive RDDM event
+
+Jeff Johnson (3):
+      wifi: ath12k: remove obsolete struct wmi_start_scan_arg
+      wifi: ath11k: remove obsolete struct wmi_start_scan_arg
+      wifi: ath11k: fix soc_dp_stats debugfs file permission
+
+Kalle Valo (7):
+      wifi: ath6kl: fix sparse warnings
+      wifi: wcn36xx: buff_to_be(): fix sparse warnings
+      wifi: wcn36xx: main: fix sparse warnings
+      wifi: wil6210: fix sparse warnings
+      wifi: ath9k: ath9k_set_moredata(): fix sparse warnings
+      wifi: ath9k: fix ath9k_use_msi declaration
+      wifi: ath9k: eeprom: fix sparse endian warnings
+
+Kang Yang (8):
+      wifi: ath11k: change interface combination for P2P mode
+      wifi: ath11k: add P2P IE in beacon template
+      wifi: ath11k: implement handling of P2P NoA event
+      wifi: ath11k: change WLAN_SCAN_PARAMS_MAX_IE_LEN from 256 to 512
+      wifi: ath11k: change scan flag scan_f_filter_prb_req for QCA6390/WCN6855/QCA2066
+      wifi: ath11k: advertise P2P dev support for QCA6390/WCN6855/QCA2066
+      wifi: ath12k: remove duplicate definitions in wmi.h
+      wifi: ath11k: remove duplicate definitions in wmi.h
+
+Karthikeyan Periyasamy (3):
+      wifi: ath12k: Refactor Rxdma buffer replinish argument
+      wifi: ath12k: Optimize the lock contention of used list in Rx data path
+      wifi: ath12k: Refactor error handler of Rxdma replenish
+
+Kevin Lo (1):
+      wifi: ath11k: adjust a comment to reflect reality
+
+Li Zhijian (1):
+      wifi: ath: Convert sprintf/snprintf to sysfs_emit
+
+Thiraviyam Mariyappan (1):
+      wifi: ath12k: fix desc address calculation in wbm tx completion
+
+ drivers/net/wireless/ath/ath10k/thermal.c    |   2 +-
+ drivers/net/wireless/ath/ath10k/wmi.c        |  26 +++-
+ drivers/net/wireless/ath/ath11k/Makefile     |   3 +-
+ drivers/net/wireless/ath/ath11k/core.c       |  20 ++-
+ drivers/net/wireless/ath/ath11k/debugfs.c    |   4 +-
+ drivers/net/wireless/ath/ath11k/mac.c        | 175 +++++++++++++++++++++------
+ drivers/net/wireless/ath/ath11k/mhi.c        |  17 ++-
+ drivers/net/wireless/ath/ath11k/p2p.c        | 149 +++++++++++++++++++++++
+ drivers/net/wireless/ath/ath11k/p2p.h        |  22 ++++
+ drivers/net/wireless/ath/ath11k/pci.h        |   1 +
+ drivers/net/wireless/ath/ath11k/thermal.c    |   2 +-
+ drivers/net/wireless/ath/ath11k/wmi.c        | 107 +++++++++++++++-
+ drivers/net/wireless/ath/ath11k/wmi.h        |  78 ++++++------
+ drivers/net/wireless/ath/ath12k/dp.c         |  31 +++--
+ drivers/net/wireless/ath/ath12k/dp.h         |   7 +-
+ drivers/net/wireless/ath/ath12k/dp_rx.c      | 140 +++++++++++++--------
+ drivers/net/wireless/ath/ath12k/dp_rx.h      |   1 +
+ drivers/net/wireless/ath/ath12k/dp_tx.c      |   2 +-
+ drivers/net/wireless/ath/ath12k/wmi.c        |   2 +-
+ drivers/net/wireless/ath/ath12k/wmi.h        |  34 ------
+ drivers/net/wireless/ath/ath6kl/htc_mbox.c   |   3 +-
+ drivers/net/wireless/ath/ath6kl/htc_pipe.c   |   3 +-
+ drivers/net/wireless/ath/ath9k/ath9k.h       |   1 +
+ drivers/net/wireless/ath/ath9k/eeprom_4k.c   |   2 +-
+ drivers/net/wireless/ath/ath9k/eeprom_9287.c |   4 +-
+ drivers/net/wireless/ath/ath9k/eeprom_def.c  |   6 +-
+ drivers/net/wireless/ath/ath9k/pci.c         |   2 -
+ drivers/net/wireless/ath/ath9k/xmit.c        |  10 +-
+ drivers/net/wireless/ath/wcn36xx/main.c      |   4 +-
+ drivers/net/wireless/ath/wcn36xx/txrx.c      |   4 +-
+ drivers/net/wireless/ath/wcn36xx/wcn36xx.h   |   7 +-
+ drivers/net/wireless/ath/wil6210/cfg80211.c  |   4 +-
+ drivers/net/wireless/ath/wil6210/fw.h        |   1 -
+ drivers/net/wireless/ath/wil6210/fw_inc.c    |   4 +-
+ 34 files changed, 660 insertions(+), 218 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath11k/p2p.c
+ create mode 100644 drivers/net/wireless/ath/ath11k/p2p.h
 
