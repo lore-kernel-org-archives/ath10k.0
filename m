@@ -4,86 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2A14CD128A
-	for <ath10k@archiver.kernel.org>; Wed,  3 Apr 2024 13:54:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C5CACD128A
+	for <ath10k@archiver.kernel.org>; Wed,  3 Apr 2024 13:56:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/1mLLJelfE/1ZCr4RmUgYaG7UyB0RYak5vHMrZNjTRc=; b=girnpIcWBVc11Z4vVpvu7xCM1A
-	qbpZsdE7YxOhvuLw8cWKRr9B4p5Jku0WWiE+GbuniLNGaC//GQuAhqciQ3FvlheZrpD0Lk7No+yMd
-	Wo0kaKzo47wQPI83VGMXJJHcsR5T6Nz4K+V6cd52GhEpFCcMrXwWVgc4l74DJazHtqwjyC+TdoQEp
-	yEvuQNaVKtex1qRr79Z32Dncf4SU2elIq6Yq6e2SXujabMbrZs8g81LdS7TRprg2Qxqf9aP1qBu9g
-	LXkNZrmcXazw37Ko6nVk1jMRldQ9AoQVCPPkAdX9AjnWCsOiufEFqf1tQFKJJYliuR22chhzuv3mw
-	vA38RhYw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=IeDVjxJ3sAqTv13/aXHF66O8awP4FQ/ZTnlb/hTWU6s=; b=jq72wCWPzxGoGr6ysL68u0XI4I
+	YDVuKhsPdeeEXRtoQggFw53W2gRaYgAjWbKlFvtNxOa4b80W/09PRVnFKL63dOX11bbHoFc7DmlOi
+	eeCSXonMCvGX6tVJIX0n2kkTmHksJB2SHwfWmoBdYDyF1xh12agxjE48Ok3wH6HVj0zb3AKD3AHYS
+	l2B+btRLJa2ZhHtfj3dcy3GRUhB4CGzZ6lvdTTt+V/cnxZ4yG2WidpNxU5bD9F3twFY0oJ+vJo4mt
+	jM3LHyVpus1Si31enHVnIip7RmWq7QZzarsKAuvc9+XbzYdguAzJE1yr+so00aQL2NOuadyAi0LBZ
+	7nk5exzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rs14l-0000000GK9a-46G6;
-	Wed, 03 Apr 2024 13:54:51 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1rs15q-0000000GKX7-2PtF;
+	Wed, 03 Apr 2024 13:55:58 +0000
+Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rs14k-0000000GK7v-0DJw;
-	Wed, 03 Apr 2024 13:54:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
-	In-Reply-To:Date:References:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=/1mLLJelfE/1ZCr4RmUgYaG7UyB0RYak5vHMrZNjTRc=; b=Jb4Hr4WY/OKhRLi8tftgy8WMHu
-	EvVuFpcf4kjchHCw4cGZ9bTJwuZ9i7D1aAMGNYriotL+ULSapjOU3QpPFfP4nYKFzWqyRZNh7pYsC
-	WPIXigfug9P3VhaC8nIbM5j95f4KCjATAmWXaMdY1VPDc0exba2g4PqygnQuD2WlJgec6/2af1ae2
-	busIip0C5Shvp6tUzfxVjOIObruiRJbbnMDnrYirXvbZPrYbXjJNxhh/2cZrbagiua8KbKTXqRDar
-	Ui/ogfUMGvfyQpVS0b+31nbIopCDYLjMLb3O+3ZyoDLF2VBfpTO3VHlmmMgvxVu8OMoxHPk9bGzO7
-	6xiCMZvw==;
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rs14g-00000004FXb-26Vt;
-	Wed, 03 Apr 2024 13:54:48 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 21AB8612ED;
-	Wed,  3 Apr 2024 13:54:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEA13C433F1;
-	Wed,  3 Apr 2024 13:54:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712152478;
-	bh=jmLir6yT+gXZwNc/mLtJCMF1x5e9R+cRof8vBe2L93U=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=RoXYoA8Xu3bK3fwacMxAUk55arZBbe8CSE0xL8PSkJ3LC07/XU2PHh7+AuCstnLfx
-	 famW8CIYt4jydEYRZEIDzw/p+FKjZ1OC0Yf9Ec/RARno3Hd8gtQpMg6qk6BEaqgRU5
-	 JYn5naQopH64LRTGh38PCKogDX3Tlrn3mUba3VN5gumRdikAVYysrxIuoLMzw0jpUn
-	 ZvfXILkBp0Gy1QUrz2abtzArDjNIj1lFdzrXMiIkDad3NjCTSavW47yLDU6I4XCytm
-	 IyjaH1bqtzpgymZkv/OAfQ9G7IGV1RSifehVdAZXCgN47lyU6ER91FKgy583Mp3NDG
-	 V5uyp0DpLwGmw==
-From: Kalle Valo <kvalo@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>,  Marcel Holtmann
- <marcel@holtmann.org>,  Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-  Matthias Brugger <matthias.bgg@gmail.com>,  AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>,  Jeff Johnson
- <jjohnson@kernel.org>,  Arend van Spriel <arend.vanspriel@broadcom.com>,
-  Brian Norris <briannorris@chromium.org>,  =?utf-8?B?SsOpcsO0bWU=?=
- Pouiller
- <jerome.pouiller@silabs.com>,  linux-mmc@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  linux-bluetooth@vger.kernel.org,
-  linux-arm-kernel@lists.infradead.org,
-  linux-mediatek@lists.infradead.org,  linux-wireless@vger.kernel.org,
-  ath10k@lists.infradead.org,  brcm80211@lists.linux.dev,
-  brcm80211-dev-list.pdl@broadcom.com
-Subject: Re: [PATCH 7/7] wifi: silabs: wfx: drop driver owner initialization
-References: <20240329-module-owner-sdio-v1-0-e4010b11ccaa@linaro.org>
-	<20240329-module-owner-sdio-v1-7-e4010b11ccaa@linaro.org>
-Date: Wed, 03 Apr 2024 16:54:33 +0300
-In-Reply-To: <20240329-module-owner-sdio-v1-7-e4010b11ccaa@linaro.org>
-	(Krzysztof Kozlowski's message of "Fri, 29 Mar 2024 18:24:37 +0100")
-Message-ID: <87bk6q5z6u.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	id 1rs15n-0000000GKWB-0sCU
+	for ath10k@lists.infradead.org;
+	Wed, 03 Apr 2024 13:55:56 +0000
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso8194514a12.2
+        for <ath10k@lists.infradead.org>; Wed, 03 Apr 2024 06:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712152553; x=1712757353; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=IeDVjxJ3sAqTv13/aXHF66O8awP4FQ/ZTnlb/hTWU6s=;
+        b=rpHid8vRQYK/3B2fPsWdY0dpNABec6TKBAFo8m+aMpk1sImLdzYc6uxNf2WGU8MkCK
+         XATgfkuDzJW46nzLzz80lMhvLA+3PUcDL6bT1pDNfl7GuwqrTN3QE7BA8liuQ072X8yH
+         KPXnit7fezoHVe0wtFADXT904AYxNbp2zmT8ufIkZ2gR+E1XqLxo0VKzINDS9VDNjMMh
+         3Yzi2JGuIpx8wDjeraqku4V9em4a9dWgtT9csdEibnE79sXg/GHbbxGUPTgC6GTc5HYY
+         /yG0G/CUq0xfe667cpIobB/acM5AidjPGb32sGhOriMnscgX6c+2x0Zyu76KJoLJ+GS7
+         THiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712152553; x=1712757353;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IeDVjxJ3sAqTv13/aXHF66O8awP4FQ/ZTnlb/hTWU6s=;
+        b=Sl2ifiqt62JAZAK3lpZRZ6l9AXjUunEU598DR4xWzYNCq7xCauWaUI1UOo0MODHvO4
+         YLgRH+V4trY4kG49WGn6OGULP+QDIUt70E6N5V4gxugWcG8xdmUnZVOT9xaKImUK9+dv
+         D+v83vGlMv+Mzs+mi3hv5lT1J4fZ5O7A2tVEs9qzS+syocTW5FXjeM9BLDEciQJkJkKe
+         dlU0M5wia/4srS032l6SvGc4VdJ3v8qgo4UR0syMsGZo2fLNuWGvFaBplDjzakJyp8YJ
+         +QWF9ksWwKlkj8q2Xxw/W1XVKXvs5vdMOtxGU/kHu+C0EKeMie6vQOImqQHVf6ZLnupc
+         gHDA==
+X-Forwarded-Encrypted: i=1; AJvYcCWcsDAW949JqnC3Y8eTMTboSpIkR7iwnNEcjWdG7JeBHFPxiLZaq8eIQ2JTd8MQS1k9zYexVOH7cnTBVgyvDWCiMsOQf8BLlAP7dw==
+X-Gm-Message-State: AOJu0YybGe5ecBHl0cmLsFkbkpY/aa7q8vlZpVfh+C1kR8VNkq5d6mLg
+	tSFm0hqGHc9FEI4erTfwsnNjBTMWpbNxuz8BUS8eH9nLpYva967sgNyK/4dZpQo=
+X-Google-Smtp-Source: AGHT+IH9+C9juSmV/GBuPYaqohGOY4cGhVgCt2H6EcxLrUYmesOKvHEB93iuGOIysgmB4m7ArBHZ6w==
+X-Received: by 2002:a50:d596:0:b0:566:47ee:b8b4 with SMTP id v22-20020a50d596000000b0056647eeb8b4mr1682778edi.17.1712152553328;
+        Wed, 03 Apr 2024 06:55:53 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id s2-20020aa7cb02000000b0056c0d96e099sm7963516edt.89.2024.04.03.06.55.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 06:55:52 -0700 (PDT)
+Message-ID: <ec9c76dc-81c3-448c-86c3-8b4cb07c89c5@linaro.org>
+Date: Wed, 3 Apr 2024 15:55:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] wifi: ath10k: sdio: simplify module initialization
+To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Jeff Johnson <jjohnson@kernel.org>,
+ Brian Norris <briannorris@chromium.org>,
+ Ajay Singh <ajay.kathat@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, linux-wireless@vger.kernel.org,
+ ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240329171019.63836-1-krzysztof.kozlowski@linaro.org>
+ <f78fa061-3b34-47d2-a40c-bbec744f0f97@quicinc.com>
+ <87jzle5zda.fsf@kernel.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <87jzle5zda.fsf@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240403_145446_691609_6A19FEDB 
-X-CRM114-Status: UNSURE (   7.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240403_065555_318960_7819C402 
+X-CRM114-Status: GOOD (  11.33  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,23 +144,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
+On 03/04/2024 15:50, Kalle Valo wrote:
+> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
+> 
+>> On 3/29/2024 10:10 AM, Krzysztof Kozlowski wrote:
+>>> This driver's initialization functions do not perform any custom code,
+>>> except printing messages.  Printing messages on modules
+>>> loading/unloading is discouraged because it pollutes the dmesg
+>>> regardless whether user actually has this device.  Core kernel code
+>>> already gives tools to investigate whether module was loaded or not.
+>>>
+>>> Drop the printing messages which allows to replace open-coded
+>>> module_sdio_driver().
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+>> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>>
+>>>
+>>> ---
+>>>
+>>> FYI:
+>>> I have ongoing patchset touching few lines above this patch chunk
+>>> (sdio_driver) which might go via different tree. If that patchset is
+>>> applied via different tree, it might result in a trivial conflict, but
+>>> there is no dependency. They can go via separate trees (except that
+>>> trivial conflict).
+>>
+>> I'll let Kalle respond if he'll take this through the ath tree vs letting you
+>> take it through your tree
+> 
+> I prefer to avoid conflicts as much as possible. In this patchset I'm
+> not anticipating any conflicts with wireless trees, so if we can avoid
+> any conflicts, please take this patchset via the other tree:
+> 
+> Acked-by: Kalle Valo <kvalo@kernel.org>
+> 
+> I'll drop this patchset from my queue. But if I should take these to
+> wireless trees instead just let me know.
 
-> Core in sdio_register_driver() already sets the .owner, so driver does
-> not need to.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+OK, let me squeeze both through sdio, with corrected subjects.
 
-Also here the preferred title format is:
+Best regards,
+Krzysztof
 
-wifi: wfx: drop driver owner initialization
-
-Feel free to take this via sdio tree:
-
-Acked-by: Kalle Valo <kvalo@kernel.org>
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
