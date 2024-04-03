@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C5CACD128A
-	for <ath10k@archiver.kernel.org>; Wed,  3 Apr 2024 13:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6926ACD128A
+	for <ath10k@archiver.kernel.org>; Wed,  3 Apr 2024 14:02:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IeDVjxJ3sAqTv13/aXHF66O8awP4FQ/ZTnlb/hTWU6s=; b=jq72wCWPzxGoGr6ysL68u0XI4I
-	YDVuKhsPdeeEXRtoQggFw53W2gRaYgAjWbKlFvtNxOa4b80W/09PRVnFKL63dOX11bbHoFc7DmlOi
-	eeCSXonMCvGX6tVJIX0n2kkTmHksJB2SHwfWmoBdYDyF1xh12agxjE48Ok3wH6HVj0zb3AKD3AHYS
-	l2B+btRLJa2ZhHtfj3dcy3GRUhB4CGzZ6lvdTTt+V/cnxZ4yG2WidpNxU5bD9F3twFY0oJ+vJo4mt
-	jM3LHyVpus1Si31enHVnIip7RmWq7QZzarsKAuvc9+XbzYdguAzJE1yr+so00aQL2NOuadyAi0LBZ
-	7nk5exzQ==;
+	bh=Xffq3xDlhcth/zmXxLFozcKGPrlUpFFerV06UWS3/eA=; b=iCijDc3WF0RY7zPpPUviQCzh9c
+	k2+yQxlbK+VdvvuXsOraf+J6kdyt7VDJEpvJqguo3vr5yNGiD0DW1rRJyRKlgOUz7e3CCzWiF7C7X
+	JyfuuvfFHZ03b495VTSa4H9cd2viD7vNpRLqqlGHqI7yOCp4wFkncOmHGOFLq2fuJH9Q3+JjgbmVx
+	Quoukr+Cdw9RNI5SM4ZDaLe/rpt/9kUJXsSfjYHBe9E8J7yfYu5P/4FfCubP1D1AuLUBww0JkoA5G
+	Nk29LMODAr0R5tboskCpnrpv4xhM0mFAIorTC7w0wYtmlW3MAPYchrS2cA/CbKF8LjoD3+AptWyLK
+	J//nhCQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rs15q-0000000GKX7-2PtF;
-	Wed, 03 Apr 2024 13:55:58 +0000
-Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
+	id 1rs1CN-0000000GLrE-0xJn;
+	Wed, 03 Apr 2024 14:02:43 +0000
+Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rs15n-0000000GKWB-0sCU
+	id 1rs1CI-0000000GLow-48XS
 	for ath10k@lists.infradead.org;
-	Wed, 03 Apr 2024 13:55:56 +0000
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso8194514a12.2
-        for <ath10k@lists.infradead.org>; Wed, 03 Apr 2024 06:55:54 -0700 (PDT)
+	Wed, 03 Apr 2024 14:02:40 +0000
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2d485886545so106097041fa.2
+        for <ath10k@lists.infradead.org>; Wed, 03 Apr 2024 07:02:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712152553; x=1712757353; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1712152956; x=1712757756; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=IeDVjxJ3sAqTv13/aXHF66O8awP4FQ/ZTnlb/hTWU6s=;
-        b=rpHid8vRQYK/3B2fPsWdY0dpNABec6TKBAFo8m+aMpk1sImLdzYc6uxNf2WGU8MkCK
-         XATgfkuDzJW46nzLzz80lMhvLA+3PUcDL6bT1pDNfl7GuwqrTN3QE7BA8liuQ072X8yH
-         KPXnit7fezoHVe0wtFADXT904AYxNbp2zmT8ufIkZ2gR+E1XqLxo0VKzINDS9VDNjMMh
-         3Yzi2JGuIpx8wDjeraqku4V9em4a9dWgtT9csdEibnE79sXg/GHbbxGUPTgC6GTc5HYY
-         /yG0G/CUq0xfe667cpIobB/acM5AidjPGb32sGhOriMnscgX6c+2x0Zyu76KJoLJ+GS7
-         THiA==
+        bh=Xffq3xDlhcth/zmXxLFozcKGPrlUpFFerV06UWS3/eA=;
+        b=gFIpUIiApzHffORay5lpPGGVrVGGkQbDl9Kpdn9N0+pGvf4qeXdAqweutzhs/9Qtnq
+         fm3exDqOMek+xsha7MGpMby7k8G7Jluy72hYbiG11QwB9eHklCpYJoP8KRKjl83IU3Gz
+         O6FjRzrK8bfppSk26ZZw9xuI8NqB7u2uZ/XDq+y04TIYiN17yTSqmHPhdH6f48F14mTx
+         /WCplv+tgyammBUhcdgKk+aar+ylE2juaYxBQ04mbSU4dUeWT6b91ZKidq+PF92mKBcr
+         mHWUX/oTJWocBNpEChuYB37FY0wU+hNye2mrv/TKK9BpZRLiWnthVDb7xvMEne99GCgC
+         /I2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712152553; x=1712757353;
+        d=1e100.net; s=20230601; t=1712152956; x=1712757756;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IeDVjxJ3sAqTv13/aXHF66O8awP4FQ/ZTnlb/hTWU6s=;
-        b=Sl2ifiqt62JAZAK3lpZRZ6l9AXjUunEU598DR4xWzYNCq7xCauWaUI1UOo0MODHvO4
-         YLgRH+V4trY4kG49WGn6OGULP+QDIUt70E6N5V4gxugWcG8xdmUnZVOT9xaKImUK9+dv
-         D+v83vGlMv+Mzs+mi3hv5lT1J4fZ5O7A2tVEs9qzS+syocTW5FXjeM9BLDEciQJkJkKe
-         dlU0M5wia/4srS032l6SvGc4VdJ3v8qgo4UR0syMsGZo2fLNuWGvFaBplDjzakJyp8YJ
-         +QWF9ksWwKlkj8q2Xxw/W1XVKXvs5vdMOtxGU/kHu+C0EKeMie6vQOImqQHVf6ZLnupc
-         gHDA==
-X-Forwarded-Encrypted: i=1; AJvYcCWcsDAW949JqnC3Y8eTMTboSpIkR7iwnNEcjWdG7JeBHFPxiLZaq8eIQ2JTd8MQS1k9zYexVOH7cnTBVgyvDWCiMsOQf8BLlAP7dw==
-X-Gm-Message-State: AOJu0YybGe5ecBHl0cmLsFkbkpY/aa7q8vlZpVfh+C1kR8VNkq5d6mLg
-	tSFm0hqGHc9FEI4erTfwsnNjBTMWpbNxuz8BUS8eH9nLpYva967sgNyK/4dZpQo=
-X-Google-Smtp-Source: AGHT+IH9+C9juSmV/GBuPYaqohGOY4cGhVgCt2H6EcxLrUYmesOKvHEB93iuGOIysgmB4m7ArBHZ6w==
-X-Received: by 2002:a50:d596:0:b0:566:47ee:b8b4 with SMTP id v22-20020a50d596000000b0056647eeb8b4mr1682778edi.17.1712152553328;
-        Wed, 03 Apr 2024 06:55:53 -0700 (PDT)
+        bh=Xffq3xDlhcth/zmXxLFozcKGPrlUpFFerV06UWS3/eA=;
+        b=uXPQhVCM0rBrJmGtoqVNvi3Dth+JdYVWTYHlnyEPoElHJpQFa97ZTEiTyLSxhYTIRQ
+         v0FdcgERlYkCYs/bbzOVs2oKsHjlh+O9PhGOmtbcNHSLcovpENvzbonAVvfaWD7Qo31k
+         HSWJQHWIhmJWVjSsXSrFMGX2CNoCPNiKoW9EGYo8Zzha46xVktu7cCUEjkKyu1yyEanx
+         xFL2tfNkiQWSwNBSzimhETFQ2XRS75PV50ihUhSVV89NNIOXztcMgEbTqjoFFWQnPQYh
+         7zfEZJ9vBXm8IFkHbGrwu3uZCC0JVu15ApSdho0MG0YGN1d5aBxYNwdUuHC2Z9kUN54R
+         q4kQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVcn5bRTW3DDO+nyNQfRlPDk6W8Z7MU+y5aUNls40BoDdIF6HdDSNbmiDr8nusU/ThHtH7Iz1ycw7LCDT64yJZVftywvNRG3RnGxQ==
+X-Gm-Message-State: AOJu0YyE8cZHCfS81ndJ/GghUFqgyq1a4vyQQVSKz6UuQtCiZ34AUGRp
+	E6b+bilf5rv5fv0A9Gxti7OZ3+Ie6mEv+EPgbsCYvx99Yx/hYpVi1XZArbDP7XZ+bxo1MIPNxVv
+	i
+X-Google-Smtp-Source: AGHT+IETrJrTqm00Dp9BwZahe/RD7sPBnfDU3orBH0Q5JhIG1nu10mWk/AhrLzD3NxyRT2xEBRwUmQ==
+X-Received: by 2002:a2e:8550:0:b0:2d4:3e96:47ee with SMTP id u16-20020a2e8550000000b002d43e9647eemr3625858ljj.26.1712152956372;
+        Wed, 03 Apr 2024 07:02:36 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id s2-20020aa7cb02000000b0056c0d96e099sm7963516edt.89.2024.04.03.06.55.52
+        by smtp.gmail.com with ESMTPSA id o1-20020a1709064f8100b00a46baba1a0asm7788206eju.100.2024.04.03.07.02.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 06:55:52 -0700 (PDT)
-Message-ID: <ec9c76dc-81c3-448c-86c3-8b4cb07c89c5@linaro.org>
-Date: Wed, 3 Apr 2024 15:55:51 +0200
+        Wed, 03 Apr 2024 07:02:33 -0700 (PDT)
+Message-ID: <ec78df08-118b-4086-beec-9227b309595a@linaro.org>
+Date: Wed, 3 Apr 2024 16:02:30 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/6] wifi: ath10k: sdio: simplify module initialization
@@ -128,8 +129,8 @@ In-Reply-To: <87jzle5zda.fsf@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240403_065555_318960_7819C402 
-X-CRM114-Status: GOOD (  11.33  )
+X-CRM114-CacheID: sfid-20240403_070239_075076_C49FDCA6 
+X-CRM114-Status: GOOD (  12.54  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -183,7 +184,8 @@ On 03/04/2024 15:50, Kalle Valo wrote:
 > I'll drop this patchset from my queue. But if I should take these to
 > wireless trees instead just let me know.
 
-OK, let me squeeze both through sdio, with corrected subjects.
+Just to clarify - only the first patch has possible conflict. The rest
+should be fine. Can you pick up 2-6 patches from this set?
 
 Best regards,
 Krzysztof
