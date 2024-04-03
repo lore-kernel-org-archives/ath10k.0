@@ -4,98 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5193CD128A
-	for <ath10k@archiver.kernel.org>; Wed,  3 Apr 2024 17:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74703CD128A
+	for <ath10k@archiver.kernel.org>; Wed,  3 Apr 2024 18:16:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Y+zN2ir3wcSw60JnUZhYl89sqH9XQ6cSsnDil8Gkw6Q=; b=BuivIg1gtNWrUsQ0BAgs1T2Hty
-	e8meAavmWjVYubIXStwG/uAii5kC0LXNt5W5+rlmNUbCboxARXz8vbljGXTMAU42/wknVG7g5/1KS
-	iRMGOsb8Yz6juGCYigDDTtzy8f/cIStz5spuCm6SiFIjjx0sanh3PxbHT75yukXZTE3vXO/IW1b7i
-	tdiPpVQc4Vc2b+0YXJMowI08ew0634R9RZ5ITOHjtXFkwzXnhibKtsLQgjqs6BiZWLq2NXXwR5HKj
-	5FE5Ke6YWO/oxy0ckd0RuXg3aOcYL35H1YTpMqFslP+3TcIZnbUP+/qQT6hEaKIZ+c3R/vSbG1sgJ
-	pH6JbzNw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=yMk/LPFqs7VskBV22jyb1Tdh2P4ZoSSQNrYCMOikFmQ=; b=uGFysMHr8q2PqF/rnPRcVQky+8
+	ThwbNrzBOXQfpmqn+5SgfdNGv1lSKzE2V/bxQ67p830ShIp+MpfDOmHRN/3OiQmZ/1ej+3wg8oz9T
+	/V1V1FKZUsPNgonblN7nN/6ashoSL+IFzZ/nHSkTgPV9qnukqa3chxZQON4fnIK9I18IHsI4UYxP/
+	oI7+7A0M74CqtdJqVv/EDXV1qUHAvC9BzEqZRiczY6w/0qq0OS+inH96OCkTtVas46tdI+x0866DE
+	lB8dkMq1tKMUX0/1w8aypsg7HeQjcPfEYXL9wnavI1aUyZs8GE+rJylfuWtv+jsN4z9XCqWwzQ72V
+	BC1QXGYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rs48A-0000000H6YF-2NYv;
-	Wed, 03 Apr 2024 17:10:34 +0000
-Received: from mail-lj1-x236.google.com ([2a00:1450:4864:20::236])
+	id 1rs59l-0000000HLGr-2p01;
+	Wed, 03 Apr 2024 18:16:17 +0000
+Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rs487-0000000H6Wk-3wzJ
+	id 1rs59i-0000000HLF8-0j05
 	for ath10k@lists.infradead.org;
-	Wed, 03 Apr 2024 17:10:33 +0000
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2d848973b57so438391fa.3
-        for <ath10k@lists.infradead.org>; Wed, 03 Apr 2024 10:10:27 -0700 (PDT)
+	Wed, 03 Apr 2024 18:16:16 +0000
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3436b096690so989453f8f.1
+        for <ath10k@lists.infradead.org>; Wed, 03 Apr 2024 11:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712164226; x=1712769026; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y+zN2ir3wcSw60JnUZhYl89sqH9XQ6cSsnDil8Gkw6Q=;
-        b=EE4iyNkpfHNJm28U/oKFyt3lyADin3a+RrliitRka5UGoInZNOUIyFuNHG8AY13Nep
-         qQ99Nqv0QmObV4gLoTOdU8g5iJrnpoQm3zT/7l16sVIyGxYO7AFcKMLXCBxmVfsL9Clx
-         FPLpht3D5GyKwSNxz4S7IVuKMlmCopve7jqMKXGyXcFj7M7rohNfkLh0drK8GlfTztim
-         TrRxFrPIIUGLWDgw1iBd4ispizsKHVnYgeJnaPkGSDQaUYDRzP7TREjuYebPyw9ccjFS
-         Eh4KK0gyQjkHz2xXv1BwSJqP04OQbPyorditr95+hqLuEU+pmiLhysAi9EOR/IXAPXdG
-         TDBg==
+        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1712168166; x=1712772966; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yMk/LPFqs7VskBV22jyb1Tdh2P4ZoSSQNrYCMOikFmQ=;
+        b=HW1uTYfGCT/wWepEcDc6s9vg/Uf9Th8JGAEAEGWbWr7rKwPZxv3YjqK/IfLMChan+/
+         sHUJzLjkhb6w1kneervtkbXmK4+AeHjp0tbPawWsBDx0Rwf51m3lDjzY6pIb0aGKAIiu
+         Ka5x1J2tWRqqgMvZBQf+lh8oVPeGpdi8irLW292vlx2wlkcKmgkG4asOows5EvWShyrp
+         q4df3xrf6IlClHyCmTaQgxdqi94iCMYtQ/IvDXemFwNDRnicYnYmMzMjxne7vxD4mY/s
+         GImgDXqz29AVZZrAbc66Wz145TmNhxwL/d06TK1HomPR4f3SDg/UVySLW/lJDvspcNp1
+         gW9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712164226; x=1712769026;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y+zN2ir3wcSw60JnUZhYl89sqH9XQ6cSsnDil8Gkw6Q=;
-        b=AavHjj1otjTq7NSJL9jbrAu7kpWGvhSVGO+cmsVhNj1c1iK/723SxmE7ttC8wv9VKl
-         cDySQqlt2g5W+KKI9jw+hBw0oXrppaN5+7gsZER+2mrcrue2phzzsRFR1VsIKD6aB/RO
-         urELlQMNondQnpFJkhqcdu+cZO3ofLdzupBTONIU/ecxF3I6saOmeWi+PJHMr1pEYZvg
-         8wlRuittudQ1695hSejgIAE0VJ29Ecxgk5/QraXxsnupt1ilv5xkhhoiV/1aDfKiK6kq
-         V7zNlFAlanKaeurASGRIl4c+CIwcp3U9V9REbtvuue8/a7IybD3LI1KivzUX/DFMBFxm
-         APwg==
-X-Forwarded-Encrypted: i=1; AJvYcCXT4IHuU/MIUX9bhiA4JRkf6QwGwUaLabqgc0mq2wzZzDYykTc+QhMKrEkiV5m7G1UxI+tg+qZR4AG+zbyHD74PtJSe054Njv2CjQ==
-X-Gm-Message-State: AOJu0YzFzmBPpaztxI1JV94OkufSDzqOADslbbhyJdv8j64IJWQQWe+X
-	GfD5/4E9jvT4cEARD/AhFJRKrPMq12R0O/LJjTvVw93H0uLg46B15vQmO2M6rbBi39gpY721iyS
-	k
-X-Google-Smtp-Source: AGHT+IHm0F0qkDxHvy9yc52xu5a2NgU4D/4+ae7i/3qwVDw/rcFHypOJAe9JvNFwb9ysbJ3Cb2nWnw==
-X-Received: by 2002:a2e:99c9:0:b0:2d4:6c1c:7734 with SMTP id l9-20020a2e99c9000000b002d46c1c7734mr175643ljj.26.1712164225597;
-        Wed, 03 Apr 2024 10:10:25 -0700 (PDT)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id x2-20020a2e8382000000b002d71b89f93bsm1450472ljg.27.2024.04.03.10.10.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 10:10:14 -0700 (PDT)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 03 Apr 2024 20:10:12 +0300
-Subject: [PATCH] arm64: dts: qcom: sm8150-hdk: enable WiFI support
+        d=1e100.net; s=20230601; t=1712168166; x=1712772966;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yMk/LPFqs7VskBV22jyb1Tdh2P4ZoSSQNrYCMOikFmQ=;
+        b=jxOVYaZx/EZ/PiN14asCbeGpD7cL8/InT5N8Es+qqmJCRjKMFczlhAo0/fBZOtFqA9
+         V26nDrCfYUa8ymXEbGGfh/FmsphLq8rcHmuTqdBzD5wHF4bqC11VTlWbpZPWQpX2qzzA
+         sH421ceJK2veHqTc1LHKRv2M7NgkU4gw+OMMa0qkm9vnQZcEQRZ0soDZCrbCeIsEPvH9
+         gK/kIF/YXEvJltcJqKyG62JJnVD6fZT2/4OiGWocNJH4tVentVJ20vh/uJNQ6TM6v7BV
+         16KBDs2IMuVdwMMpHZr4dIcGgPWubFk/0+yw7vcLgmQy35EBR1Lcqn9IISyuMxolXGIB
+         3Zbw==
+X-Forwarded-Encrypted: i=1; AJvYcCXmakT2YdpFYDp/MmcLOdNuGXExXndus8ZjjwGEJfquM7ohhxKP71D13HY+vWKL7X3HKkCBCh/z1iH99jLrkTdqf9BDDY/EmM+ZNg==
+X-Gm-Message-State: AOJu0Yw6z9E//CKJ639qYL0ctYSkPSnMI/5PqQgRmAz3X8u3Q2U1+A5K
+	KxasYyPBa0c2riQJuIX2OBkyDGttOc3xWsXVV2QcVUPVBDCB+sDdvgM6N+g8RJ8=
+X-Google-Smtp-Source: AGHT+IGo6IK4jzvPBeq+2C/SXoVrcSjTLf8DS+QLbHtNh0mgQm3NoGkkSkE8i74VGzKZ5Xv8eEXnFQ==
+X-Received: by 2002:a5d:690d:0:b0:343:8485:4edd with SMTP id t13-20020a5d690d000000b0034384854eddmr3336441wru.23.1712168165964;
+        Wed, 03 Apr 2024 11:16:05 -0700 (PDT)
+Received: from ?IPV6:2a02:8428:2a4:1a01:79e6:9288:5142:9623? ([2a02:8428:2a4:1a01:79e6:9288:5142:9623])
+        by smtp.gmail.com with ESMTPSA id t10-20020a05600c450a00b004161b59e230sm6352480wmo.41.2024.04.03.11.16.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 11:16:05 -0700 (PDT)
+Message-ID: <43e18846-cc4f-4b30-8019-4617359ddaa0@freebox.fr>
+Date: Wed, 3 Apr 2024 20:16:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: msm8998: set
+ qcom,no-msa-ready-indicator for wifi
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>,
+ ath10k <ath10k@lists.infradead.org>,
+ wireless <linux-wireless@vger.kernel.org>, DT <devicetree@vger.kernel.org>,
+ MSM <linux-arm-msm@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Pierre-Hugues Husson <phhusson@freebox.fr>, Arnaud Vrac <avrac@freebox.fr>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Jami Kettunen <jamipkettunen@gmail.com>,
+ Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+References: <fd26ce4a-a9f3-4ada-8d46-ed36fb2456ca@freebox.fr>
+ <5cdad89c-282a-4df5-a286-b8404bc4dd81@freebox.fr>
+ <252618e8-9e80-4774-a96c-caa7f838ef01@linaro.org>
+ <502322f1-4f66-4922-bc4e-46bacac23410@linaro.org>
+ <0ca1221b-b707-450f-877d-ca07a601624d@freebox.fr>
+ <CAA8EJppeREj-0g9oGCzzKx5ywhg1mgmJR1q8yvXKN7N45do1Xg@mail.gmail.com>
+ <91031ed0-104a-4752-8b1e-0dbe15ebf201@freebox.fr>
+ <CAA8EJpooJLbV+nVWedru=r6fascd8ZxKumiMm_iyzzJwyQ-tig@mail.gmail.com>
+Content-Language: en-US
+From: Marc Gonzalez <mgonzalez@freebox.fr>
+In-Reply-To: <CAA8EJpooJLbV+nVWedru=r6fascd8ZxKumiMm_iyzzJwyQ-tig@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240403-sm8150-hdk-wifi-v1-1-8da3063829c2@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAHONDWYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDEwNj3eJcC0NTA92MlGzd8sy0TF1zk5TUxNTkRCBOUgLqKihKTcusAJs
- YHVtbCwDns67HYQAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Kalle Valo <kvalo@kernel.org>, 
- Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2493;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=6yB8jITO6dm5A3iw3f6NpbSDj6c1Ihz8ymCz6gkRHfw=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmDY12yuwPHmKtZ/NmXgv95SvLL8Lw5Bwr9uyrx
- bgLSjDONPGJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZg2NdgAKCRCLPIo+Aiko
- 1ZXrB/9KjPWcjTMwwhwi6z4mOT/+a+pLQR8GOe50+v8JgBsbPQKKrZ4lMcQM2zpYFWSYtNLlsuV
- mRbXt33qWd3lQoE52zFumkOQt1o08pz/C3wHG3yHXuWnYLLgr7pl361cV9tHwAEsvBH2mE1r1+t
- wOveXqo44Vxpr8Wj1ZUDkyq5YbiGebY7KkOnzw3rSdC300CkxPEm1PHB4YY2WYcxPVfSs2OcdQc
- CDDFg+dKqg0olvxx4MPefEYtnbQbs+s9fpHb9FTOsjYd+tTKEbV4rPKol0TDf9LoZH+6jbpus7t
- oVmXy1wnN46PxruG/KzqnjSREzgrNI4xusQbWUYM/Rvb1ZKM
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240403_101032_081761_F9DA56A0 
-X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-CacheID: sfid-20240403_111614_364238_DE8BF24F 
+X-CRM114-Status: UNSURE (   9.48  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -111,71 +113,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Enable modem DSP and WiFI devices on the SM8150 HDK device. The HDK is
-manufactured by Lantronix, but it attributed to Qualcomm, so the
-calibration string uses Qualcomm as manufacturer.
+On 03/04/2024 16:12, Dmitry Baryshkov wrote:
 
-For reference:
+> From [Jeff's] message it looks like we are expected to get MSA READY even on msm8998.
 
-ath10k_snoc 18800000.wifi: qmi chip_id 0x30224 chip_family 0x4001 board_id 0x55 soc_id 0x40060000
-ath10k_snoc 18800000.wifi: qmi fw_version 0x32040163 fw_build_timestamp 2019-10-08 05:42 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.3.2.0-00355-QCAHLSWMTPLZ-1
-ath10k_snoc 18800000.wifi: wcn3990 hw1.0 target 0x00000008 chip_id 0x00000000 sub 0000:0000
-ath10k_snoc 18800000.wifi: kconfig debug 1 debugfs 0 tracing 0 dfs 0 testmode 0
-ath10k_snoc 18800000.wifi: firmware ver  api 5 features wowlan,mgmt-tx-by-reference,non-bmi crc32 b3d4b790
-ath10k_snoc 18800000.wifi: htt-ver 3.73 wmi-op 4 htt-op 3 cal file max-sta 32 raw 0 hwcrypto 1
-ath10k_snoc 18800000.wifi: invalid MAC address; choosing random
+This is the code we're using:
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
-Note the device also uses updated wlanmdsp, so it will be updated with
-firmware-name for WiFi once [1] is merged.
+https://git.codelinaro.org/clo/la/kernel/msm-4.4/-/blob/caf_migration/kernel.lnx.4.4.r38-rel/drivers/net/wireless/ath/ath10k/qmi.c
 
-[   68.236220] ath10k_snoc 18800000.wifi: chan info: invalid frequency 0 (idx 41 out of bounds)
-[   69.426700] ath10k_snoc 18800000.wifi: chan info: invalid frequency 0 (idx 41 out of bounds)o
+When ATH10K_SNOC_DRIVER_EVENT_SERVER_ARRIVE,
+driver registers an "indicator handler"
+ath10k_snoc_qmi_wlfw_clnt_ind()
 
-[1] https://lore.kernel.org/ath10k/20240306-wcn3990-firmware-path-v2-0-f89e98e71a57@linaro.org/
----
- arch/arm64/boot/dts/qcom/sm8150-hdk.dts | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+It handles QMI_WLFW_FW_READY_IND_V01 by posting
+ATH10K_SNOC_DRIVER_EVENT_FW_READY_IND
+which is handled in the
+ath10k_snoc_driver_event_work() work queue.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-hdk.dts b/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-index de670b407ef1..6cb6f503fdac 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-@@ -609,6 +609,11 @@ &remoteproc_cdsp {
- 	firmware-name = "qcom/sm8150/cdsp.mbn";
- };
- 
-+&remoteproc_mpss {
-+	firmware-name = "qcom/sm8150/modem.mbn";
-+	status = "okay";
-+};
-+
- &remoteproc_slpi {
- 	status = "okay";
- 
-@@ -713,3 +718,14 @@ &usb_1_dwc3_ss {
- &usb_2_dwc3 {
- 	dr_mode = "host";
- };
-+
-+&wifi {
-+	status = "okay";
-+
-+	vdd-0.8-cx-mx-supply = <&vreg_l1a_0p75>;
-+	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
-+	vdd-1.3-rfa-supply = <&vreg_l2c_1p3>;
-+	vdd-3.3-ch0-supply = <&vreg_l11c_3p3>;
-+
-+	qcom,ath10k-calibration-variant = "Qualcomm_sm8150hdk";
-+};
+But QMI_WLFW_MSA_READY_IND_V01 only triggers
+a debug log and setting qmi_cfg->msa_ready = true;
 
----
-base-commit: abfb54bc2d2b925336c6ea9ae2b335e3867ceb89
-change-id: 20240403-sm8150-hdk-wifi-74deaecaaecb
+$ git grep '\<msa_ready\>'
+drivers/net/wireless/ath/ath10k/qmi.c:          qmi_cfg->msa_ready = true;
+drivers/net/wireless/ath/ath10k/qmi.c:  qmi_cfg->msa_ready = false;
+drivers/net/wireless/ath/ath10k/qmi.h: * msa_ready: wlan firmware msa memory ready for board data download
+drivers/net/wireless/ath/ath10k/qmi.h:  bool msa_ready;
 
-Best regards,
--- 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+So basically, the vendor ath10k driver ignores QMI_WLFW_MSA_READY_IND_V01.
+
+
+I will test the following patch which aligns the behavior
+of mainline driver to that of vendor driver:
+
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 38e939f572a9e..0e1ab5aca663b 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -1040,6 +1040,7 @@ static void ath10k_qmi_driver_event_work(struct work_struct *work)
+ 		switch (event->type) {
+ 		case ATH10K_QMI_EVENT_SERVER_ARRIVE:
+ 			ath10k_qmi_event_server_arrive(qmi);
++			ath10k_qmi_event_msa_ready(qmi);
+ 			break;
+ 		case ATH10K_QMI_EVENT_SERVER_EXIT:
+ 			ath10k_qmi_event_server_exit(qmi);
+@@ -1048,7 +1049,7 @@ static void ath10k_qmi_driver_event_work(struct work_struct *work)
+ 			ath10k_qmi_event_fw_ready_ind(qmi);
+ 			break;
+ 		case ATH10K_QMI_EVENT_MSA_READY_IND:
+-			ath10k_qmi_event_msa_ready(qmi);
++			printk(KERN_WARNING "IGNORING MSA_READY INDICATOR");
+ 			break;
+ 		default:
+ 			ath10k_warn(ar, "invalid event type: %d", event->type);
+
+
+Dmitry Baryshkov reported:
+Works on sm8150, sdm845, qrb2210
+
+Regards
 
 
