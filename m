@@ -4,78 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 412A3CD1292
-	for <ath10k@archiver.kernel.org>; Thu,  4 Apr 2024 15:28:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDE43CD1288
+	for <ath10k@archiver.kernel.org>; Thu,  4 Apr 2024 21:23:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=g4t6qwx3MonSiI0Uo3aG8eZwujx8xTZ8Ih7oIW0g68U=; b=5FBqyIMh5MBjMfOmP+JPK0YoHB
-	tIsv8OShpbus5s017fO3BCv3N4+T3dXZGPOXLki0WirtJQqaiZxVfcL+190q9lC3XoSE05NNnHVyr
-	LUkpjKpg4SBjsPha9xI75cd28MgIj2ISCNHNWzKZt6EsVF1hv3zuvuyGqwMwgF8X+dwx5tGfNo5TO
-	8+z1AOeSIqzBZlp42Cgk6SWg3NE6MwAr4mnMV0ucjh0R5Swt7IK4yiB+p1gSMYcEkRg9zWBKbOyFf
-	UXNmAD39nw3WqeiMw/gVlNmac3RAa2dD9HvqeXVKhYs4QRku9/JqqxsJpi6U0IydbsKX/R9nTB+d9
-	zGd0ty2Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=eFgK3fO75BY37OtT8czBHMRoUNEQvj+ylMhip6Sz/uU=; b=mmNjj0nVYUnxoZdukHWUbhpABu
+	aj+zxLq/nc0EHL3b768XyGKF8902rVU3v31n/6fRN5YHlnrq4kaSeMeVKsVD6Ufd9TVZkUJzRGBwN
+	JS84LHYeR79OkgeHIgaT0ihgsx+Iqe7jcMZBUwffrA7jw0GdOzm935+CKM551ktr7KtMIvuvYf8FE
+	Jl9cDhp9z4yWxIcqTNe8fc0pjrQx7JXp1dPiWPnfihhcAF+KV/wyjZOLh9wFV1X9wdsFO/h+F4MH5
+	kQM1ooQlOMyzNXdRWRNOj6BvwJ50dScRMg5gJSJd2LBwEwdEwLjLZI8KM8UPRH6n8dw5+7kC2krhO
+	8kcqPrAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsP0j-00000003F8k-2YyJ;
-	Thu, 04 Apr 2024 15:28:17 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rsUYN-00000004Ixs-46XG;
+	Thu, 04 Apr 2024 21:23:24 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsP0g-00000003F7X-11DK
+	id 1rsUYL-00000004Iwz-0uZ9
 	for ath10k@lists.infradead.org;
-	Thu, 04 Apr 2024 15:28:15 +0000
+	Thu, 04 Apr 2024 21:23:22 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D73A961200;
-	Thu,  4 Apr 2024 15:28:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 143BAC433C7;
-	Thu,  4 Apr 2024 15:28:08 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id BC13D61776;
+	Thu,  4 Apr 2024 21:23:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABBA8C433B2;
+	Thu,  4 Apr 2024 21:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712244492;
-	bh=kFnpx5tB/cOSNRhheZ9+fj6gL/PgrOpF3Q++o3JjWqk=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=B4ZyxnWRY6QDwGCgzRK4sS9Yr2ohJAEihjYC01BJTA4XOv0BmXoLAISwpDGrqqnTv
-	 4rsINRdWvn358oQM52XmkKPAG4zc6Z6p+UlPKTvWKQtYj/r4MPYi5N3rcNnywlovgx
-	 SJrZCysgn21LtHWb07jv2DT0xovACa/ctMomGNZO82crfF1SZgMiv5qax8V7A85vZS
-	 vyOF1P2Fm2/Ez+cz9cYKGXKFOLH0/9tYkxDwEEcjBgASsHcAUIhom7iGM8gXdT+j4Q
-	 5ufnKF2//xDq5kDV0176Xn0N827UWHzbpg/Vp/waZ6sXnXO4UFCgoFdA1tARewulLw
-	 aqe68yIK0sG2Q==
-From: Kalle Valo <kvalo@kernel.org>
-To: Marc Gonzalez <mgonzalez@freebox.fr>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,  Konrad Dybcio
- <konrad.dybcio@linaro.org>,  Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>,  Jeff Johnson
- <quic_jjohnson@quicinc.com>,  ath10k <ath10k@lists.infradead.org>,
-  wireless <linux-wireless@vger.kernel.org>,  DT
- <devicetree@vger.kernel.org>,  MSM <linux-arm-msm@vger.kernel.org>,  Rob
- Herring <robh+dt@kernel.org>,  Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
-  Pierre-Hugues Husson <phhusson@freebox.fr>,  Arnaud Vrac
- <avrac@freebox.fr>,  Bjorn Andersson <andersson@kernel.org>,  Jami
- Kettunen <jamipkettunen@gmail.com>,  Jeffrey Hugo
- <jeffrey.l.hugo@gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: msm8998: set
- qcom,no-msa-ready-indicator for wifi
-References: <fd26ce4a-a9f3-4ada-8d46-ed36fb2456ca@freebox.fr>
-	<5cdad89c-282a-4df5-a286-b8404bc4dd81@freebox.fr>
-	<252618e8-9e80-4774-a96c-caa7f838ef01@linaro.org>
-	<502322f1-4f66-4922-bc4e-46bacac23410@linaro.org>
-	<0ca1221b-b707-450f-877d-ca07a601624d@freebox.fr>
-	<CAA8EJppeREj-0g9oGCzzKx5ywhg1mgmJR1q8yvXKN7N45do1Xg@mail.gmail.com>
-	<87ttkh49xi.fsf@kernel.org>
-	<e804b257-4dc0-45f1-a5c5-66bda51cf296@freebox.fr>
-Date: Thu, 04 Apr 2024 18:28:07 +0300
-In-Reply-To: <e804b257-4dc0-45f1-a5c5-66bda51cf296@freebox.fr> (Marc
-	Gonzalez's message of "Thu, 4 Apr 2024 14:30:40 +0200")
-Message-ID: <87h6gh406w.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=k20201202; t=1712265800;
+	bh=qK1WJ95y942nDqpYdpVd7M8hb2SED2//IBpTA+Bn1jk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=bxXkHXMUcDgf0qA/6DQ54jxDBHsNtUX+npjVi2MY81OYCdFL9w0n63mg8WPFWdfzg
+	 B6rv9bcAKBwRGzqZ0cwdEzAJqdQeAZyI4bk5DBp2wJ1NuriKQBmKJ3lPt2H5MvE2w5
+	 UBo+OtNqDOla4UYFYKYV+7iqNdDtK11TrJCqrkVPAOeyj+Z8iFpCdxcSPY78nqDJNd
+	 J+wUnPMiQr/egEIVprE4o17wyc+qRKjCpEijMA6Aa5uJAQnMVl1pB6D8saKlaIMu76
+	 S6fXC3gQ+VPpXXXNQIXxJFESad2msjSNQpyrSBOyb80n0uNOEjvLExVJ0D8O8R91jC
+	 AZu6UpS6dZlvQ==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kalle Valo <kvalo@kernel.org>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	ath10k@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: qcom: sm8150-hdk: enable WiFI support
+Date: Thu,  4 Apr 2024 16:22:49 -0500
+Message-ID: <171226578698.615813.10917637974157146735.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240403-sm8150-hdk-wifi-v1-1-8da3063829c2@linaro.org>
+References: <20240403-sm8150-hdk-wifi-v1-1-8da3063829c2@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240404_082814_455442_630040AA 
-X-CRM114-Status: GOOD (  17.82  )
+X-CRM114-CacheID: sfid-20240404_142321_323476_8585E928 
+X-CRM114-Status: UNSURE (   6.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,45 +81,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Marc Gonzalez <mgonzalez@freebox.fr> writes:
 
-> On 04/04/2024 13:57, Kalle Valo wrote:
->
->> Dmitry Baryshkov wrote:
->> 
->>> I'd say, we should take a step back and actually verify how this was
->>> handled in the vendor kernel.
->> 
->> One comment related to this: usually vendor driver and firmware branches
->> go "hand in hand", meaning that a version of driver supports only one
->> specific firmware branch. And there can be a lot of branches. So even if
->> one branch might have a check for something specific, there are no
->> guarantees what the other N+1 branches do :/
->
-> The consequences and ramifications of the above comment are not clear to me.
->
-> Does this mean:
-> "It is pointless to analyze a given version (or even several versions)
-> of the vendor driver downstream, because there are exist a large number
-> of variations of the code." ?
+On Wed, 03 Apr 2024 20:10:12 +0300, Dmitry Baryshkov wrote:
+> Enable modem DSP and WiFI devices on the SM8150 HDK device. The HDK is
+> manufactured by Lantronix, but it attributed to Qualcomm, so the
+> calibration string uses Qualcomm as manufacturer.
+> 
+> For reference:
+> 
+> ath10k_snoc 18800000.wifi: qmi chip_id 0x30224 chip_family 0x4001 board_id 0x55 soc_id 0x40060000
+> ath10k_snoc 18800000.wifi: qmi fw_version 0x32040163 fw_build_timestamp 2019-10-08 05:42 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.3.2.0-00355-QCAHLSWMTPLZ-1
+> ath10k_snoc 18800000.wifi: wcn3990 hw1.0 target 0x00000008 chip_id 0x00000000 sub 0000:0000
+> ath10k_snoc 18800000.wifi: kconfig debug 1 debugfs 0 tracing 0 dfs 0 testmode 0
+> ath10k_snoc 18800000.wifi: firmware ver  api 5 features wowlan,mgmt-tx-by-reference,non-bmi crc32 b3d4b790
+> ath10k_snoc 18800000.wifi: htt-ver 3.73 wmi-op 4 htt-op 3 cal file max-sta 32 raw 0 hwcrypto 1
+> ath10k_snoc 18800000.wifi: invalid MAC address; choosing random
+> 
+> [...]
 
-I was trying to say that because the design philosophy between vendor
-drivers and upstream drivers is very different, we can't 100% trust
-vendor drivers. It's a very good idea to check what vendor drivers do
-but we just need to be careful before making any conclusions. Testing
-real hardware (and corresponding firmware) is the most reliable way to
-know how different products/firmware work, unfortunately.
+Applied, thanks!
 
-> And thus, "it is nonsensical to try to "align" the mainline driver to
-> "the" vendor driver, as there is no single "vendor driver"" ?
+[1/1] arm64: dts: qcom: sm8150-hdk: enable WiFI support
+      commit: e5fd6512f6e842d8c5883b9fa4d72c8a5295efdc
 
-No no, I'm not saying that. I have suffered this "N+1 different firmware
-branches behaving slighly differently" problem since ath6kl days so for
-me this is business as usual, sadly. I'm sure we can find a solution for
-ath10k.
-
+Best regards,
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Bjorn Andersson <andersson@kernel.org>
 
