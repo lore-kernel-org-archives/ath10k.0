@@ -4,102 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A38CD1299
-	for <ath10k@archiver.kernel.org>; Thu,  4 Apr 2024 13:04:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05191CD1284
+	for <ath10k@archiver.kernel.org>; Thu,  4 Apr 2024 13:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
 	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QJzdwgYqSiXBG2wAbt+70V3f0hLZ0hXphRY5qJD39hQ=; b=U244FPSe0xS0QAkc+bb1l0ZO3a
-	Syul/LHlQzNTEgko2Yn7BzsY9Fl69AN4+4twoIIaG+pgk/nSaeuiwPyqAh/zpYQuy2MELUjj3rJXd
-	uktvjQyaSFhWaUNj086q9APmzjZ/2A6s5zGE8fnAuckzeYe8q5Rh/LmbJ/cO+AcT3l+nYpe67Avs4
-	A6s4xdhyRAHMVsehkIWwZfhjVrbkckZUxAPl+pjqiOQgZ1YnMnGXMnNBi83owXgPrGYybeQ3FAUAT
-	4Wj12Kd8H+WCdwkM3n//GRxqfMzbJDIujyasF14ZPsGyy5t6qVblPwEteRmuHKi82ldYEM5qYVlcv
-	MIXzYCvw==;
+	bh=tknSODYMU/l/2VPgjwwryjgmML6llAA/U7CzR6kpVHI=; b=Cbk/alcOmEUm71py7pIJSEV4h0
+	NTmokgWnWhGttEBlwpalsf4vxKY+RUBhauEwifRyiZjXWxx7DS+8u7hix5It1w/1PMme4J88ZSCqh
+	9Y8ls3mt0tMtyAV/SislBDyHi4ABg7X3nK7qvh6+za54/T0htGbuZzGx3Do6aecTRm+guRYqHefrl
+	ONnatkXksn2dRd+A8JuD8yaBvXm9qD93fLaKQkBitUpa+iUpM6u4ZpZcyem2skPnrBCbH/U9pPQVt
+	GwXWj7ml8a/5kMQ7+qTIhXYbjHtC+yT+omaYq9ZPjt5yeHQK2SY9pZF0Grs2VgyJCOztA/ekmkWtu
+	g4wNcjxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsMle-00000002kon-36HD;
-	Thu, 04 Apr 2024 13:04:34 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1rsMv4-00000002mTy-24Gt;
+	Thu, 04 Apr 2024 13:14:18 +0000
+Received: from mail-yw1-x1136.google.com ([2607:f8b0:4864:20::1136])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsJRw-000000021wr-2RaE
-	for ath10k@bombadil.infradead.org;
-	Thu, 04 Apr 2024 09:32:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:Subject:Message-ID:
-	Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=QJzdwgYqSiXBG2wAbt+70V3f0hLZ0hXphRY5qJD39hQ=; b=PfcJ6l/P0DeN3EQC2tQ/nJ6blS
-	QiyWehbGrfoCVs9ZQCSYNAiE/NOPs1nrd2JhHBXDRyAI57BQ3Ftfu0upHleo8v7IhzpqPZatWuzPJ
-	t92icCSgsPY9N9GCt9PkDfuOPrFmzh1TQD17BPPrlNTx2K0e7eQz22MNuk7MZ5mR7Kq9tUA7+ttLo
-	JJn5/pWGhvhaacDadBhzRYHKcycwLSvyVaF6XH3limE6/LuKuqQn7F3TUVsjSP+pyY2StE3AHCfXu
-	3xio7zTxs4+mFfKRTvu92Y3+W65SRq1YAZ2aX7x4nnJ3CWhWVQtJMR2eiAC2hMdGpkKCzshNe22Hh
-	lSiuUC5g==;
-Received: from mail-yb1-f169.google.com ([209.85.219.169])
-	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsJRa-00000004tjI-0OOy
+	id 1rsMv0-00000002mTc-2Pdh
 	for ath10k@lists.infradead.org;
-	Thu, 04 Apr 2024 09:31:51 +0000
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dd14d8e7026so757827276.2
-        for <ath10k@lists.infradead.org>; Thu, 04 Apr 2024 02:31:34 -0700 (PDT)
+	Thu, 04 Apr 2024 13:14:15 +0000
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-6150670d372so10307857b3.1
+        for <ath10k@lists.infradead.org>; Thu, 04 Apr 2024 06:14:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712223091; x=1712827891; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1712236452; x=1712841252; darn=lists.infradead.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QJzdwgYqSiXBG2wAbt+70V3f0hLZ0hXphRY5qJD39hQ=;
-        b=zc/kZiUY93GsKWMF/62TB5FDeJvLowiJcNNtjrDiVbh9coJnWG6my2pbNtlOsOetD/
-         lbdMsNDHunbtZnbkQeP31q1doSdkP2GuuKLQJZdXx9Uw9jqesltBFxBrWpR7A9QtQ4ze
-         4Plx/mnBgFcAlem9JbKLq+pfhi+jIAddrVPgGr+MvRxHZtTLQZL+uFA3kq6K2wdTV6JD
-         1LzztWX2Q/onKTDtrP2dIPS+ar0u2xlTv9CEa+6+7aI2w3SMljSvG7lkFi3eQI3GZaay
-         PaWYaLZvutFqAM7dV6AVCUmtT5aHcLkuZn8hHEwJx4QXC/PmGQsCddlaJ6xlRlQBwp9Y
-         GRTQ==
+        bh=tknSODYMU/l/2VPgjwwryjgmML6llAA/U7CzR6kpVHI=;
+        b=vCphCjj4yd2R18VE3qLB35pEyLuzkpHZKhjGGCfQpH4moiMGjTsSmbTRDAF8IQcsJI
+         HfDpizE9VUuTTftpB5ehZB3GJgu0SVLrpdubKL92Ln1htdWh+ibSUSBdF1iUl2nLnLXa
+         Bo3DXzz9Dcvhj29l9kWt2JqbSYBKBv3zy5Yf/PPY2IOxOEAjjm66+VOZXQctabrYFRKV
+         wdbGPZ4YynMCpj0Eoo4fLP/KbzbV2nf9OnoU3p5cn/CSC1CGyHI7Kp1NI1rwLlQP217J
+         Cu9+gwu8sZo72dxIvyd9mY3keDYByeln0mA7ReenA7eMuNQW8MFbdL0aGul9JlnR9iDe
+         +iRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712223091; x=1712827891;
+        d=1e100.net; s=20230601; t=1712236452; x=1712841252;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QJzdwgYqSiXBG2wAbt+70V3f0hLZ0hXphRY5qJD39hQ=;
-        b=sGV/cj9Jx3bwbEqftRC1pmoZ2c2rKqW7k0CumURuwEmkUatzUM9iZSfR4hq62neK66
-         2+5nG1ZK54VJXJWOGEbYRiVvPvE0Xt533rlZeBHMGsBRYtzv7GqVM9GsH34hhxTj5Nz7
-         kHyFO1S04n4GlRJs0lHiyUbDwCi25I1j5o/WPI/fPbdwluol7ycVOu99dujpBTIuH2Ux
-         og/Xtojbt9xWgJpFvYY7KDlMj7C6CQjc9CZlXA47vEFICyvnk4Aj5mV9192KrVxgN4U9
-         gGOtI/c8SEExVtTx7o5RKKzhHWFWsyhgjh+nvv3McJoTZXzvPERd8F7DKWnPMlkn2e+g
-         MFTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXRJg6URDRx9fBQIETOSoJdC1JJkdglAm4DKxT39byKj0rmpB6r3UrRXm1wy1bB6j3qD7mMsdS90FraXrlxBGwVAmltFYoutaFFbQ==
-X-Gm-Message-State: AOJu0YzNlKSWgEE3v7lmT7VjebLuO6LevXn2SXnPdCOJN0MsBNEMVS+B
-	AAFrU0oO0/LA9Bt1F969InGJaZOFhMm6Dx899X5APtooUC7Z5XpmmGme1p9jFco7WgnpPNbPUcV
-	UrpbvVuxCszvPkMnIJUzt6hPNnsV2ud+sRsijpw==
-X-Google-Smtp-Source: AGHT+IHTXtbKZV4PRrgxvlL/R1tUqcSFTjPcwK6//feDtYUO9NjrShijYYET6/+oeV22B9HIEQVjv5iZuw/cw+hBGTs=
-X-Received: by 2002:a25:ac04:0:b0:dc7:423c:b8aa with SMTP id
- w4-20020a25ac04000000b00dc7423cb8aamr1828891ybi.12.1712223091503; Thu, 04 Apr
- 2024 02:31:31 -0700 (PDT)
+        bh=tknSODYMU/l/2VPgjwwryjgmML6llAA/U7CzR6kpVHI=;
+        b=XGQNXcI8N4RvL+ApIO/LiDFdFXX9YYnjIzrvkWKr6cI7ZyXzFBbJ7NHxuKGxgPvr/a
+         HBFPtYXe35nL1sPIvP/u9xuRpAuGeSQewaDNMiCW7CY1fYJqdXXSwUiroSf20HClo7Ut
+         fQx0t2+30AD4vPDfFcxQgaQjybsQzll1OOYkMDxfrZSGCYOY5oSZlFvdNCxHeoOXEzOH
+         4hnunj60WNM60rq6nV3iuQh/eEeK6bEmzNhH7RPwgHVw7eM9YpztChxFU3k5hBv9UQmA
+         Ac8HQkwIJq+vLweMEUytFe8QFcM0AWD+ybtzkZiHlBwBkfKcbKPmoBGO8dVN/6SYFGDl
+         VbeA==
+X-Forwarded-Encrypted: i=1; AJvYcCVtTmy5VO07M74vXcYsm3zz2391IAJFWaxlJixLpKHAw4FJ5h4PVBzSJ5Td3oV8yk4+WR98sk2VNz1RBk6B9lCrOpilg2WERO685Q==
+X-Gm-Message-State: AOJu0YzH4H4G72jE991eT6s115pkdsfnFuTlVE4876nw4rOmwuLZgFR6
+	T7ac+NgD6Ks30RlpFJQUx4MkbqD847G5yiEkkwtngIapNJQUnhkn+KxivtpQKg/RgAinlCcZHh+
+	IXkvFOUak+KM8Cc76EJP1ew0P5uKsHowfRLbm2NYPyTYTat9j
+X-Google-Smtp-Source: AGHT+IHryU3PLO20GBRCCgKMJ6XaprTWbXPQPdQ4lA3pQDeAvfm7RbBhJGsftpZ1ACzQsnluXERsu8pQW/NEsN9JBts=
+X-Received: by 2002:a25:2e4b:0:b0:dc6:8534:bb06 with SMTP id
+ b11-20020a252e4b000000b00dc68534bb06mr2340069ybn.17.1712236452434; Thu, 04
+ Apr 2024 06:14:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240403-module-owner-sdio-v2-0-ae46d6b955eb@linaro.org>
-In-Reply-To: <20240403-module-owner-sdio-v2-0-ae46d6b955eb@linaro.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 4 Apr 2024 11:30:54 +0200
-Message-ID: <CAPDyKFodTh-KN+=b1B3V+7aNEoR0SPo5-xjFaWu=gYEtsDy1pQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] mmc/wifi/bluetooth: store owner from modules with sdio_register_driver()
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Kalle Valo <kvalo@kernel.org>, 
-	Jeff Johnson <jjohnson@kernel.org>, Arend van Spriel <arend.vanspriel@broadcom.com>, 
-	Brian Norris <briannorris@chromium.org>, Francesco Dolcini <francesco@dolcini.it>, 
-	=?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>, 
-	linux-mmc@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, brcm80211@lists.linux.dev, 
-	brcm80211-dev-list.pdl@broadcom.com, Jeff Johnson <quic_jjohnson@quicinc.com>, 
-	Francesco Dolcini <francesco.dolcini@toradex.com>
+References: <fd26ce4a-a9f3-4ada-8d46-ed36fb2456ca@freebox.fr>
+ <5cdad89c-282a-4df5-a286-b8404bc4dd81@freebox.fr> <252618e8-9e80-4774-a96c-caa7f838ef01@linaro.org>
+ <502322f1-4f66-4922-bc4e-46bacac23410@linaro.org> <0ca1221b-b707-450f-877d-ca07a601624d@freebox.fr>
+ <CAA8EJppeREj-0g9oGCzzKx5ywhg1mgmJR1q8yvXKN7N45do1Xg@mail.gmail.com>
+ <87ttkh49xi.fsf@kernel.org> <e804b257-4dc0-45f1-a5c5-66bda51cf296@freebox.fr>
+In-Reply-To: <e804b257-4dc0-45f1-a5c5-66bda51cf296@freebox.fr>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 4 Apr 2024 16:14:01 +0300
+Message-ID: <CAA8EJprBe_th5n_J4BRxUhAO1k89cZOGyTfCBzGQazN5fe9Nuw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: msm8998: set qcom,no-msa-ready-indicator
+ for wifi
+To: Marc Gonzalez <mgonzalez@freebox.fr>
+Cc: Kalle Valo <kvalo@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Jeff Johnson <quic_jjohnson@quicinc.com>, 
+	ath10k <ath10k@lists.infradead.org>, wireless <linux-wireless@vger.kernel.org>, 
+	DT <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Pierre-Hugues Husson <phhusson@freebox.fr>, Arnaud Vrac <avrac@freebox.fr>, 
+	Bjorn Andersson <andersson@kernel.org>, Jami Kettunen <jamipkettunen@gmail.com>, 
+	Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240404_103140_865748_93E7E4C0 
-X-CRM114-Status: UNSURE (   8.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240404_061414_651603_38DCC769 
+X-CRM114-Status: GOOD (  24.94  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,26 +100,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, 3 Apr 2024 at 16:17, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Thu, 4 Apr 2024 at 15:30, Marc Gonzalez <mgonzalez@freebox.fr> wrote:
 >
-> Changes in v2:
-> 1. Add "wifi: ath10k: sdio: simplify module initialization" patch, from
->    my other patchset to avoid conflicts.
-> 2. Add Acks/Rb tags.
-> 3. Drop applied SDIO patch, which was the dependency for the rest
->    cleanups.
-> 4. Update subjects according to feedback.
-> - Link to v1: https://lore.kernel.org/r/20240329-module-owner-sdio-v1-0-e4010b11ccaa@linaro.org
+> On 04/04/2024 13:57, Kalle Valo wrote:
 >
-> Merging
-> =======
-> With Acks from Kalle, please take entire set via mmc/sdio.
+> > Dmitry Baryshkov wrote:
+> >
+> >> I'd say, we should take a step back and actually verify how this was
+> >> handled in the vendor kernel.
+> >
+> > One comment related to this: usually vendor driver and firmware branches
+> > go "hand in hand", meaning that a version of driver supports only one
+> > specific firmware branch. And there can be a lot of branches. So even if
+> > one branch might have a check for something specific, there are no
+> > guarantees what the other N+1 branches do :/
+>
+> The consequences and ramifications of the above comment are not clear to me.
+>
+> Does this mean:
+> "It is pointless to analyze a given version (or even several versions)
+> of the vendor driver downstream, because there are exist a large number
+> of variations of the code." ?
+>
+> And thus, "it is nonsensical to try to "align" the mainline driver to
+> "the" vendor driver, as there is no single "vendor driver"" ?
+>
+> Thus, the following patch (or one functionally-equivalent) is not acceptable?
 
-The series applied for next, thanks!
+For reference, I tested this patch on sdm845 (db845c), qcm2290 aka
+qrb2210 (rb1), sm6115 aka qrb4210 (rb2) and sm8150 platforms.
+I was not able to fully test it on sda660, modem crashes without this
+patch (there is no MSA_READY indication) and with the patch applied
+the device hangs, most likely because of the IOMMU or clocking issue.
 
-[...]
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> index 38e939f572a9e..fd9ac9717488a 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -1040,6 +1040,8 @@ static void ath10k_qmi_driver_event_work(struct work_struct *work)
+>                 switch (event->type) {
+>                 case ATH10K_QMI_EVENT_SERVER_ARRIVE:
+>                         ath10k_qmi_event_server_arrive(qmi);
+> +                       printk(KERN_NOTICE "NOT WAITING FOR MSA_READY INDICATOR");
+> +                       ath10k_qmi_event_msa_ready(qmi);
+>                         break;
+>                 case ATH10K_QMI_EVENT_SERVER_EXIT:
+>                         ath10k_qmi_event_server_exit(qmi);
+> @@ -1048,7 +1050,7 @@ static void ath10k_qmi_driver_event_work(struct work_struct *work)
+>                         ath10k_qmi_event_fw_ready_ind(qmi);
+>                         break;
+>                 case ATH10K_QMI_EVENT_MSA_READY_IND:
+> -                       ath10k_qmi_event_msa_ready(qmi);
+> +                       printk(KERN_NOTICE "IGNORING ACTUAL MSA_READY INDICATOR");
+>                         break;
+>                 default:
+>                         ath10k_warn(ar, "invalid event type: %d", event->type);
+>
+>
+>
+> Regards
+>
 
-Kind regards
-Uffe
+
+-- 
+With best wishes
+Dmitry
 
