@@ -4,68 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDE43CD1288
-	for <ath10k@archiver.kernel.org>; Thu,  4 Apr 2024 21:23:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3300ECD11C2
+	for <ath10k@archiver.kernel.org>; Fri,  5 Apr 2024 05:12:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=eFgK3fO75BY37OtT8czBHMRoUNEQvj+ylMhip6Sz/uU=; b=mmNjj0nVYUnxoZdukHWUbhpABu
-	aj+zxLq/nc0EHL3b768XyGKF8902rVU3v31n/6fRN5YHlnrq4kaSeMeVKsVD6Ufd9TVZkUJzRGBwN
-	JS84LHYeR79OkgeHIgaT0ihgsx+Iqe7jcMZBUwffrA7jw0GdOzm935+CKM551ktr7KtMIvuvYf8FE
-	Jl9cDhp9z4yWxIcqTNe8fc0pjrQx7JXp1dPiWPnfihhcAF+KV/wyjZOLh9wFV1X9wdsFO/h+F4MH5
-	kQM1ooQlOMyzNXdRWRNOj6BvwJ50dScRMg5gJSJd2LBwEwdEwLjLZI8KM8UPRH6n8dw5+7kC2krhO
-	8kcqPrAQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=PLc8PxM1slGgdK+9DW0lsBk5tgo3c4kY5RRSsxLJXcg=; b=dhKmF7WlgkeTBRz7t4xL29jD+h
+	9Tvm+7cHX9nNHj99NFER4+sooaGQY6Zh68moAKLqKkEygXdxEXaWKzXFIXCgv0igPazp+KWPO+AzF
+	+vOZBDF4N+5qkarpTSboAwuekpolmeMf/9y/7U1BIXs2l2lgl761ZEXasekKO5A575kF5gq0jipO0
+	ullZ+fLz3reJD9MyVOE1Mzw+mxpykCZCoOXv2wIne1B4kJ2tR0Wbzu7EgsI+31zxNiMKP+BKjgRBq
+	s3j37QPCqBuy3IMrn3YpyR5AKkVbputXSxl2vLh39CW/2RlWhlHWBryekX8f19YFo/l1SBca8igHg
+	GPU8xqFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsUYN-00000004Ixs-46XG;
-	Thu, 04 Apr 2024 21:23:24 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rsbsP-00000005G7M-1jpv;
+	Fri, 05 Apr 2024 05:12:33 +0000
+Received: from mgamail.intel.com ([192.198.163.15])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsUYL-00000004Iwz-0uZ9
+	id 1rsbsM-00000005G6l-1U8X
 	for ath10k@lists.infradead.org;
-	Thu, 04 Apr 2024 21:23:22 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id BC13D61776;
-	Thu,  4 Apr 2024 21:23:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABBA8C433B2;
-	Thu,  4 Apr 2024 21:23:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712265800;
-	bh=qK1WJ95y942nDqpYdpVd7M8hb2SED2//IBpTA+Bn1jk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bxXkHXMUcDgf0qA/6DQ54jxDBHsNtUX+npjVi2MY81OYCdFL9w0n63mg8WPFWdfzg
-	 B6rv9bcAKBwRGzqZ0cwdEzAJqdQeAZyI4bk5DBp2wJ1NuriKQBmKJ3lPt2H5MvE2w5
-	 UBo+OtNqDOla4UYFYKYV+7iqNdDtK11TrJCqrkVPAOeyj+Z8iFpCdxcSPY78nqDJNd
-	 J+wUnPMiQr/egEIVprE4o17wyc+qRKjCpEijMA6Aa5uJAQnMVl1pB6D8saKlaIMu76
-	 S6fXC3gQ+VPpXXXNQIXxJFESad2msjSNQpyrSBOyb80n0uNOEjvLExVJ0D8O8R91jC
-	 AZu6UpS6dZlvQ==
-From: Bjorn Andersson <andersson@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kalle Valo <kvalo@kernel.org>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	ath10k@lists.infradead.org
-Subject: Re: [PATCH] arm64: dts: qcom: sm8150-hdk: enable WiFI support
-Date: Thu,  4 Apr 2024 16:22:49 -0500
-Message-ID: <171226578698.615813.10917637974157146735.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240403-sm8150-hdk-wifi-v1-1-8da3063829c2@linaro.org>
-References: <20240403-sm8150-hdk-wifi-v1-1-8da3063829c2@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	Fri, 05 Apr 2024 05:12:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712293950; x=1743829950;
+  h=date:from:to:cc:subject:message-id;
+  bh=32Ei5Lzd/rMgolxVyYIn/7fPe1JsQDWPipDtL6POUZ4=;
+  b=DmCrPVSza2MF/xigCQO5WARCr7dsEXwG/goMvJuC/Wy+1KbROTI+ijSL
+   CX377ioltNqaBVis4Pr3U2zVe218bBikH0ZCuX8qmiIke4aQpnKqU6cFw
+   Pa7QiCBpfL8nKt5O99QX2yJogHKt05dT/hm6QQVkZoNPa0FyqylCrOMuY
+   pdKjj1XPTybi3F+szNPnCo/1mm/HmxloxF9U5WksDJLW2Gwtpc6CnXZJo
+   FP2DRPfIMs1Jyp1U3v8YpRRQ8+IzcLQfvG0xH6VcmGk1r+JgYMxKkTMvy
+   oGKKVnJpw43SY1eFzkoegk6aKQRxeICLJd6qPlCm1a9+s03+QyJQsVo5N
+   A==;
+X-CSE-ConnectionGUID: MYK3SGy2TIi8C/dL31P7xw==
+X-CSE-MsgGUID: 0fS/gnBuSSCewNIsVda4kg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7797113"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="7797113"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 22:12:29 -0700
+X-CSE-ConnectionGUID: XVowyMQ9S5euU13v3cCESA==
+X-CSE-MsgGUID: Z37pXxaqSTCVdvgNbiXDAQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="23719806"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 04 Apr 2024 22:12:28 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rsbsH-0001vG-12;
+	Fri, 05 Apr 2024 05:12:25 +0000
+Date: Fri, 05 Apr 2024 13:12:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 7d285a14d034c163f5f427ae180bb308857f3a49
+Message-ID: <202404051315.4zQzvqDA-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240404_142321_323476_8585E928 
-X-CRM114-Status: UNSURE (   6.96  )
+X-CRM114-CacheID: sfid-20240404_221230_442656_81FA6C39 
+X-CRM114-Status: UNSURE (   3.49  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,30 +83,196 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 7d285a14d034c163f5f427ae180bb308857f3a49  wifi: ath12k: fix link capable flags
 
-On Wed, 03 Apr 2024 20:10:12 +0300, Dmitry Baryshkov wrote:
-> Enable modem DSP and WiFI devices on the SM8150 HDK device. The HDK is
-> manufactured by Lantronix, but it attributed to Qualcomm, so the
-> calibration string uses Qualcomm as manufacturer.
-> 
-> For reference:
-> 
-> ath10k_snoc 18800000.wifi: qmi chip_id 0x30224 chip_family 0x4001 board_id 0x55 soc_id 0x40060000
-> ath10k_snoc 18800000.wifi: qmi fw_version 0x32040163 fw_build_timestamp 2019-10-08 05:42 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.3.2.0-00355-QCAHLSWMTPLZ-1
-> ath10k_snoc 18800000.wifi: wcn3990 hw1.0 target 0x00000008 chip_id 0x00000000 sub 0000:0000
-> ath10k_snoc 18800000.wifi: kconfig debug 1 debugfs 0 tracing 0 dfs 0 testmode 0
-> ath10k_snoc 18800000.wifi: firmware ver  api 5 features wowlan,mgmt-tx-by-reference,non-bmi crc32 b3d4b790
-> ath10k_snoc 18800000.wifi: htt-ver 3.73 wmi-op 4 htt-op 3 cal file max-sta 32 raw 0 hwcrypto 1
-> ath10k_snoc 18800000.wifi: invalid MAC address; choosing random
-> 
-> [...]
+elapsed time: 1096m
 
-Applied, thanks!
+configs tested: 176
+configs skipped: 3
 
-[1/1] arm64: dts: qcom: sm8150-hdk: enable WiFI support
-      commit: e5fd6512f6e842d8c5883b9fa4d72c8a5295efdc
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Best regards,
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240405   gcc  
+arc                   randconfig-002-20240405   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                        neponset_defconfig   gcc  
+arm                   randconfig-001-20240405   gcc  
+arm                   randconfig-002-20240405   clang
+arm                   randconfig-003-20240405   gcc  
+arm                   randconfig-004-20240405   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240405   gcc  
+arm64                 randconfig-002-20240405   gcc  
+arm64                 randconfig-003-20240405   gcc  
+arm64                 randconfig-004-20240405   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240405   gcc  
+csky                  randconfig-002-20240405   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240405   clang
+hexagon               randconfig-002-20240405   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240405   gcc  
+i386         buildonly-randconfig-002-20240405   gcc  
+i386         buildonly-randconfig-003-20240405   clang
+i386         buildonly-randconfig-004-20240405   gcc  
+i386         buildonly-randconfig-005-20240405   clang
+i386         buildonly-randconfig-006-20240405   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240405   clang
+i386                  randconfig-002-20240405   gcc  
+i386                  randconfig-003-20240405   clang
+i386                  randconfig-004-20240405   clang
+i386                  randconfig-005-20240405   clang
+i386                  randconfig-006-20240405   gcc  
+i386                  randconfig-011-20240405   clang
+i386                  randconfig-012-20240405   gcc  
+i386                  randconfig-013-20240405   gcc  
+i386                  randconfig-014-20240405   gcc  
+i386                  randconfig-015-20240405   gcc  
+i386                  randconfig-016-20240405   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240405   gcc  
+loongarch             randconfig-002-20240405   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                         amcore_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 decstation_r4k_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240405   gcc  
+nios2                 randconfig-002-20240405   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240405   gcc  
+parisc                randconfig-002-20240405   gcc  
+parisc64                         alldefconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                        cell_defconfig   gcc  
+powerpc               randconfig-001-20240405   clang
+powerpc               randconfig-002-20240405   clang
+powerpc               randconfig-003-20240405   clang
+powerpc                      walnut_defconfig   gcc  
+powerpc64             randconfig-001-20240405   gcc  
+powerpc64             randconfig-002-20240405   gcc  
+powerpc64             randconfig-003-20240405   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240405   clang
+riscv                 randconfig-002-20240405   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240405   clang
+s390                  randconfig-002-20240405   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                ecovec24-romimage_defconfig   gcc  
+sh                          kfr2r09_defconfig   gcc  
+sh                    randconfig-001-20240405   gcc  
+sh                    randconfig-002-20240405   gcc  
+sh                   rts7751r2dplus_defconfig   gcc  
+sh                           sh2007_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                       sparc32_defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240405   gcc  
+sparc64               randconfig-002-20240405   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240405   gcc  
+um                    randconfig-002-20240405   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240405   clang
+x86_64       buildonly-randconfig-002-20240405   clang
+x86_64       buildonly-randconfig-003-20240405   gcc  
+x86_64       buildonly-randconfig-004-20240405   gcc  
+x86_64       buildonly-randconfig-005-20240405   clang
+x86_64       buildonly-randconfig-006-20240405   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240405   clang
+x86_64                randconfig-002-20240405   clang
+x86_64                randconfig-003-20240405   clang
+x86_64                randconfig-004-20240405   gcc  
+x86_64                randconfig-005-20240405   clang
+x86_64                randconfig-006-20240405   gcc  
+x86_64                randconfig-011-20240405   clang
+x86_64                randconfig-012-20240405   gcc  
+x86_64                randconfig-013-20240405   gcc  
+x86_64                randconfig-014-20240405   clang
+x86_64                randconfig-015-20240405   gcc  
+x86_64                randconfig-016-20240405   gcc  
+x86_64                randconfig-071-20240405   gcc  
+x86_64                randconfig-072-20240405   gcc  
+x86_64                randconfig-073-20240405   gcc  
+x86_64                randconfig-074-20240405   gcc  
+x86_64                randconfig-075-20240405   gcc  
+x86_64                randconfig-076-20240405   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240405   gcc  
+xtensa                randconfig-002-20240405   gcc  
+
 -- 
-Bjorn Andersson <andersson@kernel.org>
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
