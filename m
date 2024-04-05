@@ -4,88 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17A1AC67861
-	for <ath10k@archiver.kernel.org>; Fri,  5 Apr 2024 12:50:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F61DC67861
+	for <ath10k@archiver.kernel.org>; Fri,  5 Apr 2024 13:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
 	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/h5ZKUyP0Cry0+mHbTzooNJMYvg5n+9KMU/0TdwKBUE=; b=Zl+LDVWTwu1JyjNfFC2XVda0ny
-	doBn8oblKmojxKBtiW1F7jsDs3So+cML1eR41iol51GVczXNA0riRL5j5y5f3E68MqL2hh03Foq3T
-	u1EagdqIBPoAVXP/RsEjCt43MVaFE0Qivk37/r5ZULzHVkTRBzB0Xn6TQfga7c9PejXoFSXukbDDb
-	f+rPcKFVsOAT8gyhWEsimIljjTZIjGJLLURjoS8ZXfY5YWurwBQ8zRCYr6snlZk+kYjLbnix+8Qeu
-	2iy6s5AL+O3+B863k8ad4ElVS16WdMbN0cs/g6EHjyR1/uN2nXyqtLXVkdkUJfKLghgdWmtCR92hZ
-	jBYsq5tA==;
+	bh=iU1YdowZKR4NxwS1m2fNh/bSZUDHJtarrpZbW985aMo=; b=T/JEZZiTlHCftlhNbQ36cqEIIZ
+	ecWDdes4pIWn4vaQVNWXAwt1+83QDP5SSaHh+1z8NDczbIfhBfTTaSeY8CAoKtzo/vDCcD2e8BwRq
+	YJZWjefYxErvqrFmIA/8bfpMftefma+Q2ViZTA0sWtk1Gz4sIHup+7OFsRN1eZshT7sr9HT/LGBq2
+	nPKSVhq/bwydysTnoDDLgEpiP0UlqdFu0Kb9CzOLzDu6q9B6VrWFQ00KNvZPoD0F+AofIhw0XsgDn
+	KXOzqnqUxqvneefwdY/GPs+mrHbRTHE88VzCSlbaZaeCKxNq1Yq+4F4YzUTu6BjQZAHfq6to1Ex8T
+	LDXfjnQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsj1E-000000072Ug-2u0p;
-	Fri, 05 Apr 2024 12:50:08 +0000
-Received: from mail-yb1-xb33.google.com ([2607:f8b0:4864:20::b33])
+	id 1rsjHc-000000078QI-38n9;
+	Fri, 05 Apr 2024 13:07:04 +0000
+Received: from mail-ot1-x329.google.com ([2607:f8b0:4864:20::329])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsj1A-000000072RF-3yEF
+	id 1rsjHa-000000078Or-0XHA
 	for ath10k@lists.infradead.org;
-	Fri, 05 Apr 2024 12:50:06 +0000
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-dcc71031680so2125963276.2
-        for <ath10k@lists.infradead.org>; Fri, 05 Apr 2024 05:50:00 -0700 (PDT)
+	Fri, 05 Apr 2024 13:07:03 +0000
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6e89e48d2c0so1027998a34.1
+        for <ath10k@lists.infradead.org>; Fri, 05 Apr 2024 06:07:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712321399; x=1712926199; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1712322420; x=1712927220; darn=lists.infradead.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/h5ZKUyP0Cry0+mHbTzooNJMYvg5n+9KMU/0TdwKBUE=;
-        b=D2vkFT9k9Uwngh2p04UztbMD+81VGFaTtksaUPpf5CPwwP50t4Ecwh2XY9vSVhL3jC
-         NYliWcEnZ+/IvrO+hIU6+XtYkWhqm7oq284mywFLErNEehF9aeHoVvb3L8SqAhWZCxdG
-         xTrvxM/iNb0COC7aaQM9AyB/RP/0FDzalkVD3cHk2kdKSIgWU/nWUbL+v6/Z+bDBWWQQ
-         1wCrfMoMlgKKZJMT0H4vjg8GDt/YnMSB0eBAHGfjtNypdEK9UbBFV+d3FKd8/w6zuoUk
-         KayC6XAHuIPubsyL5MWBvtX93zB0Qet8ITYDb67LzXzfjGqSutMP+6lm4tF47wtx8TOB
-         Wy6A==
+        bh=iU1YdowZKR4NxwS1m2fNh/bSZUDHJtarrpZbW985aMo=;
+        b=FOm/tGg/pX0/aTBS9U3/SznAd2ktIfXZSRBwltqFEvgLei4FH6Rg43VK+1WQXvfAyO
+         lA/xBovq11iXRNl3t273V68Ze0J8EShbh2oyF8uEoHN5F2CdgGn6oULHbz31ZBLyc0XB
+         kwcjne5K1xxWF94zzwZNyTUxc27x0SyRSjCeXhCd234TWgwbP7j2H79yh9kgVRfSA+FG
+         6usMtqusO0k+I2dskIhmbXDUxEL8fi30XYd6mosXlMSjJCHDJ9JRvOWq7van0gu5/1V+
+         agQPZhpIPBdLbLXz0M2nmigMHXm+AyBOqqtKrSJQ4UpIvhu59i+n30FdPE1dvrQbdGnj
+         jLZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712321399; x=1712926199;
+        d=1e100.net; s=20230601; t=1712322420; x=1712927220;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/h5ZKUyP0Cry0+mHbTzooNJMYvg5n+9KMU/0TdwKBUE=;
-        b=v8VOw0SW91O49p8jEJ+FaAfdZ9WYVW5x/TaR9Sohnh1T/UkTcZTBLqM9oNNWSWCmqi
-         /3cgVG2jgeoO/mZtlQUhplgspvRTWI9gWgV25d5hz4KHZyFn4DhATjl6SW0CSvLUGwR+
-         70KLCEByR12su7fzEW7h0piZZIxSNgSnMvjbq3oHx5LVc50xK3REpZXl73e59sngftdn
-         oLRcWfqzv8PTDonwW6RPZEcfPvgHnx/SSWBvw6cXDE/o0eLSYdAZB2x3cl4NcoN/NzZ8
-         lioTHh8NNQJxYQxETCBOffu2Bf6g0YMps3QgYiiafY2yAgkbPmD/dCjA/61xT8pySOPf
-         B/kg==
-X-Forwarded-Encrypted: i=1; AJvYcCVFGJ0IP5C1QT8TlnJvIDsNJlLH05lgga39Zp5Qs8uDgmxYwNikGNYptAatqebvVvfNC7Qke026i+qnE5BXDQiACfpdWz1X79jlzA==
-X-Gm-Message-State: AOJu0Yz+9WWHz24f8JG59b8mNpYxUuhNinOYpjmP17SuPc+1FASsm/zp
-	gGjXDrrN9GcaEXm4QgrKViT2BxB1EV2pGwqUkcNt2Cj9S62zSbcKfJopcbePvWjCZymw064N+wo
-	B9EhzdfSI8t4Wzprmk3E4IA7ALM79e0d//t9sKA==
-X-Google-Smtp-Source: AGHT+IF+uYN0V7kj1WIHdUIWItVzS1wQ6IV2lWWc/0drhKwFzKBD2YiWPAiRHKjXhywplhFwsAgFyDg/DQC+/Ij0EOk=
-X-Received: by 2002:a5b:9c5:0:b0:dcc:4b84:67cd with SMTP id
- y5-20020a5b09c5000000b00dcc4b8467cdmr937832ybq.9.1712321399265; Fri, 05 Apr
- 2024 05:49:59 -0700 (PDT)
+        bh=iU1YdowZKR4NxwS1m2fNh/bSZUDHJtarrpZbW985aMo=;
+        b=wsfXS1Vhs1Y9vyXUxe8D/eGTEF3KO+gmt8tMamHjYDprc2Wo0LjgbqZ12OUR8U+5xQ
+         oGVK76Wv7EKT1bdXSYOY1syJKsJt4eGfiPzNFK3CJqoGN3hZvRZiYQr5MLxjee+xpUMR
+         tYKQWrQsKpYxL1+1nQPlVylGjH7AdqjHp+dlXPVEl5XjY2mHuSUFhJH6D/DtMofuH52w
+         PnTbp5dTK0P+IW6dwsUId0P3Tp4VHpM0A9OCff909OC0zy5Ljp9hoAxN7YB8WpeaHIdm
+         ackPqIsr4PiaWpRLnaHHs3QD+KzQPUbaACQlF3AVDwC+Nh4uqlVGMHop8YB98ob3Pr/R
+         NrYg==
+X-Forwarded-Encrypted: i=1; AJvYcCV905aYxWYxgFbMXrONXChrolso62VduExLq6DlPaim4z5MAUVPuTfxwE7gTeqQhOeQbrR5ayFBdVWb/tkUrJGwXRYSB7ll/+Y1bg==
+X-Gm-Message-State: AOJu0YytPCm+flzzuvVE0Xu60EgRN3ZMDvGwjAopnsM7bHJ46H/lpLE+
+	41jDzHta5wKdP6ThtjWOBVioZL1ArfU0TTh2cwl1/7zAf7fnwf7uFatCLTsUY/Sb17ZUKuJqDYJ
+	YkCk4vmADZVP81kUml1GaC6ouDRW32WQxAeWOPQ==
+X-Google-Smtp-Source: AGHT+IE+c2hDr24po6hk/C0dtlrmRnWazW8ArZW5UqRYqD6PC4fukxRp5eNcGAEsjPJWC/uAs3K3YzzUWmogRx/P+BA=
+X-Received: by 2002:a05:6359:100c:b0:17b:5fda:a544 with SMTP id
+ ib12-20020a056359100c00b0017b5fdaa544mr1738518rwb.24.1712322419701; Fri, 05
+ Apr 2024 06:06:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240306-wcn3990-firmware-path-v2-0-f89e98e71a57@linaro.org>
- <87plw7hgt4.fsf@kernel.org> <CAA8EJpr6fRfY5pNz6cXVTaNashqffy5_qLv9c35nkgjaDuSgyQ@mail.gmail.com>
- <87cys7hard.fsf@kernel.org> <CAA8EJpowyEEbXQ4YK-GQ63wZSkJDy04qJsC2uuYCXt+aJ1HSOQ@mail.gmail.com>
- <87v85wg39y.fsf@kernel.org> <CAA8EJpq_XLUEMC67ck2tZRjqS0PazCkQWWMGmwydeWxTETHwcg@mail.gmail.com>
- <871q7k3tnq.fsf@kernel.org> <CAA8EJppASEmj6-Jt7OCABAeqr8umSgXaDDha9nn2nRafuZ-Gvw@mail.gmail.com>
- <87sf002d8d.fsf@kernel.org>
-In-Reply-To: <87sf002d8d.fsf@kernel.org>
+References: <20240130-wcn3990-board-fw-v1-0-738f7c19a8c8@linaro.org>
+ <CAA8EJprsjs8SWZmpTisyQcAZ9VC8g3_GEEc1hhp8bMZrm-hyaw@mail.gmail.com> <875xww3tv8.fsf@kernel.org>
+In-Reply-To: <875xww3tv8.fsf@kernel.org>
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 5 Apr 2024 15:49:48 +0300
-Message-ID: <CAA8EJpp4J4b1mpkkeVCsnjVw83E7jmu+3yHActTNEeGcOKHPrQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 0/4] wifi: ath10k: support board-specific firmware overrides
+Date: Fri, 5 Apr 2024 16:06:48 +0300
+Message-ID: <CAA8EJprZTdDZZ=NSzn9xEBGB0kp0s1HHLffF0X7YSLyVxy7ZSw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] wifi: ath10k: fix board file loading for wcn3990 devices
 To: Kalle Valo <kvalo@kernel.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org, 
+	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	Yongqin Liu <yongqin.liu@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240405_055005_073735_E22BF3B7 
-X-CRM114-Status: GOOD (  32.87  )
+X-CRM114-CacheID: sfid-20240405_060702_209558_CC1EDEE9 
+X-CRM114-Status: GOOD (  17.90  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,107 +90,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, 5 Apr 2024 at 15:41, Kalle Valo <kvalo@kernel.org> wrote:
+On Fri, 5 Apr 2024 at 14:57, Kalle Valo <kvalo@kernel.org> wrote:
 >
 > Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 >
-> > On Fri, 5 Apr 2024 at 15:01, Kalle Valo <kvalo@kernel.org> wrote:
+> > On Tue, 30 Jan 2024 at 08:47, Dmitry Baryshkov
+> > <dmitry.baryshkov@linaro.org> wrote:
 > >
 > >>
-> >> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
+> >> The ath10k driver fails to properly handle fallback from board-2.bin to
+> >> board.bin for WCN3990 cards. This happens because the
+> >> ath10k_hw_params_list doesn't include .fw.board* parameters for the
+> >> WCN3990 platform.
 > >>
-> >> > On Fri, 8 Mar 2024 at 17:19, Kalle Valo <kvalo@kernel.org> wrote:
-> >> >>
-> >> >> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
-> >> >>
-> >> >> >> To be on the safe side using 'qcom-rb1' makes sense but on the other
-> >> >> >> hand that means we need to update linux-firmware (basically add a new
-> >> >> >> symlink) everytime a new product is added. But are there going to be
-> >> >> >> that many new ath10k based products?
-> >> >> >>
-> >> >> >> Using 'qcm2290' is easier because for a new product then there only
-> >> >> >> needs to be a change in DTS and no need to change anything
-> >> >> >> linux-firmware. But here the risk is that if there's actually two
-> >> >> >> different ath10k firmware branches for 'qcm2290'. If that ever happens
-> >> >> >> (I hope not) I guess we could solve that by adding new 'qcm2290-foo'
-> >> >> >> directory?
-> >> >> >>
-> >> >> >> But I don't really know, thoughts?
-> >> >> >
-> >> >> > After some thought, I'd suggest to follow approach taken by the rest
-> >> >> > of qcom firmware:
-> >> >>
-> >> >> Can you provide pointers to those cases?
-> >> >
-> >> > https://gitlab.com/kernel-firmware/linux-firmware/-/tree/main/qcom/sc8280xp/LENOVO/21BX
-> >> >
-> >> >>
-> >> >> > put a default (accepted by non-secured hardware) firmware to SoC dir
-> >> >> > and then put a vendor-specific firmware into subdir. If any of such
-> >> >> > vendors appear, we might even implement structural fallback: first
-> >> >> > look into sdm845/Google/blueline, then in sdm845/Google, sdm845/ and
-> >> >> > finally just under hw1.0.
-> >> >>
-> >> >> Honestly that looks quite compilicated compared to having just one
-> >> >> sub-directory. How will ath10k find the directory names (or I vendor and
-> >> >> model names) like 'Google' or 'blueline' in this example?
-> >> >
-> >> > I was thinking about the firmware-name = "sdm845/Google/blueline". But
-> >> > this can be really simpler, firmware-name = "blueline" or
-> >> > "sdm845/blueline" with no need for fallbacks.
+> >> Add board data configuration for WCN3990. While we are at it, merge
+> >> common pieces of BDF support: drop .board and .eboard names from struct
+> >> ath10k_hw_params_fw and use the common name instead.
 > >>
-> >> I have been also thinking about this and I would prefer not to have the
-> >> fallbacks. But good if you agree with that.
+> >> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >> ---
+> >> Dmitry Baryshkov (3):
+> >>       wifi: ath10k: populate board data for WCN3990
+> >>       wifi: ath10k: drop chip-specific board data file name
+> >>       wifi: ath10k: drop fw.eboard file name
 > >>
-> >> IMHO just "sdm845-blueline" would be the most simple. I don't see the
-> >> point of having a directory structure when there are not that many
-> >> directories really. But this is just cosmetics.
+> >>  drivers/net/wireless/ath/ath10k/core.c      | 32 ++++-------------------------
+> >>  drivers/net/wireless/ath/ath10k/hw.h        | 14 ++-----------
+> >>  drivers/net/wireless/ath/ath10k/pci.c       | 10 ++++-----
+> >>  drivers/net/wireless/ath/ath10k/targaddrs.h |  3 +++
+> >>  4 files changed, 14 insertions(+), 45 deletions(-)
+> >> ---
+> >> base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
+> >> change-id: 20240129-wcn3990-board-fw-a2d97507a712
 > >
-> > It is "not many directories" if we are thinking about the
-> > linux-firmware or open devices. But once embedded distros start
-> > picking this up for the supported devices, this can quickly become a
-> > nuisance.
+> > Kalle, Jeff, is there anything pending on me on this series?
 >
-> Ok. Just out of curiosity, any ideas how many devices/products are there
-> with wcn3990 who want to use ath10k?
+> This is in my queue (Deferred state):
+>
+> https://patchwork.kernel.org/project/linux-wireless/list/?series=821157&state=*&order=date
+>
+> Unfortunately there is not really much time for ath10k nowadays so there
+> will be delays.
 
-Just for the DT in mainline I can count about 30 devices that have
-ath10k WiFi node:
+No problems, each maintainer treats PW states slightly differently, so
+I was trying to understand if there is anything left on my side.
 
-arch/arm64/boot/dts/qcom/msm8998-clamshell.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts:&wifi {
-arch/arm64/boot/dts/qcom/msm8998-mtp.dts:&wifi {
-arch/arm64/boot/dts/qcom/msm8998-oneplus-common.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/msm8998-xiaomi-sagit.dts:&wifi {
-arch/arm64/boot/dts/qcom/qcs404-evb.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-idp.dts:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-trogdor-kingoftown.dts:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-trogdor-pazquel360.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts:&wifi {
-arch/arm64/boot/dts/qcom/sc8180x-primus.dts:&wifi {
-arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sdm845-db845c.dts:&wifi {
-arch/arm64/boot/dts/qcom/sdm845-mtp.dts:&wifi {
-arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sdm845-samsung-starqltechn.dts:&wifi {
-arch/arm64/boot/dts/qcom/sdm845-shift-axolotl.dts:&wifi {
-arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium-common.dtsi:&wifi {
-arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts:&wifi {
-arch/arm64/boot/dts/qcom/sm6375-sony-xperia-murray-pdx225.dts:&wifi {
-arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts:&wifi {
-arch/arm64/boot/dts/qcom/sm8150-mtp.dts:&wifi {
-arch/arm64/boot/dts/qcom/qrb2210-rb1.dts:&wifi {
-arch/arm64/boot/dts/qcom/qrb4210-rb2.dts:&wifi {
-
-The list doesn't include e.g. PIxel 2-3-4-5 or some other phones which
-are still on their way for the proper mainline support.
---
+-- 
 With best wishes
 Dmitry
 
