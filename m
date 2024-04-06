@@ -4,61 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8591BCD11C2
-	for <ath10k@archiver.kernel.org>; Fri,  5 Apr 2024 15:15:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F21A5CD1292
+	for <ath10k@archiver.kernel.org>; Sat,  6 Apr 2024 06:09:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=92osei7yPkrJsPqHlLVeHlJVESorHNwYc3CNcqlyMxc=; b=U/PzhpsaaiXTldYDAmBlerFA02
-	JcrE1fuVuBHHSNI9Ox4ybSUoLeoP5kQ9/wJmqvI8CrxoOvuVcYHPCdZN7n5GokWPEwW2rPZhdMr2x
-	nBDDwSjEaHxmom4UOnf6v889Wkrn4A972YzWRFWtPl8vCnzBljTUnVml8Z/K+zeCFes+fSj0j4Mix
-	pY0VnKKSlEuXFK7MSZN2h7eyfCa84aO3t6QplAya2ySl6OwLbuZUoSQV9uRq7D0iFu+Jk+Y7tFjF1
-	Zv9BMAvjJp/ZGNJg/mRGNMrydmpAMYhDmaT5aDTYoh6MBlOC1yWC2KlyR71aCFjzTd4k/48i6aXoX
-	c+t02pGg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=zTrR9r4jCw1aAoyaxgTzevngftL407m9JmPYF0CjNrU=; b=4s6wTl6KBSu//Fp8tP/VUfs83Q
+	zei2qC4JMP/kRVQfbVMuOcVVG6zLtgpUtE6UJWWxH/cpmEdrXvobPSHOICoq+w8y6kKjHwdaqPJJX
+	ysZePllu0FfG776xElN68M61unQN1uLAuwuE1ASEdLIEXtvrNv0ucqRS+agQn9feKSmPzNvHqDK3F
+	UZxq9FFEQ5/UNzWc/uoMeH+l6GnnUYkEzrPI7l9ESm4De33zFlzW0oHSvNh654bvWtfHtP7K1loTd
+	T0GGJE+GtgQRjdYwUZTGz99LMI0mUpoUMiwjn6bmCVearfQuTRNs/upYxj509yX/XAp/bp2x0eWQ2
+	xkKbe67g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rslHi-00000007gZr-2zmI;
-	Fri, 05 Apr 2024 15:15:18 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rszFB-00000009lv4-0U8r;
+	Sat, 06 Apr 2024 06:09:37 +0000
+Received: from mgamail.intel.com ([192.198.163.11])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rslHf-00000007gXo-41Gk;
-	Fri, 05 Apr 2024 15:15:17 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 869BECE1905;
-	Fri,  5 Apr 2024 15:15:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FFCEC433F1;
-	Fri,  5 Apr 2024 15:15:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712330109;
-	bh=/LdsrP494psWcbVKzb4oeMdYx37H9n0G7HUYFd7B4nY=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=n4KMGBGA0SEnhwr+GQ02RaDjoJRvjyXCrFj3iJZAbb6cOWle+jrJch3E3gkzvQY7d
-	 L963m+IicpgEH4itjW2qvA+xJ1L7O7UG9oDLYJd6yuuVNd0jQpjBwjDKOHb32ECZ12
-	 srT9JrqB709WIxbH/76B1hLJhAwTbTL/eu8BTgPTZaoU7e63sYFy+9OxsBAS/4sY5B
-	 JFyNJYKqP5oF+92uripI3kK4nUtOTLPnayb229VKraq4J+fOV/Agr9poOVeKjy6Y4s
-	 Zwv++qAwJ30slvtgCAncxnfTadXbyl9wqJD8OFYC0ErYNkFSaPRVleOhTIpPLDMNMf
-	 CS0hsmY/Gxpjg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org,  ath11k@lists.infradead.org,
-  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,
-  imitsyanko@quantenna.com,  geomatsi@gmail.com,
-  linux-kernel@vger.kernel.org,  netdev@vger.kernel.org
-Subject: Re: [PATCH 0/3] wifi: Un-embed ath10k and ath11k dummy netdev
-References: <20240405122123.4156104-1-leitao@debian.org>
-Date: Fri, 05 Apr 2024 18:15:05 +0300
-In-Reply-To: <20240405122123.4156104-1-leitao@debian.org> (Breno Leitao's
-	message of "Fri, 5 Apr 2024 05:21:15 -0700")
-Message-ID: <87y19r264m.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+	id 1rszF7-00000009lu6-2rjs
+	for ath10k@lists.infradead.org;
+	Sat, 06 Apr 2024 06:09:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712383774; x=1743919774;
+  h=date:from:to:cc:subject:message-id;
+  bh=Cp+j2JrRIVxuAaPHJEDM9ys0qjLIFfGlMwlWr36Tb2U=;
+  b=R4UZlhkADA6/tKSFBua9yrn8Hoj9/iPpw6O5eDZ/0kiQUiFFCPcHOOI4
+   TxApo8LKHC4ol3TCa3Dbnj+26ie+vqXn71Odnb5Idje2nYqFLQ1RJ2NOq
+   9zOn8UrBCPzoos3h0omn25rSOusccSelMFiX1dmrvG7vuFSVF3jiFJu+A
+   C8Ym9whZa4FozATVunBnQyy0qOMoEP4lDcskUIBpN0WDgU2gsN/JyxrVu
+   QxbO3kY2DbNrm8et8EAY9pyKAOkKUR4ANcn0m/ZHmIS8rhYtwXr+RtvDb
+   4NgxPxIZMO2QKhQ834wS23BxaGL5sApK9QHRQ6GwhZjgCl9OsASN+PeHJ
+   A==;
+X-CSE-ConnectionGUID: jQOifphES1Oj2AP2O3IqDQ==
+X-CSE-MsgGUID: HWFVS6OTQnK43RIQsVP2wA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="18339728"
+X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
+   d="scan'208";a="18339728"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 23:09:21 -0700
+X-CSE-ConnectionGUID: 7v694l/ZRIyRXTLvEYZ1AA==
+X-CSE-MsgGUID: I+utOkw1RwCp6lWunvu5qA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
+   d="scan'208";a="42545608"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 05 Apr 2024 23:09:20 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rszEs-0003BU-0c;
+	Sat, 06 Apr 2024 06:09:18 +0000
+Date: Sat, 06 Apr 2024 14:09:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 9f6e5447f5eb847075a8e64249e57d478bb824aa
+Message-ID: <202404061415.kMYp2pZy-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240405_081516_578801_13D44906 
-X-CRM114-Status: GOOD (  18.02  )
+X-CRM114-CacheID: sfid-20240405_230933_864698_D781FB5D 
+X-CRM114-Status: UNSURE (   3.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,216 +83,155 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Breno Leitao <leitao@debian.org> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 9f6e5447f5eb847075a8e64249e57d478bb824aa  Merge branch 'ath-next' into ath-qca
 
-> struct net_device shouldn't be embedded into any structure, instead,
-> the owner should use the private space to embed their state into
-> net_device.
->
-> This patch set fixes the problem above for ath10k and ath11k. This also
-> fixes the conversion of qtnfmac driver to the new helper.
->
-> This patch set depends on a series that is still under review:
-> https://lore.kernel.org/all/20240404114854.2498663-1-leitao@debian.org/#t
->
-> If it helps, I've pushed the tree to
-> https://github.com/leitao/linux/tree/wireless-dummy
->
-> PS: Due to lack of hardware, unfortunately all these patches are
-> compiled tested only.
->
-> Breno Leitao (3):
->   wifi: qtnfmac: Use netdev dummy allocator helper
->   wifi: ath10k: allocate dummy net_device dynamically
->   wifi: ath11k: allocate dummy net_device dynamically
+elapsed time: 1058m
 
-Thanks for setting up the branch, that makes the testing very easy. I
-now tested the branch using the commit below with ath11k WCN6855 hw2.0
-on an x86 box:
+configs tested: 135
+configs skipped: 3
 
-5be9a125d8e7 wifi: ath11k: allocate dummy net_device dynamically
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-But unfortunately it crashes, the stack trace below. I can easily test
-your branches, just let me know what to test. A direct 'git pull'
-command is the best.
-
-[  238.886002] rmmod ath11k_pci
-[  239.530328] ------------[ cut here ]------------
-[  239.530433] kernel BUG at net/core/dev.c:11066!
-[  239.530621] invalid opcode: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN
-[  239.530709] CPU: 5 PID: 1668 Comm: rmmod Not tainted 6.9.0-rc2+ #1367
-[  239.530762] Hardware name: Intel(R) Client Systems NUC8i7HVK/NUC8i7HVB, BIOS HNKBLi70.86A.0067.2021.0528.1339 05/28/2021
-[  239.530848] RIP: 0010:free_netdev (net/core/dev.c:11066 (discriminator 1)) 
-[ 239.530893] Code: 08 84 d2 0f 85 3c 01 00 00 0f b7 83 3a 03 00 00 48 29 c3 48 89 df e8 27 10 21 fe 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b 44 0f b6 25 fd 91 53 02 41 80 fc 01 0f 87 1f 14 94 00 41 83
-All code
-========
-   0:	08 84 d2 0f 85 3c 01 	or     %al,0x13c850f(%rdx,%rdx,8)
-   7:	00 00                	add    %al,(%rax)
-   9:	0f b7 83 3a 03 00 00 	movzwl 0x33a(%rbx),%eax
-  10:	48 29 c3             	sub    %rax,%rbx
-  13:	48 89 df             	mov    %rbx,%rdi
-  16:	e8 27 10 21 fe       	call   0xfffffffffe211042
-  1b:	48 83 c4 10          	add    $0x10,%rsp
-  1f:	5b                   	pop    %rbx
-  20:	41 5c                	pop    %r12
-  22:	41 5d                	pop    %r13
-  24:	41 5e                	pop    %r14
-  26:	41 5f                	pop    %r15
-  28:	5d                   	pop    %rbp
-  29:	c3                   	ret
-  2a:*	0f 0b                	ud2		<-- trapping instruction
-  2c:	44 0f b6 25 fd 91 53 	movzbl 0x25391fd(%rip),%r12d        # 0x2539231
-  33:	02 
-  34:	41 80 fc 01          	cmp    $0x1,%r12b
-  38:	0f 87 1f 14 94 00    	ja     0x94145d
-  3e:	41                   	rex.B
-  3f:	83                   	.byte 0x83
-
-Code starting with the faulting instruction
-===========================================
-   0:	0f 0b                	ud2
-   2:	44 0f b6 25 fd 91 53 	movzbl 0x25391fd(%rip),%r12d        # 0x2539207
-   9:	02 
-   a:	41 80 fc 01          	cmp    $0x1,%r12b
-   e:	0f 87 1f 14 94 00    	ja     0x941433
-  14:	41                   	rex.B
-  15:	83                   	.byte 0x83
-[  239.530977] RSP: 0018:ffffc90002dffb70 EFLAGS: 00010202
-[  239.531023] RAX: 0000000000000005 RBX: ffff88810c819000 RCX: 0000000000000000
-[  239.531072] RDX: 1ffff110219032d1 RSI: ffffffff87e79780 RDI: 0000000000000000
-[  239.531120] RBP: ffffc90002dffba8 R08: 0000000000000001 R09: 0000000000000001
-[  239.531169] R10: ffffffff897e3f17 R11: 00000000000000bb R12: ffff88810c8194e0
-[  239.531224] R13: ffff88810c819178 R14: dffffc0000000000 R15: ffff88810c819688
-[  239.531274] FS:  00007f462c4c4740(0000) GS:ffff888232c00000(0000) knlGS:0000000000000000
-[  239.531326] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  239.531371] CR2: 000055fc93483308 CR3: 0000000113a99004 CR4: 00000000003706f0
-[  239.531420] Call Trace:
-[  239.531484]  <TASK>
-[  239.531550] ? show_regs (arch/x86/kernel/dumpstack.c:479) 
-[  239.531592] ? die (arch/x86/kernel/dumpstack.c:421 arch/x86/kernel/dumpstack.c:434 arch/x86/kernel/dumpstack.c:447) 
-[  239.531630] ? do_trap (arch/x86/kernel/traps.c:114 arch/x86/kernel/traps.c:155) 
-[  239.531669] ? do_error_trap (./arch/x86/include/asm/traps.h:58 arch/x86/kernel/traps.c:176) 
-[  239.531708] ? free_netdev (net/core/dev.c:11066 (discriminator 1)) 
-[  239.531749] ? handle_invalid_op (arch/x86/kernel/traps.c:214) 
-[  239.531789] ? free_netdev (net/core/dev.c:11066 (discriminator 1)) 
-[  239.531829] ? exc_invalid_op (arch/x86/kernel/traps.c:267) 
-[  239.531868] ? asm_exc_invalid_op (./arch/x86/include/asm/idtentry.h:621) 
-[  239.531910] ? free_netdev (net/core/dev.c:11066 (discriminator 1)) 
-[  239.531952] ath11k_pcic_free_irq (drivers/net/wireless/ath/ath11k/pcic.c:312 (discriminator 2) drivers/net/wireless/ath/ath11k/pcic.c:334 (discriminator 2)) ath11k
-[  239.532029] ath11k_pci_remove (drivers/net/wireless/ath/ath11k/pci.c:478 drivers/net/wireless/ath/ath11k/pci.c:987) ath11k_pci
-[  239.532075] pci_device_remove (./include/linux/pm_runtime.h:129 drivers/pci/pci-driver.c:475) 
-[  239.532116] device_remove (drivers/base/dd.c:569) 
-[  239.532155] device_release_driver_internal (drivers/base/dd.c:1272 drivers/base/dd.c:1293) 
-[  239.532198] ? __kasan_check_read (mm/kasan/shadow.c:32) 
-[  239.532241] driver_detach (drivers/base/dd.c:1357) 
-[  239.532281] bus_remove_driver (drivers/base/bus.c:736) 
-[  239.532322] driver_unregister (drivers/base/driver.c:275) 
-[  239.532362] pci_unregister_driver (./include/linux/spinlock.h:351 drivers/pci/pci-driver.c:85 drivers/pci/pci-driver.c:1467) 
-[  239.532402] ? find_module_all (kernel/module/main.c:357 (discriminator 1)) 
-[  239.532443] ath11k_pci_exit (drivers/net/wireless/ath/ath11k/pci.c:1069) ath11k_pci
-[  239.532543] __do_sys_delete_module (kernel/module/main.c:756) 
-[  239.532584] ? __kasan_slab_free (mm/kasan/common.c:274) 
-[  239.532625] ? module_flags (kernel/module/main.c:700) 
-[  239.532666] ? kmem_cache_free (mm/slub.c:4280 (discriminator 3) mm/slub.c:4344 (discriminator 3)) 
-[  239.533366] ? __fput (fs/file_table.c:436) 
-[  239.534132] ? debug_smp_processor_id (lib/smp_processor_id.c:61) 
-[  239.534855] __x64_sys_delete_module (kernel/module/main.c:698) 
-[  239.535620] do_syscall_64 (arch/x86/entry/common.c:52 (discriminator 1) arch/x86/entry/common.c:83 (discriminator 1)) 
-[  239.536334] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
-[  239.537628] RIP: 0033:0x7f462c611c8b
-[ 239.538510] Code: 73 01 c3 48 8b 0d 05 c2 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d d5 c1 0c 00 f7 d8 64 89 01 48
-All code
-========
-   0:	73 01                	jae    0x3
-   2:	c3                   	ret
-   3:	48 8b 0d 05 c2 0c 00 	mov    0xcc205(%rip),%rcx        # 0xcc20f
-   a:	f7 d8                	neg    %eax
-   c:	64 89 01             	mov    %eax,%fs:(%rcx)
-   f:	48 83 c8 ff          	or     $0xffffffffffffffff,%rax
-  13:	c3                   	ret
-  14:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-  1b:	00 00 00 
-  1e:	90                   	nop
-  1f:	f3 0f 1e fa          	endbr64
-  23:	b8 b0 00 00 00       	mov    $0xb0,%eax
-  28:	0f 05                	syscall
-  2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- trapping instruction
-  30:	73 01                	jae    0x33
-  32:	c3                   	ret
-  33:	48 8b 0d d5 c1 0c 00 	mov    0xcc1d5(%rip),%rcx        # 0xcc20f
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3f:	48                   	rex.W
-
-Code starting with the faulting instruction
-===========================================
-   0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
-   6:	73 01                	jae    0x9
-   8:	c3                   	ret
-   9:	48 8b 0d d5 c1 0c 00 	mov    0xcc1d5(%rip),%rcx        # 0xcc1e5
-  10:	f7 d8                	neg    %eax
-  12:	64 89 01             	mov    %eax,%fs:(%rcx)
-  15:	48                   	rex.W
-[  239.540022] RSP: 002b:00007fff08acd828 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-[  239.540791] RAX: ffffffffffffffda RBX: 0000555f9f0647d0 RCX: 00007f462c611c8b
-[  239.541556] RDX: 000000000000000a RSI: 0000000000000800 RDI: 0000555f9f064838
-[  239.542319] RBP: 00007fff08acd888 R08: 0000000000000000 R09: 0000000000000000
-[  239.543087] R10: 00007f462c68dac0 R11: 0000000000000206 R12: 00007fff08acda60
-[  239.543859] R13: 00007fff08acdeb7 R14: 0000555f9f0632a0 R15: 0000555f9f0647d0
-[  239.544615]  </TASK>
-[  239.545337] Modules linked in: ath11k_pci(-) ath11k mac80211 libarc4 cfg80211 qmi_helpers qrtr_mhi mhi qrtr nvme nvme_core
-[  239.546153] ---[ end trace 0000000000000000 ]---
-[  239.568717] RIP: 0010:free_netdev (net/core/dev.c:11066 (discriminator 1)) 
-[ 239.569476] Code: 08 84 d2 0f 85 3c 01 00 00 0f b7 83 3a 03 00 00 48 29 c3 48 89 df e8 27 10 21 fe 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b 44 0f b6 25 fd 91 53 02 41 80 fc 01 0f 87 1f 14 94 00 41 83
-All code
-========
-   0:	08 84 d2 0f 85 3c 01 	or     %al,0x13c850f(%rdx,%rdx,8)
-   7:	00 00                	add    %al,(%rax)
-   9:	0f b7 83 3a 03 00 00 	movzwl 0x33a(%rbx),%eax
-  10:	48 29 c3             	sub    %rax,%rbx
-  13:	48 89 df             	mov    %rbx,%rdi
-  16:	e8 27 10 21 fe       	call   0xfffffffffe211042
-  1b:	48 83 c4 10          	add    $0x10,%rsp
-  1f:	5b                   	pop    %rbx
-  20:	41 5c                	pop    %r12
-  22:	41 5d                	pop    %r13
-  24:	41 5e                	pop    %r14
-  26:	41 5f                	pop    %r15
-  28:	5d                   	pop    %rbp
-  29:	c3                   	ret
-  2a:*	0f 0b                	ud2		<-- trapping instruction
-  2c:	44 0f b6 25 fd 91 53 	movzbl 0x25391fd(%rip),%r12d        # 0x2539231
-  33:	02 
-  34:	41 80 fc 01          	cmp    $0x1,%r12b
-  38:	0f 87 1f 14 94 00    	ja     0x94145d
-  3e:	41                   	rex.B
-  3f:	83                   	.byte 0x83
-
-Code starting with the faulting instruction
-===========================================
-   0:	0f 0b                	ud2
-   2:	44 0f b6 25 fd 91 53 	movzbl 0x25391fd(%rip),%r12d        # 0x2539207
-   9:	02 
-   a:	41 80 fc 01          	cmp    $0x1,%r12b
-   e:	0f 87 1f 14 94 00    	ja     0x941433
-  14:	41                   	rex.B
-  15:	83                   	.byte 0x83
-[  239.571082] RSP: 0018:ffffc90002dffb70 EFLAGS: 00010202
-[  239.571929] RAX: 0000000000000005 RBX: ffff88810c819000 RCX: 0000000000000000
-[  239.572970] RDX: 1ffff110219032d1 RSI: ffffffff87e79780 RDI: 0000000000000000
-[  239.573792] RBP: ffffc90002dffba8 R08: 0000000000000001 R09: 0000000000000001
-[  239.574600] R10: ffffffff897e3f17 R11: 00000000000000bb R12: ffff88810c8194e0
-[  239.575368] R13: ffff88810c819178 R14: dffffc0000000000 R15: ffff88810c819688
-[  239.576136] FS:  00007f462c4c4740(0000) GS:ffff888231c00000(0000) knlGS:0000000000000000
-[  239.576909] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  239.577723] CR2: 0000557ff5c54118 CR3: 0000000113a99003 CR4: 00000000003706f0
-[  239.578508] Kernel panic - not syncing: Fatal exception
-[  239.579273] Kernel Offset: 0x3e00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-[  239.608975] Rebooting in 10 seconds..
-
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                        multi_v5_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240406   clang
+i386         buildonly-randconfig-002-20240406   clang
+i386         buildonly-randconfig-003-20240406   gcc  
+i386         buildonly-randconfig-004-20240406   clang
+i386         buildonly-randconfig-005-20240406   gcc  
+i386         buildonly-randconfig-006-20240406   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240406   clang
+i386                  randconfig-002-20240406   gcc  
+i386                  randconfig-003-20240406   clang
+i386                  randconfig-004-20240406   clang
+i386                  randconfig-005-20240406   clang
+i386                  randconfig-006-20240406   gcc  
+i386                  randconfig-011-20240406   clang
+i386                  randconfig-012-20240406   clang
+i386                  randconfig-013-20240406   clang
+i386                  randconfig-014-20240406   gcc  
+i386                  randconfig-015-20240406   clang
+i386                  randconfig-016-20240406   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                           ip27_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                    adder875_defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                               j2_defconfig   gcc  
+sh                      rts7751r2d1_defconfig   gcc  
+sh                           se7343_defconfig   gcc  
+sh                             sh03_defconfig   gcc  
+sh                            titan_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240406   clang
+x86_64       buildonly-randconfig-002-20240406   gcc  
+x86_64       buildonly-randconfig-003-20240406   clang
+x86_64       buildonly-randconfig-004-20240406   gcc  
+x86_64       buildonly-randconfig-005-20240406   gcc  
+x86_64       buildonly-randconfig-006-20240406   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240406   gcc  
+x86_64                randconfig-002-20240406   clang
+x86_64                randconfig-003-20240406   gcc  
+x86_64                randconfig-004-20240406   clang
+x86_64                randconfig-005-20240406   clang
+x86_64                randconfig-006-20240406   clang
+x86_64                randconfig-011-20240406   gcc  
+x86_64                randconfig-012-20240406   clang
+x86_64                randconfig-013-20240406   clang
+x86_64                randconfig-014-20240406   gcc  
+x86_64                randconfig-015-20240406   gcc  
+x86_64                randconfig-016-20240406   clang
+x86_64                randconfig-071-20240406   clang
+x86_64                randconfig-072-20240406   clang
+x86_64                randconfig-073-20240406   clang
+x86_64                randconfig-074-20240406   clang
+x86_64                randconfig-075-20240406   clang
+x86_64                randconfig-076-20240406   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
