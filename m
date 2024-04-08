@@ -4,70 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B38EFC67861
-	for <ath10k@archiver.kernel.org>; Mon,  8 Apr 2024 13:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0A72CD1296
+	for <ath10k@archiver.kernel.org>; Mon,  8 Apr 2024 15:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/+5wDrVmPRuIiSwBrRmVT0PS58QAkfRbs3RzHuiSDAI=; b=b+KhRqnPQY1nh5I/D5ZNnjpkT/
-	5+Kz3YTSl63+SYkRp3QFL8RBoifYFOXLwntT/mGBZrBEzgZJbPu3Q6bq67q41OAmPVBo/MNB2Bcty
-	1gpm5SSn/ee3XqAFxOxJs8OzdGI7N21aOllXeSkEvh1dbDQrwvfq5i2xLRo0BcuVbRNF72+ukU2Li
-	ihqMDeZ8xc9pINBNSVV+md11fL3zM+GLHYlCoajwTFY7gJnfhgcJABOwypEw99XGbCS06gZOQ8mYw
-	Iz/4sfKZKucjtwBYkt1vepHJrYz2wsasIIos7YX/r08Ow6pfereuoGVR2utYG9aQmBtHAvXYk3sxE
-	uQK4vl9Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=PV2QGCABE36oWSsPi/l6CQE6DAlPBHE1k65KDD12Caw=; b=NKXDnN0MzRXg2wtXM/TWkNGcQb
+	jqE7duKyOsWOCjwYaFeyPOvfQNQaqKNNt2RO67FfkkTKSHeF1WiZVWD/OfZZi4q54vA8QyATh8jmP
+	Yko7y1if5CHg3uUt924XJbp8uCoYalhK/Y0m+zi6mbS7URd5vRQoFKZKVUaqJgNLdXXb4Lv0rLCTf
+	dRnVOPqiNH6JaDTz4EGmoxpa/fXmi9ahY77tOR6plezs9/4qABbStVaBkhXPAZsazj87LokXA2sa6
+	zulRV9Zh91TYmfWrzsKPTwYV6xSg0Zkl0TSXM+5hMhebVdDsOvLl3Ol1d9pFgHM4F5CLYg+SYc4fQ
+	dAHWmjnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtp8d-0000000Fjj7-3RoN;
-	Mon, 08 Apr 2024 13:34:19 +0000
-Received: from mail-ej1-f47.google.com ([209.85.218.47])
+	id 1rtrIz-0000000G5mF-25kS;
+	Mon, 08 Apr 2024 15:53:09 +0000
+Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtp8U-0000000FjfK-19qu;
-	Mon, 08 Apr 2024 13:34:13 +0000
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a44ad785a44so525932266b.3;
-        Mon, 08 Apr 2024 06:34:00 -0700 (PDT)
+	id 1rtrIw-0000000G5ku-0d68
+	for ath10k@lists.infradead.org;
+	Mon, 08 Apr 2024 15:53:07 +0000
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-343f62d8124so2192816f8f.2
+        for <ath10k@lists.infradead.org>; Mon, 08 Apr 2024 08:53:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1712591582; x=1713196382; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PV2QGCABE36oWSsPi/l6CQE6DAlPBHE1k65KDD12Caw=;
+        b=aPsuLxxi7Er40qZwh2bfIA37lsaTz92OwQ4H+LCbtq483z069xox5VtVQR1oqUDT5b
+         TN4v+FPDlSE8EpXVWN6xPwPocWughAcJCAwVjMel2OqoxaQTz72leHx7wqgoWIygNhPB
+         M91nDRmw9i2Y4GdLQh/9lsMD5+THm2JNSbmLwPWfHQCbiJKNBKtXYu17zWnS4QuVSnVT
+         w9OSar1nQGrPW6zYid4DQD25a7Nf+n+6kw+JcG6rk7OADC+/QK0Pkw4fKqlq6EsXK4zJ
+         sKPFHaOsh7yQP3PzfWsm4jGzi6IALP1kRXHGJshCc2eRWrNCtI243T6FXQyOWlnXyY5J
+         nZlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712583239; x=1713188039;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/+5wDrVmPRuIiSwBrRmVT0PS58QAkfRbs3RzHuiSDAI=;
-        b=nz+DsuNcBruYxRGaRfxjR6H7ffu8ZXma3ExRkgKYl4ubT9cOapAb8wRRGoxxpUGvZI
-         3VRmofLb6TtTHxKfQJITFzvsG7th2jgSQNB8CMb1hchiB6a8OIdnoIQo7snsR4SSkH5p
-         F6ciriX/i5fL6u3SVgQBV6DmlKNHdwAW8X8ndduI25j6+JFqb1nlT/O1R9OHu9a8Iqrt
-         SbUCzVMrgVXu5jgx63F5Sch160rDAhYEzRDVbLmZjQwe2vbPoYiMfDREwVE9CgsCa4M1
-         2BNShmyhOxu0D9gglnlgh+Frr8uk/qJW4dcReSRIViOy0UNirD4R4hKPzXQsbj3eoBsY
-         bsTg==
-X-Forwarded-Encrypted: i=1; AJvYcCWc2nXaq3IYMgKAfr3Q3sC7PTX9PBfHR2KOsC4XDeuy+hGsPa7wuHPGRZ5gz3hIo3HY5i9U+J3jj3qypw+juLXc+/VrnpcZgvNx8Qm4WgfgjMb/MD7BblAF9VrOCBqGd2RPHrY+pGc=
-X-Gm-Message-State: AOJu0YxIlF4YYHr82WO4vQsCTmXxSy3YfIy8PiuhQQGe/SdHnu4mpB/Y
-	1CnJxYWpO+S0zw18gLniS8zimNzuGDLqQWv8uDaMFR3jd7TRwEJY
-X-Google-Smtp-Source: AGHT+IFG1A/aXSJF1vs3BAnXmRfhA0B3vs71mMEuEDjURn9PVqQkXpJtMGYAvgXIPvupcCdvOEeZ3Q==
-X-Received: by 2002:a17:907:d8a:b0:a51:ce92:1e1b with SMTP id go10-20020a1709070d8a00b00a51ce921e1bmr3195308ejc.72.1712583239288;
-        Mon, 08 Apr 2024 06:33:59 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-008.fbsv.net. [2a03:2880:30ff:8::face:b00c])
-        by smtp.gmail.com with ESMTPSA id s21-20020a170906355500b00a51da296f66sm1035902eja.41.2024.04.08.06.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 06:33:59 -0700 (PDT)
-Date: Mon, 8 Apr 2024 06:33:56 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: kuba@kernel.org, ath11k@lists.infradead.org, ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org, imitsyanko@quantenna.com,
-	geomatsi@gmail.com, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH 0/3] wifi: Un-embed ath10k and ath11k dummy netdev
-Message-ID: <ZhPyRHHlVot+a8Xq@gmail.com>
-References: <20240405122123.4156104-1-leitao@debian.org>
- <87y19r264m.fsf@kernel.org>
+        d=1e100.net; s=20230601; t=1712591582; x=1713196382;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PV2QGCABE36oWSsPi/l6CQE6DAlPBHE1k65KDD12Caw=;
+        b=H7tDvfECT7TZJTQPv0t60lu+5tl04BESTl0dPNrPdCswXf5MAnQ2+q1pFHH7KnwozJ
+         a3cM+SOy7eU+/fOmFKzbAfi+sQZDpZt1xQnLAveE/hZJNskVtphL1a03rCFxAc9N9Egd
+         Bh9bjoI7vrq2t/6raE9lDp43DcVYZbbOl1X0rH3XMSw+h77tW0FoYdiFBlxVz0417WD1
+         B3wf9vykr6W70mRh0zmek7RYHs6fr4olToXrDUK5mpySp27HTf6GETYhhsTn4lxLN9bc
+         IUDVAW0qmHZr0ig9fvqn4MEhh7nb4v8RF9XUwQ1gXWzTT95fQaDbV6p0D0Ya5LZel6R7
+         dZHg==
+X-Forwarded-Encrypted: i=1; AJvYcCUrnBIUB/uRGm8PXXCcB8450V8Cn15ps7Ck7YG0DM/3hoOsV1uw2C5mZNtHQJlqfhs/Z1fvxShJsRtrgjs7Br1Y5dzSCuovvEsLKQ==
+X-Gm-Message-State: AOJu0YwUX8C3vUPhL4L0ntiPfF4P3/mrf/4C08SM02EkoNqEaBPR+/MF
+	l1jR1xx9yAjM49UVwvy+qCNu5s2q2P2mxlwtb0omOsFV8oHUP+lxKn6ozhEePf4=
+X-Google-Smtp-Source: AGHT+IF87J4Q/rgFnwCIm8WBGlFyl1vMp8m6s/lxg+SxFZ0lmZ8/wXNjMI8XEjSdYdJzrpjZ6SXNIA==
+X-Received: by 2002:adf:e647:0:b0:345:5ff1:245d with SMTP id b7-20020adfe647000000b003455ff1245dmr4115241wrn.32.1712591582423;
+        Mon, 08 Apr 2024 08:53:02 -0700 (PDT)
+Received: from [192.168.108.81] (freebox.vlq16.iliad.fr. [213.36.7.13])
+        by smtp.gmail.com with ESMTPSA id z15-20020a5d4c8f000000b00343daeddcb2sm9341328wrs.45.2024.04.08.08.53.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 08:53:02 -0700 (PDT)
+Message-ID: <ad5e178b-cd64-4a87-8994-f917993f3bbb@freebox.fr>
+Date: Mon, 8 Apr 2024 17:53:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y19r264m.fsf@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: msm8998: set
+ qcom,no-msa-ready-indicator for wifi
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k
+ <ath10k@lists.infradead.org>, wireless <linux-wireless@vger.kernel.org>,
+ DT <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Pierre-Hugues Husson <phhusson@freebox.fr>, Arnaud Vrac <avrac@freebox.fr>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Jami Kettunen <jamipkettunen@gmail.com>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+References: <fd26ce4a-a9f3-4ada-8d46-ed36fb2456ca@freebox.fr>
+ <5cdad89c-282a-4df5-a286-b8404bc4dd81@freebox.fr>
+ <252618e8-9e80-4774-a96c-caa7f838ef01@linaro.org>
+ <502322f1-4f66-4922-bc4e-46bacac23410@linaro.org>
+ <0ca1221b-b707-450f-877d-ca07a601624d@freebox.fr>
+ <CAA8EJppeREj-0g9oGCzzKx5ywhg1mgmJR1q8yvXKN7N45do1Xg@mail.gmail.com>
+ <87ttkh49xi.fsf@kernel.org> <e804b257-4dc0-45f1-a5c5-66bda51cf296@freebox.fr>
+ <87h6gh406w.fsf@kernel.org>
+Content-Language: en-US
+From: Marc Gonzalez <mgonzalez@freebox.fr>
+In-Reply-To: <87h6gh406w.fsf@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240408_063410_767936_4D4D28B4 
-X-CRM114-Status: GOOD (  21.49  )
+X-CRM114-CacheID: sfid-20240408_085306_232750_645336C8 
+X-CRM114-Status: GOOD (  19.91  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,56 +112,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+On 04/04/2024 17:28, Kalle Valo wrote:
+
+> Marc Gonzalez wrote:
+> 
+>> On 04/04/2024 13:57, Kalle Valo wrote:
+>>
+>>> Dmitry Baryshkov wrote:
+>>>
+>>>> I'd say, we should take a step back and actually verify how this was
+>>>> handled in the vendor kernel.
+>>>
+>>> One comment related to this: usually vendor driver and firmware branches
+>>> go "hand in hand", meaning that a version of driver supports only one
+>>> specific firmware branch. And there can be a lot of branches. So even if
+>>> one branch might have a check for something specific, there are no
+>>> guarantees what the other N+1 branches do :/
+>>
+>> The consequences and ramifications of the above comment are not clear to me.
+>>
+>> Does this mean:
+>> "It is pointless to analyze a given version (or even several versions)
+>> of the vendor driver downstream, because there are exist a large number
+>> of variations of the code." ?
+> 
+> I was trying to say that because the design philosophy between vendor
+> drivers and upstream drivers is very different, we can't 100% trust
+> vendor drivers. It's a very good idea to check what vendor drivers do
+> but we just need to be careful before making any conclusions. Testing
+> real hardware (and corresponding firmware) is the most reliable way to
+> know how different products/firmware work, unfortunately.
+> 
+>> And thus, "it is nonsensical to try to "align" the mainline driver to
+>> "the" vendor driver, as there is no single "vendor driver"" ?
+> 
+> No no, I'm not saying that. I have suffered this "N+1 different firmware
+> branches behaving slighly differently" problem since ath6kl days so for
+> me this is business as usual, sadly. I'm sure we can find a solution for
+> ath10k.
+
 Hello Kalle,
 
-On Fri, Apr 05, 2024 at 06:15:05PM +0300, Kalle Valo wrote:
-> Breno Leitao <leitao@debian.org> writes:
-> 
-> > struct net_device shouldn't be embedded into any structure, instead,
-> > the owner should use the private space to embed their state into
-> > net_device.
-> >
-> > This patch set fixes the problem above for ath10k and ath11k. This also
-> > fixes the conversion of qtnfmac driver to the new helper.
-> >
-> > This patch set depends on a series that is still under review:
-> > https://lore.kernel.org/all/20240404114854.2498663-1-leitao@debian.org/#t
-> >
-> > If it helps, I've pushed the tree to
-> > https://github.com/leitao/linux/tree/wireless-dummy
-> >
-> > PS: Due to lack of hardware, unfortunately all these patches are
-> > compiled tested only.
-> >
-> > Breno Leitao (3):
-> >   wifi: qtnfmac: Use netdev dummy allocator helper
-> >   wifi: ath10k: allocate dummy net_device dynamically
-> >   wifi: ath11k: allocate dummy net_device dynamically
-> 
-> Thanks for setting up the branch, that makes the testing very easy. I
-> now tested the branch using the commit below with ath11k WCN6855 hw2.0
-> on an x86 box:
-> 
-> 5be9a125d8e7 wifi: ath11k: allocate dummy net_device dynamically
-> 
-> But unfortunately it crashes, the stack trace below. I can easily test
-> your branches, just let me know what to test. A direct 'git pull'
-> command is the best.
+I can spin a v3, no problem.
 
-Thanks for the test.
+Do you prefer:
 
-Reading the issue, I am afraid that freeing netdev explicitly
-(free_netdev()) might not be the best approach at the exit path.
+Option A = never waiting for the MSA_READY indicator for ANYONE
+Option B = not waiting for the MSA_READY indicator when qcom,no-msa-ready-indicator is defined
+Option C = not waiting for the MSA_READY indicator for certain platforms (based on root compatible)
+Option D = some other solution not yet discussed
 
-I would like to try to leverage the ->needs_free_netdev netdev
-mechanism to do the clean-up, if that makes sense. I've updated the
-ath11k patch, and I am curious if that is what we want.
+Dmitry has tested Option A on 5 platforms, where it does not induce regressions.
+I worked on msm8998, where Option A (or any equivalent) unbreaks WiFi.
 
-Would you mind testing a net patch I have, please?
+Please provide guidance :)
 
-  https://github.com/leitao/linux/tree/wireless-dummy_v2
+Regards
 
-PS: I didn't updated the other drivers (ath10k, qtnfmac, etc).
-
-Thank you!
 
