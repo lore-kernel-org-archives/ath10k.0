@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4192CCD11C2
-	for <ath10k@archiver.kernel.org>; Wed, 10 Apr 2024 13:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BD4DCD128A
+	for <ath10k@archiver.kernel.org>; Wed, 10 Apr 2024 13:19:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ui1DJxKv+GCSubTCimqVqNTb9BwhV0yVlSdcCwIQq1A=; b=yNGF9PdHEdCumtMW+jIyH8KT/5
-	Vlaxg1tl3xMEy0AtkeaRxbzXf757Sp9rrieBb5wjuBj/lZ+abIdPysfPK13wUog/xgK0mccXB0zoq
-	e0XIpDP2v2BmRLAtRd7WCzM0jCNgBq6WxDqiAqAtELXpb5JFPOjArKaOT1MiQT+WrMQCdZvfJe/Pz
-	5sChnS0JG3syPghcMx1mGIoV10bCh1ZYGhMb7akgL5pBKlZiEFt/OF+Abws0ZkcGD7TWEqhUAONg2
-	bVUkWT/psE07ALGduyh8Y6YGRi2nwnhq0JlFI4jtsd4KSz0QlF0SD8zD0lpTc64dgv9snMnNEoSzN
-	WQcVDFkQ==;
+	bh=9uOh18J18K7IiJjOdRTp7+wBD9ghOrm4r66dFYnU+6Y=; b=IU41HTVtRvr7XrqApXFf78g07L
+	XAHW9cjYnusHG8aco0+zXLR41qbjyoHUxMoTvRw8gfDRP8zXxlWsx7HNM9Ux6MsbCQ0Yvot/NsXGO
+	JMLQWIKH2X7nmXp/G0IAKh50rfB2LZKtQFLQVvUsdtFO7I3awWyOWFoc/d6gu5ecUx3l/8kNXYF9l
+	Mfw1d7Cb34Yhpcw4Z4IwguQm69gJxQRF6MdcDIu7eVwRDSWzcHXF6VzdOthRl3Mt0kdfSwL28taAf
+	REfY55P9Yvwl5ESUQmp/iwd9E7zgvLldCGgDmvB3rPKeCh1C3ZkeBvz0W12DnY2NR4rTD5VcQyW0w
+	zcydsChQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruXrJ-000000076Po-128Y;
-	Wed, 10 Apr 2024 13:19:25 +0000
-Received: from mail-ed1-f46.google.com ([209.85.208.46])
+	id 1ruXrj-000000076n2-1uQC;
+	Wed, 10 Apr 2024 13:19:51 +0000
+Received: from mail-ej1-f49.google.com ([209.85.218.49])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruXq8-000000075QC-1VrK;
-	Wed, 10 Apr 2024 13:18:13 +0000
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56e509baddaso3718904a12.1;
-        Wed, 10 Apr 2024 06:18:11 -0700 (PDT)
+	id 1ruXqJ-000000075ZX-1l8L;
+	Wed, 10 Apr 2024 13:18:25 +0000
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a51b008b3aeso531384066b.3;
+        Wed, 10 Apr 2024 06:18:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712755090; x=1713359890;
+        d=1e100.net; s=20230601; t=1712755100; x=1713359900;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ui1DJxKv+GCSubTCimqVqNTb9BwhV0yVlSdcCwIQq1A=;
-        b=kZjXlqjS/p1PmKTcIccvwQXYqwjHgNYwo9I3sFHjfec7RvaQiIzV0kOFb3M/JyE6Jz
-         NRDHfZZ9Dv9grvGqaNNQHObJvz8MZBxEmBAIVtvpz69auDer5THc/08ouW91vXBGt+26
-         sWlworOo7ovQLxYAEW/MYiAoMkN51COCLg+OmwsQC34tztkPI8st/1yjuOlc1GnZxd5U
-         GAjzVO0gEtnIDgTNkxL1Z00Bi+ZLr6gYsDJs9BrJJXDVfQ4NReFsXpobDVLtaQ8KNi1f
-         Mcg0grgh6i5LcdK7Jp0wF8P6SCC2aWa8OO7gtVmiwAa8bSwih4mjUrGr3B0ErmvfzTxU
-         cOZw==
-X-Forwarded-Encrypted: i=1; AJvYcCUM+Pa0fEa9NNAUBtfk68K47iJVV7s1Al1MZQnzEdjjyo/ZfrJ8Q9TlXtTUt7m589oN2lLYizPJ/EPbh7mfLw42DGBT2hKQj4aeuMfRpQwjXC4RDOeMbRh6e5I8syzykt5I8gX1kn1mdisEmNJyWb3PIVp6u55U9WFhwLgDO5Bnkve9TTEXQHrnHGa1Ky9BKyFuIrywFhcAY8TZNNLffHiDEj+kWanLOrKDaH9jGh5+vw==
-X-Gm-Message-State: AOJu0Yx8+XIgG6ZZ+S/SnsSJy1CZwlKIVt0Gv+GDQQk5y5+9SmTKZCVQ
-	ti3Oq8PBwi9TCfuUf5BPZ0xOtBeJx8+PJ3pVxuKmRSLMW+hDRFTY
-X-Google-Smtp-Source: AGHT+IGftURUiLhae3IWuo+JgModGLFYkH2l8Vww82aSVu0SYVtXrmdtfM8lFQGJV5CM4+6FNOQ1pQ==
-X-Received: by 2002:a50:d49c:0:b0:568:32cc:f808 with SMTP id s28-20020a50d49c000000b0056832ccf808mr1310263edi.15.1712755090031;
-        Wed, 10 Apr 2024 06:18:10 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-002.fbsv.net. [2a03:2880:30ff:2::face:b00c])
-        by smtp.gmail.com with ESMTPSA id fi9-20020a056402550900b0056bdc4a5cd6sm6359853edb.62.2024.04.10.06.18.08
+        bh=9uOh18J18K7IiJjOdRTp7+wBD9ghOrm4r66dFYnU+6Y=;
+        b=biUokhFVrxEwHuFiCuTTM/1rmUpk2OJtQN7xKR2wJEmDlysOOuADYkh5em4vALOqMa
+         VtnOFZC3QrKCbF5gl9r97sMcBc+EvqkndWZU5RxnmB2QDf6MTRzg6LpPVxBB0bCUbskA
+         87XPwceumrUt2lqUsGCAQSY6SdYiOCQExeeEVDyxZVAyNqrAx24J+4m/608/hX5Xkrye
+         4480HoUApWPTBuscB1HCI02p2kbxv1A7LaGzRkH1+/Wa2plztdSk2MOknrVz+R9bKtKu
+         4xYKoJIx1J9IaXxzvx/8DnSEfQztcI09IBclsC6dx1TLqghsdgLZVXbS2HmyQrDVjZ/r
+         4bxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXlvwzolFJDrP0POA+5SCc30CxnRLtovoKg7zrEstGhTQbQYSASWoaX6kLUUcxzeQNDlFa0Cxm7Mfx9L+6VRTeuMXYTkXK1ynwjAu0bTaz8Yv8N53pT2Ool4j23Shlql/MwnGTo/VbgxxKhaBBhLTt4QRkBZ6x3NvNqGXQluIwU3O6kp/O9Don/Kr9Ne18AmC8f3Io33z3LuEq46tAs9nMrwl4Gn8licnl6TsPwoJzWhw==
+X-Gm-Message-State: AOJu0Yx2XL85UBchEg7VIlby4xnUtgJazidrnId/xxcs0s997Y9kBevh
+	4qvGjAMRfwWYLZmwFzrCHgg2ijk16ot8F9dLed329Yr3KXtmqptf
+X-Google-Smtp-Source: AGHT+IFr2S2LI08jI8XIroOmyyE/85QrJ6Hsd+T5Ighzae4CMX/NDkh7+a/IOM6kncoda2BU+ME9hQ==
+X-Received: by 2002:a17:907:7ea0:b0:a4e:6957:de25 with SMTP id qb32-20020a1709077ea000b00a4e6957de25mr2199693ejc.57.1712755100549;
+        Wed, 10 Apr 2024 06:18:20 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-116.fbsv.net. [2a03:2880:30ff:74::face:b00c])
+        by smtp.gmail.com with ESMTPSA id qf15-20020a1709077f0f00b00a47439647efsm6935601ejc.133.2024.04.10.06.18.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 06:18:09 -0700 (PDT)
+        Wed, 10 Apr 2024 06:18:19 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: aleksander.lobakin@intel.com,
 	kuba@kernel.org,
@@ -68,7 +68,8 @@ To: aleksander.lobakin@intel.com,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	geomatsi@gmail.com,
-	kvalo@kernel.org
+	kvalo@kernel.org,
+	Igor Mitsyanko <imitsyanko@quantenna.com>
 Cc: quic_jjohnson@quicinc.com,
 	leon@kernel.org,
 	dennis.dalessandro@cornelisnetworks.com,
@@ -77,17 +78,18 @@ Cc: quic_jjohnson@quicinc.com,
 	bpf@vger.kernel.org,
 	idosch@idosch.org,
 	leitao@debian.org
-Subject: [PATCH net-next v5 06/10] net: ipa: allocate dummy net_device dynamically
-Date: Wed, 10 Apr 2024 06:13:47 -0700
-Message-ID: <20240410131407.3897251-7-leitao@debian.org>
+Subject: [PATCH net-next v5 08/10] wifi: qtnfmac: Use netdev dummy allocator helper
+Date: Wed, 10 Apr 2024 06:13:49 -0700
+Message-ID: <20240410131407.3897251-9-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240410131407.3897251-1-leitao@debian.org>
 References: <20240410131407.3897251-1-leitao@debian.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240410_061812_486678_596ADAD6 
-X-CRM114-Status: GOOD (  13.16  )
+X-CRM114-CacheID: sfid-20240410_061823_544928_BA01EF8F 
+X-CRM114-Status: UNSURE (   9.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,85 +104,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+There is a new dummy netdev allocator, use it instead of
+alloc_netdev()/init_dummy_netdev combination.
 
-Un-embed the net_device from the private struct by converting it
-into a pointer. Then use the leverage the new alloc_netdev_dummy()
-helper to allocate and initialize dummy devices.
+Using alloc_netdev() with init_dummy_netdev might cause some memory
+corruption at the driver removal side.
 
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-
+Fixes: 61cdb09ff760 ("wifi: qtnfmac: allocate dummy net_device dynamically")
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ipa/gsi.c | 12 ++++++++----
- drivers/net/ipa/gsi.h |  2 +-
- 2 files changed, 9 insertions(+), 5 deletions(-)
+ drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 9a0b1fe4a93a..d70be15e95a6 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -1730,10 +1730,10 @@ static int gsi_channel_setup_one(struct gsi *gsi, u32 channel_id)
- 	gsi_channel_program(channel, true);
+diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
+index f8f55db2f454..f66eb43094d4 100644
+--- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
++++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
+@@ -372,8 +372,7 @@ static int qtnf_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto error;
+ 	}
  
- 	if (channel->toward_ipa)
--		netif_napi_add_tx(&gsi->dummy_dev, &channel->napi,
-+		netif_napi_add_tx(gsi->dummy_dev, &channel->napi,
- 				  gsi_channel_poll);
- 	else
--		netif_napi_add(&gsi->dummy_dev, &channel->napi,
-+		netif_napi_add(gsi->dummy_dev, &channel->napi,
- 			       gsi_channel_poll);
- 
- 	return 0;
-@@ -2369,12 +2369,14 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev,
- 	/* GSI uses NAPI on all channels.  Create a dummy network device
- 	 * for the channel NAPI contexts to be associated with.
- 	 */
--	init_dummy_netdev(&gsi->dummy_dev);
-+	gsi->dummy_dev = alloc_netdev_dummy(0);
-+	if (!gsi->dummy_dev)
-+		return -ENOMEM;
- 	init_completion(&gsi->completion);
- 
- 	ret = gsi_reg_init(gsi, pdev);
- 	if (ret)
--		return ret;
-+		goto err_reg_exit;
- 
- 	ret = gsi_irq_init(gsi, pdev);	/* No matching exit required */
- 	if (ret)
-@@ -2389,6 +2391,7 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev,
- 	return 0;
- 
- err_reg_exit:
-+	free_netdev(gsi->dummy_dev);
- 	gsi_reg_exit(gsi);
- 
- 	return ret;
-@@ -2399,6 +2402,7 @@ void gsi_exit(struct gsi *gsi)
- {
- 	mutex_destroy(&gsi->mutex);
- 	gsi_channel_exit(gsi);
-+	free_netdev(gsi->dummy_dev);
- 	gsi_reg_exit(gsi);
- }
- 
-diff --git a/drivers/net/ipa/gsi.h b/drivers/net/ipa/gsi.h
-index 42063b227c18..6b7ec2a39676 100644
---- a/drivers/net/ipa/gsi.h
-+++ b/drivers/net/ipa/gsi.h
-@@ -155,7 +155,7 @@ struct gsi {
- 	struct mutex mutex;		/* protects commands, programming */
- 	struct gsi_channel channel[GSI_CHANNEL_COUNT_MAX];
- 	struct gsi_evt_ring evt_ring[GSI_EVT_RING_COUNT_MAX];
--	struct net_device dummy_dev;	/* needed for NAPI */
-+	struct net_device *dummy_dev;	/* needed for NAPI */
- };
- 
- /**
+-	bus->mux_dev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
+-				    init_dummy_netdev);
++	bus->mux_dev = alloc_netdev_dummy(0);
+ 	if (!bus->mux_dev) {
+ 		ret = -ENOMEM;
+ 		goto error;
 -- 
 2.43.0
 
