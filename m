@@ -4,71 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 322E7CD11C2
-	for <ath10k@archiver.kernel.org>; Wed, 10 Apr 2024 11:04:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3ECDCD128A
+	for <ath10k@archiver.kernel.org>; Wed, 10 Apr 2024 11:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=SmnKdENepUAxeWMETiH5dHMiq/C2U9upv+6ezIJSE2E=; b=o57i556pmuZVMuCZx2kUJwtjE1
-	ny/DrhX5FcJki1PaJPvUZL6OFCUSUl4Rbwfxhuws+ORwMVe+BTg1a3OsFSdNPxa2m20eZEz6su1ew
-	hYNv9CHfncS0uSxsY0ttJCRp46MJorN5WepYVh4XBjWAMP5ayInPgjQyGTawN9HyT7bbf25vrP6SM
-	QqtZOnjRNTwivv/mHvA2DEJNgYv0K4EqYI6y/VmPz10qyBKzpMyUo/DYcrYJSf5XU7Kvn8kOWYiA2
-	5ZKBYP3pz24PfTDs4KKVyfY05o36QW09basF2o8UzKeaVj3z490qPT+maEP3OVVbsMNHX36zpFhmc
-	QiZSa/LQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=5RenAIti6McvKXi8QC4qbp24wHgGzwtMM+b1Bo/azeU=; b=K8pkaRo5J0rFBGwoJhi+AnMxHc
+	WjIFSn4JULf6A+YWewYJOyavTR9Vx0ufhH6TputdXHShC6YucldsWVNAeEyQfjf1+0jUnMOuznsAc
+	/QgEXTnuiTMfLe2tap3PDAZWKZ03BUpQr8Ct8o0NDTcGIkYtaM9+9HAEDIp6Wbn5awTD4vtULUwjr
+	06FaSUIX6UDoa23qcfN5MAbB7AVaeF0uEUiU9yALSkJ7FAekO1f2rAw0jDULagchKlOZrFCDuXTap
+	fVUzMQ0GIBBF92TRmJpNSfcwnELkwsTyEesLKvW3m2co+DGk35Oy5bdI4wKncp97NHuTZZeuN4i+G
+	KE+D5kwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruVkB-00000006XCD-1UEn;
-	Wed, 10 Apr 2024 11:03:55 +0000
-Received: from mgamail.intel.com ([198.175.65.19])
+	id 1ruVqS-00000006Ycv-26dH;
+	Wed, 10 Apr 2024 11:10:24 +0000
+Received: from wfhigh8-smtp.messagingengine.com ([64.147.123.159])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruVk8-00000006XBI-14jH
-	for ath10k@lists.infradead.org;
-	Wed, 10 Apr 2024 11:03:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712747033; x=1744283033;
-  h=date:from:to:cc:subject:message-id;
-  bh=v7cXax8lSFGoSqxIIj5m3CcrRI9JA0iDsTcJrGhmZVY=;
-  b=i+iG63b+HO1YOCckKkGZmz/bPmnEZk2U+oV5pWGTA2iKV9bHmVAuziZq
-   IbImETbDUnlSD/wT/Hgl3SImeTdRRAuEofRcfhJxxEdznd2vEmJOJROiV
-   JXMDA6AUlKc3Wl8N3bgXpjSYjhccOYJ0vlZotj8vWhPlmw8MZi3iUuzo5
-   tiEkimpEfUa7Z3tn0CR3967v4gHDbiaKXkPBLmZDdBpYSSgChU/RpnDex
-   PnTEKYp1Hbai5rLJXeP/4UnsdMbr0hX08168qiLN45dBAITbIjTlcjLbH
-   +hZ++ZAcwaY9rQ6KO+WqHkLg4l7xB+cH9dLYRxl73hBM7zw++VHRQA6uo
-   w==;
-X-CSE-ConnectionGUID: cI7j9TkGTuCfi/VpLIgMnQ==
-X-CSE-MsgGUID: K1mNNYOdTY6qsklp6WdHcg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7974289"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="7974289"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:03:48 -0700
-X-CSE-ConnectionGUID: u5MPnqh8Rsmxtb6062259g==
-X-CSE-MsgGUID: oCpcDtjDRCOPMr8FCxc7rw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="51746321"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 10 Apr 2024 04:03:46 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ruVjz-0007En-3A;
-	Wed, 10 Apr 2024 11:03:43 +0000
-Date: Wed, 10 Apr 2024 19:03:27 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- dc410c4accd2fe64479a1f4ebc47ec9cd3928f4a
-Message-ID: <202404101924.u5gYns9j-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1ruVqO-00000006YaU-2pR6;
+	Wed, 10 Apr 2024 11:10:22 +0000
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 4A868180014A;
+	Wed, 10 Apr 2024 07:10:11 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 10 Apr 2024 07:10:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712747410; x=1712833810; bh=5RenAIti6McvKXi8QC4qbp24wHgG
+	zwtMM+b1Bo/azeU=; b=IcUQGu0gk2uB/Yhz0/r7dNBgzhSphX87liEpsU+lEIRO
+	pjyz7Mlw3krXVffkC1hxXjuRwJlcJOWvfEUddF2beeXcDZTQL8vDSIeyZtwgJuoP
+	gX1cjd1MKRSrnSlooQrVEI3HaLyuUbRZNqdk4MiB0bUfgI/Qp8MZHLWjtV0riweV
+	mFFsdXqfeJgIX/nS1ttboWDQTKA8Jdp+HXQ3llM10Fq1Tvzbw5cQ/LPBF2flJPXi
+	tf+nqBi8xCLZ3C7J6cBMLgf1XkLrSFq6b7ZJXyab1IZNV9ZW4vkFEt7htTDoS+gj
+	WD+bRPLJTKM9nYMO0YEZxf4g0lSStTSr5rls+i21Nw==
+X-ME-Sender: <xms:kXMWZofoAeyyMdCE3dmynplzzSoFKTyN85lWhp2jBx0Hi6pVC5zqcQ>
+    <xme:kXMWZqNnI-plEFyUJeVGicC0I2cMQ31244zdFSpFp_sKinA3ltCWl2rkS5wgo0bDW
+    YSqUvRHOmrLKs0>
+X-ME-Received: <xmr:kXMWZpjq01vNRiIYThXjvgHhCF_SuUNHfrc4Y6ZrAvLG36niqPrKVNTY1J3B>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnhepffeuvefhhfduvdejteefuedugfehgeelvdevheehueeuuddvheegtdetfeeh
+    geefnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:kXMWZt_eAtfa-EaklNydcuKWlGjEY2Faip1ejvKC_lnZEPEee2kQlQ>
+    <xmx:kXMWZksDTTRNKl0lc_dUTlAsoumtMRtFadGWloYnamM62xDZPtZZ0w>
+    <xmx:kXMWZkFlygm2o9GsOcU5af3hMO1J50NeXdRA-aQScGE9uHOFn54e1Q>
+    <xmx:kXMWZjMUryqdsI04l8sMM1902wmmuzAxIQaT9NV9doZGjVFdo_-Zmg>
+    <xmx:knMWZjVX2uhgJxerY0XjCVM6wuenfy3ZzJ1xbR-XbUjrDGyEe38MYUL2>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Apr 2024 07:10:08 -0400 (EDT)
+Date: Wed, 10 Apr 2024 14:10:04 +0300
+From: Ido Schimmel <idosch@idosch.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
+	pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, nbd@nbd.name,
+	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org, taras.chornyi@plvision.eu,
+	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org, geomatsi@gmail.com,
+	kvalo@kernel.org, quic_jjohnson@quicinc.com, leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
+	Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	amcohen@nvidia.com
+Subject: Re: [PATCH net-next v4 2/9] net: create a dummy net_device allocator
+Message-ID: <ZhZzjNDRaHtdYjDg@shredder>
+References: <20240409125738.1824983-1-leitao@debian.org>
+ <20240409125738.1824983-3-leitao@debian.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409125738.1824983-3-leitao@debian.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240410_040352_457358_CFFBE272 
-X-CRM114-Status: UNSURE (   3.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240410_041020_895723_31901303 
+X-CRM114-Status: GOOD (  26.30  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,184 +107,169 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: dc410c4accd2fe64479a1f4ebc47ec9cd3928f4a  Add localversion-wireless-testing-ath
+On Tue, Apr 09, 2024 at 05:57:16AM -0700, Breno Leitao wrote:
+> It is impossible to use init_dummy_netdev together with alloc_netdev()
+> as the 'setup' argument.
+> 
+> This is because alloc_netdev() initializes some fields in the net_device
+> structure, and later init_dummy_netdev() memzero them all. This causes
+> some problems as reported here:
+> 
+> 	https://lore.kernel.org/all/20240322082336.49f110cc@kernel.org/
+> 
+> Split the init_dummy_netdev() function in two. Create a new function called
+> init_dummy_netdev_core() that does not memzero the net_device structure.
+> Then have init_dummy_netdev() memzero-ing and calling
+> init_dummy_netdev_core(), keeping the old behaviour.
+> 
+> init_dummy_netdev_core() is the new function that could be called as an
+> argument for alloc_netdev().
+> 
+> Also, create a helper to allocate and initialize dummy net devices,
+> leveraging init_dummy_netdev_core() as the setup argument. This function
+> basically simplify the allocation of dummy devices, by allocating and
+> initializing it. Freeing the device continue to be done through
+> free_netdev()
+> 
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-elapsed time: 1368m
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
 
-configs tested: 164
-configs skipped: 3
+We were about to submit another user of init_dummy_netdev() when I
+noticed this patch. Converted the code to use alloc_netdev_dummy() [1]
+and it seems to be working fine. Will submit after your patch is
+accepted.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+See a few minor comments below.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240410   gcc  
-arc                   randconfig-002-20240410   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240410   gcc  
-arm                   randconfig-002-20240410   clang
-arm                   randconfig-003-20240410   gcc  
-arm                   randconfig-004-20240410   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240410   clang
-arm64                 randconfig-002-20240410   gcc  
-arm64                 randconfig-003-20240410   gcc  
-arm64                 randconfig-004-20240410   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240410   gcc  
-csky                  randconfig-002-20240410   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240410   clang
-hexagon               randconfig-002-20240410   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240410   gcc  
-i386         buildonly-randconfig-005-20240410   gcc  
-i386         buildonly-randconfig-006-20240410   gcc  
-i386                                defconfig   clang
-i386                  randconfig-003-20240410   gcc  
-i386                  randconfig-004-20240410   gcc  
-i386                  randconfig-005-20240410   gcc  
-i386                  randconfig-013-20240410   gcc  
-i386                  randconfig-015-20240410   gcc  
-i386                  randconfig-016-20240410   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240410   gcc  
-loongarch             randconfig-002-20240410   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240410   gcc  
-nios2                 randconfig-002-20240410   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240410   gcc  
-parisc                randconfig-002-20240410   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240410   gcc  
-powerpc               randconfig-002-20240410   gcc  
-powerpc               randconfig-003-20240410   gcc  
-powerpc64             randconfig-001-20240410   gcc  
-powerpc64             randconfig-002-20240410   gcc  
-powerpc64             randconfig-003-20240410   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240410   gcc  
-riscv                 randconfig-002-20240410   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240410   clang
-s390                  randconfig-002-20240410   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240410   gcc  
-sh                    randconfig-002-20240410   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240410   gcc  
-sparc64               randconfig-002-20240410   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240410   clang
-um                    randconfig-002-20240410   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240410   gcc  
-x86_64       buildonly-randconfig-002-20240410   clang
-x86_64       buildonly-randconfig-003-20240410   clang
-x86_64       buildonly-randconfig-004-20240410   gcc  
-x86_64       buildonly-randconfig-005-20240410   clang
-x86_64       buildonly-randconfig-006-20240410   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240410   clang
-x86_64                randconfig-002-20240410   gcc  
-x86_64                randconfig-003-20240410   clang
-x86_64                randconfig-004-20240410   clang
-x86_64                randconfig-005-20240410   gcc  
-x86_64                randconfig-006-20240410   clang
-x86_64                randconfig-011-20240410   gcc  
-x86_64                randconfig-012-20240410   gcc  
-x86_64                randconfig-013-20240410   gcc  
-x86_64                randconfig-014-20240410   clang
-x86_64                randconfig-015-20240410   gcc  
-x86_64                randconfig-016-20240410   clang
-x86_64                randconfig-071-20240410   gcc  
-x86_64                randconfig-072-20240410   clang
-x86_64                randconfig-073-20240410   gcc  
-x86_64                randconfig-074-20240410   clang
-x86_64                randconfig-075-20240410   gcc  
-x86_64                randconfig-076-20240410   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240410   gcc  
-xtensa                randconfig-002-20240410   gcc  
+[...]
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +/**
+> + *	init_dummy_netdev	- init a dummy network device for NAPI
+> + *	@dev: device to init
+> + *
+> + *	This takes a network device structure and initialize the minimum
+
+s/initialize/initializes/
+
+> + *	amount of fields so it can be used to schedule NAPI polls without
+> + *	registering a full blown interface. This is to be used by drivers
+> + *	that need to tie several hardware interfaces to a single NAPI
+> + *	poll scheduler due to HW limitations.
+> + */
+> +void init_dummy_netdev(struct net_device *dev)
+> +{
+> +	/* Clear everything. Note we don't initialize spinlocks
+> +	 * are they aren't supposed to be taken by any of the
+
+I assume you meant s/are/as/ ?
+
+> +	 * NAPI code and this dummy netdev is supposed to be
+> +	 * only ever used for NAPI polls
+> +	 */
+> +	memset(dev, 0, sizeof(struct net_device));
+> +	init_dummy_netdev_core(dev);
+> +}
+> +EXPORT_SYMBOL_GPL(init_dummy_netdev);
+
+[1]
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/pci.c b/drivers/net/ethernet/mellanox/mlxsw/pci.c
+index db2950baf6b4..bf66d996e32e 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/pci.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/pci.c
+@@ -132,20 +132,40 @@ struct mlxsw_pci {
+        u8 num_cqs; /* Number of CQs */
+        u8 num_sdqs; /* Number of SDQs */
+        bool skip_reset;
+-       struct net_device napi_dev_tx;
+-       struct net_device napi_dev_rx;
++       struct net_device *napi_dev_tx;
++       struct net_device *napi_dev_rx;
+ };
+ 
+-static void mlxsw_pci_napi_devs_init(struct mlxsw_pci *mlxsw_pci)
++static int mlxsw_pci_napi_devs_init(struct mlxsw_pci *mlxsw_pci)
+ {
+-       init_dummy_netdev(&mlxsw_pci->napi_dev_tx);
+-       strscpy(mlxsw_pci->napi_dev_tx.name, "mlxsw_tx",
+-               sizeof(mlxsw_pci->napi_dev_tx.name));
++       int err;
++
++       mlxsw_pci->napi_dev_tx = alloc_netdev_dummy(0);
++       if (!mlxsw_pci->napi_dev_tx)
++               return -ENOMEM;
++       strscpy(mlxsw_pci->napi_dev_tx->name, "mlxsw_tx",
++               sizeof(mlxsw_pci->napi_dev_tx->name));
++
++       mlxsw_pci->napi_dev_rx = alloc_netdev_dummy(0);
++       if (!mlxsw_pci->napi_dev_rx) {
++               err = -ENOMEM;
++               goto err_alloc_rx;
++       }
++       strscpy(mlxsw_pci->napi_dev_rx->name, "mlxsw_rx",
++               sizeof(mlxsw_pci->napi_dev_rx->name));
++       dev_set_threaded(mlxsw_pci->napi_dev_rx, true);
++
++       return 0;
+ 
+-       init_dummy_netdev(&mlxsw_pci->napi_dev_rx);
+-       strscpy(mlxsw_pci->napi_dev_rx.name, "mlxsw_rx",
+-               sizeof(mlxsw_pci->napi_dev_rx.name));
+-       dev_set_threaded(&mlxsw_pci->napi_dev_rx, true);
++err_alloc_rx:
++       free_netdev(mlxsw_pci->napi_dev_tx);
++       return err;
++}
++
++static void mlxsw_pci_napi_devs_fini(struct mlxsw_pci *mlxsw_pci)
++{
++       free_netdev(mlxsw_pci->napi_dev_rx);
++       free_netdev(mlxsw_pci->napi_dev_tx);
+ }
+ 
+ static char *__mlxsw_pci_queue_elem_get(struct mlxsw_pci_queue *q,
+@@ -804,11 +824,11 @@ static void mlxsw_pci_cq_napi_setup(struct mlxsw_pci_queue *q,
+ 
+        switch (cq_type) {
+        case MLXSW_PCI_CQ_SDQ:
+-               netif_napi_add(&mlxsw_pci->napi_dev_tx, &q->u.cq.napi,
++               netif_napi_add(mlxsw_pci->napi_dev_tx, &q->u.cq.napi,
+                               mlxsw_pci_napi_poll_cq_tx);
+                break;
+        case MLXSW_PCI_CQ_RDQ:
+-               netif_napi_add(&mlxsw_pci->napi_dev_rx, &q->u.cq.napi,
++               netif_napi_add(mlxsw_pci->napi_dev_rx, &q->u.cq.napi,
+                               mlxsw_pci_napi_poll_cq_rx);
+                break;
+        }
+@@ -1793,7 +1813,10 @@ static int mlxsw_pci_init(void *bus_priv, struct mlxsw_core *mlxsw_core,
+        if (err)
+                goto err_requery_resources;
+ 
+-       mlxsw_pci_napi_devs_init(mlxsw_pci);
++       err = mlxsw_pci_napi_devs_init(mlxsw_pci);
++       if (err)
++               goto err_napi_devs_init;
++
+        err = mlxsw_pci_aqs_init(mlxsw_pci, mbox);
+        if (err)
+                goto err_aqs_init;
+@@ -1811,6 +1834,8 @@ static int mlxsw_pci_init(void *bus_priv, struct mlxsw_core *mlxsw_core,
+ err_request_eq_irq:
+        mlxsw_pci_aqs_fini(mlxsw_pci);
+ err_aqs_init:
++       mlxsw_pci_napi_devs_fini(mlxsw_pci);
++err_napi_devs_init:
+ err_requery_resources:
+ err_config_profile:
+ err_cqe_v_check:
+@@ -1838,6 +1863,7 @@ static void mlxsw_pci_fini(void *bus_priv)
+ 
+        free_irq(pci_irq_vector(mlxsw_pci->pdev, 0), mlxsw_pci);
+        mlxsw_pci_aqs_fini(mlxsw_pci);
++       mlxsw_pci_napi_devs_fini(mlxsw_pci);
+        mlxsw_pci_fw_area_fini(mlxsw_pci);
+        mlxsw_pci_free_irq_vectors(mlxsw_pci);
+ }
 
