@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0449FC4345F
-	for <ath10k@archiver.kernel.org>; Thu, 11 Apr 2024 15:03:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A375C4345F
+	for <ath10k@archiver.kernel.org>; Thu, 11 Apr 2024 15:03:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CsBGQlMm+F00sLCL/qlkhF4TnT6nst/CdHn7pOQlov8=; b=EWxrC5fl2XR8cd3af8uIj/hLPr
-	bFsmboEsxqOFS7p5MyHbkanWolV57aO1qJteZ7Trza9iTQ4KgaRhHHMeRVa7d6WgMw0C44qpPO+pt
-	g92MNhpVoj5HPVe1nQgm2mNXm4TReByeAwN0WA1c3s45KiDraWdgjRR/tSCE9LmBrDYo3Ic+J7kWO
-	qu2QAyqmMrfPYl/BbymB4apcryiNNPmUvS3zPLsQq6tN6jD8H8GGwe0blXhAX2RkRKf1PqE/9Q1Q0
-	jJrBmlXZRE7/ETeBJGRtKzGohUPLq/STGIuEh52lCPJpQ890reZxU6us9AB6nKc0Ce3Dj3pJczoFZ
-	nMTYo1sQ==;
+	bh=/BGqPmC8OttnSs/eU7zOpIE4pu3ScGIxqadvcYRpWVY=; b=O3CLOuPQ51Mh4TcdEWMki1jDoq
+	kzR4ZNHYLhMVLcaB4ua8Ax+Ay6H6He2sakZWeE48XziNcXAGwrsbTn8UBywuzhdFpAomepP2X8gwn
+	nJNQReQW4PPQPsG+Dch3sJ1ywVa6fFfNGLhX964KdvbbGiavuOVip8+xo3JbPdVkjk+MNizutt8M6
+	e/GcHYJf+WN/EsiW37FaEjyjIa1gj9eyoluV8ARnLpJ6Zni29fAD1mdtSZqxGRWIOyYinPO8KfCVA
+	cPQFN6FnWpQnFv006dNTyp1tfFkul+mzNGrHfnmnyNjJhPyd04ngWPY1HrgXN6l2FLhkWvNz1Yjss
+	NPSkLx+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruvx1-0000000Ccm9-3PUs;
-	Thu, 11 Apr 2024 15:02:55 +0000
-Received: from mail-ed1-f49.google.com ([209.85.208.49])
+	id 1ruvx7-0000000Ccpz-036N;
+	Thu, 11 Apr 2024 15:03:01 +0000
+Received: from mail-ed1-f46.google.com ([209.85.208.46])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruuyi-0000000CJWQ-1FO5;
-	Thu, 11 Apr 2024 14:00:41 +0000
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so5782782a12.3;
-        Thu, 11 Apr 2024 07:00:34 -0700 (PDT)
+	id 1ruuyn-0000000CJcV-2vIf;
+	Thu, 11 Apr 2024 14:00:46 +0000
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56e1baf0380so9136575a12.3;
+        Thu, 11 Apr 2024 07:00:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712844033; x=1713448833;
+        d=1e100.net; s=20230601; t=1712844039; x=1713448839;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CsBGQlMm+F00sLCL/qlkhF4TnT6nst/CdHn7pOQlov8=;
-        b=LJxcP33CD7eeEiyDG0ZovzGdjB8ZBduzLZX6CuAspVvSYNONE/urVDmhGIYLg6QEI7
-         IInlB8X6XHSlMKrX/a7n/Bkf3GstDY/8HvDpVHCpB3D4n8Y9oIziSfehbBjAFXOqtRf7
-         dPAOo6GSsrNzKRKJQdyg/my8J7wjTZI6t+r2S7Axgzp5txW5GlVagOIA0y7UnDPRGmzo
-         a4xBR1Lj6LRXuhF7ak+bPjj7ONIz2zFQ9DYk0eCEWyVU8M0SNYA8JEawQib/sntYQwFs
-         3VMhdGEMe0ToS8/FGw7VtHtNyP2wouxxZPlaiA5mKQBZ1gozWuKrFzyLgmLfROYPUyCq
-         zFCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXuR+AIiBYBEDE+1PlHdinfU6J33e9ajzM9cxK3UFQpr/hSdlCclr+8Rbsq1QC6r2jrrq+QHsFJyYJohUJgQ/PMQ1lstU1aSzP9ZWERaaj+4E/fKTP0Jpoja4+m41wpDJKPkUUyoJwECg8V4kLWxxDbZG+PWDxUxzOrytxabJ6K9b76GkrbFMTwDuOXmwJN0Qh1DQCotbnDQg4yk4Vdgg7wlnNhVdNkGr4txYk811Xawg==
-X-Gm-Message-State: AOJu0YxxAcXdujQKN1Mx/oNSOjYsxqLLmd9V3xWv9niZpD8lDGRPTb+G
-	eEM+TfP91I1im5DSCZ+HglvHoZPa/AmRBDW1R32n0KA8U5kh1bre
-X-Google-Smtp-Source: AGHT+IFud+Eom8L4ZFwJRqHZVgEqfH7X88Ie/XPPj8tgIpWpDGGDBjHw1/LfCtyATsqdzgihSLhWLQ==
-X-Received: by 2002:a50:cdde:0:b0:56f:ebcf:bd94 with SMTP id h30-20020a50cdde000000b0056febcfbd94mr1037512edj.12.1712844032908;
-        Thu, 11 Apr 2024 07:00:32 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-111.fbsv.net. [2a03:2880:30ff:6f::face:b00c])
-        by smtp.gmail.com with ESMTPSA id cs9-20020a0564020c4900b005682a0e915fsm733377edb.76.2024.04.11.07.00.32
+        bh=/BGqPmC8OttnSs/eU7zOpIE4pu3ScGIxqadvcYRpWVY=;
+        b=vsQgfw6CDkYUBx3Rrco0ZvqLMG3Mjoqf169PMuQ8NYT55pmarcAZu0f8lu2EYLq417
+         cd7CB3bNzcYhIYIJVL/pP93zTX6GPXdvF7gKNPXPNF7g5kKcaUPK/boVh2tzZ6ZW+0ta
+         kM3i1ktgRMluf0f3YE4bRoeaGYtLkIZJxwNjLPXdS1ASnLBtLrfb23bTOBDwxD7Gvdnc
+         JXScLjUVQW2J/R9WnRZW+UulUD3XDCEn61Rul3z1HBP7TOUT8nVNK3bKqfkg9FgN+MRb
+         B3FJcXZEKbJoHdcFrN7NUBDZl68ReblFLfUjJdHKxHCyjPrk/U4EDNMu2OUBmKRyPbEW
+         xfNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXhGK8+cgHM29+DVSzJOCQkueH1FUnTz3cZqiX+vk/J+vO+l8XbJXIIhfmcZPHzsuuBaUWXJ3ADEiFCgGJNerZvTxpFgBNOIeVr4H1XVmjOULWTNExgnUnwWA9Pq9qLBF+/AnZz2u5PcAJ6IdHFv/3E9TbxO67TxcEOPnuFgpGo29GRcndeymlpVgyrhHk3Bhgw8Gl8uw5eH9HQLMPOha7w/nkeyvZnlaP7bNRcpc20fA==
+X-Gm-Message-State: AOJu0YwKHDgsZm38E2Syz6i6kp5opdOY86UYK2Fa83+/OGSHv36BptmV
+	/17/wmN6GOHCGH6hMBz4PebBo/T45wC4CGLugTzuYmZk7WeVp+zR
+X-Google-Smtp-Source: AGHT+IG4+o9xRNLQwLkYfsUlHG1UHOmgoIWY43a7bYPctiZu6u/S6IWuuYxegoUfE+v2k6Gk3pf3Hg==
+X-Received: by 2002:a17:906:f856:b0:a52:2d35:eb3 with SMTP id ks22-20020a170906f85600b00a522d350eb3mr267543ejb.19.1712844039402;
+        Thu, 11 Apr 2024 07:00:39 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-118.fbsv.net. [2a03:2880:30ff:76::face:b00c])
+        by smtp.gmail.com with ESMTPSA id k11-20020a170906578b00b00a51be2b75f3sm782911ejq.35.2024.04.11.07.00.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 07:00:32 -0700 (PDT)
+        Thu, 11 Apr 2024 07:00:38 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: aleksander.lobakin@intel.com,
 	kuba@kernel.org,
@@ -68,7 +68,8 @@ To: aleksander.lobakin@intel.com,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	geomatsi@gmail.com,
-	kvalo@kernel.org
+	kvalo@kernel.org,
+	Jeff Johnson <jjohnson@kernel.org>
 Cc: quic_jjohnson@quicinc.com,
 	leon@kernel.org,
 	dennis.dalessandro@cornelisnetworks.com,
@@ -76,24 +77,18 @@ Cc: quic_jjohnson@quicinc.com,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	idosch@idosch.org,
-	leitao@debian.org,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Alex Elder <elder@linaro.org>,
-	Nick Child <nnac123@linux.ibm.com>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Christian Marangi <ansuelsmth@gmail.com>
-Subject: [PATCH net-next v6 07/10] net: ibm/emac: allocate dummy net_device dynamically
-Date: Thu, 11 Apr 2024 06:59:31 -0700
-Message-ID: <20240411135952.1096696-8-leitao@debian.org>
+	leitao@debian.org
+Subject: [PATCH net-next v6 09/10] wifi: ath10k: allocate dummy net_device dynamically
+Date: Thu, 11 Apr 2024 06:59:33 -0700
+Message-ID: <20240411135952.1096696-10-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411135952.1096696-1-leitao@debian.org>
 References: <20240411135952.1096696-1-leitao@debian.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240411_070036_942753_9EB6825C 
-X-CRM114-Status: GOOD (  12.93  )
+X-CRM114-CacheID: sfid-20240411_070042_237555_9ED1A07D 
+X-CRM114-Status: GOOD (  12.83  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,78 +107,134 @@ Embedding net_device into structures prohibits the usage of flexible
 arrays in the net_device structure. For more details, see the discussion
 at [1].
 
-Un-embed the net_device from the private struct by converting it
-into a pointer. Then use the leverage the new alloc_netdev_dummy()
-helper to allocate and initialize dummy devices.
+Un-embed the net_device from struct ath10k by converting it
+into a pointer. Then use the leverage alloc_netdev() to allocate the
+net_device object at ath10k_core_create(). The free of the device occurs
+at ath10k_core_destroy().
 
 [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ethernet/ibm/emac/mal.c | 14 +++++++++++---
- drivers/net/ethernet/ibm/emac/mal.h |  2 +-
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 9 +++++++--
+ drivers/net/wireless/ath/ath10k/core.h | 2 +-
+ drivers/net/wireless/ath/ath10k/pci.c  | 2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c | 2 +-
+ drivers/net/wireless/ath/ath10k/snoc.c | 4 ++--
+ drivers/net/wireless/ath/ath10k/usb.c  | 2 +-
+ 6 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/emac/mal.c b/drivers/net/ethernet/ibm/emac/mal.c
-index 2439f7e96e05..d92dd9c83031 100644
---- a/drivers/net/ethernet/ibm/emac/mal.c
-+++ b/drivers/net/ethernet/ibm/emac/mal.c
-@@ -605,9 +605,13 @@ static int mal_probe(struct platform_device *ofdev)
- 	INIT_LIST_HEAD(&mal->list);
- 	spin_lock_init(&mal->lock);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 9ce6f49ab261..8663822e0b8d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -3673,11 +3673,13 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 	INIT_WORK(&ar->set_coverage_class_work,
+ 		  ath10k_core_set_coverage_class_work);
  
--	init_dummy_netdev(&mal->dummy_dev);
-+	mal->dummy_dev = alloc_netdev_dummy(0);
-+	if (!mal->dummy_dev) {
-+		err = -ENOMEM;
-+		goto fail_unmap;
-+	}
+-	init_dummy_netdev(&ar->napi_dev);
++	ar->napi_dev = alloc_netdev_dummy(0);
++	if (!ar->napi_dev)
++		goto err_free_tx_complete;
  
--	netif_napi_add_weight(&mal->dummy_dev, &mal->napi, mal_poll,
-+	netif_napi_add_weight(mal->dummy_dev, &mal->napi, mal_poll,
- 			      CONFIG_IBM_EMAC_POLL_WEIGHT);
+ 	ret = ath10k_coredump_create(ar);
+ 	if (ret)
+-		goto err_free_tx_complete;
++		goto err_free_netdev;
  
- 	/* Load power-on reset defaults */
-@@ -637,7 +641,7 @@ static int mal_probe(struct platform_device *ofdev)
- 					  GFP_KERNEL);
- 	if (mal->bd_virt == NULL) {
- 		err = -ENOMEM;
--		goto fail_unmap;
-+		goto fail_dummy;
+ 	ret = ath10k_debug_create(ar);
+ 	if (ret)
+@@ -3687,6 +3689,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 
+ err_free_coredump:
+ 	ath10k_coredump_destroy(ar);
++err_free_netdev:
++	free_netdev(ar->napi_dev);
+ err_free_tx_complete:
+ 	destroy_workqueue(ar->workqueue_tx_complete);
+ err_free_aux_wq:
+@@ -3708,6 +3712,7 @@ void ath10k_core_destroy(struct ath10k *ar)
+ 
+ 	destroy_workqueue(ar->workqueue_tx_complete);
+ 
++	free_netdev(ar->napi_dev);
+ 	ath10k_debug_destroy(ar);
+ 	ath10k_coredump_destroy(ar);
+ 	ath10k_htt_tx_destroy(&ar->htt);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index c110d15528bd..26003b519574 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1269,7 +1269,7 @@ struct ath10k {
+ 	struct ath10k_per_peer_tx_stats peer_tx_stats;
+ 
+ 	/* NAPI */
+-	struct net_device napi_dev;
++	struct net_device *napi_dev;
+ 	struct napi_struct napi;
+ 
+ 	struct work_struct set_coverage_class_work;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 5c34b156b4ff..558bec96ae40 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3217,7 +3217,7 @@ static void ath10k_pci_free_irq(struct ath10k *ar)
+ 
+ void ath10k_pci_init_napi(struct ath10k *ar)
+ {
+-	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_pci_napi_poll);
++	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_pci_napi_poll);
+ }
+ 
+ static int ath10k_pci_init_irq(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 0ab5433f6cf6..e28f2fe1101b 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2532,7 +2532,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 		return -ENOMEM;
  	}
  
- 	for (i = 0; i < mal->num_tx_chans; ++i)
-@@ -703,6 +707,8 @@ static int mal_probe(struct platform_device *ofdev)
- 	free_irq(mal->serr_irq, mal);
-  fail2:
- 	dma_free_coherent(&ofdev->dev, bd_size, mal->bd_virt, mal->bd_dma);
-+ fail_dummy:
-+	free_netdev(mal->dummy_dev);
-  fail_unmap:
- 	dcr_unmap(mal->dcr_host, 0x100);
-  fail:
-@@ -734,6 +740,8 @@ static void mal_remove(struct platform_device *ofdev)
+-	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll);
++	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll);
  
- 	mal_reset(mal);
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
+ 		   "sdio new func %d vendor 0x%x device 0x%x block 0x%x/0x%x\n",
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 2c39bad7ebfb..0449b9ffc32d 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -935,7 +935,7 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
  
-+	free_netdev(mal->dummy_dev);
-+
- 	dma_free_coherent(&ofdev->dev,
- 			  sizeof(struct mal_descriptor) *
- 			  (NUM_TX_BUFF * mal->num_tx_chans +
-diff --git a/drivers/net/ethernet/ibm/emac/mal.h b/drivers/net/ethernet/ibm/emac/mal.h
-index d212373a72e7..e0ddc41186a2 100644
---- a/drivers/net/ethernet/ibm/emac/mal.h
-+++ b/drivers/net/ethernet/ibm/emac/mal.h
-@@ -205,7 +205,7 @@ struct mal_instance {
- 	int			index;
- 	spinlock_t		lock;
+ 	bitmap_clear(ar_snoc->pending_ce_irqs, 0, CE_COUNT_MAX);
  
--	struct net_device	dummy_dev;
-+	struct net_device	*dummy_dev;
+-	dev_set_threaded(&ar->napi_dev, true);
++	dev_set_threaded(ar->napi_dev, true);
+ 	ath10k_core_napi_enable(ar);
+ 	ath10k_snoc_irq_enable(ar);
+ 	ath10k_snoc_rx_post(ar);
+@@ -1253,7 +1253,7 @@ static int ath10k_snoc_napi_poll(struct napi_struct *ctx, int budget)
  
- 	unsigned int features;
- };
+ static void ath10k_snoc_init_napi(struct ath10k *ar)
+ {
+-	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_snoc_napi_poll);
++	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_snoc_napi_poll);
+ }
+ 
+ static int ath10k_snoc_request_irq(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
+index 3c482baacec1..3b51b7f52130 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -1014,7 +1014,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+ 		return -ENOMEM;
+ 	}
+ 
+-	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_usb_napi_poll);
++	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_usb_napi_poll);
+ 
+ 	usb_get_dev(dev);
+ 	vendor_id = le16_to_cpu(dev->descriptor.idVendor);
 -- 
 2.43.0
 
