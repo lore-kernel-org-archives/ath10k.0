@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29331C04FF0
-	for <ath10k@archiver.kernel.org>; Thu, 11 Apr 2024 15:03:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0449FC4345F
+	for <ath10k@archiver.kernel.org>; Thu, 11 Apr 2024 15:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bGHHnAjzHXOHKZAHNwNt7Xm//rgfn0lSUB+nM5VysgU=; b=VPzUbY3h0jFxYhyjcwu7lESnT1
-	bJXdx/EDjZwpeVlIFTgPnGe4ouujHnxd1an7jayhhSjrya7MzzKfOoy37Bc5wd1HdopLAcJ0AX9AH
-	tVAuozRSluYBFnp88dSyEUdvfrZpx2opCJ4+glyHbTdQ7oEiMZHNUViRJUwwoc4ndGod9yL8p9nTh
-	0/LjxqvrDqLynVg8xOopAhK5hrqzKnAbGMQl37MY9IksJb9tKkDqart2mh4+8f21N0OYRcHfNH7Y0
-	t5QwuiLHrC9mzOY4beJ097jDW3KctAHfQWj7UWS/8JAcp4DCqfv7a7DGa8tXnNdIedgaRFgI74LX7
-	rheMyVkg==;
+	bh=CsBGQlMm+F00sLCL/qlkhF4TnT6nst/CdHn7pOQlov8=; b=EWxrC5fl2XR8cd3af8uIj/hLPr
+	bFsmboEsxqOFS7p5MyHbkanWolV57aO1qJteZ7Trza9iTQ4KgaRhHHMeRVa7d6WgMw0C44qpPO+pt
+	g92MNhpVoj5HPVe1nQgm2mNXm4TReByeAwN0WA1c3s45KiDraWdgjRR/tSCE9LmBrDYo3Ic+J7kWO
+	qu2QAyqmMrfPYl/BbymB4apcryiNNPmUvS3zPLsQq6tN6jD8H8GGwe0blXhAX2RkRKf1PqE/9Q1Q0
+	jJrBmlXZRE7/ETeBJGRtKzGohUPLq/STGIuEh52lCPJpQ890reZxU6us9AB6nKc0Ce3Dj3pJczoFZ
+	nMTYo1sQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruvwy-0000000Ccim-220T;
-	Thu, 11 Apr 2024 15:02:52 +0000
-Received: from mail-ej1-f50.google.com ([209.85.218.50])
+	id 1ruvx1-0000000Ccm9-3PUs;
+	Thu, 11 Apr 2024 15:02:55 +0000
+Received: from mail-ed1-f49.google.com ([209.85.208.49])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruuyd-0000000CJPm-47mK;
-	Thu, 11 Apr 2024 14:00:38 +0000
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51d0dda061so138197466b.1;
-        Thu, 11 Apr 2024 07:00:26 -0700 (PDT)
+	id 1ruuyi-0000000CJWQ-1FO5;
+	Thu, 11 Apr 2024 14:00:41 +0000
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so5782782a12.3;
+        Thu, 11 Apr 2024 07:00:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712844025; x=1713448825;
+        d=1e100.net; s=20230601; t=1712844033; x=1713448833;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bGHHnAjzHXOHKZAHNwNt7Xm//rgfn0lSUB+nM5VysgU=;
-        b=KfbHKUWdzEFJg3fcFRJoF2r089vH7BuqZYoa4JgWm1qfB7xTDyYCMfYG2NmVBgG8YT
-         ZZLwxpQY9OOVgOoClhfbxewQuzIFtDOoiIre8jFD+MPDab+FAuRCPMDie1C07xG1QTEn
-         XqXk3dxY1I1C8VHIvgI2XMMOlwyrHB71rrD2ZNCjld0P8GnP1AAnSsaIyu7EWsvwQxDV
-         qT+lGiE92BcGX2b3yJA+yMPgBULapdMYwubgETsUTxb+J19d1MKWDsv8pOD1ozqdoYEw
-         2tLWwpLOmJFDPou0bkCfbDqKzbr3gQc2A0gQh9D+yAJ4PDpIi7VEc9Qltc/IoDExmarm
-         E3Qw==
-X-Forwarded-Encrypted: i=1; AJvYcCWPLh2KQ1o1A8tu891uXFLtHQWw9gAWbKx2XqlkTfrnKEM9PekBcoseUg2/CKCLy5jZIfv6pZcoPEkxZLdgo8B9AUkOySsWtHC3L5wLoQhrm4BGOmU0BHUR6vECeTxvwgPnaySvoza58fsgZVjuPgkTdkrJ3Pig3dP9ghmMCBcn6OaDhkxzhVcMcnuKJ0Tm8x66o2bUPW2zoooEYhjZgAnHlw8o6VeQtWIlR9yDCvGRNQ==
-X-Gm-Message-State: AOJu0YwiCwCihGPaPOrbaSEV0mm2v+SPX5OnkhUmVorvdC1c4TPiB8PV
-	ucEsygnt9Sj8hNuzi4ymwrUSRtEXfsQRHiR2gDXyMIdD8ervwrhr
-X-Google-Smtp-Source: AGHT+IFxOmGSIuAo0wZUWkrauT0Df5Dw6XBlFRpFNMRfvlacHHcHSCFBfO1xLfD0FfesNZg9hXPQZg==
-X-Received: by 2002:a17:907:6d27:b0:a52:197b:5f4a with SMTP id sa39-20020a1709076d2700b00a52197b5f4amr2654126ejc.2.1712844025222;
-        Thu, 11 Apr 2024 07:00:25 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-008.fbsv.net. [2a03:2880:30ff:8::face:b00c])
-        by smtp.gmail.com with ESMTPSA id b9-20020a1709063f8900b00a522e8740ecsm20659ejj.139.2024.04.11.07.00.24
+        bh=CsBGQlMm+F00sLCL/qlkhF4TnT6nst/CdHn7pOQlov8=;
+        b=LJxcP33CD7eeEiyDG0ZovzGdjB8ZBduzLZX6CuAspVvSYNONE/urVDmhGIYLg6QEI7
+         IInlB8X6XHSlMKrX/a7n/Bkf3GstDY/8HvDpVHCpB3D4n8Y9oIziSfehbBjAFXOqtRf7
+         dPAOo6GSsrNzKRKJQdyg/my8J7wjTZI6t+r2S7Axgzp5txW5GlVagOIA0y7UnDPRGmzo
+         a4xBR1Lj6LRXuhF7ak+bPjj7ONIz2zFQ9DYk0eCEWyVU8M0SNYA8JEawQib/sntYQwFs
+         3VMhdGEMe0ToS8/FGw7VtHtNyP2wouxxZPlaiA5mKQBZ1gozWuKrFzyLgmLfROYPUyCq
+         zFCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXuR+AIiBYBEDE+1PlHdinfU6J33e9ajzM9cxK3UFQpr/hSdlCclr+8Rbsq1QC6r2jrrq+QHsFJyYJohUJgQ/PMQ1lstU1aSzP9ZWERaaj+4E/fKTP0Jpoja4+m41wpDJKPkUUyoJwECg8V4kLWxxDbZG+PWDxUxzOrytxabJ6K9b76GkrbFMTwDuOXmwJN0Qh1DQCotbnDQg4yk4Vdgg7wlnNhVdNkGr4txYk811Xawg==
+X-Gm-Message-State: AOJu0YxxAcXdujQKN1Mx/oNSOjYsxqLLmd9V3xWv9niZpD8lDGRPTb+G
+	eEM+TfP91I1im5DSCZ+HglvHoZPa/AmRBDW1R32n0KA8U5kh1bre
+X-Google-Smtp-Source: AGHT+IFud+Eom8L4ZFwJRqHZVgEqfH7X88Ie/XPPj8tgIpWpDGGDBjHw1/LfCtyATsqdzgihSLhWLQ==
+X-Received: by 2002:a50:cdde:0:b0:56f:ebcf:bd94 with SMTP id h30-20020a50cdde000000b0056febcfbd94mr1037512edj.12.1712844032908;
+        Thu, 11 Apr 2024 07:00:32 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-111.fbsv.net. [2a03:2880:30ff:6f::face:b00c])
+        by smtp.gmail.com with ESMTPSA id cs9-20020a0564020c4900b005682a0e915fsm733377edb.76.2024.04.11.07.00.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 07:00:24 -0700 (PDT)
+        Thu, 11 Apr 2024 07:00:32 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: aleksander.lobakin@intel.com,
 	kuba@kernel.org,
@@ -68,13 +68,7 @@ To: aleksander.lobakin@intel.com,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	geomatsi@gmail.com,
-	kvalo@kernel.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>
+	kvalo@kernel.org
 Cc: quic_jjohnson@quicinc.com,
 	leon@kernel.org,
 	dennis.dalessandro@cornelisnetworks.com,
@@ -82,18 +76,24 @@ Cc: quic_jjohnson@quicinc.com,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	idosch@idosch.org,
-	leitao@debian.org
-Subject: [PATCH net-next v6 05/10] net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
-Date: Thu, 11 Apr 2024 06:59:29 -0700
-Message-ID: <20240411135952.1096696-6-leitao@debian.org>
+	leitao@debian.org,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Alex Elder <elder@linaro.org>,
+	Nick Child <nnac123@linux.ibm.com>,
+	Rob Herring <robh@kernel.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Christian Marangi <ansuelsmth@gmail.com>
+Subject: [PATCH net-next v6 07/10] net: ibm/emac: allocate dummy net_device dynamically
+Date: Thu, 11 Apr 2024 06:59:31 -0700
+Message-ID: <20240411135952.1096696-8-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411135952.1096696-1-leitao@debian.org>
 References: <20240411135952.1096696-1-leitao@debian.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240411_070032_332141_2BAFAC55 
-X-CRM114-Status: GOOD (  15.23  )
+X-CRM114-CacheID: sfid-20240411_070036_942753_9EB6825C 
+X-CRM114-Status: GOOD (  12.93  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,72 +120,70 @@ helper to allocate and initialize dummy devices.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 17 +++++++++++++----
- drivers/net/ethernet/mediatek/mtk_eth_soc.h |  2 +-
- 2 files changed, 14 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/ibm/emac/mal.c | 14 +++++++++++---
+ drivers/net/ethernet/ibm/emac/mal.h |  2 +-
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index caa13b9cedff..d7a96dc11c07 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -1710,7 +1710,7 @@ static struct page_pool *mtk_create_page_pool(struct mtk_eth *eth,
- 	if (IS_ERR(pp))
- 		return pp;
+diff --git a/drivers/net/ethernet/ibm/emac/mal.c b/drivers/net/ethernet/ibm/emac/mal.c
+index 2439f7e96e05..d92dd9c83031 100644
+--- a/drivers/net/ethernet/ibm/emac/mal.c
++++ b/drivers/net/ethernet/ibm/emac/mal.c
+@@ -605,9 +605,13 @@ static int mal_probe(struct platform_device *ofdev)
+ 	INIT_LIST_HEAD(&mal->list);
+ 	spin_lock_init(&mal->lock);
  
--	err = __xdp_rxq_info_reg(xdp_q, &eth->dummy_dev, id,
-+	err = __xdp_rxq_info_reg(xdp_q, eth->dummy_dev, id,
- 				 eth->rx_napi.napi_id, PAGE_SIZE);
- 	if (err < 0)
- 		goto err_free_pp;
-@@ -4188,6 +4188,8 @@ static int mtk_free_dev(struct mtk_eth *eth)
- 		metadata_dst_free(eth->dsa_meta[i]);
+-	init_dummy_netdev(&mal->dummy_dev);
++	mal->dummy_dev = alloc_netdev_dummy(0);
++	if (!mal->dummy_dev) {
++		err = -ENOMEM;
++		goto fail_unmap;
++	}
+ 
+-	netif_napi_add_weight(&mal->dummy_dev, &mal->napi, mal_poll,
++	netif_napi_add_weight(mal->dummy_dev, &mal->napi, mal_poll,
+ 			      CONFIG_IBM_EMAC_POLL_WEIGHT);
+ 
+ 	/* Load power-on reset defaults */
+@@ -637,7 +641,7 @@ static int mal_probe(struct platform_device *ofdev)
+ 					  GFP_KERNEL);
+ 	if (mal->bd_virt == NULL) {
+ 		err = -ENOMEM;
+-		goto fail_unmap;
++		goto fail_dummy;
  	}
  
-+	free_netdev(eth->dummy_dev);
+ 	for (i = 0; i < mal->num_tx_chans; ++i)
+@@ -703,6 +707,8 @@ static int mal_probe(struct platform_device *ofdev)
+ 	free_irq(mal->serr_irq, mal);
+  fail2:
+ 	dma_free_coherent(&ofdev->dev, bd_size, mal->bd_virt, mal->bd_dma);
++ fail_dummy:
++	free_netdev(mal->dummy_dev);
+  fail_unmap:
+ 	dcr_unmap(mal->dcr_host, 0x100);
+  fail:
+@@ -734,6 +740,8 @@ static void mal_remove(struct platform_device *ofdev)
+ 
+ 	mal_reset(mal);
+ 
++	free_netdev(mal->dummy_dev);
 +
- 	return 0;
- }
+ 	dma_free_coherent(&ofdev->dev,
+ 			  sizeof(struct mal_descriptor) *
+ 			  (NUM_TX_BUFF * mal->num_tx_chans +
+diff --git a/drivers/net/ethernet/ibm/emac/mal.h b/drivers/net/ethernet/ibm/emac/mal.h
+index d212373a72e7..e0ddc41186a2 100644
+--- a/drivers/net/ethernet/ibm/emac/mal.h
++++ b/drivers/net/ethernet/ibm/emac/mal.h
+@@ -205,7 +205,7 @@ struct mal_instance {
+ 	int			index;
+ 	spinlock_t		lock;
  
-@@ -4983,9 +4985,14 @@ static int mtk_probe(struct platform_device *pdev)
- 	/* we run 2 devices on the same DMA ring so we need a dummy device
- 	 * for NAPI to work
- 	 */
--	init_dummy_netdev(&eth->dummy_dev);
--	netif_napi_add(&eth->dummy_dev, &eth->tx_napi, mtk_napi_tx);
--	netif_napi_add(&eth->dummy_dev, &eth->rx_napi, mtk_napi_rx);
-+	eth->dummy_dev = alloc_netdev_dummy(0);
-+	if (!eth->dummy_dev) {
-+		err = -ENOMEM;
-+		dev_err(eth->dev, "failed to allocated dummy device\n");
-+		goto err_unreg_netdev;
-+	}
-+	netif_napi_add(eth->dummy_dev, &eth->tx_napi, mtk_napi_tx);
-+	netif_napi_add(eth->dummy_dev, &eth->rx_napi, mtk_napi_rx);
+-	struct net_device	dummy_dev;
++	struct net_device	*dummy_dev;
  
- 	platform_set_drvdata(pdev, eth);
- 	schedule_delayed_work(&eth->reset.monitor_work,
-@@ -4993,6 +5000,8 @@ static int mtk_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+err_unreg_netdev:
-+	mtk_unreg_dev(eth);
- err_deinit_ppe:
- 	mtk_ppe_deinit(eth);
- 	mtk_mdio_cleanup(eth);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 9ae3b8a71d0e..723fc637027c 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -1242,7 +1242,7 @@ struct mtk_eth {
- 	spinlock_t			page_lock;
- 	spinlock_t			tx_irq_lock;
- 	spinlock_t			rx_irq_lock;
--	struct net_device		dummy_dev;
-+	struct net_device		*dummy_dev;
- 	struct net_device		*netdev[MTK_MAX_DEVS];
- 	struct mtk_mac			*mac[MTK_MAX_DEVS];
- 	int				irq[3];
+ 	unsigned int features;
+ };
 -- 
 2.43.0
 
