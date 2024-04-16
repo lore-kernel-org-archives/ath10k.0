@@ -4,57 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B557C4345F
-	for <ath10k@archiver.kernel.org>; Sun, 14 Apr 2024 00:04:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3F9FC4345F
+	for <ath10k@archiver.kernel.org>; Tue, 16 Apr 2024 12:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Date:Subject:To:From:Message-ID:Reply-To:Cc:
+	Content-Type:Subject:From:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=lBa1nG96yDw/SidFzySUWtqZQlmALT7ZQA05J6hfDUk=; b=ptMiy5xCL9JB8gDkbN5xakYXyp
-	atKhtiDUhf7MIkhdSEQxs9/h5dheN/vmMVvolY7hOAu5Qx+olIZuZU2R0+3aAVT/9wr0xgSPhM9FR
-	8aIt+yvrDcRiUXYWg0TNt+48xxxDMdnRHxfPz61BN1I4bDKfjM4dnUdKCMJi8uFVGveLZaYoOp6Oa
-	FNsfB5N7HynK2otCrY+I85Vqp3K9WKCoOqvPRc5OiRd+Z9eY1yFTHrPRFa+n8jsfVd/lvww/65hCu
-	YfW0oLPaFmsSpaj8qO65Wti/7ytoSiePNmBwUuU7fictvpscDbkEjn4ByupvhM/wj91RLRlAYbHZ/
-	GGhXwAeQ==;
+	bh=WqKKGz/njguKbCKjpmwFj1fH/+/+JzOG+0xPE0aUZQE=; b=mamwAFr0XTPC3M7wXD07j/kRJo
+	IybQJPwSxND7M7AVAbf0PJrdXqtAm3cLbhZcqvpz93rr6WXA3cy9+zujVLJtmFgqisepVWYE7pugf
+	nqu2ZdUDnUKmwSqM4MnmuI07tuwwUgRWLe7sdlt/c96V+oGob++/w3LIkXQWS6vNg1vgQAd58cfVe
+	Xb201ECLmL3bAMl1JA3Ymho/m7OMlk0lXeT/yEHVt8EWia01aYLcrrrqS2DCVwkDEZSBqclXuc04g
+	ZBZ2alEParq7kVGTnhEqhVBCMgbv7DETdYjWKpE81jHXbGGSbFKi3zNRJH+Tyz8KsEVOu3cyDWxYf
+	O2hHZJ+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvnMN-00000004EWf-0kkv;
-	Sun, 14 Apr 2024 00:04:39 +0000
-Received: from v160-251-215-124.kpp1.static.cnode.jp ([2400:8500:2002:3179:160:251:215:124] helo=vm-805d5b38-61.novalocal)
+	id 1rwhw2-0000000C8JK-0Bil;
+	Tue, 16 Apr 2024 12:29:14 +0000
+Received: from mx3.molgen.mpg.de ([141.14.17.11])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvnMK-00000004EVy-0Vex
+	id 1rwhvy-0000000C8Gm-0FA7
 	for ath10k@lists.infradead.org;
-	Sun, 14 Apr 2024 00:04:37 +0000
-Received: from owzhtesk (unknown [64.176.47.47])
-	by vm-805d5b38-61.novalocal (Postfix) with ESMTPA id 33CB6A39DF
-	for <ath10k@lists.infradead.org>; Sun, 14 Apr 2024 07:09:32 +0800 (CST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 vm-805d5b38-61.novalocal 33CB6A39DF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wjhnt.com;
-	s=default; t=1713049772;
-	bh=lBa1nG96yDw/SidFzySUWtqZQlmALT7ZQA05J6hfDUk=;
-	h=From:To:Subject:Date:From;
-	b=KyrpvXvM/Oxz2F0L8BR9r8Xu9JMUPF2lNjWyPDo8pXYERfp05qhPWT6K4IJH3fXe0
-	 vpXX6gMWLV3xK8Z2ebPmdRioqfsVh68uH7URWEmzgETSa1kaw4dcbXzOE1y0ED2ylL
-	 8DVK7kqVM6L/V89fwJnQ6WoylWIR+uQe48bjul1A=
-Message-ID: <d7f7e62119701230b80fa10219945abc@wjhnt.com>
-From: =?utf-8?B?44Kz44Kk44Oz44OB44Kn44OD44Kv5qCq5byP5Lya56S+?= <notification@wjhnt.com>
-To: ath10k <ath10k@lists.infradead.org>
-Subject: =?utf-8?B?44CQQ29p4oGhbmNo4oGkZWNr44CR77yc4oGk6YeN6KaB77ye?=
-	=?utf-8?B?4oGk44Ki44Kr44Km44Oz44OI77iJ44Gu5Yip55So44KS5LiA5pmC5Yi2?=
-	=?utf-8?B?6ZmQ44GX4oGh44CB5YaN6ZaL5omL57aa44GN44Gu77iJ6Kit5a6a44KS?=
-	=?utf-8?B?6KGM4oGk44GE44G+44GX44Gf77iJ44CC?=
-Date: Sun, 14 Apr 2024 08:09:30 +0900
-X-Priority: 3
-X-Mailer: Jwdgz Ibltr 3.8
+	Tue, 16 Apr 2024 12:29:13 +0000
+Received: from [10.0.98.87] (unknown [212.201.152.66])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 0EC6D61E5FE35;
+	Tue, 16 Apr 2024 14:28:45 +0200 (CEST)
+Message-ID: <6689d445-af96-47eb-bcb5-eb096a77f084@molgen.mpg.de>
+Date: Tue, 16 Apr 2024 14:28:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: ath10k: Rekeying PTK for STA 10:06:ed:15:ac:6c but driver can't
+ safely do that.
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240413_170436_386893_9E29788A 
-X-CRM114-Status: UNSURE (   0.25  )
+X-CRM114-CacheID: sfid-20240416_052910_411719_FB4B7198 
+X-CRM114-Status: UNSURE (   4.94  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -70,40 +65,132 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Coinc=E2=81=A1he=E2=81=A1ck=E3=82=92=E3=81=94=E5=88=A9=E2=81=A1=E7=94=A8=E3=
-=81=84=E2=81=A4=E3=81=9F=E3=81=A0=E3=81=8D=E3=81=82=E3=82=8A=E3=81=8C=E3=81=
-=A8=E3=81=86=E3=81=94=E3=81=96=E2=81=A4=E3=81=84=E3=81=BE=E2=81=A4=E3=81=99=
-=E3=80=82=0D=0A=0D=0A=E3=81=8A=E5=AE=A2=E6=A7=98=E3=81=8C Coinc=E2=81=A1hec=
-k =E5=88=A9=E7=94=A8=E3=82=92=E5=88=B6=E9=99=90=E2=81=A4=E3=81=97=E3=81=BE=
-=E2=81=A4=E3=81=97=E3=81=9F=E2=81=A4=E3=80=81=E3=81=8A=E7=9F=A5=E3=82=89=EF=
-=B8=89=E3=81=9B=E3=81=84=EF=B8=89=E3=81=9F=E3=81=97=E3=81=BE=E3=81=99=E3=80=
-=82=0D=0A=0D=0A=E2=96=A0=E3=81=8A=E5=95=8F=E3=81=84=E5=90=88=E3=82=8F=E3=81=
-=9B=E3=83=95=E2=81=A1=E3=82=A9=E3=83=BC=E3=83=A0=E2=81=A1=0D=0Ahttps://coin=
-check.buopd.com/?onetoken=3D31SFsmFI61eLcaRwi&token=3DNTGd7WWD5F7CKcidfO=0D=
-=0A=0D=0A=E2=96=A0=E7=B7=8A=E6=80=A5=EF=B8=89=E5=AF=BE=E5=BF=9C=E7=AA=93=E5=
-=8F=A3=0D=0ATE=E2=81=A1L: =EF=B8=890570-0262=E2=81=A100=0D=0A=E5=B9=B3=E6=
-=97=A5=EF=B8=89=EF=BC=9A=E3=80=8024=E6=99=82=E9=96=93=E5=8F=97=E4=BB=98=EF=
-=B8=89=0D=0A=E5=9C=9F=E6=97=A5=E2=81=A1=E7=A5=9D=EF=BC=9A=E5=A4=9C=E9=96=93=
-=E3=81=AE=E3=81=BF=E5=8F=97=E4=BB=98=EF=BC=88=E2=81=A118:00=EF=B8=89=EF=BD=
-=9E=E7=BF=8C09:00=EF=BC=89=0D=0A=0D=0A----------=EF=B8=89--=EF=B8=89------=
-=E2=81=A4----------=EF=B8=89---------=E2=81=A1--------=E2=81=A1----=E2=81=
-=A4------=E2=81=A4----=E2=81=A1-----=E2=81=A4--=E2=81=A4-----=E2=81=A4--=EF=
-=B8=89----------=EF=B8=89------=E2=81=A4=0D=0A=E3=82=B3=E3=82=A4=E3=83=B3=
-=E3=83=81=E3=82=A7=E3=83=83=EF=B8=89=E3=82=AF=E6=A0=AA=E5=BC=8F=E4=BC=9A=E7=
-=A4=BE=0D=0A=E3=80=92150-=E2=81=A40044 =E6=9D=B1=E4=BA=AC=EF=B8=89=E9=83=BD=
-=E6=B8=8B=E8=B0=B7=E5=8C=BA=E5=86=86=E5=B1=B1=EF=B8=89=E7=94=BA3-6 E=EF=B8=
-=89=E3=83=BB=E3=82=B9=E3=83=9A=E3=83=BC=E3=82=B9=E3=82=BF=E3=83=AF=E3=83=BC=
-1=E2=81=A40F=0D=0AURL=EF=BC=9Ahttps://coincheck.buopd.com/?faq=3DojOYLM77VL=
-IZ2=0D=0A=E3=83=98=E3=83=AB=E2=81=A1=E3=83=97=E3=82=BB=E3=83=B3=E3=82=BF=E3=
-=83=BC=E2=81=A1=EF=BC=9Ahttps://coincheck.buopd.com/?faq=3Dc4Ly0352=0D=0A=
-=E6=9A=97=E5=8F=B7=E8=B3=87=E7=94=A3=E4=BA=A4=E6=8F=9B=E6=A5=AD=E7=99=BB=E9=
-=8C=B2=E3=80=80=EF=B8=89=E9=96=A2=E6=9D=B1=E8=B2=A1=E5=8B=99=E5=B1=80=E9=95=
-=B7 =E2=81=A1=E7=AC=AC000=E2=81=A414=E5=8F=B7=0D=0A=E5=8A=A0=E5=85=A5=E5=8D=
-=94=E4=BC=9A=E3=80=80=E4=B8=80=E8=88=AC=E7=A4=BE=E5=9B=A3=E2=81=A4=E6=B3=95=
-=E4=BA=BA=E2=81=A4=E6=97=A5=E6=9C=AC=E6=9A=97=E5=8F=B7=E8=B3=87=E7=94=A3=E5=
-=8F=96=EF=B8=89=E5=BC=95=E6=A5=AD=E5=8D=94=E4=BC=9A=0D=0A---------=E2=81=A1=
------=EF=B8=89--=EF=B8=89----=E2=81=A4----------=EF=B8=89--=E2=81=A1-----=
-=E2=81=A4-------=E2=81=A1---------=E2=81=A4------=E2=81=A4--------=EF=B8=89=
----=E2=81=A4-------=E2=81=A1--------=E2=81=A4----=EF=B8=89
+Dear Linux folks,
 
+
+In a research institution using *eduroam*, I noticed on Dell XPS 13 9360 
+with Debian sid/unstable
+
+     $ lspci -nn -s 3a:00.0 -v
+     3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 
+802.11ac Wireless Network Adapter [168c:003e] (rev 32)
+         Subsystem: Rivet Networks Killer Wireless-n/a/ac 1535 Wireless 
+Network Adapter [1a56:1535]
+         Flags: bus master, fast devsel, latency 0, IRQ 137
+         Memory at dc000000 (64-bit, non-prefetchable) [size=2M]
+         Capabilities: <access denied>
+         Kernel driver in use: ath10k_pci
+         Kernel modules: ath10k_pci
+
+that the Wireless connection dropped for a short time, and then 
+reconnected again. Linux 6.9-rc3+ warns:
+
+     [73861.687754] Rekeying PTK for STA 10:06:ed:15:ac:6c but driver 
+can't safely do that.
+
+According to the logs since March 2024, this never happened in other 
+environments.
+
+With wpa_supplicant logs:
+
+```
+[73862.470842] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-EAP-STARTED EAP 
+authentication started
+[73862.485995] wpa_supplicant[595]: wlp58s0: 
+CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=25 -> NAK
+[73862.499998] wpa_supplicant[595]: wlp58s0: 
+CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=21
+[73862.500424] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-EAP-METHOD EAP 
+vendor 0 method 21 (TTLS) selected
+[…]
+[73862.624544] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-EAP-SUCCESS EAP 
+authentication completed successfully
+[73862.626116] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:17:9b:6c 0
+[73862.626436] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:1a:45:8c 0
+[73862.626723] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:19:6f:8c 0
+[73862.626972] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:19:f1:0c 0
+[73862.627211] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:15:ac:63 0
+[73862.627435] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:19:82:6c 0
+[73862.627699] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:17:9b:63 0
+[73862.627911] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:19:f1:03 0
+[73862.628245] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:19:6f:83 0
+[73862.628451] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:17:de:0c 0
+[73862.628645] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
+10:06:ed:15:ac:6c 0
+[73862.628863] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:15:ac:6c 0
+[73862.668477] wpa_supplicant[595]: wlp58s0: WPA: Key negotiation 
+completed with 10:06:ed:15:ac:6c [PTK=CCMP GTK=CCMP]
+[73861.687754] kernel: Rekeying PTK for STA 10:06:ed:15:ac:6c but driver 
+can't safely do that.
+[73864.676479] kernel: wlp58s0: disassociated from 10:06:ed:15:ac:6c 
+(Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
+[73865.736655] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-DISCONNECTED 
+bssid=10:06:ed:15:ac:6c reason=15
+[73865.738236] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE 
+init=CORE type=WORLD
+[73865.743914] NetworkManager[37941]: <info>  [1713258751.9001] device 
+(wlp58s0): supplicant interface state: completed -> disconnected
+[73865.745206] NetworkManager[37941]: <info>  [1713258751.9002] device 
+(p2p-dev-wlp58s0): supplicant management interface state: completed -> 
+disconnected
+[73865.843396] NetworkManager[37941]: <info>  [1713258751.9996] device 
+(wlp58s0): supplicant interface state: disconnected -> scanning
+[73865.843901] NetworkManager[37941]: <info>  [1713258751.9997] device 
+(p2p-dev-wlp58s0): supplicant management interface state: disconnected 
+-> scanning
+[73866.738215] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE 
+init=BEACON_HINT type=UNKNOWN
+[73870.738803] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:17:9b:6c 0
+[73870.757221] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:1a:45:8c 0
+[73870.757717] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:15:ac:63 0
+[73870.758043] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:17:9b:63 0
+[73870.760797] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:19:f1:03 0
+[73870.761195] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:19:6f:8c 0
+[73870.761530] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:19:6f:83 0
+[73870.761817] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:19:f1:0c 0
+[73870.762121] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
+10:06:ed:17:de:0c 0
+[73870.795881] wpa_supplicant[595]: wlp58s0: SME: Trying to authenticate 
+with 10:06:ed:17:9b:6c (SSID='eduroam' freq=5280 MHz)
+[73869.865071] kernel: wlp58s0: authenticate with 10:06:ed:17:9b:6c 
+(local address=9c:b6:d0:d1:6a:b1)
+[73869.865097] kernel: wlp58s0: send auth to 10:06:ed:17:9b:6c (try 1/3)
+[73869.866808] kernel: wlp58s0: authenticated
+[73870.869552] wpa_supplicant[595]: wlp58s0: Trying to associate with 
+10:06:ed:17:9b:6c (SSID='eduroam' freq=5280 MHz)
+[73869.916978] kernel: wlp58s0: associate with 10:06:ed:17:9b:6c (try 1/3)
+[73869.922533] kernel: wlp58s0: RX AssocResp from 10:06:ed:17:9b:6c 
+(capab=0x1111 status=0 aid=4)
+[73869.928849] kernel: wlp58s0: associated
+[73870.889860] wpa_supplicant[595]: wlp58s0: Associated with 
+10:06:ed:17:9b:6c
+[73870.890342] wpa_supplicant[595]: wlp58s0: 
+CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+```
+
+Could something done about that or is it a hardware limitation?
+
+
+Kind regards,
+
+Paul
 
