@@ -4,52 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3F9FC4345F
-	for <ath10k@archiver.kernel.org>; Tue, 16 Apr 2024 12:29:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EBB5C4345F
+	for <ath10k@archiver.kernel.org>; Wed, 17 Apr 2024 01:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:From:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=WqKKGz/njguKbCKjpmwFj1fH/+/+JzOG+0xPE0aUZQE=; b=mamwAFr0XTPC3M7wXD07j/kRJo
-	IybQJPwSxND7M7AVAbf0PJrdXqtAm3cLbhZcqvpz93rr6WXA3cy9+zujVLJtmFgqisepVWYE7pugf
-	nqu2ZdUDnUKmwSqM4MnmuI07tuwwUgRWLe7sdlt/c96V+oGob++/w3LIkXQWS6vNg1vgQAd58cfVe
-	Xb201ECLmL3bAMl1JA3Ymho/m7OMlk0lXeT/yEHVt8EWia01aYLcrrrqS2DCVwkDEZSBqclXuc04g
-	ZBZ2alEParq7kVGTnhEqhVBCMgbv7DETdYjWKpE81jHXbGGSbFKi3zNRJH+Tyz8KsEVOu3cyDWxYf
-	O2hHZJ+A==;
+	bh=WG8RmBtAqWwL+m05PEX0/y5T3IyRZxrs2/1CjKLDaIo=; b=jy+GXdWh5wLob4IYyGP8FK0NDk
+	cCFR4ekVTBSwziB0I34KPJhmRnZa46jomSknKnxcO+QBP69FNPR6rNUJhIbMUi4mdkCaEKsne7wLe
+	SlJ43quEZt3V/FRkgX5mVvGYwZY8HB6ESjjHmb6pNzq4Bd4T7XZFZdSsesiC5pimSmt6fqkicQZLD
+	qcYHMa4ove82tUabezdEZ7mC/Kew+43b3xaIAwTnYCerHTwyObrIIt7ltJB6k27uUyrFyZEl9Miwd
+	4alvmJ+DFUFiC6FZtq6bNWruOcwHBclZwjp6OfYTjk89Pjuu3qdDbj1ff7AAwczP2WQ5dmvSCo/5A
+	jPjI8r4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwhw2-0000000C8JK-0Bil;
-	Tue, 16 Apr 2024 12:29:14 +0000
-Received: from mx3.molgen.mpg.de ([141.14.17.11])
+	id 1rwtf0-0000000ELFI-1V4L;
+	Wed, 17 Apr 2024 01:00:26 +0000
+Received: from mgamail.intel.com ([198.175.65.19])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwhvy-0000000C8Gm-0FA7
+	id 1rwtev-0000000ELEl-1jqw
 	for ath10k@lists.infradead.org;
-	Tue, 16 Apr 2024 12:29:13 +0000
-Received: from [10.0.98.87] (unknown [212.201.152.66])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 0EC6D61E5FE35;
-	Tue, 16 Apr 2024 14:28:45 +0200 (CEST)
-Message-ID: <6689d445-af96-47eb-bcb5-eb096a77f084@molgen.mpg.de>
-Date: Tue, 16 Apr 2024 14:28:44 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- linux-kernel@vger.kernel.org
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: ath10k: Rekeying PTK for STA 10:06:ed:15:ac:6c but driver can't
- safely do that.
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+	Wed, 17 Apr 2024 01:00:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713315622; x=1744851622;
+  h=date:from:to:cc:subject:message-id;
+  bh=M2cVkz/2rj132VoO7gw310CDyQT3mXv86ebpjSj1kbk=;
+  b=K3zTDhqy8+gZTWEppmvwqilZkpCRTjiPbUFb6ulaj5tvN7vW05quqGcM
+   2kxDUMBbvzHNNkGo3aarG5G8qT7dUHFrLDJ+xddr2wWLmCe9zmVXacenk
+   uLktPCwJvP1Rm7n31VYIE/gaFt6AMkjx66syBFTYl88bKLM3ICfy2ElKl
+   RHz+pD07rT3CKRCeyglUwCqTdOh4TPEgyzJ79/sSV6yvA3V3FtB7IZ+96
+   lYOna8usY4/+MueyNYbqz01KGjlhj3icEwPTVgdH04NbUQ1uM6xnugf+x
+   8LPFUfUZ/kTG5ef/uWEaQ9FZjwWQFuCp/IXGOWeq5tXeinWL9AS80gJYe
+   Q==;
+X-CSE-ConnectionGUID: Pr9/Zo5yQCm0eWQi+ogUuw==
+X-CSE-MsgGUID: RxEbUh6yRvOaFtcsUrrSPw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8670717"
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="8670717"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 18:00:21 -0700
+X-CSE-ConnectionGUID: WtMinx00Qt+EccxnpNuXtg==
+X-CSE-MsgGUID: m/uRTeZ7QAuNOmjcIYYooQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="23041513"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by orviesa008.jf.intel.com with ESMTP; 16 Apr 2024 18:00:20 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rwter-0005uS-0W;
+	Wed, 17 Apr 2024 01:00:17 +0000
+Date: Wed, 17 Apr 2024 08:59:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 70d6c9e29b2a5a20b7ca735f0ad1e6b963dadd0b
+Message-ID: <202404170835.i1TjhyLH-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240416_052910_411719_FB4B7198 
-X-CRM114-Status: UNSURE (   4.94  )
+X-CRM114-CacheID: sfid-20240416_180021_518785_0DE90972 
+X-CRM114-Status: UNSURE (   3.53  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -65,132 +83,121 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dear Linux folks,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 70d6c9e29b2a5a20b7ca735f0ad1e6b963dadd0b  Merge branch 'ath-next' into ath-qca
 
+elapsed time: 1040m
 
-In a research institution using *eduroam*, I noticed on Dell XPS 13 9360 
-with Debian sid/unstable
+configs tested: 101
+configs skipped: 3
 
-     $ lspci -nn -s 3a:00.0 -v
-     3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 
-802.11ac Wireless Network Adapter [168c:003e] (rev 32)
-         Subsystem: Rivet Networks Killer Wireless-n/a/ac 1535 Wireless 
-Network Adapter [1a56:1535]
-         Flags: bus master, fast devsel, latency 0, IRQ 137
-         Memory at dc000000 (64-bit, non-prefetchable) [size=2M]
-         Capabilities: <access denied>
-         Kernel driver in use: ath10k_pci
-         Kernel modules: ath10k_pci
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-that the Wireless connection dropped for a short time, and then 
-reconnected again. Linux 6.9-rc3+ warns:
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240417   clang
+i386         buildonly-randconfig-002-20240417   gcc  
+i386         buildonly-randconfig-003-20240417   clang
+i386         buildonly-randconfig-004-20240417   gcc  
+i386         buildonly-randconfig-005-20240417   gcc  
+i386         buildonly-randconfig-006-20240417   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240417   clang
+i386                  randconfig-002-20240417   gcc  
+i386                  randconfig-003-20240417   gcc  
+i386                  randconfig-004-20240417   clang
+i386                  randconfig-005-20240417   clang
+i386                  randconfig-006-20240417   clang
+i386                  randconfig-011-20240417   gcc  
+i386                  randconfig-012-20240417   gcc  
+i386                  randconfig-013-20240417   clang
+i386                  randconfig-014-20240417   gcc  
+i386                  randconfig-015-20240417   gcc  
+i386                  randconfig-016-20240417   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
 
-     [73861.687754] Rekeying PTK for STA 10:06:ed:15:ac:6c but driver 
-can't safely do that.
-
-According to the logs since March 2024, this never happened in other 
-environments.
-
-With wpa_supplicant logs:
-
-```
-[73862.470842] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-EAP-STARTED EAP 
-authentication started
-[73862.485995] wpa_supplicant[595]: wlp58s0: 
-CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=25 -> NAK
-[73862.499998] wpa_supplicant[595]: wlp58s0: 
-CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=21
-[73862.500424] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-EAP-METHOD EAP 
-vendor 0 method 21 (TTLS) selected
-[…]
-[73862.624544] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-EAP-SUCCESS EAP 
-authentication completed successfully
-[73862.626116] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:17:9b:6c 0
-[73862.626436] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:1a:45:8c 0
-[73862.626723] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:19:6f:8c 0
-[73862.626972] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:19:f1:0c 0
-[73862.627211] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:15:ac:63 0
-[73862.627435] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:19:82:6c 0
-[73862.627699] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:17:9b:63 0
-[73862.627911] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:19:f1:03 0
-[73862.628245] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:19:6f:83 0
-[73862.628451] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:17:de:0c 0
-[73862.628645] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-REMOVED 
-10:06:ed:15:ac:6c 0
-[73862.628863] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:15:ac:6c 0
-[73862.668477] wpa_supplicant[595]: wlp58s0: WPA: Key negotiation 
-completed with 10:06:ed:15:ac:6c [PTK=CCMP GTK=CCMP]
-[73861.687754] kernel: Rekeying PTK for STA 10:06:ed:15:ac:6c but driver 
-can't safely do that.
-[73864.676479] kernel: wlp58s0: disassociated from 10:06:ed:15:ac:6c 
-(Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
-[73865.736655] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-DISCONNECTED 
-bssid=10:06:ed:15:ac:6c reason=15
-[73865.738236] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE 
-init=CORE type=WORLD
-[73865.743914] NetworkManager[37941]: <info>  [1713258751.9001] device 
-(wlp58s0): supplicant interface state: completed -> disconnected
-[73865.745206] NetworkManager[37941]: <info>  [1713258751.9002] device 
-(p2p-dev-wlp58s0): supplicant management interface state: completed -> 
-disconnected
-[73865.843396] NetworkManager[37941]: <info>  [1713258751.9996] device 
-(wlp58s0): supplicant interface state: disconnected -> scanning
-[73865.843901] NetworkManager[37941]: <info>  [1713258751.9997] device 
-(p2p-dev-wlp58s0): supplicant management interface state: disconnected 
--> scanning
-[73866.738215] wpa_supplicant[595]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE 
-init=BEACON_HINT type=UNKNOWN
-[73870.738803] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:17:9b:6c 0
-[73870.757221] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:1a:45:8c 0
-[73870.757717] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:15:ac:63 0
-[73870.758043] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:17:9b:63 0
-[73870.760797] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:19:f1:03 0
-[73870.761195] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:19:6f:8c 0
-[73870.761530] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:19:6f:83 0
-[73870.761817] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:19:f1:0c 0
-[73870.762121] wpa_supplicant[595]: wlp58s0: PMKSA-CACHE-ADDED 
-10:06:ed:17:de:0c 0
-[73870.795881] wpa_supplicant[595]: wlp58s0: SME: Trying to authenticate 
-with 10:06:ed:17:9b:6c (SSID='eduroam' freq=5280 MHz)
-[73869.865071] kernel: wlp58s0: authenticate with 10:06:ed:17:9b:6c 
-(local address=9c:b6:d0:d1:6a:b1)
-[73869.865097] kernel: wlp58s0: send auth to 10:06:ed:17:9b:6c (try 1/3)
-[73869.866808] kernel: wlp58s0: authenticated
-[73870.869552] wpa_supplicant[595]: wlp58s0: Trying to associate with 
-10:06:ed:17:9b:6c (SSID='eduroam' freq=5280 MHz)
-[73869.916978] kernel: wlp58s0: associate with 10:06:ed:17:9b:6c (try 1/3)
-[73869.922533] kernel: wlp58s0: RX AssocResp from 10:06:ed:17:9b:6c 
-(capab=0x1111 status=0 aid=4)
-[73869.928849] kernel: wlp58s0: associated
-[73870.889860] wpa_supplicant[595]: wlp58s0: Associated with 
-10:06:ed:17:9b:6c
-[73870.890342] wpa_supplicant[595]: wlp58s0: 
-CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
-```
-
-Could something done about that or is it a hardware limitation?
-
-
-Kind regards,
-
-Paul
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
