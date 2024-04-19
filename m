@@ -4,71 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06EDEC4345F
-	for <ath10k@archiver.kernel.org>; Fri, 19 Apr 2024 06:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65C76C4345F
+	for <ath10k@archiver.kernel.org>; Fri, 19 Apr 2024 15:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=zzcTyEjLJDT+lC2WkJw3C6qiWNUZD9iwvO9YldBXnUE=; b=FroOZAEiPeLhoNhX0B5RS18NuO
-	GUIaZnHWuFNB345F6pcGICyUJJ+9/tHnEnXlVPwOy44iGHlqBYxy70rdwqz1RHQ5JIYcZJ7k1RE63
-	bbcVQ++YAJdpvYqlJDEYik5GPP75JnTqonAzrJl0j7JMaI64DmYT9LW5cL5jm5IIsUa0q2pwXIrCG
-	wBT0kPH8HQeQWQ+ghjOpMcP6j8LLzuPj/wGR1FzCQXy7olHlFgIxiZ90GFRD/xJW9Yj7SOspz+cVQ
-	Ds9TRSzd5tBrk875JRYtsBxZw8YDyOi+egFDwTNptzeoNZP4k6tuyKgiHmfo76YFH6l8O0MFeGYeJ
-	7hIZ0DcA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=9Wo8SmDNArByT9MfsI6PAGKm5TIESVSuSSafxP6REhs=; b=FTFFYRi0b3sLA2ozqYWcn7JYcK
+	MXXHQScd7iDvwlsl/FDljBB/JqLVlLz99zZeuLhhhb7cpOcp89M/hVg0/FyQ/3reX4i9FvpzX2Lfr
+	2wHT29uu7rgANd/JgzhTq66oe6k2/6cAxSEO3MGWwVMrd9RO1E2ew9gG/Gs/8CYZkbkE80JaK9H+u
+	igCsd17fVBkDt6aJlEGbibRjDxj6zm/C+fIdGyGzAlkRIEuv+7LaUaBWG1Wi6nDehoLwaYkLUIFs7
+	qpNk+GkyYbGxUS6pYSVS40r4SM/xWM+Xfw/wnmOGdIhT80q9VPesInkdGC4X0olVMqozjM/LMZCIp
+	Jb6/ze6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxiDu-00000004hSJ-3XOC;
-	Fri, 19 Apr 2024 06:59:50 +0000
-Received: from mgamail.intel.com ([192.198.163.10])
+	id 1rxprr-000000065ku-28Um;
+	Fri, 19 Apr 2024 15:09:35 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxiDp-00000004hRn-2Dv6
+	id 1rxpro-000000065kI-1APg
 	for ath10k@lists.infradead.org;
-	Fri, 19 Apr 2024 06:59:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713509985; x=1745045985;
-  h=date:from:to:cc:subject:message-id;
-  bh=cvBVdzWinQu7kXMoALSK0VmXfca8iiA/yd/vW0aqwF0=;
-  b=aKi2pZNXozyKy9+F6qADp9NtbbG5UrBbdrwyvGAmNsVg+67UFm7Ph6h6
-   0VzQxy0nQvCFirC4uR5sPC1iNPpOEfLGfRmoSAUnc5yvgfBn9vfCMC+GA
-   MryfrQAZf/Ui77pypCp3eATZgbIn6kWBkO7JY2ygd43EE/4pk/axf78WB
-   PnONWB/fBHeNVt8SYf/8p9WSl+YZCKXzRmVkfUukaMSzUBaXguLNk1Kx2
-   DMvKjdG3DryJbVsRU1PdpDO89+dupsz5nA49PKHlqpIpaZ6op1ymDjjkL
-   KA6JjJn8D1xaVbjUtbgvqIR8XRuwVqrkuurNGaDy4kbzg920aN8sJtiNh
-   w==;
-X-CSE-ConnectionGUID: JDhKmrT+Qam28ONdeXGGWg==
-X-CSE-MsgGUID: axGVAlBzQKWDgyJRwPO+Tg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="20488556"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="20488556"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 23:59:44 -0700
-X-CSE-ConnectionGUID: qS5CQcLfSLGOw4S8wyZCdw==
-X-CSE-MsgGUID: itopb8EnR8WVI6Z1OmXYqQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="23279410"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by fmviesa009.fm.intel.com with ESMTP; 18 Apr 2024 23:59:42 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rxiDd-0009oa-09;
-	Fri, 19 Apr 2024 06:59:34 +0000
-Date: Fri, 19 Apr 2024 14:58:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 2372c6d28032b8336fb41c2dfa9209936cd27452
-Message-ID: <202404191443.6Js5AtwC-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Fri, 19 Apr 2024 15:09:33 +0000
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43JDggXX025508;
+	Fri, 19 Apr 2024 15:09:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=9Wo8SmDNArByT9MfsI6PAGKm5TIESVSuSSafxP6REhs=; b=Gw
+	Y54oRWvDGd22r7sN4dDr70BSS6ZuTzpeHt8tZSLRSyvB0AqgvKpVP7UWQS2RKnh6
+	zMOA8nzYNulnCtu+m1Gj/Qw3zGnUNemcUDqtZdnBsyW+cuI9nUuFH8JCvzjgC1XT
+	uJNJt3bJONyZKzkOV5V2pM5vQjgWWTRn9iR+7tLJvfxUHXRqQb1kythLwUFAZ5c9
+	b9oOVF1/6B76zSAwScJ84088I6LdIula+tngT0aGUb+WoIaNJ7XdxJXVy06MpFj7
+	Em0Y0t2yD76wlwgpvN6kCz3dtCmUu2TqZ3uwHae8uxk3tUyUeKtU0whc0UUJrwj3
+	aQL28/Ip7Onba68fL6rg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xk9s7a51f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Apr 2024 15:09:27 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43JF9QpM020996
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Apr 2024 15:09:26 GMT
+Received: from [10.110.56.161] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 19 Apr
+ 2024 08:09:25 -0700
+Message-ID: <a4c2cb8c-dd80-457f-82b5-2eb58a9b55b5@quicinc.com>
+Date: Fri, 19 Apr 2024 08:09:24 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH wireless] wifi: ath10k: Fix an error code problem in
+ ath10k_dbg_sta_write_peer_debug_trigger()
+Content-Language: en-US
+To: Su Hui <suhui@nfschina.com>, <kvalo@kernel.org>, <jjohnson@kernel.org>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>, <morbo@google.com>,
+        <justinstitt@google.com>
+CC: <c_mkenna@qti.qualcomm.com>, <linux-wireless@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <llvm@lists.linux.dev>, <kernel-janitors@vger.kernel.org>
+References: <20240417081736.2226586-1-suhui@nfschina.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240417081736.2226586-1-suhui@nfschina.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rJl189pniCvvvdIHyH8iJmr6ShUY7FCy
+X-Proofpoint-ORIG-GUID: rJl189pniCvvvdIHyH8iJmr6ShUY7FCy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-19_10,2024-04-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ phishscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
+ impostorscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404190114
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240418_235945_888029_238D39BF 
-X-CRM114-Status: UNSURE (   3.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240419_080932_376461_1758F1A3 
+X-CRM114-Status: GOOD (  19.84  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,148 +102,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 2372c6d28032b8336fb41c2dfa9209936cd27452  wifi: ath12k: don't use %pK in dmesg format strings
+On 4/17/2024 1:17 AM, Su Hui wrote:
+> Clang Static Checker (scan-build) Warning:
+> drivers/net/wireless/ath/ath10k/debugfs_sta.c:line 429, column 3
+> Value stored to 'ret' is never read.
+> 
+> Return 'ret' rather than 'count' when 'ret' stores an error code.
+> By the way, remove some useless code.
+> 
+> Fixes: ee8b08a1be82 ("ath10k: add debugfs support to get per peer tids log via tracing")
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/debugfs_sta.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+> index 394bf3c32abf..5525dabe390a 100644
+> --- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+> +++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+> @@ -415,7 +415,7 @@ ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
+>  	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
+>  	struct ath10k *ar = arsta->arvif->ar;
+>  	u8 peer_debug_trigger;
+> -	int ret;
+> +	int ret = 0;
 
-elapsed time: 921m
+this is unnecessary since this will be written in all paths that lead to the
+return that reads it
 
-configs tested: 128
-configs skipped: 3
+>  
+>  	if (kstrtou8_from_user(user_buf, count, 0, &peer_debug_trigger))
+>  		return -EINVAL;
+> @@ -432,14 +432,12 @@ ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
+>  
+>  	ret = ath10k_wmi_peer_set_param(ar, arsta->arvif->vdev_id, sta->addr,
+>  					ar->wmi.peer_param->debug, peer_debug_trigger);
+> -	if (ret) {
+> +	if (ret)
+>  		ath10k_warn(ar, "failed to set param to trigger peer tid logs for station ret: %d\n",
+>  			    ret);
+> -		goto out;
+> -	}
+>  out:
+>  	mutex_unlock(&ar->conf_mutex);
+> -	return count;
+> +	return ret ?: count;
+>  }
+>  
+>  static const struct file_operations fops_peer_debug_trigger = {
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'd suggest as an alternate solution that this function is a good candidate
+for the the cleanup.h functionality. By scoping the mutex_lock() you can
+simply return at each error location, and remove the explicit mutex_unlock().
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240419   gcc  
-arc                   randconfig-002-20240419   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240419   gcc  
-arm                   randconfig-002-20240419   clang
-arm                   randconfig-003-20240419   gcc  
-arm                   randconfig-004-20240419   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240419   clang
-arm64                 randconfig-002-20240419   clang
-arm64                 randconfig-003-20240419   clang
-arm64                 randconfig-004-20240419   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240419   gcc  
-csky                  randconfig-002-20240419   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240419   clang
-hexagon               randconfig-002-20240419   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240419   clang
-i386         buildonly-randconfig-002-20240419   gcc  
-i386         buildonly-randconfig-003-20240419   gcc  
-i386         buildonly-randconfig-004-20240419   gcc  
-i386         buildonly-randconfig-005-20240419   gcc  
-i386         buildonly-randconfig-006-20240419   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240419   clang
-i386                  randconfig-002-20240419   clang
-i386                  randconfig-003-20240419   clang
-i386                  randconfig-004-20240419   gcc  
-i386                  randconfig-005-20240419   clang
-i386                  randconfig-006-20240419   clang
-i386                  randconfig-011-20240419   gcc  
-i386                  randconfig-012-20240419   clang
-i386                  randconfig-013-20240419   gcc  
-i386                  randconfig-014-20240419   clang
-i386                  randconfig-015-20240419   gcc  
-i386                  randconfig-016-20240419   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240419   gcc  
-loongarch             randconfig-002-20240419   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240419   gcc  
-nios2                 randconfig-002-20240419   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240419   gcc  
-parisc                randconfig-002-20240419   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240419   gcc  
-powerpc               randconfig-002-20240419   gcc  
-powerpc               randconfig-003-20240419   gcc  
-powerpc64             randconfig-001-20240419   gcc  
-powerpc64             randconfig-002-20240419   gcc  
-powerpc64             randconfig-003-20240419   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-002-20240419   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
+But I'd accept this with the initializer change removed as well since I don't
+think ath10k has any cleanup.h usages yet.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+/jeff
 
