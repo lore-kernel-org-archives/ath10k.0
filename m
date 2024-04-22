@@ -4,64 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3B22C4345F
-	for <ath10k@archiver.kernel.org>; Mon, 22 Apr 2024 06:53:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF605C4345F
+	for <ath10k@archiver.kernel.org>; Mon, 22 Apr 2024 12:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8bhQnAt10FkroavO7Qz6LO+wtoG2v0IJuQhquYK/pqc=; b=htTolAo2dy0NvdQpjF9QY80TEb
-	HedeBX1c8ZIq12HMEymxZhEP9BCRYtCv0fyl0O+6uvITiIGICM4ifFB3yvmys1kPhwNhDv0z9XDK/
-	Lh9OeTJe7rw7FMYk/VJ8hys2w8Qr/+gqDQTzt+piM4ASm0+YnwIi6DdGlwYb8ttcKRST2/TAlQDyd
-	sQJK9oEUbEXaJtPShdHyI6aV9IxHBxNjgEgm8nrthC+A4ogKhPWFPC/mjGasBHgrR9tC9PEtYJaUg
-	nZ0VZ8a354dcpsUYUsAnn1QvNCI3lW2TkeRpc/CWasbzMLLlg/PnUTpvVUNOiD1SqJe6JVYpTnEIF
-	SNQom7yQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=iz0ikdoTMPeoGlY7AzEyABEuqkNB0Gjgw6bWzoieFE4=; b=iZ7zI8zzpTG2mIU8eU/m4HmYYW
+	gvEocunNpgMRklIAS4iptXNKOin6MgYkS/yhKuOtEIcgevt0RFRrdCjAJuz0rHwADllf0gifSTsEY
+	LdCyfwUaFKIMJVDTuS7N6qDzyrr3wG2agO9VtudD0OZ72l0M1trFxtLotZgTT5Eo/YcKEV7h0MCUs
+	aq7y56U/95D0/goORqiAmZcuonuX3ZXVwVn+jkrHAW8FE6WMfaeoU/XauiNyZYAU1CPMoZzbtVI6c
+	yuVmykoo6pe0shQNvoQOUpdexpqlUh67Rqdspnxs7Yxet22ulECvBmA1NN2AjHW+6rFixTCnEOCXI
+	lZyRIGCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rynYZ-0000000CIyw-2oTw;
-	Mon, 22 Apr 2024 06:53:39 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rysxU-0000000DWfL-3UQb;
+	Mon, 22 Apr 2024 12:39:44 +0000
+Received: from mail-lf1-f41.google.com ([209.85.167.41])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rynYU-0000000CIvC-3olx
-	for ath10k@lists.infradead.org;
-	Mon, 22 Apr 2024 06:53:38 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 4B21FCE0A1A;
-	Mon, 22 Apr 2024 06:53:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF79BC116B1;
-	Mon, 22 Apr 2024 06:53:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713768810;
-	bh=BQ5lv0ySOhngt6oiBldECYAUh+70HIqFEVh7ZrhT2SU=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Cui0MaRtDe2xqQ3NEwHoiaqNEPh9QZrdEiUYskHiBgjzUxclmHsmCP6ag5nGU84bM
-	 3b5x6NxZdfPeMvegaO7mkU3QgMxZobmAm2oln8xkQM/Oy8/+Oucf2IgnmG/TyB/Wn7
-	 iQdcRWT2PJLWTmUDU6bWMGk2/fV7G6TSzKe1IoWdNnlo3yMEBweewQVG1KrgHX1Sf7
-	 td471aBOw8drLYvbX6PKTOaVitHwsw9ADZoAa5l91FQdSWkWxrU3MP5yynDhnSBkIW
-	 O8yLZoEwnTC68ASfkWblx7Spb7MGUF+NSjqs1Yv/Qw45PpGMdE8ky27RWo8/FkcZUT
-	 on4t2PTh/wcSQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Su Hui <suhui@nfschina.com>
-Cc: quic_jjohnson@quicinc.com,  jjohnson@kernel.org,  nathan@kernel.org,
-  ndesaulniers@google.com,  morbo@google.com,  justinstitt@google.com,
-  c_mkenna@qti.qualcomm.com,  linux-wireless@vger.kernel.org,
-  ath10k@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  llvm@lists.linux.dev,  kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH wireless v2] wifi: ath10k: Fix an error code problem in
- ath10k_dbg_sta_write_peer_debug_trigger()
-References: <20240422034243.938962-1-suhui@nfschina.com>
-Date: Mon, 22 Apr 2024 09:53:26 +0300
-In-Reply-To: <20240422034243.938962-1-suhui@nfschina.com> (Su Hui's message of
-	"Mon, 22 Apr 2024 11:42:44 +0800")
-Message-ID: <878r15j3bt.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	id 1rysxP-0000000DWdD-26NA;
+	Mon, 22 Apr 2024 12:39:41 +0000
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51ae2e37a87so2591602e87.2;
+        Mon, 22 Apr 2024 05:39:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713789576; x=1714394376;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iz0ikdoTMPeoGlY7AzEyABEuqkNB0Gjgw6bWzoieFE4=;
+        b=sOJUdZoO8NTqx+CWOJKxGncqzWDX3/lbbr44eLtfVXapv56PbPSAWbE1DaMYDyzsPj
+         pf0kkUYDEZsHrOeWgf1Ci2+OUvqAqLfUz/z5qeVNI4hmU8F9yG/uaRaKSOT1Ne4FyVqa
+         IZMwTFhYEXxMd0LBpsSPhkqkEfYUVoktUtVVoAJaYVNB65NAJeW0wUI1gJO61dqfKoVF
+         nfLf1ytqVnkEbrQ4xJgmKWC5NmcofFOFIv4YcqTy4b4AiE5+Sz+Jfy4OlEWljKEC4KPX
+         5W3lWDiAflW67S2dRwcmSAQ0PQtfM5bO/VNx1TLVh67U7DD0LsRzq4Id82S5W2zEE2Pg
+         iEEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVeWUaqcfNyPhGe3x/jaQ6cxpl+GZXEE8M7fUj+VsP64ZsBYQHfqqD+IGOnFnE1hsWkoaj81hMfn3aUOTt4/tssEb9WAC43m1TAQHxww/69yXLOtulwofEiElO7eqm1VhAIyMs2LqEJ1h8Q2Zj64yxPokohDeYALt5EPqHIkxhOycMcwyaXjkWY+ZNBbAspW6Smtx5VciLVfHNyrBzclrxqajovXgNUD0FFR2QSJsHI0A==
+X-Gm-Message-State: AOJu0YyAXEVu2VUMsWXp2NjrLk6yGy/bt3Q9Wk0I4rFt1/wWmzEm3C0E
+	Vx+0AEbytSFsJyZ3PZHKqSP6sZKVukMBAL5Rvu1Mz092Pc81T+n+
+X-Google-Smtp-Source: AGHT+IF5YTCCg6KEsN0PmqluDOTi/5NrwJEUq5lvraAub+lxIQJqUtef+oDOn/RubcUZafX5KbdePw==
+X-Received: by 2002:a19:ca4f:0:b0:515:c195:d6b8 with SMTP id h15-20020a19ca4f000000b00515c195d6b8mr5518092lfj.60.1713789575968;
+        Mon, 22 Apr 2024 05:39:35 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id og14-20020a1709071dce00b00a55ac4c4550sm1906884ejc.211.2024.04.22.05.39.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 05:39:35 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: aleksander.lobakin@intel.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	elder@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	nbd@nbd.name,
+	sean.wang@mediatek.com,
+	Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org,
+	taras.chornyi@plvision.eu,
+	ath11k@lists.infradead.org,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	geomatsi@gmail.com,
+	kvalo@kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: quic_jjohnson@quicinc.com,
+	leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	idosch@idosch.org,
+	leitao@debian.org
+Subject: [PATCH net-next v7 00/10] allocate dummy device dynamically
+Date: Mon, 22 Apr 2024 05:38:53 -0700
+Message-ID: <20240422123921.854943-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240421_235335_215873_10DB49A4 
-X-CRM114-Status: GOOD (  15.30  )
+X-CRM114-CacheID: sfid-20240422_053939_561235_990BA787 
+X-CRM114-Status: GOOD (  12.10  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,44 +102,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Su Hui <suhui@nfschina.com> writes:
+struct net_device shouldn't be embedded into any structure, instead,
+the owner should use the private space to embed their state into
+net_device.
 
-> Clang Static Checker (scan-build) Warning:
-> drivers/net/wireless/ath/ath10k/debugfs_sta.c:line 429, column 3
-> Value stored to 'ret' is never read.
->
-> Return 'ret' rather than 'count' when 'ret' stores an error code.
-> By the way, remove some useless code.
->
-> Fixes: ee8b08a1be82 ("ath10k: add debugfs support to get per peer tids log via tracing")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
-> v2:
->  - remove the initializer change.
->
->  drivers/net/wireless/ath/ath10k/debugfs_sta.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> index 394bf3c32abf..c1198e9027ae 100644
-> --- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> +++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> @@ -432,14 +432,12 @@ ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
->  
->  	ret = ath10k_wmi_peer_set_param(ar, arsta->arvif->vdev_id, sta->addr,
->  					ar->wmi.peer_param->debug, peer_debug_trigger);
-> -	if (ret) {
-> +	if (ret)
->  		ath10k_warn(ar, "failed to set param to trigger peer tid logs for station ret: %d\n",
->  			    ret);
-> -		goto out;
-> -	}
+But, in some cases the net_device is embedded inside the private
+structure, which blocks the usage of zero-length arrays inside
+net_device.
 
-Minimal changes with one logical change per patch, please. I'll remove
-this part in the pending branch.
+Create a helper to allocate a dummy device at dynamically runtime, and
+move the Ethernet devices to use it, instead of embedding the dummy
+device inside the private structure.
+
+This fixes all the network cases plus some wireless drivers.
+
+PS: Due to lack of hardware, unfortunately most these patches are
+compiled tested only, except ath11k that was kindly tested by Kalle Valo.
+
+---
+Changelog:
+
+v7:
+	* Document the return value of alloc_netdev_dummy()
+v6:
+	* No code change. Just added Reviewed-by: and fix a commit message
+v5:
+	* Added a new patch to fix some typos in the previous code
+	* Rebased to net-net/main
+v4:
+	* Added a new patch to add dummy device at free_netdev(), as suggested
+	  by Jakub.
+	* Added support for some wireless driver.
+	* Added some Acked-by and Reviewed-by.
+v3:
+	* Use free_netdev() instead of kfree() as suggested by Jakub.
+	* Change the free_netdev() place in ipa driver, as suggested by
+	  Alex Elder.
+	* Set err in the error path in the Marvell driver, as suggested
+	  by Simon Horman.
+v2:
+	* Patch 1: Use a pre-defined name ("dummy#") for the dummy
+	  net_devices.
+	* Patch 2-5: Added users for the new helper.
+v1:
+	* https://lore.kernel.org/all/20240327200809.512867-1-leitao@debian.org/
+
+Breno Leitao (10):
+  net: core: Fix documentation
+  net: free_netdev: exit earlier if dummy
+  net: create a dummy net_device allocator
+  net: marvell: prestera: allocate dummy net_device dynamically
+  net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
+  net: ipa: allocate dummy net_device dynamically
+  net: ibm/emac: allocate dummy net_device dynamically
+  wifi: qtnfmac: Use netdev dummy allocator helper
+  wifi: ath10k: allocate dummy net_device dynamically
+  wifi: ath11k: allocate dummy net_device dynamically
+
+ drivers/net/ethernet/ibm/emac/mal.c           | 14 ++++-
+ drivers/net/ethernet/ibm/emac/mal.h           |  2 +-
+ .../ethernet/marvell/prestera/prestera_rxtx.c | 15 ++++-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 17 ++++--
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h   |  2 +-
+ drivers/net/ipa/gsi.c                         | 12 ++--
+ drivers/net/ipa/gsi.h                         |  2 +-
+ drivers/net/wireless/ath/ath10k/core.c        |  9 ++-
+ drivers/net/wireless/ath/ath10k/core.h        |  2 +-
+ drivers/net/wireless/ath/ath10k/pci.c         |  2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c        |  2 +-
+ drivers/net/wireless/ath/ath10k/snoc.c        |  4 +-
+ drivers/net/wireless/ath/ath10k/usb.c         |  2 +-
+ drivers/net/wireless/ath/ath11k/ahb.c         |  9 ++-
+ drivers/net/wireless/ath/ath11k/core.h        |  2 +-
+ drivers/net/wireless/ath/ath11k/pcic.c        | 21 +++++--
+ .../wireless/quantenna/qtnfmac/pcie/pcie.c    |  3 +-
+ include/linux/netdevice.h                     |  3 +
+ net/core/dev.c                                | 59 +++++++++++++------
+ 19 files changed, 129 insertions(+), 53 deletions(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.43.0
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
