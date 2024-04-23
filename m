@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C70CCC41513
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B74E2C04FF8
 	for <ath10k@archiver.kernel.org>; Tue, 23 Apr 2024 03:42:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,62 +12,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=5AoLQDpkI7ILkVwPOozZjpIwVM/SeA2WQsK0w56komk=; b=1qKz82UBELN3Az7DhRiiUiyUwK
-	bkANVV8fYhizoTx3UbguoGcNX4ZcRq4dcXAjLv5OETApN7WDzI6zMiMyXpFOXTl5OV/1MlkaQlgB3
-	I0wnnxEzNOPVaIw0n+KMLK1zO1TbzOOXD8triUht8JemrlwYg5/cJxtPR+eg5tYHJvX6lncITSq+5
-	ko/CCbT0skU9ko7QVMinM5ag/gtofKLVwLuh3j8VINQbq9lFSRxTJDLzPP5T4MymekEUaiB+kJrVY
-	WJ8Q+CPpC05Hf15NIG/6QFHen8fQbJdpGhIY5SC55ZayotBvYUFnA4qKYOsepFovMTGNfqI3Js7oI
-	eCdf+Ssg==;
+	bh=0icejQZcaZP+T8fGMwoxpV/KrYLRxkQvlIDO9byBoC0=; b=WwYajb0b7DZFVVlZ9gr8F+wHjq
+	HtSKH5FT0LBpXWK10ldHGPh/8NABHhurOeV0rN0a1pCE2xShUXGRJz+gYiRwJBjDg0RRgi1ZMUw0y
+	lR64zFFJOUaB1keZaMtaiINWe4ilbd0Ld8uEuXwYbRrdlZVzWWrv1kRYH08cOUHCCdQBH5INEU8kA
+	W3HcP8iD7cm5rxCplq3hz2l6bRZ+55ZBEwCyjMqYzBu6HR7qqwiFbRh0LE/ysqXqMhTXKaMPy4in7
+	O8opTb8qgMBJphWeg6V+zjxsvDY/ojCQOFJYZwmuSPEC9ZilgBg1/GasS6hhwadCvocBvoXi7eRKX
+	06mPICzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rz72e-0000000Fr7h-3F3s;
-	Tue, 23 Apr 2024 03:42:00 +0000
-Received: from mgamail.intel.com ([198.175.65.20])
+	id 1rz72g-0000000Fr8F-2GKz;
+	Tue, 23 Apr 2024 03:42:02 +0000
+Received: from mgamail.intel.com ([192.198.163.10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rz72b-0000000Fr5I-12Rh
+	id 1rz72c-0000000Fr5r-15OH
 	for ath10k@lists.infradead.org;
 	Tue, 23 Apr 2024 03:41:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713843717; x=1745379717;
+  t=1713843718; x=1745379718;
   h=date:from:to:cc:subject:message-id;
-  bh=9rd0uCq8JC3Jti9k3Jw9izihBmyQu/tbrx7DKJPCcK8=;
-  b=EFZvgwWn6PuR60qGvU+4zejLsGbo2+RGCfMUoDBs18ZMBsigxI1Ig999
-   ipCIenTYQo4pBiPetV09BQMoLm+gW2iNneLcJFgaGO1Rv7xAwFUIuWAAF
-   ULIk0KUcjT23q7RXQ/EaONu1C7zmPtNzPjPIs4ICKVjmq2ae+j43TSSTn
-   dMPnXastRJmRmmZvnGP2oo4AzRvmvlwFCoG4NQksJhF1l2wE5zmqHRkI4
-   +0pnTVoKes11X76PhGoZGOfLk0XwBqQFQsP2iL/u9X9mSZR1Nvb8mUBkJ
-   ENXDbCL40ZF7ec7gcCd+Az9OvNcfrJPxiTdI8tfNwFef83DaDM3e3rEaY
-   Q==;
-X-CSE-ConnectionGUID: iXG68GN6RdaxE0Hnu12ttA==
-X-CSE-MsgGUID: +b7ZNQXrQnKQKBA5w8Y6Ow==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9240796"
+  bh=cohHt4b/s7ulT0WnD+xW4uTSPYODO2YKFUr/99IiIsA=;
+  b=Gnrm1krajzrxxi4fSNhceF43mQCtnGsHa0LCJmLcL68qagnqSZ0jOzM/
+   tJgWJhhPD9lbN9+Dgf17k69BpuV57P/3oYtPe7ivee3txfBGy/Hk5qY3X
+   PwEMyL6NfJnSe98FeaCZqTV1jXFiKnD4lLhBiFduFewb28e0RLXzWB5Po
+   3H3GePTKMkS5LgX0ayMGDPCKzMMXIbSOYPH3UfsxwYn6ayGyJPpKcwCOl
+   bUhfnZB1WKa4o5NW2kp00UGweK5Q/MVdUommCYHs+rkt2/FF8l7YWzZbh
+   Jp/kVuQ52iqCJv11jCBb2FsKj8icwFjWj+yOweasLFiWa4su6v8rPwWa2
+   g==;
+X-CSE-ConnectionGUID: uiB4uD+mQjOgFAfQ6dxKcQ==
+X-CSE-MsgGUID: WGrv50IDR/SfRsUEaHky9Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="20812550"
 X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9240796"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 20:41:55 -0700
-X-CSE-ConnectionGUID: TvsuIHBaTJO0RHMMZXnt1w==
-X-CSE-MsgGUID: o2jSmowiR7emq4lDEfB+cQ==
+   d="scan'208";a="20812550"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 20:41:55 -0700
+X-CSE-ConnectionGUID: mpXVuRV7QYWLT0QF3PBSmw==
+X-CSE-MsgGUID: V2vV0fJ4Tj2Dw9sMjrQ6xw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="29024265"
+   d="scan'208";a="24277694"
 Received: from lkp-server01.sh.intel.com (HELO 01437695816f) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 22 Apr 2024 20:41:54 -0700
+  by fmviesa007.fm.intel.com with ESMTP; 22 Apr 2024 20:41:53 -0700
 Received: from kbuild by 01437695816f with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rz72V-0000SG-0i;
+	id 1rz72V-0000SI-0m;
 	Tue, 23 Apr 2024 03:41:51 +0000
-Date: Tue, 23 Apr 2024 11:40:59 +0800
+Date: Tue, 23 Apr 2024 11:41:32 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- e1bdff48a1bb4a4ac660c19c55a820968c48b3f2
-Message-ID: <202404231156.l1pRiuQm-lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ 264e95feb91f4c02f75e7dba7a67267b0022db2c
+Message-ID: <202404231129.mM3jRlbA-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240422_204157_363624_1853E8B5 
-X-CRM114-Status: UNSURE (   3.50  )
+X-CRM114-CacheID: sfid-20240422_204158_339922_AB6B2047 
+X-CRM114-Status: UNSURE (   3.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,12 +83,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: e1bdff48a1bb4a4ac660c19c55a820968c48b3f2  wifi: ath12k: fix out-of-bound access of qmi_invoke_handler()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: 264e95feb91f4c02f75e7dba7a67267b0022db2c  Add localversion-wireless-testing-ath
 
 elapsed time: 917m
 
-configs tested: 152
+configs tested: 162
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -198,25 +198,34 @@ riscv                             allnoconfig   gcc
 riscv                            allyesconfig   clang
 riscv                               defconfig   clang
 riscv                 randconfig-001-20240423   gcc  
+riscv                 randconfig-002-20240423   gcc  
 s390                             allmodconfig   clang
 s390                              allnoconfig   clang
 s390                             allyesconfig   gcc  
 s390                                defconfig   clang
+s390                  randconfig-001-20240423   clang
+s390                  randconfig-002-20240423   gcc  
 sh                               allmodconfig   gcc  
 sh                                allnoconfig   gcc  
 sh                               allyesconfig   gcc  
 sh                                  defconfig   gcc  
+sh                    randconfig-001-20240423   gcc  
+sh                    randconfig-002-20240423   gcc  
 sparc                            allmodconfig   gcc  
 sparc                             allnoconfig   gcc  
 sparc                               defconfig   gcc  
 sparc64                          allmodconfig   gcc  
 sparc64                          allyesconfig   gcc  
 sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240423   gcc  
+sparc64               randconfig-002-20240423   gcc  
 um                               allmodconfig   clang
 um                                allnoconfig   clang
 um                               allyesconfig   gcc  
 um                                  defconfig   clang
 um                             i386_defconfig   gcc  
+um                    randconfig-001-20240423   gcc  
+um                    randconfig-002-20240423   gcc  
 um                           x86_64_defconfig   clang
 x86_64                            allnoconfig   clang
 x86_64                           allyesconfig   clang
@@ -247,6 +256,7 @@ x86_64                randconfig-075-20240422   gcc
 x86_64                randconfig-076-20240422   gcc  
 x86_64                          rhel-8.3-rust   clang
 xtensa                            allnoconfig   gcc  
+xtensa                randconfig-002-20240423   gcc  
 
 -- 
 0-DAY CI Kernel Test Service
