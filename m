@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65954C4345F
-	for <ath10k@archiver.kernel.org>; Sat, 27 Apr 2024 14:57:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 298CFC4345F
+	for <ath10k@archiver.kernel.org>; Sun, 28 Apr 2024 03:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=XLZ2oHRhEYtEwqp/rc3LNzp6NmFaWREdFmzYNHlCIDc=; b=n+eBUL2w/5hUUetEmlsWkV7hBr
-	5gq092E0DSjfmQxNd1hSVqOxwUVGs/Lr2yseUgSTHvGR5TUT+LYSnNY1krVDU8DNciu+835UEa46J
-	3mPAUuVjUEdgwQQwVUeFYudXo4EO2ZWFDarcgtD31o/MvbTDN9UAw9RAk7IqYK1s9D9oLrpPnZgqI
-	J2BG9UlG3cQJECgDHlMsbPC+elTeUhVVdcd72mCJtXLw8uuRFA105S5KPGX/fy4o0Meun92Qkdnz3
-	NAWoHCtumMtdq/22hYoSMyUSvn59cgDky9LWHXztEoGiGBn36+g74dXEm2zZW2y7KbWRTo4B+HLoG
-	XFTlr1CA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:References:Cc:To:Subject:From:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=INiTAPtSQ5NRWwUSKrkM+2Hl+9rrJz802g5WHQLeGQA=; b=Ahw4QSJlWd0uL3dMmmIqJdzSf4
+	otVdbmRKV497HPCKIiIAcSavmPNvD/WgATJzSSnCpecA06Z7Yy7+r+vdxc2KLIdubqkYEb2kCCdwO
+	sfqRnrxgn2KRpsxykRdRi4ULktoOdenrWqABgNlLVx6ug3Y7CC69I6Rj2UHYASa6uIt1Zpp/mxAmP
+	lHpyMniDaUrr9hLX2CYgc6+RVQyizcALwx6l94g6kW842KNLg7LLQ6YCxnDU+iA5g2j093JVT1xEq
+	x0smjDZn/o4zTpTU+6hxQTnTNfxzgsXVrM68KZcrEJBnXG95mFsY8Fwq+S1hsekghSgcZlUb98VYv
+	igTGeMiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0jUm-0000000Fh1a-3tcd;
-	Sat, 27 Apr 2024 14:57:44 +0000
-Received: from mgamail.intel.com ([198.175.65.9])
+	id 1s0uq6-0000000Gh5t-39Aj;
+	Sun, 28 Apr 2024 03:04:30 +0000
+Received: from mail-108-mta57.mxroute.com ([136.175.108.57])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0jUk-0000000Fh0C-00nm
+	id 1s0uq2-0000000Gh4z-1HQb
 	for ath10k@lists.infradead.org;
-	Sat, 27 Apr 2024 14:57:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714229862; x=1745765862;
-  h=date:from:to:cc:subject:message-id;
-  bh=pPgagmj0GZvusOQs3RrRa62EFVuRSJ4LH9RSjY6o1EA=;
-  b=nBoz4B+3BxUskV51tn655RT6NZNCgYHAfLJtsaAlSAjmFGN1afdkr2lQ
-   +go0MOVXYMXqiIIz7yfpoSxkBz+9ohVrAEJv5dWkE3nz5lc+OuwaSzxKt
-   yLHEJrykNVHoNGx7R8nA7DcoaX3ch8/HezhmReqkdUPV4unySm00aSMWx
-   GW4CPKQC+wWwIpzqWpd5JsDVfi8XR53CD722wDexDNo+9cQOUddgz/XVI
-   Pv/9OiUm3Y4Pi5s7JwEVK7Q9AfYCKCXtT7+EUteQhasL9m7ilPuhFaZdG
-   rRFeoO8z5/rJwQU1l21xohfIYAtkvQcNTAZ0BsvdPnfuSgDMdH4QX8k9N
-   w==;
-X-CSE-ConnectionGUID: JN9mPSwQRNa2WO4XrJdGYg==
-X-CSE-MsgGUID: EWWVOEGBQniel61hgRB6Uw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="32451397"
-X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
-   d="scan'208";a="32451397"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 07:57:41 -0700
-X-CSE-ConnectionGUID: j6t1Vp5CSH2XsqLxFWOePQ==
-X-CSE-MsgGUID: grf8kar2SYSXUhw45F15xw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
-   d="scan'208";a="25762275"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 27 Apr 2024 07:57:39 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0jUf-0005A2-0k;
-	Sat, 27 Apr 2024 14:57:37 +0000
-Date: Sat, 27 Apr 2024 22:56:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
+	Sun, 28 Apr 2024 03:04:28 +0000
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta57.mxroute.com (ZoneMTA) with ESMTPSA id 18f22a91b0c0008ca2.002
+ for <ath10k@lists.infradead.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Sun, 28 Apr 2024 03:04:18 +0000
+X-Zone-Loop: 86e8f8715d3fc7024aca394b8cd176a22457ebaac4d9
+X-Originating-IP: [136.175.111.2]
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=ericswpark.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+	References:Cc:To:Subject:From:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=INiTAPtSQ5NRWwUSKrkM+2Hl+9rrJz802g5WHQLeGQA=; b=CRCAqhoYat9FunxLLXLm5xzLJ7
+	N6qHb5R9+W/+//QXOWIQJGlcLpCFkzga+j9AF38I2Wh3eOlkxwWwFOg1of1vfJBfOO1sARnFLr7eJ
+	tlGxQEAk1IEvnSCrTuXW0QhBgXxnsdhhwQkHMHj9+YLvvNSt7FWPf+emPTxZep7RIsEJkk2lpMgkt
+	BTZbFoj1QZlmuL6KD/ZooMNyb2LaAW4vMrJqIT/eTQAYHjTHEUx+L+ySpYfCIGMrMLfrifVk0ybNj
+	IokLMHJbimxs6kwDgX4lOqC6Efvf+PYcbVBPTRb8f5GFRQjj2DTmgVCSTbRum1C+50Xmi7RjO+0fx
+	7FhoOlAQ==;
+Message-ID: <eb86c5b7-b1b6-4515-afdf-cf3e78a79df2@ericswpark.com>
+Date: Sat, 27 Apr 2024 23:04:16 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Eric Park <me@ericswpark.com>
+Subject: Re: QCA6174 showing terrible performance when connecting via WPA3-SAE
+To: Kalle Valo <kvalo@kernel.org>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 095fd2a6b00244e04050e2eb9f503be5fd225967
-Message-ID: <202404272243.SuNtnczV-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+References: <2b4e20fa-3c76-4800-b872-f5d20b0cfe95@ericswpark.com>
+ <87r0ghf4rw.fsf@kernel.org> <a1231edb5e12283f6f5fbbf9e0ba7af8@ericswpark.com>
+ <87wmolsrcc.fsf@kernel.org>
+Content-Language: en-US
+In-Reply-To: <87wmolsrcc.fsf@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Id: me@ericswpark.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240427_075742_109994_FE6FDDF6 
-X-CRM114-Status: UNSURE (   3.21  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240427_200426_471769_65D34A8F 
+X-CRM114-Status: GOOD (  12.42  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,200 +80,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 095fd2a6b00244e04050e2eb9f503be5fd225967  Merge branch 'pending' into master-pending
+On 4/25/24 5:51 AM, Kalle Valo wrote:
 
-elapsed time: 1399m
+> I do not use Network Manager or other connection managers when testing.
+> It's much more reliable to use wpasupplicant directly and you get full
+> control. I usually create a custom config file and then start the
+> supplicant manually. Some pointers:
+>
+> (...)
 
-configs tested: 180
-configs skipped: 3
+I had some time today to test this, but unfortunately I couldn't figure 
+out if wpa_supplicant was using WPA2 or WPA3. Trying to connect via 
+`key_mgmt=SAE` caused `dhcpcd` to time out looking for carriers, so I 
+guess it was connecting via WPA2. In any case the speed results were the 
+same as disabling WPA3 on the router-side.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The reason I'm sending this email despite not making much progress above 
+is because it turns out I was chasing a red herring. The real problem 
+behind the degraded throughput was 802.11w. The router was advertising 
+support for it (802.11w capable but optional), but was not forcing 
+clients that didn't have the capability (required mode).
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                      axs103_smp_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240427   gcc  
-arc                   randconfig-002-20240427   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                         axm55xx_defconfig   clang
-arm                                 defconfig   clang
-arm                       imx_v4_v5_defconfig   clang
-arm                        mvebu_v7_defconfig   clang
-arm                             mxs_defconfig   clang
-arm                   randconfig-001-20240427   clang
-arm                   randconfig-002-20240427   clang
-arm                   randconfig-003-20240427   gcc  
-arm                   randconfig-004-20240427   clang
-arm                           spitz_defconfig   gcc  
-arm                       versatile_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240427   clang
-arm64                 randconfig-002-20240427   clang
-arm64                 randconfig-003-20240427   gcc  
-arm64                 randconfig-004-20240427   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240427   gcc  
-csky                  randconfig-002-20240427   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240427   clang
-hexagon               randconfig-002-20240427   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240427   clang
-i386         buildonly-randconfig-002-20240427   gcc  
-i386         buildonly-randconfig-003-20240427   clang
-i386         buildonly-randconfig-004-20240427   clang
-i386         buildonly-randconfig-005-20240427   clang
-i386         buildonly-randconfig-006-20240427   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240427   clang
-i386                  randconfig-002-20240427   gcc  
-i386                  randconfig-003-20240427   clang
-i386                  randconfig-004-20240427   gcc  
-i386                  randconfig-005-20240427   gcc  
-i386                  randconfig-006-20240427   clang
-i386                  randconfig-011-20240427   gcc  
-i386                  randconfig-012-20240427   gcc  
-i386                  randconfig-013-20240427   clang
-i386                  randconfig-014-20240427   clang
-i386                  randconfig-015-20240427   gcc  
-i386                  randconfig-016-20240427   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240427   gcc  
-loongarch             randconfig-002-20240427   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip22_defconfig   gcc  
-mips                      loongson3_defconfig   gcc  
-mips                malta_qemu_32r6_defconfig   gcc  
-mips                        maltaup_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240427   gcc  
-nios2                 randconfig-002-20240427   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240427   gcc  
-parisc                randconfig-002-20240427   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     mpc512x_defconfig   clang
-powerpc                 mpc832x_rdb_defconfig   gcc  
-powerpc               randconfig-001-20240427   clang
-powerpc               randconfig-002-20240427   clang
-powerpc               randconfig-003-20240427   clang
-powerpc                     tqm8540_defconfig   gcc  
-powerpc64             randconfig-001-20240427   gcc  
-powerpc64             randconfig-002-20240427   gcc  
-powerpc64             randconfig-003-20240427   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240427   clang
-riscv                 randconfig-002-20240427   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240427   gcc  
-s390                  randconfig-002-20240427   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sh                    randconfig-001-20240427   gcc  
-sh                    randconfig-002-20240427   gcc  
-sh                          sdk7786_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240427   gcc  
-sparc64               randconfig-002-20240427   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240427   clang
-um                    randconfig-002-20240427   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240427   clang
-x86_64       buildonly-randconfig-002-20240427   clang
-x86_64       buildonly-randconfig-003-20240427   gcc  
-x86_64       buildonly-randconfig-004-20240427   clang
-x86_64       buildonly-randconfig-005-20240427   clang
-x86_64       buildonly-randconfig-006-20240427   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240427   clang
-x86_64                randconfig-002-20240427   clang
-x86_64                randconfig-003-20240427   gcc  
-x86_64                randconfig-004-20240427   clang
-x86_64                randconfig-005-20240427   gcc  
-x86_64                randconfig-006-20240427   gcc  
-x86_64                randconfig-011-20240427   gcc  
-x86_64                randconfig-012-20240427   clang
-x86_64                randconfig-013-20240427   clang
-x86_64                randconfig-014-20240427   clang
-x86_64                randconfig-015-20240427   gcc  
-x86_64                randconfig-016-20240427   gcc  
-x86_64                randconfig-071-20240427   gcc  
-x86_64                randconfig-072-20240427   clang
-x86_64                randconfig-073-20240427   clang
-x86_64                randconfig-074-20240427   clang
-x86_64                randconfig-075-20240427   clang
-x86_64                randconfig-076-20240427   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                          iss_defconfig   gcc  
-xtensa                randconfig-001-20240427   gcc  
-xtensa                randconfig-002-20240427   gcc  
+In Optional mode, I was experiencing the degraded performance. But after 
+I disabled 802.11w on the router side, the speeds recovered to normal 
+levels on both 2.4 GHz and 5 GHz bands, even connected over WPA3.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+So I'm guessing something on the driver's side is signaling that it 
+supports 802.11w, when in reality it doesn't or some bug with the 
+implementation causes the speed to drop. Or maybe there's an overhead 
+I'm unaware of when 802.11w is enabled? My limited understanding of 
+802.11w is that the management frames are protected to prevent deauth 
+attacks.
+
+I'm not sure where to begin troubleshooting this, but in the interim can 
+I disable the capability advertising on the driver-level? I don't want 
+to disable 802.11w on my entire network, if possible.
+
+- Eric
+
 
