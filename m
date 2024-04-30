@@ -4,94 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D79CC4345F
-	for <ath10k@archiver.kernel.org>; Mon, 29 Apr 2024 23:24:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49985C4345F
+	for <ath10k@archiver.kernel.org>; Tue, 30 Apr 2024 02:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Fd2LTJN7mExidgR4wG0glRVq7EWgwgs0gJNGj4m+AT4=; b=K6QIkKEgcC7pBBzwxyn/5WtbYW
-	6dLvdxOJAz/D7MiCu2Y3Ltt0rtKyP/MT7qvrMMav7r2yM9BrUjEE8pyIJnujutfcXgjpdzZ37npwQ
-	ek3kCTVPrni+hbcv70F2yGk6ov5RoGz/JJs+eebZcJBZ0ii112CTDLoT3OgOmOeXtx3RAAoZvKRXt
-	XE8gpRN1+2WqHjH6eXO+EZF2brOM4tZxjvYn90zaUZdjzTCtTEn1ER3omfxGEiLEOiWWFcNjHa3+r
-	k5wU9V3SjJ04/3GZM0QLWE1d9gFLZ4W/Pf9fZ9nO7HVoAd+ky73+yz6pmMedSIEMraHU1/YCkolRT
-	dQmPPKZg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:CC:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4CllrCgnnFB2Wr4UN0fdYd/y9OMoKqDaEtt4RXkUtBY=; b=hMxz+3iCMrIUuz53bxWsklKpGJ
+	D4u2oOTS4zle0bNemnWVIWMry4SLwzGHNoIQa27ZW9XuwGA7nECBY8Y3iK2Y8u16uIo6L8/K2O8eo
+	rZtKfcT3XpmKqXnft10XINRbBBdDwmutefSEB4DU6Cyz3DDhhRJCIRnArjcyQwFDj/NIU1He7Glal
+	EZebz9ZY1tOto+X/78wkiDuw/143gVXCfuob0H7FVZeuJWGslg7xRZ9tzvE0PI9KjphbvayNt+mM2
+	JxG/zMMDNywsUrcVDHFjeVdRJXjSjwVHulm8OTS4cd6h4qNuB0WBzIEtqqbmD9gGpWE/weloGCK4m
+	0n3V3haw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1aMb-00000004Sgi-3Hcw;
-	Mon, 29 Apr 2024 23:24:49 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1s1d5G-00000004mef-1GiB;
+	Tue, 30 Apr 2024 02:19:06 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1aMY-00000004Sfe-1wGG
+	id 1s1d5D-00000004mdq-1hhK
 	for ath10k@lists.infradead.org;
-	Mon, 29 Apr 2024 23:24:48 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-41b79450f78so27345975e9.2
-        for <ath10k@lists.infradead.org>; Mon, 29 Apr 2024 16:24:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714433082; x=1715037882; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fd2LTJN7mExidgR4wG0glRVq7EWgwgs0gJNGj4m+AT4=;
-        b=G1RbgcuyD2xRooqThAcL20JlbmlciMH3BCzsXjgXeuVv7dRgQ7wNnnc1C7dMGGooA6
-         BYMaZnXi6cznNbGor6hHNvAi/Qlr2PzASpdypeAxt3Q6imGosSoRXonDttgpB6TjcdMI
-         u1Qz21BlDCWWz1Gi872S9LJ9PNjGmol3pkg3Y0PyXzMUBtOckLI8ACsoJDoizLK+5Jap
-         CBJgDmk6qtDdA696qR8xpzrXHGbkXzU5fzbEl+QW7Ms6xHPZENLsNpqpmlcTR6meVS7D
-         OGM5UcAoIGJbxidfbdJuklNaHFQrAqXcOFFPkzE+nv26sRtywI+0usxkcVO5Z4jthmb/
-         BEeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714433082; x=1715037882;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fd2LTJN7mExidgR4wG0glRVq7EWgwgs0gJNGj4m+AT4=;
-        b=LsjoQjPbD1+ootRhnY/Fo9V3zsOm6XjjjsNSuqZ6wCYfJLnWg7tgv2O2TzpVAAoCAt
-         4DwcwtsbkZ6n14EktIBPq2mWtvg2/oUhv9IpuCGVU0T13DCMrz6qvcTJcxON1d9Lj5O2
-         te2rly2UM55F056HC8qU3rdrKpdziyAdvdTol/luFWiaDmYVTpV1EgU3/sEWg8NeKk1a
-         ylS0s90RRDruajEsdLfAFTR548raRFo8QE1tVgbvd8pzxv9LUBhWGjDfgmlzLMaCbFC2
-         vjfEL/tPeYvk+ZERd4yor9VTmwbGl86C6U/Qzf5WB0fulIxCSDeZ62wffWUZoDImRsld
-         T5XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5J94r6+BEZjAb/U+GiwGQMACIWj40XDkw/L3BZxxzIYDaadw1gF47qQLa5YGUQWeEsIcFEVZ2TlPo04UrfdDhPlo+He+EL7k0Rg==
-X-Gm-Message-State: AOJu0YxgQxjIDf4EeGIxnEM4VWlNjcuHWQLdQlsnnQ2KiFUgS+yv1rSl
-	MPC8gBm9BBR9jNqDndQHLQAMqebaBuyk4U7YcxeRFhvVLktwTQj9Oy9bEdpl10U=
-X-Google-Smtp-Source: AGHT+IHE7q9J0s4PVV5qxrR1nnvsJd1w+fjAvErLazpWYnvpEwqc/iF7E4hKZWuHUnbgRl27LnK9TQ==
-X-Received: by 2002:adf:f5c7:0:b0:34a:d1d4:cb3c with SMTP id k7-20020adff5c7000000b0034ad1d4cb3cmr9833037wrp.39.1714433082505;
-        Mon, 29 Apr 2024 16:24:42 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.227])
-        by smtp.gmail.com with ESMTPSA id y18-20020adff152000000b0034d7a555047sm315284wro.96.2024.04.29.16.24.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 16:24:42 -0700 (PDT)
-Message-ID: <463bcd2f-c741-4120-b7ae-2bb55d5211e3@linaro.org>
-Date: Tue, 30 Apr 2024 00:24:40 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Tue, 30 Apr 2024 02:19:04 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43U28gUO025662;
+	Tue, 30 Apr 2024 02:18:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=4CllrCgnnFB2Wr4UN0fdY
+	d/y9OMoKqDaEtt4RXkUtBY=; b=iML3sVkeDd+7ObHktgmy4sHyMiR/aPJyKaFES
+	okXBz1bc8g/W7X45l1Pq34qXsGli/VlBVFfERsEg9YUWz0iKy36GE+Qs7gpevLTD
+	WdePWsdwyEG6b24ECKUBSeakOxszRZHPJPaXhFwApYO3dVICfFbAFuO/eUH70ZLA
+	1+g+HzDl3AvGb3qWs9zKBIoJ3iF/MxLuXAT4SGxHUjYJ/l2/d+tilge5Wq3nwk6c
+	jAP3m9MndE7irpRo0JzdbftDIudlO85eXEAKxREA+YemLZVYk4/cpLUwebt3HsAn
+	86d661YyGZ9sGmW2jcfr6vqa/zuaqBERWyQu2HGcSZ0ISq0TA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtqkr8102-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 02:18:57 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43U2ItiO002112
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 02:18:55 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Mon, 29 Apr 2024 19:18:55 -0700
+Date: Mon, 29 Apr 2024 19:18:54 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+CC: Marc Gonzalez <mgonzalez@freebox.fr>, Kalle Valo <kvalo@kernel.org>,
+        "Jeff
+ Johnson" <quic_jjohnson@quicinc.com>,
+        ath10k <ath10k@lists.infradead.org>,
+        wireless <linux-wireless@vger.kernel.org>,
+        DT <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Pierre-Hugues Husson <phhusson@freebox.fr>,
+        "Arnaud
+ Vrac" <avrac@freebox.fr>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad
+ Dybcio" <konrad.dybcio@linaro.org>,
+        Jami Kettunen <jamipkettunen@gmail.com>,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>,
+        Alexey Minnekhanov
+	<alexeymin@postmarketos.org>
 Subject: Re: [PATCH v3 0/3] Work around missing MSA_READY indicator for
  msm8998 devices
-To: Marc Gonzalez <mgonzalez@freebox.fr>, Kalle Valo <kvalo@kernel.org>,
- Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k <ath10k@lists.infradead.org>
-Cc: wireless <linux-wireless@vger.kernel.org>, DT
- <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Pierre-Hugues Husson <phhusson@freebox.fr>, Arnaud Vrac <avrac@freebox.fr>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Jami Kettunen <jamipkettunen@gmail.com>,
- Jeffrey Hugo <quic_jhugo@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Alexey Minnekhanov <alexeymin@postmarketos.org>
+Message-ID: <ZjBVDkc2KGIUxwbg@hu-bjorande-lv.qualcomm.com>
 References: <ebbda69c-63c1-4003-bf97-c3adf3ccb9e3@freebox.fr>
-Content-Language: en-US
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <ebbda69c-63c1-4003-bf97-c3adf3ccb9e3@freebox.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <463bcd2f-c741-4120-b7ae-2bb55d5211e3@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <463bcd2f-c741-4120-b7ae-2bb55d5211e3@linaro.org>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: vNH_vqNqQ1j1KxSTV5KOc7DibHJOU5Ps
+X-Proofpoint-ORIG-GUID: vNH_vqNqQ1j1KxSTV5KOc7DibHJOU5Ps
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_22,2024-04-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ suspectscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
+ phishscore=0 mlxscore=0 clxscore=1011 lowpriorityscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404300016
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240429_162446_552537_FC533FFF 
-X-CRM114-Status: GOOD (  12.53  )
+X-CRM114-CacheID: sfid-20240429_191903_679221_5030B6B2 
+X-CRM114-Status: GOOD (  21.12  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,31 +117,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 29/04/2024 15:01, Marc Gonzalez wrote:
-> Work around missing MSA_READY indicator in ath10k driver
-> (apply work-around for all msm8998 devices)
+On Tue, Apr 30, 2024 at 12:24:40AM +0100, Bryan O'Donoghue wrote:
+> On 29/04/2024 15:01, Marc Gonzalez wrote:
+> > Work around missing MSA_READY indicator in ath10k driver
+> > (apply work-around for all msm8998 devices)
+> > 
+> > CHANGELOG v3
+> > - Add a paragraph in binding commit to explain why we use
+> >    a DT property instead of a firmware feature bit.
+> > - Warn if the "no_msa_ready_indicator" property is true,
+> >    but we actually receive the indicator.
+> > 
+> > Marc Gonzalez (3):
+> >    dt-bindings: net: wireless: ath10k: add qcom,no-msa-ready-indicator prop
+> >    wifi: ath10k: do not always wait for MSA_READY indicator
+> >    arm64: dts: qcom: msm8998: set qcom,no-msa-ready-indicator for wifi
+> > 
+> >   Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml |  5 +++++
+> >   arch/arm64/boot/dts/qcom/msm8998.dtsi                           |  1 +
+> >   drivers/net/wireless/ath/ath10k/qmi.c                           | 11 +++++++++++
+> >   drivers/net/wireless/ath/ath10k/qmi.h                           |  1 +
+> >   4 files changed, 18 insertions(+)
+> > 
 > 
-> CHANGELOG v3
-> - Add a paragraph in binding commit to explain why we use
->    a DT property instead of a firmware feature bit.
-> - Warn if the "no_msa_ready_indicator" property is true,
->    but we actually receive the indicator.
-> 
-> Marc Gonzalez (3):
->    dt-bindings: net: wireless: ath10k: add qcom,no-msa-ready-indicator prop
->    wifi: ath10k: do not always wait for MSA_READY indicator
->    arm64: dts: qcom: msm8998: set qcom,no-msa-ready-indicator for wifi
-> 
->   Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml |  5 +++++
->   arch/arm64/boot/dts/qcom/msm8998.dtsi                           |  1 +
->   drivers/net/wireless/ath/ath10k/qmi.c                           | 11 +++++++++++
->   drivers/net/wireless/ath/ath10k/qmi.h                           |  1 +
->   4 files changed, 18 insertions(+)
+> I wonder if you could infer the workaround based on firmware version,
+> instead of kernel passed flag ?
 > 
 
-I wonder if you could infer the workaround based on firmware version, 
-instead of kernel passed flag ?
+It's been a while, but I attempted this for the similar workaround for
+SDM845 RB3 et al. I vaguely remember concluding that the different
+devices I worked on, had firmware from different branches without any
+suitable version scheme to use for such comparison - which is why we
+have "qcom,snoc-host-cap-8bit-quirk;" in those nodes (which apparently
+is not documented in the yaml).
 
----
-bod
+I'd also rather see us ask Marc spending time on some more fruitful
+exercise...
+
+Regards,
+Bjorn
 
