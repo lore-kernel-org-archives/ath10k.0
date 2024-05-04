@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 487D9C25B4F
-	for <ath10k@archiver.kernel.org>; Sat,  4 May 2024 13:44:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CD84C10F1A
+	for <ath10k@archiver.kernel.org>; Sat,  4 May 2024 14:21:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=DaAL4sECQq5An8XJpsHnrtcfAXW8qhyXPMj2aZ1OdOg=; b=HSnA/Yv0HMXV6eDlJV+5ATRSqL
-	k/F19BZs3g0PMNEnCbj1HnJYNFVIWmCvlzd2OgjOxmbGn0ilZF0Rrl9tml+WxGshbY/rQO/Qvqvgs
-	roABO8DCkZ80YWSsMEbah7HgZHfQzmBvMlfeFf3DQGfQSJyPya+GHuMuIRD0GJoLyxjV5hqa92SY5
-	kF5xhaGOz+IQoF6JRkB/FHVrPTN0F/l7zKvnPg3D1mqWsQo8PS8U7QDFOWH2X/Rq2OYJyGKCmRkZ2
-	HrgLqCOARiYMKWsbVqwVbiF8hsYMnZVEWwWZemwP4WKWgMLLAVcmMeAXPo+ueAmH/h0w2N/xVhRkd
-	8ighLSjA==;
+	bh=FHYZGAzHi4H7UmH9TxkN54ATUb9NxntjpiAGZmtILOY=; b=yIY/Q5OOz7J+AVwnlFXXyHF1w0
+	7/vsRzyii2MTNyzynNZXyMpRZpBtiNFn81vY/3sp+Wf8a4WK4qIrpxbyoJHP1rMD7hD4ydAhK54ao
+	e2HKDs/g56b+LgfOpI6pb8sno1kvKWrWcTt1Fuzkh8yDvIEA5YrJR0c25E0oG9Wzf3TAylRElyOio
+	IiVWsOGKksUfZH4Qtphl+OmMBh3CgQF4IFEL0DqA53SdM66WcJjoALDt7UhvABzYMftwzlH7IzE/c
+	F542cWT11MKOrONjd7GLhtbTB2VaI9pSYJ/RS/b7vov1YfsKdh+J/PcwIMZNplaMJMi5NcNssgX37
+	aq+qFc0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s3Fgt-00000002BBh-2Y7J;
-	Sat, 04 May 2024 13:44:39 +0000
-Received: from mgamail.intel.com ([192.198.163.15])
+	id 1s3GGi-00000002EVA-39Zy;
+	Sat, 04 May 2024 14:21:40 +0000
+Received: from mgamail.intel.com ([192.198.163.14])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s3Fgp-00000002BAm-3hgy
+	id 1s3GGe-00000002EUQ-48bq
 	for ath10k@lists.infradead.org;
-	Sat, 04 May 2024 13:44:37 +0000
+	Sat, 04 May 2024 14:21:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714830276; x=1746366276;
+  t=1714832497; x=1746368497;
   h=date:from:to:cc:subject:message-id;
-  bh=geaO7YdnoHkwjxpZWpfV8IjuhBRG7qRHjS4w+hEawvg=;
-  b=lR6wa1hC1EzE9lJ3FFxKTd1RBlOT9EMJpB+ReMAHqVU8eHPW2BdtyyoQ
-   lIs3b/oH7km+6fGE6zUMfLWZSjAk6FyC6vaWOxEA18+YnKBt1as1Z9J9w
-   2uzbgoeJ18Sv2NF6JDoZVsPX7eZ5oYC+zqeDtrnQJrbS3VKAzUi/rBc74
-   DaDoXQRc/uv2hz6FRFfSco4P1E9y4b1uLphsZu9nKVEgWS/FwwBkcHsjD
-   dv7NaUDCJh04SQvR6FmNbCMPOTVGQsIrhivQ0PaRkCQDNcY8ZVWFFUysz
-   AVLdGpYJ3VAO9QOlSkGtAZTLbNJOjRIu4b7caeMbCvseZG4WOq3tka0RP
-   Q==;
-X-CSE-ConnectionGUID: BzWQipOKTtaElF/uEhcLZQ==
-X-CSE-MsgGUID: 5XrCzUZMTaC249ne/K8/XA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10788631"
+  bh=sdDPt9/Ib/oX6IpyCTNXD6o81lBwDeYKYkOeM92Phjk=;
+  b=Gcsn73+cPwXxnhdqWoebR21T3b0aIAulx6+lHP7iXPSi5WQkWT5IwTqc
+   ihE5JJir/l7tfvdhPMmEW2Yx9sUbvJmDrr1xutuQFkVHuBpmizIaVvECs
+   2XQWclesD+Yipzx3IoPrpzlOThpwxoJKH11G+uB0tp4TjXlECMpfW/wlY
+   wD9GZFQsA1FghjopYVFsgFtulk4EW7tCDrCemEZjmZGO9BYMBz8od8K26
+   SAG6VhaVKfjUB63RgJqxWseFjJx4r5bZsdFzFrcogm/yDw4/CYlA3urxL
+   9KnQacPckqjaO919I4/EQb37SbBnktxSfzsE3DLLXkoVxoRBzk6RfJsph
+   A==;
+X-CSE-ConnectionGUID: A+yXkSARQeek8cSTkpsRZA==
+X-CSE-MsgGUID: Tz8r6yOmTgWxLj/RtwquWg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10847488"
 X-IronPort-AV: E=Sophos;i="6.07,254,1708416000"; 
-   d="scan'208";a="10788631"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2024 06:44:33 -0700
-X-CSE-ConnectionGUID: +hppyux8R/ydr6GIDqeUeA==
-X-CSE-MsgGUID: KwiNk2QVRCqUKGzqgovomw==
+   d="scan'208";a="10847488"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2024 07:21:34 -0700
+X-CSE-ConnectionGUID: 3hXv5fnxR/qhWm+AzggnPQ==
+X-CSE-MsgGUID: lGTLwP8LShCE+Jw/3aI8YA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,254,1708416000"; 
-   d="scan'208";a="32317487"
+   d="scan'208";a="28127266"
 Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 04 May 2024 06:44:32 -0700
+  by orviesa006.jf.intel.com with ESMTP; 04 May 2024 07:21:33 -0700
 Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1s3Fgj-000Cp6-31;
-	Sat, 04 May 2024 13:44:29 +0000
-Date: Sat, 04 May 2024 21:44:00 +0800
+	id 1s3GGY-000Cqi-2P;
+	Sat, 04 May 2024 14:21:30 +0000
+Date: Sat, 04 May 2024 22:21:14 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- 72daed71d3770fb1e187ebe06e447968ebf62d33
-Message-ID: <202405042158.RWRyB4Fe-lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 50b2c5d63ae20d64af6dd8f9a766dca266669520
+Message-ID: <202405042212.k1Luou3a-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240504_064436_262380_50E9F109 
+X-CRM114-CacheID: sfid-20240504_072137_120592_8A0E8164 
 X-CRM114-Status: UNSURE (   3.58  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
@@ -83,12 +83,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: 72daed71d3770fb1e187ebe06e447968ebf62d33  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 50b2c5d63ae20d64af6dd8f9a766dca266669520  wifi: ath12k: remove invalid peer create logic
 
-elapsed time: 1452m
+elapsed time: 1454m
 
-configs tested: 145
+configs tested: 139
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -104,9 +104,7 @@ arc                              allyesconfig   gcc
 arc                                 defconfig   gcc  
 arc                   randconfig-001-20240504   gcc  
 arc                   randconfig-002-20240504   gcc  
-arm                              allmodconfig   gcc  
 arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
 arm                                 defconfig   clang
 arm                   randconfig-001-20240504   clang
 arm                   randconfig-002-20240504   clang
@@ -118,7 +116,6 @@ arm64                 randconfig-001-20240504   gcc
 arm64                 randconfig-002-20240504   gcc  
 arm64                 randconfig-003-20240504   gcc  
 arm64                 randconfig-004-20240504   clang
-csky                             allmodconfig   gcc  
 csky                              allnoconfig   gcc  
 csky                                defconfig   gcc  
 csky                  randconfig-001-20240504   gcc  
@@ -131,14 +128,12 @@ hexagon               randconfig-001-20240504   clang
 hexagon               randconfig-002-20240504   clang
 i386                             allmodconfig   gcc  
 i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
 i386         buildonly-randconfig-001-20240504   clang
 i386         buildonly-randconfig-002-20240504   gcc  
 i386         buildonly-randconfig-003-20240504   gcc  
 i386         buildonly-randconfig-004-20240504   clang
 i386         buildonly-randconfig-005-20240504   clang
 i386         buildonly-randconfig-006-20240504   clang
-i386                                defconfig   clang
 i386                  randconfig-001-20240504   gcc  
 i386                  randconfig-002-20240504   clang
 i386                  randconfig-003-20240504   gcc  
@@ -235,7 +230,6 @@ x86_64       buildonly-randconfig-005-20240504   clang
 x86_64       buildonly-randconfig-006-20240504   clang
 x86_64                              defconfig   gcc  
 x86_64                randconfig-001-20240504   clang
-x86_64                randconfig-002-20240504   clang
 x86_64                          rhel-8.3-rust   clang
 xtensa                            allnoconfig   gcc  
 xtensa                randconfig-001-20240504   gcc  
