@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF921C4345F
-	for <ath10k@archiver.kernel.org>; Sat,  4 May 2024 14:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAA5BC25B5C
+	for <ath10k@archiver.kernel.org>; Mon,  6 May 2024 09:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=S6cJcM7MU2gG9fzapojRlzYhCuZorh3BOjvkPXLiqHY=; b=gQ567CUreD/h1WMvghqX1Onf1w
-	VOP+MaTiebZKhWyduhxJmSCAt1ZwUvzI/J/7/E9XeezQY0QfbqtY/5Xf2B3zcyQUyHEdxaj2O+lxE
-	Y/GziqzGuPgkhO0TLctNEcvYbKSQmMtS/Tf2Xtpsj6/9xapUWoTVRxoyj+fAxNnVntYnVKOkJVm+n
-	c2SRMdcc/33sMawFkfbt6GywQScFTrnXWC1pf/L6R6cJaL794aiPvIiIVJgO2odRWql94TsTCD7Fw
-	mqL0aFlaQAcTaJ6STJ6g4vNAOS1myvpa8mp6jZ2zXKgmGZ+Xwb0IOmffXmLx2CqcXlTU21bgLTvtm
-	mrXGA3FA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=AGTPOzpsPeXbdBBzIq/rSE+g6F4hqZPgv1na7tT0YjM=; b=vHkCXrQroFCQ56pKCjzVGUxs6v
+	SuO1ksY2Gm71wggdANplqIN/FFUUaOC862OMrJPI65R8xaZqcYzy6KOZtu3Q7Sm+J6F9+Xscb8Mhz
+	ffX+K4KgF4Ug35eopJp6DmplHyGaBjg9OzJfgGBLBtUM5npxVz11c1fe3P+oIFFXtF7y/7n9+WrQ6
+	bCTtOSzvgTDA6W2NCcYVQ2WNSQIQnWUA3+HfdQMriPeAPQWtDSV6mGI6YeWJ6psQTTnmFMdeVDiEX
+	/Xbz1AUgmdRtoAcwarX7OP2XL84HgNBBzt+aZ+z4m8FKjfPVd2NQqSjqHZVUY3hYto4dWBrCh2FDi
+	EkpxQv4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s3GHj-00000002EgU-19bB;
-	Sat, 04 May 2024 14:22:43 +0000
-Received: from mgamail.intel.com ([198.175.65.10])
+	id 1s3uH9-00000006jmD-1p4O;
+	Mon, 06 May 2024 09:04:47 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s3GHg-00000002EfS-1GBf
+	id 1s3uH5-00000006jjV-2cXr
 	for ath10k@lists.infradead.org;
-	Sat, 04 May 2024 14:22:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714832561; x=1746368561;
-  h=date:from:to:cc:subject:message-id;
-  bh=IhC6iyqnqJ5OBMiKs6ujtIzcw59NBW2NogzR2VuBglM=;
-  b=Qrd+aHGoBrRoHR4Y4C+V75yq9lVTku1t8VGEL2inUnotWpKI2jVYysU/
-   u5gqvvHIWFs0+9MmtkCDtnGkbSWO9EZRQQYEbI6Jib2ibXusdpfj5oE3n
-   8qFilVTOthwcnv+WshBu3JRFev9fxYzuhLd27Hl0FqHO0MjP4vzARwaT8
-   AqvKUJDeRY3yF9B5nFMwi/vAjhKV4vuCKImVL5Tp0vr0XI6LoL2TEKOu8
-   yD5OypyFcvItl977OFcJwqlIfjB35qcwCb6O/EycF1j3+Yc2YVFLG7W3j
-   Ce+dEuTbLMtSNk04L9wRhBDjmd/aFHYC1a3ImTeONuxdl0g9v39BjO0VJ
-   A==;
-X-CSE-ConnectionGUID: YsUNM5i7QACFgCFmOYRiww==
-X-CSE-MsgGUID: CAWNl+mGR3qB0ToQ1GLg0g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="28104580"
-X-IronPort-AV: E=Sophos;i="6.07,254,1708416000"; 
-   d="scan'208";a="28104580"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2024 07:22:35 -0700
-X-CSE-ConnectionGUID: U1yQiojhTT2qKiO0TZR0ug==
-X-CSE-MsgGUID: 5WMwMIRXRo6K/fkV/MtU6g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,254,1708416000"; 
-   d="scan'208";a="28218342"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 04 May 2024 07:22:33 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s3GHW-000CrA-39;
-	Sat, 04 May 2024 14:22:30 +0000
-Date: Sat, 04 May 2024 22:21:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
+	Mon, 06 May 2024 09:04:45 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id B95A461115;
+	Mon,  6 May 2024 09:04:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6FB9C116B1;
+	Mon,  6 May 2024 09:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714986280;
+	bh=fgvoj0EoUqITCbi6T0ph43pzi6dps4lLWN8TneDPZLc=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=pAqoIbwUXZ7ulIWetOwrzGBiabSJsY8lOBYefjlgbObaSxZnU1WGB2Wyxm3lBUCJk
+	 l5GbRBpMOuSxjjCxcefOZpMLarJVOX82X242+NKQ3hJeHFj9CXF8phxyiBUgXgANYf
+	 wvi9YS5P53jbA3Eh/dzwfcAJASPE7W7odWgLdjauh2MhhXtAnLIng0PqAXwe1kN6AL
+	 BWvAG9CEZtFISbaqhaIh9C3Fas5VWnvo3HDKW6UjoJR8h4LbU6PS32dYgoHkW7OwuF
+	 lyumcH03pKEJHSGiCJUsIuDzSxNAmtz1JoLdvQrMiSRE3Me6z70y6fL1iuktVc86/3
+	 MsnKxJIYdjkoA==
+From: Kalle Valo <kvalo@kernel.org>
+To: Eric Park <me@ericswpark.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- d109402a1cbe13551c2a78357fb3ff2fdab5076f
-Message-ID: <202405042252.kMhXBSi2-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+Subject: Re: QCA6174 showing terrible performance when connecting via WPA3-SAE
+References: <2b4e20fa-3c76-4800-b872-f5d20b0cfe95@ericswpark.com>
+	<87r0ghf4rw.fsf@kernel.org>
+	<a1231edb5e12283f6f5fbbf9e0ba7af8@ericswpark.com>
+	<87wmolsrcc.fsf@kernel.org>
+	<eb86c5b7-b1b6-4515-afdf-cf3e78a79df2@ericswpark.com>
+	<87o79sfjlf.fsf@kernel.org>
+	<483bc3022513fd0740b5342b59ce94ad@ericswpark.com>
+	<87bk5sqgdf.fsf@kernel.org>
+	<7b8068ed-52ea-4051-b530-3a9af650e582@ericswpark.com>
+	<b9a07fe0-b50a-4d70-a7f3-3b82d224d90f@ericswpark.com>
+Date: Mon, 06 May 2024 12:04:38 +0300
+In-Reply-To: <b9a07fe0-b50a-4d70-a7f3-3b82d224d90f@ericswpark.com> (Eric
+	Park's message of "Fri, 3 May 2024 17:52:57 -0400")
+Message-ID: <87jzk7mhuh.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240504_072240_409005_9705BBFC 
-X-CRM114-Status: UNSURE (   3.58  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240506_020443_829703_FF2699A9 
+X-CRM114-Status: GOOD (  15.78  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,155 +80,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: d109402a1cbe13551c2a78357fb3ff2fdab5076f  Merge branch 'pending' into master-pending
+Eric Park <me@ericswpark.com> writes:
 
-elapsed time: 1455m
+> I had the opportunity to test the connection with another router (Asus
+> RT-AX56U) today and it negotiated with WPA2-PSK, PMF default on, on 5
+> GHz. I ran a speedtest and got 20 Mbps both up/down.
+>
+> I then ran the `nmcli connection modify <SSID2> wifi-sec.pmf 1` and
+> after reconnecting it connected with PMF disabled. (I think the reason
+> it worked this time is because of WPA2-PSK -- there's probably some
+> way of making it work with WPA3 APs and `nmcli` but I don't know the
+> correct commands to give in order to make that happen.) The speedtest
+> increased to 100 Mbps both up/down, and that's the WAN limit -- I'm
+> pretty sure if I ran a iperf3 inside the LAN it would've been much
+> faster.
+>
+> I think the PMF implementation in ath10k, at least for the QCA6174
+> chip, has some issues as it has consistently worsened performance on
+> two out of two sample APs I've tested it on.
 
-configs tested: 135
-configs skipped: 3
+Yeah, clearly something is wrong somewhere but difficult to say where
+exactly. I got a private comment that one possible cause might be that
+the first ADDBA frame is not decrypted correctly and the aggregation is
+not working. Broken aggregation would explain the decrease in
+throughput.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240504   gcc  
-arc                   randconfig-002-20240504   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240504   clang
-arm                   randconfig-002-20240504   clang
-arm                   randconfig-003-20240504   clang
-arm                   randconfig-004-20240504   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240504   gcc  
-arm64                 randconfig-002-20240504   gcc  
-arm64                 randconfig-003-20240504   gcc  
-arm64                 randconfig-004-20240504   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240504   gcc  
-csky                  randconfig-002-20240504   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240504   clang
-hexagon               randconfig-002-20240504   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240504   clang
-i386         buildonly-randconfig-002-20240504   gcc  
-i386         buildonly-randconfig-003-20240504   gcc  
-i386         buildonly-randconfig-004-20240504   clang
-i386         buildonly-randconfig-005-20240504   clang
-i386         buildonly-randconfig-006-20240504   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240504   gcc  
-i386                  randconfig-002-20240504   clang
-i386                  randconfig-003-20240504   gcc  
-i386                  randconfig-004-20240504   clang
-i386                  randconfig-005-20240504   clang
-i386                  randconfig-006-20240504   gcc  
-i386                  randconfig-011-20240504   gcc  
-i386                  randconfig-012-20240504   clang
-i386                  randconfig-013-20240504   clang
-i386                  randconfig-014-20240504   gcc  
-i386                  randconfig-015-20240504   gcc  
-i386                  randconfig-016-20240504   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240504   gcc  
-loongarch             randconfig-002-20240504   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240504   gcc  
-nios2                 randconfig-002-20240504   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240504   gcc  
-parisc                randconfig-002-20240504   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc               randconfig-001-20240504   gcc  
-powerpc               randconfig-002-20240504   gcc  
-powerpc               randconfig-003-20240504   gcc  
-powerpc64             randconfig-001-20240504   clang
-powerpc64             randconfig-002-20240504   clang
-powerpc64             randconfig-003-20240504   clang
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240504   gcc  
-riscv                 randconfig-002-20240504   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240504   clang
-s390                  randconfig-002-20240504   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240504   gcc  
-sh                    randconfig-002-20240504   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240504   gcc  
-sparc64               randconfig-002-20240504   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240504   gcc  
-um                    randconfig-002-20240504   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240504   gcc  
-xtensa                randconfig-002-20240504   gcc  
+This is of course just a theory. I don't know how familiar you are with
+802.11 protocols but that is something to investigate. Unfortunately I
+have very little time for ath10k nowadays.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
