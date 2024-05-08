@@ -4,70 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8285C25B5F
-	for <ath10k@archiver.kernel.org>; Wed,  8 May 2024 11:06:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4865C04FFE
+	for <ath10k@archiver.kernel.org>; Wed,  8 May 2024 17:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Date:Message-ID:Mime-Version:Subject:To:From:Reply-To:Cc:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=j9FnWjTgYSoAwkSKOJ5BtNPpH8EcyvuzFBNF72ROtKg=; b=oWjurLHB9iCOX/BTUhey3+wgb+
-	pM/SO777tMhRbDQiYuSjz2ub1hyPhx7wFMMrj37IcZXMFHlVh6lETxYnbKsZdtmuxnM6nb9p47Q+u
-	JMV65IYSaVgZ0+whzxsbczljTXVAhgddc8SbWyVKq2HEwlcB941rRkfiF2oCLKip6iX6x5KQLRC3p
-	MBzrqJRpF6d4tGf5vQ/mURw1R0mqseruNg2F3xdfj11h1kOBXCKZlzDMnKIj+IzNjbHKFKvLlBPEr
-	W4ITDBh/w6VVY4gERfJz8l7SxP63BLNmV8EO0TVt2/T4YOpJpe0g/WSQKgHK78bEnO0Gq/Z5U2EzU
-	7K6K0R9Q==;
+	bh=549Rgks9EqLznkeSdpcU0wAalVY/u1t/5acxQIbRL0g=; b=v+ErL1+20ki89YPfu9xOatdQg8
+	rfuchzXquJHtxmcR+NcPkKEpMJiqOUTe2tffSn1uWgtkrBjnzFkyueIYmZ4Patuvv1Kv65c26FqRa
+	XWJhUNRgTVSS91PSUpNEvP0tTMo/JOA4Yi2WnmD0baSTgONZZuTrV7idObtEJfhmdSlG1bHUYOlW/
+	ZaVmsb0vEiOxKb2vndIPdqdQMuaWKbUkKoxD8GyJ7U9/o9Prim9Cmgqovwa3r4p2hP3FR9MBKKB8e
+	wEUrEZL36LsvO2tkNev1i3VSsmMKtNFWs1aJqtClgrk8BmgTbuD97BjxyHyH8eDq/e1vPP9IzvXdn
+	PmXuz8dQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4f83-0000000F7l0-2twq;
-	Wed, 08 May 2024 11:06:31 +0000
-Received: from mgamail.intel.com ([198.175.65.9])
+	id 1s4kzD-0000000GLLt-2j6P;
+	Wed, 08 May 2024 17:21:47 +0000
+Received: from [104.143.35.198] (helo=mail0.jv561.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4f80-0000000F7jO-2BEQ
+	id 1s4kz1-0000000GLII-0z3O
 	for ath10k@lists.infradead.org;
-	Wed, 08 May 2024 11:06:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715166389; x=1746702389;
-  h=date:from:to:cc:subject:message-id;
-  bh=+KO0zaokj6pX5IWIOXH0Eh2jCwVUl6wcXge/bPZZNcc=;
-  b=gNYBCIBp/ywhRVXHcNmSXjSJbN6Cgrtoy4PJkKhB+XXpl8XvQt8KltaU
-   tqeFLmFgL2C+woBHoA+PTXoGdrBuVmK8Ao7C9F6tR6U01VSmpIl2xmUkf
-   gEtIXXZhqwO7twjtM4xK1YkTkBbWtghq3Z5xlOOO4cUwkiWsH3/qBaIwN
-   fiB7mH7WXs6ktx+N5Hwm5KXF6FXhOQHb9/Ts0V13Ot+RqS3C5c82MEUQ8
-   9ZgjmZ/IRhcESkMzkYI26BQIWJNb3qValBkqsyvs13UQLpFAgTMi9ScPp
-   Lc+wsA6kXxpmbs6/c7Ri0BLPkOG9Qy2UTWSAxvTxI+b1dvnPYrGJpIBA6
-   g==;
-X-CSE-ConnectionGUID: oiiG+P1hQu+5d168ZhNFiQ==
-X-CSE-MsgGUID: V0rNG673TgOTQwVgt66sCg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11066"; a="33524609"
-X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="33524609"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 04:06:26 -0700
-X-CSE-ConnectionGUID: mrY7EHlwSwevqP1nequ9HA==
-X-CSE-MsgGUID: Ll8956pMR1KFWBfxLVpTcg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="33685872"
-Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 08 May 2024 04:06:25 -0700
-Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s4f7u-0003KD-18;
-	Wed, 08 May 2024 11:06:22 +0000
-Date: Wed, 08 May 2024 19:05:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- 1025c616ee13372f3803b158abb1d87ef368ae3d
-Message-ID: <202405081950.lUsxqO8n-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Wed, 08 May 2024 17:21:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=default; d=jv561.com;
+ h=From:To:Subject:Mime-Version:Message-ID:Date:Content-Type:
+ Content-Transfer-Encoding; i=no-reply@jv561.com;
+ bh=549Rgks9EqLznkeSdpcU0wAalVY/u1t/5acxQIbRL0g=;
+ b=C5CVpDXjVBiFI/svdkVhkGw76YZFzvXgTlYJw4eHY7DPNqTOTD/3q7qT+xvy+CNOMGNyRCtb2NV9
+   AoqQixmNIwXaFXopMqSbio5hR1MJyQlKQ7aeDURjKXGXzyjOpqhZv7hk/zjjkmIiuWg58ahhW9hX
+   w5azoAPMOzKB7W28Md8=
+From: =?utf-8?B?6Ieq5YuV44Oh44O844Or6YCB5L+h?= <no-reply@jv561.com>
+To: =?utf-8?B?YXRoMTBr?= <ath10k@lists.infradead.org>
+Subject: =?utf-8?B?44CQ5LiJ5LqV5L2P5Y+L44Kr44O844OJ44CR44GU5Yip55So?=
+	=?utf-8?B?5YaF5a6544Gu44GK55+l44KJ44Gb?=
+Mime-Version: 1.0
+Message-ID: <tencent_01A8D5A85AFC957DC11379AC@jv561.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-QQ-Mailer: QQMail 2.x
+Date: Thu, 09 May 2024 01:11:21 +0800
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240508_040628_694505_0BEAAA72 
-X-CRM114-Status: UNSURE (   3.81  )
+X-CRM114-CacheID: sfid-20240508_102135_785856_C9399EEE 
+X-CRM114-Status: UNSURE (   2.01  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,179 +64,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: 1025c616ee13372f3803b158abb1d87ef368ae3d  Add localversion-wireless-testing-ath
+三井住友カードをご利用のお客様へ
 
-elapsed time: 1462m
+このたびは三井住友カードをご利用いただき、誠にありがとうございます。
+下記のご利用照会がございましたので、お知らせいたします。
 
-configs tested: 159
-configs skipped: 3
+※本メールは、ご利用・請求を確定するものではありません。
+ご利用日時：2024/05/08      23:18
+ご利用場所：セブン-イレブン 千代田一ツ橋 3 丁目店
+ご利用金額：16, 580円
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+カードを使用した覚えがない場合は、以下 の リ ン ク をクリ ッ ク し てカ ー ド使用の詳細を確認してください。
+https://fjhealthy.com
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240508   gcc  
-arc                   randconfig-002-20240508   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240508   gcc  
-arm                   randconfig-002-20240508   clang
-arm                   randconfig-003-20240508   clang
-arm                   randconfig-004-20240508   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240508   gcc  
-arm64                 randconfig-002-20240508   clang
-arm64                 randconfig-003-20240508   gcc  
-arm64                 randconfig-004-20240508   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240508   gcc  
-csky                  randconfig-002-20240508   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240508   clang
-hexagon               randconfig-002-20240508   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240508   clang
-i386         buildonly-randconfig-002-20240508   clang
-i386         buildonly-randconfig-003-20240508   gcc  
-i386         buildonly-randconfig-004-20240508   gcc  
-i386         buildonly-randconfig-005-20240508   clang
-i386         buildonly-randconfig-006-20240508   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240508   gcc  
-i386                  randconfig-002-20240508   clang
-i386                  randconfig-003-20240508   clang
-i386                  randconfig-004-20240508   gcc  
-i386                  randconfig-005-20240508   clang
-i386                  randconfig-006-20240508   gcc  
-i386                  randconfig-011-20240508   gcc  
-i386                  randconfig-012-20240508   gcc  
-i386                  randconfig-013-20240508   clang
-i386                  randconfig-014-20240508   clang
-i386                  randconfig-015-20240508   clang
-i386                  randconfig-016-20240508   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240508   gcc  
-loongarch             randconfig-002-20240508   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240508   gcc  
-nios2                 randconfig-002-20240508   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240508   gcc  
-parisc                randconfig-002-20240508   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc               randconfig-001-20240508   clang
-powerpc               randconfig-002-20240508   gcc  
-powerpc               randconfig-003-20240508   clang
-powerpc64             randconfig-001-20240508   gcc  
-powerpc64             randconfig-002-20240508   gcc  
-powerpc64             randconfig-003-20240508   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240508   gcc  
-riscv                 randconfig-002-20240508   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240508   clang
-s390                  randconfig-002-20240508   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240508   gcc  
-sh                    randconfig-002-20240508   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240508   gcc  
-sparc64               randconfig-002-20240508   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240508   gcc  
-um                    randconfig-002-20240508   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240508   clang
-x86_64       buildonly-randconfig-002-20240508   clang
-x86_64       buildonly-randconfig-003-20240508   clang
-x86_64       buildonly-randconfig-004-20240508   clang
-x86_64       buildonly-randconfig-005-20240508   gcc  
-x86_64       buildonly-randconfig-006-20240508   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240508   gcc  
-x86_64                randconfig-002-20240508   clang
-x86_64                randconfig-003-20240508   clang
-x86_64                randconfig-004-20240508   gcc  
-x86_64                randconfig-005-20240508   gcc  
-x86_64                randconfig-006-20240508   gcc  
-x86_64                randconfig-011-20240508   clang
-x86_64                randconfig-012-20240508   clang
-x86_64                randconfig-013-20240508   gcc  
-x86_64                randconfig-014-20240508   gcc  
-x86_64                randconfig-015-20240508   clang
-x86_64                randconfig-016-20240508   gcc  
-x86_64                randconfig-071-20240508   gcc  
-x86_64                randconfig-072-20240508   gcc  
-x86_64                randconfig-073-20240508   clang
-x86_64                randconfig-074-20240508   gcc  
-x86_64                randconfig-075-20240508   gcc  
-x86_64                randconfig-076-20240508   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240508   gcc  
-xtensa                randconfig-002-20240508   gcc  
+＜ご注意点＞
+本サービスは、お客様の三井住友カードのご利用照会が行われた場合、
+三 井 住 友 NETにご登録いただいているメールアドレスへお知らせするサービスです。
+——————————————————————
+■発 行 者■
+三井住友カード株式会社
+〒135-0061
+東京都江東区豊洲2丁目2番31
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
