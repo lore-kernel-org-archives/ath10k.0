@@ -4,79 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA2C1C10F1A
-	for <ath10k@archiver.kernel.org>; Thu,  9 May 2024 12:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE53DC10F1A
+	for <ath10k@archiver.kernel.org>; Thu,  9 May 2024 13:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:From:To:MIME-Version:Date:Message-ID:Reply-To:Cc:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Dznd3bjM/PeqDJaYgIJy0JnewJ/Lifz1NgwaaM3tKbU=; b=PB04JCYMHR6Wf8WqvREoa/bhai
-	7xIi15gF1ph5IF2z+j2DoQFHWePgeSn24mjm84q0hx7qW2/XKFY74i/PMexj0BEK9rn8qj9HbGzUn
-	6UVMtSSaJyKcUFeepk8LDD+vYcXtt02vdGDaauuPLVpzG+VphDE4fq/6obEXH42CxLG5Llj5pLrO9
-	pqoj0aeXHZ+hpth5IYajNc4kdF/4VQbNTlU2nCkjHOiILEe1m9kGsNnKSqZuxNfGU9eWCAKylag7L
-	WVvi/4Wc+pEKf+TA9GDmrmhamDv7hiYYYfnd7u9ZvUAlMYR1h1Dqn6f08rKZ7pvc6sZ3VL7x8i8Mr
-	Ndg3rBWg==;
+	bh=tqat2kTX1XWK63AM8w2YM/jJ3ySOAf7coQwS7973ytA=; b=v6MEQeTzVURmsuEH0aeVC8FOX3
+	T42ZNrIkkh9dGUxzeVTYV9ZhyifL/kGasTaEeiP/9srS+CZ/UDiNYmC8Vh4vFHEg2OE6LhfnWaFEF
+	GDipbPPuw5hO1f8v76ER/fWINcDAbYJHTAodub3DXEWG6/9+rPjWZlSeNJRBcedfMoKnOd5kaNTJ0
+	WeJS74Pl0itI9P+sX2Olxlc4Do1AS4YmzR1z4eAH8J3ll4MUlM536Vqh0mHKNWmd3pz3MIUspzQQf
+	4ARQuHXVpki5aSmRTxRfi0HpRKeWs7KuH2EyENQXPCC6F3JWCsHfTTkbQZsu6zhhAeNXkRsa56GIN
+	enxj1+OQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s52a5-00000001NFs-3NNV;
-	Thu, 09 May 2024 12:09:01 +0000
-Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
+	id 1s53ug-00000001aKM-36nA;
+	Thu, 09 May 2024 13:34:22 +0000
+Received: from mgamail.intel.com ([192.198.163.7])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s52a3-00000001NCh-1LIt
+	id 1s53ub-00000001aHl-0t61
 	for ath10k@lists.infradead.org;
-	Thu, 09 May 2024 12:09:00 +0000
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-34f0e55787aso545763f8f.2
-        for <ath10k@lists.infradead.org>; Thu, 09 May 2024 05:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715256535; x=1715861335; darn=lists.infradead.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dznd3bjM/PeqDJaYgIJy0JnewJ/Lifz1NgwaaM3tKbU=;
-        b=Mm20emm/7j85xoDvKJJdpWRxnTf+j7WjDkpeT4y546fcYxJquIjg7RSr2s1buq/GfN
-         rrKRSvsW67g18ZudxB3yqZXin9UNAEpEgr8BTXsBFqok9arn+dSM1HnRZKe6WTM+Fi19
-         v9lEUZM2i32o0S1wLiQ4K2y63U/mHvUOotA6ME9/I1+TD3Sz178I2uqU8U/2esO2zPkV
-         cCOw4DmpEe2yT51M34Rucnw7IkH0BjqiNNjsxHPortRA061T7qT8etcaXDlH2abq0Qz9
-         BphjPgv3HKA//rw4Jv8K06CPF5viRgKvxgBSEaynBZYC8B3/5k5oZ0vJM9/3y9hrs50+
-         TZFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715256535; x=1715861335;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Dznd3bjM/PeqDJaYgIJy0JnewJ/Lifz1NgwaaM3tKbU=;
-        b=o4aZ8o2Rat0LAwJgWX7kzSX8tnwRXpbehTTvJ4HUAyzynCScY4SVTeE3YytIhiy809
-         CZQEJ/xoRjFxE+avLwOOcUq972ex6qOvH6cJBYL169q+fX1HFarjDD1HIhHbgUJzXQjU
-         GQIfUt52YjPE8AjYFhkhDPMNov4r6WWRgIHTdx2kXkhBMyKboWHVkEGu/RJOH4xDPa+P
-         zCK1T/sAKLWUXYF7sN7dti8roJfUJFdN9O1KX1K/fSGNZZZrQw9o9JlcaOpmIkllq70b
-         jxZNUZEo768SET2wZh6w6cvWaljLLzBYj4ZqlkW0MKV28DPdiJGGH3nJRQ70a77WC+xY
-         dDUA==
-X-Gm-Message-State: AOJu0YyMIxbTqXXOFY+BszCDtQU2/fLtgjq01RaLjbg88zh62u9s9Rrp
-	7GFU21BDWKAbIpyfu2sQfdajEwQrWSbE8csnOkrcpV5PcPGYD7W+CNzIfDjq
-X-Google-Smtp-Source: AGHT+IGZP2SgmlizTixsQVtity+wyhHPJhMg697cbMWykmY9Vx62KtvD8LIiDflJivsrDTmzrW04Sw==
-X-Received: by 2002:a5d:5908:0:b0:34a:2d0c:4463 with SMTP id ffacd0b85a97d-34fca149bbdmr4276260f8f.4.1715256534886;
-        Thu, 09 May 2024 05:08:54 -0700 (PDT)
-Received: from [10.123.13.239] ([195.55.200.178])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3502b79bca6sm1550776f8f.12.2024.05.09.05.08.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 May 2024 05:08:54 -0700 (PDT)
-Message-ID: <cb6fe672-e18f-4864-980e-241749083565@gmail.com>
-Date: Thu, 9 May 2024 05:08:51 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: ath10k@lists.infradead.org,
- "open list:MEDIATEK MT76 WIRELESS LAN DRIVER"
- <linux-wireless@vger.kernel.org>
-From: James Prestwood <prestwoj@gmail.com>
-Subject: Ath10k "hardware restarting" all clients at specific location
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+	Thu, 09 May 2024 13:34:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715261657; x=1746797657;
+  h=date:from:to:cc:subject:message-id;
+  bh=BSpBZdbLbWtKtDhFhJ7nFavZUZqAuLyMRW6El+1zbuo=;
+  b=SUTJ/d+Cg26a7MKhv06Nd7L2KfNDrjeYnz996f0p5qOum5fn4ito9f5b
+   d1ksUwIVVuscvNKSdIY3Q/DsOWY2MzalbsxVkeRIpTJpWtT+rSLwm9W9f
+   dV6oRvqA0IO+HAy+BcaRwr+mWTpN5TmCvtbUhDgjwImOR75pk41knGvcC
+   l2pB3jQrHgOZnJyE3w6MrgiuseOnK3EIGx8WByVHQwZik4ToEJO3WONAD
+   lOdf8c8GJ8rLfulZKYnM0WGDTwhCq/JF7ONBzOfCOJOWrB1TUI+9cSkkS
+   nNk/0snqHvrH38yozb4B52h4xAzWuxqZMi2JAx3W+H9Qc5rO0KYKoweLB
+   Q==;
+X-CSE-ConnectionGUID: JcWFTV/zQZG/ApmXFZ4TXw==
+X-CSE-MsgGUID: WBvp9KMqTXK3Ai8tkBtviA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11067"; a="36563527"
+X-IronPort-AV: E=Sophos;i="6.08,148,1712646000"; 
+   d="scan'208";a="36563527"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2024 06:34:04 -0700
+X-CSE-ConnectionGUID: 1ja1H1vyRtqEN1FEJlfDgA==
+X-CSE-MsgGUID: IW6Wt95vR8qTQON67F6XOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,148,1712646000"; 
+   d="scan'208";a="29297513"
+Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 09 May 2024 06:34:03 -0700
+Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s53uK-0004xF-1q;
+	Thu, 09 May 2024 13:34:00 +0000
+Date: Thu, 09 May 2024 21:33:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ 53a695b2b5edf16e1758417df7846b065a4bb00a
+Message-ID: <202405092135.94lm0t6V-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240509_050859_471893_5B2BC4E8 
-X-CRM114-Status: UNSURE (   8.99  )
+X-CRM114-CacheID: sfid-20240509_063417_326047_241EC0E5 
+X-CRM114-Status: UNSURE (   3.91  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -92,72 +83,154 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: 53a695b2b5edf16e1758417df7846b065a4bb00a  wifi: ath12k: allocate dummy net_device dynamically
 
-I've got a really odd one here. We have about wifi 50 clients all 
-experiencing a problem where seemingly out of the blue the ath10k driver 
-times out reading a WMI command and restarts the hardware. I've poured 
-though logs and cannot find any patters as far as when it happens. 
-Sometimes during a scan, sometimes after a roam, and sometimes when the 
-client has a stable connection. It appears completely random.
+elapsed time: 1457m
 
-The issue looks to be isolated to a single physical location. We have 
-many other locations with clients running an identical software stack 
-(kernel version and ath10k firmware) and the same AP/network deployments 
-and see ZERO instances of this in the last month of logs. Its only one 
-physical location where clients are frequently seeing this happen. For 
-this specific version of our software we are running:
+configs tested: 134
+configs skipped: 3
 
-Ubuntu 22.04 5.15.0-72-generic
-QCA6174 HW 3.2
-Ath10k firmware WLAN.RM.4.4.1-00288-QCARMSWPZ-1
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I have also updated to the latest firmware (WLAN.RM.4.4.1-00309-) on a 
-single client yesterday, and saw 3 instances of this still as of this 
-morning.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240509   gcc  
+arc                   randconfig-002-20240509   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240509   gcc  
+arm                   randconfig-002-20240509   clang
+arm                   randconfig-003-20240509   clang
+arm                   randconfig-004-20240509   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240509   clang
+arm64                 randconfig-002-20240509   clang
+arm64                 randconfig-003-20240509   gcc  
+arm64                 randconfig-004-20240509   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240509   gcc  
+csky                  randconfig-002-20240509   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240509   clang
+hexagon               randconfig-002-20240509   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240509   gcc  
+i386         buildonly-randconfig-002-20240509   gcc  
+i386         buildonly-randconfig-003-20240509   clang
+i386         buildonly-randconfig-004-20240509   clang
+i386         buildonly-randconfig-005-20240509   gcc  
+i386         buildonly-randconfig-006-20240509   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240509   clang
+i386                  randconfig-002-20240509   clang
+i386                  randconfig-003-20240509   clang
+i386                  randconfig-004-20240509   gcc  
+i386                  randconfig-005-20240509   clang
+i386                  randconfig-006-20240509   gcc  
+i386                  randconfig-011-20240509   clang
+i386                  randconfig-012-20240509   gcc  
+i386                  randconfig-013-20240509   clang
+i386                  randconfig-014-20240509   gcc  
+i386                  randconfig-015-20240509   gcc  
+i386                  randconfig-016-20240509   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240509   gcc  
+loongarch             randconfig-002-20240509   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240509   gcc  
+nios2                 randconfig-002-20240509   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240509   gcc  
+parisc                randconfig-002-20240509   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc               randconfig-001-20240509   clang
+powerpc               randconfig-002-20240509   clang
+powerpc               randconfig-003-20240509   clang
+powerpc64             randconfig-001-20240509   clang
+powerpc64             randconfig-002-20240509   gcc  
+powerpc64             randconfig-003-20240509   clang
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240509   gcc  
+riscv                 randconfig-002-20240509   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240509   gcc  
+s390                  randconfig-002-20240509   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240509   gcc  
+sh                    randconfig-002-20240509   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240509   gcc  
+sparc64               randconfig-002-20240509   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240509   clang
+um                    randconfig-002-20240509   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240509   gcc  
+xtensa                randconfig-002-20240509   gcc  
 
-Due to the isolated nature of this and having other locations with 
-identical configurations/software it seems like some 
-external/environmental difference at this location. Is there any 
-external event that could cause this (rouge frame, interference, ???)
-
-May 09 00:31:06 kernel: wlan0: disconnect from AP aa:46:8d:37:8f:48 for 
-new assoc to aa:46:8d:37:80:b5
-May 09 00:31:06 kernel: wlan0: associate with aa:46:8d:37:80:b5 (try 1/3)
-May 09 00:31:06 kernel: wlan0: RX ReassocResp from aa:46:8d:37:80:b5 
-(capab=0x1511 status=0 aid=4)
-May 09 00:31:06 kernel: wlan0: associated
-May 09 00:31:06 kernel: ath: EEPROM regdomain: 0x82d4
-May 09 00:31:06 kernel: ath: EEPROM indicates we should expect a country 
-code
-May 09 00:31:06 kernel: ath: doing EEPROM country->regdmn map search
-May 09 00:31:06 kernel: ath: country maps to regdmn code: 0x37
-May 09 00:31:06 kernel: ath: Country alpha2 being used: ES
-May 09 00:31:06 kernel: ath: Regpair used: 0x37
-May 09 00:31:06 kernel: ath: regdomain 0x82d4 dynamically updated by 
-country element
-May 09 00:31:06 kernel: wlan0: Limiting TX power to 30 (30 - 0) dBm as 
-advertised by aa:46:8d:37:80:b5
-May 09 00:31:42 kernel: ath10k_pci 0000:02:00.0: timed out waiting peer 
-stats info
-May 09 00:31:45 kernel: ath10k_pci 0000:02:00.0: wmi command 90113 
-timeout, restarting hardware
-May 09 00:31:45 kernel: ath10k_pci 0000:02:00.0: could not request stats 
-(-11)
-May 09 00:31:45 kernel: ath10k_pci 0000:02:00.0: could not request peer 
-stats info: -108
-May 09 00:31:45 kernel: ath10k_pci 0000:02:00.0: failed to read 
-hi_board_data address: -16
-May 09 00:31:45 kernel: ieee80211 phy0: Hardware restart was requested
-May 09 00:31:45 kernel: ath10k_pci 0000:02:00.0: could not request stats 
-(-108)
-May 09 00:31:45 kernel: ath10k_pci 0000:02:00.0: device successfully 
-recovered
-May 09 00:31:46 kernel: wlan0: deauthenticated from aa:46:8d:37:80:b5 
-(Reason: 6=CLASS2_FRAME_FROM_NONAUTH_STA)
-
-Thanks,
-
-James
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
