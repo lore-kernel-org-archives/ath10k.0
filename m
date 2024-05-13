@@ -4,73 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97FB7C25B10
-	for <ath10k@archiver.kernel.org>; Mon, 13 May 2024 14:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 440FFC25B10
+	for <ath10k@archiver.kernel.org>; Mon, 13 May 2024 15:09:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
-	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jB84jq3Crj6axci5gs8xEI1E2bZQv9Fgj6RlYg17wys=; b=BCH0Co7W+tCrtUKCOpvaU60Dwl
-	OisvMoQYuqrKncNVte7veIcLHeg38Dz+n02dAQpVVdCHt3vwqBnyJeBYDY4UHpRJk9ovlI5yvNrc8
-	xWreGL1QBXsFBOB9C8xkutNATXdVMDWc6OrPPvtPzPF0xGil6x+TMx7a7c80vzMyMlAkc+kTEQMQ6
-	Xdb93j/KxJLTmSO0aOWrxJ4bOGPMl46VtAcqF/YDtyeU9R6GpVP9D1PJi26nlf6rfoa9AqQeIaF0v
-	M3R7sFT1bsCrcqocdtBh17v/v57TrscwiyMGRCQUwyuOTQkmBX2j2I4W3BQLXMvaok1WqT6lThdzf
-	of6k6apQ==;
+	bh=bsQVXHQhWcmCU6NOkodQMdmrvCdS8Y6ZYWpxSKXCq5k=; b=PL+ExTcg0dwjxgkqB0TqEPjsjs
+	EMz5mnNKq9XyEtas2dgqjul07IpDvOCzvHCcnT2ktJbNsJc3LkGzKnY/LpKpPexW92y+NImFEzoEz
+	DMcMx3W+bKVqt1Y+f79eUcEEqLXGE/Fze5VlH7XH8KlOfQWfP7D/uTqWz/Bd4Ma5K8W+H2KfBk+SA
+	G0nX6ZDaWoqhb7JYYGm37CU/+RmVhCIW08jKp87LXo3jo4WsgHaMsa2suYy085nUZkfnqqgcg8mhN
+	K6AEnx/viwz28LL8HEQ/iJlk7FhWKWOpTEb77Wl4A8s4v7vD+Zo0x781saNqwd9M3e7R31fXPmlDE
+	bdcCEfjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6WTM-0000000D9Rm-099C;
-	Mon, 13 May 2024 14:16:12 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1s6XIU-0000000DJ1D-23Rg;
+	Mon, 13 May 2024 15:09:02 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6WTF-0000000D9R0-35K8
+	id 1s6XIR-0000000DJ0R-3Qqd
 	for ath10k@lists.infradead.org;
-	Mon, 13 May 2024 14:16:10 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 0315860DF3;
-	Mon, 13 May 2024 14:16:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C2D4C32781;
-	Mon, 13 May 2024 14:16:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715609764;
-	bh=ztDLgSBwpXs1XqFtFOt86T1h2DMz/XQmvsHWKSx1FeM=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=DNmtCVJwPDEsfWvcPiiLOyHBC4Rmy3N3hPBcJgLbFVdGL8tHpmNpfu4Vbqle0QPY4
-	 PsFmfqWo0euv1DYfjyazS7BPjAgu2LTVgezqGPm9PxM7e0esVeZqPW7t+v6T93jjh+
-	 oLp/uW4uSLL1EqSJvj66pxuE+tM1rIPn1thedJosCmoambJFEWpeKmB0BwLKxxxN1o
-	 BFiIuyhP0Mmr5KCKhLM7KXupG3G7/QIeb6U1p0wxqNaetUNsFDNkd9ZSNwR+7tDXwX
-	 g40rXpANPwJFhlLLJbNdWUtZt88PHFvjJDLpgwPj3gv6RlI/Gf62diIjizSch2FHXZ
-	 nPSCPQ1o9+U1Q==
-Content-Type: text/plain; charset="utf-8"
+	Mon, 13 May 2024 15:09:01 +0000
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44DBUkAn007037;
+	Mon, 13 May 2024 15:08:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=bsQVXHQhWcmCU6NOkodQMdmrvCdS8Y6ZYWpxSKXCq5k=; b=Ot
+	2s94kgxemLwA0C1ORnZVlYrsU4hNHoTC3atqoxeFML79O4bm19olYVpqllB6nVGb
+	3Hep4rdlTJq2NYb853/N1KBriosnWWkH5yg08nE2aHiPAUbraSuzYoi7uRy2f0s3
+	xjE3a6IjmVg4pd+t03QbhHkRi1QHPtuzlKfuTE9arTWefviC/0Tk9AcAce+GSY9o
+	XsS/7fxwZ5FFvWW7SDzEsAo552XQmQK4EapJT27Z21Y8wa+kef6GsRq5hKbI6Yo0
+	3nsE4StRJC3r0mWdcOZL+v1rK+fIUV8Uq99KN40AZV9tfuccOGxUHjxJZIPx7wut
+	A1PYpTgST3o5IqOYCX7w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3y3j28ger0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 13 May 2024 15:08:46 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 44DF8jgx007751
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 13 May 2024 15:08:45 GMT
+Received: from [10.110.0.4] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 13 May
+ 2024 08:08:43 -0700
+Message-ID: <a3854bed-7229-47a9-a71b-72f5f68ec13e@quicinc.com>
+Date: Mon, 13 May 2024 08:08:42 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14] ath10k: add LED and GPIO controlling support for
+ various chipsets
+Content-Language: en-US
+To: Kalle Valo <kvalo@kernel.org>
+CC: Christian Marangi <ansuelsmth@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>,
+        Sebastian
+ Gottschall <s.gottschall@dd-wrt.com>,
+        Steve deRosier
+	<derosier@cal-sierra.com>,
+        Stefan Lippers-Hollmann <s.l-h@gmx.de>
+References: <20230611080505.17393-1-ansuelsmth@gmail.com>
+ <878rcjbaqs.fsf@kernel.org> <648cdebb.5d0a0220.be7f8.a096@mx.google.com>
+ <648ded2a.df0a0220.b78de.4603@mx.google.com>
+ <CA+_ehUzzVq_sVTgVCM+r=oLp=GNn-6nJRBG=bndJjrRDhCodaw@mail.gmail.com>
+ <87v83nlhb3.fsf@kernel.org>
+ <7585e7c3-8be6-45a6-96b3-ecb4b98b12d8@quicinc.com>
+ <cce2700c-e54f-4a50-b3f0-0b8a82b961a4@quicinc.com>
+ <663e2bd9.5d0a0220.d970d.cbf8@mx.google.com>
+ <a56bd4f9-d76b-4924-a901-554d71ea17bd@quicinc.com>
+ <87seyojuuq.fsf@kernel.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <87seyojuuq.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v3 1/3] dt-bindings: net: wireless: ath10k: add
- qcom,no-msa-ready-indicator prop
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <54ac2295-36b4-49fc-9583-a10db8d9d5d6@freebox.fr>
-References: <54ac2295-36b4-49fc-9583-a10db8d9d5d6@freebox.fr>
-To: Marc Gonzalez <mgonzalez@freebox.fr>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
- ath10k <ath10k@lists.infradead.org>,
- wireless <linux-wireless@vger.kernel.org>, DT
- <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Pierre-Hugues Husson <phhusson@freebox.fr>, Arnaud Vrac <avrac@freebox.fr>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Jami Kettunen <jamipkettunen@gmail.com>,
- Jeffrey Hugo <quic_jhugo@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Alexey Minnekhanov <alexeymin@postmarketos.org>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <171560975908.1690511.498631481702370762.kvalo@kernel.org>
-Date: Mon, 13 May 2024 14:16:00 +0000 (UTC)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: voR0tJwiuCbfgjHvs1Pyr62cWm_ZV8QO
+X-Proofpoint-GUID: voR0tJwiuCbfgjHvs1Pyr62cWm_ZV8QO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-13_10,2024-05-10_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=848
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2405010000 definitions=main-2405130098
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240513_071605_981665_10A61F6B 
-X-CRM114-Status: GOOD (  14.25  )
+X-CRM114-CacheID: sfid-20240513_080900_193651_26381DA6 
+X-CRM114-Status: GOOD (  17.97  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,45 +119,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Marc Gonzalez <mgonzalez@freebox.fr> wrote:
-
-> The ath10k driver waits for an "MSA_READY" indicator
-> to complete initialization. If the indicator is not
-> received, then the device remains unusable.
+On 5/11/2024 7:17 AM, Kalle Valo wrote:
+> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
 > 
-> cf. ath10k_qmi_driver_event_work()
+>> On 5/10/2024 7:14 AM, Christian Marangi wrote:
+>>
+>>> On Thu, May 09, 2024 at 09:48:08AM -0700, Jeff Johnson wrote:
+>>>> On 5/9/2024 9:37 AM, Jeff Johnson wrote:
+>>>>> On 5/8/2024 9:50 PM, Kalle Valo wrote:
+>>>>>> Sorry for the delay but finally I looked at this again. I decided to
+>>>>>> just remove the fixme and otherwise it looks good for me. Please check
+>>>>>> my changes:
+>>>>>>
+>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=688130a66ed49f20ca0ce02c3987f6a474f7c93a
+>>>>>>
+>>>>>
+>>>>> I have a question about the copyrights in the two new files:
+>>>>> + * Copyright (c) 2018-2023, The Linux Foundation. All rights reserved.
+>>>>>
+>>>>> My understanding is that Qualcomm's affiliation with Linux Foundation via Code
+>>>>> Aurora ended in December 2021, and hence any contributions in 2022-2023 should
+>>>>> be the copyright of Qualcomm Innovation Center, Inc.
+>>>>>
+>>>>>
+>>>>
+>>>> ok it seems like Kalle's v13 had:
+>>>>  + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+>>>>
+>>>> and Ansuel's v14 has:
+>>>>  + * Copyright (c) 2018-2023, The Linux Foundation. All rights reserved.
+>>>>
+>>>> So Ansuel, is your work on behalf of The Linux Foundation?
+>>>>
+>>>
+>>> When I resubmitted this at times, I just updated the copyright to the
+>>> current year so I guess it was wrong doing that?
+>>>
+>>> As you can see from the copyright header this patch went all around and
+>>> I think at the end (around 2018) the Linux copyright was added as it was
+>>> submitted upstream. (can't remember if maintainers were asking that)
+>>>
+>>> So me watching the old year and resubmitting it, just updated the date.
+>>>
+>>> Soo I think we should revert to 2018?
+>>>
+>>
+>> Yes, in this case changing the Linux Foundation copyright back to 2018 is correct.
 > 
-> Several msm8998-based devices are affected by this issue.
-> Oddly, it seems safe to NOT wait for the indicator, and
-> proceed immediately when QMI_EVENT_SERVER_ARRIVE.
+> I changed it now back to 2018, please check:
 > 
-> Jeff Johnson wrote:
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=5eff06bef76b6d4e1553c2d4978025c329d8db35
 > 
->   The feedback I received was "it might be ok to change all ath10k qmi
->   to skip waiting for msa_ready", and it was pointed out that ath11k
->   (and ath12k) do not wait for it.
-> 
->   However with so many deployed devices, "might be ok" isn't a strong
->   argument for changing the default behavior.
-> 
-> Kalle Valo first suggested setting a bit in firmware-5.bin to trigger
-> work-around in the driver. However, firmware-5.bin is parsed too late.
-> So we are stuck with a DT property.
-> 
-> Signed-off-by: Marc Gonzalez <mgonzalez@freebox.fr>
-> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> Acked-by: Rob Herring (Arm) <robh@kernel.org>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-
-2 patches applied to ath-next branch of ath.git, thanks.
-
-71b6e321e302 dt-bindings: net: wireless: ath10k: add qcom,no-msa-ready-indicator prop
-6d67d18014a8 wifi: ath10k: do not always wait for MSA_READY indicator
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/54ac2295-36b4-49fc-9583-a10db8d9d5d6@freebox.fr/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+LGTM, thanks!
 
