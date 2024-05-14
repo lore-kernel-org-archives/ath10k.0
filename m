@@ -4,92 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04740C04FFE
-	for <ath10k@archiver.kernel.org>; Tue, 14 May 2024 14:43:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09F37C04FFE
+	for <ath10k@archiver.kernel.org>; Tue, 14 May 2024 15:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=aAjjICOleHXNnITLx80ygde13/wbWjLWPL4FqboldaM=; b=tM+67bXRH+pj5zN3AbPeKoAYFw
-	DQi9WPigzr+0Pg+/abNn2jKudRhW+xesD8ZLhlsnR2dOza9kOLURr+XynF+T3vZKEkiRITZOnhIPi
-	VnUENZyt0F+O1VcR5LS2V3d91voERgVqKkN+pwDfU4h0nhEwFD2GlxcLhmL7w6kdm3ryCpzbWt0pu
-	Stop9lKZsyS7M/FrKFaGfCD2Hl3CV9VJGLgkyx2NDB1rdgLdL2BnU2Bbl98XJCoX++9FtUfCvT5Kg
-	MXjuIgBomaeYZ9V38H35Jl78XJC93ngCdAKosvYj2CSoDz3+saJp0kqeCYs5ajdZc/zOTvwaL+Rs7
-	Pd66HH0g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3Ja6BcMK9eUhuA9W8Hgk7qdRbkvE6eu3Li6xIc81sto=; b=qP3dFJ2rJgmU/RMuX+m/jMJ9j3
+	bUhrAZ1y3wC1XspiN9BTmQPQtdVA3WG+rUapYmxF0SpebL4GaPnZQxhmdV3VxJ8iKpsBQhhogsf3R
+	7DslksrTerBt+dwujd8Ha+/+sN4LfUGKSeJ+VQ3ldL32cVCuTo3oMANz55/bcNfZ2EJcrewFwFdij
+	D6L0ogKejZi2x73ir68079gfz3rZZrFSf3ay0Jt16PiVJoMC5FnDldcMpGkj6xIDyCe0ei/vcy5to
+	e8nRbc1HPenANvf1DzVOUGRMI0lEV6JULLTiwdrnbxHJBjaN09S4IlVqIgOPE1Ui9vDT+NP26Tie5
+	ySPHB+rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6tNQ-0000000GDgj-1ihU;
-	Tue, 14 May 2024 14:43:36 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1s6u4A-0000000GKOU-2osg;
+	Tue, 14 May 2024 15:27:46 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6tNN-0000000GDfx-1DsQ
+	id 1s6u46-0000000GKNm-3qTs
 	for ath10k@lists.infradead.org;
-	Tue, 14 May 2024 14:43:34 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44EA3WtS004117;
-	Tue, 14 May 2024 14:43:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=aAjjICOleHXNnITLx80ygde13/wbWjLWPL4FqboldaM=; b=Cq
-	v5U9MXDpZxIXRfktQIkC5+6NX5gBJZEWYaN5HlzMFm8Go3vSkUpQiI8IAkJ1xJ0o
-	RJtXDawnU03/u3fu8NbndpnELudbmBcbiezI09M4Bt23J4aWjFzHwnxgg2lE2kBc
-	dhuClwcWbi9iy1lvM7lSmMtxfxZzA+s8a5l3Mu1f8hEyZTl5ZzVE8RiPHZjnMijk
-	70/51pM6Mug9mPSHMDpfFLcHXj/J8BVAi1Fqt6h7/ZF8alRZhY541G5P7qOmLvpZ
-	qTfsKp9WXfko6YvfFs9Kxmt+jifhFeAivhxYr2Unbl1orl8Y4vSDEaVp3wXzgvAV
-	mJhWSTgs0E4zWHMtqpFw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3y45vb8n82-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 14 May 2024 14:43:28 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 44EEhRtK019301
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 14 May 2024 14:43:27 GMT
-Received: from [10.110.0.4] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 14 May
- 2024 07:43:26 -0700
-Message-ID: <12a208d7-f36b-4953-abff-323a15452b3c@quicinc.com>
-Date: Tue, 14 May 2024 07:43:25 -0700
+	Tue, 14 May 2024 15:27:44 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 66023CE128E;
+	Tue, 14 May 2024 15:27:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C25CCC2BD10;
+	Tue, 14 May 2024 15:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715700459;
+	bh=J+8R64t0/rNJFPorKxW5pJEKa78/HWfkBPhejVnOV4M=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=Bsg46iLzSbdomFt1v4hRDvcvSDeYcPZ+skf7AD2PbBm2Wf7a6QyzqrpqJNr/16Ik6
+	 RQ5/1l+CV6BSVcJM4bWGN6k8cZqYE+j+qc/TYsdE2UFaQEWuGwo2OFqOOaEmoUzgik
+	 geTdSO3Mo3OJo6eigMYYoYr9GgJSNS+ub0qTM9ZEtckhEZkiBIGsjT0xPxkLeZ5hff
+	 mFLfB09AFAqzYaW4ff5NrjHKOmj1Yf4hxs/L/7VCUuKiFbmw2kDoriWPHN6lGdUUur
+	 WVag8DyaqKJ57eSle2HwplunuDZ7JpPXwxVceI2ohhOD7JGYEt4CDqk63ROh5E+xDS
+	 l+cPFzoD5HShQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Eric Park <me@ericswpark.com>
+Cc: ath10k@lists.infradead.org
+Subject: Re: QCA6174 showing terrible performance when connecting via WPA3-SAE
+References: <2b4e20fa-3c76-4800-b872-f5d20b0cfe95@ericswpark.com>
+	<87r0ghf4rw.fsf@kernel.org>
+	<a1231edb5e12283f6f5fbbf9e0ba7af8@ericswpark.com>
+	<87wmolsrcc.fsf@kernel.org>
+	<eb86c5b7-b1b6-4515-afdf-cf3e78a79df2@ericswpark.com>
+	<87o79sfjlf.fsf@kernel.org>
+	<483bc3022513fd0740b5342b59ce94ad@ericswpark.com>
+	<87bk5sqgdf.fsf@kernel.org>
+	<7b8068ed-52ea-4051-b530-3a9af650e582@ericswpark.com>
+	<b9a07fe0-b50a-4d70-a7f3-3b82d224d90f@ericswpark.com>
+	<87jzk7mhuh.fsf@kernel.org>
+	<85de5d4a-6c73-4cd0-8f30-73dd6e1f8eb0@ericswpark.com>
+Date: Tue, 14 May 2024 18:27:37 +0300
+In-Reply-To: <85de5d4a-6c73-4cd0-8f30-73dd6e1f8eb0@ericswpark.com> (Eric
+	Park's message of "Tue, 7 May 2024 10:37:01 +0900")
+Message-ID: <87pltoifbq.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: ath10k: fix QCOM_RPROC_COMMON dependency
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalle Valo
-	<kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        Stephen Boyd
-	<swboyd@chromium.org>,
-        Rakesh Pillai <quic_pillair@quicinc.com>
-CC: <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <linux-kbuild@vger.kernel.org>
-References: <20240511-ath10k-snoc-dep-v1-1-9666e3af5c27@linaro.org>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240511-ath10k-snoc-dep-v1-1-9666e3af5c27@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4OmYH8MLtWgkn02V-bn8b6U1_Y2cZtnJ
-X-Proofpoint-ORIG-GUID: 4OmYH8MLtWgkn02V-bn8b6U1_Y2cZtnJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-14_08,2024-05-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1011 mlxscore=0 suspectscore=0 spamscore=0 malwarescore=0
- adultscore=0 mlxlogscore=911 phishscore=0 priorityscore=1501 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2405010000 definitions=main-2405140104
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240514_074333_485842_C1A6CDA5 
-X-CRM114-Status: GOOD (  18.95  )
+X-CRM114-CacheID: sfid-20240514_082743_160818_3CC29181 
+X-CRM114-Status: GOOD (  10.89  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,50 +82,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 5/11/2024 3:49 AM, Dmitry Baryshkov wrote:
-> If ath10k_snoc is built-in, while Qualcomm remoteprocs are built as
-> modules, compilation fails with:
-> 
-> /usr/bin/aarch64-linux-gnu-ld: drivers/net/wireless/ath/ath10k/snoc.o: in function `ath10k_modem_init':
-> drivers/net/wireless/ath/ath10k/snoc.c:1534: undefined reference to `qcom_register_ssr_notifier'
-> /usr/bin/aarch64-linux-gnu-ld: drivers/net/wireless/ath/ath10k/snoc.o: in function `ath10k_modem_deinit':
-> drivers/net/wireless/ath/ath10k/snoc.c:1551: undefined reference to `qcom_unregister_ssr_notifier'
-> 
-> Add corresponding dependency to ATH10K_SNOC Kconfig entry so that it's
-> built as module if QCOM_RPROC_COMMON is built as module too.
-> 
-> Fixes: 747ff7d3d742 ("ath10k: Don't always treat modem stop events as crashes")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/net/wireless/ath/ath10k/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-> index e6ea884cafc1..4f385f4a8cef 100644
-> --- a/drivers/net/wireless/ath/ath10k/Kconfig
-> +++ b/drivers/net/wireless/ath/ath10k/Kconfig
-> @@ -45,6 +45,7 @@ config ATH10K_SNOC
->  	depends on ATH10K
->  	depends on ARCH_QCOM || COMPILE_TEST
->  	depends on QCOM_SMEM
-> +	depends on QCOM_RPROC_COMMON || QCOM_RPROC_COMMON=n
->  	select QCOM_SCM
->  	select QCOM_QMI_HELPERS
->  	help
-> 
-> ---
-> base-commit: 75fa778d74b786a1608d55d655d42b480a6fa8bd
-> change-id: 20240511-ath10k-snoc-dep-862a9da2e6bb
+Eric Park <me@ericswpark.com> writes:
 
-I see how this fixes the problem, but this doesn't seem like an ideal
-solution. The fact that the *_ssr_notifier() functions are correctly protected
-by conditional compilation ideally should mean that clients don't need to call
-call out this as a dependency. Otherwise, it would mean we'd need to do this
-for all feature flags.
+> On 5/6/2024 6:04 PM, Kalle Valo wrote:
+>
+>> (...)
+>> This is of course just a theory. I don't know how familiar you are with
+>> 802.11 protocols but that is something to investigate. Unfortunately I
+>> have very little time for ath10k nowadays.
+>
+> Not very familiar with 802.11 protocols, I'm just a user. Until it can
+> be fixed can PMF
+> be disabled for the QCA6174 card?
 
-+linux-kbuild just to make sure there isn't a better approach.
+But James is reporting[1] that 802.11w is working for him. So it doesn't
+seem to be completely broken even if you are having problems and
+removing the 802.11w support from the driver doesn't sound right.
 
-/jeff
+[1] https://lore.kernel.org/all/ce0e2043-5085-4dd6-86bd-89dca6f566be@gmail.com/
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
