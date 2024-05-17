@@ -4,75 +4,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6730C25B78
-	for <ath10k@archiver.kernel.org>; Fri, 17 May 2024 09:41:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24D82C04FFE
+	for <ath10k@archiver.kernel.org>; Fri, 17 May 2024 09:50:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:In-Reply-To:Date:References:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=o7wsUc1EhLNRk90IDBN/gtH9UOSjgqj9R7AVPFW/Z0g=; b=nu4xW33d6zhB1LIddvWf/g5vi/
-	egdYFQ3orpuqI+4cnqkjSDCwxebJjsZ3djsCA5YNGiSSywsAljVeQtHlyJVOcDE0AL5oEo0TTOJv7
-	7I0pDpG2cx93264E7aUc4qe4eEbD924BlmNwZ3kj7pu4/QxFtIfEyot5BNP6CT8Q/5I2T4OMatJJ/
-	zK90QwmMZ1m4JhDnlWzIXnYQavlUsN1eW0JY6VK/URLPuudQYGaeLOqbbzSBwgxXh5p4heAKee4IA
-	sBSPdfOxKwRJTjrcQzzM7d/SBlh09kPPq/Oj2rRH/Eelkq4j8B4GUH4a6LTUP6E6bhfrnS4lOjrRG
-	nwdMS1IQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=; b=hwFF9ppwOIBkfPJoMsjCnS8BG5
+	aRY+YmlMDyGtF0do1HSV3p4VzStyJTtByUlfVKgOr3zPHEM8GjZAIW9FsXV6CpAnT1eEboviPt5OI
+	oxJBhtuGiN6WT7KYCZDaI8RNZVeKUGG6GXGFKAEdaZ70F98adxklWFPO69FNX7468FHhBL//Zwluz
+	1kvniDf5oQ+wQBdSbfc4CgW6tGhb9yEdGrTnsjhYzP2WrR/aNUa+SskR9I91SpH3HHEnIlZGZD3EH
+	2Ncp/aj/t/xbNSgDlJz3FmRl45hsEKQ79eNAHADPfqhht87+MZMxz+xXK12SayzqefCHiULVNw1GX
+	/89hmSdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7u5r-00000007OVv-3zqi;
-	Fri, 17 May 2024 09:41:39 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1s7uES-00000007PmJ-2grd;
+	Fri, 17 May 2024 09:50:32 +0000
+Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7u5p-00000007OVT-2qji
-	for ath10k@lists.infradead.org;
-	Fri, 17 May 2024 09:41:39 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id B2AEBCE0AC2;
-	Fri, 17 May 2024 09:41:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E3DFC2BD10;
-	Fri, 17 May 2024 09:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715938894;
-	bh=o7wsUc1EhLNRk90IDBN/gtH9UOSjgqj9R7AVPFW/Z0g=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=rJ7QE6jJMoCXRriSDmQh3KOshX5e/1mSv/nLFO+pIxHR8+YzQuiTdhMbbo7yRtQpF
-	 z5GRZlxqruZ7Zv/A2/7cNypz0mO8hbzhkocgXTgSfGDx8ON3MytvlYjnaRJOUHLBtW
-	 tPgx8DrNxev543tKbhpCPWGgD2hQesOn0rSImyt/moCoF3zBhiQzbTH42JrhZ8/pE6
-	 v7FDg4AnF8UfYLxjuyICZhdQHnFLB4/4N1gF1ZJMoHy1P975IkRbFX87K/WZyb1NpK
-	 mwL7Yd1Hv0pjFOc6TKW5KbSgyz67hybLiA0FQB9IElMjPrFffjJB+S203Qy69OXlAN
-	 57eyInG7bWPeA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Eric Park <me@ericswpark.com>
-Cc: ath10k@lists.infradead.org
-Subject: Re: QCA6174 showing terrible performance when connecting via WPA3-SAE
-References: <2b4e20fa-3c76-4800-b872-f5d20b0cfe95@ericswpark.com>
-	<87r0ghf4rw.fsf@kernel.org>
-	<a1231edb5e12283f6f5fbbf9e0ba7af8@ericswpark.com>
-	<87wmolsrcc.fsf@kernel.org>
-	<eb86c5b7-b1b6-4515-afdf-cf3e78a79df2@ericswpark.com>
-	<87o79sfjlf.fsf@kernel.org>
-	<483bc3022513fd0740b5342b59ce94ad@ericswpark.com>
-	<87bk5sqgdf.fsf@kernel.org>
-	<7b8068ed-52ea-4051-b530-3a9af650e582@ericswpark.com>
-	<b9a07fe0-b50a-4d70-a7f3-3b82d224d90f@ericswpark.com>
-	<87jzk7mhuh.fsf@kernel.org>
-	<85de5d4a-6c73-4cd0-8f30-73dd6e1f8eb0@ericswpark.com>
-	<87pltoifbq.fsf@kernel.org>
-	<c707de9b-2b55-4720-a9f8-1654946c6616@ericswpark.com>
-	<87cypnijr6.fsf@kernel.org>
-	<1489399e-4f49-4d37-8494-e9d575d656a4@ericswpark.com>
-Date: Fri, 17 May 2024 12:41:32 +0300
-In-Reply-To: <1489399e-4f49-4d37-8494-e9d575d656a4@ericswpark.com> (Eric
-	Park's message of "Fri, 17 May 2024 17:43:47 +0900")
-Message-ID: <87v83cg4hf.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	id 1s7uEM-00000007Pj3-2n1J;
+	Fri, 17 May 2024 09:50:31 +0000
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6034E37344;
+	Fri, 17 May 2024 09:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1715939422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=;
+	b=aqPS27rfYVOIlQYJQqRWN1OB2KuGqplKO0xASvAy99Em1LNhKAq/Z45rrmqOfomt6ymSXF
+	OiEv1bW+ZdpI213w3TR/RlpBxADCOtSoygZG2IWVCeRjyU7fk9xYWgYywcz+IS9+rfxp20
+	iBC1DT09pzE+KgT4PXFcXk6IVt2gReU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1715939422;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=;
+	b=ybHcdzifmrWaHz4fudlW6TywmF4wPptrNP5A3fPjgJZxiNP8yysPTURMY+P9YDVx2v+UNY
+	h72YrP3bBg//bVBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1715939422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=;
+	b=aqPS27rfYVOIlQYJQqRWN1OB2KuGqplKO0xASvAy99Em1LNhKAq/Z45rrmqOfomt6ymSXF
+	OiEv1bW+ZdpI213w3TR/RlpBxADCOtSoygZG2IWVCeRjyU7fk9xYWgYywcz+IS9+rfxp20
+	iBC1DT09pzE+KgT4PXFcXk6IVt2gReU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1715939422;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=;
+	b=ybHcdzifmrWaHz4fudlW6TywmF4wPptrNP5A3fPjgJZxiNP8yysPTURMY+P9YDVx2v+UNY
+	h72YrP3bBg//bVBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3DB2D13991;
+	Fri, 17 May 2024 09:50:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rHjlDV0oR2boBwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 17 May 2024 09:50:21 +0000
+Date: Fri, 17 May 2024 11:50:38 +0200
+Message-ID: <87r0e0zs0h.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Linux trace kernel
+ <linux-trace-kernel@vger.kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers 
+ <mathieu.desnoyers@efficios.com>,
+	Linus Torvalds 
+ <torvalds@linux-foundation.org>,
+	linuxppc-dev@lists.ozlabs.org,
+	kvm@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-cxl@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
+	freedreno@lists.freedesktop.org,
+	virtualization@lists.linux.dev,
+	linux-rdma@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-tegra@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	ath11k@lists.infradead.org,
+	ath12k@lists.infradead.org,
+	brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com,
+	linux-usb@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev,
+	linux-cifs@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-edac@vger.kernel.org,
+	selinux@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-hwmon@vger.kernel.org,
+	io-uring@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-wpan@vger.kernel.org,
+	dev@openvswitch.org,
+	linux-s390@vger.kernel.org,
+	tipc-discussion@lists.sourceforge.net,
+	Julia 
+ Lawall <Julia.Lawall@inria.fr>
+Subject: Re: [PATCH] tracing/treewide: Remove second parameter of __assign_str()
+In-Reply-To: <20240516133454.681ba6a0@rorschach.local.home>
+References: <20240516133454.681ba6a0@rorschach.local.home>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	R_RATELIMIT(0.00)[to_ip_from(RL6rcqepr6awpd9qb5xxedoiwq)];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[50];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[efficios.com:email,inria.fr:email,imap1.dmz-prg2.suse.org:helo,suse.de:email,goodmis.org:email,linux-foundation.org:email]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240517_024137_922112_60658ABA 
-X-CRM114-Status: GOOD (  17.92  )
+X-CRM114-CacheID: sfid-20240517_025027_456883_B61E8D93 
+X-CRM114-Status: GOOD (  21.10  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,44 +177,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Eric Park <me@ericswpark.com> writes:
+On Thu, 16 May 2024 19:34:54 +0200,
+Steven Rostedt wrote:
+> 
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> [
+>    This is a treewide change. I will likely re-create this patch again in
+>    the second week of the merge window of v6.10 and submit it then. Hoping
+>    to keep the conflicts that it will cause to a minimum.
+> ]
+> 
+> With the rework of how the __string() handles dynamic strings where it
+> saves off the source string in field in the helper structure[1], the
+> assignment of that value to the trace event field is stored in the helper
+> value and does not need to be passed in again.
+> 
+> This means that with:
+> 
+>   __string(field, mystring)
+> 
+> Which use to be assigned with __assign_str(field, mystring), no longer
+> needs the second parameter and it is unused. With this, __assign_str()
+> will now only get a single parameter.
+> 
+> There's over 700 users of __assign_str() and because coccinelle does not
+> handle the TRACE_EVENT() macro I ended up using the following sed script:
+> 
+>   git grep -l __assign_str | while read a ; do
+>       sed -e 's/\(__assign_str([^,]*[^ ,]\) *,[^;]*/\1)/' $a > /tmp/test-file;
+>       mv /tmp/test-file $a;
+>   done
+> 
+> I then searched for __assign_str() that did not end with ';' as those
+> were multi line assignments that the sed script above would fail to catch.
+> 
+> Note, the same updates will need to be done for:
+> 
+>   __assign_str_len()
+>   __assign_rel_str()
+>   __assign_rel_str_len()
+> 
+> I tested this with both an allmodconfig and an allyesconfig (build only for both).
+> 
+> [1] https://lore.kernel.org/linux-trace-kernel/20240222211442.634192653@goodmis.org/
+> 
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Julia Lawall <Julia.Lawall@inria.fr>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-> On 5/15/24 5:04 PM, Kalle Valo wrote:
->
->> Eric Park <me@ericswpark.com> writes:
->>> I'm unsure what to test next, if it can be triaged at all. It's an
->>> outdated card=C2=A0 in a really old laptop and I can always work around=
- it
->>> with a USB WiFi adapter. If anyone has any suggestions I'm all ears
->>> but otherwise I think this would be a good place to stop.
->> One thing to try is to make sure your setup matches what James is using,
->> especially the firmware version.
->
-> Interesting, this is what I get from `dmesg`:
->
-> qca6174 hw2.1 target 0x05010000 chip_id 0x003405ff sub 144d:4125
-> firmware ver SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,
-> no-4addr-pad crc32 10bf8e08
->
-> I'm guessing the firmware version 1.1.1 is the latest one for the hw
-> 2.1 variant (going off of the firmware repository), but please correct
-> me if I'm wrong!
->
-> Looking at the repository that version was updated 8 years ago. Is
-> there anything else I can try? I'm guessing newer firmware only
-> works on the newer hardware revisions.
+For the sound part
+Acked-by: Takashi Iwai <tiwai@suse.de>
 
-Aha! I had totally missed that you are using hw2.1. (James is using
-hw3.2) Yeah, that hardware version has been problematic almost since the
-beginning and there has been any firmware updates for a long time. I'm
-not surprised at all that 802.11w is slow on hw2.1.
 
-I think disabling 802.11w for QCA6174 hw2.1 is a good idea, patches
-welcome.
+thanks,
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+Takashi
 
