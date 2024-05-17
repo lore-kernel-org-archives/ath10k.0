@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 963A9C25B7A
-	for <ath10k@archiver.kernel.org>; Fri, 17 May 2024 19:28:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75009C04FFE
+	for <ath10k@archiver.kernel.org>; Fri, 17 May 2024 19:31:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=WgzGlzqPiybBUh4V+8KDGP8noqeSPaKIMN2y3VqVSWc=; b=IpTE+vrvEJKaAJ8xX3xAH5/M9h
-	1QVlZ2h0MQs5umPigmBEtoNuExn+FLqirL38RwWDfbHgc02LEueK8wAMjs34qO7w1fDG6sO7SUjmZ
-	/kaTC4jnJKKaS/eVgQ23gd/2RZOR8Wy+AyI69P19gybm6lAv8TTeK0eY2XfL8no7doEz63jalACuq
-	DqevEm56//2fCncZuNTcfCQSmAPwb2udu18mdWZFSuhAf8Pk5bOmgDC+pPJ8AtyRU9J730QJlo0dm
-	vDJPf6H9HTXHMqewLxG3cXdMW+slkOJUPOpNl66JBvFcTeEaomZWNW40eEt6KcszLsWThk5jvFRPY
-	BL4VDl7A==;
+	bh=rMdxC1+gGY4nqdid9Pw3VKcFO6qqLBiqQCAefqR0XI4=; b=k3u/FwlAGwFXK9sKo1G0ei2+Pv
+	Ljn4vQQtntq0rSWcxh1CVIlrYEmoZfnR7bjif/Wcl8onT/fbnseH1UQm5ARrfctMRTmKkMKk6y30Z
+	HuGJ4D9NkTvfYycPC9h3xMClbFgv6nImYNYNPLPyeYTEToSbifqVe5g8Mb6pd4Bu2C7jvg8lJIxsM
+	0dXqXm3xZnhn0DMUs+luw0rA769X4dTj+bvJ9HyCJ7YtAAiHJT50qJHlVX2wsHPq+6457JWw/s4SL
+	Nz6xEdf0MTnBjUADe91gSF/BRFhDgSC97u8/OylXJlwPJjq9jtfcE8p/bcTehX2oMFOSqKWADLwDM
+	cxad+KQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s83GA-00000008pGf-0p93;
-	Fri, 17 May 2024 19:28:54 +0000
-Received: from mgamail.intel.com ([198.175.65.16])
+	id 1s83J2-00000008pdt-2Lsv;
+	Fri, 17 May 2024 19:31:52 +0000
+Received: from mgamail.intel.com ([198.175.65.11])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s83G7-00000008pFd-2FBy
+	id 1s83Iz-00000008pdU-24SQ
 	for ath10k@lists.infradead.org;
-	Fri, 17 May 2024 19:28:53 +0000
+	Fri, 17 May 2024 19:31:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715974132; x=1747510132;
+  t=1715974310; x=1747510310;
   h=date:from:to:cc:subject:message-id;
-  bh=fy9HpFEHHOyg+UxOWQ8iEjJjXiguqMavzHAgvCCV/n8=;
-  b=VQotKN6+tGT6yDn4xs2cjlLOgNiY8fam7pHKd/MmGBVFBSz4uMI0SkJv
-   SFFxk7COp1f6sQnbTijiUjORQbzCw+PLJVxsMXnfPWWUaXRme3TLOA3RL
-   iahKYLdztGsO7+KOcnNvtwAAKa+lb2kg4b3tqTJarJEH3bmzMDtBGHaCY
-   iD0FOAKjSyIrlDA+DTxWJsyLbeR/j9zHLl4dRSUY0yIYnN0FXnEQnI82i
-   5OObOoPH5rIpOuYD6zvlUvjLI1QS11ddQMyaZ3XqNiMaBRub8qO0Q4Blk
-   TM3TQssaefxPpr4lW2CfQGxV90fa9tnoXUiZVnh4KSYhKn1DQ8ZMAL5wP
-   Q==;
-X-CSE-ConnectionGUID: 32fzgAw2Rh6DTJEkWTy/8g==
-X-CSE-MsgGUID: 3+GbfDLbQH6Qzw1+KFDdXQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11075"; a="12282759"
+  bh=wIFv7Pk3f/xa1fvIshT7ZCx6HHVfUyY3uXR/ElciXbk=;
+  b=M25o/qmQj5IovYPkyBn7e8rPuoqi6TIoXMkwW3q4DVG5AIyru+xbd7a9
+   kLt6q/pNy51nV1/0VYRjK0gChqZVbY6PGYGCMgYqjEcZVUBGbROTGrdq8
+   g14XMHGJoOqRpuLK9Nt9ETYFgSWjgyCw5IftSUEH9GnJi1o5CrN0KWWAc
+   MLdIH3OfKCSlc3ULJnjJWiEgYzsOiBUejaEYkcititXMaDRNg1bz7wJMl
+   nWUCiJXSBlcY8SB1ELD0oAgPVPTw9mrfN9/IEfrTXfN/pC0Y0Fsi98VPI
+   bSrIgL33naTNlPvB0piNkrX5j7BqLvMTus7qLScCU0A3XyaJacxgYFvzu
+   g==;
+X-CSE-ConnectionGUID: PQLHxDztR2qn4jZbhDAmPw==
+X-CSE-MsgGUID: Pmt4W+j4Rqim3xij3Qt+4Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11075"; a="22749877"
 X-IronPort-AV: E=Sophos;i="6.08,168,1712646000"; 
-   d="scan'208";a="12282759"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2024 12:28:49 -0700
-X-CSE-ConnectionGUID: cXnCy/WoQ/ewKsrz37Z0QA==
-X-CSE-MsgGUID: OCG4HZqTSbSGN8V7K//5ow==
+   d="scan'208";a="22749877"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2024 12:31:49 -0700
+X-CSE-ConnectionGUID: i8HzmByMTtS/NMV8QxbU1g==
+X-CSE-MsgGUID: 6r7y+LF7QouCk0i6tXN23w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,168,1712646000"; 
-   d="scan'208";a="31874665"
+   d="scan'208";a="63080275"
 Received: from unknown (HELO 108735ec233b) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 17 May 2024 12:28:48 -0700
+  by fmviesa001.fm.intel.com with ESMTP; 17 May 2024 12:31:47 -0700
 Received: from kbuild by 108735ec233b with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1s83G0-00013g-3B;
-	Fri, 17 May 2024 19:28:44 +0000
-Date: Sat, 18 May 2024 03:28:26 +0800
+	id 1s83Iv-00014I-0i;
+	Fri, 17 May 2024 19:31:45 +0000
+Date: Sat, 18 May 2024 03:30:58 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
- faf25794d26d1efe1e2441a6ba0dab0407fa34db
-Message-ID: <202405180322.IQn1SYq7-lkp@intel.com>
+Subject: [kvalo-ath:ath-current] BUILD SUCCESS
+ 637c435f08ea7e77c53a2ad590b651d0de225e3b
+Message-ID: <202405180355.CbLOEk8Z-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240517_122851_644808_1CED0B38 
-X-CRM114-Status: UNSURE (   3.62  )
+X-CRM114-CacheID: sfid-20240517_123149_622332_A746670C 
+X-CRM114-Status: UNSURE (   3.81  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,12 +83,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
-branch HEAD: faf25794d26d1efe1e2441a6ba0dab0407fa34db  Merge branch 'ath-next' into ath-qca
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-current
+branch HEAD: 637c435f08ea7e77c53a2ad590b651d0de225e3b  wifi: ath11k: Fix error path in ath11k_pcic_ext_irq_config
 
-elapsed time: 734m
+elapsed time: 737m
 
-configs tested: 155
+configs tested: 156
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -102,19 +102,20 @@ arc                              allmodconfig   gcc
 arc                               allnoconfig   gcc  
 arc                              allyesconfig   gcc  
 arc                                 defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
 arc                   randconfig-001-20240517   gcc  
 arc                   randconfig-002-20240517   gcc  
 arm                              allmodconfig   gcc  
 arm                               allnoconfig   clang
 arm                              allyesconfig   gcc  
 arm                                 defconfig   clang
-arm                            mps2_defconfig   clang
-arm                        multi_v7_defconfig   gcc  
+arm                            hisi_defconfig   gcc  
+arm                         lpc32xx_defconfig   clang
+arm                         nhk8815_defconfig   clang
 arm                   randconfig-001-20240517   clang
 arm                   randconfig-002-20240517   clang
 arm                   randconfig-003-20240517   clang
 arm                   randconfig-004-20240517   clang
+arm                           sama7_defconfig   clang
 arm64                            allmodconfig   clang
 arm64                             allnoconfig   gcc  
 arm64                               defconfig   gcc  
@@ -165,14 +166,17 @@ m68k                             allmodconfig   gcc
 m68k                              allnoconfig   gcc  
 m68k                             allyesconfig   gcc  
 m68k                                defconfig   gcc  
+m68k                           virt_defconfig   gcc  
 microblaze                       allmodconfig   gcc  
 microblaze                        allnoconfig   gcc  
 microblaze                       allyesconfig   gcc  
 microblaze                          defconfig   gcc  
 mips                              allnoconfig   gcc  
 mips                             allyesconfig   gcc  
-mips                       bmips_be_defconfig   gcc  
-mips                    maltaup_xpa_defconfig   gcc  
+mips                           jazz_defconfig   clang
+mips                  maltasmvp_eva_defconfig   gcc  
+mips                         rt305x_defconfig   clang
+nios2                         10m50_defconfig   gcc  
 nios2                            allmodconfig   gcc  
 nios2                             allnoconfig   gcc  
 nios2                            allyesconfig   gcc  
@@ -182,7 +186,6 @@ nios2                 randconfig-002-20240517   gcc
 openrisc                          allnoconfig   gcc  
 openrisc                         allyesconfig   gcc  
 openrisc                            defconfig   gcc  
-openrisc                       virt_defconfig   gcc  
 parisc                           allmodconfig   gcc  
 parisc                            allnoconfig   gcc  
 parisc                           allyesconfig   gcc  
@@ -193,12 +196,16 @@ parisc64                            defconfig   gcc
 powerpc                          allmodconfig   gcc  
 powerpc                           allnoconfig   gcc  
 powerpc                          allyesconfig   clang
-powerpc                   bluestone_defconfig   clang
+powerpc                     asp8347_defconfig   clang
+powerpc                      bamboo_defconfig   clang
+powerpc                      chrp32_defconfig   clang
+powerpc                      pasemi_defconfig   clang
 powerpc               randconfig-001-20240517   clang
 powerpc               randconfig-002-20240517   clang
 powerpc               randconfig-003-20240517   gcc  
-powerpc                     taishan_defconfig   clang
-powerpc64                        alldefconfig   clang
+powerpc                    sam440ep_defconfig   gcc  
+powerpc                     tqm8540_defconfig   gcc  
+powerpc                      walnut_defconfig   gcc  
 powerpc64             randconfig-001-20240517   gcc  
 powerpc64             randconfig-002-20240517   gcc  
 powerpc64             randconfig-003-20240517   clang
@@ -206,7 +213,6 @@ riscv                            allmodconfig   clang
 riscv                             allnoconfig   gcc  
 riscv                            allyesconfig   clang
 riscv                               defconfig   clang
-riscv             nommu_k210_sdcard_defconfig   gcc  
 riscv                 randconfig-001-20240517   clang
 riscv                 randconfig-002-20240517   gcc  
 s390                             allmodconfig   clang
@@ -221,12 +227,6 @@ sh                               allyesconfig   gcc
 sh                                  defconfig   gcc  
 sh                    randconfig-001-20240517   gcc  
 sh                    randconfig-002-20240517   gcc  
-sh                           se7206_defconfig   gcc  
-sh                           se7751_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sh                     sh7710voipgw_defconfig   gcc  
-sh                        sh7785lcr_defconfig   gcc  
 sparc                            allmodconfig   gcc  
 sparc                             allnoconfig   gcc  
 sparc                               defconfig   gcc  
@@ -248,6 +248,7 @@ x86_64                           allyesconfig   clang
 x86_64                              defconfig   gcc  
 x86_64                          rhel-8.3-rust   clang
 xtensa                            allnoconfig   gcc  
+xtensa                  audio_kc705_defconfig   gcc  
 xtensa                randconfig-001-20240517   gcc  
 xtensa                randconfig-002-20240517   gcc  
 
