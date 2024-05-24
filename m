@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9A7EC25B7A
-	for <ath10k@archiver.kernel.org>; Fri, 24 May 2024 13:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F07CC25B74
+	for <ath10k@archiver.kernel.org>; Fri, 24 May 2024 14:01:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=5C4AL8noFCS/sj5BhDZdVat9EFLktDHO9bAiQ7x+qfg=; b=uDA7VjXPYQTSh0PeRkN3dPUg/7
-	+a0gvT4CzcVEVnHOQQw75l5m3IZ54Z+QzdfCYUkPHIdz2vpMfTeRPxpds2ZQZ4GJ/ZIE7+xw5u9pT
-	vq0eVEpZ5ajOY5A2dnhQeh+mbDOt156ScSLEwrdTCsO35QCiET1BK/HCjzA9bZvyCHAc+Z+ubyXtF
-	EHmDeJq0l26urcS9nyKoyJAx++oPO38KZfzLuYN66tG50a1v1SXw6zwx6fimrjs6G+cg5PoFvBfEx
-	FIU+GWW4pRufk9zrJka1Se55sAfKU89dqtq+7jFnnX8ayB2GxaY14TgJyM2y97nRu7FuVPbB0NTzj
-	JvRLI0dA==;
+	bh=7mHSzvodv7tpZ7OCinVXsc8R+1naAtzrqm9d1jJI32Q=; b=ykG1R/zKewETQFRgkVCIo1+3Wc
+	uSVjVZHTfRT7Ixx20FLk/dstvj1wYwMzGr5OZB6rEWBhXzMeFx4fuRU89qmAE6gVAVJ3QrU71ekK7
+	oaow+OoqUEixW2TZ0sTc+6lPqmwykssHhsKpxQyFmwIXBVV9elG6I1hkyVrrHs9v3tSm/bvh1zGum
+	TXrC7415mWh+rX7jpBhqSMp/YJ9YJLZPeWfb4/GsugcKOCGEKTj1v9K9jSgurlD6dwlCs8sCOyvCt
+	iFLP6hJcI3TUqWIpMF5XlEFO+4aq2uMII6vODQb7PO2BwgSpxuxmDxxOD77zVpIHDjdUWExz1xINf
+	4/7/dKBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAVCh-0000000910d-3ONR;
-	Fri, 24 May 2024 13:43:27 +0000
-Received: from mgamail.intel.com ([198.175.65.10])
+	id 1sAVUC-000000093dZ-0t0w;
+	Fri, 24 May 2024 14:01:32 +0000
+Received: from mgamail.intel.com ([192.198.163.15])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAVCe-000000090zA-1Zb0
+	id 1sAVU7-000000093cu-2E8q
 	for ath10k@lists.infradead.org;
-	Fri, 24 May 2024 13:43:25 +0000
+	Fri, 24 May 2024 14:01:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716558204; x=1748094204;
+  t=1716559287; x=1748095287;
   h=date:from:to:cc:subject:message-id;
-  bh=QFpBba/+NPcoEllway3HgDTEwtO8bmZGecmxMt0/7ME=;
-  b=KNqDniA1fnX7Ika27/LIDmJBlf4L9KAI3LSh79pDbnpmiIOpjY6RDkhQ
-   Mb4qvmVRTmN2GHI5L91/DGm7GXw6NhNOyV190biJAn3GTozQBQRtj0NgL
-   luTtuoOUvn8MRlfw8qe0SRD5nvbYs4JzulhDp+SAOSCov7Ha6301ugq0G
-   Hj8zN5vcu2xUH/UPqpOVyJdUOn1I2O20g9kL8NuNS5d6yrIc4AFsxj0Ny
-   QBqsETXDegm18LnnULY/EjFK5lOjTSFakaeS1qPyqBgWEUqjjHpVYhhlX
-   PSt8aBVgQDpgXGplN2j+CtAwQ8ISWt5UKz6b64b2UgTxB2MT/3AVwWbu8
-   w==;
-X-CSE-ConnectionGUID: oaiJER0jSbOKnLDQnIMD2w==
-X-CSE-MsgGUID: O2th7YXHRKiP6d2BxZRhnA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11081"; a="30442416"
+  bh=d8dlxRGhMibWAEHJMUjt86XhzFGfLt3ljeBe/qwibMY=;
+  b=grTa0Xtk6jT+BwcsH9TLyfowdCmF4UAY8M6Pix68jdeYBAc1LuvrSmcE
+   ZJz9meAQateXytdKrmTHu+2D6hWCGfdhNY+6SuOQhVGEf2HbRF3V8mvTi
+   pSIei+BlzOSBsVEhhcIAxgy/H0geCbkmofSe16xRQS5gSmV1938bclGcA
+   7XKOnva4VmyhgwsHQ41xQNYAv+vYZZFuRCe3eHX1UcQD+Z6P8WH1zUXA0
+   zGwVrU/ZK9GcqdgrUxDlIUsr26Z3Ay+Qtm7X1fHhCkrBmqYEU9DToD8V4
+   MEKsvsQehsm+ytnOvlCvekV7RTZZXuQJHnNmHclzFQRIH3EtX5lPWvWOD
+   g==;
+X-CSE-ConnectionGUID: cxfforIDRQGoLIW4Mr7dsg==
+X-CSE-MsgGUID: KNf4kVWlRu+IBPqBOqyltQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11082"; a="13121870"
 X-IronPort-AV: E=Sophos;i="6.08,185,1712646000"; 
-   d="scan'208";a="30442416"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2024 06:43:20 -0700
-X-CSE-ConnectionGUID: 8vd4faTdRhaw356iiyiFVA==
-X-CSE-MsgGUID: DwuEJn8PT2qg+rHJoa2PBw==
+   d="scan'208";a="13121870"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2024 07:01:20 -0700
+X-CSE-ConnectionGUID: /HMXYA6GSvy6mxYRx+CgPA==
+X-CSE-MsgGUID: aavRuco7RYi559/61eNNig==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,185,1712646000"; 
-   d="scan'208";a="34043573"
+   d="scan'208";a="34142539"
 Received: from unknown (HELO 0610945e7d16) ([10.239.97.151])
-  by fmviesa006.fm.intel.com with ESMTP; 24 May 2024 06:43:19 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 24 May 2024 07:01:20 -0700
 Received: from kbuild by 0610945e7d16 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1sAVCX-0005S5-0W;
-	Fri, 24 May 2024 13:43:17 +0000
-Date: Fri, 24 May 2024 21:43:04 +0800
+	id 1sAVTx-0005T3-2R;
+	Fri, 24 May 2024 14:01:17 +0000
+Date: Fri, 24 May 2024 22:00:55 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-current] BUILD SUCCESS
- 6e16782d6b4a724f9c9dcd49471219643593b60c
-Message-ID: <202405242101.dyuVW7dW-lkp@intel.com>
+Subject: [kvalo-ath:ath-qca] BUILD SUCCESS
+ 7c44ae3e65e59f6003454d942642328ea10919a5
+Message-ID: <202405242253.lgg5aKOO-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240524_064324_500547_6BB9D3A4 
-X-CRM114-Status: UNSURE (   3.90  )
+X-CRM114-CacheID: sfid-20240524_070127_720366_E259892A 
+X-CRM114-Status: UNSURE (   3.63  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,12 +83,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-current
-branch HEAD: 6e16782d6b4a724f9c9dcd49471219643593b60c  wifi: ath11k: move power type check to ASSOC stage when connecting to 6 GHz AP
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-qca
+branch HEAD: 7c44ae3e65e59f6003454d942642328ea10919a5  Merge branch 'ath-current' into ath-qca
 
-elapsed time: 1449m
+elapsed time: 1467m
 
-configs tested: 162
+configs tested: 161
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -193,9 +193,7 @@ powerpc               randconfig-003-20240524   clang
 powerpc64             randconfig-001-20240524   gcc  
 powerpc64             randconfig-002-20240524   gcc  
 powerpc64             randconfig-003-20240524   gcc  
-riscv                            allmodconfig   clang
 riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
 riscv                               defconfig   clang
 riscv                 randconfig-001-20240524   gcc  
 riscv                 randconfig-002-20240524   clang
@@ -215,6 +213,7 @@ sparc                            allmodconfig   gcc
 sparc                             allnoconfig   gcc  
 sparc                               defconfig   gcc  
 sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
 sparc64                             defconfig   gcc  
 sparc64               randconfig-001-20240524   gcc  
 sparc64               randconfig-002-20240524   gcc  
