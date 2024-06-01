@@ -4,57 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45E0BC25B7E
-	for <ath10k@archiver.kernel.org>; Fri, 31 May 2024 17:01:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6B5DC25B76
+	for <ath10k@archiver.kernel.org>; Sat,  1 Jun 2024 09:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=antZWW8IGb+9ZCNfPqsl6RlwE3y0DrtIK/3sJKRt72c=; b=Y09RsvjdzYOj/f7EAhOFyjn8RK
-	rlokez6Ja02OHvlA67bTcdSUHte06blAQ2D6eAQovawLGqROOulbSn+YXTuq6n372zTmsy4yQqatF
-	vHa+ah29IIjOcGRW+RZ5zO6fmbCRNvYQRkv+/M8adufYQkgrvQvnryoCkRRvf2aGrK036+DMqv4+F
-	qzcu9QgR13LfrLzJyGo7aBe546IPrKLxBUuW7rkjQuNdTrrpjS/FpVQIOpwUORRcI1GSNsi9OyVOb
-	rJkymK0RaslghXJordsMS+6UyUVyeSicL7GtaWm1dxO4V/4bKnfmZQvypaSCkiZmp4UYgA/eUbFSS
-	kQCBxyQQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
+	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=S2L8JqRgsNXQ4iLAOjOyP62kdDzzqMsK1S/4VG5J/vU=; b=DMQoeCweRDOXSwCkDoK5mvv8A/
+	OSmzzji0PlkqhEi4zWyH9GqOAW6h75P1J2OcRkUOf2KQsFY2Nd8x/uQX6WCdvRaby3FzmxkE+7KTX
+	7U/r0bp2YVA6GkGjTg9nJgTow4PXuX5axmKm369Wi3OxxnJBepKC8glm5rlINcUMvnc6UH7sTk7zl
+	obBLEE7JjK2CNvE0kBHbF512fCkVAwowpwcryR9R53tfVkgFzNUFkTNW+M2GQr8gTuOPuWea3O6e3
+	PLN61fQR6Vwo5SGYDQ5S60MbZBBeg34t/lrCVnKpfIIOt53wjY8yZt9+hN5DvZaZuB4TttXggVU8M
+	pLSOld7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sD5ch-0000000AwY2-1KiL;
-	Fri, 31 May 2024 17:00:59 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sDLV6-0000000CJ91-1dOs;
+	Sat, 01 Jun 2024 09:58:12 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sD5ce-0000000AwWM-0dTr;
-	Fri, 31 May 2024 17:00:57 +0000
+	id 1sDLV2-0000000CJ8T-2qq3;
+	Sat, 01 Jun 2024 09:58:10 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id B1ED9CE1D47;
-	Fri, 31 May 2024 17:00:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C767DC4AF0B;
-	Fri, 31 May 2024 17:00:48 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id C60D4CE1ACC;
+	Sat,  1 Jun 2024 09:57:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A92D0C116B1;
+	Sat,  1 Jun 2024 09:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717174850;
-	bh=npo7uATaKkeSuypMjGQBs62SKdU1v8hnJzTlwcO6QEM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=oDUuhoJTWb3vqDy0rIuhvvDNpIP0eTwVsXJ2Vwd5OOaBMYbd1+sBtJR6gt63LJX6N
-	 YPqnKYB4vWoFxA1hS2E6NEG6HiXX9jy7TNyIeehjisHsY5N2raoTO4J2H6b0+b+AUI
-	 PvpUGTkPDj5HcHDB0P+GBFRU0DU+rDjxPm4Ti8Wd5SPjh3Fgj0+Rx/D7EqLbJoEDyI
-	 EgmpAl+1t2ZbLPOGQ4ZR/rcQapjTgN6Eo4H8iZ5aHxJ+akNSEjPx+O0ZmviXMUoSm1
-	 wnya48XURoAbpY+JFRmBobiGnC14/iDbIYSIYwudZA13OmF2TJYTiM73iYbLRsH0k3
-	 J7WlzUDE+aTAg==
-From: Kalle Valo <kvalo@kernel.org>
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
- ath12k@lists.infradead.org, quic_jjohnson@quicinc.com
-Subject: pull-request: ath-current-20240531
-Date: Fri, 31 May 2024 20:00:46 +0300
-Message-ID: <87ttidvrup.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=k20201202; t=1717235879;
+	bh=ABPZwTl98JqWjY9l5L1A3Pf6ulH1Xx1AiunqIWYybpw=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=nUEVUUm7eSNS5laRl59xNobBEKQP0WW2fCspCPBBM9SDbjXRDElexohcHagse0Dz4
+	 mcaLPiGc7LkdxgynDO7uhGBoYOx+aoqGpdTnwmlyrr4E8jCtX3vL4uipXK+Dm1kuxf
+	 siPiLDzBRKBaLZA+/YP7naIWhEsFdzXUcsQUpp78tpVNufEl1feSWL4fMdgpY/DgCh
+	 XK9rqSHiptRdzorr1PleYuOzpTHhNYykLQ4K+c/zPpZsb6Nonhm7o5T4kdZjqeJujw
+	 eKJeNg/Kjh8cP77a3D5HUDh/21qKJUrN7c6T1vi2Km41a+A5eRwSvfBFSflkD7IpkJ
+	 fFtPzm3pxSaSA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Subject: Re: pull-request: ath-current-20240531
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <87ttidvrup.fsf@kernel.org>
+References: <87ttidvrup.fsf@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org, ath12k@lists.infradead.org,
+ quic_jjohnson@quicinc.com
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <171723587573.967328.5470768065737630382.kvalo@kernel.org>
+Date: Sat,  1 Jun 2024 09:57:57 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240531_100056_393828_5CFE4935 
-X-CRM114-Status: UNSURE (   7.07  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240601_025808_942387_5EF5B405 
+X-CRM114-Status: GOOD (  11.38  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,46 +72,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Kalle Valo <kvalo@kernel.org> wrote:
 
-Please pull, more information in the tag below.
+> Hi,
+> 
+> Please pull, more information in the tag below.
+> 
+> Kalle
+> 
+> The following changes since commit 1d60eabb82694e58543e2b6366dae3e7465892a5:
+> 
+>   wifi: mwl8k: initialize cmd->addr[] properly (2024-05-07 15:08:14 +0300)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git tags/ath-current-20240531
+> 
+> for you to fetch changes up to 6e16782d6b4a724f9c9dcd49471219643593b60c:
+> 
+>   wifi: ath11k: move power type check to ASSOC stage when connecting to 6 GHz AP (2024-05-23 15:45:52 +0300)
+> 
+> ----------------------------------------------------------------
+> Merge ath-current from git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+> 
+> ath.git fixes for 6.10. Two fixes for user reported regressions in
+> ath11k. One dependency fix and one error path fix.
+> 
+> ----------------------------------------------------------------
+> Baochen Qiang (1):
+>       wifi: ath11k: move power type check to ASSOC stage when connecting to 6 GHz AP
+> 
+> Breno Leitao (1):
+>       wifi: ath11k: Fix error path in ath11k_pcic_ext_irq_config
+> 
+> Carl Huang (1):
+>       wifi: ath11k: fix WCN6750 firmware crash caused by 17 num_vdevs
+> 
+> Dmitry Baryshkov (1):
+>       wifi: ath10k: fix QCOM_RPROC_COMMON dependency
+> 
+>  drivers/net/wireless/ath/ath10k/Kconfig |  1 +
+>  drivers/net/wireless/ath/ath11k/core.c  |  2 +-
+>  drivers/net/wireless/ath/ath11k/mac.c   | 38 ++++++++++++++++++++++-----------
+>  drivers/net/wireless/ath/ath11k/pcic.c  | 25 +++++++++++++++-------
+>  4 files changed, 44 insertions(+), 22 deletions(-)
 
-Kalle
+Pulled, thanks.
 
-The following changes since commit 1d60eabb82694e58543e2b6366dae3e7465892a5:
+10bc8558b59a Merge tag 'ath-current-20240531' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath
 
-  wifi: mwl8k: initialize cmd->addr[] properly (2024-05-07 15:08:14 +0300)
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/87ttidvrup.fsf@kernel.org/
 
-are available in the Git repository at:
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git tags/ath-current-20240531
-
-for you to fetch changes up to 6e16782d6b4a724f9c9dcd49471219643593b60c:
-
-  wifi: ath11k: move power type check to ASSOC stage when connecting to 6 GHz AP (2024-05-23 15:45:52 +0300)
-
-----------------------------------------------------------------
-Merge ath-current from git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
-
-ath.git fixes for 6.10. Two fixes for user reported regressions in
-ath11k. One dependency fix and one error path fix.
-
-----------------------------------------------------------------
-Baochen Qiang (1):
-      wifi: ath11k: move power type check to ASSOC stage when connecting to 6 GHz AP
-
-Breno Leitao (1):
-      wifi: ath11k: Fix error path in ath11k_pcic_ext_irq_config
-
-Carl Huang (1):
-      wifi: ath11k: fix WCN6750 firmware crash caused by 17 num_vdevs
-
-Dmitry Baryshkov (1):
-      wifi: ath10k: fix QCOM_RPROC_COMMON dependency
-
- drivers/net/wireless/ath/ath10k/Kconfig |  1 +
- drivers/net/wireless/ath/ath11k/core.c  |  2 +-
- drivers/net/wireless/ath/ath11k/mac.c   | 38 ++++++++++++++++++++++-----------
- drivers/net/wireless/ath/ath11k/pcic.c  | 25 +++++++++++++++-------
- 4 files changed, 44 insertions(+), 22 deletions(-)
 
