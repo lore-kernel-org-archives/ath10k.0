@@ -4,55 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B30C7C27C4F
-	for <ath10k@archiver.kernel.org>; Mon,  3 Jun 2024 07:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 782A1C25B75
+	for <ath10k@archiver.kernel.org>; Mon,  3 Jun 2024 20:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=sz5QzLsq2hbzE5ccg4hkyVC2UuT9zvNlBdx/2Q5t8ww=; b=gvMxq6OBlYtzfMwxPTz1XxyYI8
-	caVDiyHKc3p3mQJhyyc7RN5WjML2Cbu+y7hwr6NB3ehrI3TX7bSCI88JUwe7GoTc1fQIJ90STd0Jm
-	tdsT9D0TWRFmYaeuW/uKwuPlBBuyfc/Ko2LtPOJ55M9DEQuJXqfr2eLymixhzwpaSwY7ESVmcGfOF
-	3w1mi/tXcDd1NG+P7wZzD1B/ZPafyoE/Kxywk9L1Nzcn+JV4dCVsc4aXuTk2Az8oGy9IXMkyQEUDC
-	LKNNrICtTji5Qcf3a6RcC87cJYj/qYQcKUoD3cKJThNazOizvU+h/wDJuAw6Iw676HK3216Lxt5Gx
-	sIAjW5iw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JZLwlRnQfdO3ImOJrKNYmzEqxHi09ftcOGFarQS9k0c=; b=SX9uE5ebuOtNrkfa/EJlxsQI0E
+	nXNOeNbCLMuqZOlQvTLHpits2s2hcrHeu6pRxJ7fIpDV3Ttu+XeCAjNZSvd7y2I4W7Cel/TCStijX
+	Dz0BX93N49K2JvCybblFXBfGc7esmAIUM3vTJh5SGJ12UEXBpM2P5vfK45B8rsuNBYQzY89l8x+WW
+	BMaXGCnYpKRsl+L3OE9tvHFCFV62vV2bOpa+bqPScgtgH/wOAlq1a0GmrAOcI5qDLT7m5QdfGbquN
+	MIRPz+lsiz6BYTcZhXDy0+7e6/0qidLBS3ab/y+C2xwj7tzGM33iqSTZod1PoD6GW6M2FKrfwk1x6
+	gScICrQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sE2EZ-0000000FuUI-0tx2;
-	Mon, 03 Jun 2024 07:35:59 +0000
-Received: from mail.smartylink24.com ([217.61.0.148])
+	id 1sEE2J-00000000Gen-0hQr;
+	Mon, 03 Jun 2024 20:12:07 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sE2EV-0000000FuSU-2EkN
-	for ath10k@lists.infradead.org;
-	Mon, 03 Jun 2024 07:35:57 +0000
-Received: by mail.smartylink24.com (Postfix, from userid 1002)
-	id 13245825EB; Mon,  3 Jun 2024 09:35:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=smartylink24.com;
-	s=mail; t=1717400145;
-	bh=sz5QzLsq2hbzE5ccg4hkyVC2UuT9zvNlBdx/2Q5t8ww=;
-	h=Date:From:To:Subject:From;
-	b=nxqtndSPOifBz84JWzvyDTb5HcLjjfKfETvmY+ajv16HnmiLP6jJAIJQLYcU0s8sM
-	 Bz3FfUjSkqqR+yHidk+NDWWL9es0R4ouXEPor/I9MpmZHR7OdQ/hqabPr5GIa9Yqiz
-	 B7+MIDiRzFGjnLS2v45pZfq6s89pLetFOHW6IB8Mffo70YtZKBd+8rv2WKzYrlrMfe
-	 N2rkuM16yCfb9OExS3ObSCKF4QofFEse8mRaLckJkaccCFOUA1bZD5QasXbaAZ1gHv
-	 Q2cnz+U8im8Mp2X4eMFk2AWayKAj/pTunmXCKrD+sm1cHSFCAm709VhTTPK6OMYQeq
-	 2nstfZPO0beDw==
-Received: by mail.smartylink24.com for <ath10k@lists.infradead.org>; Mon,  3 Jun 2024 07:35:26 GMT
-Message-ID: <20240603084500-0.1.p.252x.0.fj72f5yl5l@smartylink24.com>
-Date: Mon,  3 Jun 2024 07:35:26 GMT
-From: "Cristian Forbes" <cristian.forbes@smartylink24.com>
-To: <ath10k@lists.infradead.org>
-Subject: Smartphone Delivery 
-X-Mailer: mail.smartylink24.com
+	id 1sEE2B-00000000Gcl-3mVm;
+	Mon, 03 Jun 2024 20:12:05 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id D37F8CE0F25;
+	Mon,  3 Jun 2024 20:11:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E21E3C32782;
+	Mon,  3 Jun 2024 20:11:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717445517;
+	bh=pGZR0EvHvDWqai8PBnHLS0nBSNBDYKCqGmU8d6NkPs8=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=frAxb16dDKVqKH15L+a8G2eMgz0PUmxfu47KRyVDx4wjhqL3GSYW2/oWTq7ujcrXo
+	 tftIRnzqqCMgpENwVgx7CV7by3XOPtAS5s8icqkviZRnl9MI/Uud1clY0ZIAV80iUL
+	 aNWjkLJmC3wqKFosgbioz0JB1b54FvQbLwLnqjEey+gD8WvEi2pXpgDuhmEuo3aMtm
+	 ocL8m/LjE3oD1X25As62D18M+emV7lhlC5N2WqsWXbvgmPryEE7uwM/o/3mqHKZ1lw
+	 DWD6uUmpr9Odku+gtDR9DKPxl2JFo0EsL47TYAXZYIlGBkyRhhbKVnNGXDt4UjmhPb
+	 tthHQidiL3WGw==
+From: Kalle Valo <kvalo@kernel.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: ath10k <ath10k@lists.infradead.org>,  ath11k
+ <ath11k@lists.infradead.org>,  ath12k <ath12k@lists.infradead.org>,
+  linux-wireless <linux-wireless@vger.kernel.org>
+Subject: Re: New staging repos for ath1*k firmware
+References: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
+	<878r09gfzv.fsf@kernel.org>
+Date: Mon, 03 Jun 2024 23:11:53 +0300
+In-Reply-To: <878r09gfzv.fsf@kernel.org> (Kalle Valo's message of "Fri, 17 May
+	2024 08:32:52 +0300")
+Message-ID: <87ed9dn5va.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240603_003556_299936_09597C46 
-X-CRM114-Status: UNSURE (  -0.60  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240603_131200_517970_9A66648E 
+X-CRM114-Status: GOOD (  13.98  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,21 +73,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello,
+Kalle Valo <kvalo@kernel.org> writes:
 
-Are you looking for a reliable smartphone supplier that provides the late=
-st models at attractive prices with fast delivery?
+> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
+>
+>> Historically, prior to being incorporated into the linux-firmware
+>> project, firmware for kernel.org ath1*k drivers has been first published
+>> to Kalle's GitHub:
+>> https://github.com/kvalo/ath10k-firmware
+>> https://github.com/kvalo/ath11k-firmware
+>> (ath12k firmware was pushed to the ath11k-firmware repo on a temporary
+>> basis in anticipation of this move)
+>>
+>> But in order to have repos with multiple maintainers, as well as to have
+>> a hosting platform with more control, we have moved to CodeLinaro:
+>> https://git.codelinaro.org/clo/ath-firmware/ath10k-firmware
+>> https://git.codelinaro.org/clo/ath-firmware/ath11k-firmware
+>> https://git.codelinaro.org/clo/ath-firmware/ath12k-firmware
+>>
+>> Note that most people should not care about this -- normally you should
+>> use the firmware that is in the official linux-firmware repo:
+>> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/
+>>
+>> You should only need to access the staging repos if you need a previous
+>> version to work around an issue, or if you are testing new firmware that
+>> is supposed to fix a problem that you've reported.
+>>
+>> Please let Kalle & I know if you have any issues with these new repos!
+>
+> The final reminder that the github.com repositories will be deleted in
+> two weeks. If someone is still using them switch to the new
+> git.codelinaro.org location NOW.
 
-Our offer includes a wide range of mobile phones from manufacturers such =
-as Motorola, Google, Honor, OnePlus, Oppo, POCO, Samsung, and Xiaomi.
+And github.com repos are gone now.
 
-We offer attractive wholesale prices that will allow you to increase your=
- margin. We guarantee delivery across the European Union within 48 hours.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Are you interested in getting the latest smartphone models for your store=
-?
-
-
-Best regards
-Cristian Forbes
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
