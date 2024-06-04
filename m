@@ -4,88 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70709C25B75
-	for <ath10k@archiver.kernel.org>; Mon,  3 Jun 2024 20:47:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DD19C27C50
+	for <ath10k@archiver.kernel.org>; Tue,  4 Jun 2024 13:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rSqhldWIOXjUJSVi6PvugsUVUev3HfvYjeAu2cTO6Vs=; b=mKSf/PBwdXgXFHUdzdGwsuPqH3
-	ONkHfwcuPbdp5xJqyEbjkuQJve1Cpv1Yku6wNwduw6/KVQp/nswiSbU8Xs5Uqu+6EhYs0y7uxHJAT
-	xHUWwoSVT64x3Q2JMw2kYcZ3o/FeJCsCnWNop241B7wLYDeoZGIwf02cdud3Xb3W1Jac+hWx/Wi8+
-	RwyE6gMkGY87RvxVDcOn7TTIOnoo+wX5ngHz78Ynui20iysRtPQXukqfRSDRTxE3nxfC9agjFJVtF
-	WCa39iKeavAvqaNuI/ZyFYFL7BJOpVKnZPE+Hq5Pb6J8xFu+1eSx8BXAOOVuLMtBhr73yld4qXmlM
-	ZWLGdofw==;
+	bh=g3xKDmGEtE5NY3eQm4y/GHC7J2gBGR92nLzdqVWo5F0=; b=xTZ+pP8ZK6g2j792W0EW2uIbi9
+	hvaM58ccvsCHyxrduzx51Epk6YneSSX/OnJdXZBmd1LSnLV1LQK5mi/0YdIWn6ytHvHcMNfWajHFw
+	CO1ZAapF5QK4HAnWaRuDlQUxZHz6MnF/SlQSah8IOOJcsbkPVRnLr67SWxatrXm/y0O+BhIDSieTu
+	8Zuci7DYB0HqcwNoxhkmex0QxLPkXVHAFstlvnB+wmv5EZ9aChU25gkdaSvuS6f7GGrs2rHkq6CK5
+	M/qec4pljboldL9PEoXAlXsgrBb389DrNth9ZKOY0tPX67LuP9qEpSczlTaadxc2j9cexuRtvdRHf
+	AStGtQcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEEal-00000000K0h-2LWd;
-	Mon, 03 Jun 2024 20:47:43 +0000
+	id 1sEUOZ-00000002XUF-3GyY;
+	Tue, 04 Jun 2024 13:40:11 +0000
 Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEEai-00000000K0D-4B6Q;
-	Mon, 03 Jun 2024 20:47:42 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4539ZwDE011871;
-	Mon, 3 Jun 2024 20:47:28 GMT
+	id 1sEUOW-00000002XTD-0mVk
+	for ath10k@lists.infradead.org;
+	Tue, 04 Jun 2024 13:40:09 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4548lMfs000933;
+	Tue, 4 Jun 2024 13:39:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	rSqhldWIOXjUJSVi6PvugsUVUev3HfvYjeAu2cTO6Vs=; b=gZXzoJVBH2xFx0cq
-	puVTVMarONnaze6M4g87z0TAmyUAI5Q6QZIcjufDcWWPvrsfNbBI/OqdyrAjpXZP
-	RVOW2Oz1VoBV3MYzZganltJx07ARNM8ZR6yMnyifCzTY2UKcSRiIxJC2Yy3y2/VD
-	rcV3y414K+8HXPW8OokIJWdy7PaSujwZiBH4GXH+e4p8XCqSGAN8/m/KN4ZJUk5l
-	lIg6UP/0mg0o2mZPWV8OzLZyq5hE+u10VtGYWdgZseODfqHwZiuJVxRsnPk7fIhR
-	OLn7Na7TB5p+mtUNYoA6rUzOuRP7HH7KW7ACHgC+l6fhVMKHGJ4BYV3GsvBJUYL1
-	x7juhw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3yfw6qmyb5-1
+	g3xKDmGEtE5NY3eQm4y/GHC7J2gBGR92nLzdqVWo5F0=; b=QO9SgBOZQWdcRV/2
+	GmUNDR60B5JL/RFYPJmrnSZ4nPEq1iUBMaxI9Bq0yKMyflUmfUUyUFWyidBp+h2x
+	1CyUul08o9lmPAYSxgMFKaGrcVIZsivPlO5mYS+sgcdOzBtsxn4kduJqPN7pqAsg
+	PKndjQPXQx72PiUUpguB7tPOSoTVafAxQeqSKCeGpYm8BlP/+1kJXsCmT+JRt41Y
+	F+Vm+hZmgDJRRZBY6qQ3Q40vBf1tVjBl9/wd7kWFxB/vjrx3m8MejoPYPdFTdjy3
+	AbMFrt9CKXagNdbVTWMYbLc0Q/NaY8k1L3mYp5za7YUmH4uxb9alg+u3nL1pPRVr
+	r+446A==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3yfw5kq2s7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 03 Jun 2024 20:47:28 +0000 (GMT)
+	Tue, 04 Jun 2024 13:39:51 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 453KlRhO013369
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 454DdosV012590
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 3 Jun 2024 20:47:27 GMT
-Received: from [10.48.241.139] (10.49.16.6) by nalasex01a.na.qualcomm.com
+	Tue, 4 Jun 2024 13:39:50 GMT
+Received: from [10.81.24.74] (10.49.16.6) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 3 Jun 2024
- 13:47:26 -0700
-Message-ID: <c6f85ed9-d1bc-4f44-b0c4-74e351798940@quicinc.com>
-Date: Mon, 3 Jun 2024 13:47:25 -0700
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 4 Jun 2024
+ 06:39:49 -0700
+Message-ID: <bb8cf06e-4f96-4545-b459-3e70acb50f97@quicinc.com>
+Date: Tue, 4 Jun 2024 06:39:48 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: New staging repos for ath1*k firmware
+Subject: Re: [PATCH v2 11/22] ath10k: Use iommu_paging_domain_alloc()
 Content-Language: en-US
-To: <pgupta@hindutool.com>, <kvalo@kernel.org>
-CC: <ath10k@lists.infradead.org>, <ath11k@lists.infradead.org>,
-        <ath12k@lists.infradead.org>, <linux-wireless@vger.kernel.org>
-References: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
- <878r09gfzv.fsf@kernel.org> <87ed9dn5va.fsf@kernel.org>
- <1717446068.3fam2c8qo0gc0k0g@mailapp03.register.com>
+To: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
+        Will
+ Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Jason
+ Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>
+CC: Yi Liu <yi.l.liu@intel.com>, David Airlie <airlied@gmail.com>,
+        Daniel
+ Vetter <daniel@ffwll.ch>, Kalle Valo <kvalo@kernel.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alex
+ Williamson <alex.williamson@redhat.com>, <mst@redhat.com>,
+        Jason Wang
+	<jasowang@redhat.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan
+ Hunter <jonathanh@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>, <iommu@lists.linux.dev>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <ath10k@lists.infradead.org>
+References: <20240604015134.164206-1-baolu.lu@linux.intel.com>
+ <20240604015134.164206-12-baolu.lu@linux.intel.com>
 From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <1717446068.3fam2c8qo0gc0k0g@mailapp03.register.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20240604015134.164206-12-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.49.16.6]
 X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: WIlJ8GqBPsm0NhXe0nf5_a2mIfOTK8I1
-X-Proofpoint-ORIG-GUID: WIlJ8GqBPsm0NhXe0nf5_a2mIfOTK8I1
+X-Proofpoint-GUID: Md4EIe9lNXys9JP7qqj6UgaTb6nNYv_z
+X-Proofpoint-ORIG-GUID: Md4EIe9lNXys9JP7qqj6UgaTb6nNYv_z
 X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-06-03_17,2024-05-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0 malwarescore=0
- mlxscore=0 adultscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2405170001 definitions=main-2406030167
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-04_05,2024-06-04_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 suspectscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2405170001 definitions=main-2406040109
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240603_134741_075684_C574EDAD 
-X-CRM114-Status: UNSURE (   9.70  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240604_064008_270345_73759A96 
+X-CRM114-Status: GOOD (  15.46  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,22 +117,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 6/3/2024 1:21 PM, pgupta@hindutool.com wrote:
-> The manufacturer of my wifi7 modules (Compex) suggested I use the following repository:
++ath10k list for viibility
+
+On 6/3/24 18:51, Lu Baolu wrote:
+> An iommu domain is allocated in ath10k_fw_init() and is attached to
+> ar_snoc->fw.dev in the same function. Use iommu_paging_domain_alloc() to
+> make it explicit.
 > 
-> https://github.com/quic/upstream-wifi-fw/tree/main/ath12k-firmware/QCN9274/hw2.0/1.3/WLAN.WBE.1.3-03253-QCAHKSWPL_SILICONZ-1
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/snoc.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Is this part of the ath12k project?  I have seen it online but have not used it.
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index 8530550cf5df..0fe47d51013c 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1635,10 +1635,10 @@ static int ath10k_fw_init(struct ath10k *ar)
+>   
+>   	ar_snoc->fw.dev = &pdev->dev;
+>   
+> -	iommu_dom = iommu_domain_alloc(&platform_bus_type);
+> -	if (!iommu_dom) {
+> +	iommu_dom = iommu_paging_domain_alloc(ar_snoc->fw.dev);
+> +	if (IS_ERR(iommu_dom)) {
+>   		ath10k_err(ar, "failed to allocate iommu domain\n");
+> -		ret = -ENOMEM;
+> +		ret = PTR_ERR(iommu_dom);
+>   		goto err_unregister;
+>   	}
+>   
 
-That (unfortunately misnamed) repository exists only for the benefit of the
-QSDK project, which is a fork of OpenWRT. The firmware releases in that
-project have only been validated with drivers that are part of the QSDK --
-they have not been validated with upstream kernel.org drivers.
-
-Note that the firmware move from Kalle's personal Github account to CodeLinaro
-is just one step in what we hope to be a consolidation effort that is also
-intended to include firmware from github.com/quic/upstream-wifi-fw as well as
-independent projects containing board files.
-
-/jeff
 
