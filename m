@@ -4,71 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D4A7C25B78
-	for <ath10k@archiver.kernel.org>; Tue,  4 Jun 2024 14:07:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24150C27C54
+	for <ath10k@archiver.kernel.org>; Tue,  4 Jun 2024 22:56:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=qmRCvZ9bfGbvY45L6UXjnLPDp1BCbbE46h+Eync0o3k=; b=152z1PJPtmITflFyxC8r64u+/D
-	xHMIZ09YrNyVjmcZalr5ei084hOwI/TYzou9psEQqCQjMZRKtu9eMGC2sSlc+USV2/Q8Dpt48xX6f
-	cFi2PoTMaNZ8pzNsVDiBt3q7ZRE3zvndAsYFLd4+dfF9SRXUNRADkZ4zX0p5rsJDoAH08xEZAU0Qd
-	a2fYlvkjD/OWIePG9Wpk00AwC8m8c+LY+5lz70fDB7OZC8NUERYAaB+XHxzj2p9EkwJ3Vucpqnc6C
-	kCqcyuUam9JD30Tr4VqaRKXEDmOOp6TgQ//Zrrnis5znPLLDZf/KxK6w3+B1odTRBvFKn9ezcY7Z7
-	CYxUVDxQ==;
+	bh=inQPca2qexc3f1YzzH7unkrDeiGUyf5eWJd5wIzungs=; b=EqemSOCxQDHNEKdvu7wK0ZClKU
+	HcpdupEel/3UaGoVABM5xZW/ZGjEGVdKkRiJcj/tI64cojPhRUdJMQow358vbGQN5uIlzICIr0A8W
+	xp7aZSedFqYsNJfgrmchgzZo+JANMGr54kNo4Xo5Ikjttmfatlf5usg+oM54mIjpsHqyUD++Lmc9Q
+	uwePX0e+G0S+a9m57wt2v1Ui/Y3gMkPsfwWbMefIKuL2ccuayUDAddlj7fqud/9ZnLPJJmXxqT2Kf
+	nQJF3xVEl2+ZsDy1R3R7Ms0/2CiMy+Bq1gGs99sLF5wGJJLCniCjkVJhzQ2pHIjuZ9X/1yK89Hzgx
+	ME7+3fpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEUpN-00000002dAy-1iAU;
-	Tue, 04 Jun 2024 14:07:53 +0000
+	id 1sEd4w-0000000470o-3KE3;
+	Tue, 04 Jun 2024 22:56:30 +0000
 Received: from mgamail.intel.com ([198.175.65.16])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEUpJ-00000002d8f-0V1Z
+	id 1sEd4t-0000000470O-2G7P
 	for ath10k@lists.infradead.org;
-	Tue, 04 Jun 2024 14:07:51 +0000
+	Tue, 04 Jun 2024 22:56:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717510069; x=1749046069;
-  h=date:from:to:cc:subject:message-id;
-  bh=AIV6VNbOo4alCx6U35C+K4PChyglcxlFsBwJLKkbf1I=;
-  b=VaL0/Uaul4gwBHhZROTnNydIq9102pedPxMRnu6tx+vmuSMDmWZR1oZo
-   aD0S3YppsSK2iyvtyvThGNd/s2nbPqg7bJ5WOWxeZeNC4X25XQsUgpCbi
-   /CV6Mc6OG/wKDRAeT80z7fJMfKjgpN8HnAMZs8qogwXDJGNhWJxg2xC0+
-   7+WrJibzFdgTRoxx2jaQn1zdGRYmALml3FBC+tDDm7VwTRZtO3FsKgiHt
-   qIpHo/1X0kVbDbqfDlMqiRU579BOWSbBzjLmOyvjgMmooHduzBjUM4fiH
-   QqSckVHWJIQmzrm6xFtuNHMKCcw/vFRBbexDUhl+yqLWXHRA4Zg+6b2JG
-   w==;
-X-CSE-ConnectionGUID: CMA1m9Z6SbmRnsQNt7UQmg==
-X-CSE-MsgGUID: Hoj6lq3ORdK4FLyOmYV++w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11093"; a="14188641"
-X-IronPort-AV: E=Sophos;i="6.08,213,1712646000"; 
-   d="scan'208";a="14188641"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2024 07:07:47 -0700
-X-CSE-ConnectionGUID: f5jjs5e2T0GAeFF5890fIA==
-X-CSE-MsgGUID: I+2jsN3bTx+vnxts5GX8/A==
+  t=1717541788; x=1749077788;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=vDd4QAVGXylqcxBvFGG9NNS7qOB8GjGN+CmZ40vpbCw=;
+  b=aYshPGd3qJfzaRbUIqIjFNeitShUxGNI/fNbMtrGA8erWGjyyvdEdZ3e
+   N+g413s4P2U0Vfx/C6bBF/g2g1oeM8LCGwid3fPR5GYkL/PsJDc6IFlmL
+   Kv7Db6kXVcKuUmhCRZ8jAoACM6MQy7ht6hWb02Il1NtgGaAU+tqxGytzO
+   ju/iUASx0NBIPZzhnUVhATpS3ugGvCm5kmcLmOwVH924Vw7dyqprvSGUH
+   5rG9IvJlDLb07BKiumoc+MueNZeX8/zpFpmltrHwSb2veWhGP9lly7/69
+   zYlmLBlTH3pK6xl5HqVidjTHfb4etwRAnBUTyiIdEiD0UgUV/LE3sldTx
+   Q==;
+X-CSE-ConnectionGUID: 4SFF4ljZQOeYX6nfV0tdDw==
+X-CSE-MsgGUID: uVkQ8cFzT+2Ox4FG4DJORw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11093"; a="14254485"
+X-IronPort-AV: E=Sophos;i="6.08,214,1712646000"; 
+   d="scan'208";a="14254485"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2024 15:56:27 -0700
+X-CSE-ConnectionGUID: O8uXuBBWTE2P5WMuSi5xxg==
+X-CSE-MsgGUID: 3o6+RsenTEKPgWqP8sHMmQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,213,1712646000"; 
-   d="scan'208";a="37717684"
+X-IronPort-AV: E=Sophos;i="6.08,214,1712646000"; 
+   d="scan'208";a="60577778"
 Received: from unknown (HELO 0610945e7d16) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 04 Jun 2024 07:07:46 -0700
+  by fmviesa002.fm.intel.com with ESMTP; 04 Jun 2024 15:56:25 -0700
 Received: from kbuild by 0610945e7d16 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1sEUpE-000NKB-0j;
-	Tue, 04 Jun 2024 14:07:44 +0000
-Date: Tue, 04 Jun 2024 22:07:11 +0800
+	id 1sEd4o-0000df-2D;
+	Tue, 04 Jun 2024 22:56:22 +0000
+Date: Wed, 5 Jun 2024 06:55:32 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- a116bf2be795eb1db75fa6a48aa85c397be001a6
-Message-ID: <202406042208.bhsXLtZw-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+Cc: oe-kbuild-all@lists.linux.dev, Kalle Valo <kvalo@codeaurora.org>,
+	ath10k@lists.infradead.org
+Subject: [kvalo-ath:master-pending 5/5]
+ drivers/net/wireless/ath/ath11k/pci.c:708:15: error: implicit declaration of
+ function 'vzalloc'; did you mean 'kzalloc'?
+Message-ID: <202406050650.VgDMtMhL-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240604_070749_315307_DB49B53E 
-X-CRM114-Status: UNSURE (   3.77  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240604_155627_663428_6A05D185 
+X-CRM114-Status: GOOD (  10.23  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,160 +86,156 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: a116bf2be795eb1db75fa6a48aa85c397be001a6  Revert "PCI: Lock upstream bridge for pci_reset_function()"
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
+head:   6f446d0a1af020dd164a006adc327f4fd3d5dacd
+commit: 6f446d0a1af020dd164a006adc327f4fd3d5dacd [5/5] Merge branch 'pending' into master-pending
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20240605/202406050650.VgDMtMhL-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240605/202406050650.VgDMtMhL-lkp@intel.com/reproduce)
 
-elapsed time: 1477m
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202406050650.VgDMtMhL-lkp@intel.com/
 
-configs tested: 142
-configs skipped: 3
+All error/warnings (new ones prefixed by >>):
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+   drivers/net/wireless/ath/ath11k/pci.c: In function 'ath11k_pci_coredump_download':
+>> drivers/net/wireless/ath/ath11k/pci.c:708:15: error: implicit declaration of function 'vzalloc'; did you mean 'kzalloc'? [-Werror=implicit-function-declaration]
+     708 |         buf = vzalloc(len);
+         |               ^~~~~~~
+         |               kzalloc
+>> drivers/net/wireless/ath/ath11k/pci.c:708:13: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+     708 |         buf = vzalloc(len);
+         |             ^
+   cc1: some warnings being treated as errors
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240604   gcc  
-arc                   randconfig-002-20240604   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                                 defconfig   clang
-arm                   randconfig-002-20240604   gcc  
-arm                   randconfig-004-20240604   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-002-20240604   gcc  
-arm64                 randconfig-003-20240604   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240604   gcc  
-csky                  randconfig-002-20240604   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-002-20240604   clang
-i386         buildonly-randconfig-003-20240604   clang
-i386         buildonly-randconfig-005-20240604   clang
-i386         buildonly-randconfig-006-20240604   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240604   clang
-i386                  randconfig-002-20240604   clang
-i386                  randconfig-003-20240604   clang
-i386                  randconfig-004-20240604   clang
-i386                  randconfig-011-20240604   clang
-i386                  randconfig-014-20240604   clang
-i386                  randconfig-015-20240604   clang
-i386                  randconfig-016-20240604   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240604   gcc  
-loongarch             randconfig-002-20240604   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240604   gcc  
-nios2                 randconfig-002-20240604   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240604   gcc  
-parisc                randconfig-002-20240604   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240604   gcc  
-powerpc               randconfig-002-20240604   gcc  
-powerpc               randconfig-003-20240604   gcc  
-powerpc64             randconfig-001-20240604   gcc  
-powerpc64             randconfig-002-20240604   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-002-20240604   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-002-20240604   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240604   gcc  
-sh                    randconfig-002-20240604   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240604   gcc  
-sparc64               randconfig-002-20240604   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240604   clang
-x86_64       buildonly-randconfig-002-20240604   clang
-x86_64       buildonly-randconfig-003-20240604   gcc  
-x86_64       buildonly-randconfig-004-20240604   clang
-x86_64       buildonly-randconfig-005-20240604   gcc  
-x86_64       buildonly-randconfig-006-20240604   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240604   clang
-x86_64                randconfig-002-20240604   gcc  
-x86_64                randconfig-003-20240604   gcc  
-x86_64                randconfig-004-20240604   gcc  
-x86_64                randconfig-005-20240604   gcc  
-x86_64                randconfig-006-20240604   gcc  
-x86_64                randconfig-011-20240604   clang
-x86_64                randconfig-012-20240604   clang
-x86_64                randconfig-013-20240604   clang
-x86_64                randconfig-014-20240604   clang
-x86_64                randconfig-015-20240604   clang
-x86_64                randconfig-016-20240604   clang
-x86_64                randconfig-071-20240604   clang
-x86_64                randconfig-072-20240604   gcc  
-x86_64                randconfig-073-20240604   gcc  
-x86_64                randconfig-074-20240604   clang
-x86_64                randconfig-075-20240604   clang
-x86_64                randconfig-076-20240604   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240604   gcc  
-xtensa                randconfig-002-20240604   gcc  
+
+vim +708 drivers/net/wireless/ath/ath11k/pci.c
+
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  681  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  682  static void ath11k_pci_coredump_download(struct ath11k_base *ab)
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  683  {
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  684  	struct ath11k_pci *ab_pci = ath11k_pci_priv(ab);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  685  	struct mhi_controller *mhi_ctrl = ab_pci->mhi_ctrl;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  686  	struct image_info *rddm_img, *fw_img;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  687  	struct timespec64 timestamp;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  688  	int i, len, mem_idx;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  689  	enum ath11k_fw_crash_dump_type mem_type;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  690  	struct ath11k_dump_file_data *file_data;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  691  	struct ath11k_tlv_dump_data *dump_tlv;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  692  	size_t hdr_len = sizeof(*file_data);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  693  	void *buf;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  694  	u32 dump_seg_sz[FW_CRASH_DUMP_TYPE_MAX] = { 0 };
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  695  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  696  	ath11k_mhi_coredump(mhi_ctrl, false);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  697  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  698  	len = ath11k_pci_coredump_calculate_size(ab, dump_seg_sz);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  699  	if (!len) {
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  700  		ath11k_warn(ab, "No crash dump data found for devcoredump");
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  701  		return;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  702  	}
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  703  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  704  	rddm_img = mhi_ctrl->rddm_image;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  705  	fw_img = mhi_ctrl->fbc_image;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  706  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  707  	/* dev_coredumpv() requires vmalloc data */
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31 @708  	buf = vzalloc(len);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  709  	if (!buf)
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  710  		return;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  711  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  712  	ab->dump_data = buf;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  713  	ab->ath11k_coredump_len = len;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  714  	file_data = ab->dump_data;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  715  	strscpy(file_data->df_magic, "ATH11K-FW-DUMP", sizeof(file_data->df_magic));
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  716  	file_data->len = cpu_to_le32(len);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  717  	file_data->version = cpu_to_le32(ATH11K_FW_CRASH_DUMP_V2);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  718  	file_data->chip_id = cpu_to_le32(ab_pci->dev_id);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  719  	file_data->qrtr_id = cpu_to_le32(ab_pci->ab->qmi.service_ins_id);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  720  	file_data->bus_id = cpu_to_le32(pci_domain_nr(ab_pci->pdev->bus));
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  721  	guid_gen(&file_data->guid);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  722  	ktime_get_real_ts64(&timestamp);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  723  	file_data->tv_sec = cpu_to_le64(timestamp.tv_sec);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  724  	file_data->tv_nsec = cpu_to_le64(timestamp.tv_nsec);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  725  	buf += hdr_len;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  726  	dump_tlv = buf;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  727  	dump_tlv->type = cpu_to_le32(FW_CRASH_DUMP_PAGING_DATA);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  728  	dump_tlv->tlv_len = cpu_to_le32(dump_seg_sz[FW_CRASH_DUMP_PAGING_DATA]);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  729  	buf += COREDUMP_TLV_HDR_SIZE;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  730  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  731  	/* append all segments together as they are all part of a single contiguous
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  732  	 * block of memory
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  733  	 */
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  734  	for (i = 0; i < fw_img->entries ; i++) {
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  735  		if (!fw_img->mhi_buf[i].buf)
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  736  			continue;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  737  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  738  		memcpy_fromio(buf, (void const __iomem *)fw_img->mhi_buf[i].buf,
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  739  			      fw_img->mhi_buf[i].len);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  740  		buf += fw_img->mhi_buf[i].len;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  741  	}
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  742  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  743  	dump_tlv = buf;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  744  	dump_tlv->type = cpu_to_le32(FW_CRASH_DUMP_RDDM_DATA);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  745  	dump_tlv->tlv_len = cpu_to_le32(dump_seg_sz[FW_CRASH_DUMP_RDDM_DATA]);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  746  	buf += COREDUMP_TLV_HDR_SIZE;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  747  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  748  	/* append all segments together as they are all part of a single contiguous
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  749  	 * block of memory
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  750  	 */
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  751  	for (i = 0; i < rddm_img->entries; i++) {
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  752  		if (!rddm_img->mhi_buf[i].buf)
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  753  			continue;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  754  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  755  		memcpy_fromio(buf, (void const __iomem *)rddm_img->mhi_buf[i].buf,
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  756  			      rddm_img->mhi_buf[i].len);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  757  		buf += rddm_img->mhi_buf[i].len;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  758  	}
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  759  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  760  	mem_idx = FW_CRASH_DUMP_REMOTE_MEM_DATA;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  761  	for (; mem_idx < FW_CRASH_DUMP_TYPE_MAX; mem_idx++) {
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  762  		if (mem_idx == FW_CRASH_DUMP_NONE)
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  763  			continue;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  764  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  765  		dump_tlv = buf;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  766  		dump_tlv->type = cpu_to_le32(mem_idx);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  767  		dump_tlv->tlv_len = cpu_to_le32(dump_seg_sz[mem_idx]);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  768  		buf += COREDUMP_TLV_HDR_SIZE;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  769  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  770  		if (!dump_tlv->tlv_len)
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  771  			continue;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  772  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  773  		for (i = 0; i < ab->qmi.mem_seg_count; i++) {
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  774  			mem_type = ath11k_coredump_get_dump_type
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  775  						(ab->qmi.target_mem[i].type);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  776  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  777  			if (mem_type != mem_idx)
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  778  				continue;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  779  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  780  			if (!ab->qmi.target_mem[i].v.iaddr) {
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  781  				ath11k_dbg(ab, ATH11K_DBG_PCI,
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  782  					   "Skipping mem region type %d",
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  783  					   ab->qmi.target_mem[i].type);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  784  				continue;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  785  			}
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  786  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  787  			memcpy_fromio(buf, ab->qmi.target_mem[i].v.iaddr,
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  788  				      ab->qmi.target_mem[i].size);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  789  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  790  			buf += ab->qmi.target_mem[i].size;
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  791  		}
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  792  	}
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  793  
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  794  	queue_work(ab->workqueue, &ab->dump_work);
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  795  }
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  796  #endif
+9e0e90f4ca68b5 Miaoqing Pan 2024-05-31  797  
+
+:::::: The code at line 708 was first introduced by commit
+:::::: 9e0e90f4ca68b50d1c7016d565731c0c2b31b2ef wifi: ath11k: Add firmware coredump collection support
+
+:::::: TO: Miaoqing Pan <quic_miaoqing@quicinc.com>
+:::::: CC: Kalle Valo <quic_kvalo@quicinc.com>
 
 -- 
 0-DAY CI Kernel Test Service
