@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40133C25B76
-	for <ath10k@archiver.kernel.org>; Wed,  5 Jun 2024 17:40:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0CE6C27C52
+	for <ath10k@archiver.kernel.org>; Wed,  5 Jun 2024 18:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=OGuYPnEbWWPTXFnT9HJKaXhE/3KIv5OJeAROT/Y69VQ=; b=sOSMAX9iVeWo3NPqLO96i9W4EB
-	Pmq7zoHq35WXKbXyeniaEV7WC90pgqH4+drUm/t2QVG6gbUB6kXVyyDLgB1EG1moBKv+p317TPSKX
-	tSr0O0b2OwdG/WpAn84x3VxJ0zPEtmpuIqs1nWgfLg76iZAwPleIshq3W7ms0vt2sFEpzCp56zb45
-	2eEbbjNwutR3IVCmSCv556uqGVexGIRR3ve/wV4u//gZ2JYOxvzxRKu0/YGOG/RtNW+5ud91pMIxI
-	cjHuVwGhCjIy9cKMhKektBerhjbJq/JBNlTs0vNUcr3H1LE61d8+O39hdo2w6mirx0tTzjRWUlR1K
-	JIQRT1pA==;
+	bh=acTCNibMKdpVo/9Sfu/0y8db2HIMVgX+/JtTeCiw4AI=; b=SjgYd2XQGamrkl/4eSlUGWcIO2
+	4xzs5ynt7xaiiTCDD2zrui+6pey2OdWwpu05jYtdQeVATdcvNd3tgTgK43FxRTzL+8UjLdQkSDE3p
+	ORE7YWITGKqsmRhaCxVMNCDXRT7Ryri6qYnBwXUB6DXAqpA1TeTHx+FGo6xRIEc/DL2J6RyuV6WSz
+	A0xzmOEgNDNgZmjygmrvCZ9f8aXGFmSgVfZMW7OZfFV70Mbb/J3QYEs8PD2WBQcab0pMp6wA+sNNn
+	YaWp4+g2BQLywQG4A2T6Q9fDLuTqWhDJHrhGNsCDiW3KZirlA2lWiQa1zjvuExtb/l3crNhzQiOnO
+	PCoXJ2lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEucu-000000070NL-1mOp;
-	Wed, 05 Jun 2024 17:40:44 +0000
-Received: from mgamail.intel.com ([198.175.65.12])
+	id 1sEv8h-000000077ym-34Xx;
+	Wed, 05 Jun 2024 18:13:35 +0000
+Received: from mgamail.intel.com ([198.175.65.16])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEucr-000000070MB-0jfc
+	id 1sEv8e-000000077xG-1NOg
 	for ath10k@lists.infradead.org;
-	Wed, 05 Jun 2024 17:40:42 +0000
+	Wed, 05 Jun 2024 18:13:33 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717609241; x=1749145241;
+  t=1717611212; x=1749147212;
   h=date:from:to:cc:subject:message-id;
-  bh=YG4EJGbktIQbYLK6RHnHrKY5uZ+Zd4ar+esJsA05Bjo=;
-  b=h8IbsUH9vdNhd+7S0G7XZ5T35w9xZNEZu5uS34aQoXZtp4oan0VoewMI
-   qLN8K9LxY+DIjh23ItYU1L4eDAG07Y/+4K5BNt/If8GgZc/u1Esmt2Dkc
-   hTFAqJhYSXKqnzfPM2t62LdWBxUyWAWyShAvswq19I/hXilATvFG3UKCV
-   nEdSXrPNaV6fBPK4z+paBYZ67NDqapHfbomysvDCnlzqSRO1xAg0tnD/0
-   1udM4XIAVIdQ8rMpW6huo3BwY5ay3IdIXL5iot9YNXIiKwEvoZe6HmNJc
-   PivSEZAqHMW1fLFhv6ql2MfsguAEqTp4paQSsT43Ayfzi2GywIjhbaAqG
-   Q==;
-X-CSE-ConnectionGUID: csjjEyJGT/mzoJMlQ98gAw==
-X-CSE-MsgGUID: 10rlJaTcQF+RZEsLWUM/jw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11094"; a="25642792"
+  bh=4fG2GhS5dYYSLHM74AxtG+ADdT8KiiGskKSyAqSQq7M=;
+  b=l8IC5+YgQii0oJatCbRC9j4fNhcr0IrzbylQa92GABHfH6GOSz9WooDy
+   mv6mkjD9LtRU62O6xkc1PfZtZi+YSfrSpOvfvXyGxP4Jq/Fw6b/8yBBVl
+   PDyyXaGIlECiMFNi2PAqiIvdzrkhpezQwOdffD106akhXXoykUE789DL+
+   z1JwSvkdL3Q6RIdawHF81GJh5igfNkvP7nheEkYwm9dWLwYrHVJdSnjnh
+   mhL4vfAH76QFQoM89snM4vgWi88VO/1V0seEybWKXxsXqAc1sZvwBDbwE
+   2Ff3sSbt9K8z64tbmMWHRrgr18rx9e3vvqY9bW8cPiCW6TlI7EHHeBV9e
+   g==;
+X-CSE-ConnectionGUID: +OHX17SJSAajNwKQat8XZg==
+X-CSE-MsgGUID: D7XUnlciSwaiuryP6pLRhw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11094"; a="14377989"
 X-IronPort-AV: E=Sophos;i="6.08,217,1712646000"; 
-   d="scan'208";a="25642792"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2024 10:40:25 -0700
-X-CSE-ConnectionGUID: 2/QrdamdTeaFB/Nb1RArlQ==
-X-CSE-MsgGUID: pnm5FY+JThq1HmD2jIlqaQ==
+   d="scan'208";a="14377989"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2024 11:13:30 -0700
+X-CSE-ConnectionGUID: qo8DYlRUQjWmqjPtGB/zmg==
+X-CSE-MsgGUID: JjbMFh0TTGuNoYOVvzsETg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,217,1712646000"; 
-   d="scan'208";a="37736748"
+   d="scan'208";a="37565471"
 Received: from unknown (HELO 0610945e7d16) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 05 Jun 2024 10:40:24 -0700
+  by fmviesa007.fm.intel.com with ESMTP; 05 Jun 2024 11:13:29 -0700
 Received: from kbuild by 0610945e7d16 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1sEucY-00020R-20;
-	Wed, 05 Jun 2024 17:40:22 +0000
-Date: Thu, 06 Jun 2024 01:40:07 +0800
+	id 1sEv8Z-00022k-0n;
+	Wed, 05 Jun 2024 18:13:27 +0000
+Date: Thu, 06 Jun 2024 02:12:42 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD REGRESSION
- 6f446d0a1af020dd164a006adc327f4fd3d5dacd
-Message-ID: <202406060103.NM9Paunt-lkp@intel.com>
+Subject: [kvalo-ath:pending] BUILD SUCCESS
+ cf899366dcc92549ed47b45c1d4aa7ee6696995f
+Message-ID: <202406060239.mgGOgqHN-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240605_104041_335973_E505B7DF 
-X-CRM114-Status: UNSURE (   3.38  )
+X-CRM114-CacheID: sfid-20240605_111332_433127_CBE7AFB9 
+X-CRM114-Status: UNSURE (   3.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,92 +83,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 6f446d0a1af020dd164a006adc327f4fd3d5dacd  Merge branch 'pending' into master-pending
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+branch HEAD: cf899366dcc92549ed47b45c1d4aa7ee6696995f  wifi: ath11k: use 'time_left' variable with wait_event_timeout()
 
-Error/Warning reports:
+elapsed time: 1480m
 
-https://lore.kernel.org/oe-kbuild-all/202406050650.VgDMtMhL-lkp@intel.com
-
-Error/Warning: (recently discovered and may have been fixed)
-
-drivers/net/wireless/ath/ath11k/pci.c:708:13: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-drivers/net/wireless/ath/ath11k/pci.c:708:15: error: implicit declaration of function 'vzalloc'; did you mean 'kzalloc'? [-Werror=implicit-function-declaration]
-drivers/net/wireless/ath/ath11k/pci.c:708:6: error: incompatible integer to pointer conversion assigning to 'void *' from 'int' [-Wint-conversion]
-drivers/net/wireless/ath/ath11k/pci.c:708:8: error: call to undeclared function 'vzalloc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- alpha-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- i386-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- i386-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- loongarch-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- loongarch-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- microblaze-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- microblaze-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- mips-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- mips-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- openrisc-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- parisc-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- parisc-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- sparc-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- sparc64-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-|-- sparc64-allyesconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-`-- um-allyesconfig
-    |-- drivers-net-wireless-ath-ath11k-pci.c:error:implicit-declaration-of-function-vzalloc
-    `-- drivers-net-wireless-ath-ath11k-pci.c:warning:assignment-to-void-from-int-makes-pointer-from-integer-without-a-cast
-clang_recent_errors
-|-- x86_64-allmodconfig
-|   |-- drivers-net-wireless-ath-ath11k-pci.c:error:call-to-undeclared-function-vzalloc-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   `-- drivers-net-wireless-ath-ath11k-pci.c:error:incompatible-integer-to-pointer-conversion-assigning-to-void-from-int
-`-- x86_64-allyesconfig
-    |-- drivers-net-wireless-ath-ath11k-pci.c:error:call-to-undeclared-function-vzalloc-ISO-C99-and-later-do-not-support-implicit-function-declarations
-    `-- drivers-net-wireless-ath-ath11k-pci.c:error:incompatible-integer-to-pointer-conversion-assigning-to-void-from-int
-
-elapsed time: 1448m
-
-configs tested: 148
+configs tested: 133
 configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
 tested configs:
 alpha                             allnoconfig   gcc  
 alpha                            allyesconfig   gcc  
 alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
 arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
 arc                                 defconfig   gcc  
 arc                   randconfig-001-20240605   gcc  
 arc                   randconfig-002-20240605   gcc  
@@ -291,24 +223,7 @@ x86_64                            allnoconfig   clang
 x86_64                           allyesconfig   clang
 x86_64       buildonly-randconfig-001-20240605   gcc  
 x86_64       buildonly-randconfig-002-20240605   gcc  
-x86_64       buildonly-randconfig-003-20240605   gcc  
-x86_64       buildonly-randconfig-004-20240605   clang
-x86_64       buildonly-randconfig-005-20240605   clang
-x86_64       buildonly-randconfig-006-20240605   clang
 x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240605   clang
-x86_64                randconfig-002-20240605   clang
-x86_64                randconfig-003-20240605   gcc  
-x86_64                randconfig-004-20240605   clang
-x86_64                randconfig-005-20240605   clang
-x86_64                randconfig-006-20240605   gcc  
-x86_64                randconfig-011-20240605   clang
-x86_64                randconfig-012-20240605   gcc  
-x86_64                randconfig-013-20240605   clang
-x86_64                randconfig-014-20240605   gcc  
-x86_64                randconfig-015-20240605   clang
-x86_64                randconfig-016-20240605   gcc  
-x86_64                randconfig-071-20240605   gcc  
 x86_64                          rhel-8.3-rust   clang
 xtensa                            allnoconfig   gcc  
 xtensa                randconfig-001-20240605   gcc  
