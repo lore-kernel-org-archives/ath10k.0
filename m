@@ -4,60 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92926C25B76
-	for <ath10k@archiver.kernel.org>; Wed,  5 Jun 2024 18:31:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E257C27C52
+	for <ath10k@archiver.kernel.org>; Thu,  6 Jun 2024 18:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
-	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FIRzuDDGgqRPaBzKEDg/kxgMBQSLeJdam+0BlfRkoCo=; b=ym1XiZAul7gtX4TTi7MF494w+t
-	v3vewqdSWlP14DKKCAFkn1uo6GHYOZL2c3gtbVMcQxGxbXuMYtavXMpOlGR9Ylf2MENTXDznccyRP
-	6NXypBLxX5QBP/oMEkJR2MesxfsnP/wxk6pIfaln6IwySqo77JXdDX1xaUSpiQUUHyHTYn4cXxZPO
-	NymBl6MML65LHAqsXII66hm1cpl031tLVldyDkOVYAjojX5G4tZP+yG8tTwk1eXAwzKwVtg5IgZgk
-	zTsoiSMyLxCQxasLA2gE2zvwvbBBsE7fMIsoognucBBvYFuqE/DvyFAi99oNWSbzPGL/sd/Ic8JuZ
-	2kfEvwhw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=8mnSEIYqggUWcHFTXPju1sHa37nDth3iQjJCYgWd7es=; b=OgkZoXyOpLAlQYpx+VqVQ3BGVk
+	XIj72tJQMTEHW1lT292T+qxgn5v77hR218Zygs8cJbZ08QskdnV8ZuyOYRo5qXSgpNeJGXy9IIrHM
+	V5S/cNLDAs8R/fsdGXTJs13cyykwv4j8tCCbYlRfTNH1OLT3TpQnVkCbMAqUmGfF6uD7eUIHTR7PQ
+	FQpWfD8qvcRQUW+/caGKeAiDttuUA5awCA2jxtx6IzsTOkuwX5gM45I6pLJsdM9UwdB538WTGy+ho
+	sRtsOuY0OYzAVjl/mWzYbW5wOFe83jEZgovP08RwFwsgYPY6bUc3DI3nkTnC0F6eQoDGrjJ/9VTfx
+	1MuY+M+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEvPT-00000007AKv-0KhB;
-	Wed, 05 Jun 2024 18:30:55 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sFIJA-0000000B2Th-1mTF;
+	Thu, 06 Jun 2024 18:57:56 +0000
+Received: from [137.220.228.123] (helo=mail0.alpqx.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEvPP-00000007AKJ-3MDg;
-	Wed, 05 Jun 2024 18:30:54 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 2FBCECE18E3;
-	Wed,  5 Jun 2024 18:30:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F85EC2BD11;
-	Wed,  5 Jun 2024 18:30:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717612248;
-	bh=dUTV71XmXtlYZZ1TirvFxoo1PTDfrRAJm9sogfuoBiI=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=Nl4VLitUSYhrOwKqITxiY7uKr9VBEwuGX7zeXzMARdOuewIuimA7WtMoFDnSz+d0U
-	 gW/g5LHyQcb0qXqm+9L0FA05qTYh6OFwctKJaQjt6ctcDIYSIOnWIn10BpVHEMsriQ
-	 XceX7uDIxPsSu80LrniK95FIFsJsIitFsImTEHIpSUOeuMJdJnNKbrvk1OoVZCKb5o
-	 kJ3QWK3u24GrY03nUWxC9CE7qxvVGqlEoz6CmrDX0Qpm/u5TuAfpvrwMsX9nlbggur
-	 LU6iyZQqoUUg3eRrEXaiPT7HkHKRK73hZTTedextnbhyeNEya5aPGNQfF31TcD8DkX
-	 NyrJtaVF6vcXg==
-Content-Type: text/plain; charset="utf-8"
+	id 1sFIJ6-0000000B2ST-23ns
+	for ath10k@lists.infradead.org;
+	Thu, 06 Jun 2024 18:57:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=default; d=alpqx.com;
+ h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:
+ Content-Transfer-Encoding; i=no-reply@alpqx.com;
+ bh=8mnSEIYqggUWcHFTXPju1sHa37nDth3iQjJCYgWd7es=;
+ b=gObgXT37yaGpVIhJ0I2Ir0ddRSyusF8Cqo5nao8B3KD0E27pMDOfN6dHsnt6qplaJjR79uXn92JH
+   49Ps3Xdg9mxyoNmqH+uUynZxI4orSF9jxVA1hjLTXkohnojsvCbtKOO2qynFzIhTQ7TidQlOTju9
+   q8x+3UxcZ7qQvT2TVew=
+From: =?utf-8?Q?=E8=87=AA=E5=8B=95=E3=83=A1=E3=83=BC=E3=83=AB=E9=80=9A=E7=9F=A5?= <no-reply@alpqx.com>
+To: "=?utf-8?Q?ath10k@lists.infradead.org?=" <ath10k@lists.infradead.org>
+Subject: =?utf-8?Q?=E3=80=90_=E4=B8=89=E4=BA=95=E4=BD=8F=E5=8F=8B?=
+	=?utf-8?Q?=E3=82=AB=E3=83=BC=E3=83=89_=E3=80=91=E6=B1=BA=E6=B8=88?=
+	=?utf-8?Q?=E5=AE=8C=E4=BA=86=E3=81=AE=E3=81=8A=E7=9F=A5=E3=82=89?=
+	=?utf-8?Q?=E3=81=9B?=
+Date: Fri, 07 Jun 2024 02:47:38 +0800
+Message-ID: <OOFIPIGPOHLJOEBPGODJMKMEHKGJ.no-reply@alpqx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: pull-request: ath-next-20240605
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <87a5jzs6w2.fsf@kernel.org>
-References: <87a5jzs6w2.fsf@kernel.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- ath11k@lists.infradead.org, ath12k@lists.infradead.org,
- quic_jjohnson@quicinc.com
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <171761224540.2099453.10305785123277567469.kvalo@kernel.org>
-Date: Wed,  5 Jun 2024 18:30:46 +0000 (UTC)
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-MSMail-Priority: Normal
+Importance: Normal
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240605_113052_795061_E1D4934A 
-X-CRM114-Status: GOOD (  19.00  )
+X-CRM114-CacheID: sfid-20240606_115753_012998_C68AC0BD 
+X-CRM114-Status: UNSURE (  -0.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,225 +67,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Kalle Valo <kvalo@kernel.org> wrote:
-
-> Hi,
-> 
-> Please pull, more information in the tag below.
-> 
-> Kalle
-> 
-> The following changes since commit f1c26960b6afb9c38a4019ad36392c654db6e20e:
-> 
->   Merge tag 'ath-next-20240502' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath (2024-05-03 13:30:19 +0300)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git tags/ath-next-20240605
-> 
-> for you to fetch changes up to 22767241e64427bbcffea2e2d51531ab467bc4ef:
-> 
->   wifi: ath12k: add hw_link_id in ath12k_pdev (2024-06-03 16:15:50 +0300)
-> 
-> ----------------------------------------------------------------
-> ath.git patches for v6.11
-> 
-> ath12k
-> 
-> * remove unsupported tx monitor handling
-> 
-> * channel 2 in 6 GHz band support
-> 
-> * Spatial Multiplexing Power Save (SMPS) in 6 GHz band support
-> 
-> * multiple BSSID (MBSSID) and Enhanced Multi-BSSID Advertisements (EMA) support
-> 
-> * dynamic VLAN support
-> 
-> * add panic handler for resetting the firmware state
-> 
-> ath10k
-> 
-> * add qcom,no-msa-ready-indicator Device Tree property
-> 
-> * LED support for various chipsets
-> 
-> ----------------------------------------------------------------
-> Aloka Dixit (9):
->       wifi: ath12k: advertise driver capabilities for MBSSID and EMA
->       wifi: ath12k: configure MBSSID params in vdev create/start
->       wifi: ath12k: rename MBSSID fields in wmi_vdev_up_cmd
->       wifi: ath12k: create a structure for WMI vdev up parameters
->       wifi: ath12k: configure MBSSID parameters in AP mode
->       wifi: ath12k: refactor arvif security parameter configuration
->       wifi: ath12k: add MBSSID beacon support
->       wifi: ath12k: add EMA beacon support
->       wifi: ath12k: skip sending vdev down for channel switch
-> 
-> Baochen Qiang (9):
->       wifi: ath12k: fix Smatch warnings on ath12k_core_suspend()
->       wifi: ath11k: refactor setting country code logic
->       wifi: ath11k: restore country code during resume
->       wifi: ath11k: fix wrong definition of CE ring's base address
->       wifi: ath12k: fix race due to setting ATH12K_FLAG_EXT_IRQ_ENABLED too early
->       wifi: ath12k: fix wrong definition of CE ring's base address
->       wifi: ath12k: fix memory leak in ath12k_dp_rx_peer_frag_setup()
->       wifi: ath12k: do not process consecutive RDDM event
->       wifi: ath12k: add panic handler
-> 
-> Breno Leitao (2):
->       wifi: wil6210: Do not use embedded netdev in wil6210_priv
->       wifi: ath12k: allocate dummy net_device dynamically
-> 
-> Jeff Johnson (8):
->       wifi: ath11k: refactor CE remap & unmap
->       wifi: ath11k: unmap the CE in ath11k_ahb_probe() error path
->       wifi: ath12k: initialize 'ret' in ath12k_qmi_load_file_target_mem()
->       wifi: ath11k: initialize 'ret' in ath11k_qmi_load_file_target_mem()
->       wifi: ath11k: fix misspelling of "dma" in num_rxmda_per_pdev
->       wifi: ath12k: fix misspelling of "dma" in num_rxmda_per_pdev
->       wifi: ath12k: initialize 'ret' in ath12k_dp_rxdma_ring_sel_config_wcn7850()
->       wifi: ath12k: Fix devmem address prefix when logging
-> 
-> Kalle Valo (1):
->       wifi: ath11k: ath11k_mac_op_ipv6_changed(): use list_for_each_entry()
-> 
-> Kang Yang (5):
->       wifi: ath12k: remove unused variable monitor_flags
->       wifi: ath12k: avoid duplicated vdev stop
->       wifi: ath12k: avoid duplicated vdev down
->       wifi: ath12k: remove invalid peer create logic
->       wifi: ath12k: remove redundant peer delete for WCN7850
-> 
-> Karthikeyan Kathirvel (1):
->       wifi: ath12k: drop failed transmitted frames from metric calculation.
-> 
-> Karthikeyan Periyasamy (13):
->       wifi: ath12k: Refactor the hardware recovery procedure
->       wifi: ath12k: Refactor the hardware state
->       wifi: ath12k: Add lock to protect the hardware state
->       wifi: ath12k: Replace "chip" with "device" in hal Rx return buffer manager
->       wifi: ath12k: Refactor idle ring descriptor setup
->       wifi: ath12k: Introduce device index
->       wifi: ath12k: add multi device support for WBM idle ring buffer setup
->       wifi: ath12k: avoid double SW2HW_MACID conversion
->       wifi: ath12k: remove duplicate definition of MAX_RADIOS
->       wifi: ath12k: use correct MAX_RADIOS
->       wifi: ath12k: refactor rx descriptor CMEM configuration
->       wifi: ath12k: improve the rx descriptor error information
->       wifi: ath12k: add hw_link_id in ath12k_pdev
-> 
-> Lingbo Kong (1):
->       wifi: ath12k: fix ack signal strength calculation
-> 
-> Marc Gonzalez (2):
->       dt-bindings: net: wireless: ath10k: add qcom,no-msa-ready-indicator prop
->       wifi: ath10k: do not always wait for MSA_READY indicator
-> 
-> Muna Sinada (1):
->       wifi: ath12k: dynamic VLAN support
-> 
-> Nithyanantham Paramasivam (1):
->       wifi: ath12k: Fix tx completion ring (WBM2SW) setup failure
-> 
-> P Praneesh (3):
->       wifi: ath12k: change DMA direction while mapping reinjected packets
->       wifi: ath12k: fix invalid memory access while processing fragmented packets
->       wifi: ath12k: fix firmware crash during reo reinject
-> 
-> Pradeep Kumar Chitrapu (6):
->       wifi: ath12k: add channel 2 into 6 GHz channel list
->       wifi: ath12k: Correct 6 GHz frequency value in rx status
->       wifi: ath12k: fix survey dump collection in 6 GHz
->       wifi: ath12k: add 6 GHz params in peer assoc command
->       wifi: ath12k: refactor SMPS configuration
->       wifi: ath12k: support SMPS configuration for 6 GHz
-> 
-> Rob Herring (Arm) (1):
->       dt-bindings: net: wireless: ath11k: Drop "qcom,ipq8074-wcss-pil" from example
-> 
-> Sebastian Gottschall (1):
->       wifi: ath10k: add LED and GPIO controlling support for various chipsets
-> 
-> Sven Eckelmann (1):
->       wifi: ath12k: Don't drop tx_status in failure case
-> 
-> Tamizh Chelvam Raja (3):
->       wifi: ath12k: fix calling correct function for rx monitor mode
->       wifi: ath12k: Remove unsupported tx monitor handling
->       wifi: ath12k: Remove unused tcl_*_ring configuration
-> 
-> Venkateswara Naralasetty (1):
->       wifi: ath11k: skip status ring entry processing
-> 
->  .../bindings/net/wireless/qcom,ath10k.yaml         |   5 +
->  .../bindings/net/wireless/qcom,ath11k.yaml         |   9 -
->  drivers/net/wireless/ath/ath10k/Kconfig            |   6 +
->  drivers/net/wireless/ath/ath10k/Makefile           |   1 +
->  drivers/net/wireless/ath/ath10k/core.c             |  32 ++
->  drivers/net/wireless/ath/ath10k/core.h             |   8 +
->  drivers/net/wireless/ath/ath10k/hw.h               |   1 +
->  drivers/net/wireless/ath/ath10k/leds.c             |  90 ++++
->  drivers/net/wireless/ath/ath10k/leds.h             |  34 ++
->  drivers/net/wireless/ath/ath10k/mac.c              |   1 +
->  drivers/net/wireless/ath/ath10k/qmi.c              |  11 +
->  drivers/net/wireless/ath/ath10k/qmi.h              |   1 +
->  drivers/net/wireless/ath/ath10k/wmi-ops.h          |  32 ++
->  drivers/net/wireless/ath/ath10k/wmi-tlv.c          |   2 +
->  drivers/net/wireless/ath/ath10k/wmi.c              |  54 ++
->  drivers/net/wireless/ath/ath10k/wmi.h              |  35 ++
->  drivers/net/wireless/ath/ath11k/ahb.c              |  57 +-
->  drivers/net/wireless/ath/ath11k/ce.h               |   6 +-
->  drivers/net/wireless/ath/ath11k/core.c             |  49 +-
->  drivers/net/wireless/ath/ath11k/debugfs.c          |   6 +-
->  drivers/net/wireless/ath/ath11k/dp.c               |  12 +-
->  drivers/net/wireless/ath/ath11k/dp_rx.c            | 104 +++-
->  drivers/net/wireless/ath/ath11k/dp_tx.c            |   6 +-
->  drivers/net/wireless/ath/ath11k/hal.c              |  16 +-
->  drivers/net/wireless/ath/ath11k/hal.h              |   2 +
->  drivers/net/wireless/ath/ath11k/hw.h               |   4 +-
->  drivers/net/wireless/ath/ath11k/mac.c              |  19 +-
->  drivers/net/wireless/ath/ath11k/qmi.c              |   2 +-
->  drivers/net/wireless/ath/ath11k/reg.c              |  18 +-
->  drivers/net/wireless/ath/ath11k/reg.h              |   4 +-
->  drivers/net/wireless/ath/ath11k/wmi.c              |   2 +-
->  drivers/net/wireless/ath/ath12k/ce.h               |   6 +-
->  drivers/net/wireless/ath/ath12k/core.c             | 144 ++++--
->  drivers/net/wireless/ath/ath12k/core.h             |  44 +-
->  drivers/net/wireless/ath/ath12k/dp.c               |  83 +--
->  drivers/net/wireless/ath/ath12k/dp.h               |   4 +-
->  drivers/net/wireless/ath/ath12k/dp_mon.c           |  40 +-
->  drivers/net/wireless/ath/ath12k/dp_rx.c            | 115 ++---
->  drivers/net/wireless/ath/ath12k/dp_tx.c            | 165 +++---
->  drivers/net/wireless/ath/ath12k/dp_tx.h            |   5 +-
->  drivers/net/wireless/ath/ath12k/hal.c              |   5 +-
->  drivers/net/wireless/ath/ath12k/hal.h              |  21 +-
->  drivers/net/wireless/ath/ath12k/hal_desc.h         |  47 +-
->  drivers/net/wireless/ath/ath12k/hal_tx.h           |   4 +-
->  drivers/net/wireless/ath/ath12k/hif.h              |   9 +
->  drivers/net/wireless/ath/ath12k/hw.c               |  23 +-
->  drivers/net/wireless/ath/ath12k/hw.h               |   4 +-
->  drivers/net/wireless/ath/ath12k/mac.c              | 574 ++++++++++++++++-----
->  drivers/net/wireless/ath/ath12k/mhi.c              |  11 +
->  drivers/net/wireless/ath/ath12k/pci.c              |  39 +-
->  drivers/net/wireless/ath/ath12k/pci.h              |   1 +
->  drivers/net/wireless/ath/ath12k/qmi.c              |   8 +-
->  drivers/net/wireless/ath/ath12k/reg.c              |  19 +-
->  drivers/net/wireless/ath/ath12k/wmi.c              |  55 +-
->  drivers/net/wireless/ath/ath12k/wmi.h              |  48 +-
->  drivers/net/wireless/ath/wil6210/netdev.c          |  21 +-
->  drivers/net/wireless/ath/wil6210/wil6210.h         |   2 +-
->  57 files changed, 1516 insertions(+), 610 deletions(-)
->  create mode 100644 drivers/net/wireless/ath/ath10k/leds.c
->  create mode 100644 drivers/net/wireless/ath/ath10k/leds.h
-
-Pulled, thanks.
-
-a46300b1b09b Merge tag 'ath-next-20240605' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/87a5jzs6w2.fsf@kernel.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+=E4=B8=89=E4=BA=95=E4=BD=8F=E5=8F=8B=E3=82=AB=E3=83=BC=E3=83=89=E3=82=AF=E3=
+=83=A9=E3=82=B7=E3=83=83=E3=82=AF=E2=80=BB=E4=BC=9A=E5=93=A1=0D=0A=0D=0A=E3=
+=81=93=E3=81=AE=E3=81=9F=E3=81=B3=E3=81=AF=E4=B8=89=E4=BA=95=E4=BD=8F=E5=8F=
+=8B=E3=82=AB=E3=83=BC=E3=83=89=E3=82=92=E3=81=94=E5=88=A9=E7=94=A8=E3=81=84=
+=E3=81=9F=E3=81=A0=E3=81=8D=E3=80=81=E8=AA=A0=E3=81=AB=E3=81=82=E3=82=8A=E3=
+=81=8C=E3=81=A8=E3=81=86=E3=81=94=E3=81=96=E3=81=84=E3=81=BE=E3=81=99=E3=80=
+=82=0D=0A=E6=98=A8=E6=97=A5=E3=80=81=E3=81=8A=E5=AE=A2=E6=A7=98=E3=81=AE=E3=
+=82=AF=E3=83=AC=E3=82=B8=E3=83=83=E3=83=88=E3=82=AB=E3=83=BC=E3=83=89=E3=81=
+=A7=E6=B6=88=E8=B2=BB=E6=94=AF=E5=87=BA=E3=81=8C=E7=99=BA=E7=94=9F=E3=81=97=
+=E3=81=9F=E3=81=93=E3=81=A8=E3=82=92=E3=81=8A=E7=9F=A5=E3=82=89=E3=81=9B=E3=
+=81=84=E3=81=9F=E3=81=97=E3=81=BE=E3=81=99=E3=80=82=0D=0A=E3=81=9D=E3=81=AE=
+=E6=94=AF=E6=89=95=E3=81=84=E3=81=AE=E8=A9=B3=E7=B4=B0=E3=81=AF=E6=AC=A1=E3=
+=81=AE=E3=81=A8=E3=81=8A=E3=82=8A=E3=81=A7=E3=81=99=E3=80=82=0D=0A  =E3=81=
+=94 =E5=88=A9 =E7=94=A8 =E6=97=A5 =E6=99=82 =EF=BC=9A 2024=E5=B9=B46=E6=9C=
+=886=E6=97=A5 18:49=0D=0A  =E3=81=94 =E5=88=A9 =E7=94=A8 =E5=A0=B4 =E6=89=
+=80 =EF=BC=9A =E5=8D=83=E4=BB=A3=E7=94=B0=E4=B8=80=E3=83=84=E6=A9=8B 3 =E4=
+=B8=81=E7=9B=AE=E5=BA=97 ( =E3=82=BB =E3=83=96 =E3=83=B3 =E3=82=A4 =E3=83=
+=AC =E3=83=96 =E3=83=B3 )=0D=0A  =E3=81=94 =E5=88=A9 =E7=94=A8 =E9=87=91 =
+=E9=A1=8D =EF=BC=9A 17530 =E5=86=86=0D=0A=0D=0A=E3=82=AB=E3=83=BC=E3=83=89=
+=E3=82=92=E4=BD=BF=E7=94=A8=E3=81=97=E3=81=9F=E8=A6=9A=E3=81=88=E3=81=8C=E3=
+=81=AA=E3=81=84=E5=A0=B4=E5=90=88=E3=81=AF=E3=80=81=E4=BB=A5=E4=B8=8B=E3=81=
+=AE=E3=83=AA=E3=83=B3=E3=82=AF=E3=82=92=E3=82=AF=E3=83=AA=E3=83=83=E3=82=AF=
+=E3=81=97=E3=81=A6=E3=82=AF=E3=83=AC=E3=82=B8=E3=83=83=E3=83=88 =E3=82=AB=
+=E3=83=BC=E3=83=89=E6=94=AF=E6=89=95=E3=81=84=E3=81=AE=E6=89=BF=E8=AA=8D=E3=
+=82=92=E3=82=AD=E3=83=A3=E3=83=B3=E3=82=BB=E3=83=AB=E3=81=97=E3=81=A6=E3=81=
+=8F=E3=81=A0=E3=81=95=E3=81=84=E3=80=82=0D=0Ahttps://annarborhealthcare.com=
+=0D=0A=0D=0A=E4=B8=89 =E4=BA=95 =E4=BD=8F =E5=8F=8B NET=E3=81=AB=E3=81=94=
+=E7=99=BB=E9=8C=B2=E3=81=84=E3=81=9F=E3=81=A0=E3=81=84=E3=81=A6=E3=81=84=E3=
+=82=8B=E3=83=A1=E3=83=BC=E3=83=AB=E3=82=A2=E3=83=89=E3=83=AC=E3=82=B9=E3=81=
+=B8=E3=81=8A=E7=9F=A5=E3=82=89=E3=81=9B=E3=81=99=E3=82=8B=E3=82=B5=E3=83=BC=
+=E3=83=93=E3=82=B9=E3=81=A7=E3=81=99=E3=80=82=0D=0A------------------------=
+-----------=0D=0A=E2=96=A0 =E7=99=BA =E8=A1=8C =E8=80=85 =E2=96=A0=0D=0A=E4=
+=B8=89=E4=BA=95=E4=BD=8F=E5=8F=8B=E3=82=AB=E3=83=BC=E3=83=89=E6=A0=AA =E5=
+=BC=8F =E4=BC=9A =E7=A4=BE=0D=0A=E3=80=92135-0061 =E6=9D=B1=E4=BA=AC=E9=83=
+=BD=E6=B1=9F=E6=9D=B1=E5=8C=BA=E8=B1=8A=E6=B4=B22=E4=B8=81=E7=9B=AE2=E7=95=
+=AA31=E5=8F=B7
 
 
