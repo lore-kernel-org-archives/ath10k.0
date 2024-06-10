@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A812AC27C5E
-	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 08:59:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22F15C27C5E
+	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 08:59:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lVPaErnwSFLlCEbCWKg99/NKJKB0jHikHnPfjxibXxA=; b=2FM4aDSOFAwWU2r0ABbWfDyvSB
-	vgMDUHIrQHQiFRuw1/Yy9sNI+6aCyCfzMJajCEZQznuIgZbdybETOUBgUoYs7SznsXu5M0wFhJkkJ
-	1A6hCqQvTWj+DYxZ4j0w8lERIZf2EA5G3J6jbdqcwMaYfgb03tKQLYi7zk1SJkqhzhT2CzLoIth0i
-	x6UdD9CCXrAg1t9vJzYIVZ7s3ysXOJgVlOqpnBpnP4aSgIOfPr/r6aj2laonKfUv55UKddVgMmEnU
-	CM5qz5h129xtxsmJFVywr1OTRNDVNzGXGJ6j/ikU46dD+Hkz45J85+ISFZ0fTxL3CZunUoPVzA7OQ
-	tQktkt0Q==;
+	bh=t1RfAV4PLwvTnmu8HHsceEpEdR+TeZfEUh8Xl6gJd1M=; b=0PPSa78k3XNR+0yPP/hl8DKOok
+	nP486Dm/N53j63SOngP35aLrv5xTEKnmznQcFEw2uhdiHX4KtL35QPPSGK17eeISD2K5JEUSj7PyB
+	MQmVFzH0O4WrjsKALtI4yUap+OFBAu654aPBMu5Nr5hNi9xwWATKtd9XB+86zO36BkHGKlSOEknL/
+	Jws0Lm6u8EBck2kJdOwF078pZeDWmVT+K0gRaZz9FBzsWIZReReIMI92BC6N/Yc8xEgzAmQpRO8oL
+	BkAG1oOaBWp2qQpPL/cYYo3mcEjDHpjIA4mSLruk2Hl0dxpQjx3CciaQ5Y3/otehpui6hEokWkDTA
+	CGtLC7Yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGaro-00000004LMm-1bfj;
-	Mon, 10 Jun 2024 08:59:04 +0000
+	id 1sGarz-00000004LXV-1eTg;
+	Mon, 10 Jun 2024 08:59:15 +0000
 Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGarN-00000004Kq1-3Hzv;
-	Mon, 10 Jun 2024 08:58:53 +0000
+	id 1sGarU-00000004Ku8-1jbR;
+	Mon, 10 Jun 2024 08:59:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718009917; x=1749545917;
+  t=1718009924; x=1749545924;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=qU++r+SggSyx2fIXITvVfcmJ8RsRBVMKn+9+u6WfEcI=;
-  b=UDqh5Sh7UJu55pRN7wRyZwZKdspYYSP6SyNU0YHgAtoy9tRDrRIY56DK
-   xuyP9EtuLuEqqt1SPNvygddWa3NwFgem9LedY+9dzv/7++2lMxAi8m4uP
-   sj+sI6tEF9P+V+5aWo4JLvLk2Tdr28Tpv97a6ZjGwyqx6Yu+N4RYxEy9v
-   8AvkzFX6EPehbSjK/W58VDHFgLwMZkUEPONfokjK8swdfn5g1+yxxAcaV
-   4wrutM5vrqg40/0/5epVwdaQ+YBy6/bzc21Dn6CZipaYkdh8m84o0Aq7f
-   E8C+rLwNNgFeJ8Fj8goTkudsp80n4BoD6jO2D80zWWQ12bYhlvCh5u9f7
-   g==;
-X-CSE-ConnectionGUID: h0fdzcE6TWuXKqp5bv+UZQ==
-X-CSE-MsgGUID: lPtzrgxSSOin5D8yBsL7MA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581572"
+  bh=4msQrWBVL2b4JwUEKLRwKbzNTovn+5JwozhskLlkUwI=;
+  b=EGoPeOfzvUHF8r+Cg8gFPObu4A0QC1db8KttwuvTe6h1VZPfxbYm4b+z
+   OHknJKtq+gB1tB5Z5Xf8aGAxnWC0eOHTJL19Lzu2EhVEXZvGYOd8//lD6
+   54V3Cy4UbfsXEyIcznRp6Yo+/6wG79jxAB5Mmr431RnLRkpZNmuO0lF8d
+   ZG773gd7RbeetRzmuErednDbnpY9Nj8EHZ3+M8Et+H6V1eueM5bbU0Who
+   LhB+Ro6rNcRyq9HU5+lrdLqF/JzHITZpuP0O/t5r7WKIhtDAKFUUUJIQu
+   cqBVmjhsIXigqNOz3wgnK6TdqSriMumBLWyqQCWPvswv8EGxIW+kNYkDk
+   Q==;
+X-CSE-ConnectionGUID: uyleKBK8TFuYVQ5DrD8rIw==
+X-CSE-MsgGUID: qOaxNxvhSTC9Cw+3E8pGFA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581601"
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="17581572"
+   d="scan'208";a="17581601"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:58:37 -0700
-X-CSE-ConnectionGUID: bCISEAxDQLCb2yA7Goorcw==
-X-CSE-MsgGUID: H05Iq2PASIy2ktFmbvS+zw==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:58:42 -0700
+X-CSE-ConnectionGUID: 3haueZ8xSc2KYY4kPv/lrg==
+X-CSE-MsgGUID: cSDsjgrOSmyakXpWAx+X+A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="43432449"
+   d="scan'208";a="43432474"
 Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:58:33 -0700
+  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:58:38 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>,
@@ -77,18 +77,20 @@ Cc: Yi Liu <yi.l.liu@intel.com>,
 	iommu@lists.linux.dev,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 04/21] vhost-vdpa: Use iommu_paging_domain_alloc()
-Date: Mon, 10 Jun 2024 16:55:38 +0800
-Message-Id: <20240610085555.88197-5-baolu.lu@linux.intel.com>
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH v3 05/21] drm/msm: Use iommu_paging_domain_alloc()
+Date: Mon, 10 Jun 2024 16:55:39 +0800
+Message-Id: <20240610085555.88197-6-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240610_015838_197535_A7887D86 
-X-CRM114-Status: GOOD (  10.37  )
+X-CRM114-CacheID: sfid-20240610_015845_838970_5D72B22B 
+X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,50 +105,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Replace iommu_domain_alloc() with iommu_paging_domain_alloc().
+The domain allocated in msm_iommu_new() is for the @dev. Replace
+iommu_domain_alloc() with iommu_paging_domain_alloc() to make it explicit.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/vhost/vdpa.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/msm/msm_iommu.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 63a53680a85c..e31ec9ebc4ce 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -1312,26 +1312,24 @@ static int vhost_vdpa_alloc_domain(struct vhost_vdpa *v)
- 	struct vdpa_device *vdpa = v->vdpa;
- 	const struct vdpa_config_ops *ops = vdpa->config;
- 	struct device *dma_dev = vdpa_get_dma_dev(vdpa);
--	const struct bus_type *bus;
+diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
+index d5512037c38b..2a94e82316f9 100644
+--- a/drivers/gpu/drm/msm/msm_iommu.c
++++ b/drivers/gpu/drm/msm/msm_iommu.c
+@@ -407,10 +407,13 @@ struct msm_mmu *msm_iommu_new(struct device *dev, unsigned long quirks)
+ 	struct msm_iommu *iommu;
  	int ret;
  
- 	/* Device want to do DMA by itself */
- 	if (ops->set_map || ops->dma_map)
- 		return 0;
+-	domain = iommu_domain_alloc(dev->bus);
+-	if (!domain)
++	if (!device_iommu_mapped(dev))
+ 		return NULL;
  
--	bus = dma_dev->bus;
--	if (!bus)
--		return -EFAULT;
--
- 	if (!device_iommu_capable(dma_dev, IOMMU_CAP_CACHE_COHERENCY)) {
- 		dev_warn_once(&v->dev,
- 			      "Failed to allocate domain, device is not IOMMU cache coherent capable\n");
- 		return -ENOTSUPP;
- 	}
++	domain = iommu_paging_domain_alloc(dev);
++	if (IS_ERR(domain))
++		return ERR_CAST(domain);
++
+ 	iommu_set_pgtable_quirks(domain, quirks);
  
--	v->domain = iommu_domain_alloc(bus);
--	if (!v->domain)
--		return -EIO;
-+	v->domain = iommu_paging_domain_alloc(dma_dev);
-+	if (IS_ERR(v->domain)) {
-+		ret = PTR_ERR(v->domain);
-+		v->domain = NULL;
-+		return ret;
-+	}
- 
- 	ret = iommu_attach_device(v->domain, dma_dev);
- 	if (ret)
+ 	iommu = kzalloc(sizeof(*iommu), GFP_KERNEL);
 -- 
 2.34.1
 
