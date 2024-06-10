@@ -4,55 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E257C27C52
-	for <ath10k@archiver.kernel.org>; Thu,  6 Jun 2024 18:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA2F7C27C5E
+	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 08:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=8mnSEIYqggUWcHFTXPju1sHa37nDth3iQjJCYgWd7es=; b=OgkZoXyOpLAlQYpx+VqVQ3BGVk
-	XIj72tJQMTEHW1lT292T+qxgn5v77hR218Zygs8cJbZ08QskdnV8ZuyOYRo5qXSgpNeJGXy9IIrHM
-	V5S/cNLDAs8R/fsdGXTJs13cyykwv4j8tCCbYlRfTNH1OLT3TpQnVkCbMAqUmGfF6uD7eUIHTR7PQ
-	FQpWfD8qvcRQUW+/caGKeAiDttuUA5awCA2jxtx6IzsTOkuwX5gM45I6pLJsdM9UwdB538WTGy+ho
-	sRtsOuY0OYzAVjl/mWzYbW5wOFe83jEZgovP08RwFwsgYPY6bUc3DI3nkTnC0F6eQoDGrjJ/9VTfx
-	1MuY+M+g==;
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3RVIGexN1QEWlp04qJ5r/Sc6XYG5nucX3DQOszMb49c=; b=uv7SGkQKrUZ3XE27jmFV78kxbL
+	wn4r4PGuQYvJO5Mrh3m4nxg1rL2J0dY1LoUr9zNI2INihofnbXq31WNp3x68zMignvwpO0fsPNSTk
+	cDNyi+13e2TLl0wVfeT92wbLkeFyqye1SrVLBaJPtJ6zzPu5+moHFOOneVIhVEGRSP+0hIsCv4u93
+	PAO/vkBSXoowx3b2r+HJ5QQfYgc4GoIAoQzWPxNz001Q6yx4D2Rr/0u/1ksXRTPfNfc1Slt5+ArKe
+	4lMXEG+OGarLMZ4k8dTCw+HVPGmuiVPP6nKc7BmblkO6KqjQ73VHxpFh6G4d1s527Ky9zWoJ3EaYH
+	RQCTipdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFIJA-0000000B2Th-1mTF;
-	Thu, 06 Jun 2024 18:57:56 +0000
-Received: from [137.220.228.123] (helo=mail0.alpqx.com)
+	id 1sGarV-00000004L83-3o0R;
+	Mon, 10 Jun 2024 08:58:45 +0000
+Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFIJ6-0000000B2ST-23ns
-	for ath10k@lists.infradead.org;
-	Thu, 06 Jun 2024 18:57:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=default; d=alpqx.com;
- h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:
- Content-Transfer-Encoding; i=no-reply@alpqx.com;
- bh=8mnSEIYqggUWcHFTXPju1sHa37nDth3iQjJCYgWd7es=;
- b=gObgXT37yaGpVIhJ0I2Ir0ddRSyusF8Cqo5nao8B3KD0E27pMDOfN6dHsnt6qplaJjR79uXn92JH
-   49Ps3Xdg9mxyoNmqH+uUynZxI4orSF9jxVA1hjLTXkohnojsvCbtKOO2qynFzIhTQ7TidQlOTju9
-   q8x+3UxcZ7qQvT2TVew=
-From: =?utf-8?Q?=E8=87=AA=E5=8B=95=E3=83=A1=E3=83=BC=E3=83=AB=E9=80=9A=E7=9F=A5?= <no-reply@alpqx.com>
-To: "=?utf-8?Q?ath10k@lists.infradead.org?=" <ath10k@lists.infradead.org>
-Subject: =?utf-8?Q?=E3=80=90_=E4=B8=89=E4=BA=95=E4=BD=8F=E5=8F=8B?=
-	=?utf-8?Q?=E3=82=AB=E3=83=BC=E3=83=89_=E3=80=91=E6=B1=BA=E6=B8=88?=
-	=?utf-8?Q?=E5=AE=8C=E4=BA=86=E3=81=AE=E3=81=8A=E7=9F=A5=E3=82=89?=
-	=?utf-8?Q?=E3=81=9B?=
-Date: Fri, 07 Jun 2024 02:47:38 +0800
-Message-ID: <OOFIPIGPOHLJOEBPGODJMKMEHKGJ.no-reply@alpqx.com>
+	id 1sGar9-00000004Kq1-0hl4;
+	Mon, 10 Jun 2024 08:58:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1718009903; x=1749545903;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=lO/IPmdUqOg04lYCYxFPmCNa0L0veD8icxIpi6zQo+o=;
+  b=ErrazFQGKUipQlX/Y1m/4+WADwQ30ZDksI1JtSlMmOl+U5LN3t//2VOr
+   J9bCcZC7dyclBaZ+CcuseM4kdSNpTiGrhIWMhRKycDbfMAabGSTnqqYND
+   J0lFgDC0gDtfE8jpfSD3KPM4tFR3aK669CWL5+ejhpY+n/O0krKoKBGVl
+   EctijAOvZ89TX8LcqAGhd0uCIAqd9NYRcx1xQmsZbSe6fiZgkp9OGU9tm
+   Yl1DQuGyuOYaHUuc+f75ZysXtCat2LNbwRoi9PfpQ11v+st9+Har9Z+HF
+   021WDUdSiCMtJgJ4m86AfkH0RmrHo6p3mocowlsKprqr/KuCoEa0gt5vS
+   w==;
+X-CSE-ConnectionGUID: O1NXuBn3SeyJOiSnX40YBA==
+X-CSE-MsgGUID: LoTPxLd/TYajpi4/D2PmTg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581515"
+X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
+   d="scan'208";a="17581515"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:58:22 -0700
+X-CSE-ConnectionGUID: T7ftFoB4QDSGxVb/F3iHkQ==
+X-CSE-MsgGUID: ImRDR5fxSxuM0OMEzjzIVA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
+   d="scan'208";a="43432409"
+Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
+  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:58:17 -0700
+From: Lu Baolu <baolu.lu@linux.intel.com>
+To: Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Kevin Tian <kevin.tian@intel.com>
+Cc: Yi Liu <yi.l.liu@intel.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	mst@redhat.com,
+	Jason Wang <jasowang@redhat.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	ath10k@lists.infradead.org,
+	ath11k@lists.infradead.org,
+	iommu@lists.linux.dev,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v3 01/21] iommu: Add iommu_paging_domain_alloc() interface
+Date: Mon, 10 Jun 2024 16:55:35 +0800
+Message-Id: <20240610085555.88197-2-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240610085555.88197-1-baolu.lu@linux.intel.com>
+References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-MSMail-Priority: Normal
-Importance: Normal
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2180
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_115753_012998_C68AC0BD 
-X-CRM114-Status: UNSURE (  -0.24  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240610_015824_013201_CDED4F45 
+X-CRM114-Status: GOOD (  14.26  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,41 +103,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-=E4=B8=89=E4=BA=95=E4=BD=8F=E5=8F=8B=E3=82=AB=E3=83=BC=E3=83=89=E3=82=AF=E3=
-=83=A9=E3=82=B7=E3=83=83=E3=82=AF=E2=80=BB=E4=BC=9A=E5=93=A1=0D=0A=0D=0A=E3=
-=81=93=E3=81=AE=E3=81=9F=E3=81=B3=E3=81=AF=E4=B8=89=E4=BA=95=E4=BD=8F=E5=8F=
-=8B=E3=82=AB=E3=83=BC=E3=83=89=E3=82=92=E3=81=94=E5=88=A9=E7=94=A8=E3=81=84=
-=E3=81=9F=E3=81=A0=E3=81=8D=E3=80=81=E8=AA=A0=E3=81=AB=E3=81=82=E3=82=8A=E3=
-=81=8C=E3=81=A8=E3=81=86=E3=81=94=E3=81=96=E3=81=84=E3=81=BE=E3=81=99=E3=80=
-=82=0D=0A=E6=98=A8=E6=97=A5=E3=80=81=E3=81=8A=E5=AE=A2=E6=A7=98=E3=81=AE=E3=
-=82=AF=E3=83=AC=E3=82=B8=E3=83=83=E3=83=88=E3=82=AB=E3=83=BC=E3=83=89=E3=81=
-=A7=E6=B6=88=E8=B2=BB=E6=94=AF=E5=87=BA=E3=81=8C=E7=99=BA=E7=94=9F=E3=81=97=
-=E3=81=9F=E3=81=93=E3=81=A8=E3=82=92=E3=81=8A=E7=9F=A5=E3=82=89=E3=81=9B=E3=
-=81=84=E3=81=9F=E3=81=97=E3=81=BE=E3=81=99=E3=80=82=0D=0A=E3=81=9D=E3=81=AE=
-=E6=94=AF=E6=89=95=E3=81=84=E3=81=AE=E8=A9=B3=E7=B4=B0=E3=81=AF=E6=AC=A1=E3=
-=81=AE=E3=81=A8=E3=81=8A=E3=82=8A=E3=81=A7=E3=81=99=E3=80=82=0D=0A  =E3=81=
-=94 =E5=88=A9 =E7=94=A8 =E6=97=A5 =E6=99=82 =EF=BC=9A 2024=E5=B9=B46=E6=9C=
-=886=E6=97=A5 18:49=0D=0A  =E3=81=94 =E5=88=A9 =E7=94=A8 =E5=A0=B4 =E6=89=
-=80 =EF=BC=9A =E5=8D=83=E4=BB=A3=E7=94=B0=E4=B8=80=E3=83=84=E6=A9=8B 3 =E4=
-=B8=81=E7=9B=AE=E5=BA=97 ( =E3=82=BB =E3=83=96 =E3=83=B3 =E3=82=A4 =E3=83=
-=AC =E3=83=96 =E3=83=B3 )=0D=0A  =E3=81=94 =E5=88=A9 =E7=94=A8 =E9=87=91 =
-=E9=A1=8D =EF=BC=9A 17530 =E5=86=86=0D=0A=0D=0A=E3=82=AB=E3=83=BC=E3=83=89=
-=E3=82=92=E4=BD=BF=E7=94=A8=E3=81=97=E3=81=9F=E8=A6=9A=E3=81=88=E3=81=8C=E3=
-=81=AA=E3=81=84=E5=A0=B4=E5=90=88=E3=81=AF=E3=80=81=E4=BB=A5=E4=B8=8B=E3=81=
-=AE=E3=83=AA=E3=83=B3=E3=82=AF=E3=82=92=E3=82=AF=E3=83=AA=E3=83=83=E3=82=AF=
-=E3=81=97=E3=81=A6=E3=82=AF=E3=83=AC=E3=82=B8=E3=83=83=E3=83=88 =E3=82=AB=
-=E3=83=BC=E3=83=89=E6=94=AF=E6=89=95=E3=81=84=E3=81=AE=E6=89=BF=E8=AA=8D=E3=
-=82=92=E3=82=AD=E3=83=A3=E3=83=B3=E3=82=BB=E3=83=AB=E3=81=97=E3=81=A6=E3=81=
-=8F=E3=81=A0=E3=81=95=E3=81=84=E3=80=82=0D=0Ahttps://annarborhealthcare.com=
-=0D=0A=0D=0A=E4=B8=89 =E4=BA=95 =E4=BD=8F =E5=8F=8B NET=E3=81=AB=E3=81=94=
-=E7=99=BB=E9=8C=B2=E3=81=84=E3=81=9F=E3=81=A0=E3=81=84=E3=81=A6=E3=81=84=E3=
-=82=8B=E3=83=A1=E3=83=BC=E3=83=AB=E3=82=A2=E3=83=89=E3=83=AC=E3=82=B9=E3=81=
-=B8=E3=81=8A=E7=9F=A5=E3=82=89=E3=81=9B=E3=81=99=E3=82=8B=E3=82=B5=E3=83=BC=
-=E3=83=93=E3=82=B9=E3=81=A7=E3=81=99=E3=80=82=0D=0A------------------------=
------------=0D=0A=E2=96=A0 =E7=99=BA =E8=A1=8C =E8=80=85 =E2=96=A0=0D=0A=E4=
-=B8=89=E4=BA=95=E4=BD=8F=E5=8F=8B=E3=82=AB=E3=83=BC=E3=83=89=E6=A0=AA =E5=
-=BC=8F =E4=BC=9A =E7=A4=BE=0D=0A=E3=80=92135-0061 =E6=9D=B1=E4=BA=AC=E9=83=
-=BD=E6=B1=9F=E6=9D=B1=E5=8C=BA=E8=B1=8A=E6=B4=B22=E4=B8=81=E7=9B=AE2=E7=95=
-=AA31=E5=8F=B7
+Commit <17de3f5fdd35> ("iommu: Retire bus ops") removes iommu ops from
+bus. The iommu subsystem no longer relies on bus for operations. So the
+bus parameter in iommu_domain_alloc() is no longer relevant.
+
+Add a new interface named iommu_paging_domain_alloc(), which explicitly
+indicates the allocation of a paging domain for DMA managed by a kernel
+driver. The new interface takes a device pointer as its parameter, that
+better aligns with the current iommu subsystem.
+
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ include/linux/iommu.h |  6 ++++++
+ drivers/iommu/iommu.c | 20 ++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
+
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 7bc8dff7cf6d..46f1348f1f0a 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -780,6 +780,7 @@ extern bool iommu_present(const struct bus_type *bus);
+ extern bool device_iommu_capable(struct device *dev, enum iommu_cap cap);
+ extern bool iommu_group_has_isolated_msi(struct iommu_group *group);
+ extern struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus);
++struct iommu_domain *iommu_paging_domain_alloc(struct device *dev);
+ extern void iommu_domain_free(struct iommu_domain *domain);
+ extern int iommu_attach_device(struct iommu_domain *domain,
+ 			       struct device *dev);
+@@ -1086,6 +1087,11 @@ static inline struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus
+ 	return NULL;
+ }
+ 
++static inline struct iommu_domain *iommu_paging_domain_alloc(struct device *dev)
++{
++	return ERR_PTR(-ENODEV);
++}
++
+ static inline void iommu_domain_free(struct iommu_domain *domain)
+ {
+ }
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 9df7cc75c1bc..e03c71a34347 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -2016,6 +2016,10 @@ static int __iommu_domain_alloc_dev(struct device *dev, void *data)
+ 	return 0;
+ }
+ 
++/*
++ * The iommu ops in bus has been retired. Do not use this interface in
++ * new drivers.
++ */
+ struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
+ {
+ 	const struct iommu_ops *ops = NULL;
+@@ -2032,6 +2036,22 @@ struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
+ }
+ EXPORT_SYMBOL_GPL(iommu_domain_alloc);
+ 
++/**
++ * iommu_paging_domain_alloc() - Allocate a paging domain
++ * @dev: device for which the domain is allocated
++ *
++ * Allocate a paging domain which will be managed by a kernel driver. Return
++ * allocated domain if successful, or a ERR pointer for failure.
++ */
++struct iommu_domain *iommu_paging_domain_alloc(struct device *dev)
++{
++	if (!dev_has_iommu(dev))
++		return ERR_PTR(-ENODEV);
++
++	return __iommu_domain_alloc(dev_iommu_ops(dev), dev, IOMMU_DOMAIN_UNMANAGED);
++}
++EXPORT_SYMBOL_GPL(iommu_paging_domain_alloc);
++
+ void iommu_domain_free(struct iommu_domain *domain)
+ {
+ 	if (domain->type == IOMMU_DOMAIN_SVA)
+-- 
+2.34.1
 
 
