@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6502DC27C55
-	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 10:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77611C27C55
+	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 10:02:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+SaPIMF83XQCia0fFIVvLuSpi/oDiT5VPT9VzY2loG8=; b=ETsxCajizNN7BEEkAyZiUDldRM
-	3MgyycYKWZCoBXcHt8BAn31qgh924E+EafLKuB6JHR0OatZ8EMt3HEjs+GXRlhDBgN4XuvR5YVBrt
-	hF7ct08EfwodzgdRWBObGxuEL1/wdRsKvNL4mWSyNmm7uPhRoh+gldIV59Zk5ay2kT4W/g8tRUb1/
-	JfD1SFvPbV8ppc48g6qPzTmThIXG/fzGv+POgaaeQH4is3ThI82DTPpsFM6RGF5zaacPmJ5znv95N
-	0aqd2LTX1iEKDYEOMVN3Cyljma5GSYOZi6RsIBh7dc7mjNHhNaOHoxmbiTQt5rXWEpTR3wNrUn8U6
-	pSVfB3Zg==;
+	bh=Ap6c4IUnejCX6LN2RXmfplNrXwUiUrx9CE7MWr+mWwE=; b=Nkq1QiVIlEk71TJJ66KPmsUkGH
+	ewIicb9dxcynrZb512rjX4FRAeoCcFGXtgXkEFE5bn4fgUCMaXWvKPA3lKwwJfOySUHE1ujo6XjKE
+	mpQu0w/3EYB4yzkO5S3GCZSz11huMu+6R1n31IpAQJCumklQJ4NLWSYFq6dlJb2gRFfLieoKDJut4
+	Rdap4JQaiwRX6s0lV3zoV1vDdHhvmA7j3Pp8lrbiNqsOCKDx0rQVJF9ksVRRB56wCE0sm9SR4jGQb
+	RBHly5FC5PapS2PzPev8bnF01WyCv5ywA8bPcup7TsntKugwB3QRYEcVlbBcrZFnR7Vjrsimz4oTj
+	pevUm6dA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGbrA-00000004Xxs-3UwY;
-	Mon, 10 Jun 2024 10:02:28 +0000
+	id 1sGbrG-00000004Y1u-042n;
+	Mon, 10 Jun 2024 10:02:34 +0000
 Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGas9-00000004Kn7-4BRJ;
-	Mon, 10 Jun 2024 08:59:41 +0000
+	id 1sGasO-00000004Ku8-3qLM;
+	Mon, 10 Jun 2024 08:59:53 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718009966; x=1749545966;
+  t=1718009981; x=1749545981;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kDJcZN33ntEvZZurzXrpsoEVgCNzk8vicnqImPO/kUg=;
-  b=Hd8GqUGjEDV3UQJ2NqUAK1He0G0Jil0jKRtlXB6jHiCZf7ADiKyBQjkf
-   tNRIcMRhZPaO5OXZjgDhaFPOa3ZCZMZWD1JnSnZWkoJ8bsenK5KgSCg9k
-   fXCLFVOrWUqJcH3Gpoqr5wH1FpTjSax2XmBpP8i684HJnSR4l5SUxMZRP
-   1AB/R3WflsFVxWlZmHmp9xQS4bijN3GQc7ulrT84fLy6ZedZyTkIyMXgu
-   H6O0saoec1whKItPlCQcAyoTpmCVHjDgO/x1gVioHH0Kur5WjECI7piO8
-   Sp4PV7K+nr+pFeeH8+mOjh/o1lMHFctWxwm4fe7YR2riByaWQxsQ8mAng
+  bh=v9ajyqSmZ+fyr4zUzek4FxHLrUQ5pgq0PnnoHeKwwEA=;
+  b=DJyCd1dcvcmGdiNXAQlXkK7s2cB+tnLSr7LihVYbrwzzkg8ZSqdrJhA/
+   ELDVoGNzaUtg+7PYnjvNUaeB0GOrf7fuHGvPYUv7JN4bOwLKKAz+qXXnJ
+   40rALsli6j/LobF2z9Uz2rKqzqIxkM+l6LWxbZIbOXI1L5EQflNcSYtVT
+   KXIzx//AtWojFssz6uCDN/hKh5604O/bvbH61V/chiZ+9G0RCSVG+uZdC
+   ujxdYmLXBpzFWZS4Z3OSz6BwjEfDwvkxlG9xgd1g/i5iyFJPciXSGuwKL
+   NdExjVIuYddtRAM7DPCypNBkRwO/fazV7FTNncYPQK4xRVoHezl71ZnJb
    A==;
-X-CSE-ConnectionGUID: ib4ng0EWTYujl4Ytvit6Xw==
-X-CSE-MsgGUID: 3hLJCQDTStCve2Xv+4eZnQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581802"
+X-CSE-ConnectionGUID: bMGVxhGYSi2nhxqR5xJT+w==
+X-CSE-MsgGUID: Pcm8AK8xRs24lcvG1Xa0AA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581851"
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="17581802"
+   d="scan'208";a="17581851"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:59:18 -0700
-X-CSE-ConnectionGUID: NfOkwSpKThicZbLMfICvvA==
-X-CSE-MsgGUID: AQGFlrAZSA+rn/BX4z4/mg==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:59:29 -0700
+X-CSE-ConnectionGUID: GkBRboXmTSyQf4zFvmmGBw==
+X-CSE-MsgGUID: c0ivZk7UTYCnDo9fVTczuQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="43432718"
+   d="scan'208";a="43432808"
 Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:59:14 -0700
+  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:59:24 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>,
@@ -77,18 +77,20 @@ Cc: Yi Liu <yi.l.liu@intel.com>,
 	iommu@lists.linux.dev,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 12/21] remoteproc: Use iommu_paging_domain_alloc()
-Date: Mon, 10 Jun 2024 16:55:46 +0800
-Message-Id: <20240610085555.88197-13-baolu.lu@linux.intel.com>
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH v3 14/21] RDMA/usnic: Use iommu_paging_domain_alloc()
+Date: Mon, 10 Jun 2024 16:55:48 +0800
+Message-Id: <20240610085555.88197-15-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240610_015926_714844_E8D08B99 
-X-CRM114-Status: UNSURE (   9.32  )
+X-CRM114-CacheID: sfid-20240610_015941_404853_6AAB9773 
+X-CRM114-Status: UNSURE (   9.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -104,34 +106,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-An iommu domain is allocated in rproc_enable_iommu() and is attached to
-rproc->dev.parent in the same function.
-
-Use iommu_paging_domain_alloc() to make it explicit.
+usnic_uiom_alloc_pd() allocates a paging domain for a given device.
+In this case, iommu_domain_alloc(dev->bus) is equivalent to 
+iommu_paging_domain_alloc(dev). Replace it as iommu_domain_alloc()
+has been deprecated.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Acked-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/remoteproc/remoteproc_core.c | 6 +++---
+ drivers/infiniband/hw/usnic/usnic_uiom.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index f276956f2c5c..eb66f78ec8b7 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -109,10 +109,10 @@ static int rproc_enable_iommu(struct rproc *rproc)
- 		return 0;
- 	}
+diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
+index 84e0f41e7dfa..f948b76f984d 100644
+--- a/drivers/infiniband/hw/usnic/usnic_uiom.c
++++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
+@@ -443,11 +443,11 @@ struct usnic_uiom_pd *usnic_uiom_alloc_pd(struct device *dev)
+ 	if (!pd)
+ 		return ERR_PTR(-ENOMEM);
  
--	domain = iommu_domain_alloc(dev->bus);
+-	pd->domain = domain = iommu_domain_alloc(dev->bus);
 -	if (!domain) {
-+	domain = iommu_paging_domain_alloc(dev);
++	pd->domain = domain = iommu_paging_domain_alloc(dev);
 +	if (IS_ERR(domain)) {
- 		dev_err(dev, "can't alloc iommu domain\n");
--		return -ENOMEM;
-+		return PTR_ERR(domain);
+ 		usnic_err("Failed to allocate IOMMU domain");
+ 		kfree(pd);
+-		return ERR_PTR(-ENOMEM);
++		return ERR_CAST(domain);
  	}
  
- 	iommu_set_fault_handler(domain, rproc_iommu_fault, rproc);
+ 	iommu_set_fault_handler(pd->domain, usnic_uiom_dma_fault, NULL);
 -- 
 2.34.1
 
