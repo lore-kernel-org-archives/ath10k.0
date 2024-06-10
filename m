@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1344DC27C5F
-	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 09:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49D00C27C6E
+	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 09:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=COzfqyw/2J66lisWr44Prrk1Kh1uWon96ltvs/z5lPU=; b=Q4BfcztAJuUFYQxOphbzhbh+vi
-	QpXBSteB0PLmJucv5KmI8L40ZjtEERaSIlDh5u7neePNtZ7NqtB341dqzer9/dKnx11ZMQJqXyxGR
-	xHNcP4kvYpTJOqDpT3FdJUk0DgerNGgeRrS/USLQ9fNQtTR+WzBExJEYTvp0acu5HwS61TbM0Wlhf
-	2hMrlQp2gYcaXEUgLBcxeOnf+mYe9OvLQOZV2GS1znkraqXvqKefKkH9bAjh86TALh3EVQQN8fnPr
-	O4ilCgyASy0r8oIXrXr0c0U4sfIxSA/FqCRkljde5F3IYIz1Bj+kWn6q2Ukbm42mQTAy3MSYLBuOj
-	uiSs3kcA==;
+	bh=fr40brAswpmGmhMFrh6KcZXgHsqtbEnyu9zzTU7pYWQ=; b=qCtu3PozI5pH3CKc7aGv9DbR3w
+	NdGwxaLpD7yk4rikcYIVEj7o/bjqQj8Fr/OuerInBhcnJyav6J9I/H1rPrPbDbKq1KZB37BZkQSri
+	OkFVGoBSjHvDYpqr+Lph6lqfy9v1bRwGN1/HUwPyIZjD92EqSf77w1zvrun05eEOHYLF5NMUYifow
+	x2gf/Kg5MT24EzbdBEuTpUO7GEVRSc/YxZ0I+lXYrxvVMFnFmFcT2T4hKgnXAxCfl5cNi3dT9rvcX
+	LsLjWLJ9d7PckPFFoqDyiRDYdkwwmoIBAFX74b6wn+uY9lwCfdNJ2z37uh/DyQQ/VH7W04QWveeJv
+	bW/zlhFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGaso-00000004MCc-0l7R;
-	Mon, 10 Jun 2024 09:00:06 +0000
+	id 1sGasz-00000004MLv-25ZY;
+	Mon, 10 Jun 2024 09:00:17 +0000
 Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGasH-00000004Kq1-0BbJ;
-	Mon, 10 Jun 2024 08:59:44 +0000
+	id 1sGasP-00000004Kn7-34sN;
+	Mon, 10 Jun 2024 08:59:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718009973; x=1749545973;
+  t=1718009981; x=1749545981;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=sM71nWFg3cNfoT7YtYLr4iW7aTMKAR3F9pN2mUDECnk=;
-  b=nVCDtvnTrpfEinQtMaXhcBC7oK0VkSRzJGiHxegbxY/lLg8kuVVTmSBw
-   rQ8Gxq8HEp8VK0VxwgPsoRCQVRSV0WEXUQgp8HVLTrj/cEEO8nJFe+kMa
-   +rarzyR+sovaj4GPCSBKn52ZGwfgdbFkiLIS7nqjoHmQ3o4Q+eJB/zBhN
-   7tPOb12GMpguldeq2JEZJOi6D4E/rL1WzU7tEI8pjWOpQWvv9JqL53hwi
-   KoUBUZ/ReUMnrZcBfsG++40jW5ZXRG0bfrnQzM4gKjBmRxfQP4ArZtdqL
-   GzCODVwfaltfOkCgearbtDJ8iDVYkDfni4AIqt1WRchm0pH7Yn7DTsZJi
-   w==;
-X-CSE-ConnectionGUID: giUZPXovRSuPsjUrbT9E1Q==
-X-CSE-MsgGUID: 8vVJLkvcSumt56c5bLhKrw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581832"
+  bh=kAf7SPBLso5zp49wUYubqs0YKzd/lC+tt+i0+MOxu64=;
+  b=NyMBy0aSn3sfc/7rLw3U1IBGswSTs18eWsh1PtXEAe78yG0wzSp5KrKI
+   AJCN2d1YSjYRf/77aDXtzPdkUbnHm2FmdWVCWFEPFJ2KGkD672VaMpp2h
+   StiOzN1Wv8r/Yi/x+nRRIMFuKyDC6fh+Rc7URgt7XKEZcNdq1jEll1/OR
+   0JpGRK9Vh/zksHkBQM9dt8KK3fey2o5R96HIh0vnISSXxujONVuVneg+3
+   cxHg0yk0jT/LhfUcPIispS2XazIxV51hr534wO8+lDk44P50FcjmVmSOw
+   ejUyu3LPbGMye5lBI4JUuU4n9OogQpPeNEzSg8qQeKkoJFB7iLEU5Gbgs
+   g==;
+X-CSE-ConnectionGUID: GPjLljBiQeSOcvK/K+6VAw==
+X-CSE-MsgGUID: YxwbRtIOTuOqIG9CJGc2sA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581892"
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="17581832"
+   d="scan'208";a="17581892"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:59:23 -0700
-X-CSE-ConnectionGUID: pUWAnATbSkmzoSbiD3n7dw==
-X-CSE-MsgGUID: EcaT65n0R1+t1siUeF7hbw==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:59:34 -0700
+X-CSE-ConnectionGUID: IZUNZ8cdRjO1AyWUbBMniA==
+X-CSE-MsgGUID: oS6yPYCwQEWB97mfMcpzCQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="43432756"
+   d="scan'208";a="43432851"
 Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:59:19 -0700
+  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:59:30 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>,
@@ -78,18 +78,17 @@ Cc: Yi Liu <yi.l.liu@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 13/21] soc/fsl/qbman: Use iommu_paging_domain_alloc()
-Date: Mon, 10 Jun 2024 16:55:47 +0800
-Message-Id: <20240610085555.88197-14-baolu.lu@linux.intel.com>
+Subject: [PATCH v3 15/21] iommu/vt-d: Add helper to allocate paging domain
+Date: Mon, 10 Jun 2024 16:55:49 +0800
+Message-Id: <20240610085555.88197-16-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240610_015933_435415_33BA6198 
-X-CRM114-Status: UNSURE (   9.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240610_015942_750489_8379B992 
+X-CRM114-Status: GOOD (  16.04  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,33 +103,121 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-An iommu domain is allocated in portal_set_cpu() and is attached to
-pcfg->dev in the same function.
-
-Use iommu_paging_domain_alloc() to make it explicit.
+The domain_alloc_user operation is currently implemented by allocating a
+paging domain using iommu_domain_alloc(). This is because it needs to fully
+initialize the domain before return. Add a helper to do this to avoid using
+iommu_domain_alloc().
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/soc/fsl/qbman/qman_portal.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/iommu/intel/iommu.c | 87 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 78 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/soc/fsl/qbman/qman_portal.c b/drivers/soc/fsl/qbman/qman_portal.c
-index e23b60618c1a..456ef5d5c199 100644
---- a/drivers/soc/fsl/qbman/qman_portal.c
-+++ b/drivers/soc/fsl/qbman/qman_portal.c
-@@ -48,9 +48,10 @@ static void portal_set_cpu(struct qm_portal_config *pcfg, int cpu)
- 	struct device *dev = pcfg->dev;
- 	int ret;
- 
--	pcfg->iommu_domain = iommu_domain_alloc(&platform_bus_type);
--	if (!pcfg->iommu_domain) {
-+	pcfg->iommu_domain = iommu_paging_domain_alloc(dev);
-+	if (IS_ERR(pcfg->iommu_domain)) {
- 		dev_err(dev, "%s(): iommu_domain_alloc() failed", __func__);
-+		pcfg->iommu_domain = NULL;
- 		goto no_iommu;
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 2e9811bf2a4e..ccde5f5972e4 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -3633,6 +3633,79 @@ static struct iommu_domain blocking_domain = {
  	}
- 	ret = fsl_pamu_configure_l1_stash(pcfg->iommu_domain, cpu);
+ };
+ 
++static int iommu_superpage_capability(struct intel_iommu *iommu, bool first_stage)
++{
++	if (!intel_iommu_superpage)
++		return 0;
++
++	if (first_stage)
++		return cap_fl1gp_support(iommu->cap) ? 2 : 1;
++
++	return fls(cap_super_page_val(iommu->cap));
++}
++
++static struct dmar_domain *paging_domain_alloc(struct device *dev, bool first_stage)
++{
++	struct device_domain_info *info = dev_iommu_priv_get(dev);
++	struct intel_iommu *iommu = info->iommu;
++	struct dmar_domain *domain;
++	int addr_width;
++
++	domain = kzalloc(sizeof(*domain), GFP_KERNEL);
++	if (!domain)
++		return ERR_PTR(-ENOMEM);
++
++	INIT_LIST_HEAD(&domain->devices);
++	INIT_LIST_HEAD(&domain->dev_pasids);
++	INIT_LIST_HEAD(&domain->cache_tags);
++	spin_lock_init(&domain->lock);
++	spin_lock_init(&domain->cache_lock);
++	xa_init(&domain->iommu_array);
++
++	domain->nid = dev_to_node(dev);
++	domain->has_iotlb_device = info->ats_enabled;
++	domain->use_first_level = first_stage;
++
++	/* calculate the address width */
++	addr_width = agaw_to_width(iommu->agaw);
++	if (addr_width > cap_mgaw(iommu->cap))
++		addr_width = cap_mgaw(iommu->cap);
++	domain->gaw = addr_width;
++	domain->agaw = iommu->agaw;
++	domain->max_addr = __DOMAIN_MAX_ADDR(addr_width);
++
++	/* iommu memory access coherency */
++	domain->iommu_coherency = iommu_paging_structure_coherency(iommu);
++
++	/* pagesize bitmap */
++	domain->domain.pgsize_bitmap = SZ_4K;
++	domain->iommu_superpage = iommu_superpage_capability(iommu, first_stage);
++	domain->domain.pgsize_bitmap |= domain_super_pgsize_bitmap(domain);
++
++	/*
++	 * IOVA aperture: First-level translation restricts the input-address
++	 * to a canonical address (i.e., address bits 63:N have the same value
++	 * as address bit [N-1], where N is 48-bits with 4-level paging and
++	 * 57-bits with 5-level paging). Hence, skip bit [N-1].
++	 */
++	domain->domain.geometry.force_aperture = true;
++	domain->domain.geometry.aperture_start = 0;
++	if (first_stage)
++		domain->domain.geometry.aperture_end = __DOMAIN_MAX_ADDR(domain->gaw - 1);
++	else
++		domain->domain.geometry.aperture_end = __DOMAIN_MAX_ADDR(domain->gaw);
++
++	/* always allocate the top pgd */
++	domain->pgd = iommu_alloc_page_node(domain->nid, GFP_KERNEL);
++	if (!domain->pgd) {
++		kfree(domain);
++		return ERR_PTR(-ENOMEM);
++	}
++	domain_flush_cache(domain, domain->pgd, PAGE_SIZE);
++
++	return domain;
++}
++
+ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
+ {
+ 	struct dmar_domain *dmar_domain;
+@@ -3695,15 +3768,11 @@ intel_iommu_domain_alloc_user(struct device *dev, u32 flags,
+ 	if (user_data || (dirty_tracking && !ssads_supported(iommu)))
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
+-	/*
+-	 * domain_alloc_user op needs to fully initialize a domain before
+-	 * return, so uses iommu_domain_alloc() here for simple.
+-	 */
+-	domain = iommu_domain_alloc(dev->bus);
+-	if (!domain)
+-		return ERR_PTR(-ENOMEM);
+-
+-	dmar_domain = to_dmar_domain(domain);
++	/* Do not use first stage for user domain translation. */
++	dmar_domain = paging_domain_alloc(dev, false);
++	if (IS_ERR(dmar_domain))
++		return ERR_CAST(dmar_domain);
++	domain = &dmar_domain->domain;
+ 
+ 	if (nested_parent) {
+ 		dmar_domain->nested_parent = true;
 -- 
 2.34.1
 
