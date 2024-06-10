@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA2F7C27C5E
-	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 08:58:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2083BC27C5E
+	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 08:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3RVIGexN1QEWlp04qJ5r/Sc6XYG5nucX3DQOszMb49c=; b=uv7SGkQKrUZ3XE27jmFV78kxbL
-	wn4r4PGuQYvJO5Mrh3m4nxg1rL2J0dY1LoUr9zNI2INihofnbXq31WNp3x68zMignvwpO0fsPNSTk
-	cDNyi+13e2TLl0wVfeT92wbLkeFyqye1SrVLBaJPtJ6zzPu5+moHFOOneVIhVEGRSP+0hIsCv4u93
-	PAO/vkBSXoowx3b2r+HJ5QQfYgc4GoIAoQzWPxNz001Q6yx4D2Rr/0u/1ksXRTPfNfc1Slt5+ArKe
-	4lMXEG+OGarLMZ4k8dTCw+HVPGmuiVPP6nKc7BmblkO6KqjQ73VHxpFh6G4d1s527Ky9zWoJ3EaYH
-	RQCTipdw==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=ANdnNKEXEKMU7+nCdQRC8BKJq392jdqzaIpfScTXSn4=; b=xOFBpOwEPX56sYOlI+Jp6wCNui
+	3Til1ahR/JmN4O/a3zMIK978MsfAJgo64N6rzhrxeZxnuWiV6+rCnhTTbV4NppRbgJStlHubu3URf
+	fesQv/VrUL+56n6d1/7G0R7WvabbYjnTDC/JF5k868RlUT1E3vY5sxNeiGMNrwYHNr8k8n0szfXus
+	I1OZCv7C8kRHMILPruow3jAkWqYQ+ljQhOXhDVrrs0vJn3oKRwmPQFkCYX/zZQvmV/xThzG4ofKJh
+	aKuJX5xo3s7/p5uqQrD1v0kRGO+MN7B+V/R1ieI2Gcv5rsbcmQ9CgIxw2jC2q4clV9Gw85VZMZa+k
+	DSzSo5wA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGarV-00000004L83-3o0R;
-	Mon, 10 Jun 2024 08:58:45 +0000
+	id 1sGarN-00000004L2Y-32OM;
+	Mon, 10 Jun 2024 08:58:37 +0000
 Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGar9-00000004Kq1-0hl4;
-	Mon, 10 Jun 2024 08:58:37 +0000
+	id 1sGar6-00000004Kn7-1mcM;
+	Mon, 10 Jun 2024 08:58:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718009903; x=1749545903;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lO/IPmdUqOg04lYCYxFPmCNa0L0veD8icxIpi6zQo+o=;
-  b=ErrazFQGKUipQlX/Y1m/4+WADwQ30ZDksI1JtSlMmOl+U5LN3t//2VOr
-   J9bCcZC7dyclBaZ+CcuseM4kdSNpTiGrhIWMhRKycDbfMAabGSTnqqYND
-   J0lFgDC0gDtfE8jpfSD3KPM4tFR3aK669CWL5+ejhpY+n/O0krKoKBGVl
-   EctijAOvZ89TX8LcqAGhd0uCIAqd9NYRcx1xQmsZbSe6fiZgkp9OGU9tm
-   Yl1DQuGyuOYaHUuc+f75ZysXtCat2LNbwRoi9PfpQ11v+st9+Har9Z+HF
-   021WDUdSiCMtJgJ4m86AfkH0RmrHo6p3mocowlsKprqr/KuCoEa0gt5vS
-   w==;
-X-CSE-ConnectionGUID: O1NXuBn3SeyJOiSnX40YBA==
-X-CSE-MsgGUID: LoTPxLd/TYajpi4/D2PmTg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581515"
+  t=1718009900; x=1749545900;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0vujK8zNCKvKagqP+H4Q/hFUwMNe4QRoYI5wcH4k1DU=;
+  b=Zfcp0hwkD5sqnrtb6ixVjLCDLfnzcaUBR9BAQjGBXWIkeychoZmM+8HB
+   LV6IaknogfqX7f6DSGQztCkUICUxu0H/uoUVWDdDQ2ylXh9kyTGTouIM4
+   x2Zl/tkAqdMNZkEs+cduq4P0Xi6+LyXPXd8m8x1fc7/eJcmc9amEhQNE0
+   0tVoVliy3y1vj4H2QHMpIfl0JCe2pbL4+BfgKm3tBBrqKOWltM4qQcoVh
+   HuN0bt6B0m4FIiywpoR/fazzORQ2R3cltpV4/g04wa45y1slTFVm6a+DE
+   IIVIpe8GPjcEdqhNTxYO1rkyOzZaiosHFvrZKMwGNJ8ZWal9yyHdTEHgj
+   g==;
+X-CSE-ConnectionGUID: ADTsY/C+RXSO7U1JP/bpHg==
+X-CSE-MsgGUID: 8BeiBg0rQemQFf/WuzZYlw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581495"
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="17581515"
+   d="scan'208";a="17581495"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:58:22 -0700
-X-CSE-ConnectionGUID: T7ftFoB4QDSGxVb/F3iHkQ==
-X-CSE-MsgGUID: ImRDR5fxSxuM0OMEzjzIVA==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:58:17 -0700
+X-CSE-ConnectionGUID: DFrvvBhUT0CHyUEqQL0Vhg==
+X-CSE-MsgGUID: ar5nZaOiT0efo7DDRkQyLQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="43432409"
+   d="scan'208";a="43432400"
 Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:58:17 -0700
+  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:58:12 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>,
@@ -78,17 +78,15 @@ Cc: Yi Liu <yi.l.liu@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 01/21] iommu: Add iommu_paging_domain_alloc() interface
-Date: Mon, 10 Jun 2024 16:55:35 +0800
-Message-Id: <20240610085555.88197-2-baolu.lu@linux.intel.com>
+Subject: [PATCH v3 00/21] iommu: Refactoring domain allocation interface
+Date: Mon, 10 Jun 2024 16:55:34 +0800
+Message-Id: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240610085555.88197-1-baolu.lu@linux.intel.com>
-References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240610_015824_013201_CDED4F45 
-X-CRM114-Status: GOOD (  14.26  )
+X-CRM114-CacheID: sfid-20240610_015820_909512_66669FFF 
+X-CRM114-Status: GOOD (  20.09  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,83 +101,106 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Commit <17de3f5fdd35> ("iommu: Retire bus ops") removes iommu ops from
-bus. The iommu subsystem no longer relies on bus for operations. So the
-bus parameter in iommu_domain_alloc() is no longer relevant.
+The IOMMU subsystem has undergone some changes, including the removal
+of iommu_ops from the bus structure. Consequently, the existing domain
+allocation interface, which relies on a bus type argument, is no longer
+relevant:
 
-Add a new interface named iommu_paging_domain_alloc(), which explicitly
-indicates the allocation of a paging domain for DMA managed by a kernel
-driver. The new interface takes a device pointer as its parameter, that
-better aligns with the current iommu subsystem.
+    struct iommu_domain *iommu_domain_alloc(struct bus_type *bus)
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- include/linux/iommu.h |  6 ++++++
- drivers/iommu/iommu.c | 20 ++++++++++++++++++++
- 2 files changed, 26 insertions(+)
+This series is designed to refactor the use of this interface. It
+proposes a new interface iommu_paging_domain_alloc() to replace
+iommu_domain_alloc(). This interface is for allocating iommu paging
+domains for kernel drivers. It takes a device pointer as a parameter,
+which better reflects the current design of the IOMMU subsystem.
 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 7bc8dff7cf6d..46f1348f1f0a 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -780,6 +780,7 @@ extern bool iommu_present(const struct bus_type *bus);
- extern bool device_iommu_capable(struct device *dev, enum iommu_cap cap);
- extern bool iommu_group_has_isolated_msi(struct iommu_group *group);
- extern struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus);
-+struct iommu_domain *iommu_paging_domain_alloc(struct device *dev);
- extern void iommu_domain_free(struct iommu_domain *domain);
- extern int iommu_attach_device(struct iommu_domain *domain,
- 			       struct device *dev);
-@@ -1086,6 +1087,11 @@ static inline struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus
- 	return NULL;
- }
- 
-+static inline struct iommu_domain *iommu_paging_domain_alloc(struct device *dev)
-+{
-+	return ERR_PTR(-ENODEV);
-+}
-+
- static inline void iommu_domain_free(struct iommu_domain *domain)
- {
- }
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 9df7cc75c1bc..e03c71a34347 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2016,6 +2016,10 @@ static int __iommu_domain_alloc_dev(struct device *dev, void *data)
- 	return 0;
- }
- 
-+/*
-+ * The iommu ops in bus has been retired. Do not use this interface in
-+ * new drivers.
-+ */
- struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
- {
- 	const struct iommu_ops *ops = NULL;
-@@ -2032,6 +2036,22 @@ struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
- }
- EXPORT_SYMBOL_GPL(iommu_domain_alloc);
- 
-+/**
-+ * iommu_paging_domain_alloc() - Allocate a paging domain
-+ * @dev: device for which the domain is allocated
-+ *
-+ * Allocate a paging domain which will be managed by a kernel driver. Return
-+ * allocated domain if successful, or a ERR pointer for failure.
-+ */
-+struct iommu_domain *iommu_paging_domain_alloc(struct device *dev)
-+{
-+	if (!dev_has_iommu(dev))
-+		return ERR_PTR(-ENODEV);
-+
-+	return __iommu_domain_alloc(dev_iommu_ops(dev), dev, IOMMU_DOMAIN_UNMANAGED);
-+}
-+EXPORT_SYMBOL_GPL(iommu_paging_domain_alloc);
-+
- void iommu_domain_free(struct iommu_domain *domain)
- {
- 	if (domain->type == IOMMU_DOMAIN_SVA)
+The majority of device drivers currently using iommu_domain_alloc() do
+so to allocate a domain for a specific device and then attach that
+domain to the device. These cases can be straightforwardly migrated to
+the new interface.
+
+The drm/tegra driver is a bit different in that the device pointer
+passed to the helper, which allocates the iommu domain, is not the one
+that will be used for the kernel DMA API. Move the existing logic in
+iommu_domain_alloc() into the driver to ensure it works as intended.
+
+Now that all consumers of iommu_domain_alloc() have switched to the new
+interface, we can finally remove iommu_domain_alloc(). This removal
+paves the way for the IOMMU subsystem to support multiple iommu drivers.
+Additionally, the individual iommu driver implementation for domain
+allocation could also be simplified, as there will always be a valid
+device pointer passed along the path.
+
+The whole series is also available on GitHub:
+https://github.com/LuBaolu/intel-iommu/commits/iommu-domain-allocation-refactor-v3
+
+Change log:
+
+v3:
+ - Remove the proposed iommu_user_domain_alloc() interface.
+
+v2: https://lore.kernel.org/linux-iommu/20240604015134.164206-1-baolu.lu@linux.intel.com/
+ - Drop the vt-d patches which implement paging domain support from this
+   series. I will post them in a separate series later.
+ - Convert all drivers that call iommu_domain_alloc() to use the new
+   interface and remove iommu_domain_alloc() from the tree.
+ - For the drm/msm driver, make the code compatible with the no-IOMMU
+   case.
+ - Various cleanups and refinements.
+
+v1: https://lore.kernel.org/linux-iommu/20240529053250.91284-1-baolu.lu@linux.intel.com/
+
+Lu Baolu (20):
+  iommu: Add iommu_paging_domain_alloc() interface
+  iommufd: Use iommu_paging_domain_alloc()
+  vfio/type1: Use iommu_paging_domain_alloc()
+  vhost-vdpa: Use iommu_paging_domain_alloc()
+  drm/msm: Use iommu_paging_domain_alloc()
+  drm/nouveau/tegra: Use iommu_paging_domain_alloc()
+  gpu: host1x: Use iommu_paging_domain_alloc()
+  media: nvidia: tegra: Use iommu_paging_domain_alloc()
+  media: venus: firmware: Use iommu_paging_domain_alloc()
+  wifi: ath10k: Use iommu_paging_domain_alloc()
+  wifi: ath11k: Use iommu_paging_domain_alloc()
+  remoteproc: Use iommu_paging_domain_alloc()
+  soc/fsl/qbman: Use iommu_paging_domain_alloc()
+  RDMA/usnic: Use iommu_paging_domain_alloc()
+  iommu/vt-d: Add helper to allocate paging domain
+  ARM: dma-mapping: Use iommu_paging_domain_alloc()
+  drm/rockchip: Use iommu_paging_domain_alloc()
+  drm/tegra: Remove call to iommu_domain_alloc()
+  iommu: Remove iommu_present()
+  iommu: Remove iommu_domain_alloc()
+
+Robin Murphy (1):
+  ARM: dma-mapping: Pass device to arm_iommu_create_mapping()
+
+ include/linux/iommu.h                         | 12 +--
+ arch/arm/include/asm/dma-iommu.h              |  2 +-
+ arch/arm/mm/dma-mapping.c                     | 12 +--
+ drivers/gpu/drm/exynos/exynos_drm_dma.c       |  2 +-
+ drivers/gpu/drm/msm/msm_iommu.c               |  7 +-
+ .../drm/nouveau/nvkm/engine/device/tegra.c    |  4 +-
+ drivers/gpu/drm/rockchip/rockchip_drm_drv.c   | 10 ++-
+ drivers/gpu/drm/tegra/drm.c                   | 34 ++++++--
+ drivers/gpu/host1x/dev.c                      |  7 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c      |  6 +-
+ drivers/iommu/intel/iommu.c                   | 87 +++++++++++++++++--
+ drivers/iommu/iommu.c                         | 63 +++-----------
+ drivers/iommu/iommufd/hw_pagetable.c          |  7 +-
+ drivers/iommu/ipmmu-vmsa.c                    |  3 +-
+ drivers/iommu/mtk_iommu_v1.c                  |  3 +-
+ .../media/platform/nvidia/tegra-vde/iommu.c   |  7 +-
+ drivers/media/platform/qcom/venus/firmware.c  |  6 +-
+ drivers/media/platform/ti/omap3isp/isp.c      |  2 +-
+ drivers/net/wireless/ath/ath10k/snoc.c        |  6 +-
+ drivers/net/wireless/ath/ath11k/ahb.c         |  6 +-
+ drivers/remoteproc/remoteproc_core.c          |  6 +-
+ drivers/soc/fsl/qbman/qman_portal.c           |  5 +-
+ drivers/vfio/vfio_iommu_type1.c               |  7 +-
+ drivers/vhost/vdpa.c                          | 14 ++-
+ 24 files changed, 183 insertions(+), 135 deletions(-)
+
 -- 
 2.34.1
 
