@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 487FAC27C6E
-	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 08:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55C8AC27C6E
+	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 09:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7c3nb+7azuxd71hyVzQ9JDWmVC1llrC8TgSr7KR9524=; b=kqDEs+Zv0zjCCJaXu41Kte7C25
-	FLHjHGe9zQBdnd5FKGx2Nhx/fb8n9h0ofcBZq2z6rw3CNxmqfIsCzSADQrcoFIMjblPUzhsVky7Ip
-	LRyQaIg4q8JSVff7QYnb5l0AGONp3cTgXJ8aJBOan9pm9ThklKSJ/wEHjuGIp8r+ywv4MQAbRNj+V
-	MI7zmReTBsOUJKJnuFRxKmwuZss3Mtd5yRY6sl2yydktXuQRhBt/N241O50AEYUlgb0x7SlprpwNA
-	NpTidaHJiMfTrk3YEsHrAMtbdULpwmuuiFEaCZEFmv//p8HS7qDEoHQi4r0Pm5kO5YRxBSrFsqxWt
-	6xBOb4nw==;
+	bh=JMjFY09hqo4AuCvdOCNnqdOGIw+vwcNgHfwq2i269mk=; b=1IJQeqAUyuuDWP7/P+fRTPHRIh
+	iYG+qUiupIUNdoXIRMJ1gaXPOvNjxdt2C7sJNFQKPHkEeK1JGm/DUsrxi1AEz5T6VM2ePIAT7xKVc
+	a2SiC5TQ58LvjAblUe1ql2wYomF4sjSawCFvrBwpbyuVjyp8fj+k1+YrFdp7TXscSJofXMlXFyWO4
+	S8tJDiBP1b3p5wBPIVZM4WRmHsUHS78L0ikltvqx4RkvWOgDuCR8nWC2NlhphMBRJFNETdFSSmz/j
+	pAWxYw4inf+ACqEJWvWnWzyY7Rvcj+y7J5CaAhC117n44REH9bp5G9jo96Wc3vcnEd3Vbxe60cgMr
+	KtFJRKmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGasH-00000004Lmh-3Fnx;
-	Mon, 10 Jun 2024 08:59:33 +0000
+	id 1sGash-00000004M6P-00ba;
+	Mon, 10 Jun 2024 08:59:59 +0000
 Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGark-00000004Ku8-3Rf5;
-	Mon, 10 Jun 2024 08:59:23 +0000
+	id 1sGas7-00000004Ku8-2xCh;
+	Mon, 10 Jun 2024 08:59:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718009940; x=1749545940;
+  t=1718009963; x=1749545963;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=gcVUdhVM6KwB99b7OFzWjZ/BBZdHQiOtwXYtd2+KA+I=;
-  b=j+giOCghvktCE5cjzr2i9MVRTiESCnrxNY/2YpEMlAubnIUi5RTEwO4q
-   mnsGvA8yIdhjxm2fejOgHAuleahzQqjphC5cW/HQiaPWNJ8iYgbpVmCa8
-   A+020QrXtHXHeQm8Iyxk8iDerFMqm5vv1JYdbGjqMr8HgSs813YLev63T
-   te1tXlW3fSn0DbogcOphZK0f8k+TP/fFnQI1aPyxwPYOgsOQKJC6sGl5P
-   UQ4qLXgpm0mF9WMxAalEkLTdOBMz8e2irg1xXF786+qqqMQg35zQXmMOb
-   Kgemj6BHSH2au2mDcfE7x8KLLzvR9+Ia54f4Sad0epHnFwQIJpkLuIwzI
-   w==;
-X-CSE-ConnectionGUID: SD7ETNmOTXSkCB3ThSxraw==
-X-CSE-MsgGUID: 8IZUvDKnSY+9QoDVH1805g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581654"
+  bh=0YWlii2bXNnHccsmtL/FJMzKgMQQ20l9rtRa+FjY2hk=;
+  b=bMwlCvfvrCjO1L4MzEjDG7YozH0ktEo0ZcOmiVdK7zNHtuDwdAJTkBBX
+   nHbx5Ld8HRm4DOIrv5V3vI2VtGz1aiXleZ3dAwF4ZJtbpUiH+ENG5M5vT
+   DkeuSARHimHfuZZfO+lX0wD5XbIoYa3T2J6TKEwRnuNtBrfU5hkgvQUtI
+   DEK3tGe9U0qAIcnry0jaScqYYCGUBNJ5THzRG+vvtoBaIdgdNEFPgu6LO
+   eoOd+OWNRmA8k9JepcxIHDEYHTX4UorsXlmks6sjtYMI3PGg/vEqWxNO8
+   VppCikhbrC/2yYBNm35CKX02CEAYoXlJEyqEp5D/m0gFAXSVn0OI/EDRD
+   Q==;
+X-CSE-ConnectionGUID: tSgpMe9oRpqbPUiz7rF8KA==
+X-CSE-MsgGUID: 1bs6srl8S+iK+vElU7rLNA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581767"
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="17581654"
+   d="scan'208";a="17581767"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:58:57 -0700
-X-CSE-ConnectionGUID: S518TnLfQLutDzB5t6Znmg==
-X-CSE-MsgGUID: oLlb/Z4oQiiBn2odn2LRRg==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:59:13 -0700
+X-CSE-ConnectionGUID: /nHz8Xa6R1C1//x2x4ZYpg==
+X-CSE-MsgGUID: fbNfhGj2Ro2X3TwDUjfe6g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="43432568"
+   d="scan'208";a="43432670"
 Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:58:53 -0700
+  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:59:08 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>,
@@ -78,17 +78,17 @@ Cc: Yi Liu <yi.l.liu@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 08/21] media: nvidia: tegra: Use iommu_paging_domain_alloc()
-Date: Mon, 10 Jun 2024 16:55:42 +0800
-Message-Id: <20240610085555.88197-9-baolu.lu@linux.intel.com>
+Subject: [PATCH v3 11/21] wifi: ath11k: Use iommu_paging_domain_alloc()
+Date: Mon, 10 Jun 2024 16:55:45 +0800
+Message-Id: <20240610085555.88197-12-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240610_015901_395853_89F2CCE9 
-X-CRM114-Status: UNSURE (   7.87  )
+X-CRM114-CacheID: sfid-20240610_015924_055058_2C0E7835 
+X-CRM114-Status: UNSURE (   9.36  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -104,30 +104,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-An iommu domain is allocated in tegra_vde_iommu_init() and is attached to
-vde->dev. Use iommu_paging_domain_alloc() to make it explicit.
+An iommu domain is allocated in ath11k_ahb_fw_resources_init() and is
+attached to ab_ahb->fw.dev in the same function.
+
+Use iommu_paging_domain_alloc() to make it explicit.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 ---
- drivers/media/platform/nvidia/tegra-vde/iommu.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath11k/ahb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/nvidia/tegra-vde/iommu.c b/drivers/media/platform/nvidia/tegra-vde/iommu.c
-index 5521ed3e465f..b1d9d841d944 100644
---- a/drivers/media/platform/nvidia/tegra-vde/iommu.c
-+++ b/drivers/media/platform/nvidia/tegra-vde/iommu.c
-@@ -78,9 +78,10 @@ int tegra_vde_iommu_init(struct tegra_vde *vde)
- 		arm_iommu_release_mapping(mapping);
- 	}
- #endif
--	vde->domain = iommu_domain_alloc(&platform_bus_type);
--	if (!vde->domain) {
--		err = -ENOMEM;
-+	vde->domain = iommu_paging_domain_alloc(dev);
-+	if (IS_ERR(vde->domain)) {
-+		err = PTR_ERR(vde->domain);
-+		vde->domain = NULL;
- 		goto put_group;
+diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
+index ca0f17ddebba..a469647719f9 100644
+--- a/drivers/net/wireless/ath/ath11k/ahb.c
++++ b/drivers/net/wireless/ath/ath11k/ahb.c
+@@ -1001,10 +1001,10 @@ static int ath11k_ahb_fw_resources_init(struct ath11k_base *ab)
+ 
+ 	ab_ahb->fw.dev = &pdev->dev;
+ 
+-	iommu_dom = iommu_domain_alloc(&platform_bus_type);
+-	if (!iommu_dom) {
++	iommu_dom = iommu_paging_domain_alloc(ab_ahb->fw.dev);
++	if (IS_ERR(iommu_dom)) {
+ 		ath11k_err(ab, "failed to allocate iommu domain\n");
+-		ret = -ENOMEM;
++		ret = PTR_ERR(iommu_dom);
+ 		goto err_unregister;
  	}
  
 -- 
