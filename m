@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1897C27C5E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7461C41513
 	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 10:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,47 +12,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qdii365A3dfDth8bMIN65S0AN4mTMUmZMSOhFfC0V8A=; b=UdDrpgJD6Mqb6aISjMpqXxKhzK
-	EcB2ZSJi+M5tmJ7R9nnhGCLk92viiSU8UB5glkxTzTvqnrS2BqlHWgZYK+u7uu1qWdfzAMSF1irt+
-	rhoIMWzaHebDXwhkOZTzsiERNhr/quiSuf1v/TeN7lYijIKftk3O85LiFx9vNEptva7051oOgYAM8
-	H+FLHwN7XF8WGpLEKxrCGexBNuVpKjKJgBovBYSxEP8s/VtVlbjF/NNCZ6HCuR+7cPKsPETHb+Mwv
-	y78zvF61vKRlwHzKYEGZKeihmCBs+buqkOY0/vpvW4HP7PvjOZ44iatGxuv4oEljhYaPaHO89PfOi
-	ejT1xI8A==;
+	bh=vOv+YN9h4ibDJtSzat5oLqqAArjLOrl0DnJ23PxND9Y=; b=u71VpuSW4zRz7jyE0yzVgLSMq3
+	xM/dFzpzu6mdMXdkN4XW2Y7TgYUaUeuuwgfX1bcVtg5PBdotM2gVbgpbG0IzzLKNri/oJqPicDR8O
+	/of5nGMpWvsa4NzKJvuFD7HKjizZ0YYUoGC820zOd0tCc/hBUi4AAKhT4M4XO4Joaask4tcdOr8IF
+	uJ5tJtqweYgIcMg92sVcXQsGtE0hknOWDsSJcO0iMcc8ZOZXQ8S0OW6lhENX7WN5feKPY8jwolyIs
+	974qpe9YYAzPPgaaLOGgRVjq3u6rjxSPCgdFKOQysHBHQqmdyrG0Le4MBB8mg/0xgmOsooxPqbxQA
+	s36c79gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGbr5-00000004Xuv-1C2n;
-	Mon, 10 Jun 2024 10:02:23 +0000
+	id 1sGbr7-00000004Xvc-0KwG;
+	Mon, 10 Jun 2024 10:02:25 +0000
 Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGarE-00000004Ku8-0dho;
-	Mon, 10 Jun 2024 08:58:43 +0000
+	id 1sGarY-00000004Kn7-0TWL;
+	Mon, 10 Jun 2024 08:59:03 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718009908; x=1749545908;
+  t=1718009928; x=1749545928;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=V0sWEWGdvvTEoPPivf5bf1akoI1gM9dFCowdFsNKU9w=;
-  b=CVSd+8+HQbb1eIyWfs+RlB8m8aMlHIsr7M+fzTwLyzShyovXWPi84g1a
-   9/puqDbS79YZA2YpnfmcMaNLM+TfTwzh4LuX2VEAVgBrPq4BiaSfche4i
-   NYdbPSegCQzfrZjTXCzaxr3s9nYmkWE7VXqBuEm8K+Fgsx/Eq9rkX2RmC
-   VBPEB1+d2pl5gLvWck951SOvxUUYU6QsXoofzcNbdO9OMyzB2sTHqQUWE
-   wG+2RXqf7P2Tjzvi4E+I5674Y/Ri/BPmWiPb2VKEYtQnV5Yu/VyS6XNRU
-   0WfrqjYQeum7vPqUAKvhzeauZCBhWubs4cbBha2EGnv20lOrnbmorJ4eU
-   Q==;
-X-CSE-ConnectionGUID: bKvBiHwBR9+S36kxZopoXw==
-X-CSE-MsgGUID: dRShlzJbRCClWQlqy2OFuA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581530"
+  bh=GbpYXxZBS+r4Y0EiK3BFmXVZKaFfLeJ2IAlI0t0Upno=;
+  b=Z3VsvgX2vVlLgjm1BsrPRPQJpDPhKtvMcNfQA/5PX7bE2VOa2mBCi06A
+   zZl2RiRitOfEw+89RTsGZmmfBlc51vDd5F8kFZiEIWKq3MB8K/UUSarvs
+   v0q16NOutn6IrzS641kmPdqif32vItkT1X8DZkOMmjDwNuoenZC7gQ90m
+   +Hme+MigYqwSLCsz1CBoIcueCEHTGuf+HdD6KmQGRKouMN/Ma0dbByzr2
+   88TGXY+zBt275/ZaTYK3mPpGlij479nqFm1ZIiS+6WtGX+ELjy3lN0HYM
+   l+saF0Srs+tuZE5Ox4EgHJDGqFAh4pLY4RMQ0yIvLG77t15lFR2hTxZid
+   g==;
+X-CSE-ConnectionGUID: AvXIolqzSr2krS8xOQfBww==
+X-CSE-MsgGUID: 2PrgQG6ESaipykuRZBZYKQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581626"
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="17581530"
+   d="scan'208";a="17581626"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:58:27 -0700
-X-CSE-ConnectionGUID: bhp1h+vXQo6jelkBwQxcTg==
-X-CSE-MsgGUID: deHpkp5nSxiuSR3yUuqFZw==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:58:47 -0700
+X-CSE-ConnectionGUID: VamhjrgFQlaSd3fZomawuA==
+X-CSE-MsgGUID: APBKRNmnS5KOzuWJvg3h1Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="43432419"
+   d="scan'208";a="43432531"
 Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:58:23 -0700
+  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:58:43 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>,
@@ -78,17 +78,17 @@ Cc: Yi Liu <yi.l.liu@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 02/21] iommufd: Use iommu_paging_domain_alloc()
-Date: Mon, 10 Jun 2024 16:55:36 +0800
-Message-Id: <20240610085555.88197-3-baolu.lu@linux.intel.com>
+Subject: [PATCH v3 06/21] drm/nouveau/tegra: Use iommu_paging_domain_alloc()
+Date: Mon, 10 Jun 2024 16:55:40 +0800
+Message-Id: <20240610085555.88197-7-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240610_015828_670785_5047A87B 
-X-CRM114-Status: UNSURE (   9.85  )
+X-CRM114-CacheID: sfid-20240610_015848_884509_1039498E 
+X-CRM114-Status: UNSURE (   9.35  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -104,34 +104,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-If the iommu driver doesn't implement its domain_alloc_user callback,
-iommufd_hwpt_paging_alloc() rolls back to allocate an iommu paging domain.
-Replace iommu_domain_alloc() with iommu_user_domain_alloc() to pass the
-device pointer along the path.
+In nvkm_device_tegra_probe_iommu(), a paging domain is allocated for @dev
+and attached to it on success. Use iommu_paging_domain_alloc() to make it
+explicit.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/iommu/iommufd/hw_pagetable.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
-index 33d142f8057d..cbddfa3ca95a 100644
---- a/drivers/iommu/iommufd/hw_pagetable.c
-+++ b/drivers/iommu/iommufd/hw_pagetable.c
-@@ -137,9 +137,10 @@ iommufd_hwpt_paging_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
- 		}
- 		hwpt->domain->owner = ops;
- 	} else {
--		hwpt->domain = iommu_domain_alloc(idev->dev->bus);
--		if (!hwpt->domain) {
--			rc = -ENOMEM;
-+		hwpt->domain = iommu_paging_domain_alloc(idev->dev);
-+		if (IS_ERR(hwpt->domain)) {
-+			rc = PTR_ERR(hwpt->domain);
-+			hwpt->domain = NULL;
- 			goto out_abort;
- 		}
- 	}
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c b/drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c
+index 87caa4a72921..763c4c2925f9 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c
+@@ -120,8 +120,8 @@ nvkm_device_tegra_probe_iommu(struct nvkm_device_tegra *tdev)
+ 	mutex_init(&tdev->iommu.mutex);
+ 
+ 	if (device_iommu_mapped(dev)) {
+-		tdev->iommu.domain = iommu_domain_alloc(&platform_bus_type);
+-		if (!tdev->iommu.domain)
++		tdev->iommu.domain = iommu_paging_domain_alloc(dev);
++		if (IS_ERR(tdev->iommu.domain))
+ 			goto error;
+ 
+ 		/*
 -- 
 2.34.1
 
