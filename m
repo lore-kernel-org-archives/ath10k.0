@@ -4,93 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77611C27C55
-	for <ath10k@archiver.kernel.org>; Mon, 10 Jun 2024 10:02:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB59DC2BA16
+	for <ath10k@archiver.kernel.org>; Wed, 12 Jun 2024 15:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Date:Message-Id:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ap6c4IUnejCX6LN2RXmfplNrXwUiUrx9CE7MWr+mWwE=; b=Nkq1QiVIlEk71TJJ66KPmsUkGH
-	ewIicb9dxcynrZb512rjX4FRAeoCcFGXtgXkEFE5bn4fgUCMaXWvKPA3lKwwJfOySUHE1ujo6XjKE
-	mpQu0w/3EYB4yzkO5S3GCZSz11huMu+6R1n31IpAQJCumklQJ4NLWSYFq6dlJb2gRFfLieoKDJut4
-	Rdap4JQaiwRX6s0lV3zoV1vDdHhvmA7j3Pp8lrbiNqsOCKDx0rQVJF9ksVRRB56wCE0sm9SR4jGQb
-	RBHly5FC5PapS2PzPev8bnF01WyCv5ywA8bPcup7TsntKugwB3QRYEcVlbBcrZFnR7Vjrsimz4oTj
-	pevUm6dA==;
+	bh=u4ZRYpyRksJXAC7eqQUrubX0WAADsS963fxbHZmjvRY=; b=0RlzhQoKpLawm0L0u8Ym3GxJaf
+	eudAV0832diycdUz0MHqxo9KecVyNVlkKZ5b3MZ/C2ZUrDJ76sZjD6C3/IOAIWS/8WFCE2iZtKonS
+	K/g+G4E6mxsWYucEfNM4IvbTn6l7slO2SfPBMCcn7InjOoAnbZTCdgWNj0qlb46khQeguTqz+YLWx
+	N+1vBWgOhywrYxz5Gbvhrj65N9sZB58r8Vhl+Cfwq8l5D6mkXBTdy8U8mqgJfpCXGnlSyqlS8Q2EJ
+	3NwMjKfDgBmSub+kgnZV8/wb3PkmpDnc3mcrsB4egqsbYACmbtN3x9HkibF1/aLvDIekxyNN17mxK
+	kCXrJ8UA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGbrG-00000004Y1u-042n;
-	Mon, 10 Jun 2024 10:02:34 +0000
-Received: from mgamail.intel.com ([192.198.163.13])
+	id 1sHQKS-0000000DG5D-0GsB;
+	Wed, 12 Jun 2024 15:56:04 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGasO-00000004Ku8-3qLM;
-	Mon, 10 Jun 2024 08:59:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718009981; x=1749545981;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=v9ajyqSmZ+fyr4zUzek4FxHLrUQ5pgq0PnnoHeKwwEA=;
-  b=DJyCd1dcvcmGdiNXAQlXkK7s2cB+tnLSr7LihVYbrwzzkg8ZSqdrJhA/
-   ELDVoGNzaUtg+7PYnjvNUaeB0GOrf7fuHGvPYUv7JN4bOwLKKAz+qXXnJ
-   40rALsli6j/LobF2z9Uz2rKqzqIxkM+l6LWxbZIbOXI1L5EQflNcSYtVT
-   KXIzx//AtWojFssz6uCDN/hKh5604O/bvbH61V/chiZ+9G0RCSVG+uZdC
-   ujxdYmLXBpzFWZS4Z3OSz6BwjEfDwvkxlG9xgd1g/i5iyFJPciXSGuwKL
-   NdExjVIuYddtRAM7DPCypNBkRwO/fazV7FTNncYPQK4xRVoHezl71ZnJb
-   A==;
-X-CSE-ConnectionGUID: bMGVxhGYSi2nhxqR5xJT+w==
-X-CSE-MsgGUID: Pcm8AK8xRs24lcvG1Xa0AA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11098"; a="17581851"
-X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="17581851"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 01:59:29 -0700
-X-CSE-ConnectionGUID: GkBRboXmTSyQf4zFvmmGBw==
-X-CSE-MsgGUID: c0ivZk7UTYCnDo9fVTczuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="43432808"
-Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 10 Jun 2024 01:59:24 -0700
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Kevin Tian <kevin.tian@intel.com>
-Cc: Yi Liu <yi.l.liu@intel.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	mst@redhat.com,
-	Jason Wang <jasowang@redhat.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Mikko Perttunen <mperttunen@nvidia.com>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	ath10k@lists.infradead.org,
-	ath11k@lists.infradead.org,
-	iommu@lists.linux.dev,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH v3 14/21] RDMA/usnic: Use iommu_paging_domain_alloc()
-Date: Mon, 10 Jun 2024 16:55:48 +0800
-Message-Id: <20240610085555.88197-15-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240610085555.88197-1-baolu.lu@linux.intel.com>
-References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
+	id 1sHQKO-0000000DG3L-1X3O;
+	Wed, 12 Jun 2024 15:56:02 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id ADF7F614E9;
+	Wed, 12 Jun 2024 15:55:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7AEC7C4DDE4;
+	Wed, 12 Jun 2024 15:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718207757;
+	bh=OGohKvk0MjWf9+Q8+mvrBX+1BAlKKRyUXLbfH75xyb4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=kYWVzenO6v46dav7m+6VeeBQvWtkfZ2ijSROLzZNF2xhVox8NT4g6D7nEQ7Yr1CvD
+	 QbMqbzoNwKvtHxN4oOUSJGsdzFSOiqxLCA02gKqMCQ7TCsZzzusBONx5M/RWdCVpV3
+	 EiLccKqgRHfAnZUsG10WiKCsIr5ffuOoIqg1qhcsU6IhDG8FGsX5pkowWNVMy10FlC
+	 cn2EJB/8N7UtSBq02dCqRuSQs3PZ1MDiLAg7XtxdpzyjShLg11I47hWenlonizyvmL
+	 MeVPPNyid+I2VhiIZBpPj5WbK56sRWz78MH6UY8PKtaaCMSFrdgOOixPo+5vEX+bSG
+	 8/iqEXeUVgsUQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 61107C43618;
+	Wed, 12 Jun 2024 15:55:57 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH] tracing/treewide: Remove second parameter of
+ __assign_str()
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: <171820775738.32393.13116890369510221266.git-patchwork-notify@kernel.org>
+Date: Wed, 12 Jun 2024 15:55:57 +0000
+References: <20240516133454.681ba6a0@rorschach.local.home>
+In-Reply-To: <20240516133454.681ba6a0@rorschach.local.home>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, ath10k@lists.infradead.org,
+ Julia.Lawall@inria.fr, linux-s390@vger.kernel.org, dev@openvswitch.org,
+ linux-cifs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+ iommu@lists.linux.dev, ath11k@lists.infradead.org,
+ linux-media@vger.kernel.org, linux-wpan@vger.kernel.org,
+ linux-pm@vger.kernel.org, selinux@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+ linux-erofs@lists.ozlabs.org, virtualization@lists.linux.dev,
+ linux-sound@vger.kernel.org, linux-block@vger.kernel.org,
+ ocfs2-devel@lists.linux.dev, mathieu.desnoyers@efficios.com,
+ linux-cxl@vger.kernel.org, linux-tegra@vger.kernel.org,
+ intel-xe@lists.freedesktop.org, linux-edac@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+ linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+ linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+ linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+ ath12k@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
+ mhiramat@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ freedreno@lists.freedesktop.org, linux-nfs@vger.kernel.org,
+ linux-btrfs@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240610_015941_404853_6AAB9773 
-X-CRM114-Status: UNSURE (   9.99  )
+X-CRM114-CacheID: sfid-20240612_085600_484220_5A6FC0DF 
+X-CRM114-Status: UNSURE (   8.17  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -106,37 +97,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-usnic_uiom_alloc_pd() allocates a paging domain for a given device.
-In this case, iommu_domain_alloc(dev->bus) is equivalent to 
-iommu_paging_domain_alloc(dev). Replace it as iommu_domain_alloc()
-has been deprecated.
+Hello:
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/infiniband/hw/usnic/usnic_uiom.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This patch was applied to jaegeuk/f2fs.git (dev)
+by Steven Rostedt (Google) <rostedt@goodmis.org>:
 
-diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
-index 84e0f41e7dfa..f948b76f984d 100644
---- a/drivers/infiniband/hw/usnic/usnic_uiom.c
-+++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
-@@ -443,11 +443,11 @@ struct usnic_uiom_pd *usnic_uiom_alloc_pd(struct device *dev)
- 	if (!pd)
- 		return ERR_PTR(-ENOMEM);
- 
--	pd->domain = domain = iommu_domain_alloc(dev->bus);
--	if (!domain) {
-+	pd->domain = domain = iommu_paging_domain_alloc(dev);
-+	if (IS_ERR(domain)) {
- 		usnic_err("Failed to allocate IOMMU domain");
- 		kfree(pd);
--		return ERR_PTR(-ENOMEM);
-+		return ERR_CAST(domain);
- 	}
- 
- 	iommu_set_fault_handler(pd->domain, usnic_uiom_dma_fault, NULL);
+On Thu, 16 May 2024 13:34:54 -0400 you wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> [
+>    This is a treewide change. I will likely re-create this patch again in
+>    the second week of the merge window of v6.10 and submit it then. Hoping
+>    to keep the conflicts that it will cause to a minimum.
+> ]
+> 
+> [...]
+
+Here is the summary with links:
+  - [f2fs-dev] tracing/treewide: Remove second parameter of __assign_str()
+    https://git.kernel.org/jaegeuk/f2fs/c/2c92ca849fcc
+
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
