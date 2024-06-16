@@ -4,70 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60398C27C53
-	for <ath10k@archiver.kernel.org>; Thu, 13 Jun 2024 02:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 579CCC27C53
+	for <ath10k@archiver.kernel.org>; Sun, 16 Jun 2024 13:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Subject:From:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=isNHRNimu9d7CowA0SSWrV+SpfOwhIo7gIekRI20WFQ=; b=4/MxlGNuiypckinl/tHC7qzmjq
-	UpDGV8lGxvX6IJtOVX3HwVNUUSa7CgoKlSnIouxTKU9tEHAA70f+Wb1/0/k0hWb4P14808l/lQ78O
-	DQj2PS/ihRyF80/tPVWZhAdNSezIO4enZZKlqKCT4WdbvUeDvL/MewxSpMYqTWsVhWUM9zTRw7oiH
-	Mynw+dLWGwhrM7IcuhypqO8G+vv5ns3fO1eUoO28CJt738EsVwnAjubJKxUkDkBsYwm7+4SDWgxnd
-	LYr4DtLJNmGmd/ql63zGAy+8daOCbT95mezCS17ATKz0ipG7OE1huwFV2dt5UUBzba+yptNRNDqtU
-	w4Fkx2QQ==;
+	bh=/0wZfPI4oPePZLNgKpifruFZHJZT8e4jpsh4Ca8qO94=; b=bwHG5sG7O7hUgs9odwYhz0xZ6y
+	SiOtFzFjjR3sJQURDXqdUFVIApGWHgs2hoqCz6QAdC5ZAUqrdjP7tKjSj0dkzHRKkoCMc+F3TLKIE
+	DTjGZH8Fy9N9oepuAMAcYIYCuvLfWBj8hDCkr0T2UTyUgQ3MFNy6o8oRs2UWBUOiOhp8KMzCOc7P1
+	OCUeizmYxrwoQ7zr2l5LPx4Q8dIKriJao6QX3AdB78ipze7LlWpDA5uglbAN5xbfhxl/puLNJfQQP
+	BcW+nGrUoObvuW29byLb3EPY/3lZc8G85QfK75+0xuPCqHVf677GKATx8GmeXAR74ca+SfRD5HcbA
+	CU2xj2wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHaT0-0000000EtMX-2OOB;
-	Thu, 13 Jun 2024 02:45:34 +0000
-Received: from mgamail.intel.com ([198.175.65.17])
+	id 1sIpf4-00000007ZVl-0Tb8;
+	Sun, 16 Jun 2024 13:11:10 +0000
+Received: from mx3.molgen.mpg.de ([141.14.17.11])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHaSu-0000000EtLi-3jJb
+	id 1sIpez-00000007ZUj-1i7F
 	for ath10k@lists.infradead.org;
-	Thu, 13 Jun 2024 02:45:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718246729; x=1749782729;
-  h=date:from:to:cc:subject:message-id;
-  bh=8L+cijEi+GlfRkqUL9Cl5k4k8D30Daver+l2DS1BmDw=;
-  b=eSkiBqMoDsjnMiByWKRJOE4an3Cj9WeZ3JbP3U/IoBA20i5Q8rAmU24F
-   BBw3qd/KTeArEDCU0yfLQLyqQ62sJxKheFL5o0QgeeTlMN7Wtm3pSdfdN
-   vWhpCczBMQ9JSDK1lvbwldTg0kwy0BaQewn1WTejJY+442Hrk9Z5toO+n
-   WvHKZgSQKFGmtXHa7YszGjjzYj+SHj6usynKUoA0gkhB5zpBe+HfyDFss
-   TXPbo3zbLrwWXFumO24AVqBnJN8ASELaph3pFUPdq882WuSNBaQ7SvTM+
-   EEM+lygsBdxbcA1ipqxzxYm0pYZ6dTYzn4pvyv/Wv4icCpvxy1yCR8k1x
-   A==;
-X-CSE-ConnectionGUID: 7StaMBIiSBm2BZQ2f7WcWw==
-X-CSE-MsgGUID: ptGQl32RT0G3DgYoQQlnvg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11101"; a="15166313"
-X-IronPort-AV: E=Sophos;i="6.08,234,1712646000"; 
-   d="scan'208";a="15166313"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2024 19:45:28 -0700
-X-CSE-ConnectionGUID: XL8XUcrCRbK3mooIKlgrMw==
-X-CSE-MsgGUID: YShCMmD/Ri+ucnbEh2QHtQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,234,1712646000"; 
-   d="scan'208";a="44889944"
-Received: from lkp-server01.sh.intel.com (HELO 628d7d8b9fc6) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 12 Jun 2024 19:45:26 -0700
-Received: from kbuild by 628d7d8b9fc6 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sHaSq-00028k-2M;
-	Thu, 13 Jun 2024 02:45:24 +0000
-Date: Thu, 13 Jun 2024 10:45:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master-pending] BUILD SUCCESS
- 28c712e2cb963cb45deb96519cb1d02d3439d79a
-Message-ID: <202406131012.jkOwEuqC-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	Sun, 16 Jun 2024 13:11:08 +0000
+Received: from [172.16.184.163] (i68973E31.versanet.de [104.151.62.49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 743FC61E5FE01;
+	Sun, 16 Jun 2024 15:10:34 +0200 (CEST)
+Message-ID: <fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de>
+Date: Sun, 16 Jun 2024 15:10:32 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: invalid vht params rate 1920 100kbps nss 2 mcs 9
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240612_194529_007463_F1415791 
-X-CRM114-Status: UNSURE (   3.76  )
+X-CRM114-CacheID: sfid-20240616_061105_620411_C80C6297 
+X-CRM114-Status: UNSURE (   3.03  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,129 +64,108 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master-pending
-branch HEAD: 28c712e2cb963cb45deb96519cb1d02d3439d79a  Merge branch 'pending' into master-pending
+Dear Linux folks,
 
-elapsed time: 1879m
 
-configs tested: 109
-configs skipped: 3
+Linux 6.10-rc3 (commit a3e18a540541) logged the warning below when 
+connecting to a public WiFi:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+     ath10k_pci 0000:3a:00.0: invalid vht params rate 1920 100kbps nss 2 
+mcs 9
 
-tested configs:
-alpha                             allnoconfig   gcc-13.2.0
-alpha                            allyesconfig   gcc-13.2.0
-alpha                               defconfig   gcc-13.2.0
-arc                               allnoconfig   gcc-13.2.0
-arc                                 defconfig   gcc-13.2.0
-arc                   randconfig-001-20240613   gcc-13.2.0
-arc                   randconfig-002-20240613   gcc-13.2.0
-arm                               allnoconfig   clang-19
-arm                                 defconfig   clang-14
-arm                   randconfig-001-20240613   gcc-13.2.0
-arm                   randconfig-002-20240613   clang-17
-arm                   randconfig-003-20240613   clang-19
-arm                   randconfig-004-20240613   clang-19
-arm64                             allnoconfig   gcc-13.2.0
-arm64                               defconfig   gcc-13.2.0
-arm64                 randconfig-001-20240613   gcc-13.2.0
-arm64                 randconfig-002-20240613   clang-19
-arm64                 randconfig-003-20240613   clang-19
-arm64                 randconfig-004-20240613   clang-19
-csky                              allnoconfig   gcc-13.2.0
-csky                                defconfig   gcc-13.2.0
-csky                  randconfig-001-20240613   gcc-13.2.0
-csky                  randconfig-002-20240613   gcc-13.2.0
-hexagon                          allmodconfig   clang-19
-hexagon                           allnoconfig   clang-19
-hexagon                          allyesconfig   clang-19
-hexagon                             defconfig   clang-19
-hexagon               randconfig-001-20240613   clang-19
-hexagon               randconfig-002-20240613   clang-15
-i386         buildonly-randconfig-001-20240612   gcc-13
-i386         buildonly-randconfig-002-20240612   gcc-8
-i386         buildonly-randconfig-003-20240612   gcc-13
-i386         buildonly-randconfig-004-20240612   clang-18
-i386         buildonly-randconfig-005-20240612   gcc-13
-i386         buildonly-randconfig-006-20240612   clang-18
-i386                  randconfig-001-20240612   gcc-8
-i386                  randconfig-002-20240612   clang-18
-i386                  randconfig-003-20240612   clang-18
-i386                  randconfig-004-20240612   clang-18
-i386                  randconfig-005-20240612   gcc-13
-i386                  randconfig-006-20240612   clang-18
-i386                  randconfig-011-20240612   clang-18
-i386                  randconfig-012-20240612   clang-18
-i386                  randconfig-013-20240612   clang-18
-i386                  randconfig-014-20240612   gcc-7
-i386                  randconfig-015-20240612   gcc-13
-i386                  randconfig-016-20240612   gcc-7
-loongarch                        allmodconfig   gcc-13.2.0
-loongarch                         allnoconfig   gcc-13.2.0
-loongarch                           defconfig   gcc-13.2.0
-loongarch             randconfig-001-20240613   gcc-13.2.0
-loongarch             randconfig-002-20240613   gcc-13.2.0
-m68k                             allmodconfig   gcc-13.2.0
-m68k                              allnoconfig   gcc-13.2.0
-m68k                             allyesconfig   gcc-13.2.0
-m68k                                defconfig   gcc-13.2.0
-microblaze                        allnoconfig   gcc-13.2.0
-microblaze                       allyesconfig   gcc-13.2.0
-microblaze                          defconfig   gcc-13.2.0
-mips                              allnoconfig   gcc-13.2.0
-mips                             allyesconfig   gcc-13.2.0
-nios2                            allmodconfig   gcc-13.2.0
-nios2                             allnoconfig   gcc-13.2.0
-nios2                               defconfig   gcc-13.2.0
-nios2                 randconfig-001-20240613   gcc-13.2.0
-nios2                 randconfig-002-20240613   gcc-13.2.0
-openrisc                          allnoconfig   gcc-13.2.0
-openrisc                            defconfig   gcc-13.2.0
-parisc                            allnoconfig   gcc-13.2.0
-parisc                              defconfig   gcc-13.2.0
-parisc                randconfig-001-20240613   gcc-13.2.0
-parisc                randconfig-002-20240613   gcc-13.2.0
-parisc64                            defconfig   gcc-13.2.0
-powerpc                           allnoconfig   gcc-13.2.0
-powerpc               randconfig-001-20240613   clang-19
-powerpc               randconfig-002-20240613   clang-19
-powerpc               randconfig-003-20240613   clang-19
-powerpc64             randconfig-001-20240613   clang-19
-powerpc64             randconfig-002-20240613   clang-19
-powerpc64             randconfig-003-20240613   gcc-13.2.0
-riscv                             allnoconfig   gcc-13.2.0
-riscv                               defconfig   clang-19
-riscv                 randconfig-001-20240613   clang-19
-riscv                 randconfig-002-20240613   clang-19
-s390                              allnoconfig   clang-19
-s390                                defconfig   clang-19
-s390                  randconfig-001-20240613   gcc-13.2.0
-s390                  randconfig-002-20240613   gcc-13.2.0
-sh                                allnoconfig   gcc-13.2.0
-sh                                  defconfig   gcc-13.2.0
-sh                    randconfig-001-20240613   gcc-13.2.0
-sh                    randconfig-002-20240613   gcc-13.2.0
-sparc                             allnoconfig   gcc-13.2.0
-sparc                               defconfig   gcc-13.2.0
-sparc64                             defconfig   gcc-13.2.0
-sparc64               randconfig-001-20240613   gcc-13.2.0
-sparc64               randconfig-002-20240613   gcc-13.2.0
-um                               allmodconfig   clang-19
-um                                allnoconfig   clang-17
-um                               allyesconfig   gcc-13
-um                                  defconfig   clang-19
-um                             i386_defconfig   gcc-13
-um                    randconfig-001-20240613   gcc-9
-um                    randconfig-002-20240613   gcc-9
-um                           x86_64_defconfig   clang-15
-x86_64       buildonly-randconfig-001-20240613   gcc-13
-xtensa                            allnoconfig   gcc-13.2.0
-xtensa                randconfig-001-20240613   gcc-13.2.0
-xtensa                randconfig-002-20240613   gcc-13.2.0
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Kind regards,
+
+Paul
+
+
+```
+Jun 16 11:38:15 abreu kernel: Linux version 
+6.10.0-rc3-00174-ga3e18a540541 (build@bohemianrhapsody.molgen.mpg.de) 
+(gcc (Debian 13.2.0-25) 13.2.0, GNU ld (GNU Binutils for Debian) 2.42) 
+#196 SMP PREEMPT_DYNAMIC Sun Jun 16 06:02:29 CEST 2024
+[…]
+Jun 16 11:38:15 abreu kernel: DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 
+2.21.0 06/02/2022
+[…]
+Jun 16 11:38:33 abreu kernel: ath10k_pci 0000:3a:00.0: enabling device 
+(0000 -> 0002)
+Jun 16 11:38:33 abreu kernel: ath10k_pci 0000:3a:00.0: pci irq msi 
+oper_irq_mode 2 irq_mode 0 reset_mode 0
+Jun 16 11:38:34 abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 
+target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+Jun 16 11:38:34 abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 
+debugfs 0 tracing 0 dfs 0 testmode 0
+Jun 16 11:38:34 abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver 
+WLAN.RM.4.4.1-00288- api 6 features wowlan,ignore-otp,mfp crc32 bf907c7c
+Jun 16 11:38:34 abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 
+bmi_id N/A crc32 d2863f91
+Jun 16 11:38:34 abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 
+wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+Jun 16 11:38:34 abreu kernel: ath: EEPROM regdomain: 0x6c
+Jun 16 11:38:34 abreu kernel: ath: EEPROM indicates we should expect a 
+direct regpair map
+Jun 16 11:38:34 abreu kernel: ath: Country alpha2 being used: 00
+Jun 16 11:38:34 abreu kernel: ath: Regpair used: 0x6c
+[…]
+Jun 16 11:39:20 abreu kernel: wlp58s0: authenticate with 
+70:18:a7:0e:f7:cb (local address=9c:b6:d0:d1:6a:b1)
+Jun 16 11:39:20 abreu kernel: wlp58s0: send auth to 70:18:a7:0e:f7:cb 
+(try 1/3)
+Jun 16 11:39:20 abreu kernel: wlp58s0: send auth to 70:18:a7:0e:f7:cb 
+(try 2/3)
+Jun 16 11:39:20 abreu kernel: wlp58s0: send auth to 70:18:a7:0e:f7:cb 
+(try 3/3)
+Jun 16 11:39:20 abreu kernel: wlp58s0: authentication with 
+70:18:a7:0e:f7:cb timed out
+Jun 16 11:39:22 abreu kernel: wlp58s0: authenticate with 
+4c:bc:48:39:16:ab (local address=9c:b6:d0:d1:6a:b1)
+Jun 16 11:39:22 abreu kernel: wlp58s0: send auth to 4c:bc:48:39:16:ab 
+(try 1/3)
+Jun 16 11:39:22 abreu kernel: wlp58s0: send auth to 4c:bc:48:39:16:ab 
+(try 2/3)
+Jun 16 11:39:22 abreu kernel: wlp58s0: send auth to 4c:bc:48:39:16:ab 
+(try 3/3)
+Jun 16 11:39:22 abreu kernel: wlp58s0: authentication with 
+4c:bc:48:39:16:ab timed out
+Jun 16 11:39:24 abreu kernel: wlp58s0: authenticate with 
+4c:bc:48:38:d8:4b (local address=9c:b6:d0:d1:6a:b1)
+Jun 16 11:39:24 abreu kernel: wlp58s0: send auth to 4c:bc:48:38:d8:4b 
+(try 1/3)
+Jun 16 11:39:24 abreu kernel: wlp58s0: authenticated
+Jun 16 11:39:24 abreu kernel: wlp58s0: associate with 4c:bc:48:38:d8:4b 
+(try 1/3)
+Jun 16 11:39:24 abreu kernel: wlp58s0: RX AssocResp from 
+4c:bc:48:38:d8:4b (capab=0x1101 status=0 aid=30)
+Jun 16 11:39:24 abreu kernel: wlp58s0: associated
+Jun 16 11:39:24 abreu kernel: wlp58s0: Limiting TX power to 20 (23 - 3) 
+dBm as advertised by 4c:bc:48:38:d8:4b
+Jun 16 11:39:50 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:39:56 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:40:02 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:40:08 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:40:20 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:40:26 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:40:32 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:40:38 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:40:43 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:40:49 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:41:01 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:41:13 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:41:19 abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht 
+params rate 1920 100kbps nss 2 mcs 9
+Jun 16 11:41:21 abreu kernel: wlp58s0: deauthenticating from 
+4c:bc:48:38:d8:4b by local choice (Reason: 3=DEAUTH_LEAVING)
 
