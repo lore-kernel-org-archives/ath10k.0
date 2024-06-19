@@ -4,88 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A4D9C27C4F
-	for <ath10k@archiver.kernel.org>; Tue, 18 Jun 2024 10:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3956C27C53
+	for <ath10k@archiver.kernel.org>; Wed, 19 Jun 2024 14:21:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=W+1G6ctf3dEufzv8hnxv/2f/+ildfxpX9w/HVKI85qk=; b=t8H7CKutyYd4FVVbgw74pMSKRh
-	5LB2aFe+X8HDLgEmg46QhPGq/Woj5D8sv+SC1aofPI4sltEV3cb9jlafxmo45b0IqGtKzUkAaIKY9
-	B/wHpNHiaPiPLDp1FN1tyt6SLTPOdxgck6YMdzfGohshOgI4YQSmFKf/hiMAONgUnag3yFj9cM8VS
-	XlbkZ4UjmDzXbqlUvNscUD14tDjWlRi5hNwFQufmQ+jMYu9hGwG69dNS0aqiHmPy/Aqz5Nmxpj6f7
-	22xRlq8L+1l2pIKX7DoCrrmi3R8uhTPeZEarT48QNea7FePxqCZ8HyAYvJBMKzJhJzlUZu++K2WIM
-	HopM/oxA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7yoE1PBMeOt8AWWOCfirQIQiAXfywLWQ1wTXnwAB5no=; b=fDQso8iQltLCrKuB7X2q/3MBj5
+	/9hECO7oU+qsSY/qVtr1554CiJ+zwqsnnKue47m/KlUBE6ZZ5tlX20PPS+Gt1WCMrZ+kYMgXLjxD7
+	Viz1PcX67sE9T9NivNGKt6mYTLo7lkzlW4pTnAdK6tsm8JfQVPAJ8HkKPyXQKZxKSV/byJfCdiygz
+	1mribj7N2GZBi4R6nIYob6v1dPKjQl4G/+UsNOFITNml2S96YuY1ZhL2pGwT1+KlXQvxObFhju01V
+	xALq92tQk/z4p0VgsPcCjz29pHtbnGw9GhVfLkOVX+6sAMMJz3RGp6cUtdDflMC5LLzZdkSE0OzTw
+	7tIYPDqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJWO5-0000000ERbW-2Tpx;
-	Tue, 18 Jun 2024 10:48:29 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1sJwBE-00000001USr-3tWV;
+	Wed, 19 Jun 2024 14:20:56 +0000
+Received: from mail-qv1-xf2b.google.com ([2607:f8b0:4864:20::f2b])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJWO2-0000000ERZG-1few
+	id 1sJwBB-00000001URv-3sq3
 	for ath10k@lists.infradead.org;
-	Tue, 18 Jun 2024 10:48:28 +0000
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45IAYuEr013981;
-	Tue, 18 Jun 2024 10:48:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	W+1G6ctf3dEufzv8hnxv/2f/+ildfxpX9w/HVKI85qk=; b=nyjzN/2Cz/gucEpP
-	hkKGqS3w1g+QMD6bAzZnGDklU3wtLTNu5e0ga+I60e19OQ32FF6nfgJWUEI+ZhIF
-	rmRddjcinT4a5z/q8L76zmyU+nQLyXRH4ZGjrXqt+iXxa2G7g+/3Ktpcuw59eMr0
-	SyrnwQWm6shrCZE5MsKqRJ+vI8ioQbjNLfMY3uqaMc98DpS4qFNsAeKfO9f8EW/U
-	sQCUcHMpeG9FM9y2W14EW44Hz7v6QN7P5tVOHjl3EbKuKYvKMxzv/NyMT9uXgb9M
-	cgh7WBp908nU1paxNyhfuheqFJJ2AgEW1/2ozI415SgvgoiUI1JodpnmmHXvGKzt
-	y19gAQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3yu8m1g0u3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 18 Jun 2024 10:48:17 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 45IAmE2S026366
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 18 Jun 2024 10:48:14 GMT
-Received: from [10.231.195.67] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 18 Jun
- 2024 03:48:13 -0700
-Message-ID: <4613abff-5718-4250-a37e-127dd5a4cce6@quicinc.com>
-Date: Tue, 18 Jun 2024 18:48:10 +0800
+	Wed, 19 Jun 2024 14:20:55 +0000
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-6ad86f3cc34so30554396d6.1
+        for <ath10k@lists.infradead.org>; Wed, 19 Jun 2024 07:20:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1718806852; x=1719411652; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7yoE1PBMeOt8AWWOCfirQIQiAXfywLWQ1wTXnwAB5no=;
+        b=H+eIuBX/8gEOO3Ad8zf2X6jGNSZoXed01kkQa3Pvg+QHm1BshXOD3L6naux1nl+YzP
+         bM8rySEY8IN0bpSdG1JrVbCaaEmxglVT3FhYSGQtxYFQZFrsgNDvGbLFjqHjBXd3ZH2M
+         Z2pi8wFdalD2+nkdLm/WTFrPuA+93KT66uVu2LbW6fRXlur5TRJODDWIzhZH9UAdiGbR
+         d60XJb/ZvEjs6ghLLhYonoTSZuiDoGhYfPXUEedoPsCZ+lDjWLBxUBlIvwIoyDC1+Uo1
+         Ves/i7ySln9T/2MFGi/VYX3or96ba8+3htxtBMf76FGYad5IAEfgXW6oil8Kguk0/83A
+         1Teg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718806852; x=1719411652;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7yoE1PBMeOt8AWWOCfirQIQiAXfywLWQ1wTXnwAB5no=;
+        b=LLj3+e02DHzSBdCAbai56Yk4PG4dZIw2eRqqZ4Dl6FLEX3MXl+WVgdYGMMHXzbzeH3
+         9Yg0/sstAU16UtfYum/5wyAkTKDb5TlCOd161fy99mDZe4CU/VTuKagZcGknl9yISLZr
+         +zZivvVoEW+B/OegAB+CX2XKXFCfqvJBWMRRWm6BLrV1hXqlF4wVU+lO66PmzgwMPpLl
+         ZR7mZDHfd6BK7oAZ2/cMN9zZ1gvuEh/fRbuZeLHVvMvtpCbvRGXdH6x2E/wY7ktPjiMl
+         h8j+YGfZ7o7jX9WhseMHmoH0LPevFyoSI1UiaRDtaKuoSKzVsmBTpob+vs/ib1/hONO6
+         0OGw==
+X-Forwarded-Encrypted: i=1; AJvYcCXLSmZkp3/Q+gMZq1GDQnZcyzT782nVUy5o/7RC2GSXCc+9Smd/L1UmQCJad9CITPnoogSVM2cuCufm0sLQ6D9OwJs8DDxeIMdhwQ==
+X-Gm-Message-State: AOJu0YxsNx9KvNOFrFwpLr1QTvZLxAmAwQFW0sPOEnh0NY/xsfBZUZuV
+	2Fhewz+Q4mqqH15YewhiPZ7tOQ7tc56+t2xMNyBZ8Ka6cC80ri3riAGe+rbCcdw=
+X-Google-Smtp-Source: AGHT+IHRnNfM3kpcWftEa4vzfduj3t2OxKbu1f062TE8ncSp4oMlwh+It4VOxlc2xlXVn+nW/690wQ==
+X-Received: by 2002:a0c:f093:0:b0:6b5:a5:f5f2 with SMTP id 6a1803df08f44-6b501eabd0emr29525536d6.55.1718806852061;
+        Wed, 19 Jun 2024 07:20:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b503445091sm9427136d6.101.2024.06.19.07.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jun 2024 07:20:51 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1sJwB8-004YTZ-Pt;
+	Wed, 19 Jun 2024 11:20:50 -0300
+Date: Wed, 19 Jun 2024 11:20:50 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Kevin Tian <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Alex Williamson <alex.williamson@redhat.com>, mst@redhat.com,
+	Jason Wang <jasowang@redhat.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+	iommu@lists.linux.dev, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/21] iommu: Add iommu_paging_domain_alloc() interface
+Message-ID: <20240619142050.GG791043@ziepe.ca>
+References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
+ <20240610085555.88197-2-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: invalid vht params rate 1920 100kbps nss 2 mcs 9
-To: Kalle Valo <kvalo@kernel.org>, James Prestwood <prestwoj@gmail.com>
-CC: Paul Menzel <pmenzel@molgen.mpg.de>, <linux-wireless@vger.kernel.org>,
-        <ath10k@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
-References: <fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de>
- <1faa7eee-ed1e-477b-940d-a5cf4478cf73@gmail.com> <87iky7mvxt.fsf@kernel.org>
- <37ba6cb0-d887-4fcf-b7dc-c93a5fc5900f@gmail.com> <875xu6mtgh.fsf@kernel.org>
-Content-Language: en-US
-From: Baochen Qiang <quic_bqiang@quicinc.com>
-In-Reply-To: <875xu6mtgh.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: JGUi_qz77y87ErCxy18sxHu4Yl-3AGTP
-X-Proofpoint-GUID: JGUi_qz77y87ErCxy18sxHu4Yl-3AGTP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-18_02,2024-06-17_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=980 spamscore=0 malwarescore=0 mlxscore=0
- phishscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2405170001 definitions=main-2406180079
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240610085555.88197-2-baolu.lu@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240618_034826_465595_CE29C263 
-X-CRM114-Status: GOOD (  19.59  )
+X-CRM114-CacheID: sfid-20240619_072054_078913_7E38D707 
+X-CRM114-Status: GOOD (  12.64  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,71 +110,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+On Mon, Jun 10, 2024 at 04:55:35PM +0800, Lu Baolu wrote:
+> Commit <17de3f5fdd35> ("iommu: Retire bus ops") removes iommu ops from
+> bus. The iommu subsystem no longer relies on bus for operations. So the
+> bus parameter in iommu_domain_alloc() is no longer relevant.
+> 
+> Add a new interface named iommu_paging_domain_alloc(), which explicitly
+> indicates the allocation of a paging domain for DMA managed by a kernel
+> driver. The new interface takes a device pointer as its parameter, that
+> better aligns with the current iommu subsystem.
+> 
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  include/linux/iommu.h |  6 ++++++
+>  drivers/iommu/iommu.c | 20 ++++++++++++++++++++
+>  2 files changed, 26 insertions(+)
 
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-On 6/18/2024 6:33 PM, Kalle Valo wrote:
-> + baochen
-> 
-> James Prestwood <prestwoj@gmail.com> writes:
-> 
->> Hi Kalle,
->>
->> On 6/17/24 8:27 AM, Kalle Valo wrote:
->>> James Prestwood <prestwoj@gmail.com> writes:
->>>
->>>> Hi Paul,
->>>>
->>>> On 6/16/24 6:10 AM, Paul Menzel wrote:
->>>>> Dear Linux folks,
->>>>>
->>>>>
->>>>> Linux 6.10-rc3 (commit a3e18a540541) logged the warning below when
->>>>> connecting to a public WiFi:
->>>>>
->>>>>      ath10k_pci 0000:3a:00.0: invalid vht params rate 1920 100kbps
->>>>> nss 2 mcs 9
->>>> This has been reported/discussed [1]. It was hinted that there was a
->>>> firmware fix for this, but none that I tried got rid of it. I got fed
->>>> up enough with the logs filling up with this I patched our kernel to
->>>> remove the warning. AFAICT it appears benign (?). Removing the warning
->>>> was purely "cosmetic" so other devs stopped complaining about it :)
->>>>
->>>> [1] https://www.mail-archive.com/ath10k@lists.infradead.org/msg13406.html
->>> More reliable link to the discussion:
->>>
->>> https://lore.kernel.org/ath10k/76a816d983e6c4d636311738396f97971b5523fb.1612915444.git.skhan@linuxfoundation.org/
->>>
->>> I think we should add this workaround I mentioned in 2021:
->>>
->>>     "If the firmware still keeps sending invalid rates we should add a
->>>      specific check to ignore the known invalid values, but not all of
->>>      them."
->>>
->>>     https://lore.kernel.org/ath10k/87h7mktjgi.fsf@codeaurora.org/
->>>
->>> I guess that would be mcs == 7 and rate == 1440?
->>
->> I think its more than this combination (Paul's are different). 
-> 
-> Good point.
-> 
->> So how many combinations are we willing to add here? Seems like that
->> could get out of hand if there are more than a few invalid
->> combinations. 
-> 
-> Yeah, but there haven't been that many different values reported yet,
-> right? And I expect that ath10k user base will just get smaller in the
-> future so the chances are that we will get less reports.
-> 
->> Would we also want to restrict the workaround to specific
->> hardware/firmware?
-> 
-> Good idea, limiting per hardware would be simple to implement using
-> hw_params. Of course we could even limit this per firmware version using
-> enum ath10k_fw_features, but not sure if that's worth all the extra work.
-> 
-> Baochen, do you know more about this firmware bug? Any suggestions?
-will check with firmware team first.
-
-> 
+Jason
 
