@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D70AC27C53
-	for <ath10k@archiver.kernel.org>; Wed, 19 Jun 2024 14:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A642FC27C79
+	for <ath10k@archiver.kernel.org>; Wed, 19 Jun 2024 14:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3LZUM5jfj4JrQADb+518kXqO9JR2q1Dki1G0Ben/yk4=; b=LM9eJUQBCNp2nUK5XLgklEs58t
-	XfQp+Kjg4PrcQo+NNafKZQP/f5RNQvcGbeI9/NZBPYD8XpYz/3xn21qV6073NG2E0RlXhXZb/g4zl
-	jczBcFuhiEfRfnyB1+xWPM7PL+LIQcE5w2ScstiGQwPil2x3+QfVGl053zWEhUrsX6Zf+gAY59C65
-	UvARym6T03DNMfAewOUqFYL79fnlFACtZgvu0K/zprvY6/MkM3d5voTKQHUjMruHb7S2rgoRtv/fo
-	25Z6Vn/YbEdq/tKNGcgyBffV/4pg0v/caZ8kiBQPoUKaE4dLddwzVsrvCZP6gq6dVgXRdf3qrk7zd
-	9fbLt6CQ==;
+	bh=41x36+E2nhusvTatiAF8IHTdsL8WdLUPppc5CYA4l6M=; b=V+oDnop+2oLctuvltMRCnvlJhB
+	M1aqV2n+Jq0ViKDuM5sT2xdNCKs0ssex5WRgydYEhIfkgCwwVP83CoRkKBDPbOjpvEQL0ShEJg3sj
+	CHtC5siPy1KxU8ghU9lNV6+ZEooTZ1va35DrptjR0BZycczYPHslyuDKvPZUzVO4iqL6tfahQC+7S
+	x9N76YClw5vpF5/+V/BAU3xcGDEUad0c4qrj+91cm/ScQJnvV2bGcvjVRn9O2OMV3VrWBBscZnpkM
+	NPN16NXi6DlmXROtp75PfCBJ0eZ9loPzuyQEUUru/duQdYTP6sBL06EczIsKEMW3lH08OYBJGWPOh
+	Kc+Uv+Sw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJwM5-00000001Y8q-3IPA;
-	Wed, 19 Jun 2024 14:32:09 +0000
-Received: from mail-qv1-xf2f.google.com ([2607:f8b0:4864:20::f2f])
+	id 1sJwRe-00000001auO-0vPR;
+	Wed, 19 Jun 2024 14:37:54 +0000
+Received: from mail-qk1-x72d.google.com ([2607:f8b0:4864:20::72d])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJwM2-00000001Y6D-2vwI
+	id 1sJwRX-00000001aqp-3YeU
 	for ath10k@lists.infradead.org;
-	Wed, 19 Jun 2024 14:32:08 +0000
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-6b50a68b0b3so3543226d6.0
-        for <ath10k@lists.infradead.org>; Wed, 19 Jun 2024 07:32:06 -0700 (PDT)
+	Wed, 19 Jun 2024 14:37:50 +0000
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-797dcb558ebso426138385a.2
+        for <ath10k@lists.infradead.org>; Wed, 19 Jun 2024 07:37:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1718807525; x=1719412325; darn=lists.infradead.org;
+        d=ziepe.ca; s=google; t=1718807866; x=1719412666; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3LZUM5jfj4JrQADb+518kXqO9JR2q1Dki1G0Ben/yk4=;
-        b=AfjPusuWn4sIzY4YFQBfsW7+eJZwdG4r8lCD7cDxAigHeGfnCGGSb/w4hiMFLVYkm7
-         PSUGggJi3oa1UMlIrKr7pZmZ3buteHZcq36gGOiygIXtn7gPT+h5eYq76KRZN1tmTFFX
-         HbpadvPSobXOuZK5yoHTh0Ys538sXMQG2XQWHirDlnr1ZGPzr2Vy/IVgw39zOh49atW1
-         3j7+d23fIlEykBFEnmpVjmA0eVgz/I6jUrAFagL0SX/us1x4XwpGqH2et2kT7cfiKCK8
-         bk1lUPLgx3nT/YzOfO+biYgWnG4H84Jp+m81JPdTqylpmlaz+L9YAg2q46CK/ytGYHoe
-         Sqyg==
+        bh=41x36+E2nhusvTatiAF8IHTdsL8WdLUPppc5CYA4l6M=;
+        b=WodYc+oDCgY7D9A5QeYmiMCjcdCcJwGZMkq7zXfvw4h0Ph7KxzioVe85ugdaNu3eB/
+         tQwxDaIkFX1Yy4u6mF+ufav9Ypcy4Sb+vpGFm9CdurGKNBVMaybjUv+qSsIzu8B/zlue
+         WojN09r85K3+YY/KeNhbup/9aIWjwk4nhYZR0O/gEhcH3x6usL33Tswcew3jKEzg4i86
+         rsM3HZKa5jldjBPrtnEtxGneCx/1Ekfr80hqL1Qr0Kyjmc6AguNoSoFisn4iFvQsTACh
+         H1iG2OO4/RzuyA/b34khxcXjenM8VlLLiQAbi0EilOJFl2JUSpzqMXTD9whKpai2VGas
+         RUDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718807525; x=1719412325;
+        d=1e100.net; s=20230601; t=1718807866; x=1719412666;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3LZUM5jfj4JrQADb+518kXqO9JR2q1Dki1G0Ben/yk4=;
-        b=a9JUesq+kX+fT0RCz4LuqycKfpukJCJdBBRc/mSbF7KZhyLb0tazlZHxhjZ0cW2toG
-         LWs2RxqEOHCxBjSO+0139qBa+HPjRRrK4ne5MaokbqQayznmWtDgndBaGab55yV9e09u
-         pg2ZTqAz6noG+1OtUGzCoXsp+wjbNxkBhtFRv9VfoDCJBIDdZGaJDHBuV3UOJz4kjGop
-         H3cUSdMLngdtPyxXup1BqiQJHtN/wPQh68j3OlncjzlSbJrBjh3ixoP0uS4mvYmDxwRK
-         eddw8tBOJugWmvN6Z4BbG22OdXYmnmfUIK2ccHXZOyuP+J5N/M5cSl0fxXvwyDXcuR3P
-         5bDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX/iEcSIYglg8FWfCdaFw3fDaVAx4Zm9/iLZl5eBanNHSRrYEuUXnoyNemCeOp8haMCbe8TgaNQ31VSkoZhJ+kB8tPlhLfLKD00tA==
-X-Gm-Message-State: AOJu0Yz+gUP0aSNJdAXNtHEp56rw6DsLYJAaB19tADsvtEKXilQrVFcU
-	fhEGHzX/P30bfGTsSSpEaVdUnIYCX+x022pXMluT2ArySD8qaDMRB2KsHhj/3KgcbF9AwoA7hmB
-	X
-X-Google-Smtp-Source: AGHT+IGuQBogl5nnCa0xO+oPgBraH+EqrP6Ubhg3FSeuAcnXv1sZiKKYgQ7jm2DbFVYX9xP9hURczQ==
-X-Received: by 2002:ad4:5f8b:0:b0:6b0:72ac:b306 with SMTP id 6a1803df08f44-6b2e22d60bdmr86925786d6.1.1718807525299;
-        Wed, 19 Jun 2024 07:32:05 -0700 (PDT)
+        bh=41x36+E2nhusvTatiAF8IHTdsL8WdLUPppc5CYA4l6M=;
+        b=vePxUViWI3GNGvndS6jBQ2H+fnyVJ/JYHQo5UJjezvqiETMrKfJITEi+MHuks9dux4
+         wBr2+Zd3oYEqPkj3u3THM1eCwpfCGNP3Nhdya5YmIyZu9urB933SWxcp88PY+5BZi+W+
+         SXY2FuJ/W8JvNahY2OUuXpHe2+v01DHg/7QEKI1Y8uzRwIBIVi9Y0HVPKW3HQV+iI5Hs
+         JTTQXTRPfaMteInR93E6E7WmeHATVSt3t91woPGulEQ7XlnT5cJ59D/SHPzZWwScRn02
+         5OYVS/5PRvOghWndsb7/2088Pb005Qk5X2w1aJFbjfKfmrZ7o7neOaCT+4B5UBVay/hq
+         vmsA==
+X-Forwarded-Encrypted: i=1; AJvYcCVwiz4LYsDnUUEeJg7fNH3EGWY2k9MiRTRoWFgQ4hu7mYYilBoo3x0S5aOZz5azi6L990HRtCur0yNkI5I7ar9KrYBmCa03uUV1Og==
+X-Gm-Message-State: AOJu0YxSDoqwekmGmPJGVshY6L0bPzd1fkpPtFvV/cILfXHhkY7y66Yi
+	vOkxl6Fp5AJ8mR0ROGdgVxNGysEf3AvQqXV60Ef55yPmRbh4WMOF4LOxl66SKNY=
+X-Google-Smtp-Source: AGHT+IEcJxNrliYdvuzlpiDb78QsThSHkvJcrlo7MFvwHxPiUc2KNP4DZqSrOqcyX1HTz8934IoI+w==
+X-Received: by 2002:a05:620a:4044:b0:79b:b8ef:160d with SMTP id af79cd13be357-79bb8ef1b2fmr197306985a.32.1718807866220;
+        Wed, 19 Jun 2024 07:37:46 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b2a5eb498bsm77913746d6.76.2024.06.19.07.32.04
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-798abc0719fsm611398185a.83.2024.06.19.07.37.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jun 2024 07:32:04 -0700 (PDT)
+        Wed, 19 Jun 2024 07:37:45 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.95)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1sJwM0-004bip-ET;
-	Wed, 19 Jun 2024 11:32:04 -0300
-Date: Wed, 19 Jun 2024 11:32:04 -0300
+	id 1sJwRV-004dKe-BM;
+	Wed, 19 Jun 2024 11:37:45 -0300
+Date: Wed, 19 Jun 2024 11:37:45 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
 To: Lu Baolu <baolu.lu@linux.intel.com>
 Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
@@ -86,18 +85,17 @@ Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
 	ath10k@lists.infradead.org, ath11k@lists.infradead.org,
 	iommu@lists.linux.dev, dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 09/21] media: venus: firmware: Use
- iommu_paging_domain_alloc()
-Message-ID: <20240619143204.GD1091770@ziepe.ca>
+Subject: Re: [PATCH v3 10/21] wifi: ath10k: Use iommu_paging_domain_alloc()
+Message-ID: <20240619143745.GE1091770@ziepe.ca>
 References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
- <20240610085555.88197-10-baolu.lu@linux.intel.com>
+ <20240610085555.88197-11-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240610085555.88197-10-baolu.lu@linux.intel.com>
+In-Reply-To: <20240610085555.88197-11-baolu.lu@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240619_073206_795572_333B864E 
-X-CRM114-Status: GOOD (  10.47  )
+X-CRM114-CacheID: sfid-20240619_073747_989520_8BB362F3 
+X-CRM114-Status: GOOD (  10.59  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,14 +110,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 10, 2024 at 04:55:43PM +0800, Lu Baolu wrote:
-> An iommu domain is allocated in venus_firmware_init() and is attached to
-> core->fw.dev in the same function. Use iommu_paging_domain_alloc() to
+On Mon, Jun 10, 2024 at 04:55:44PM +0800, Lu Baolu wrote:
+> An iommu domain is allocated in ath10k_fw_init() and is attached to
+> ar_snoc->fw.dev in the same function. Use iommu_paging_domain_alloc() to
 > make it explicit.
 > 
 > Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 > ---
->  drivers/media/platform/qcom/venus/firmware.c | 6 +++---
+>  drivers/net/wireless/ath/ath10k/snoc.c | 6 +++---
 >  1 file changed, 3 insertions(+), 3 deletions(-)
 
 Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
