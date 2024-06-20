@@ -4,85 +4,172 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5057C2BA1A
-	for <ath10k@archiver.kernel.org>; Thu, 20 Jun 2024 01:17:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 307B3C27C79
+	for <ath10k@archiver.kernel.org>; Thu, 20 Jun 2024 17:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:Cc:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LM8Jbsxciqb5f7yGy4N7aYIswmToBHm/OC14p7bDwqA=; b=sQxrSr+X8o64cbwihyT/fXhdDP
-	Bp0u5b/Zz+M1v1IaFRF19QBQqgBgJsNE6AVKEI5dxQRgd/GOPa6IQ6KTREcjX7f9LMneeC1C6JxO/
-	2uudV+RtiwOgn+0sTFaIwq2QPHTcz5DxRzS+/tkm5PPR0ivkqSABoYEycBYhmHp1k0d61olAcQt+L
-	n/JXAS9twhYxGa83HXDCuEvpRJXfRf5OUWstrFBrhjdgO93jXJUgQFk4CmhkUMcwAHpE7VJP+95YM
-	BAHHmm76shEqG+aSfvV98vtiYTULH6P+18gWn0u5EjSu06mMWy8Wy+rK2Qj+S8NNCnWhlc5TUgsUo
-	ozxl+KOQ==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=W47tS6B8wqIVT2qpvRqiOMMzdBB5xZ547KnoaR9dSwQ=; b=lQKG8GCVdtHLQXmqo4vt2VanKr
+	khtMQWhPe0W5PXKGHcgunPCTp0w127yoGyV87YzrLM2J5oMom52+kUchcjCTGKvyx/6v2aofSaR/O
+	ZSY+n+2nj+4uELEDCM0XXXzXBnp8sUCH65LlU2EtQH0xbjAMiKInyUoiABdn1hKv2DHsKXsOrWhOm
+	TGOSaV0Lz6bpfv8uNo9h007/6nOQ+iL3PuKbjWvSVTTDAEX1dCeKk+r1rPyqPlvRwXnXoqcmvBKs+
+	n2E3CYAg2TLk9ms7JQ2jhbpGllvUUdShO4tAlWY4jDroh2JgkySqff/3QqiKsMj0u0dNarZwWyjEz
+	X9xQHGMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sK6QA-00000003EFr-20JJ;
-	Thu, 20 Jun 2024 01:17:02 +0000
-Received: from mgamail.intel.com ([192.198.163.13])
+	id 1sKM25-00000006A2N-0sfF;
+	Thu, 20 Jun 2024 17:57:13 +0000
+Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sK6Q6-00000003EEy-3BBA;
-	Thu, 20 Jun 2024 01:17:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718846219; x=1750382219;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=eiW/MHJ0UdJLO8lrujvSRMTbc/MZOUzVpzfOqp/fsrc=;
-  b=S10A8DW6i4YGmQ8CNxFiO6S+b5d4JEIi2Hl2ICZihUmFxkhgZnQwtZxF
-   Qu0zUGRoNt+vhELZEIq+8IkbyXBLJFNL2Y7YQJDVnBwKiWEYAKuzvEIqY
-   N8l5IYO4l9+B+VOcAU5PEATxxoymHy2wJzp1f++zyPclZORzdtNA0AT8E
-   NymEg377k1tj4YAxdTEVO48i4EKfqlm1QLJJWkRtOR/6NsW3avjJHz3i5
-   BfVfgvmCI8/IBlLcwj/prYzVxAn7lhb4t1SGK5MFxsDmvRZug0i3Iohum
-   CvDC2mwjNi/ZrIgWaEPoxyZ/jQIZVPdkZOCDCxPIPAzJmjTZlX6X6Gwbh
-   A==;
-X-CSE-ConnectionGUID: mehzVKw8TgylsEottieYtA==
-X-CSE-MsgGUID: gd1mBe7gTLGMajiFgbhzzw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11108"; a="18715948"
-X-IronPort-AV: E=Sophos;i="6.08,251,1712646000"; 
-   d="scan'208";a="18715948"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2024 18:16:57 -0700
-X-CSE-ConnectionGUID: DcNvoBqKR3Cd0EDhpcHZ6A==
-X-CSE-MsgGUID: koFwvhFKTT2QQL91tyJqgA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,251,1712646000"; 
-   d="scan'208";a="73272079"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa001.fm.intel.com with ESMTP; 19 Jun 2024 18:16:52 -0700
-Message-ID: <d4cfdc8f-12a4-44d1-85ee-ce05dd88b3e3@linux.intel.com>
-Date: Thu, 20 Jun 2024 09:14:24 +0800
+	id 1sKM21-00000006A01-2ymP;
+	Thu, 20 Jun 2024 17:57:12 +0000
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-7062c11d0d1so1107828b3a.1;
+        Thu, 20 Jun 2024 10:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718906228; x=1719511028; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W47tS6B8wqIVT2qpvRqiOMMzdBB5xZ547KnoaR9dSwQ=;
+        b=WJlDWt5+3xC76VzpJBeD+RGRXySlnXTac+KXj6D0BQgusvw4OImUmtjowsK3McMWd7
+         f9DMVtZGtuaEewA2yb+mtn7u7CaZAHkM3o/yJlSPkBJypfD+zZnPfqdvJqgwRGzDG0WK
+         8oN104bnk9xwzVL0k+QhF55mTZCbxO+SdobbKC6fAqoBbMO0tZ2CD8SPDu5i64GbYN0t
+         dH6y6vBY1gc6yAUlwHBuHCAR3b/WeZ5nkC62SNGuHN29hEQZSGRL1JJGu6oY95by6DfV
+         6qZbaTP3UjSZ9vSXzD0/EDRtBArSxhYTwcJZKHi4UL4YJ/uXyiUa+MOYqd+FLALY0neB
+         +hRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718906228; x=1719511028;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W47tS6B8wqIVT2qpvRqiOMMzdBB5xZ547KnoaR9dSwQ=;
+        b=jYlXcnYxl+ZLidB3g3nQFPkR6q17DBD55QE/zGrmjBIUapZ3a6lXpiJOgz7anE3Mg+
+         4RgyN8h0hXTPDh9uEAgpOB0pVaCZRY15CNESSt5bsb8xwTOKEkcHv/VnFDagMVbcQpHM
+         gU/z2H7aVZFKnzJaz+L7O+AWSeSydYZl9h/MhTdBduV8Z46mAUnFvHk81PbMmWEL1Sm5
+         tj8EhsTKenxDZzmVmTL9EkiTTNKHHD49nCGt3GaSJRh7pzS9nN+ZKUct6E+xdumxNytA
+         bv5aUcXrrKPzXTxzPI7zuSR25fV7BHQFqKKSOD+g5e7RMKdxRKvebvAoNKUrOJwAwrPg
+         ksgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWVY0kZ+jjztRvjS/paIjjDboCixJkQDDzKfFFGQ/cDQmnpW+ezslMnIHBFcZgatuIr1Li5wDlRLQihAdprfJvZ4+cJssRThpg0I7cLXO01taSXKCoB4umxOOzdgQhEzJc4ZdiHAKbq5TvJHa+tyz3e
+X-Gm-Message-State: AOJu0YwtpRG6uLxd1NeOB87rViVvIgUNWWFwA5TKiY0bFwAy/OGaSYFt
+	p80b/iC92DgMysMfPWylpb/IG0HAh0t6i+0/6Y5ZQnbnYTVfGFZE
+X-Google-Smtp-Source: AGHT+IETPnhQIIAFAn3PVCfwnEc7SkEbk6ro/qDz0Ch8QyPc2IoUZATwJ2GjFRkYml1JLqHQ4RqduQ==
+X-Received: by 2002:a05:6a00:1712:b0:704:12fc:7b30 with SMTP id d2e1a72fcca58-70629c565e1mr5514020b3a.17.1718906227709;
+        Thu, 20 Jun 2024 10:57:07 -0700 (PDT)
+Received: from localhost ([216.228.127.128])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb6b11bsm12644924b3a.154.2024.06.20.10.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jun 2024 10:57:07 -0700 (PDT)
+From: Yury Norov <yury.norov@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Disseldorp <ddiss@suse.de>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jens Axboe <axboe@kernel.dk>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	Karsten Graul <kgraul@linux.ibm.com>,
+	Karsten Keil <isdn@linux-pingi.de>,
+	Kees Cook <keescook@chromium.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oliver Neukum <oneukum@suse.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ping-Ke Shih <pkshih@realtek.com>,
+	Rich Felker <dalias@libc.org>,
+	Rob Herring <robh@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	GR-QLogic-Storage-Upstream@marvell.com,
+	alsa-devel@alsa-project.org,
+	ath10k@lists.infradead.org,
+	dmaengine@vger.kernel.org,
+	iommu@lists.linux.dev,
+	kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-bluetooth@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-media@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-net-drivers@amd.com,
+	linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	mpi3mr-linuxdrv.pdl@broadcom.com,
+	netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>,
+	Alexey Klimov <alexey.klimov@linaro.org>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Jan Kara <jack@suse.cz>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: [PATCH v4 00/40] lib/find: add atomic find_bit() primitives
+Date: Thu, 20 Jun 2024 10:56:23 -0700
+Message-ID: <20240620175703.605111-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Kevin Tian <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Kalle Valo <kvalo@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Alex Williamson <alex.williamson@redhat.com>, mst@redhat.com,
- Jason Wang <jasowang@redhat.com>, Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Mikko Perttunen <mperttunen@nvidia.com>,
- Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org,
- ath11k@lists.infradead.org, iommu@lists.linux.dev,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 15/21] iommu/vt-d: Add helper to allocate paging domain
-To: Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
- <20240610085555.88197-16-baolu.lu@linux.intel.com>
- <20240619151254.GI1091770@ziepe.ca>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240619151254.GI1091770@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240619_181659_095310_C4175870 
-X-CRM114-Status: GOOD (  20.18  )
+X-CRM114-CacheID: sfid-20240620_105709_958699_73330FDC 
+X-CRM114-Status: GOOD (  28.05  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,86 +184,296 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 6/19/24 11:12 PM, Jason Gunthorpe wrote:
-> On Mon, Jun 10, 2024 at 04:55:49PM +0800, Lu Baolu wrote:
->> The domain_alloc_user operation is currently implemented by allocating a
->> paging domain using iommu_domain_alloc(). This is because it needs to fully
->> initialize the domain before return. Add a helper to do this to avoid using
->> iommu_domain_alloc().
->>
->> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 87 +++++++++++++++++++++++++++++++++----
->>   1 file changed, 78 insertions(+), 9 deletions(-)
-> It seems Ok, but I have some small thoughts
-> 
-> Reviewed-by: Jason Gunthorpe<jgg@nvidia.com>
-> 
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index 2e9811bf2a4e..ccde5f5972e4 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -3633,6 +3633,79 @@ static struct iommu_domain blocking_domain = {
->>   	}
->>   };
->>   
->> +static int iommu_superpage_capability(struct intel_iommu *iommu, bool first_stage)
->> +{
->> +	if (!intel_iommu_superpage)
->> +		return 0;
->> +
->> +	if (first_stage)
->> +		return cap_fl1gp_support(iommu->cap) ? 2 : 1;
->> +
->> +	return fls(cap_super_page_val(iommu->cap));
->> +}
->> +
->> +static struct dmar_domain *paging_domain_alloc(struct device *dev, bool first_stage)
->> +{
->> +	struct device_domain_info *info = dev_iommu_priv_get(dev);
->> +	struct intel_iommu *iommu = info->iommu;
->> +	struct dmar_domain *domain;
->> +	int addr_width;
->> +
->> +	domain = kzalloc(sizeof(*domain), GFP_KERNEL);
->> +	if (!domain)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	INIT_LIST_HEAD(&domain->devices);
->> +	INIT_LIST_HEAD(&domain->dev_pasids);
->> +	INIT_LIST_HEAD(&domain->cache_tags);
->> +	spin_lock_init(&domain->lock);
->> +	spin_lock_init(&domain->cache_lock);
->> +	xa_init(&domain->iommu_array);
-> You should probably split more, with an 'alloc struct dmar_domain'
-> function that can be used by SVA and others too.
-> 
->> +	domain->nid = dev_to_node(dev);
->> +	domain->has_iotlb_device = info->ats_enabled;
->> +	domain->use_first_level = first_stage;
->> +
->> +	/* calculate the address width */
->> +	addr_width = agaw_to_width(iommu->agaw);
->> +	if (addr_width > cap_mgaw(iommu->cap))
->> +		addr_width = cap_mgaw(iommu->cap);
->> +	domain->gaw = addr_width;
->> +	domain->agaw = iommu->agaw;
->> +	domain->max_addr = __DOMAIN_MAX_ADDR(addr_width);
->> +
->> +	/* iommu memory access coherency */
->> +	domain->iommu_coherency = iommu_paging_structure_coherency(iommu);
->> +
->> +	/* pagesize bitmap */
->> +	domain->domain.pgsize_bitmap = SZ_4K;
->> +	domain->iommu_superpage = iommu_superpage_capability(iommu, first_stage);
->> +	domain->domain.pgsize_bitmap |= domain_super_pgsize_bitmap(domain);
-> Then some of this stuff is really just paging only. Like
-> SVA/identity/etc don't have pgszie and other things.
+--- 
 
-Yeah, good suggestion. I could do this in this series if it needs a new
-version or in my next series which will add domain_alloc_paging for the
-intel driver.
+This v4 moves new API to separate headers, as adding stuff to find.h
+concerns people, particularly Linus. It also adds few more conversions
+alongside other cosmetic changes. See full changelog below.
 
-Best regards,
-baolu
+---
+
+Add helpers around test_and_{set,clear}_bit() to allow searching for
+clear or set bits and flipping them atomically.
+
+Using atomic search primitives allows to implement lockless bitmap
+handling where only individual bits are touched by concurrent processes,
+and where people now have to protect their bitmaps to search for a free
+or set bit due to the lack of atomic searching routines.
+
+The typical lock-protected bit allocation may look like this:
+
+	unsigned long alloc_bit()
+	{
+		unsigned long bit;
+
+		spin_lock(bitmap_lock);
+		bit = find_first_zero_bit(bitmap, nbits);
+		if (bit < nbits)
+			__set_bit(bit, bitmap);
+		spin_unlock(bitmap_lock);
+
+		return bit;
+	}
+
+	void free_bit(unsigned long bit)
+	{
+		spin_lock(bitmap_lock);
+		__clear_bit(bit, bitmap);
+		spin_unlock(bitmap_lock);
+	}
+
+Now with atomic find_and_set_bit(), the above can be implemented
+lockless, directly by using it and atomic clear_bit().
+
+Patches 36-40 do this in few places in the kernel where the
+transition is clear. There is likely more candidates for
+refactoring.
+
+The other important case is when people opencode atomic search
+or atomic traverse on the maps with the patterns looking like:
+
+	for (idx = 0; idx < nbits; idx++)
+		if (test_and_clear_bit(idx, bitmap))
+			do_something(idx);
+
+Or like this:
+
+	do {
+		bit = find_first_bit(bitmap, nbits);
+		if (bit >= nbits)
+			return nbits;
+
+	} while (!test_and_clear_bit(bit, bitmap));
+
+	return bit;
+
+In both cases, the opencoded loop may be converted to a single function
+or iterator call. Correspondingly:
+
+	for_each_test_and_clear_bit(idx, bitmap, nbits)
+		do_something(idx);
+
+Or:
+	return find_and_clear_bit(bitmap, nbits);
+
+Obviously, the less routine code people have to write themself, the
+less probability to make a mistake. The patch #33 fixes one such
+mistake.
+
+The new API is not only a handy helpers - it also resolves a non-trivial
+issue of using non-atomic find_bit() together with atomic
+test_and_{set,clear)_bit().
+
+The trick is that find_bit() implies that the bitmap is a regular
+non-volatile piece of memory, and compiler is allowed to use such
+optimization techniques like re-fetching memory instead of caching it.
+
+For example, find_first_bit() is implemented like:
+
+      for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
+              val = addr[idx];
+              if (val) {
+                      sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
+                      break;
+              }
+      }
+
+On register-memory architectures, like x86, compiler may decide to
+access memory twice - first time to compare against 0, and second time
+to fetch its value to pass it to __ffs().
+
+When running find_first_bit() on volatile memory, the memory may get
+changed in-between, and for instance, it may lead to passing 0 to
+__ffs(), which is an undefined behaviour. This is a potentially
+dangerous call.
+
+find_and_clear_bit() as a wrapper around test_and_clear_bit()
+naturally treats underlying bitmap as a volatile memory and prevents
+compiler from such optimizations.
+
+Now that KCSAN is catching exactly this type of situations and warns on
+undercover memory modifications. We can use it to reveal improper usage
+of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
+
+In some cases concurrent operations with plain find_bit() are acceptable.
+For example:
+
+ - two threads running find_*_bit(): safe wrt ffs(0) and returns correct
+   value, because underlying bitmap is unchanged;
+ - find_next_bit() in parallel with set or clear_bit(), when modifying
+   a bit prior to the start bit to search: safe and correct;
+ - find_first_bit() in parallel with set_bit(): safe, but may return wrong
+   bit number;
+ - find_first_zero_bit() in parallel with clear_bit(): same as above.
+
+In last 2 cases find_bit() may not return a correct bit number, but
+it may be OK if caller requires any (not exactly the first) set or clear
+bit, correspondingly.
+
+In such cases, KCSAN may be safely silenced with data_race(). But in most
+cases where KCSAN detects concurrency we should carefully review the code
+and likely protect critical sections or switch to atomic find_and_bit(),
+as appropriate.
+
+This patch adds the following atomic primitives:
+
+	find_and_set_bit(addr, nbits);
+	find_and_set_next_bit(addr, nbits, start);
+	...
+
+Here find_and_{set,clear} part refers to the corresponding
+test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
+derive their semantics from corresponding find() or test() functions.
+
+For brevity, the naming omits the fact that we search for zero bit in
+find_and_set, and correspondingly search for set bit in find_and_clear
+functions.
+
+The patch also adds iterators with atomic semantics, like
+for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
+corresponding atomic operation with 'for_each'.
+
+This series is not aimed on performance, but some performance
+implications are considered.
+
+In [1] Jan reported 2% slowdown in a single-thread search test when
+switching find_bit() function to treat bitmaps as volatile arrays. On
+the other hand, kernel robot in the same thread reported +3.7% to the
+performance of will-it-scale.per_thread_ops test.
+
+Assuming that our compilers are sane and generate better code against
+properly annotated data, the above discrepancy doesn't look weird. When
+running on non-volatile bitmaps, plain find_bit() outperforms atomic
+find_and_bit(), and vice-versa.
+
+So, all users of find_bit() API, where heavy concurrency is expected,
+are encouraged to switch to atomic find_and_bit() as appropriate.
+
+The 1st patch of this series adds atomic find_and_bit() API, 2nd adds
+a basic test for new API, and all the following patches spread it over
+the kernel.
+
+[1] https://lore.kernel.org/lkml/634f5fdf-e236-42cf-be8d-48a581c21660@alu.unizg.hr/T/#m3e7341eb3571753f3acf8fe166f3fb5b2c12e615
+
+---
+v1: https://lore.kernel.org/netdev/20231118155105.25678-29-yury.norov@gmail.com/T/
+v2: https://lore.kernel.org/all/20231204185101.ddmkvsr2xxsmoh2u@quack3/T/
+v3: https://lore.kernel.org/linux-pci/ZX4bIisLzpW8c4WM@yury-ThinkPad/T/
+v4:
+ - drop patch v3-24: not needed after null_blk refactoring;
+ - add patch 34: "MIPS: sgi-ip27: optimize alloc_level()";
+ - add patch 35: "uprobes: optimize xol_take_insn_slot()";
+ - add patches 36-40: get rid of locking scheme around bitmaps;
+ - move new API to separate headers, to not bloat bitmap.h @ Linus;
+ - patch #1: adjust comments to allow returning >= @size;
+ - rebase the series on top of current master.
+
+Yury Norov (40):
+  lib/find: add atomic find_bit() primitives
+  lib/find: add test for atomic find_bit() ops
+  lib/sbitmap; optimize __sbitmap_get_word() by using find_and_set_bit()
+  watch_queue: optimize post_one_notification() by using
+    find_and_clear_bit()
+  sched: add cpumask_find_and_set() and use it in __mm_cid_get()
+  mips: sgi-ip30: optimize heart_alloc_int() by using find_and_set_bit()
+  sparc: optimize alloc_msi() by using find_and_set_bit()
+  perf/arm: use atomic find_bit() API
+  drivers/perf: optimize ali_drw_get_counter_idx() by using
+    find_and_set_bit()
+  dmaengine: idxd: optimize perfmon_assign_event()
+  ath10k: optimize ath10k_snoc_napi_poll()
+  wifi: rtw88: optimize the driver by using atomic iterator
+  KVM: x86: hyper-v: optimize and cleanup kvm_hv_process_stimers()
+  PCI: hv: Optimize hv_get_dom_num() by using find_and_set_bit()
+  scsi: core: optimize scsi_evt_emit() by using an atomic iterator
+  scsi: mpi3mr: optimize the driver by using find_and_set_bit()
+  scsi: qedi: optimize qedi_get_task_idx() by using find_and_set_bit()
+  powerpc: optimize arch code by using atomic find_bit() API
+  iommu: optimize subsystem by using atomic find_bit() API
+  media: radio-shark: optimize the driver by using atomic find_bit() API
+  sfc: optimize the driver by using atomic find_bit() API
+  tty: nozomi: optimize interrupt_handler()
+  usb: cdc-acm: optimize acm_softint()
+  RDMA/rtrs: optimize __rtrs_get_permit() by using
+    find_and_set_bit_lock()
+  mISDN: optimize get_free_devid()
+  media: em28xx: cx231xx: optimize drivers by using find_and_set_bit()
+  ethernet: rocker: optimize ofdpa_port_internal_vlan_id_get()
+  bluetooth: optimize cmtp_alloc_block_id()
+  net: smc: optimize smc_wr_tx_get_free_slot_index()
+  ALSA: use atomic find_bit() functions where applicable
+  m68k: optimize get_mmu_context()
+  microblaze: optimize get_mmu_context()
+  sh: mach-x3proto: optimize ilsel_enable()
+  MIPS: sgi-ip27: optimize alloc_level()
+  uprobes: optimize xol_take_insn_slot()
+  scsi: sr: drop locking around SR index bitmap
+  KVM: PPC: Book3s HV: drop locking around kvmppc_uvmem_bitmap
+  wifi: mac80211: drop locking around ntp_fltr_bmap
+  mailbox: bcm-flexrm: simplify locking scheme
+  powerpc/xive: drop locking around IRQ map
+
+ MAINTAINERS                                  |   2 +
+ arch/m68k/include/asm/mmu_context.h          |  12 +-
+ arch/microblaze/include/asm/mmu_context_mm.h |  12 +-
+ arch/mips/sgi-ip27/ip27-irq.c                |  13 +-
+ arch/mips/sgi-ip30/ip30-irq.c                |  13 +-
+ arch/powerpc/kvm/book3s_hv_uvmem.c           |  33 +-
+ arch/powerpc/mm/book3s32/mmu_context.c       |  11 +-
+ arch/powerpc/platforms/pasemi/dma_lib.c      |  46 +--
+ arch/powerpc/platforms/powernv/pci-sriov.c   |  13 +-
+ arch/powerpc/sysdev/xive/spapr.c             |  34 +-
+ arch/sh/boards/mach-x3proto/ilsel.c          |   5 +-
+ arch/sparc/kernel/pci_msi.c                  |  10 +-
+ arch/x86/kvm/hyperv.c                        |  41 +--
+ drivers/dma/idxd/perfmon.c                   |   9 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c       |  16 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h        |  11 +-
+ drivers/iommu/msm_iommu.c                    |  19 +-
+ drivers/isdn/mISDN/core.c                    |  10 +-
+ drivers/mailbox/bcm-flexrm-mailbox.c         |  21 +-
+ drivers/media/radio/radio-shark.c            |   6 +-
+ drivers/media/radio/radio-shark2.c           |   6 +-
+ drivers/media/usb/cx231xx/cx231xx-cards.c    |  17 +-
+ drivers/media/usb/em28xx/em28xx-cards.c      |  38 +--
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c    |  18 +-
+ drivers/net/ethernet/rocker/rocker_ofdpa.c   |  12 +-
+ drivers/net/ethernet/sfc/rx_common.c         |   5 +-
+ drivers/net/ethernet/sfc/siena/rx_common.c   |   5 +-
+ drivers/net/ethernet/sfc/siena/siena_sriov.c |  15 +-
+ drivers/net/wireless/ath/ath10k/snoc.c       |  10 +-
+ drivers/net/wireless/realtek/rtw88/pci.c     |   6 +-
+ drivers/net/wireless/realtek/rtw89/pci.c     |   6 +-
+ drivers/pci/controller/pci-hyperv.c          |   8 +-
+ drivers/perf/alibaba_uncore_drw_pmu.c        |  11 +-
+ drivers/perf/arm-cci.c                       |  25 +-
+ drivers/perf/arm-ccn.c                       |  11 +-
+ drivers/perf/arm_dmc620_pmu.c                |  10 +-
+ drivers/perf/arm_pmuv3.c                     |   9 +-
+ drivers/scsi/mpi3mr/mpi3mr_os.c              |  22 +-
+ drivers/scsi/qedi/qedi_main.c                |  10 +-
+ drivers/scsi/scsi_lib.c                      |   8 +-
+ drivers/scsi/sr.c                            |  15 +-
+ drivers/tty/nozomi.c                         |   6 +-
+ drivers/usb/class/cdc-acm.c                  |   6 +-
+ include/linux/cpumask_atomic.h               |  20 ++
+ include/linux/find.h                         |   4 -
+ include/linux/find_atomic.h                  | 324 +++++++++++++++++++
+ kernel/events/uprobes.c                      |  15 +-
+ kernel/sched/sched.h                         |  15 +-
+ kernel/watch_queue.c                         |   7 +-
+ lib/find_bit.c                               |  86 +++++
+ lib/sbitmap.c                                |  47 +--
+ lib/test_bitmap.c                            |  62 ++++
+ net/bluetooth/cmtp/core.c                    |  11 +-
+ net/smc/smc_wr.c                             |  11 +-
+ sound/pci/hda/hda_codec.c                    |   8 +-
+ sound/usb/caiaq/audio.c                      |  14 +-
+ 56 files changed, 747 insertions(+), 493 deletions(-)
+ create mode 100644 include/linux/cpumask_atomic.h
+ create mode 100644 include/linux/find_atomic.h
+
+-- 
+2.43.0
+
 
