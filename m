@@ -4,72 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E45A6C30653
-	for <ath10k@archiver.kernel.org>; Wed, 26 Jun 2024 12:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD14AC27C4F
+	for <ath10k@archiver.kernel.org>; Wed, 26 Jun 2024 15:31:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:In-Reply-To:Date:References:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vrGR49umSrf6jXsmHMnbHGXbB2t/2+C/fhNk0egBlRM=; b=K/dfcTgnRs/6/sL0aZPW1WUwpm
-	ZsUOPRFN3FaM7BLa/zFqJ17fig76iLuK3s/Eucg3GA5dPnRybcO2c0md3HA7q7quWfPw7hI4r41us
-	aWy9F5NIvFEaDthVAWwHA76r5JMVsivgm7EKjRPafMyJV2ZTfm/TU+zavsoqB4uhqDw2KszAnDzr8
-	5ktQg/5YnfPP8n2jn6LBSWWpJz/ayCd5wx9+IMJzWXMlz6a/C/sqGJoRXr9NXIIgKvyv/CMT/jzmm
-	RD+UrvNGMLpkbpe0JP0K3dyOy5+qYEY9q5d//KZ31lbDsdUJeadr00Z+rH2P+W2LKA6rnqWh/CwGz
-	xYf/rlow==;
+	bh=AoVR0f8c5XaTly5lMjRvh2GcUnOM3ExOJ5sNDJHMFsc=; b=upNi9buhPqShYH/eVY/LDXLt+T
+	yQPtAPPb5mo4Ai8o7E3kq0R+CJANWiENiDFJJ5KNzMUktFLHpkcfW1b9nbNXnn4EVrUCykf5VvNzD
+	wI4hBCukpUDKtYO3BnqSGwWN+SzjWsVKLD4JLtbnnBAROGRYCC9UhPlk5OobJH7qNnbdFY9Pip7Gt
+	AU4N29jEMWtigOkvIPsKCq0SPksLFgmoJhU2ikKl6BlWyGvZMvWJkRdNkfDAjmTcUlpJO27PbxL0Y
+	Gx472NxMY5WByX4ln5629j+SWC1qB8kiDSpSkEBBEqGclfjw0HKmGU3mO7Ah3VPzoe6l2cbJ7oYyY
+	6T/pHHzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMRrH-00000006lDJ-0ArN;
-	Wed, 26 Jun 2024 12:34:43 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sMUbp-00000007PAk-1m3Z;
+	Wed, 26 Jun 2024 15:30:57 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMRrE-00000006lCK-0yB5
-	for ath10k@lists.infradead.org;
-	Wed, 26 Jun 2024 12:34:42 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id E6ADE619F8;
-	Wed, 26 Jun 2024 12:34:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A369FC2BD10;
-	Wed, 26 Jun 2024 12:34:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719405278;
-	bh=vrGR49umSrf6jXsmHMnbHGXbB2t/2+C/fhNk0egBlRM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=OGmgqk0v/2DSdHP2PehmCcFWE0tpK+Tr/6pIC6YHZYUJhx5ISOW692+cZKlMFi1Dh
-	 R2UDifrfuCz35g/fVQg2doIYQVOP5XDTlWs1qQ+JoNEazkKFWc6X8n+cS9h/Lxbxyy
-	 NIKKbdtDD/3u6Ci/9mXaKK+6M+8E496cVoA5E7yGCo3OqHgdw2Gbcbp3UzQwwhqSho
-	 bMxD/dqiTXh7et+58LWQbdOoZRic4bZPbg+xDx2+Kio94N+lBE3lE9Q5Kpl9JlEjaE
-	 TCWew9pss1StJkv4ZuTJLSGgNbj6k+0L/S+EGGPCWhKy1WYOlaAyJhCKI4OQaBI59b
-	 u6oOZajc7R4fw==
-From: Kalle Valo <kvalo@kernel.org>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Baochen Qiang <quic_bqiang@quicinc.com>,  James Prestwood
- <prestwoj@gmail.com>,  linux-wireless@vger.kernel.org,
-  ath10k@lists.infradead.org,  LKML <linux-kernel@vger.kernel.org>,  Hans
- de Goede <hdegoede@redhat.com>,  Kai-Heng Feng
- <kai.heng.feng@canonical.com>,  Hui Wang <hui.wang@canonical.com>
-Subject: Re: invalid vht params rate 1920 100kbps nss 2 mcs 9
-References: <fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de>
-	<1faa7eee-ed1e-477b-940d-a5cf4478cf73@gmail.com>
-	<87iky7mvxt.fsf@kernel.org>
-	<37ba6cb0-d887-4fcf-b7dc-c93a5fc5900f@gmail.com>
-	<875xu6mtgh.fsf@kernel.org>
-	<f7faff80-864a-4411-ad28-4f1151bc1e51@quicinc.com>
-	<082024ce-fdd4-4fb1-8055-6d25f7d2e524@molgen.mpg.de>
-	<878qyshuud.fsf@kernel.org>
-	<d19d520c-547b-46c1-b59e-748c2cccaf53@molgen.mpg.de>
-Date: Wed, 26 Jun 2024 15:34:34 +0300
-In-Reply-To: <d19d520c-547b-46c1-b59e-748c2cccaf53@molgen.mpg.de> (Paul
-	Menzel's message of "Wed, 26 Jun 2024 13:48:01 +0200")
-Message-ID: <874j9fj31h.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	id 1sMUbl-00000007PAD-3eaO;
+	Wed, 26 Jun 2024 15:30:55 +0000
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45QAfjkY029578;
+	Wed, 26 Jun 2024 15:30:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	AoVR0f8c5XaTly5lMjRvh2GcUnOM3ExOJ5sNDJHMFsc=; b=Ww/8UWnzXLjinOuH
+	IBGSbvxE1yCkJq+/Nyo4JlPwZvTXD+bcF3417RmiY+PhBrTXFnOVvPIcqAXztRp2
+	GzCN9+y8GxgM/RprYhJ5Z+9H+9POd790hp/sWQUwHAjQRkPiboNKzR3aYJ3kT2kI
+	3OS8e2k60F86YJ3AVbWS1TPE8r9QQ4HfWxXftgPfGc5/c78WtXwozSn8L2xNmRFH
+	s4vOVGP2NEbKdAnkvGsSfrPrhpywt1HaBL8rISdwisGo4Mzk5aiwKxkSd4brzOd/
+	C9GVOXw1cKYqHdjkqXUuMO8LBl0vg6MkTXFCCaYRz94melA6q9k5n9l9Qi5/bm2C
+	NPv7zw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ywnm6sp10-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 26 Jun 2024 15:30:50 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 45QFUnDt024866
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 26 Jun 2024 15:30:49 GMT
+Received: from [10.48.244.230] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 26 Jun
+ 2024 08:30:48 -0700
+Message-ID: <bf4f7295-fb25-401b-b9ae-6c0fab758ce6@quicinc.com>
+Date: Wed, 26 Jun 2024 08:30:48 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH wireless] MAINTAINERS: wifi: update ath.git location
+Content-Language: en-US
+To: Kalle Valo <kvalo@kernel.org>, <ath10k@lists.infradead.org>,
+        <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>
+References: <20240626102632.1554485-1-kvalo@kernel.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240626102632.1554485-1-kvalo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: uBuSAKqJ3V8LeYN0z97DHBsI5P66HALB
+X-Proofpoint-ORIG-GUID: uBuSAKqJ3V8LeYN0z97DHBsI5P66HALB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-26_07,2024-06-25_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 suspectscore=0 phishscore=0 clxscore=1011 spamscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=886 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2406140001 definitions=main-2406260114
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240626_053440_417363_12CABC8C 
-X-CRM114-Status: GOOD (  10.92  )
+X-CRM114-CacheID: sfid-20240626_083054_080785_DC241031 
+X-CRM114-Status: UNSURE (   8.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,29 +98,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Paul Menzel <pmenzel@molgen.mpg.de> writes:
+On 6/26/2024 3:26 AM, Kalle Valo wrote:
+> ath.git tree has moved to a new location. The old location will be an alias to
+> the new location and will work at least until end of 2024, but best to update
+> git trees already now.
+> 
+> Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
->> All firmware releases are available here:
->> https://git.codelinaro.org/clo/ath-firmware/ath10k-firmware/-/tree/main/=
-QCA6174/hw3.0/4.4.1?ref_type=3Dheads
->> And more info here:
->> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/firmware
->
-> Thank you. It looks like the latest firmware version is 309, and
-> Debian sid/unstable still ships version 288 in *firmware-atheros*
-> 20230625-2 [1].
->
-> Unfortunately, there does not seem to be a change-log for version 309
-> (or any version for that matter). I am going to manually copy it
-> anyway, but it=E2=80=99d be nice, if I knew what to expect. ;-)
-
-Yeah, unfortunately there are no changelogs available for firmware
-releases but I do understand the need for those. There has been
-discussions to create them but no success yet.
-
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
 
