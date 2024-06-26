@@ -4,66 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58F50C2BBCA
-	for <ath10k@archiver.kernel.org>; Tue, 25 Jun 2024 15:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39565C27C4F
+	for <ath10k@archiver.kernel.org>; Wed, 26 Jun 2024 08:53:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z08Q+ITwk6z0OJeCtAIG4Lm+BOA7wQKDVnRRdeS2K+U=; b=YoqB87+q2bh8PZD1Ty67xNGihq
-	J98XC9gAQnPPJaG3H8KqGWl4vM8IFqFEQM64kUaB+afXRlZ/0WWpR70DGIXpq983DWZsPic1RqB9S
-	/jTS906+dxGYlRaHuBO8ZLKrSbU0CALHNIMOOErTGo8XIbtPW+xzg0OvOnIvbL+r50SnYbxNC11fv
-	8T94VIljLxZgmVyKKI53UH/sh9iTBE/ZB/VQf+/QPxHm/azPFebWqSs+DyKaRq7FPmnx1zf6/NzJm
-	Rhw9FYz7WdNv2dB1TJL9ha7xcoIRuFVN9Ce7ardXp4mxI5QlCneaKYi+01n8QBMerAiij2lxUAAZa
-	TfckDFlg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=vtiWjzaRVELuAtYmqwTMNPx5ECIiXFHRCQkUzUemNYg=; b=VsAJGxKQnMBLfLyOEs605eKcOg
+	78rKfoM1YUdxKWSCdUpsGxAQIXvktQocGcZ6oPgp5FM3zhza5HHouNlhmne2GXXynTcOcZ3v7m5Vd
+	ki3Ih6lRH8KWBbxBk7rTD/LNBC3/0bkGyZmkWfOZDzHcVgtj75jHz3SGvTpWJ8Pfb7NaRy6c5BxN7
+	INqHq2ORVYQ0Do0iyrfMXfhjPoHdfKfS0JwWbttdN6Q6vpqKsjbMAr4iK+jGvbFInn5lg20Dkj2C4
+	Eub0Oh8UeWwkcxeF+Eac0CAtmiAjrZgCGl0ItqX9zDq4IET7TH42GXlXSXkVtMP9gyPsowcepirSO
+	bbEH36Rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sM82s-00000003W7w-0Mnc;
-	Tue, 25 Jun 2024 15:25:22 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sMOPM-000000060Cl-1J4L;
+	Wed, 26 Jun 2024 08:53:40 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sM82o-00000003W5I-3EV3
+	id 1sMOPJ-000000060CN-4BRh
 	for ath10k@lists.infradead.org;
-	Tue, 25 Jun 2024 15:25:20 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 468EE611EE;
-	Tue, 25 Jun 2024 15:25:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A42CBC32781;
-	Tue, 25 Jun 2024 15:25:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719329117;
-	bh=8pXLi0+NE2elKsEGz3Exeg1kDvY+fHABVyxjsl7HrNI=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Y0UWZ99e81f92pCKDy/ylcK54a2iCMmLSB3RltsaGQs72cjZYgVQ9wGF7SKhM1LRE
-	 6+jSqJQsQQASg4sy82IGvB8FlpAKrBeHjVaS/mnnHY6wu0AegRToWx4WD07pqBbKS3
-	 tXIT9L/oMTdRWeoJyGjg68VZ4vQ6NA4BL9ZDihNaXQUMliXQCVNpCVHgIkfFNCI60B
-	 26eja9WqGWkiQH67YTIAQwFvYfiKKfoiW4Xe6wafdM7zH1RBpayRmZ7jMI4TU6UT5y
-	 P9yVqxDa8mBURa5b8OVPxiuyYw5uuGQtjWx23p4czraCfdxdiPSKfMHsH5arFGaywM
-	 blOFXGQpi2lzw==
-From: Kalle Valo <kvalo@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,  Koen Vandeputte
- <koen.vandeputte@citymesh.com>,  <ath10k@lists.infradead.org>,
-  linux-wireless <linux-wireless@vger.kernel.org>,  "David S. Miller"
- <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Paolo Abeni
- <pabeni@redhat.com>,  <netdev@vger.kernel.org>,  Johannes Berg
- <johannes@sipsolutions.net>,  Kees Cook <keescook@chromium.org>
-Subject: Re: ieee80211.h virtual_map splat
-References: <CAPh3n83zb1PwFBFijJKChBqY95zzpYh=2iPf8tmh=YTS6e3xPw@mail.gmail.com>
-	<c470e4ff-3f70-40f6-844a-f9614286509f@quicinc.com>
-	<87o77pik7w.fsf@kernel.org> <20240625080248.32c3e03d@kernel.org>
-Date: Tue, 25 Jun 2024 18:25:12 +0300
-In-Reply-To: <20240625080248.32c3e03d@kernel.org> (Jakub Kicinski's message of
-	"Tue, 25 Jun 2024 08:02:48 -0700")
-Message-ID: <87jzidhwo7.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	Wed, 26 Jun 2024 08:53:39 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45Q4anhj001756;
+	Wed, 26 Jun 2024 08:53:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	vtiWjzaRVELuAtYmqwTMNPx5ECIiXFHRCQkUzUemNYg=; b=o2oEClm+Rjm0NcdE
+	ftM8otmZ/iA3C1qYZvxQCq4DhVpP3rHzwaE7RKsxlMVJxcK+5X8le2ZprCeTBccl
+	P117yWt8kanYlCJWrH0LW5pY7zk+zEv1amTYgqLZBn0f2t4kunMGK1SQxj0IgngB
+	GVuaMvyJXka5Y/QBs+YGMsGfJDd6BTY/1VWCxRvIKe1b+ockMEwUIQOUuQENUK6t
+	F8pHtxMhINh5aYewMes9+a7ok6gLxqZfWoht/QXr4uhn6w+v+2L9TZN86WWEgG2f
+	9kowNGL5NVZ4KszT85vlDrpEnDyaKHfL84SNGcgUH0Hic6cRoq5kHd7hCxFgsZM/
+	3+73HA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 400c468k21-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 26 Jun 2024 08:53:32 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 45Q8rU0F022444
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 26 Jun 2024 08:53:30 GMT
+Received: from [10.231.195.67] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 26 Jun
+ 2024 01:53:28 -0700
+Message-ID: <f7faff80-864a-4411-ad28-4f1151bc1e51@quicinc.com>
+Date: Wed, 26 Jun 2024 16:53:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: invalid vht params rate 1920 100kbps nss 2 mcs 9
+To: Kalle Valo <kvalo@kernel.org>, James Prestwood <prestwoj@gmail.com>
+CC: Paul Menzel <pmenzel@molgen.mpg.de>, <linux-wireless@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
+References: <fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de>
+ <1faa7eee-ed1e-477b-940d-a5cf4478cf73@gmail.com> <87iky7mvxt.fsf@kernel.org>
+ <37ba6cb0-d887-4fcf-b7dc-c93a5fc5900f@gmail.com> <875xu6mtgh.fsf@kernel.org>
+Content-Language: en-US
+From: Baochen Qiang <quic_bqiang@quicinc.com>
+In-Reply-To: <875xu6mtgh.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: VFgmVXFK74dkMqecOEk-jiqHlF8M2vwT
+X-Proofpoint-GUID: VFgmVXFK74dkMqecOEk-jiqHlF8M2vwT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-26_03,2024-06-25_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 adultscore=0
+ priorityscore=1501 malwarescore=0 clxscore=1015 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2406140001
+ definitions=main-2406260066
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240625_082518_907545_9CCE36A9 
-X-CRM114-Status: GOOD (  15.75  )
+X-CRM114-CacheID: sfid-20240626_015338_239251_3799B057 
+X-CRM114-Status: GOOD (  23.06  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,43 +100,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Jakub Kicinski <kuba@kernel.org> writes:
 
-> On Tue, 25 Jun 2024 09:56:35 +0300 Kalle Valo wrote:
->> > Adding netdev to the initial message in the thread.
->> > https://lore.kernel.org/all/CAPh3n83zb1PwFBFijJKChBqY95zzpYh=2iPf8tmh=YTS6e3xPw@mail.gmail.com/
->> >
->> > There was some discussion in the thread, with the observation that the splat 
->> > is fixed by:
->> > 2ae5c9248e06 ("wifi: mac80211: Use flexible array in struct ieee80211_tim_ie")
->> >
->> > Followed by discussion if this should be backported.
->> >
->> > Kees said that "netdev [...] maintainers have asked that contributors not 
->> > include "Cc: stable" tags, as they want to evaluate for themselves whether 
->> > patches should go to stable or not"  
->> 
->> BTW this rule doesn't apply to wireless subsystem. For wireless patches
->> it's ok to "Cc: stable" in patches or anyone can send a request to
->> stable maintainers to pick a patch.
->
-> It's an old rule. Quoting documentation:
->
->   Stable tree
->   ~~~~~~~~~~~
->   
->   While it used to be the case that netdev submissions were not supposed
->   to carry explicit ``CC: stable@vger.kernel.org`` tags that is no longer
->   the case today. Please follow the standard stable rules in
->   :ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`,
->   and make sure you include appropriate Fixes tags!
->   
-> See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#stable-tree
 
-Oh, I haven't noticed the change. Thanks for correcting.
+On 6/18/2024 6:33 PM, Kalle Valo wrote:
+> + baochen
+> 
+> James Prestwood <prestwoj@gmail.com> writes:
+> 
+>> Hi Kalle,
+>>
+>> On 6/17/24 8:27 AM, Kalle Valo wrote:
+>>> James Prestwood <prestwoj@gmail.com> writes:
+>>>
+>>>> Hi Paul,
+>>>>
+>>>> On 6/16/24 6:10 AM, Paul Menzel wrote:
+>>>>> Dear Linux folks,
+>>>>>
+>>>>>
+>>>>> Linux 6.10-rc3 (commit a3e18a540541) logged the warning below when
+>>>>> connecting to a public WiFi:
+>>>>>
+>>>>>      ath10k_pci 0000:3a:00.0: invalid vht params rate 1920 100kbps
+>>>>> nss 2 mcs 9
+>>>> This has been reported/discussed [1]. It was hinted that there was a
+>>>> firmware fix for this, but none that I tried got rid of it. I got fed
+>>>> up enough with the logs filling up with this I patched our kernel to
+>>>> remove the warning. AFAICT it appears benign (?). Removing the warning
+>>>> was purely "cosmetic" so other devs stopped complaining about it :)
+>>>>
+>>>> [1] https://www.mail-archive.com/ath10k@lists.infradead.org/msg13406.html
+>>> More reliable link to the discussion:
+>>>
+>>> https://lore.kernel.org/ath10k/76a816d983e6c4d636311738396f97971b5523fb.1612915444.git.skhan@linuxfoundation.org/
+>>>
+>>> I think we should add this workaround I mentioned in 2021:
+>>>
+>>>     "If the firmware still keeps sending invalid rates we should add a
+>>>      specific check to ignore the known invalid values, but not all of
+>>>      them."
+>>>
+>>>     https://lore.kernel.org/ath10k/87h7mktjgi.fsf@codeaurora.org/
+>>>
+>>> I guess that would be mcs == 7 and rate == 1440?
+>>
+>> I think its more than this combination (Paul's are different). 
+> 
+> Good point.
+> 
+>> So how many combinations are we willing to add here? Seems like that
+>> could get out of hand if there are more than a few invalid
+>> combinations. 
+> 
+> Yeah, but there haven't been that many different values reported yet,
+> right? And I expect that ath10k user base will just get smaller in the
+> future so the chances are that we will get less reports.
+> 
+>> Would we also want to restrict the workaround to specific
+>> hardware/firmware?
+> 
+> Good idea, limiting per hardware would be simple to implement using
+> hw_params. Of course we could even limit this per firmware version using
+> enum ath10k_fw_features, but not sure if that's worth all the extra work.
+> 
+> Baochen, do you know more about this firmware bug? Any suggestions?
+OK, there are two issues here:
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+1. invalid HT rate: "ath10k_pci 0000:02:00.0: invalid ht params rate 1440 100kbps nss 2 mcs 7".
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+As commented by Wen quite some time ago, this has been fixed from firmware side, and firmware newer than [ver:241] has the fix included.
+
+2. invaid VHT rate: "ath10k_pci 0000:3a:00.0: invalid vht params rate 1920 100kbps nss 2 mcs 9".
+
+After checking with firmware team, I thought this is because there is a mismatch in rate definition between host and firmware: In host, the rate for 'nss 2 mcs 9' is defined as {1560, 1733}, see supported_vht_mcs_rate_nss2[]. While in firmware this is defined as {1730, 1920}. So seems we can update host definition to avoid this issue.
+
+
+> 
 
