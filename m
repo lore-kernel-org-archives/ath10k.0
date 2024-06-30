@@ -4,85 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC1B4C2BBCA
-	for <ath10k@archiver.kernel.org>; Fri, 28 Jun 2024 08:29:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C3A1C27C4F
+	for <ath10k@archiver.kernel.org>; Sun, 30 Jun 2024 13:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:Cc:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zHR3n6gfFPM8onQRKUv5nkyP8Yc7lkot4U76AfLNkvE=; b=KcwXy0auJQF0ChtX5RovkzG0TO
-	K6WWzdjGSkW2TkvIGgXWyJZC1IDZQpuy5KL2qZpubMkVli3anspbt0sg+N++RYMF1GZJLeK14urU7
-	MKN8WD9OW3wzVB/1x+SkjhjhjXyIP+gDJRHb7qp4N1x7kg8KRXlzQEC1mxGx/12WDPEud0TIMbJpD
-	w340knmNhZWUtiaHclIG3VTP+9iK0fxq0M7Vlh5s+aiqctVa5Iuf8kCIZrsWlMBKox6akR8BHFmec
-	lxbDZdOydt7W9gNVxOhE7ydJgZ/QzXmBNWgtGxRKTuxRXbbO5x0cUnfSiMOPuUZNvp7s77hH4J2DG
-	uXNEcn4w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=yppqQ77eDxnVytbNmLrLyFXYSQKMqB50XQnw5pigShY=; b=iTh1x3WCvVuI8uLkOgGIUe4N8s
+	8TI+e6/yZbi1frRsU+HP4/r00TUtc7Ft0ozbiWawC+3KCTW8BeAOekXB/+DnJQzwvAYHqTDmPEiDk
+	Sx3VXbDJZVmmsxR62Q39VCVVuKs1zSIA00tP+1exyTI7cvO7KppjlDao2zJIgUJgn9aZztCb/CAUk
+	Sgr5uKo2dXaa60MbcKGVkTWwB9nLwWee6buRbApaZPS/R8ALnMnb5KP82VPNeIxfot+dPiOMh1RYW
+	VOqQFy5ZlbZfGBdNmhAYU6vY/ec5wv70wvMZpXtLqufVZH2okkN7mRtzyDc/ix7RcM8acKas1MAIy
+	L5SbjdDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sN6z0-0000000D4Ee-0oXD;
-	Fri, 28 Jun 2024 08:29:26 +0000
-Received: from mgamail.intel.com ([198.175.65.17])
+	id 1sNuBC-00000000POe-26od;
+	Sun, 30 Jun 2024 13:01:18 +0000
+Received: from mgamail.intel.com ([192.198.163.14])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sN6yw-0000000D4Dw-2J13;
-	Fri, 28 Jun 2024 08:29:24 +0000
+	id 1sNuB9-00000000PNt-40lW
+	for ath10k@lists.infradead.org;
+	Sun, 30 Jun 2024 13:01:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1719563362; x=1751099362;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FhnmmwRsgt7q9OpUqfd3kxwu+nTktaxW9bMtPJ2FQU4=;
-  b=a/YX3j5jIaOPp8/3Px2OHxFwT9KMkHDn1Bm4tUEMMtk6tHvFxczZDffg
-   QxLRVNSUb5g2NUE81aUHOW2h74da8orQO+w7N59fcEeR0Hk7e+mAznaVt
-   iBhu54+GodW0NDQb3MtKduyu94jnIbD8ealXLCsRL9gUmtjA7HuUwx+2c
-   2r7vKWrbd5it51IDnUEOKL7cSercvfbiPZ38hViZ391kQTbf3ZduyWFUy
-   jQwOZjrp30YxjAWJLCgoVldsCV5Nb9jtMCN0cmN4IfnBfaL3q8pE9KNiX
-   Ah4sLUbDUuDO0x7/0KIYtDGJAhCkYb8U7nDuIDiCKnTEFyrmLANWJa2Yq
-   g==;
-X-CSE-ConnectionGUID: s+2x0+cCRPmM1RghNgwbaQ==
-X-CSE-MsgGUID: AVsYBqUhQCGQB4LA3rrJpQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11116"; a="16867415"
-X-IronPort-AV: E=Sophos;i="6.09,168,1716274800"; 
-   d="scan'208";a="16867415"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2024 01:29:21 -0700
-X-CSE-ConnectionGUID: zrjDGM4cTFOB7XZjM3TJ0A==
-X-CSE-MsgGUID: oy92/Yr/QYuzmi6T5Mdjuw==
+  t=1719752477; x=1751288477;
+  h=date:from:to:cc:subject:message-id;
+  bh=g/GQtfa9LluakSWI08K5cT4oTinL0UPdPrIsGimP9YE=;
+  b=PuFomvp6KWVM2uU9/v0NVvaBB7Gk3n3TTggRJjieStT8VJRDBiFGtdHo
+   pXEbmd0cYvDqUQZQTsM7ypl9/3seAY4m87qnbVxuUAO0IpJT3k0Gk06ep
+   NhVByXcsoKvrgLi1puaWuwv/WLLoCbGs503gHvpU+jsWg0yGwjgjgVzUX
+   Sq/4L2hue2ZbSJT/XhLcufxXAsloEH8Bgz8MXH2vobOjTQLjBuFMlDyHu
+   U/LF9d4ka/rGyS6YSGCakvyBMbmlyZtoI9yUSXgiD5I0M52eCfH7viWW0
+   sgHDtg6DNLLpfZ5xQRatLM9XFdbzneqGcO2YNY4uHqKBeKLzIy9Qgy3Qf
+   A==;
+X-CSE-ConnectionGUID: BPQARv8kQFCL1PWOhvskew==
+X-CSE-MsgGUID: wfGUny9QSJedVteSlYD7Fg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11119"; a="17096219"
+X-IronPort-AV: E=Sophos;i="6.09,174,1716274800"; 
+   d="scan'208";a="17096219"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2024 06:01:13 -0700
+X-CSE-ConnectionGUID: E5Dr5+CxQFK2oWP3cOMpoA==
+X-CSE-MsgGUID: 6dEY3ay/TMqZgKbspDuCfw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,168,1716274800"; 
-   d="scan'208";a="49580626"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.125.248.220]) ([10.125.248.220])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2024 01:29:16 -0700
-Message-ID: <1a62d729-878d-4c26-9619-43514c90aa35@linux.intel.com>
-Date: Fri, 28 Jun 2024 16:29:13 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Kalle Valo <kvalo@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Alex Williamson <alex.williamson@redhat.com>, mst@redhat.com,
- Jason Wang <jasowang@redhat.com>, Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Mikko Perttunen <mperttunen@nvidia.com>,
- Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org,
- ath11k@lists.infradead.org, iommu@lists.linux.dev,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 15/21] iommu/vt-d: Add helper to allocate paging domain
-To: Yi Liu <yi.l.liu@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>
-References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
- <20240610085555.88197-16-baolu.lu@linux.intel.com>
- <86dbf286-bb0b-4beb-b26f-a74562b0ace8@intel.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <86dbf286-bb0b-4beb-b26f-a74562b0ace8@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-IronPort-AV: E=Sophos;i="6.09,174,1716274800"; 
+   d="scan'208";a="45124840"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 30 Jun 2024 06:01:10 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sNuB2-000LcS-26;
+	Sun, 30 Jun 2024 13:01:08 +0000
+Date: Sun, 30 Jun 2024 21:00:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ 9783e0407421a4dfc25e3a3001d0e0cff4236806
+Message-ID: <202406302125.jUqH4NKB-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240628_012922_670723_8F8EF96A 
-X-CRM114-Status: GOOD (  20.38  )
+X-CRM114-CacheID: sfid-20240630_060116_064143_79F9E753 
+X-CRM114-Status: UNSURE (   3.79  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,147 +83,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 2024/6/28 13:42, Yi Liu wrote:
-> On 2024/6/10 16:55, Lu Baolu wrote:
->> The domain_alloc_user operation is currently implemented by allocating a
->> paging domain using iommu_domain_alloc(). This is because it needs to 
->> fully
->> initialize the domain before return. Add a helper to do this to avoid 
->> using
->> iommu_domain_alloc().
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 87 +++++++++++++++++++++++++++++++++----
->>   1 file changed, 78 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index 2e9811bf2a4e..ccde5f5972e4 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -3633,6 +3633,79 @@ static struct iommu_domain blocking_domain = {
->>       }
->>   };
->> +static int iommu_superpage_capability(struct intel_iommu *iommu, bool 
->> first_stage)
->> +{
->> +    if (!intel_iommu_superpage)
->> +        return 0;
->> +
->> +    if (first_stage)
->> +        return cap_fl1gp_support(iommu->cap) ? 2 : 1;
->> +
->> +    return fls(cap_super_page_val(iommu->cap));
->> +}
->> +
->> +static struct dmar_domain *paging_domain_alloc(struct device *dev, 
->> bool first_stage)
->> +{
->> +    struct device_domain_info *info = dev_iommu_priv_get(dev);
->> +    struct intel_iommu *iommu = info->iommu;
->> +    struct dmar_domain *domain;
->> +    int addr_width;
->> +
->> +    domain = kzalloc(sizeof(*domain), GFP_KERNEL);
->> +    if (!domain)
->> +        return ERR_PTR(-ENOMEM);
->> +
->> +    INIT_LIST_HEAD(&domain->devices);
->> +    INIT_LIST_HEAD(&domain->dev_pasids);
->> +    INIT_LIST_HEAD(&domain->cache_tags);
->> +    spin_lock_init(&domain->lock);
->> +    spin_lock_init(&domain->cache_lock);
->> +    xa_init(&domain->iommu_array);
->> +
->> +    domain->nid = dev_to_node(dev);
->> +    domain->has_iotlb_device = info->ats_enabled;
->> +    domain->use_first_level = first_stage;
->> +
->> +    /* calculate the address width */
->> +    addr_width = agaw_to_width(iommu->agaw);
->> +    if (addr_width > cap_mgaw(iommu->cap))
->> +        addr_width = cap_mgaw(iommu->cap);
->> +    domain->gaw = addr_width;
->> +    domain->agaw = iommu->agaw;
->> +    domain->max_addr = __DOMAIN_MAX_ADDR(addr_width);
->> +
->> +    /* iommu memory access coherency */
->> +    domain->iommu_coherency = iommu_paging_structure_coherency(iommu);
->> +
->> +    /* pagesize bitmap */
->> +    domain->domain.pgsize_bitmap = SZ_4K;
->> +    domain->iommu_superpage = iommu_superpage_capability(iommu, 
->> first_stage);
->> +    domain->domain.pgsize_bitmap |= domain_super_pgsize_bitmap(domain);
->> +
->> +    /*
->> +     * IOVA aperture: First-level translation restricts the 
->> input-address
->> +     * to a canonical address (i.e., address bits 63:N have the same 
->> value
->> +     * as address bit [N-1], where N is 48-bits with 4-level paging and
->> +     * 57-bits with 5-level paging). Hence, skip bit [N-1].
->> +     */
->> +    domain->domain.geometry.force_aperture = true;
->> +    domain->domain.geometry.aperture_start = 0;
->> +    if (first_stage)
->> +        domain->domain.geometry.aperture_end = 
->> __DOMAIN_MAX_ADDR(domain->gaw - 1);
->> +    else
->> +        domain->domain.geometry.aperture_end = 
->> __DOMAIN_MAX_ADDR(domain->gaw);
->> +
->> +    /* always allocate the top pgd */
->> +    domain->pgd = iommu_alloc_page_node(domain->nid, GFP_KERNEL);
->> +    if (!domain->pgd) {
->> +        kfree(domain);
->> +        return ERR_PTR(-ENOMEM);
->> +    }
->> +    domain_flush_cache(domain, domain->pgd, PAGE_SIZE);
->> +
->> +    return domain;
->> +}
->> +
->>   static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
->>   {
->>       struct dmar_domain *dmar_domain;
->> @@ -3695,15 +3768,11 @@ intel_iommu_domain_alloc_user(struct device 
->> *dev, u32 flags,
->>       if (user_data || (dirty_tracking && !ssads_supported(iommu)))
->>           return ERR_PTR(-EOPNOTSUPP);
->> -    /*
->> -     * domain_alloc_user op needs to fully initialize a domain before
->> -     * return, so uses iommu_domain_alloc() here for simple.
->> -     */
->> -    domain = iommu_domain_alloc(dev->bus);
->> -    if (!domain)
->> -        return ERR_PTR(-ENOMEM);
->> -
->> -    dmar_domain = to_dmar_domain(domain);
->> +    /* Do not use first stage for user domain translation. */
->> +    dmar_domain = paging_domain_alloc(dev, false);
-> 
-> this is not an apple-to-apple replacement yet. You need to set the type,
-> owner and domain->ops as well.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: 9783e0407421a4dfc25e3a3001d0e0cff4236806  wifi: ath12k: fix driver initialization for WoW unsupported devices
 
-Yes. You are right. I will add below lines.
+elapsed time: 4050m
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d51f840715e5..c5d9c2283977 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -3732,6 +3732,9 @@ intel_iommu_domain_alloc_user(struct device *dev, 
-u32 flags,
-         if (IS_ERR(dmar_domain))
-                 return ERR_CAST(dmar_domain);
-         domain = &dmar_domain->domain;
-+       domain->type = IOMMU_DOMAIN_UNMANAGED;
-+       domain->owner = &intel_iommu_ops;
-+       domain->ops = intel_iommu_ops.default_domain_ops;
+configs tested: 72
+configs skipped: 0
 
-         if (nested_parent) {
-                 dmar_domain->nested_parent = true;
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Best regards,
-baolu
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                   randconfig-001-20240630   gcc-13.2.0
+arc                   randconfig-002-20240630   gcc-13.2.0
+arm                               allnoconfig   gcc-13.2.0
+arm                   randconfig-001-20240630   gcc-13.2.0
+arm                   randconfig-002-20240630   gcc-13.2.0
+arm                   randconfig-003-20240630   gcc-13.2.0
+arm                   randconfig-004-20240630   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                 randconfig-001-20240630   gcc-13.2.0
+arm64                 randconfig-002-20240630   gcc-13.2.0
+arm64                 randconfig-003-20240630   gcc-13.2.0
+arm64                 randconfig-004-20240630   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                  randconfig-001-20240630   gcc-13.2.0
+csky                  randconfig-002-20240630   gcc-13.2.0
+i386         buildonly-randconfig-001-20240628   gcc-10
+i386         buildonly-randconfig-002-20240628   gcc-10
+i386         buildonly-randconfig-003-20240628   gcc-10
+i386         buildonly-randconfig-004-20240628   gcc-10
+i386         buildonly-randconfig-005-20240628   gcc-10
+i386         buildonly-randconfig-006-20240628   gcc-10
+i386                  randconfig-001-20240628   gcc-10
+i386                  randconfig-002-20240628   gcc-10
+i386                  randconfig-003-20240628   gcc-10
+i386                  randconfig-004-20240628   gcc-10
+i386                  randconfig-005-20240628   gcc-10
+i386                  randconfig-006-20240628   gcc-10
+i386                  randconfig-011-20240628   gcc-10
+i386                  randconfig-012-20240628   gcc-10
+i386                  randconfig-013-20240628   gcc-10
+i386                  randconfig-014-20240628   gcc-10
+i386                  randconfig-015-20240628   gcc-10
+i386                  randconfig-016-20240628   gcc-10
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch             randconfig-001-20240630   gcc-13.2.0
+loongarch             randconfig-002-20240630   gcc-13.2.0
+m68k                              allnoconfig   gcc-13.2.0
+microblaze                        allnoconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-13.2.0
+nios2                 randconfig-001-20240630   gcc-13.2.0
+nios2                 randconfig-002-20240630   gcc-13.2.0
+openrisc                          allnoconfig   gcc-13.2.0
+parisc                            allnoconfig   gcc-13.2.0
+parisc                randconfig-001-20240630   gcc-13.2.0
+parisc                randconfig-002-20240630   gcc-13.2.0
+powerpc                           allnoconfig   gcc-13.2.0
+powerpc               randconfig-001-20240630   gcc-13.2.0
+powerpc               randconfig-002-20240630   gcc-13.2.0
+powerpc               randconfig-003-20240630   gcc-13.2.0
+powerpc64             randconfig-001-20240630   gcc-13.2.0
+powerpc64             randconfig-002-20240630   gcc-13.2.0
+powerpc64             randconfig-003-20240630   gcc-13.2.0
+riscv                             allnoconfig   gcc-13.2.0
+riscv                 randconfig-001-20240630   gcc-13.2.0
+riscv                 randconfig-002-20240630   gcc-13.2.0
+s390                              allnoconfig   gcc-13.2.0
+s390                  randconfig-001-20240630   gcc-13.2.0
+s390                  randconfig-002-20240630   gcc-13.2.0
+sh                                allnoconfig   gcc-13.2.0
+sh                    randconfig-001-20240630   gcc-13.2.0
+sh                    randconfig-002-20240630   gcc-13.2.0
+sparc64               randconfig-001-20240630   gcc-13.2.0
+sparc64               randconfig-002-20240630   gcc-13.2.0
+um                                allnoconfig   gcc-13.2.0
+um                    randconfig-001-20240630   gcc-13.2.0
+um                    randconfig-002-20240630   gcc-13.2.0
+xtensa                            allnoconfig   gcc-13.2.0
+xtensa                randconfig-001-20240630   gcc-13.2.0
+xtensa                randconfig-002-20240630   gcc-13.2.0
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
