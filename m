@@ -4,71 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0D07C2BD09
-	for <ath10k@archiver.kernel.org>; Wed,  3 Jul 2024 07:12:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE4E0C30653
+	for <ath10k@archiver.kernel.org>; Wed,  3 Jul 2024 07:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=caOin58dBjLnsYcRTyAKqudtKr99s1GI1YJpHP+UGYQ=; b=z8HOpN3HRoiOIAja0/uPEmAVZc
-	dkNTykh1EmBfjGIc1EuQn0UU1bt0RLoyliYZPIIaHxFmrwaN5FB/n4ZnTQYY1xflb6r+pDHatk9ta
-	LmXQOWrZpnqBI4SySfyUeG167JgqKb6bLnD87J6x8OZJz2IygSErozoYLGc+W3PFKVvCyZwtDC5lV
-	iwJd3AdBS6dWPOKe31zGN6m3ngJYoecbOPRwYV7g2m30eR1jkD3biayNCQKC0DuR+yJe/z0eWYAGx
-	orTk9rAVteA/M9g8gpbSN9X15vkcO8QsB6RYqtcGAi543wTf7JEI02uUXtLtYwULCKDsktTf/CnMf
-	Wj/0WMQw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=gCaQlshmePyQDB6ovrNsJ5/VaZp8xkilWo/C5ufKmIY=; b=WFQBQd6pkHYmvD2LFvdG4FMpQ5
+	MJMNhtEqf3mXylip2erYV4Hm7RNx+J61XBPCz4mdPJAXsKxz3wcwVvGitceHU8Vm8rekmCpkqxxZY
+	ZHruc2SB8MRY6eFhO5tB58BG2iKlyXITEuU9OjhcXXSY8f4sgXV+5epA5wpTnFShaqmWbCt/G0Fju
+	iPdqi/yop459UtzTGoBLCRdGbqGvHLe+0wIm3ax7IeaZy4X7OU6Q1uSmL+5u/G8ZReFT1zVFi8la8
+	sZ6YhbTbyDU95ld/bVXS3DZZuKuF94d0ycCQ6JL69qOa1/c0eGHI1SNhyVqHCqRXlOa4C9GVZPRkL
+	F3ccplKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOuA8-00000009ITj-2AJ5;
-	Wed, 03 Jul 2024 07:12:20 +0000
-Received: from mgamail.intel.com ([192.198.163.8])
+	id 1sOuCP-00000009J5f-1ihJ;
+	Wed, 03 Jul 2024 07:14:41 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOuA6-00000009ITN-0MZd
-	for ath10k@lists.infradead.org;
-	Wed, 03 Jul 2024 07:12:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1719990738; x=1751526738;
-  h=date:from:to:cc:subject:message-id;
-  bh=wCeKaDYNs33W4A3byvN2AukGnw0l+r5vc5WsMdWTV3Y=;
-  b=YudUytll9gcHltZbKvSa0LMUopL/EC4nIF+SBlwOU+nP6239F5387kiR
-   52oIUyNnbGgxf+rDi+0AuaFcbvhv7DW6Nh3pTlvL+mh8tgdtvJT9/qfQd
-   o71C8EF1kZW7Liqyj0SFgM9xRBSyRrkfyrUUBkb8MJi+j8v2FWCZEwf7N
-   kbRPwVq1/W1wY4oCheZMYyTorDjAuqQL1P04Gn8UwO7SP5scO3SgXTt03
-   W2E3dtvZlZeRrJGImWY6ExttwiB1wbQNKYhPvp60dHUcs1vHa9ZQZymnF
-   5YIw9Hyirx6CDMN0tAV3KiiBqXrXbahtLZ/Foflwj9bnoWtRHLfCQiUE9
-   w==;
-X-CSE-ConnectionGUID: Zko9sNJyTjaFHmcHupJ6JA==
-X-CSE-MsgGUID: 5PzLZfThQSSM/THEQApmSw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11121"; a="34741246"
-X-IronPort-AV: E=Sophos;i="6.09,181,1716274800"; 
-   d="scan'208";a="34741246"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2024 00:12:15 -0700
-X-CSE-ConnectionGUID: SbWXz9Y8TdG4i4Giwakgjw==
-X-CSE-MsgGUID: 4UrmE4mPRgqVDxpGAG9KaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,181,1716274800"; 
-   d="scan'208";a="50768614"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 03 Jul 2024 00:12:13 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sOu9z-000PQU-1a;
-	Wed, 03 Jul 2024 07:12:11 +0000
-Date: Wed, 03 Jul 2024 15:11:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalle Valo <quic_kvalo@quicinc.com>
-Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:master] BUILD SUCCESS
- 26fe05a9c30960422e1d62d924c6eb6344ead1ae
-Message-ID: <202407031531.n6rH0wQe-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1sOuCL-00000009J4p-3wTO;
+	Wed, 03 Jul 2024 07:14:39 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 1168CCE1D4E;
+	Wed,  3 Jul 2024 07:14:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF794C2BD10;
+	Wed,  3 Jul 2024 07:14:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719990875;
+	bh=x+1Z0OH2iTgkOWjPo7qguUcayPfUY6MxGUvlYB4Er9U=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=Ekvw+WdQ2FH0lUhpQUPwlryZvnC0zVEx3AVCDmPFolSc0F6dnzOq5U1MvgtGXpsSY
+	 NFRAdF24djUA2rpP8DlBk/4H/lJWEGtQfCxuRDuDpcKZlhDT27chfOvhYy2VsJ7s6P
+	 4qhTirqvwSNnyeC1liCyanoUmx7ls76ySdL7DcsElc69Hxw4UlsNndkYHGXExA6yLY
+	 il5YAIPK+85e+g20b5/cPoyDAgH0McKmfcNjxQ/j6PqS/aa93rOxH1auwrjRhXtfic
+	 CefBDu8i9Rl53pYHjisFxmOHqtC1Hzq2yYnQnVeeniLLOWBm3stV2Y0CRnB4jzCkht
+	 304GsGKjOkWdA==
+From: Kalle Valo <kvalo@kernel.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: <linux-wireless@vger.kernel.org>,  <ath10k@lists.infradead.org>,
+  <ath11k@lists.infradead.org>,  <ath12k@lists.infradead.org>,
+  <quic_kvalo@quicinc.com>,  Bartosz Golaszewski
+ <bartosz.golaszewski@linaro.org>
+Subject: Re: pull-request: ath-next-20240702
+References: <812acd8a-fc26-4611-8a7a-c3a1d6197d00@quicinc.com>
+	<87zfqzdkgh.fsf@kernel.org>
+Date: Wed, 03 Jul 2024 10:14:32 +0300
+In-Reply-To: <87zfqzdkgh.fsf@kernel.org> (Kalle Valo's message of "Wed, 03 Jul
+	2024 10:05:18 +0300")
+Message-ID: <87v81ndk13.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240703_001218_161215_8E2145FD 
-X-CRM114-Status: UNSURE (   3.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240703_001438_177944_796D3242 
+X-CRM114-Status: GOOD (  12.61  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,132 +74,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-branch HEAD: 26fe05a9c30960422e1d62d924c6eb6344ead1ae  Add localversion-wireless-testing-ath
+Kalle Valo <kvalo@kernel.org> writes:
 
-elapsed time: 2160m
+> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
+>
+>> The following changes since commit bb678f01804ccaa861b012b2b9426d69673d8a84:
+>>
+>>   Merge branch 'intel-wired-lan-driver-updates-2024-06-03'
+>> (2024-06-10 19:52:50 -0700)
+>>
+>> are available in the Git repository at:
+>>
+>>   git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20240702
+>>
+>> for you to fetch changes up to 5344fc76f8944249026884157f846f88489edfc0:
+>>
+>>   wifi: ath12k: Support TQM stats (2024-07-01 21:57:28 +0300)
+>>
+>> ----------------------------------------------------------------
+>> ath.git patches for v6.11
+>>
+>> We have moved to a new group-managed repo, and this is the first pull
+>> request from that repo, and from me. Fingers crossed...
+>>
+>> We have some new features in ath12k along with some cleanups in ath11k
+>> and ath12k. Also notable are some device-tree changes to allow certain
+>> ath11k and ath12k devices to work with a new power sequencing
+>> subsystem.
+>>
+>> Major changes:
+>>
+>> ath12k
+>>
+>> * DebugFS support for datapath statistics
+>> * WCN7850: support for WoW (Wake on WLAN)
+>> * WCN7850: device-tree bindings
+>>
+>> ath11k
+>>
+>> * QCA6390: device-tree bindings
+>>
+>> ----------------------------------------------------------------
+>
+> I see a weird warning from gpg which I have never seen before:
+>
+> merged tag 'ath-next-20240702'
+> gpg: Signature made Tue 02 Jul 2024 05:55:42 PM EEST
+> gpg:                using EDDSA key 3F9AD487CCF522D7A21F0C492C15BBA0898CCB7B
+> gpg:                issuer "jjohnson@kernel.org"
+> gpg: Good signature from "Jeff Johnson <quic_jjohnson@quicinc.com>" [full]
+> gpg: WARNING: We do NOT trust this key!
+> gpg:          The signature is probably a FORGERY.
+>
+> It first says that the signature is good and then claims it's a forgery,
+> odd. Is this a problem between using different email addresses or what?
 
-configs tested: 112
-configs skipped: 1
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc-13.2.0
-arc                               allnoconfig   gcc-13.2.0
-arc                   randconfig-001-20240703   gcc-13.2.0
-arc                   randconfig-002-20240703   gcc-13.2.0
-arm                              alldefconfig   gcc-13.2.0
-arm                               allnoconfig   gcc-13.2.0
-arm                     davinci_all_defconfig   gcc-13.2.0
-arm                          gemini_defconfig   gcc-13.2.0
-arm                        multi_v5_defconfig   gcc-13.2.0
-arm                   randconfig-001-20240703   gcc-13.2.0
-arm                   randconfig-002-20240703   gcc-13.2.0
-arm                   randconfig-003-20240703   gcc-13.2.0
-arm                   randconfig-004-20240703   gcc-13.2.0
-arm                       spear13xx_defconfig   gcc-13.2.0
-arm                       versatile_defconfig   gcc-13.2.0
-arm64                             allnoconfig   gcc-13.2.0
-arm64                 randconfig-001-20240703   gcc-13.2.0
-arm64                 randconfig-002-20240703   gcc-13.2.0
-arm64                 randconfig-003-20240703   gcc-13.2.0
-arm64                 randconfig-004-20240703   gcc-13.2.0
-csky                              allnoconfig   gcc-13.2.0
-csky                  randconfig-001-20240703   gcc-13.2.0
-csky                  randconfig-002-20240703   gcc-13.2.0
-i386         buildonly-randconfig-001-20240702   gcc-13
-i386         buildonly-randconfig-002-20240702   gcc-13
-i386         buildonly-randconfig-003-20240702   gcc-13
-i386         buildonly-randconfig-004-20240702   gcc-13
-i386         buildonly-randconfig-005-20240702   gcc-13
-i386         buildonly-randconfig-006-20240702   gcc-13
-i386                  randconfig-001-20240702   gcc-13
-i386                  randconfig-002-20240702   gcc-13
-i386                  randconfig-003-20240702   gcc-13
-i386                  randconfig-004-20240702   gcc-13
-i386                  randconfig-005-20240702   gcc-13
-i386                  randconfig-006-20240702   gcc-13
-i386                  randconfig-011-20240702   gcc-13
-i386                  randconfig-012-20240702   gcc-13
-i386                  randconfig-013-20240702   gcc-13
-i386                  randconfig-014-20240702   gcc-13
-i386                  randconfig-015-20240702   gcc-13
-i386                  randconfig-016-20240702   gcc-13
-loongarch                         allnoconfig   gcc-13.2.0
-loongarch             randconfig-001-20240703   gcc-13.2.0
-loongarch             randconfig-002-20240703   gcc-13.2.0
-m68k                              allnoconfig   gcc-13.2.0
-m68k                         amcore_defconfig   gcc-13.2.0
-microblaze                        allnoconfig   gcc-13.2.0
-mips                              allnoconfig   gcc-13.2.0
-mips                          eyeq5_defconfig   gcc-13.2.0
-mips                           ip27_defconfig   gcc-13.2.0
-mips                      maltaaprp_defconfig   gcc-13.2.0
-nios2                             allnoconfig   gcc-13.2.0
-nios2                 randconfig-001-20240703   gcc-13.2.0
-nios2                 randconfig-002-20240703   gcc-13.2.0
-openrisc                          allnoconfig   gcc-13.2.0
-openrisc                  or1klitex_defconfig   gcc-13.2.0
-parisc                            allnoconfig   gcc-13.2.0
-parisc                randconfig-001-20240703   gcc-13.2.0
-parisc                randconfig-002-20240703   gcc-13.2.0
-powerpc                           allnoconfig   gcc-13.2.0
-powerpc               randconfig-001-20240703   gcc-13.2.0
-powerpc               randconfig-002-20240703   gcc-13.2.0
-powerpc               randconfig-003-20240703   gcc-13.2.0
-powerpc                     tqm8560_defconfig   gcc-13.2.0
-powerpc64             randconfig-001-20240703   gcc-13.2.0
-powerpc64             randconfig-002-20240703   gcc-13.2.0
-powerpc64             randconfig-003-20240703   gcc-13.2.0
-riscv                             allnoconfig   gcc-13.2.0
-riscv                               defconfig   gcc-13.2.0
-riscv                 randconfig-001-20240703   gcc-13.2.0
-riscv                 randconfig-002-20240703   gcc-13.2.0
-s390                              allnoconfig   gcc-13.2.0
-s390                  randconfig-001-20240703   gcc-13.2.0
-s390                  randconfig-002-20240703   gcc-13.2.0
-sh                                allnoconfig   gcc-13.2.0
-sh                               j2_defconfig   gcc-13.2.0
-sh                    randconfig-001-20240703   gcc-13.2.0
-sh                    randconfig-002-20240703   gcc-13.2.0
-sh                   rts7751r2dplus_defconfig   gcc-13.2.0
-sh                           sh2007_defconfig   gcc-13.2.0
-sparc64               randconfig-001-20240703   gcc-13.2.0
-sparc64               randconfig-002-20240703   gcc-13.2.0
-um                                allnoconfig   gcc-13.2.0
-um                    randconfig-001-20240703   gcc-13.2.0
-um                    randconfig-002-20240703   gcc-13.2.0
-x86_64       buildonly-randconfig-001-20240703   clang-18
-x86_64       buildonly-randconfig-002-20240703   clang-18
-x86_64       buildonly-randconfig-003-20240703   clang-18
-x86_64       buildonly-randconfig-004-20240703   clang-18
-x86_64       buildonly-randconfig-005-20240703   clang-18
-x86_64       buildonly-randconfig-006-20240703   clang-18
-x86_64                randconfig-001-20240703   clang-18
-x86_64                randconfig-002-20240703   clang-18
-x86_64                randconfig-003-20240703   clang-18
-x86_64                randconfig-004-20240703   clang-18
-x86_64                randconfig-005-20240703   clang-18
-x86_64                randconfig-006-20240703   clang-18
-x86_64                randconfig-011-20240703   clang-18
-x86_64                randconfig-012-20240703   clang-18
-x86_64                randconfig-013-20240703   clang-18
-x86_64                randconfig-014-20240703   clang-18
-x86_64                randconfig-015-20240703   clang-18
-x86_64                randconfig-016-20240703   clang-18
-x86_64                randconfig-071-20240703   clang-18
-x86_64                randconfig-072-20240703   clang-18
-x86_64                randconfig-073-20240703   clang-18
-x86_64                randconfig-074-20240703   clang-18
-x86_64                randconfig-075-20240703   clang-18
-x86_64                randconfig-076-20240703   clang-18
-xtensa                            allnoconfig   gcc-13.2.0
-xtensa                randconfig-001-20240703   gcc-13.2.0
-xtensa                randconfig-002-20240703   gcc-13.2.0
+I did 'gpg --refresh-keys', now your key contains your kernel.org
+address and I don't see the warning anymore.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
