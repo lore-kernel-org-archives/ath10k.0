@@ -4,85 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E89AFC30658
-	for <ath10k@archiver.kernel.org>; Tue,  2 Jul 2024 20:45:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA49CC3065C
+	for <ath10k@archiver.kernel.org>; Wed,  3 Jul 2024 00:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:CC:To:From:MIME-Version:Date:Message-ID:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=N8d/iTyV0Es1LzN9dYmgx+3uWEh64MISDrPEC+6ChUE=; b=yBwOa9ceAN8bJ2PRi5L0RiWw8R
-	lCH9Yd7cZJaqJzVhHviwHEt6hZNIbi1yVdwsZ4V7lcipZax742aFEWoNSIeSVHw1g0wFl9iY2BFs5
-	uPIAzL2PCURfuwWk2B/4HM1qgMrguwJY0HB8PT1JLLu/q3n4fe1yt/cWQlSpOdomLqS/hGeED1BoG
-	5XgzG3YOwLujI6FNj8u/sL1MX+0t4/RXJrcjLP5vCnJMMUax81JDq9p2rDgKHjT4GzcM7ZYciklkW
-	1QJGjukqS4wbzQUu/F+rrDvY0D/hD9X5k0pU6zfz1lyJsRXb7EMCgx4K24PhzVOPaljImeXZQm52B
-	9o9Hl9PQ==;
+	bh=8kIL3bO8wcwrDW8j6fX4Xck3/Y05Hn3dTmXgOTNhb2w=; b=2BDjPrlsuXyrstL6xMeMH6bfml
+	2PpAzKrFAStQgERwJBVJ1Ld6JzyeSmR3jCfdksRK+jg76C8amGzB20mshz8ZxbYBlJWLnAcqnadOp
+	Q+smcGdz8/ZAqOa8BT7KQ66tWjEJPMcY1TQLCrrJ9MbhVt20xZV/Sa2v0LV139rMSh2R/uQpCNdss
+	G+4QMTJKjXlR5tso0/NDq7BLCIK+/CmxqtnBBo6WOXTD0Mq+5gP71p10t8YUIC9AYVrMbI5uVw/Zd
+	00saPq3Ebs0XTN00jpsVIjye9nnUtrV2Gty3nwnNkZfSqwmIOTrYATUxtoYuLBo72vIGvLFH/u2k3
+	nUgD9nAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOkNC-00000007uvM-3yt8;
-	Tue, 02 Jul 2024 20:45:10 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1sOnkR-00000008OZq-1fnA;
+	Wed, 03 Jul 2024 00:21:23 +0000
+Received: from mgamail.intel.com ([198.175.65.16])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOkN9-00000007uun-2rDR;
-	Tue, 02 Jul 2024 20:45:09 +0000
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 462HEkUB004294;
-	Tue, 2 Jul 2024 20:45:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=qcppdkim1; bh=N8d/iTyV0Es1LzN9dYmgx+
-	3uWEh64MISDrPEC+6ChUE=; b=Tt7JCyLDPQeNkkCPxJCvFjx8wLX75na3tgaVMD
-	2imnDPcocowp0ztUxuWPoQ3jabT/Xoe1tRKYskacv/K1bviZeghWP5TfCT70E+Ne
-	q1jaqeUmvBBnbpBiVjgacPoW2mAgsH8rf8+sxvNW263UHnaXcWrrtc3RYj9Audag
-	dKo28a86+UndcvtyhyWuKDUD9ivbQzv+Hi0xR+A8pGOlVKDWXo5HUEOytoHpPo6a
-	bbT4c05SHO0KTH0e7LFD+zp8IRWxphEsWEGIwhad97rrJ9gSL+vg8fHr92rf6IjC
-	hiGHl+QW980nxDpmx7zPpkFTNwmtFKHNnBaHsTawU3N5KyBg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4029uxexdv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jul 2024 20:45:05 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 462Kj47a016615
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Jul 2024 20:45:04 GMT
-Received: from [10.48.245.148] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 2 Jul 2024
- 13:44:57 -0700
-Message-ID: <812acd8a-fc26-4611-8a7a-c3a1d6197d00@quicinc.com>
-Date: Tue, 2 Jul 2024 13:44:56 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-To: <linux-wireless@vger.kernel.org>
-CC: <ath10k@lists.infradead.org>, <ath11k@lists.infradead.org>,
-        <ath12k@lists.infradead.org>, <quic_jjohnson@quicinc.com>,
-        <quic_kvalo@quicinc.com>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>
-Subject: pull-request: ath-next-20240702
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: mq9efbWP1t1fwfhfPMEj4MGAAmxg_5Tj
-X-Proofpoint-ORIG-GUID: mq9efbWP1t1fwfhfPMEj4MGAAmxg_5Tj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-02_16,2024-07-02_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0 mlxscore=0
- clxscore=1011 phishscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2406140001 definitions=main-2407020152
+	id 1sOnkO-00000008OZ2-1wNP
+	for ath10k@lists.infradead.org;
+	Wed, 03 Jul 2024 00:21:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1719966080; x=1751502080;
+  h=date:from:to:cc:subject:message-id;
+  bh=Jh1QMh+nV6JpzllyVTy5rYvWxsfa6Ff4onGL/Zxhhv4=;
+  b=l5lEzHLFppGa02BPmBxFDAv6Hi+H4+42kMxzsufIEa2T0DwUekx4yKc/
+   p0Ga0hrILMDsodlEoD6YrkSdwFddZpy4yrUCB54Jh3H4jhT2ey3sauTaz
+   /tHjmJ/Yr7o2Yjl6jPLXMIyk7QKIPYRDBGq4nLNK2FAg1RlsyH0zZ+nOd
+   y8RVOp0nSTnCSay9KtwuAPfXqJcqpddjicvex2rOnYA7Aip5veNMdTfsF
+   k+tCDtdSTnkOX0pSaBgSrWn0sVp8KTcdCShZcaZTV7NqnzwtXkSRkwSE2
+   +N8tafvBG7d+L82pvI3alJB/BUHPbXIHpeZ7HY2j+eoCSHJ0+/ZE/78jP
+   g==;
+X-CSE-ConnectionGUID: vlJrPDfQR9aakHQkdlNj7A==
+X-CSE-MsgGUID: cYM0xDBsQxukjHlPpITWMQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11121"; a="17304686"
+X-IronPort-AV: E=Sophos;i="6.09,180,1716274800"; 
+   d="scan'208";a="17304686"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2024 17:21:19 -0700
+X-CSE-ConnectionGUID: M6esZhleQsGO7Ghx7yiOrw==
+X-CSE-MsgGUID: mmk3NSpYRj6l76Mgp5MhWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,180,1716274800"; 
+   d="scan'208";a="51247726"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 02 Jul 2024 17:21:19 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sOnkK-000P0P-0o;
+	Wed, 03 Jul 2024 00:21:16 +0000
+Date: Wed, 03 Jul 2024 08:20:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:ath-next] BUILD SUCCESS
+ 5344fc76f8944249026884157f846f88489edfc0
+Message-ID: <202407030855.FqlBVj71-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240702_134507_877982_897EFE59 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20240702_172120_573180_8C6407FF 
+X-CRM114-Status: UNSURE (   3.91  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,141 +83,136 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The following changes since commit bb678f01804ccaa861b012b2b9426d69673d8a84:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+branch HEAD: 5344fc76f8944249026884157f846f88489edfc0  wifi: ath12k: Support TQM stats
 
-  Merge branch 'intel-wired-lan-driver-updates-2024-06-03' (2024-06-10 19:52:50 -0700)
+elapsed time: 1751m
 
-are available in the Git repository at:
+configs tested: 116
+configs skipped: 1
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20240702
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-for you to fetch changes up to 5344fc76f8944249026884157f846f88489edfc0:
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                   randconfig-001-20240703   gcc-13.2.0
+arc                   randconfig-002-20240703   gcc-13.2.0
+arm                               allnoconfig   clang-19
+arm                               allnoconfig   gcc-13.2.0
+arm                   randconfig-001-20240703   gcc-13.2.0
+arm                   randconfig-002-20240703   gcc-13.2.0
+arm                   randconfig-003-20240703   gcc-13.2.0
+arm                   randconfig-004-20240703   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                 randconfig-001-20240703   gcc-13.2.0
+arm64                 randconfig-002-20240703   gcc-13.2.0
+arm64                 randconfig-003-20240703   gcc-13.2.0
+arm64                 randconfig-004-20240703   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                  randconfig-001-20240703   gcc-13.2.0
+csky                  randconfig-002-20240703   gcc-13.2.0
+hexagon                           allnoconfig   clang-19
+i386         buildonly-randconfig-001-20240702   gcc-13
+i386         buildonly-randconfig-001-20240703   clang-18
+i386         buildonly-randconfig-002-20240702   gcc-13
+i386         buildonly-randconfig-002-20240703   clang-18
+i386         buildonly-randconfig-003-20240702   gcc-13
+i386         buildonly-randconfig-003-20240703   clang-18
+i386         buildonly-randconfig-004-20240702   gcc-13
+i386         buildonly-randconfig-004-20240703   clang-18
+i386         buildonly-randconfig-005-20240702   gcc-13
+i386         buildonly-randconfig-005-20240703   clang-18
+i386         buildonly-randconfig-006-20240702   gcc-13
+i386         buildonly-randconfig-006-20240703   clang-18
+i386                  randconfig-001-20240702   gcc-13
+i386                  randconfig-001-20240703   clang-18
+i386                  randconfig-002-20240702   gcc-13
+i386                  randconfig-002-20240703   clang-18
+i386                  randconfig-003-20240702   gcc-13
+i386                  randconfig-003-20240703   clang-18
+i386                  randconfig-004-20240702   gcc-13
+i386                  randconfig-004-20240703   clang-18
+i386                  randconfig-005-20240702   gcc-13
+i386                  randconfig-005-20240703   clang-18
+i386                  randconfig-006-20240702   gcc-13
+i386                  randconfig-006-20240703   clang-18
+i386                  randconfig-011-20240702   gcc-13
+i386                  randconfig-011-20240703   clang-18
+i386                  randconfig-012-20240702   gcc-13
+i386                  randconfig-012-20240703   clang-18
+i386                  randconfig-013-20240702   gcc-13
+i386                  randconfig-013-20240703   clang-18
+i386                  randconfig-014-20240702   gcc-13
+i386                  randconfig-014-20240703   clang-18
+i386                  randconfig-015-20240702   gcc-13
+i386                  randconfig-015-20240703   clang-18
+i386                  randconfig-016-20240702   gcc-13
+i386                  randconfig-016-20240703   clang-18
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch             randconfig-001-20240703   gcc-13.2.0
+loongarch             randconfig-002-20240703   gcc-13.2.0
+m68k                              allnoconfig   gcc-13.2.0
+microblaze                        allnoconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-13.2.0
+nios2                 randconfig-001-20240703   gcc-13.2.0
+nios2                 randconfig-002-20240703   gcc-13.2.0
+openrisc                          allnoconfig   gcc-13.2.0
+parisc                            allnoconfig   gcc-13.2.0
+parisc                randconfig-001-20240703   gcc-13.2.0
+parisc                randconfig-002-20240703   gcc-13.2.0
+powerpc                           allnoconfig   gcc-13.2.0
+powerpc               randconfig-001-20240703   gcc-13.2.0
+powerpc               randconfig-002-20240703   gcc-13.2.0
+powerpc               randconfig-003-20240703   gcc-13.2.0
+powerpc64             randconfig-001-20240703   gcc-13.2.0
+powerpc64             randconfig-002-20240703   gcc-13.2.0
+powerpc64             randconfig-003-20240703   gcc-13.2.0
+riscv                             allnoconfig   gcc-13.2.0
+riscv                 randconfig-001-20240703   gcc-13.2.0
+riscv                 randconfig-002-20240703   gcc-13.2.0
+s390                              allnoconfig   gcc-13.2.0
+s390                  randconfig-001-20240703   gcc-13.2.0
+s390                  randconfig-002-20240703   gcc-13.2.0
+sh                                allnoconfig   gcc-13.2.0
+sh                    randconfig-001-20240703   gcc-13.2.0
+sh                    randconfig-002-20240703   gcc-13.2.0
+sparc64               randconfig-001-20240703   gcc-13.2.0
+sparc64               randconfig-002-20240703   gcc-13.2.0
+um                                allnoconfig   gcc-13.2.0
+um                    randconfig-001-20240703   gcc-13.2.0
+um                    randconfig-002-20240703   gcc-13.2.0
+x86_64       buildonly-randconfig-001-20240703   clang-18
+x86_64       buildonly-randconfig-002-20240703   clang-18
+x86_64       buildonly-randconfig-003-20240703   clang-18
+x86_64       buildonly-randconfig-004-20240703   clang-18
+x86_64       buildonly-randconfig-005-20240703   clang-18
+x86_64       buildonly-randconfig-006-20240703   clang-18
+x86_64                randconfig-001-20240703   clang-18
+x86_64                randconfig-002-20240703   clang-18
+x86_64                randconfig-003-20240703   clang-18
+x86_64                randconfig-004-20240703   clang-18
+x86_64                randconfig-005-20240703   clang-18
+x86_64                randconfig-006-20240703   clang-18
+x86_64                randconfig-011-20240703   clang-18
+x86_64                randconfig-012-20240703   clang-18
+x86_64                randconfig-013-20240703   clang-18
+x86_64                randconfig-014-20240703   clang-18
+x86_64                randconfig-015-20240703   clang-18
+x86_64                randconfig-016-20240703   clang-18
+x86_64                randconfig-071-20240703   clang-18
+x86_64                randconfig-072-20240703   clang-18
+x86_64                randconfig-073-20240703   clang-18
+x86_64                randconfig-074-20240703   clang-18
+x86_64                randconfig-075-20240703   clang-18
+x86_64                randconfig-076-20240703   clang-18
+xtensa                            allnoconfig   gcc-13.2.0
+xtensa                randconfig-001-20240703   gcc-13.2.0
+xtensa                randconfig-002-20240703   gcc-13.2.0
 
-  wifi: ath12k: Support TQM stats (2024-07-01 21:57:28 +0300)
-
-----------------------------------------------------------------
-ath.git patches for v6.11
-
-We have moved to a new group-managed repo, and this is the first pull
-request from that repo, and from me. Fingers crossed...
-
-We have some new features in ath12k along with some cleanups in ath11k
-and ath12k. Also notable are some device-tree changes to allow certain
-ath11k and ath12k devices to work with a new power sequencing
-subsystem.
-
-Major changes:
-
-ath12k
-
-* DebugFS support for datapath statistics
-* WCN7850: support for WoW (Wake on WLAN)
-* WCN7850: device-tree bindings
-
-ath11k
-
-* QCA6390: device-tree bindings
-
-----------------------------------------------------------------
-Aaradhana Sahu (3):
-      wifi: ath12k: Fix WARN_ON during firmware crash in split-phy
-      wifi: ath12k: fix NULL pointer access in ath12k_mac_op_get_survey()
-      wifi: ath12k: fix uninitialize symbol error on ath12k_peer_assoc_h_he()
-
-Aditya Kumar Singh (3):
-      wifi: ath12k: fix per pdev debugfs registration
-      wifi: ath12k: unregister per pdev debugfs
-      wifi: ath12k: handle symlink cleanup for per pdev debugfs dentry
-
-Ajith C (1):
-      wifi: ath12k: fix firmware crash due to invalid peer nss
-
-Baochen Qiang (11):
-      wifi: ath12k: fix ACPI warning when resume
-      wifi: ath11k: fix RCU documentation in ath11k_mac_op_ipv6_changed()
-      wifi: ath11k: fix wrong handling of CCMP256 and GCMP ciphers
-      wifi: ath12k: add ATH12K_DBG_WOW log level
-      wifi: ath12k: implement WoW enable and wakeup commands
-      wifi: ath12k: add basic WoW functionalities
-      wifi: ath12k: add WoW net-detect functionality
-      wifi: ath12k: implement hardware data filter
-      wifi: ath12k: support ARP and NS offload
-      wifi: ath12k: support GTK rekey offload
-      wifi: ath12k: handle keepalive during WoWLAN suspend and resume
-
-Bartosz Golaszewski (2):
-      dt-bindings: net: wireless: qcom,ath11k: describe the ath11k on QCA6390
-      dt-bindings: net: wireless: describe the ath12k PCI module
-
-Dinesh Karthikeyan (6):
-      wifi: ath12k: Add support to enable debugfs_htt_stats
-      wifi: ath12k: Add htt_stats_dump file ops support
-      wifi: ath12k: Add support to parse requested stats_type
-      wifi: ath12k: Support Transmit Scheduler stats
-      wifi: ath12k: Support pdev error stats
-      wifi: ath12k: Support TQM stats
-
-Harshitha Prem (1):
-      wifi: ath12k: Remove unused ath12k_base from ath12k_hw
-
-Karthikeyan Periyasamy (3):
-      wifi: ath12k: avoid unnecessary MSDU drop in the Rx error process
-      wifi: ath12k: fix mbssid max interface advertisement
-      wifi: ath12k: fix peer metadata parsing
-
-Lingbo Kong (3):
-      wifi: ath11k: fix ack signal strength calculation
-      wifi: ath11k: modify the calculation of the average signal strength in station mode
-      wifi: ath12k: Fix pdev id sent to firmware for single phy devices
-
-Pradeep Kumar Chitrapu (1):
-      wifi: ath12k: fix legacy peer association due to missing HT or 6 GHz capabilities
-
-Rameshkumar Sundaram (2):
-      wifi: ath12k: modify remain on channel for single wiphy
-      wifi: ath12k: fix driver initialization for WoW unsupported devices
-
-Ramya Gnanasekar (1):
-      wifi: ath12k: Dump additional Tx PDEV HTT stats
-
-Wolfram Sang (1):
-      wifi: ath11k: use 'time_left' variable with wait_event_timeout()
-
- .../bindings/net/wireless/qcom,ath11k-pci.yaml     |   46 +
- .../bindings/net/wireless/qcom,ath12k.yaml         |   99 ++
- drivers/net/wireless/ath/ath11k/dp_rx.c            |    3 +-
- drivers/net/wireless/ath/ath11k/dp_rx.h            |    3 +
- drivers/net/wireless/ath/ath11k/dp_tx.c            |   16 +-
- drivers/net/wireless/ath/ath11k/dp_tx.h            |    4 +-
- drivers/net/wireless/ath/ath11k/hal_tx.h           |    4 +-
- drivers/net/wireless/ath/ath11k/mac.c              |   29 +-
- drivers/net/wireless/ath/ath11k/qmi.c              |   20 +-
- drivers/net/wireless/ath/ath12k/Makefile           |    3 +-
- drivers/net/wireless/ath/ath12k/acpi.c             |    2 +
- drivers/net/wireless/ath/ath12k/core.c             |   71 +-
- drivers/net/wireless/ath/ath12k/core.h             |   34 +-
- drivers/net/wireless/ath/ath12k/debug.h            |    3 +-
- drivers/net/wireless/ath/ath12k/debugfs.c          |   19 +-
- drivers/net/wireless/ath/ath12k/debugfs.h          |    6 +-
- .../net/wireless/ath/ath12k/debugfs_htt_stats.c    | 1540 ++++++++++++++++++++
- .../net/wireless/ath/ath12k/debugfs_htt_stats.h    |  567 +++++++
- drivers/net/wireless/ath/ath12k/dp.h               |    1 +
- drivers/net/wireless/ath/ath12k/dp_rx.c            |   54 +-
- drivers/net/wireless/ath/ath12k/dp_rx.h            |    4 +
- drivers/net/wireless/ath/ath12k/dp_tx.c            |    4 +-
- drivers/net/wireless/ath/ath12k/hal_desc.h         |   26 +-
- drivers/net/wireless/ath/ath12k/htc.c              |    6 +
- drivers/net/wireless/ath/ath12k/hw.h               |    2 -
- drivers/net/wireless/ath/ath12k/mac.c              |  302 +++-
- drivers/net/wireless/ath/ath12k/mac.h              |    5 +
- drivers/net/wireless/ath/ath12k/wmi.c              |  728 ++++++++-
- drivers/net/wireless/ath/ath12k/wmi.h              |  586 +++++++-
- drivers/net/wireless/ath/ath12k/wow.c              | 1026 +++++++++++++
- drivers/net/wireless/ath/ath12k/wow.h              |   62 +
- 31 files changed, 5156 insertions(+), 119 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom,ath12k.yaml
- create mode 100644 drivers/net/wireless/ath/ath12k/debugfs_htt_stats.c
- create mode 100644 drivers/net/wireless/ath/ath12k/debugfs_htt_stats.h
- create mode 100644 drivers/net/wireless/ath/ath12k/wow.c
- create mode 100644 drivers/net/wireless/ath/ath12k/wow.h
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
