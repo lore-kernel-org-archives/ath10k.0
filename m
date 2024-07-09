@@ -4,97 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DF60C3271E
-	for <ath10k@archiver.kernel.org>; Tue,  9 Jul 2024 01:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08B54C3DA45
+	for <ath10k@archiver.kernel.org>; Tue,  9 Jul 2024 02:14:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:From:References:To:Subject:Cc:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6TZ2gaa2Be+UXDU0zBE43v2WaClgrIHp6alI1YJXBT0=; b=TkzXdTZo4VRP7EzUz6XDBWKVQr
-	gByaMjGUJH+FVrthPCPGVcm06UFybLh3uNfdH+PmTl6SCpNUMlowS0q2L0ZSBEnx4WCVjgVkxLzQ0
-	/Sn1yArQzOZHgiHarx6c/CRAaKcWeJu0gxP8KbtC9h4GnK3jOoPaLXLXkamKC7ObpkDrzuepGpbbD
-	qrgq2awehkmtckLOKlJhuTQ2ArNWXhFhId8EhmYa9VJzBNs/1Tv4Wo35sOedowZYLWBqvb6jSCixm
-	63wIlFPuW/wgg6g3AWR9c4rEJDzlJAdBFAZ+w47id35uFdeDeaalUePKRrTB6et/diSupeyoSdpJe
-	FpbEEnzw==;
+	bh=qUOHk3af/wiiU4x9YQj64B9av57lqo+pWVxtsBrHifE=; b=YQBcKT6gASe2sXzabRMgTre3jt
+	vk2eSM/ceRRPU3GrQFHJ/9OGsx+xzuHaGSEf1ttb4ohdD5GyoVCS1zjInjBXqfLv6UKHgaxPJGRXy
+	Q7j7b0NjptrdUlfZtepLKSHxZ4bKtfiViwuCFwcvNdHEf3oraso0Ry6u9m6f1YlSnKRDAtEm9qHoS
+	8l1lfW79eTxzEhD9ud55xmk9+slJnepQLmPGZ+S27QkrTR+brrsdLNzE5ZMk/1PxQo7e1NoYA5+KD
+	aKzyf0vNcdr0t9uza0eJpiuWLlsupjpGVWFMygda23Fwfsrdd3+zTUELdlpUcupThoShFV1QH+JVV
+	VuGYodJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sQzjS-00000005Y7T-2rRi;
-	Tue, 09 Jul 2024 01:33:26 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1sR0MW-00000005cHQ-0CtT;
+	Tue, 09 Jul 2024 02:13:48 +0000
+Received: from mgamail.intel.com ([198.175.65.17])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sQzjO-00000005Y6i-3oCp
-	for ath10k@lists.infradead.org;
-	Tue, 09 Jul 2024 01:33:24 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 468CIglf016601;
-	Tue, 9 Jul 2024 01:33:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	6TZ2gaa2Be+UXDU0zBE43v2WaClgrIHp6alI1YJXBT0=; b=CpGPIJbdtsEKr2N/
-	gp4nRw6gYD4sIFxZyUbmP/gmyGNfU9OdZYrXe/RswxHFnP65a/oCorSppbfwm6Ic
-	wwPBKTHurgZMR/w3fXZ8rlTnOdPLjw1HMFIwSEPNfFUWxjpxdUYOItCnnJLi36n6
-	AtXydUnGI0h2/TfzNzl8JHORnjU4AaqLbzh6MVS9qolYfMMn4azystOMUNAOWVR+
-	JhLBkweO//w0+Zpg9TzPndZvuX29S0QelPJXUHMBqXJ4RBeLYJ3LHJtfes8mQplZ
-	qqS2wYi+LVhvdiJri2tx/eowBCSDTaJCJiJNLv1h7fuYAj5mTIEnfdlY/uArLnNN
-	bHk5Lg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 406xa6517m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jul 2024 01:33:18 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 4691XHbC011688
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Jul 2024 01:33:17 GMT
-Received: from [10.231.195.67] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Jul 2024
- 18:33:15 -0700
-Message-ID: <dec60af0-d439-4e72-ba07-358996532e9c@quicinc.com>
-Date: Tue, 9 Jul 2024 09:33:13 +0800
+	id 1sR0MS-00000005cGd-1qkI;
+	Tue, 09 Jul 2024 02:13:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720491225; x=1752027225;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qmfe73rj7uPFO7PgvLZEQThh1iERDsTRnG6XRTqML+c=;
+  b=HsUQSRmdzBEzmKaAG+8UWsADR2+jOuPK9ERW5qJ1ehuOMdRvIl9IW9wv
+   1uXWNplKsoAWdAG9XqFULFRjvh5I9U5wxkgyB4ThorwUJXeyMENa/K02m
+   Atl1a3+//EgzOfsLh6i/iubNR5zn736Ir8C0th+pVVr39+41rghsAA2jD
+   fwaK3qGhS5uYyUJI3aAIvvxjz9Pj8JhY6R+vdWyNZzBSPgbwHD45fKn3A
+   IU8vI0WXMA2E1Ej8LEzCQAr8DmzcW3yJX3WgRC0UiwX9XxzlncPhYITNc
+   Q0FcyIXHnhCJsXHwetX7PS/brsEhd6HOXgHutTibE8/yD8YU3DtglwQfY
+   A==;
+X-CSE-ConnectionGUID: waTf8ymGSUenzimr8DDg0A==
+X-CSE-MsgGUID: 5SNQQnaER2KxRygkhA/FIA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11127"; a="17824234"
+X-IronPort-AV: E=Sophos;i="6.09,193,1716274800"; 
+   d="scan'208";a="17824234"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2024 19:13:42 -0700
+X-CSE-ConnectionGUID: d5zKqABkTUWp4MS7DXpD4g==
+X-CSE-MsgGUID: AnVNl0FXQyWJ4eCG+5lDGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,193,1716274800"; 
+   d="scan'208";a="52100309"
+Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa005.fm.intel.com with ESMTP; 08 Jul 2024 19:13:33 -0700
+Message-ID: <56911ed6-d819-4882-9c7e-bfe4ba5826c2@linux.intel.com>
+Date: Tue, 9 Jul 2024 10:10:44 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: invalid vht params rate 1920 100kbps nss 2 mcs 9
-To: Kalle Valo <kvalo@kernel.org>
-CC: Paul Menzel <pmenzel@molgen.mpg.de>, James Prestwood <prestwoj@gmail.com>,
-        <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>,
-        LKML
-	<linux-kernel@vger.kernel.org>,
-        Chun Wu <chunwu@qti.qualcomm.com>
-References: <fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de>
- <1faa7eee-ed1e-477b-940d-a5cf4478cf73@gmail.com> <87iky7mvxt.fsf@kernel.org>
- <37ba6cb0-d887-4fcf-b7dc-c93a5fc5900f@gmail.com> <875xu6mtgh.fsf@kernel.org>
- <f7faff80-864a-4411-ad28-4f1151bc1e51@quicinc.com>
- <082024ce-fdd4-4fb1-8055-6d25f7d2e524@molgen.mpg.de>
- <462c97dc-f366-4f75-9327-04d9424b819a@quicinc.com>
- <b30307fd-4417-4220-a3ac-e3e80f23105e@molgen.mpg.de>
- <ceddb62b-61dd-44c9-babd-cd375c5a147d@quicinc.com>
- <87sewkcgwr.fsf@kernel.org>
+Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+ Robin Murphy <robin.murphy@arm.com>, Kevin Tian <kevin.tian@intel.com>,
+ catalin.marinas@arm.com, kernel-team@android.com, Yi Liu
+ <yi.l.liu@intel.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Kalle Valo <kvalo@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Alex Williamson <alex.williamson@redhat.com>, mst@redhat.com,
+ Jason Wang <jasowang@redhat.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Mikko Perttunen <mperttunen@nvidia.com>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org, iommu@lists.linux.dev,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/21] iommu: Refactoring domain allocation interface
+To: Jason Gunthorpe <jgg@ziepe.ca>, Will Deacon <will@kernel.org>
+References: <20240610085555.88197-1-baolu.lu@linux.intel.com>
+ <172009858593.2049787.5200500337719932334.b4-ty@kernel.org>
+ <20240708163407.GC14050@ziepe.ca>
 Content-Language: en-US
-From: Baochen Qiang <quic_bqiang@quicinc.com>
-In-Reply-To: <87sewkcgwr.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ABLAPEmiHLTZX01Anr7hRqQbp2PtLObw
-X-Proofpoint-ORIG-GUID: ABLAPEmiHLTZX01Anr7hRqQbp2PtLObw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-08_14,2024-07-08_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=636
- suspectscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=0
- clxscore=1015 adultscore=0 malwarescore=0 mlxscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2406140001 definitions=main-2407090009
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240708163407.GC14050@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240708_183323_085589_B952079E 
-X-CRM114-Status: GOOD (  10.78  )
+X-CRM114-CacheID: sfid-20240708_191344_568567_3A77D140 
+X-CRM114-Status: GOOD (  12.25  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,26 +98,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-
-
-On 7/8/2024 6:33 PM, Kalle Valo wrote:
-> Baochen Qiang <quic_bqiang@quicinc.com> writes:
-> 
->>>>> 2.  invalid vht params rate 960 100kbps nss 1 mcs 9
->>>>> 3.  invalid vht params rate 1730 100kbps nss 2 mcs 9
->>>>> 4.  invalid vht params rate 1920 100kbps nss 2 mcs 9
->>>>
->>>> OK, these are due to mismatch between host and QCA6174 firmware, we
->>>> can update host to fix them.
+On 7/9/24 12:34 AM, Jason Gunthorpe wrote:
+> On Thu, Jul 04, 2024 at 03:18:56PM +0100, Will Deacon wrote:
+>> On Mon, 10 Jun 2024 16:55:34 +0800, Lu Baolu wrote:
+>>> The IOMMU subsystem has undergone some changes, including the removal
+>>> of iommu_ops from the bus structure. Consequently, the existing domain
+>>> allocation interface, which relies on a bus type argument, is no longer
+>>> relevant:
+>>>
+>>>      struct iommu_domain *iommu_domain_alloc(struct bus_type *bus)
+>>>
+>>> [...]
+>> Applied a few of these to iommu (iommufd/paging-domain-alloc), thanks!
 >>
->> Kalle, the root cause to these three warnings are clear now and if you
->> agree I can submit patches to fix them. Or I can also wait until the
->> NSS 3 issue is clear.
-> 
-> I'm not sure why would we want to wait for the NSS 3 to be solved? Based
-> on my (limited) understanding I think it would be good to submit patches
-> for solved issues now.
-Sure, will do today.
+>> [01/21] iommu: Add iommu_paging_domain_alloc() interface
+>>          https://git.kernel.org/iommu/c/a27bf2743cb8
+>> [02/21] iommufd: Use iommu_paging_domain_alloc()
+>>          https://git.kernel.org/iommu/c/26a581606fab
+>> [03/21] vfio/type1: Use iommu_paging_domain_alloc()
+>>          https://git.kernel.org/iommu/c/60ffc4501722
+>> [04/21] vhost-vdpa: Use iommu_paging_domain_alloc()
+>>          https://git.kernel.org/iommu/c/9c159f6de1ae
+>> [05/21] drm/msm: Use iommu_paging_domain_alloc()
+>>          https://git.kernel.org/iommu/c/45acf35af200
+>>
+>> [10/21] wifi: ath10k: Use iommu_paging_domain_alloc()
+>>          https://git.kernel.org/iommu/c/d5b7485588df
+>> [11/21] wifi: ath11k: Use iommu_paging_domain_alloc()
+>>          https://git.kernel.org/iommu/c/ef50d41fbf1c
+>>
+>> [14/21] RDMA/usnic: Use iommu_paging_domain_alloc()
+>>          https://git.kernel.org/iommu/c/3b10f25704be
+>> [15/21] iommu/vt-d: Add helper to allocate paging domain
+>>          https://git.kernel.org/iommu/c/9e9ba576c259
+> Great, Lu can you please split the remaining by subsystem and try to
+> get them to go through subsystem trees? Joerg can take the leftovers
+> at rc6/7 or something like that so we can finish this.
 
-> 
+Yes, sure. I guess I need to wait until 6.11-rc1 is out. It's a bit late
+in the cycle for the subsystem trees to accept brand new changes.
+
+> I think this is enough that Intel and AMD could now assert that dev is
+> non-null?
+
+Yes.
+
+Thanks,
+baolu
 
