@@ -4,84 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0335C3DA49
-	for <ath10k@archiver.kernel.org>; Thu, 11 Jul 2024 02:04:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 138CCC3DA49
+	for <ath10k@archiver.kernel.org>; Thu, 11 Jul 2024 15:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
-	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GIN7cDUxMEh5z0Kmkl+tZgmrDUumJllCqGWH4WUXIh4=; b=ENeE6QkMSehusWn+RqjXVS872k
-	s9D1G2E4zWB6LQiv2X5b0rYyKydGyzF2M/o74ZawsjRTLdAhzApagJCh/63VQBGzXN6JAnEmfZVn4
-	m7EzyPOjbrvxS4oy6T1vmaRU15E3iBubq1CqKBTmwwfIj6edrSZU1Iyi2y3RsH3JzMKWHueXvj4aj
-	pvsDaWjgNIFZjBjdItkRnAJCaTNFjuLIT5GbMJfUb6pfJeWX45NeWiCrzu6h81MSr1y3DyjysdzQj
-	mH7Q+sCyTiZPf2oVGddbpuDlbywYIJP05Y3DdBPQutyS9P6zzqNrx1pY3hRzmqPwKUaxFAOp5XjDD
-	WwIKE+ZA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=TFkaTKO2sx5G2kOMu95KiES44Jo9KETes2ylWxYz6vI=; b=n3ZynrADiRz+RpxB26QJErGaVr
+	NpY0rlVNZaIle//ct3mog3R2+pvPliDTBARVQ/dj+q8kkI05Him47IDjf9l77aObZkakZMpiafykT
+	SiO4rzZY0xHjpiJMoytO9NqbnetGNCR0uAiNV+VHjRH5wyQuIpLDgqTPCnvHmAOhzHqWW3xbkP66O
+	EvnmfqKEtymCVeYSrWEgF+rN/cbbNREKjMcmmSO1jHdsFcMJ7vcGeLriKr6EcREsbRYE3KMY58aZ6
+	PRmYsZZypUbqBHZA9AQwovrmP5oUS019HtmL2j1EM80sb4aVX0gKcyl/nGyQYM0Si5+Kc0+TJZ8YG
+	ydfrqTqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRjAE-0000000COcJ-40uI;
-	Thu, 11 Jul 2024 02:04:06 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1sRvMW-0000000ERgo-0XRa;
+	Thu, 11 Jul 2024 15:05:36 +0000
+Received: from mgamail.intel.com ([192.198.163.12])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRjAA-0000000COba-2Pbq
+	id 1sRvMR-0000000ERgB-3fSb
 	for ath10k@lists.infradead.org;
-	Thu, 11 Jul 2024 02:04:04 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46AKuttx013692;
-	Thu, 11 Jul 2024 02:04:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	GIN7cDUxMEh5z0Kmkl+tZgmrDUumJllCqGWH4WUXIh4=; b=d6zcb1DXa3p4fu9A
-	ZeaBYIJS8Ju4H5m0s6kSMdny6GeIWJpitG80n+pfttfm8y+18RHXuZjq4TP/rpIq
-	RsEtFPOLRyEAUKWXeetToT3y4aLf3rOXwheiuCe/VBR1smOjFXGTwn/gF1/vI9kj
-	ryEONpawRBRAC0LJ5yaNu9kLyk22kxmFircfvhdDCSbrHkGEms+YekC9oAccKG4m
-	7NxbXpB1jnvHXnoLtPFWt5d9wJ8/b09t35a8uvpBLxw666Qg7zv58VptRNt8iPG7
-	x5NhKx0gS4Ag80j4KtY1JJXstMh/C9SInYSKwE6F15P0OK4MMVEDJiS7Rqp/q5lA
-	nfmpIQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 406we92ue8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jul 2024 02:04:00 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 46B23x9q021057
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jul 2024 02:03:59 GMT
-Received: from bqiang-SFF.qca.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 10 Jul 2024 19:03:58 -0700
-From: Baochen Qiang <quic_bqiang@quicinc.com>
-To: <ath10k@lists.infradead.org>
-CC: <linux-wireless@vger.kernel.org>, <quic_bqiang@quicinc.com>
-Subject: [PATCH 2/2] wifi: ath10k: fix invalid VHT parameters in supported_vht_mcs_rate_nss2
-Date: Thu, 11 Jul 2024 10:03:44 +0800
-Message-ID: <20240711020344.98040-3-quic_bqiang@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240711020344.98040-1-quic_bqiang@quicinc.com>
-References: <20240711020344.98040-1-quic_bqiang@quicinc.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: yfQ-Gq3ZQltLysfPyiY1bEgZUQQZP6cn
-X-Proofpoint-GUID: yfQ-Gq3ZQltLysfPyiY1bEgZUQQZP6cn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-10_20,2024-07-10_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- bulkscore=0 spamscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=999 malwarescore=0 mlxscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2406140001
- definitions=main-2407110012
+	Thu, 11 Jul 2024 15:05:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720710332; x=1752246332;
+  h=date:from:to:cc:subject:message-id;
+  bh=LcuzSrlIpDlalklBM4lgBQmf54op8i8CVjwOGLVXPJE=;
+  b=YPFBRn05WRjs++v/+7/qJhQWrhwTgI2OZ3KZlrBD3UOfl2edlTEAcOQ4
+   hg+4Qt/4WG7gbd8Si0prEP/35w4JXT+Ax/PfaYqSF5sbybiuCIFK3kbN2
+   FDCx2Iarw5YSGmKLAuY1jCOgX/oCKmo3hxENsvFC0MU164hujN273Slol
+   1l8FvhlfgtVBgsteuHu/xnxJL/pDz9ODuZ+cXGUieaSg27dtC83maqbyi
+   tsW0h1TmzfK7V+dTCOouVDBqDfyfbdw63XIYlnp20tWaNrVBmccIOIbrX
+   Q9s31V0vK0YPKdkjNr/050KC6L2xAwqpRND7zMvXQo5gzE7/AWMxQHCDq
+   Q==;
+X-CSE-ConnectionGUID: xn/Emal9Tb24A5VgfnsGpQ==
+X-CSE-MsgGUID: fQSM0PyuQQ+XJBkwIgBWRQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11130"; a="21967809"
+X-IronPort-AV: E=Sophos;i="6.09,200,1716274800"; 
+   d="scan'208";a="21967809"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2024 08:05:30 -0700
+X-CSE-ConnectionGUID: 4+i8YjAATXS2ueuYJFzF/Q==
+X-CSE-MsgGUID: oLI4sgKSSIuAXM+cn/T9pg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,200,1716274800"; 
+   d="scan'208";a="53179305"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 11 Jul 2024 08:05:29 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sRvMN-000ZQ4-02;
+	Thu, 11 Jul 2024 15:05:27 +0000
+Date: Thu, 11 Jul 2024 23:05:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalle Valo <quic_kvalo@quicinc.com>
+Cc: ath10k@lists.infradead.org
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ db1ce56e6e1d395dd42a3cd6332a871d9be59c45
+Message-ID: <202407112314.myBFmCdP-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240710_190402_747494_E97502EC 
-X-CRM114-Status: GOOD (  12.61  )
+X-CRM114-CacheID: sfid-20240711_080532_719762_48566618 
+X-CRM114-Status: UNSURE (   3.91  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,44 +83,169 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-In supported_vht_mcs_rate_nss2, the rate for MCS9 & VHT20 is defined as
-{1560, 1733}, this does not align with firmware's definition and therefore
-fails the verification in ath10k_mac_get_rate_flags_vht():
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git master
+branch HEAD: db1ce56e6e1d395dd42a3cd6332a871d9be59c45  Add localversion-wireless-testing-ath
 
-	invalid vht params rate 1730 100kbps nss 2 mcs 9
-and:
-	invalid vht params rate 1920 100kbps nss 2 mcs 9
+elapsed time: 1270m
 
-Change it to {1730,  1920} to align with firmware, so this issue could be
-fixed.
+configs tested: 149
+configs skipped: 6
 
-Since ath10k_hw_params::supports_peer_stats_info is enabled only for
-QCA6174, this change does not affect other chips.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00309-QCARMSWPZ-1
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+alpha                            allyesconfig   gcc-13.3.0
+alpha                               defconfig   gcc-13.2.0
+arc                              allmodconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                              allyesconfig   gcc-13.2.0
+arc                                 defconfig   gcc-13.2.0
+arc                   randconfig-001-20240711   gcc-13.2.0
+arc                   randconfig-002-20240711   gcc-13.2.0
+arm                              allmodconfig   gcc-13.2.0
+arm                               allnoconfig   gcc-13.2.0
+arm                              allyesconfig   gcc-13.2.0
+arm                                 defconfig   gcc-13.2.0
+arm                            mps2_defconfig   clang-19
+arm                            qcom_defconfig   clang-19
+arm                   randconfig-001-20240711   gcc-13.2.0
+arm                   randconfig-002-20240711   gcc-13.2.0
+arm                   randconfig-003-20240711   gcc-13.2.0
+arm                   randconfig-004-20240711   gcc-13.2.0
+arm                          sp7021_defconfig   clang-19
+arm64                            allmodconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                               defconfig   clang-19
+arm64                               defconfig   gcc-13.2.0
+arm64                 randconfig-001-20240711   gcc-13.2.0
+arm64                 randconfig-002-20240711   gcc-13.2.0
+arm64                 randconfig-003-20240711   gcc-13.2.0
+arm64                 randconfig-004-20240711   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                                defconfig   gcc-13.2.0
+csky                  randconfig-001-20240711   gcc-13.2.0
+csky                  randconfig-002-20240711   gcc-13.2.0
+hexagon                          allmodconfig   clang-19
+hexagon                          allyesconfig   clang-19
+i386                             allmodconfig   clang-18
+i386                              allnoconfig   clang-18
+i386                             allyesconfig   clang-18
+i386         buildonly-randconfig-001-20240711   gcc-13
+i386         buildonly-randconfig-002-20240711   gcc-10
+i386         buildonly-randconfig-002-20240711   gcc-13
+i386         buildonly-randconfig-003-20240711   gcc-13
+i386         buildonly-randconfig-004-20240711   gcc-13
+i386         buildonly-randconfig-004-20240711   gcc-8
+i386         buildonly-randconfig-005-20240711   gcc-10
+i386         buildonly-randconfig-005-20240711   gcc-13
+i386         buildonly-randconfig-006-20240711   gcc-13
+i386                                defconfig   clang-18
+i386                  randconfig-001-20240711   gcc-13
+i386                  randconfig-002-20240711   gcc-10
+i386                  randconfig-002-20240711   gcc-13
+i386                  randconfig-003-20240711   gcc-13
+i386                  randconfig-003-20240711   gcc-8
+i386                  randconfig-004-20240711   gcc-13
+i386                  randconfig-005-20240711   clang-18
+i386                  randconfig-005-20240711   gcc-13
+i386                  randconfig-006-20240711   gcc-13
+i386                  randconfig-011-20240711   gcc-13
+i386                  randconfig-011-20240711   gcc-9
+i386                  randconfig-012-20240711   clang-18
+i386                  randconfig-012-20240711   gcc-13
+i386                  randconfig-013-20240711   gcc-13
+i386                  randconfig-014-20240711   clang-18
+i386                  randconfig-014-20240711   gcc-13
+i386                  randconfig-015-20240711   clang-18
+i386                  randconfig-015-20240711   gcc-13
+i386                  randconfig-016-20240711   gcc-13
+i386                  randconfig-016-20240711   gcc-9
+loongarch                        allmodconfig   gcc-13.3.0
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch                           defconfig   gcc-13.2.0
+loongarch             randconfig-001-20240711   gcc-13.2.0
+loongarch             randconfig-002-20240711   gcc-13.2.0
+m68k                             allmodconfig   gcc-13.3.0
+m68k                              allnoconfig   gcc-13.2.0
+m68k                             allyesconfig   gcc-13.3.0
+m68k                                defconfig   gcc-13.2.0
+microblaze                       allmodconfig   gcc-13.2.0
+microblaze                        allnoconfig   gcc-13.2.0
+microblaze                       allyesconfig   gcc-13.2.0
+microblaze                          defconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+mips                         db1xxx_defconfig   clang-19
+nios2                             allnoconfig   gcc-13.2.0
+nios2                               defconfig   gcc-13.2.0
+nios2                 randconfig-001-20240711   gcc-13.2.0
+nios2                 randconfig-002-20240711   gcc-13.2.0
+openrisc                          allnoconfig   gcc-13.3.0
+openrisc                         allyesconfig   gcc-13.3.0
+openrisc                            defconfig   gcc-13.2.0
+parisc                           allmodconfig   gcc-13.3.0
+parisc                            allnoconfig   gcc-13.3.0
+parisc                           allyesconfig   gcc-13.3.0
+parisc                              defconfig   gcc-13.2.0
+parisc                randconfig-001-20240711   gcc-13.2.0
+parisc                randconfig-002-20240711   gcc-13.2.0
+parisc64                            defconfig   gcc-13.2.0
+powerpc                          allmodconfig   gcc-13.3.0
+powerpc                           allnoconfig   gcc-13.3.0
+powerpc                          allyesconfig   gcc-13.3.0
+powerpc                       ebony_defconfig   clang-19
+powerpc                         ps3_defconfig   clang-19
+powerpc               randconfig-001-20240711   gcc-13.2.0
+powerpc               randconfig-002-20240711   gcc-13.2.0
+powerpc               randconfig-003-20240711   gcc-13.2.0
+powerpc                     stx_gp3_defconfig   clang-19
+powerpc                         wii_defconfig   clang-19
+powerpc64             randconfig-001-20240711   gcc-13.2.0
+powerpc64             randconfig-002-20240711   gcc-13.2.0
+powerpc64             randconfig-003-20240711   gcc-13.2.0
+riscv                            allmodconfig   gcc-13.3.0
+riscv                             allnoconfig   gcc-13.3.0
+riscv                            allyesconfig   gcc-13.3.0
+riscv                               defconfig   gcc-13.2.0
+riscv                 randconfig-001-20240711   gcc-13.2.0
+riscv                 randconfig-002-20240711   gcc-13.2.0
+s390                             allmodconfig   clang-19
+s390                              allnoconfig   clang-19
+s390                             allyesconfig   clang-19
+s390                             allyesconfig   gcc-13.2.0
+s390                                defconfig   gcc-13.2.0
+s390                  randconfig-001-20240711   gcc-13.2.0
+s390                  randconfig-002-20240711   gcc-13.2.0
+sh                               allmodconfig   gcc-13.3.0
+sh                                allnoconfig   gcc-13.2.0
+sh                               allyesconfig   gcc-13.3.0
+sh                                  defconfig   gcc-13.2.0
+sh                    randconfig-001-20240711   gcc-13.2.0
+sh                    randconfig-002-20240711   gcc-13.2.0
+sparc                            allmodconfig   gcc-13.3.0
+sparc64                             defconfig   gcc-13.2.0
+sparc64               randconfig-001-20240711   gcc-13.2.0
+sparc64               randconfig-002-20240711   gcc-13.2.0
+um                               allmodconfig   clang-19
+um                               allmodconfig   gcc-13.3.0
+um                                allnoconfig   clang-17
+um                               allyesconfig   gcc-13
+um                               allyesconfig   gcc-13.3.0
+um                                  defconfig   gcc-13.2.0
+um                             i386_defconfig   gcc-13.2.0
+um                    randconfig-001-20240711   gcc-13.2.0
+um                    randconfig-002-20240711   gcc-13.2.0
+um                           x86_64_defconfig   gcc-13.2.0
+x86_64                            allnoconfig   clang-18
+x86_64                           allyesconfig   clang-18
+x86_64                              defconfig   clang-18
+x86_64                          rhel-8.3-rust   clang-18
+xtensa                            allnoconfig   gcc-13.2.0
+xtensa                randconfig-001-20240711   gcc-13.2.0
+xtensa                randconfig-002-20240711   gcc-13.2.0
 
-Fixes: 3344b99d69ab ("ath10k: add bitrate parse for peer stats info")
-Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Closes: https://lore.kernel.org/lkml/fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de/
-Signed-off-by: Baochen Qiang <quic_bqiang@quicinc.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3c34f3d8e555..e62b251405fc 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -9136,7 +9136,7 @@ static const struct ath10k_index_vht_data_rate_type supported_vht_mcs_rate_nss2[
- 	{6,  {5265, 5850}, {2430, 2700}, {1170, 1300} },
- 	{7,  {5850, 6500}, {2700, 3000}, {1300, 1444} },
- 	{8,  {7020, 7800}, {3240, 3600}, {1560, 1733} },
--	{9,  {7800, 8667}, {3600, 4000}, {1560, 1733} }
-+	{9,  {7800, 8667}, {3600, 4000}, {1730, 1920} }
- };
- 
- static void ath10k_mac_get_rate_flags_ht(struct ath10k *ar, u32 rate, u8 nss, u8 mcs,
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
