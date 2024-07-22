@@ -4,82 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F50DC3DA59
-	for <ath10k@archiver.kernel.org>; Mon, 15 Jul 2024 12:38:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 522CBC3DA5D
+	for <ath10k@archiver.kernel.org>; Mon, 22 Jul 2024 23:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4sOGd8ILXqtgCUTYOD0O2ztRCepVHNWTEZZrqp4/PJY=; b=oCCjwB7Sgz7IZDjXX50cA1gwmd
-	oZwpdjC18HppxGGHD8f6w7WLnamXDNuYONjqPgvmBVpOE1BaJ3PPG9mdoD+wkwlGA6JxNQlTjzhww
-	m8tw5e5EZCOwxAGY/k7a8BDAs1AGst3g786ibMcArjXVd1VPHwYO8W5S1qQJ6pa6iONBeAUuOSSHx
-	bFAo5iZWRMcG925AujWrcJZ/yNwLRAQb21jxyxewmS013y3RZ8VV5g7EBDMj8JLsUg0FcVp0MxRnn
-	pmq+75/aPx+v4WAOiPW8rkfKDmrbQi4iPBjXDl9+QLkNGJXm6aHR+5UK0MTCtVzzM6IHQKco1hboz
-	xm5unBxQ==;
+	bh=yTJNJO7nX6K8ALk5OD7mCfTxogiN2tYAJ6floJyReuQ=; b=XZuiQouDRChD319C3YGuP25HLr
+	4ibPnmzDtw180P3AxG9VwWNMfGq0E/y8eJ3oufLnuoJQw502HWjyrzecSPL3yxWn1N+g3uQKhoBdc
+	Cdwvn6oOch7kXAMErZs7aNdZJSCyXKYEoL1RWD5dQI2wcPX1v0+Kb69FK05fnzNW/bY3oo5ij3imZ
+	mY8SfmZDT963YhIZpiuOifdUTzsJgFh3wzsUFtjnlqTe/6WHMhDTMbRYsWqk4aF+26FWDG+EaL7Ze
+	nctWlNctWGOxwPpQHfwuu1tEMR5WVOkm2ZkfWJVbFNe7XStunSKhAvawQapU9LXGeqLSVu8YYP3qn
+	99R3cmZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sTKyY-000000073Hu-3gfM;
-	Mon, 15 Jul 2024 12:38:42 +0000
-Received: from mail-yb1-xb2b.google.com ([2607:f8b0:4864:20::b2b])
+	id 1sW2NB-0000000AquK-1Ndx;
+	Mon, 22 Jul 2024 23:23:17 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sTKyW-000000073HN-1fMb
+	id 1sW2N7-0000000AqtP-3pGk
 	for ath10k@lists.infradead.org;
-	Mon, 15 Jul 2024 12:38:41 +0000
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-e0354459844so4280936276.3
-        for <ath10k@lists.infradead.org>; Mon, 15 Jul 2024 05:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721047119; x=1721651919; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4sOGd8ILXqtgCUTYOD0O2ztRCepVHNWTEZZrqp4/PJY=;
-        b=a4l0bd0AhIYsr9aXeZKJmnME2O/Z9E+x/QEEPbWRrQaL5dos0JsKfl4ba/0LrZPeDW
-         P+hLr+wbTyKWCHQdGgWVdN/STyjFdPpW6bDWAexhm2tbzbSn7oSTlciLlQD0beTfMh0h
-         IHW8IP7uvXXNjGfOSFBMF3p2mgk+7ApDUxfaAbTDaaxdvrd/OpXBNHQhj4y8B0McYkrh
-         Od+1jujQW2Qos8JuOwTPOWeZfkdJBvFi2OK8wW6x3MmL5NABSbdLYNeRnJMSLp+1G6/u
-         DAlRehPW3XNfx4Fb3XT8E0rsnuptFLT7sooFpMGtraCRXiiI6NvNRLuDBx27+6WLFqGI
-         ZqfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721047119; x=1721651919;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4sOGd8ILXqtgCUTYOD0O2ztRCepVHNWTEZZrqp4/PJY=;
-        b=ct7sH0+d8p3x6zZPHk7IhpxGxnmkKuR4hBY8vThSZ8O5gaBVLuXKUjoJEBfdrlpKAj
-         8YkRaKcZp+xEAYsJcvpEDTWBw+7mXaj8G56GQTyu9hWIcwW/jTT43Ey/5t3HobrI6i9D
-         E7bKktNQZdLxVAL/MyDR6CWxhKpAtKQvkaeEuI7+w40AbqW4FgP9ic9ZkBNeyHKgBdJF
-         yi/gEkzRAVarwd+iOj+Mm1q13tCGSbRMl3J8wJuG42BdR5M49vTpyaZMQkLdkQROD3rP
-         qKQ7KfSOgUZa00zI8I3MivRr6neeXWZmpN9HWBh91QneuEYwEo0+VSkSlCsVswvURsxc
-         VkzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXP5yA3mb5fevcx3zCiyZMJB80pxbyPjKnxzlAeFFDziT87LFrPIJYcUPj0iMcl/k6H6ZVxitss7LALwa5LgdCXlLwmWRnRB5RDuA==
-X-Gm-Message-State: AOJu0YwITL1cDXvxH2lqoPiiklh9C+gjlw5m145rtSiYV1AypHA13rxi
-	FDXrk6wlabZTh8y7jnP7GYYbS6ou3QOp21/j+007U/8FyJNDmolXB7Ul0A==
-X-Google-Smtp-Source: AGHT+IFCvcgcaQfGPpFJ9QEedbXDxEOwKx34UtaDypeshbYxYIqQjai83t2PaptEzxeXnuk4AyQlXQ==
-X-Received: by 2002:a25:84c4:0:b0:e03:2d88:13a4 with SMTP id 3f1490d57ef6-e041b137102mr21793649276.52.1721047118862;
-        Mon, 15 Jul 2024 05:38:38 -0700 (PDT)
-Received: from [10.102.4.159] ([50.78.19.50])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b7619a54e9sm20936986d6.71.2024.07.15.05.38.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jul 2024 05:38:38 -0700 (PDT)
-Message-ID: <603104a7-a1ea-43c2-b0d5-fd4e46a27fe6@gmail.com>
-Date: Mon, 15 Jul 2024 05:38:36 -0700
+	Mon, 22 Jul 2024 23:23:15 +0000
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46MArQAC005440;
+	Mon, 22 Jul 2024 23:23:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	yTJNJO7nX6K8ALk5OD7mCfTxogiN2tYAJ6floJyReuQ=; b=NXkQa+w4Bi5FfhH/
+	kZ7ce2IPY1XwSuuk+pvvrG6KOmzJd0nxoC8KmqGuvGWpwxFiamiM2xzNfKL/cohk
+	8H9ZsE29bDxP7v5ZoA33ORqDzt7EF26SR15G5ydqTriHpGJhrddsClvHx/rRrm1y
+	N2EYBtjH0StApz9tD3h9ErVpsX/oMKX4TmAo75/+qIUqqQtR9T8dvPX7nY12BAnZ
+	6UKd/wwh2UGvvcbcjmKppja/1mktHZw1egPhL0cQJjNVhtnoTIYOhlp2DKbsL80w
+	u32zrF63pUFdT1CBy9Mg6DkvFqqVZUWtAx7EOt6D0BsaB+Eeq9ZigYR6bPpn86Ap
+	tfe0yQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40g487d2g6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jul 2024 23:23:12 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 46MNNB3S021907
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jul 2024 23:23:11 GMT
+Received: from [10.111.176.36] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 22 Jul
+ 2024 16:23:11 -0700
+Message-ID: <cb198e25-971d-4b9e-8e3d-1e9defb64c11@quicinc.com>
+Date: Mon, 22 Jul 2024 16:23:11 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] wifi: ath10k: fix invalid VHT parameters
-To: Baochen Qiang <quic_bqiang@quicinc.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
-References: <20240711020344.98040-1-quic_bqiang@quicinc.com>
+Subject: Re: [PATCH 2/2] wifi: ath10k: fix invalid VHT parameters in
+ supported_vht_mcs_rate_nss2
 Content-Language: en-US
-From: James Prestwood <prestwoj@gmail.com>
-In-Reply-To: <20240711020344.98040-1-quic_bqiang@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Baochen Qiang <quic_bqiang@quicinc.com>, <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>
+References: <20240711020344.98040-1-quic_bqiang@quicinc.com>
+ <20240711020344.98040-3-quic_bqiang@quicinc.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240711020344.98040-3-quic_bqiang@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: U5MEANccvV52XAQtOdZvvb_TzryUj7-6
+X-Proofpoint-GUID: U5MEANccvV52XAQtOdZvvb_TzryUj7-6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-22_16,2024-07-22_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ suspectscore=0 phishscore=0 priorityscore=1501 mlxlogscore=809
+ malwarescore=0 adultscore=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2407110000 definitions=main-2407220174
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240715_053840_472968_D5E7C3E3 
-X-CRM114-Status: UNSURE (   8.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240722_162314_104786_07F615B5 
+X-CRM114-Status: GOOD (  10.59  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,25 +99,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Baochen,
+On 7/10/2024 7:03 PM, Baochen Qiang wrote:
+> In supported_vht_mcs_rate_nss2, the rate for MCS9 & VHT20 is defined as
+> {1560, 1733}, this does not align with firmware's definition and therefore
+> fails the verification in ath10k_mac_get_rate_flags_vht():
+> 
+> 	invalid vht params rate 1730 100kbps nss 2 mcs 9
+> and:
+> 	invalid vht params rate 1920 100kbps nss 2 mcs 9
+> 
+> Change it to {1730,  1920} to align with firmware, so this issue could be
+> fixed.
+> 
+> Since ath10k_hw_params::supports_peer_stats_info is enabled only for
+> QCA6174, this change does not affect other chips.
+> 
+> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00309-QCARMSWPZ-1
+> 
+> Fixes: 3344b99d69ab ("ath10k: add bitrate parse for peer stats info")
+> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> Closes: https://lore.kernel.org/lkml/fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de/
+> Signed-off-by: Baochen Qiang <quic_bqiang@quicinc.com>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-I've compiled both changes and so far those messages are gone.
-
-Tested-By: James Prestwood <prestwoj@gmail.com> # on QCA6174 hw3.2
-
-On 7/10/24 7:03 PM, Baochen Qiang wrote:
-> supported_vht_mcs_rate_nss1 and supported_vht_mcs_rate_nss2 in host do not
-> align with firmware's definitions, resulting in some warnings. Fix them.
->
-> Baochen Qiang (2):
->    wifi: ath10k: fix invalid VHT parameters in
->      supported_vht_mcs_rate_nss1
->    wifi: ath10k: fix invalid VHT parameters in
->      supported_vht_mcs_rate_nss2
->
->   drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
->
-> base-commit: db1ce56e6e1d395dd42a3cd6332a871d9be59c45
 
