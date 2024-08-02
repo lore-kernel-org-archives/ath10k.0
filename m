@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E4EC3DA4A
-	for <ath10k@archiver.kernel.org>; Fri,  2 Aug 2024 16:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04229C3DA4A
+	for <ath10k@archiver.kernel.org>; Fri,  2 Aug 2024 16:09:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=MDPS6Z/l2vfgmpMvRBbrvO0orrQoymTU4OevldpIzkg=; b=d1LHsORG7msPovYstH4NltgEOE
-	nZeSY2AzLDL8z30z65pmf8UlXDdKZCeooLY9nP2Ili/DnWekoJE9nWi6OaIxg8nv+RHSYQGnTnNLl
-	HGHVwtiZJuZqqpC+mF0E0Witl+fV/CLDTeRzB3q0+V8hy/KaEWCQSiid11L5aM3mwa3hu0j3FuY+P
-	/Wvz1zsTCZU94XH95CR0h+ILTLllKdZ582ZAKeROmL3WsrqBljuK7DbqZHAWtMMG5sBHho0IJoSw4
-	Pj34phmUSKhd+5vCMwVQR7Y8BPztNmQ4FiDqdMV9/qne/sTVrc34OF1vN06lVjMIhPKYT2XTZevC4
-	ZHSkZ4kg==;
+	bh=r2YQMYe5LuBFg5BQ78O2RI2HoxdhDFzKxhpbGvWITmc=; b=dz6mmeT3Vc4zBvjeYO4NWlx8m7
+	RfYotCvDpvfzBvql3sSbOOeGEz4uN7v4OnVU71rUjKExdZQIAdwGWtxolngoZqTvVFZp4Ibo3ZuGT
+	/9LYHwNoDhcyMJfEAGLpJGvGHGKLAbw/72dPQI1SNTFdAUqDRnLdi+RjSEemfPUuZSDCiyAK4Xv5W
+	550skkMvmd/9Jw5KJR0kyLGhY6hi+nfeWlBBlup6umqiRPLIjLobYDKjHSbbgbrwSAaP/An/BuHnN
+	q/Ld5O+/22L/cWj4lhwaV6Sn09euXlC3LmfGIyUT8E8/vSvyjkUwUVp7pieRwt4YK1ZKZibUmb7GA
+	7b+KlUiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sZuox-00000009PDj-2biH;
-	Fri, 02 Aug 2024 16:07:59 +0000
-Received: from mgamail.intel.com ([198.175.65.17])
+	id 1sZuqC-00000009PMu-1mdJ;
+	Fri, 02 Aug 2024 16:09:16 +0000
+Received: from mgamail.intel.com ([192.198.163.18])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sZuou-00000009PDA-3Lqp
+	id 1sZuqA-00000009PML-05JO
 	for ath10k@lists.infradead.org;
-	Fri, 02 Aug 2024 16:07:58 +0000
+	Fri, 02 Aug 2024 16:09:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1722614877; x=1754150877;
+  t=1722614954; x=1754150954;
   h=date:from:to:cc:subject:message-id;
-  bh=tjwyVT7RBC27YCpvhZpSs7SSKL8Qzap5Qyc4dHHwSvM=;
-  b=iu3XJ7MPxbtQmGXIs9ydbdtuaXlKQGC9wH7mNkckK1tG0+N0FRqUxgkt
-   e1HCLtIOEN1GSvtPKZS0jpJrCRvUcuDjP2Nt491KjFgiLiGasIi3eKmQi
-   PBAI+G2fKowT3uPwyNMm1yGLce0QMZ2EYBFoeXtJPEOBlcLonvHyIdkYS
-   /oQvfGcgYQHZvJEBwiSd13rL/S8YmFaAQtsRM670EjK8IhCIYD32Ds4tX
-   s3iPHEBcwGcVAzX29MbZXHTcjsWaYA0ZxBVziU+y1HGpFcCe7aMXLX4CS
-   mP/LO7xsqGJPicjjeP9hvq6lv3Ad1W4UDJt5+PriqQHvT3QwNZNO1/Ov4
-   w==;
-X-CSE-ConnectionGUID: JbCcia4sR32XrvURGt6CfQ==
-X-CSE-MsgGUID: T2s9H1/fTEalto/wwqlEeg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11152"; a="20759717"
+  bh=/XPxR80tIT3HpdiHZr5F4QAIWC7o10wZLMOfLDwTOT4=;
+  b=YUdZ5oB8kaRjoQfW+u3IaSa2900OlB6+1G8WtcIB6Y8BUwgtXzNIb/5p
+   0y3vUlOPjF+O5fuLOaZCZxV+Oce38zb6hS1nvBQuQGJubZX0DW/N78i2r
+   /GWHZeR2kzDP1xnPDkVjtmty1vxqlL+d3dlgpvY1CPsMs0skx6832jznf
+   OWPqn+lD+1jTQWasbBpZW2SEkPZfFHbUKTT9KSFd0HL8hk7Og/0eiPQ+c
+   d6ZKDmNDGL59YABtrNswhHHISMjtm9FALKnCOzA93d/8zVXhOvURAjqmo
+   bbYgePce3TVim2/PLuY6PT/cJn5reYCzXD5Vrf+w6+3OvTnqrdnA7zLxo
+   A==;
+X-CSE-ConnectionGUID: fk1EMsESR++qx0WfiCuL7A==
+X-CSE-MsgGUID: ivUgEJFcQUCUAak5K/6New==
+X-IronPort-AV: E=McAfee;i="6700,10204,11152"; a="20221631"
 X-IronPort-AV: E=Sophos;i="6.09,258,1716274800"; 
-   d="scan'208";a="20759717"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2024 09:07:56 -0700
-X-CSE-ConnectionGUID: Hx4VZiWZQxmGh8qOgfkZtA==
-X-CSE-MsgGUID: tgZ8JXaqTbKxTcKPyCdT1Q==
+   d="scan'208";a="20221631"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2024 09:09:13 -0700
+X-CSE-ConnectionGUID: YETy99xiSHmD/prV/SZ1nQ==
+X-CSE-MsgGUID: /VOkVr1IQRua1mk/9Jl+mA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.09,258,1716274800"; 
-   d="scan'208";a="55533613"
+   d="scan'208";a="60289735"
 Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 02 Aug 2024 09:07:54 -0700
+  by orviesa005.jf.intel.com with ESMTP; 02 Aug 2024 09:09:11 -0700
 Received: from kbuild by 68891e0c336b with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1sZuoq-000x32-11;
-	Fri, 02 Aug 2024 16:07:52 +0000
-Date: Sat, 03 Aug 2024 00:07:14 +0800
+	id 1sZuq5-000x3D-1G;
+	Fri, 02 Aug 2024 16:09:09 +0000
+Date: Sat, 03 Aug 2024 00:08:24 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kalle Valo <quic_kvalo@quicinc.com>
 Cc: ath10k@lists.infradead.org
-Subject: [kvalo-ath:ath-next] BUILD SUCCESS
- 3f66f26703093886db81f0610b97a6794511917c
-Message-ID: <202408030012.eHR5oPnn-lkp@intel.com>
+Subject: [kvalo-ath:master] BUILD SUCCESS
+ aefacd7c75edfaf6690819c1990b851f4c7b50cf
+Message-ID: <202408030015.AtdtMDVQ-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240802_090756_910027_EC9B2F0D 
-X-CRM114-Status: UNSURE (   3.93  )
+X-CRM114-CacheID: sfid-20240802_090914_142441_2CB22297 
+X-CRM114-Status: UNSURE (   3.84  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,8 +83,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-branch HEAD: 3f66f26703093886db81f0610b97a6794511917c  wifi: ath9k: fix possible integer overflow in ath9k_get_et_stats()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
+branch HEAD: aefacd7c75edfaf6690819c1990b851f4c7b50cf  Add localversion-wireless-testing-ath
 
 elapsed time: 1446m
 
