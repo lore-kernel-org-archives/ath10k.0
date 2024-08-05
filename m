@@ -4,82 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9543C52D70
-	for <ath10k@archiver.kernel.org>; Mon,  5 Aug 2024 10:04:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEAE1C3DA4A
+	for <ath10k@archiver.kernel.org>; Mon,  5 Aug 2024 10:24:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hSYGTPrpLH+BuhVL/Q/2E8uLKhl1KfRAsEdIshJ8Sjg=; b=eqaHmwo3rS0e471aSoZMGPSsre
-	cdrY7vtTThUSSR4y1DT64hWT4e8E2V8km1UhP58uX1AY5BE6Hmo/y1CoyEixR73R64+Xv4w0pI8wA
-	sd/vHowtqA5OQuE9/yRnBhGGwk4vLEPE3szpqLedy6UsBEgV4zk/Li0ZDwzkSdVORPIUsaB0VYzX8
-	QxbN7sh0FrYX/YBxKnol2A3O/iW78m/ZB/szYqUqnzkblVMK2+YAqFTAtDloXFjlb3/ab9lVdGFWw
-	m/Bgp9v/4cHuGVDjjzrYlRSiXi9vuX/6QtSa8lj0XSxw02Ou4OmCFK3E1K8z4bgs1kL6ii/FhViVQ
-	WOzn6RJg==;
+	bh=7o+9k/xRqTdcMWC2cvbgsZGUGHEZkEwsZmy23wb1EDA=; b=Ufm4Sc2Q3WRw1witI8wZpQyFWg
+	tJoffFCQIsVbK0QaLFPakec6/CebO53JxJo2TCCPE1kK1DiV+mD8UFl+f+0/aW49fcTatoSDRGwWU
+	8/qkYB2mb6Pzs4qabcHmApzPZ55H3i4x0QEad/PvN41A53Z6WnsiTdzdWonmgql5OP73EiHrgwy7W
+	MOavskDB1FBuhDw4GNTqAM5rhaBUXiMe+Lw1o7i8ZUwuaqJG7DxsCdai4WjAlQcLod/6hY6D9UPla
+	7ad4txRGEfaSryt6018Qzaurl7NqkGa/RPQJ8O5DkHsdBA3sV9jrPBN8QNbV6HybffYmggDdq3Hyk
+	BlNKVQ3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1saua8-0000000FQdW-2vtp;
-	Mon, 05 Aug 2024 10:04:48 +0000
-Received: from mail-yb1-xb2b.google.com ([2607:f8b0:4864:20::b2b])
+	id 1saut0-0000000FUT7-21Zw;
+	Mon, 05 Aug 2024 10:24:18 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1saua5-0000000FQco-3KI1
+	id 1sauqr-0000000FTd6-3hYq
 	for ath10k@lists.infradead.org;
-	Mon, 05 Aug 2024 10:04:47 +0000
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-e05e94a979eso4126351276.0
-        for <ath10k@lists.infradead.org>; Mon, 05 Aug 2024 03:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1722852284; x=1723457084; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hSYGTPrpLH+BuhVL/Q/2E8uLKhl1KfRAsEdIshJ8Sjg=;
-        b=rzAJVzxEP/wzl6tl9s/EtOATF3TJuGPaWU2Hlshz8buTOQxk7nDLp+4nXIZF6/T6FI
-         gYdtB3FTvKJ9NBboNHxLLZipDv6GXKKwI/WXk9jutGSRhM3i3FuHCnYm155rrebgLKrG
-         cju0LBaMlYsFSWikvBBkWEY27uCPE/a2xbrOf9MNdiY/EmIubdOgpgGO3Oxb10is9qjn
-         hlhq3a6lJ/JWxdmWNrmnRP1P8BrwhTiWGN1bzD0xyMDWVYTIXz1ErYcU/JiYd0co6Esj
-         Fkym9BDLB6DMh6RPSoz6/rDR5zTnSidgrkUWeqnsbigp+wARx1Eqk5zmH3puvVlmONDI
-         Z5jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722852284; x=1723457084;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hSYGTPrpLH+BuhVL/Q/2E8uLKhl1KfRAsEdIshJ8Sjg=;
-        b=SAXMq/t9xTIUY2riBRGEOvdgew0MFfwPAweQhJc1Y87xBfOqjJ0JXyLm6v/SNZsZQr
-         UM9welL8CWgSDgePpGZh37wkwacy2GQPxcETONd86cyypOA+lMQRq1XBmvueOU7JM5QW
-         LpF3y9a3a6xb1nzo8uCOy2w5fJcvm/WyI61/1C17sFt895mQTFgKoRiwzBuMsTSUU9+y
-         2GHNI1dtmt+nBVqiOoVLm3fz+ZCkzXGs/J3bybsazNIuw9qql51mGXNgWjQ1v1BM+Hlk
-         qQ5oFFHK5hYeCD4Q6B+KnLbuXq0ILjpgizstS2C3lMIhYaV7LBdn5FpVa0fyO6a/Rn+2
-         dfzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX4gv7dl/SLbty2kD+YWDsUg+QaT2a8touNva9gUGJm7PEunoiLNHP2v8pcKvqswBaLmQW9jeMHkPkfeIqq7P2AIPHhSTUjJ56J3w==
-X-Gm-Message-State: AOJu0Yx8DPi51fNhjTuuEz2g/7fv50h8S/L7wbYI8HgfPjh+laPGSqI2
-	ylTFqghDWdQR8QXR1XmCY7hgl+FxT8dS5SGaabQsrFQwTfsg/VcwrJAd6WxiYftvkGF374NRZuY
-	vMbjLteAVYS7od47v5nL247hQIQpHRXYbrlfu6A==
-X-Google-Smtp-Source: AGHT+IE28QvjYWO5xF3nlYl96xgvVqGoKpL4LpWlRu2pROebD4A3WQjuKfY14W5cvKLlfjChMzAEUCdDmxnejwKRHho=
-X-Received: by 2002:a05:6902:2b0d:b0:e0b:bf20:4fdd with SMTP id
- 3f1490d57ef6-e0bde8ee6f3mr10631170276.1.1722852284031; Mon, 05 Aug 2024
- 03:04:44 -0700 (PDT)
+	Mon, 05 Aug 2024 10:22:07 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 0B590CE0AB1;
+	Mon,  5 Aug 2024 10:22:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930E0C32782;
+	Mon,  5 Aug 2024 10:22:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722853323;
+	bh=6KDt+JmP1HRccqMzAJ7O3BYqToFx6PIMOFQll+8+U+A=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=NFf/3R7Ry7ZHoy8l0wIboTlLm1JLNUB9MqNAk+qaf9/zVFfJGBGBY35wmt3h/WyTh
+	 GBZgWRemao98doyS7JdKi4rA3dSepeuxYiQKd1Sg9oFZEr6fTM9QD71xC6ewi10l0Y
+	 KnzXnNETmOzih7cE55rT8iC9V+2K/xEh6zym1qi3T6Urw9N+fU8OqH68m3t9TdpL3k
+	 4d9/3egkCzyfLmQv0/O7PNvFo2y98VUC5JdrokBb/+/gdHlEIGki1lG2z7F+V0GNmk
+	 o7OSKV4XVHHTjOnFx1h8iiDhFudmY2LgEjqe7qMTIEgeOIs/4lC86A4x0H4sFfLZHv
+	 avbdQl/84AwWA==
+From: Kalle Valo <kvalo@kernel.org>
+To: SALVATORE BUONO <tottobuono@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Subject: Re: Problem with driver ath10k_pci
+References: <CAH_QiWBD3DdGL-GocHjakJvwrZNMzoiJ+RfCm5iiZf8msbbJ8g@mail.gmail.com>
+Date: Mon, 05 Aug 2024 13:22:00 +0300
+In-Reply-To: <CAH_QiWBD3DdGL-GocHjakJvwrZNMzoiJ+RfCm5iiZf8msbbJ8g@mail.gmail.com>
+	(SALVATORE BUONO's message of "Fri, 2 Aug 2024 20:55:52 +0200")
+Message-ID: <877ccvjmlz.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20240805040131.450412-1-felix@kaechele.ca> <20240805040131.450412-2-felix@kaechele.ca>
-In-Reply-To: <20240805040131.450412-2-felix@kaechele.ca>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Mon, 5 Aug 2024 12:04:07 +0200
-Message-ID: <CAPDyKFqyRevbmPy6h8BsiTLBi6=J+9uRmSib43bzzZHFEmDSVg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mmc: sdio: add Qualcomm QCA9379-3 SDIO id
-To: Felix Kaechele <felix@kaechele.ca>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>, 
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>, Rocky Liao <quic_rjliao@quicinc.com>, 
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
-	linux-mmc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240805_030445_855834_1925C0A5 
-X-CRM114-Status: GOOD (  12.75  )
+X-CRM114-CacheID: sfid-20240805_032206_303543_112C3D53 
+X-CRM114-Status: GOOD (  12.95  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,35 +71,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, 5 Aug 2024 at 06:01, Felix Kaechele <felix@kaechele.ca> wrote:
->
-> Adds the id for Qualcomm QCA9379-3 SDIO based cards such as
-> the LITEON WCBN3510A and Silex SX-SDMAC2.
->
-> Signed-off-by: Felix Kaechele <felix@kaechele.ca>
+SALVATORE BUONO <tottobuono@gmail.com> writes:
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Good morning, there is a problem with this driver with new version of
+> ubuntu, since before I update to 24.04 it works correctly, but now it does
+> not work anymore after sleep/suspension. It disconnects and I tried a lot
+> of commands to restart the wifi module but it does not work. This is the
+> discussion on ubuntu forum, but no solution is found. Can you fix it?
+>
+>
+> *Salvatore Buono*
+> salvatore@salvatore-Inspiron-5515:~$ sudo dmesg | grep ath10k
+> [    3.509206] ath10k_pci 0000:02:00.0: enabling device (0000 -> 0002)
+> [    3.511043] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+> [    3.734071] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1028:0310
+> [    3.734081] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+> [    3.734432] ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+> [    3.799439] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
+> [    3.881223] ath10k_pci 0000:02:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> [    5.804589] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+> [  394.964239] ath10k_pci 0000:02:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x000b address=0xfb294f50 flags=0x0070]
+> [  402.843038] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+> [  403.045772] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1028:0310
+> [  403.045788] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
+> [  403.046353] ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+> [  403.110616] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
+> [  403.197531] ath10k_pci 0000:02:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> [  403.259722] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+> [  418.545075] ath10k_pci 0000:02:00.0: timed out waiting peer stats info
+> [  423.537127] ath10k_pci 0000:02:00.0: wmi command 90113 timeout, restarting hardware
+> [  423.537147] ath10k_pci 0000:02:00.0: could not request stats (-11)
+> [  423.549132] ath10k_pci 0000:02:00.0: could not request peer stats info: -108
+> [  423.559691] ath10k_pci 0000:02:00.0: failed to read hi_board_data address: -16
+> [  426.587606] ath10k_pci 0000:02:00.0: failed to receive initialized event from target: 00000000
+> [  429.603807] ath10k_pci 0000:02:00.0: failed to receive initialized event from target: 00000000
+> [  429.603824] ath10k_pci 0000:02:00.0: failed to wait for target init: -110
+> [  429.606647] ath10k_pci 0000:02:00.0: failed to delete WMI vdev 1: -108
+> [  429.606657] ath10k_pci 0000:02:00.0: failed to set 2g txpower 46: -108
+> [  429.606661] ath10k_pci 0000:02:00.0: failed to setup tx power 23: -108
+> [  429.606664] ath10k_pci 0000:02:00.0: failed to recalc tx power: -108
+> [  429.606855] ath10k_pci 0000:02:00.0: failed to flush transmit queue (skip 1 ar-state 2): 5000
+> [  429.606898] ath10k_pci 0000:02:00.0: failed to flush transmit queue (skip 1 ar-state 2): 5000
 
-Kind regards
-Uffe
+You need to report this to Ubuntu. We don't support distro kernels, only
+vanilla kernel.org releases.
 
-> ---
->  include/linux/mmc/sdio_ids.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-> index 7cddfdac2f57..63000a8f4b13 100644
-> --- a/include/linux/mmc/sdio_ids.h
-> +++ b/include/linux/mmc/sdio_ids.h
-> @@ -52,6 +52,7 @@
->  #define SDIO_DEVICE_ID_ATHEROS_AR6004_19       0x0419
->  #define SDIO_DEVICE_ID_ATHEROS_AR6005          0x050A
->  #define SDIO_DEVICE_ID_ATHEROS_QCA9377         0x0701
-> +#define SDIO_DEVICE_ID_ATHEROS_QCA9379         0x0801
->
->  #define SDIO_VENDOR_ID_BROADCOM                        0x02d0
->  #define SDIO_DEVICE_ID_BROADCOM_NINTENDO_WII   0x044b
-> --
-> 2.45.2
->
+Adding also ath10k list.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
