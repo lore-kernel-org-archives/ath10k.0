@@ -4,64 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99020C3DA7F
-	for <ath10k@archiver.kernel.org>; Mon, 12 Aug 2024 14:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79B9BC52D7C
+	for <ath10k@archiver.kernel.org>; Mon, 12 Aug 2024 15:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:In-Reply-To:Date:References:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AuZl7KuGPHABtwpk8j5WTBEXEQt0/z7uhp4RN7X4XFU=; b=cxhW9wvK04yd9/k3kHUcZhqdT/
-	rMOs0zDqwoBBNPFLd2mGTNu4W4yw5wlTHJSZwroDQ9RP9AbUldx0KorDtkmGZVNFuzDgICGkJQEE4
-	mWqIbmjWsC8URryOJCd9ofcKAt+NICvwqnaPSb7v1XdLq8jcb5qdqncbitlFkTViWWY6DyNeItmAX
-	tfBu3dY/zZXUUKiA8bZo8DsuvO8GUv6ftReiVUkK4Pv90yuSjTj93G+/Fo+boanWqSKIV+kesEUsH
-	RT1zvRyTE/QbqAUgXhhQTT5/3hnXZpzekWXonMi0jSpImjhuX1WJsTKSjgdOqEnIng6IZxvfSk/G6
-	G0N9Jd0w==;
+	Content-Type:Subject:CC:To:From:MIME-Version:Date:Message-ID:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=GvMLIUxd1sWR5SI1wQrmBcATK5sUWrvbdeu4Db5BmhQ=; b=tGYKLvzxiU2FeUF4dV0XR7r/QX
+	j3Dn0naCwrbPbA/X4c4EsIM62gdaEEmdEgjwuR7LxClREk/6/+ap/jyG6dIAvHcyjnQ60XJzseDbt
+	rXLCv2DBGbzYXPbW9lXebTASrGfPkCCbAgX3FjbQT1gdtX/ThbE4FVd5H00fkxiVJVAmTShzVdi0I
+	QK9B5M73/jct3LNw2uXDiggciGF2pJtH5KGEQtbatf+9WXCiQWfpSTou+shavIyKNgc3pXaoaZA9A
+	0g6tT3l84VtD8l3IsgpJ4yi9s4Gpuvkf3uIv2R3jC9FyAiNpB0WR+98J1XOcTsdV2Zm/iX6Wzk8Hr
+	bbdT0zjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdW5O-00000000aO5-09KL;
-	Mon, 12 Aug 2024 14:31:50 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1sdWe7-00000000geE-2RCk;
+	Mon, 12 Aug 2024 15:07:43 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdW5L-00000000aND-3CF8
-	for ath10k@lists.infradead.org;
-	Mon, 12 Aug 2024 14:31:49 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 98DD0CE0E9C;
-	Mon, 12 Aug 2024 14:31:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85072C32782;
-	Mon, 12 Aug 2024 14:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723473102;
-	bh=AuZl7KuGPHABtwpk8j5WTBEXEQt0/z7uhp4RN7X4XFU=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=H2cozLGguWUUG21BS1FK/cXXZRdtQy96L00RODJLIU1GyIxTH8um4XGLNAnGpNjDJ
-	 80zqrfWn7bQMg0DyGO3Ic0weobLcGTofGxjZBuCPin4ZXRBsLJ4aoPy44nHJnr3+2r
-	 J6UgOEWtNHum03F3H63rl1aemCBNAyV4s4YM6sQONR2iWWPL92z5/ciO6B6jtXG9M0
-	 hJiDzSyP1E2uotLa+YxnKelf7OJczZEJx3XLEvCDoPMKfd/8bImKNZc9UHctk0V6cE
-	 KpajfpEWDj7jd/haKvKJ1kBjqA6kEww5WMyQrgiEiG2jlWmaqir+SPvYtHtmGkg8Rt
-	 X5ysYBf7RKdxQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: MOHAMMAD RASIM <mohammad.rasim96@gmail.com>
-Cc: linux-wireless@vger.kernel.org,  ath10k@lists.infradead.org
-Subject: Re: [question] is it possible to enable monitor mode /packet
- injection on wcn3990
-References: <CACq04CG8WCGDxf6Krx3bjxHU5OtYJJNOtD77TtPQhTfdy6ey_g@mail.gmail.com>
-	<56BBE89F-FF40-47C4-A4B9-F492FD8F6E2A@gmail.com>
-	<87zfpigr5t.fsf@kernel.org>
-	<D802221D-56B0-4CBB-833A-EA548A36FC7E@gmail.com>
-Date: Mon, 12 Aug 2024 17:31:39 +0300
-In-Reply-To: <D802221D-56B0-4CBB-833A-EA548A36FC7E@gmail.com> (MOHAMMAD
-	RASIM's message of "Mon, 12 Aug 2024 16:51:07 +0300")
-Message-ID: <87le1124ok.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	id 1sdWe3-00000000gdO-24Cr;
+	Mon, 12 Aug 2024 15:07:41 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47CDSTT2001043;
+	Mon, 12 Aug 2024 15:07:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=GvMLIUxd1sWR5SI1wQrmBc
+	ATK5sUWrvbdeu4Db5BmhQ=; b=EE4PL0PyKCR+C1zTJ7wC6vvZDVNW+PzrOgagKW
+	Ld+CsWHRqkRFyCmnG/Rc4TfgGaN5Pw7mRdNArtNEl4Dht4sEVJkxQv9di/45v8QX
+	g/dSkuBkJDikF5dDgKxW8awWEcFGWCkN1BulSwWMYwl3lA9CCIj6Kx9pd0nKopyE
+	5r4Tpk5rQVd8DJ+pyJyrh0QEU073dmNmf1SVUchVdRvVIJCO0WC00d9f5cM2qbF8
+	MbQ+nxtkG7kJ6B4MHThRkTb2dLaOaX9vUaz2Drjg8WqzuO9yhBnxno6hql6y+zRB
+	9CwVcN/fmFhT9o03tXrYI5oepPsLFPmQKRSYd+dinxMqurOg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40x3et4g57-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Aug 2024 15:07:36 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 47CF7ZIC022449
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Aug 2024 15:07:35 GMT
+Received: from [10.111.178.117] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 12 Aug
+ 2024 08:07:34 -0700
+Message-ID: <7c3b295d-3d5e-40ee-ac33-c92669f29d51@quicinc.com>
+Date: Mon, 12 Aug 2024 08:07:34 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+To: <linux-wireless@vger.kernel.org>
+CC: <ath10k@lists.infradead.org>, <ath11k@lists.infradead.org>,
+        <ath12k@lists.infradead.org>, <quic_jjohnson@quicinc.com>,
+        <quic_kvalo@quicinc.com>
+Subject: pull-request: ath-current-20240812
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 9weQVwKyogkPxWi5uiLK3LvEWgaKtSJ7
+X-Proofpoint-ORIG-GUID: 9weQVwKyogkPxWi5uiLK3LvEWgaKtSJ7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-12_04,2024-08-12_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ suspectscore=0 impostorscore=0 phishscore=0 clxscore=1011 mlxlogscore=580
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
+ definitions=main-2408120112
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240812_073148_027978_91F290DA 
-X-CRM114-Status: GOOD (  11.00  )
+X-CRM114-CacheID: sfid-20240812_080739_748593_94A6D034 
+X-CRM114-Status: UNSURE (   8.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,40 +96,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-MOHAMMAD RASIM <mohammad.rasim96@gmail.com> writes:
+The following changes since commit de9c2c66ad8e787abec7c9d7eff4f8c3cdd28aed:
 
->> On 12 Aug 2024, at 10:02=E2=80=AFAM, Kalle Valo <kvalo@kernel.org> wrote:
->>=20
->> + ath10k list
->>=20
->>> I have a device that has the wcn3990 wifi chip that uses the
->>> ath10k_snoc driver, i tried to put it in monitor mode, the "set
->>> monitor" mode command succeed but can't get any scanning working after
->>> that, does the chip support such mode?has anyone tried monitor mode
->>> with this chip or other snoc chips?
->>=20
->> I doubt that WCN3990 firmware supports monitor mode, though just
->> guessing here.
->
-> Some people has got monitor mode working under android ( different
-> driver, qcacld-2.0, and qcacld-3.0) with these kind of chips:
-> https://github.com/kimocoder/qualcomm_android_monitor_mode/
->
->
-> Some older chips (wcn3680 think) even supported packet injection(using
-> the older qcacld-2.0 driver).
->
-> Commits in the newer qcacld-3.0 driver (that supported the wcn3990)
-> did contain hints that monitor mode and packet injection should work.
->
-> So maybe the firmware does support it?
+  Linux 6.11-rc2 (2024-08-04 13:50:53 -0700)
 
-Maybe it does then, I don't know really. My response was just based on
-my past experiences with mobile chipsets.
+are available in the Git repository at:
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git
+tags/ath-current-20240812
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+for you to fetch changes up to 38055789d15155109b41602ad719d770af507030:
+
+  wifi: ath12k: use 128 bytes aligned iova in transmit path for WCN7850
+(2024-08-05 12:28:07 +0300)
+
+----------------------------------------------------------------
+ath.git patch for v6.11
+
+We have a single patch for the next 6.11-rc which introduces a
+workaround to ath12k which addresses a WCN7850 hardware issue that
+prevents proper operation with unaligned transmit buffers.
+
+----------------------------------------------------------------
+Baochen Qiang (1):
+      wifi: ath12k: use 128 bytes aligned iova in transmit path for WCN7850
+
+ drivers/net/wireless/ath/ath12k/dp_tx.c | 72 +++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath12k/hw.c    |  6 +++
+ drivers/net/wireless/ath/ath12k/hw.h    |  4 ++
+ drivers/net/wireless/ath/ath12k/mac.c   |  1 +
+ 4 files changed, 83 insertions(+)
 
