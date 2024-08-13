@@ -4,61 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEFD0C52D7B
-	for <ath10k@archiver.kernel.org>; Tue, 13 Aug 2024 09:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE5BBC52D7C
+	for <ath10k@archiver.kernel.org>; Tue, 13 Aug 2024 16:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
-	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=n5Wa5WoaE8vEEzbPOiCelU1UFATtAqkRV8PJ2jtek2k=; b=4BKibewojOth9LuGvLyMJgK5z8
-	EDCL1gzdBeKuEtMCl8p80QIvMJ3t86SxWcnxUeAPoiS6PfiYloYn52SjLEJCtB2aX+xKfRs4ZVjV9
-	SsBugVarhJiOFmkewQ0H4tNUSozpqvVrzdXLdqexQhXa9vhwkuy+WpZWWdKIgswg0TyfcXe9kxhqs
-	bp2qG3Z7ZupaQ1P46jkLF8xJAqRQUhV8vC6UcriAokcQRQOrIlB/KNz/o0lK8szxAleZ4KG8rItxM
-	BfkErQIrCi+5kiOnUZfdWqCvy0Cgvfma4Q1F6+xcoEbBJimB0t/mR2PrPd3hKGIJh6vzDUHrxY6bA
-	kLRntWuA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=vedtT6Chhe///2lfmmvo2ALtWT6s8iqXDAfNOl1f85o=; b=Bv0VrAHDx/350ingYt74oEf5if
+	VpfUdHckS/nRpgREi18qrw8TdMvpawCcZHwFq/2zHVE77Lp7p0cHFqvokP2ImK0deBoPZpU8Gzn55
+	ox0kzXCOXevSEAmXDjyp7aiGZA2SvvfRE0Gc83QcdN7Ro6srBQMIFX1ZMbnckUIzH8M1GmGhi6sRU
+	08BbIFfGO9HsuIdcn7hEumLP/aGkPtrIsEN+fT/BIbkuz3OLcfEONyG4oqIuLovlWMMuh9pEPvBru
+	IqgTWmqaMXXC4fn4dQ97XS3yKitM7ibDQ3iKIwMSIwH/MQ+DOsCpPsG1DKk5AIlzww/rhIH94Ex+/
+	TMTF+sWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdoJ4-00000003EiG-0tHA;
-	Tue, 13 Aug 2024 09:59:10 +0000
+	id 1sdud4-00000004Oqw-03IJ;
+	Tue, 13 Aug 2024 16:44:14 +0000
 Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdoJ1-00000003EfO-0n45;
-	Tue, 13 Aug 2024 09:59:09 +0000
+	id 1sdud1-00000004OpD-1EZQ;
+	Tue, 13 Aug 2024 16:44:12 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 708C7CE1232;
-	Tue, 13 Aug 2024 09:59:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D5FAC4AF09;
-	Tue, 13 Aug 2024 09:59:02 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 9A031CE138D;
+	Tue, 13 Aug 2024 16:44:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FF08C4AF0B;
+	Tue, 13 Aug 2024 16:44:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723543144;
-	bh=pzpoiFfq+2ivyX/04lGLavlOS/9I6phiMjzd/5Zydhc=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=X3Ow85ZE7SAClwfDmI6sr+FFRdLqMvqPXPkPBYTU9TFgBAzBEuYgeD7Z2QN4jFk6l
-	 GdiVYuaRfh7w5lmZR9UI8kikUrjsO1gnzEQSHW0Ji9hKwgkrIZM6YJECDvGIW3PHbu
-	 sxJZuGLjlszvMhf/iLrTLA1QKuIDSHjku67Izbmr2mMXn02XKqwi7TJr/vXtZBNxqI
-	 RF2lbsk5O8vABjcXZ5cw8DgGlI7AQgVK2Nk1g7iHeKD+H1Dk2eATEEpLMV5Ck5iHAy
-	 as0ah4WraZaH64WW4F0XMJVcwQ1V1pm1lV9BfpXiH/XKucGRCryY7M+62r3i75PtV6
-	 pCODkIjxGfnWA==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: ath-next-20240812
+	s=k20201202; t=1723567448;
+	bh=xYyT1jdZW9+VRI9b3mmRuSwMQCc/AU1cbEeq1xxXdqI=;
+	h=From:List-Id:To:Cc:Subject:Date:From;
+	b=qgWj1/f45FsiBjyvxVIsvfiyZWbOjDa2zUWIhvZ8wCjDognaZpO446u7f0K2jaE9l
+	 Fc9Q2Kt4IZK424bqFSkFOKwOrN7s8DLNUZfanTCnqgzYP/XKdl5aFSljtqWuEEssiK
+	 V01sE5wu4vA/8BuHln3NO22OcPbDgjj1Wiun485ZEsBsuDU/YGkXi1DOTcjKvCX2t2
+	 Dp/YTovZxaUpcoOiYKV9xqcfASuhBfRDftzakYDNqJJ+QkVf+2EX+av4AEFQ+/IXE7
+	 6u0AjyjyQB4OQllQA9L0z5yHXfjnLnLcncNEHWrPFEIcIwdJRrv9CkE2IF5TQ0Fgqb
+	 HdnueSfdk/v/w==
 From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <9ee38166-782b-409d-a2df-e2cee6e2ae21@quicinc.com>
-References: <9ee38166-782b-409d-a2df-e2cee6e2ae21@quicinc.com>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>,
- <ath10k@lists.infradead.org>, <ath11k@lists.infradead.org>,
- <ath12k@lists.infradead.org>, <quic_jjohnson@quicinc.com>,
- <quic_kvalo@quicinc.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <172354314111.731215.9038812147638682056.kvalo@kernel.org>
-Date: Tue, 13 Aug 2024 09:59:02 +0000 (UTC)
+To: linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org, ath12k@lists.infradead.org,
+    Jeff Johnson <quic_jjohnson@quicinc.com>
+Subject: [PULL linux-firmware] ath11k and ath12k firmware 20240813
+Date: Tue, 13 Aug 2024 19:44:05 +0300
+Message-ID: <87cymc1iga.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240813_025907_597630_7D83658B 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20240813_094411_703549_3FF0B46B 
+X-CRM114-Status: UNSURE (   9.03  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,109 +70,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
+Hi,
 
-> The following changes since commit c1cacb01f35589bd41360cdb7535afc792c08a7c:
-> 
->   Merge tag 'ath-next-20240702' of git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath (2024-07-03 16:57:16 +0300)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20240812
-> 
-> for you to fetch changes up to 89fbe672bd0e5e5c39600fcc7a3bca0b8a212d23:
-> 
->   Revert "wifi: ath9k: use devm for request_irq()" (2024-08-10 10:21:58 +0300)
-> 
-> ----------------------------------------------------------------
-> ath.git patches for v6.12
-> 
-> This is a fairly light pull request since ath12k is still working on
-> MLO-related changes, and the other drivers are mostly in maintenance
-> mode with a few cleanups and bug fixes.
-> 
-> Major changes:
-> 
-> ath12k
-> 
-> * DebugFS support for transmit DE stats
-> * Make ASPM support hardware-dependent
-> * Align BSS Channel information command and message with firmware
-> 
-> ath11k
-> 
-> * Use work queue for beacon tx events
-> 
-> ath9k
-> 
-> * Use devm for gpio_request_one
-> * Use unmanaged PCI functions in ath9k_pci_owl_loader()
-> 
-> ----------------------------------------------------------------
-> Aditya Kumar Singh (1):
->       wifi: ath12k: restore ASPM for supported hardwares only
-> 
-> Baochen Qiang (1):
->       wifi: ath12k: fix invalid AMPDU factor calculation in ath12k_peer_assoc_h_he()
-> 
-> Dinesh Karthikeyan (1):
->       wifi: ath12k: Support Transmit DE stats
-> 
-> Dmitry Kandybka (1):
->       wifi: ath9k: fix possible integer overflow in ath9k_get_et_stats()
-> 
-> Heiner Kallweit (1):
->       wifi: ath9k: use unmanaged PCI functions in ath9k_pci_owl_loader
-> 
-> Kang Yang (1):
->       wifi: ath11k: use work queue to process beacon tx event
-> 
-> Karthikeyan Periyasamy (2):
->       wifi: ath12k: fix array out-of-bound access in SoC stats
->       wifi: ath11k: fix array out-of-bound access in SoC stats
-> 
-> P Praneesh (2):
->       wifi: ath12k: fix BSS chan info request WMI command
->       wifi: ath12k: match WMI BSS chan info structure with firmware definition
-> 
-> Rosen Penev (2):
->       wifi: ath9k: use devm for request_irq()
->       wifi: ath9k: use devm for gpio_request_one()
-> 
-> Thorsten Blum (1):
->       wifi: ath9k: Use swap() to improve ath9k_hw_get_nf_hist_mid()
-> 
-> Toke Høiland-Jørgensen (2):
->       wifi: ath9k: Remove error checks when creating debugfs entries
->       Revert "wifi: ath9k: use devm for request_irq()"
-> 
->  drivers/net/wireless/ath/ath11k/core.h             |   1 +
->  drivers/net/wireless/ath/ath11k/dp_rx.c            |   2 +-
->  drivers/net/wireless/ath/ath11k/mac.c              |  12 +
->  drivers/net/wireless/ath/ath11k/wmi.c              |   4 +-
->  .../net/wireless/ath/ath12k/debugfs_htt_stats.c    | 354 +++++++++++++++++++++
->  .../net/wireless/ath/ath12k/debugfs_htt_stats.h    | 126 ++++++++
->  drivers/net/wireless/ath/ath12k/dp_rx.c            |   2 +-
->  drivers/net/wireless/ath/ath12k/hw.c               |   6 +
->  drivers/net/wireless/ath/ath12k/hw.h               |   1 +
->  drivers/net/wireless/ath/ath12k/mac.c              |   5 +-
->  drivers/net/wireless/ath/ath12k/pci.c              |   3 +-
->  drivers/net/wireless/ath/ath12k/wmi.c              |   1 +
->  drivers/net/wireless/ath/ath12k/wmi.h              |   3 +-
->  .../net/wireless/ath/ath9k/ath9k_pci_owl_loader.c  |   8 +-
->  drivers/net/wireless/ath/ath9k/calib.c             |   7 +-
->  drivers/net/wireless/ath/ath9k/debug.c             |   6 +-
->  drivers/net/wireless/ath/ath9k/htc_drv_debug.c     |   2 -
->  drivers/net/wireless/ath/ath9k/hw.c                |   6 +-
->  18 files changed, 521 insertions(+), 28 deletions(-)
+Here's a pull request for ath11k and ath12k. We have new ath11k hardware
+QCA2066 hw2.1 and usual smaller updates.
 
-Pulled, thanks.
+Please let me know if there are any problems.
 
-ae98f5c9fd8b Merge tag 'ath-next-20240812' of git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath
+Kalle
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/9ee38166-782b-409d-a2df-e2cee6e2ae21@quicinc.com/
+The following changes since commit 594600762910b4bbe8a88d0dc6495521366c880c:
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+  Merge branch 'vpu' into 'main' (2024-08-09 13:02:09 +0000)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ath/linux-firmware.git ath-20240813
+
+for you to fetch changes up to 82318c966fd1af87044299d34611751c76f70927:
+
+  ath12k: WCN7850 hw2.0: update board-2.bin (2024-08-13 19:36:13 +0300)
+
+----------------------------------------------------------------
+Kalle Valo (6):
+      ath11k: IPQ5018 hw1.0: update to WLAN.HK.2.6.0.1-01291-QCAHKSWPL_SILICONZ-1
+      ath11k: QCA2066 hw2.1: add board-2.bin
+      ath11k: QCA2066 hw2.1: add to WLAN.HSP.1.1-03926.13-QCAHSPSWPL_V2_SILICONZ_CE-2.52297.3
+      ath11k: WCN6855 hw2.0: update board-2.bin
+      ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.41
+      ath12k: WCN7850 hw2.0: update board-2.bin
+
+ WHENCE                           |    9 +-
+ ath11k/IPQ5018/hw1.0/m3_fw.b01   |  Bin 136 -> 136 bytes
+ ath11k/IPQ5018/hw1.0/m3_fw.b02   |  Bin 262144 -> 262144 bytes
+ ath11k/IPQ5018/hw1.0/m3_fw.mdt   |  Bin 284 -> 284 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b00   |  Bin 532 -> 532 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b01   |  Bin 520 -> 520 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b02   |  Bin 7552 -> 7552 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b04   |  Bin 86788 -> 86788 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b08   |  Bin 4096 -> 4096 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b09   |  Bin 2330624 -> 2334720 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b10   |  Bin 269028 -> 269220 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b11   |  Bin 99436 -> 99456 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.b13   |  Bin 7024 -> 7072 bytes
+ ath11k/IPQ5018/hw1.0/q6_fw.mdt   |  Bin 1052 -> 1052 bytes
+ ath11k/QCA2066/hw2.1/Notice.txt  | 3658 ++++++++++++++++++++++++++++++++++++++
+ ath11k/QCA2066/hw2.1/amss.bin    |  Bin 0 -> 5349376 bytes
+ ath11k/QCA2066/hw2.1/board-2.bin |  Bin 0 -> 685144 bytes
+ ath11k/QCA2066/hw2.1/m3.bin      |  Bin 0 -> 266684 bytes
+ ath11k/WCN6855/hw2.0/amss.bin    |  Bin 4988928 -> 4988928 bytes
+ ath11k/WCN6855/hw2.0/board-2.bin |  Bin 6308684 -> 6429240 bytes
+ ath11k/WCN6855/hw2.0/m3.bin      |  Bin 266684 -> 266684 bytes
+ ath12k/WCN7850/hw2.0/board-2.bin |  Bin 382856 -> 1897968 bytes
+ 22 files changed, 3665 insertions(+), 2 deletions(-)
+ create mode 100644 ath11k/QCA2066/hw2.1/Notice.txt
+ create mode 100644 ath11k/QCA2066/hw2.1/amss.bin
+ create mode 100644 ath11k/QCA2066/hw2.1/board-2.bin
+ create mode 100644 ath11k/QCA2066/hw2.1/m3.bin
 
