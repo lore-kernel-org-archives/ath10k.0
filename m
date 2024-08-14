@@ -4,82 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEBD8C3DA4A
-	for <ath10k@archiver.kernel.org>; Wed, 14 Aug 2024 15:48:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66405C52D7B
+	for <ath10k@archiver.kernel.org>; Wed, 14 Aug 2024 16:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bRPEnt+UgePlZ3KhAkXimBTF2+g5TXY/scfZYgz7QTs=; b=Q8cKBUOQuopVTho813jrfGF4gx
-	yEyB9UelZR+kfGwXNN5KdLCXkFGe3fMGgb15FSDYyCARybIFkn24tQ1bJQ0pVoLjG+FT2imyTBTqO
-	88MXPhwdN39hoRtxaZJJuLr1dwn/kQ8UiXBGuFBnCMlEVsqAgX6IWj37XL0TgepbCHJA2dRkJH/hS
-	IM5AN2rrdee63CIZSKtCmWn7UzLN54fGk69ovdxofK4jS7o34VAJE3jH4Thmws2/zq2eUvX4y0qot
-	as2tlTLB/J1eU+4wPMNKvgIstkTOoRs6IPFd4oqddgBtKDfIXHWeG345kc0wSwboHlxZ3eWFU4qqY
-	znPPWOHQ==;
+	bh=AGHGrfhVZGCi7ebZvtlasyvLsOQ+wsjF4xpmwarBNSQ=; b=AIoj3/3ScwFPwOT5rje9R+Owvb
+	aQn1EBuAtxIv/AIbohRBZicJuXGLPACSvpF7MtBWGojbYtDlVo5LwBJQf+AhgHvlllqnVn8idsO2Q
+	kRB/cfWyVpcN/vIneHAoXKNi3jus9DtblAlSCstH+IOBEoHqOeva2K8tgUZIokBcbheiKQDmriVM7
+	HwdUaKNmnLMpp0SQHmJeKdQwam6wEvWNEZU3WlzistOvvVi4N05rRcocA5hAK/ZSGlKXgIzrplfhU
+	CGUxfaeFVWCUuAuVh+Juew3GSsyf/mwT1JUYI0mYlBtlaTPp7bU5k83ufYTOqnWQiodISRo+ezqKQ
+	fmsCY7wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seGF2-00000007XMx-3A7Q;
-	Wed, 14 Aug 2024 15:48:52 +0000
-Received: from mail-lj1-x22d.google.com ([2a00:1450:4864:20::22d])
+	id 1seH8D-00000007iZ7-497I;
+	Wed, 14 Aug 2024 16:45:53 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seGCg-00000007Wgd-1318
+	id 1seH80-00000007iSy-0TB9
 	for ath10k@lists.infradead.org;
-	Wed, 14 Aug 2024 15:46:27 +0000
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2f01e9f53e3so407961fa.1
-        for <ath10k@lists.infradead.org>; Wed, 14 Aug 2024 08:46:24 -0700 (PDT)
+	Wed, 14 Aug 2024 16:45:41 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-530e2287825so50431e87.1
+        for <ath10k@lists.infradead.org>; Wed, 14 Aug 2024 09:45:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723650383; x=1724255183; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bRPEnt+UgePlZ3KhAkXimBTF2+g5TXY/scfZYgz7QTs=;
-        b=G1c9faYW+b4CEBZmqVzhCbGHO53lzjnCD9CWdDjflSGRJoV940P5P6dKTWaFBmOqGW
-         +cTysQrK/Fu815c/EB/W0/YcT6DoCTq/XNkGxkoSmDmKteYjeO7sisBu5PNi/zsXX4sS
-         VI9OiZlryF5f2Wj/0behjqkhbvnmBhCwC92gqNNlf0G/dZuzNhUlqG2MMT19Z6l9CqjB
-         nDVpnUrzjCUm23nGUfHpEVGBRxDt7URGloA9O7xZ9g+KueufBeHdgy4pUPcXmtMztMrF
-         //sdhFd5k8959rWNm0iwAUfOW2NROg8yrsmtpeKwVPF5VUEwbN52IeR76fIqM1cKGxwL
-         CdiA==
+        d=gmail.com; s=20230601; t=1723653938; x=1724258738; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AGHGrfhVZGCi7ebZvtlasyvLsOQ+wsjF4xpmwarBNSQ=;
+        b=Pz4W72cZ8+FxNaR9g7iyufP0n+sl9aj3Ejkj2Jk5Ubn09balOABz9I7jELzb09sjOr
+         50RWZwRNLfYNLzhRB6+AIT4YszRhpnJjuKdouoALd2aEc70d5PLIXS6dg964PH6MLyZ6
+         KsNQLPYjZM/SBd4iAT5o6y6mgxEEDXPTxFJiTujshRw8mrjM7q2EefR9gUf26wrfvbU0
+         iBEVqvWcOqyZO+qa3tJTQM+SYbvRdRXVxmlQQRWFpdV+fiikrJxPdsiuzhp4ek2FgorP
+         53LjleazWK+YgLDqExZ6qqGdYnWUjHOYreO5DL2XqCv5qK1KwfxQrmVRv4OiVt3XZexD
+         KPMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723650383; x=1724255183;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bRPEnt+UgePlZ3KhAkXimBTF2+g5TXY/scfZYgz7QTs=;
-        b=nECOFw/N+Lh662W6M2gh1VSHdJzR4eRJvuJmf4d7yeemjGKJIbADy1tWqRhZ0bofII
-         /MLjapYeaaxtiVojKnx33YQceP39H2WPr+pJFzKMvV/AWDi/Bdc65sG4JSwU2xckpHFP
-         aoaJqnUntkGwahNVRf/MD2PyYJVVtQHd7ni6nIoJMGmVSk/G0k8fOE3MkyFvV387K7wz
-         8xTQyOtqbN/1tVpcS9iGBFIu9JkQRXF5AdESGXhilUYXAWIbHcUJyAovdnX5WfrZ/d6r
-         ShhblnbyeYgnmbbiVUjQTkDF7zvNnnHraBYeNvPF7IFyExISPXoZORKNauM/A5hTi+DX
-         EYHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUSCnLI8F4zPO+I1BNIij2MHCCjT1O8lS1iE5up8zRjbOMtydXeJHOaYIKjIW8xjIlnunFfcB7WWaAksE5wo+C7E2eqczFtKsV8Fg==
-X-Gm-Message-State: AOJu0Yz0aPkzRsp1cookhmcg/AC/X2rI6wghjFtLNdgn13HS9kjhMhkE
-	7tdeGcViTUBmvcpXa9sQ/hpXd2LKbZBAWwbDOYG9eyizJtRGtH1U
-X-Google-Smtp-Source: AGHT+IHgPS8BeIAAs4QPC7yWpVRDMHPBO0tYIu3AF0VCs4w7+PPohNvYhErNnpmHZ4JWoJ6d20Q5Bg==
-X-Received: by 2002:a05:651c:b10:b0:2ef:2e3f:35d9 with SMTP id 38308e7fff4ca-2f3aa2fbd57mr33187681fa.33.1723650382501;
-        Wed, 14 Aug 2024 08:46:22 -0700 (PDT)
-Received: from [10.100.121.195] ([152.193.78.90])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80f3f4b801sm186584666b.1.2024.08.14.08.46.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Aug 2024 08:46:21 -0700 (PDT)
-Message-ID: <64c8a9c6-9da7-4e25-9245-490c9e7e21d2@gmail.com>
-Date: Wed, 14 Aug 2024 08:46:18 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] wifi: ath10k: fix invalid VHT parameters
+        d=1e100.net; s=20230601; t=1723653938; x=1724258738;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AGHGrfhVZGCi7ebZvtlasyvLsOQ+wsjF4xpmwarBNSQ=;
+        b=uchW/HfJbPb/vYbGos+omPoA+kwcTJSX7n/AgcdFd0xBY4LsPSLjDNauH9QPOHSF02
+         lk3IdTOMOhDDNxniLsCX+VvHg3tLBLnWWvHMG4BWrekIAzo8+tnX7yYfozv1KzU8KZuE
+         8+6whC+XjbIimaB0jX2HMacirI6TrsLa7DYru/wKrpFOMY4gdd83RySkBNTkwCkLKe3t
+         olM63WWR8YLJgXqrZx7vMa3V37vS62BBwCGcIhnNBnM9niX5AAHkPJ0d7UwU69cX62wW
+         6gBJ1WbHgVKahUqAAWHtcNU9PH/PFQwExQzglX+nroAfNC0jdEPuG3osYgnJH+dVRThY
+         cjug==
+X-Gm-Message-State: AOJu0Yxojp5HYXdA/1lhmfKuzAACnrALnuBeSJUPVarvzENG2/+ztmPi
+	nT+WnozevGctUZdGRv3K1tGmsiuTgOrlmSZqYFGQVFlwiT4qhokivEULSg==
+X-Google-Smtp-Source: AGHT+IGVg6Z0mt0BxnC93MsDZoAr+SShVFVo+bU62HnJUJOcbpwqge9ERHZqtEV57lc9gM3wwjbHyA==
+X-Received: by 2002:ac2:4e16:0:b0:52c:d80e:55a5 with SMTP id 2adb3069b0e04-532edbb301fmr2484707e87.41.1723653938262;
+        Wed, 14 Aug 2024 09:45:38 -0700 (PDT)
+Received: from LOCLAP699.vf-sint-niklaas.locus ([152.193.78.90])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80f3f475ccsm196326166b.14.2024.08.14.09.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Aug 2024 09:45:37 -0700 (PDT)
 From: James Prestwood <prestwoj@gmail.com>
-To: Baochen Qiang <quic_bqiang@quicinc.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
-References: <20240711020344.98040-1-quic_bqiang@quicinc.com>
- <603104a7-a1ea-43c2-b0d5-fd4e46a27fe6@gmail.com>
-Content-Language: en-US
-In-Reply-To: <603104a7-a1ea-43c2-b0d5-fd4e46a27fe6@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: linux-wireless@vger.kernel.org
+Cc: ath10k@lists.infradead.org,
+	James Prestwood <prestwoj@gmail.com>
+Subject: [RFC 1/1] wifi: ath10k: reduce timeout for disabling a key
+Date: Wed, 14 Aug 2024 09:45:07 -0700
+Message-Id: <20240814164507.996303-2-prestwoj@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240814164507.996303-1-prestwoj@gmail.com>
+References: <20240814164507.996303-1-prestwoj@gmail.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240814_084626_309312_24D779EC 
-X-CRM114-Status: GOOD (  10.15  )
+X-CRM114-CacheID: sfid-20240814_094540_176834_AFE118A3 
+X-CRM114-Status: GOOD (  14.71  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,38 +91,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Baochen,
+The QCA6174 experiences random cases of a key failing to be disabled.
+The timeout for this currently is 3 seconds. This can happen on
+roaming when removing the old key during the transition to the new
+BSS. Though the roam will generally succeed (except with
+some AP vendors, explained below) it means that it is delayed by 3
+seconds until the timeout expires.
 
-On 7/15/24 5:38 AM, James Prestwood wrote:
-> Hi Baochen,
->
-> I've compiled both changes and so far those messages are gone.
->
-> Tested-By: James Prestwood <prestwoj@gmail.com> # on QCA6174 hw3.2
+Certain AP vendors appear to have issues with this delay and either
+ignore the subsequent reassociation, or reject it. This results in
+a disconnect.
 
-I just noticed another one actually:
+Since key removal is a non-fatal failure it feels somewhat safe to
+reduce this timeout down in order to both reduce the potential
+delay and play nice with APs that aren't able to handle the delay
+between authentication and association.
 
-invalid vht params rate 585 100kbps nss 1 mcs 4
+Signed-off-by: James Prestwood <prestwoj@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thanks,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ec8d5b29bc72..fd20107abd0f 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -301,6 +301,7 @@ static int ath10k_install_key(struct ath10k_vif *arvif,
+ 	struct ath10k *ar = arvif->ar;
+ 	int ret;
+ 	unsigned long time_left;
++	unsigned long timeout = (cmd == DISABLE_KEY) ? 1 : 3;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+@@ -313,7 +314,8 @@ static int ath10k_install_key(struct ath10k_vif *arvif,
+ 	if (ret)
+ 		return ret;
+ 
+-	time_left = wait_for_completion_timeout(&ar->install_key_done, 3 * HZ);
++	time_left = wait_for_completion_timeout(&ar->install_key_done,
++						timeout * HZ);
+ 	if (time_left == 0)
+ 		return -ETIMEDOUT;
+ 
+-- 
+2.34.1
 
-James
-
->
-> On 7/10/24 7:03 PM, Baochen Qiang wrote:
->> supported_vht_mcs_rate_nss1 and supported_vht_mcs_rate_nss2 in host 
->> do not
->> align with firmware's definitions, resulting in some warnings. Fix them.
->>
->> Baochen Qiang (2):
->>    wifi: ath10k: fix invalid VHT parameters in
->>      supported_vht_mcs_rate_nss1
->>    wifi: ath10k: fix invalid VHT parameters in
->>      supported_vht_mcs_rate_nss2
->>
->>   drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->>
->> base-commit: db1ce56e6e1d395dd42a3cd6332a871d9be59c45
 
