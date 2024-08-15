@@ -4,76 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F15DC531DD
-	for <ath10k@archiver.kernel.org>; Wed, 14 Aug 2024 16:45:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43D44C3DA7F
+	for <ath10k@archiver.kernel.org>; Thu, 15 Aug 2024 13:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=D+tPDiTXkWJj5I1HhSQqqfRMrtmrsXTQDIjEBJRLwdU=; b=zZXiOfxl1va+q7gA53Ee+Jn/VK
-	t8phyRAHnrk5HBqMKNwXUxJEKNNwOSXmS5Dk5zpYvxJxId+n4zVwDPrZ3V2AKWXryGgEmk57jgxPX
-	CokyE8GaLcEpz1/GrELEtfJzgDcwcnkLWqDpm8cgxg3nePBiWjhS+iiSx/Kna9TO89XEb586Trr9w
-	2pWZz3ki9sH14KYkwoeqHzVrzyzZzxaN8Vmn0IrDVO/eAtGDmFNOzVULinnBfF1pwJ5fnx426sT8o
-	kGbxbPqIcNCf+9bAwPtbQ1EhCGLrRaQx7WNiSYqF+sMJYIGzBLYHGlA82+OZGbYc3EGGEj6O6jBnE
-	nMdjs/sA==;
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=VKY6eAID+r0Zg0ifrOX8aS/wr6iWUF6+sdzwifPFEkU=; b=iiGmbJHyNAHgFD7TFHaZFY5eis
+	2nwszdxr5HTm0w8TpW9Sqfrg3win1Q3gPG/lcObP8/LNAUojm1z0AEMdIds2YnSUiAu3UtuHxMSK6
+	g98GET95ueY7IBPguQuPhAy2gYIaZkbI17rfPAG5PxbIBjzwJn/fZKpL/eFgU5jhcnTraDzJtfUcW
+	qOBEuKNh/FWICYlfdMpqDZwq+GBPpydWJluvd2EARVoGX/3EsxCWd00ZvsHWZ61RbhwDs27Ryp+kK
+	krRx3jiOxPuq007W5WXEJmZaqNHbrSQCAiIqO9vKPs3Zjgvhz22HxUpySnTiq+1RPvoatGAVwjVYC
+	x5E603CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seH8D-00000007iYn-1NCn;
-	Wed, 14 Aug 2024 16:45:53 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1seaxO-0000000A78g-1ygb;
+	Thu, 15 Aug 2024 13:56:02 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seH7y-00000007iSd-2z2d
-	for ath10k@lists.infradead.org;
-	Wed, 14 Aug 2024 16:45:40 +0000
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a7d2a9a23d9so10898566b.3
-        for <ath10k@lists.infradead.org>; Wed, 14 Aug 2024 09:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723653936; x=1724258736; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=D+tPDiTXkWJj5I1HhSQqqfRMrtmrsXTQDIjEBJRLwdU=;
-        b=ni7Dn3rmhYHiTjWSHZ5uAxH9Wvpyjb+pXffaQbz/Wh8HDyBccxFltsOVEI4G36XR1o
-         yKdh+MXoMaZQuxMfQQDFugiYqUSBM/lNiMfBuLoAi4VLNjJMSCZvNzHj9Ah4mpAm/mLz
-         GJw0mjTYHNSBbJOnZ9jC8JAVZLMjHfkW/p4SzCiwervOW6DqBXjM4CMg6seSi+XKttLQ
-         tk7gqQcqh0kA2qqgGqObV4JRUN81ToHRB/ar9L7xtF9W2/T7V2VIMzFI/OYdvLz26/Eo
-         L8xdNb0xwABELIzfuNG7fJbNj4N112VcywphMr8NJc0nRvGgzXhot25kl8mn9OmkMXSO
-         OeOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723653936; x=1724258736;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D+tPDiTXkWJj5I1HhSQqqfRMrtmrsXTQDIjEBJRLwdU=;
-        b=AeDSGrIgp1cKoh1I7RRlvgWMZkz6EyehIBjASLQQ2FgGml42kpSTjBqrxoEGj8XOaH
-         T9b0EUy6zvhNDXKZ11O3asG5BLV87DnRVpCtqYgFjvpBNMZM+sza7bWLvwmL3jpxRV/P
-         QaeKt8rB+v9wmxYr+ZYRQzJsPRy00TJHBiqUfk213ncmgi5aBtV8PC2tzF/ANndidJ61
-         aR1jdCHJWF0pcVxOs3PZYX0hIgqKPm9ZrY4bwS9tg2V4E/brey+k0ZCqX1GPtlXEkuaW
-         HAC4FRSrUEZJpMdW8+BknSPJVbZSOTVC5Wv9vad9aNKVp7ZynqfcfCUFOHSZnyzabSvF
-         GLwQ==
-X-Gm-Message-State: AOJu0YxhWPrzYoHTDL1g2pokRu3oUxOjQ0sTN/3Qwip7FUTXS0jG5aG7
-	LPl0rT+isZSnJ9XvKYZ1deYCL9Td/8qJdHCAnGrXll69/7T3L8uf
-X-Google-Smtp-Source: AGHT+IH4p+rKi+kxav0+gPINVDeE1ZlmfHcxiA+Uzx43uXFE9ExUtCRNWMsQM0fPxJHCrjbtk4ik9g==
-X-Received: by 2002:a17:907:3f86:b0:a80:f6a9:c311 with SMTP id a640c23a62f3a-a8366460685mr226358266b.0.1723653936195;
-        Wed, 14 Aug 2024 09:45:36 -0700 (PDT)
-Received: from LOCLAP699.vf-sint-niklaas.locus ([152.193.78.90])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80f3f475ccsm196326166b.14.2024.08.14.09.45.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2024 09:45:35 -0700 (PDT)
-From: James Prestwood <prestwoj@gmail.com>
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org,
-	James Prestwood <prestwoj@gmail.com>
-Subject: [RFC 0/1] wifi: ath10k: improvement on key removal failure
-Date: Wed, 14 Aug 2024 09:45:06 -0700
-Message-Id: <20240814164507.996303-1-prestwoj@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	id 1seaxK-0000000A77Y-3bjX;
+	Thu, 15 Aug 2024 13:56:01 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 32631CE1C7E;
+	Thu, 15 Aug 2024 13:55:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B853C4AF0A;
+	Thu, 15 Aug 2024 13:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723730156;
+	bh=MsSF0ZMUFFKBilcSHXDg3Wgfc1Du5Oe51UnolXkzzvQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
+	b=P0cEgGkTVxCOyhlzQ3El8NHry3MfF+l32ATuun3K5VT+yqZ+3BDZj1AtK3PQnHV7D
+	 4mE4GyGi7QUIGdVBG2CdxIteJQMiRUI9oGT+11M/cif9/FBFnOHinWGuhg04aAUhqZ
+	 VzyFJZmCVD+xcyCMe6GyUwX4QwJSWGO9D+Uzn69Mta+YZH4nqX/PU9OuSloH79Lrps
+	 dDlgYCSpAl5RWpS9EaKzI2q9+Bs1gviQBfh3snO2/E1lEKv3wSDVtvKcFgWvUqdScD
+	 xD1MAmyzQ/63N7LGd1CMa3YB4iGqXZEXFghbpTfgat5rzIKLjY9v/4bGXXspyDJQw/
+	 vniTpSjkR9wsg==
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-64b417e1511so9573047b3.3;
+        Thu, 15 Aug 2024 06:55:56 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXPYM854auGJ2X72hjpoA5sj0gggG3X5j5ouzDKOXxCJef8m48YhH6ik/epkvDSf2/hNOcQiYI/Hxf6aNBCszPuefxwGhcsl9kVecQ936h1VnF1AfyF0INFEK0KZnK6+nyC27ZbyLEs9E6xuM6sM1+lSUdgHmKDWiEb4d1Y2sZNt5Hv
+X-Gm-Message-State: AOJu0YwWnDfuFpT1ZKeEYHYQeuNplO7IQYJnmbvUZViUjQgSlj0YEjvG
+	Mw+dHFvRAGlZsPKCN5dcTVaJkG+0ODWFCI6oC6f5egTRCndxNmfVr37NWjCkbgzyaXcmcd+tvZk
+	KJuS1V64L/EnUL23c20neCYjfhWo=
+X-Google-Smtp-Source: AGHT+IE9g8Et9/7N9qT7VqtHIV42bP2F1ImRodlvjO4IZyU8D4JRPGtVEFXM1hFoSuCz+Mw4pNGd3uYxCaaPPr6u6k0=
+X-Received: by 2002:a05:690c:fcb:b0:62f:37c9:77bc with SMTP id
+ 00721157ae682-6ac8fe09107mr83314787b3.0.1723730155534; Thu, 15 Aug 2024
+ 06:55:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <87cymc1iga.fsf@kernel.org>
+In-Reply-To: <87cymc1iga.fsf@kernel.org>
+From: Josh Boyer <jwboyer@kernel.org>
+Date: Thu, 15 Aug 2024 09:55:44 -0400
+X-Gmail-Original-Message-ID: <CA+5PVA5M1vcSH2z41zQwBuv8pj89GG-wGkHApMOe=UiDmhHAkw@mail.gmail.com>
+Message-ID: <CA+5PVA5M1vcSH2z41zQwBuv8pj89GG-wGkHApMOe=UiDmhHAkw@mail.gmail.com>
+Subject: Re: [PULL linux-firmware] ath11k and ath12k firmware 20240813
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
+	ath12k@lists.infradead.org, Jeff Johnson <quic_jjohnson@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240814_094538_773371_7ED5C3F5 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20240815_065559_273800_7A602205 
+X-CRM114-Status: GOOD (  17.49  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,36 +82,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-This is in regard to my earlier question [1]. After some testing with
-adding an artificial 3 second delay between auth and assoc frames I
-saw that the device would fail to roam 100% of the time. This further
-backed up my theory that this firmware failure is causing some
-timeout on the AP, and resulting it either ignoring the reassociation
-or rejecting it.
+On Tue, Aug 13, 2024 at 12:44=E2=80=AFPM Kalle Valo <kvalo@kernel.org> wrot=
+e:
+>
+> Hi,
+>
+> Here's a pull request for ath11k and ath12k. We have new ath11k hardware
+> QCA2066 hw2.1 and usual smaller updates.
+>
+> Please let me know if there are any problems.
+>
+> Kalle
+>
+> The following changes since commit 594600762910b4bbe8a88d0dc6495521366c88=
+0c:
+>
+>   Merge branch 'vpu' into 'main' (2024-08-09 13:02:09 +0000)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/ath/linux-firmware.git at=
+h-20240813
 
-Changing kernel behavior to fix a vendor quirk isn't great, but
-in this situation since the key removal is non-fatal and it
-improves general performance when the firmware does time out I
-thought it was an acceptable compromise. I am also pursuing the
-vendor to fix this, and allow a greater delay between auth and
-assoc.
+Merged and pushed out.
 
-The reason I'm sending this as an RFC is that I have no idea about
-other hardware, firmwares, etc, that use ath10k. I have only tested
-on the QCA6174. Maybe different configurations _do_ need 3 seconds
-to remove a key? Maybe this timeout needs to be a hw_param?
+https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/275
 
-[1] https://lore.kernel.org/linux-wireless/9eafac85-2262-4f92-a70b-32109f65c05a@gmail.com/T/#t
+josh
 
-
-
-James Prestwood (1):
-  wifi: ath10k: reduce timeout for disabling a key
-
- drivers/net/wireless/ath/ath10k/mac.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
--- 
-2.34.1
-
+>
+> for you to fetch changes up to 82318c966fd1af87044299d34611751c76f70927:
+>
+>   ath12k: WCN7850 hw2.0: update board-2.bin (2024-08-13 19:36:13 +0300)
+>
+> ----------------------------------------------------------------
+> Kalle Valo (6):
+>       ath11k: IPQ5018 hw1.0: update to WLAN.HK.2.6.0.1-01291-QCAHKSWPL_SI=
+LICONZ-1
+>       ath11k: QCA2066 hw2.1: add board-2.bin
+>       ath11k: QCA2066 hw2.1: add to WLAN.HSP.1.1-03926.13-QCAHSPSWPL_V2_S=
+ILICONZ_CE-2.52297.3
+>       ath11k: WCN6855 hw2.0: update board-2.bin
+>       ath11k: WCN6855 hw2.0: update to WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V=
+2_SILICONZ_LITE-3.6510.41
+>       ath12k: WCN7850 hw2.0: update board-2.bin
+>
+>  WHENCE                           |    9 +-
+>  ath11k/IPQ5018/hw1.0/m3_fw.b01   |  Bin 136 -> 136 bytes
+>  ath11k/IPQ5018/hw1.0/m3_fw.b02   |  Bin 262144 -> 262144 bytes
+>  ath11k/IPQ5018/hw1.0/m3_fw.mdt   |  Bin 284 -> 284 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b00   |  Bin 532 -> 532 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b01   |  Bin 520 -> 520 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b02   |  Bin 7552 -> 7552 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b04   |  Bin 86788 -> 86788 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b08   |  Bin 4096 -> 4096 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b09   |  Bin 2330624 -> 2334720 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b10   |  Bin 269028 -> 269220 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b11   |  Bin 99436 -> 99456 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.b13   |  Bin 7024 -> 7072 bytes
+>  ath11k/IPQ5018/hw1.0/q6_fw.mdt   |  Bin 1052 -> 1052 bytes
+>  ath11k/QCA2066/hw2.1/Notice.txt  | 3658 ++++++++++++++++++++++++++++++++=
+++++++
+>  ath11k/QCA2066/hw2.1/amss.bin    |  Bin 0 -> 5349376 bytes
+>  ath11k/QCA2066/hw2.1/board-2.bin |  Bin 0 -> 685144 bytes
+>  ath11k/QCA2066/hw2.1/m3.bin      |  Bin 0 -> 266684 bytes
+>  ath11k/WCN6855/hw2.0/amss.bin    |  Bin 4988928 -> 4988928 bytes
+>  ath11k/WCN6855/hw2.0/board-2.bin |  Bin 6308684 -> 6429240 bytes
+>  ath11k/WCN6855/hw2.0/m3.bin      |  Bin 266684 -> 266684 bytes
+>  ath12k/WCN7850/hw2.0/board-2.bin |  Bin 382856 -> 1897968 bytes
+>  22 files changed, 3665 insertions(+), 2 deletions(-)
+>  create mode 100644 ath11k/QCA2066/hw2.1/Notice.txt
+>  create mode 100644 ath11k/QCA2066/hw2.1/amss.bin
+>  create mode 100644 ath11k/QCA2066/hw2.1/board-2.bin
+>  create mode 100644 ath11k/QCA2066/hw2.1/m3.bin
 
