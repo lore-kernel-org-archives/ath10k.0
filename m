@@ -4,56 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71885C3DA4A
-	for <ath10k@archiver.kernel.org>; Mon, 19 Aug 2024 18:14:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 658B0C52D6F
+	for <ath10k@archiver.kernel.org>; Tue, 20 Aug 2024 01:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/1RcudAHew7wdiiwttKmKJv8z0Zu8tmv5zsg/ho7Z4g=; b=GgJrr4U/ROFn3QKoTZJi5LJyzP
-	vR3Xt8icB3HBDpWdf1aibJuRASORB+HT8kDPceqi8Sug8a7xKerhfPQRzOP7L4htK1RlmiB0OxYUk
-	tegFrPjzWnM2GnXU3jIIvBCRFKK2esyz4dtsRSLw+pYpyL4UlgVmeA7YSJ1eHJ+RUG343n13hJLOj
-	yGtDm4QAI4m7DPUze6nxLodvXjWDlEDokCShSs13X+LB2eG8+pL0XlFBfVHb45Lv1ZKA4MIrFVPqh
-	BL2EnpRc2TzTWff8TZlorl6dJa97xLOBPyzxIaCpfwxNH9B7BQS/Ui+mFm4BwL4jhufLdU3bP7v3D
-	lzif4Kug==;
+	bh=NdAxZncuXoxty+k24YBc+NkgmXgq0kwW8375hpCMQxE=; b=KXhLIpjH78aXqmDDPjfVcseSFx
+	aUtJNSHHeaQxXv1teSXJmMwWQF+JInyBqYZFhuEgj2xGoO3w8hOsh/Y1GartMTSuZdnL+kXpVQgoW
+	5e2NQRf6pWTRNGPOqgP5YJS6rt6SnEgBk1nDMjrF7ZhGd7cMCK6ibUxQZsi8H7ND6sxIxf5IvhUwH
+	80IXFw1ESFuk9g8FB0LMrhDl8OrIipMWiCVxt2wTGy/e9RgHUsavvozujCSFLUSNST8hqDS2ujbq2
+	PogGrlTCiP+0UVmZmzixwBS2RQuUhIAj4SYsqKCbr6AQD7ONurrIavXFBlmqCLG9OiRjJLjwkV1MU
+	52PgejFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sg6t1-00000002WKU-3Hom;
-	Mon, 19 Aug 2024 18:13:47 +0000
-Received: from mx3.molgen.mpg.de ([141.14.17.11])
+	id 1sgE26-00000003Tp6-3eJT;
+	Tue, 20 Aug 2024 01:51:38 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sg6sw-00000002WJC-2aQu
+	id 1sgE23-00000003Tnk-0ifx
 	for ath10k@lists.infradead.org;
-	Mon, 19 Aug 2024 18:13:46 +0000
-Received: from [192.168.0.2] (ip5f5af273.dynamic.kabel-deutschland.de [95.90.242.115])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 1A7D861E5FE07;
-	Mon, 19 Aug 2024 20:13:24 +0200 (CEST)
-Message-ID: <672441c5-a344-4bcc-95e9-a2726bc69bdc@molgen.mpg.de>
-Date: Mon, 19 Aug 2024 20:13:23 +0200
+	Tue, 20 Aug 2024 01:51:36 +0000
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47JNe4Ce002613;
+	Tue, 20 Aug 2024 01:51:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	NdAxZncuXoxty+k24YBc+NkgmXgq0kwW8375hpCMQxE=; b=Z0r20mEWpdBUqCbO
+	xTRCgVMF9UpwLFu5pYRIJh0POSBPIFwsOjKR8xXH/6Vy4pfyKci7MBDSjTQM+5Wp
+	iyddQWaPvaRgtqIO4vwjLe6omyrieLmxMjRMP6GyuY6xYN2dbHNJzS+VkDbU+5iA
+	1M0HZ839uEwd0xzU6+MWiIOg1gfjUzhG+xZOgqhRascXjANsqAQxGkpeD2V0kUNu
+	/nIiRXbaXKy7yvQDEY/4s/yGy6g0vUO91E9uyat2PlCnADm9P8VX/28gC9dpV7y2
+	ASidl80fC7+fFA9cwIVAa8nrO58sthZcdvG3su6jQQevj/ungHZhQ8YPNV6pLPM5
+	YALEHA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 413qxg3q5c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Aug 2024 01:51:32 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 47K1pVsf032599
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Aug 2024 01:51:31 GMT
+Received: from [10.231.195.67] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 19 Aug
+ 2024 18:51:30 -0700
+Message-ID: <c16ca5e3-8d1b-4690-82b0-50827ce8b932@quicinc.com>
+Date: Tue, 20 Aug 2024 09:51:28 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] wifi: ath10k: fix invalid VHT parameters in
- supported_vht_mcs_rate_nss2
-To: Baochen Qiang <quic_bqiang@quicinc.com>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- James Prestwood <prestwoj@gmail.com>,
- Jeff Johnson <quic_jjohnson@quicinc.com>
+Subject: Re: [PATCH 0/2] wifi: ath10k: fix invalid VHT parameters
+To: James Prestwood <prestwoj@gmail.com>, <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>
 References: <20240711020344.98040-1-quic_bqiang@quicinc.com>
- <20240711020344.98040-3-quic_bqiang@quicinc.com>
+ <603104a7-a1ea-43c2-b0d5-fd4e46a27fe6@gmail.com>
+ <64c8a9c6-9da7-4e25-9245-490c9e7e21d2@gmail.com>
+ <e49b05be-7fdd-4007-9137-e46703812fa1@quicinc.com>
+ <6e93a6c8-015f-4649-8c72-d21fa9f9fde9@gmail.com>
 Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20240711020344.98040-3-quic_bqiang@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Baochen Qiang <quic_bqiang@quicinc.com>
+In-Reply-To: <6e93a6c8-015f-4649-8c72-d21fa9f9fde9@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: JH1c5Nr0VIj-sYSf3jXYyJ2taKwlvAMd
+X-Proofpoint-GUID: JH1c5Nr0VIj-sYSf3jXYyJ2taKwlvAMd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-19_16,2024-08-19_03,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 mlxlogscore=999 malwarescore=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 bulkscore=0
+ adultscore=0 mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2407110000 definitions=main-2408200013
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240819_111342_976207_07053E70 
-X-CRM114-Status: GOOD (  19.65  )
+X-CRM114-CacheID: sfid-20240819_185135_440564_698501FE 
+X-CRM114-Status: GOOD (  17.37  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,362 +101,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dear Boachen,
 
 
-Thank you for your patch, I found by chance. ;-) (It’d be great if you 
-could carbon-copy me in the future.)
-
-Am 11.07.24 um 04:03 schrieb Baochen Qiang:
-> In supported_vht_mcs_rate_nss2, the rate for MCS9 & VHT20 is defined as
-> {1560, 1733}, this does not align with firmware's definition and therefore
-> fails the verification in ath10k_mac_get_rate_flags_vht():
+On 8/19/2024 7:47 PM, James Prestwood wrote:
+> Hi Baochen,
 > 
-> 	invalid vht params rate 1730 100kbps nss 2 mcs 9
-> and:
-
-(I’d add blank lines around the *and*.)
-
-> 	invalid vht params rate 1920 100kbps nss 2 mcs 9
+> On 8/19/24 2:45 AM, Baochen Qiang wrote:
+>>
+>> On 8/14/2024 11:46 PM, James Prestwood wrote:
+>>> Hi Baochen,
+>>>
+>>> On 7/15/24 5:38 AM, James Prestwood wrote:
+>>>> Hi Baochen,
+>>>>
+>>>> I've compiled both changes and so far those messages are gone.
+>>>>
+>>>> Tested-By: James Prestwood <prestwoj@gmail.com> # on QCA6174 hw3.2
+>>> I just noticed another one actually:
+>>>
+>>> invalid vht params rate 585 100kbps nss 1 mcs 4
+>> Ah :(
+>>
+>> James, could you share some info about this? like hardware target, firmware version, AP model, and any specific steps to hit this.
 > 
-> Change it to {1730,  1920} to align with firmware, so this issue could be
-> fixed.
-
-… to fix the issue.
-
-> Since ath10k_hw_params::supports_peer_stats_info is enabled only for
-> QCA6174, this change does not affect other chips.
+> This is running with your fixes in this patch set, which did fix the majority of the "invalid vht params" messages, but then recently I noticed some others.
 > 
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00309-QCARMSWPZ-1
-
-How did you test it? Were you able to reproduce the errors?
-
-Anyway, with Linux v6.11-rc3-306-gdf6cbc62cc9b (Merge tag 'scsi-fixes' 
-of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi), I was able 
-to reproduce the issue addressed in this patch at the airport BER (I 
-guess they use Cisco), and applying your two patches, I wasn’t able to 
-see the messages anymore.
-
-> Fixes: 3344b99d69ab ("ath10k: add bitrate parse for peer stats info")
-> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> Closes: https://lore.kernel.org/lkml/fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de/
-> Signed-off-by: Baochen Qiang <quic_bqiang@quicinc.com>
-> ---
->   drivers/net/wireless/ath/ath10k/mac.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> The hardware:
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 3c34f3d8e555..e62b251405fc 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -9136,7 +9136,7 @@ static const struct ath10k_index_vht_data_rate_type supported_vht_mcs_rate_nss2[
->   	{6,  {5265, 5850}, {2430, 2700}, {1170, 1300} },
->   	{7,  {5850, 6500}, {2700, 3000}, {1300, 1444} },
->   	{8,  {7020, 7800}, {3240, 3600}, {1560, 1733} },
-> -	{9,  {7800, 8667}, {3600, 4000}, {1560, 1733} }
-> +	{9,  {7800, 8667}, {3600, 4000}, {1730, 1920} }
->   };
->   
->   static void ath10k_mac_get_rate_flags_ht(struct ath10k *ar, u32 rate, u8 nss, u8 mcs,
+> kernel: ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 168c:3363
+> kernel: ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00288- api 6 features wowlan,ignore-otp,mfp crc32 bf907c7c
+> 
+> And its actually a few more than I thought:
+> 
+> ath10k_pci 0000:02:00.0: invalid vht params rate 900 100kbps nss 3 mcs 4
+> ath10k_pci 0000:02:00.0: invalid vht params rate 867 100kbps nss 2 mcs 6
+> ath10k_pci 0000:02:00.0: invalid vht params rate 540 100kbps nss 3 mcs 3
+> ath10k_pci 0000:02:00.0: invalid vht params rate 1500 100kbps nss 3 mcs 7
+> 
+> I unfortunately don't have a way to reproduce it. We just see this now somewhat rarely, e.g. 13 of the above in the last 3 days. I assume its just when the MCS/NSS changes and we hit a rate that isn't mapped right like the few you fixed.
+> 
+Thank you for the info. will try to reproduce internally.
 
-Tested-by: Paul Menzel <pmenzel@molgen.mpg.de> # Dell XPS 13 9360
-(qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535, 
-firmware ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp 
-crc32 0793bcf2)
-
-
-Kind regards,
-
-Paul
-
-
-PS: For the record the log messages without your patches:
-
-```
-$ journalctl -b -2 _TRANSPORT=kernel -o short-monotonic -g ath10k | cat
-[    9.235159] abreu kernel: ath10k_pci 0000:3a:00.0: enabling device 
-(0000 -> 0002)
-[    9.235737] abreu kernel: ath10k_pci 0000:3a:00.0: pci irq msi 
-oper_irq_mode 2 irq_mode 0 reset_mode 0
-[    9.536027] abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 
-target 0x05030000 chip_id 0x00340aff sub 1a56:1535
-[    9.536283] abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 
-debugfs 0 tracing 0 dfs 0 testmode 0
-[    9.536448] abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver 
-WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
-[    9.664028] abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 
-bmi_id N/A crc32 d2863f91
-[    9.804022] abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 
-wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-[    9.888048] abreu kernel: ath10k_pci 0000:3a:00.0 wlp58s0: renamed 
-from wlan0
-[  513.580087] abreu kernel: ath10k_pci 0000:3a:00.0: failed to flush 
-transmit queue (skip 0 ar-state 1): 0
-[ 2567.504260] abreu kernel: ath10k_pci 0000:3a:00.0: pci irq msi 
-oper_irq_mode 2 irq_mode 0 reset_mode 0
-[ 2567.780099] abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 
-target 0x05030000 chip_id 0x00340aff sub 1a56:1535
-[ 2567.780840] abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 
-debugfs 0 tracing 0 dfs 0 testmode 0
-[ 2567.781291] abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver 
-WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
-[ 2567.856082] abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 
-bmi_id N/A crc32 d2863f91
-[ 2567.948225] abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 
-wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-[ 2568.055481] abreu kernel: ath10k_pci 0000:3a:00.0 wlp58s0: renamed 
-from wlan0
-[ 2594.004036] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2606.716035] abreu kernel: ath10k_pci 0000:3a:00.0: pci irq msi 
-oper_irq_mode 2 irq_mode 0 reset_mode 0
-[ 2606.996065] abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 
-target 0x05030000 chip_id 0x00340aff sub 1a56:1535
-[ 2606.997132] abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 
-debugfs 0 tracing 0 dfs 0 testmode 0
-[ 2606.997787] abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver 
-WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
-[ 2607.076065] abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 
-bmi_id N/A crc32 d2863f91
-[ 2607.172110] abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 
-wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-[ 2607.288083] abreu kernel: ath10k_pci 0000:3a:00.0 wlp58s0: renamed 
-from wlan0
-[ 2619.004042] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2634.004063] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2634.004555] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2646.008072] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2658.004636] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2670.004124] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2676.004124] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2682.008029] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2694.008097] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2700.008035] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2706.008036] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2712.008036] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2718.013839] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2724.008034] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2730.008047] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2736.008160] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2742.012285] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2754.004105] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1730 100kbps nss 2 mcs 9
-[ 2760.008098] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2766.008097] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2772.008111] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2784.008045] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2790.008116] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2796.004150] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2802.008109] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2808.008074] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2820.008060] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2838.008137] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2844.008135] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2856.008179] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2862.008038] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2874.004098] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2892.008086] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2898.008175] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2904.008100] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2910.008031] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2940.008087] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2946.008062] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2964.008098] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2970.008089] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2976.008094] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2982.004167] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2988.012097] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 2994.008078] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3000.008129] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3018.008091] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1730 100kbps nss 2 mcs 9
-[ 3036.008060] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3042.004087] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3048.008104] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3054.012046] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3060.008090] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3066.008157] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3072.008299] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3078.004268] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3084.012112] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3102.004068] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3108.012337] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3114.008081] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3120.008092] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3126.004109] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3132.008110] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3162.004063] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3168.008092] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3192.012049] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1730 100kbps nss 2 mcs 9
-[ 3198.008053] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3204.012100] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3210.012098] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3216.008087] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3222.008052] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3228.012313] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3246.008047] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1730 100kbps nss 2 mcs 9
-[ 3252.008035] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3258.004121] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3264.008099] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3270.012084] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3276.008129] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3282.004088] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3294.004099] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3318.004049] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3324.008203] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3330.008069] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3336.012074] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3342.008087] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3348.004111] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3366.008075] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3372.008026] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3378.008111] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3384.008285] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3390.008103] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3396.008092] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3402.008038] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3408.008092] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3414.008273] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3438.008111] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1730 100kbps nss 2 mcs 9
-[ 3444.004040] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3450.008046] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3456.008056] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3462.008052] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-[ 3467.020210] abreu kernel: ath10k_pci 0000:3a:00.0: invalid vht params 
-rate 1920 100kbps nss 2 mcs 9
-```
-
-With both of your patches:
-
-```
-$ journalctl -b -1 _TRANSPORT=kernel -o short-monotonic -g ath10k | cat
-[   15.136140] abreu kernel: ath10k_pci 0000:3a:00.0: enabling device 
-(0000 -> 0002)
-[   15.148602] abreu kernel: ath10k_pci 0000:3a:00.0: pci irq msi 
-oper_irq_mode 2 irq_mode 0 reset_mode 0
-[   15.468121] abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 
-target 0x05030000 chip_id 0x00340aff sub 1a56:1535
-[   15.468401] abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 
-debugfs 0 tracing 0 dfs 0 testmode 0
-[   15.468598] abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver 
-WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
-[   15.568036] abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 
-bmi_id N/A crc32 d2863f91
-[   15.672086] abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 
-wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-[   15.788147] abreu kernel: ath10k_pci 0000:3a:00.0 wlp58s0: renamed 
-from wlan0
-[   75.232061] abreu kernel: ath10k_pci: unknown parameter 'debug_mask' 
-ignored
-[   75.240101] abreu kernel: ath10k_pci 0000:3a:00.0: pci irq msi 
-oper_irq_mode 2 irq_mode 0 reset_mode 0
-[   75.516113] abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 
-target 0x05030000 chip_id 0x00340aff sub 1a56:1535
-[   75.516835] abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 
-debugfs 0 tracing 0 dfs 0 testmode 0
-[   75.517283] abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver 
-WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
-[   75.592080] abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 
-bmi_id N/A crc32 d2863f91
-[   75.684191] abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 
-wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-[   75.787369] abreu kernel: ath10k_pci 0000:3a:00.0 wlp58s0: renamed 
-from wlan0
-```
+> Thanks,
+> 
+> James
+> 
+> 
+>>
+>>> Thanks,
+>>>
+>>> James
+>>>
+>>>> On 7/10/24 7:03 PM, Baochen Qiang wrote:
+>>>>> supported_vht_mcs_rate_nss1 and supported_vht_mcs_rate_nss2 in host do not
+>>>>> align with firmware's definitions, resulting in some warnings. Fix them.
+>>>>>
+>>>>> Baochen Qiang (2):
+>>>>>     wifi: ath10k: fix invalid VHT parameters in
+>>>>>       supported_vht_mcs_rate_nss1
+>>>>>     wifi: ath10k: fix invalid VHT parameters in
+>>>>>       supported_vht_mcs_rate_nss2
+>>>>>
+>>>>>    drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
+>>>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>
+>>>>>
+>>>>> base-commit: db1ce56e6e1d395dd42a3cd6332a871d9be59c45
 
