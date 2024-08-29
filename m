@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB88BC8303E
-	for <ath10k@archiver.kernel.org>; Thu, 29 Aug 2024 18:33:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80D9ACA0EC0
+	for <ath10k@archiver.kernel.org>; Thu, 29 Aug 2024 22:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:
 	To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=RJrboIA5Pf+zt5BDECFWkP2LScqS8n01G9327qeEd+g=; b=ryUn0lyJ68biZ7
-	vJ6ZuWINIgag6FdrKnXpcRgMGfufkaDSgG2wQKiudr6m+k1C/hlYW8cAiwmGU43u+Hl5lSbFF2rdy
-	1afxlj+BxWBRegHc6lJPY/gYmOZ/TtnwuFQa1UGBE7yi+GJQioZ+/a8NFI8aUmYsmkZm9u9168m/t
-	mnC1+9Jj7TB0i4mSN4gfSCOdPC8nebmzY7swHsZMKfbL3/mPKyEy0sDaRiRk66A3CVqZpteob0Xem
-	AHNQb6cj7TAk/FWqbO4z0aEoWY3eKEPZwchsJ3C+BmsZuQZZ1G6gXX1KZUFNVFgcNuE2G58Js7iOc
-	dN4h/VhSQTAktGm6jvCw==;
+	List-Owner; bh=tTRq17I1sWyyW0gSaEWVjbx/zk6WWu+63R0LchEfaDs=; b=DFmapPF7c8V1Pl
+	9NpAcreW30KndI9OphpMYsw51mOfdTf/kSqYgipofIKlUWFHJv3w2u1Wa1oEtR4lp+EJ2PDGrH8RG
+	IjkPWIj30UU8Mxq72P66PLSTpCUCYj+oI0YtYjK0MFVNmaFqjG3Vyjd12lqx9jtgAwG4LcGbg/ZDn
+	vYxmWD7aanVjTzyBEmEIx1qtIhD8SCMqdksXUhwyvn9McEzdEVvP5WndQxfJRVPDA5F/vsH43QDww
+	tz4HLZwtRheVNxos17IWFPmFt37zyeSjavSn/rwxJB+jRj+Nxf5goeowm3e+OKC8DdWR+WBUIUa4m
+	Y2wsizcBNmZQF7rHLs1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sjjxg-00000003Cbc-3uVs;
-	Thu, 29 Aug 2024 18:33:36 +0000
+	id 1sjnOr-00000003p9K-1TVv;
+	Thu, 29 Aug 2024 22:13:53 +0000
 Received: from hz-hc-03.sysprovider.com ([185.250.202.102])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sjjxe-00000003CaA-16fw
+	id 1sjnOn-00000003p7B-3fxS
 	for ath10k@lists.infradead.org;
-	Thu, 29 Aug 2024 18:33:35 +0000
+	Thu, 29 Aug 2024 22:13:51 +0000
 Received: from [178.215.236.220]
 	by hz-hc-03.sysprovider.com with esmtp (Exim 4.96-58-g4e9ed49f8)
-	(envelope-from <defensoriasag@outlook.com>)
-	id 1sjjxc-0007x0-0N
+	(envelope-from <m-nishimura@suntechno.co.jp>)
+	id 1sjnOm-0002FC-1J
 	for ath10k@lists.infradead.org;
-	Thu, 29 Aug 2024 20:33:32 +0200
-From: Sr. Roy Kessier <marketing@neteris.com>
+	Fri, 30 Aug 2024 00:13:48 +0200
+From: Roy Kessier  <jonathan.capeluto@neteris.com>
 To: ath10k@lists.infradead.org
-Subject: =?UTF-8?B?U2VociBnZWVocnRlciBFbXBmw6RuZ2VyOg==?=
-Date: 29 Aug 2024 11:33:31 -0700
-Message-ID: <20240829113331.49D76229D3833130@neteris.com>
+Subject: =?UTF-8?B?SW50ZXJuYXRpb25hbGUgV8OkaHJ1bmdzZm9uZHMgKElXRik=?=
+Date: 29 Aug 2024 15:13:48 -0700
+Message-ID: <20240829151347.C402620CDF288E08@neteris.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240829_113334_446836_C764C948 
-X-CRM114-Status: UNSURE (   0.17  )
+X-CRM114-CacheID: sfid-20240829_151350_084744_59801314 
+X-CRM114-Status: UNSURE (   0.24  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -57,7 +57,7 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: roykessier@yandex.com
+Reply-To: info@elibertytrust.us
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
@@ -89,7 +89,7 @@ direkt auf Ihr Bankkonto zu =C3=BCberweisen.
 Um einen reibungslosen und problemlosen Zahlungsvorgang zu=20
 gew=C3=A4hrleisten, kontaktieren Sie bitte unseren Vertreter, Herrn=20
 Roy Kessier, unter der folgenden E-Mail-Adresse:
-E-Mail: roykessier@yandex.com
+E-Mail: info@elibertytrust.us
 
 Bitte teilen Sie uns auch Ihre WhatsApp-Nummer mit, um die=20
 Kommunikation zu erleichtern.
@@ -98,5 +98,5 @@ Vielen Dank f=C3=BCr Ihre Aufmerksamkeit in dieser Angelegenheit.
 
 Aufrichtig,
 Herr Roy Kessier
-roykessier@yandex.com
+info@elibertytrust.us
 
