@@ -4,68 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57BD9CD4F21
-	for <ath10k@archiver.kernel.org>; Wed,  4 Sep 2024 18:34:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC899CD4F32
+	for <ath10k@archiver.kernel.org>; Wed,  4 Sep 2024 21:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Mime-Version:In-Reply-To:References:Message-Id:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Bx0NfChvS/WRzwXKgzFXcOJ4I2pWdn1qR9pxH9TDklE=; b=j+uJpTxzjO02LpGz/DgTnZ5qta
-	wtfw68csVS/jvCnOvQPOFSKbkaJ4c/XnNEOCmJw76ouEYZ5N/02Rx6ZGbg1fpelHzRvmLH5Z9xrwH
-	EfdUPhjkGd7/rrb1UsmwhVChkYF0Y5oe75y84M95BBtULZOa743dpk93RgJ0e+rcMxNLUcOZJD2gn
-	fhLf2A8M1KmfRFErz2quXqXVZibeveSEQGRHgXAxtUNlERd0xKBcWwqFEEPSGFN/ihylqUvSHfr7Q
-	9vccFo7Nw6PGvO+wWJpyPoX13hQ6Pyt+uiJ0sn0Sewt0xN6WVjhxx5d1lpYmeuvGb9iwFfgDuQRIV
-	ds0eWJvQ==;
+	bh=QTTjo7NTFeiyi1GWoiVfJY9SrFo2k4ZD0hkZxbwH2Io=; b=njmtgvqdQuHVBnxzinXmDeRIvv
+	zpaCUvSAX/XBbJhuEMSgjnz+kRU9cm6USsnC1zpZgsm90jJBBUyfrfSUFkM+kf3snIuegGmNANO+w
+	4NCBu7IOJ8gTtsBF2eyL13kKAdSUCw5PJ+oB+9YhjECIrlAmsu4Gq0J1DSKK5tibBO3CyaouKAaUX
+	yCsLHrIPt80zxomcmmOs6ji1OCKabvoGnW3NfRZZEsdabsJhKE8iadJSFfCiu7cCqsHoECLBJ+Tic
+	DAalkLDRLEnZFNkE+RDl923mtlNTkJ+ZB46TI402xeW0bi9WmEUjUMOjDHa6KqycbydIzT3ehOt0p
+	aULa6ymw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slupY-00000005cbI-02Ve;
-	Wed, 04 Sep 2024 18:34:12 +0000
-Received: from mxe-2-566.seznam.cz ([2a02:598:64:8a00::1000:566])
+	id 1slxFV-000000065Xi-1LPk;
+	Wed, 04 Sep 2024 21:09:09 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slukP-00000005bSv-2mxw
+	id 1slxFS-000000065Wl-02nd
 	for ath10k@lists.infradead.org;
-	Wed, 04 Sep 2024 18:28:55 +0000
-Received: from email.seznam.cz
-	by smtpc-mxe-5549df4ffc-zc8mb
-	(smtpc-mxe-5549df4ffc-zc8mb [2a02:598:64:8a00::1000:566])
-	id 3f8f2cc5c17b9e6f3f01a2dd;
-	Wed, 04 Sep 2024 20:28:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz;
-	s=szn20221014; t=1725474526;
-	bh=Bx0NfChvS/WRzwXKgzFXcOJ4I2pWdn1qR9pxH9TDklE=;
-	h=Received:From:To:Cc:Subject:Date:Message-Id:References:
-	 In-Reply-To:Mime-Version:X-Mailer:Content-Type:
-	 Content-Transfer-Encoding;
-	b=dHIvLbFSoCy6SLun53I7arXesqBJEuo6+FAQKPDYbKR6aQ2HPrVjMacDR5+hoOHby
-	 zWS1fSuHb7mGs6S986h671ot3WpSmc0ghZMiaTL0DbgEXLjcphYpkgamz/iWXSqxOv
-	 4jDIp8NqGQ5Nrt4VsWDPq2+edLpW7XCHsCYJ2L4pLsXC+9ETZH587YeGJ0rfBBj831
-	 SO4kI0S78pJYmHgvcKGQTJHI1iQAXtdast/W4xnvV+6kAq88nzkENxAqMn43mzABdx
-	 fZ7tsiu6yHbDoyusZETy4K1KBMiD3k97gCZowvRNKhpd1dkLx441QAGRqDuZbYJbXw
-	 fh/AYPe7MhrxQ==
-Received: from 184-143.ktuo.cz (184-143.ktuo.cz [82.144.143.184])
-	by email.seznam.cz (szn-UNKNOWN-unknown) with HTTP;
-	Wed, 04 Sep 2024 20:28:41 +0200 (CEST)
-From: "Tomas Paukrt" <tomaspaukrt@email.cz>
-To: "Jeff Johnson" <quic_jjohnson@quicinc.com>
-Cc: <linux-wireless@vger.kernel.org>,
-	<ath10k@lists.infradead.org>
+	Wed, 04 Sep 2024 21:09:07 +0000
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 484DH8rF009037;
+	Wed, 4 Sep 2024 21:09:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	QTTjo7NTFeiyi1GWoiVfJY9SrFo2k4ZD0hkZxbwH2Io=; b=cOGTKWczdmXVhNGW
+	LMd4y0gLraxhkPu19vC74FNzPX6RM42ZUBILLQZNgmCQ9Tr7kcTxs+ArYmqYlaIZ
+	60cwSC/Yqb8ntjXtNXRWOoqR9lMtWlmIw5jAbzkABSjKsJU+3dy6bq7Zc2KM8V8Q
+	M6ENfhYVo9eo+tmMfhFrKNgS/mk21zcYSHAB9wADWXFbd6s6HLO3tBxOaTfdCKk/
+	vro467ew4NVHvn2g9vxlrp3N+QVk0kv+qjWofn4KrINqcJREhX0FYCDS5ut7556a
+	AsyH24A4CrzvmsV3OAs/X8MhTP80NMpiLktoClyp1BNa5Q7M6IlzS2MBhvn6tC2V
+	9o70Gw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41bt67443t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 04 Sep 2024 21:09:02 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 484L91Uh005416
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 4 Sep 2024 21:09:01 GMT
+Received: from [10.111.180.250] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 4 Sep 2024
+ 14:09:00 -0700
+Message-ID: <c9f1100c-b34a-4d77-bfbe-1e20cf4143ef@quicinc.com>
+Date: Wed, 4 Sep 2024 14:09:00 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] wifi: ath10k: add USB device ID for Atheros QCA9377-7
-Date: Wed, 04 Sep 2024 20:28:41 +0200 (CEST)
-Message-Id: <56o.Zbc9.7x3xmPitckT.1csARP@seznam.cz>
+To: Tomas Paukrt <tomaspaukrt@email.cz>
+CC: <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>
 References: <22t.ZbsX.5bWREDtSGGB.1cqQpF@seznam.cz>
-	<8b7d9777-e239-4173-bec5-607e15b98130@quicinc.com>
-In-Reply-To: <8b7d9777-e239-4173-bec5-607e15b98130@quicinc.com>
-Mime-Version: 1.0 (szn-mime-2.1.61)
-X-Mailer: szn-UNKNOWN-unknown
-Content-Type: text/plain;
-	charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+ <8b7d9777-e239-4173-bec5-607e15b98130@quicinc.com>
+ <56o.Zbc9.7x3xmPitckT.1csARP@seznam.cz>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <56o.Zbc9.7x3xmPitckT.1csARP@seznam.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: TVWLsE-zo3Eb7Y07qoe0nBKsNjrkj_8I
+X-Proofpoint-GUID: TVWLsE-zo3Eb7Y07qoe0nBKsNjrkj_8I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-04_19,2024-09-04_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ bulkscore=0 mlxscore=0 impostorscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=708 lowpriorityscore=0 spamscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2409040160
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240904_112854_230183_36BE975A 
-X-CRM114-Status: UNSURE (   3.72  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240904_140906_220892_F69D0B9F 
+X-CRM114-Status: GOOD (  11.68  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,18 +99,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-> Also the Tested-on tag should include the firmware version information a=
-s well.
+On 9/4/2024 11:28 AM, Tomas Paukrt wrote:
+>> Also the Tested-on tag should include the firmware version information as well.
+> 
+> Hi Jeff,
+> 
+> I tested it with manually converted firmware from https://github.com/8devices/qcacld-2.0/tree/CNSS.LEA.NRT_3.0/firmware_bin/usb which does not include any explicit version.
+> 
+> What version should I write in the Tested-on tag in this case?
 
-Hi Jeff,
+Ah, my good friend qcacld-2.0.
 
-I tested it with manually converted firmware from https://github.com/8devi=
-ces/qcacld-2.0/tree/CNSS.LEA.NRT_3.0/firmware_bin/usb which does not inclu=
-de any explicit version.
+I'd expect to see something written to kmsg, but not sure it is there for USB.
 
-What version should I write in the Tested-on tag in this case?
+for QMI there is: 
+		ath10k_info(ar, "qmi fw_version 0x%x fw_build_timestamp %s fw_build_id %s",
+			    qmi->fw_version, qmi->fw_build_timestamp, qmi->fw_build_id);
 
-Best regards
+but looking at past ath10k USB changes I only see:
+    Tested-on: QCA9377 hw1.0 USB 1.0.0.299
 
-Tomas
+So I guess what you have is OK since this just allows you to be probed anyway
+so that is actually independent of firmware version.
+
 
