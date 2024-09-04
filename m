@@ -4,60 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF55DCD379F
-	for <ath10k@archiver.kernel.org>; Tue,  3 Sep 2024 16:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB43DCA0ED3
+	for <ath10k@archiver.kernel.org>; Wed,  4 Sep 2024 10:46:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
-	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Um7fNBDYaqkyPc70x4oJbYjoKYzbyGO5fJTA4gycLkI=; b=v2rUj0zHtZGfWoLjtD/kKd+U3X
-	VutNFoRt/2Vvc/3A3AZT2dxASSM8kVSOU38xpUuyIyuSRvtjrJoTJlV1YRYb0bT9WRRgJijoCXEzw
-	/pK6v0l+LRPDMn/jtgO3XrCXgn0lLrmnSduqL3/C/PV0XF/FszF5Qt7Cx0i8C0e8VZpfnCoV+HhH3
-	HWJiPQ2hg3H3MM/XMFHTEzlte7s577ipECpDMMnHiESKHZMF/rechUAQj80csHkIelgUITRj+4Wlr
-	LPcrdeVuwORbzAwHlJo9Hj807HtQsmBul/ZeDlwaz+A9zb0/ITsg4jwtwGMkkQ19dJ49WRRJlq1fW
-	rfQurqEQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:From:MIME-Version:Date:Message-ID:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=dfB/6k69VviH28y28g1ULLPKNLuYrR4YFjAoHC8C+vU=; b=Elm+Kq/bOSZWXS2Ls7H5eAJvQu
+	AEzRUnAtsD5zZgy7xYWRj3Bqar9x8u1VgL+jOU5lhSpGpsreUIs8bh/wh1XmRZMJzBrVIDi+AsbR8
+	naoYc9Snf4q0qy7JMtegmEi8G+pEO97rhCXGBs3KQUfq/i3Wo1tWcIK9OriMr5vsPhqK8bbZGvVkS
+	QzORgGruc3WTWWzSbb1BMLLL/mrB8iklQGmMUOtKjgobZO508AtDClljZuBTZbrKtemSsWDiIC9tX
+	1Wo2xVLlk9ZKIPn5r2eLmJISGElQxUSiQMJ16QT8nHTFFGJleBr6+eLgfQF0StVRQareQd4JMXiQf
+	lgeMfF+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slWo3-00000001D58-1Fz0;
-	Tue, 03 Sep 2024 16:55:03 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1slnWe-00000003yrZ-0RrW;
+	Wed, 04 Sep 2024 10:46:12 +0000
+Received: from mx3.molgen.mpg.de ([141.14.17.11])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slWo0-00000001D3o-13K3;
-	Tue, 03 Sep 2024 16:55:01 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id CF2AAA4269E;
-	Tue,  3 Sep 2024 16:54:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30150C4CEC4;
-	Tue,  3 Sep 2024 16:54:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725382498;
-	bh=7x+YrA8eBSCwHO38MdsmJ0ad5kmlhnw1+vLAFBPFl4o=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=f4fp8a5DSCUzZA6OLozVL5Vq0o0ttbuBEuruPREnT2ln3KFQazSb2Rk68yXYrTSzP
-	 Hj5svlhqs3Pz8rcMcXYJQRFx8jW8p/pnyzsA2XRYcCS1l4IJZPk14+Bc6Q2ja9YWAR
-	 7LB1S5pqHATXbW2lM8V4YZPfOqfwTkpmqHXocoSfHH141WCgBAweO/EPyQZwcSoISC
-	 b5IkyemjLZFWep88hG+bJuYXxUj43N0HeSkhIytvnOGYIM6db2E3ja7ioHWCmWPNEg
-	 RKrFecCz/K5ciqEjsj9bGJ5bWgbmaHRn8aVJJ6mgccHZWKPj5Qpu3rwDNGxDhZLPzB
-	 AbkfVjmC9ARUw==
-Content-Type: text/plain; charset="utf-8"
+	id 1slnWa-00000003ypt-3ViH
+	for ath10k@lists.infradead.org;
+	Wed, 04 Sep 2024 10:46:11 +0000
+Received: from [192.168.179.80] (p54b6ff28.dip0.t-ipconnect.de [84.182.255.40])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8E5BA61BA1843;
+	Wed,  4 Sep 2024 12:45:34 +0200 (CEST)
+Message-ID: <d8253ab3-f4f0-40fd-a550-d75eef121b56@molgen.mpg.de>
+Date: Wed, 4 Sep 2024 12:45:01 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: pull-request: ath-current-20240903
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <8a9375eb-3205-4a78-a8c1-bd85df106ec9@quicinc.com>
-References: <8a9375eb-3205-4a78-a8c1-bd85df106ec9@quicinc.com>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>,
- <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>,
- <quic_jjohnson@quicinc.com>, <quic_kvalo@quicinc.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <172538249548.948898.11503528023921018995.kvalo@kernel.org>
-Date: Tue,  3 Sep 2024 16:54:56 +0000 (UTC)
+User-Agent: Mozilla Thunderbird
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: failed to remove key (0, ce:ce:1e:27:bb:e0) from hardware (-110)
+ (ETIMEDOUT)
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Baochen Qiang <quic_bqiang@quicinc.com>,
+ James Prestwood <prestwoj@gmail.com>, linux-wireless@vger.kernel.org,
+ ath10k@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240903_095500_390023_2C3373E9 
-X-CRM114-Status: GOOD (  16.79  )
+X-CRM114-CacheID: sfid-20240904_034609_055008_E70EC500 
+X-CRM114-Status: UNSURE (   4.85  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,58 +66,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
+Dear Linux folks,
 
-> The following changes since commit 38055789d15155109b41602ad719d770af507030:
-> 
->   wifi: ath12k: use 128 bytes aligned iova in transmit path for WCN7850 (2024-08-05 12:28:07 +0300)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-current-20240903
-> 
-> for you to fetch changes up to 2f833e8948d6c88a3a257d4e426c9897b4907d5a:
-> 
->   Revert "wifi: ath11k: support hibernation" (2024-09-02 19:33:00 +0300)
-> 
-> ----------------------------------------------------------------
-> ath.git patches for v6.11-rc7
-> 
-> We have three patch which address two issues in the ath11k driver
-> which should be addressed for 6.11-rc7:
-> 
-> One patch fixes a NULL pointer dereference while parsing transmit
-> power envelope (TPE) information, and the other two patches revert the
-> hibernation support since it is interfering with suspend on some
-> platforms. Note the cause of the suspend wakeups is still being
-> investigated, and it is hoped this can be addressed and hibernation
-> support can be restored in the near future.
-> 
-> ----------------------------------------------------------------
-> Baochen Qiang (3):
->       wifi: ath11k: fix NULL pointer dereference in ath11k_mac_get_eirp_power()
->       Revert "wifi: ath11k: restore country code during resume"
->       Revert "wifi: ath11k: support hibernation"
-> 
->  drivers/net/wireless/ath/ath11k/ahb.c  |   4 +-
->  drivers/net/wireless/ath/ath11k/core.c | 115 +++++++++------------------------
->  drivers/net/wireless/ath/ath11k/core.h |   4 --
->  drivers/net/wireless/ath/ath11k/hif.h  |  12 +---
->  drivers/net/wireless/ath/ath11k/mac.c  |   1 +
->  drivers/net/wireless/ath/ath11k/mhi.c  |  12 +---
->  drivers/net/wireless/ath/ath11k/mhi.h  |   3 +-
->  drivers/net/wireless/ath/ath11k/pci.c  |  44 ++-----------
->  drivers/net/wireless/ath/ath11k/qmi.c  |   2 +-
->  9 files changed, 49 insertions(+), 148 deletions(-)
 
-Pulled, thanks.
+Linux 6.11-rc6+ logged the warning below when resuming from ACPI S3 (or 
+unloading and loading the `ath10k_core`/`ath10k_pci` modules) having 
+been connected to an AVM network:
 
-e88b9ed3e03a Merge tag 'ath-current-20240903' of git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath
+     wlp58s0: failed to remove key (0, ce:ce:1e:27:bb:e0) from hardware 
+(-110)
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/8a9375eb-3205-4a78-a8c1-bd85df106ec9@quicinc.com/
+Error code 110 is the value for ETIMEDOUT. I saw James patch [1], and 
+applied it, and the error is still there (as exepected).
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-https://docs.kernel.org/process/submitting-patches.html
+Can the warning be improved so the user know, which component is at fault?
 
+
+Kind regards,
+
+Paul
+
+
+[1]: https://lore.kernel.org/all/20240814164507.996303-1-prestwoj@gmail.com/
+
+```
+Sep 04 07:21:38.469669 abreu kernel: Linux version 
+6.11.0-rc6-00027-ga91d08fcc356 (build@bohemianrhapsody.molgen.mpg.de) 
+(gcc (Debian 14.2.0-4) 14.2.0, GNU ld (GNU Binutils for Debian) 2.43.1) 
+#294 SMP PREEMPT_DYNAMIC Tue Sep  3 23:01:18 CEST 2024
+Sep 04 07:21:38.469718 abreu kernel: Command line: 
+BOOT_IMAGE=/vmlinuz-6.11.0-rc6-00027-ga91d08fcc356 
+root=UUID=32e29882-d94d-4a92-9ee4-4d03002bfa29 ro quiet pci=noaer 
+mem_sleep_default=deep log_buf_len=8M cryptomgr.notests
+[…]
+Sep 04 12:34:55.826218 abreu sudo[25874]:  pmenzel : TTY=pts/7 ; 
+PWD=/home/pmenzel ; USER=root ; COMMAND=/usr/sbin/modprobe ath10k_pci
+Sep 04 12:34:55.828046 abreu sudo[25874]: pam_unix(sudo:session): 
+session opened for user root(uid=0) by pmenzel(uid=5272)
+Sep 04 12:34:55.869839 abreu kernel: ath10k_pci 0000:3a:00.0: pci irq 
+msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+Sep 04 12:34:56.005202 abreu sudo[25874]: pam_unix(sudo:session): 
+session closed for user root
+Sep 04 12:34:56.161706 abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 
+hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+Sep 04 12:34:56.162591 abreu kernel: ath10k_pci 0000:3a:00.0: kconfig 
+debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+Sep 04 12:34:56.163115 abreu kernel: ath10k_pci 0000:3a:00.0: firmware 
+ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+Sep 04 12:34:56.241683 abreu kernel: ath10k_pci 0000:3a:00.0: board_file 
+api 2 bmi_id N/A crc32 d2863f91
+Sep 04 12:34:56.333784 abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 
+3.87 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+Sep 04 12:34:56.417649 abreu kernel: ath: EEPROM regdomain: 0x6c
+Sep 04 12:34:56.417919 abreu kernel: ath: EEPROM indicates we should 
+expect a direct regpair map
+Sep 04 12:34:56.418022 abreu kernel: ath: Country alpha2 being used: 00
+Sep 04 12:34:56.418114 abreu kernel: ath: Regpair used: 0x6c
+Sep 04 12:34:56.422440 abreu NetworkManager[610]: <info> 
+[1725446096.4223] device (wlan0): driver supports Access Point (AP) mode
+[…]
+Sep 04 12:35:12.042484 abreu wpa_supplicant[618]: wlp58s0: WPA: Group 
+rekeying completed with ce:ce:1e:27:bb:e0 [GTK=CCMP]
+Sep 04 12:35:21.800998 abreu sudo[25953]:  pmenzel : TTY=pts/7 ; 
+PWD=/home/pmenzel ; USER=root ; COMMAND=/usr/sbin/modprobe -r ath10k_pci
+Sep 04 12:35:21.803733 abreu sudo[25953]: pam_unix(sudo:session): 
+session opened for user root(uid=0) by pmenzel(uid=5272)
+Sep 04 12:35:21.881668 abreu kernel: wlp58s0: deauthenticating from 
+ce:ce:1e:27:bb:e0 by local choice (Reason: 3=DEAUTH_LEAVING)
+Sep 04 12:35:22.905717 abreu kernel: ath10k_pci 0000:3a:00.0: failed to 
+install key for vdev 0 peer ce:ce:1e:27:bb:e0: -110
+Sep 04 12:35:22.906604 abreu kernel: wlp58s0: failed to remove key (0, 
+ce:ce:1e:27:bb:e0) from hardware (-110)
+Sep 04 12:35:22.908927 abreu wpa_supplicant[618]: wlp58s0: 
+CTRL-EVENT-DISCONNECTED bssid=ce:ce:1e:27:bb:e0 reason=3 locally_generated=1
+Sep 04 12:35:22.908995 abreu wpa_supplicant[618]: BSSID 
+ce:ce:1e:27:bb:e0 ignore list count incremented to 2, ignoring for 10 
+seconds
+```
 
