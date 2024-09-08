@@ -4,51 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BB03EB64C9
-	for <ath10k@archiver.kernel.org>; Sun,  8 Sep 2024 01:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47CAFECE577
+	for <ath10k@archiver.kernel.org>; Sun,  8 Sep 2024 01:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=XwgZYkd4DV1KyYKyYVmxxWQxVs2YbXyF6CWMKyfm8ec=; b=G8nuok63c8lAqd865S+vzNNb6w
-	dCwGU8q0osFKUdvSO3h6j/Cd4ANas97Yk6JWe4SiW9YpMy7Bi00xV4YmtW3Opj8yHYoX7Cj0zSaXe
-	BNXBC2y7Hbc2eTbHEqUddqnLMnS0f4rAKXoQIqMjEvxlosFiiUbSD4kbdw0YBTa+bGHaeQOLCBi1M
-	iPev5KKDhu91RFocX2yxqkJ+1p4srzP+bSO1T0CbX2cMdQt8Rz6Q3o8OHPxd+AKbhGC7e+D5h9Dlu
-	Gx6UVRjgEa/oIbObMduUCbLOBkAQEtCJtuCQ7+/yN3Q5pAcJR4uD87HvP70Gy0Z4BjxsKsEPqh/wa
-	UlXsOiug==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=kdQb/9hCxaHr8mRRViUSPfdsAO3V7TaCw9s5qABgzn4=; b=xcbf1Oaw9R9leE4+fX2IJhwld2
+	9RDo+4ZCk9OusFTeXzXZ1FZnmhQgENcnaSWCsFD2tP47tYfhdewUHDQRVq49Qz+LN1nryV5wb99dW
+	QwNuXBLTVLG958GOcVOqeyUB6AAnQ1TsH3Goz6kwjoZCfKOgMI++C9ekS4XxFeCcw/e+2mW2x031N
+	SqC/NBu80A4Ni3efB2ilsld5xVE6IVFPgz4kt1nRke/2ueG63y7ik16yKJGwsvRhe3lfytlKK7tEE
+	JAwpsFMLaciKhclbuvtAmrCUVGUgzsos6i5Y1P82jNIsmjqNxygbSiOAtVRTxAquteRzyvxUztoIF
+	QkucaCQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sn6nR-0000000Fw4f-2jAJ;
-	Sun, 08 Sep 2024 01:32:57 +0000
-Received: from mail.kaechele.ca ([54.39.219.105])
+	id 1sn6nT-0000000Fw56-1szB;
+	Sun, 08 Sep 2024 01:32:59 +0000
+Received: from mail.kaechele.ca ([2607:5300:60:7a38::25:1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sn6nP-0000000Fw26-0G3P
+	id 1sn6nP-0000000Fw2r-1JYI
 	for ath10k@lists.infradead.org;
-	Sun, 08 Sep 2024 01:32:56 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 808D1C005F;
-	Sat,  7 Sep 2024 21:34:14 -0400 (EDT)
+	Sun, 08 Sep 2024 01:32:57 +0000
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BCFCAC006A;
+	Sat,  7 Sep 2024 21:34:17 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaechele.ca; s=201907;
 	t=1725759257; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=XwgZYkd4DV1KyYKyYVmxxWQxVs2YbXyF6CWMKyfm8ec=;
-	b=GJ+eiKKWcNzPHw3LZQAu5w/JQibXBCNKkFtvM8B8ec6CLGYNQUqjVbjNAAS1HaxGckcxy4
-	FWGg78+hvYMQRUBi8R95QP2dyqpNU+vjp20GXrx1mPOJsv8O4BDlwBYieWR5XLDNvV7WyO
-	JbyTriVUgLqFVSP4mC8PieKGMp+LrhY=
+	 content-transfer-encoding:in-reply-to:references;
+	bh=kdQb/9hCxaHr8mRRViUSPfdsAO3V7TaCw9s5qABgzn4=;
+	b=HXorXizUKOcIEr/PPQC66giENmlP8DC7/xzzKBuctk1LfFAxxCA1y/D40CgR0IooDMkM9E
+	CvLAa64zlxIB43VDvqvDT7wnZR6BfGdN+4sU4vtR3HydJVC2nNZJguJOr+M2cVSL0qT4O8
+	bXIYaBWcy7TLBsm3/54VmTsOz+OJlJo=
 From: Felix Kaechele <felix@kaechele.ca>
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org,
-	linux-mmc@vger.kernel.org
-Subject: [PATCH v2 0/2] Add support for QCA9379 hw1.0 SDIO WiFi
-Date: Sat,  7 Sep 2024 21:32:42 -0400
-Message-ID: <20240908013244.496382-1-felix@kaechele.ca>
+	linux-mmc@vger.kernel.org,
+	Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v2 1/2] mmc: sdio: add Qualcomm QCA9379-3 SDIO id
+Date: Sat,  7 Sep 2024 21:32:43 -0400
+Message-ID: <20240908013244.496382-2-felix@kaechele.ca>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240908013244.496382-1-felix@kaechele.ca>
+References: <20240908013244.496382-1-felix@kaechele.ca>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240907_183255_306338_34092F09 
-X-CRM114-Status: UNSURE (   7.73  )
+X-CRM114-CacheID: sfid-20240907_183255_581456_6F80E4C3 
+X-CRM114-Status: UNSURE (   6.59  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -64,30 +68,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-This is a v2 of the following patchset: https://lore.kernel.org/ath10k/20240805040131.450412-1-felix@kaechele.ca/T/
+Adds the id for Qualcomm QCA9379-3 SDIO based cards such as
+the LITEON WCBN3510A and Silex SX-SDMAC2.
 
-Changes in v2:
-- drop Bluetooth part of the patch which mainly consisted with introducing
-  a new compatible string into the driver
-- added Acked-By given by Ulf Hansson on the SDIO id addition
+Signed-off-by: Felix Kaechele <felix@kaechele.ca>
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ include/linux/mmc/sdio_ids.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks,
-Felix
-
-Felix Kaechele (2):
-  mmc: sdio: add Qualcomm QCA9379-3 SDIO id
-  wifi: ath10k: add support for QCA9379 hw1.0 SDIO
-
- drivers/net/wireless/ath/ath10k/core.c      | 37 +++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h        | 10 ++++++
- drivers/net/wireless/ath/ath10k/pci.c       |  2 ++
- drivers/net/wireless/ath/ath10k/sdio.c      |  5 ++-
- drivers/net/wireless/ath/ath10k/targaddrs.h |  3 ++
- include/linux/mmc/sdio_ids.h                |  1 +
- 6 files changed, 57 insertions(+), 1 deletion(-)
-
-
-base-commit: 903aaf66edc97dd5b9e3118d19677291051a9c40
+diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
+index 7cddfdac2f57..63000a8f4b13 100644
+--- a/include/linux/mmc/sdio_ids.h
++++ b/include/linux/mmc/sdio_ids.h
+@@ -52,6 +52,7 @@
+ #define SDIO_DEVICE_ID_ATHEROS_AR6004_19	0x0419
+ #define SDIO_DEVICE_ID_ATHEROS_AR6005		0x050A
+ #define SDIO_DEVICE_ID_ATHEROS_QCA9377		0x0701
++#define SDIO_DEVICE_ID_ATHEROS_QCA9379		0x0801
+ 
+ #define SDIO_VENDOR_ID_BROADCOM			0x02d0
+ #define SDIO_DEVICE_ID_BROADCOM_NINTENDO_WII	0x044b
 -- 
 2.46.0
 
