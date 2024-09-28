@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1FD7CF6495
-	for <ath10k@archiver.kernel.org>; Sat, 28 Sep 2024 09:11:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C95DCF6495
+	for <ath10k@archiver.kernel.org>; Sat, 28 Sep 2024 09:13:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
 	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
 	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8S999j/GuvTcM2yJ9dhz3AX/2l+wRFZYBJQWxrk1DGg=; b=xtoiENr4jNNmJZCtbdKkrIo/rj
-	uD8wZRCv4WmDNNlqkARaAEfeGvqofgiWhwUAMQo/16fxdYzNtaafkLsMtrUSdapHovu/aa8dlkL6N
-	dkCLEI9MLXuTJARiCRKTMwbeIdidlIc6bqS1AtjBUbe2ExImLNRc8xTce0Lfz01WSeGWPJm9tT4YZ
-	PLkVeiwQAZzsJYmcUD8X4256G76XgdlFhGvxQaJj76yZwIebzeLl5rfqUV9NiI81PPhaosWwHS93B
-	Xl+FfnYlmyLhM3CoQIZKBzvjD3/WcjsuQHHludxgzZxj9vxK5YvvNih4XDTOx4WGrWq2OxLTlgKYj
-	2A+AbkqA==;
+	bh=9MGA8yh0n0LVQgrrLvF/vW2cGMnY4+rzfABYk3dHtpY=; b=1LURPu3aoEz1DPz/yClxWXTR11
+	TUzFLyCqgIvW0fsEqF8Mllt+vWb6QGIyYGeRcMgTd9FaMT1ka3GVuusRutFAZgGCxSmroBs1YgOXP
+	pwwyoVRP446djRV6VVkR+8aTMg1V7MxpiA1+YAc7aaWg7I83Sr6XvBIglkJ8pX9+MyR5gJmdd263r
+	F4RsVhbSXDPfrhWFC4kxHuNXfHQvuV3QdjyQ9Ta7eON8n3VkAGkpWfmP8r4F2mFi1JrjpDhJtdX+l
+	iE5AU7JUTL3gtBTgedRT0GJyJ9OqpcxlpF8u+ipcMsnZqtZb8fR4cCrAwQUg5ioOx0FfsroD5Nw8z
+	fC2Ra6Ow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1suTU8-0000000CrOz-1Da4;
-	Sat, 28 Sep 2024 09:11:28 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1suTVl-0000000Crcr-0FGM;
+	Sat, 28 Sep 2024 09:13:09 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1suTU6-0000000CrNl-0Ftu
+	id 1suTVj-0000000CrcQ-0HSK
 	for ath10k@lists.infradead.org;
-	Sat, 28 Sep 2024 09:11:27 +0000
+	Sat, 28 Sep 2024 09:13:08 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7CDAA5C5423;
-	Sat, 28 Sep 2024 09:11:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 613A3C4CECF;
-	Sat, 28 Sep 2024 09:11:23 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id F41A6A401B4;
+	Sat, 28 Sep 2024 09:12:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95B98C4CEC3;
+	Sat, 28 Sep 2024 09:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727514684;
-	bh=OJ3gO0JwDTJwnTctZQnELZ3cghcWHB1pcbja2AailI8=;
+	s=k20201202; t=1727514785;
+	bh=8/JQT2MYezwnANraA78P+Yt1ozUwaArcy0dZ2wd0BVA=;
 	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=n2xtlhk6BD4fbK6P276W0InOdSg4UVsuylMASUwP8JWAagf7bkTCDzgEDeGpRKkD5
-	 ail25wNetiu0z2oiFGGcKCMjxvGrjRnJcqwqnMHf+dpYlUwm4IUqyGH+9TIcU/c+2f
-	 tnrbCX0PZ1XtggcrUlFJi4pcIvLJY2wrPBEpQ848xiym9lyM3mvceWup110QcyroB/
-	 msesWHB21ko15cVFSvkF5YdSXCGxx/mFK69dEMmJRU0bw6Qrgbm9q4smYzL86GmTCf
-	 MIZdil8BV/wMAPAIxRkg9jTdSil8SSuPAu1hMAHGGxlsjs+vFrY5zw5szhx/luTwbJ
-	 4fNeL9h/EUKjA==
+	b=T+7YhzVQfpd4PHcgySsM0szy4kzfqD3nJ3bvIVHNCywWo71Wtd9dj/+aHWDcRqHXW
+	 a+hMuDjK7/BMeBI8hhSe7nI7rKjFypQkdrxRBURBVIbj7Xi/NTxFD9v5INzf1eoM0X
+	 AUdHK18lY3QedQDLakOSLOTnmbVkBNaN3K3uS8WWQWK9ZCqzAKEISRKBJX0li1YLm+
+	 EuoDlsl53V7TdxEFbao3+lCoYomoQkOgMpTNjjoLDNPo+X7difhU0P4SK1fCeWPegy
+	 Wz+bwSeX+bFQEvQfJVueCr8hcvtZQffImUQKvOPCuJtCBbBm6bFa/5UphTz4+VXr8a
+	 PlfTI8bhzii+Q==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/2] wifi: ath10k: fix invalid VHT parameters in
- supported_vht_mcs_rate_nss1
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] wifi: ath10k: fix the stack frame size warning in
+ ath10k_remain_on_channel
 From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240711020344.98040-2-quic_bqiang@quicinc.com>
-References: <20240711020344.98040-2-quic_bqiang@quicinc.com>
-To: Baochen Qiang <quic_bqiang@quicinc.com>
-Cc: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
- <quic_bqiang@quicinc.com>
+In-Reply-To: <20240830015349.1083226-1-quic_miaoqing@quicinc.com>
+References: <20240830015349.1083226-1-quic_miaoqing@quicinc.com>
+To: Miaoqing Pan <quic_miaoqing@quicinc.com>
+Cc: <quic_jjohnson@quicinc.com>, <ath10k@lists.infradead.org>,
+ <linux-wireless@vger.kernel.org>, Miaoqing Pan <quic_miaoqing@quicinc.com>
 User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <172751468142.2249584.250066721438756221.kvalo@kernel.org>
-Date: Sat, 28 Sep 2024 09:11:23 +0000 (UTC)
+Message-ID: <172751478271.2249584.10843872161726973254.kvalo@kernel.org>
+Date: Sat, 28 Sep 2024 09:13:04 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240928_021126_175770_A3057CF8 
-X-CRM114-Status: UNSURE (   8.51  )
+X-CRM114-CacheID: sfid-20240928_021307_191435_B09315FD 
+X-CRM114-Status: UNSURE (   4.88  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,36 +74,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Baochen Qiang <quic_bqiang@quicinc.com> wrote:
+Miaoqing Pan <quic_miaoqing@quicinc.com> wrote:
 
-> In supported_vht_mcs_rate_nss1, the rate for MCS9 & VHT20 is defined as
-> {780,  867}, this does not align with firmware's definition and therefore
-> fails the verification in ath10k_mac_get_rate_flags_vht():
+> Fix the following W=1 kernel build warning:
 > 
->         invalid vht params rate 960 100kbps nss 1 mcs 9
+> drivers/net/wireless/ath/ath10k/mac.c: In function ‘ath10k_remain_on_channel’:
+> drivers/net/wireless/ath/ath10k/mac.c:7980:1: warning: the frame size of 1064 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 > 
-> Change it to {865,  960} to align with firmware, so this issue could be
-> fixed.
+> Compile tested only.
 > 
-> Since ath10k_hw_params::supports_peer_stats_info is enabled only for
-> QCA6174, this change does not affect other chips.
-> 
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00309-QCARMSWPZ-1
-> 
-> Fixes: 3344b99d69ab ("ath10k: add bitrate parse for peer stats info")
-> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> Closes: https://lore.kernel.org/lkml/fba24cd3-4a1e-4072-8585-8402272788ff@molgen.mpg.de/
-> Signed-off-by: Baochen Qiang <quic_bqiang@quicinc.com>
+> Signed-off-by: Miaoqing Pan <quic_miaoqing@quicinc.com>
 > Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 > Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-2 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-d50886b27850 wifi: ath10k: fix invalid VHT parameters in supported_vht_mcs_rate_nss1
-52db16ec5bae wifi: ath10k: fix invalid VHT parameters in supported_vht_mcs_rate_nss2
+c4c074d3fddc wifi: ath10k: fix the stack frame size warning in ath10k_remain_on_channel
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240711020344.98040-2-quic_bqiang@quicinc.com/
+https://patchwork.kernel.org/project/linux-wireless/patch/20240830015349.1083226-1-quic_miaoqing@quicinc.com/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 https://docs.kernel.org/process/submitting-patches.html
