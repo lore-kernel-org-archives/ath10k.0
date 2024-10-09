@@ -4,93 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C775CF043B
-	for <ath10k@archiver.kernel.org>; Wed,  9 Oct 2024 04:16:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93DC9CED610
+	for <ath10k@archiver.kernel.org>; Wed,  9 Oct 2024 06:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=c43TJbsGEiI2vCVL4KRiRuZs3pWbqT3Gn91q/Mfi0Hk=; b=UWtmTpnmlMZQVOuvjfIdFm6QDY
-	DDS4ghkV0VqEHQr/qsWHE0m0cZLi98Od1WR/3f5mmOMjQqbQatms9KfdOmj4vqVVyYTCNGQJSI/vK
-	kwY/b9vtCgvm15YcvlKmXAROoKyyQXL0oeTVx8O5CD8sVlxeEiyHgNn7ZTs/DFJtLz/SnUsTtcvzE
-	OGY5G8BdqNSgbeFVeYQLOEwjMVGnFz9iEDU60HWv3hksuVSyAxfsjCu8CrSSP92pZuifnAW8GBY5O
-	TEQkqZXLhtMLmZMk88Ihc2X/hdlXp/5Ut5uvsAQh6shjBJZ2LGsMgtHs5oyJFrOBu7/4/aneiHh58
-	4MZgihpg==;
+	bh=GPvYSPUlyNo11D60Rn7xn72ZEXb5uv2wt4zjMOlQ4WE=; b=uw13aZDEleHPBG9lpRdyeOwXRB
+	e6QsajAi/aiZT/uOWfl51D/dA9XUlEgDAUheO4kVGXpAfM7wSiArI8A6DXZBGwyq/hfKMEGnkv6v6
+	56qYA/t7HzhTsKcHPQ4xUOTvMLLpFRXvFoJCeVq8D8X3kzEDh01HuMe6z1wcT9tKl98yQib2nEHUY
+	Jovbz5WskDBYMS1OhReg8xG/elmEqgb3C4AhC46Hur8o+znfZxArVBwr8XfNhS0rN+z7W2wbBApoR
+	ubBn2O49Stazegs1Kjed4JRs15PHnREEqRslBLMux05RttDYQukvq+hCtNNKxZ1R5uwXm9aHGuwSM
+	rJwz1rjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syO88-00000007qxB-3jEm;
-	Wed, 09 Oct 2024 04:16:56 +0000
-Received: from mgamail.intel.com ([192.198.163.7])
+	id 1syQdq-000000089jc-0V8p;
+	Wed, 09 Oct 2024 06:57:50 +0000
+Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1syO84-00000007qlY-2SgJ;
-	Wed, 09 Oct 2024 04:16:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728447413; x=1759983413;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=F/5wX0qVJczRA+WzF+0h7RDUQ6Vlg1N7b7JHM6GAw3Q=;
-  b=YyuTNNC/EA6muneZ0r2BPaS8psAsX1xzrSoJk25hloEOSBJdXNx0WFX5
-   hL5133PWC2yuqmgcrg2DRsnu8CIxcHL4mZim8TbJxy4MFX0hHyY5yEOVy
-   VocY0jjzvqj0Pdj45zOa3TwEewqZOr+V/G89ylArTA9GNvA/TNNhrE1IK
-   +H0Rw+6bB8y0YHZ9RNI6Ri1CdUitZjHY1eVsJ38BLis+w4J7wBDD2okfp
-   NEl+ggkHM8NWzIdtpWj4XNuZeyPm4ZQ86uo73xrROWvt6pmZMRf1ihNCa
-   TboyM8v5YYcwUu/4WmfP/OAiMdEivNR6DxefHD6OX1NR+efcWjuWemBq9
-   g==;
-X-CSE-ConnectionGUID: BBXs4sCASZGeJrIhsmcN8A==
-X-CSE-MsgGUID: bv6TrDR/QMi3z/ShfeIQnA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11219"; a="53127032"
-X-IronPort-AV: E=Sophos;i="6.11,189,1725346800"; 
-   d="scan'208";a="53127032"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2024 21:16:52 -0700
-X-CSE-ConnectionGUID: zKivlZtaRWO54jYgwlDlNw==
-X-CSE-MsgGUID: hSstibpsRNKP9XCVIJnPUg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,189,1725346800"; 
-   d="scan'208";a="80095760"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 08 Oct 2024 21:16:47 -0700
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Kevin Tian <kevin.tian@intel.com>
-Cc: Yi Liu <yi.l.liu@intel.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
+	id 1syQdn-000000089jF-1O5P
+	for ath10k@lists.infradead.org;
+	Wed, 09 Oct 2024 06:57:48 +0000
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a9950d27234so448983566b.1
+        for <ath10k@lists.infradead.org>; Tue, 08 Oct 2024 23:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728457065; x=1729061865; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GPvYSPUlyNo11D60Rn7xn72ZEXb5uv2wt4zjMOlQ4WE=;
+        b=UoUgWPn6zGfawAiigBDKeSzm1hB9opMjH3BUpGicqwn6y7sgDt7JdA089qRLblZErb
+         0tjTV/DoqwPLq14YSshkv4a1BC5t0pLCjamx2Wa1tMX/v4GejUURd3Ycri0qKqlyHj8F
+         OZiQQX+eIsiVXWWmKL5eYX0S05nx6G6sJFdQSIv3yHdncqwrAp1ZEW5D7qWXeeXeOp7Y
+         9TZfU+6oCSyotDaGj9ZFZ1ePEe3nWFTav9tH8BcMn4dBMnjx8VEBs7cG01Xu2CHainAg
+         c2dZv4Vh9VK+fPIpfYTa4dtZL2S4m4vZDprqn6ihkoZTj39AheXydpvxkXrw1Cod5hb8
+         1RiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728457065; x=1729061865;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GPvYSPUlyNo11D60Rn7xn72ZEXb5uv2wt4zjMOlQ4WE=;
+        b=qBkh9oE0L5R1ahaxRGOddoco2HFUTeE6doxbZxgXZ4ZXkZoujJ8xqVfSNhmOjlmXgq
+         PVCKvCwAxGUKK7fYqatT0XJ8Axz7c3M7HILmEk8zENcYk2xDLaixBuRwhLvwsocWIqNz
+         z0DYNHrGiwCDdRTGKXDm/o23MNidYdg73KYhy3hP5KyJecFr1NU3HRnkRKeLWbqz2vxP
+         A+0VB8BWQe8y0KPnQiYssvP9wiYDHNVBT/Q/XiKyWR/Wxi3ynsejgCXaxFA98ZjZXPWK
+         E3e6GRwPmTDGNOIWUZmnrPWrUFBX+EJpiMa65o5vIrBaUsg8/5FQzLBFCq9AFcx+S/yT
+         EIUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU7KB2IAVpTKbvp+TNS32kjmzCpsVshRkIBDjRC+i1vEW1hcOgbJQqQgER30ieOgL4y77w6LHA=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz69Sk3fnyZHYI0NVoZJ+VIbH8KEElVnRIEgNZU/bxw5OxV28a5
+	QEl8EKV1TGnjI/jVA05ziFNTQmmdJ56faPSFkOvagjnGzWcsXZo=
+X-Google-Smtp-Source: AGHT+IGzGHI/bUPLoB14IBW6oz/xRDOg6TnvNCvh1TiQvQNTqF6u593L5vc0eIz9x8PT1DHo2OBRLg==
+X-Received: by 2002:a17:907:97c7:b0:a99:4e8c:e5c9 with SMTP id a640c23a62f3a-a998d19831bmr114753866b.20.1728457064793;
+        Tue, 08 Oct 2024 23:57:44 -0700 (PDT)
+Received: from frutis-latitude7490.lan (public-gprs367762.centertel.pl. [37.47.67.211])
+        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-a992e5bb275sm622758566b.11.2024.10.08.23.57.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Oct 2024 23:57:44 -0700 (PDT)
+From: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>
+To: 
+Cc: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>,
 	Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	mst@redhat.com,
-	Jason Wang <jasowang@redhat.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Mikko Perttunen <mperttunen@nvidia.com>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Jeff Johnson <jjohnson@kernel.org>,
+	linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org,
-	ath11k@lists.infradead.org,
-	Lyude Paul <lyude@redhat.com>,
-	Beleswar Padhi <b-padhi@ti.com>,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH v4 4/4] iommu: Remove iommu_domain_alloc()
-Date: Wed,  9 Oct 2024 12:11:47 +0800
-Message-ID: <20241009041147.28391-5-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241009041147.28391-1-baolu.lu@linux.intel.com>
-References: <20241009041147.28391-1-baolu.lu@linux.intel.com>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] wifi: ath10k: add channel 177 for 5 GHz band
+Date: Wed,  9 Oct 2024 08:49:28 +0200
+Message-ID: <20241009065051.51143-1-frut3k7@gmail.com>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240801202359.794035-1-frut3k7@gmail.com>
+References: <20240801202359.794035-1-frut3k7@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241008_211652_771320_D6342BB0 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20241008_235747_392844_76677109 
+X-CRM114-Status: GOOD (  12.73  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,91 +97,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The iommu_domain_alloc() interface is no longer used in the tree anymore.
-Remove it to avoid dead code.
+Add support for channel 177 (5885 MHz ) for the 5 GHz band.
 
-There is increasing demand for supporting multiple IOMMU drivers, and this
-is the last bus-based thing standing in the way of that.
+Tested-on: qca988x hw2.0 firmware ver 10.2.4-1.0-00047
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
 ---
- include/linux/iommu.h |  6 ------
- drivers/iommu/iommu.c | 36 ------------------------------------
- 2 files changed, 42 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h | 4 ++--
+ drivers/net/wireless/ath/ath10k/mac.c  | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index bd722f473635..6d809f6e6c8d 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -788,7 +788,6 @@ extern int bus_iommu_probe(const struct bus_type *bus);
- extern bool iommu_present(const struct bus_type *bus);
- extern bool device_iommu_capable(struct device *dev, enum iommu_cap cap);
- extern bool iommu_group_has_isolated_msi(struct iommu_group *group);
--extern struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus);
- struct iommu_domain *iommu_paging_domain_alloc(struct device *dev);
- extern void iommu_domain_free(struct iommu_domain *domain);
- extern int iommu_attach_device(struct iommu_domain *domain,
-@@ -1091,11 +1090,6 @@ static inline bool device_iommu_capable(struct device *dev, enum iommu_cap cap)
- 	return false;
- }
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 446dca74f06a..3dff8c028526 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -39,8 +39,8 @@
+ #define WMI_READY_TIMEOUT (5 * HZ)
+ #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
+ #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
+-#define ATH10K_NUM_CHANS 41
+-#define ATH10K_MAX_5G_CHAN 173
++#define ATH10K_NUM_CHANS 42
++#define ATH10K_MAX_5G_CHAN 177
  
--static inline struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
--{
--	return NULL;
--}
--
- static inline struct iommu_domain *iommu_paging_domain_alloc(struct device *dev)
- {
- 	return ERR_PTR(-ENODEV);
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 83c8e617a2c5..521471706400 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -1994,42 +1994,6 @@ __iommu_group_domain_alloc(struct iommu_group *group, unsigned int type)
- 	return __iommu_domain_alloc(dev_iommu_ops(dev), dev, type);
- }
- 
--static int __iommu_domain_alloc_dev(struct device *dev, void *data)
--{
--	const struct iommu_ops **ops = data;
--
--	if (!dev_has_iommu(dev))
--		return 0;
--
--	if (WARN_ONCE(*ops && *ops != dev_iommu_ops(dev),
--		      "Multiple IOMMU drivers present for bus %s, which the public IOMMU API can't fully support yet. You will still need to disable one or more for this to work, sorry!\n",
--		      dev_bus_name(dev)))
--		return -EBUSY;
--
--	*ops = dev_iommu_ops(dev);
--	return 0;
--}
--
--/*
-- * The iommu ops in bus has been retired. Do not use this interface in
-- * new drivers.
-- */
--struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
--{
--	const struct iommu_ops *ops = NULL;
--	int err = bus_for_each_dev(bus, NULL, &ops, __iommu_domain_alloc_dev);
--	struct iommu_domain *domain;
--
--	if (err || !ops)
--		return NULL;
--
--	domain = __iommu_domain_alloc(ops, NULL, IOMMU_DOMAIN_UNMANAGED);
--	if (IS_ERR(domain))
--		return NULL;
--	return domain;
--}
--EXPORT_SYMBOL_GPL(iommu_domain_alloc);
--
- /**
-  * iommu_paging_domain_alloc() - Allocate a paging domain
-  * @dev: device for which the domain is allocated
+ /* Antenna noise floor */
+ #define ATH10K_DEFAULT_NOISE_FLOOR -95
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 646e1737d4c4..cee6a4d287b5 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -9543,6 +9543,7 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
+ 	CHAN5G(165, 5825, 0),
+ 	CHAN5G(169, 5845, 0),
+ 	CHAN5G(173, 5865, 0),
++	CHAN5G(177, 5885, 0),
+ 	/* If you add more, you may need to change ATH10K_MAX_5G_CHAN */
+ 	/* And you will definitely need to change ATH10K_NUM_CHANS in core.h */
+ };
 -- 
-2.43.0
+2.46.0
 
 
