@@ -4,85 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93DC9CED610
-	for <ath10k@archiver.kernel.org>; Wed,  9 Oct 2024 06:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25315D24462
+	for <ath10k@archiver.kernel.org>; Fri, 11 Oct 2024 01:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GPvYSPUlyNo11D60Rn7xn72ZEXb5uv2wt4zjMOlQ4WE=; b=uw13aZDEleHPBG9lpRdyeOwXRB
-	e6QsajAi/aiZT/uOWfl51D/dA9XUlEgDAUheO4kVGXpAfM7wSiArI8A6DXZBGwyq/hfKMEGnkv6v6
-	56qYA/t7HzhTsKcHPQ4xUOTvMLLpFRXvFoJCeVq8D8X3kzEDh01HuMe6z1wcT9tKl98yQib2nEHUY
-	Jovbz5WskDBYMS1OhReg8xG/elmEqgb3C4AhC46Hur8o+znfZxArVBwr8XfNhS0rN+z7W2wbBApoR
-	ubBn2O49Stazegs1Kjed4JRs15PHnREEqRslBLMux05RttDYQukvq+hCtNNKxZ1R5uwXm9aHGuwSM
-	rJwz1rjw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=oLtfco7CYTSkruhDHn9AtchkZ7x9E9bb03vUF9ZRl8c=; b=HJE3Qv+hsIsMluoWMdQ2O1yEOS
+	MPdFLtq8YSgJVnW2OSQQ5YT7sENCBR7vAAZjcd6Xav8uwXXvcZPLXKB8LKltGUyHOLfNqhlaYa2jA
+	mRQ9tJbHJVDh2uhawp2yrE1x1vKStBJq5TVWVZTpRq7u8oQggSrkPSmXiPjQQQRJn+/E+J2zs0t/1
+	rcE4kSqn+B+saRbvNffP6YbTQUplsI+4sh9zA8TM+P2PHBHEdF72OgvhJU1/5CUsf5gg46SwYhM4F
+	oAWttreo3z/7UA4gyTFnYTm1jR39Fl+3Q9wpm4OMcp0BUGa5qsjb5IHmsznk2R0pBriYwsBj23pxf
+	uaaXDReA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syQdq-000000089jc-0V8p;
-	Wed, 09 Oct 2024 06:57:50 +0000
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+	id 1sz47r-0000000EsU3-1e7t;
+	Fri, 11 Oct 2024 01:07:27 +0000
+Received: from mail-qv1-xf2b.google.com ([2607:f8b0:4864:20::f2b])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1syQdn-000000089jF-1O5P
+	id 1sz47n-0000000EsTD-2PBa
 	for ath10k@lists.infradead.org;
-	Wed, 09 Oct 2024 06:57:48 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a9950d27234so448983566b.1
-        for <ath10k@lists.infradead.org>; Tue, 08 Oct 2024 23:57:46 -0700 (PDT)
+	Fri, 11 Oct 2024 01:07:24 +0000
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-6cbe700dcc3so10227716d6.3
+        for <ath10k@lists.infradead.org>; Thu, 10 Oct 2024 18:07:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728457065; x=1729061865; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GPvYSPUlyNo11D60Rn7xn72ZEXb5uv2wt4zjMOlQ4WE=;
-        b=UoUgWPn6zGfawAiigBDKeSzm1hB9opMjH3BUpGicqwn6y7sgDt7JdA089qRLblZErb
-         0tjTV/DoqwPLq14YSshkv4a1BC5t0pLCjamx2Wa1tMX/v4GejUURd3Ycri0qKqlyHj8F
-         OZiQQX+eIsiVXWWmKL5eYX0S05nx6G6sJFdQSIv3yHdncqwrAp1ZEW5D7qWXeeXeOp7Y
-         9TZfU+6oCSyotDaGj9ZFZ1ePEe3nWFTav9tH8BcMn4dBMnjx8VEBs7cG01Xu2CHainAg
-         c2dZv4Vh9VK+fPIpfYTa4dtZL2S4m4vZDprqn6ihkoZTj39AheXydpvxkXrw1Cod5hb8
-         1RiA==
+        d=google.com; s=20230601; t=1728608836; x=1729213636; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oLtfco7CYTSkruhDHn9AtchkZ7x9E9bb03vUF9ZRl8c=;
+        b=P1Ej6/AHFGo6hro1YbORA6z2owcPOiwX9nHFfa2CmeLicPKP90xE1WBuIW51iY3a+K
+         cXQ30OPyUbwDdVgMqV/7KX+ehLjbaoCeqVeytK7/jI08TbjrlH1Xv/m/chVJ1bg9K+5h
+         dUh0sM1cuUszYLnrqfHUgE97GWKS7dQERTNXMcH5ZxlkZGVriRk0KDMVcIC+33SYGEHt
+         oyNVzXrG1CXO4K7gxDTNs1tlxA4HLPHgUDPscT8SfiZpnKnuU/tHqnGzK8BLB94UMzwZ
+         Z9UD2EHgJY5utC5lCWEhWoh+/LOL5W71aESq3hXZeWU69N5qS+m9TqP1iUOZyC7Fxo8o
+         /AwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728457065; x=1729061865;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GPvYSPUlyNo11D60Rn7xn72ZEXb5uv2wt4zjMOlQ4WE=;
-        b=qBkh9oE0L5R1ahaxRGOddoco2HFUTeE6doxbZxgXZ4ZXkZoujJ8xqVfSNhmOjlmXgq
-         PVCKvCwAxGUKK7fYqatT0XJ8Axz7c3M7HILmEk8zENcYk2xDLaixBuRwhLvwsocWIqNz
-         z0DYNHrGiwCDdRTGKXDm/o23MNidYdg73KYhy3hP5KyJecFr1NU3HRnkRKeLWbqz2vxP
-         A+0VB8BWQe8y0KPnQiYssvP9wiYDHNVBT/Q/XiKyWR/Wxi3ynsejgCXaxFA98ZjZXPWK
-         E3e6GRwPmTDGNOIWUZmnrPWrUFBX+EJpiMa65o5vIrBaUsg8/5FQzLBFCq9AFcx+S/yT
-         EIUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU7KB2IAVpTKbvp+TNS32kjmzCpsVshRkIBDjRC+i1vEW1hcOgbJQqQgER30ieOgL4y77w6LHA=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz69Sk3fnyZHYI0NVoZJ+VIbH8KEElVnRIEgNZU/bxw5OxV28a5
-	QEl8EKV1TGnjI/jVA05ziFNTQmmdJ56faPSFkOvagjnGzWcsXZo=
-X-Google-Smtp-Source: AGHT+IGzGHI/bUPLoB14IBW6oz/xRDOg6TnvNCvh1TiQvQNTqF6u593L5vc0eIz9x8PT1DHo2OBRLg==
-X-Received: by 2002:a17:907:97c7:b0:a99:4e8c:e5c9 with SMTP id a640c23a62f3a-a998d19831bmr114753866b.20.1728457064793;
-        Tue, 08 Oct 2024 23:57:44 -0700 (PDT)
-Received: from frutis-latitude7490.lan (public-gprs367762.centertel.pl. [37.47.67.211])
-        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-a992e5bb275sm622758566b.11.2024.10.08.23.57.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2024 23:57:44 -0700 (PDT)
-From: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>
-To: 
-Cc: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Jeff Johnson <jjohnson@kernel.org>,
-	linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] wifi: ath10k: add channel 177 for 5 GHz band
-Date: Wed,  9 Oct 2024 08:49:28 +0200
-Message-ID: <20241009065051.51143-1-frut3k7@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240801202359.794035-1-frut3k7@gmail.com>
-References: <20240801202359.794035-1-frut3k7@gmail.com>
+        d=1e100.net; s=20230601; t=1728608836; x=1729213636;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oLtfco7CYTSkruhDHn9AtchkZ7x9E9bb03vUF9ZRl8c=;
+        b=mSVvpQbIUuHjAYV/CuZ9hkXaVoa0q1tqSp/dh59/sdN0hEqrkTmK1i4wYdPHeZPX7p
+         PwYtlHZol2+MWwzg0zT7hJPGnpZ0aS/0Kx1YvxcAeHyI3v5DbusgLgvIV+jgnv64DPtT
+         49NGahqdlnC1MWN97whhhSkqSuE+SfGuS/UEANShaBpYirL0LUfcZAUjKX2QxxCwf2On
+         wkJrlRMbHPbLJPSTf5CPA6GPO7anc3Z+eHr5YtSG1Ivo+FEV7dDNe8956Ge+G9aelewa
+         JbxDo1SwyHB5YZbyNPKAxZJU/YhhwhLgu/RXOvfrCNWO4tk1fXdz+Hi/gxWldfT8S4zC
+         9A+Q==
+X-Gm-Message-State: AOJu0Yzqh4FZ1zKVlm42DMkc5o9dym0q6nbD3oXh3Jz784j3bR3wsgyE
+	x+4l+vhekij5aC+cV83mXZ3i6dVGjRfk7aoffboaA2CELefdCf3/X8jgORHu46syzffmRss6nkB
+	tziuJd46QQvmUem7fheOaECBW3uVzMkCN0M6gMIe0ScD77kLzAw==
+X-Google-Smtp-Source: AGHT+IG1IPgTRgTS0BIIfpBkCfsfGiVu8O8/Lby/bdx0N0082xjwhFiPhAr2iQsuMORy4Ja0+DTJ5k0TZRJKu03WKA8=
+X-Received: by 2002:a05:6214:8f3:b0:6cb:e997:6717 with SMTP id
+ 6a1803df08f44-6cbf00139b7mr13861936d6.38.1728608836406; Thu, 10 Oct 2024
+ 18:07:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20241008022246.1010-1-quic_kangyang@quicinc.com>
+In-Reply-To: <20241008022246.1010-1-quic_kangyang@quicinc.com>
+From: David Ruth <druth@google.com>
+Date: Thu, 10 Oct 2024 21:06:37 -0400
+Message-ID: <CAKHmtrQVMLOo=UFamTFNK3ofLVuLdrfFAyfF1syFdA4+4w4Uog@mail.gmail.com>
+Subject: Re: [PATCH] wifi: ath10k: avoid NULL pointer error during sdio remove
+To: Kang Yang <quic_kangyang@quicinc.com>
+Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241008_235747_392844_76677109 
-X-CRM114-Status: GOOD (  12.73  )
+X-CRM114-CacheID: sfid-20241010_180723_630707_0C70124B 
+X-CRM114-Status: UNSURE (   4.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,44 +87,6 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Add support for channel 177 (5885 MHz ) for the 5 GHz band.
-
-Tested-on: qca988x hw2.0 firmware ver 10.2.4-1.0-00047
-
-Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.h | 4 ++--
- drivers/net/wireless/ath/ath10k/mac.c  | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 446dca74f06a..3dff8c028526 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -39,8 +39,8 @@
- #define WMI_READY_TIMEOUT (5 * HZ)
- #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
- #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
--#define ATH10K_NUM_CHANS 41
--#define ATH10K_MAX_5G_CHAN 173
-+#define ATH10K_NUM_CHANS 42
-+#define ATH10K_MAX_5G_CHAN 177
- 
- /* Antenna noise floor */
- #define ATH10K_DEFAULT_NOISE_FLOOR -95
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 646e1737d4c4..cee6a4d287b5 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -9543,6 +9543,7 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
- 	CHAN5G(165, 5825, 0),
- 	CHAN5G(169, 5845, 0),
- 	CHAN5G(173, 5865, 0),
-+	CHAN5G(177, 5885, 0),
- 	/* If you add more, you may need to change ATH10K_MAX_5G_CHAN */
- 	/* And you will definitely need to change ATH10K_NUM_CHANS in core.h */
- };
--- 
-2.46.0
-
+Tested-by: David Ruth <druth@chromium.org>
+Reviewed-by: David Ruth <druth@chromium.org>
 
