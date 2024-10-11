@@ -4,74 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25315D24462
-	for <ath10k@archiver.kernel.org>; Fri, 11 Oct 2024 01:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D16B6D0D785
+	for <ath10k@archiver.kernel.org>; Fri, 11 Oct 2024 12:49:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oLtfco7CYTSkruhDHn9AtchkZ7x9E9bb03vUF9ZRl8c=; b=HJE3Qv+hsIsMluoWMdQ2O1yEOS
-	MPdFLtq8YSgJVnW2OSQQ5YT7sENCBR7vAAZjcd6Xav8uwXXvcZPLXKB8LKltGUyHOLfNqhlaYa2jA
-	mRQ9tJbHJVDh2uhawp2yrE1x1vKStBJq5TVWVZTpRq7u8oQggSrkPSmXiPjQQQRJn+/E+J2zs0t/1
-	rcE4kSqn+B+saRbvNffP6YbTQUplsI+4sh9zA8TM+P2PHBHEdF72OgvhJU1/5CUsf5gg46SwYhM4F
-	oAWttreo3z/7UA4gyTFnYTm1jR39Fl+3Q9wpm4OMcp0BUGa5qsjb5IHmsznk2R0pBriYwsBj23pxf
-	uaaXDReA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JYXhI4uqaBPdca/xkSzazU6us1mcfLn79gTY/K2O1Ns=; b=oAfUzEOvkhH9Cqt6OVtEK/fph2
+	AuNZ+7oD4fGpN3daC9MKSrtoRnQk+1v+FZ3xadJT05jJjgX9UkRGvUBrEOw2rWYomMRRKCL4NNZ/q
+	3LaIBYvjnIgB8AYKjKK+ALRtLAonU3PTIceem5YTEiTZzXfm1S24itZnLJh0HWM2jQccAWcybiv9D
+	WE55t9y/W3OoAYKoZhtJv+BNZ+5hs/6k+mTWBmTEcfoMZj2EzW6TLOY9F6bge+hi+r8aDD7cmM9fe
+	3MrEUlHuyuJPIsHcDz+nuTRVtvPxfXnVfGJXWRJNRKV6IF5EB0GXUgulw9FZLtMoRwIkvmjbEo0lI
+	WNxQBOSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sz47r-0000000EsU3-1e7t;
-	Fri, 11 Oct 2024 01:07:27 +0000
-Received: from mail-qv1-xf2b.google.com ([2607:f8b0:4864:20::f2b])
+	id 1szF52-0000000GLz9-0YR5;
+	Fri, 11 Oct 2024 12:49:16 +0000
+Received: from mx3.molgen.mpg.de ([141.14.17.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sz47n-0000000EsTD-2PBa
+	id 1szF4z-0000000GLwg-11Q0
 	for ath10k@lists.infradead.org;
-	Fri, 11 Oct 2024 01:07:24 +0000
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-6cbe700dcc3so10227716d6.3
-        for <ath10k@lists.infradead.org>; Thu, 10 Oct 2024 18:07:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1728608836; x=1729213636; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oLtfco7CYTSkruhDHn9AtchkZ7x9E9bb03vUF9ZRl8c=;
-        b=P1Ej6/AHFGo6hro1YbORA6z2owcPOiwX9nHFfa2CmeLicPKP90xE1WBuIW51iY3a+K
-         cXQ30OPyUbwDdVgMqV/7KX+ehLjbaoCeqVeytK7/jI08TbjrlH1Xv/m/chVJ1bg9K+5h
-         dUh0sM1cuUszYLnrqfHUgE97GWKS7dQERTNXMcH5ZxlkZGVriRk0KDMVcIC+33SYGEHt
-         oyNVzXrG1CXO4K7gxDTNs1tlxA4HLPHgUDPscT8SfiZpnKnuU/tHqnGzK8BLB94UMzwZ
-         Z9UD2EHgJY5utC5lCWEhWoh+/LOL5W71aESq3hXZeWU69N5qS+m9TqP1iUOZyC7Fxo8o
-         /AwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728608836; x=1729213636;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oLtfco7CYTSkruhDHn9AtchkZ7x9E9bb03vUF9ZRl8c=;
-        b=mSVvpQbIUuHjAYV/CuZ9hkXaVoa0q1tqSp/dh59/sdN0hEqrkTmK1i4wYdPHeZPX7p
-         PwYtlHZol2+MWwzg0zT7hJPGnpZ0aS/0Kx1YvxcAeHyI3v5DbusgLgvIV+jgnv64DPtT
-         49NGahqdlnC1MWN97whhhSkqSuE+SfGuS/UEANShaBpYirL0LUfcZAUjKX2QxxCwf2On
-         wkJrlRMbHPbLJPSTf5CPA6GPO7anc3Z+eHr5YtSG1Ivo+FEV7dDNe8956Ge+G9aelewa
-         JbxDo1SwyHB5YZbyNPKAxZJU/YhhwhLgu/RXOvfrCNWO4tk1fXdz+Hi/gxWldfT8S4zC
-         9A+Q==
-X-Gm-Message-State: AOJu0Yzqh4FZ1zKVlm42DMkc5o9dym0q6nbD3oXh3Jz784j3bR3wsgyE
-	x+4l+vhekij5aC+cV83mXZ3i6dVGjRfk7aoffboaA2CELefdCf3/X8jgORHu46syzffmRss6nkB
-	tziuJd46QQvmUem7fheOaECBW3uVzMkCN0M6gMIe0ScD77kLzAw==
-X-Google-Smtp-Source: AGHT+IG1IPgTRgTS0BIIfpBkCfsfGiVu8O8/Lby/bdx0N0082xjwhFiPhAr2iQsuMORy4Ja0+DTJ5k0TZRJKu03WKA8=
-X-Received: by 2002:a05:6214:8f3:b0:6cb:e997:6717 with SMTP id
- 6a1803df08f44-6cbf00139b7mr13861936d6.38.1728608836406; Thu, 10 Oct 2024
- 18:07:16 -0700 (PDT)
+	Fri, 11 Oct 2024 12:49:15 +0000
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id AE7AC61E5FE05;
+	Fri, 11 Oct 2024 14:48:44 +0200 (CEST)
+Message-ID: <8eda1bd2-88fc-4262-aec0-6f88a73797ef@molgen.mpg.de>
+Date: Fri, 11 Oct 2024 14:48:44 +0200
 MIME-Version: 1.0
-References: <20241008022246.1010-1-quic_kangyang@quicinc.com>
-In-Reply-To: <20241008022246.1010-1-quic_kangyang@quicinc.com>
-From: David Ruth <druth@google.com>
-Date: Thu, 10 Oct 2024 21:06:37 -0400
-Message-ID: <CAKHmtrQVMLOo=UFamTFNK3ofLVuLdrfFAyfF1syFdA4+4w4Uog@mail.gmail.com>
-Subject: Re: [PATCH] wifi: ath10k: avoid NULL pointer error during sdio remove
-To: Kang Yang <quic_kangyang@quicinc.com>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: failed to remove key (0, ce:ce:1e:27:bb:e0) from hardware (-110)
+ (ETIMEDOUT)
+To: James Prestwood <prestwoj@gmail.com>
+Cc: Kalle Valo <kvalo@kernel.org>, Baochen Qiang <quic_bqiang@quicinc.com>,
+ linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+References: <d8253ab3-f4f0-40fd-a550-d75eef121b56@molgen.mpg.de>
+ <8be8619d-f09f-43b2-ada8-2fca2a7d8ea5@gmail.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <8be8619d-f09f-43b2-ada8-2fca2a7d8ea5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241010_180723_630707_0C70124B 
-X-CRM114-Status: UNSURE (   4.26  )
+X-CRM114-CacheID: sfid-20241011_054913_446510_3292A105 
+X-CRM114-Status: UNSURE (   9.30  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,6 +69,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Tested-by: David Ruth <druth@chromium.org>
-Reviewed-by: David Ruth <druth@chromium.org>
+Dear James,
+
+
+Am 04.09.24 um 16:09 schrieb James Prestwood:
+
+> On 9/4/24 3:45 AM, Paul Menzel wrote:
+
+>> Linux 6.11-rc6+ logged the warning below when resuming from ACPI S3 
+>> (or unloading and loading the `ath10k_core`/`ath10k_pci` modules) 
+>> having been connected to an AVM network:
+>>
+>>     wlp58s0: failed to remove key (0, ce:ce:1e:27:bb:e0) from hardware (-110)
+>>
+>> Error code 110 is the value for ETIMEDOUT. I saw James patch [1], and 
+>> applied it, and the error is still there (as expected).
+> 
+> My patch won't actually fix the timeout, I just lowered the time that 
+> ath10k would wait before it continued which fixed some incompatibility 
+> on the AP side of things. Based on your logs though, it appears you 
+> already got disconnected before the failure to remove the key...
+
+I am still applying your patch manually on the current master branch, 
+and it looks like it hasn’t still been reviewed. Maybe it’s due to the 
+RFC tag. Do you plan on moving it ahead?
+
+
+Kind regards,
+
+Paul
+
+
+>> [1]: https://lore.kernel.org/all/20240814164507.996303-1-prestwoj@gmail.com/
 
