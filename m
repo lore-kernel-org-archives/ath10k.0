@@ -4,88 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C92DD0EE12
-	for <ath10k@archiver.kernel.org>; Fri, 11 Oct 2024 16:52:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 035D3CF2568
+	for <ath10k@archiver.kernel.org>; Sat, 12 Oct 2024 14:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=njZ484qpDsi6Z2x/1aupfhS9YOld/F1zjzQoZ1yH3Ro=; b=vuAetjKPL+0zfftC/Ztq8psL+L
-	4KY4gwX5mVGoE/C0Cn0W+HHa7gAXu4hCHZ0cKM6u7a5xyPjhYA0bbzjgb29sejfm0/FI7efLqTj0X
-	Vwdnz66JtT3dTiOFzVZeNr4C+/7hSDoIOD9jLoJs6L29PnDgdmO3uG2PeTXKFq9aQObTNCIGsBCBF
-	bFr77qUITOQLJlrSYPyOUuEiwV4evl6qP2woKe7ppfe1vZgPKmau1ZnlXcd4ydzlyTq8uA6Ukysat
-	PldKoARQSnHc1TZpLfcJPA8qXmc8Ojlm2ovPti/5rL9eBDmq5ehVwyOWTwiuMoAxBmYMQAgwzb7+7
-	GxD3UpVQ==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=nZwbub+Y+2CpDF1gb5jtpGb5EXEnMSxGMYCK7/dCUDI=; b=Ppv2ZDEd6tJSH0+27bGKNkq+hz
+	ETop4CXvnJWNTAw6jjsgGt1Zjwf6KTtQR8hs8SUGYOmy9XaVNK8tBttjH/q05w99wmA5Ya5j2tafT
+	93EjlpLj35Dj4/ljLpaIjXYhxfcYGGzbaHMBRPBJKhv5mgPSSJt82Bp5+4RrpNcvWgQ04PUNg7BKd
+	oakGNDaSTeiYrAOlu3GeMt3NFShv2v0l8oBOSkekCWRC05ojGrHvgT4rbLBxCB6L24fjxl87QYgGO
+	jd9xV7zCY20ahXwXQtcq/XerbyJmyyyynJKlZXwQZjtdfCkaADoBMov4cMpd1H1NM/3B8MTBqQ9fv
+	FocF9VMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1szIrv-0000000H1EV-2A4U;
-	Fri, 11 Oct 2024 16:51:59 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1szcsa-00000001JqN-48Ly;
+	Sat, 12 Oct 2024 14:14:00 +0000
+Received: from e2i340.smtp2go.com ([103.2.141.84])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szIrs-0000000H1E6-1KfI
+	id 1szcsX-00000001Jpw-3Wn8
 	for ath10k@lists.infradead.org;
-	Fri, 11 Oct 2024 16:51:57 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49B9rmUB020040;
-	Fri, 11 Oct 2024 16:51:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	njZ484qpDsi6Z2x/1aupfhS9YOld/F1zjzQoZ1yH3Ro=; b=TNVFIjKf0an3j4fg
-	07Wl25Ax+yyaz+vdrjtWAKSQo4S6/mQPUzoTf0bQ2B4UDoMWHrDljs/+PwqX86V5
-	h4SkgYXqsi0CmeZByvmzvrqt7YQUv3vDGtLbLfKCASt1GcXcv4RIhYz/WcyKOU8n
-	Va4bgJXgy0LKA+P4hQK6mZyRP0mFTvp0jrCIuZAWAq3btJX5bMSQdmVJ6tG5HLMf
-	1vPvgEBO6rcN8/agT7zabF5J1vNoPBPzxvBJgB4R0FMy+w6R5PrZID59VHzpqUeo
-	9aEHv7QGzsgrCpLWmjTtttImpdVbkOV2uHP8eJmDyrikTj+fSpMmvFlaCKyhEfPP
-	W6tiIw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 426db7mf9k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 16:51:51 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49BGpov3028837
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 16:51:51 GMT
-Received: from [10.48.240.152] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 11 Oct
- 2024 09:51:50 -0700
-Message-ID: <b58b5b2e-bf9f-480c-810b-2cef29aab82c@quicinc.com>
-Date: Fri, 11 Oct 2024 09:51:49 -0700
+	Sat, 12 Oct 2024 14:13:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=smtpservice.net; s=maxzs0.a1-4.dyn; x=1728743325; h=Feedback-ID:
+	X-Smtpcorp-Track:Message-Id:Date:Subject:To:From:Reply-To:Sender:
+	List-Unsubscribe:List-Unsubscribe-Post;
+	bh=nZwbub+Y+2CpDF1gb5jtpGb5EXEnMSxGMYCK7/dCUDI=; b=dkKAbigNS9YRGA5BuL5Tgclw2t
+	F6/cxrG6RgTn5SdQOjYUQ4eTQfLM8Zczmeahag4vjNX6uI+lSJD7Dd8Rq32QXuleDIeT0rvG9+aUp
+	HMreqsKYVcNCg0rg7FBQqQtPbwG8jqp+kFNV4kcrpvUN5BNwLXfYIVoHpzMRpj+ufCtdqwxyJnsJx
+	8OCphL9ttvzfoMwchFRHo0AGDle9a/ZZWovpXV8avEuO9JCpWYiwYIizkIG6Z3VvxN067kBvtD2tM
+	E2aF0Q//31J99vDXGtFGSU4VfhyyfhxTSJdzYrqFXPJLO4SXbFd8Qgzp65rVIwowYyn9r/kG9TYpq
+	pLqaVdPA==;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triplefau.lt;
+ i=@triplefau.lt; q=dns/txt; s=s510616; t=1728742425; h=from : subject
+ : to : message-id : date;
+ bh=nZwbub+Y+2CpDF1gb5jtpGb5EXEnMSxGMYCK7/dCUDI=;
+ b=RuV1p76sIVfkCMmVzZePcm7dGiPKWBWLRKCM5p8t0C+JQ374C+evIjGoZ1YZ+uEaKu4NG
+ U8h3mmMJ+2OZNM5GNaRffP6JGOlkjvXzvt0DSQSVn/t42aJxazaa0rLkrOP3KyKbf/lc9yw
+ UE7vsNwJd0NHjrr6yM0ptSKX89xOKq8c7MSVqVy3JP42uHt/p7A1U19/FM1luQLkjvHXFE4
+ d0I5uEaKXkH9v1d84djnFg254BN7370X7rB+qBDjVu54Q3PIifW/kad2NOK9LZ8cCXebked
+ sJ+h2Pr4NGz1oO3T1GAKtkeL0QT4Db+7qqVLe+W0K6Hmdh+xG8u4N8tDl7RQ==
+Received: from [10.172.233.58] (helo=SmtpCorp) by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94.2-S2G) (envelope-from <repk@triplefau.lt>)
+ id 1szcsI-TRjz50-AJ; Sat, 12 Oct 2024 14:13:42 +0000
+Received: from [10.12.239.196] (helo=localhost) by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.97.1-S2G) (envelope-from <repk@triplefau.lt>)
+ id 1szcsH-FnQW0hPuzUP-oFaB; Sat, 12 Oct 2024 14:13:42 +0000
+From: Remi Pommarel <repk@triplefau.lt>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+ Cedric Veilleux <veilleux.cedric@gmail.com>,
+ Remi Pommarel <repk@triplefau.lt>
+Subject: [PATCH 0/2] Improve ath10k flush queue mechanism
+Date: Sat, 12 Oct 2024 16:13:53 +0200
+Message-Id: <cover.1728741827.git.repk@triplefau.lt>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] wifi: ath10k: add channel 177 for 5 GHz band
-To: =?UTF-8?Q?Pawe=C5=82_Owoc?= <frut3k7@gmail.com>
-CC: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240801202359.794035-1-frut3k7@gmail.com>
- <20241009065051.51143-1-frut3k7@gmail.com>
-Content-Language: en-US
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20241009065051.51143-1-frut3k7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9sSnCPrP0KTQXd4Lw_uXlg2Dv2mGvdBW
-X-Proofpoint-GUID: 9sSnCPrP0KTQXd4Lw_uXlg2Dv2mGvdBW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 bulkscore=0
- malwarescore=0 mlxscore=0 phishscore=0 clxscore=1011 spamscore=0
- adultscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2409260000 definitions=main-2410110117
+X-Smtpcorp-Track: vtPVE6UPbXVR.EAvrXvg1ai8x.ZDaYzQHTAgz
+Feedback-ID: 510616m:510616apGKSTK:510616sE1o2YokP8
+X-Report-Abuse: Please forward a copy of this message, including all headers,
+ to <abuse-report@smtp2go.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241011_095156_384488_86DBEED6 
-X-CRM114-Status: GOOD (  16.75  )
+X-CRM114-CacheID: sfid-20241012_071358_365264_7DD1E050 
+X-CRM114-Status: GOOD (  11.19  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,55 +87,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 10/8/2024 11:49 PM, Paweł Owoc wrote:> Add support for channel 177 (5885
-MHz ) for the 5 GHz band.
-> 
-> Tested-on: qca988x hw2.0 firmware ver 10.2.4-1.0-00047
+It has been reported [0] that a 3-4 seconds (actually up to 5 sec) of
+radio silence could be observed followed by the error below on ath10k
+devices:
 
-Can you elaborate on what was tested in your commit text? And more
-importantly, what is the impact on existing devices, especially given that
-existing devices would not have calibration data for this channel in the board
-files? Does the QCA988x board file even have calibration data for this channel?
+ ath10k_pci 0000:04:00.0: failed to flush transmit queue (skip 0 ar-state 1): 0
 
-> 
-> Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
-> ---
+This is due to how the TX queues are flushed in ath10k. When a STA is
+removed, mac80211 need to flush queues [1], but because ath10k does not
+have a lightweight .flush_sta operation, ieee80211_flush_queues() is
+called instead effectively blocking the whole queue during the drain
+causing this radio silence. Also because ath10k_flush() waits for all
+queued to be emptied, not only the flushed ones it could more easily
+take up to 5 seconds to finish making the whole situation worst.
 
-what is the diff from v1?
-for future reference when you submit a new version of a patch you should
-include a patch changelog after the ---, see:
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#the-canonical-patch-format
+The first patch of this series adds a .flush_sta operation to flush only
+specific STA traffic avoiding the need to stop whole queues and should
+be enough in itself to fix the reported issue.
 
->  drivers/net/wireless/ath/ath10k/core.h | 4 ++--
->  drivers/net/wireless/ath/ath10k/mac.c  | 1 +
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 446dca74f06a..3dff8c028526 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -39,8 +39,8 @@
->  #define WMI_READY_TIMEOUT (5 * HZ)
->  #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
->  #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
-> -#define ATH10K_NUM_CHANS 41
-> -#define ATH10K_MAX_5G_CHAN 173
-> +#define ATH10K_NUM_CHANS 42
-> +#define ATH10K_MAX_5G_CHAN 177
->  
->  /* Antenna noise floor */
->  #define ATH10K_DEFAULT_NOISE_FLOOR -95
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 646e1737d4c4..cee6a4d287b5 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -9543,6 +9543,7 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
->  	CHAN5G(165, 5825, 0),
->  	CHAN5G(169, 5845, 0),
->  	CHAN5G(173, 5865, 0),
-> +	CHAN5G(177, 5885, 0),
->  	/* If you add more, you may need to change ATH10K_MAX_5G_CHAN */
->  	/* And you will definitely need to change ATH10K_NUM_CHANS in core.h */
->  };
+The second patch of this series is a proposal to improve ath10k_flush so
+that it will be less likely to timeout waiting for non related queues to
+drain.
+
+The abose kernel warning could still be observed (e.g. flushing a dead
+STA) but should be now harmless.
+
+[0]: https://lore.kernel.org/all/CA+Xfe4FjUmzM5mvPxGbpJsF3SvSdE5_wgxvgFJ0bsdrKODVXCQ@mail.gmail.com/
+[1]: commit 0b75a1b1e42e ("wifi: mac80211: flush queues on STA removal")
+
+Remi Pommarel (2):
+  wifi: ath10k: Implement ieee80211 flush_sta callback
+  wifi: ath10k: Flush only requested txq in ath10k_flush()
+
+ drivers/net/wireless/ath/ath10k/core.h   |  4 ++
+ drivers/net/wireless/ath/ath10k/htt.h    | 11 +++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 50 +++++++++++++++-
+ drivers/net/wireless/ath/ath10k/mac.c    | 76 ++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/txrx.c   |  5 +-
+ 5 files changed, 129 insertions(+), 17 deletions(-)
+
+-- 
+2.40.0
 
 
