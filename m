@@ -4,77 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EA53CF256B
-	for <ath10k@archiver.kernel.org>; Sat, 12 Oct 2024 14:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A885CFC271
+	for <ath10k@archiver.kernel.org>; Tue, 15 Oct 2024 06:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8rLniM8BoY5sp/onB7H8OkcVpspfA6/G2G0ABl2Rw5k=; b=SBZLLh5PF1wR1dVEuqs5nh1Wfw
-	mCJEk8OUvHpkhHHN5PODO8xBkw3Mlr3YWhDUbA5MQbA2q3lzy7I0IyPdbJ2069q45ch6B9wov9GnP
-	bKjgbt7u365UJ4vXsekCGHjCzQowfet9iEGoW5Prf7p2j+/qg3Z5elxEZg9hfVgUKcHWE+Zbf51kn
-	a/1ZzGNKKB6MDuwHZA2hjTUYcN4mP0uXlb9CrRNQNNbXIyRb/bm+wkbCDmmeWsvnD5DVy5iKF7eA/
-	0dVTFC5dGwHbb+gkod01u6SgZYd47IlvfwZszIOlWzW6x0tAeRUpd3OXuJpWflNO69f/4eqMFB3EG
-	VPwYhbRA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=ANlADneuu0TU4NEWZ6V7PrzdLYwNdv/Vvk1QjP26udY=; b=uNrZiI3HRcIPF9ZRH1X2HZt2lz
+	AJ2boMmyde9duyBd8tGfsLr48tkqmuFabvdkaahxB3P4Nr6thYUAHBJzXDn/Ul6u4sAS2GRc+C6to
+	H559o2UCy/08sM5D3VFejsPDQ8c2ZGHwibwXI8H3tlxZt02P3N7HCd3OCqcLapDnTJFFbIsHDIXlt
+	nBFzpy8O9Moy01KQdtt0GK/PijmTnMu7M2tp+VvZHrxJU0aUu2hPh6u+Mrz6rxSMMedE1d4OK1bLx
+	/JRMQ7L7rocBCwZs5KRRgKtzsIbOc2j+f9I4il9J1YuxCGmYwTUxddQPyPvD5xvSuyDAY1+seDI28
+	hcCTMDdg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1szcsg-00000001Jrf-0iLY;
-	Sat, 12 Oct 2024 14:14:06 +0000
-Received: from e2i340.smtp2go.com ([103.2.141.84])
+	id 1t0bPc-00000007GQJ-3rlm;
+	Tue, 15 Oct 2024 06:52:08 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szcsd-00000001Jq0-1gyr
+	id 1t0bFC-00000007F0U-0sj7
 	for ath10k@lists.infradead.org;
-	Sat, 12 Oct 2024 14:14:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=smtpservice.net; s=maxzs0.a1-4.dyn; x=1728743328; h=Feedback-ID:
-	X-Smtpcorp-Track:Message-Id:Date:Subject:To:From:Reply-To:Sender:
-	List-Unsubscribe:List-Unsubscribe-Post;
-	bh=8rLniM8BoY5sp/onB7H8OkcVpspfA6/G2G0ABl2Rw5k=; b=N5XrbFZK58kP+4qIwsj7gJeYR2
-	ELjCDCMXAwCvqswQxUm4BGxES28rWiWkeU/fTIgQgEWYCLfky2PpgycG+Bub5ZibXwOQLyAKYsfzN
-	hdC6msz5jCwNcmK9rZ0XXY4bJAZfwkP+rU0VJFKW+wsQGNraPlEoehgLZKuc1UmnG7E6ogq10L8uV
-	xk/GMSbaJQAV/9ovCBavRDEYSXix1DaiD/M85FTpHiFnWQ91nIVLyOnHpsvhuBIErn7qzDjIJqW6g
-	8BV8NxW9j1q0jUsTq6TuIAZ5KzXDfHpN4FoN7cA3i7SYOZd7PzKjSI4BDs9M/8QLc2D2UJVtXWbj1
-	0vVHkS0Q==;
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triplefau.lt;
- i=@triplefau.lt; q=dns/txt; s=s510616; t=1728742428; h=from : subject
- : to : message-id : date;
- bh=8rLniM8BoY5sp/onB7H8OkcVpspfA6/G2G0ABl2Rw5k=;
- b=bp+ECGUDr3o1L4lWReH6zh/TBNsvaTndWagqdDJeOjaLmqTpxZVaSXJ8deJQybdhL6rah
- H+wQQc0x00KFoLxqWcojRFKwLdRkc6xlzKozE+iT80HcLkI3lt2Cb8/4llABtMHibwEtc8X
- LK3jwQw7KryzopmbyP8tQnQx8QcoWGFHHm4BOZeVkCMY3XrJwvg6t0U20liPM7PXFCXkXoO
- cTVI9kC3k+Z4HpxqQA56tN/1KB3wZus3irp2/WxjE97NCjPbGwlvadbjnIxx+cnX9uhOOQT
- ML/yQbcd/6OUxs21kWDe2/zvLdPHuoOJzNzlOMZ6rUNcLDJjMzOVc6vT8sUg==
-Received: from [10.172.233.58] (helo=SmtpCorp) by smtpcorp.com with esmtpsa
- (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
- (Exim 4.94.2-S2G) (envelope-from <repk@triplefau.lt>)
- id 1szcsM-TRjzAX-T6; Sat, 12 Oct 2024 14:13:46 +0000
-Received: from [10.12.239.196] (helo=localhost) by smtpcorp.com with esmtpsa
- (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
- (Exim 4.97.1-S2G) (envelope-from <repk@triplefau.lt>)
- id 1szcsM-FnQW0hPuzbs-mf9j; Sat, 12 Oct 2024 14:13:46 +0000
-From: Remi Pommarel <repk@triplefau.lt>
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
- Cedric Veilleux <veilleux.cedric@gmail.com>,
- Remi Pommarel <repk@triplefau.lt>
-Subject: [PATCH 2/2] wifi: ath10k: Flush only requested txq in ath10k_flush()
-Date: Sat, 12 Oct 2024 16:13:55 +0200
-Message-Id: <3baf9565d72291a0b730d9a53fc1ee9610dcc91f.1728741827.git.repk@triplefau.lt>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1728741827.git.repk@triplefau.lt>
-References: <cover.1728741827.git.repk@triplefau.lt>
+	Tue, 15 Oct 2024 06:41:24 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49F0lNeH012373;
+	Tue, 15 Oct 2024 06:41:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-type:date:from:message-id:mime-version:subject:to; s=
+	qcppdkim1; bh=ANlADneuu0TU4NEWZ6V7PrzdLYwNdv/Vvk1QjP26udY=; b=Eb
+	jAh/2I7OvUzx2WuuFM1Ufu6cx/NkkUyVU2MfZFq8BGynygPiyWxycUl6kJR02hc1
+	po3j1/qDzINdtpf4zoUDSMDWHYtZ8KcGxFcZ/USKft6Yg/6nsv1OwI++ZRAwh0gi
+	AG65REXc5VKwTqs2rrgs0NxthtYIYSp9mX2McsDCrBhq9hYev/2j6QL/iFHG1RMq
+	StWlehSct7wRvCKo4NdF2jlgLKwOrjicYDjistX8H45zB3t9gtQJRbBnfhaIcXBW
+	LJjnihnlh4JDnM8RLCyq+HQCz6OGSPdtwSQWrn6/dGZEQ0vNqOIapZtX6dXH36kY
+	2JLyX5EN8S0wfsroCMIQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 429e5g0nc8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 15 Oct 2024 06:41:19 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49F6fJGe030878
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 15 Oct 2024 06:41:19 GMT
+Received: from hu-mpubbise-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Mon, 14 Oct 2024 23:41:17 -0700
+From: Manikanta Pubbisetty <quic_mpubbise@quicinc.com>
+To: <ath10k@lists.infradead.org>
+CC: <linux-wireless@vger.kernel.org>,
+        Manikanta Pubbisetty
+	<quic_mpubbise@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH ath-current] wifi: ath10k: Fix memory leak in management tx
+Date: Tue, 15 Oct 2024 12:11:03 +0530
+Message-ID: <20241015064103.6060-1-quic_mpubbise@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Smtpcorp-Track: Wkq042yNCTh8.YH-HmoWYvTPQ.83_GQQIXpHf
-Feedback-ID: 510616m:510616apGKSTK:510616sMQlxFZQJl
-X-Report-Abuse: Please forward a copy of this message, including all headers,
- to <abuse-report@smtp2go.com>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: KQT_A4WmFeySMsIe-UWDXa3SSxU_t0fK
+X-Proofpoint-ORIG-GUID: KQT_A4WmFeySMsIe-UWDXa3SSxU_t0fK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ adultscore=0 impostorscore=0 mlxscore=0 priorityscore=1501 suspectscore=0
+ bulkscore=0 phishscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
+ definitions=main-2410150044
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241012_071403_731258_45E5FC8D 
-X-CRM114-Status: GOOD (  17.61  )
+X-CRM114-CacheID: sfid-20241014_234122_278183_A8501DAB 
+X-CRM114-Status: GOOD (  13.95  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,238 +95,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The ieee80211 flush callback can be called to flush only part of all hw
-queues. The ath10k's flush callback implementation (i.e. ath10k_flush())
-was waiting for all pending frames of all queues to be flushed ignoring
-the queue parameter. Because only the queues to be flushed are stopped
-by mac80211, skb can still be queued to other queues meanwhile. Thus
-ath10k_flush() could fail (and wait 5sec holding ar->conf lock) even if
-the requested queues are flushed correctly.
+In the current logic, memory is allocated for storing the MSDU context
+during management packet TX but this memory is not being freed during
+management TX completion. Similar leaks are seen in the management TX
+cleanup logic.
 
-A way to reproduce the issue is to use two different APs because
-each vdev has its own hw queue in ath10k. Connect STA0 to AP0 and STA1
-to AP1. Then generate traffic from AP0 to STA0 and kill STA0 without
-clean disassociation frame (e.g. unplug power cable, reboot -f, ...).
-Now if we were to flush AP1's queue, ath10k_flush() would fail (and
-effectively block 5 seconds with ar->conf or even wiphy's lock held)
-with the following warning:
+Kmemleak reports this problem as below,
 
- ath10k_pci 0000:01:00.0: failed to flush transmit queue (skip 0 ar-state 2): 0
+unreferenced object 0xffffff80b64ed250 (size 16):
+  comm "kworker/u16:7", pid 148, jiffies 4294687130 (age 714.199s)
+  hex dump (first 16 bytes):
+    00 2b d8 d8 80 ff ff ff c4 74 e9 fd 07 00 00 00  .+.......t......
+  backtrace:
+    [<ffffffe6e7b245dc>] __kmem_cache_alloc_node+0x1e4/0x2d8
+    [<ffffffe6e7adde88>] kmalloc_trace+0x48/0x110
+    [<ffffffe6bbd765fc>] ath10k_wmi_tlv_op_gen_mgmt_tx_send+0xd4/0x1d8 [ath10k_core]
+    [<ffffffe6bbd3eed4>] ath10k_mgmt_over_wmi_tx_work+0x134/0x298 [ath10k_core]
+    [<ffffffe6e78d5974>] process_scheduled_works+0x1ac/0x400
+    [<ffffffe6e78d60b8>] worker_thread+0x208/0x328
+    [<ffffffe6e78dc890>] kthread+0x100/0x1c0
+    [<ffffffe6e78166c0>] ret_from_fork+0x10/0x20
 
-Wait only for pending frames of the requested queues to be flushed in
-ath10k_flush() to avoid that long blocking.
+Free the memory during completion and cleanup to fix the leak.
 
-Reported-by: Cedric Veilleux <veilleux.cedric@gmail.com>
-Signed-off-by: Remi Pommarel <repk@triplefau.lt>
+Protect the mgmt_pending_tx idr_remove() operation in
+ath10k_wmi_tlv_op_cleanup_mgmt_tx_send() using ar->data_lock similar to
+other instances.
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1
+
+Fixes: dc405152bb64 ("ath10k: handle mgmt tx completion event")
+Fixes: c730c477176a ("ath10k: Remove msdu from idr when management pkt send fails")
+Cc: stable@vger.kernel.org
+Signed-off-by: Manikanta Pubbisetty <quic_mpubbise@quicinc.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |  7 +++--
- drivers/net/wireless/ath/ath10k/htt_tx.c | 18 ++++++++++---
- drivers/net/wireless/ath/ath10k/mac.c    | 33 +++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/txrx.c   |  2 +-
- 4 files changed, 44 insertions(+), 16 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 7 ++++++-
+ drivers/net/wireless/ath/ath10k/wmi.c     | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index d150f9330941..33054fc4d9fb 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1870,6 +1870,7 @@ struct ath10k_htt {
- 	spinlock_t tx_lock;
- 	int max_num_pending_tx;
- 	int num_pending_tx;
-+	int pending_per_queue[IEEE80211_MAX_QUEUES];
- 	int num_pending_mgmt_tx;
- 	struct idr pending_tx;
- 	wait_queue_head_t empty_tx_wq;
-@@ -2447,8 +2448,10 @@ void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
- void ath10k_htt_tx_txq_recalc(struct ieee80211_hw *hw,
- 			      struct ieee80211_txq *txq);
- void ath10k_htt_tx_txq_sync(struct ath10k *ar);
--void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
--int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt);
-+void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
-+			       struct ieee80211_txq *txq);
-+int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt,
-+			      struct ieee80211_txq *txq);
- void ath10k_htt_tx_mgmt_dec_pending(struct ath10k_htt *htt);
- int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
- 				   bool is_presp);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 7477cb8f5d10..a87ceda86098 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -140,19 +140,26 @@ void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
- 	spin_unlock_bh(&ar->htt.tx_lock);
- }
- 
--void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
-+void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
-+			       struct ieee80211_txq *txq)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index dbaf26d6a7a6..16d07d619b4d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -3043,9 +3043,14 @@ ath10k_wmi_tlv_op_cleanup_mgmt_tx_send(struct ath10k *ar,
+ 				       struct sk_buff *msdu)
  {
-+	int num_txq = -1;
+ 	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(msdu);
++	struct ath10k_mgmt_tx_pkt_addr *pkt_addr;
+ 	struct ath10k_wmi *wmi = &ar->wmi;
+ 
+-	idr_remove(&wmi->mgmt_pending_tx, cb->msdu_id);
++	spin_lock_bh(&ar->data_lock);
++	pkt_addr = idr_remove(&wmi->mgmt_pending_tx, cb->msdu_id);
++	spin_unlock_bh(&ar->data_lock);
 +
- 	lockdep_assert_held(&htt->tx_lock);
++	kfree(pkt_addr);
  
- 	htt->num_pending_tx--;
- 	if (htt->num_pending_tx == htt->max_num_pending_tx - 1)
- 		ath10k_mac_tx_unlock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
- 
--	if (htt->num_pending_tx == 0)
-+	if (txq)
-+		num_txq = --htt->pending_per_queue[txq->vif->hw_queue[txq->ac]];
-+
-+	if (htt->num_pending_tx == 0 || num_txq == 0)
- 		wake_up(&htt->empty_tx_wq);
- }
- 
--int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt)
-+int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt,
-+			      struct ieee80211_txq *txq)
- {
- 	lockdep_assert_held(&htt->tx_lock);
- 
-@@ -163,6 +170,11 @@ int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt)
- 	if (htt->num_pending_tx == htt->max_num_pending_tx)
- 		ath10k_mac_tx_lock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
- 
-+	if (!txq)
-+		return 0;
-+
-+	htt->pending_per_queue[txq->vif->hw_queue[txq->ac]]++;
-+
  	return 0;
  }
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 4861179b2217..5e061f7525a6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2441,6 +2441,7 @@ wmi_process_mgmt_tx_comp(struct ath10k *ar, struct mgmt_tx_compl_params *param)
+ 	dma_unmap_single(ar->dev, pkt_addr->paddr,
+ 			 msdu->len, DMA_TO_DEVICE);
+ 	info = IEEE80211_SKB_CB(msdu);
++	kfree(pkt_addr);
  
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 373a0aa6b01c..bb4a6f11dd1d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4385,7 +4385,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 	u16 airtime;
+ 	if (param->status) {
+ 		info->flags &= ~IEEE80211_TX_STAT_ACK;
+@@ -9612,6 +9613,7 @@ static int ath10k_wmi_mgmt_tx_clean_up_pending(int msdu_id, void *ptr,
+ 	dma_unmap_single(ar->dev, pkt_addr->paddr,
+ 			 msdu->len, DMA_TO_DEVICE);
+ 	ieee80211_free_txskb(ar->hw, msdu);
++	kfree(pkt_addr);
  
- 	spin_lock_bh(&ar->htt.tx_lock);
--	ret = ath10k_htt_tx_inc_pending(htt);
-+	ret = ath10k_htt_tx_inc_pending(htt, txq);
- 	spin_unlock_bh(&ar->htt.tx_lock);
- 
- 	if (ret)
-@@ -4394,7 +4394,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 	skb = ieee80211_tx_dequeue_ni(hw, txq);
- 	if (!skb) {
- 		spin_lock_bh(&ar->htt.tx_lock);
--		ath10k_htt_tx_dec_pending(htt);
-+		ath10k_htt_tx_dec_pending(htt, txq);
- 		spin_unlock_bh(&ar->htt.tx_lock);
- 
- 		return -ENOENT;
-@@ -4416,7 +4416,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
- 
- 		if (ret) {
--			ath10k_htt_tx_dec_pending(htt);
-+			ath10k_htt_tx_dec_pending(htt, txq);
- 			spin_unlock_bh(&ar->htt.tx_lock);
- 			return ret;
- 		}
-@@ -4430,7 +4430,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to push frame: %d\n", ret);
- 
- 		spin_lock_bh(&ar->htt.tx_lock);
--		ath10k_htt_tx_dec_pending(htt);
-+		ath10k_htt_tx_dec_pending(htt, txq);
- 		if (is_mgmt)
- 			ath10k_htt_tx_mgmt_dec_pending(htt);
- 		spin_unlock_bh(&ar->htt.tx_lock);
-@@ -4693,7 +4693,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
- 			is_presp = ieee80211_is_probe_resp(hdr->frame_control);
- 		}
- 
--		ret = ath10k_htt_tx_inc_pending(htt);
-+		ret = ath10k_htt_tx_inc_pending(htt, txq);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to increase tx pending count: %d, dropping\n",
- 				    ret);
-@@ -4706,7 +4706,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
- 		if (ret) {
- 			ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
- 				   ret);
--			ath10k_htt_tx_dec_pending(htt);
-+			ath10k_htt_tx_dec_pending(htt, txq);
- 			spin_unlock_bh(&ar->htt.tx_lock);
- 			ieee80211_free_txskb(ar->hw, skb);
- 			return;
-@@ -4719,7 +4719,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
- 		if (is_htt) {
- 			spin_lock_bh(&ar->htt.tx_lock);
--			ath10k_htt_tx_dec_pending(htt);
-+			ath10k_htt_tx_dec_pending(htt, txq);
- 			if (is_mgmt)
- 				ath10k_htt_tx_mgmt_dec_pending(htt);
- 			spin_unlock_bh(&ar->htt.tx_lock);
-@@ -8046,10 +8046,12 @@ static int ath10k_mac_op_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
- 	return -EOPNOTSUPP;
+ 	return 0;
  }
- 
--void ath10k_mac_wait_tx_complete(struct ath10k *ar)
-+static void _ath10k_mac_wait_tx_complete(struct ath10k *ar,
-+					 unsigned long queues)
- {
- 	bool skip;
- 	long time_left;
-+	unsigned int q;
- 
- 	/* mac80211 doesn't care if we really xmit queued frames or not
- 	 * we'll collect those frames either way if we stop/delete vdevs
-@@ -8062,7 +8064,11 @@ void ath10k_mac_wait_tx_complete(struct ath10k *ar)
- 			bool empty;
- 
- 			spin_lock_bh(&ar->htt.tx_lock);
--			empty = (ar->htt.num_pending_tx == 0);
-+			for_each_set_bit(q, &queues, ar->hw->queues) {
-+				empty = (ar->htt.pending_per_queue[q] == 0);
-+				if (!empty)
-+					break;
-+			}
- 			spin_unlock_bh(&ar->htt.tx_lock);
- 
- 			skip = (ar->state == ATH10K_STATE_WEDGED) ||
-@@ -8077,6 +8083,13 @@ void ath10k_mac_wait_tx_complete(struct ath10k *ar)
- 			    skip, ar->state, time_left);
- }
- 
-+void ath10k_mac_wait_tx_complete(struct ath10k *ar)
-+{
-+	unsigned int queues = GENMASK(ar->hw->queues - 1, 0);
-+
-+	_ath10k_mac_wait_tx_complete(ar, queues);
-+}
-+
- static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			 u32 queues, bool drop)
- {
-@@ -8098,7 +8111,7 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	}
- 
- 	mutex_lock(&ar->conf_mutex);
--	ath10k_mac_wait_tx_complete(ar);
-+	_ath10k_mac_wait_tx_complete(ar, queues);
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index ece56379b0f0..5b5078cff153 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -82,7 +82,7 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 
- 	flags = skb_cb->flags;
- 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
--	ath10k_htt_tx_dec_pending(htt);
-+	ath10k_htt_tx_dec_pending(htt, txq);
- 	spin_unlock_bh(&htt->tx_lock);
- 
- 	rcu_read_lock();
 -- 
-2.40.0
+2.17.1
 
 
