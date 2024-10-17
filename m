@@ -4,90 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31B55D3C536
-	for <ath10k@archiver.kernel.org>; Thu, 17 Oct 2024 21:34:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DED0CD3C538
+	for <ath10k@archiver.kernel.org>; Thu, 17 Oct 2024 22:52:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EcSHCx2JQq3nN+Y3bskrGaIP8pxhfHO/tg8J4qfzDYw=; b=R8DOs3tP34VS73ZB+KbHsu4IbE
-	E3RT4OiV4EdquhvLiLaYYrYj6eQYl8WAVF+hSRXvx0Qowj8Z/IulT1jtGH3cBkWqPkdP5/OXed9mv
-	P0w2Pv4OrTL6UnkpFx9v/ndkxQie9xFS9TOntbxYZFqnxzbWqUvJzWglJsgVkdFGL7MQwpohqTB2l
-	e02lDiBpyBerLTHmYy21k2faRg34oOaDX5MJMc4Xy6Uu4KSfsjX4axTJcKfVqarTAdkTGsflM3dQ+
-	o2fDwqx8Ue6P+yW2PpYtjqkYXoJnytKh1Hm36ZCEj5T03C2EjboW0cLwT4wP+GCZ4uEHCfjqDfZd1
-	9oAp1O4w==;
+	bh=Ak09hnm3ZyKvAlgCv6Rshtaw1ScSFFpp67M4d2jxtOE=; b=3lBSbngauAmWCUXNTDvl1TXQ1j
+	sznx1xLpldtgdyZzbZNo9dVpSlqIuXJ2Ev+Zt5pBEjNI6aDN1q9kzxpfh5vyq1W+dai99fANe48vD
+	AjA4yIM8TaKEqxuxAQ9wKyka0DR3p350MNYgOfkwOg1/wYxpbPxIoQ/3ZGj5luzAWoWGSmipQycpY
+	E/JD0Fe8Be7VwLQMagvrbC8gj1Yzv1VRcpBQ6ojfqsexIkFAOe0sN3Yb6QS0njBSDKpgFglNhmyIk
+	XoirId/8EaLE34+T5bD3d2EDPAM/uFGxAev24k2BprihVRAhx/XrKL5YrysaWc764oUgwlYsseYYM
+	D/YyoPKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1Y8E-0000000GFX8-0ovK;
-	Thu, 17 Oct 2024 21:34:06 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1t1ZLq-0000000GNJN-0E0x;
+	Thu, 17 Oct 2024 22:52:14 +0000
+Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1Xz5-0000000GEK9-28Nw
+	id 1t1ZLn-0000000GNIp-28Qd
 	for ath10k@lists.infradead.org;
-	Thu, 17 Oct 2024 21:24:43 +0000
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49HKJBAT027126;
-	Thu, 17 Oct 2024 21:24:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	EcSHCx2JQq3nN+Y3bskrGaIP8pxhfHO/tg8J4qfzDYw=; b=gEUCZayO0u3f8+aJ
-	Z0GHNNfEq8TG9jZ2RXoDrpgx76HWegY8SBLeQP1WV7TlVl8ubaShSESiFnr5VOhO
-	24CnHbHB/yAs3QJEShtlY43qiYdWXB+gyE4hOZA7UJRcMW4Pz3aThRMFUjma1meq
-	DBpw/rgMVF9yI8Ht8gXqUoiMjGg4/n8Z5/70ZbEwMuQRI38xAPDQlBNJmCB0QywF
-	OfDpAZw8xn2t4PRx3yT4onOykE4z6zqivRxtsCntfEbvvC5dQNg0sUIeQ/8ZUYdY
-	brOmKZDhan877gMXF68S5kloxFY85ZyrhgVSAygPxnwxkteYJmyXn1PwpvH34Vez
-	hQjzoQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42ay8ja2kc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 17 Oct 2024 21:24:32 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49HLOUBM015333
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 17 Oct 2024 21:24:30 GMT
-Received: from [10.48.241.64] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 17 Oct
- 2024 14:24:30 -0700
-Message-ID: <3ea462fe-3028-44c1-9be4-3d973d202bee@quicinc.com>
-Date: Thu, 17 Oct 2024 14:24:29 -0700
+	Thu, 17 Oct 2024 22:52:12 +0000
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-7ea80863f12so731244a12.1
+        for <ath10k@lists.infradead.org>; Thu, 17 Oct 2024 15:52:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729205530; x=1729810330; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ak09hnm3ZyKvAlgCv6Rshtaw1ScSFFpp67M4d2jxtOE=;
+        b=EjVVWFb+uTURPucYhwa+KbZ9PF7CgSPgl7zS5Hm3urLe/zKYPj5V4EJQLhVbsmYjSo
+         DA6ASfdmcB7zhayJSLE6IyExhtto7saAsvsNszfubEHqTqVtwj3sZ46IEes/ZWMNlclm
+         NTQxdPmetcZxfkrkhpofIBvwIBI3ejjZ9jSUZXrChJYW4m2ZuLBGErerUbk+9no7DWr+
+         5oMjfqEFK0NkGtbBPh5pkM4XwUkUvScAt06VNF9lqlJK7kPyDYfgipRquyFkwKoeA/PJ
+         3vtBE6AOvgWdQM/sd8Ld6D0ITbuWcSKnuyiODh0vUAErFEx+OWBMlaHHxrb//ff+DCS+
+         2PTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729205530; x=1729810330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ak09hnm3ZyKvAlgCv6Rshtaw1ScSFFpp67M4d2jxtOE=;
+        b=gcdgX5t9hfYo70WTcOl8pU5JyByHy3+/UTPUQriK1MBUkEhP325uiyN4szzuFHUtns
+         iHubc27R/sVedxpY4l6nDOMdL/yoZFZRjgWWE8h4qNXqwVwg9y+fK4sz+3liXTqJiFQW
+         B9yHs1DzYOCMQmOe0nCgOP0sSVHahWRDb+lg5yjEklg1r0ny2a26jrqrXBvuxzYqqxOk
+         /C3NHF+ZbSagpQWOREQuYlbTcaPornlCyFp6Skxd6WXGXU1BOxxD2RK9DTrbGg3sheAb
+         rXeH0+KHTkmV2neBsChHN6fTW+2IorrbWT0ZemeKG+0tsm/1nCvIBUOZAWa5OUlQbnwg
+         XuNg==
+X-Forwarded-Encrypted: i=1; AJvYcCXL8lhw9aHnUxNwkZITch3mcbe5XDS7J8EyJC6dp6iHmFEef/7sXT/wdYA1LvIe4f88cD0komM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwUYvchsQ5qnD94m8y926F1B93hquNUYcib6Y7LvIbEuQPJEp6t
+	loE9SBXRlhzfR1+853W13svuHs19LNpUt1la3oDuqU2y0JehbxmKcm6zk2DtrrbA5poOVfzb+gY
+	KDNamBKN4Hars6UQzk8NcZPpZ5jbo6iW0pw==
+X-Google-Smtp-Source: AGHT+IGgAVW5XSoMHG4e+KpIXFuLcDgPF2s1F+2Cv3K68fhHnOOm7OviGrLHhAGMq+8oKZAf3PPVXx/5ByQdbk46G4E=
+X-Received: by 2002:a05:6a21:710a:b0:1d8:d880:2069 with SMTP id
+ adf61e73a8af0-1d92c4ad296mr654536637.3.1729205530193; Thu, 17 Oct 2024
+ 15:52:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] wifi: ath10k: Flush only requested txq in
- ath10k_flush()
-To: Remi Pommarel <repk@triplefau.lt>, <ath10k@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        Cedric
- Veilleux <veilleux.cedric@gmail.com>
-References: <cover.1728741827.git.repk@triplefau.lt>
- <3baf9565d72291a0b730d9a53fc1ee9610dcc91f.1728741827.git.repk@triplefau.lt>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <3baf9565d72291a0b730d9a53fc1ee9610dcc91f.1728741827.git.repk@triplefau.lt>
+References: <20240801202359.794035-1-frut3k7@gmail.com> <20241009065051.51143-1-frut3k7@gmail.com>
+ <b58b5b2e-bf9f-480c-810b-2cef29aab82c@quicinc.com>
+In-Reply-To: <b58b5b2e-bf9f-480c-810b-2cef29aab82c@quicinc.com>
+From: =?UTF-8?Q?Pawe=C5=82_Owoc?= <frut3k7@gmail.com>
+Date: Fri, 18 Oct 2024 00:51:59 +0200
+Message-ID: <CAKEyCaDUfn4jtCdTt9JJ-Qe+CCudORPwcjj5i5=G28ANc+eCRg@mail.gmail.com>
+Subject: Re: [PATCH v2] wifi: ath10k: add channel 177 for 5 GHz band
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>, 
+	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vyzmtg9wNEvgzaCCeMrotrhKGEchehq4
-X-Proofpoint-ORIG-GUID: vyzmtg9wNEvgzaCCeMrotrhKGEchehq4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 adultscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 spamscore=0 clxscore=1015
- mlxlogscore=929 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410170144
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241017_142439_697608_B4D9B202 
-X-CRM114-Status: GOOD (  14.75  )
+X-CRM114-CacheID: sfid-20241017_155211_576862_4643D661 
+X-CRM114-Status: GOOD (  22.72  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,38 +92,89 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 10/12/2024 7:13 AM, Remi Pommarel wrote:
-> The ieee80211 flush callback can be called to flush only part of all hw
-> queues. The ath10k's flush callback implementation (i.e. ath10k_flush())
-> was waiting for all pending frames of all queues to be flushed ignoring
-> the queue parameter. Because only the queues to be flushed are stopped
-> by mac80211, skb can still be queued to other queues meanwhile. Thus
-> ath10k_flush() could fail (and wait 5sec holding ar->conf lock) even if
-> the requested queues are flushed correctly.
-> 
-> A way to reproduce the issue is to use two different APs because
-> each vdev has its own hw queue in ath10k. Connect STA0 to AP0 and STA1
-> to AP1. Then generate traffic from AP0 to STA0 and kill STA0 without
-> clean disassociation frame (e.g. unplug power cable, reboot -f, ...).
-> Now if we were to flush AP1's queue, ath10k_flush() would fail (and
-> effectively block 5 seconds with ar->conf or even wiphy's lock held)
-> with the following warning:
-> 
->  ath10k_pci 0000:01:00.0: failed to flush transmit queue (skip 0 ar-state 2): 0
-> 
-> Wait only for pending frames of the requested queues to be flushed in
-> ath10k_flush() to avoid that long blocking.
-> 
-> Reported-by: Cedric Veilleux <veilleux.cedric@gmail.com>
+On Fri, Oct 11, 2024 at 6:51=E2=80=AFPM Jeff Johnson <quic_jjohnson@quicinc=
+.com> wrote:
+>
+> On 10/8/2024 11:49 PM, Pawe=C5=82 Owoc wrote:> Add support for channel 17=
+7 (5885
+> MHz ) for the 5 GHz band.
+> >
+> > Tested-on: qca988x hw2.0 firmware ver 10.2.4-1.0-00047
+>
+> Can you elaborate on what was tested in your commit text? And more
+> importantly, what is the impact on existing devices, especially given tha=
+t
+> existing devices would not have calibration data for this channel in the =
+board
+> files? Does the QCA988x board file even have calibration data for this ch=
+annel?
+>
+In the case of ath10k we use an external regulatory database.
+For the country "US" channels 169, 173 and 177 are marked as NO-IR and
+we cannot run AP on them.
+Even if channels are not disabled in the board files:
+            * 5845.0 MHz [169] (27.0 dBm) (no IR)
+            * 5865.0 MHz [173] (27.0 dBm) (no IR)
+            * 5885.0 MHz [177] (27.0 dBm) (no IR)
 
-WARNING:BAD_REPORTED_BY_LINK: Reported-by: should be immediately followed by Closes: with a URL to the report
+I only tested the use as a client on channel 177:
+root@OpenWrt:~# iwinfo phy1 scan
+Cell 01 - Address: XX:XX:XX:XX:XX:XX
+          ESSID: "ch177"
+          Mode: Master  Frequency: 5.885 GHz  Band: 5 GHz  Channel: 177
+          Signal: -43 dBm  Quality: 67/70
+          Encryption: mixed WPA2/WPA3 PSK/SAE (CCMP)
+          HT Operation:
+                    Primary Channel: 177
+                    Secondary Channel Offset: no secondary
+                    Channel Width: 20 MHz
+> >
+> > Signed-off-by: Pawe=C5=82 Owoc <frut3k7@gmail.com>
+> > ---
+>
+> what is the diff from v1?
+> for future reference when you submit a new version of a patch you should
+> include a patch changelog after the ---, see:
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#th=
+e-canonical-patch-format
+>
+There are no differences. My previous patch was deferred. I don't know
+exactly how to proceed in such a case.
 
-> Signed-off-by: Remi Pommarel <repk@triplefau.lt>
-> ---
->  drivers/net/wireless/ath/ath10k/htt.h    |  7 +++--
->  drivers/net/wireless/ath/ath10k/htt_tx.c | 18 ++++++++++---
->  drivers/net/wireless/ath/ath10k/mac.c    | 33 +++++++++++++++++-------
->  drivers/net/wireless/ath/ath10k/txrx.c   |  2 +-
->  4 files changed, 44 insertions(+), 16 deletions(-)
-
+> >  drivers/net/wireless/ath/ath10k/core.h | 4 ++--
+> >  drivers/net/wireless/ath/ath10k/mac.c  | 1 +
+> >  2 files changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wirel=
+ess/ath/ath10k/core.h
+> > index 446dca74f06a..3dff8c028526 100644
+> > --- a/drivers/net/wireless/ath/ath10k/core.h
+> > +++ b/drivers/net/wireless/ath/ath10k/core.h
+> > @@ -39,8 +39,8 @@
+> >  #define WMI_READY_TIMEOUT (5 * HZ)
+> >  #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
+> >  #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
+> > -#define ATH10K_NUM_CHANS 41
+> > -#define ATH10K_MAX_5G_CHAN 173
+> > +#define ATH10K_NUM_CHANS 42
+> > +#define ATH10K_MAX_5G_CHAN 177
+> >
+> >  /* Antenna noise floor */
+> >  #define ATH10K_DEFAULT_NOISE_FLOOR -95
+> > diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wirele=
+ss/ath/ath10k/mac.c
+> > index 646e1737d4c4..cee6a4d287b5 100644
+> > --- a/drivers/net/wireless/ath/ath10k/mac.c
+> > +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> > @@ -9543,6 +9543,7 @@ static const struct ieee80211_channel ath10k_5ghz=
+_channels[] =3D {
+> >       CHAN5G(165, 5825, 0),
+> >       CHAN5G(169, 5845, 0),
+> >       CHAN5G(173, 5865, 0),
+> > +     CHAN5G(177, 5885, 0),
+> >       /* If you add more, you may need to change ATH10K_MAX_5G_CHAN */
+> >       /* And you will definitely need to change ATH10K_NUM_CHANS in cor=
+e.h */
+> >  };
+>
 
