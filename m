@@ -4,91 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 998A4D3001B
-	for <ath10k@archiver.kernel.org>; Fri, 18 Oct 2024 16:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BB93D3C919
+	for <ath10k@archiver.kernel.org>; Sat, 19 Oct 2024 15:32:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=X9yWHtce5E627XFATNma/BqkF4zKRZm72cz3DZRf6as=; b=YAEM2g0lxZ+UI9fvnr6kEDa+v/
-	GyBoZvz0r/rPFpzSLqq5fb8UvKKxFiQ78LNU6mnpjBxqQ8f/p9PJX2Njb0Mb7qscPnH4Ql06NOwOS
-	wY6bhq/IGUlP/haF5dmR3Y3LNBM+5jzD6r++jHscgVqx541ll59Psokk0NK1Hc/bx0cnSEguzoY0Q
-	0HE1ssz+pOvv0rGdeEmHMWO3YwGGIo0iy+aKOeNDpXjZP0EosPnJ7evxe/OpJduhovnFdbpyE8NQC
-	Il4VC+vTm3/HjgnBl+OxcPU9qffy3pbGJHlVvWycgw+NGgLTSm0zkM/e4brxlX6hA5yVCDmX3+SUP
-	e/eG0APw==;
+	bh=tMbXRc4YDc45MT1d2qKMPKKlX3fx86b90pw720KiDfI=; b=PxDMHohmA48wE7+7SUuVgnOF5g
+	nTAZ2PkThwugSQ4fzR+v9FjrVI7/t1VKelX2eV2dPVF4R/WkD3fCYzbZGvsANMCw9wee1vRVElSsh
+	xME9V9cjnYcQ1HwnPzkdjAdHQwAQALBsmxyV2vbgeeq2i5gX8py6Rjn4ZrkO61YRgzUlXRliRnC1k
+	AxShcDc8GBV+aPV2IqEdiWmdW+WXnzMoAOynYFGHXxCwDtTwAb0DNFdYW+Hpqc4sKaPNTUj/BbjTi
+	m+lebE1+mDYfQB3U1cIP4J3toyyj2zZnY2Q+DFDYZq/tVf7F0o4y8UTUHvJ4jJu1ZKssgWyD0uYY2
+	d9nyqNrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1pgw-00000001KUx-2gnj;
-	Fri, 18 Oct 2024 16:19:06 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1t2BRK-00000003Vxe-2VQq;
+	Sat, 19 Oct 2024 15:32:26 +0000
+Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1pgu-00000001KU6-0IWy
+	id 1t2BRH-00000003VxA-2zRL
 	for ath10k@lists.infradead.org;
-	Fri, 18 Oct 2024 16:19:05 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49IBapIE019324;
-	Fri, 18 Oct 2024 16:19:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	X9yWHtce5E627XFATNma/BqkF4zKRZm72cz3DZRf6as=; b=U3oTuCvqdP/zwIO9
-	YkbF1eide7r77GED2LvFs9rC6Ab1LbgvvCGBX/j0N8Yz2Y3unJHbV3YlrkaO+I07
-	ZfOW3gyi2uejK3pvxVSy0IKHLec9f2xfHy/NM8i4D+5c/RmCmYQshsAlaT3afpbc
-	9viHPGbPpUF5f/D8jYdO+WAvyd1APU6ZNhTt71tvOK1fV49+c/bC4tuXivnUfixv
-	wq26cM1IyH7cYaSJPDmz9Hz7S01qgJKcB1koTrXxK3WQv8Pni7RG/RjehSQgcOa1
-	beBL/PPTEJrVs9st8SjKYOvgKWatqf3KTNHelEbSu2Q1hzJ5WDjuBvS1k0TY0iUE
-	WVNuJQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42bexpa8jt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 18 Oct 2024 16:18:59 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49IGIwrs022059
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 18 Oct 2024 16:18:58 GMT
-Received: from [10.216.12.9] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 18 Oct
- 2024 09:18:55 -0700
-Message-ID: <753a6661-9d52-93da-23a4-d33dab4a396b@quicinc.com>
-Date: Fri, 18 Oct 2024 21:48:50 +0530
+	Sat, 19 Oct 2024 15:32:25 +0000
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-71e681bc315so2042232b3a.0
+        for <ath10k@lists.infradead.org>; Sat, 19 Oct 2024 08:32:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729351942; x=1729956742; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tMbXRc4YDc45MT1d2qKMPKKlX3fx86b90pw720KiDfI=;
+        b=Pg5wBoNOr78jenuiOj6DfXpohpFgIjhdvLqxHTV56I2+pcYJH2VsqUHmwu4fo7BG+b
+         LgH3g3ojZnKlNG5+DUlZvqvKu8VjHCBJEytcsoQlVUMNbkLj9DCVp+rb+Ua/ADtoNfKu
+         9ckw2swn3CGwuWXaoOOlNN5SPIiJXLI4fD91K0vXqNjxw3255QYepu+C4ehi+6iqLR/v
+         Ve7vchyCK/5xKUnmA1vthxV2YnHlT4kYLqUwb8QAe0S34FwnvbWM+OBP4P58qZDIwMRi
+         apq1Khhe4JXFfYR4s94koapsQ72u1+DRprJauP7sEaPGS4KKjSid5PffTDpoBZDWwD0p
+         HD7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729351942; x=1729956742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tMbXRc4YDc45MT1d2qKMPKKlX3fx86b90pw720KiDfI=;
+        b=ueknYx5EDFtoQYhU+0oFwdz88pOch2ftwhbEXYawOk4tQtM7zjIVGA1F4Dbe+NLE66
+         RxNZOv0CMAk6fTqiYRaVI/P2UhbTVDHmCatzaWdjBRYMEZXabEfG0p5jnpl196ls3P4X
+         sGkwj7w0WW2ZQHIhO9Ef9VXc/4s2yQ8LkU5H2tVGN6PFz1CHXVaQP1io1atyeL4Kj/+6
+         B3KksZj73ETI/n+jmu/6eZfC9rfLFeqySabSoXpborJL+pKf98L6cc4nhbEdVhbqlHgY
+         zRP+YZ4juqWtKL0/2W0WOhm26uk1hNXIK3nf5zJyiv6bAyYoB/9NzZjYILPgFdFjsxvo
+         kG3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXCjk44ja67CaB2AqAdetg8Ph9A4euSMhF3sejUFehPEqxNxUZNm06fZLSLGIkg0nQGMwRzoRg=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yyu9gnl/EvI+s0gln9+UZhH+OyE7H5SxZQJmzP1l1UHvqWdZL36
+	S76mTi87B1+p6q0hRDt07hIEteY6LliYcn2e/+VmaxZJgtWucsXRskVoO47Adbw3zqNnc7X/kxD
+	7aHGsf053ka9j46Z3SMR8KKWufA==
+X-Google-Smtp-Source: AGHT+IFJna+hBKXImW8Ukhf2hjuSYeoPJcv9SN4RAswAP5PzwhWWEEM29I8Tn+A3FSx/U4+sO1kd59bFe5ksAV0udi4=
+X-Received: by 2002:a05:6a00:2da2:b0:71e:6a99:4732 with SMTP id
+ d2e1a72fcca58-71ea4255c3emr7246225b3a.11.1729351942310; Sat, 19 Oct 2024
+ 08:32:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] wifi: ath10k: Flush only requested txq in
- ath10k_flush()
-Content-Language: en-US
-To: Remi Pommarel <repk@triplefau.lt>, <ath10k@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        Cedric
- Veilleux <veilleux.cedric@gmail.com>
-References: <cover.1728741827.git.repk@triplefau.lt>
- <3baf9565d72291a0b730d9a53fc1ee9610dcc91f.1728741827.git.repk@triplefau.lt>
-From: Vasanthakumar Thiagarajan <quic_vthiagar@quicinc.com>
-In-Reply-To: <3baf9565d72291a0b730d9a53fc1ee9610dcc91f.1728741827.git.repk@triplefau.lt>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: z1Zm4QQINbQxOO4v76qhrGdKTnXXEbSa
-X-Proofpoint-ORIG-GUID: z1Zm4QQINbQxOO4v76qhrGdKTnXXEbSa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- clxscore=1015 spamscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0
- suspectscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410180104
+References: <20240801202359.794035-1-frut3k7@gmail.com> <20241009065051.51143-1-frut3k7@gmail.com>
+ <b58b5b2e-bf9f-480c-810b-2cef29aab82c@quicinc.com> <CAKEyCaDUfn4jtCdTt9JJ-Qe+CCudORPwcjj5i5=G28ANc+eCRg@mail.gmail.com>
+ <87ed4dr5pj.fsf@kernel.org>
+In-Reply-To: <87ed4dr5pj.fsf@kernel.org>
+From: =?UTF-8?Q?Pawe=C5=82_Owoc?= <frut3k7@gmail.com>
+Date: Sat, 19 Oct 2024 17:32:10 +0200
+Message-ID: <CAKEyCaD-1GO1NL-=1E92BE9=XKa2PymOAY14vMmtwYGLsPjeUg@mail.gmail.com>
+Subject: Re: [PATCH v2] wifi: ath10k: add channel 177 for 5 GHz band
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, Jeff Johnson <jjohnson@kernel.org>, 
+	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241018_091904_153379_D6A9121D 
-X-CRM114-Status: GOOD (  17.37  )
+X-CRM114-CacheID: sfid-20241019_083223_770817_8307BA53 
+X-CRM114-Status: UNSURE (   8.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,51 +94,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-
-
-On 10/12/2024 7:43 PM, Remi Pommarel wrote:
-> The ieee80211 flush callback can be called to flush only part of all hw
-> queues. The ath10k's flush callback implementation (i.e. ath10k_flush())
-> was waiting for all pending frames of all queues to be flushed ignoring
-> the queue parameter. Because only the queues to be flushed are stopped
-> by mac80211, skb can still be queued to other queues meanwhile. Thus
-> ath10k_flush() could fail (and wait 5sec holding ar->conf lock) even if
-> the requested queues are flushed correctly.
-> 
-> A way to reproduce the issue is to use two different APs because
-> each vdev has its own hw queue in ath10k. Connect STA0 to AP0 and STA1
-> to AP1. Then generate traffic from AP0 to STA0 and kill STA0 without
-> clean disassociation frame (e.g. unplug power cable, reboot -f, ...).
-> Now if we were to flush AP1's queue, ath10k_flush() would fail (and
-> effectively block 5 seconds with ar->conf or even wiphy's lock held)
-> with the following warning:
-> 
->   ath10k_pci 0000:01:00.0: failed to flush transmit queue (skip 0 ar-state 2): 0
-> 
-> Wait only for pending frames of the requested queues to be flushed in
-> ath10k_flush() to avoid that long blocking.
-> 
-> Reported-by: Cedric Veilleux <veilleux.cedric@gmail.com>
-> Signed-off-by: Remi Pommarel <repk@triplefau.lt>
-> ---
->   drivers/net/wireless/ath/ath10k/htt.h    |  7 +++--
->   drivers/net/wireless/ath/ath10k/htt_tx.c | 18 ++++++++++---
->   drivers/net/wireless/ath/ath10k/mac.c    | 33 +++++++++++++++++-------
->   drivers/net/wireless/ath/ath10k/txrx.c   |  2 +-
->   4 files changed, 44 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-> index d150f9330941..33054fc4d9fb 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt.h
-> +++ b/drivers/net/wireless/ath/ath10k/htt.h
-> @@ -1870,6 +1870,7 @@ struct ath10k_htt {
->   	spinlock_t tx_lock;
->   	int max_num_pending_tx;
->   	int num_pending_tx;
-> +	int pending_per_queue[IEEE80211_MAX_QUEUES];
-
-Something like num_pending_per_queue[] to align with the existing
-packet counter looks better?
-
-Vasanth
+On Fri, Oct 18, 2024 at 1:49=E2=80=AFPM Kalle Valo <kvalo@kernel.org> wrote=
+:
+>
+> I wonder how this works with QCA6174, unfortunately I'm not able to test
+> that.
+>
+I only tested on QCA988X, QCA9984 and IPQ4019 as clients.
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpa=
+tches
 
