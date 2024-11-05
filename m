@@ -4,61 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42C35D767DA
-	for <ath10k@archiver.kernel.org>; Thu, 31 Oct 2024 14:31:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA5C0D2C13D
+	for <ath10k@archiver.kernel.org>; Tue,  5 Nov 2024 15:39:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
-	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=//++SECxqsxtpHksGcWbvYXexL6zVkDBySo33sGZKzE=; b=U8ZKqOs6QImejB5le7RHrlN78m
-	zQYbjTknUc/H9vpHwHocbjzw7hsKJPDS9RhuGc04gVm0LZ2tB9VIfj+5qOIiK+Y99eaWEC7HsKitz
-	hHvz1cz9ZewN5JZ5XzkCEb5o1GZ+Z7xRTP36TK2B2QLkCEylozGFOcWN/BYXPWJtbH7PZSQZLldJy
-	JmB5PYj0nDanXZZigb/o6FsrFi/HRL/C/fkKX56xXGhYalTappe10YySFdFPWZjpQQBBwXoCk/WEd
-	YbwQrnYSLjbNWww635BJCIkjkVfr8CLgizXX3U2dzB1ftng40UMils9JRWUl2YAaKn+oKXRVglN8f
-	pclzlXBg==;
+	bh=nm3D/IBxdUByznHhid/dQYj2ZtQ9e8hAUGuJz9TxpmQ=; b=De4MmIb5x+MyPUDDgODsVIsOBf
+	7ohlbT24gmKu8tGUjgkT//x3RV+gbLhq87jYohV5A//SWB4UBCXlZyTHSTk6mjpQ/TtzGSKU9cbGN
+	LDkGgfgxXU3pdNdXCf7LrkmjKK152kXBRpn/S/4X0KumZ28Q5DJ+Se5U+APMtZ61wbsmJtHTOhiuB
+	UJNl7G1eVVA2Mtyt2yNYfTjnpnQQKqkvCIpOWhqzqsw3jVSNZRlYlLgSDvc/216EeL/8sWg5gmPxa
+	bysnRMHOkICj9g8CujfLmjCDeRb2NJLv0K4+PQR+3TUh+BKM23qk6joGDVdqKfJIAh9HbPhdrMKA6
+	PG3iu8Og==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t6WDJ-00000003oiL-2eFB;
-	Thu, 31 Oct 2024 14:31:53 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1t8Lek-0000000HS4J-1whU;
+	Tue, 05 Nov 2024 15:39:46 +0000
+Received: from mail.kaechele.ca ([2607:5300:60:987e::25:1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t6W4K-00000003nMu-06A0;
-	Thu, 31 Oct 2024 14:22:38 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 887EAA440E8;
-	Thu, 31 Oct 2024 14:20:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12E62C4FE06;
-	Thu, 31 Oct 2024 14:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730383470;
-	bh=qSK9zLPkEa3v95QbOoDFrOjBNIDs7wxUlKiKLDrnIjk=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=epE0Ybp6Ihhe90EdoHN57vcY0J+i1crf/uHT/1Z4RtiPS6VjuL9qCZ2lRjCyMBB19
-	 oBXw2CMjpaA2IAc4plPbbJIFQtM7MuVh2NbsadZtxDqM3ZD6PlbUvo0I9fh8xSWEeY
-	 +3UUcHQfwO7S0+DWqKB1p+U8SLZjiF9iI9mOr2DwR/hI7YyV0d7wMVHfIdoXIeWyR9
-	 CF7mS0DF302TUuBJd0N0GUnsr+ZLizyWDheND/ED+ln6/AGJlIzx1g6S77MrGQa9BS
-	 yPeQztz9pbjyEtX7Ykcc16fzFaL1uw54C1ATY4Vb4e3E6qZQTYEEqlIMA7ZZSqMAxF
-	 qeywjpVRbNNng==
-Content-Type: text/plain; charset="utf-8"
+	id 1t8Leg-0000000HS15-2IQX
+	for ath10k@lists.infradead.org;
+	Tue, 05 Nov 2024 15:39:44 +0000
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 30253C005F;
+	Tue,  5 Nov 2024 10:39:28 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaechele.ca; s=201907;
+	t=1730821172; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=nm3D/IBxdUByznHhid/dQYj2ZtQ9e8hAUGuJz9TxpmQ=;
+	b=eaz2V37OE6V7f+Sd9bpiQtcF79y/h/qfeUki/7lJxM7XjmWSSiUp/O2NGZAMuV/ON8XM7N
+	HBVoA2VN/F52xHZOgqSXfTpYIEaJhgMbgB8kJMXKJ5VwPzXrRsabDZbKTex5GoRghrFDT8
+	h1ZjvjoAG6y6eAJ5Nf9ecmKuRs6wDzU=
+Message-ID: <c1385aa1-0d41-4ed7-a00c-e40c69bafeaa@kaechele.ca>
+Date: Tue, 5 Nov 2024 10:39:27 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] wifi: ath10k: add support for QCA9379 hw1.0 SDIO
+From: Felix Kaechele <felix@kaechele.ca>
+To: ath10k@lists.infradead.org, Kalle Valo <kvalo@kernel.org>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: linux-wireless@vger.kernel.org
+References: <20240908013244.496382-1-felix@kaechele.ca>
+ <20240908013244.496382-3-felix@kaechele.ca>
+Content-Language: en-US
+In-Reply-To: <20240908013244.496382-3-felix@kaechele.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: pull-request: ath-next-20241030
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <dabcbe71-c23d-4207-83bc-f077a7a8dece@quicinc.com>
-References: <dabcbe71-c23d-4207-83bc-f077a7a8dece@quicinc.com>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>,
- <ath10k@lists.infradead.org>, <ath11k@lists.infradead.org>,
- <ath12k@lists.infradead.org>, <quic_jjohnson@quicinc.com>,
- <quic_kvalo@quicinc.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <173038346698.539202.6047176272378730385.kvalo@kernel.org>
-Date: Thu, 31 Oct 2024 14:04:28 +0000 (UTC)
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241031_072236_277192_A006B738 
-X-CRM114-Status: GOOD (  21.20  )
+X-CRM114-CacheID: sfid-20241105_073942_956512_0622932A 
+X-CRM114-Status: GOOD (  26.30  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,244 +69,220 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
+Gentle ping on this one.
 
-> The following changes since commit 34c44eb31de9cb7202ff070900463d6c706392c4:
-> 
->   Merge branch 'net-ibm-emac-modernize-a-bit' (2024-09-13 21:49:00 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20241030
-> 
-> for you to fetch changes up to cdad737160571a98cc4933a62c9f2728e965ab27:
-> 
->   wifi: ath12k: convert tasklet to BH workqueue for CE interrupts (2024-10-25 12:22:03 -0700)
-> 
-> ----------------------------------------------------------------
-> ath.git patches for v6.13
-> 
-> This development cycle featured phase 1 of patches to ath12k to
-> support the new 802.11be MLO feature, along with other ath12k feature
-> patches.  In older drivers, support for some additional devices were
-> added. And there was the usual set of bug fixes and cleanups across
-> most drivers.
-> 
-> Per-driver highlights:
-> 
-> ath12k
-> * Switch to using wiphy_lock() and remove ar->conf_mutex
-> * Convert struct ath12k_sta::update_wk to use struct wiphy_work
-> * Add phase 1 of 802.11be MLO support
-> * Add firmware coredump collection support
-> * Add debugfs support for a multitude of statistics
-> * Fix host representation of multiple hal_rx structs
-> * Fix use-after-free in ath12k_dp_cc_cleanup()
-> * Skip Rx TID cleanup for self peer
-> * Fix warning and crash when unloading in a VM
-> * Convert CE interrupt handling from tasklet to BH workqueue
-> * Fix A-MSDU indication in monitor mode
-> 
-> ath11k
-> * Fix double free issue during SRNG deinit
-> * Enable firmware diagnostic events for WCN6750
-> * Fix CE offset address calculation for WCN6750 during SSR
-> * Fix stack frame size warning in ath11k_vif_wow_set_wakeups()
-> * Document the inputs for ath11k on WCN6855
-> 
-> ath10k
-> * Fix multiple stack frame size warnings
-> * Fix invalid VHT parameters in supported_vht_mcs_rate_nss* structs
-> * Avoid NULL pointer error during SDIO remove
-> 
-> ath5k
-> * Add support for Arcadyan ARV45XX AR2417 & Gigaset SX76[23] AR241[34]A
-> 
-> ----------------------------------------------------------------
-> Andrew Kreimer (2):
->       wifi: wcn36xx: fix a typo in struct wcn36xx_sta documentation
->       wifi: ath6kl: fix typos in struct wmi_rssi_threshold_params_cmd and wmi_snr_threshold_params_cmd comments
-> 
-> Arnd Bergmann (1):
->       wifi: ath12k: fix one more memcpy size error
-> 
-> Balaji Pothunoori (2):
->       wifi: ath11k: enable fw_wmi_diag_event hw param for WCN6750
->       wifi: ath11k: Fix CE offset address calculation for WCN6750 in SSR
-> 
-> Baochen Qiang (2):
->       wifi: ath10k: fix invalid VHT parameters in supported_vht_mcs_rate_nss1
->       wifi: ath10k: fix invalid VHT parameters in supported_vht_mcs_rate_nss2
-> 
-> Bartosz Golaszewski (1):
->       dt-bindings: net: ath11k: document the inputs of the ath11k on WCN6855
-> 
-> Caleb Connolly (1):
->       wifi: ath11k: allow missing memory-regions
-> 
-> Colin Ian King (1):
->       wifi: ath12k: make read-only array svc_id static const
-> 
-> Dinesh Karthikeyan (5):
->       wifi: ath12k: Support Self-Generated Transmit stats
->       wifi: ath12k: Support Ring and SFM stats
->       wifi: ath12k: Support pdev Transmit Multi-user stats
->       wifi: ath12k: Support pdev CCA Stats
->       wifi: ath12k: Support Pdev OBSS Stats
-> 
-> Jeongjun Park (1):
->       wifi: ath9k: add range check for conn_rsp_epid in htc_connect_service()
-> 
-> Jose Ignacio Tornos Martinez (2):
->       wifi: ath12k: fix crash when unbinding
->       wifi: ath12k: fix warning when unbinding
-> 
-> Kalle Valo (7):
->       wifi: ath12k: fix atomic calls in ath12k_mac_op_set_bitrate_mask()
->       wifi: ath12k: convert struct ath12k_sta::update_wk to use struct wiphy_work
->       wifi: ath12k: switch to using wiphy_lock() and remove ar->conf_mutex
->       wifi: ath12k: cleanup unneeded labels
->       wifi: ath12k: ath12k_mac_set_key(): remove exit label
->       wifi: ath12k: ath12k_mac_op_sta_state(): clean up update_wk cancellation
->       wifi: ath12k: add missing lockdep_assert_wiphy() for ath12k_mac_op_ functions
-> 
-> Kang Yang (9):
->       wifi: ath10k: avoid NULL pointer error during sdio remove
->       wifi: ath12k: remove unused variable monitor_present
->       wifi: ath12k: fix struct hal_rx_ppdu_end_user_stats
->       wifi: ath12k: fix struct hal_rx_ppdu_start
->       wifi: ath12k: fix struct hal_rx_phyrx_rssi_legacy_info
->       wifi: ath12k: fix struct hal_rx_mpdu_start
->       wifi: ath12k: delete NSS and TX power setting for monitor vdev
->       wifi: ath12k: use tail MSDU to get MSDU information
->       wifi: ath12k: fix A-MSDU indication in monitor mode
-> 
-> Li Zetao (1):
->       wifi: ath9k: use clamp() in ar9003_aic_cal_post_process()
-> 
-> Lingbo Kong (1):
->       wifi: ath12k: remove msdu_end structure for WCN7850
-> 
-> Manikanta Pubbisetty (1):
->       wifi: ath11k: Fix double free issue during SRNG deinit
-> 
-> Miaoqing Pan (3):
->       wifi: ath10k: fix the stack frame size warning in ath10k_remain_on_channel
->       wifi: ath10k: fix the stack frame size warning in ath10k_hw_scan
->       wifi: ath11k: fix the stack frame size warning in ath11k_vif_wow_set_wakeups
-> 
-> Nicolas Escande (1):
->       wifi: ath12k: move txbaddr/rxbaddr into struct ath12k_dp
-> 
-> Pradeep Kumar Chitrapu (1):
->       wifi: ath12k: Support BE OFDMA Pdev Rate Stats
-> 
-> Raj Kumar Bhagat (1):
->       wifi: ath12k: convert tasklet to BH workqueue for CE interrupts
-> 
-> Rajat Soni (1):
->       wifi: ath12k: Support DMAC Reset Stats
-> 
-> Rameshkumar Sundaram (5):
->       wifi: ath12k: fix use-after-free in ath12k_dp_cc_cleanup()
->       wifi: ath12k: prepare vif config caching for MLO
->       wifi: ath12k: modify ath12k_mac_vif_chan() for MLO
->       wifi: ath12k: modify ath12k_get_arvif_iter() for MLO
->       wifi: ath12k: modify ath12k_mac_op_set_key() for MLO
-> 
-> Ramya Gnanasekar (1):
->       wifi: ath12k: Skip Rx TID cleanup for self peer
-> 
-> Roopni Devanathan (1):
->       wifi: ath12k: Modify print_array_to_buf() to support arrays with 1-based semantics
-> 
-> Rosen Penev (5):
->       wifi: ath9k: eeprom: remove platform data
->       wifi: ath9k: btcoex: remove platform_data
->       wifi: ath9k: remove ath9k_platform_data
->       wifi: ath5k: add PCI ID for SX76X
->       wifi: ath5k: add PCI ID for Arcadyan devices
-> 
-> Sidhanta Sahu (1):
->       wifi: ath12k: Support Pdev Scheduled Algorithm Stats
-> 
-> Sowmiya Sree Elavalagan (1):
->       wifi: ath12k: Add firmware coredump collection support
-> 
-> Sriram R (7):
->       wifi: ath12k: prepare vif data structure for MLO handling
->       wifi: ath12k: pass ath12k_link_vif instead of vif/ahvif
->       wifi: ath12k: prepare sta data structure for MLO handling
->       wifi: ath12k: modify ath12k_mac_op_bss_info_changed() for MLO
->       wifi: ath12k: update ath12k_mac_op_conf_tx() for MLO
->       wifi: ath12k: update ath12k_mac_op_update_vif_offload() for MLO
->       wifi: ath12k: modify link arvif creation and removal for MLO
-> 
->  .../bindings/net/wireless/qcom,ath11k-pci.yaml     |   29 +
->  drivers/net/wireless/ath/ath10k/mac.c              |  100 +-
->  drivers/net/wireless/ath/ath10k/sdio.c             |    6 +-
->  drivers/net/wireless/ath/ath11k/ahb.c              |   12 +-
->  drivers/net/wireless/ath/ath11k/core.c             |    2 +-
->  drivers/net/wireless/ath/ath11k/hal.c              |    1 +
->  drivers/net/wireless/ath/ath11k/qmi.c              |    3 +
->  drivers/net/wireless/ath/ath11k/wow.c              |   39 +-
->  drivers/net/wireless/ath/ath12k/Kconfig            |   10 +
->  drivers/net/wireless/ath/ath12k/Makefile           |    1 +
->  drivers/net/wireless/ath/ath12k/ce.h               |    2 +-
->  drivers/net/wireless/ath/ath12k/core.c             |    9 +-
->  drivers/net/wireless/ath/ath12k/core.h             |  110 +-
->  drivers/net/wireless/ath/ath12k/coredump.c         |   51 +
->  drivers/net/wireless/ath/ath12k/coredump.h         |   80 +
->  drivers/net/wireless/ath/ath12k/debugfs.c          |    4 +-
->  .../net/wireless/ath/ath12k/debugfs_htt_stats.c    | 1358 +++++++++++++-
->  .../net/wireless/ath/ath12k/debugfs_htt_stats.h    |  444 ++++-
->  drivers/net/wireless/ath/ath12k/dp.c               |   58 +-
->  drivers/net/wireless/ath/ath12k/dp.h               |    7 +-
->  drivers/net/wireless/ath/ath12k/dp_mon.c           |  122 +-
->  drivers/net/wireless/ath/ath12k/dp_rx.c            |   16 +-
->  drivers/net/wireless/ath/ath12k/dp_rx.h            |    2 +-
->  drivers/net/wireless/ath/ath12k/dp_tx.c            |    9 +-
->  drivers/net/wireless/ath/ath12k/dp_tx.h            |    2 +-
->  drivers/net/wireless/ath/ath12k/hal.c              |   12 +-
->  drivers/net/wireless/ath/ath12k/hal_rx.h           |   53 +-
->  drivers/net/wireless/ath/ath12k/hif.h              |    6 +
->  drivers/net/wireless/ath/ath12k/hw.c               |    4 +-
->  drivers/net/wireless/ath/ath12k/mac.c              | 1845 ++++++++++++--------
->  drivers/net/wireless/ath/ath12k/mac.h              |   11 +-
->  drivers/net/wireless/ath/ath12k/mhi.c              |    5 +
->  drivers/net/wireless/ath/ath12k/mhi.h              |    2 +-
->  drivers/net/wireless/ath/ath12k/p2p.c              |   17 +-
->  drivers/net/wireless/ath/ath12k/p2p.h              |    2 +-
->  drivers/net/wireless/ath/ath12k/pci.c              |  200 ++-
->  drivers/net/wireless/ath/ath12k/peer.c             |   13 +-
->  drivers/net/wireless/ath/ath12k/peer.h             |    4 +-
->  drivers/net/wireless/ath/ath12k/rx_desc.h          |   88 +-
->  drivers/net/wireless/ath/ath12k/wmi.c              |   30 +-
->  drivers/net/wireless/ath/ath12k/wmi.h              |    8 +-
->  drivers/net/wireless/ath/ath12k/wow.c              |   87 +-
->  drivers/net/wireless/ath/ath5k/pci.c               |    2 +
->  drivers/net/wireless/ath/ath6kl/wmi.h              |    8 +-
->  drivers/net/wireless/ath/ath9k/ar9003_aic.c        |   10 +-
->  .../net/wireless/ath/ath9k/ath9k_pci_owl_loader.c  |    1 -
->  drivers/net/wireless/ath/ath9k/btcoex.c            |   16 +-
->  drivers/net/wireless/ath/ath9k/eeprom.c            |   12 -
->  drivers/net/wireless/ath/ath9k/htc_hst.c           |    3 +
->  drivers/net/wireless/ath/ath9k/hw.c                |    2 +-
->  drivers/net/wireless/ath/ath9k/init.c              |   52 +-
->  drivers/net/wireless/ath/wcn36xx/wcn36xx.h         |    2 +-
->  include/linux/ath9k_platform.h                     |   51 -
->  53 files changed, 3782 insertions(+), 1241 deletions(-)
->  create mode 100644 drivers/net/wireless/ath/ath12k/coredump.c
->  create mode 100644 drivers/net/wireless/ath/ath12k/coredump.h
->  delete mode 100644 include/linux/ath9k_platform.h
+It still applies cleanly against the ath/master branch as of today.
 
-Pulled, thanks.
+If there's no chance of this going in please let me know and I'll stop 
+re-sending this patch.
 
-3c1f19ab3d59 Merge tag 'ath-next-20241030' of git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath
+I understand that bandwidth for ath10k related requests is minimal these 
+days and there may not be an interest in fixing what are possibly 
+firmware related issues for this rather obscure IoT/Automotive (SDIO, no 
+less!) chipset.
+I unfortunately don't have the information, documentation and latest 
+firmware images available on my side to help with this either.
+I am, however, always willing to work with someone on fixing any of the 
+outstanding issues.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/dabcbe71-c23d-4207-83bc-f077a7a8dece@quicinc.com/
+Thanks!
+Felix
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+On 2024-09-07 21:32, Felix Kaechele wrote:
+> This adds support for the QCA9379-3 SDIO SoC. It is part of the
+> QCA6174 SDIO family.
+> 
+> While the device is generally working, there are some remaining issues:
+> - the card will perform a full reconnect upon expiry of the Group Key
+>    renewal interval
+> - rx rates are not reported correctly (i.e. always show as 6.0 MBit/s)
+> 
+> More debugging would need to be done on these, preferably by people with
+> access to proper documentation.
+> 
+> This change was tested on a device that uses a LITEON WCBN3510A module.
+> The module was tested in WPA2 and WPA3 Personal scenarios using iperf3.
+> Performance was comparable to the same device using the vendor driver in
+> the same environment.
+> 
+> Tested-on: QCA9379 hw1.0 SDIO WLAN.NPL.1.6-00163-QCANPLSWPZ-1
+> 
+> Signed-off-by: Felix Kaechele <felix@kaechele.ca>
+> ---
+>   drivers/net/wireless/ath/ath10k/core.c      | 37 +++++++++++++++++++++
+>   drivers/net/wireless/ath/ath10k/hw.h        | 10 ++++++
+>   drivers/net/wireless/ath/ath10k/pci.c       |  2 ++
+>   drivers/net/wireless/ath/ath10k/sdio.c      |  5 ++-
+>   drivers/net/wireless/ath/ath10k/targaddrs.h |  3 ++
+>   5 files changed, 56 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index b3294287bce1..32d5d4be8830 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -661,6 +661,42 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>   		.delay_unmap_buffer = false,
+>   		.mcast_frame_registration = false,
+>   	},
+> +	{
+> +		.id = QCA9379_HW_1_0_DEV_VERSION,
+> +		.dev_id = QCA9379_1_0_DEVICE_ID,
+> +		.bus = ATH10K_BUS_SDIO,
+> +		.name = "qca9379 hw1.0 sdio",
+> +		.patch_load_addr = QCA9379_HW_1_0_PATCH_LOAD_ADDR,
+> +		.uart_pin = 19,
+> +		.otp_exe_param = 0,
+> +		.channel_counters_freq_hz = 88000,
+> +		.max_probe_resp_desc_thres = 0,
+> +		.cal_data_len = 0,
+> +		.fw = {
+> +			.dir = QCA9379_HW_1_0_FW_DIR,
+> +			.board_size = QCA9379_BOARD_DATA_SZ,
+> +			.board_ext_size = QCA9379_BOARD_EXT_DATA_SZ,
+> +		},
+> +		.rx_desc_ops = &qca988x_rx_desc_ops,
+> +		.hw_ops = &qca6174_sdio_ops,
+> +		.hw_clk = qca6174_clk,
+> +		.target_cpu_freq = 176000000,
+> +		.decap_align_bytes = 4,
+> +		.n_cipher_suites = 8,
+> +		.num_peers = 10,
+> +		.ast_skid_limit = 0x10,
+> +		.num_wds_entries = 0x20,
+> +		.uart_pin_workaround = true,
+> +		.tx_stats_over_pktlog = false,
+> +		.credit_size_workaround = true,
+> +		.bmi_large_size_download = true,
+> +		.supports_peer_stats_info = false,
+> +		.dynamic_sar_support = false,
+> +		.hw_restart_disconnect = false,
+> +		.use_fw_tx_credits = true,
+> +		.delay_unmap_buffer = false,
+> +		.mcast_frame_registration = false,
+> +	},
+>   	{
+>   		.id = QCA4019_HW_1_0_DEV_VERSION,
+>   		.dev_id = 0,
+> @@ -3602,6 +3638,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+>   		break;
+>   	case ATH10K_HW_QCA6174:
+>   	case ATH10K_HW_QCA9377:
+> +	case ATH10K_HW_QCA9379:
+>   		ar->regs = &qca6174_regs;
+>   		ar->hw_ce_regs = &qcax_ce_regs;
+>   		ar->hw_values = &qca6174_values;
+> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+> index 442091c6dfd2..419fa1888e75 100644
+> --- a/drivers/net/wireless/ath/ath10k/hw.h
+> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+> @@ -30,6 +30,7 @@ enum ath10k_bus {
+>   #define QCA9888_2_0_DEVICE_ID	(0x0056)
+>   #define QCA9984_1_0_DEVICE_ID	(0x0046)
+>   #define QCA9377_1_0_DEVICE_ID   (0x0042)
+> +#define QCA9379_1_0_DEVICE_ID   (0x0042)
+>   #define QCA9887_1_0_DEVICE_ID   (0x0050)
+>   
+>   /* QCA988X 1.0 definitions (unsupported) */
+> @@ -59,6 +60,9 @@ enum ath10k_bus {
+>   #define QCA9377_HW_1_0_DEV_VERSION	0x05020000
+>   #define QCA9377_HW_1_1_DEV_VERSION	0x05020001
+>   
+> +/* QCA9379 target BMI version signatures */
+> +#define QCA9379_HW_1_0_DEV_VERSION	0x05040000
+> +
+>   enum qca6174_pci_rev {
+>   	QCA6174_PCI_REV_1_1 = 0x11,
+>   	QCA6174_PCI_REV_1_3 = 0x13,
+> @@ -115,6 +119,10 @@ enum qca9377_chip_id_rev {
+>   #define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
+>   #define QCA9377_HW_1_0_PATCH_LOAD_ADDR	0x1234
+>   
+> +/* QCA9379 1.0 definitions */
+> +#define QCA9379_HW_1_0_FW_DIR		ATH10K_FW_DIR "/QCA9379/hw1.0"
+> +#define QCA9379_HW_1_0_PATCH_LOAD_ADDR	0x1234
+> +
+>   /* QCA4019 1.0 definitions */
+>   #define QCA4019_HW_1_0_DEV_VERSION     0x01000000
+>   #define QCA4019_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA4019/hw1.0"
+> @@ -230,6 +238,7 @@ enum ath10k_hw_rev {
+>   	ATH10K_HW_QCA9888,
+>   	ATH10K_HW_QCA9984,
+>   	ATH10K_HW_QCA9377,
+> +	ATH10K_HW_QCA9379,
+>   	ATH10K_HW_QCA4019,
+>   	ATH10K_HW_QCA9887,
+>   	ATH10K_HW_WCN3990,
+> @@ -401,6 +410,7 @@ int ath10k_hw_diag_fast_download(struct ath10k *ar,
+>   #define QCA_REV_9888(ar) ((ar)->hw_rev == ATH10K_HW_QCA9888)
+>   #define QCA_REV_9984(ar) ((ar)->hw_rev == ATH10K_HW_QCA9984)
+>   #define QCA_REV_9377(ar) ((ar)->hw_rev == ATH10K_HW_QCA9377)
+> +#define QCA_REV_9379(ar) ((ar)->hw_rev == ATH10K_HW_QCA9379)
+>   #define QCA_REV_40XX(ar) ((ar)->hw_rev == ATH10K_HW_QCA4019)
+>   #define QCA_REV_WCN3990(ar) ((ar)->hw_rev == ATH10K_HW_WCN3990)
+>   
+> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+> index c52a16f8078f..6fee3d52d808 100644
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -1899,6 +1899,7 @@ void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
+>   		 *  to mask irq/MSI.
+>   		 */
+>   		break;
+> +	case ATH10K_HW_QCA9379:
+>   	case ATH10K_HW_WCN3990:
+>   		break;
+>   	}
+> @@ -1927,6 +1928,7 @@ static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
+>   		 *  to unmask irq/MSI.
+>   		 */
+>   		break;
+> +	case ATH10K_HW_QCA9379:
+>   	case ATH10K_HW_WCN3990:
+>   		break;
+>   	}
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index 08a6f36a6be9..24123d23ad5a 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -1105,6 +1105,7 @@ static void ath10k_sdio_set_mbox_info(struct ath10k *ar)
+>   				ATH10K_HIF_MBOX0_EXT_WIDTH_ROME_2_0;
+>   		break;
+>   	case (SDIO_DEVICE_ID_ATHEROS_QCA9377 & 0x0F00):
+> +	case (SDIO_DEVICE_ID_ATHEROS_QCA9379 & 0x0F00):
+>   		mbox_info->ext_info[0].htc_ext_sz =
+>   			ATH10K_HIF_MBOX0_EXT_WIDTH_ROME_2_0;
+>   		break;
+> @@ -2597,7 +2598,8 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+>   
+>   	dev_id_base = (id->device & 0x0F00);
+>   	if (dev_id_base != (SDIO_DEVICE_ID_ATHEROS_AR6005 & 0x0F00) &&
+> -	    dev_id_base != (SDIO_DEVICE_ID_ATHEROS_QCA9377 & 0x0F00)) {
+> +	    dev_id_base != (SDIO_DEVICE_ID_ATHEROS_QCA9377 & 0x0F00) &&
+> +	    dev_id_base != (SDIO_DEVICE_ID_ATHEROS_QCA9379 & 0x0F00)) {
+>   		ret = -ENODEV;
+>   		ath10k_err(ar, "unsupported device id %u (0x%x)\n",
+>   			   dev_id_base, id->device);
+> @@ -2656,6 +2658,7 @@ static void ath10k_sdio_remove(struct sdio_func *func)
+>   static const struct sdio_device_id ath10k_sdio_devices[] = {
+>   	{SDIO_DEVICE(SDIO_VENDOR_ID_ATHEROS, SDIO_DEVICE_ID_ATHEROS_AR6005)},
+>   	{SDIO_DEVICE(SDIO_VENDOR_ID_ATHEROS, SDIO_DEVICE_ID_ATHEROS_QCA9377)},
+> +	{SDIO_DEVICE(SDIO_VENDOR_ID_ATHEROS, SDIO_DEVICE_ID_ATHEROS_QCA9379)},
+>   	{},
+>   };
+>   
+> diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+> index ba37e6c7ced0..1a0f71126683 100644
+> --- a/drivers/net/wireless/ath/ath10k/targaddrs.h
+> +++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+> @@ -481,6 +481,9 @@ struct host_interest {
+>   #define QCA9377_BOARD_DATA_SZ     QCA6174_BOARD_DATA_SZ
+>   #define QCA9377_BOARD_EXT_DATA_SZ 0
+>   
+> +#define QCA9379_BOARD_DATA_SZ     QCA6174_BOARD_DATA_SZ
+> +#define QCA9379_BOARD_EXT_DATA_SZ 0
+> +
+>   #define QCA99X0_BOARD_DATA_SZ	  12288
+>   #define QCA99X0_BOARD_EXT_DATA_SZ 0
+>   
 
 
