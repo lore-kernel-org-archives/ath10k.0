@@ -4,112 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E70DD59F5D
-	for <ath10k@archiver.kernel.org>; Wed,  6 Nov 2024 18:23:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEDDCD5AE79
+	for <ath10k@archiver.kernel.org>; Thu,  7 Nov 2024 09:35:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:Message-ID:Date:References:In-Reply-To:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rOz51ybN174/NE4VmqTygjrL3+d/cxjHeOuIyEPAqt4=; b=Hu16tgpURSHbTVMEZvmsH2aZ3U
-	Rak+FKtfsyqj0HvcaJSlV9BRrCKYUI0Nw72N/RZZLCr48GajxZ0bxzewrjxyIjJdlZtE2/1VrVYdi
-	eidkes9WBB9N5dDRnh9FusPC+UZn32PVrRFHF3e0wDRLkbqwiNiXc5UdPbh2a1N8bvljlhWKCUTmS
-	6aveZA+rkexz/lKeEQNRmtvkoIVBlyNs4C53PNZyqNI/ZRjmzY/zRi/wX00YgbyOW3LKbosmbrlx/
-	i7ccMJ1CZy1iIPYKQRI0/GvpMIlgp1W4KngDw2ctS6sU2TtsjhuN08zMNxQJAFlO6RrZjIOMHbnUd
-	XeFpEUfA==;
+	bh=A3gBPLxLIFjBUvT/9EO2DO8Lp/H909xwWuUilV/trcc=; b=rF8Edk1waS1nlq3quqPOi5M8A/
+	fNo3eOCgXwz4lbraEf746R5MIxcQeZTnmkBtcJZVdYqnR3gFDY/wrU7ZPIwwEmO0YW46ruqPpjXpp
+	un3oX/VWlwq/mxg7H7mLUt/v9NkumJU80+jJU80lsnZkVsDgSufOdBr7Ak5YyE47BML3pd7WG8lFx
+	NU3YzrRFHR7qFX00uLTZX09JV9C0r3BdZmSiWbyWFTPP6HbEhpL710Kx/XjblOpCJpYeKQtqMg6L7
+	z2S2m95/cslKVunTvrcm8ivPGB0vel4jUdm0V6MtlPkIofrk5F5xumSk+IzqAFXkOqggBS4G3e3NL
+	rW9rhHrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8kgk-00000004KVT-458k;
-	Wed, 06 Nov 2024 18:23:30 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1t8yvD-00000006JN7-3dJF;
+	Thu, 07 Nov 2024 09:35:23 +0000
+Received: from mail.toke.dk ([45.145.95.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8kgg-00000004KUR-2Z1F;
-	Wed, 06 Nov 2024 18:23:28 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4A6Fqx9Q013161;
-	Wed, 6 Nov 2024 18:22:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	rOz51ybN174/NE4VmqTygjrL3+d/cxjHeOuIyEPAqt4=; b=Il0fUvoIGwYf8Sg7
-	/rZgXUsXQBt/b/6vFRnfEkqzWo4bYbsivw1f9w+ApMtviPOBdibb5MPlUuVhUlWp
-	9ka8gbVJs/uSpw0HuEc5HsDZVfr68o9j+CHN54mtmeAv4PXJTslxWXq7rzacjhA2
-	outhJLqMNO/qo8c7ZLvjLO4JJZGFEUsd9RsIRq6kzW9eoeLyl8WOc9Luiz78FgVy
-	3Z+pwc7m4kbMEVcaeDmSXCwPmBtOoEs/wyz4GKnzldBGhLht3K3Y+cq9sjFxM50+
-	CESTh1m7pigB9pd+aP2R0wK1PLhtMCNdhBNSQrNAG2sM3VrnInlzK09FJCmWJV6o
-	BZkLrA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42qp2ruvt7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Nov 2024 18:22:59 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4A6IMwst030379
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 6 Nov 2024 18:22:58 GMT
-Received: from [10.48.242.250] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 6 Nov 2024
- 10:22:57 -0800
-Message-ID: <5c6a887c-db74-44b4-9d8c-2e412f938b47@quicinc.com>
-Date: Wed, 6 Nov 2024 10:22:56 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	id 1t8yv9-00000006JKf-2i1p;
+	Thu, 07 Nov 2024 09:35:21 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+	t=1730972113; bh=A3gBPLxLIFjBUvT/9EO2DO8Lp/H909xwWuUilV/trcc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=hMPqC1nqdZbu6JIOlIiGh/tEo0XoQaVFqxaQKpTMmrzMTI0Z51JWqX6tb123/ka/Z
+	 80RM8u6wubPj8YKnZHy87BTlMuiQEn/UZA1X6A6P1gWo+1AuKpNwcY+68Ig26WP4SI
+	 fJI7tyu7vdPYi2nh9oby8Fg1OCPwkc4KKA33CyS/MhmtWHZYQb6mk16iUiwqW7IFA+
+	 Gycf+7r3Q4kXbC6UNJb+XZDtNG10TuQcjyRe0f2EA7h6YSbRi7kK0BispM8M0TVPhK
+	 f4FjKx4qMWAhVxnVDBkl9psNyyt9lII4mdUthuyxmNP0J+qd8W++L9eMEJrQ+CDUiB
+	 jNQwPYfvdD45A==
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>, Kalle
+ Valo
+ <kvalo@kernel.org>
+Cc: Jeff Johnson <jjohnson@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+ Nick Kossifidis <mickflemm@gmail.com>, Luis Chamberlain
+ <mcgrof@kernel.org>, Loic Poulain <loic.poulain@linaro.org>, Arend van
+ Spriel <arend.vanspriel@broadcom.com>, Felix Fietkau <nbd@nbd.name>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>,
+ Shayne Chen <shayne.chen@mediatek.com>, Sean Wang
+ <sean.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>, Peter Chiu
+ <chui-hao.chiu@mediatek.com>, Breno Leitao <leitao@debian.org>, "Russell
+ King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+ linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org, wcn36xx@lists.infradead.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
 Subject: Re: [PATCH] wifi: Switch back to struct platform_driver::remove()
-To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
-        Kalle
- Valo <kvalo@kernel.org>
-CC: Jeff Johnson <jjohnson@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-        Loic Poulain
-	<loic.poulain@linaro.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder
- Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean
- Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-        Andy
- Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Chiu
-	<chui-hao.chiu@mediatek.com>,
-        Breno Leitao <leitao@debian.org>,
-        "Russell King
- (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>,
-        <ath11k@lists.infradead.org>, <wcn36xx@lists.infradead.org>,
-        <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-References: <20241106170706.38922-2-u.kleine-koenig@baylibre.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Content-Language: en-US
 In-Reply-To: <20241106170706.38922-2-u.kleine-koenig@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: T1aSXxpDUQsJs2sd2RbFf2FLmhPdtqyi
-X-Proofpoint-ORIG-GUID: T1aSXxpDUQsJs2sd2RbFf2FLmhPdtqyi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- bulkscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 mlxscore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2411060143
+References: <20241106170706.38922-2-u.kleine-koenig@baylibre.com>
+Date: Thu, 07 Nov 2024 10:35:13 +0100
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <87fro375f2.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241106_102326_779409_AB9CF739 
-X-CRM114-Status: GOOD (  12.12  )
+X-CRM114-CacheID: sfid-20241107_013520_212835_4B88037B 
+X-CRM114-Status: UNSURE (   6.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,26 +81,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 11/6/2024 9:07 AM, Uwe Kleine-König wrote:
+Uwe Kleine-K=C3=B6nig <u.kleine-koenig@baylibre.com> writes:
+
 > After commit 0edb555a65d1 ("platform: Make platform_driver::remove()
 > return void") .remove() is (again) the right callback to implement for
 > platform drivers.
-> 
+>
 > Convert all platform drivers below drivers/net/wireless to use
 > .remove(), with the eventual goal to drop struct
 > platform_driver::remove_new(). As .remove() and .remove_new() have the
 > same prototypes, conversion is done by just changing the structure
 > member name in the driver initializer.
-> 
+>
 > En passant several whitespace changes are done to make indentation
 > consistent in the struct initializers.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@baylibre.com>
+>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@baylibre.com>
 
-I'll let Kalle make the decision if he wants to take this patch into wireless
-or if he'd prefer that the parts that have driver-specific projects be split
-out separately. If he'll take it as-is, for drivers/net/wireless/ath/*:
+For ath9k:
 
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk>
 
