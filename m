@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C785E668AB
-	for <ath10k@archiver.kernel.org>; Sun, 24 Nov 2024 13:35:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0EB3E66887
+	for <ath10k@archiver.kernel.org>; Sun, 24 Nov 2024 13:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MbQPlmQKlrwBLK30EA6ENhNxlrCq+hadh5BX2mVvtYw=; b=U76RpcgYOWxzD9hYtZBcE8pVZM
-	SrBtMcFIZC1H7izRrjfp4nTNRqBDML1BVYMIizarnTev0NTFkUtR7SwM2h7V4TbYktoPz1401K7bb
-	s7zS+Ng8IBhGZ4OtfLwz4USqITSXqNxoCO/On7WuUSNUjJjRIZqn7hK8LvW+LoDXt93jOvO5pMtyA
-	0wObngDrtGUvMnBTCyxzatpuw4eYnPi+610yQ0aak21aQqiM6nirHAIkit0gAJro7XkpL9/xjwiZ0
-	luOfjo69D7VZJbS5Yp/o+Nlbrvr+rOetK5c9GV05FdYsF4EWjVo4ytaXYzfqIbPQKfBc6BfC8vmIR
-	zmOfFtsA==;
+	bh=MbQPlmQKlrwBLK30EA6ENhNxlrCq+hadh5BX2mVvtYw=; b=42qCw9Gh2iDlbP29BNI+VB2hm1
+	Uj417fMtqpONMAjXc4PAVDtBDOA52adCoHvAjHMG4e1znvnuXJdAVaRb5BkKgA05vZn/RrxyHLjA+
+	rZO0jeLW2LVbnzGAfqZNahgLHUgiL2j5zExJTGNFWpnk897xa1vS9v658WaSScSg2t57Zu7zWkPbJ
+	ld6F0qkxBX2LdK1yS+gFmE5X2kqgCmxf9V84YpGeSH9tAiBvv0iWdieIfyaAWWdrZXaYD6pujQfhp
+	3kkITPetpfVStZv8qlS/zlmSxNKDENcwAiD1ZOy9L+e4JNn/ga5znS2LDwu1rIiEAme1mgymkin+d
+	lX7Rhnvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tFClx-00000005wH4-08DP;
-	Sun, 24 Nov 2024 13:35:33 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1tFCtP-00000005yEd-3m11;
+	Sun, 24 Nov 2024 13:43:15 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tFClu-00000005wGE-0y9D
+	id 1tFCtO-00000005yDq-0x0N
 	for ath10k@lists.infradead.org;
-	Sun, 24 Nov 2024 13:35:31 +0000
+	Sun, 24 Nov 2024 13:43:15 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2D6655C5586;
-	Sun, 24 Nov 2024 13:34:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59CFDC4CED3;
-	Sun, 24 Nov 2024 13:35:28 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 148395C5588;
+	Sun, 24 Nov 2024 13:42:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AA57C4CECC;
+	Sun, 24 Nov 2024 13:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732455329;
+	s=k20201202; t=1732455793;
 	bh=8oreY0imW4H/APsYD40vBOOhKAUrw0TwBDohPYNmXws=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T9wEonEox/vW3tQWx2ww8zNysoQa4tirHcGmlfRoYuAkYtF2Or9crmF+xeJwcjHB3
-	 StF9Qm7ck0BCznKGrVOS74/S3N00KHwj/mmInjia8q8xEsiFleZjkuqz0xQni9sAJ3
-	 KRg2AEXw7cipVWVGGLLvIazX9oTMOjl8kvhR29JOHfdpX/QXOngXE49r25cRsUqSkr
-	 QVSB8W9hORgJrzPq2l/MIFRrNjeCEUt/PMhhrzyqpGTWm4EVqArACF2Wu6MjNOcHcT
-	 +prC1OSLe8ZQELRYzyH3ds/MlLO0pB9vhwElHfXyR7AIlfhfyOfGZDe+kQ30lD/0jS
-	 NK0Yf+zIDAJOw==
+	b=MgIcOM/u+BCXFmx9jNppUukgcKnXs9nHIxKZbjfSKxOpisM4l0RZW+hfA5UnDusq9
+	 LO2W7AsRMKl9UVJ395dYUUNBPgNrviCKuN4n1d67gajo440gkO87fKPKVunochI484
+	 8gCAxICaz8uwYFz8g6klXkrRN/TOnXouqbyWG4riLqyVlXWmR0MmAt9DyFlkYyO8AO
+	 79OJDjMfNpwXaZpQ0YSGmqaqwDGCeCpRuOsWkwKsthyN4XFGcHqZTGmEsbclqDFwnk
+	 ncrm3C0Cot7D2NhvodzznugQnxIXRveYV18j9NKxuUBNGwZpFfJ3PEET34IMAKWRY0
+	 N5e0Xk3065yzw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -53,20 +53,20 @@ Cc: Kang Yang <quic_kangyang@quicinc.com>,
 	jjohnson@kernel.org,
 	linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.12 045/107] wifi: ath10k: avoid NULL pointer error during sdio remove
-Date: Sun, 24 Nov 2024 08:29:05 -0500
-Message-ID: <20241124133301.3341829-45-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.11 39/87] wifi: ath10k: avoid NULL pointer error during sdio remove
+Date: Sun, 24 Nov 2024 08:38:17 -0500
+Message-ID: <20241124134102.3344326-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124133301.3341829-1-sashal@kernel.org>
-References: <20241124133301.3341829-1-sashal@kernel.org>
+In-Reply-To: <20241124134102.3344326-1-sashal@kernel.org>
+References: <20241124134102.3344326-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.1
+X-stable-base: Linux 6.11.10
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241124_053530_354075_0AC9D3BF 
+X-CRM114-CacheID: sfid-20241124_054314_343656_B7594AA6 
 X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
