@@ -4,65 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBA40E77188
-	for <ath10k@archiver.kernel.org>; Fri,  3 Jan 2025 14:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7C33E77197
+	for <ath10k@archiver.kernel.org>; Thu,  9 Jan 2025 09:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:To:Message-Id:Subject:Date:
-	Mime-Version:From:Content-Transfer-Encoding:Content-Type:Reply-To:Cc:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=E7LGgsLaEn4E4MwNzNTYwP7H/zKUs7pN3bTk8HyJL/s=; b=OHUfMWQsRwxRk3amTQ5GwqdxMu
-	QrxUlinSpmJow/1gFagKhLWSeHpnLa7uJHr+TCD8g5TOSMYQUx1FDycryX5gtdaEY9xFIw9B1ZUTQ
-	utRP9lK3QzWMCyiYNBRUAGAH0c02sd27nXaYsgLjXMSdP/Y3j3kaXlCRpRz9ndmQvp0mgaTR5aEdu
-	pC9OdP5YyiF/gLgCn8u8ux9NV34rk/GhwZiIp7ICUbL5GEojiBsrrJouUHGlYa3iV8WH01suFeVNo
-	Tv+7IFrnp2eqij/WDbxuYQ9V6qcRUWkn43opRZooL1aIAStiRtDMghNc1/n7dwQOK+lT6T7Z721/u
-	YQwfOzoQ==;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=; b=Ej3qGojb8MEFJZ2Zya9/HVrMVF
+	EHltXn9uHlh8PfapZGP4ogb5YHywJMGLI0E/h4+MtNQozZoTpKVOSKjruB6GOXvPfZ0G3b+j5i89A
+	v2QN2Qo34yWGiuWWafzfPLhYY/aeMWoKLhDmvXssWOUTwH9EZij+ef0jYgDh5GdRfiQylFHbCFuS5
+	9MU/ToPAkOVXnkLvvE6xJPBVCioe78/PdjA3H9WcXuy/KvUSiW8m0+JqUwBzQ2NnEZNMxzmh8ASvO
+	kv5fqFjYgFGKwZhnCCGKtYBhvBMCm23HW++lTMZ8tiI2uyzCjxvKOsd8plmzrcdX9HPJB7SlGU8WG
+	hGjjzkJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTiXK-0000000D5oj-3aVZ;
-	Fri, 03 Jan 2025 14:20:26 +0000
-Received: from mr85p00im-ztdg06011101.me.com ([17.58.23.185])
+	id 1tVoR7-0000000BFsY-2xqY;
+	Thu, 09 Jan 2025 09:02:41 +0000
+Received: from mail.revenueraft.com ([51.210.151.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTiXJ-0000000D5oJ-1ytj
+	id 1tVoR4-0000000BFpo-0eiZ
 	for ath10k@lists.infradead.org;
-	Fri, 03 Jan 2025 14:20:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-	s=1a1hai; t=1735914011;
-	bh=E7LGgsLaEn4E4MwNzNTYwP7H/zKUs7pN3bTk8HyJL/s=;
-	h=Content-Type:From:Mime-Version:Date:Subject:Message-Id:To:
-	 x-icloud-hme;
-	b=M+BL9Qgld1vDN/ukKkRPhaokNP7fJ8rjYwYamkyGJEgYxhFdsmBd0uJxckRmaBIHP
-	 3g9UztkW/BJbNA4HaX2Ckh0Rc9RbE/GYsbt0AqbCzYCoCPfzClfXTmYpN8eIauptq4
-	 0PNc27j58kgdpFWzJkqUdBhdz6bxTZjRXn084qhOe4CTcmtjvJj+n/E6FV4Bgtc0Ga
-	 BKyT2Kaw6YXGe3Jpoe6kvlaDI9zGoLBHEjPwB+VHm4jJXDo3WnUEOjoNF8z0W85p1i
-	 f5M5UIjMjYB963SzNJNtmDf9LAxd6fxOGK8s1cZN5iUbcc8gNqEsS7mLPzy7iZj5t3
-	 zaSuTvoN628jQ==
-Received: from smtpclient.apple (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-	by mr85p00im-ztdg06011101.me.com (Postfix) with ESMTPSA id 42B14DA0490
-	for <ath10k@lists.infradead.org>; Fri,  3 Jan 2025 14:20:09 +0000 (UTC)
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-From: soyblanco701@icloud.com
-Mime-Version: 1.0 (1.0)
-Date: Fri, 3 Jan 2025 06:19:47 -0800
-Subject: Re: Re: linux-stable-4.9.y: please apply serious ath10k security
-Message-Id: <30E7A8F1-5110-4B4F-AA4C-9287EA6E842C@icloud.com>
-To: ath10k@lists.infradead.org
-X-Mailer: iPhone Mail (22C152)
-X-Proofpoint-GUID: nhb84SznXCDjYT_TJ9EfdCklf1equ41O
-X-Proofpoint-ORIG-GUID: nhb84SznXCDjYT_TJ9EfdCklf1equ41O
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-02_03,2025-01-02_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=541
- mlxscore=0 spamscore=0 phishscore=0 bulkscore=0 suspectscore=0
- adultscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2501030127
-X-Bad-Reply: 'Re:' in Subject but no References or In-Reply-To headers
+	Thu, 09 Jan 2025 09:02:40 +0000
+Received: by mail.revenueraft.com (Postfix, from userid 1002)
+	id A898C226F6; Thu,  9 Jan 2025 09:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=revenueraft.com;
+	s=mail; t=1736413352;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=;
+	h=Date:From:To:Subject:From;
+	b=VTNWACApdgKoH074myWzZGyoERJsQw/1OC7XkPZg+QFHDSE7vAEWkDcr34koasIaj
+	 27H/FJVwsUwSmgvA3wop0prKVwXEo0d/BaTFWlLbRUNy1g8tUUbwVuLzM6lWfQdxsX
+	 uSfi8RgiQRKaS30VJOpmlqegAtqKHI3OvcfKu/PkpucikOtM2r3EkXr1utnJGDspwi
+	 qDaSPXYyyXVxL2cT7dQ1/FMPR+s6y34Q251IbFWyt1yy7faRvnWkMrYZmMJ2z+dEsh
+	 kXFyuHCHc87osuZdv2pbz1V0vBxpa7lgj98dDz7CY0LMUNpow+qMgG5z158S2I6rWN
+	 oqZ+wPXh38MWg==
+Received: by mail.revenueraft.com for <ath10k@lists.infradead.org>; Thu,  9 Jan 2025 09:00:55 GMT
+Message-ID: <20250109074500-0.1.4q.dgod.0.c3bhba6gb3@revenueraft.com>
+Date: Thu,  9 Jan 2025 09:00:55 GMT
+From: "Konrad Olkiewicz" <konrad.olkiewicz@revenueraft.com>
+To: <ath10k@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
+X-Mailer: mail.revenueraft.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250103_062025_522066_3F3ADF71 
-X-CRM114-Status: UNSURE (   3.04  )
+X-CRM114-CacheID: sfid-20250109_010238_871795_3E0FA94A 
+X-CRM114-Status: UNSURE (   0.70  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,6 +67,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello
-Sent from my iPhone
+Dzie=C5=84 dobry,
+
+Czy potrzebuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w?
+
+Skutecznie pomagamy rozpoczyna=C4=87 rozmowy handlowe z klientami zainter=
+esowanymi Pa=C5=84stwa ofert=C4=85.
+
+Zapraszam do kontaktu zwrotnego.
+
+
+Pozdrawiam serdecznie
+Konrad Olkiewicz
 
