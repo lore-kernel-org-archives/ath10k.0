@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D7F9E77197
-	for <ath10k@archiver.kernel.org>; Thu,  9 Jan 2025 13:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EA67E77197
+	for <ath10k@archiver.kernel.org>; Thu,  9 Jan 2025 13:08:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9s4BIvIKq4yNbwBJEWaTczHqFsUmebiubwxHYrSeW1w=; b=O0dPxLqukxHvZmryGACEwGRsI8
-	zqaO9iGcg+JahzQ6ouBYjgxxQouAJT74x2YAw8raEuny/mGFqiqA2MfE5dZiR/EszIFGuC+RLdsyr
-	c4aLOP89tTQ0uqe7Rui1hdQvZxbVh2KEkKjRBk5tPxl64qa67Hscze2J2FoBNaWpI+HgNliUh6uOT
-	aG8R2OO6wyrPAWx0NEOOLqENWmkH/P8jU/asevW8Bb/f076EjsQuXvsS40Q9FUJLiO2/lTeKIiLbr
-	HbP0gUc0rhhddBrAX/t4M0lEmnX3K/Z2o2ba7XagtevQMmFO6Z0UgpLeB6nfOaBsjnLyZvxyXANmQ
-	tHWv41bg==;
+	bh=DRp81Kl3NIMZznqRLx5i2hAMw/K/qEeEjM9NQLx3hQ4=; b=i0p4wepZsxbHWZYTKsdit8/xQp
+	AZK5hsQXpvuVuHAo+H3Z4P9Wf+Mi/f27LGF4BqUfdOv/Ad0LDQ5kiBB366457D91DUoeDyqsYNi/2
+	lcCDYl02tB+aIdOnFbcudbL0eJpm+gtI8Z286UfUUue7BJbNO6BCzpkn1DZOD/7lP1PO3W6ujRWdN
+	hNSvoZ86Xbue/9zXyzYB0OBm+pVrkDm/f+RSZ2Mayzj3qKnRflW+b/5AV7IxEbw+rnkE+r+GVTMfE
+	A4sy8iNmKulv2IdCoDfGaLnFwTecTdSiNfp+VcqlsS7kYJ6MX0l2fTlbWz+xTTs4mnkVsWE2xroaz
+	vRyaejTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tVsDj-0000000BwIm-2A2c;
-	Thu, 09 Jan 2025 13:05:07 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tVsHD-0000000Bx1p-1eEt;
+	Thu, 09 Jan 2025 13:08:43 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tVsDg-0000000BwH1-42nW
+	id 1tVsHA-0000000Bx18-3pld
 	for ath10k@lists.infradead.org;
-	Thu, 09 Jan 2025 13:05:06 +0000
+	Thu, 09 Jan 2025 13:08:42 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 947B1A41BAB;
-	Thu,  9 Jan 2025 13:03:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1845C4CED2;
-	Thu,  9 Jan 2025 13:05:02 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 93274A41BC6;
+	Thu,  9 Jan 2025 13:06:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46F28C4CED2;
+	Thu,  9 Jan 2025 13:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736427903;
-	bh=nWmz63W1uAhpdYEaB77+TMv4CTNJnteVN4HUDYk5nZ8=;
+	s=k20201202; t=1736428119;
+	bh=7ITLaen7UqS4VHFOfXTVUMhb7BCDETQvpAN0OW/chKo=;
 	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=OfrEku7Zpe3Ye5uB9yCX7USbrYiPRTdMgJEmagFPt7OhG+//bAUKoxBVN75YyneUH
-	 FvcnbMntG7LXN3fMac8eBxbeDyqedlpNNy6NWwZlkFPhBQjwXPv5+iL/Qb9Fm1JwUa
-	 CU2TfVzvarn4gZ0Kj4YPLqh++1r0Q7FhCBVK6SsKU8MiHJvIHZeZhqz0EhSxCP3r6i
-	 B9zqOes8UbqUTC1dUcdH3ykm9GZJg2g+7xjZVmjmyNLNyjECa2qdLseHD6Omm+pZar
-	 OcMl3M4URF/Enf8ov+/yuakGqob2jA+PRO3mBNVscfblek7HcPyDyaPx7OfaTdN2st
-	 OSJg8+4nw87rw==
+	b=KcRMqYg/8cRkijos0TGDZl/kbNcEmg8EHA/3Uy6KeHg1Wv+/FHpI05Ub/JV4zGuvn
+	 Jxhv+/ke+jUo8gErC+kDQIKSCB1LR76NYqmnnHMQid0nzVhbpawLSA/TyfpEcvRpVo
+	 cesoEDQ41d+JDrscKp657++c5qYkfT7DSUexJ5YkgHgNEQb8HxwBaJ75pUVZhYRtVi
+	 BDEoMIskS+RRFBsRV3L7ShxDlyU6LQyA/4atsluZTAz7lUybKoASZEqPz0EwDoQlkP
+	 jGVbA+62qlwImnlu11UeM08h5846fTQiHqzFr+UL4QJElfogmhA4wX4giU/zRTUww0
+	 Sqm4TD81FMBDQ==
 From: Kalle Valo <kvalo@kernel.org>
-To: Dmitry Antipov <dmantipov@yandex.ru>
-Cc: Jeff Johnson <jjohnson@kernel.org>,  ath10k@lists.infradead.org,
-  linux-wireless@vger.kernel.org,  lvc-project@linuxtesting.org
-Subject: Re: [PATCH] wifi: ath10k: perform buffer size check in
- ath10k_wow_convert_8023_to_80211()
-References: <20241225124710.91238-1-dmantipov@yandex.ru>
-Date: Thu, 09 Jan 2025 15:05:00 +0200
-In-Reply-To: <20241225124710.91238-1-dmantipov@yandex.ru> (Dmitry Antipov's
-	message of "Wed, 25 Dec 2024 15:47:10 +0300")
-Message-ID: <87h668dtoj.fsf@kernel.org>
+To: Jamie <jamie@stimulussoft.com>
+Cc: ath10k@lists.infradead.org
+Subject: Re: Ath10k firmware crash
+References: <a5b15899-b214-403b-a1b2-84a948e776ef@stimulussoft.com>
+Date: Thu, 09 Jan 2025 15:08:37 +0200
+In-Reply-To: <a5b15899-b214-403b-a1b2-84a948e776ef@stimulussoft.com>
+	(jamie@stimulussoft.com's message of "Thu, 2 Jan 2025 22:19:54 +0200")
+Message-ID: <87cygwdtii.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250109_050505_068871_215C54CA 
-X-CRM114-Status: GOOD (  10.57  )
+X-CRM114-CacheID: sfid-20250109_050841_016952_85E286AB 
+X-CRM114-Status: UNSURE (   8.31  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,30 +72,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dmitry Antipov <dmantipov@yandex.ru> writes:
+Jamie <jamie@stimulussoft.com> writes:
 
-> Looking through the following:
->
-> -> ath10k_vif_wow_set_wakeups()
->    -> ath10k_wow_convert_8023_to_80211()
->       ...
->       memcpy(..., ..., pattern_len);                    [1]
->       ...
->    <- ...
->    if (WARN_ON(...packet_len > WOW_MAX_PATTERN_SIZE))   [2]
->       ...
->
-> I've found that [2] makes no sense after [1]. I.e. check for possible
-> buffer overflow should be performed prior to touching both 'pattern' and
-> 'mask' buffers with 'memcpy()' in 'ath10k_wow_convert_8023_to_80211()'.
-> Compile tested only.
->
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+> Ath10k firmware crashes periodically with Qualcomm Atheros QCA6174
+> 802.11ac Wireless Network Adapter. Fedora 41 on Dell XPS 9575. Kernel
+> version is 6.12.6-200.fc41.x86_64. The problem is intermittent. The
+> driver crashes after some while and network goes down.
 
-This code path should be tested on a real device, can anyone help with
-that?
+Is this is a regression and an old existing issue? In other words, is
+there an older version of kernel which doesn't crash?
+
+My first guess is that this is a bug in the firmware and getting that
+fixed is difficult.
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
