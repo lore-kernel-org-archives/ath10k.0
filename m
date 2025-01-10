@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18B03E7719C
-	for <ath10k@archiver.kernel.org>; Fri, 10 Jan 2025 12:28:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DEF4E7719F
+	for <ath10k@archiver.kernel.org>; Fri, 10 Jan 2025 13:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
+	Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=K6nPcemujhcaUpXh6mF3n+lPqFRLYr1FBovbwC4wdWs=; b=d9FkyYFJpWNHw/mNEKHZN++TyM
-	FnfRgBHUepRwagtSYYuw8HVWkm+FdhQqpZL+WFDnqcx9TQj+jcycjebBipZvHQ4n0InbchqIY79VU
-	nQF3n0Z243ilOXjSbJsS9djKnWS9vgvAv1/dRO2ZgyLDmgYr0AjIgs3OiLl2e8n5vzLFBcqke3ykw
-	L4NHYsS0bvVhJn8Et4WTbMNlM7+f7ljrNBJT1ORAGcWH71yYeSBhj3THvuKh9n6MV3SNLyKMQLE0t
-	aTHo/co85pyGm6A3gwfqTDxvwa30KO8mmADyt88CR4NzVG0vIFZwJWPxJNC0ebQOiGLHqAkkhK651
-	aru3s8CA==;
+	bh=tvpAoHY60h7MOy6i+B28lZjSdkaIDZZ0NhhCLmqalMg=; b=lTBRRG5bCaml8iUMV6/cn84Rh1
+	1/0GsGNArKfbvl6oaScbXw0I8SJuzpecimq3K7WhLRz3CwfEsF+ww+WIl3FzM+idL8QNUTR0+Xj7c
+	91DlvdY8phP3DAEA7IydY8dikWkHjAOrah4GApslfwgC6yY0O5hsuBrcv/eDcF8DXFbUnvWnPKOZA
+	2XH9dm+Oye+HQ4TTswaPRKrX6Ug7wr0/454sXkRm9D26Cu9cyHJkVeLljBGMDXphCMTPWrHvV3/Ds
+	LHRrVAt0b4OVJGhEdc0hhBM/2K3bZUlH3xAMb1ac3HaNVP4Ij93wneC/eFp2+3LV6BLgeZl3yAdUs
+	DZMDpMqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWE83-0000000FGeq-0bwJ;
-	Fri, 10 Jan 2025 12:28:43 +0000
+	id 1tWEpl-0000000FQdp-1dA1;
+	Fri, 10 Jan 2025 13:13:53 +0000
 Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWE80-0000000FGdC-27qC
+	id 1tWERN-0000000FLYX-1Xhz
 	for ath10k@lists.infradead.org;
-	Fri, 10 Jan 2025 12:28:41 +0000
+	Fri, 10 Jan 2025 12:48:42 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 4370EA41475;
-	Fri, 10 Jan 2025 12:26:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F6B9C4CED6;
-	Fri, 10 Jan 2025 12:28:37 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 03C6CA403A2;
+	Fri, 10 Jan 2025 12:46:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E31FC4CED6;
+	Fri, 10 Jan 2025 12:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736512119;
-	bh=fFU+KELsOlSeFgOoShwCsHprcd4LKutco8qjr9j8o2g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=bVEc+R2JrzQSfEksFMdQpzaDFa5j4HzW5xMdbRGqwxqnNKQ5WWFYzf3ln/8jpVtWo
-	 AeEiGRGjRgGDKx92oLFBHEbTf8UzGnKh39LioVxkud+h1Yy6Y0RHE8D6AAspHaJGtk
-	 dGTsYa/idgAtWH4FhsZ7k9uIRWcd0LXOvGJ3GH4B7/bwSLqxFADqJlnE2mJHVPEVNk
-	 tP4qZKh4rTlUqtKPFnSSTN+Fi+qXT/oMuaUoxxQTK6khtfjikVxEWtzqMk4MrZCl/W
-	 coxcr6nfS8T7JaQsnQRoUOU8T7GhgeHpzKq0Tvo4rPOB0RJwcvMHCmhLw7iJNIKnSd
-	 dc7WFSFStS1SQ==
+	s=k20201202; t=1736513320;
+	bh=3fQ2h4Pt/uqWLkiK7e7VGOOcXJfXhwzLCd84M4/rp5Y=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=j4yyJ1yofByWb3zLnLfpxVnJmR2DwX2dXJ/i9VgB0x1XMs1eVJY6CfU+OZKunWIpZ
+	 wylLsHs+w6TILie2J4cN75e4mDzk3yg2ll3fftR8p+qMkMf2o35XWFUhl3DNT3RrIL
+	 7d4FoORFBFKBvws3SeT/8PUBup+cB5aKoUBcqHwaYxtXw4bj7rNMsBvzNGPNWQWSN6
+	 g2UOHiSJoBp0Eb70NOhYXhnhRmbR/lxcrjnIzbuBMRijhln1hormbLc1zA5ZKF52D4
+	 KFyhcqs76MC8nk3HB9EFXgkFnNRZpEBkCOAsdSYiukP+4vL0KO+jsu5l22RNePQTNQ
+	 etQAr+JyftpwQ==
 From: Kalle Valo <kvalo@kernel.org>
-To: Dmitry Antipov <dmantipov@yandex.ru>
-Cc: Jeff Johnson <jjohnson@kernel.org>,  linux-wireless@vger.kernel.org,
-  lvc-project@linuxtesting.org,  Fedor Pchelkin <pchelkin@ispras.ru>,
-    ath10k@lists.infradead.org
-Subject: Re: [PATCH] wifi: ath10k: add extra output check in
- ath10k_wmi_event_debug_print()
-In-Reply-To: <20250110115024.1497597-1-dmantipov@yandex.ru> (Dmitry Antipov's
-	message of "Fri, 10 Jan 2025 14:50:24 +0300")
-References: <20250110115024.1497597-1-dmantipov@yandex.ru>
+To: smaxxx <smaxxx@protonmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Subject: Re: Slow WiFi speed on QC9377
+References: <jLGAMZpgr-fd7mc1F0QKdZ5SEd6keErnKsICO7NTMf5vTYUjkkYdY4MlFB0wml6KiLQYodK135tt04AOtaw9HowJWXlelIEa2C7ieZvjhpk=@protonmail.com>
+	<ph8MqbGHbHR3_t7MZ-gpZF_RF9NQemCzXCHlkN4lcd0ZWZ_u5axS-5G39iWfuxoIpUV3VMxT7zTduKbyu9MOXMb__A6GJOVBFBkfn9crNUE=@protonmail.com>
+Date: Fri, 10 Jan 2025 14:48:37 +0200
+In-Reply-To: <ph8MqbGHbHR3_t7MZ-gpZF_RF9NQemCzXCHlkN4lcd0ZWZ_u5axS-5G39iWfuxoIpUV3VMxT7zTduKbyu9MOXMb__A6GJOVBFBkfn9crNUE=@protonmail.com>
+	(smaxxx@protonmail.com's message of "Fri, 10 Jan 2025 10:43:24 +0000")
+Message-ID: <87a5bysul6.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-Date: Fri, 10 Jan 2025 14:28:36 +0200
-Message-ID: <87ed1asvij.fsf@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_042840_609947_1A0834A9 
-X-CRM114-Status: UNSURE (   7.35  )
+X-CRM114-CacheID: sfid-20250110_044841_522146_7556921D 
+X-CRM114-Status: UNSURE (   9.80  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,20 +73,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dmitry Antipov <dmantipov@yandex.ru> writes:
+smaxxx <smaxxx@protonmail.com> writes:
 
-> In 'ath10k_wmi_event_debug_print()', passing skb of the very weird
-> layout may produce debug output of the zero length. In such a case,
-> 'if (skb->data[i - 1] == '\n')' will trigger an access beyond skb data
-> boundaries. So fix this by adding an extra check whether at least one
-> byte of the debug output was really emitted. Compile tested only.
+> Hi everyone,
 >
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> it seems that this is not a ath10k firmware issue but rather a kernel issue. I tried following:
 >
-> Suggested-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+> Live boot newest Manjaro: Problem
+>
+> Live boot Ubuntu 18.04: Full WiFi speed as expected
+>
+> Live boot Ubuntu 20.04: Problem
+>
+> Ubuntu 18.04 had kernel 5.4.0-84 and WLAN.TF.2.1-00021-QCARMSWP api 6 - no problem.
+>
+> Ubuntu 20.04 had same firmware but kernel 5.15 - problem. I am gonna
+> try to downgrade the kernel and see if that fixes my problem.
 
-Adding ath10k list.
+What's the full speed you are expecting?
 
 -- 
 https://patchwork.kernel.org/project/linux-wireless/list/
