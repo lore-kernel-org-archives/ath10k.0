@@ -4,83 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52D79C02192
-	for <ath10k@archiver.kernel.org>; Wed, 29 Jan 2025 09:23:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1774BC0218F
+	for <ath10k@archiver.kernel.org>; Fri, 31 Jan 2025 13:23:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dkVtFYf2MVcLNdpgF/1FM6AyzPrPgahv/4qNthU6GjE=; b=ARShr7RkEJiND7Kksh+/bPrGU6
-	9v81UO3bX6y2eplWLTJuhxeLnwy9M6OnRO5t6vd/RphBXzup3Hz+sDs6Rjz2uFaOo1UxpCExEL4fB
-	96/OndQUSLtTKYaTaPjWIMH0LNeHkrkCNBXxg5BgD+OkAhllCO5iIU7foSXUocxXplO0eddA7Jedz
-	PnIkcLBQuu9WjOTAxB5s4jcE0wZrtabfWnLfkBbr+xU9xrILB8QL94s+nxP5+CmbOL9u4fGncZvL2
-	0jr41FNKaU4imtcewHkv48NnaMpOY61pD3EK2pXo8Lf/qA3WBtojGjrHGAMPW9f/mOYTOGur8V+yR
-	vW+TaGvw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=i98dv1hcShtHP6AHCDM9O3+gtS5Xr9m1puc+d9u+8pg=; b=E8GYdOxtr1RubQ6cQ8bxKnSO/H
+	AZAGd4rgKfSnvTusbXDvHGzERhWN+RpgitK9YBiJ9l1KnjS1CKSgBia7x5S+uCKI0u40gaSLIcUUy
+	qH9SP1i8Ffe1ZcNkRk5n5Cb+BxFX4t+1qFQGvkUiiGIGtABNdb7rFStZDjvHUlfCGkNAi44/bCCvP
+	v4sCmpt9vpVWIOg3ewb1ZMoCeQPA2t49pPdqMHY74E/D4oxzSETda0NTmoA10r/BtQf8xmMBbdn5z
+	Q0R0M034JCjQhi/2w5DLTTs4QObtluFeWIFhqXIW4wtTAhfW1djkizinXuDgWDZ/71hlXdDVgFtvb
+	EWZ+5UHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1td4IT-00000006duO-37tK;
-	Wed, 29 Jan 2025 09:23:45 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1tdqzJ-0000000AgCo-3Hn6;
+	Fri, 31 Jan 2025 13:23:13 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1td4IQ-00000006dtg-3LgP;
-	Wed, 29 Jan 2025 09:23:43 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2f83a8afcbbso762916a91.1;
-        Wed, 29 Jan 2025 01:23:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738142621; x=1738747421; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dkVtFYf2MVcLNdpgF/1FM6AyzPrPgahv/4qNthU6GjE=;
-        b=AKZMAamtjrv/SfKOySuy3Aq+DCsnzn9/6GDH/ZmwtrDANck6lK+HBbMbYHjb0PHnvK
-         fgD+kNH+d+yeBMBbOjYpSd3LRoAv5pMhCTJh5SOIrPAovNRj1TA5jaXTc2uKj6xFDj9Q
-         cVFQuUNu5yVcULGEMEu4T8dIvITAq3BPufVggoK5luW5c/8lXMYEnbuKZWW9tv/BQBn2
-         GYZVuZ9O5yEv1qYK9DLRYgo6WTF+VTtPJgLa1Raje7tpR04DnDw3bPqOjvVcccut38D0
-         5JiE5fbVEaeCYHts7++oY9jJ86/lkXZaFSJvjZu4+An0d8Td827dbrOjugQSS0NAv5QP
-         QS2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738142621; x=1738747421;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dkVtFYf2MVcLNdpgF/1FM6AyzPrPgahv/4qNthU6GjE=;
-        b=uDHhPqng/sdoyYrBU4eUWyqKRt3DmjHSpNFfxzAdXHeCRVo+dFcPGQSUJbf6/PllDp
-         UuxnqLYyuh8NYXVlbVtTQnN9S//iI8Se27SlwVPB8fgXZYsRCNTPdmAEbdyBW76u17J2
-         HZnjxLlDbH0iNepjr8x2b4GXK0Kl2N5W6kJljUNl9VNmzLfNHXL25vGT5B/AYHYfTN9C
-         ptHr5WvF4vRx7nRt043NkI+gAwpXYASHjI7tmcLwsYa4sIN/INDTy67NTBItUX674yI8
-         bu/FDqspPos2C2n7PdV5w7re/w9Cy7Csc6ov6gO5009iKviFT2zorhuRf4McpHddZP8R
-         JOjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUPTQO8aQVvaFicJpn/nsH1bLFB9qjuQb7JVYyCx+ec2/JKrdHegHdVqgDZBWs857CSyufFknwc@lists.infradead.org, AJvYcCUPWAQva46aFWYjtGJ0qid9Yb1E9rJLc1KBhAXIbXIhps/ZGonOUs+CDjdj52/AUGnyAn44Wy8=@lists.infradead.org, AJvYcCXJRI23Z/zJPR75UTcK3Ehxds6YYHZy0Kdm+XO1Q8e0KKJ8i3FigWtzK3CgbWYeJrFtWAxFiLjI@lists.infradead.org
-X-Gm-Message-State: AOJu0YzWdWesTbTQAjh2P6VxYTVxHWHz42oU/ApDt45xcAmuiCQrZOw5
-	3/ktlVGUzBE4WCE0u89fcRQCJcHTUNTH6ZKcW9X6Zzr+9+m5VcZyBGWYxSaEXfUl5vWd8S+UsMU
-	6G22ycI/gIFGqRuR1GeTrb7ZqnEv2IXwH
-X-Gm-Gg: ASbGncv7ZpciLxfx4Q3V7Rx7xZhUK+elqdYkjoTLT4S51Osx0IM95IqVafgg/zDWJaU
-	WnOH5OcDZ0Dn9vs/9cC1ueqXJo5SnUxFwkjS4IIPvP00PX8P52tX5AK6wfhHOtR64fVyFDgoewA
-	==
-X-Google-Smtp-Source: AGHT+IG0NT5+Ebjs5FpztVqBT9QwuXSYNyzgvElMDH+2iRgo6k0KnderKKdowGTHlRb3LEKlUYgj7jqgzgwCWWUfrYM=
-X-Received: by 2002:a17:90b:4ecf:b0:2ee:5c9b:35c0 with SMTP id
- 98e67ed59e1d1-2f83a05c569mr3598722a91.9.1738142621531; Wed, 29 Jan 2025
- 01:23:41 -0800 (PST)
-MIME-Version: 1.0
-References: <87wmefguqt.fsf@kernel.org> <e64c416a975d8fcc4e245db78f31b0daef358e89.camel@tuxdriver.com>
-In-Reply-To: <e64c416a975d8fcc4e245db78f31b0daef358e89.camel@tuxdriver.com>
-From: Emmanuel Grumbach <egrumbach@gmail.com>
-Date: Wed, 29 Jan 2025 11:23:30 +0200
-X-Gm-Features: AWEUYZnYaDjc0TciMfJF2gwFNzQ1rD_qqkGo6wdKEgYfWf7G52X1E5mNencBTLo
-Message-ID: <CANUX_P3Z2qQC1+SwqqczrQx-9_EOBwDnh-KtvkGFf0heJ81AXw@mail.gmail.com>
+	id 1tdqzG-0000000AgC2-2T2X;
+	Fri, 31 Jan 2025 13:23:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=i98dv1hcShtHP6AHCDM9O3+gtS5Xr9m1puc+d9u+8pg=;
+	t=1738329788; x=1739539388; b=AiqK1yvnOCK8B2UerNkt4zS0UxpRSxALGoLtzuiqZlxAJXL
+	A7HNQSLyiPYSJohN6LPrqe81GITGK+Ths22DONTCZmgEnQtLKrsXu35KphTuH0RyMrky7RWH/bySr
+	8FYMpRLP5se2Qpo3Jd4b6rKi6queDw0iLpGQRcTygVRuMhfZOnsPmxe20F+JHBi7ZhvBO7wHDxTuS
+	ZnKH27AfrEX/owh91jGj0x4EHiqxpRasT7knznbskwjPt4GNLFteP4ZLKT0mx4oO5WRPyNSy5/SnL
+	rz+DNF9q/OfwfPcL60g8o4Avxi9wTHwEbnTNGa/XZMLHhRLuhOfgk09LD1ehwFQg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1tdqzA-0000000G9Bj-3JqL;
+	Fri, 31 Jan 2025 14:23:05 +0100
+Message-ID: <21896d2788b8bc6c7fcb534cd43e75671a57f494.camel@sipsolutions.net>
 Subject: Re: Stepping down as maintainer
-To: "John W. Linville" <linville@tuxdriver.com>
-Cc: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, ath12k@lists.infradead.org, 
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org, 
-	Johannes Berg <johannes@sipsolutions.net>
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org
+Cc: ath12k@lists.infradead.org, ath11k@lists.infradead.org, 
+	ath10k@lists.infradead.org
+Date: Fri, 31 Jan 2025 14:23:03 +0100
+In-Reply-To: <87wmefguqt.fsf@kernel.org>
+References: <87wmefguqt.fsf@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250129_012342_835564_67D3796B 
-X-CRM114-Status: GOOD (  15.22  )
+X-CRM114-CacheID: sfid-20250131_052310_638231_192EABCF 
+X-CRM114-Status: GOOD (  20.66  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,41 +73,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Kalle,
+Hi Kalle, all,
 
-On Tue, Jan 28, 2025 at 5:18=E2=80=AFPM John W. Linville <linville@tuxdrive=
-r.com> wrote:
->
-> On Tue, 2025-01-28 at 11:20 +0200, Kalle Valo wrote:
-> > Hi everyone,
-> >
-> > I'm stepping down from all my maintainer roles. My first commit
->
-> Well, my friend, I suppose the time has come for you to move on to
-> something else? I truly hope that something exciting and rewarding
-> awaits you!
->
-> You have done a great job in this maintainer role, and I am very
-> certain that you will be missed. Few people realize how thankless such
-> a role can be, but I do. I hope you will now have some some time to
-> enjoy your sauna as you consider what comes next for you.
->
-> Thanks for the job you have done.
->
+> I'm stepping down from all my maintainer roles. My first commit
+> feed9bab7b14 ("spi: omap2_mcspi PIO RX fix") to the kernel was back in
+> 2008 for v2.6.24 so I have been here for a long time. Thank you everyone
+> who I have worked with, there are too many to list here.
 
-I think we met only once in Seville in ... 2016..
+First and foremost, let me add my thanks to the list here. We've worked
+together for many years on wireless now and I appreciate that greatly,
+personally and also in the role you've played in shaping wireless, be it
+through the reviews directly, or the more indirect things like sharing
+the tree maintenance etc. Thank you!
 
-I also would like to take a few moments to thank you for the work you've
-done for us all. Just like for many areas in life, we take things for grant=
-ed
-and only when there is a change we sometimes become more attentive to
-what people have done for so many years without being recognized enough.
+This is also an opportunity to thank Qualcomm for sponsoring your work
+here. Certainly I'd expect they also got a lot of value out of it, but
+we the community definitely got a lot, so thank you Qualcomm!
 
-Good luck and I hope you'll enjoy the ride of your next adventure!
+> Jeff continues to maintain ath10k, ath11k and ath12k drivers so they are
+> unaffected. But for the wireless driver maintainer (drivers/net/wireless/=
+)
+> there is no replacement at the moment. If anyone is interested, please
+> do let Johannes and me know.
 
-John, I think the last mail I got from you was when you stepped down... I a=
-ssume
-that the equipment that was considered then state of the art is now under h=
-eavy
-development as part of your vintage hobby? ;)
+I'll be honest and say that I did delay my reply to see if anyone would
+speak up, but in the short term I really didn't expect anyone to step
+up. We're pretty niche in wireless, after all :)
+
+There's obviously reluctance of netdev picking up any wireless related
+activity, and that would anyway be impractical if cfg80211 and/or
+mac80211 were to remain separate. There's also a clear separation of the
+lists, and given the volumes involved I think that's likely better for
+everyone.
+
+In the short term at least, I therefore expect that I will (need to) be
+the custodian of the wireless trees. And I say "custodian" rather than
+"maintainer" quite intentionally, because I cannot really take on the
+role as you've filled it in the past. Shoes a few sizes too big, I
+guess.
+
+
+So as the wireless community, I think we will need to come to terms with
+the fact that our workflow and processes will change now, and we'll
+invariably have to take on some new work. In some ways, netdev has
+already undergone such a transformation in the past, with
+ * maintenance shared across more people (to some extent),
+ * a lot more emphasis on reviewers _other_ than the maintainers, and
+ * automation to take care of rote things.
+
+I'm not sure we will be able to find (trusted) people willing to share
+the maintenance with in the short term, but the other two things seem
+entirely manageable in the short term. I'm already checking if I can get
+(interim) automation set up in the short term, with a more permanent
+setup, independent of myself or hopefully any company, to come later.
+
+As for reviews, I suppose that'll be a new thing in the wireless world
+where pretty much everyone (with few exceptions) works in their driver
+niche. I would think that was also the case for Ethernet in the past
+though, where now we see "cross-vendor" Reviewed-by tags on many
+patches, even ones specific to other drivers. This is where we should
+get to, to distribute reviews across more people. For those of you who
+may not have seen, Jakub also publishes statistics about that, e.g.
+https://lore.kernel.org/netdev/20250121200710.19126f7d@kernel.org/
+
+Hopefully then over time we'll see where things fall, and find one or
+multiple people to share the tree maintenance with again. Bus factor and
+all that.
+
+
+However, that's only *my* vision for how we continue to maintain the
+wireless tree going from here. I'm open to other suggestions (though
+pre-emptively reject the suggestion that "every driver has their own
+maintainer and that's good enough...")
+
+
+Thanks for reading this far, and thanks again Kalle! :-)
+
+johannes
+
+
+PS: I'll update patchwork auto-delegation accordingly soon, just have to
+remember when I have enough time to click all the slow buttons there
 
