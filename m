@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1774BC0218F
-	for <ath10k@archiver.kernel.org>; Fri, 31 Jan 2025 13:23:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA10CC02193
+	for <ath10k@archiver.kernel.org>; Mon,  3 Feb 2025 18:04:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=i98dv1hcShtHP6AHCDM9O3+gtS5Xr9m1puc+d9u+8pg=; b=E8GYdOxtr1RubQ6cQ8bxKnSO/H
-	AZAGd4rgKfSnvTusbXDvHGzERhWN+RpgitK9YBiJ9l1KnjS1CKSgBia7x5S+uCKI0u40gaSLIcUUy
-	qH9SP1i8Ffe1ZcNkRk5n5Cb+BxFX4t+1qFQGvkUiiGIGtABNdb7rFStZDjvHUlfCGkNAi44/bCCvP
-	v4sCmpt9vpVWIOg3ewb1ZMoCeQPA2t49pPdqMHY74E/D4oxzSETda0NTmoA10r/BtQf8xmMBbdn5z
-	Q0R0M034JCjQhi/2w5DLTTs4QObtluFeWIFhqXIW4wtTAhfW1djkizinXuDgWDZ/71hlXdDVgFtvb
-	EWZ+5UHw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=2OQ6cIBYtDQqOLquKMrAIvQ0xXU0wCUXZNzvGoE/9Xo=; b=Wc41rD2InOhHA9dJPh1W45piYg
+	4E76AfQhUaML2o62N01uyFdl1yHzSwIXS8fakG1BU+wvDVVQ2BbmrgiLZqOWqwXS75E6SdbPGOtQp
+	qbIyVIhGC+Q1hDdTEUELuY9Di0xb1MDvg5afFMG/Z/IMeiexxI1wuc9QkrZgY4uHxoB5HwiMSdio/
+	NLzj3tlfmhgf3GaCmDAzowzU6+X0HbvWsLjcUYoqsIGbmhy2amXcQubCo31+iexp+ET4orGPE3AnU
+	SLKybUAsNICLlaxqSIenZNBVpTKpRhHhAhddk4tQLKggrHux98ngpJJs9nFoPBeXL+w035Qlc/x51
+	xptEjuUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tdqzJ-0000000AgCo-3Hn6;
-	Fri, 31 Jan 2025 13:23:13 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1tf0oY-0000000GCpJ-3jj3;
+	Mon, 03 Feb 2025 18:04:54 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tdqzG-0000000AgC2-2T2X;
-	Fri, 31 Jan 2025 13:23:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=i98dv1hcShtHP6AHCDM9O3+gtS5Xr9m1puc+d9u+8pg=;
-	t=1738329788; x=1739539388; b=AiqK1yvnOCK8B2UerNkt4zS0UxpRSxALGoLtzuiqZlxAJXL
-	A7HNQSLyiPYSJohN6LPrqe81GITGK+Ths22DONTCZmgEnQtLKrsXu35KphTuH0RyMrky7RWH/bySr
-	8FYMpRLP5se2Qpo3Jd4b6rKi6queDw0iLpGQRcTygVRuMhfZOnsPmxe20F+JHBi7ZhvBO7wHDxTuS
-	ZnKH27AfrEX/owh91jGj0x4EHiqxpRasT7knznbskwjPt4GNLFteP4ZLKT0mx4oO5WRPyNSy5/SnL
-	rz+DNF9q/OfwfPcL60g8o4Avxi9wTHwEbnTNGa/XZMLHhRLuhOfgk09LD1ehwFQg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1tdqzA-0000000G9Bj-3JqL;
-	Fri, 31 Jan 2025 14:23:05 +0100
-Message-ID: <21896d2788b8bc6c7fcb534cd43e75671a57f494.camel@sipsolutions.net>
-Subject: Re: Stepping down as maintainer
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org
-Cc: ath12k@lists.infradead.org, ath11k@lists.infradead.org, 
-	ath10k@lists.infradead.org
-Date: Fri, 31 Jan 2025 14:23:03 +0100
-In-Reply-To: <87wmefguqt.fsf@kernel.org>
-References: <87wmefguqt.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	id 1tf0oV-0000000GCnF-0dqo;
+	Mon, 03 Feb 2025 18:04:52 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id AE7C65C66FC;
+	Mon,  3 Feb 2025 18:04:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53290C4CEE2;
+	Mon,  3 Feb 2025 18:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738605890;
+	bh=eNIW6WQcqPXhIWN6S46qWzShZTr4zretpTw8PTTRw9w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=MPP+tjQHgZHPt2+r5AYhupMEyj4Nkh3Ak81oPBn8bnZ4PmdwEhcAiJIdlrWqpynFT
+	 yZ9u+SBv/a1tjViGGNhOSLtdEF/20tZEt6WVjuinRWOhZVTbkftLVi7XTSXtYdjltA
+	 3H06+ELtAFsIVvQQB5Dlkwcu8MZgltmEYsMAI0siY8nKGYZ2Ho8PkiHbSi5F+uuVBj
+	 L3t+Y+cR5NIfLXck3C0TP9S5MKxhUy+KrNi7nIuND9koTisbb0V9rqg6S1CijrRvZh
+	 gSOvV1UXH8BrrEULK9/G4H1l6oObEJstg9U30MvAV5Si/VbCg0HbNlE28Ai3oGgXbd
+	 jFY27HTRbUkmg==
+From: Kalle Valo <kvalo@kernel.org>
+To: ath10k@lists.infradead.org,
+	ath11k@lists.infradead.org,
+	ath12k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+Subject: [PATCH wireless 2/2] MAINTAINERS: wifi: remove Kalle
+Date: Mon,  3 Feb 2025 20:04:45 +0200
+Message-Id: <20250203180445.1429640-2-kvalo@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250203180445.1429640-1-kvalo@kernel.org>
+References: <20250203180445.1429640-1-kvalo@kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250131_052310_638231_192EABCF 
-X-CRM114-Status: GOOD (  20.66  )
+X-CRM114-CacheID: sfid-20250203_100451_233710_E25D374F 
+X-CRM114-Status: UNSURE (   8.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,85 +72,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Kalle, all,
+I'm stepping down as wireless driver maintainer. Johannes kindly voluntereed to
+be the "custodian"[1] for the drivers until a better solution is found.
 
-> I'm stepping down from all my maintainer roles. My first commit
-> feed9bab7b14 ("spi: omap2_mcspi PIO RX fix") to the kernel was back in
-> 2008 for v2.6.24 so I have been here for a long time. Thank you everyone
-> who I have worked with, there are too many to list here.
+Link: https://lore.kernel.org/all/21896d2788b8bc6c7fcb534cd43e75671a57f494.camel@sipsolutions.net/ [1]
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-First and foremost, let me add my thanks to the list here. We've worked
-together for many years on wireless now and I appreciate that greatly,
-personally and also in the role you've played in shaping wireless, be it
-through the reviews directly, or the more indirect things like sharing
-the tree maintenance etc. Thank you!
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2048c75c3c42..6401e59ec2cc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16341,7 +16341,7 @@ X:	drivers/net/can/
+ X:	drivers/net/wireless/
+ 
+ NETWORKING DRIVERS (WIRELESS)
+-M:	Kalle Valo <kvalo@kernel.org>
++M:	Johannes Berg <johannes@sipsolutions.net>
+ L:	linux-wireless@vger.kernel.org
+ S:	Maintained
+ W:	https://wireless.wiki.kernel.org/
+-- 
+2.39.5
 
-This is also an opportunity to thank Qualcomm for sponsoring your work
-here. Certainly I'd expect they also got a lot of value out of it, but
-we the community definitely got a lot, so thank you Qualcomm!
-
-> Jeff continues to maintain ath10k, ath11k and ath12k drivers so they are
-> unaffected. But for the wireless driver maintainer (drivers/net/wireless/=
-)
-> there is no replacement at the moment. If anyone is interested, please
-> do let Johannes and me know.
-
-I'll be honest and say that I did delay my reply to see if anyone would
-speak up, but in the short term I really didn't expect anyone to step
-up. We're pretty niche in wireless, after all :)
-
-There's obviously reluctance of netdev picking up any wireless related
-activity, and that would anyway be impractical if cfg80211 and/or
-mac80211 were to remain separate. There's also a clear separation of the
-lists, and given the volumes involved I think that's likely better for
-everyone.
-
-In the short term at least, I therefore expect that I will (need to) be
-the custodian of the wireless trees. And I say "custodian" rather than
-"maintainer" quite intentionally, because I cannot really take on the
-role as you've filled it in the past. Shoes a few sizes too big, I
-guess.
-
-
-So as the wireless community, I think we will need to come to terms with
-the fact that our workflow and processes will change now, and we'll
-invariably have to take on some new work. In some ways, netdev has
-already undergone such a transformation in the past, with
- * maintenance shared across more people (to some extent),
- * a lot more emphasis on reviewers _other_ than the maintainers, and
- * automation to take care of rote things.
-
-I'm not sure we will be able to find (trusted) people willing to share
-the maintenance with in the short term, but the other two things seem
-entirely manageable in the short term. I'm already checking if I can get
-(interim) automation set up in the short term, with a more permanent
-setup, independent of myself or hopefully any company, to come later.
-
-As for reviews, I suppose that'll be a new thing in the wireless world
-where pretty much everyone (with few exceptions) works in their driver
-niche. I would think that was also the case for Ethernet in the past
-though, where now we see "cross-vendor" Reviewed-by tags on many
-patches, even ones specific to other drivers. This is where we should
-get to, to distribute reviews across more people. For those of you who
-may not have seen, Jakub also publishes statistics about that, e.g.
-https://lore.kernel.org/netdev/20250121200710.19126f7d@kernel.org/
-
-Hopefully then over time we'll see where things fall, and find one or
-multiple people to share the tree maintenance with again. Bus factor and
-all that.
-
-
-However, that's only *my* vision for how we continue to maintain the
-wireless tree going from here. I'm open to other suggestions (though
-pre-emptively reject the suggestion that "every driver has their own
-maintainer and that's good enough...")
-
-
-Thanks for reading this far, and thanks again Kalle! :-)
-
-johannes
-
-
-PS: I'll update patchwork auto-delegation accordingly soon, just have to
-remember when I have enough time to click all the slow buttons there
 
