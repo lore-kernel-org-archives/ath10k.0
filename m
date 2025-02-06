@@ -4,71 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9B57C02194
-	for <ath10k@archiver.kernel.org>; Thu,  6 Feb 2025 12:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FCFBC02194
+	for <ath10k@archiver.kernel.org>; Thu,  6 Feb 2025 20:30:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
+	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jxeEKhbt6RBIKuIfnRrTQBNtbImRQqNXKP5zZutgTnk=; b=YcbOD1anVbXooEHgarZN1+Diyl
-	+UficcZf9BHAmCxvKegBm0HKqi4P/6VjCUfOxqXDcCoYevLbuAfURFrUJfP0/EPMHS9dM5GvHpUl4
-	kh/+vFkoIHfwq1Nm7aKXtl6z69d0QR0ywaVwAiHpPL/Ed+a2PIpuPTF7YrJTnW1gTosSmLgsv7P4j
-	kQw5kdSzfWW+uKhHc3EwynrM+JoaUnj/cEZaiQ7JiHSVV9Zs9ZpImdosEtyoQ4bmG1CDgIYutig/R
-	qxIrdoKbORMFF+3ZZRmYQbj3wchirgs+Ajik31eKFBQz7pw4UgzteC0xhEeoGCOPBJPNkh729aXio
-	LAE8rT2A==;
+	bh=mtTcWkO4bRVYzIeCJ/JqL9n+9tVD9IOVGume1rdQHzE=; b=XecAUxeBWOxZoW34y+w32TTP0W
+	yVTULVPCVTQ6WQBvrziyhZefVlrLB4hUcgf9lhSiNQdNt2iwLx2RaSw7P0MujWrZesLIpIEaG03eJ
+	cOKageQkRmMFAI7oQ8yvoBXur6Wy8c3OIjGH6y7QJdTbIhHqYUy8Ep/1uXN7/fNEHvNj+i2Hc2VUH
+	pQMz87URYt9+ykf8TlbklIOBbPEYrpWY9qyzbeK2cU2Rr9igUrMlpJicN4WldgVgtw0HDsLV4IOTf
+	Ntu9F6mN7v5u3bFI1VPTLa0wbKGrJlC38tsiglH2bJLv3vljat2osQL7s2seJWHkjgkee4hSynxib
+	xz7PHQLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tg17d-00000006IMM-1Yv5;
-	Thu, 06 Feb 2025 12:36:45 +0000
+	id 1tg8WQ-00000007UGH-2nQK;
+	Thu, 06 Feb 2025 20:30:50 +0000
 Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tg17b-00000006ILg-0SCs;
-	Thu, 06 Feb 2025 12:36:44 +0000
+	id 1tg8WM-00000007UFZ-1dri;
+	Thu, 06 Feb 2025 20:30:49 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 96526A44212;
-	Thu,  6 Feb 2025 12:34:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44936C4CEE6;
-	Thu,  6 Feb 2025 12:36:41 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 27E30A445BE;
+	Thu,  6 Feb 2025 20:28:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8708C4CEDD;
+	Thu,  6 Feb 2025 20:30:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738845401;
-	bh=gZypxpWMVdeu/KHG2lytgMJCpY5x3szqPbKkUNQKt6w=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
-	b=quxvCURu7Nr9va1h9rTphwETV1cXucIk2AMm6VANAH3xtCUPJzMjOf06LEfeFT9M6
-	 9FFZ+Kb6UBiK7aezN5qrOJq97HjFBEzA3+65LlK4qqHT9nDBTKKLXkUygNu1Huoi7R
-	 tODDhSRFeZpI+c0+G7a8EbdNaZ6K4i7WBC9gNStLoSuoqDzs71v53sUukzb1hB1kV+
-	 L5OI9aLRvNa2j4Ms/1tdleVgjhy384RnARfj17uU+QSsLCZ/p0L0J/8pUa0kNDMfES
-	 RavtAT3MExeXP4oS4IZaXfF+xSMVDg3IzS2ZNaOEJpttkenSp36rfng/HdrNeYmhta
-	 XSLMbQAehzIHQ==
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e3983426f80so664600276.1;
-        Thu, 06 Feb 2025 04:36:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUUnBPz57kiYh2geGQHFcm3dkYF8XAINElDDk+M9DjcyL/ArukE55rwq3ULjd3hA/S3bnnTI8Y=@lists.infradead.org, AJvYcCX177csiXS0kgOorUH5eGzbiTffRL3WH5Kcla2Fq2M++lZP0lgNliGVP5z1OBrBwmdkLluXeJnJ@lists.infradead.org, AJvYcCXQCn6oGThHoAmAuSv+CArSMihEnsI2AAKBRQTmY68nu6Y+wnqNPDpG0lOtK3KobBX4fW6QqRRx@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz1dZm2seDli9CPA9Y+oMNZyjlw8pqCKyZoUj7g8iTubsdxjNlT
-	dueIzIzt0MU1EvOsqqXBkblDFK2/UEE/zJ0ZNvDqgal4NzYSqdqiR22OwtvBpvgJI23B0aq6Kei
-	ZC5EU4wqb5aYgt8A32oqa38jGJVw=
-X-Google-Smtp-Source: AGHT+IHdNcp8QXu8zXn3jgkuuXU33OOv9AfM6HtJI9lJz8nhGrzBKKLWVF9Ifu2qSFe/HCPAAF8yDA3PNZkmeSIKCuU=
-X-Received: by 2002:a05:6902:845:b0:e5b:411a:a80f with SMTP id
- 3f1490d57ef6-e5b411aa9b6mr515894276.42.1738845400378; Thu, 06 Feb 2025
- 04:36:40 -0800 (PST)
+	s=k20201202; t=1738873844;
+	bh=uxK6tuwuJNODoSeoVxh/I0TT0BWkiYbdCYE2ZBTQroo=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=TjUQCB9NnCMFgjeaZBVJCXZB98Uf0I1RM72A+/SnqQMYXWpRAa5inRhXSSW0agp3H
+	 F1ANqLoQVudCIwyiaMbEBQOGRc4cmIMv6lPw4ArLTrzkTYQ9MbH/y7n89ZU8v2VXmL
+	 Pbvkna364mmrM3rXnb0nS6CQB2/KkQ5oo6gp3Qv6Ey4M7/lAxc6P75u+06HpXl87G4
+	 NAxp3DYdhZBmEaFrXGluSnotg/fyu9gGNflmw54eW1aPdtOiMeDk+JSlRzJBlMiKZu
+	 qcTk2+bmeBFZucLWac6bLTEqvcTVkoyVBR0fTzkIaR8/hp+cw+6IDSdL1elbYEvUt1
+	 Etpft2PurSpwA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <9be8cab2-02d0-40d2-b69f-7cb3095249a9@oss.qualcomm.com>
-In-Reply-To: <9be8cab2-02d0-40d2-b69f-7cb3095249a9@oss.qualcomm.com>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Thu, 6 Feb 2025 07:36:29 -0500
-X-Gmail-Original-Message-ID: <CA+5PVA4e7TB-qXAcdyN8CVboesOJcKSH-10KpTxbG3KaH77yuw@mail.gmail.com>
-X-Gm-Features: AWEUYZlZknHcwXucuuJ-kRjaC-qqH6H1cPUMkMTC4lRfMcL7gLTXNJU5ZOTFw10
-Message-ID: <CA+5PVA4e7TB-qXAcdyN8CVboesOJcKSH-10KpTxbG3KaH77yuw@mail.gmail.com>
-Subject: Re: [PULL linux-firmware] ath11k and ath12k firmware 20250205
-To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
-	ath12k@lists.infradead.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH wireless 1/2] MAINTAINERS: wifi: ath: remove Kalle
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20250203180445.1429640-1-kvalo@kernel.org>
+References: <20250203180445.1429640-1-kvalo@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+ ath12k@lists.infradead.org, linux-wireless@vger.kernel.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <173887384195.28414.6609534484126873119.kvalo@kernel.org>
+Date: Thu,  6 Feb 2025 20:30:43 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250206_043643_277099_8F08A1A9 
-X-CRM114-Status: GOOD (  17.65  )
+X-CRM114-CacheID: sfid-20250206_123046_497924_89FCCCCD 
+X-CRM114-Status: UNSURE (   5.77  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,111 +72,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Feb 5, 2025 at 2:42=E2=80=AFPM Jeff Johnson
-<jeff.johnson@oss.qualcomm.com> wrote:
->
-> Hi,
-> Here's a new pull request for ath11k and ath12k.
-> This includes new ath11k support for QCA6698AQ, updated ath11k board supp=
-ort
-> for the Qualcomm Robotics RB3 gen2 platform [1], and some board and firmw=
-are
-> upgrades for other ath11k and ath12k hardware.
->
-> Please let me know if there are any problems.
->
-> /jeff
->
-> [1] https://msgid.link/CAA8EJpq=3DQRbWe6KTxcmHkHp20rgEgLZeGYV7+Hy2Qkfo_My=
-V1g@mail.gmail.com
->
-> The following changes since commit 7ac1fc5f254d8d97a1aa96360c23f0659addb0=
-47:
->
->   Merge branch 'make-deb-fix-no-such-file-error' into 'main' (2025-02-04 =
-12:31:31 +0000)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/ath/linux-firmware.git at=
-h-20250205
+Kalle Valo <kvalo@kernel.org> wrote:
 
-Merged and pushed out.
+> I'm stepping down as ath10k, ath11k and ath12k maintainer so remove me from
+> MAINTAINERS file and Device Tree bindings. Jeff continues as the maintainer.
+> 
+> As my quicinc.com email will not work anymore so add an entry to .mailmap file
+> to direct the mail to my kernel.org address.
+> 
+> Signed-off-by: Kalle Valo <kvalo@kernel.org>
+> Acked-by: Jeff Johnson <jjohnson@kernel.org>
 
-https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/437
+2 patches applied to wireless.git, thanks.
 
-josh
+0db6b7d49b50 MAINTAINERS: wifi: ath: remove Kalle
+b76adb9758f8 MAINTAINERS: wifi: remove Kalle
 
->
-> for you to fetch changes up to 99720d02248f775f952a97455ea3b3a687196a50:
->
->   ath12k: WCN7850 hw2.0: update board-2.bin (2025-02-05 11:26:43 -0800)
->
-> ----------------------------------------------------------------
-> Jeff Johnson (12):
->       ath11k: IPQ6018 hw1.0: update to WLAN.HK.2.7.0.1-02409-QCAHKSWPL_SI=
-LICONZ-1
->       ath11k: IPQ8074 hw2.0: update to WLAN.HK.2.9.0.1-02146-QCAHKSWPL_SI=
-LICONZ-1
->       ath11k: QCA2066 hw2.1: update board-2.bin
->       ath11k: QCA2066 hw2.1: update to WLAN.HSP.1.1-03926.13-QCAHSPSWPL_V=
-2_SILICONZ_CE-2.52297.6
->       ath11k: QCA6390 hw2.0: update board-2.bin
->       ath11k: QCA6698AQ hw2.1: add board-2.bin
->       ath11k: QCA6698AQ hw2.1: add to WLAN.HSP.1.1-04479-QCAHSPSWPL_V1_V2=
-_SILICONZ_IOE-1
->       ath11k: QCN9074 hw1.0: update to WLAN.HK.2.9.0.1-02146-QCAHKSWPL_SI=
-LICONZ-1
->       ath11k: WCN6750 hw1.0: update board-2.bin
->       ath12k: QCN9274 hw2.0: update board-2.bin
->       ath12k: QCN9274 hw2.0: update to WLAN.WBE.1.4.1-00199-QCAHKSWPL_SIL=
-ICONZ-1
->       ath12k: WCN7850 hw2.0: update board-2.bin
->
->  WHENCE                              |   15 +-
->  ath11k/IPQ6018/hw1.0/Notice.txt     |  419 ++--
->  ath11k/IPQ6018/hw1.0/m3_fw.b01      |  Bin 6712 -> 6712 bytes
->  ath11k/IPQ6018/hw1.0/m3_fw.mdt      |  Bin 6860 -> 6860 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b00      |  Bin 340 -> 340 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b01      |  Bin 7000 -> 7000 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b02      |  Bin 4696 -> 4696 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b03      |  Bin 2602320 -> 2606416 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b04      |  Bin 386016 -> 386528 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b05      |  Bin 202532 -> 202532 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b07      |  Bin 9912 -> 9912 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.b08      |  Bin 464564 -> 467388 bytes
->  ath11k/IPQ6018/hw1.0/q6_fw.mdt      |  Bin 7340 -> 7340 bytes
->  ath11k/IPQ8074/hw2.0/Notice.txt     |  419 ++--
->  ath11k/IPQ8074/hw2.0/m3_fw.b01      |  Bin 136 -> 136 bytes
->  ath11k/IPQ8074/hw2.0/m3_fw.b02      |  Bin 327680 -> 327680 bytes
->  ath11k/IPQ8074/hw2.0/m3_fw.mdt      |  Bin 284 -> 284 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b00      |  Bin 340 -> 340 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b01      |  Bin 328 -> 328 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b02      |  Bin 4696 -> 4696 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b03      |  Bin 2978704 -> 3215248 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b04      |  Bin 982944 -> 1000480 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b05      |  Bin 248260 -> 254596 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b07      |  Bin 10112 -> 9960 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.b08      |  Bin 504104 -> 596768 bytes
->  ath11k/IPQ8074/hw2.0/q6_fw.mdt      |  Bin 668 -> 668 bytes
->  ath11k/QCA2066/hw2.1/amss.bin       |  Bin 5349376 -> 5349376 bytes
->  ath11k/QCA2066/hw2.1/board-2.bin    |  Bin 685144 -> 685144 bytes
->  ath11k/QCA6390/hw2.0/board-2.bin    |  Bin 115984 -> 173980 bytes
->  ath11k/QCA6698AQ/hw2.1/Notice.txt   | 3658 +++++++++++++++++++++++++++++=
-++++++
->  ath11k/QCA6698AQ/hw2.1/amss.bin     |  Bin 0 -> 5132288 bytes
->  ath11k/QCA6698AQ/hw2.1/board-2.bin  |  Bin 0 -> 866120 bytes
->  ath11k/QCA6698AQ/hw2.1/m3.bin       |  Bin 0 -> 266684 bytes
->  ath11k/QCN9074/hw1.0/Notice.txt     |  419 ++--
->  ath11k/QCN9074/hw1.0/amss.bin       |  Bin 3963336 -> 4227408 bytes
->  ath11k/QCN9074/hw1.0/m3.bin         |  Bin 340108 -> 340108 bytes
->  ath11k/WCN6750/hw1.0/board-2.bin    |  Bin 843548 -> 927980 bytes
->  ath12k/QCN9274/hw2.0/board-2.bin    |  Bin 292160 -> 1308544 bytes
->  ath12k/QCN9274/hw2.0/firmware-2.bin |  Bin 15224888 -> 15392824 bytes
->  ath12k/WCN7850/hw2.0/board-2.bin    |  Bin 1897968 -> 1986952 bytes
->  40 files changed, 4136 insertions(+), 794 deletions(-)
->  create mode 100644 ath11k/QCA6698AQ/hw2.1/Notice.txt
->  create mode 100644 ath11k/QCA6698AQ/hw2.1/amss.bin
->  create mode 100644 ath11k/QCA6698AQ/hw2.1/board-2.bin
->  create mode 100644 ath11k/QCA6698AQ/hw2.1/m3.bin
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20250203180445.1429640-1-kvalo@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
