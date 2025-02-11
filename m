@@ -4,59 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FCFBC02194
-	for <ath10k@archiver.kernel.org>; Thu,  6 Feb 2025 20:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEBE0C0219D
+	for <ath10k@archiver.kernel.org>; Tue, 11 Feb 2025 08:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-ID:Cc:To:
-	References:In-Reply-To:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mtTcWkO4bRVYzIeCJ/JqL9n+9tVD9IOVGume1rdQHzE=; b=XecAUxeBWOxZoW34y+w32TTP0W
-	yVTULVPCVTQ6WQBvrziyhZefVlrLB4hUcgf9lhSiNQdNt2iwLx2RaSw7P0MujWrZesLIpIEaG03eJ
-	cOKageQkRmMFAI7oQ8yvoBXur6Wy8c3OIjGH6y7QJdTbIhHqYUy8Ep/1uXN7/fNEHvNj+i2Hc2VUH
-	pQMz87URYt9+ykf8TlbklIOBbPEYrpWY9qyzbeK2cU2Rr9igUrMlpJicN4WldgVgtw0HDsLV4IOTf
-	Ntu9F6mN7v5u3bFI1VPTLa0wbKGrJlC38tsiglH2bJLv3vljat2osQL7s2seJWHkjgkee4hSynxib
-	xz7PHQLA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=; b=TfQ8gLosv/lEvvKSnYXJFxQhff
+	eRBFQJ0uDAjtM5J264yXPsuTaPwpj9GJ1xblORRhjaLBGnlOoLuJblb+8ZsH2+lbgrKb6RRIw5Al8
+	H+zh2sv3emjMfSCK30BIG6Tde8Yk0mxmg4umMOs7bHkrh0yc4Z9z2F+9h5ybilYz96tsjcUqgVjAm
+	qp3EZ4oTV0IB3beSBkS9TZKS6YKqA6/h1KKbMlQgOL5nOKNPxVSPXcqDwM23cbezEWsTtBXbOKKdV
+	6VZbyWLlZcalzBmDv3Wzd1vL5e4Fg/IBPjmshyd1SU/4GC6aijgGEbM2TeoaGKOrntUKB1jBG36jA
+	3+iwpb8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tg8WQ-00000007UGH-2nQK;
-	Thu, 06 Feb 2025 20:30:50 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1thlx0-000000033ax-1NlJ;
+	Tue, 11 Feb 2025 08:49:02 +0000
+Received: from mail.revenueraft.com ([51.210.151.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tg8WM-00000007UFZ-1dri;
-	Thu, 06 Feb 2025 20:30:49 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 27E30A445BE;
-	Thu,  6 Feb 2025 20:28:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8708C4CEDD;
-	Thu,  6 Feb 2025 20:30:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738873844;
-	bh=uxK6tuwuJNODoSeoVxh/I0TT0BWkiYbdCYE2ZBTQroo=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=TjUQCB9NnCMFgjeaZBVJCXZB98Uf0I1RM72A+/SnqQMYXWpRAa5inRhXSSW0agp3H
-	 F1ANqLoQVudCIwyiaMbEBQOGRc4cmIMv6lPw4ArLTrzkTYQ9MbH/y7n89ZU8v2VXmL
-	 Pbvkna364mmrM3rXnb0nS6CQB2/KkQ5oo6gp3Qv6Ey4M7/lAxc6P75u+06HpXl87G4
-	 NAxp3DYdhZBmEaFrXGluSnotg/fyu9gGNflmw54eW1aPdtOiMeDk+JSlRzJBlMiKZu
-	 qcTk2+bmeBFZucLWac6bLTEqvcTVkoyVBR0fTzkIaR8/hp+cw+6IDSdL1elbYEvUt1
-	 Etpft2PurSpwA==
-Content-Type: text/plain; charset="utf-8"
+	id 1thltt-000000032tS-1uf3
+	for ath10k@lists.infradead.org;
+	Tue, 11 Feb 2025 08:45:51 +0000
+Received: by mail.revenueraft.com (Postfix, from userid 1002)
+	id 93D7424262; Tue, 11 Feb 2025 08:45:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=revenueraft.com;
+	s=mail; t=1739263543;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=;
+	h=Date:From:To:Subject:From;
+	b=xJoFskt3paxUXgjWDItPARM/qr1FjIDe/eoSRaJ0+AZu4pLogLY6dgu7z7yMN7Qzg
+	 /FKcupIHRTGbIk3PyoFT2J6lEb9MzAZSxL49zGfK05wiVl2VSgZifijHL/nf2pUlOr
+	 dWW/HgrYUySFPRu4eak6UAj0tnKTc1ogHw/+iputQZ+Y9fs8DUmNRSp4ZmBmBzbtGc
+	 NJm2yOpWvvw+sUPSZYlO5S2WD8pHP024ar25tUlvEYfnB2VnNM+nG8+OBfzM2PpyfR
+	 Pe2xg4PydIX7DtMG6nW9St+WPoDHkHa2XglUjfhHLAx52HrsSLM3sSyCLl15tpQOwg
+	 CJLHmsWmXKJQg==
+Received: by mail.revenueraft.com for <ath10k@lists.infradead.org>; Tue, 11 Feb 2025 08:45:34 GMT
+Message-ID: <20250211074500-0.1.5d.dgod.0.hn8sia6khd@revenueraft.com>
+Date: Tue, 11 Feb 2025 08:45:34 GMT
+From: "Konrad Olkiewicz" <konrad.olkiewicz@revenueraft.com>
+To: <ath10k@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
+X-Mailer: mail.revenueraft.com
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH wireless 1/2] MAINTAINERS: wifi: ath: remove Kalle
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20250203180445.1429640-1-kvalo@kernel.org>
-References: <20250203180445.1429640-1-kvalo@kernel.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
- ath12k@lists.infradead.org, linux-wireless@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <173887384195.28414.6609534484126873119.kvalo@kernel.org>
-Date: Thu,  6 Feb 2025 20:30:43 +0000 (UTC)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250206_123046_497924_89FCCCCD 
-X-CRM114-Status: UNSURE (   5.77  )
+X-CRM114-CacheID: sfid-20250211_004550_206197_935F4463 
+X-CRM114-Status: UNSURE (   1.01  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,25 +67,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Kalle Valo <kvalo@kernel.org> wrote:
+Dzie=C5=84 dobry,
 
-> I'm stepping down as ath10k, ath11k and ath12k maintainer so remove me from
-> MAINTAINERS file and Device Tree bindings. Jeff continues as the maintainer.
-> 
-> As my quicinc.com email will not work anymore so add an entry to .mailmap file
-> to direct the mail to my kernel.org address.
-> 
-> Signed-off-by: Kalle Valo <kvalo@kernel.org>
-> Acked-by: Jeff Johnson <jjohnson@kernel.org>
+Czy potrzebuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w?
 
-2 patches applied to wireless.git, thanks.
+Skutecznie pomagamy rozpoczyna=C4=87 rozmowy handlowe z klientami zainter=
+esowanymi Pa=C5=84stwa ofert=C4=85.
 
-0db6b7d49b50 MAINTAINERS: wifi: ath: remove Kalle
-b76adb9758f8 MAINTAINERS: wifi: remove Kalle
+Zapraszam do kontaktu zwrotnego.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20250203180445.1429640-1-kvalo@kernel.org/
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Pozdrawiam serdecznie
+Konrad Olkiewicz
 
