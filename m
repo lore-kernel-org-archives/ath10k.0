@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6564C021BE
-	for <ath10k@archiver.kernel.org>; Tue, 25 Feb 2025 17:19:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 642F4C021B8
+	for <ath10k@archiver.kernel.org>; Wed, 26 Feb 2025 09:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Qy+0APQiRYBidt6TGL+wUHVYtFCZn9mwlvKkPx69zrk=; b=2bFSNHRVSwmLdT5oLXamXteNrM
-	ZTOFmLrNTX+X6yNJl2fItpSIBVGrHhGJT98+4B1Z6q5YtEB0iswT+6m1QCo5pbEZpSqTHLMkE/wqA
-	ZNl2Bei6NwAK/+H8hBGQniGjb0yeQYcpd981Rv/+GmiFBc33wzr2uBUf9O8B1DSm/Z+0atzt62tWP
-	uJ2fcG/GSF0rLyJitMBytarGjtuVhxyGQaKa6mW6gsWQeXEnrx0K2OWr5cpzBteB2CTLJrtdVeQtZ
-	rRklR7H4gn0SlXQdgAowDFxkZPnuXWqh1/3QTkxhkhp9Swm09wwrE/rP0CIA/V5EmuxrMeUJbhPPa
-	WBJW1x9A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=; b=s9bsOoKu8+e6CEYoetQB+QBMSf
+	bK0gz1n4PDPwpzKbDD7Z01dZnv+o0VCvEoWL69/m+4t8SsKYDeKwi9kZ9nNF+bfVaArYBtNQR3cf+
+	h+bPdwXBYU4/BpO6nRcd0ThHm7Alu45aneSpNIx3idJ+yd+dZrgV3F0WGVw6HNcI4oz2UlGEpQDmS
+	cZQbR+kuZd1jAUoIXlo5ADKLmkdNQgI8n3zdVEhen5rWxRkQrMYM86gNWLuDfT82C54hWF4MbuUZ9
+	L3m9EwXkq9H6pYDNbkt5wMycl+J+pbKO7MQix3gv/At50JzXSdb2HrLSX5ehAARxYEkKLkfMQl/RZ
+	o2vtsKcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmyaF-00000000ajW-1f1v;
-	Tue, 25 Feb 2025 17:19:03 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1tnDd1-000000033pQ-1jh4;
+	Wed, 26 Feb 2025 09:22:55 +0000
+Received: from mail.revenueraft.com ([51.210.151.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmyWi-00000000ZTn-07Xf;
-	Tue, 25 Feb 2025 17:15:24 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8AAAB6129B;
-	Tue, 25 Feb 2025 17:15:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00476C4CEDD;
-	Tue, 25 Feb 2025 17:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740503723;
-	bh=7KeqBFol8pGLRVvFbeuC+puSXOYFlCJdGV7zPxksw7s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D/GPGZXeAlGWSiKVMN9ABMI1yaVWrR4V2oHRRwyBLXzcOuX9hCCjYJwcq1Fb0XZ9Y
-	 MjqnURj4wK5tFnqZfYta9/djn513hXYNQm3d8f+2joPI/Z058C4v04Li2/eZOvbUSn
-	 7A9v12Jj0k3zH68ZKxsZtTErDRqvJZ9vj/A7agSVQgu29nyuFNWaTeEuab747g7rCw
-	 HKBbsgEZFQcEAXD7OWNS2yn2JyLpWwo6hp0EtVbQnad1lvWwVIHJ06jpU4KtDsIFZL
-	 Tl9V1QFJiCsPLa52hVSQ0C79t3Pw2Nvsbyt6pPR81f2Lpns12SogMGwZ59znC/2T1X
-	 3a3hjT1YO/H0w==
-Date: Tue, 25 Feb 2025 11:15:21 -0600
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jeff Johnson <jjohnson@kernel.org>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
-	ath11k@lists.infradead.org, ath12k@lists.infradead.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/5] dt-bindings: wireless: ath11k: Strip ath11k prefix
- from calibration property
-Message-ID: <174050372078.2716032.16014648484871048536.robh@kernel.org>
-References: <20250225-b-wifi-qcom-calibration-variant-v1-0-3b2aa3f89c53@linaro.org>
- <20250225-b-wifi-qcom-calibration-variant-v1-2-3b2aa3f89c53@linaro.org>
+	id 1tnD8L-00000002xhp-0Stf
+	for ath10k@lists.infradead.org;
+	Wed, 26 Feb 2025 08:51:15 +0000
+Authentication-Results: revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+ARC-Seal: i=1; d=revenueraft.com; s=default; a=rsa-sha256; cv=none;
+	t=1740559867;
+	b=Rsy2/wUGd2uSy9AFMUo4RwnAEvsBxg+G8KyFMjLHHPshD4U2W2RTsXpQku9IMCCWbKqB
+	 b+4WkEHRN7y01CjZTPClCi4TpuPAM8ReAmfIBIU/VxOBeQ0PHI/zGpQ5bQjWn9XV5nhsX
+	 ct1Y6CJUSpP7Z6H2VJ6BdnNFxAvN6xntkqi75lCU9DGdabCY1nZJNyT4LvTNMeQB5Md97
+	 UYtGAtZSUSSAH9v+wbMYs9wXa7yIwokQ2hMCqFg+De+jf8JR5Jh58/7GO+/ZUvqNP2KOn
+	 G03Ls6zwwmLTS4zCp4vIQ99F4tf2mkRU2+x4OYqegXS+zKwoFBbzz4ksahLGrYJV1cg==
+ARC-Message-Signature: i=1; d=revenueraft.com; s=default; a=rsa-sha256;
+	c=relaxed/simple; t=1740559867;
+	h=Message-ID:Date:From:Subject:From;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=;
+	b=uQCZ4gmQAKXuFAagj3y6/L4DkwyOymwn0wp6Ao6cp8/ZnNAJ43gcHj8Z9RNveoKhgW2e
+	 ivc76oeDJ1QJGefqz/cOUxhCaT5z1dgvW2Rnp59rcSkPuQqh2QBU5FHnkIwWOboiLukvw
+	 gO29XpCEZi+WfeKvyya5HmFQKwI21o5S4Z5McmvmeFMZW/XokgIDVtRPP19/8Ki2AnnjW
+	 WWO4DLILRgeSqyP3kk3s4Lay5sMKsILq8xBujqjG81Ce+Oq8Nx9JZumx4k2oY6BLsOFM3
+	 P6PTYF3VhVPjAcMKahCKtmw4l1QTpxrdmP6wh1UXJkgUrNgGQQh9wZ910MlPpN5or8w==
+ARC-Authentication-Results: i=1; revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+Received: by mail.revenueraft.com (Postfix, from userid 1002)
+	id CC1182323B; Wed, 26 Feb 2025 08:51:00 +0000 (UTC)
+Received: by mail.revenueraft.com for <ath10k@lists.infradead.org>; Wed, 26 Feb 2025 08:50:50 GMT
+Message-ID: <20250226074500-0.1.5p.dgod.0.u6zd16ayrk@revenueraft.com>
+Date: Wed, 26 Feb 2025 08:50:50 GMT
+From: "Konrad Olkiewicz" <konrad.olkiewicz@revenueraft.com>
+To: <ath10k@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
+X-Mailer: mail.revenueraft.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250225-b-wifi-qcom-calibration-variant-v1-2-3b2aa3f89c53@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250226_005113_299424_C6FD9FF6 
+X-CRM114-Status: UNSURE (   0.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,24 +75,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Dzie=C5=84 dobry,
 
-On Tue, 25 Feb 2025 10:05:33 +0100, Krzysztof Kozlowski wrote:
-> Devicetree properties describing exactly the same thing should be
-> reusable between device bindings.  All Qualcomm Atheros WiFi chips needs
-> certain calibration data, so properties should not be prefixed with
-> device family (ath11k).
-> 
-> Deprecate qcom,ath11k-calibration-variant and alike, so we gradually
-> switch to a common property.  This will also allow moving these
-> properties to common schema, if desired.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml        | 9 ++++++++-
->  Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml  | 7 +++++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
+Czy potrzebuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w?
 
-Acked-by: Rob Herring (Arm) <robh@kernel.org>
+Skutecznie pomagamy rozpoczyna=C4=87 rozmowy handlowe z klientami zainter=
+esowanymi Pa=C5=84stwa ofert=C4=85.
 
+Zapraszam do kontaktu zwrotnego.
+
+
+Pozdrawiam serdecznie
+Konrad Olkiewicz
 
