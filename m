@@ -4,55 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CFE5C19776
-	for <ath10k@archiver.kernel.org>; Fri, 28 Feb 2025 08:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 063EEC19776
+	for <ath10k@archiver.kernel.org>; Fri, 28 Feb 2025 14:42:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=5Ag/W9YjfbFJOGLdiTXWgO7Nle+kHbv1rgCfGcU2GBw=; b=H6sGaIUFv2/CTz9JSLwUPTPJu7
-	ACxA2osszZ19+Krq6Mfjpt6flfLBET1+svLk4+Rh5YMbvTy40GA5cVNY3H/0aqiJ5aDD56mqAoyoR
-	nL2cbyN4TM1JVE6PitK4QItdFjFgQGeSxo72w/huHLlPDuNFWJVj6NfwlhQV6kBp4hgo0PIpXDHyw
-	S2xLpxKFaXbJ68qumJi9xb7e4nG5S7FMH2OJF1bs2WvAYkSqQqFtOxhJPnydcrhxFAs3wuh5KomUH
-	79+Khemi7U7P0HQDt+p64NV87cVBAm35nCDtrp0mF4OODmjb1zlowrIMhukcXF24ueTE5VPOWQBR8
-	Myv2v/wA==;
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=xANmBR63rsukBgh4Ti9sEiPLDfn1CRbSV6qWPW9XsaA=; b=zsZMylTW2mO722iv7kkagFxODQ
+	40HF7KotoQLsR3W2CYB6hVQkgK0Hwp0PfW3YQ6qQXWT7FhOhHd+cywJrOTj1iosy7d1oUwP0/OH1M
+	SPyBV2vLFklM/VdRL193Mz3Ich3K/TTXdyOAhf/zH6hcoqexrC18L60rFaRREELYWJdqeADQpUZMZ
+	avyObpijIm+oX/lBlvkU7Fv2ck+cmabP86Ni7Ha85B2z/u0tQgb/nLRqw4r0G+/wOoevTOeosyY5g
+	/M7igC3agZ1iPEHo7dHSU+141nxGx3Yr2Pcpu29gIYht9k6vQpIXFzYy2rWWoDrMBzHPcT4TX06fW
+	k1Toqx+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnvoL-0000000ACSr-0oTi;
-	Fri, 28 Feb 2025 08:33:33 +0000
-Received: from mail.commetrax.com ([141.95.18.165])
+	id 1to1ZV-0000000BJBH-11xW;
+	Fri, 28 Feb 2025 14:42:37 +0000
+Received: from tor.source.kernel.org ([2600:3c04::f03c:95ff:fe5e:7468])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnvmU-0000000AC9r-19Vf
-	for ath10k@lists.infradead.org;
-	Fri, 28 Feb 2025 08:31:40 +0000
-Received: by mail.commetrax.com (Postfix, from userid 1002)
-	id 5C39525224; Fri, 28 Feb 2025 09:31:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=commetrax.com;
-	s=mail; t=1740731481;
-	bh=5Ag/W9YjfbFJOGLdiTXWgO7Nle+kHbv1rgCfGcU2GBw=;
-	h=Date:From:To:Subject:From;
-	b=RboRUX/vuft2lmEtiZXWdMyqTq4qN2iIV713Eo8Yp9OFjbWMz8thW3wg6uyRXlNlp
-	 j9fek7ooirEn3GHcoOUjV+Bbd8HgoqIeNb/2LfJ02WRgGcW7Hlw13ByedO1pbgEkzN
-	 +RjhDEo4JHgfkeBBfHyjj6V2A/XRrK4LdCGl5ZogFOIvtNaMBS7CP4WGqNVYD8ukIk
-	 GW/6c7qV5Znd9z3/oK3tPL85xbIsO8ynorAD/ATv+YBYHwREoX7pBkIN4SyihiTs7B
-	 tUrOsW5BzzYfKiUtk1z0a/w6b90s4cnDkb6g1JjSwsBAW8mO8qvHOdmjMNqyBd6tdI
-	 xb0HqTLrfOlMw==
-Received: by mail.commetrax.com for <ath10k@lists.infradead.org>; Fri, 28 Feb 2025 08:31:11 GMT
-Message-ID: <20250228084500-0.1.85.mk72.0.r98xb7gikh@commetrax.com>
-Date: Fri, 28 Feb 2025 08:31:11 GMT
-From: "Vincenc Turek" <vincenc.turek@commetrax.com>
-To: <ath10k@lists.infradead.org>
-Subject: Message from production
-X-Mailer: mail.commetrax.com
+	id 1to1Gy-0000000BFLV-2JNY;
+	Fri, 28 Feb 2025 14:23:28 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 5B2CC61F51;
+	Fri, 28 Feb 2025 14:23:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99890C4CEE2;
+	Fri, 28 Feb 2025 14:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740752607;
+	bh=Ixp7yCQwmxH5iAj5X6uih/HSFfgLk+61gfC1s2n2Sog=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
+	b=hYYfQyes+87D1zRTYv39OBFRpEnSGd8l37xdtNglQGpGcmjCbLirYjyodDymq5eaX
+	 q0TBGVZQXBmE90qnX26v+rxcSUjgbQZzlOWFU9KvtMyWX5eyrA9VvsnE/0kJ5FJiZD
+	 LdvSw2d6Qpqj18QDfIqnw157OME0fa/gE3b7OAlL0gpfi5yHnSMKXHiDGfI5ORT2m8
+	 WuUtBA0rvx9kMTDUlV03HWoCQGoRHFFgVklx42upT3XcNW3kBUTg1dZjCLOtMIYTob
+	 YQhNyjWDwoX1Ee3xPA3oLwpfC0DeEWH78SpISqu+3d0UfYa4AoBs2Y4al4r2gVR9xT
+	 5eLJzeHBSPtIg==
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6fcf90d09c6so18756667b3.0;
+        Fri, 28 Feb 2025 06:23:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUTc793E3pAU35ZDcAk4sxY2a8RgdtjoEijdxEJbAPCav8NaRszAp1vFkHNyDrADx7kOy3krcDJ@lists.infradead.org, AJvYcCVYQPLL/AMhCXUBMVYtv7Any2pUUGBNnYzohUg3rlfMSRqthHrqZRgY9EQKgcA95FXyAuPrOUo=@lists.infradead.org, AJvYcCXJeAtXNx2g223oa7TJpbzh07nS+KpFiPTHNswCB4KgT9ApGaqfqfO1Xh6uF7qvO15XA5OFyqpi@lists.infradead.org
+X-Gm-Message-State: AOJu0YxLrvYUWos1JU6/++pukB0AXuR7QOFcTAzN4JLQHbSIsxTiEogj
+	DiBl8tmn3uV8CHUsXLe9uPYmRtYJSuOnWCA4xJSqs2tdZRtX44CkBvvnvmExOj4qZIvwmjDjWP3
+	MKDKVJPaCUy9ltoUhBNoGbVbny3s=
+X-Google-Smtp-Source: AGHT+IFBw+C8TJ7OTqiW9TAJfZMrrLscr0uAEq4wfLF+1ArhUSuCv2PPuHPrhhoFsg/POsSt1JR6zA+fHf12wo1fI14=
+X-Received: by 2002:a05:690c:4988:b0:6fb:5d74:959d with SMTP id
+ 00721157ae682-6fd39471851mr104119537b3.1.1740752606896; Fri, 28 Feb 2025
+ 06:23:26 -0800 (PST)
 MIME-Version: 1.0
+References: <74b29af1-4024-4636-af8f-a95fa0f3601e@oss.qualcomm.com>
+In-Reply-To: <74b29af1-4024-4636-af8f-a95fa0f3601e@oss.qualcomm.com>
+From: Josh Boyer <jwboyer@kernel.org>
+Date: Fri, 28 Feb 2025 09:23:14 -0500
+X-Gmail-Original-Message-ID: <CA+5PVA76tdjDE+4+JrpkrQ0+mw2aB-MPtXx6vjaQc77d8AQ6gw@mail.gmail.com>
+X-Gm-Features: AQ5f1Jq49M1aKHoQ4B7ctdYd0pAV_MseN3BJzOya8m5bDxVjlI7OkYAe0iQqH7o
+Message-ID: <CA+5PVA76tdjDE+4+JrpkrQ0+mw2aB-MPtXx6vjaQc77d8AQ6gw@mail.gmail.com>
+Subject: Re: [PULL linux-firmware] ath10k, ath11k and ath12k firmware 20250226
+To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
+	ath12k@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250228_003139_005399_BCD5CEFA 
-X-CRM114-Status: UNSURE (   0.64  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,20 +80,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello,
+On Wed, Feb 26, 2025 at 6:08=E2=80=AFPM Jeff Johnson
+<jeff.johnson@oss.qualcomm.com> wrote:
+>
+> Hi,
+> Here's a new pull request for ath10k, ath11k and ath12k.
+>
+> This request only touches ath11k, and adds new firmware and board file fo=
+r
+> QCA6698AQ hw2.1 and new microcode for QCA6698AQ.
+>
+> Please let me know if there are any problems.
+>
+> /jeff
+>
+>
+> The following changes since commit 1a1470d90de2a25e5befadb2f1fa30758af682=
+ca:
+>
+>   Merge branch 'robot/pr-0-1740366711' into 'main' (2025-02-24 05:26:03 +=
+0000)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/ath/linux-firmware.git at=
+h-20250226
 
-We specialize in manufacturing packaging for the food industry, such as t=
-hose for ketchup, mustard, and sauces.
+Merged and pushed out.
 
-We also offer solutions for household and construction chemicals =E2=80=93=
- packaging in various sizes and shapes to meet your requirements.
+https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/461
 
-Our products are durable and resistant to damage, ensuring faster and has=
-sle-free transportation of your goods.
+josh
 
-How about a short presentation of our offer?
-
-
-Best regards
-Vincenc Turek
+>
+> for you to fetch changes up to 811bb52b1d293c3a9641c8747c8963ade18b7e81:
+>
+>   ath11k: QCN9074 hw1.0: update to WLAN.HK.2.9.0.1-02175-QCAHKSWPL_SILICO=
+NZ-2 (2025-02-26 14:53:32 -0800)
+>
+> ----------------------------------------------------------------
+> Jeff Johnson (3):
+>       ath11k: QCA6698AQ hw2.1: update board-2.bin
+>       ath11k: QCA6698AQ hw2.1: update to WLAN.HSP.1.1-04604-QCAHSPSWPL_V1=
+_V2_SILICONZ_IOE-1
+>       ath11k: QCN9074 hw1.0: update to WLAN.HK.2.9.0.1-02175-QCAHKSWPL_SI=
+LICONZ-2
+>
+>  WHENCE                             |   5 +++--
+>  ath11k/QCA6698AQ/hw2.1/amss.bin    | Bin 5132288 -> 5140480 bytes
+>  ath11k/QCA6698AQ/hw2.1/board-2.bin | Bin 866120 -> 986384 bytes
+>  ath11k/QCA6698AQ/hw2.1/m3.bin      | Bin 266684 -> 266684 bytes
+>  ath11k/QCN9074/hw1.0/.notice       |   4 ++++
+>  ath11k/QCN9074/hw1.0/m3.bin        | Bin 340108 -> 340108 bytes
+>  6 files changed, 7 insertions(+), 2 deletions(-)
+>  create mode 100644 ath11k/QCN9074/hw1.0/.notice
 
