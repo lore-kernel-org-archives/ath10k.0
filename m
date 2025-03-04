@@ -4,88 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4954CC282CD
-	for <ath10k@archiver.kernel.org>; Mon,  3 Mar 2025 15:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ED02C021B8
+	for <ath10k@archiver.kernel.org>; Tue,  4 Mar 2025 20:45:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NWIXuPc4m1eeN4AwHgo8V/KdIHX8Pn3/CGz7RPYywtw=; b=oYAjWWLUzRj3TaGiFUTeQUS4L9
-	jmOLMBGMEecGrdRQA8qOrAUco3bEva0KzuIRGST2DwdFWx59jHveG7MkZBt4htTfcnWtIh/eVkpFx
-	SCKvvzRVcrnG5NlTSZijcQQrBT/wTP8lL5oNuQyvJke3XoIZJo+KmVTrRWgdpbY729jbuwfMsECYe
-	VXmuNWW9ZYJj+sfiwqHsVFzDl8iYL0y1v9ipvieLUPBj95TLVgUUUM5eFZnBMeNcjq/+ZDz+yUiTO
-	D33OcT1l/VLk0FNNPm91H2e3HAnT/wMvkfXEynZY3bMTn/9XIorLIDkdOLaD7VkJTLb6VWFFv5nph
-	yBVtaKhw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	Content-Transfer-Encoding:Content-Type:In-Reply-To:From:Subject:References:Cc
+	:To:MIME-Version:Date:Message-ID:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0CAx1mQ5RZ6zsMxOMxa0QiY+PZp3mnFBFPc/jCZGve4=; b=sAKR5bRq6x1zC7INSt8UAWaTBE
+	FoDTRgdWuaFaWOyzEJzK33FMr9G4tVEc2O4vFaV8+0UF6qP+6+qx3OpiYGU9z6AriWy0DocRAlpH7
+	GJj4B/YzkK7vlXJyUzlYPD29mnLuWDYrmxx/PsYtoc0++LkngewAmpQDXeTHJFdcnGBEKCEEh0dC4
+	kCBZuqUclXZAknp8IKO8C6H/JT/yQcPfxZ8kQNw/00n1gJGA9NgoLyrHBq4u3Ahu2ypqYmzDhEV8i
+	/N1fODEyQtIzV6gMgZYG/RBJKbFapcOPl/Ipx+5oVZg9Rahr89+sh0ubemUIDckDonBt9GIkU/y/2
+	MHmKP6Gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tp7Zm-00000001Gzd-1jBi;
-	Mon, 03 Mar 2025 15:19:26 +0000
-Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
+	id 1tpZ8D-00000006DRo-3s71;
+	Tue, 04 Mar 2025 20:44:49 +0000
+Received: from ip-89-177-23-149.bb.vodafone.cz ([89.177.23.149] helo=ixit.cz)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tp7Zk-00000001Gyg-1ooX;
-	Mon, 03 Mar 2025 15:19:25 +0000
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-22359001f1aso101877285ad.3;
-        Mon, 03 Mar 2025 07:19:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741015163; x=1741619963; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NWIXuPc4m1eeN4AwHgo8V/KdIHX8Pn3/CGz7RPYywtw=;
-        b=DzJZKfoQALHttC7xRSng5TGsRRt7tFSJLvouHSaUGVu5+IgAzIIIrCTjcSag8F0vof
-         rPi+KIT0RH7xHz2jIn8WEStmkZhvkmc8QI4OvUNikKZ6xBbTOhU2tMjr6suWvIJw4dTl
-         4U6Y5/XkVA4m6JLiTYlUqKlOG+uB2uBah3/de1itgXd0TMULu1SmQiXm/p8lTkQYO892
-         QwhlOUMtmHcugMtC/PuXK8p9rplLxVXDl7gBTsqdztGzzrBhcYO9HDtAWz3XB/SdOfzK
-         5NC6AvsqWzJcDH/1vM3dXbHNw42SpcFoiUI5AqMm2WEkyRbt2VPRNwHRNvkr5r39bLue
-         kZ2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741015163; x=1741619963;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NWIXuPc4m1eeN4AwHgo8V/KdIHX8Pn3/CGz7RPYywtw=;
-        b=npKGsK3bqSmIJrtBCuzNGgSOIO3z9rRWjsd34QJT9IPatIgEs8JA33fB0V6nABxSSt
-         4qoX5LgHmUp00LyeU+OuVHqjUQJtFFRztiRSiY6O3OxOHBdCKbqelqClxPOYia6lf6QC
-         qfJrHTWClPOuuFxTQ/9RdGHSXTuGrPtuTGvG8Zv3U/f2NjJqBtaD63wCLBjh4vjFa42S
-         B+EKUQrxSwAyRO1wC07i2iJiNWqIA/J/x1oIqGKgCgeOuQAGROOPGTUuzW3LAcp7lB6s
-         XWVca/vH2bIAlpjTYas4UCuuFSlcny1PUyhTBPhP3XdfVRtYlVHm89OrOUmHcaRw/vYM
-         WjlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWg5tCQthlJQME8Y1AyF5PJhcc+XVdr4KQgDfOPUopnHZPddsTvXeM6bvTbkh8+4QoiAMq6pfY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxyUlR/81pxVy739/9CVQC6FsWWo1hiyhpmCsANw9IaxZsywGbB
-	mEpy2ctP5Zpimf7L0q7L+8rd8FAllzgbAB1Xdf4+qcNLpg7A/pZk+amhHg==
-X-Gm-Gg: ASbGncsM13jN08PWFSWDZJd2AT4TK2688/OWoOqVRlEX5xmncASWiMf2Fp117Lhba8C
-	5ctF0BhcPTPn1aYxo2+0yQ3HKRnjQ6Gl91YgAS3IDOxtWYwW2N6k9qIc6PrHd/qSjjHxluOHWAQ
-	Tai9pQ93zU5MEbJkwc+c/cQ82mvcaPKw4f2Y2ixw6xYFQer4HG1lcsgeBcLXTlEpqgwj06qsY5s
-	DoUtiq1mSYmYaqpgQHfFRc3QJUH73w5Tu2Ih93Z0Y2Qz1JZVbAM1OCzRE7/1pZ0EcV94MZKDyic
-	y/YP5aOXZJENLFpYmhrWvHE1I+o46sKaedgO2ScVronCi0kT
-X-Google-Smtp-Source: AGHT+IElZ7MSRul6VnOUi3YIAcx+W0OWu4AJQ8VE2nVgWZeXyyB6RkpCRTVGIzMizYQwknZJO3BWwg==
-X-Received: by 2002:a05:6a00:ad0:b0:72d:9cbc:730d with SMTP id d2e1a72fcca58-734ac36d76dmr22319128b3a.11.1741015162760;
-        Mon, 03 Mar 2025 07:19:22 -0800 (PST)
-Received: from [10.100.120.127] ([152.193.78.90])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-736512c5694sm2594945b3a.179.2025.03.03.07.19.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Mar 2025 07:19:22 -0800 (PST)
-Message-ID: <62a3f906-d16d-42ed-9a72-aaeb81499098@gmail.com>
-Date: Mon, 3 Mar 2025 07:19:19 -0800
+	id 1tpXF8-00000005t9c-1TWU
+	for ath10k@lists.infradead.org;
+	Tue, 04 Mar 2025 18:43:53 +0000
+Received: from [10.0.0.228] (unknown [10.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ixit.cz (Postfix) with ESMTPSA id 7EBF116508E;
+	Tue,  4 Mar 2025 19:43:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+	t=1741113824; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=0CAx1mQ5RZ6zsMxOMxa0QiY+PZp3mnFBFPc/jCZGve4=;
+	b=eOfA0JzF8XO4Oy6q9bZSu45oTn4TozB4eK33nfrsSbKtCx+rx41ZQu1V1gPmoRtQpXQjKB
+	DsRj8bLeu3L+0pqe3cRvqhvh8iQQYXrK+DIDVuwndJ2foTeVswZ0oJI4O0AQrKhqHfRira
+	0mP8EMEAVCTWwhcUauIHqB/wbvg+pjc=
+Message-ID: <b796bfee-b753-479a-a8d6-ba1fe3ee6222@ixit.cz>
+Date: Tue, 4 Mar 2025 19:43:44 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Connection timeouts (NL80211_TIMEOUT_UNSPECIFIED) after
- disconnect/association timeout
-From: James Prestwood <prestwoj@gmail.com>
-To: "open list:MEDIATEK MT76 WIRELESS LAN DRIVER"
- <linux-wireless@vger.kernel.org>
-Cc: ath10k@lists.infradead.org,
- "ath11k@lists.infradead.org" <ath11k@lists.infradead.org>
-References: <441e9883-1efc-498b-ba33-6a4f12443f3b@gmail.com>
+User-Agent: Mozilla Thunderbird Beta
+To: amit.pundir@linaro.org
+Cc: ath10k@lists.infradead.org, bjorn.andersson@linaro.org,
+ davem@davemloft.net, devicetree@vger.kernel.org, jeffrey.l.hugo@gmail.com,
+ john.stultz@linaro.org, konradybcio@gmail.com, kuba@kernel.org,
+ kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org, robh@kernel.org,
+ sumit.semwal@linaro.org
+References: <CAMi1Hd2g68U8LVng2+RmhD+zFLqW8vcHS54FvaKxNF+BMs_tZg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap QMI
+ requests
 Content-Language: en-US
-In-Reply-To: <441e9883-1efc-498b-ba33-6a4f12443f3b@gmail.com>
+From: David Heidelberg <david@ixit.cz>
+Autocrypt: addr=david@ixit.cz; keydata=
+ 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
+In-Reply-To: <CAMi1Hd2g68U8LVng2+RmhD+zFLqW8vcHS54FvaKxNF+BMs_tZg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250303_071924_483743_C6B5E60F 
-X-CRM114-Status: GOOD (  29.06  )
+X-CRM114-CacheID: sfid-20250304_104351_472936_B926F6C6 
+X-CRM114-Status: UNSURE (   3.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,182 +120,14 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Reply-To: CAMi1Hd2g68U8LVng2+RmhD+zFLqW8vcHS54FvaKxNF+BMs_tZg@mail.gmail.com
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Still seeing this, and I think I've uncovered a bit more info. I'm going 
-to add some additional debugging to confirm, but it appears for some 
-reason the kernel's BSS list does not contain the BSS (or in some cases 
-any BSS's) we are trying to connect to. I'll go over the sequence of 
-events again:
+Kind reminder.
 
-1. Client gets deauthenticated for whatever reason
+This workaround is still used by sdm845 downstream.
 
-Feb 27 22:43:58 kernel: wlan0: deauthenticated from **:**:**:22:60:7c 
-(Reason: 6=CLASS2_FRAME_FROM_NONAUTH_STA)
-
-2. Client issues a scan to reconnect, note that it clearly sees the 
-following BSS's after scanning:
-
-Feb 27 22:43:58 iwd[457]: src/station.c:station_print_scan_bss() 
-Processing BSS '**:**:**:22:40:92' with SSID: <redacted>, freq: 5300, 
-rank: 1702, strength: -5900, data_rate: 173.3, snr: 40, load: 21/255
-Feb 27 22:43:58 iwd[457]: src/station.c:station_print_scan_bss() 
-Processing BSS '**:**:**:1c:10:98' with SSID: <redacted>, freq: 5500, 
-rank: 1418, strength: -6300, data_rate: 144.4, snr: 33, load: 37/255
-
-3. Client tries to connect to **:**:**:22:40:92
-
-Feb 27 22:43:58 iwd[457]: event: connect-info, ssid: <redacted>, bss: 
-**:**:**:22:40:92, signal: -59, load: 21/255
-Feb 27 22:43:58 iwd[457]: event: state, old: autoconnect_quick, new: 
-connecting (auto)
-
-4. Based on the IWD logging it appears the kernel has no BSS record, and 
-tries to issue a scan (the scan was definitely not from IWD), but 
-apparently comes up with nothing:
-
-Feb 27 22:43:58 iwd[457]: src/scan.c:scan_notify() Scan notification 
-Trigger Scan(33)
-Feb 27 22:43:59 iwd[457]: src/scan.c:scan_notify() Scan notification New 
-Scan Results(34)
-Feb 27 22:43:59 iwd[457]: src/netdev.c:netdev_mlme_notify() MLME 
-notification Connect(46)
-Feb 27 22:43:59 iwd[457]: src/netdev.c:netdev_connect_event()
-Feb 27 22:43:59 iwd[457]: src/netdev.c:netdev_connect_event() aborting 
-and ignore_connect_event not set, proceed
-Feb 27 22:43:59 iwd[457]: event: connect-timeout, reason: 0
-
-The timeout reason 0 is NL80211_TIMEOUT_UNSPECIFIED.
-
-5. IWD proceeds to the next BSS, which the kernel also needs to scan 
-for, but succeeds:
-
-Feb 27 22:43:59 iwd[457]: event: connect-info, ssid: <redacted>, 
-bss: **:**:**:1c:10:98, signal: -63, load: 37/255
-Feb 27 22:43:59 iwd[457]: src/station.c:station_try_next_bss() 
-Attempting to connect to next BSS **:**:**:1c:10:98
-Feb 27 22:43:59 iwd[457]: src/netdev.c:netdev_link_notify() event 16 on 
-ifindex 5
-Feb 27 22:43:59 iwd[457]: src/scan.c:scan_notify() Scan notification 
-Trigger Scan(33)
-Feb 27 22:43:59 iwd[457]: src/scan.c:scan_notify() Scan notification New 
-Scan Results(34)
-Feb 27 22:43:59 iwd[457]: src/netdev.c:netdev_link_notify() event 16 on 
-ifindex 5
-Feb 27 22:43:59 iwd[457]: src/netdev.c:netdev_mlme_notify() MLME 
-notification New Station(19)
-Feb 27 22:43:59 kernel: wlan0: authenticate with **:**:**:1c:10:98 
-(local address=**:**:**:a2:a4:58)
-Feb 27 22:43:59 kernel: wlan0: send auth to **:**:**:1c:10:98 (try 1/3)
-
-So it would appear to me that despite the original scan that IWD issued 
-which clearly showed both BSS's the kernel's BSS list did not contain 
-those entries. In both cases above the kernel needed to scan for the 
-requested BSS. Anything we can do on the supplicant side? I figured an 
-explicit scan by the supplicant would surely populate the kernel's BSS 
-list, but apparently in some cases it does not?
-
-Thanks,
-
-James
-
-On 12/4/24 8:57 AM, James Prestwood wrote:
-> Hi,
->
-> I noticed this behavior where in some cases if the client gets 
-> disconnect or fails to roam due to an association timeout the next 
-> connection attempt will fail with a timeout of 
-> NL80211_TIMEOUT_UNSPECIFIED as the reason. Briefly looking at the 
-> kernel code in nl80211/sme.c:cfg80211_conn_do_work() this appears to 
-> be the default value passed in, so its hitting one of the cases that 
-> aren't auth/assoc related. There are no kernel logs when this happens. 
-> The supplicant fails multiple times continuing to iterate BSS's until 
-> it finally is able to connect a few seconds later. In some _very_ rare 
-> cases I have seen the client never able to reconnect to any BSS's, it 
-> just loops over all BSS with the same NL80211_TIMEOUT_UNSPECIFIED 
-> error indefinitely until a customer notices and reboots the client.
->
-> I see this behavior on kernel 6.2 and 6.8 (that's all our clients run 
-> at the moment) and on both ath10k and ath11k drivers. I'm not able to 
-> get this to happen with mac80211_hwsim fwiw. Prior to switching to 6.2 
-> (and 6.8) we were on 5.15 and I never saw this happen.
->
-> Below are some logs from the kernel and IWD. Lots of irrelevant lines 
-> have been removed to be more concise.
->
-> tl;dr
->
-> 1. Got an association timeout attempting to roam, disconnected
->
-> 2. Scanned (~1 second), plenty of available BSS's
->
-> 3. Failed to connect to 4 different BSS's in a row with 
-> NL80211_TIMEOUT_UNSPECIFIED ("reason: 0")
->
-> 4. Failed to connect to the next BSS with an auth timeout (no issue 
-> here, this just happens sometimes)
->
-> 5. Finally able to connect to another BSS (oddly, the original BSS we 
-> were roaming away from)
->
->
-> Dec 04 11:42:34 iwd[391]: event: roam-info, bss: **:**:**:13:06:ea, 
-> signal: -87, load: 63/255
-> Dec 04 11:42:34 iwd[391]: event: state, old: connected, new: ft-roaming
-> Dec 04 11:42:34 kernel: wlan0: disconnect from AP **:**:**:13:07:b6 
-> for new assoc to **:**:**:13:06:ea
-> Dec 04 11:42:34 kernel: wlan0: associate with **:**:**:13:06:ea (try 1/3)
-> Dec 04 11:42:34 kernel: wlan0: associate with **:**:**:13:06:ea (try 2/3)
-> Dec 04 11:42:34 kernel: wlan0: associate with **:**:**:13:06:ea (try 3/3)
-> Dec 04 11:42:34 kernel: wlan0: association with **:**:**:13:06:ea 
-> timed out
-> Dec 04 11:42:34 iwd[391]: src/netdev.c:netdev_associate_event()
-> Dec 04 11:42:34 iwd[391]: event: association-timeout,
-> Dec 04 11:42:34 iwd[391]: event: state, old: ft-roaming, new: 
-> disconnected
-> Dec 04 11:42:34 iwd[391]: event: state, old: disconnected, new: 
-> autoconnect_quick
-> Dec 04 11:42:34 iwd[391]: src/station.c:station_quick_scan_triggered() 
-> Quick scan triggered for wlan0
-> Dec 04 11:42:35 iwd[391]: src/scan.c:scan_notify() Scan notification 
-> New Scan Results(34)
-> Dec 04 11:42:35 iwd[391]: src/netdev.c:netdev_link_notify() event 16 
-> on ifindex 5
-> Dec 04 11:42:35 iwd[391]: event: connect-info, ssid: <redacted>, bss: 
-> **:**:**:12:fc:f8, signal: -56, load: 65/255
-> Dec 04 11:42:35 iwd[391]: event: state, old: autoconnect_quick, new: 
-> connecting (auto)
-> Dec 04 11:42:35 iwd[391]: event: connect-timeout, reason: 0
-> Dec 04 11:42:35 iwd[391]: event: connect-info, ssid: <redacted>, bss: 
-> **:**:**:12:fd:56, signal: -62, load: 69/255
-> Dec 04 11:42:36 iwd[391]: event: connect-timeout, reason: 0
-> Dec 04 11:42:36 iwd[391]: event: connect-info, ssid: <redacted>, bss: 
-> **:**:**:13:08:33, signal: -60, load: 53/255
-> Dec 04 11:42:36 iwd[391]: event: connect-timeout, reason: 0
-> Dec 04 11:42:36 iwd[391]: event: connect-info, ssid: <redacted>, bss: 
-> **:**:**:12:fd:34, signal: -67, load: 43/255
-> Dec 04 11:42:36 iwd[391]: event: connect-timeout, reason: 0
-> Dec 04 11:42:36 kernel: wlan0: authenticate with **:**:**:13:07:b6
-> Dec 04 11:42:36 iwd[391]: event: connect-failed, status: 1
-> Dec 04 11:42:36 iwd[391]: event: connect-info, ssid: <redacted>, bss: 
-> **:**:**:13:07:b6, signal: -70, load: 28/255
-> Dec 04 11:42:36 iwd[391]: src/station.c:station_try_next_bss() 
-> Attempting to connect to next BSS **:**:**:13:07:b6
-> Dec 04 11:42:36 kernel: wlan0: send auth to **:**:**:13:07:b6 (try 1/3)
-> Dec 04 11:42:36 kernel: wlan0: send auth to **:**:**:13:07:b6 (try 2/3)
-> Dec 04 11:42:36 kernel: wlan0: authenticated
-> Dec 04 11:42:36 kernel: wlan0: associate with **:**:**:13:07:b6 (try 1/3)
-> Dec 04 11:42:36 kernel: wlan0: RX AssocResp from **:**:**:13:07:b6 
-> (capab=0x1511 status=0 aid=3)
->
->
-> While writing this email I also saw it happen live while I had a 
-> mac80211/cfg80211 trace running. In this recent case it failed on 12 
-> consecutive BSS's with the unspecified timeout. That trace log is 
-> attached, maybe could shed more light on this.
->
-> Thanks,
->
-> James
+Thank you
+David
 
