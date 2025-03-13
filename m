@@ -4,59 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CC4FC28B2E
-	for <ath10k@archiver.kernel.org>; Wed, 12 Mar 2025 23:42:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CC72C28B28
+	for <ath10k@archiver.kernel.org>; Thu, 13 Mar 2025 08:48:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=EFC2GOTRt7rYbo3ysC6lkMLHNGYqIaicJq1YAfTp6HI=; b=TvD3Ig51sDC9hCqrYlH5UN3ThR
-	RuTHWaaUquhXmtMKzq2l5b2toKCqUro9M2Q2vSb7lKxakd3nQKPszDyKeUPPAd/hck16PmKxlhq8V
-	3a5iSo/FBVvNYRnv/ybOwhqaDebbQ+82PZTL24cs0kWVab+ZBquytIM11CSwWdZc84yqlBXaSoi5m
-	94qXPvzLFo+Y2o6ZMSgfTOsHEDtoA+HvNUpDyirjvuL+qxMCaiHpr4Ltk6V7hqjHc5iHm5Os8qqSx
-	tn/ba1dmo6lUXMjvxeFGfSiixBeyU5xizgiLfoEUJR2SSzcchRb6cwuHqwTzDGAnZkjsuv/RhJeJW
-	EzJC6G9A==;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=; b=h3CZZgH5EXHhhljhBsWdqUl3rV
+	fQNHDbVtK42nbRebe3Z5/lnI4myYY9Dy+TTUzNGLpMo9qzDScTTfnLUvKjuoD1JV6MKXju8VMZr6x
+	1CHCQhsXSW1m+AIkPi67OErsyqOM+veqSRnAvkvp3TiSL3pzBgeYIyrXLGzVVPk7c+NdQujVr/XPs
+	v2EIFFeDGODJyVS5Z6sjeTL+3iM1m5AiA9ITI+Oim62FLvnv2Nvov6k9KYwyxuyrQCmrzAoRdn78u
+	hMb02JVjvaj64tPP71w0bOCTQdBRCoFAEQPZo4qei1EYATzb7mVPZB75MUVaUHYwowsU6N6F4/4hJ
+	FyYdiuYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsVie-00000009jUu-1oL8;
-	Wed, 12 Mar 2025 23:42:36 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tseF7-0000000Ab6E-0AHx;
+	Thu, 13 Mar 2025 08:48:41 +0000
+Received: from mail.revenueraft.com ([51.210.151.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsVic-00000009jUZ-1zy2
+	id 1tseCR-0000000Aao5-3ZJ4
 	for ath10k@lists.infradead.org;
-	Wed, 12 Mar 2025 23:42:35 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id D5633A44E18;
-	Wed, 12 Mar 2025 23:37:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 345DDC4CEE3;
-	Wed, 12 Mar 2025 23:42:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741822953;
-	bh=qfr+2zQR+Sacn+n4lmc0XvBgQVef5IcvW3V6IrEHRjY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QEznmNDDw2mWRCdJFMz0BQsGUXBUqqp4i2TF1aqfqFjbP0mcv+ee+/aXL/ng+BycS
-	 smOraYvyBoMajGCCiToJlWpLF5eKHeP7MJtOnkrlHJCMGr36vMEyEZwrfwPOIvv1LH
-	 myE6FBt5+CjyT2qeUOvovlA1f8cJkI2VgW/dRU67o2den8CLJ7jBGMFC3QJ6YtdUuK
-	 zvKuyeBfl+tgwxSFvs1b6SnVpN93VZkkioU1wR3m7dLno2VBdokwwyKxh8T9U+BNSZ
-	 vj+eOVVnfExX2MrBPgxSRLxRsPtTscma0wR2C0ERGKcUPQFqo8xMsg8x2Fs57H5LUy
-	 59Iu6HTg/Gt8w==
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Kalle Valo <kvalo@kernel.org>,
-	Jeff Johnson <jjohnson@kernel.org>
-Cc: linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] wifi: ath10k: Drop of_get_property() call
-Date: Wed, 12 Mar 2025 18:42:27 -0500
-Message-ID: <20250312234228.1243477-1-robh@kernel.org>
-X-Mailer: git-send-email 2.47.2
+	Thu, 13 Mar 2025 08:45:58 +0000
+Authentication-Results: revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+ARC-Seal: i=1; d=revenueraft.com; s=default; a=rsa-sha256; cv=none;
+	t=1741855540;
+	b=Vcr8T5jrfO6FdCCsRp01SjZhO7qhiJg0qiC7OsXDrkw9hizAnJ/IK3x3bS+spU0TFP9W
+	 OxRWbPLYwFK62Wq0XPQC0EvswFaX99UAs8jsosphh6u8TW8MHBrz3ATTyNclHVlTOoHiu
+	 4PLh/0EQLsQl6ZWhHhXDsoRsK++tkY210VlWTMs/1YibgUaKdwxFR3mu2HitgKFSdNHuZ
+	 SEFDmap1wHiApPgUOn9RlIghZRW5Lsl8jCvzzd8Y6l53pY+R40fPjuIkJpJE2lQyTC3U5
+	 fcA9veEhNTF8UrL+im7OU7gW8VlNpJrdj17XqOldmAVBFX/HCviiBXRcqMMJ9MJFjnA==
+ARC-Message-Signature: i=1; d=revenueraft.com; s=default; a=rsa-sha256;
+	c=relaxed/simple; t=1741855540;
+	h=Message-ID:Date:From:Subject:From;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=;
+	b=xv6EEv+XolEnwTSQ2CHuFDCaRoV/pgIc8Nzejj2IBcrWHI/7lSFKqSNCz4NHgKhJRdod
+	 lbjsydyvsHu7CyXERkQT/UQeJ1LRw2BiVk3ydCRjj7q2lD0yzkjIgBzsGGqcTLshJyL8P
+	 uTd1F5SNzXsVgyVdXC/dfVkl0D4HiErlVYWO9/IxNx2qr2bzVXgJY3SFAL4jM9DZOixEg
+	 EgZ92g5gy8KMjO14LdpTIYiC5apchqw4lKFkHLCGOv0dnLehigwLvuxIA+AZcYBY73nhC
+	 7tpDAFq3r180kX1AszKLImJp+nXKMfEX7E970a5E0s3/7AE4BJ7SF5VsyUab3rGhCqQ==
+ARC-Authentication-Results: i=1; revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+Received: by mail.revenueraft.com (Postfix, from userid 1002)
+	id 4DD6525396; Thu, 13 Mar 2025 08:45:37 +0000 (UTC)
+Received: by mail.revenueraft.com for <ath10k@lists.infradead.org>; Thu, 13 Mar 2025 08:45:28 GMT
+Message-ID: <20250313074501-0.1.60.dgod.0.f2pb3roqlp@revenueraft.com>
+Date: Thu, 13 Mar 2025 08:45:28 GMT
+From: "Konrad Olkiewicz" <konrad.olkiewicz@revenueraft.com>
+To: <ath10k@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
+X-Mailer: mail.revenueraft.com
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250312_164234_576794_4D1C0179 
-X-CRM114-Status: GOOD (  12.28  )
+X-CRM114-CacheID: sfid-20250313_014556_029247_EDC873C2 
+X-CRM114-Status: UNSURE (   0.32  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,73 +75,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-There's no need to check the property presence and length before calling
-of_property_read_u8_array() as it will return an error if the property
-is missing or the length is too small. The return errno doesn't matter
-to the caller, so no change in behavior there.
+Dzie=C5=84 dobry,
 
-Change of_property_read_u8_array() to of_property_read_variable_u8_array()
-as the former allows properties to be longer than the requested length.
-Now the property has to be the exact length requested as the removed
-check required.
+Czy potrzebuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w?
 
-This part of a larger effort to remove DT functions like
-of_get_property() and of_find_property() which return raw DT data
-having no reference counting.
+Skutecznie pomagamy rozpoczyna=C4=87 rozmowy handlowe z klientami zainter=
+esowanymi Pa=C5=84stwa ofert=C4=85.
 
-Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+Zapraszam do kontaktu zwrotnego.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b3294287bce1..db7444af251d 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1889,7 +1889,7 @@ static int ath10k_download_cal_file(struct ath10k *ar,
- static int ath10k_download_cal_dt(struct ath10k *ar, const char *dt_name)
- {
- 	struct device_node *node;
--	int data_len;
-+	int data_len = ar->hw_params.cal_data_len;
- 	void *data;
- 	int ret;
- 
-@@ -1900,28 +1900,18 @@ static int ath10k_download_cal_dt(struct ath10k *ar, const char *dt_name)
- 		 */
- 		return -ENOENT;
- 
--	if (!of_get_property(node, dt_name, &data_len)) {
--		/* The calibration data node is optional */
--		return -ENOENT;
--	}
--
--	if (data_len != ar->hw_params.cal_data_len) {
--		ath10k_warn(ar, "invalid calibration data length in DT: %d\n",
--			    data_len);
--		ret = -EMSGSIZE;
--		goto out;
--	}
--
- 	data = kmalloc(data_len, GFP_KERNEL);
- 	if (!data) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	ret = of_property_read_u8_array(node, dt_name, data, data_len);
-+	ret = of_property_read_variable_u8_array(node, dt_name, data, data_len, data_len);
- 	if (ret) {
--		ath10k_warn(ar, "failed to read calibration data from DT: %d\n",
--			    ret);
-+		/* Don't warn if optional property not found  */
-+		if (ret != -EINVAL)
-+			ath10k_warn(ar, "failed to read calibration data from DT: %d\n",
-+				    ret);
- 		goto out_free;
- 	}
- 
--- 
-2.47.2
 
+Pozdrawiam serdecznie
+Konrad Olkiewicz
 
