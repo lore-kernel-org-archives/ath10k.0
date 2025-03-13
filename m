@@ -4,83 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42360C282DE
-	for <ath10k@archiver.kernel.org>; Thu, 13 Mar 2025 13:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A44C35FF6
+	for <ath10k@archiver.kernel.org>; Thu, 13 Mar 2025 18:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:From:To:MIME-Version:Date:Message-ID:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=zG+/el2dfOqyHNdk5GBZ8dqZp7cxAL1w7Fg44Y7tCBs=; b=w5WeniRQsYlzCI2Yo/+QJQWxdn
-	VSY6hVK/JU/pTod5nHmYQQIr20A42yBvlyDjwSEx45ajNMsIhdiM+J7jvzxtAzICodONrHEAglQxR
-	Yo3LOItECQJN3DFzWTm8kWlRPwW4CQWIv7tNkeIRr/+ucV/zmV4u/9SM3Jpdr56kVGDbHY28EI8uH
-	1XJuU4RXlAOKpYTtkHlgmOnqZwHtxPyigOHF7inharTTVlsWL2djC2hcJmK562yPBK612p0ndXvbu
-	nXc0SgKtHw+PKuxZ0ceduqQW2+8oFjXLx80Aw9/6hYP7q0ilWvbdaQFXrzKeRm/qMtn8xwxpJd4rz
-	ibOFOl1g==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=awOPnnsbd+ZITDDV/+JLRdAlqUsZWoQ4R77EaysafPU=; b=aY2Sm+QgkU1wPNpmP1eiJaH01F
+	sblsuGw3YqvrXdTq2QpCYTIticOb5Z4mNxjVngNurlpow43bRDrLPws9VFTCUacJ8tktYSx6Bw3oi
+	V7W9pHFjVK0BnLRgMzFy2dsSawxxR0mGSuoR/bXBXXgaWbI0GOdvCBVeDESnsAnkoBdIH9nirIKSB
+	cTbx5+lazPzQBbsoW+uyQUOwcnzdF4U0/ndyvXRQht4ogXP/a0K4Olpb71jii3CHrSdV/LLnG+sH+
+	KZfR5YfyAA0yGP43/yV5jjeikaC2N9/xTezNY0Jr9N0MzbPz1c7sBbtH0fHouyl5p9146SBQ3ULY9
+	l3vRBRXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsij6-0000000BOqI-22HL;
-	Thu, 13 Mar 2025 13:35:56 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1tsmu1-0000000C6RK-1xOZ;
+	Thu, 13 Mar 2025 18:03:29 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tshkV-0000000BFew-0rTO
-	for ath10k@bombadil.infradead.org;
-	Thu, 13 Mar 2025 12:33:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Subject:From:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=zG+/el2dfOqyHNdk5GBZ8dqZp7cxAL1w7Fg44Y7tCBs=; b=Am+7FUhgtJrGcHxOHPXGwLCEC0
-	iz7qCRhX6k79mPPACqrQLIEkm+/2uhMZ5WwhqxzmhS7XMZWAzSHNUkpkrdx3CnSz4mDIfXyxhqspa
-	VGhnP5McY6jSZEJ6zbgjPjv75lhF5th3Xk9YSJGAv89Y/xLYFEVM91eKNkRVe/ks8rGhM4pbUSFh8
-	Yz8IqNZxpbffCQhekJ/+V3zQmrPGkUABuvcko/uXyhS2b1w2gH1yXkDpT6gc8YjyL0DbTsZ8xwj5k
-	ZOvSzulftSgNPUxrNfKLHmFrlanWXzftG1i8twKv9cXpi8ummfx9MH5vvjdivoMIYEKvOoyudyCzi
-	SeaCjFaQ==;
-Received: from mailout4.zih.tu-dresden.de ([141.30.67.75])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tshkR-00000002bqa-3URL
+	id 1tsmNb-0000000C2wL-3Reb
 	for ath10k@lists.infradead.org;
-	Thu, 13 Mar 2025 12:33:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=mailbox.tu-dresden.de; s=dkim2022; h=Content-Transfer-Encoding:Content-Type
-	:Subject:From:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=zG+/el2dfOqyHNdk5GBZ8dqZp7cxAL1w7Fg44Y7tCBs=; b=JNuHKmYv9N9CjTQL0Kxs5JQfb9
-	2P4RAhgSyZvP4J+Mvg9iXQg535Ld7aTYERFN5YO/tn77f6omGqiclQbeNoOnV5Dn7BNrmz8Ew1lLc
-	7XLT1H3uV8peCPfeSX6FVN1hkgykjdCGLoVGCZtqtWjROKItHCVvDeeXy6Lran2WLhmb6NV/X6riM
-	HLVDWM1oQA9ZnDJjnjoP5ed+AFtWXmjaRi3WAeZG9BdlRB4tU2mSQ5Tya1C4iO02cefcD2XYapM9Y
-	1wPZdw71je9QffLH7LknrTEnOUjP4T9ZgH9V+FS+PsgIfM7ggAz+TgogK/raBFy/tYxARknTiHw4w
-	QWflMcAQ==;
-Received: from [172.26.35.139] (helo=msx.tu-dresden.de)
-	by mailout4.zih.tu-dresden.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <frieder_stefan.hannenheim@mailbox.tu-dresden.de>)
-	id 1tshkM-001ar1-IY
-	for ath10k@lists.infradead.org; Thu, 13 Mar 2025 13:33:11 +0100
-Received: from [192.168.1.101] (141.30.86.223) by
- msx-t422.msx.ad.zih.tu-dresden.de (172.26.35.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Thu, 13 Mar 2025 13:33:04 +0100
-Message-ID: <e90cbe8a-ceea-46a3-a461-1f3860d1cab6@mailbox.tu-dresden.de>
-Date: Thu, 13 Mar 2025 13:33:03 +0100
+	Thu, 13 Mar 2025 17:30:01 +0000
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52DAa09D003492
+	for <ath10k@lists.infradead.org>; Thu, 13 Mar 2025 17:29:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	awOPnnsbd+ZITDDV/+JLRdAlqUsZWoQ4R77EaysafPU=; b=Fs2aRRl5KVkinpOp
+	HDdew9bXb3MLMqoaPfl1Yg8hIq22hLlUFwd5DMitu/g4zIwo5Rk7IsNDNq2FIK7P
+	jt3WQT+tvfhKkI/tD978Fb6V0Y8ezSlqS6enzQw51MDarjjRHOKY0Na/yuT/yDFt
+	YJrAD6P2OD7bLWOVx6NsOt9g8qNO6VV6PooGCm7gEvEs5JrAY2kjbQtMfrWfX+bZ
+	s2ij7Ircmlup0VIQ3q/1VsrgM3X6veip0gXKCstyyOVpD9z5Mu+soI3bIhvs/9OD
+	LnDI+NDlEc/VS3EqZba5Xwc4pWfkGbfsY790lXktLDxhmrPbQLFQJEgDwO1G48Xz
+	2txrHA==
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 45b96yck1m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Thu, 13 Mar 2025 17:29:58 +0000 (GMT)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-223a2770b75so22855945ad.1
+        for <ath10k@lists.infradead.org>; Thu, 13 Mar 2025 10:29:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741886997; x=1742491797;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=awOPnnsbd+ZITDDV/+JLRdAlqUsZWoQ4R77EaysafPU=;
+        b=BFVgAcWfei4mCSPALG/lu1aRg9o9P14axlInUmT5S66cnBUaHldxYvqbM5dlDv9rUR
+         xf6iUOK9XzMJxfVbI+k8wr1wBSbtOv80aXKZmFboufxK2JSJOX8nZxAZOoE6P4NhNFEc
+         lkTL28qs46rg8v5IFR+LZHQ5LViCyrTmjFs5gNdEL+g7NIotik5BgmGNhSlrKgAmVwrp
+         BwoQy65q2nARcbgFDsdJHZ7UX+KscvPVgCSt33AY1VM7dtBH1AUMDwnamWRZpCGYsiK5
+         WKU8VW6aq7DfZBY8za0dwf+h6cZNOfCBhWFKdirnHGBigvrRfIR7LnUx3b7AOldFA9vs
+         Qk7w==
+X-Forwarded-Encrypted: i=1; AJvYcCWyJM3XLZWQ0f3JBqlLubzKnBjfBzMJHI+IZO/ktMf/MjJueXmstrzuevlVhmg+aj4F1uUOCVQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyEkCk1fTT3EWWAYIhIO4wTE/7EDbQYMeJ3VpspsuifdSiUALr7
+	VSZpqhol7Zg5fkSd7qcCjcZm0wrmKt+UoyntdpHwibyP58s1olaWIlG/DAAAC3w7FV842MxtE6B
+	IKeWYVm7bAXlS876F4qwSvJ2q5DvGwBO0XbvZcfE6j6NqA0tkBQjNZv5LPlECdTgwyjHH
+X-Gm-Gg: ASbGncut8coXrDTgVdtyA59Cpbfb4FJKad9uyRGI+hzRFKTHz/oPXkl154OISa2OPg3
+	pLhQaOnuuBq9/Nx1GG+mmuXIyoA4gxbazAhpgIRo5qN8+4JZNR+qdv/V3MTmDHZ+heWuwZjUmHh
+	r9kaixrsefkrpEZkPyCsedOENHBji57unyf+77UDmaIJMiiOhQjPViq2BHyGgL320YD68ZhlXGp
+	aElRoHgZpvvI5iMyHM+wgXIe8odL+ogBwQVmX5d4Z9+WWH5wlVDq4tKozPX0tc7uJj46ECMcyFS
+	18CkLFWPwv3aMBp4hTBQrAcL5UxpI41ugqd8DaQCfa2UcnkGd5oT2kNbI4TpnymDFWDHKcKq+Ce
+	29pwEvWNX
+X-Received: by 2002:a05:6a00:8d2:b0:736:339b:8296 with SMTP id d2e1a72fcca58-7371f17e455mr494950b3a.18.1741886997437;
+        Thu, 13 Mar 2025 10:29:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGPhq47TWkIDcRQxoDx44xKFXPM4TKX8MLJNf13Xta2UOYeZHJ1f+/yEahV1YT+F1aEcUgnFQ==
+X-Received: by 2002:a05:6a00:8d2:b0:736:339b:8296 with SMTP id d2e1a72fcca58-7371f17e455mr494906b3a.18.1741886996826;
+        Thu, 13 Mar 2025 10:29:56 -0700 (PDT)
+Received: from [192.168.1.111] (c-73-202-227-126.hsd1.ca.comcast.net. [73.202.227.126])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73711529531sm1608998b3a.2.2025.03.13.10.29.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Mar 2025 10:29:56 -0700 (PDT)
+Message-ID: <fdaab417-62b7-4151-be35-34fb7a354eae@oss.qualcomm.com>
+Date: Thu, 13 Mar 2025 10:29:55 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: <ath10k@lists.infradead.org>
+Subject: Re: [PATCH] wifi: ath10k: Drop of_get_property() call
+To: "Rob Herring (Arm)" <robh@kernel.org>, Jeff Johnson <jjohnson@kernel.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20250312234228.1243477-1-robh@kernel.org>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 Content-Language: en-US
-From: Frieder Hannenheim <frieder_stefan.hannenheim@mailbox.tu-dresden.de>
-Subject: Debugging Wifi Issues on Google Pixel 3a
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <20250312234228.1243477-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MSX-L422.msx.ad.zih.tu-dresden.de (172.26.34.142) To
- msx-t422.msx.ad.zih.tu-dresden.de (172.26.35.139)
-X-TUD-Virus-Scanned: mailout4.zih.tu-dresden.de
+X-Proofpoint-ORIG-GUID: Vru_Vxn-K9RUoXQH1Xw_MNKcLD5PUAtL
+X-Authority-Analysis: v=2.4 cv=I+llRMgg c=1 sm=1 tr=0 ts=67d31616 cx=c_pps a=IZJwPbhc+fLeJZngyXXI0A==:117 a=e70TP3dOR9hTogukJ0528Q==:17 a=IkcTkHD0fZMA:10 a=Vs1iUdzkB0EA:10 a=VwQbUJbxAAAA:8 a=syD-WeZVJwOIrOENAgcA:9 a=QEXdDO2ut3YA:10
+ a=uG9DUKGECoFWVXl0Dc02:22
+X-Proofpoint-GUID: Vru_Vxn-K9RUoXQH1Xw_MNKcLD5PUAtL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-13_08,2025-03-13_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 adultscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 spamscore=0 malwarescore=0 mlxscore=0 suspectscore=0
+ phishscore=0 bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
+ definitions=main-2503130133
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250313_123316_082734_D662F556 
-X-CRM114-Status: UNSURE (   7.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250313_102959_887582_9320F09A 
+X-CRM114-Status: GOOD (  25.16  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,32 +121,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi All,
+On 3/12/2025 4:42 PM, Rob Herring (Arm) wrote:
+> There's no need to check the property presence and length before calling
+> of_property_read_u8_array() as it will return an error if the property
+> is missing or the length is too small. The return errno doesn't matter
+> to the caller, so no change in behavior there.
+> 
+> Change of_property_read_u8_array() to of_property_read_variable_u8_array()
+> as the former allows properties to be longer than the requested length.
+> Now the property has to be the exact length requested as the removed
+> check required.
+> 
+> This part of a larger effort to remove DT functions like
+> of_get_property() and of_find_property() which return raw DT data
+> having no reference counting.
+> 
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 22 ++++++----------------
+>  1 file changed, 6 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index b3294287bce1..db7444af251d 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -1889,7 +1889,7 @@ static int ath10k_download_cal_file(struct ath10k *ar,
+>  static int ath10k_download_cal_dt(struct ath10k *ar, const char *dt_name)
+>  {
+>  	struct device_node *node;
+> -	int data_len;
+> +	int data_len = ar->hw_params.cal_data_len;
+>  	void *data;
+>  	int ret;
+>  
+> @@ -1900,28 +1900,18 @@ static int ath10k_download_cal_dt(struct ath10k *ar, const char *dt_name)
+>  		 */
+>  		return -ENOENT;
+>  
+> -	if (!of_get_property(node, dt_name, &data_len)) {
+> -		/* The calibration data node is optional */
+> -		return -ENOENT;
+> -	}
 
-I'm having issues with Wifi on a WCN3990 chip. It seems to work fine for people in the US but here in Europe connecting to Wifi networks is hit-or-miss.
-I am in Germany and can only connect to a few Wifi networks, with the others failing with authentication issues.
+note that there is one instance where .cal_data_len = 0
 
-We guessed this was because of the regulatory information not set and indeed the driver always falls back to the default, which is the US.
+so i suggest that there still needs to be an early return here to avoid
+kmalloc(0):
 
-[ 24.072334] ath: EEPROM regdomain: 0x0
-[ 24.072346] ath: EEPROM indicates default country code should be used
+	if (!data_len)
+		return -ENOENT;
 
-But even after patching the default regdomain to be Germany and providing the bdwlan files used by Android
-(found here: https://github.com/TheMuppets/proprietary_vendor_google_sargo/tree/lineage-21/proprietary/vendor/firmware)
-the connection issues remain. I am now at my wits end and so I am asking here how to best debug this. This is a log excerpt from when the connection fails:
-[ 1976.444722] wlan0: authenticate with 04:d9:f5:12:75:b4 (local 
-address=5e:00:a8:96:03:48)
-[ 1976.444816] wlan0: send auth to 04:d9:f5:12:75:b4 (try 1/3)
-[ 1976.451117] wlan0: authenticated
-[ 1976.452960] wlan0: associate with 04:d9:f5:12:75:b4 (try 1/3)
-[ 1976.455507] wlan0: RX AssocResp from 04:d9:f5:12:75:b4 (capab=0x511 
-status=18 aid=284)
-[ 1976.455548] wlan0: 04:d9:f5:12:75:b4 denied association (code=18) Here is the PostmarketOS issue for this problem. Maybe there's some useful information there:
-https://gitlab.postmarketos.org/postmarketOS/pmaports/-/issues/3134
+> -
+> -	if (data_len != ar->hw_params.cal_data_len) {
+> -		ath10k_warn(ar, "invalid calibration data length in DT: %d\n",
+> -			    data_len);
+> -		ret = -EMSGSIZE;
+> -		goto out;
+> -	}
+> -
+>  	data = kmalloc(data_len, GFP_KERNEL);
+>  	if (!data) {
+>  		ret = -ENOMEM;
+>  		goto out;
+>  	}
+>  
+> -	ret = of_property_read_u8_array(node, dt_name, data, data_len);
+> +	ret = of_property_read_variable_u8_array(node, dt_name, data, data_len, data_len);
+>  	if (ret) {
+> -		ath10k_warn(ar, "failed to read calibration data from DT: %d\n",
+> -			    ret);
+> +		/* Don't warn if optional property not found  */
+> +		if (ret != -EINVAL)
+> +			ath10k_warn(ar, "failed to read calibration data from DT: %d\n",
+> +				    ret);
+>  		goto out_free;
+>  	}
+>  
 
-Please let me know on how to further debug this, your help will be greatly appreciated.
+this could made even cleaner using cleanup.h functionality (all of the gotos
+could disappear). perhaps I'll do that as a follow-up patch on top of your patch.
 
-Thanks in advance
-Frieder Hannenheim
-
+/jeff
 
