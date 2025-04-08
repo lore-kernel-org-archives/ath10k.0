@@ -4,55 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40AFEC369A2
-	for <ath10k@archiver.kernel.org>; Tue,  8 Apr 2025 13:14:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BE4DC369A5
+	for <ath10k@archiver.kernel.org>; Tue,  8 Apr 2025 15:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=eTw/Ga5/N6mVrc9xwMpMFYxdgBp3YtFvnyozeSy1je8=; b=PFpYA68wYRjWhveD8yab5j+SZy
-	+MZdAQkBzT6YoRyRisB3oo94kRq2C7RIZdbv7keUy44UuBEBFAbc71B7gWsbMIQSzUyKdvPOXIMFD
-	tX1s+FRe2v/aDT++2gK0I6NT/tcmBm1qP4/8pV1+zC5/sr4JT7LY5edN30zZ6zA3eCohWXH4b+CzI
-	mwIulK8Yq9V+UKbBZtXnG66wDkCDgUdzkNefA51DiNRsKgQOYaUZ7p8dqd6Onyw0oYeLxbsaptYoO
-	ggdctDfp0uobWzqlLLb9a72VzTLbRfC3KOCFr/ZNCFco6SeEZQvKs0PjeavmHdXQv4ls8Ca81xhoX
-	8zLvQ0jQ==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=pctFuou7K6UODLPKxKTgI/jveEjfklrGVfRqNLl+hro=; b=VOkbAMDD43ol5ceWzo39LOm2zm
+	b2FVTsBIQCryeYO9HBFptEZ8/66NpK6hhkGUERJZ2AV71PO8/qnOmLIp8pzQkxkPKDgKYdDJUNd4g
+	7OvorbnGf8rjE5esWJA1BmLZPOxcfyz9f5ecOVtxqPW2dIC0TPNmCwERjSPfZdz8GsjNWPo4NS7ez
+	urzbG5Cp0MPQmS4e/8ADrdfrusiTlSi+KO2hESsLtdxhbH627Aa8KAFRCrFS20cOGPr2m3q9MqFqU
+	iRSma+HKPWBNEmKZNqTQADFOTYfqUQGtEll0+stGW4zKd58GM5gS20WN4WE5emhMslIMfZjhSoQLa
+	yVOukLcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u28m3-000000046RP-2ic7;
-	Tue, 08 Apr 2025 13:13:55 +0000
-Received: from mail.primefinix.com ([141.95.160.218])
+	id 1u2Ae4-00000004WwQ-303d;
+	Tue, 08 Apr 2025 15:13:48 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u26cL-00000003l3L-3x3G
+	id 1u2AZb-00000004W7U-3Ls0
 	for ath10k@lists.infradead.org;
-	Tue, 08 Apr 2025 10:55:48 +0000
-Received: by mail.primefinix.com (Postfix, from userid 1002)
-	id 2FB33A61A1; Tue,  8 Apr 2025 09:35:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=primefinix.com;
-	s=mail; t=1744097819;
-	bh=eTw/Ga5/N6mVrc9xwMpMFYxdgBp3YtFvnyozeSy1je8=;
-	h=Date:From:To:Subject:From;
-	b=OVQ5RTTv+LT8KxxgHFQwNXZVASrKWxqHh53xWqAKMLtoMGlvMyOlmMTiGfUctsPA3
-	 O9paVifezbd4HlA0Dpf4Kr6TclKqH+2L+XrVmfUhpcDS0UGII+R4Nro+HaW74cOeGk
-	 xdfX9emc63fcfvdzzhayjojM2XD8G8GiDCJF3YrFI9u6HOUQ+d1Ca1EE7kbEeprtRm
-	 zHfhWINMbtwchORhc1m58vp/ZRnRK0r4/1r/HmG8A6w89df74Btt12+rnBSWtBAe2Z
-	 5o6ildgiEyozqz1i2O/6yy23+pHJa/+I2n6mrLstj85VplWmtBqpPbzuCBfKCvxJzp
-	 lqq7rslvXOU1g==
-Received: by mail.primefinix.com for <ath10k@lists.infradead.org>; Tue,  8 Apr 2025 07:35:44 GMT
-Message-ID: <20250408084500-0.1.jx.1zi2m.0.ymd7m1zwq2@primefinix.com>
-Date: Tue,  8 Apr 2025 07:35:44 GMT
-From: "Brendon Roy" <brendon.roy@primefinix.com>
-To: <ath10k@lists.infradead.org>
-Subject: Mattresses - collaboration
-X-Mailer: mail.primefinix.com
+	Tue, 08 Apr 2025 15:09:13 +0000
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 538BRev5006523
+	for <ath10k@lists.infradead.org>; Tue, 8 Apr 2025 15:09:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	pctFuou7K6UODLPKxKTgI/jveEjfklrGVfRqNLl+hro=; b=kcWlkfMAIyTvGUK2
+	O78nkAl7Eb6+80JcljLlCLB9xTnZRvYCnbpJcQ2jIYgUQ7miDpf5v0JUizGurTiO
+	0+R7mVlR21PvylbpxztvklnLCxeTAG1MwWrcSs0J5SGqBSQSrYhq9GOcfurK28Kq
+	VOPdo3WwtY1lc+ZxbYyJZqO7M/vnll9klrFQSkTuTIxLkD7u80EvHtsFl+1sxbqM
+	We9/mPsmkgMomHtqo+BMVSC0HqYAVo0K//7oA5cf48jZFgFjTjaNh8gUDJopCbLb
+	rCJXhG5ZgHD1SQsMFx9SJ7g4UIikkkIRi4hHwsRj2jZW32lZCR0hW6iMaiwZ+APK
+	7uRy+w==
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 45twftg2sc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Tue, 08 Apr 2025 15:09:11 +0000 (GMT)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-22650077995so83133305ad.3
+        for <ath10k@lists.infradead.org>; Tue, 08 Apr 2025 08:09:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744124950; x=1744729750;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pctFuou7K6UODLPKxKTgI/jveEjfklrGVfRqNLl+hro=;
+        b=LdBcGJJLb3XMgoX/bjNeLWTnHrxh75Z8vCa1n51koAGmKJKeHCiQeRjU1LEfR5jNF8
+         iWP509OLBKvL58bNqarjdd5HFZddCxBXTcv3spo2fw22EyVsvUqZjnWbf1aYZHiRcoAD
+         Ho2ol9/OEiWv2+FfkOouIfQNM5dVPJUzylo0zniKDfBncpwRKRbT9+XInfaahg/MgE34
+         SbJ7lQvpkCgYqGWp5srWPeK/NEVKQQOVHxhFmWMRaTcwPSUjj3dviZGif6UVI365Xo0i
+         Dn3L1b/LpZ3QXEJbkmMewePrN59RiyPsAzfS78dtnF0ntb7NgisT28T/Jz3recPAo4WN
+         1HwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVdku0PJFoJmYq2xb7H6pstLBGoYGEwQyKSy7AMOs6gfVoUC2aX75sl2oLlyajOBhjlyD+pj6E=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzIdd9FIikRVKlrNtFZdztrGgelzwEqT0RbnKpii6zFiyxa81KT
+	qQPqCJjIds993sVmmpSvQbElw2N8c0LqYxQNj0KmxHTLTRkzNklwtdDjC6g04LnA0kFjDt7A9ZP
+	kUqm3STY8Wk84iOaXWrBnAehh2qX4ocZNWbxj6KvhP0ucEhaWPtMgi2oXVzIq
+X-Gm-Gg: ASbGncsimBUPRtB1qGLOqbnjLcy19RjneuXuCgjHpro5d0pOv52wqnEE2vwmG9vZ12r
+	vThCBSiSjOvRRlfKeTYsbGmpe4lA38N3nzQ6Ko3QF/olm4kpabA3K9brBOs5OMPMilpQCF6pOxv
+	h9Tf00ZlnYwXoef/OyTxkJkov50aae2rbY0Axib8vrqZPXw0mMjD9hRc1o7Dg8a32+iGANZRouM
+	MAR8SghhUhTjrUCboKHyqqd2xwUIq9l8NDPKRe4yxY1oPTQJsIutliGLpVYWrQB8I909dNpWjeG
+	0iOKqKAjiYptOMUK8EL7G3fTa2bTWjO3mFzGIYPP8XfyRABmfjj7PRwl7HC1eilOld79pAQ=
+X-Received: by 2002:a17:903:19c4:b0:216:3d72:1712 with SMTP id d9443c01a7336-22a95587be7mr216673345ad.48.1744124949742;
+        Tue, 08 Apr 2025 08:09:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGNrtrSw2E1SAGUq7CqH0A6kBJG37r/+rnOESKXQy0U2GuSemu5naPzR5orh59B/fwt9z1wGQ==
+X-Received: by 2002:a17:903:19c4:b0:216:3d72:1712 with SMTP id d9443c01a7336-22a95587be7mr216672525ad.48.1744124949072;
+        Tue, 08 Apr 2025 08:09:09 -0700 (PDT)
+Received: from [10.227.110.203] (i-global254.qualcomm.com. [199.106.103.254])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2297866eca9sm101503035ad.170.2025.04.08.08.09.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Apr 2025 08:09:08 -0700 (PDT)
+Message-ID: <26cafcbb-6a94-40ab-aabf-3c9943cfb925@oss.qualcomm.com>
+Date: Tue, 8 Apr 2025 08:09:05 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build failure after merge of the ath-next tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Dr. David Alan Gilbert" <linux@treblig.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>
+Cc: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+        Balamurugan S <quic_bselvara@quicinc.com>,
+        P Praneesh <quic_ppranees@quicinc.com>,
+        Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>,
+        Ath10k List <ath10k@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20250408105146.459dfcf5@canb.auug.org.au>
+ <Z_R2lEVjqn2Y3_sP@gallifrey> <20250408113747.3a10275a@canb.auug.org.au>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20250408113747.3a10275a@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Authority-Analysis: v=2.4 cv=B5+50PtM c=1 sm=1 tr=0 ts=67f53c17 cx=c_pps a=IZJwPbhc+fLeJZngyXXI0A==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17 a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=3WJfbomfAAAA:8 a=rOUgymgbAAAA:8 a=4uOVVYVnsCJchGKozvwA:9 a=QEXdDO2ut3YA:10
+ a=uG9DUKGECoFWVXl0Dc02:22 a=1cNuO-ABBywtgFSQhe9S:22 a=MP9ZtiD8KjrkvI0BhSjB:22 a=IwZ_ZZASwsaSaAdrsfNp:22
+X-Proofpoint-GUID: 8A6K_8YeotPQEiOGor0xLkZMXFjzGj9i
+X-Proofpoint-ORIG-GUID: 8A6K_8YeotPQEiOGor0xLkZMXFjzGj9i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-08_06,2025-04-08_03,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=921
+ suspectscore=0 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ priorityscore=1501 adultscore=0 impostorscore=0 lowpriorityscore=0
+ mlxscore=0 clxscore=1015 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
+ definitions=main-2504080106
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250408_035546_689057_F0BB1060 
-X-CRM114-Status: UNSURE (   0.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250408_080911_861522_1D1D88D7 
+X-CRM114-Status: GOOD (  14.48  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,19 +128,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On 4/7/2025 6:37 PM, Stephen Rothwell wrote:
+> Hi Dave,
+> 
+> On Tue, 8 Apr 2025 01:06:28 +0000 "Dr. David Alan Gilbert" <linux@treblig.org> wrote:
+>>
+>> * Stephen Rothwell (sfr@canb.auug.org.au) wrote:
+>>>
+>>> After merging the ath-next tree, today's linux-next build (x86_64
+>>> allmodconfig) failed like this:
+>>>
+>>> drivers/net/wireless/ath/ath12k/ahb.c: In function 'ath12k_ahb_stop':
+>>> drivers/net/wireless/ath/ath12k/ahb.c:337:9: error: implicit declaration of function 'del_timer_sync'; did you mean 'dev_mc_sync'? [-Wimplicit-function-declaration]
+>>>   337 |         del_timer_sync(&ab->rx_replenish_retry);
+>>>       |         ^~~~~~~~~~~~~~
+>>>       |         dev_mc_sync
+>>>
+>>> Caused by commit
+>>>
+>>>   6cee30f0da75 ("wifi: ath12k: add AHB driver support for IPQ5332")
+>>>
+>>> I have used the ath-next tree from next-20250407 for today.  
+>>
+>> I guess a clash with the recent:
+>> Fixes: 8fa7292fee5c ("treewide: Switch/rename to timer_delete[_sync]()")
+> 
+> I will try that out tomorrow.
 
-Dropshipping our mattresses is a solution that is now gaining a lot of po=
-pularity =E2=80=93 simple sales without the need to invest in warehousing=
-, logistics, or shipping.
+Yes, looks like you'll need to carry a patch:
+s/del_timer_sync/timer_delete_sync/
 
-You sell, and we take care of the rest. What's more, we don't leave you o=
-n your own =E2=80=93 we help with sales and marketing so that you can see=
- results faster.
-
-Can I present the details of our partnership program?
+Until that renaming patch makes it down to my tree and we rename.
 
 
-Best regards
-Brendon Roy
+
 
