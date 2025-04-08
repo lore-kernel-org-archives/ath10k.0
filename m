@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B613C36010
-	for <ath10k@archiver.kernel.org>; Tue,  8 Apr 2025 01:06:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCABBC36010
+	for <ath10k@archiver.kernel.org>; Tue,  8 Apr 2025 01:37:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=W/pw3Cf0YcI/LQNvU3r1N+3wtaVcN1U5fMoqAQq4CBk=; b=uP5hGaCM+eU+BmBSXOAYR6FYwP
-	yvw+vJJpKkwmU4KhcxMveVL6wwlpHwFsZueJir4cQnzTdxrGoPzXec9q+JNFt6R8Kh8Mhn/pENJoK
-	aSC2vtadLJ8vy9ZBhJ6gJnXAyAqA6OviQqJVgBtgVfph5uWR5KYZw7+c/vLPHZnxwaPuT7PsdrNJu
-	mYsRr9EYsj3V0O2UgDV6aER5UWNza6/WT9GJtdNJUWJqkGhmeICU6dwOq9U6OO+t6tI+B/BOJQ4i5
-	JRfeM2B4rPf11mvcjW6NV28JpOunUysWOrguY+uKpacGMDLwA2BLRXG/4haR88Ryx9A+/IpG2XZDA
-	dCFZ/L1w==;
+	bh=pry0XYR1bNyVtjgGwwK1T2iqph7egXui1QMVMr15pE4=; b=yJFDeXb26V2shbPvJG2KzRv/+U
+	Sd36XWZCkzcndK6PfQDdFILRuO3sio1kJvYdBH55tZUEUzW4UZzAz7tRYCIIpV0//bCQDWdL0jsQP
+	IA+ECyTGa21kCDk0TcT4qZOzOhDsNZTq0SBt1P39qanPA2o2K4A2d5ZyFQIvllrC7yWQamSyIU0Fg
+	EQota5wajL/yy6ofPnTG0J2bCBJRKCN9QyEATtDKYo3ea8wZc4i9PcWKv5zt0ChrQOegnM1OgkB0s
+	vf8jNeX1CFeX/ry0zHUlg5rGW/oL1VQiVHSAQzFYKgTjKVTM+BpUWmHz2PkDOgDzo0YAjQNU58PGe
+	JHOS4+Rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1xQO-00000002QQC-462Y;
-	Tue, 08 Apr 2025 01:06:48 +0000
-Received: from mx.treblig.org ([2a00:1098:5b::1])
+	id 1u1xuS-00000002SpZ-2a5x;
+	Tue, 08 Apr 2025 01:37:52 +0000
+Received: from gandalf.ozlabs.org ([150.107.74.76] helo=mail.ozlabs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1xQM-00000002QPp-15A6
+	id 1u1xuQ-00000002Sob-0JSL
 	for ath10k@lists.infradead.org;
-	Tue, 08 Apr 2025 01:06:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
-	:Subject; bh=W/pw3Cf0YcI/LQNvU3r1N+3wtaVcN1U5fMoqAQq4CBk=; b=Sk6sXUwhdH1RozKG
-	cztxbqs9TCd6eUVTUKL1jP3b4QdjtBE6BGNedtVIEH1OQ/rU+D+uKE5gZU/Z64mkdZOiqc24DYgTT
-	NCOwuemUJ8WZiYCo5Esh9ld+rO6I9LHUadEMZmryv0akdfemMrU7l9SofdzaEjsdKaqlxPMpfvheh
-	oNJpIGKYabzQmpnesSE+75MJYvP3bEOK3sO12aLm4dc6u2EPQKajeDulWy5v7MwB/sFW4UpSPZrha
-	2W8VivA5MAwJV+4AMAxLZzU9s93HSo7DMU7IVZciBzlea0X6dVLBS7xN9V+q4VaHUUNnXAOipg96C
-	N/JGgGrGqS+HOaK4Mw==;
-Received: from dg by mx.treblig.org with local (Exim 4.96)
-	(envelope-from <dg@treblig.org>)
-	id 1u1xQ4-009hzA-2m;
-	Tue, 08 Apr 2025 01:06:28 +0000
-Date: Tue, 8 Apr 2025 01:06:28 +0000
-From: "Dr. David Alan Gilbert" <linux@treblig.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
+	Tue, 08 Apr 2025 01:37:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=202503; t=1744076268;
+	bh=pry0XYR1bNyVtjgGwwK1T2iqph7egXui1QMVMr15pE4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QBOxgWCGVDM0mYWO28VCIVWVP1Hw1VF8KkrN8UfnnXQXCF/o3+f0Spx7FqUpA3nvQ
+	 znMFWNBRGKqO2Qqy8UGMl2+uUBz8VSqYTP5wCe7P8xQcKGqnlwTUrTkZ3gJdM0N28h
+	 dkNQLX8X658IsZEaIzPNipKXC+m0XzavPo48+AFBH7GMf2HzqtDTNTcTr+F1PtbDxt
+	 oURF5M+zzKYnbLUV+W8bO5yEPGlTNT3UisYNBA6iddu778xeoiJKICqbZ2Lp/8YMR2
+	 ODrG2MNQDsSbL/AkAdTV5EH8eBGFEgLa38pu6sd7+R6vh86MDtpFYhm+ARQEaH8eiP
+	 lT7bAOKsB2tqA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4ZWpcD1Nvmz4x8Y;
+	Tue,  8 Apr 2025 11:37:47 +1000 (AEST)
+Date: Tue, 8 Apr 2025 11:37:47 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: "Dr. David Alan Gilbert" <linux@treblig.org>
 Cc: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-	Balamurugan S <quic_bselvara@quicinc.com>,
-	Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
-	P Praneesh <quic_ppranees@quicinc.com>,
-	Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>,
-	Ath10k List <ath10k@lists.infradead.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
+ Balamurugan S <quic_bselvara@quicinc.com>, Jeff Johnson
+ <jeff.johnson@oss.qualcomm.com>, P Praneesh <quic_ppranees@quicinc.com>,
+ Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>, Ath10k List
+ <ath10k@lists.infradead.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
 Subject: Re: linux-next: build failure after merge of the ath-next tree
-Message-ID: <Z_R2lEVjqn2Y3_sP@gallifrey>
+Message-ID: <20250408113747.3a10275a@canb.auug.org.au>
+In-Reply-To: <Z_R2lEVjqn2Y3_sP@gallifrey>
 References: <20250408105146.459dfcf5@canb.auug.org.au>
+	<Z_R2lEVjqn2Y3_sP@gallifrey>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20250408105146.459dfcf5@canb.auug.org.au>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
-X-Uptime: 01:05:37 up 334 days, 12:19,  1 user,  load average: 0.00, 0.01,
- 0.00
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Content-Type: multipart/signed; boundary="Sig_/+gp7kqPae4FJqvCGp=VvsLM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250407_180646_514923_0224B745 
-X-CRM114-Status: GOOD (  11.07  )
+X-CRM114-CacheID: sfid-20250407_183750_252146_534896D2 
+X-CRM114-Status: GOOD (  13.82  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,37 +78,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-* Stephen Rothwell (sfr@canb.auug.org.au) wrote:
-> Hi all,
-> 
-> After merging the ath-next tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> drivers/net/wireless/ath/ath12k/ahb.c: In function 'ath12k_ahb_stop':
-> drivers/net/wireless/ath/ath12k/ahb.c:337:9: error: implicit declaration of function 'del_timer_sync'; did you mean 'dev_mc_sync'? [-Wimplicit-function-declaration]
->   337 |         del_timer_sync(&ab->rx_replenish_retry);
->       |         ^~~~~~~~~~~~~~
->       |         dev_mc_sync
-> 
-> Caused by commit
-> 
->   6cee30f0da75 ("wifi: ath12k: add AHB driver support for IPQ5332")
-> 
-> I have used the ath-next tree from next-20250407 for today.
+--Sig_/+gp7kqPae4FJqvCGp=VvsLM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I guess a clash with the recent:
-Fixes: 8fa7292fee5c ("treewide: Switch/rename to timer_delete[_sync]()")
+Hi Dave,
 
-Dave
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+On Tue, 8 Apr 2025 01:06:28 +0000 "Dr. David Alan Gilbert" <linux@treblig.o=
+rg> wrote:
+>
+> * Stephen Rothwell (sfr@canb.auug.org.au) wrote:
+> >=20
+> > After merging the ath-next tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >=20
+> > drivers/net/wireless/ath/ath12k/ahb.c: In function 'ath12k_ahb_stop':
+> > drivers/net/wireless/ath/ath12k/ahb.c:337:9: error: implicit declaratio=
+n of function 'del_timer_sync'; did you mean 'dev_mc_sync'? [-Wimplicit-fun=
+ction-declaration]
+> >   337 |         del_timer_sync(&ab->rx_replenish_retry);
+> >       |         ^~~~~~~~~~~~~~
+> >       |         dev_mc_sync
+> >=20
+> > Caused by commit
+> >=20
+> >   6cee30f0da75 ("wifi: ath12k: add AHB driver support for IPQ5332")
+> >=20
+> > I have used the ath-next tree from next-20250407 for today. =20
+>=20
+> I guess a clash with the recent:
+> Fixes: 8fa7292fee5c ("treewide: Switch/rename to timer_delete[_sync]()")
 
+I will try that out tomorrow.
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+--Sig_/+gp7kqPae4FJqvCGp=VvsLM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmf0fesACgkQAVBC80lX
+0GyIFQgAnISd1YyFiTjCOFbapwzs/ZBqzyIaYKnXBnGbnTnv6ZTNeXYaY1EvGsXr
+Hlz5cvbtV4JETqIlMCBSfx0/gGBTTka4uqeV+110Grsh+lWSip5jKDEHevtjJehF
+7T9dvr6RY6VGlc0sAyT91aWruLlLJzKeuZW8cgdMSkH04FKhIs6HRwpVLGJj0wU1
+yU/a+5/8PQiOZZpZY2ZSGfk7rlZRwddzhlV2kFpgMb2fCUWmX/RUiXUVRy8dB9KQ
+cWLepciql773B3DLZePmJ0PULy2iLek9m1V8AHn40vNbFHtijjk9dYjKk0e3i1FJ
++4wjUfH15h6KoDDlzRGjMTiePFKfsw==
+=Hs2Q
+-----END PGP SIGNATURE-----
+
+--Sig_/+gp7kqPae4FJqvCGp=VvsLM--
 
