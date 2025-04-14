@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D85FC369B2
-	for <ath10k@archiver.kernel.org>; Mon, 14 Apr 2025 08:26:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8172C369B7
+	for <ath10k@archiver.kernel.org>; Mon, 14 Apr 2025 08:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Q/VnYhVD1SCgZYyfaXiiv1axKyoVwiXgocwEv4oE1Ko=; b=MBZrceMruLQGs94Cfhi1JEw6Nm
-	ic0kB5sPtG8n9XdCU5u++mPsIK9fBeb7xrhkDBxXdPEnHi85EJWPyoI8OcxLhsMhDckb/EJdtoeDk
-	HoDIcAkTlkBiKtGhN1IKwRw0qZ38fJBT8NuYUFbVWKh+XK7g1fdggbAiwU7VGOFfMsC+oFkwAILHq
-	ptYyTDwH40Du8TlvkWQHO8Z7CPDbuw8w7hJ6RlKkhq8W1a86uSpndEJhjhdDa6ThV7tweyI6evX8r
-	zmrZHd5bc9lzxvxS4/tt7G97DJl7nUGvU5nZA/pGeIZOUeeMAmDs5sLuT4sQ/iusRk5a64LGacZAD
-	ZTi6Lg2A==;
+	bh=g+p3ZZ8m+P6MBwg+X0cWHrVyngWhZc3MgIiUJosTjVM=; b=d9w31V4y21FJqvoQjLOS4piamo
+	fxkcSZRvbtO9iBF8rTVf1yLLulkP5HDK6IfZ8N/+4MsuYi7lUpLJei2dzP2Qo219OEzh4+0QBzcEl
+	sU02Msy26Pr7mEUOi4fW6OtNWGyaYcKtKV8VCGJTEywrs6Mq397DQlWges1Qg+iGstSmoMNSzkt9T
+	52KqxhEUu/4uCmdVURbS2hhw1aNvEscWADIR5gVPns5oh4KwULRWLAvULYLLRi1lAPlaZC26ci7L8
+	Z+5Xn98cA6Kvykf4E+fstMH7m3j8oJ5TM4FTaQ0ANp76Cgiab4QFrbw1+Ks4UdxfAMwursLoyR+ZY
+	JR2P1X3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4F92-000000014X6-1bSg;
-	Mon, 14 Apr 2025 08:26:20 +0000
+	id 1u4F9E-000000014lX-1WqL;
+	Mon, 14 Apr 2025 08:26:32 +0000
 Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4F8y-000000014Th-46yw;
-	Mon, 14 Apr 2025 08:26:18 +0000
+	id 1u4F8z-000000014Te-3QyQ;
+	Mon, 14 Apr 2025 08:26:23 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020; t=1744619175;
@@ -33,27 +33,27 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Q/VnYhVD1SCgZYyfaXiiv1axKyoVwiXgocwEv4oE1Ko=;
-	b=oXHvZS2XoGF1OUDHETEpesHyXLq7OFuBkAoXwt+6oCKMZrrFFF7uAwyKIDqzJqoXyqoqMx
-	YfMGx/Wq/+MNteZfIoJ/sv1izi7t6HJy44wVg2hqGx0ck5MT8UTT10/XExG98CKxAN//+G
-	OusqYZlGizraLiAQZfjQ1cDm7BhQ2SwbOYT7Ir2X/9itY/sZWkuig3cgmYDSu9N5UAd2we
-	4DXfe2USWh11pvXMgy16WHeMjzegIHTAOIk2/I6NBfxU/jAKvND/ARkjDKzYATCwovn5na
-	lAdIxHxyggXJgXvs29oqrL2p0PIPjlmvFObHVwm+/ndrprruazh3PRaU8SKhHA==
+	bh=g+p3ZZ8m+P6MBwg+X0cWHrVyngWhZc3MgIiUJosTjVM=;
+	b=ofLbcum+e5ES97JZNHgUn4eizYkDbWnLe7xsM+Zdmxa5+24Dx7P2aGHM7z3O141w/4Rr+k
+	WRveEv8SYrJCfpnOWdRe0Lrhgax34JsFWwZTghEZ5yEiNmWu6LJq8IoexKOIoS9JwGMj1U
+	S4w3rdfc484lB0AX/t1LFVhunaQKaxEszKarS5CJczq3PXzEjlrWASNsfBbYVIl4/NbegK
+	ySYcWod+zpWWxlHAn/FkiejzfE4POH5aygMEbC5tcYMs8Peb/Qj9iPW0Q1uyrh/mjAD2S0
+	9q0+XyXre1y2vy0I+hqySM0tWoAVSXGqdyLIy8qXEkZlH8mWo+xn53pyczg7DQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1744619175;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Q/VnYhVD1SCgZYyfaXiiv1axKyoVwiXgocwEv4oE1Ko=;
-	b=BW7eyc5nmNTm4BrUjTKiQcxtNBwCiX+GSkj3s651FAkykMV6ELiCFt5lY/bvAC3YEtdm8y
-	c90pAWGVmstytfDg==
-Date: Mon, 14 Apr 2025 10:26:05 +0200
-Subject: [PATCH net-next 4/7] wifi: wcn36xx: Don't use %pK through printk
+	bh=g+p3ZZ8m+P6MBwg+X0cWHrVyngWhZc3MgIiUJosTjVM=;
+	b=R8G1LC3nTq9auZ80K7wKWRdWZ5AzwlgcChsPmwJreInP145Kb0TjPt+6wFT5D5ZCsiLixI
+	icD4Mn52YWhoOcBw==
+Date: Mon, 14 Apr 2025 10:26:04 +0200
+Subject: [PATCH net-next 3/7] wifi: ath12k: Don't use %pK through printk
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250414-restricted-pointers-net-v1-4-12af0ce46cdd@linutronix.de>
+Message-Id: <20250414-restricted-pointers-net-v1-3-12af0ce46cdd@linutronix.de>
 References: <20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de>
 In-Reply-To: <20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de>
 To: Jeff Johnson <jjohnson@kernel.org>, 
@@ -73,16 +73,16 @@ Cc: ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
  intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
  linux-rdma@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1744619172; l=1466;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744619172; l=2012;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=61F6yS3SeLiDBJeFobz+nPKysOXCT5pH1Ry4x0mEWwk=;
- b=x/NwFZLAfuFMn6Tuwkaaozs8DHU3CODeWCFL2e9Z5eSwidQOwOcFXmSdTvN9+ChrWvdguO2cn
- UysC7tAl9ggC5QE/fMdSdsC5X2A9PqW1zeBD1+dBhqDiAkkT9kN1N/c
+ bh=Mog1fUxDWxYnW9KpoZ7DzBFzkRO6Ky21p9XzMNb3Vf8=;
+ b=b/us2xNbwh8znqfnzh9E4Av2oMff6qZufNEzIm5QnYwVPSQtCv4hVANkyEXwMgwxfZZXMClBq
+ TRKDFzK5g7kCqMlmFJDdqt8wzmcZOLvplpYQXCfNLJTM+XlGTzlWrnQ
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250414_012617_156594_319BEE83 
-X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-CacheID: sfid-20250414_012618_000516_63BF14F3 
+X-CRM114-Status: UNSURE (   9.68  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -113,22 +113,31 @@ for which its usage is safe.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- drivers/net/wireless/ath/wcn36xx/testmode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath12k/testmode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/testmode.c b/drivers/net/wireless/ath/wcn36xx/testmode.c
-index e5142c052985ddf629b93d7b9687e6ba63a48e8b..d7a2a483cbc486308032709a99bba9a52ed0ff59 100644
---- a/drivers/net/wireless/ath/wcn36xx/testmode.c
-+++ b/drivers/net/wireless/ath/wcn36xx/testmode.c
-@@ -56,7 +56,7 @@ static int wcn36xx_tm_cmd_ptt(struct wcn36xx *wcn, struct ieee80211_vif *vif,
- 	msg = buf;
+diff --git a/drivers/net/wireless/ath/ath12k/testmode.c b/drivers/net/wireless/ath/ath12k/testmode.c
+index 18d56a976dc74c4f6eab87e358c14d4faea648e2..fb6af7ccf71f44ae4bd01cde53fba3527eed0d2d 100644
+--- a/drivers/net/wireless/ath/ath12k/testmode.c
++++ b/drivers/net/wireless/ath/ath12k/testmode.c
+@@ -97,7 +97,7 @@ void ath12k_tm_process_event(struct ath12k_base *ab, u32 cmd_id,
+ 	u8 const *buf_pos;
  
- 	wcn36xx_dbg(WCN36XX_DBG_TESTMODE,
--		    "testmode cmd wmi msg_id 0x%04X msg_len %d buf %pK buf_len %d\n",
-+		    "testmode cmd wmi msg_id 0x%04X msg_len %d buf %p buf_len %d\n",
- 		   msg->msg_id, msg->msg_body_length,
- 		   buf, buf_len);
- 
+ 	ath12k_dbg(ab, ATH12K_DBG_TESTMODE,
+-		   "testmode event wmi cmd_id %d ftm event msg %pK datalen %d\n",
++		   "testmode event wmi cmd_id %d ftm event msg %p datalen %d\n",
+ 		   cmd_id, ftm_msg, length);
+ 	ath12k_dbg_dump(ab, ATH12K_DBG_TESTMODE, NULL, "", ftm_msg, length);
+ 	pdev_id = DP_HW2SW_MACID(le32_to_cpu(ftm_msg->seg_hdr.pdev_id));
+@@ -227,7 +227,7 @@ static int ath12k_tm_cmd_process_ftm(struct ath12k *ar, struct nlattr *tb[])
+ 	buf_len = nla_len(tb[ATH_TM_ATTR_DATA]);
+ 	cmd_id = WMI_PDEV_UTF_CMDID;
+ 	ath12k_dbg(ar->ab, ATH12K_DBG_TESTMODE,
+-		   "testmode cmd wmi cmd_id %d buf %pK buf_len %d\n",
++		   "testmode cmd wmi cmd_id %d buf %p buf_len %d\n",
+ 		   cmd_id, buf, buf_len);
+ 	ath12k_dbg_dump(ar->ab, ATH12K_DBG_TESTMODE, NULL, "", buf, buf_len);
+ 	bufpos = buf;
 
 -- 
 2.49.0
