@@ -4,74 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BB00C369B8
-	for <ath10k@archiver.kernel.org>; Tue, 15 Apr 2025 07:15:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9AEFC369AB
+	for <ath10k@archiver.kernel.org>; Tue, 15 Apr 2025 07:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/4DddnPVge9/03hGcVhj2b0OGOQ590RpyA8OzYtklTQ=; b=mB5TKLfIyiFI4FSNVhi9XDxlBx
-	sccLaZS/Dx0298YH9KI6M9PNuLSs5lk3RUe24ZPm2VKx25mYgPuJQFLYZMgo4k9R0GAH9cs+odOB8
-	Xm4G292rx4sesRHktRhWO5UaG05H0Me8utP2vcwpkBONoBsHTpLqE/bBP8wPZPppQhIks/7Se/QNw
-	vRAYnNXvD1y3Xgnh2M0bGna95DiN/PAiFB5ca2NAIZq+BAjjoty/WWJpblIB7Cgx6K3tz+opeA4QI
-	3aF9N2h5W08WtniixHXJwF+oebQUa9ID/4pEpxzuE7DtqWS924f/bUlhDj4cLNBIm7YJl7lfIuiOQ
-	jT12h1uA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=; b=XPL9x8p/qbTDrBKURQsUcqQte/
+	z2fdojPfgs97OL8FX+PJqEppxG9r6ol5FdDLlydtcediZz5MEEs9AhCtsEqnouSSxaoLm2qNkP0Ng
+	hSdiO9BYhw/mdvi3GUpYCkIg9GhwkHzsAN0udXQLfXaktGSzYEiws4nd4PtREXd+Xgk9ECmNA5iet
+	luU4Qjrhuj9MWkJCEfTtXs0dF+MjEPLbns+DucNoswiL5um4D+3R+Wtc/xIslXTYcBj3Xmw+1s2S9
+	2M7VYkxyHsdiL8c3sWWtH2jmJNYPiKsp9g8gpFdge9r1FRi5Y4qBWFbsQKNk/wsLEdI67xhOgeTgW
+	u2co83sg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4aVW-00000004lVR-0act;
-	Tue, 15 Apr 2025 07:14:58 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1u4bCZ-00000004uA7-0GsW;
+	Tue, 15 Apr 2025 07:59:27 +0000
+Received: from mail.revenueraft.com ([51.210.151.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4aGo-00000004jNM-1CWH;
-	Tue, 15 Apr 2025 06:59:47 +0000
-Date: Tue, 15 Apr 2025 08:59:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1744700384;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/4DddnPVge9/03hGcVhj2b0OGOQ590RpyA8OzYtklTQ=;
-	b=vuYrOTc8QKwZILdPxE6nlighse8j5czreAU0NRRwXH1YPWLjdY3d2rgnmIBklwUTnZbJ4i
-	mW3R7pbaGwblKuKhbYK+OyBN9orQD41H6M9HZkoPc4O2ZMShfJnMzwW56/2sxT762VPUye
-	aoqHwtWY4NDMT4NWwcxAQZfSIloQ9K2b2iIiWhS2I1RGuC5Lz+VELCRHaU/4HJqS1JI5MQ
-	yu/N9j8P9SKznAzYMKnOQeS03+PcDgn9hh7n5XkvDCVBT6vagGsuYB6cWn4m+MemWbcuQW
-	AJiGvabKv5fvy2QuNIpq1ErGhlQhvivTDiAW0SW6YixSCrVD6XPUsVBEftmjyA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1744700384;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/4DddnPVge9/03hGcVhj2b0OGOQ590RpyA8OzYtklTQ=;
-	b=NvPKiU/NFg6b2GvIsSSHtwZXG+jiIVYcV6xItmZvYPFCDeSuQXxyHYGrI0ugX2vU2lvaot
-	V1nhHULnntqIsxDw==
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-To: Brian Norris <briannorris@chromium.org>
-Cc: Jeff Johnson <jjohnson@kernel.org>, 
-	Loic Poulain <loic.poulain@linaro.org>, Francesco Dolcini <francesco@dolcini.it>, 
-	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, ath10k@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, ath11k@lists.infradead.org, ath12k@lists.infradead.org, 
-	wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 0/7] net: Don't use %pK through printk
-Message-ID: <20250415084250-8f385935-6e23-447d-8e94-3170d0d3ec9f@linutronix.de>
-References: <20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de>
- <Z_1XiNY2ujreEo69@google.com>
+	id 1u4azd-00000004r6z-0rPJ
+	for ath10k@lists.infradead.org;
+	Tue, 15 Apr 2025 07:46:09 +0000
+Authentication-Results: revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+ARC-Seal: i=1; d=revenueraft.com; s=default; a=rsa-sha256; cv=none;
+	t=1744703159;
+	b=XmCa7AUbvMbpxnp7SYgTr6VGSixSqfVw0o86YlLGoGM6jWBx+1rHYY8n6602t9hKCa5Q
+	 14dO4swHp42PGcfhBPdFDHDShdOHgWffleOu/5EdBwtWM9wqSsIedgDaEBFCClY/xzm+0
+	 qR+tskdWwVDV2CCpHuE3FenJUCoj+xAr6+qNw+YBbfqgkXXxkEecmC+J/fy5F1rhXFAef
+	 mixJwqza7PLTEd/1aSAitAm4LXc3TMjvKcAiLoB5VESVEcAMOCiH5OH4ExPZtOelrrmIU
+	 vCbuf1fDdpJVhAEUfK699igcpErWErCu7dBN8coNCtcJodYbfC8yCyluN2TtYRWW9aA==
+ARC-Message-Signature: i=1; d=revenueraft.com; s=default; a=rsa-sha256;
+	c=relaxed/simple; t=1744703159;
+	h=Message-ID:Date:From:Subject:From;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=;
+	b=urxxjiQIEtSarX10IuZl33r1Ycvx28kwEHq6McBIDPYYgX2c6JpP0GedG0fhTkkPhcOE
+	 auSbjX6MUk7elm/KUqEq5XdDJo34YBmXoH+XVY6D7EoBOD71Kx3U0zkCF3Y1CV5Hd+yoT
+	 2Oy4JsNnPH/nvVTh5mu2QhklD4El3s1a6L4QdF2vp7qZ39RDXDbaT9703ZrJ4sxsIi643
+	 1vt24xGYQj+8voNQmdSNeqXkAqu+TP5bAq2ZbBG200TYAH+dar4als7r/gYzaAwZlt4Tw
+	 yqvq+R/Yprg7BcJkWMpFiCDq0Sienx0LHjBtl4ZlXDr9ZABd14XO1y6uNg1GFBs0dxg==
+ARC-Authentication-Results: i=1; revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+Received: by mail.revenueraft.com (Postfix, from userid 1002)
+	id 7CEB0232EF; Tue, 15 Apr 2025 07:45:56 +0000 (UTC)
+Received: by mail.revenueraft.com for <ath10k@lists.infradead.org>; Tue, 15 Apr 2025 07:45:47 GMT
+Message-ID: <20250415064500-0.1.6n.dgod.0.qrzr64uig3@revenueraft.com>
+Date: Tue, 15 Apr 2025 07:45:47 GMT
+From: "Konrad Olkiewicz" <konrad.olkiewicz@revenueraft.com>
+To: <ath10k@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
+X-Mailer: mail.revenueraft.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z_1XiNY2ujreEo69@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250414_235946_466358_969646A5 
-X-CRM114-Status: GOOD (  13.10  )
+X-CRM114-CacheID: sfid-20250415_004605_382351_B2EB06AA 
+X-CRM114-Status: UNSURE (   0.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,41 +75,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 14, 2025 at 11:44:24AM -0700, Brian Norris wrote:
-> On Mon, Apr 14, 2025 at 10:26:01AM +0200, Thomas Weißschuh wrote:
-> > Furthermore, restricted pointers ("%pK") were never meant to be used
-> > through printk().
-> 
-> Is this really true? Documentation/admin-guide/sysctl/kernel.rst still
-> has a section on kptr_restrict which talks about dmesg, CAP_SYSLOG, and
-> %pK, which sounds like it's intended. But I'm not highly familiar with
-> this space, so maybe I'm misreading something.
+Dzie=C5=84 dobry,
 
-The wording about dmesg, etc was added in
-commit 312b4e226951 ("vsprintf: check real user/group id for %pK").
+Czy potrzebuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w?
 
-Its commit message also notes:
+Skutecznie pomagamy rozpoczyna=C4=87 rozmowy handlowe z klientami zainter=
+esowanymi Pa=C5=84stwa ofert=C4=85.
 
-    This is a only temporary solution to the issue.  The correct solution is
-    to do the permission check at open() time on files, and to replace %pK
-    with a function which checks the open() time permission.  %pK uses in
-    printk should be removed since no sane permission check can be done, and
-    instead protected by using dmesg_restrict.
-
-Doing this is my goal. One of the later steps is to replace %pK completely.
-Probably with a function similar to kallsyms_show_value().
-
-> (I do see that commit a48849e2358e ("printk: clarify the documentation
-> for plain pointer printing") updated
-> Documentation/core-api/printk-formats.rst.)
-> 
-> In any case, even if the advice has changed, it seems (again, to an
-> outsider) a bit much to say it was "never" meant to be used through
-> printk().
-
-IMO "never" is correct. Using %pK through printk() was only ever a bandaid to
-get at least some of the security benefits of hashed pointers.
+Zapraszam do kontaktu zwrotnego.
 
 
-Thomas
+Pozdrawiam serdecznie
+Konrad Olkiewicz
 
