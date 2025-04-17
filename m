@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76CD9C369CF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78FE6C369D0
 	for <ath10k@archiver.kernel.org>; Thu, 17 Apr 2025 13:20:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=M1GeXntpnPWyXUESrbciRq82BQz1QlJ7YZ0gk/CUbVc=; b=4hk37H3bVktziz6buJwSvsCIGi
-	MybUg+ENc5OX1bLO+KINRVp+g3wvVmvlDBlRRq0p1M8OT/1YdiIrpndyNbo7p5Y7M+tTOnoqAh98W
-	Lla5lpHFm4hW/ST8fRNtwB2Ny1SM57sKqCzfCgb/Vq1/RkfFiCVzit+1+dS89+mfT7L2jcPRozRXa
-	wA7cHZqbBd6d1A7q24IrJexdysR5k3NX63OA3wY23K3krsW+jx+Vc666FzVloLa/y7G+6xrr9wFmo
-	nk6JmwD4EgVkxVG5799k2Og/vvgCeeA7AaKivelSNH5tvHzJwObLfZyUiIMkH0+3ekLV0h7PeYcyR
-	RzKMMTfw==;
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ax4rJeZalogOj8wIoY/TFwkI03ahXbhPQLwzXY9UpSs=; b=E2hTXx4yuObOoq
+	EKRl8762nbdy0eL5aDCINKttHw/bmJQwNNsbIsCgArgld3eLvgeXymrl+RE8fVgP66c3OUpIKkoN3
+	1YStXT3ut+3RbIZFQcLwTR3C75IGD02Y7qFCW1jUAChIfvVc4ruX3u0r8Ul+B/zYQ/KJKOl7hGYBH
+	6I4WH60HTlBwP8E7eTmAN/Zy3WvjzJYL8LkFtpZFqzxMvEMOveY+OM3myLx8XTAjAs2IGjWHrvEGJ
+	tMYtZ9KVv9Z18zS+lzhw+5iSxe70aiYKb/R4mqcrT5C5cEnIAZIlje7DHE/kAWPyUWTMN4xPXKY6F
+	SKtFGDzKymlFStIyAJNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u5PAh-0000000D7Q2-3LFM;
-	Thu, 17 Apr 2025 13:20:51 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1u5PAe-0000000D7Mk-0UIg;
+	Thu, 17 Apr 2025 13:20:48 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u5PAO-0000000D7HT-13FX;
-	Thu, 17 Apr 2025 13:20:33 +0000
+	id 1u5PAN-0000000D7HR-0wuw;
+	Thu, 17 Apr 2025 13:20:32 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1744896029;
+	s=2020; t=1744896028;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M1GeXntpnPWyXUESrbciRq82BQz1QlJ7YZ0gk/CUbVc=;
-	b=yuZ3hdlS0nUrlUULOiIVbfJkKVbyppqvbHlS2FV4PHE0yPJR7/k9NSZX7NTQosz3hCIxnI
-	80m0fcciH2e8yPHCegiCEWDbu4M0DCNHPj1NKb7YFrGysEz2yIq7xihzImhzVL6plVFJB2
-	ADcSIASXby4bV0PP8c8FGM7O//J8rfv8WNurYJ6TG+Y42N8JZjtQFFqsr3M9OFdhnPPrx+
-	oqXdE4WxuEdkmzFhz2lIHhaPXqTqWJhP++jqkQu9trCPVcsWbc5lG4N4GIFpxc9Kd235nV
-	DpUFGdZrJHEtt1ab68b6AO+cqf8UrOI1gL8Djk9Zdj3ha67kHDpp0Yc/yuUIKQ==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ax4rJeZalogOj8wIoY/TFwkI03ahXbhPQLwzXY9UpSs=;
+	b=dx+USYBaLx2I8Gdx4jaFGW21JHYSvZVQrMa5rF24bMOqGyQaCRgOzg0x0adtoH5JsOf47v
+	2hJnYdYFooJcZxCWeTw2EPrM4awrBlwYJW2xB5R5gYeSnqutuy2HT9AwFj8PqePW5X34C3
+	NqLOaNdSQv97cS0V2073siV4AMC/9KiZA1RP5999vF5i99jwHTR0VwpD6HpAolWxL2W4eb
+	PPm2n0L+wUt9QO1jEe3nthl4ZXhQyYMLM1sBmPvS+T5q3lcUazqEogUeikY/16l71r+tc4
+	nVLZ9cHWKGQqqsO8t4usyVnssXaNuO1fcSf78zFdsP3LUrWJ/Sk27C0zCwyqZQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1744896029;
+	s=2020e; t=1744896028;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M1GeXntpnPWyXUESrbciRq82BQz1QlJ7YZ0gk/CUbVc=;
-	b=DJ9y5yUdNyJvZAr2C+gTNyK6ZzcIz6wYME/IU6h3n1ld9N+CixdHwFfw0mZCow+IKHwlnQ
-	NIAIjsnaIIi1ZXBw==
-Date: Thu, 17 Apr 2025 15:19:08 +0200
-Subject: [PATCH ath-next 2/4] wifi: ath11k: Don't use %pK through printk
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ax4rJeZalogOj8wIoY/TFwkI03ahXbhPQLwzXY9UpSs=;
+	b=Qaj+PmDOxeik8no8OOe9lbHhu7DdF7oqPucBcoWuTLQSfomc8hZvaWFmgzLnJx/muwN01O
+	PloGeSH7pFB+TZDw==
+Subject: [PATCH ath-next 0/4] wifi: ath: Don't use %pK through printk
+Date: Thu, 17 Apr 2025 15:19:06 +0200
+Message-Id: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250417-restricted-pointers-ath-v1-2-4e9a04dbe362@linutronix.de>
-References: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
-In-Reply-To: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
+X-B4-Tracking: v=1; b=H4sIAMr/AGgC/x2MwQqDQAwFf0VybmDd1Ur7K8WDuM+ayypJKIL47
+ 932ODAzJxlUYPRsTlJ8xGQrFdpbQ/M6lTdYcmWKIfahawdWmKvMjsz7JsWhxpOv3C1xePQppHT
+ PVOtdscjxP7/oJxQcTuN1fQHjFTh/cwAAAA==
+X-Change-ID: 20250417-restricted-pointers-ath-4f279530336d
 To: Jeff Johnson <jjohnson@kernel.org>, 
  Loic Poulain <loic.poulain@oss.qualcomm.com>, ath10k@lists.infradead.org, 
  ath11k@lists.infradead.org, ath12k@lists.infradead.org, 
@@ -63,16 +63,16 @@ To: Jeff Johnson <jjohnson@kernel.org>,
 Cc: linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
  Aleksandr Loktionov <aleksandr.loktionov@intel.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1744896028; l=1593;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744896028; l=2034;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=StrFXkjU61OZ/Br21albUB1TSXKwVdbD6fzzr0lF8cg=;
- b=qNfUCGEcsX+Nn3t6KcR00t00ASyLvVOQ9TKgoODq6Fiscv21IPuHnZP3h1CZZ+fhT6EfqPdXD
- zojyXNUtyhTBdeQzn4UWhWmDHqDB0JcpZvueCEpIxa0eDWTZKPlTF2u
+ bh=USJc9JCGJMae1BOrGUqYC9Qw2zxqsi9K4Px5b2V9oIE=;
+ b=4aoFpAS7vIBaF9DayfeaPUa3K8Y5PLpmCpvBRYmcVCoc+zcl7IawUrjWZAlS1Ft2aLcp1igtX
+ zxE18fWrB/kCfXWYMg4nMCS/vnn8USOet1o2Ez+oHcqdiricl6fnoxv
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250417_062032_430018_6207B728 
-X-CRM114-Status: UNSURE (   8.94  )
+X-CRM114-CacheID: sfid-20250417_062031_405179_8BBDB8E6 
+X-CRM114-Status: UNSURE (   6.35  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -94,34 +94,44 @@ Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
 the regular %p has been improved to avoid this issue.
 Furthermore, restricted pointers ("%pK") were never meant to be used
 through printk(). They can still unintentionally leak raw pointers or
-acquire sleeping looks in atomic contexts.
+acquire sleeping locks in atomic contexts.
 
 Switch to the regular pointer formatting which is safer and
 easier to reason about.
-There are still a few users of %pK left, but these use it through seq_file,
-for which its usage is safe.
+
+These patches were originally part of
+https://lore.kernel.org/lkml/20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de/
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 ---
- drivers/net/wireless/ath/ath11k/testmode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thomas Weißschuh (4):
+      wifi: ath10k: Don't use %pK through printk
+      wifi: ath11k: Don't use %pK through printk
+      wifi: ath12k: Don't use %pK through printk
+      wifi: wcn36xx: Don't use %pK through printk
 
-diff --git a/drivers/net/wireless/ath/ath11k/testmode.c b/drivers/net/wireless/ath/ath11k/testmode.c
-index 9be1cd742339c95ffa74c09bee924f4eff15134a..a9751ea2a0b73009bfb600d51c3978200ce99114 100644
---- a/drivers/net/wireless/ath/ath11k/testmode.c
-+++ b/drivers/net/wireless/ath/ath11k/testmode.c
-@@ -107,7 +107,7 @@ static int ath11k_tm_process_event(struct ath11k_base *ab, u32 cmd_id,
- 	u32 pdev_id;
- 
- 	ath11k_dbg(ab, ATH11K_DBG_TESTMODE,
--		   "event wmi cmd_id %d ftm event msg %pK datalen %d\n",
-+		   "event wmi cmd_id %d ftm event msg %p datalen %d\n",
- 		   cmd_id, ftm_msg, length);
- 	ath11k_dbg_dump(ab, ATH11K_DBG_TESTMODE, NULL, "", ftm_msg, length);
- 	pdev_id = DP_HW2SW_MACID(ftm_msg->seg_hdr.pdev_id);
+ drivers/net/wireless/ath/ath10k/ahb.c       |  2 +-
+ drivers/net/wireless/ath/ath10k/bmi.c       |  6 +++---
+ drivers/net/wireless/ath/ath10k/ce.c        |  4 ++--
+ drivers/net/wireless/ath/ath10k/core.c      |  4 ++--
+ drivers/net/wireless/ath/ath10k/htc.c       |  6 +++---
+ drivers/net/wireless/ath/ath10k/htt_rx.c    |  2 +-
+ drivers/net/wireless/ath/ath10k/mac.c       | 22 +++++++++++-----------
+ drivers/net/wireless/ath/ath10k/pci.c       |  2 +-
+ drivers/net/wireless/ath/ath10k/testmode.c  |  4 ++--
+ drivers/net/wireless/ath/ath10k/txrx.c      |  2 +-
+ drivers/net/wireless/ath/ath10k/usb.c       |  4 ++--
+ drivers/net/wireless/ath/ath10k/wmi.c       |  4 ++--
+ drivers/net/wireless/ath/ath11k/testmode.c  |  2 +-
+ drivers/net/wireless/ath/ath12k/testmode.c  |  4 ++--
+ drivers/net/wireless/ath/wcn36xx/testmode.c |  2 +-
+ 15 files changed, 35 insertions(+), 35 deletions(-)
+---
+base-commit: cfb2e2c57aef75a414c0f18445c7441df5bc13be
+change-id: 20250417-restricted-pointers-ath-4f279530336d
 
+Best regards,
 -- 
-2.49.0
+Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 
 
