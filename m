@@ -4,58 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78FE6C369D0
-	for <ath10k@archiver.kernel.org>; Thu, 17 Apr 2025 13:20:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50A5AC369C9
+	for <ath10k@archiver.kernel.org>; Thu, 17 Apr 2025 13:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ax4rJeZalogOj8wIoY/TFwkI03ahXbhPQLwzXY9UpSs=; b=E2hTXx4yuObOoq
-	EKRl8762nbdy0eL5aDCINKttHw/bmJQwNNsbIsCgArgld3eLvgeXymrl+RE8fVgP66c3OUpIKkoN3
-	1YStXT3ut+3RbIZFQcLwTR3C75IGD02Y7qFCW1jUAChIfvVc4ruX3u0r8Ul+B/zYQ/KJKOl7hGYBH
-	6I4WH60HTlBwP8E7eTmAN/Zy3WvjzJYL8LkFtpZFqzxMvEMOveY+OM3myLx8XTAjAs2IGjWHrvEGJ
-	tMYtZ9KVv9Z18zS+lzhw+5iSxe70aiYKb/R4mqcrT5C5cEnIAZIlje7DHE/kAWPyUWTMN4xPXKY6F
-	SKtFGDzKymlFStIyAJNQ==;
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=wl2sntL2foeXMHL68yZgS6j+JHjIlWFLQNY02bMKsA0=; b=dsKu8w1ORg1w+5lSMgcr19lOA/
+	GS3Vv3sSdJlzubF7COZlXmC9Qpt5lLgHpTgPiL6MtxCRh9AmMXz9HCzzsyjV0jEsqwSeBimZceUnK
+	Si8NGS/QBGmYkTHlAKg+sELUVMo1nF4BXAAADVOf8MoJGYHouFsExUbTkw1fNohPZFdXJqb/aMUlG
+	WGY0SsjMje76uT3oLBIg3vTOrv92I6yMoHlAeFUN8NGm3tsoI4RWq9GaJXU/rrxYo083ST/FIzvn+
+	Fx46FrE1a3m9WO4EMlSQ0yDQsasgmzYrN8qo1mmhVJsYqdFUyOgx+XkVXLwzW5BAhMBNv+GnmyY/l
+	5kZDBCYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u5PAe-0000000D7Mk-0UIg;
-	Thu, 17 Apr 2025 13:20:48 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1u5PAm-0000000D7WL-03Wt;
+	Thu, 17 Apr 2025 13:20:56 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u5PAN-0000000D7HR-0wuw;
-	Thu, 17 Apr 2025 13:20:32 +0000
+	id 1u5PAR-0000000D7JT-0nm3;
+	Thu, 17 Apr 2025 13:20:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=wl2sntL2foeXMHL68yZgS6j+JHjIlWFLQNY02bMKsA0=; b=ozmVWa1DK6tq0PfXDnCTh3pdeo
+	qTfpRew45F8iSCRnYreFmQ5T0IMHIPOmEv4G3Fcllb2PmmIYEeCR8nKCRgsZLCcNGJk43syAezJYD
+	3FpSpUgDXRVmiE51OhggEgggeCLvv+81z7OMO12Yubc+hCaXes2Bs+EbrvM5UUPZtAVnYsLTUAtwa
+	M4npJb6+4GXHI6lV5OMciCPPdGXHohUkqKYMXyDvIfjSu71fTvuHkN7CMSxKBgxmn5YX3rnPYPEdY
+	/6HjxWSExB2P4DcWhfpkJHEPi/cYPVYrwzZo+zBw04pvB3dF8MXhnBcwLUtXn+4ViBG+ntwiAC1YU
+	RAWhLywg==;
+Received: from galois.linutronix.de ([193.142.43.55])
+	by desiato.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1u5PAN-0000000AIdJ-40e4;
+	Thu, 17 Apr 2025 13:20:33 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1744896028;
+	s=2020; t=1744896030;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ax4rJeZalogOj8wIoY/TFwkI03ahXbhPQLwzXY9UpSs=;
-	b=dx+USYBaLx2I8Gdx4jaFGW21JHYSvZVQrMa5rF24bMOqGyQaCRgOzg0x0adtoH5JsOf47v
-	2hJnYdYFooJcZxCWeTw2EPrM4awrBlwYJW2xB5R5gYeSnqutuy2HT9AwFj8PqePW5X34C3
-	NqLOaNdSQv97cS0V2073siV4AMC/9KiZA1RP5999vF5i99jwHTR0VwpD6HpAolWxL2W4eb
-	PPm2n0L+wUt9QO1jEe3nthl4ZXhQyYMLM1sBmPvS+T5q3lcUazqEogUeikY/16l71r+tc4
-	nVLZ9cHWKGQqqsO8t4usyVnssXaNuO1fcSf78zFdsP3LUrWJ/Sk27C0zCwyqZQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wl2sntL2foeXMHL68yZgS6j+JHjIlWFLQNY02bMKsA0=;
+	b=TNMKyZYkQFCGx2hlGy222xN+FSM05lqYzc9pkB40Pkfm4GK62M6Pw+SyfP5vbk5GiGUH0Z
+	QfyCYye3jK5B6KULY93cm/HodU8W2ttU0DpwNQIIQLEX7P8mo9o6/dLtlf+f3bRozAm9yE
+	KRsyDn649Yds6WaoxiLfb8/N0RAhqooUkSq1L1XEUypxXDi+f8qCY/aI9hkl+f09KwqRgv
+	Oh5oC2IBwb7oHqGyGvuhrSXLWdqxCEwt6425X3Al8gOJwuXC+DwDjL8hpFk2seSnYF8wp2
+	CSFqc2pbJafDIno01pJJCH8DUCg0SdZhG+k3C/fHx8uPRpAB7gHorUdIJpNdFA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1744896028;
+	s=2020e; t=1744896030;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ax4rJeZalogOj8wIoY/TFwkI03ahXbhPQLwzXY9UpSs=;
-	b=Qaj+PmDOxeik8no8OOe9lbHhu7DdF7oqPucBcoWuTLQSfomc8hZvaWFmgzLnJx/muwN01O
-	PloGeSH7pFB+TZDw==
-Subject: [PATCH ath-next 0/4] wifi: ath: Don't use %pK through printk
-Date: Thu, 17 Apr 2025 15:19:06 +0200
-Message-Id: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wl2sntL2foeXMHL68yZgS6j+JHjIlWFLQNY02bMKsA0=;
+	b=qmZ5eJ2JxK+q0AnKD+06vInxzCTLBW0rJFJbzJHcfKRjvWEPBo9Ljeo8tW5yud7+SCR3Mb
+	73wS1UuLpExbkpAA==
+Date: Thu, 17 Apr 2025 15:19:10 +0200
+Subject: [PATCH ath-next 4/4] wifi: wcn36xx: Don't use %pK through printk
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAMr/AGgC/x2MwQqDQAwFf0VybmDd1Ur7K8WDuM+ayypJKIL47
- 932ODAzJxlUYPRsTlJ8xGQrFdpbQ/M6lTdYcmWKIfahawdWmKvMjsz7JsWhxpOv3C1xePQppHT
- PVOtdscjxP7/oJxQcTuN1fQHjFTh/cwAAAA==
-X-Change-ID: 20250417-restricted-pointers-ath-4f279530336d
+Message-Id: <20250417-restricted-pointers-ath-v1-4-4e9a04dbe362@linutronix.de>
+References: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
+In-Reply-To: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
 To: Jeff Johnson <jjohnson@kernel.org>, 
  Loic Poulain <loic.poulain@oss.qualcomm.com>, ath10k@lists.infradead.org, 
  ath11k@lists.infradead.org, ath12k@lists.infradead.org, 
@@ -63,16 +77,16 @@ To: Jeff Johnson <jjohnson@kernel.org>,
 Cc: linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
  Aleksandr Loktionov <aleksandr.loktionov@intel.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1744896028; l=2034;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744896028; l=1588;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=USJc9JCGJMae1BOrGUqYC9Qw2zxqsi9K4Px5b2V9oIE=;
- b=4aoFpAS7vIBaF9DayfeaPUa3K8Y5PLpmCpvBRYmcVCoc+zcl7IawUrjWZAlS1Ft2aLcp1igtX
- zxE18fWrB/kCfXWYMg4nMCS/vnn8USOet1o2Ez+oHcqdiricl6fnoxv
+ bh=OPNAC8Z0G8ITTpc1DdLDRC3Y4E82qIDfQhRitc5zvvE=;
+ b=T9JbjQdhxZNU/5ra4J11M4K9RgxRQecAuFkyV/yXCB395zBURy5tiBfy5Y2S/5H8Fwnlxqbzh
+ N3oXHE6uPafAuOx65sdfN4UN5MCYPBHgzjjQ0yXzQcuzxd341OlPjft
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250417_062031_405179_8BBDB8E6 
-X-CRM114-Status: UNSURE (   6.35  )
+X-CRM114-CacheID: sfid-20250417_142032_120659_CE26B49A 
+X-CRM114-Status: UNSURE (   8.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -94,44 +108,35 @@ Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
 the regular %p has been improved to avoid this issue.
 Furthermore, restricted pointers ("%pK") were never meant to be used
 through printk(). They can still unintentionally leak raw pointers or
-acquire sleeping locks in atomic contexts.
+acquire sleeping looks in atomic contexts.
 
 Switch to the regular pointer formatting which is safer and
 easier to reason about.
-
-These patches were originally part of
-https://lore.kernel.org/lkml/20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de/
+There are still a few users of %pK left, but these use it through seq_file,
+for which its usage is safe.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+Acked-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 ---
-Thomas Weißschuh (4):
-      wifi: ath10k: Don't use %pK through printk
-      wifi: ath11k: Don't use %pK through printk
-      wifi: ath12k: Don't use %pK through printk
-      wifi: wcn36xx: Don't use %pK through printk
+ drivers/net/wireless/ath/wcn36xx/testmode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/net/wireless/ath/ath10k/ahb.c       |  2 +-
- drivers/net/wireless/ath/ath10k/bmi.c       |  6 +++---
- drivers/net/wireless/ath/ath10k/ce.c        |  4 ++--
- drivers/net/wireless/ath/ath10k/core.c      |  4 ++--
- drivers/net/wireless/ath/ath10k/htc.c       |  6 +++---
- drivers/net/wireless/ath/ath10k/htt_rx.c    |  2 +-
- drivers/net/wireless/ath/ath10k/mac.c       | 22 +++++++++++-----------
- drivers/net/wireless/ath/ath10k/pci.c       |  2 +-
- drivers/net/wireless/ath/ath10k/testmode.c  |  4 ++--
- drivers/net/wireless/ath/ath10k/txrx.c      |  2 +-
- drivers/net/wireless/ath/ath10k/usb.c       |  4 ++--
- drivers/net/wireless/ath/ath10k/wmi.c       |  4 ++--
- drivers/net/wireless/ath/ath11k/testmode.c  |  2 +-
- drivers/net/wireless/ath/ath12k/testmode.c  |  4 ++--
- drivers/net/wireless/ath/wcn36xx/testmode.c |  2 +-
- 15 files changed, 35 insertions(+), 35 deletions(-)
----
-base-commit: cfb2e2c57aef75a414c0f18445c7441df5bc13be
-change-id: 20250417-restricted-pointers-ath-4f279530336d
+diff --git a/drivers/net/wireless/ath/wcn36xx/testmode.c b/drivers/net/wireless/ath/wcn36xx/testmode.c
+index e5142c052985ddf629b93d7b9687e6ba63a48e8b..d7a2a483cbc486308032709a99bba9a52ed0ff59 100644
+--- a/drivers/net/wireless/ath/wcn36xx/testmode.c
++++ b/drivers/net/wireless/ath/wcn36xx/testmode.c
+@@ -56,7 +56,7 @@ static int wcn36xx_tm_cmd_ptt(struct wcn36xx *wcn, struct ieee80211_vif *vif,
+ 	msg = buf;
+ 
+ 	wcn36xx_dbg(WCN36XX_DBG_TESTMODE,
+-		    "testmode cmd wmi msg_id 0x%04X msg_len %d buf %pK buf_len %d\n",
++		    "testmode cmd wmi msg_id 0x%04X msg_len %d buf %p buf_len %d\n",
+ 		   msg->msg_id, msg->msg_body_length,
+ 		   buf, buf_len);
+ 
 
-Best regards,
 -- 
-Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+2.49.0
 
 
