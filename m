@@ -4,62 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9AEFC369AB
-	for <ath10k@archiver.kernel.org>; Tue, 15 Apr 2025 07:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76CD9C369CF
+	for <ath10k@archiver.kernel.org>; Thu, 17 Apr 2025 13:20:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=; b=XPL9x8p/qbTDrBKURQsUcqQte/
-	z2fdojPfgs97OL8FX+PJqEppxG9r6ol5FdDLlydtcediZz5MEEs9AhCtsEqnouSSxaoLm2qNkP0Ng
-	hSdiO9BYhw/mdvi3GUpYCkIg9GhwkHzsAN0udXQLfXaktGSzYEiws4nd4PtREXd+Xgk9ECmNA5iet
-	luU4Qjrhuj9MWkJCEfTtXs0dF+MjEPLbns+DucNoswiL5um4D+3R+Wtc/xIslXTYcBj3Xmw+1s2S9
-	2M7VYkxyHsdiL8c3sWWtH2jmJNYPiKsp9g8gpFdge9r1FRi5Y4qBWFbsQKNk/wsLEdI67xhOgeTgW
-	u2co83sg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=M1GeXntpnPWyXUESrbciRq82BQz1QlJ7YZ0gk/CUbVc=; b=4hk37H3bVktziz6buJwSvsCIGi
+	MybUg+ENc5OX1bLO+KINRVp+g3wvVmvlDBlRRq0p1M8OT/1YdiIrpndyNbo7p5Y7M+tTOnoqAh98W
+	Lla5lpHFm4hW/ST8fRNtwB2Ny1SM57sKqCzfCgb/Vq1/RkfFiCVzit+1+dS89+mfT7L2jcPRozRXa
+	wA7cHZqbBd6d1A7q24IrJexdysR5k3NX63OA3wY23K3krsW+jx+Vc666FzVloLa/y7G+6xrr9wFmo
+	nk6JmwD4EgVkxVG5799k2Og/vvgCeeA7AaKivelSNH5tvHzJwObLfZyUiIMkH0+3ekLV0h7PeYcyR
+	RzKMMTfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4bCZ-00000004uA7-0GsW;
-	Tue, 15 Apr 2025 07:59:27 +0000
-Received: from mail.revenueraft.com ([51.210.151.11])
+	id 1u5PAh-0000000D7Q2-3LFM;
+	Thu, 17 Apr 2025 13:20:51 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4azd-00000004r6z-0rPJ
-	for ath10k@lists.infradead.org;
-	Tue, 15 Apr 2025 07:46:09 +0000
-Authentication-Results: revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
-ARC-Seal: i=1; d=revenueraft.com; s=default; a=rsa-sha256; cv=none;
-	t=1744703159;
-	b=XmCa7AUbvMbpxnp7SYgTr6VGSixSqfVw0o86YlLGoGM6jWBx+1rHYY8n6602t9hKCa5Q
-	 14dO4swHp42PGcfhBPdFDHDShdOHgWffleOu/5EdBwtWM9wqSsIedgDaEBFCClY/xzm+0
-	 qR+tskdWwVDV2CCpHuE3FenJUCoj+xAr6+qNw+YBbfqgkXXxkEecmC+J/fy5F1rhXFAef
-	 mixJwqza7PLTEd/1aSAitAm4LXc3TMjvKcAiLoB5VESVEcAMOCiH5OH4ExPZtOelrrmIU
-	 vCbuf1fDdpJVhAEUfK699igcpErWErCu7dBN8coNCtcJodYbfC8yCyluN2TtYRWW9aA==
-ARC-Message-Signature: i=1; d=revenueraft.com; s=default; a=rsa-sha256;
-	c=relaxed/simple; t=1744703159;
-	h=Message-ID:Date:From:Subject:From;
-	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=;
-	b=urxxjiQIEtSarX10IuZl33r1Ycvx28kwEHq6McBIDPYYgX2c6JpP0GedG0fhTkkPhcOE
-	 auSbjX6MUk7elm/KUqEq5XdDJo34YBmXoH+XVY6D7EoBOD71Kx3U0zkCF3Y1CV5Hd+yoT
-	 2Oy4JsNnPH/nvVTh5mu2QhklD4El3s1a6L4QdF2vp7qZ39RDXDbaT9703ZrJ4sxsIi643
-	 1vt24xGYQj+8voNQmdSNeqXkAqu+TP5bAq2ZbBG200TYAH+dar4als7r/gYzaAwZlt4Tw
-	 yqvq+R/Yprg7BcJkWMpFiCDq0Sienx0LHjBtl4ZlXDr9ZABd14XO1y6uNg1GFBs0dxg==
-ARC-Authentication-Results: i=1; revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
-Received: by mail.revenueraft.com (Postfix, from userid 1002)
-	id 7CEB0232EF; Tue, 15 Apr 2025 07:45:56 +0000 (UTC)
-Received: by mail.revenueraft.com for <ath10k@lists.infradead.org>; Tue, 15 Apr 2025 07:45:47 GMT
-Message-ID: <20250415064500-0.1.6n.dgod.0.qrzr64uig3@revenueraft.com>
-Date: Tue, 15 Apr 2025 07:45:47 GMT
-From: "Konrad Olkiewicz" <konrad.olkiewicz@revenueraft.com>
-To: <ath10k@lists.infradead.org>
-Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
-X-Mailer: mail.revenueraft.com
+	id 1u5PAO-0000000D7HT-13FX;
+	Thu, 17 Apr 2025 13:20:33 +0000
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1744896029;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M1GeXntpnPWyXUESrbciRq82BQz1QlJ7YZ0gk/CUbVc=;
+	b=yuZ3hdlS0nUrlUULOiIVbfJkKVbyppqvbHlS2FV4PHE0yPJR7/k9NSZX7NTQosz3hCIxnI
+	80m0fcciH2e8yPHCegiCEWDbu4M0DCNHPj1NKb7YFrGysEz2yIq7xihzImhzVL6plVFJB2
+	ADcSIASXby4bV0PP8c8FGM7O//J8rfv8WNurYJ6TG+Y42N8JZjtQFFqsr3M9OFdhnPPrx+
+	oqXdE4WxuEdkmzFhz2lIHhaPXqTqWJhP++jqkQu9trCPVcsWbc5lG4N4GIFpxc9Kd235nV
+	DpUFGdZrJHEtt1ab68b6AO+cqf8UrOI1gL8Djk9Zdj3ha67kHDpp0Yc/yuUIKQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1744896029;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M1GeXntpnPWyXUESrbciRq82BQz1QlJ7YZ0gk/CUbVc=;
+	b=DJ9y5yUdNyJvZAr2C+gTNyK6ZzcIz6wYME/IU6h3n1ld9N+CixdHwFfw0mZCow+IKHwlnQ
+	NIAIjsnaIIi1ZXBw==
+Date: Thu, 17 Apr 2025 15:19:08 +0200
+Subject: [PATCH ath-next 2/4] wifi: ath11k: Don't use %pK through printk
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20250417-restricted-pointers-ath-v1-2-4e9a04dbe362@linutronix.de>
+References: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
+In-Reply-To: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
+To: Jeff Johnson <jjohnson@kernel.org>, 
+ Loic Poulain <loic.poulain@oss.qualcomm.com>, ath10k@lists.infradead.org, 
+ ath11k@lists.infradead.org, ath12k@lists.infradead.org, 
+ wcn36xx@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+ Aleksandr Loktionov <aleksandr.loktionov@intel.com>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744896028; l=1593;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=StrFXkjU61OZ/Br21albUB1TSXKwVdbD6fzzr0lF8cg=;
+ b=qNfUCGEcsX+Nn3t6KcR00t00ASyLvVOQ9TKgoODq6Fiscv21IPuHnZP3h1CZZ+fhT6EfqPdXD
+ zojyXNUtyhTBdeQzn4UWhWmDHqDB0JcpZvueCEpIxa0eDWTZKPlTF2u
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250415_004605_382351_B2EB06AA 
-X-CRM114-Status: UNSURE (   0.78  )
+X-CRM114-CacheID: sfid-20250417_062032_430018_6207B728 
+X-CRM114-Status: UNSURE (   8.94  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,16 +88,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dzie=C5=84 dobry,
+In the past %pK was preferable to %p as it would not leak raw pointer
+values into the kernel log.
+Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
+the regular %p has been improved to avoid this issue.
+Furthermore, restricted pointers ("%pK") were never meant to be used
+through printk(). They can still unintentionally leak raw pointers or
+acquire sleeping looks in atomic contexts.
 
-Czy potrzebuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w?
+Switch to the regular pointer formatting which is safer and
+easier to reason about.
+There are still a few users of %pK left, but these use it through seq_file,
+for which its usage is safe.
 
-Skutecznie pomagamy rozpoczyna=C4=87 rozmowy handlowe z klientami zainter=
-esowanymi Pa=C5=84stwa ofert=C4=85.
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+---
+ drivers/net/wireless/ath/ath11k/testmode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Zapraszam do kontaktu zwrotnego.
+diff --git a/drivers/net/wireless/ath/ath11k/testmode.c b/drivers/net/wireless/ath/ath11k/testmode.c
+index 9be1cd742339c95ffa74c09bee924f4eff15134a..a9751ea2a0b73009bfb600d51c3978200ce99114 100644
+--- a/drivers/net/wireless/ath/ath11k/testmode.c
++++ b/drivers/net/wireless/ath/ath11k/testmode.c
+@@ -107,7 +107,7 @@ static int ath11k_tm_process_event(struct ath11k_base *ab, u32 cmd_id,
+ 	u32 pdev_id;
+ 
+ 	ath11k_dbg(ab, ATH11K_DBG_TESTMODE,
+-		   "event wmi cmd_id %d ftm event msg %pK datalen %d\n",
++		   "event wmi cmd_id %d ftm event msg %p datalen %d\n",
+ 		   cmd_id, ftm_msg, length);
+ 	ath11k_dbg_dump(ab, ATH11K_DBG_TESTMODE, NULL, "", ftm_msg, length);
+ 	pdev_id = DP_HW2SW_MACID(ftm_msg->seg_hdr.pdev_id);
 
+-- 
+2.49.0
 
-Pozdrawiam serdecznie
-Konrad Olkiewicz
 
