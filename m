@@ -4,56 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2914AC369D2
-	for <ath10k@archiver.kernel.org>; Thu, 17 Apr 2025 13:20:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B061CC369B2
+	for <ath10k@archiver.kernel.org>; Thu, 17 Apr 2025 13:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kJJ7JoeqPD8SV51uCgbiKuG2ADyhnksMTo06xAM1E7E=; b=s99pEMj1NacQS6dL2e/YOqJhaA
-	pXYiHu/hJWsmpv0+2sqr5wwHDGo1I9V9Qh9StOJ7JIDGxxxgVWn8NT4naVBCEqUSQtdFKknVlprtO
-	DJCCSXzWvmRzD+NvpkX6eCdKaOjigWXRoGuqNeI6iM7UXRE+DL/3QaRtDIygZSV8axJ8xP8uiAi1o
-	1ZzcvihyhtFVfUsmkSeqgmcEYty+bMAV+7FJdTGpeKsoyzln50rlglM7dxcDFodKY6gxNBqQKZeZX
-	FVjn0OhIa6v1qlTMYSSxhMSqsAE3hRW2l/3XlRw8e3doMCP4GgQYogSxInh4q67q4djnR1rKJRRSC
-	VLayKwUg==;
+	bh=qpuwoWN6mbA9oZ2QFKD0MvRa4oPxeEBdptFek4pK4S8=; b=iCFOcmghPUK0X4YUIucwHb2sSs
+	MG9peb9BJ5ow+M2zL6x5g+1N5s4rs21U3rPi4KQzchQueQG6eiz+6X04di33v0BFUJiVoLiEUVUOb
+	JMgIQUWD2Yk8CMfw/07t3mdutJdGSm1BIuqgRPxDZWFTGPUvF9ZkY2i+V5qAsmVfsHSKZ44o/RYrE
+	td99IsI2ltBC+1uDmdZxSyNPMaDlAOkn6cK/ku4VElxuD+3GsZLK7UrT+ZzudVUQ2ZglpRCRWU8wv
+	BobK6Xb9Y6+pDGoD2hpCp1OY5sfpD56UdfhGPw1nEjNFh6h0Zc44yl8GJqiLwraDnU/mdXtAC58nT
+	D4g2AAFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u5PAf-0000000D7Nx-3s8Q;
-	Thu, 17 Apr 2025 13:20:49 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1u5PAk-0000000D7T4-00KB;
+	Thu, 17 Apr 2025 13:20:54 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u5PAN-0000000D7HS-2F4f;
+	id 1u5PAQ-0000000D7JV-2vVJ;
+	Thu, 17 Apr 2025 13:20:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=qpuwoWN6mbA9oZ2QFKD0MvRa4oPxeEBdptFek4pK4S8=; b=fVWKjPKgtJbZXQ20G6Pnx7++X8
+	pyH5hkmFh1QoMlwB2Rlvsgya/MYZ3atfPyHKlTWTUI/Y/AqMjCGhQ1b7+eoNJL4wD1dIuqawhn1bG
+	f840CRvq7UdArwaWLvW+xM3LmSVU+8PZu4XOVfvFimcYj63ha8XWgSY/v8mTNs1D9N/b00WmQMG5T
+	iZKL9+U/GrS7rg7XF3q1c1D4ZlKDDGo32Cd7zQNZQG05RNsTOmGxQR3nVnOs2qS81KJahlBBcsr+C
+	EyUfl7i9EPDHiGPDo+VufM0kqTEXomZwdyfwirUbz1Z7VFQKTQKc+SXGMITpTE2KkxbsoUKRUk3cM
+	oJPvn6JA==;
+Received: from galois.linutronix.de ([193.142.43.55])
+	by desiato.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1u5PAN-0000000AIdG-41Mi;
 	Thu, 17 Apr 2025 13:20:33 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1744896029;
+	s=2020; t=1744896030;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kJJ7JoeqPD8SV51uCgbiKuG2ADyhnksMTo06xAM1E7E=;
-	b=15to/CiAcPRTDPtiTb1KIgtbB6l/+0HxEK4ZoVrWGAEZXRU3Q+fw4/S/kqhTl0RFClo5GE
-	GCHBe7rJg0npIOR7px/FBwS2Ae+iqiaG7KXbHuZyIE0s7gF2y2tru0qPeOFQgEl0VZAVVE
-	C7fm6LE81SD0YzHteerbH2qtEcSzzhb4xTSKdufm2/pt7kvVaAyX/jV5dwFCJDl/LbGYzs
-	oaTrt2DNh9Up+S+U2PeW1qqkmJgDzC8IqQXWSANodHb1YzoHwKt+hjvTTZMKg6W/Sc62dj
-	yEBstVJJECcqbpauSNLg6Mh90GI6sszQYRhrye+nAsoyQwa0ahdc1QopJumrhw==
+	bh=qpuwoWN6mbA9oZ2QFKD0MvRa4oPxeEBdptFek4pK4S8=;
+	b=YW4dexUMujxhI9RsX4x7e2elK1th4IpqxAipylBDIV8u2vFkCMVaIfxqtpk8zJw4WPsavJ
+	ziKnj1Sbwm3E1hTnPoKpj6QKTdUltTha+HxCoX3crpuzS9JR7W7Qctl6JCQcu/iAPFVaXO
+	eoOYsLpRVZ2hHJKzoyVj1lEiibuynlJWF2AtBMMjSiC4e5uEPGbnyHn+Kte2ItStvnQm/2
+	9wWY9buEPv0qsuiPXKPy7+MaFBx/z/QuSHjRUAz+gpVt5so8GU8DNun3Jzool9P82lww/R
+	FCfRLs0Hqj1Ai9bt8qMiWkVn1zC9TzBh/k7d5O3VIfQu3Y0mrp7Gt2RGP/uD+w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1744896029;
+	s=2020e; t=1744896030;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kJJ7JoeqPD8SV51uCgbiKuG2ADyhnksMTo06xAM1E7E=;
-	b=zcyOTsKbebJX0FHRfWeXm9vjjGLKwgpV9CEOYOlGTlhDi2CRBSzsWsLUMKw1RCz9F77Zlv
-	rdPZCpII8fOTHaCg==
-Date: Thu, 17 Apr 2025 15:19:07 +0200
-Subject: [PATCH ath-next 1/4] wifi: ath10k: Don't use %pK through printk
+	bh=qpuwoWN6mbA9oZ2QFKD0MvRa4oPxeEBdptFek4pK4S8=;
+	b=XWjWBKcpMSPa61yH7fgPD2/6e0pH02J06KeHixSvn25XVLO2gDia2o71gDihTb2qbHsnug
+	pKfiNxqb8/2EUwBA==
+Date: Thu, 17 Apr 2025 15:19:09 +0200
+Subject: [PATCH ath-next 3/4] wifi: ath12k: Don't use %pK through printk
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250417-restricted-pointers-ath-v1-1-4e9a04dbe362@linutronix.de>
+Message-Id: <20250417-restricted-pointers-ath-v1-3-4e9a04dbe362@linutronix.de>
 References: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
 In-Reply-To: <20250417-restricted-pointers-ath-v1-0-4e9a04dbe362@linutronix.de>
 To: Jeff Johnson <jjohnson@kernel.org>, 
@@ -63,16 +77,17 @@ To: Jeff Johnson <jjohnson@kernel.org>,
 Cc: linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
  Aleksandr Loktionov <aleksandr.loktionov@intel.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1744896028; l=16621;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744896028; l=2078;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=X5Y35mvwqshumnbWy5zJTMWXjcz2vOyLWTqdehB/Nrs=;
- b=S5l9ey03nN6YcVEvkqaCou2vaFy0xqNakuFhJlm7F0Op0EvsK5m8lYss8ZMIn5F2K/ygw3Cef
- F1PrsnxnhxfBpTfab6GhEL76kFdKbG/7d4NXF9lw2jyT5A2GI9d8jr/
+ bh=TTY0OdEts5CMGR4SkSsgwcX6nSC4Z23DkwaOHjZ9iIM=;
+ b=6r1KIK7Old+1LXqWuk2M0JkIPIqBlAOJFQOpKm+FhYnzMqaj1nT3xp1900DFyDmWDfN8V3Ldn
+ RvGlN9nendpBnJSC4wnuynbmYXclbpbLGsH4bQB3ZUZqyPxMHr1BgZn
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250417_062031_859123_D4548B1D 
-X-CRM114-Status: GOOD (  13.65  )
+X-CRM114-CacheID: sfid-20250417_142032_136355_344BEE09 
+X-CRM114-Status: UNSURE (   9.08  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,347 +118,31 @@ for which its usage is safe.
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 ---
- drivers/net/wireless/ath/ath10k/ahb.c      |  2 +-
- drivers/net/wireless/ath/ath10k/bmi.c      |  6 +++---
- drivers/net/wireless/ath/ath10k/ce.c       |  4 ++--
- drivers/net/wireless/ath/ath10k/core.c     |  4 ++--
- drivers/net/wireless/ath/ath10k/htc.c      |  6 +++---
- drivers/net/wireless/ath/ath10k/htt_rx.c   |  2 +-
- drivers/net/wireless/ath/ath10k/mac.c      | 22 +++++++++++-----------
- drivers/net/wireless/ath/ath10k/pci.c      |  2 +-
- drivers/net/wireless/ath/ath10k/testmode.c |  4 ++--
- drivers/net/wireless/ath/ath10k/txrx.c     |  2 +-
- drivers/net/wireless/ath/ath10k/usb.c      |  4 ++--
- drivers/net/wireless/ath/ath10k/wmi.c      |  4 ++--
- 12 files changed, 31 insertions(+), 31 deletions(-)
+ drivers/net/wireless/ath/ath12k/testmode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index db9f9ebcb62d20e5cdcf9e7b08f5ea23e0dc3d22..eb8b35b6224dbf2540013a4a066646ecc9a3db75 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -497,7 +497,7 @@ static int ath10k_ahb_resource_init(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath12k/testmode.c b/drivers/net/wireless/ath/ath12k/testmode.c
+index 18d56a976dc74c4f6eab87e358c14d4faea648e2..fb6af7ccf71f44ae4bd01cde53fba3527eed0d2d 100644
+--- a/drivers/net/wireless/ath/ath12k/testmode.c
++++ b/drivers/net/wireless/ath/ath12k/testmode.c
+@@ -97,7 +97,7 @@ void ath12k_tm_process_event(struct ath12k_base *ab, u32 cmd_id,
+ 	u8 const *buf_pos;
  
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "irq: %d\n", ar_ahb->irq);
- 
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "mem: 0x%pK mem_len: %lu gcc mem: 0x%pK tcsr_mem: 0x%pK\n",
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "mem: 0x%p mem_len: %lu gcc mem: 0x%p tcsr_mem: 0x%p\n",
- 		   ar_ahb->mem, ar_ahb->mem_len,
- 		   ar_ahb->gcc_mem, ar_ahb->tcsr_mem);
- 	return 0;
-diff --git a/drivers/net/wireless/ath/ath10k/bmi.c b/drivers/net/wireless/ath/ath10k/bmi.c
-index 9a4f8e815412cba207f3a788013d362a36a02ac3..48efdc71d54dc699e1d43d01507a7a30c9c495b4 100644
---- a/drivers/net/wireless/ath/ath10k/bmi.c
-+++ b/drivers/net/wireless/ath/ath10k/bmi.c
-@@ -349,7 +349,7 @@ static int ath10k_bmi_lz_data_large(struct ath10k *ar, const void *buffer, u32 l
- 	int ret;
- 	size_t buf_len;
- 
--	ath10k_dbg(ar, ATH10K_DBG_BMI, "large bmi lz data buffer 0x%pK length %d\n",
-+	ath10k_dbg(ar, ATH10K_DBG_BMI, "large bmi lz data buffer 0x%p length %d\n",
- 		   buffer, length);
- 
- 	if (ar->bmi.done_sent) {
-@@ -395,7 +395,7 @@ int ath10k_bmi_lz_data(struct ath10k *ar, const void *buffer, u32 length)
- 	u32 txlen;
- 	int ret;
- 
--	ath10k_dbg(ar, ATH10K_DBG_BMI, "bmi lz data buffer 0x%pK length %d\n",
-+	ath10k_dbg(ar, ATH10K_DBG_BMI, "bmi lz data buffer 0x%p length %d\n",
- 		   buffer, length);
- 
- 	if (ar->bmi.done_sent) {
-@@ -461,7 +461,7 @@ int ath10k_bmi_fast_download(struct ath10k *ar,
- 	int ret;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BMI,
--		   "bmi fast download address 0x%x buffer 0x%pK length %d\n",
-+		   "bmi fast download address 0x%x buffer 0x%p length %d\n",
- 		   address, buffer, length);
- 
- 	ret = ath10k_bmi_lz_stream_start(ar, address);
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index afae4a8027f8338ad9fed64880fa16fed09f32e4..4fc81ae17a8af4816919400cd77061c5aa7f6c3a 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -1388,7 +1388,7 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 	ath10k_ce_src_ring_highmark_set(ar, ctrl_addr, nentries);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
--		   "boot init ce src ring id %d entries %d base_addr %pK\n",
-+		   "boot init ce src ring id %d entries %d base_addr %p\n",
- 		   ce_id, nentries, src_ring->base_addr_owner_space);
- 
- 	return 0;
-@@ -1426,7 +1426,7 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
- 	ath10k_ce_dest_ring_highmark_set(ar, ctrl_addr, nentries);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
--		   "boot ce dest ring id %d entries %d base_addr %pK\n",
-+		   "boot ce dest ring id %d entries %d base_addr %p\n",
- 		   ce_id, nentries, dest_ring->base_addr_owner_space);
- 
- 	return 0;
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 6d336e39d6738bbe7973a25e073d03a07b9ae733..fe3a8f4a1cc1b774ce27112ef7dfe6adb0b4dc2f 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1200,7 +1200,7 @@ static int ath10k_download_fw(struct ath10k *ar)
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
--		   "boot uploading firmware image %pK len %d\n",
-+		   "boot uploading firmware image %p len %d\n",
- 		   data, data_len);
- 
- 	/* Check if device supports to download firmware via
-@@ -1826,7 +1826,7 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
- 
- 	if (!ar->running_fw->fw_file.otp_data ||
- 	    !ar->running_fw->fw_file.otp_len) {
--		ath10k_warn(ar, "Not running otp, calibration will be incorrect (otp-data %pK otp_len %zd)!\n",
-+		ath10k_warn(ar, "Not running otp, calibration will be incorrect (otp-data %p otp_len %zd)!\n",
- 			    ar->running_fw->fw_file.otp_data,
- 			    ar->running_fw->fw_file.otp_len);
- 		return 0;
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index a6e21ce90bad64d91afee2b4f46bfbf136547cba..2da08dfebd3e7b56b149a09b5372aa0bfb8538d1 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -34,7 +34,7 @@ static struct sk_buff *ath10k_htc_build_tx_ctrl_skb(void *ar)
- 	skb_cb = ATH10K_SKB_CB(skb);
- 	memset(skb_cb, 0, sizeof(*skb_cb));
- 
--	ath10k_dbg(ar, ATH10K_DBG_HTC, "%s: skb %pK\n", __func__, skb);
-+	ath10k_dbg(ar, ATH10K_DBG_HTC, "%s: skb %p\n", __func__, skb);
- 	return skb;
- }
- 
-@@ -54,7 +54,7 @@ void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
- 	struct ath10k *ar = ep->htc->ar;
- 	struct ath10k_htc_hdr *hdr;
- 
--	ath10k_dbg(ar, ATH10K_DBG_HTC, "%s: ep %d skb %pK\n", __func__,
-+	ath10k_dbg(ar, ATH10K_DBG_HTC, "%s: ep %d skb %p\n", __func__,
- 		   ep->eid, skb);
- 
- 	/* A corner case where the copy completion is reaching to host but still
-@@ -515,7 +515,7 @@ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 		/* zero length packet with trailer data, just drop these */
- 		goto out;
- 
--	ath10k_dbg(ar, ATH10K_DBG_HTC, "htc rx completion ep %d skb %pK\n",
-+	ath10k_dbg(ar, ATH10K_DBG_HTC, "htc rx completion ep %d skb %p\n",
- 		   eid, skb);
- 	ep->ep_ops.ep_rx_complete(ar, skb);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 83eab7479f0699513c2a08297f7dec2f00599340..52981052e211a0e23271779f8589618e0b9c8de4 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1373,7 +1373,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct sk_buff *skb)
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_DATA,
--		   "rx skb %pK len %u peer %pM %s %s sn %u %s%s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i mic-err %i amsdu-more %i\n",
-+		   "rx skb %p len %u peer %pM %s %s sn %u %s%s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i mic-err %i amsdu-more %i\n",
- 		   skb,
- 		   skb->len,
- 		   ieee80211_get_SA(hdr),
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c61b95a928dac12fb9e11164fb45a53831f8de11..8c7ffea0fa44b5d3c03f2fd7191fb757a4966ad6 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -875,7 +875,7 @@ static void ath10k_peer_map_cleanup(struct ath10k *ar, struct ath10k_peer *peer)
- 	 */
- 	for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++) {
- 		if (ar->peer_map[i] == peer) {
--			ath10k_warn(ar, "removing stale peer_map entry for %pM (ptr %pK idx %d)\n",
-+			ath10k_warn(ar, "removing stale peer_map entry for %pM (ptr %p idx %d)\n",
- 				    peer->addr, peer, i);
- 			ar->peer_map[i] = NULL;
- 		}
-@@ -4063,7 +4063,7 @@ static int ath10k_mac_tx(struct ath10k *ar,
- 
- 	if (!noque_offchan && info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
- 		if (!ath10k_mac_tx_frm_has_freq(ar)) {
--			ath10k_dbg(ar, ATH10K_DBG_MAC, "mac queued offchannel skb %pK len %d\n",
-+			ath10k_dbg(ar, ATH10K_DBG_MAC, "mac queued offchannel skb %p len %d\n",
- 				   skb, skb->len);
- 
- 			skb_queue_tail(&ar->offchan_tx_queue, skb);
-@@ -4126,7 +4126,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 
- 		mutex_lock(&ar->conf_mutex);
- 
--		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK len %d\n",
-+		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %p len %d\n",
- 			   skb, skb->len);
- 
- 		hdr = (struct ieee80211_hdr *)skb->data;
-@@ -4181,7 +4181,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		time_left =
- 		wait_for_completion_timeout(&ar->offchan_tx_completed, 3 * HZ);
- 		if (time_left == 0)
--			ath10k_warn(ar, "timed out waiting for offchannel skb %pK, len: %d\n",
-+			ath10k_warn(ar, "timed out waiting for offchannel skb %p, len: %d\n",
- 				    skb, skb->len);
- 
- 		if (!peer && tmp_peer_created) {
-@@ -7604,7 +7604,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 		 * Existing station deletion.
- 		 */
- 		ath10k_dbg(ar, ATH10K_DBG_STA,
--			   "mac vdev %d peer delete %pM sta %pK (sta gone)\n",
-+			   "mac vdev %d peer delete %pM sta %p (sta gone)\n",
- 			   arvif->vdev_id, sta->addr, sta);
- 
- 		if (sta->tdls) {
-@@ -7631,7 +7631,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 				continue;
- 
- 			if (peer->sta == sta) {
--				ath10k_warn(ar, "found sta peer %pM (ptr %pK id %d) entry on vdev %i after it was supposedly removed\n",
-+				ath10k_warn(ar, "found sta peer %pM (ptr %p id %d) entry on vdev %i after it was supposedly removed\n",
- 					    sta->addr, peer, i, arvif->vdev_id);
- 				peer->sta = NULL;
- 
-@@ -8811,7 +8811,7 @@ ath10k_mac_op_add_chanctx(struct ieee80211_hw *hw,
- 	struct ath10k *ar = hw->priv;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
--		   "mac chanctx add freq %u width %d ptr %pK\n",
-+		   "mac chanctx add freq %u width %d ptr %p\n",
- 		   ctx->def.chan->center_freq, ctx->def.width, ctx);
- 
- 	mutex_lock(&ar->conf_mutex);
-@@ -8835,7 +8835,7 @@ ath10k_mac_op_remove_chanctx(struct ieee80211_hw *hw,
- 	struct ath10k *ar = hw->priv;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
--		   "mac chanctx remove freq %u width %d ptr %pK\n",
-+		   "mac chanctx remove freq %u width %d ptr %p\n",
- 		   ctx->def.chan->center_freq, ctx->def.width, ctx);
- 
- 	mutex_lock(&ar->conf_mutex);
-@@ -8900,7 +8900,7 @@ ath10k_mac_op_change_chanctx(struct ieee80211_hw *hw,
- 	mutex_lock(&ar->conf_mutex);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
--		   "mac chanctx change freq %u width %d ptr %pK changed %x\n",
-+		   "mac chanctx change freq %u width %d ptr %p changed %x\n",
- 		   ctx->def.chan->center_freq, ctx->def.width, ctx, changed);
- 
- 	/* This shouldn't really happen because channel switching should use
-@@ -8959,7 +8959,7 @@ ath10k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
- 	mutex_lock(&ar->conf_mutex);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
--		   "mac chanctx assign ptr %pK vdev_id %i\n",
-+		   "mac chanctx assign ptr %p vdev_id %i\n",
- 		   ctx, arvif->vdev_id);
- 
- 	if (WARN_ON(arvif->is_started)) {
-@@ -9039,7 +9039,7 @@ ath10k_mac_op_unassign_vif_chanctx(struct ieee80211_hw *hw,
- 	mutex_lock(&ar->conf_mutex);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
--		   "mac chanctx unassign ptr %pK vdev_id %i\n",
-+		   "mac chanctx unassign ptr %p vdev_id %i\n",
- 		   ctx, arvif->vdev_id);
- 
- 	WARN_ON(!arvif->is_started);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index fb2c60ee433c3fc15dc7e1adf9e6d4e67862e901..20ec0a6d0f71c4fee3bf1a3d48b512ebcdfba856 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3411,7 +3411,7 @@ static int ath10k_pci_claim(struct ath10k *ar)
- 		goto err_region;
- 	}
- 
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot pci_mem 0x%pK\n", ar_pci->mem);
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot pci_mem 0x%p\n", ar_pci->mem);
- 	return 0;
- 
- err_region:
-diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
-index 7a9b9bbcdbfc5a290128ec55d3d3ce158a7b58c7..3fcefc55b74f2995be53f5d077e3a6a06aed900b 100644
---- a/drivers/net/wireless/ath/ath10k/testmode.c
-+++ b/drivers/net/wireless/ath/ath10k/testmode.c
-@@ -35,7 +35,7 @@ bool ath10k_tm_event_wmi(struct ath10k *ar, u32 cmd_id, struct sk_buff *skb)
- 	int ret;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
--		   "testmode event wmi cmd_id %d skb %pK skb->len %d\n",
-+		   "testmode event wmi cmd_id %d skb %p skb->len %d\n",
- 		   cmd_id, skb, skb->len);
- 
- 	ath10k_dbg_dump(ar, ATH10K_DBG_TESTMODE, NULL, "", skb->data, skb->len);
-@@ -397,7 +397,7 @@ static int ath10k_tm_cmd_wmi(struct ath10k *ar, struct nlattr *tb[])
- 	cmd_id = nla_get_u32(tb[ATH10K_TM_ATTR_WMI_CMDID]);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
+ 	ath12k_dbg(ab, ATH12K_DBG_TESTMODE,
+-		   "testmode event wmi cmd_id %d ftm event msg %pK datalen %d\n",
++		   "testmode event wmi cmd_id %d ftm event msg %p datalen %d\n",
+ 		   cmd_id, ftm_msg, length);
+ 	ath12k_dbg_dump(ab, ATH12K_DBG_TESTMODE, NULL, "", ftm_msg, length);
+ 	pdev_id = DP_HW2SW_MACID(le32_to_cpu(ftm_msg->seg_hdr.pdev_id));
+@@ -227,7 +227,7 @@ static int ath12k_tm_cmd_process_ftm(struct ath12k *ar, struct nlattr *tb[])
+ 	buf_len = nla_len(tb[ATH_TM_ATTR_DATA]);
+ 	cmd_id = WMI_PDEV_UTF_CMDID;
+ 	ath12k_dbg(ar->ab, ATH12K_DBG_TESTMODE,
 -		   "testmode cmd wmi cmd_id %d buf %pK buf_len %d\n",
 +		   "testmode cmd wmi cmd_id %d buf %p buf_len %d\n",
  		   cmd_id, buf, buf_len);
- 
- 	ath10k_dbg_dump(ar, ATH10K_DBG_TESTMODE, NULL, "", buf, buf_len);
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index da3bc35e41aa08da9c325a34d4ab82b64d6f80cc..493bfb410aff3d842c217dab3f43c5c921a4ac0e 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -35,7 +35,7 @@ static void ath10k_report_offchan_tx(struct ath10k *ar, struct sk_buff *skb)
- 	complete(&ar->offchan_tx_completed);
- 	ar->offchan_tx_skb = NULL; /* just for sanity */
- 
--	ath10k_dbg(ar, ATH10K_DBG_HTT, "completed offchannel skb %pK\n", skb);
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "completed offchannel skb %p\n", skb);
- out:
- 	spin_unlock_bh(&ar->data_lock);
- }
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index 3b51b7f52130ee3d94c9b2791dccf47a46e52e95..1732a4f98418df948759535dd979eceec00c06eb 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -131,7 +131,7 @@ static void ath10k_usb_recv_complete(struct urb *urb)
- 	int status = 0;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_USB_BULK,
--		   "usb recv pipe %d stat %d len %d urb 0x%pK\n",
-+		   "usb recv pipe %d stat %d len %d urb 0x%p\n",
- 		   pipe->logical_pipe_num, urb->status, urb->actual_length,
- 		   urb);
- 
-@@ -230,7 +230,7 @@ static void ath10k_usb_post_recv_transfers(struct ath10k *ar,
- 				  ath10k_usb_recv_complete, urb_context);
- 
- 		ath10k_dbg(ar, ATH10K_DBG_USB_BULK,
--			   "usb bulk recv submit %d 0x%x ep 0x%2.2x len %d buf 0x%pK\n",
-+			   "usb bulk recv submit %d 0x%x ep 0x%2.2x len %d buf 0x%p\n",
- 			   recv_pipe->logical_pipe_num,
- 			   recv_pipe->usb_pipe_handle, recv_pipe->ep_address,
- 			   ATH10K_USB_RX_BUFFER_SIZE, urb_context->skb);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 5e061f7525a6bdec402e3571810fd86774ec8588..df6a24f8f8d5b5a61957b44d705f811b2ff88a44 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2029,7 +2029,7 @@ ath10k_wmi_op_gen_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
- 	ether_addr_copy(cmd->hdr.peer_macaddr.addr, ieee80211_get_DA(hdr));
- 	memcpy(cmd->buf, msdu->data, msdu->len);
- 
--	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi mgmt tx skb %pK len %d ftype %02x stype %02x\n",
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi mgmt tx skb %p len %d ftype %02x stype %02x\n",
- 		   msdu, skb->len, fc & IEEE80211_FCTL_FTYPE,
- 		   fc & IEEE80211_FCTL_STYPE);
- 	trace_ath10k_tx_hdr(ar, skb->data, skb->len);
-@@ -2637,7 +2637,7 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 		status->boottime_ns = ktime_get_boottime_ns();
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MGMT,
--		   "event mgmt rx skb %pK len %d ftype %02x stype %02x\n",
-+		   "event mgmt rx skb %p len %d ftype %02x stype %02x\n",
- 		   skb, skb->len,
- 		   fc & IEEE80211_FCTL_FTYPE, fc & IEEE80211_FCTL_STYPE);
- 
+ 	ath12k_dbg_dump(ar->ab, ATH12K_DBG_TESTMODE, NULL, "", buf, buf_len);
+ 	bufpos = buf;
 
 -- 
 2.49.0
