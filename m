@@ -4,91 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88FA4C369C2
-	for <ath10k@archiver.kernel.org>; Mon, 21 Apr 2025 02:35:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DA56C3ABB6
+	for <ath10k@archiver.kernel.org>; Mon,  5 May 2025 07:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rDhN8/o/jwW0pjOarVpaVBL+AtxtduMrkf0Ndv/LEN4=; b=0k1p7eXij+aeoft0w8ABJSeCcK
-	TcUaK56PO41jy9gHkwK8J2y/2IYJGVBzEM/fw3E7N21p9qSTKwT3AkBS39xnTL9MjBiwBTKSRkzxT
-	la0dR29Jlj7vzOAYciszYNQL4C8DCsc4XqyTL8Dzfe/9QsTux6zH+0x/uXxh/BaMteGNe1RsOp6Q7
-	II4ilYLDGkMNcbldtGg2DSKEPq5qW5pi7HF5B8b6+5UiZW2df3aM+QovLRg+3VyVbTkmINEUdN18v
-	GJ7MJVvlLpSjtws6zOsmCM88QQ7PncHaws1MYSwG4FaqZvclY5/eG+Ix1P9nm09V5VNeNW4npzzuJ
-	e3vtqM/Q==;
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=; b=TA7OaFqr27RVHKnWDxEkAjXh8N
+	2kFRCSSsL0ZGlnIDMYq8fmCOQ11/ybLlAcTZwkMH1hgo1PkE7KKvaYMRnAoEpNHQ/67CUB3NmNVng
+	JGjhYoukJUctKVH87jag6cXZ3Vz0GHp2RQAhDJxgR8ZuX773hYAsoRKIu/Gv6epeTPTDuPg6eDToH
+	NuI/4Ik5UYMO6LIwV0j5bDs8vklGe2ugTvHEvx7PGcLKwRZ/UuaFdHP1J4DE+DzbYOK1U8VRgL1/J
+	uwTtuySZvk9OVdyDbwJnkCF48dnVZJ8a7ERzsLMyumPkD+DFWCN45p+USbn8i/gyaQ3dUQK2xZNOZ
+	creOgo3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u6h0k-00000003SM0-2VM3;
-	Mon, 21 Apr 2025 02:35:54 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uBqe7-00000006hCY-1G6J;
+	Mon, 05 May 2025 07:53:51 +0000
+Received: from mail.revenueraft.com ([51.210.151.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u6h0i-00000003SKM-1y7H
+	id 1uBqbT-00000006gdS-32Jv
 	for ath10k@lists.infradead.org;
-	Mon, 21 Apr 2025 02:35:53 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53L00i3J007848;
-	Mon, 21 Apr 2025 02:35:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	rDhN8/o/jwW0pjOarVpaVBL+AtxtduMrkf0Ndv/LEN4=; b=dDKngCLwI3nCVJjU
-	+zH8tAhlUOiTi/Nvc9KBQRtIsiw5/lsdGjqmKay1KUH4vNOct2h1iqKw1WRVvojA
-	WJYfFnlOIVEzMtJ1qW2m7rqH88up9xWt6VVDefRVZqbLHXe+8pMUeC0gl/Ya8N45
-	x4tKR2vHM0epuYriA4t6YJbb5Td03eQtcQgGxbRbyqybVObjSEQDYxUAT6lD+2qj
-	0ed+hBRA//hqgS6v9gYEfYDfeG9R4do5H6faDXo3OJ/bEygOhz/W1h1K5wbwfo6X
-	gLhBTehsobqruM7P9vTZ52bbpaeSy0ISeUA85/KIQTp/sH64PAJ4aTxFBAAhcwYE
-	TRtwlw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46454bjpuw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Apr 2025 02:35:48 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 53L2ZmrU008172
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Apr 2025 02:35:48 GMT
-Received: from [10.231.195.67] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Sun, 20 Apr
- 2025 19:35:46 -0700
-Message-ID: <e4477f1b-6d87-4715-b768-717173fbda0d@quicinc.com>
-Date: Mon, 21 Apr 2025 10:35:43 +0800
+	Mon, 05 May 2025 07:51:10 +0000
+Authentication-Results: revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+ARC-Seal: i=1; d=revenueraft.com; s=default; a=rsa-sha256; cv=none;
+	t=1746431462;
+	b=obXllQp4rFp+L32Mk4S6kxk/DzqRcx0Ua/+zlboZ7+RoopvpAmCw6RQf3S+CmCvo0YhW
+	 uD6T7vFNPdUFwjrgA9BgQNXqoOxoRsiIh2BNbtyIjYJhV/KzcBiFGxdSHiHTM5dkusiaJ
+	 70m8EKHsU9MUkRB0GobCgtNnBWPRAXgjxzet+3Q5trR/D6vdzOLlqhL78EEkacYL6fV61
+	 YUeehUKkz/RgRkgqL+HUHA53PZibTYSWNNKJ8fVup6sJffVntIXF4bocJZPNmvs27J9Dx
+	 Pl7XZRnZWbM2UMCztMa8lvJJDNVw/FSHMbdPEd1R+J60phiezqSPdn0HefHAcmobInQ==
+ARC-Message-Signature: i=1; d=revenueraft.com; s=default; a=rsa-sha256;
+	c=relaxed/simple; t=1746431462;
+	h=Message-ID:Date:From:Subject:From;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=;
+	b=yuR/JxAfKKCo66paK8YbsMGWhm/rZkNnh4TyAqSLxrrbm6Ukd8d7fQIYI6xoYn/Lxp/D
+	 BnF1AR2wXVd/nrWMy7dBFvfkMUObfo4t8L60qBGFz/sHVWRbks4JM6PLBhxqui88sJuzP
+	 mdtB8WwMpYTdMlTBwCkRF/tU4DlCKbiCst2or1HZ3bCF3SUSWivMAjX5nG9dxDeO0vLAU
+	 gkqTdF8uTMVa5mcSzXXfm90TbvMvacyGEdqCnc1vzLu/EU9BpEYC23vM7KGsBdqt0OmSY
+	 Hy+KOZGfBHqYkhRXpYq9MLZfz5b9xvWwrdTtNUnes7QNqCV2Trh5Hu/FpFv57ZtxAjA==
+ARC-Authentication-Results: i=1; revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+Received: by mail.revenueraft.com (Postfix, from userid 1002)
+	id 486EF21428; Mon,  5 May 2025 07:51:00 +0000 (UTC)
+Received: by mail.revenueraft.com for <ath10k@lists.infradead.org>; Mon,  5 May 2025 07:50:54 GMT
+Message-ID: <20250505064500-0.1.6y.dgod.0.b34x5g9fl3@revenueraft.com>
+Date: Mon,  5 May 2025 07:50:54 GMT
+From: "Konrad Olkiewicz" <konrad.olkiewicz@revenueraft.com>
+To: <ath10k@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
+X-Mailer: mail.revenueraft.com
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: ath10k: Constify structures in hw.c
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jeff Johnson
-	<jjohnson@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>
-References: <504b4d5276d13f5f9c3bffcfdaf244006312c22b.1745051315.git.christophe.jaillet@wanadoo.fr>
-Content-Language: en-US
-From: Baochen Qiang <quic_bqiang@quicinc.com>
-In-Reply-To: <504b4d5276d13f5f9c3bffcfdaf244006312c22b.1745051315.git.christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Authority-Analysis: v=2.4 cv=cdrSrmDM c=1 sm=1 tr=0 ts=6805af05 cx=c_pps a=ouPCqIW2jiPt+lZRy3xVPw==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17 a=GEpy-HfZoHoA:10 a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=COk6AnOGAAAA:8 a=eY5I1qcjwe6lrjljmsoA:9 a=QEXdDO2ut3YA:10
- a=TjNXssC_j7lpFel5tvFf:22
-X-Proofpoint-ORIG-GUID: NOxxnUuqgh4JZRF64RiqHaHhctHPefng
-X-Proofpoint-GUID: NOxxnUuqgh4JZRF64RiqHaHhctHPefng
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-21_01,2025-04-17_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
- spamscore=0 priorityscore=1501 lowpriorityscore=0 impostorscore=0
- bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
- definitions=main-2504210018
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250420_193552_537739_5BCD57CE 
-X-CRM114-Status: GOOD (  17.68  )
+X-CRM114-CacheID: sfid-20250505_005107_909269_A18CDB0A 
+X-CRM114-Status: UNSURE (   0.73  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,468 +75,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Dzie=C5=84 dobry,
+
+Czy potrzebuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w?
+
+Skutecznie pomagamy rozpoczyna=C4=87 rozmowy handlowe z klientami zainter=
+esowanymi Pa=C5=84stwa ofert=C4=85.
+
+Zapraszam do kontaktu zwrotnego.
 
 
-On 4/19/2025 4:29 PM, Christophe JAILLET wrote:
-> Structures defined in hw.c are not modified in this driver.
-> 
-> Constifying these structures moves some data to a read-only section, so
-> increase overall security.
-> 
-> On a x86_64, with allmodconfig:
-> Before:
-> ======
->    text	   data	    bss	    dec	    hex	filename
->   10357	    951	      0	  11308	   2c2c	drivers/net/wireless/ath/ath10k/hw.o
-> 
-> After:
-> =====
->    text	   data	    bss	    dec	    hex	filename
->   11125	    203	      0	  11328	   2c40	drivers/net/wireless/ath/ath10k/hw.o
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> ---
->  drivers/net/wireless/ath/ath10k/ce.c | 28 ++++++-------
->  drivers/net/wireless/ath/ath10k/hw.c | 62 ++++++++++++++--------------
->  drivers/net/wireless/ath/ath10k/hw.h | 34 ++++++++-------
->  3 files changed, 64 insertions(+), 60 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-> index afae4a8027f8..c6ee0cbb58e2 100644
-> --- a/drivers/net/wireless/ath/ath10k/ce.c
-> +++ b/drivers/net/wireless/ath/ath10k/ce.c
-> @@ -80,7 +80,7 @@ static inline u32 shadow_sr_wr_ind_addr(struct ath10k *ar,
->  
->  static inline unsigned int
->  ath10k_set_ring_byte(unsigned int offset,
-> -		     struct ath10k_hw_ce_regs_addr_map *addr_map)
-> +		     const struct ath10k_hw_ce_regs_addr_map *addr_map)
->  {
->  	return ((offset << addr_map->lsb) & addr_map->mask);
->  }
-> @@ -203,7 +203,7 @@ static inline void ath10k_ce_src_ring_dmax_set(struct ath10k *ar,
->  					       u32 ce_ctrl_addr,
->  					       unsigned int n)
->  {
-> -	struct ath10k_hw_ce_ctrl1 *ctrl_regs = ar->hw_ce_regs->ctrl1_regs;
-> +	const struct ath10k_hw_ce_ctrl1 *ctrl_regs = ar->hw_ce_regs->ctrl1_regs;
->  
->  	u32 ctrl1_addr = ath10k_ce_read32(ar, ce_ctrl_addr +
->  					  ctrl_regs->addr);
-> @@ -217,7 +217,7 @@ static inline void ath10k_ce_src_ring_byte_swap_set(struct ath10k *ar,
->  						    u32 ce_ctrl_addr,
->  						    unsigned int n)
->  {
-> -	struct ath10k_hw_ce_ctrl1 *ctrl_regs = ar->hw_ce_regs->ctrl1_regs;
-> +	const struct ath10k_hw_ce_ctrl1 *ctrl_regs = ar->hw_ce_regs->ctrl1_regs;
->  
->  	u32 ctrl1_addr = ath10k_ce_read32(ar, ce_ctrl_addr +
->  					  ctrl_regs->addr);
-> @@ -231,7 +231,7 @@ static inline void ath10k_ce_dest_ring_byte_swap_set(struct ath10k *ar,
->  						     u32 ce_ctrl_addr,
->  						     unsigned int n)
->  {
-> -	struct ath10k_hw_ce_ctrl1 *ctrl_regs = ar->hw_ce_regs->ctrl1_regs;
-> +	const struct ath10k_hw_ce_ctrl1 *ctrl_regs = ar->hw_ce_regs->ctrl1_regs;
->  
->  	u32 ctrl1_addr = ath10k_ce_read32(ar, ce_ctrl_addr +
->  					  ctrl_regs->addr);
-> @@ -313,7 +313,7 @@ static inline void ath10k_ce_src_ring_highmark_set(struct ath10k *ar,
->  						   u32 ce_ctrl_addr,
->  						   unsigned int n)
->  {
-> -	struct ath10k_hw_ce_dst_src_wm_regs *srcr_wm = ar->hw_ce_regs->wm_srcr;
-> +	const struct ath10k_hw_ce_dst_src_wm_regs *srcr_wm = ar->hw_ce_regs->wm_srcr;
->  	u32 addr = ath10k_ce_read32(ar, ce_ctrl_addr + srcr_wm->addr);
->  
->  	ath10k_ce_write32(ar, ce_ctrl_addr + srcr_wm->addr,
-> @@ -325,7 +325,7 @@ static inline void ath10k_ce_src_ring_lowmark_set(struct ath10k *ar,
->  						  u32 ce_ctrl_addr,
->  						  unsigned int n)
->  {
-> -	struct ath10k_hw_ce_dst_src_wm_regs *srcr_wm = ar->hw_ce_regs->wm_srcr;
-> +	const struct ath10k_hw_ce_dst_src_wm_regs *srcr_wm = ar->hw_ce_regs->wm_srcr;
->  	u32 addr = ath10k_ce_read32(ar, ce_ctrl_addr + srcr_wm->addr);
->  
->  	ath10k_ce_write32(ar, ce_ctrl_addr + srcr_wm->addr,
-> @@ -337,7 +337,7 @@ static inline void ath10k_ce_dest_ring_highmark_set(struct ath10k *ar,
->  						    u32 ce_ctrl_addr,
->  						    unsigned int n)
->  {
-> -	struct ath10k_hw_ce_dst_src_wm_regs *dstr_wm = ar->hw_ce_regs->wm_dstr;
-> +	const struct ath10k_hw_ce_dst_src_wm_regs *dstr_wm = ar->hw_ce_regs->wm_dstr;
->  	u32 addr = ath10k_ce_read32(ar, ce_ctrl_addr + dstr_wm->addr);
->  
->  	ath10k_ce_write32(ar, ce_ctrl_addr + dstr_wm->addr,
-> @@ -349,7 +349,7 @@ static inline void ath10k_ce_dest_ring_lowmark_set(struct ath10k *ar,
->  						   u32 ce_ctrl_addr,
->  						   unsigned int n)
->  {
-> -	struct ath10k_hw_ce_dst_src_wm_regs *dstr_wm = ar->hw_ce_regs->wm_dstr;
-> +	const struct ath10k_hw_ce_dst_src_wm_regs *dstr_wm = ar->hw_ce_regs->wm_dstr;
->  	u32 addr = ath10k_ce_read32(ar, ce_ctrl_addr + dstr_wm->addr);
->  
->  	ath10k_ce_write32(ar, ce_ctrl_addr + dstr_wm->addr,
-> @@ -360,7 +360,7 @@ static inline void ath10k_ce_dest_ring_lowmark_set(struct ath10k *ar,
->  static inline void ath10k_ce_copy_complete_inter_enable(struct ath10k *ar,
->  							u32 ce_ctrl_addr)
->  {
-> -	struct ath10k_hw_ce_host_ie *host_ie = ar->hw_ce_regs->host_ie;
-> +	const struct ath10k_hw_ce_host_ie *host_ie = ar->hw_ce_regs->host_ie;
->  
->  	u32 host_ie_addr = ath10k_ce_read32(ar, ce_ctrl_addr +
->  					    ar->hw_ce_regs->host_ie_addr);
-> @@ -372,7 +372,7 @@ static inline void ath10k_ce_copy_complete_inter_enable(struct ath10k *ar,
->  static inline void ath10k_ce_copy_complete_intr_disable(struct ath10k *ar,
->  							u32 ce_ctrl_addr)
->  {
-> -	struct ath10k_hw_ce_host_ie *host_ie = ar->hw_ce_regs->host_ie;
-> +	const struct ath10k_hw_ce_host_ie *host_ie = ar->hw_ce_regs->host_ie;
->  
->  	u32 host_ie_addr = ath10k_ce_read32(ar, ce_ctrl_addr +
->  					    ar->hw_ce_regs->host_ie_addr);
-> @@ -384,7 +384,7 @@ static inline void ath10k_ce_copy_complete_intr_disable(struct ath10k *ar,
->  static inline void ath10k_ce_watermark_intr_disable(struct ath10k *ar,
->  						    u32 ce_ctrl_addr)
->  {
-> -	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
-> +	const struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
->  
->  	u32 host_ie_addr = ath10k_ce_read32(ar, ce_ctrl_addr +
->  					    ar->hw_ce_regs->host_ie_addr);
-> @@ -396,7 +396,7 @@ static inline void ath10k_ce_watermark_intr_disable(struct ath10k *ar,
->  static inline void ath10k_ce_error_intr_disable(struct ath10k *ar,
->  						u32 ce_ctrl_addr)
->  {
-> -	struct ath10k_hw_ce_misc_regs *misc_regs = ar->hw_ce_regs->misc_regs;
-> +	const struct ath10k_hw_ce_misc_regs *misc_regs = ar->hw_ce_regs->misc_regs;
->  
->  	u32 misc_ie_addr = ath10k_ce_read32(ar,
->  			ce_ctrl_addr + ar->hw_ce_regs->misc_ie_addr);
-> @@ -410,7 +410,7 @@ static inline void ath10k_ce_engine_int_status_clear(struct ath10k *ar,
->  						     u32 ce_ctrl_addr,
->  						     unsigned int mask)
->  {
-> -	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
-> +	const struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
->  
->  	ath10k_ce_write32(ar, ce_ctrl_addr + wm_regs->addr, mask);
->  }
-> @@ -1230,7 +1230,7 @@ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id)
->  {
->  	struct ath10k_ce *ce = ath10k_ce_priv(ar);
->  	struct ath10k_ce_pipe *ce_state = &ce->ce_states[ce_id];
-> -	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
-> +	const struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
->  	u32 ctrl_addr = ce_state->ctrl_addr;
->  
->  	/*
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-> index 8fafe096adff..84b35a22fc23 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.c
-> +++ b/drivers/net/wireless/ath/ath10k/hw.c
-> @@ -212,40 +212,40 @@ const struct ath10k_hw_regs wcn3990_regs = {
->  	.pcie_intr_fw_mask			= 0x00100000,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map wcn3990_src_ring = {
-> +static const struct ath10k_hw_ce_regs_addr_map wcn3990_src_ring = {
->  	.msb	= 0x00000010,
->  	.lsb	= 0x00000010,
->  	.mask	= GENMASK(17, 17),
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map wcn3990_dst_ring = {
-> +static const struct ath10k_hw_ce_regs_addr_map wcn3990_dst_ring = {
->  	.msb	= 0x00000012,
->  	.lsb	= 0x00000012,
->  	.mask	= GENMASK(18, 18),
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map wcn3990_dmax = {
-> +static const struct ath10k_hw_ce_regs_addr_map wcn3990_dmax = {
->  	.msb	= 0x00000000,
->  	.lsb	= 0x00000000,
->  	.mask	= GENMASK(15, 0),
->  };
->  
-> -static struct ath10k_hw_ce_ctrl1 wcn3990_ctrl1 = {
-> +static const struct ath10k_hw_ce_ctrl1 wcn3990_ctrl1 = {
->  	.addr		= 0x00000018,
->  	.src_ring	= &wcn3990_src_ring,
->  	.dst_ring	= &wcn3990_dst_ring,
->  	.dmax		= &wcn3990_dmax,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map wcn3990_host_ie_cc = {
-> +static const struct ath10k_hw_ce_regs_addr_map wcn3990_host_ie_cc = {
->  	.mask	= GENMASK(0, 0),
->  };
->  
-> -static struct ath10k_hw_ce_host_ie wcn3990_host_ie = {
-> +static const struct ath10k_hw_ce_host_ie wcn3990_host_ie = {
->  	.copy_complete	= &wcn3990_host_ie_cc,
->  };
->  
-> -static struct ath10k_hw_ce_host_wm_regs wcn3990_wm_reg = {
-> +static const struct ath10k_hw_ce_host_wm_regs wcn3990_wm_reg = {
->  	.dstr_lmask	= 0x00000010,
->  	.dstr_hmask	= 0x00000008,
->  	.srcr_lmask	= 0x00000004,
-> @@ -255,7 +255,7 @@ static struct ath10k_hw_ce_host_wm_regs wcn3990_wm_reg = {
->  	.addr		= 0x00000030,
->  };
->  
-> -static struct ath10k_hw_ce_misc_regs wcn3990_misc_reg = {
-> +static const struct ath10k_hw_ce_misc_regs wcn3990_misc_reg = {
->  	.axi_err	= 0x00000100,
->  	.dstr_add_err	= 0x00000200,
->  	.srcr_len_err	= 0x00000100,
-> @@ -266,19 +266,19 @@ static struct ath10k_hw_ce_misc_regs wcn3990_misc_reg = {
->  	.addr		= 0x00000038,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map wcn3990_src_wm_low = {
-> +static const struct ath10k_hw_ce_regs_addr_map wcn3990_src_wm_low = {
->  	.msb	= 0x00000000,
->  	.lsb	= 0x00000010,
->  	.mask	= GENMASK(31, 16),
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map wcn3990_src_wm_high = {
-> +static const struct ath10k_hw_ce_regs_addr_map wcn3990_src_wm_high = {
->  	.msb	= 0x0000000f,
->  	.lsb	= 0x00000000,
->  	.mask	= GENMASK(15, 0),
->  };
->  
-> -static struct ath10k_hw_ce_dst_src_wm_regs wcn3990_wm_src_ring = {
-> +static const struct ath10k_hw_ce_dst_src_wm_regs wcn3990_wm_src_ring = {
->  	.addr		= 0x0000004c,
->  	.low_rst	= 0x00000000,
->  	.high_rst	= 0x00000000,
-> @@ -286,18 +286,18 @@ static struct ath10k_hw_ce_dst_src_wm_regs wcn3990_wm_src_ring = {
->  	.wm_high	= &wcn3990_src_wm_high,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map wcn3990_dst_wm_low = {
-> +static const struct ath10k_hw_ce_regs_addr_map wcn3990_dst_wm_low = {
->  	.lsb	= 0x00000010,
->  	.mask	= GENMASK(31, 16),
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map wcn3990_dst_wm_high = {
-> +static const struct ath10k_hw_ce_regs_addr_map wcn3990_dst_wm_high = {
->  	.msb	= 0x0000000f,
->  	.lsb	= 0x00000000,
->  	.mask	= GENMASK(15, 0),
->  };
->  
-> -static struct ath10k_hw_ce_dst_src_wm_regs wcn3990_wm_dst_ring = {
-> +static const struct ath10k_hw_ce_dst_src_wm_regs wcn3990_wm_dst_ring = {
->  	.addr		= 0x00000050,
->  	.low_rst	= 0x00000000,
->  	.high_rst	= 0x00000000,
-> @@ -305,7 +305,7 @@ static struct ath10k_hw_ce_dst_src_wm_regs wcn3990_wm_dst_ring = {
->  	.wm_high	= &wcn3990_dst_wm_high,
->  };
->  
-> -static struct ath10k_hw_ce_ctrl1_upd wcn3990_ctrl1_upd = {
-> +static const struct ath10k_hw_ce_ctrl1_upd wcn3990_ctrl1_upd = {
->  	.shift = 19,
->  	.mask = 0x00080000,
->  	.enable = 0x00000000,
-> @@ -344,25 +344,25 @@ const struct ath10k_hw_values wcn3990_values = {
->  	.ce_desc_meta_data_lsb		= 4,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_src_ring = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_src_ring = {
->  	.msb	= 0x00000010,
->  	.lsb	= 0x00000010,
->  	.mask	= GENMASK(16, 16),
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_dst_ring = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_dst_ring = {
->  	.msb	= 0x00000011,
->  	.lsb	= 0x00000011,
->  	.mask	= GENMASK(17, 17),
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_dmax = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_dmax = {
->  	.msb	= 0x0000000f,
->  	.lsb	= 0x00000000,
->  	.mask	= GENMASK(15, 0),
->  };
->  
-> -static struct ath10k_hw_ce_ctrl1 qcax_ctrl1 = {
-> +static const struct ath10k_hw_ce_ctrl1 qcax_ctrl1 = {
->  	.addr		= 0x00000010,
->  	.hw_mask	= 0x0007ffff,
->  	.sw_mask	= 0x0007ffff,
-> @@ -375,31 +375,31 @@ static struct ath10k_hw_ce_ctrl1 qcax_ctrl1 = {
->  	.dmax		= &qcax_dmax,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_cmd_halt_status = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_cmd_halt_status = {
->  	.msb	= 0x00000003,
->  	.lsb	= 0x00000003,
->  	.mask	= GENMASK(3, 3),
->  };
->  
-> -static struct ath10k_hw_ce_cmd_halt qcax_cmd_halt = {
-> +static const struct ath10k_hw_ce_cmd_halt qcax_cmd_halt = {
->  	.msb		= 0x00000000,
->  	.mask		= GENMASK(0, 0),
->  	.status_reset	= 0x00000000,
->  	.status		= &qcax_cmd_halt_status,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_host_ie_cc = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_host_ie_cc = {
->  	.msb	= 0x00000000,
->  	.lsb	= 0x00000000,
->  	.mask	= GENMASK(0, 0),
->  };
->  
-> -static struct ath10k_hw_ce_host_ie qcax_host_ie = {
-> +static const struct ath10k_hw_ce_host_ie qcax_host_ie = {
->  	.copy_complete_reset	= 0x00000000,
->  	.copy_complete		= &qcax_host_ie_cc,
->  };
->  
-> -static struct ath10k_hw_ce_host_wm_regs qcax_wm_reg = {
-> +static const struct ath10k_hw_ce_host_wm_regs qcax_wm_reg = {
->  	.dstr_lmask	= 0x00000010,
->  	.dstr_hmask	= 0x00000008,
->  	.srcr_lmask	= 0x00000004,
-> @@ -409,7 +409,7 @@ static struct ath10k_hw_ce_host_wm_regs qcax_wm_reg = {
->  	.addr		= 0x00000030,
->  };
->  
-> -static struct ath10k_hw_ce_misc_regs qcax_misc_reg = {
-> +static const struct ath10k_hw_ce_misc_regs qcax_misc_reg = {
->  	.axi_err	= 0x00000400,
->  	.dstr_add_err	= 0x00000200,
->  	.srcr_len_err	= 0x00000100,
-> @@ -420,19 +420,19 @@ static struct ath10k_hw_ce_misc_regs qcax_misc_reg = {
->  	.addr		= 0x00000038,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_src_wm_low = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_src_wm_low = {
->  	.msb    = 0x0000001f,
->  	.lsb	= 0x00000010,
->  	.mask	= GENMASK(31, 16),
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_src_wm_high = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_src_wm_high = {
->  	.msb	= 0x0000000f,
->  	.lsb	= 0x00000000,
->  	.mask	= GENMASK(15, 0),
->  };
->  
-> -static struct ath10k_hw_ce_dst_src_wm_regs qcax_wm_src_ring = {
-> +static const struct ath10k_hw_ce_dst_src_wm_regs qcax_wm_src_ring = {
->  	.addr		= 0x0000004c,
->  	.low_rst	= 0x00000000,
->  	.high_rst	= 0x00000000,
-> @@ -440,18 +440,18 @@ static struct ath10k_hw_ce_dst_src_wm_regs qcax_wm_src_ring = {
->  	.wm_high        = &qcax_src_wm_high,
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_dst_wm_low = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_dst_wm_low = {
->  	.lsb	= 0x00000010,
->  	.mask	= GENMASK(31, 16),
->  };
->  
-> -static struct ath10k_hw_ce_regs_addr_map qcax_dst_wm_high = {
-> +static const struct ath10k_hw_ce_regs_addr_map qcax_dst_wm_high = {
->  	.msb	= 0x0000000f,
->  	.lsb	= 0x00000000,
->  	.mask	= GENMASK(15, 0),
->  };
->  
-> -static struct ath10k_hw_ce_dst_src_wm_regs qcax_wm_dst_ring = {
-> +static const struct ath10k_hw_ce_dst_src_wm_regs qcax_wm_dst_ring = {
->  	.addr		= 0x00000050,
->  	.low_rst	= 0x00000000,
->  	.high_rst	= 0x00000000,
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-> index 442091c6dfd2..7ffa1fbe2874 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.h
-> +++ b/drivers/net/wireless/ath/ath10k/hw.h
-> @@ -289,19 +289,22 @@ struct ath10k_hw_ce_ctrl1 {
->  	u32 sw_wr_mask;
->  	u32 reset_mask;
->  	u32 reset;
-> -	struct ath10k_hw_ce_regs_addr_map *src_ring;
-> -	struct ath10k_hw_ce_regs_addr_map *dst_ring;
-> -	struct ath10k_hw_ce_regs_addr_map *dmax; };
-> +	const struct ath10k_hw_ce_regs_addr_map *src_ring;
-> +	const struct ath10k_hw_ce_regs_addr_map *dst_ring;
-> +	const struct ath10k_hw_ce_regs_addr_map *dmax;
-> +};
->  
->  struct ath10k_hw_ce_cmd_halt {
->  	u32 status_reset;
->  	u32 msb;
->  	u32 mask;
-> -	struct ath10k_hw_ce_regs_addr_map *status; };
-> +	const struct ath10k_hw_ce_regs_addr_map *status;
-> +};
->  
->  struct ath10k_hw_ce_host_ie {
->  	u32 copy_complete_reset;
-> -	struct ath10k_hw_ce_regs_addr_map *copy_complete; };
-> +	const struct ath10k_hw_ce_regs_addr_map *copy_complete;
-> +};
->  
->  struct ath10k_hw_ce_host_wm_regs {
->  	u32 dstr_lmask;
-> @@ -328,8 +331,9 @@ struct ath10k_hw_ce_dst_src_wm_regs {
->  	u32 addr;
->  	u32 low_rst;
->  	u32 high_rst;
-> -	struct ath10k_hw_ce_regs_addr_map *wm_low;
-> -	struct ath10k_hw_ce_regs_addr_map *wm_high; };
-> +	const struct ath10k_hw_ce_regs_addr_map *wm_low;
-> +	const struct ath10k_hw_ce_regs_addr_map *wm_high;
-> +};
->  
->  struct ath10k_hw_ce_ctrl1_upd {
->  	u32 shift;
-> @@ -355,14 +359,14 @@ struct ath10k_hw_ce_regs {
->  	u32 ce_rri_low;
->  	u32 ce_rri_high;
->  	u32 host_ie_addr;
-> -	struct ath10k_hw_ce_host_wm_regs *wm_regs;
-> -	struct ath10k_hw_ce_misc_regs *misc_regs;
-> -	struct ath10k_hw_ce_ctrl1 *ctrl1_regs;
-> -	struct ath10k_hw_ce_cmd_halt *cmd_halt;
-> -	struct ath10k_hw_ce_host_ie *host_ie;
-> -	struct ath10k_hw_ce_dst_src_wm_regs *wm_srcr;
-> -	struct ath10k_hw_ce_dst_src_wm_regs *wm_dstr;
-> -	struct ath10k_hw_ce_ctrl1_upd *upd;
-> +	const struct ath10k_hw_ce_host_wm_regs *wm_regs;
-> +	const struct ath10k_hw_ce_misc_regs *misc_regs;
-> +	const struct ath10k_hw_ce_ctrl1 *ctrl1_regs;
-> +	const struct ath10k_hw_ce_cmd_halt *cmd_halt;
-> +	const struct ath10k_hw_ce_host_ie *host_ie;
-> +	const struct ath10k_hw_ce_dst_src_wm_regs *wm_srcr;
-> +	const struct ath10k_hw_ce_dst_src_wm_regs *wm_dstr;
-> +	const struct ath10k_hw_ce_ctrl1_upd *upd;
->  };
->  
->  struct ath10k_hw_values {
-
-Reviewed-by: Baochen Qiang <quic_bqiang@quicinc.com>
-
-
+Pozdrawiam serdecznie
+Konrad Olkiewicz
 
