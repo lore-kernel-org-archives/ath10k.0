@@ -4,117 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DB97C3ABC9
-	for <ath10k@archiver.kernel.org>; Fri, 16 May 2025 17:40:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6E4FC2D0CD
+	for <ath10k@archiver.kernel.org>; Wed, 21 May 2025 05:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z2w10jA8jhawj7mJ7gHQ2d+FYBPDhiimjY7HiQ61Q6c=; b=0ErD51fq9Hg7fkj4x/dTgN3bXm
-	Drpykf5fvQAoM4lNlEci1hky/96bqZ6arodPbuGaIjiJRi1nh64mVNUkJujc8m1jQfbKi6XJWvx7A
-	/dOqMPl3r5Waibyc25VtOdNVLHdiXGkGgGzRJYV3phdDxe+NNjzTcfYAma8zdVu1tddqxs3CiDTqF
-	l2m6gQhYDBud3ez6yJB/HBpHkLWQG6WFopVZZMtkXpAi30ZlVhn3ZTpXhzzZbLD1qW1zFFPErOte+
-	t7PuPw+8z2YeanH9Hol2drAf8yRKc3eXmTs/osGvR0hPHUW0F6sAJRGtXb1tUDQ1iNBHLkFcCaNSj
-	GJGDbegg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:List-Owner;
+	bh=HoM42lN/ZmSYPV5QWNoYY/PM0agilLhn8mm3H3//o0U=; b=Lm8mihUvCW7AhawZ7odTwX4dQt
+	3JAq9nIttTmrorfPhf/RNpfm3NH9J/lFcNeQmmc1T4yzThGNmb5u7X9DFoH8L5Q/meR828nQdddbr
+	Upt9xSTFhizxxOPyNAU8V27S0SbtSjI88jYKXitMTmuFXRdZZoqWFmsnd1ooCjI1DDQYHdY7AlI2b
+	N7q8DXJX0eVGlgZfSwWvTZ+tt2kzbNGChyliA7QxjayFEbEtNHiv4J/9tj69ZF5oPyKht/hEHVT1p
+	WufNmEJCEIFAzuSuoNCjNqX88PWE0v8UpFdOfTkvSUyNpuu6k02IdtGYT4Gj0SRsCL/jXCkxpb9iI
+	MhCvMoUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFz3B-00000004Bqk-2N4U;
-	Fri, 16 May 2025 17:40:49 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uHcPO-0000000Et5R-3fIx;
+	Wed, 21 May 2025 05:54:30 +0000
+Received: from sonic314-21.consmr.mail.sg3.yahoo.com ([106.10.240.145])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFz38-00000004Bp0-3HFH
+	id 1uHcPL-0000000Et50-3hSC
 	for ath10k@lists.infradead.org;
-	Fri, 16 May 2025 17:40:47 +0000
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54GGrscu030116
-	for <ath10k@lists.infradead.org>; Fri, 16 May 2025 17:40:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	Z2w10jA8jhawj7mJ7gHQ2d+FYBPDhiimjY7HiQ61Q6c=; b=Og6rGCC5PoNgGNyX
-	tWn4KKbvRjmChKrDiHMely+CPmhtNIW0Fr85RQnsZECXVYdlE6JsqzjN3pALKZ5w
-	jqObYK4zDatp+vrlzMqB1BZxV570ZRxK/2nAGPBHpJDRSJvejPuulJXTOfG4AgDQ
-	Z/hWDERlTEG69jVbZ22epvZV1+/Q/gKGjRexfN9efzSbUcrfpAuDTN3TwICDwogF
-	h3xdo38hDAjF9Us3e1TXRIjwH6WoLh320zNWPlueuCnvS2xWi026dzQK+pabMq2W
-	KGBVdtbP5szSC2zRvrG6VU/z9Ue5xMKotzc0TlVXpyam/cDkI/JEJEQSLGEwqqhB
-	Zi0khw==
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46p997g31u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Fri, 16 May 2025 17:40:46 +0000 (GMT)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-22e50d4f49bso33397505ad.1
-        for <ath10k@lists.infradead.org>; Fri, 16 May 2025 10:40:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747417245; x=1748022045;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z2w10jA8jhawj7mJ7gHQ2d+FYBPDhiimjY7HiQ61Q6c=;
-        b=q5jTXgULQrp65fHWWE+PU5TA8lO0AqNkG9Rrv1nkrikIk1jJsIG+tZZ0hiZKvf9b0W
-         xe2JMnxU2dnrJElOWxi3U7iGByBZSvgmB2K3NsCdeaPQhZfOrJmn+KKsd8kKtTRxxW1h
-         MP17HJ/m2wAi8ea3TVUsZCMuvMJle0Tp1LFCuZhiIkvA+7Gm34hnINwBl04jjR9g/8qb
-         SO5oc9PB9JePCun/GjNit1M64DCUkK7i+ge4kH7mWhclqmfXl5acIYTS25k9ONi2YFV0
-         W/WxF1Aba3OBu0PnAu5hI57mpsYpmpqfFcsHV2S7AX3JpRyW8Aky315Hh1e7nHw4u6eM
-         XgMw==
-X-Forwarded-Encrypted: i=1; AJvYcCVx6osmVH2RQpcsjg8Wc/CyKQowgl2L6g5ylR16pLbaCbFdwsGR3HOgcNX/WLmDG7N9wE5kctw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyRk7TmwwOQspWSxqz5jIo/burcZscYr8BceCX4+RyYRfFuAHHJ
-	PyYuJTqXc9RlXO0QOMzJzF8rxuol5DZVPKacDUfggPAbE+iWR8d/jJI9cH4VRqcHICd49zQsd2u
-	UvXLFfMG+qd1cTBsWKinowLiVSTNx+tQORZ4LoUz1VC6nqEkBtnaDgnaifbhEICL4
-X-Gm-Gg: ASbGnctu1qpPszFXzuTLRyMxnduBQdZW9umJj7xmp8zqFtOHw6mFqVoTSR9EfqGY2gH
-	pfkEuyZ45A6MLp+zD4efJFuItOYiFQFC5NyWtNTsA3C71CtXQdKXYZYEWju5WSjMcIrlHxvOdqb
-	+n0kn/+tl11wD6d4gDLxdI29/h2CkFSKLapH5nzioUZcHaUnzVohGu0KBGNGix7Wc5FdhJT3l1n
-	cTQr59WNZdL09aJygY3GyBmlWWKzydaDimB987raIUkkpkI3m2B0/SfERPtNrNEbC8o049cjfoC
-	GSqgx+nf3SOy/MPzHVVRTkNjXBLwidehT+2PTk+zY9biHlxU
-X-Received: by 2002:a17:903:1983:b0:22e:62c3:6990 with SMTP id d9443c01a7336-231d44e7182mr57457985ad.16.1747417245447;
-        Fri, 16 May 2025 10:40:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IExtF4TLFrrPoEt4gmfmLFTd9XEB50AQ+2oIAkdKuvYSP0egvrOWfC3m/7jstWY5dO6hzURnA==
-X-Received: by 2002:a17:903:1983:b0:22e:62c3:6990 with SMTP id d9443c01a7336-231d44e7182mr57457635ad.16.1747417245053;
-        Fri, 16 May 2025 10:40:45 -0700 (PDT)
-Received: from [169.254.0.1] (Global_NAT1.qualcomm.com. [129.46.96.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ade573sm16994125ad.80.2025.05.16.10.40.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 May 2025 10:40:44 -0700 (PDT)
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-To: Jeff Johnson <jjohnson@kernel.org>, linux-wireless@vger.kernel.org,
-        ath10k@lists.infradead.org, Colin Ian King <colin.i.king@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20250418115627.534833-1-colin.i.king@gmail.com>
-References: <20250418115627.534833-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH] wifi: ath10k: Fix spelling mistake "comple" ->
- "complete"
-Message-Id: <174741724396.2935573.18125129643312875821.b4-ty@oss.qualcomm.com>
-Date: Fri, 16 May 2025 10:40:43 -0700
+	Wed, 21 May 2025 05:54:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1747806861; bh=HoM42lN/ZmSYPV5QWNoYY/PM0agilLhn8mm3H3//o0U=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=DA/9vUrMbIdbOY6QOOLE/HWXkG1ZdE/hITBY5i0z947JgIRusEWCcIBfCKDnJa+e8xr7fgzMRhDWsRlXFclpU/OxBFelJde8y6DOUdi05mbl8Xg+rCZL069Dc2VIkg5wMr8vbA12faItppRcYqBjXHmLJMSBeQL331ENymFpm1Bt3Bru3E9Wv62wo9esfGd3Tc3RJOOc/0OMzfA3YAs1JOioeFwlya9dKpnzs6nzx2cYa12x1pjUDF2AQvsatTOJQS9NA3wkh4tHCQsj1uWBcCoB5kD3EFZej+WthzfNzG/RTQ2e+IQOfRV8ehov+6YQTxUIeEaMLM9yYf/YLiTAKA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1747806861; bh=gSCVpqCZoQvOhSdCjAkGdtf6WSL+HZaR5zB3ERDmB/T=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=qkItRLeXsPf6XKUa4HVVjnbeGaA+eDPLxPpJhGxkQt9QAU5jOQy2L6tD1DHAzVzK4/ZrFeMpfgmv5yvgQufbX/onfabNmuEQwJ+z5Xgz5oG6BNJln8tRy5k5y8YfL58vV4CgsEl0xPdz3jQz9xnTL1yGzelz+a2Y80U5p0WlkHgTh0p+JQokXn7DheVnNs/7HD0Sv/jFW3vSHv79jRossKtgvspb3JnSjelAd1Kt7EmhQiuH9Qux0rZuhP2+V7XyeK8/JcfFk55bAYnuxVlRqv4sigpDz3X014vt2Ks4jaGdmQhv8jfYYRArXKXURnPTYRNmlbjClS8pLlF2vBqOow==
+X-YMail-OSG: 7l5hZHUVM1m_zszb.rol9Br6eJdeFxI.1soThVwUGCpxZino0vklXr8hYk9SvQx
+ td2Vq62..mBF21eO2HdnZNIq7yifx.xoxd5.sBDRTZ9Hngmap5H_Z0JTcGrrfE7mdcmyXWIafE_s
+ WSZ5_6Nrw79Dl8.h7aA6lf0g6MiC6i8KrSrYBjWE.KSoHKU1gEOcSQClZ.OZnVzjGDsdU8YD00d1
+ P_wIt4jxTlOcaOXK_b6VNyy3eluUc7EmqWr3q_1lATj2xc46af8pscTciXEzepZ85l9zP_nAwg_r
+ hYRBszKDqjZuWbmUEWWge.EqL_vofmdtQ1myXAZirv6_d8TjNsAR14_bDL3mj2gfQGXhhUgcFTBq
+ ZU1tXvena62Ts8B8PXN8vpbHNB3S9OL_hWGigmnC01J000Ljx0Zp9gcKH3M3Y2bMstxbZWpysDLS
+ cVQPIZ44OZRKLeZWLpam8rIamcT9V_uq2kDik.bW7iaemIiH5BTLAN_lv7gzFJYLPStArzNJzADK
+ n3AmZoFd3fnTYVrR9w_7tdmrahK8id3m3WUuaXef5cFsVraNsiSn1E_9GuOfEeasL8EJh0F9uxUz
+ xojegxVqflgvylsmm7622BgQC7oxZ9wkFGhvX5B1Hr0N8w6Ygi_ErnrDl2DUWL07L8ZeZbkrTu2u
+ IXPfpIvVylX6i6csj.sxVfb1LR_giYrznQ2CfX3ixqNt6IM9P8j_Gjj3o4pPEYGmd_LtaybdrJ_U
+ WZwa9kktqxjGx0HIjHAfATlAKWcj4MjlwWrZNbb84swXIXta6h5_69QbnNBCUAhhrMhbjedhy22x
+ SYXjpK_nr0eGuBCaDOlobLtOmPuhJPwJxydivSsSkIpQsWp_Mm26Wnmf2tfvvdNyfHpJaos.wkTW
+ EUml4S5R8gS4WxMmSmNiMrWcgyzN9gRjnjlOXOt_zrilBa6JEOgyjnewDujzuLhCBEdh58vlOzAn
+ ydKSM2UOHaBIZcBmPt45gvTiltWN3R3qC2OWDBfX4Cm.ORG9Anw9YCOh.4oZR6tE6MT_v78viSQc
+ sZvAZN111f8rVsA3Rj590bfnfFbVfFeb3D2Y265Z5WRmF7zgGYFhhFRh.tpfIRBMO6PuVVqwF8Up
+ Y2bFNdk_zzeV1k86r2aj0HB4JsrKuPPMaZoJENuIUYUrh1o5_70Pvw.Sijy24zysLA5.QN8fA21C
+ pygCRP5r.HAT6ZilRUGpju9SScQEv6z7fbO_WuBCPySgHl.B00ZHDnX12CDHqUvIFu5pHfD6xQfj
+ gs1W2B9j2l48UXAaO2A2SCBWUTJTXKjZyC18oxpZg7YmD18vg5kgUJR7FXASdih1IunaLVCl8pvy
+ ZoTIjL6FP00n9ILJXx4MemUSK.TbieskaiAMfN.A9iYRknRNkmg_Y9ztMXHafV6W99pgLOVieBtz
+ ZSSBQmG6gdnbM8o2R1Qw5YNMsLqfVbQiqkaqsPbZGRaI_ATZp8i0MKeEe7opEihvJ5Unx3SlVi7j
+ 3E7UxhYUPhU7RLFIRU2nEYuaeFQHfTbZC06SOt1nGfBtAj52XEO7Sjg9W5AozKupkZj8ZCRjw8xx
+ ut5yDTn5jZD0Ojb1BFyQGh3QbN8_1p.OcKJp7Yf7yQUD3Xj3_0ULP_zpLiiUrLqlFooyF_qF3ZUk
+ W35isFE.FGVW8BpjOkOX3fpQH28gs0XZxojLWlIuvkxupfOCt4xQrsnKGbKq0YDEY9qOcCtz5buZ
+ 2kE2U6BiwhAq7wGh3NAK7_x.qx_KUoBJB3D9e.34iHaqPig0DIFwcJ2H9pnBtwaKvYvjZ2zC8JEU
+ b7aZ6f3uTr6rXmz1mIjvYBqfOhsakhnMUQMQNAeTj23gW1LadbVA_SzFfW439JwWXdudNY1M5mnK
+ ja6oJIrWuc3FxELPKF60cN_7CTFC7Y06E2lvobw2KZuN92h4iVyLs0IJqGxrh.O5Gdc1SI3WbSIL
+ MO1T2I4KcTq_crHQPueaQq4iHDGqRBqUeeI1qtXR6yELhz6Yg2kyT87P_KB79xaFNjSzX_h7PShS
+ H6EhBtJRzIiAJcax7z2RYdVbZWlp1AyKs67VNNAF3dLQNWbly_JP6Fr5XxRa_IVwTIqYiFRoBq3P
+ .Oat2oC9eNLAuCKl_E4YCHqW4N_KW109cQeSYKWXzaeuD8zbzTEKC6Gd72JZnYnWKNPDXc3VEfqr
+ b5RMUuTh6ab0AmdTmcnTupuuW1XRJ5sYbH7NIHt1cp7xOErWpSS3_.n6s_fbJXJ0sOX2SUtdQzGf
+ O.cPi8rbPZgw.TZ3ztSsYC7qpLI60qD_cLm5vV1fgWi1y7ZgMsEdrviOTsJlUtxBxqMdtDyoegOm
+ wG4jyobzJ3Zy1NAjioXcbFNnAcOa6
+X-Sonic-MF: <sumanth.gavini@yahoo.com>
+X-Sonic-ID: a7a13db3-da2f-4cf6-ba5c-e0e27320fb9f
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.sg3.yahoo.com with HTTP; Wed, 21 May 2025 05:54:21 +0000
+Received: by hermes--production-gq1-74d64bb7d7-5wzx5 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 3e7a6bd0605f353d52f1d2e817d79069;
+          Wed, 21 May 2025 05:54:15 +0000 (UTC)
+From: Sumanth Gavini <sumanth.gavini@yahoo.com>
+To: jjohnson@kernel.org
+Cc: Sumanth Gavini <sumanth.gavini@yahoo.com>,
+	linux-wireless@vger.kernel.org,
+	ath10k@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] wifi: ath10k: Fix Spelling
+Date: Tue, 20 May 2025 22:54:09 -0700
+Message-ID: <20250521055411.288724-1-sumanth.gavini@yahoo.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.0
-X-Authority-Analysis: v=2.4 cv=U7uSDfru c=1 sm=1 tr=0 ts=6827789e cx=c_pps
- a=IZJwPbhc+fLeJZngyXXI0A==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=EUspDBNiAAAA:8 a=uQsNN5m5feiSJzJ953YA:9
- a=QEXdDO2ut3YA:10 a=uG9DUKGECoFWVXl0Dc02:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE2MDE3MiBTYWx0ZWRfXwXCAcepCRrHn
- obN0GOv81xiDtHSnRzmUYJVzwTMCiAvNYfa8rxf0RldVTTmCzcCivAlzfYz4aapcfZ/ZpDLfO8/
- jkXsuH8uGrRnFCER4YilPnWXLe6ft1rf1rivO1LlH/xX4vkLkqwGhkVXmB3ZgBlmIxTijl/jZRS
- +lioF3P10RraASU5BlLH2wm1S9Pg9y7yW9xnv+O2BMb0SpEdB+jsc6fJcjwU/XjeKZOjyyOo7UU
- Lghy+C5TRNmJ/Xc2QURz/zyMdG7EAx0Cmw1bMo4N250b4hsFLA55SyJ/k1LYEIQr+y98Ev1yZXj
- sdvhBeV+j31o4SawgYyJm7lqXOWlyADsrKmCfU3SMukJjO4pnljJjzXlGa1iI4MOd8YuRhJs6iB
- csY1i+yrGaCca5w8Apb0TM5gid7/EtDWacV9NfuSVd/SdG7HtDHWbVWQ2A9xOkh8wopgBxHq
-X-Proofpoint-GUID: Dxa0DLLLhzLEAVP6PEE4BiwiHuPJN-L9
-X-Proofpoint-ORIG-GUID: Dxa0DLLLhzLEAVP6PEE4BiwiHuPJN-L9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-16_05,2025-05-16_03,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 mlxscore=0 bulkscore=0 spamscore=0 phishscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 mlxlogscore=838 clxscore=1015
- lowpriorityscore=0 malwarescore=0 classifier=spam authscore=0 authtc=n/a
- authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2505070000 definitions=main-2505160172
+Content-Transfer-Encoding: 8bit
+References: <20250521055411.288724-1-sumanth.gavini.ref@yahoo.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250516_104046_826692_263D2299 
-X-CRM114-Status: UNSURE (   7.55  )
+X-CRM114-CacheID: sfid-20250520_225428_094259_DB4544BB 
+X-CRM114-Status: UNSURE (   7.53  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -130,20 +97,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Fix "trasmitting" to "transmitting"
 
-On Fri, 18 Apr 2025 12:56:27 +0100, Colin Ian King wrote:
-> There is a spelling mistake in a ath10k_warn message. Fix it and
-> remove space before colon to tidy up message.
-> 
-> 
+Signed-off-by: Sumanth Gavini <sumanth.gavini@yahoo.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks!
-
-[1/1] wifi: ath10k: Fix spelling mistake "comple" -> "complete"
-      commit: 2ef2d31925f0414ff0f37862b6c33f62b49089c5
-
-Best regards,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 446dca74f06a..5fab10f55c5d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -779,7 +779,7 @@ enum ath10k_fw_features {
+ 	/* Firmware supports bypassing PLL setting on init. */
+ 	ATH10K_FW_FEATURE_SUPPORTS_SKIP_CLOCK_INIT = 9,
+ 
+-	/* Raw mode support. If supported, FW supports receiving and trasmitting
++	/* Raw mode support. If supported, FW supports receiving and transmitting
+ 	 * frames in raw mode.
+ 	 */
+ 	ATH10K_FW_FEATURE_RAW_MODE_SUPPORT = 10,
 -- 
-Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+2.43.0
 
 
