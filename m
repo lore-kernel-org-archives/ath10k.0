@@ -4,113 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E5BEC54E90
-	for <ath10k@archiver.kernel.org>; Wed, 21 May 2025 21:43:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7D93C54E90
+	for <ath10k@archiver.kernel.org>; Thu, 22 May 2025 12:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:From:Subject:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=r/3UXMfb2V9/v+GzxFHw9E85/8iy/iR2RpL42+vKz6w=; b=upT46p4OAviM+jEIlkLw3aBmma
-	VZjCwaUZQ73mIK2hQJ8iEFswkoOhdcxkadeBeV4ult7uephdXbQ4mQwc4pG15/hrQ6ixR7Mr2oviL
-	I/NDZ+WexAHrFJKP2+fVTwnjQmTZUza5rDvTxPoTOJiYnghklX1xnyFQpevjO7MqZ5uL/ojef1sDf
-	r7xoVmP6cknh3fEuWp4o9J5RImaLrTqBDT/ouUsM0njZ3E8DomKVZ31ay1nlytaTLL2aTzxETfL6V
-	/FJPjC+Sm35WHzolgy2qbYpfBnmKZw1XI80Wg9FM8NFkeLWde0q4f02mZ5BFrkmh8TGesV0JVFBug
-	ddbXhNUw==;
+	bh=uyNt/sGsuh4XmreLRg9Ey2fKbNrRvAZ0N+H8+xGYyLM=; b=XAn7rGbuT/rlMZ7D2G7oW46+N6
+	53IOxVJAV7FAu1OR+TpG8+VpOFllfwLIzPeg8tTi2zoNxIm9YE6ffBjLhtChgTtv3YrXQK++7A555
+	TOTOC746PVW+nE5fxcJRzHKnuyKxhlbofMA6BjY1mM7rXNisk300e8EN5+wMOydnq2jXIoLomJRSw
+	wH4bcl5k/EUb+ZLhAtv699MrUTlh4lUD1GVfILKV/sGNClpVaI8GGAZZ1drQALn9WFA0MUYwZQQIj
+	7CJpqzmvgfXaJY9ijocZ+YUEgb0hh5xwIogY7V9rSD3nPJXMGreHiNIQnKxnkeE3LfY/KcGaMVoKT
+	I9IKzQEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHrDi-0000000GsbI-1C2a;
-	Wed, 21 May 2025 21:43:26 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uI4kN-00000000xcH-47Jy;
+	Thu, 22 May 2025 12:10:03 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHrDe-0000000GsZx-32B4
+	id 1uI4kL-00000000xaE-0hvq
 	for ath10k@lists.infradead.org;
-	Wed, 21 May 2025 21:43:24 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54LHXnqP006596
-	for <ath10k@lists.infradead.org>; Wed, 21 May 2025 21:43:22 GMT
+	Thu, 22 May 2025 12:10:02 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54M7ra5U016660
+	for <ath10k@lists.infradead.org>; Thu, 22 May 2025 12:09:59 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=qcppdkim1; bh=r/3UXMfb2V9/v+GzxFHw9E
-	85/8iy/iR2RpL42+vKz6w=; b=XcKW2Jr0btNQoXWXue/2dhDd30xmh5mJq2JwIF
-	/bS/z0C6ntI0/frtZNc1MoP/eDEyTy4U8Ti9f4AhqRsXimecgdsaQeLZVN+lLKCN
-	f8ykyOwfvzFytgPMbvaRYd87AV63fwRV7Vaf3L7sEHXMQlICttffqli+ZI8u4Oee
-	otdy4dSMOuX/Gjq4b1oCMEEExlw2rfwhKkl0GhwvRto4nq83xKcdlHPJp1e3vj3T
-	B+pIUV7Vs7as68VSd/vVjB3DMLDLudiq1MnY7f04DVmdYUrI+3Zbh/huyouTcHdQ
-	ri7la+SQ7KAR1za9R/++HOL/7EFSfLOR33AHSbTRHwgtZc7A==
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46rwf0mb8y-1
+	cc:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=qcppdkim1; bh=uyNt/sGsuh4XmreLRg9Ey2fKbNrRvAZ0N+H
+	8+xGYyLM=; b=XsXq3n1crRGCcoXxLKR69OsEkQqaPb7J9rItUxkG7jW48iq5fOF
+	UMG3HjOzSFiBkNhkcior+hfhAUmQ4xpjV3dg7UQUxFguFjiP7+x2637soAqR28vS
+	Z6PLwgD6nohn/0siJIz5lHPlvo0Wv1r9ipsKuPY16kasLEJqfKe/bmKyKSfBWSsq
+	Ywjekhpy6YvG5Jq4FnoGRso3NnWuDWkG0syNhgW1yjnAU09XrK5Uoq5+4ZwPydXS
+	jhkjGXhX9puE7EhAkZnoDAntAmZhYV2t4yLr22Z23UqF/CxjCfKL0v8LcWXEdQW1
+	UnH6Wcj89dqaKWLYBCK7vZGPp/eKB8DJoaA==
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46rwf9x856-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Wed, 21 May 2025 21:43:22 +0000 (GMT)
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-30e8346b49cso5909390a91.0
-        for <ath10k@lists.infradead.org>; Wed, 21 May 2025 14:43:22 -0700 (PDT)
+	for <ath10k@lists.infradead.org>; Thu, 22 May 2025 12:09:58 +0000 (GMT)
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4769a1db721so185045751cf.3
+        for <ath10k@lists.infradead.org>; Thu, 22 May 2025 05:09:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747863801; x=1748468601;
-        h=content-transfer-encoding:from:content-language:subject:cc:to
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=r/3UXMfb2V9/v+GzxFHw9E85/8iy/iR2RpL42+vKz6w=;
-        b=qLVzP/ZZsmN+Eb7PZKinFhDRwRiYzRPeZgy6tSy230Bgx3YBkXXewlI5NRw26tR/b8
-         1cCsey/EWNlMG+Fy/UOHz/8q04VdRtv3r3YbLRGx1dosx/cWp3gT/gmqjaTWR9zdVe8K
-         1a9J+AdFx60NsXOzWA7a4uGb/XN7CmlY8ciqcYj8pX6klGU4IG9hG93mYKDDahjw8489
-         hlJiezGT1OJpejHATS/yLtXW3AUpKgE8cygiqGcRlXDrghUdFMIoAg6JA7WStDupFa06
-         wBg+vM2GeF9+0kXO3m7BeMWUdgYPvgyRHNiombQpzf8rcMcVU4GPAyudrhfn9ck8RReq
-         nVWA==
-X-Gm-Message-State: AOJu0YxICE5xqSylw7h0bIGpn3BeFxiCdrdTd+lPSYuYzhZLM9mQYIjt
-	iWxNlMX6ntDuq6xSd1pRJhSwdpclEa+qm2UjBk6A7JMNjNCU8DjA8sYyGDNcXnEUIVaQokIcMpN
-	odKztxS1be3nzKSINhbBoXicnA1K5KkhuBLIEi0mMlGKHKWYPhicPrEgIzjlZAGKM
-X-Gm-Gg: ASbGncvL5yLoTfpM6zt29GKI0XPyoZ7qgQFgoVDs44OHxnreKgUrvGl1KTBZWl4xwtn
-	Q/n1tTcgUrWxxE0m3eNdo6SPIgaIlONqHB6y/BuPWDcJXobsiBXwOBiHGGOdvNLclzw+5evQOT2
-	yYyMpZ3KmoKybtVQ+TggzyqPBcM3O8oZGEQuwUqzVO6ZQ8uvcp0TbK2rHaojPvgQj+FDoc42/VI
-	kCwqliCLzm1E7IlFNYBgBwhgkTfqQc9hX7cF5NNb9fN3lLOnEvmnXovo2631UdTtzsVirb2iu2F
-	lsOBH7WhPCsA9xrIJqjvIMHjCLKVQ42uSYLHfs9mZUaiuqkt
-X-Received: by 2002:a17:90b:1946:b0:310:c609:5d1a with SMTP id 98e67ed59e1d1-310c609663bmr916777a91.14.1747863801077;
-        Wed, 21 May 2025 14:43:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEICPvVoHfG5rjo9uhkVj1agHjn28ykLeVhDszBE75AMJNR7yPFf8HzY23pfsdGzpp2iPLMdg==
-X-Received: by 2002:a17:90b:1946:b0:310:c609:5d1a with SMTP id 98e67ed59e1d1-310c609663bmr916745a91.14.1747863800540;
-        Wed, 21 May 2025 14:43:20 -0700 (PDT)
-Received: from [10.81.24.74] (Global_NAT1.qualcomm.com. [129.46.96.20])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30f365134e5sm4142241a91.42.2025.05.21.14.43.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 May 2025 14:43:20 -0700 (PDT)
-Message-ID: <8fdeef8c-b2ea-4f1c-8eb3-e600e5140f24@oss.qualcomm.com>
-Date: Wed, 21 May 2025 14:43:19 -0700
+        d=1e100.net; s=20230601; t=1747915798; x=1748520598;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uyNt/sGsuh4XmreLRg9Ey2fKbNrRvAZ0N+H8+xGYyLM=;
+        b=LkM63HTuUNxV3qZwpMMd2SyAiRTNEDb48Ep6mpBQdqx15cr5BGteysDPK4g1/E51RC
+         e7vB2V2NyrTREUEfqrFahNW+LK8/qLlVnBZEC0tXgAVFq7A03JKB+Wb9IU/Amu3WCCOV
+         53+Bpvmzv0Ri3ueW62O5eSE74cvenBx6BT2QShi1c5BAuWp//41FMbYXjsTTfQ0impHU
+         QR2sLzX2fgH5i3wmnZMijR6v9JodWQn4QZFZ4p2pe67QS0teRMeCRC0DoTHyjmkhAUgQ
+         Lrq2pkB+LW6E/cq3QRvH9PNNUo3N9K70YSL7VQylj41a3odnoMDnqAgJwlC5e3gMwydG
+         Javg==
+X-Forwarded-Encrypted: i=1; AJvYcCVticQ34uWJ9gxCvoggE763S8zm6ShgNRD841g70N38sqVoySU5cXkhVpHXhaud/JSOLrweLWQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yyf1CXiWl0DlFpelCc6XqmN8NzzJPLyk+5IQZY+h5r1moQeAMwd
+	/0YGBWTJVtD8xOjX5KxOF60+jD6wuLpG+Ahb0MoI9SXA3I6mk19ZGapqr0DLWFO2Md/ZfYeMio8
+	JFxoGH0ZZiH6g0c2jxnW978Pj8d6PjXpBTv56xCzqNhSTgRRBeIDXFeQ8CuL1OPO9
+X-Gm-Gg: ASbGnctTj0gvnsFo5vx6MV9F5AQJgECNh3+BCDPYZYA5QYzU0+Sv64OX2Lgx+o66Fyl
+	6x5hyS+F4uQvDczExIog0Nh6mBLP1sagQJ9kR+Lb+VJFpqpOJwH6lT3/q7/7Ra0ySFP2ml5kuPv
+	FsQnHU90iAAM4lycyHb6/xDkMxz4N44TRavwTFiCsRHpm5oJepsRb/QeaUWnwnO/LhbTICrEimZ
+	cndFYQlGu+VI5lMetGQnUREAVXYu9LAqCyTL/et5jlBteMKuf6bS7AI6r5sdGV8jlBXQmlXyJWo
+	yczOgNdJzl8UpNwcdTS09YrpGQHfxtjnJ61gtc4/vK3xEos=
+X-Received: by 2002:a05:622a:4d99:b0:474:e75e:fccc with SMTP id d75a77b69052e-494b09365fcmr402457771cf.35.1747915797960;
+        Thu, 22 May 2025 05:09:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFAn3tchLVOZhxfq6SRKcs3/R+CiOHJ02G89e2dun7MvAPb41vaKHUcUKztCzIq8nhPcsDS5A==
+X-Received: by 2002:a05:622a:4d99:b0:474:e75e:fccc with SMTP id d75a77b69052e-494b09365fcmr402457301cf.35.1747915797488;
+        Thu, 22 May 2025 05:09:57 -0700 (PDT)
+Received: from QCOM-eG0v1AUPpu.qualcomm.com ([2a01:e0a:82c:5f0:e5bc:5c94:e4b3:3c4e])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a36a83b63bsm17102665f8f.97.2025.05.22.05.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 May 2025 05:09:56 -0700 (PDT)
+From: Loic Poulain <loic.poulain@oss.qualcomm.com>
+To: jjohnson@kernel.org
+Cc: kvalo@kernel.org, quic_svishnoi@quicinc.com, quic_pillair@quicinc.com,
+        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+        Loic Poulain <loic.poulain@oss.qualcomm.com>
+Subject: [PATCH] wifi: ath10k: Fix unbalanced IRQ enabling
+Date: Thu, 22 May 2025 14:09:54 +0200
+Message-Id: <20250522120954.605722-1-loic.poulain@oss.qualcomm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        ath12k@lists.infradead.org, jjohnson@kernel.org
-Subject: pull-request: ath-next-20250521
-Content-Language: en-US
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: g5UKKZzBOvoiMuYAByvBISfHQ-Q6Xflj
-X-Authority-Analysis: v=2.4 cv=J/Sq7BnS c=1 sm=1 tr=0 ts=682e48fa cx=c_pps
- a=RP+M6JBNLl+fLTcSJhASfg==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=FKcf5NbGizdFyegkQZ8A:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=iS9zxrgQBfv6-_F4QbHw:22
-X-Proofpoint-ORIG-GUID: g5UKKZzBOvoiMuYAByvBISfHQ-Q6Xflj
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIxMDIxNSBTYWx0ZWRfX/zwNucARjtRa
- k+nFAs62CWRWOrVxBJyaN2OpirgxnUTiKYlcQsz2MRRM7vLGIsQztSt9nPXShCamn2dElSWbINm
- rpqeVcwoUu1zgaBxrLKiIKcCYwFjA1217a3+0EDtit4+S4eH5BvUltwfW612aCoSIJ1k0/qUitc
- +1QkoNBzku+a6TNYaj496z2uweCWevRHfzDz/enj05egCVA20sd+UKKYEyzreLAXf0VDEjShXAB
- VwE5hf2udKkEVyFpD2GjYlIGyX34iZAfQ/YOwZL7D5T6f6nMPxBOnhQVWDtimOhOo9mhP+ZuvFs
- VIRrEVuq61nNs0/KP0iHqY/SXh1t+BgDYwtwMHC/109Co4QZzMaAZiLoDTHwZaR/4OQF4UZKLUw
- iRGfSHxivHLah4UjeCxmutSOINhZyTeKI5BdK4RE/rQss639CJCJJy/MPb8Bj0V6bvINbUZn
+X-Authority-Analysis: v=2.4 cv=V9990fni c=1 sm=1 tr=0 ts=682f1416 cx=c_pps
+ a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=xqWC_Br6kY4A:10 a=dt9VzEwgFbYA:10
+ a=EUspDBNiAAAA:8 a=OyT9LloaJ-PC7jRUisgA:9 a=dawVfQjAaf238kedN5IG:22
+X-Proofpoint-ORIG-GUID: reymRZVCmbIrtfaKHDSlK1S5i4iKbWS7
+X-Proofpoint-GUID: reymRZVCmbIrtfaKHDSlK1S5i4iKbWS7
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIyMDEyMyBTYWx0ZWRfX8+Vqjg4f9ZlQ
+ 99TwV32SoZx8EUeqFdl2BhUIvn0r77dxoV02xkR9IFI/RxI165WQPdp+QNhJoRYnlFdfEDBg/NB
+ ACT2k7tm/X0lh3mNA8M+PnEfe5LGfytjEMi8Lw415dT2OodKI3kIX3ZRRJmDumUqMzSUJEEKK2x
+ xNU3Fv5Yy/MfSh8LrJz7SImN2Sx/4O0Wtr7V3djKVRXUHf4lmGev5fftt0te4uwFcz1bjXUXRvR
+ fQnR51zVeDFLzIxJAYln+zY3HCDnJJGW6H5MWCUfj6UZyRTNTkLbLzrEVHzij46bYGNUdeopeGY
+ g2yhiLtE/TnnJPyI6DPyCDGiKowXcvjQ/MZDCafO71QrX8vwyXaGBTs1WOqWXyoXBgLClfzQ8En
+ KY/ffQsLfemQFPLar9PriACBXM3w7fG4W60xqQW2W6T2d9jHTIShIvqvqvCZ6L1HpTSIvYer
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-21_07,2025-05-20_03,2025-03-28_01
+ definitions=2025-05-22_06,2025-05-22_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 classifier=spam authscore=0
- authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2505160000 definitions=main-2505210215
+ mlxlogscore=578 bulkscore=0 impostorscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 spamscore=0 phishscore=0 suspectscore=0
+ adultscore=0 malwarescore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2505220123
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250521_144322_770069_93514406 
-X-CRM114-Status: GOOD (  13.16  )
+X-CRM114-CacheID: sfid-20250522_051001_325784_FDB0FF58 
+X-CRM114-Status: GOOD (  13.41  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,185 +124,69 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The following changes since commit 68b44b05f4c880c42109a91d2e0e7faa94f40529:
+When the firmware goes down, both RECOVERY and CRASH_FLUSH flags are set,
+triggering a full recovery sequence once the firmware is back up. This
+includes stopping and restarting the SNOC interface.
 
-  wifi: mac80211: handle non-MLO mode as well in ieee80211_num_beaconing_links() (2025-05-16 10:51:44 +0200)
+However, this sequence leads to an Unbalanced IRQ warning:
 
-are available in the Git repository at:
+------------[ cut here ]------------
+Unbalanced enable for IRQ 112
+WARNING: CPU: 2 PID: 120 at kernel/irq/manage.c:792 __enable_irq+0x4c/0x7c
+CPU: 2 UID: 0 PID: 120 Comm: kworker/2:4 Not tainted [...] #234 PREEMPT
+Hardware name: Qualcomm Technologies, Inc. Robotics RB1 (DT)
+Workqueue: events_freezable ieee80211_restart_work
+pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __enable_irq+0x4c/0x7c
+lr : __enable_irq+0x4c/0x7c
+sp : ffff800081b3bab0
+[...]
+Call trace:
+ __enable_irq+0x4c/0x7c (P)
+ enable_irq+0x48/0x9c
+ ath10k_snoc_hif_start+0x6c/0x13c
+ ath10k_core_start+0x360/0x1344
+ ath10k_start+0x100/0x8fc
+ drv_start+0x34/0x58
+ ieee80211_reconfig+0xf4/0xfc0
+ ieee80211_restart_work+0x110/0x17c
+ process_one_work+0x150/0x294
+ worker_thread+0x2dc/0x3dc
+ kthread+0x130/0x204
+ ret_from_fork+0x10/0x20
+---
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20250521
+This can be reproduced by restarting rmtfs or triggering remoteproc restart
+via sysfs.
 
-for you to fetch changes up to 886bb3624e4c9914a943b63fcfdf30b8d2f2b66e:
+The root cause is that IRQs are not disabled during SNOC stop in recovery
+scenarios, but are unconditionally re-enabled during SNOC start, leading to
+an imbalance.
 
-  wifi: ath12k: fix regdomain update failure when connection establishes (2025-05-21 14:01:06 -0700)
+Fix this by skipping IRQ re-enablement in `ath10k_snoc_hif_start()` if a
+firmware recovery is in progress, restoring IRQ state symmetry.
 
-----------------------------------------------------------------
-ath.git patches for v6.16
+Fixes: 0e622f67e041 ("ath10k: add support for WCN3990 firmware crash recovery")
+Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-ath12k:
-Add monitor mode support for WCN7850.
-Enhance regulatory support including 6 GHz power modes.
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 866bad2db334..e15e1ab30458 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -937,7 +937,8 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
+ 
+ 	dev_set_threaded(ar->napi_dev, true);
+ 	ath10k_core_napi_enable(ar);
+-	ath10k_snoc_irq_enable(ar);
++	if (!test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
++		ath10k_snoc_irq_enable(ar);
+ 	ath10k_snoc_rx_post(ar);
+ 
+ 	clear_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags);
+-- 
+2.34.1
 
-In addition, perform the usual set of bug fixes and cleanups across
-all supported drivers.
-
-----------------------------------------------------------------
-Aditya Kumar Singh (3):
-      wifi: ath12k: handle scan link during vdev create
-      wifi: ath12k: Use scan link ID 15 for all scan operations
-      wifi: ath12k: fix mac pdev frequency range update
-
-Aishwarya R (1):
-      wifi: ath12k: remove redundant regulatory rules intersection logic in host
-
-Aloka Dixit (1):
-      wifi: ath12k: pass link_conf for tx_arvif retrieval
-
-Baochen Qiang (18):
-      wifi: ath12k: fix a possible dead lock caused by ab->base_lock
-      wifi: ath12k: refactor ath12k_reg_chan_list_event()
-      wifi: ath12k: refactor ath12k_reg_build_regd()
-      wifi: ath12k: add support to select 6 GHz regulatory type
-      wifi: ath12k: move reg info handling outside
-      wifi: ath12k: store reg info for later use
-      wifi: ath12k: determine interface mode in _op_add_interface()
-      wifi: ath12k: update regulatory rules when interface added
-      wifi: ath12k: update regulatory rules when connection established
-      wifi: ath12k: save power spectral density(PSD) of regulatory rule
-      wifi: ath12k: add parse of transmit power envelope element
-      wifi: ath12k: save max transmit power in vdev start response event from firmware
-      wifi: ath12k: fill parameters for vdev set TPC power WMI command
-      wifi: ath12k: add handler for WMI_VDEV_SET_TPC_POWER_CMDID
-      wifi: ath12k: use WMI_VDEV_SET_TPC_POWER_CMDID when EXT_TPC_REG_SUPPORT for 6 GHz
-      wifi: ath12k: fix regdomain update failure after 11D scan completes
-      wifi: ath12k: fix regdomain update failure when adding interface
-      wifi: ath12k: fix regdomain update failure when connection establishes
-
-Christophe JAILLET (1):
-      wifi: ath10k: Constify structures in hw.c
-
-Colin Ian King (1):
-      wifi: ath10k: Fix spelling mistake "comple" -> "complete"
-
-Dinesh Karthikeyan (1):
-      wifi: ath12k: Add support to simulate firmware crash
-
-Johan Hovold (3):
-      wifi: ath11k: fix ring-buffer corruption
-      wifi: ath11k: fix rx completion meta data corruption
-      wifi: ath12k: fix ring-buffer corruption
-
-Kang Yang (14):
-      wifi: ath12k: delete mon reap timer
-      wifi: ath12k: parse msdu_end tlv in ath12k_dp_mon_rx_parse_status_tlv()
-      wifi: ath12k: avoid call ath12k_dp_mon_parse_rx_dest_tlv() for WCN7850
-      wifi: ath12k: add srng config template for mon status ring
-      wifi: ath12k: add ring config for monitor mode on WCN7850
-      wifi: ath12k: add interrupt configuration for mon status ring
-      wifi: ath12k: add monitor mode handler by monitor status ring interrupt
-      wifi: ath12k: add support to reap and process monitor status ring
-      wifi: ath12k: fix macro definition HAL_RX_MSDU_PKT_LENGTH_GET
-      wifi: ath12k: use ath12k_buffer_addr in ath12k_dp_rx_link_desc_return()
-      wifi: ath12k: add support to reap and process mon dest ring
-      wifi: ath12k: init monitor parameters for WCN7850
-      wifi: ath12k: use different packet offset for WCN7850
-      wifi: ath12k: enable monitor mode for WCN7850
-
-Lingbo Kong (1):
-      wifi: ath12k: Abort scan before removing link interface to prevent duplicate deletion
-
-Miaoqing Pan (2):
-      dt-bindings: net: wireless: ath12k: describe firmware-name property
-      wifi: ath12k: support usercase-specific firmware overrides
-
-Mohan Kumar G (1):
-      wifi: ath12k: Send MCS15 support to firmware during peer assoc
-
-Muhammad Usama Anjum (1):
-      wifi: ath11k: Fix QMI memory reuse logic
-
-Muna Sinada (1):
-      wifi: ath12k: Prevent multicast duplication for dynamic VLAN
-
-P Praneesh (2):
-      wifi: ath12k: Fix invalid RSSI values in station dump
-      wifi: ath12k: fix memory leak in WMI firmware stats
-
-Rajat Soni (1):
-      wifi: ath12k: fix memory leak in ath12k_service_ready_ext_event
-
-Ramasamy Kaliappan (1):
-      wifi: ath12k: update EMLSR capabilities of ML Station
-
-Rosen Penev (1):
-      wifi: ath9k: ahb: do ioremap resource in one step
-
-Thiraviyam Mariyappan (1):
-      wifi: ath12k: Enable AST index based address search in Station Mode
-
-Toke Høiland-Jørgensen (1):
-      wifi: ath9k_htc: Abort software beacon handling if disabled
-
-Vignesh C (1):
-      wifi: ath12k: Fix scan initiation failure handling
-
-Vinith Kumar R (3):
-      wifi: ath12k: change soc name to device name
-      wifi: ath12k: Add device dp stats support
-      wifi: ath12k: print device dp stats in debugfs
-
-Wen Gong (1):
-      wifi: ath12k: read country code from SMBIOS for WCN7850
-
-Yingying Tang (2):
-      wifi: ath12k: Reorder and relocate the release of resources in ath12k_core_deinit()
-      wifi: ath12k: Adjust the process of resource release for ahb bus
-
-Yu Zhang(Yuriy) (1):
-      wifi: ath11k: support DBS and DFS compatibility
-
-Yury Norov (1):
-      wifi: carl9170: micro-optimize carl9170_tx_shift_bm()
-
- .../bindings/net/wireless/qcom,ath12k.yaml         |   6 +
- drivers/net/wireless/ath/ath10k/ce.c               |  28 +-
- drivers/net/wireless/ath/ath10k/hw.c               |  62 +-
- drivers/net/wireless/ath/ath10k/hw.h               |  34 +-
- drivers/net/wireless/ath/ath10k/sdio.c             |   2 +-
- drivers/net/wireless/ath/ath11k/ce.c               |  11 +-
- drivers/net/wireless/ath/ath11k/dp_rx.c            |  25 +-
- drivers/net/wireless/ath/ath11k/hal.c              |   4 +-
- drivers/net/wireless/ath/ath11k/mac.c              |  42 +-
- drivers/net/wireless/ath/ath11k/qmi.c              |   9 +
- drivers/net/wireless/ath/ath12k/ahb.c              |   5 +-
- drivers/net/wireless/ath/ath12k/ce.c               |  11 +-
- drivers/net/wireless/ath/ath12k/core.c             |  37 +-
- drivers/net/wireless/ath/ath12k/core.h             |  72 +-
- drivers/net/wireless/ath/ath12k/debugfs.c          | 263 +++++++
- drivers/net/wireless/ath/ath12k/debugfs.h          |   5 +
- drivers/net/wireless/ath/ath12k/dp.c               |  66 +-
- drivers/net/wireless/ath/ath12k/dp.h               |  28 +
- drivers/net/wireless/ath/ath12k/dp_mon.c           | 816 +++++++++++++++++++--
- drivers/net/wireless/ath/ath12k/dp_mon.h           |   3 +
- drivers/net/wireless/ath/ath12k/dp_rx.c            | 172 +++--
- drivers/net/wireless/ath/ath12k/dp_rx.h            |  10 +-
- drivers/net/wireless/ath/ath12k/dp_tx.c            |  66 +-
- drivers/net/wireless/ath/ath12k/hal.c              |  42 +-
- drivers/net/wireless/ath/ath12k/hal.h              |   4 +
- drivers/net/wireless/ath/ath12k/hal_desc.h         |   7 +-
- drivers/net/wireless/ath/ath12k/hal_rx.c           | 102 ++-
- drivers/net/wireless/ath/ath12k/hal_rx.h           |  12 +-
- drivers/net/wireless/ath/ath12k/hw.c               |  12 +-
- drivers/net/wireless/ath/ath12k/hw.h               |   1 +
- drivers/net/wireless/ath/ath12k/mac.c              | 674 ++++++++++++++---
- drivers/net/wireless/ath/ath12k/mac.h              |  43 ++
- drivers/net/wireless/ath/ath12k/pci.c              |   8 +-
- drivers/net/wireless/ath/ath12k/reg.c              | 407 +++++-----
- drivers/net/wireless/ath/ath12k/reg.h              |  18 +-
- drivers/net/wireless/ath/ath12k/wmi.c              | 231 +++---
- drivers/net/wireless/ath/ath12k/wmi.h              |  64 ++
- drivers/net/wireless/ath/ath9k/ahb.c               |  13 +-
- drivers/net/wireless/ath/ath9k/htc_drv_beacon.c    |   3 +
- drivers/net/wireless/ath/carl9170/tx.c             |   3 +-
- 40 files changed, 2751 insertions(+), 670 deletions(-)
 
