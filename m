@@ -4,111 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBC81C54E65
-	for <ath10k@archiver.kernel.org>; Thu, 22 May 2025 13:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE16DC54E65
+	for <ath10k@archiver.kernel.org>; Thu, 22 May 2025 15:52:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Xv+dLfIlgEKxHBEJuwgEq4mtTaTF543E1/RXKGoWHO0=; b=K2oBxHHTFg/FWznx0yZlyvD1FM
-	ZKkLU6uxfaRO903nrSc8EloLhZnrRqbdC2IN/iUYaovDg9p5SaCuL/X9h8PDkvQbBx6OF81J+5GME
-	SwnHZR9Ara411ab7yMSoLBOqDc3ULXG5wTWKJIDyoeMmbjNKcXo8IjhmVRcuuxgJpQPxeCZmILyYm
-	mYi2o9jCEb/tdUfoTy6HxNHuxfkrlWdD6dwGP4jBlgHSKuHUG/vH9ITjslf0mFTLTLLrpNiDMAvyL
-	PM60XHzw4VCEAS0K3VbdMDnabDVApGp66Vz5WmzA5q2PzOXHh09LgoDC7viUuip64/inlYABx4uYB
-	vfmufFgg==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MdS4YPTeQcLMqGWS3uWoTExyrGM6JzmerMv3Q+6wR2A=; b=10RzNNuPtFF8ftn9aBHaQxXp9H
+	F3YGORpztmkBkZ7n96tRY/7GfEKpwP0r6EC7EQHaCLfPRBTo5EKH0lsMTL98x8dWJ5UM1HixSZFMN
+	Jl/CUZoqYx9BAMbVYY3oD+G18QlomMmXJhoMPc/kWxZrNaxbS8Cml+mwek1Qhbwz1JR+mO0A/MLZL
+	Rz1W3AfMLMwvB/jH99C1yzJJt2qhy1sn0RVAERIkeDc4/Tq5Rhl8js0R4hwUFRr5ThOCn4D6VwyTz
+	cgy23qQv65ntQgPBSXkF4LlJ/iyGC7o8ncd9AX5SxtASRBhhY8WqthsyVeA7yVoVtWLl+LZ6tddFr
+	0zF7ogAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uI5nL-000000015kG-23Zl;
-	Thu, 22 May 2025 13:17:11 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uI8Dq-00000001VA5-27tB;
+	Thu, 22 May 2025 15:52:42 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uI5nJ-000000015jj-38sb
+	id 1uI7vB-00000001RyW-0lkq
 	for ath10k@lists.infradead.org;
-	Thu, 22 May 2025 13:17:10 +0000
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54M7hBis031739
-	for <ath10k@lists.infradead.org>; Thu, 22 May 2025 13:17:09 GMT
+	Thu, 22 May 2025 15:33:27 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54M7O2NU000727
+	for <ath10k@lists.infradead.org>; Thu, 22 May 2025 15:33:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=qcppdkim1; bh=Xv+dLfIlgEKxHBEJuwgEq4mtTaTF543E1/R
-	XKGoWHO0=; b=Axp2lyKPZ5EvyB8wQzk3I8YCAa+nZul6ZeV3xCrRg8bR2OB2vJ4
-	NbferIpAlpYLBKIhRC3XqumnWf4fZC5XrhvI00G2Zy00scnuLFNWJOYNO6QDYE/U
-	bp5FwtufukFXS50eaIPn71HC0yhT5v1+GkIAR4SC7k4InqtYVLBtZXU+HIokINuv
-	1CmyJUJlf1xVK2rWU9NS/cqneZcrw5iswuTLgLjXrhrm6JvziiQPXvXrsb76V0HO
-	lO66hEwZjQ/iCEe/J+ytDcWJv1x2GjPuOKrcuoWjwIOn74L7a1GPSBaGNSiChQE+
-	yg0lALTLM27ukK5mGTJJlAf9RE6cFVcsxTw==
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com [209.85.222.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46s8c251ew-1
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	MdS4YPTeQcLMqGWS3uWoTExyrGM6JzmerMv3Q+6wR2A=; b=c/xeNK0ThBeELsAG
+	6YDWTAWa5ZnhTXQfX/rwM8997h8/jDaVzanjoVzUd4ioO7M/mVhQo20Eaj9NnIX4
+	fDAXCGd4BtfGxeWKG4Y4oV0SS8hGAyD4v2dUNTQ6cHz5CT5viwV662+4Mvx+1tbd
+	EJLiGmAKcSOy3ZJQU1UWilnLtA7QWo1kdsVrRnNdQl9LcFPscZ39KvREKb5fuXAA
+	wgTtgNEB+3W/VgBeJob1mxWtL3EvYNwTtCEQpxZIblYI3uKHslcDQFZur06XkZ5z
+	/txn+RJMPEflJ3g2ro6HIHZLAnoWKi44xMn9PrJRi+05yCm1uLP2FuBbTi7AJq4q
+	CyYucw==
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46s95tn6fq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Thu, 22 May 2025 13:17:08 +0000 (GMT)
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7cabd21579eso1392189085a.3
-        for <ath10k@lists.infradead.org>; Thu, 22 May 2025 06:17:08 -0700 (PDT)
+	for <ath10k@lists.infradead.org>; Thu, 22 May 2025 15:33:23 +0000 (GMT)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-22aa75e6653so60340875ad.0
+        for <ath10k@lists.infradead.org>; Thu, 22 May 2025 08:33:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747919827; x=1748524627;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xv+dLfIlgEKxHBEJuwgEq4mtTaTF543E1/RXKGoWHO0=;
-        b=flQskhVt0cY8zgvZIq5N3v06Et/9NynuZsHD3ABWxsB3cJk57wgZFBdHQA9q0IySMW
-         j7Aa9X14QygrhEieObl9YfypdBdcf+WkJD2cHx3LIxKxg53EWEcxbc8RNLcPXj9mLPWe
-         AJ+JzZq2/81xg5ulBZK8xNtEd/fjFyWM4M+JC7vOBPxayf21Jcg1nyllDdzE6A14+CEA
-         m3FyYEuf1dNB++zlmYz8E2JtxRWGYezXAUm3cj/TLjJnvdax8b27cUwC4m2KTBQfaygi
-         /SgewYSEYkeE5h3CXnOE9QX6mt+0UbdzJF7Ru5Wr3c5YBc8LLfbiJSbKl8lvfejwMVac
-         YARA==
-X-Forwarded-Encrypted: i=1; AJvYcCXFdKKdMsjPPTZyh5duPG7g57Acf4zUnXUVda5rUt8ehWphPBjOe6U+K8VI0DiXjzytDilGEfc=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyJlp/sI4VuEXddzkd2xBuMTxvJ4NNixTmU49ljEmtupU1f1cJo
-	MzaLLSJVG4DSG2Mwarsj99o202Xb6Q+DnMnIJLkALQ2Khzj1pDziyofZUY/FNvJ3ekFpMq2dy4Y
-	RgjNE1jbhCWVkjwEkdzqwQx9IGtZYHFkRn7WZkfe1w5iBdy8NWAY5jmguprLEfBxH
-X-Gm-Gg: ASbGncts3YZOTASwxcSOdei+tPVTqW2rJaUSEsqMgjDVRktgCdzF9wB/kjui1GkXwzw
-	kWvfuX9mUemF2Bo/sbD1Yp/yS1mp/eQk+AvFEBhMdQycrZm2F22mXqNG50I0XqoOjfEK2L5xY4q
-	ahH1xbeQyQ9A9mkE4tlTZJxftfkrI+rrG1MwxEl7Y9YC5FKJs/Wp7VjPXuok1W5jp0jgeg+BD7r
-	jkaTYkuqFh9xKOto9PsaiPBfghEFutgytyeTu/pEcO/cIvLv2LjjLvsDiSJstnfu/0tn1JxYBnz
-	dopfJFKT8gkLSd7ZcAZLtO264+PqtRXSwO/LQKq8EJ44klE=
-X-Received: by 2002:a05:620a:4493:b0:7c7:6667:ade5 with SMTP id af79cd13be357-7cd46733233mr3097575985a.27.1747919827518;
-        Thu, 22 May 2025 06:17:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF50oZ4KZSZvY1ONbiRasISJNNHhay39+Eu0obi2aFnFlLHSm2lwNV6tT9/2rbZj8GX6Bi7IQ==
-X-Received: by 2002:a05:620a:4493:b0:7c7:6667:ade5 with SMTP id af79cd13be357-7cd46733233mr3097573385a.27.1747919827126;
-        Thu, 22 May 2025 06:17:07 -0700 (PDT)
-Received: from QCOM-eG0v1AUPpu.qualcomm.com ([2a01:e0a:82c:5f0:e5bc:5c94:e4b3:3c4e])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a35ca8d005sm23677256f8f.90.2025.05.22.06.17.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 May 2025 06:17:06 -0700 (PDT)
-From: Loic Poulain <loic.poulain@oss.qualcomm.com>
-To: jjohnson@kernel.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
-        Loic Poulain <loic.poulain@oss.qualcomm.com>
-Subject: [PATCH ath-next] wifi: ath10k: Avoid vdev delete timeout when firmware is already down
-Date: Thu, 22 May 2025 15:17:04 +0200
-Message-Id: <20250522131704.612206-1-loic.poulain@oss.qualcomm.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1747928002; x=1748532802;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MdS4YPTeQcLMqGWS3uWoTExyrGM6JzmerMv3Q+6wR2A=;
+        b=XfAPE7bp+IEuGGFcR0TFvH4FIjd9TwcUQoNaIBgYXhKrZykqKryf/sJOpA6ReabccN
+         8BhGx4Oo/Zm57IBYPKjmaZ6gKNZDjbUAvvvLJJ50aAryZRYetdiqAR6u+Sid7d4yDf1+
+         EIl3BJAM25s+iafbC64XfgqpZ/yOcSHAoOm+sIM6hV3Gg3vMjlmI41LgnIfv5jXBqFTs
+         0A8v1SQvLbxfU3SbIoK7nq41fGgy5lhUL3tGNyd1ly0y7ZbQtGFWCKbNx9KmjAhBIdSs
+         v05aObj90G5+yLPWnlETxSKCDMr/M5p5kMF2XKFAQwCer9Y6K+Trr1Xtgaj276KdLx+c
+         Mdiw==
+X-Forwarded-Encrypted: i=1; AJvYcCUsDjupICHEcqbYAxFwdbS1nDnsVoJczBI/75TTO7DAZqh1EmtX67GZniM6eCGTKfWkZGZaGTc=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy7Cv0GkzNF3JBnZwLLPlIjSHEFLctw8m4Tuz5d3RhDS+e4KVdy
+	GUBDwowf0TLmlRGeAeIfq8IqwcDdcBDm8n4+Lqrfe1WiJoGEGYTNP9mV1yfZBUO9LoBhvn8g4LP
+	j9pneYo0FvOn1tlzO1wbgoPGHbv/+Vs+367++yJnrFq2kRP8Nf8bnMkaJaoDhVJ+A
+X-Gm-Gg: ASbGncv8eDn4cGWaVgbM7leYj/b7wEoLGkqPOZx/yM8khiiZ63whQhucsnCDN79+htt
+	+iatRxTH+C7M8+C3hyylWoadnaQ44k0np/jTMAKZ16YL+c8dv91AHrbJFUGBn9c7JIBP5wRrM5W
+	B32lBQ1MDpUTrVDyPGXs5GCWKCwIhD9wbHS5zPLvjoi4tVvcKEAP8bGNIFBVsfsRGHW0LCBMB6c
+	BAfflo/q6BBQ/0ktshixG9Eh7KBDt2p1uyhlNOFtYL+0Qo8ROkVsDrvGOxkNX6BCp5Zl2oOdMe2
+	aZ8RO3bM1ohQs6DY6226fN42dlnHwWWJfHXUPiVDALS/GiStRxDbJQ6GVgs+NPDXlaKMkE626DE
+	2Rjus
+X-Received: by 2002:a17:903:2303:b0:21a:8300:b9d5 with SMTP id d9443c01a7336-231d4524c4bmr360572935ad.23.1747928001979;
+        Thu, 22 May 2025 08:33:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFkNByRwc0A0/HzOKP5rJ7ZbRS9XUCdJ1a7kCjVVDtfqq+Z01Gf1iVCby5DmblLg9YPnnWZfA==
+X-Received: by 2002:a17:903:2303:b0:21a:8300:b9d5 with SMTP id d9443c01a7336-231d4524c4bmr360572485ad.23.1747928001504;
+        Thu, 22 May 2025 08:33:21 -0700 (PDT)
+Received: from [192.168.1.111] (c-73-202-227-126.hsd1.ca.comcast.net. [73.202.227.126])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2982c04d12sm4399479a12.21.2025.05.22.08.33.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 May 2025 08:33:21 -0700 (PDT)
+Message-ID: <22c8e651-8feb-43a7-9a9c-b028e4eb2358@oss.qualcomm.com>
+Date: Thu, 22 May 2025 08:33:20 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIyMDEzNCBTYWx0ZWRfXwy9yFz/fgYAq
- 0z7IXubs5pTwAV4RYZg6PaSCSGY+m+35pWF3VjFhJ6PvNIVySM+a95xezzymN3wiMrR5rk7CMSH
- bT30hWOpL+Aq9Oy5F7jEYdkUvGZQ7m+BWH05asFC71WimBzB4jQ6evuDp148Anox3x46KOl6YWp
- MfXsEAb3kixGDfMENmQIsIRwrEsBzrPuL6TsXh2Rue8r3e49S2ksmzQZ2XKLo5cnXeZgftvTYTL
- 4Meir6xYmeGfA9N5lNB+I/YxKOeKO5aGDkhRni1aPsUKBCkxI2uW1CdE2Neu3O9mr7GMIb8zk6Q
- Uw3Yyg6olcCaB2y8/NI+pmaZD6wKZkGZ8CG53t8ZxmFkhsbCjtyAdnr7XskP5Oe1dMI46ighls7
- FqBkE03UMEKwR2OXuMG6keLVkzwVWmDNI9/E0OxBme9Lfct2+VeENibROTMe4+Pk7NXIVzZl
-X-Authority-Analysis: v=2.4 cv=RIuzH5i+ c=1 sm=1 tr=0 ts=682f23d4 cx=c_pps
- a=50t2pK5VMbmlHzFWWp8p/g==:117 a=xqWC_Br6kY4A:10 a=dt9VzEwgFbYA:10
- a=EUspDBNiAAAA:8 a=IzHPsgMo9mJ7Fn_I8X0A:9 a=IoWCM6iH3mJn3m4BftBB:22
-X-Proofpoint-ORIG-GUID: EW2-ojcvmkYYWfwas1nd0gNrsuqSxiGe
-X-Proofpoint-GUID: EW2-ojcvmkYYWfwas1nd0gNrsuqSxiGe
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: ath10k: Fix unbalanced IRQ enabling
+To: Loic Poulain <loic.poulain@oss.qualcomm.com>, jjohnson@kernel.org
+Cc: kvalo@kernel.org, quic_svishnoi@quicinc.com, quic_pillair@quicinc.com,
+        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+References: <20250522120954.605722-1-loic.poulain@oss.qualcomm.com>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20250522120954.605722-1-loic.poulain@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Authority-Analysis: v=2.4 cv=QKBoRhLL c=1 sm=1 tr=0 ts=682f43c3 cx=c_pps
+ a=cmESyDAEBpBGqyK7t0alAg==:117 a=e70TP3dOR9hTogukJ0528Q==:17
+ a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=EUspDBNiAAAA:8 a=iGDt7Nnd7u1T594T9AEA:9
+ a=QEXdDO2ut3YA:10 a=1OuFwYUASf3TG4hYMiVC:22
+X-Proofpoint-ORIG-GUID: drA5Z5zNLhblOgbY61snhjy5aTCcYGKq
+X-Proofpoint-GUID: drA5Z5zNLhblOgbY61snhjy5aTCcYGKq
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIyMDE1NyBTYWx0ZWRfX9wpcJPb1Ws/e
+ NToRcfXRnqiHoPj5g+47wYfMRy8ceHcXl6eCQQ4i1Z/frX2Azeny1O6F/7a03EfjmHHoaxVo1nP
+ 1OTNpmVE4XTOxs9jke6lOYC9YRgqWg9iO++2B8pKIQDkeQX4xmFDxU6+ejl2zslAmFehebGcEXr
+ jrwvpoiJzZ+s1PZ1H/Mu39ScPbsdmt0+PyC364b76Me+7pqT9qgRlJpfsfwdBgTpvdok4WOeSww
+ rczm0g5RGAMQv/A8K1K93oGeDR0btqtt9s43DEZgoDvZK73saFcAQ6N+RILo92iPaKxUF2pByzf
+ vAJF46XmOgcrAoaorzr0cN+GbZo36KmeB8etmQBI0r+h5SobmkPf7GOXOXPNzId1/EWmStLj24P
+ 4y690FG+yRJtqSf4SL5QanzBkhMcdBKSQXE74V9aT3POXegdeqKhRiq1/nZEt+y9+rVM2SU1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-22_06,2025-05-22_01,2025-03-28_01
+ definitions=2025-05-22_07,2025-05-22_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=834 spamscore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501
- adultscore=0 impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
- definitions=main-2505220134
+ mlxscore=0 spamscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0
+ adultscore=0 mlxlogscore=634 suspectscore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2505160000 definitions=main-2505220157
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250522_061709_792635_4DAD3406 
-X-CRM114-Status: GOOD (  19.00  )
+X-CRM114-CacheID: sfid-20250522_083325_396734_21EBB859 
+X-CRM114-Status: GOOD (  21.41  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,89 +130,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-In some scenarios, the firmware may be stopped before the interface is
-removed, either due to a crash or because the remoteproc (e.g., MPSS)
-is shut down early during system reboot or shutdown.
+On 5/22/2025 5:09 AM, Loic Poulain wrote:
+> When the firmware goes down, both RECOVERY and CRASH_FLUSH flags are set,
+> triggering a full recovery sequence once the firmware is back up. This
+> includes stopping and restarting the SNOC interface.
+> 
+> However, this sequence leads to an Unbalanced IRQ warning:
+> 
+> ------------[ cut here ]------------
+> Unbalanced enable for IRQ 112
+> WARNING: CPU: 2 PID: 120 at kernel/irq/manage.c:792 __enable_irq+0x4c/0x7c
+> CPU: 2 UID: 0 PID: 120 Comm: kworker/2:4 Not tainted [...] #234 PREEMPT
+> Hardware name: Qualcomm Technologies, Inc. Robotics RB1 (DT)
+> Workqueue: events_freezable ieee80211_restart_work
+> pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> pc : __enable_irq+0x4c/0x7c
+> lr : __enable_irq+0x4c/0x7c
+> sp : ffff800081b3bab0
+> [...]
+> Call trace:
+>  __enable_irq+0x4c/0x7c (P)
+>  enable_irq+0x48/0x9c
+>  ath10k_snoc_hif_start+0x6c/0x13c
+>  ath10k_core_start+0x360/0x1344
+>  ath10k_start+0x100/0x8fc
+>  drv_start+0x34/0x58
+>  ieee80211_reconfig+0xf4/0xfc0
+>  ieee80211_restart_work+0x110/0x17c
+>  process_one_work+0x150/0x294
+>  worker_thread+0x2dc/0x3dc
+>  kthread+0x130/0x204
+>  ret_from_fork+0x10/0x20
+> ---
 
-This leads to a delay during interface teardown, as the driver waits for
-a vdev delete response that never arrives, eventually timing out.
+this causes git to chop the description at this point, which also chops the
+tags, so remove it.
 
-Example (SNOC):
-$ echo stop > /sys/class/remoteproc/remoteproc0/state
-[ 71.64] remoteproc remoteproc0: stopped remote processor modem
-$ reboot
-[ 74.84] ath10k_snoc c800000.wifi: failed to transmit packet, dropping: -108
-[ 74.84] ath10k_snoc c800000.wifi: failed to submit frame: -108
-[...]
-[ 82.39] ath10k_snoc c800000.wifi: Timeout in receiving vdev delete response
+> 
+> This can be reproduced by restarting rmtfs or triggering remoteproc restart
+> via sysfs.
+> 
+> The root cause is that IRQs are not disabled during SNOC stop in recovery
+> scenarios, but are unconditionally re-enabled during SNOC start, leading to
+> an imbalance.
+> 
+> Fix this by skipping IRQ re-enablement in `ath10k_snoc_hif_start()` if a
+> firmware recovery is in progress, restoring IRQ state symmetry.
+> 
+> Fixes: 0e622f67e041 ("ath10k: add support for WCN3990 firmware crash recovery")
+> Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/snoc.c | 3 ++-
 
-To avoid this, skip waiting for the vdev delete response if the firmware is
-already marked as unreachable (`ATH10K_FLAG_CRASH_FLUSH`), similar to how
-`ath10k_mac_wait_tx_complete()` and `ath10k_vdev_setup_sync()` handle this case.
+My Qualcomm copyright checker flags:
+* drivers/net/wireless/ath/ath10k/snoc.c no QuIC copyright
 
-Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 32 ++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c61b95a928da..1df2617a82c0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1022,6 +1022,26 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
- 	return ar->last_wmi_vdev_start_status;
- }
- 
-+static inline int ath10k_vdev_delete_sync(struct ath10k *ar)
-+{
-+	unsigned long time_left;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	if (!test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map))
-+		return 0;
-+
-+	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags))
-+		return -ESHUTDOWN;
-+
-+	time_left = wait_for_completion_timeout(&ar->vdev_delete_done,
-+						ATH10K_VDEV_DELETE_TIMEOUT_HZ);
-+	if (time_left == 0)
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
- static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
- {
- 	struct cfg80211_chan_def *chandef = NULL;
-@@ -5900,7 +5920,6 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = (void *)vif->drv_priv;
- 	struct ath10k_peer *peer;
--	unsigned long time_left;
- 	int ret;
- 	int i;
- 
-@@ -5940,13 +5959,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to delete WMI vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
- 
--	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map)) {
--		time_left = wait_for_completion_timeout(&ar->vdev_delete_done,
--							ATH10K_VDEV_DELETE_TIMEOUT_HZ);
--		if (time_left == 0) {
--			ath10k_warn(ar, "Timeout in receiving vdev delete response\n");
--			goto out;
--		}
-+	ret = ath10k_vdev_delete_sync(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "Error in receiving vdev delete response: %d\n", ret);
-+		goto out;
- 	}
- 
- 	/* Some firmware revisions don't notify host about self-peer removal
--- 
-2.34.1
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index 866bad2db334..e15e1ab30458 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -937,7 +937,8 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
+>  
+>  	dev_set_threaded(ar->napi_dev, true);
+>  	ath10k_core_napi_enable(ar);
+> -	ath10k_snoc_irq_enable(ar);
+> +	if (!test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+> +		ath10k_snoc_irq_enable(ar);
+>  	ath10k_snoc_rx_post(ar);
+>  
+>  	clear_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags);
 
 
