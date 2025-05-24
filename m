@@ -4,85 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70172C54EDA
-	for <ath10k@archiver.kernel.org>; Fri, 23 May 2025 17:23:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F20D4C54F32
+	for <ath10k@archiver.kernel.org>; Sat, 24 May 2025 11:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:From:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=+L9RjaLh+JUJfV2DrKsGxGJ+0F3cQN9zcS4XZ0t5jHc=; b=TUGk9ovaamxCYTpjXRZuntP8Zl
-	05nPDBHC4uWZz1HQbq4b7ypy+XrVxH+73vNGzgwGeIU2a/d36w4vm4bgtUGs4j2IsDn3Kbiz/zr7F
-	GKwShqO9W69bfth0DN7GSg95FyllbpoO9UnLL0ZAoEoetLSP7loy7kEn88l4pTYxsfcxF8temL1NO
-	vM/MhL5fgvBtpgxTnisOb10X5BDnUu6Bl5KZEo6WIzHkp9VNkeVBGYOBh8c9snm8mgIR3aRpXlVOI
-	NygykdU3QBsq5W7NFFWpTZ5WqU4F3DPR6xl8zeWuWE8/iNeqcrMNcrUk92zQrEz0DxLFe1ArECoz1
-	0utgFC2A==;
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=AuL1lj5+r6l1nileRznb8GEE5TYQHgpOYBvPYyVMCQw=; b=kXvw3Pl+ZKU+dN5cnnvyC6eQtm
+	eERLPCCDTqjfAY/DUonRoXc6HhmOJzc6BVPoewf1wOYHbTl5RlTIqXnQCWTaXhnfVvZvWLP3BsPKq
+	QmGTjiNAt+fptAvLGUnbN9I/w+Xw4J1jDW40ophl8fVVHnInLZXjLfRm1RPXpthLbtveIuKqzSl46
+	tLs0VK07+rb7o5ex2R1FXiLkZKy1OBSFxCHCUZxQbEFkY1QBF7vMhRP0jWuj35vCEepp1c6PoklMC
+	TqGKnvd4ZrhogonJzQnhhubSKO35h1eTstE0Kr1Fucqh65grXdGZvN5QvB1TafofYam24c4jg1VWg
+	acl1tzvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIW7P-00000004Wmi-1oH3;
-	Fri, 23 May 2025 17:23:39 +0000
-Received: from mail-qt1-x82b.google.com ([2607:f8b0:4864:20::82b])
+	id 1uImdp-00000005lvD-2Hwr;
+	Sat, 24 May 2025 11:02:13 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIVs2-00000004UVv-1oKz
-	for ath10k@lists.infradead.org;
-	Fri, 23 May 2025 17:07:47 +0000
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-47690a4ec97so408071cf.2
-        for <ath10k@lists.infradead.org>; Fri, 23 May 2025 10:07:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748020064; x=1748624864; darn=lists.infradead.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+L9RjaLh+JUJfV2DrKsGxGJ+0F3cQN9zcS4XZ0t5jHc=;
-        b=feHLjm/q/X9asm1xCD7gI+9xFO55ahmxOQBKnJM/UlzAL9dVtOv2gXQFRaelfNGlni
-         ounenN1Ky3m8bWGapNzvuk606XUDBUYnXZfgw/ETbfwhSeHtzdrd8cwSiUhoC6cEdWIC
-         pN2cxxkN/0btk/dFBGtiISNewlRBVUpcXu7ZubpZOt5n/1rI/4J5KXkv/mlUccqCM1EQ
-         SBeYMfoikti8WbJQsqIagO2tk2yTvpZbuwcb6lgMouhmEzwplobz/YZpfUuYZ6a9xMiA
-         Jfi4A1c+kKLieuznZ+5v5XK30sSrDNvU1fyfLwMcNplJ6b77dploJTyoDnDyfDdMXat7
-         5EVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748020064; x=1748624864;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+L9RjaLh+JUJfV2DrKsGxGJ+0F3cQN9zcS4XZ0t5jHc=;
-        b=b1ojW0yy1jLgV7i5RWflqKJp5KUtd7jX/Ea7dsyrGkx75fZCozvceWzl/dZPhH3Hm+
-         LJXf+zLQZcPhx1JkBwuonadfzbLHCslkT/byycSOMMj0ntz6o9iXE9Dcee5EAAWv6TUp
-         KEZs6pNbhv4tJiiQbeefE5VMxtDIrM7WN/JHdxN7oWpbCFcQCaxCRbfCnC+aL0wpWV7h
-         +5xc8o7HB4NI3Me0AeBE2dos4x9XrS2KZ73p885QKKFTKoDWcEfYYCwgF88FusavqeYb
-         vlsSyOXMvC3sONzi0zjpB/cIEsliEc2XLxO+iKTpLgJllf1aLCmipbx+XwMZsfLG9xQU
-         DMjg==
-X-Gm-Message-State: AOJu0Ywd2rjAQmygDiUexO/00xcb1NJxKi1yFC3qgn+tpMy2fpMMShtc
-	/RnI7F9MJyt50M/gfPsCCJV479Q6+8AMQVsp2r40oKPapL9dKqM1UdQY/14k8Q==
-X-Gm-Gg: ASbGncsxJzGirmx1yMiPAANnYxHg/GNBLpt/HMyO31uubXJC1plZ53Wu2HfW/OOuL9l
-	X04Z6NykUw5gDJqfVJW4PNfcq22PFf+uAGMSs+n25L0zRnIO6nPx8fCWK3HFJ6tWG3rq6BFscy8
-	cDk1wQx4L1ISPxmMGOBBVgzwzjhsYeVUyhigj3tyjp1PK5UfOKI9LjHsxwrdSnCx9K73L4baXkO
-	qHGhvYeHYJxCQtgriU3UlOfA/dp67G/MM+ISyr0GSmBZDFRWvN5+Q+dLd9czGhHav8Lza2xsh5c
-	U+LCeBpihdhtrs6/F3kp1YbdOqV7c/8++MLcp8F8qGpgtSPJ6CgI
-X-Google-Smtp-Source: AGHT+IGgPOxi9NNuHjMWwQwXI36LImmPtDvHUNlZUV65+yoNyU4FyPAXyAUMx11p3lOaTyZaU11ZLQ==
-X-Received: by 2002:a05:622a:1f09:b0:494:a057:81a7 with SMTP id d75a77b69052e-494ae36c59dmr528162431cf.16.1748020064467;
-        Fri, 23 May 2025 10:07:44 -0700 (PDT)
-Received: from [10.201.20.170] ([71.181.84.66])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-49b8acabd14sm44023811cf.80.2025.05.23.10.07.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 May 2025 10:07:43 -0700 (PDT)
-Message-ID: <bd2f333e-28e3-46bb-8b2b-b61537ea6288@gmail.com>
-Date: Fri, 23 May 2025 10:07:40 -0700
+	id 1uImdY-00000005lrD-48do;
+	Sat, 24 May 2025 11:01:58 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id A4069A4EEAD;
+	Sat, 24 May 2025 11:01:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5130DC4CEE4;
+	Sat, 24 May 2025 11:01:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748084514;
+	bh=jsOFI/3l7DI68xEW1jpWooo+c55YFp/WUqSMUC7U6gc=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
+	b=FUTcZTb1+vcx4eQmPZq0637754gCIx1Js52QbIOBUvDcGX1cLJDouMHdbFVwvEFK1
+	 f/P1Xi7uyDYo/cPpvTbqcJm86nebUJE6RL8HRM+RikQxsUX79u6hQ62jT2xEFP2Tbu
+	 vOb/3P1D7xEPWiZdkQnrNvwYY+g1CfWTJgyWi9zuU+jK6Wp/KFHcBMsYHgXMUODh2S
+	 RBBq4E17tSFVH13MFamEDxNfBkwgD65pgmGc5rzqXLbnMwpT/1vlb70F0yrDGgCNxi
+	 /7ohF5gVgOzm/8aT5ZTzx2nSvyEdB17mNel+QloUiPUNK6JPwGsWZxaIP6wimhcJLf
+	 InKP0E/yrD4OA==
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-70e33252046so2060887b3.3;
+        Sat, 24 May 2025 04:01:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWGM5KZoAKRZfu73V0kGYvKxuQH55Ii+8kfZh/toC7swXe5Kxi1irFi4Ndtm4uJzUnDwprH2L5W@lists.infradead.org, AJvYcCWdq9flrxaLN4TO2r3NTGojqqopNMaOKCEe4HhhLS+xRLTSzEscyH5rI7aJLGgTcOXEBDxAaXE=@lists.infradead.org, AJvYcCX5AC94ykdXClbxytHkZRu06lnBhX5prQwP18cvhT8Ufz9nhTH/msz6UdIo8QyOGbfrIAyltgM2@lists.infradead.org
+X-Gm-Message-State: AOJu0YxXB7Pe7qWGGOcSxJbA/evJySgYCQIcnNQ6k2eJZ0xWvUUsIfT4
+	/hJq5/HSXjjGVnKCdlAiWcrHjiOqDsNtyztY9ceUMnsVAIONi7Ibq217gAX9dL3Cok5/7MXqRW6
+	AofFuwaRDlVMRJIji00fggxgdLNkRwds=
+X-Google-Smtp-Source: AGHT+IFJVdZ543r+wIyn2Imhhh/2TGC+yMudMhDw1/AM/qAFP+N7wR+LWtgSrHl5DYBkEaNMuQIbk3KltwcTmicgV7Y=
+X-Received: by 2002:a05:690c:921c:b0:70e:2fd7:de8 with SMTP id
+ 00721157ae682-70e2fd710d6mr10753577b3.29.1748084512607; Sat, 24 May 2025
+ 04:01:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: ath10k@lists.infradead.org
-Cc: "open list:MEDIATEK MT76 WIRELESS LAN DRIVER"
- <linux-wireless@vger.kernel.org>
-From: James Prestwood <prestwoj@gmail.com>
-Subject: DMA write/fault when 802.11w is enabled
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <fcfa4e63-e421-42d1-b6da-11d2d7d2dd95@oss.qualcomm.com>
+In-Reply-To: <fcfa4e63-e421-42d1-b6da-11d2d7d2dd95@oss.qualcomm.com>
+From: Josh Boyer <jwboyer@kernel.org>
+Date: Sat, 24 May 2025 07:01:41 -0400
+X-Gmail-Original-Message-ID: <CA+5PVA61i6upJES0Ex+fu=3te0nL5C6UsBzwdqqG71=D9cFz0w@mail.gmail.com>
+X-Gm-Features: AX0GCFtakdGE72uU9Nz4698nzxMe14QZAD3v4jd7XJvJegpl_2qLoV6ELz6n7T8
+Message-ID: <CA+5PVA61i6upJES0Ex+fu=3te0nL5C6UsBzwdqqG71=D9cFz0w@mail.gmail.com>
+Subject: Re: [PULL linux-firmware] ath10k, ath11k and ath12k firmware ath-20250523
+To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
+	ath12k@lists.infradead.org, jjohnson@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250523_100746_474547_05C3A684 
-X-CRM114-Status: UNSURE (   4.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250524_040157_088958_FE07BCD3 
+X-CRM114-Status: GOOD (  14.07  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,21 +83,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Merged and pushed out.
 
-After enabling 802.11w on some internal networks I noticed all of our 
-ath10k client devices now show this during and just after every 
-connection/roam. It started immediately after flipping to 802.11w on the 
-APs, for every client running ath10k.
+https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/561
 
-They are all running the QCA6174 hw3.2 WLAN.RM.4.4.1-00288-
+josh
 
-I don't see it causing any delays or issues in the connection or 
-afterwards, but it caught me off guard and was slightly concerning. 
-Anyone else notice this with 802.11w enabled on the QCA6174?
-
-kernel: DMAR: DRHD: handling fault status reg 2
-kernel: DMAR: [DMA Write NO_PASID] Request device [02:00.0] fault addr 
-0xffe4c000 [fault reason 0x05] PTE Write access is not set
-
+On Fri, May 23, 2025 at 1:08=E2=80=AFPM Jeff Johnson
+<jeff.johnson@oss.qualcomm.com> wrote:
+>
+> The following changes since commit 3fbaee2775a4a6d44021aa035823a7388b0874=
+fa:
+>
+>   Merge branch 'robot/pr-0-1747839277' into 'main' (2025-05-21 15:05:37 +=
+0000)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/ath/linux-firmware.git at=
+h-20250523
+>
+> for you to fetch changes up to 2e91d8c3c4bd34a27177180a38f62d3ba3c96031:
+>
+>   ath12k: WCN7850 hw2.0: update to WLAN.HMT.1.1.c5-00284.1-QCAHMTSWPL_V1.=
+0_V2.0_SILICONZ-3 (2025-05-23 09:50:02 -0700)
+>
+> ----------------------------------------------------------------
+>
+> This is an update to the WCN7850 firmware that fixes the widely reported
+> failures due to the prior version in ath-20250424.
+>
+> ----------------------------------------------------------------
+> Jeff Johnson (1):
+>       ath12k: WCN7850 hw2.0: update to WLAN.HMT.1.1.c5-00284.1-QCAHMTSWPL=
+_V1.0_V2.0_SILICONZ-3
+>
+>  WHENCE                        |   2 +-
+>  ath12k/WCN7850/hw2.0/amss.bin | Bin 6082624 -> 6078528 bytes
+>  2 files changed, 1 insertion(+), 1 deletion(-)
 
