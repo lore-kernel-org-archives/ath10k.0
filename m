@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F20D4C54F32
-	for <ath10k@archiver.kernel.org>; Sat, 24 May 2025 11:02:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A2BC61CE8
+	for <ath10k@archiver.kernel.org>; Thu,  5 Jun 2025 07:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AuL1lj5+r6l1nileRznb8GEE5TYQHgpOYBvPYyVMCQw=; b=kXvw3Pl+ZKU+dN5cnnvyC6eQtm
-	eERLPCCDTqjfAY/DUonRoXc6HhmOJzc6BVPoewf1wOYHbTl5RlTIqXnQCWTaXhnfVvZvWLP3BsPKq
-	QmGTjiNAt+fptAvLGUnbN9I/w+Xw4J1jDW40ophl8fVVHnInLZXjLfRm1RPXpthLbtveIuKqzSl46
-	tLs0VK07+rb7o5ex2R1FXiLkZKy1OBSFxCHCUZxQbEFkY1QBF7vMhRP0jWuj35vCEepp1c6PoklMC
-	TqGKnvd4ZrhogonJzQnhhubSKO35h1eTstE0Kr1Fucqh65grXdGZvN5QvB1TafofYam24c4jg1VWg
-	acl1tzvg==;
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=QWU9AnIxJQKMOisb1BDiMlvQQDXNqXsTmMeOBFi3Axo=; b=bsuuQac0dB3xJki14VxYEiFLLC
+	ptUgzxeb+o4psgkB7K+yEkP2jJsgqiZoI7THxqEfjuSEXWne68FrNa2jIH/Pe5rCWqiSKkssLRucI
+	q5X+k/DDbqIfN0BdvX8TQCTNr904PgBSKMjhfdpAUsqoxjfpNfX71Z10oeT7Gg/w9vPoNeaNbLF+c
+	XInQ02L8aTiQyPBwzTw4ahLGtCX/Jnv0zVQsT2CQY44AXLz0vUxwoNToGby9mshY9yhqYqnknNA4a
+	mNwjS/RfwlZm8RrXKiPiSdkTYAlUvybSTRoz4X/eKVYsM8v5gLjLWaXTarNB1uR/GUWWo/JU74/86
+	Qi/O19/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uImdp-00000005lvD-2Hwr;
-	Sat, 24 May 2025 11:02:13 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1uN5Ap-0000000Exdl-2nfB;
+	Thu, 05 Jun 2025 07:38:03 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uImdY-00000005lrD-48do;
-	Sat, 24 May 2025 11:01:58 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id A4069A4EEAD;
-	Sat, 24 May 2025 11:01:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5130DC4CEE4;
-	Sat, 24 May 2025 11:01:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748084514;
-	bh=jsOFI/3l7DI68xEW1jpWooo+c55YFp/WUqSMUC7U6gc=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
-	b=FUTcZTb1+vcx4eQmPZq0637754gCIx1Js52QbIOBUvDcGX1cLJDouMHdbFVwvEFK1
-	 f/P1Xi7uyDYo/cPpvTbqcJm86nebUJE6RL8HRM+RikQxsUX79u6hQ62jT2xEFP2Tbu
-	 vOb/3P1D7xEPWiZdkQnrNvwYY+g1CfWTJgyWi9zuU+jK6Wp/KFHcBMsYHgXMUODh2S
-	 RBBq4E17tSFVH13MFamEDxNfBkwgD65pgmGc5rzqXLbnMwpT/1vlb70F0yrDGgCNxi
-	 /7ohF5gVgOzm/8aT5ZTzx2nSvyEdB17mNel+QloUiPUNK6JPwGsWZxaIP6wimhcJLf
-	 InKP0E/yrD4OA==
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-70e33252046so2060887b3.3;
-        Sat, 24 May 2025 04:01:53 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWGM5KZoAKRZfu73V0kGYvKxuQH55Ii+8kfZh/toC7swXe5Kxi1irFi4Ndtm4uJzUnDwprH2L5W@lists.infradead.org, AJvYcCWdq9flrxaLN4TO2r3NTGojqqopNMaOKCEe4HhhLS+xRLTSzEscyH5rI7aJLGgTcOXEBDxAaXE=@lists.infradead.org, AJvYcCX5AC94ykdXClbxytHkZRu06lnBhX5prQwP18cvhT8Ufz9nhTH/msz6UdIo8QyOGbfrIAyltgM2@lists.infradead.org
-X-Gm-Message-State: AOJu0YxXB7Pe7qWGGOcSxJbA/evJySgYCQIcnNQ6k2eJZ0xWvUUsIfT4
-	/hJq5/HSXjjGVnKCdlAiWcrHjiOqDsNtyztY9ceUMnsVAIONi7Ibq217gAX9dL3Cok5/7MXqRW6
-	AofFuwaRDlVMRJIji00fggxgdLNkRwds=
-X-Google-Smtp-Source: AGHT+IFJVdZ543r+wIyn2Imhhh/2TGC+yMudMhDw1/AM/qAFP+N7wR+LWtgSrHl5DYBkEaNMuQIbk3KltwcTmicgV7Y=
-X-Received: by 2002:a05:690c:921c:b0:70e:2fd7:de8 with SMTP id
- 00721157ae682-70e2fd710d6mr10753577b3.29.1748084512607; Sat, 24 May 2025
- 04:01:52 -0700 (PDT)
+	id 1uN58h-0000000ExIr-1u7K
+	for ath10k@bombadil.infradead.org;
+	Thu, 05 Jun 2025 07:35:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Subject:To:From:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=QWU9AnIxJQKMOisb1BDiMlvQQDXNqXsTmMeOBFi3Axo=; b=MrJ8kT3kbrdL+bxDwy9OXfxBEA
+	SYPszSTYLKfmYWtyfF4gRnXqng+D5NC8pciEjm5u1HRLzKfSfF4+l2x2UQs5CON6D/lJUnoiOcojw
+	zrmgaPjjK7QIey71tfP0CKgiAquAY8rp0pztCyYdgQdGo9UbcA/k+OQwVpUhy/78EtQ3bP/x4d+0e
+	oZk/5ZeG8uAO9NzXE66InvlqILyl7T+8zV9UdIvpqoCV+GLVdwZtViPUPI+nDca0xpntGdw5CYqdM
+	dZ/vYKCCWvGf5/qIr0IP1ItUmUlA9BZ1+nhdaP0XlnGKmLILijow6xdYj4AKDAd/eEXxJVlU575Lq
+	Wi4Wylbw==;
+Received: from mail.negotix24.com ([37.187.55.31])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uN58e-0000000169e-0nAK
+	for ath10k@lists.infradead.org;
+	Thu, 05 Jun 2025 07:35:50 +0000
+Received: by mail.negotix24.com (Postfix, from userid 1002)
+	id E003E214E2; Thu,  5 Jun 2025 07:35:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=negotix24.com;
+	s=mail; t=1749108941;
+	bh=QWU9AnIxJQKMOisb1BDiMlvQQDXNqXsTmMeOBFi3Axo=;
+	h=Date:From:To:Subject:From;
+	b=O7YMKg8JJaZfGDfybcdQiIOZSDemMd2Nase4Rzx2JGrNZL145xY6N82EL8uC7fKe5
+	 Lz8n235s/2PLl0SJlGs1OGUxJBn+M5nSJoWvL+hsHAzxcVrp87fNByrNayurUodJai
+	 UjV80m3397ESdJcSuLtUq5mJcblmrn/+xivQXQpkO/ys8qxi4f3E/CAWxQDE2LKLxE
+	 agGqbWxQtoH9h0OIbg7FH7LEr9EYXkcwZKmks4yAFD3v1n2BuDMAF19Mvz6jUQKvYJ
+	 4QEr9xapo0UIC0s+f5UtzMBRSbAHqBBtxeUGcdKsNK5HODj1fiaFO5s7feC2KWEBgK
+	 iopBPRGIKjM6Q==
+Received: by mail.negotix24.com for <ath10k@lists.infradead.org>; Thu,  5 Jun 2025 07:35:40 GMT
+Message-ID: <20250605064500-0.1.29.7ms4.0.c6spdex5sm@negotix24.com>
+Date: Thu,  5 Jun 2025 07:35:40 GMT
+From: "Dillon Duggan" <dillon.duggan@negotix24.com>
+To: <ath10k@lists.infradead.org>
+Subject: Enhance Your Product Line
+X-Mailer: mail.negotix24.com
 MIME-Version: 1.0
-References: <fcfa4e63-e421-42d1-b6da-11d2d7d2dd95@oss.qualcomm.com>
-In-Reply-To: <fcfa4e63-e421-42d1-b6da-11d2d7d2dd95@oss.qualcomm.com>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Sat, 24 May 2025 07:01:41 -0400
-X-Gmail-Original-Message-ID: <CA+5PVA61i6upJES0Ex+fu=3te0nL5C6UsBzwdqqG71=D9cFz0w@mail.gmail.com>
-X-Gm-Features: AX0GCFtakdGE72uU9Nz4698nzxMe14QZAD3v4jd7XJvJegpl_2qLoV6ELz6n7T8
-Message-ID: <CA+5PVA61i6upJES0Ex+fu=3te0nL5C6UsBzwdqqG71=D9cFz0w@mail.gmail.com>
-Subject: Re: [PULL linux-firmware] ath10k, ath11k and ath12k firmware ath-20250523
-To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
-	ath12k@lists.infradead.org, jjohnson@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250524_040157_088958_FE07BCD3 
-X-CRM114-Status: GOOD (  14.07  )
+X-CRM114-CacheID: sfid-20250605_083548_646896_781BEDC6 
+X-CRM114-Status: UNSURE (   1.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,42 +82,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Merged and pushed out.
+Hello,
 
-https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/561
+We are seeing a growing interest in the dropshipping model of our mattres=
+ses - it is an effective way to run a business without having to maintain=
+ your own stock, organize transport or shipping services.
 
-josh
+Your role is limited to acquiring customers, while we take over all the o=
+ther duties.
 
-On Fri, May 23, 2025 at 1:08=E2=80=AFPM Jeff Johnson
-<jeff.johnson@oss.qualcomm.com> wrote:
->
-> The following changes since commit 3fbaee2775a4a6d44021aa035823a7388b0874=
-fa:
->
->   Merge branch 'robot/pr-0-1747839277' into 'main' (2025-05-21 15:05:37 +=
-0000)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/ath/linux-firmware.git at=
-h-20250523
->
-> for you to fetch changes up to 2e91d8c3c4bd34a27177180a38f62d3ba3c96031:
->
->   ath12k: WCN7850 hw2.0: update to WLAN.HMT.1.1.c5-00284.1-QCAHMTSWPL_V1.=
-0_V2.0_SILICONZ-3 (2025-05-23 09:50:02 -0700)
->
-> ----------------------------------------------------------------
->
-> This is an update to the WCN7850 firmware that fixes the widely reported
-> failures due to the prior version in ath-20250424.
->
-> ----------------------------------------------------------------
-> Jeff Johnson (1):
->       ath12k: WCN7850 hw2.0: update to WLAN.HMT.1.1.c5-00284.1-QCAHMTSWPL=
-_V1.0_V2.0_SILICONZ-3
->
->  WHENCE                        |   2 +-
->  ath12k/WCN7850/hw2.0/amss.bin | Bin 6082624 -> 6078528 bytes
->  2 files changed, 1 insertion(+), 1 deletion(-)
+Additionally, we offer comprehensive sales and marketing support, which s=
+ignificantly accelerates the achievement of measurable financial results.
+
+Would you be interested in learning about the full offer of our partnersh=
+ip program? I will be happy to present all the benefits during a short co=
+nversation.
+
+
+Best regards
+Dillon Duggan
 
