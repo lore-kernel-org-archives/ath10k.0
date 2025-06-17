@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B2FEC71136
-	for <ath10k@archiver.kernel.org>; Tue, 17 Jun 2025 12:42:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2768C71136
+	for <ath10k@archiver.kernel.org>; Tue, 17 Jun 2025 12:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=PRkt1GN29Y4MfOD6Ai5CPr029+IM2RJCJEc/r84lt+c=; b=ehkSxKEkXE2zNXYsRQKohnSSG1
-	9fFoRETrwbLwjEMHjEqtX5LpQqxQ+lQQQkkoSvLGnYrL5T8GP6miEpWCbJxU61SFjwtUR67tZV0MP
-	w2NmoCNb7LU+YZu8JRk7Q7Rz7htCaN3boMfLPSbnhMIVgnned+ZcGXKxqyW0o3eIKiYbdVW+A1WrC
-	WY7krxk6xGAWbQzHHljaWq8R20IOsHnQooZHTdyVKGySj9y7iiNdxK9F8foamYq/r7HEFfJ/glNiN
-	lFpgbqx0BcWEqrpudR6LGKWVDDYgFIFrugyAeTMTDBkqBGhJ00oTfAzXWHYv+z7xe4f74i2IW5UWe
-	arrtFUxA==;
+	bh=eo8pB+r1Vgs9mDu7a1Y9ODuiaGkK1TG5ghNeRoNu7cc=; b=IP8nkp6CL5kKtFdmt3PQt6SmFf
+	bkl3T62guC7T2m1rQjUH6X+7+1Cz7WuZ7lnsjphad7r7msF3RMfL17yZaz74WFxmryVoPJJYrCYPE
+	GjInb1Y3Jo6gm6RBQDMbmzNlHZxg4qr0qzs7lE9dVGvg0WriUHOZR2WHvOl3K4ztycHCYB/EMocJk
+	m/OSiOxJ17Q2YPWrfXT0+P78Lo5ONhKzkKM+8eJk5Yx75tQxGiA0ULFlIc4QAkyD4YtKjuOR/AUtG
+	6qXJO9R4t6C/fA8JnBxYuBVbyJqqzJPzEoSb3epmjD8D2QcRd3UNe2XurrINfwCU2XQdKoGM85dpD
+	UruURF8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRVeG-00000007DXJ-0dgJ;
-	Tue, 17 Jun 2025 12:42:44 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1uRVeH-00000007DYn-2fQ5;
+	Tue, 17 Jun 2025 12:42:45 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRVKY-00000007AfG-0HLj
+	id 1uRVKw-00000007AhU-1J6x
 	for ath10k@lists.infradead.org;
-	Tue, 17 Jun 2025 12:22:22 +0000
+	Tue, 17 Jun 2025 12:22:47 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 39DA7629F9;
-	Tue, 17 Jun 2025 12:22:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BDC4C4CEE3;
-	Tue, 17 Jun 2025 12:22:19 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 42DDD5C6663;
+	Tue, 17 Jun 2025 12:20:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A5CC4CEF0;
+	Tue, 17 Jun 2025 12:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750162940;
-	bh=zjVpP8xlXZprEOx6Ge5vzFxJC4jzf/M6qqSN+ugLKhQ=;
+	s=k20201202; t=1750162965;
+	bh=UJpfuz8qKAq6VflhBGYZWv+qIDDIElL/udp0ZibVWnI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MTmiCwBVjj8YSbPlSBCUoeLI6XsTJup6yXi7DV5UWXKbpXlEBCwHAP904cYCfIhB3
-	 +JxLEB2QrLq42efy4GB+rnTjlTjwbEgNmh/kQ2b3g/5fJFYl/rDvxzELFfpCNLOTxe
-	 Cfkdo/6coz7RJdogz+kP5Spq12Pprk48OSmCT/y8vdeSuPxyyaW8/x8w7SJvx8rivb
-	 pB0CY5WCnU74mCqokOocyKeaLLnDDvSC47y9GFNA1+M0kjdhSjKRampmePDHlk4zjM
-	 nLR7jNklK5qw44suI8YBqGrVTmZGR6tUMSd3/kJ+dEw0R76NijLDt+GeQaM7kG5ei1
-	 BghRs5Vjb441g==
+	b=IdUz+jdoS6YnIlsS9JvQjvaHPUpVAR+ObZh/q2G0sjQZUs2OJn0JxEoOEU2Tvkihq
+	 xUZMEZQ37hJnaODHBXzrTAOgKWX3WBTR/fk/3nVmLB5KxKCV4X9IsRzzTcXnip/ofn
+	 ZVujJ47H6M3vAzoNfRPutBA2YWZk6TijDUg1EjaLgTjpwIH1b+gJRWYmhFH9a5GhFJ
+	 CYvKXONr1MSsDZV3AYHJkEB2PYS3fNF4gv/fQWSuDe2EE5mVcleNM9UZtDS8OTHj5f
+	 /rKRBkD/vHJ2jgFYEMj0BztAbZedmii+cgJQqVGnSlb1oRSQZh4XYAlnnA58BdxCQM
+	 GkEgN1vo3IZYA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -51,17 +51,20 @@ Cc: Loic Poulain <loic.poulain@oss.qualcomm.com>,
 	jjohnson@kernel.org,
 	linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.15 15/15] wifi: ath10k: Avoid vdev delete timeout when firmware is already down
-Date: Tue, 17 Jun 2025 08:21:45 -0400
-Message-Id: <20250617122147.1968355-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 12/12] wifi: ath10k: Avoid vdev delete timeout when firmware is already down
+Date: Tue, 17 Jun 2025 08:22:21 -0400
+Message-Id: <20250617122222.1968832-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250617122147.1968355-1-sashal@kernel.org>
-References: <20250617122147.1968355-1-sashal@kernel.org>
+In-Reply-To: <20250617122222.1968832-1-sashal@kernel.org>
+References: <20250617122222.1968832-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.15.2
+X-stable-base: Linux 6.12.33
 Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250617_052246_446987_3DCE5B17 
+X-CRM114-Status: GOOD (  22.83  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,7 +160,7 @@ the expected response.
  1 file changed, 25 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c61b95a928dac..71a354f6b6e66 100644
+index 6b467696bc982..125d8ff0ab5c0 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
 @@ -4,6 +4,7 @@
