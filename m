@@ -4,110 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4047C71135
-	for <ath10k@archiver.kernel.org>; Fri, 13 Jun 2025 13:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B2FEC71136
+	for <ath10k@archiver.kernel.org>; Tue, 17 Jun 2025 12:42:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6eKtgM9vr74wvYivbQKkfWU15SlC67xuKSLL1mDKqTU=; b=tQNaIL3WFOWtkuqP7Rr/5c8jwi
-	ZY5bbswcMbz/AT2SUsuSV+jlSA9mvvxFM+TbGQubp4NfynChALOuG/r99fuOh1qz11sW2fhF1eVEF
-	WZmz95T0y84Q9G9f+fkmnAfTISXEpo+iTDRtkFaz4VY8WAfXrWdFZfP0vMIHsD+bZn9Mk87Us+gm4
-	/iRD102BO/1WNjooAeYLekhpom1uXbnL7NFShSwbiWm2BI0GBoXJYAHQ6beXFB3T9+FL4SBDhoEXn
-	p0TjEQ9GRnUJNBfrsXMaB9ONPUAzyhGmHYgXzl7qfkMxdaXLfdzZb5c5lh2nYlOWRhJLbBP0+jQOh
-	XeJ+8Z4w==;
+	bh=PRkt1GN29Y4MfOD6Ai5CPr029+IM2RJCJEc/r84lt+c=; b=ehkSxKEkXE2zNXYsRQKohnSSG1
+	9fFoRETrwbLwjEMHjEqtX5LpQqxQ+lQQQkkoSvLGnYrL5T8GP6miEpWCbJxU61SFjwtUR67tZV0MP
+	w2NmoCNb7LU+YZu8JRk7Q7Rz7htCaN3boMfLPSbnhMIVgnned+ZcGXKxqyW0o3eIKiYbdVW+A1WrC
+	WY7krxk6xGAWbQzHHljaWq8R20IOsHnQooZHTdyVKGySj9y7iiNdxK9F8foamYq/r7HEFfJ/glNiN
+	lFpgbqx0BcWEqrpudR6LGKWVDDYgFIFrugyAeTMTDBkqBGhJ00oTfAzXWHYv+z7xe4f74i2IW5UWe
+	arrtFUxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uQ41P-0000000GRKP-1Zo6;
-	Fri, 13 Jun 2025 13:00:39 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uRVeG-00000007DXJ-0dgJ;
+	Tue, 17 Jun 2025 12:42:44 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uQ414-0000000GRGY-0Nif
+	id 1uRVKY-00000007AfG-0HLj
 	for ath10k@lists.infradead.org;
-	Fri, 13 Jun 2025 13:00:19 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55D83Qxw027165
-	for <ath10k@lists.infradead.org>; Fri, 13 Jun 2025 13:00:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	6eKtgM9vr74wvYivbQKkfWU15SlC67xuKSLL1mDKqTU=; b=boyWahHnWr06MmQj
-	Tp3Qgwtd2Aa8rgamMBWFVB9MXwXuz2m+8qAB/ZnD44Lva8s+SjFomrXe1P59St9z
-	8Shm7j9xK0eave+vRMvm6G51hrIq4r92xw4u39MblxbdQ+g4crVbswtt/1yKH4AZ
-	OSQyF2KNi7X3b/FaF28JsryyNLkSKXXLj0oTVgcT1BAKsnS4/4r3pKgg8VI63n2P
-	wZBUYNLrFbdk3oPHfp5a0zdSwVoBVL7pd9pvvPwrH2hVc1wGpbdLZDm/fVTE+dj8
-	xsYI0r/i8kaPGQt4mJrX7ELW8ukMe7yNRDSJWdq1Rj+WXOk5NYZFP6Tgn3ZYHpL9
-	xwDPvQ==
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 474ccvkg7q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Fri, 13 Jun 2025 13:00:16 +0000 (GMT)
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4a6f6d07bb0so47758561cf.1
-        for <ath10k@lists.infradead.org>; Fri, 13 Jun 2025 06:00:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749819615; x=1750424415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6eKtgM9vr74wvYivbQKkfWU15SlC67xuKSLL1mDKqTU=;
-        b=DL430Mhe4iubbbPQF2Al0ufc0Vau8hYdGQNWS43k3pgfHPKRF8gxohlzIaBQP9dRfj
-         bki43TK+EaZP7UmrphqPxZ05c4Dpwey53+3K6upjrv1hzNgebi2m9e7IT4x0rY4iEBo1
-         0alI8chsEVOPP9xlKK1kPUV4gtpkEtGpykE4UE1JLpDev/pyh4R5yB88zlLW/ZBijhe8
-         bc7JCduX2xeerggh9ZDv4lVefhcKh8rMso+J19aYd4tOpLK5XBHw9hrm2UykswCdHGSK
-         Dluvdf1P9iW+bv05vgKhtfWQoXjchdJ0ktNCsTm9vUqg+hZ2lbscAP4R19zIhEDOha7I
-         9W3Q==
-X-Gm-Message-State: AOJu0YwartfsAFWzsu+YYIM3GDDEd1vKk0yUR7Kvyd00VMOxtj1wXC14
-	WQ1xqqxpYlZySzhd30TN4x7qOYbBQss3dS0EoWX0mHwZjBO+k5TM0n98Kv9GnYc05SH724R2eBB
-	DnvgPhyUpzzJ5V/iJWRdwjySaPhdefvxEinxBaOR7pbvSaECsLwP7ohyn46zeUKbm4RVeo4MKup
-	fN5UVwydgajU1uc2QTCmj3HnKTLe+wnw/e/u6xGuk=
-X-Gm-Gg: ASbGncsS0A3xmopztLbqO2YuacVjhVOpYtTYpvmMRbnANrYvvqNiAZ2/uIV0wlre4XT
-	1G3AXp0uHsl0g8oKWjw0HBrDbltOD5trXtWeXI8FlDKPBcqGDF4s/X2WQmhc7HRO3L4yjOOQbCY
-	ip2I11
-X-Received: by 2002:a05:622a:191c:b0:4a6:f81a:4443 with SMTP id d75a77b69052e-4a72febff3emr46139601cf.5.1749819615177;
-        Fri, 13 Jun 2025 06:00:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHXhNG6pAdisKV7R1YfNX3Tz29W+wdEkFARPRWMHpVrGeJOR7PMTBJg1AXBwf9frl/H7mWHUApAgcQdcqI1ZPA=
-X-Received: by 2002:a05:622a:191c:b0:4a6:f81a:4443 with SMTP id
- d75a77b69052e-4a72febff3emr46130171cf.5.1749819609968; Fri, 13 Jun 2025
- 06:00:09 -0700 (PDT)
+	Tue, 17 Jun 2025 12:22:22 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 39DA7629F9;
+	Tue, 17 Jun 2025 12:22:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BDC4C4CEE3;
+	Tue, 17 Jun 2025 12:22:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750162940;
+	bh=zjVpP8xlXZprEOx6Ge5vzFxJC4jzf/M6qqSN+ugLKhQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=MTmiCwBVjj8YSbPlSBCUoeLI6XsTJup6yXi7DV5UWXKbpXlEBCwHAP904cYCfIhB3
+	 +JxLEB2QrLq42efy4GB+rnTjlTjwbEgNmh/kQ2b3g/5fJFYl/rDvxzELFfpCNLOTxe
+	 Cfkdo/6coz7RJdogz+kP5Spq12Pprk48OSmCT/y8vdeSuPxyyaW8/x8w7SJvx8rivb
+	 pB0CY5WCnU74mCqokOocyKeaLLnDDvSC47y9GFNA1+M0kjdhSjKRampmePDHlk4zjM
+	 nLR7jNklK5qw44suI8YBqGrVTmZGR6tUMSd3/kJ+dEw0R76NijLDt+GeQaM7kG5ei1
+	 BghRs5Vjb441g==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Loic Poulain <loic.poulain@oss.qualcomm.com>,
+	Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
+	Sasha Levin <sashal@kernel.org>,
+	jjohnson@kernel.org,
+	linux-wireless@vger.kernel.org,
+	ath10k@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.15 15/15] wifi: ath10k: Avoid vdev delete timeout when firmware is already down
+Date: Tue, 17 Jun 2025 08:21:45 -0400
+Message-Id: <20250617122147.1968355-15-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250617122147.1968355-1-sashal@kernel.org>
+References: <20250617122147.1968355-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20250610095455.1443-1-kang.yang@oss.qualcomm.com>
-In-Reply-To: <20250610095455.1443-1-kang.yang@oss.qualcomm.com>
-From: Loic Poulain <loic.poulain@oss.qualcomm.com>
-Date: Fri, 13 Jun 2025 14:59:58 +0200
-X-Gm-Features: AX0GCFuLIWwZKM6UXeyyTu0fXzTOnTClBNkqGI5RIWNfgcxN0MiSPe6rLnnSSvQ
-Message-ID: <CAFEp6-2VOQRdYCzW1gjr71L0LZrYK5DFocUGnNoSuvAiQ32CDg@mail.gmail.com>
-Subject: Re: [PATCH ath-next] wifi: ath10k: shutdown driver when hardware is unreliable
-To: Kang Yang <kang.yang@oss.qualcomm.com>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-ORIG-GUID: NuGBWoyKxY9mfOaJU9cszgGi9o5xZjyD
-X-Authority-Analysis: v=2.4 cv=TsLmhCXh c=1 sm=1 tr=0 ts=684c20e0 cx=c_pps
- a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10
- a=EUspDBNiAAAA:8 a=PHlRw_kzcNOPMu9nZAsA:9 a=QEXdDO2ut3YA:10
- a=dawVfQjAaf238kedN5IG:22
-X-Proofpoint-GUID: NuGBWoyKxY9mfOaJU9cszgGi9o5xZjyD
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjEzMDA5NCBTYWx0ZWRfX0xYaUzG/KzLl
- caf8IGvjLwD2TzqRvCIFu31g2XBGXGmoPWMqBuO18unHXHLkuOATAUiUmImZgtkV6szHoy4kemG
- ptXjkxFJeby9y0fRaxpvzSJbzPfTi1Rx4Fwp9WAC46kfEV5Wuu0vj92epVoW2vOAs0gORUi+7nJ
- zGmNS61PtTosnNZaJ+fLsZ7f4OWf1KdgvomKHkOOgz2RTqBCza9ogSP8317UzNBLn/5a8Ea8wfk
- maDZHPikjA7bbLwbTT4dViNN6TyhIOl2mPTpCSw2lns4xr4/iC+OnAwnaemld6RNlDiy18bx0Nv
- z8NFymPHzlhWi2ZL4HjprWbOzRwrNdunkWLyd1cT92GeeXdrJsfa93I47rv2vjiJnu+xJRVbihv
- l2wYUQhD/PsKwMDICdtxK78MyoUrF3f40qR/K23yaY0dKMXhEyuEzTysEenAFJoBrqCaHF1K
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-13_01,2025-06-12_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 impostorscore=0
- priorityscore=1501 bulkscore=0 adultscore=0 clxscore=1015 mlxscore=0
- malwarescore=0 lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a
- authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2505280000 definitions=main-2506130094
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250613_060018_143513_78E09AFF 
-X-CRM114-Status: GOOD (  33.08  )
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.15.2
+Content-Transfer-Encoding: 8bit
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,198 +76,152 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Kang,
+From: Loic Poulain <loic.poulain@oss.qualcomm.com>
 
+[ Upstream commit dc9c4252fe0d7a7f1ee904405ea91534277305bf ]
 
-On Tue, Jun 10, 2025 at 11:55=E2=80=AFAM Kang Yang <kang.yang@oss.qualcomm.=
-com> wrote:
->
-> In rare cases, ath10k may lose connection with the PCIe bus due to
-> some unknown reasons, which could further lead to system crashes during
-> resuming due to watchdog timeout:
->
-> ath10k_pci 0000:01:00.0: wmi command 20486 timeout, restarting hardware
-> ath10k_pci 0000:01:00.0: already restarting
-> ath10k_pci 0000:01:00.0: failed to stop WMI vdev 0: -11
-> ath10k_pci 0000:01:00.0: failed to stop vdev 0: -11
-> ieee80211 phy0: PM: **** DPM device timeout ****
-> Call Trace:
->  panic+0x125/0x315
->  dpm_watchdog_set+0x54/0x54
->  dpm_watchdog_handler+0x57/0x57
->  call_timer_fn+0x31/0x13c
->
-> At this point, all WMI commands will timeout and attempt to restart
-> device. So set a threshold for consecutive restart failures. If the
-> threshold is exceeded, consider the hardware is unreliable and all
-> ath10k operations should be skipped to avoid system crash.
->
-> fail_cont_count and pending_recovery are atomic variables, and
-> do not involve complex conditional logic. Therefore, even if recovery
-> check and reconfig complete are executed concurrently, the recovery
-> mechanism will not be broken.
->
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00288-QCARMSWPZ-1
->
-> Signed-off-by: Kang Yang <kang.yang@oss.qualcomm.com>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c | 50 +++++++++++++++++++++++---
->  drivers/net/wireless/ath/ath10k/core.h | 11 ++++--
->  drivers/net/wireless/ath/ath10k/mac.c  |  7 +++-
->  drivers/net/wireless/ath/ath10k/wmi.c  |  6 ++++
->  4 files changed, 65 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireles=
-s/ath/ath10k/core.c
-> index fe3a8f4a1cc1..f925a3cf9ebd 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -4,6 +4,7 @@
->   * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
->   * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
->   * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights r=
-eserved.
-> + * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
->   */
->
->  #include <linux/module.h>
-> @@ -2491,12 +2492,51 @@ static int ath10k_init_hw_params(struct ath10k *a=
-r)
->         return 0;
->  }
->
-> +static bool ath10k_core_needs_recovery(struct ath10k *ar)
-> +{
-> +       long time_left;
-> +
-> +       /* Sometimes the recovery will fail and then the next all recover=
-y fail,
-> +        * so avoid infinite recovery.
-> +        */
-> +       if (atomic_read(&ar->fail_cont_count) >=3D ATH10K_RECOVERY_MAX_FA=
-IL_COUNT) {
-> +               ath10k_err(ar, "consecutive fail %d times, will shutdown =
-driver!",
-> +                          atomic_read(&ar->fail_cont_count));
-> +               ar->state =3D ATH10K_STATE_WEDGED;
-> +               return false;
-> +       }
-> +
-> +       ath10k_dbg(ar, ATH10K_DBG_BOOT, "total recovery count: %d",
+In some scenarios, the firmware may be stopped before the interface is
+removed, either due to a crash or because the remoteproc (e.g., MPSS)
+is shut down early during system reboot or shutdown.
 
-You don't need a newline.
+This leads to a delay during interface teardown, as the driver waits for
+a vdev delete response that never arrives, eventually timing out.
 
-> +                  ++ar->recovery_count);
-> +
-> +       if (atomic_read(&ar->pending_recovery)) {
-> +               /* Sometimes it happened another recovery work before the=
- previous one
-> +                * completed, then the second recovery work will destroy =
-the previous
-> +                * one, thus below is to avoid that.
-> +                */
-> +               time_left =3D wait_for_completion_timeout(&ar->driver_rec=
-overy,
-> +                                                       ATH10K_RECOVERY_T=
-IMEOUT_HZ);
-> +               if (time_left) {
-> +                       ath10k_warn(ar, "previous recovery succeeded, ski=
-p this!\n");
-> +                       return false;
-> +               }
-> +
-> +               /* Record the continuous recovery fail count when recover=
-y failed. */
-> +               atomic_inc(&ar->fail_cont_count);
-> +
-> +               /* Avoid having multiple recoveries at the same time. */
-> +               return false;
-> +       }
-> +
-> +       atomic_inc(&ar->pending_recovery);
-> +
-> +       return true;
-> +}
-> +
->  void ath10k_core_start_recovery(struct ath10k *ar)
->  {
-> -       if (test_and_set_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags)) {
-> -               ath10k_warn(ar, "already restarting\n");
-> +       if (!ath10k_core_needs_recovery(ar))
->                 return;
-> -       }
->
->         queue_work(ar->workqueue, &ar->restart_work);
->  }
-> @@ -2532,6 +2572,8 @@ static void ath10k_core_restart(struct work_struct =
-*work)
->         struct ath10k *ar =3D container_of(work, struct ath10k, restart_w=
-ork);
->         int ret;
->
-> +       reinit_completion(&ar->driver_recovery);
-> +
->         set_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
->
->         /* Place a barrier to make sure the compiler doesn't reorder
-> @@ -2596,8 +2638,6 @@ static void ath10k_core_restart(struct work_struct =
-*work)
->         if (ret)
->                 ath10k_warn(ar, "failed to send firmware crash dump via d=
-evcoredump: %d",
->                             ret);
-> -
-> -       complete(&ar->driver_recovery);
->  }
->
->  static void ath10k_core_set_coverage_class_work(struct work_struct *work=
-)
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireles=
-s/ath/ath10k/core.h
-> index 446dca74f06a..06ac95707531 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -4,6 +4,7 @@
->   * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
->   * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
->   * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserv=
-ed.
-> + * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
->   */
->
->  #ifndef _CORE_H_
-> @@ -87,6 +88,8 @@
->                                   IEEE80211_IFACE_SKIP_SDATA_NOT_IN_DRIVE=
-R)
->  #define ATH10K_ITER_RESUME_FLAGS (IEEE80211_IFACE_ITER_RESUME_ALL |\
->                                   IEEE80211_IFACE_SKIP_SDATA_NOT_IN_DRIVE=
-R)
-> +#define ATH10K_RECOVERY_TIMEOUT_HZ                     (5 * HZ)
-> +#define ATH10K_RECOVERY_MAX_FAIL_COUNT                 4
->
->  struct ath10k;
->
-> @@ -865,9 +868,6 @@ enum ath10k_dev_flags {
->         /* Per Station statistics service */
->         ATH10K_FLAG_PEER_STATS,
->
-> -       /* Indicates that ath10k device is during recovery process and no=
-t complete */
-> -       ATH10K_FLAG_RESTARTING,
-> -
->         /* protected by conf_mutex */
->         ATH10K_FLAG_NAPI_ENABLED,
->  };
-> @@ -1211,6 +1211,11 @@ struct ath10k {
->         struct work_struct bundle_tx_work;
->         struct work_struct tx_complete_work;
->
-> +       atomic_t pending_recovery;
-> +       u8 recovery_count;
+Example (SNOC):
+$ echo stop > /sys/class/remoteproc/remoteproc0/state
+[ 71.64] remoteproc remoteproc0: stopped remote processor modem
+$ reboot
+[ 74.84] ath10k_snoc c800000.wifi: failed to transmit packet, dropping: -108
+[ 74.84] ath10k_snoc c800000.wifi: failed to submit frame: -108
+[...]
+[ 82.39] ath10k_snoc c800000.wifi: Timeout in receiving vdev delete response
 
-No reason to be a u8 IMO, use unsigned int.
+To avoid this, skip waiting for the vdev delete response if the firmware is
+already marked as unreachable (`ATH10K_FLAG_CRASH_FLUSH`), similar to how
+`ath10k_mac_wait_tx_complete()` and `ath10k_vdev_setup_sync()` handle this case.
 
-> +       /* continuous recovery fail count */
-> +       atomic_t fail_cont_count;
-> +
+Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
+Link: https://patch.msgid.link/20250522131704.612206-1-loic.poulain@oss.qualcomm.com
+Signed-off-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+
+Based on my analysis of the commit and code changes:
+
+**YES**
+
+This commit should be backported to stable kernel trees for the
+following reasons:
+
+1. **It fixes a real-world bug**: The commit addresses a specific issue
+   where the driver waits for a vdev delete response that will never
+   arrive when the firmware has already crashed or been stopped. This
+   causes a 5-second timeout delay during interface teardown, which is a
+   user-visible problem.
+
+2. **Clear reproduction scenario**: The commit provides a concrete
+   example showing how the issue manifests in SNOC (Snapdragon) systems
+   when remoteproc is stopped before interface removal during system
+   shutdown/reboot.
+
+3. **Minimal and safe change**: The fix is small and follows established
+   patterns within the driver:
+   - It introduces `ath10k_vdev_delete_sync()` that mirrors the existing
+     `ath10k_vdev_setup_sync()` function
+   - Both functions check `ATH10K_FLAG_CRASH_FLUSH` before waiting,
+     which is the standard way the driver handles firmware crash
+     scenarios
+   - The change is localized to the vdev delete path and doesn't
+     introduce new behavior, just skips unnecessary waiting
+
+4. **Prevents user-facing delays**: Without this fix, users experience
+   unnecessary 5-second delays during system shutdown/reboot or when the
+   firmware crashes, which degrades the user experience.
+
+5. **Follows established patterns**: The fix uses the same approach as
+   other parts of the driver (`ath10k_vdev_setup_sync()` and
+   `ath10k_mac_wait_tx_complete()`) that already check
+   `ATH10K_FLAG_CRASH_FLUSH` to avoid waiting for responses from a
+   crashed firmware.
+
+6. **Low regression risk**: The change only affects the error path when
+   firmware is already marked as crashed. In normal operation when
+   firmware is responsive, the behavior remains unchanged.
+
+The commit is similar in nature to the historical commit #5 which was
+marked as suitable for backporting - both deal with avoiding unnecessary
+waits/timeouts when the firmware state makes it impossible to receive
+the expected response.
+
+ drivers/net/wireless/ath/ath10k/mac.c | 33 ++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c61b95a928dac..71a354f6b6e66 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4,6 +4,7 @@
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
+  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+  * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+  */
+ 
+ #include "mac.h"
+@@ -1022,6 +1023,26 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
+ 	return ar->last_wmi_vdev_start_status;
+ }
+ 
++static inline int ath10k_vdev_delete_sync(struct ath10k *ar)
++{
++	unsigned long time_left;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	if (!test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map))
++		return 0;
++
++	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags))
++		return -ESHUTDOWN;
++
++	time_left = wait_for_completion_timeout(&ar->vdev_delete_done,
++						ATH10K_VDEV_DELETE_TIMEOUT_HZ);
++	if (time_left == 0)
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
+ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
+ {
+ 	struct cfg80211_chan_def *chandef = NULL;
+@@ -5900,7 +5921,6 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 	struct ath10k *ar = hw->priv;
+ 	struct ath10k_vif *arvif = (void *)vif->drv_priv;
+ 	struct ath10k_peer *peer;
+-	unsigned long time_left;
+ 	int ret;
+ 	int i;
+ 
+@@ -5940,13 +5960,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 		ath10k_warn(ar, "failed to delete WMI vdev %i: %d\n",
+ 			    arvif->vdev_id, ret);
+ 
+-	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map)) {
+-		time_left = wait_for_completion_timeout(&ar->vdev_delete_done,
+-							ATH10K_VDEV_DELETE_TIMEOUT_HZ);
+-		if (time_left == 0) {
+-			ath10k_warn(ar, "Timeout in receiving vdev delete response\n");
+-			goto out;
+-		}
++	ret = ath10k_vdev_delete_sync(ar);
++	if (ret) {
++		ath10k_warn(ar, "Error in receiving vdev delete response: %d\n", ret);
++		goto out;
+ 	}
+ 
+ 	/* Some firmware revisions don't notify host about self-peer removal
+-- 
+2.39.5
+
 
