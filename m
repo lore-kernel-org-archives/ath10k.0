@@ -4,67 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2768C71136
-	for <ath10k@archiver.kernel.org>; Tue, 17 Jun 2025 12:42:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11FEEC71157
+	for <ath10k@archiver.kernel.org>; Wed, 18 Jun 2025 00:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=eo8pB+r1Vgs9mDu7a1Y9ODuiaGkK1TG5ghNeRoNu7cc=; b=IP8nkp6CL5kKtFdmt3PQt6SmFf
-	bkl3T62guC7T2m1rQjUH6X+7+1Cz7WuZ7lnsjphad7r7msF3RMfL17yZaz74WFxmryVoPJJYrCYPE
-	GjInb1Y3Jo6gm6RBQDMbmzNlHZxg4qr0qzs7lE9dVGvg0WriUHOZR2WHvOl3K4ztycHCYB/EMocJk
-	m/OSiOxJ17Q2YPWrfXT0+P78Lo5ONhKzkKM+8eJk5Yx75tQxGiA0ULFlIc4QAkyD4YtKjuOR/AUtG
-	6qXJO9R4t6C/fA8JnBxYuBVbyJqqzJPzEoSb3epmjD8D2QcRd3UNe2XurrINfwCU2XQdKoGM85dpD
-	UruURF8A==;
+	Content-Type:From:Subject:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=M0UFGlCDLAmGlSRbv4ia+YpJ/DiudoV1d7kt9nUTgaY=; b=L0EROhbkdkppxpgqn9HQ/pAnvO
+	ygsVtvCWsZgbqXZLzaCWH6/15qXzPuDMneOp/q5blaTmSLnDjWHDKQJskTbkNVS6nmeGrH2teXa/V
+	ctY4SSiK+2QWKnON5aKA4lN0ABDkWl30pRmhToAGukMSLHBjknfMhiiifJJuc2azn7DtzjQgMGSAX
+	+8WwSdb6qVaS7LVH0fgZpt+jcuJWR6CjbtyrKPnn4pTAOP5LfOGAdqfB3Q0JXEt6H6ptpNpaoIKeA
+	vXpmYCmxaJD03P15pp7eYgdfWfR5sVgsv4rv5SZ1TsPLmBVbiO0zIu/q07pl4dzQdCWEADeutJcVX
+	Z60ZViVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRVeH-00000007DYn-2fQ5;
-	Tue, 17 Jun 2025 12:42:45 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1uRgee-00000008gEO-1viG;
+	Wed, 18 Jun 2025 00:27:52 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRVKw-00000007AhU-1J6x
+	id 1uRgec-00000008gDS-048K
 	for ath10k@lists.infradead.org;
-	Tue, 17 Jun 2025 12:22:47 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 42DDD5C6663;
-	Tue, 17 Jun 2025 12:20:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A5CC4CEF0;
-	Tue, 17 Jun 2025 12:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750162965;
-	bh=UJpfuz8qKAq6VflhBGYZWv+qIDDIElL/udp0ZibVWnI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IdUz+jdoS6YnIlsS9JvQjvaHPUpVAR+ObZh/q2G0sjQZUs2OJn0JxEoOEU2Tvkihq
-	 xUZMEZQ37hJnaODHBXzrTAOgKWX3WBTR/fk/3nVmLB5KxKCV4X9IsRzzTcXnip/ofn
-	 ZVujJ47H6M3vAzoNfRPutBA2YWZk6TijDUg1EjaLgTjpwIH1b+gJRWYmhFH9a5GhFJ
-	 CYvKXONr1MSsDZV3AYHJkEB2PYS3fNF4gv/fQWSuDe2EE5mVcleNM9UZtDS8OTHj5f
-	 /rKRBkD/vHJ2jgFYEMj0BztAbZedmii+cgJQqVGnSlb1oRSQZh4XYAlnnA58BdxCQM
-	 GkEgN1vo3IZYA==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Loic Poulain <loic.poulain@oss.qualcomm.com>,
-	Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
-	Sasha Levin <sashal@kernel.org>,
-	jjohnson@kernel.org,
-	linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.12 12/12] wifi: ath10k: Avoid vdev delete timeout when firmware is already down
-Date: Tue, 17 Jun 2025 08:22:21 -0400
-Message-Id: <20250617122222.1968832-12-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250617122222.1968832-1-sashal@kernel.org>
-References: <20250617122222.1968832-1-sashal@kernel.org>
+	Wed, 18 Jun 2025 00:27:51 +0000
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55HEcoAN002991
+	for <ath10k@lists.infradead.org>; Wed, 18 Jun 2025 00:27:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=M0UFGlCDLAmGlSRbv4ia+Y
+	pJ/DiudoV1d7kt9nUTgaY=; b=nGL1kajB0G5RdQgvMHvzMqr0claUc2qMgsKbOf
+	eQ4OHmPb+0oCL57L87CZqI2/rLlM//p/OZbv8m9fp7gqyJJGfb5BRjA1/udsrlb+
+	2AaOo2LkAFI2fWVEQMqC+K4CZ003hf3rsj6+KpWYyZ7nqBRr9gs7HtmnZp1aQ8BB
+	/v7myCAft8EAud0iOd3/HaEhAiWcVxp683bJJ7OyjM+tmYqKyqMwzGctlDS6eo8p
+	ktWNcnLoGwE7NDHOi+J8jCiw690mTjG7w2CEn+CjRdyx1TlstRZDJHh6YBGiJQup
+	tYszus5Ni/hQgOTUAN8gCcGJ6bu6KDPhTpwd0YiFQ4ugQeyQ==
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 47ag236701-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Wed, 18 Jun 2025 00:27:49 +0000 (GMT)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-313ff01d2a6so3187307a91.3
+        for <ath10k@lists.infradead.org>; Tue, 17 Jun 2025 17:27:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750206468; x=1750811268;
+        h=content-transfer-encoding:from:content-language:subject:cc:to
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=M0UFGlCDLAmGlSRbv4ia+YpJ/DiudoV1d7kt9nUTgaY=;
+        b=I8LotgChKzNsiC37Ov6UOXGyk93hngqlah3OVxujaZK6m1EYrc2+TVfLjnMZgXjyAg
+         Jo7V06epHIqMmUcPxPywiYhEHOeDDZAyaQ0hOBLWKoIo2VGkILNSDkirQWu6LlAUX3S/
+         Zj65Z0FmHQYLmMncnJoaobUkUSRw8xDYQmf+LCKXqEpK0n2aXIhea1mchpfLzTvt9aQq
+         YGGqu+GGta7XwnrhpN5Ss4Ou52+2MCkTRaAp011EE8+Ch15rRI4T84kkcsYdgL/LaEc7
+         y1hmxQQ/tCggujYMzH1qO759qxMtRuvqvF5cEPiT7ZvtNd5XwsCW7N76V7KysZwj+uz7
+         d9+Q==
+X-Gm-Message-State: AOJu0YzvMuV1njoKkGGwB0ediKYx52jueVlAXHHfkDiB5BLdDNhKoN/h
+	hdG77jdjTfzJrsMn4WWOtlkgHQd9SbX0o06QzO8Pkb5LWnp5++dIwqWNTr/6QR9kLNjhI39KZFF
+	wbGXrnel3aL4iy6UGeqBSWV3u1HlAGa7UFgB36L2SbiU6/8rqtYtt/RsBLJWh4Zb2
+X-Gm-Gg: ASbGncvg6PZoAaercBQRJ9/O9a4rnjv5Lwp5cXejmISs52GAi7RnPbKp+v+zcwygjVz
+	Hfe3GhdHdO/bAzz/sFLnenM8yEprDAp37bnsVLQJ+8edCFI04UwO/nyQZQ7niYBzU5PhT5Ygm0T
+	DZ8m6e+pXMLkhW94P7RKALdy0ta2KIAsfbrKZI5wLoxFkre2k36mhYFSv2Blp2Y9dAdNqRUs1xH
+	70HMlGI3EbpWhH1KKKTNwK5SKE1KdPSQ9j1mxfYVB69sxucrOFj+NO2DT2SQJ9m2tMccp4mK2/w
+	Fr7G+UwnUcoJwU9adDFYt23lpbQkGvRYDrsGr0ON7yTEAD2meLapVi+ad4s=
+X-Received: by 2002:a17:90b:5847:b0:312:1dc9:9f67 with SMTP id 98e67ed59e1d1-313f1c7c54amr23328143a91.2.1750206467645;
+        Tue, 17 Jun 2025 17:27:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE47uJ5OhWhcQUshu3iRdTlSHkJeUqFGAtI4R66G6CQxenFgnSEHCf6F2kwyiWPrYnb7iu/3g==
+X-Received: by 2002:a17:90b:5847:b0:312:1dc9:9f67 with SMTP id 98e67ed59e1d1-313f1c7c54amr23328110a91.2.1750206467179;
+        Tue, 17 Jun 2025 17:27:47 -0700 (PDT)
+Received: from [10.81.24.74] (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-313c1b49834sm11294893a91.27.2025.06.17.17.27.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Jun 2025 17:27:46 -0700 (PDT)
+Message-ID: <9fb699ae-3f30-4459-94e5-2f7bdb29177b@oss.qualcomm.com>
+Date: Tue, 17 Jun 2025 17:27:45 -0700
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.33
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>
+Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, jjohnson@kernel.org
+Subject: pull-request: ath-current-20250617
+Content-Language: en-US
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: rxEs8ATigwluePbG5oS9Fh2MrPejEzz8
+X-Authority-Analysis: v=2.4 cv=edY9f6EH c=1 sm=1 tr=0 ts=68520805 cx=c_pps
+ a=vVfyC5vLCtgYJKYeQD43oA==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=VwQbUJbxAAAA:8 a=v6iAXbONLxioC5Ttwi8A:9
+ a=QEXdDO2ut3YA:10 a=rl5im9kqc5Lf4LNbBjHf:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE4MDAwMiBTYWx0ZWRfX8+FVbguug2oL
+ /xsnyJxp+/d7aPnaNtYUnzbjJZITegOchVmEB/S2WtyV2vflxDoMeVap66AKnsgVFoUn3e7Ergi
+ aIXJR9TvoQJn9TiMTVI66AdCjl0uzbGGOT8MIzaaqrs29XZGbW72IstwIYQwTC1dLSKW51uaJsO
+ +s/Xejv3Go232SWzA/tfmfKnKndT5W5/4C0FezaMFCwf27WIABteQke6zNqeImyDQd4CW47KZGf
+ j5yHu0efYY2fab10iLC4novWsjUkopzKDOOC22g0kHVndmtwkYRWXNMIaRonM90tpzbhuuc6jYF
+ uvpXZ2mf57GVLS9RYK4GndwfkkIo0PawdHQKmAgKlEMWaVMcbG49PgfvHZisla35+hxodo04bJu
+ t2dvsuxD0wq6jhpXCoXHS/1r03AGyyXeRwTselG7NasiVVC1ZHmKAYQwSUzKGrskZMgDVSW2
+X-Proofpoint-GUID: rxEs8ATigwluePbG5oS9Fh2MrPejEzz8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-17_09,2025-06-13_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 spamscore=0 bulkscore=0
+ impostorscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 malwarescore=0
+ phishscore=0 adultscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2506180002
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_052246_446987_3DCE5B17 
-X-CRM114-Status: GOOD (  22.83  )
+X-CRM114-CacheID: sfid-20250617_172750_167678_9AD904C9 
+X-CRM114-Status: GOOD (  11.40  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,152 +125,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Loic Poulain <loic.poulain@oss.qualcomm.com>
+The following changes since commit 27605c8c0f69e319df156b471974e4e223035378:
 
-[ Upstream commit dc9c4252fe0d7a7f1ee904405ea91534277305bf ]
+  Merge tag 'net-6.16-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2025-06-12 09:50:36 -0700)
 
-In some scenarios, the firmware may be stopped before the interface is
-removed, either due to a crash or because the remoteproc (e.g., MPSS)
-is shut down early during system reboot or shutdown.
+are available in the Git repository at:
 
-This leads to a delay during interface teardown, as the driver waits for
-a vdev delete response that never arrives, eventually timing out.
+  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-current-20250617
 
-Example (SNOC):
-$ echo stop > /sys/class/remoteproc/remoteproc0/state
-[ 71.64] remoteproc remoteproc0: stopped remote processor modem
-$ reboot
-[ 74.84] ath10k_snoc c800000.wifi: failed to transmit packet, dropping: -108
-[ 74.84] ath10k_snoc c800000.wifi: failed to submit frame: -108
-[...]
-[ 82.39] ath10k_snoc c800000.wifi: Timeout in receiving vdev delete response
+for you to fetch changes up to 15d25307692312cec4b57052da73387f91a2e870:
 
-To avoid this, skip waiting for the vdev delete response if the firmware is
-already marked as unreachable (`ATH10K_FLAG_CRASH_FLUSH`), similar to how
-`ath10k_mac_wait_tx_complete()` and `ath10k_vdev_setup_sync()` handle this case.
+  wifi: carl9170: do not ping device which has failed to load firmware (2025-06-17 16:28:35 -0700)
 
-Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
-Link: https://patch.msgid.link/20250522131704.612206-1-loic.poulain@oss.qualcomm.com
-Signed-off-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+----------------------------------------------------------------
+ath.git updates for v6.16-rc3
 
-Based on my analysis of the commit and code changes:
+Fix the following 3 issues:
 
-**YES**
+wifi: ath12k: avoid burning CPU while waiting for firmware stats
+wifi: ath12k: don't activate more links than firmware supports
+wifi: carl9170: do not ping device which has failed to load firmware
 
-This commit should be backported to stable kernel trees for the
-following reasons:
+----------------------------------------------------------------
+Baochen Qiang (10):
+      wifi: ath12k: parse and save hardware mode info from WMI_SERVICE_READY_EXT_EVENTID event for later use
+      wifi: ath12k: parse and save sbs_lower_band_end_freq from WMI_SERVICE_READY_EXT2_EVENTID event
+      wifi: ath12k: update freq range for each hardware mode
+      wifi: ath12k: support WMI_MLO_LINK_SET_ACTIVE_CMDID command
+      wifi: ath12k: update link active in case two links fall on the same MAC
+      wifi: ath12k: don't activate more links than firmware supports
+      wifi: ath12k: fix documentation on firmware stats
+      wifi: ath12k: avoid burning CPU while waiting for firmware stats
+      wifi: ath12k: don't use static variables in ath12k_wmi_fw_stats_process()
+      wifi: ath12k: don't wait when there is no vdev started
 
-1. **It fixes a real-world bug**: The commit addresses a specific issue
-   where the driver waits for a vdev delete response that will never
-   arrive when the firmware has already crashed or been stopped. This
-   causes a 5-second timeout delay during interface teardown, which is a
-   user-visible problem.
+Bjorn Andersson (1):
+      wifi: ath12k: Avoid CPU busy-wait by handling VDEV_STAT and BCN_STAT
 
-2. **Clear reproduction scenario**: The commit provides a concrete
-   example showing how the issue manifests in SNOC (Snapdragon) systems
-   when remoteproc is stopped before interface removal during system
-   shutdown/reboot.
+Dmitry Antipov (1):
+      wifi: carl9170: do not ping device which has failed to load firmware
 
-3. **Minimal and safe change**: The fix is small and follows established
-   patterns within the driver:
-   - It introduces `ath10k_vdev_delete_sync()` that mirrors the existing
-     `ath10k_vdev_setup_sync()` function
-   - Both functions check `ATH10K_FLAG_CRASH_FLUSH` before waiting,
-     which is the standard way the driver handles firmware crash
-     scenarios
-   - The change is localized to the vdev delete path and doesn't
-     introduce new behavior, just skips unnecessary waiting
-
-4. **Prevents user-facing delays**: Without this fix, users experience
-   unnecessary 5-second delays during system shutdown/reboot or when the
-   firmware crashes, which degrades the user experience.
-
-5. **Follows established patterns**: The fix uses the same approach as
-   other parts of the driver (`ath10k_vdev_setup_sync()` and
-   `ath10k_mac_wait_tx_complete()`) that already check
-   `ATH10K_FLAG_CRASH_FLUSH` to avoid waiting for responses from a
-   crashed firmware.
-
-6. **Low regression risk**: The change only affects the error path when
-   firmware is already marked as crashed. In normal operation when
-   firmware is responsive, the behavior remains unchanged.
-
-The commit is similar in nature to the historical commit #5 which was
-marked as suitable for backporting - both deal with avoiding unnecessary
-waits/timeouts when the firmware state makes it impossible to receive
-the expected response.
-
- drivers/net/wireless/ath/ath10k/mac.c | 33 ++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 6b467696bc982..125d8ff0ab5c0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4,6 +4,7 @@
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
-  */
- 
- #include "mac.h"
-@@ -1022,6 +1023,26 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
- 	return ar->last_wmi_vdev_start_status;
- }
- 
-+static inline int ath10k_vdev_delete_sync(struct ath10k *ar)
-+{
-+	unsigned long time_left;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	if (!test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map))
-+		return 0;
-+
-+	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags))
-+		return -ESHUTDOWN;
-+
-+	time_left = wait_for_completion_timeout(&ar->vdev_delete_done,
-+						ATH10K_VDEV_DELETE_TIMEOUT_HZ);
-+	if (time_left == 0)
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
- static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
- {
- 	struct cfg80211_chan_def *chandef = NULL;
-@@ -5900,7 +5921,6 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = (void *)vif->drv_priv;
- 	struct ath10k_peer *peer;
--	unsigned long time_left;
- 	int ret;
- 	int i;
- 
-@@ -5940,13 +5960,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to delete WMI vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
- 
--	if (test_bit(WMI_SERVICE_SYNC_DELETE_CMDS, ar->wmi.svc_map)) {
--		time_left = wait_for_completion_timeout(&ar->vdev_delete_done,
--							ATH10K_VDEV_DELETE_TIMEOUT_HZ);
--		if (time_left == 0) {
--			ath10k_warn(ar, "Timeout in receiving vdev delete response\n");
--			goto out;
--		}
-+	ret = ath10k_vdev_delete_sync(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "Error in receiving vdev delete response: %d\n", ret);
-+		goto out;
- 	}
- 
- 	/* Some firmware revisions don't notify host about self-peer removal
--- 
-2.39.5
-
+ drivers/net/wireless/ath/ath12k/core.c    |   4 +-
+ drivers/net/wireless/ath/ath12k/core.h    |  10 +-
+ drivers/net/wireless/ath/ath12k/debugfs.c |  58 ---
+ drivers/net/wireless/ath/ath12k/debugfs.h |   7 -
+ drivers/net/wireless/ath/ath12k/mac.c     | 394 +++++++++++++-
+ drivers/net/wireless/ath/ath12k/mac.h     |   2 +
+ drivers/net/wireless/ath/ath12k/wmi.c     | 829 +++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath12k/wmi.h     | 180 ++++++-
+ drivers/net/wireless/ath/carl9170/usb.c   |  19 +-
+ 9 files changed, 1395 insertions(+), 108 deletions(-)
 
