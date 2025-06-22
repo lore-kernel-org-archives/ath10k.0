@@ -4,60 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE2ECC7115C
-	for <ath10k@archiver.kernel.org>; Sat, 21 Jun 2025 11:03:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3BF0C77B7C
+	for <ath10k@archiver.kernel.org>; Sun, 22 Jun 2025 21:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:From:Message-Id:Date:Subject
-	:To:Reply-To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:MIME-Version:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=5YY/vsdCoW8tnIn4lSGzCpGbyQRDMbkuPDFZtvBqCTM=; b=rIX5gwHtRMwkKdAbfKuCFbeeF7
-	rm45g/oqpKAoOIvMehP+voJQd5u11jnbgm/GOaNp5ZmjrF6Xaqh+u4zNXYiBwcS7KMmXCewITSFsY
-	93/8Ujy9h0kMRnv8COaHzksSkNcATPZxSxxVZx+WTDjvLVDKKM8cZ8sQqoA3t3VDyeurQMe4jEoXt
-	3+vsI6n8Jy3GVwQWG8agw8qAOsYBcllBTcZ/6uFRu8PXiobu2K8sEK62OdX5BcmxbdF83cSZZOeVd
-	fYHKbhaE91UncIBWlwylAEttO3bLGiTKCHeY54qk8G9xk8vch7bVw9Nb+AKsKUrytF9RnIOX/apdp
-	4Qo5K/2Q==;
+	bh=IdW5b/ilQ2wpV5HyTgBGLknyissGVZ99awUBdPrUHEw=; b=bhx/L+fdJCLz82BYdKbk5FnbKM
+	BbfoyF1kd5v5od0WqzjXe/Fld4OWoyo9De0g34K/bK/VloYBBLfuGDav6K8K01Vy5BvrX3O9tzy/h
+	DmlDb0/sG/x8rVjI/umXgC2nI3qCOiQSd3msbhgSudjJP9LHDDv8Tn2ke2dsNHdQ1XXS/Exwy3oKh
+	x+p/oT/34M8w65+Lq+VN9oGjnJRj8SltDfNtIARu4yUpKQXQlM5uVdIoT5LsRB4RZAQVh1NoOG001
+	pCi/VtHiCTDyAsjKIPjmHjAJjgkKurIuaBdb3ConxABht1Db46BZswhT/YcbbyC99OCkoSKi2OhiK
+	lObfQLXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSw0K-0000000HNVn-1uUj;
-	Sat, 21 Jun 2025 11:03:24 +0000
-Received: from hwsrv-727273.hostwindsdns.com ([192.119.107.239])
+	id 1uTSHf-00000001EhD-3XBX;
+	Sun, 22 Jun 2025 21:31:27 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSw0I-0000000HNVR-0p4P
+	id 1uTSHZ-00000001EgL-0GYM
 	for ath10k@lists.infradead.org;
-	Sat, 21 Jun 2025 11:03:23 +0000
-Received: from selfener by hwsrv-727273.hostwindsdns.com with local (Exim 4.98.1)
-	(envelope-from <support@selfenergy.org>)
-	id 1uRsgr-0000000019l-0t1G
-	for ath10k@lists.infradead.org;
-	Wed, 18 Jun 2025 13:18:58 +0000
-To: ath10k@lists.infradead.org
-Subject: =?UTF-8?Q?Final_Agreement_Payoff_=E2=80=93_Signature_Requested?=
-X-PHP-Script: selfenergy.org/wp-includes/ms-delete-site.php for 84.239.47.150, 84.239.47.150
- X-PHP-Originating-Script: 1032:ms-delete-site.php
-Date: Wed, 18 Jun 2025 13:18:57 +0000
- From: =?UTF-8?Q?Alex_Morgan_=E2=80=93_=28AP=29?= <support@selfenergy.org>
- Message-ID: <5d36b5235e34932d473da9825f97f611@selfenergy.org>
- MIME-Version: 1.0
- Content-Type: multipart/alternative;
- 	boundary="b1_5d36b5235e34932d473da9825f97f611"
- Content-Transfer-Encoding: 8bit
-Message-Id: <E1uRsgr-0000000019l-0t1G@hwsrv-727273.hostwindsdns.com>
-From: support@selfenergy.org
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hwsrv-727273.hostwindsdns.com
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [1032 992] / [47 12]
-X-AntiAbuse: Sender Address Domain - selfenergy.org
-X-Get-Message-Sender-Via: hwsrv-727273.hostwindsdns.com: authenticated_id: selfener/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hwsrv-727273.hostwindsdns.com: selfener
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+	Sun, 22 Jun 2025 21:31:26 +0000
+Received: by mail-pg1-x544.google.com with SMTP id 41be03b00d2f7-b2c4e46a89fso2720931a12.2
+        for <ath10k@lists.infradead.org>; Sun, 22 Jun 2025 14:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750627879; x=1751232679; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IdW5b/ilQ2wpV5HyTgBGLknyissGVZ99awUBdPrUHEw=;
+        b=SwKKj02EMu4EAT2w4C0asVwRtMEJkBnTRy6JM/el0E5d6sj3GhsK0VFt1Ee2s+cBoK
+         SMDbMV3ZL488SW9dDruO8qlLQEJZYqZIOcAB4Qs3VWYlx0fvwt+OojUbgGbY/m9zr6B0
+         QgkgN80iF6cjlBmGHy7IT+aQ3nbtF8rPew9a0RjebsdYcc1fVCLCoDNemo+y39sj44ng
+         LMe+qBbX/jSYdcCpV6gDMouv3g5pdioX/nnxAHNrmjZOWHf15m2rpL2o3aEbiawnQXof
+         mwyDGGBM/lLKXP+yPWxxzoWLE/1hgJlwdhrP0/v5B9O+inhlnZiN+9CoHl1LVH6A+5NA
+         c/+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750627879; x=1751232679;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IdW5b/ilQ2wpV5HyTgBGLknyissGVZ99awUBdPrUHEw=;
+        b=mQg3xXHHKNmCAffP1FmWjaVjYhB0TlolMSkvx8+GjG7LoyRaZnpy6Gm1uyKg+GjN+Y
+         ZMaLBGQ16IgNSrFZjEBKgjopoR8RUPIwLQmEA03S9aG/2q/I0Eiv9TtytANm7yGxYyin
+         z6P1SlNkudABpaBvw2IFQqdKVC/mPHu4KSnKfxaFyFh9oOtlnLWBAJvaY99SzSQq6Ooe
+         a2vbk9njJ0IF5f9RNaDfEpvKngcVGrX9L33Iix4reL0N5BQNE8ep8HPXn3933EcT99S9
+         8tIjRjhm8r7t4NikCyAS1kWN7zpNgRC8yXNksgaE003O7QFbwIZpwGpoyvOufRoOWgf7
+         krOw==
+X-Gm-Message-State: AOJu0YxnoJhve9Iapia0SpIepE+HmBLxl6DJPtsK5p2TAKyiqJ4rGRbC
+	2tDy2v/51K6VMRvzc1V4AXUPvhRm8X0uvQf14Hl2WpVTStbwozoLnvnK8YGeWSiVFtS6vt2lfYG
+	/m64dB4WupAlMbrdtuCf0TC0pcXQjt/x/lpt8UieYV4IY
+X-Gm-Gg: ASbGncsn9F893/w96QUHm9iUSNYx7/89rdjzxv5SaV0R2I09iHnewRPd7UqRycxUiX4
+	cV/faKC68w4/UXES1Pd8rvKmhfYymYs+HKYDaGU+/IyUQcVJnulB9qdebhammMWzOe1cNIdx9fY
+	M2byRCfMP+ZtqQ9NWGujQ0tgZTo2nhrcai1jKVjn15+IDa
+X-Google-Smtp-Source: AGHT+IFZWKTvXxbH3G7bLqTtzvIEx7H67Au/OCzCNxls/aVYC/EQxcLNtVDi0fCMPkkqWWhWpADdtxZfBDjg7529qc0=
+X-Received: by 2002:a17:90b:3d0b:b0:311:b413:f5e1 with SMTP id
+ 98e67ed59e1d1-3159d8ffc0amr14898875a91.32.1750627879479; Sun, 22 Jun 2025
+ 14:31:19 -0700 (PDT)
+MIME-Version: 1.0
+From: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
+Date: Mon, 23 Jun 2025 03:01:08 +0530
+X-Gm-Features: AX0GCFv-PIdhMtiuqEmBSJhBAx3V8LVajpf5wYth2A1G7mmD97Qg2BPG5kV2AXg
+Message-ID: <CAEmM+Qh=8tm55Ypa2w3ZtOFFrGXTpKqxue59mVAo_5TVy0RJ6g@mail.gmail.com>
+Subject: [ath10k][QCA9377] Firmware crashes on Dell Inspiron 5567 (IRQ #16,
+ all modern distro kernels)
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250621_040322_260344_6D1A6823 
-X-CRM114-Status: UNSURE (   2.45  )
+X-CRM114-CacheID: sfid-20250622_143121_107070_1ECC1ABA 
+X-CRM114-Status: UNSURE (   8.50  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,128 +89,73 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-This is a multi-part message in MIME format.
+Hello,
 
---b1_5d36b5235e34932d473da9825f97f611
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+This is to inform all that constant firmware crashes have been seen in
+the "Qualcomm Atheros QCA9377 802.11ac Wireless Network Adapter",
+which was shipped with the Dell Inspiron 5567 laptops. This affects
+every kernel release, including the stable and the longterm ones.
 
+All the logs have been taken after livebooting an Arch Linux ISO.
 
+Every distro has been tried, and it has been confirmed that some error
+of this kind is shown in every distro.
 
+## Steps to reproduce the issue
 
-	
+1. Boot/liveboot any Linux ISO through this card (and possibly, this laptop).
+2. Wi-Fi network interface appears.
+3. Connect the Wi-Fi router to the computer.
+4. A few moments/minutes after that, the touchpad stops working, and
+the network interface cannot even access the Internet anymore (BUT,
+the network interface might disappear, might not disappear).
 
+## Affected distros and the necessary workarounds
 
+This has been the pattern on every distro and their corresponding
+kernels (LMDE, Linux Mint, Pop!_OS, Zorin, Kubuntu, KDE Neon,
+elementaryOS, Fedora, and even Arch). The fix which made these distros
+usable is to add two things:
 
+- Adding "options ath10k_core skip_otp=y" to a new conf file in /etc/modprobe.d.
+- Adding "pci=noaer" in GRUB kernel parameters so that the logs are
+not flooded with Multiple Correctable Errors.
 
+To defend my case (that it occurs in the other models of Inspiron 5567
+too), I have recently contacted someone running Linux Mint on the same
+model. The answer was the same: the touchpad and the Wi-Fi stop
+simultaneously.
 
+## Some of the limitations
 
+The kernel was tainted, but the other things have been properly noted
+in case they might provide some useful details. As stated,
+investigating why IRQ #16 is disabled will probably give us the
+answer.
 
+## Logs provided
 
+All the logs in a combined manner can be found here:
+https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180
 
-⼈ Adobe Acrobat Sign
+- Full dmesg: https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180#file-dmesg-log
+- Hostnamectl: https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180#file-hostnamectl-log
+- lspci: https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180#file-lspci-log
+- Modinfo of the driver:
+https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180#file-modinfo-log
+- Ping command:
+https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180#file-ping-log
+- /proc/interrupts:
+https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180#file-proc_interrupts-log
+- IP addr command (Heavily Redacted):
+https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180#file-ip_addr-log
 
-✓
+Lastly, this issue on the GitHub repository of Pop!_OS 'might' be
+relevant: https://github.com/pop-os/pop/issues/1470
 
-Your Signature is Requested For
+It would be highly appreciated if the matter were looked into.
 
-lists.infradead.org Final Agreement Payoff 
+Thanks,
 
-Open Document
-
-
-Attached is the final agreement for your reference. Read it with Acrobat Reader. You can also open it online to review its activity history.
-
-
-
-⼈ Powered by
-Adobe Acrobat Sign
-
-Need your own documents signed? Adobe Acrobat Sign can help save you time. Learn more .
-
-To ensure that you continue receiving our emails, please add adobesign@adobesign.com to your address book or safe list.
-
-Terms of Use | Report Abuse
-
-©️ 2025 Adobe. All rights reserved.
-
-
-
-Powered by  Adobe Acrobat Sign
-
- 
-
-This message (including any attachments) is confidential and may be privileged. If you are not the intended recipient please notify the sender by return e-mail and delete this message from your system. Any unauthorised use or dissemination of this message in whole or in part is strictly prohibited. This message (including any attachments) is confidential and may be privileged. If you are not the intended recipient please notify the sender by return e-mail and delete this message from your system. Any unauthorised use or dissemination of this message in whole or in part is strictly prohibited.
-
-
-
-
-
-
-
-
-
---b1_5d36b5235e34932d473da9825f97f611
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
-<div dir="ltr">
-<div dir="ltr">
-<div>
-<div aria-label="Message body">
-<div style="font-family:Arial,sans-serif,serif,EmojiFont;margin:0px;padding:0px;box-sizing:border-box">
-<div style="width:600px;border-radius:0px;max-width:600px;margin:40px auto;padding:20px;border:1px solid rgb(221,221,221);background-color:rgb(242,242,242)">
-<div style="padding:10px;border:1px solid rgb(204,204,204);background-color:rgb(252,252,252)">
-<p style="margin-top:30px;margin-bottom:40px"><span style="font-size:15px;border-radius:13%;padding:2px;color:white;background-color:rgb(113,78,225)"><strong>⼈</strong></span> Adobe Acrobat Sign</p>
-
-<div style="text-align:center"><span style="border-radius:50%;padding:10px;color:white;background-color:rgb(19,101,240)">✓</span></div>
-
-<p style="text-align:center;margin-top:50px">Your Signature is Requested For<br />
-<br />
-<strong><a>lists.infradead.org</a> Final Agreement Payoff </strong></p>
-
-<p style="text-align:center;margin-top:50px"><a data-saferedirecturl="https://www.google.com/url?q=https://s3.us-west-2.amazonaws.com/secure-docs-storage-2025/Home.pdf&source=gmail&ust=1750330173347000&usg=AOvVaw3uc8t76hgncLOMRNRfqcRv" href="https://s3.us-west-2.amazonaws.com/secure-docs-storage-2025/Home.pdf" rel="external nofollow noopener noreferrer" style="font-weight:bold;display:inline-block;text-decoration-line:none;border-radius:3px;padding:10px 20px;color:white;background-color:rgb(19,101,240)" target="_blank">Open Document</a></p>
-
-<hr style="margin-top:10px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-style:solid;border-top-color:rgb(221,221,221)" />
-<p style="text-align:center">Attached is the final agreement for your reference. Read it with <a style="color:rgb(19,101,240)">Acrobat Reader. </a>You can also <a style="color:rgb(19,101,240)">open it online</a> to review its activity history.</p>
-</div>
-
-<div style="font-size:12px;margin-top:50px;color:rgb(102,102,102)">
-<p style="text-align:center;margin-top:30px;margin-bottom:40px;color:black"><span style="font-size:15px;border-radius:13%;padding:2px;color:white;background-color:rgb(113,78,225)"><strong>⼈</strong></span><strong> Powered by</strong><br />
-Adobe Acrobat Sign</p>
-
-<p>Need your own documents signed? Adobe Acrobat Sign can help save you time.<a style="color:rgb(19,101,240)"> Learn more .</a></p>
-
-<p style="margin-top:20px">To ensure that you continue receiving our emails, please add <a href="mailto:adobesign@adobesign.com" rel="noopener noreferrer" target="_blank">adobesign@adobesign.com</a> to your address book or safe list.</p>
-
-<p style="text-align:center;margin-top:20px;color:rgb(19,101,240)">Terms of Use | Report Abuse</p>
-
-<p style="margin-top:20px;margin-bottom:40px">©️ 2025 Adobe. All rights reserved.</p>
-</div>
-</div>
-
-<div style="font-size:11px;font-family:Helvetica,Arial,"Sans Serif",serif,EmojiFont;padding:2px 5px 0px 0px;color:rgb(102,102,102)">Powered by  <span style="color:rgb(0,0,0);font-family:Arial,sans-serif,serif,EmojiFont;font-size:12px;text-align:center;background-color:rgb(242,242,242)">Adobe Acrobat Sign</span>
-
-<p alt="DocuSign" style="margin:0px" width="80"> </p>
-
-<p style="font-size:13px;margin-top:0px;margin-bottom:0px;line-height:18px">This message (including any attachments) is confidential and may be privileged. If you are not the intended recipient please notify the sender by return e-mail and delete this message from your system. Any unauthorised use or dissemination of this message in whole or in part is strictly prohibited. This message (including any attachments) is confidential and may be privileged. If you are not the intended recipient please notify the sender by return e-mail and delete this message from your system. Any unauthorised use or dissemination of this message in whole or in part is strictly prohibited.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</body>
-</html>
-
-
-
---b1_5d36b5235e34932d473da9825f97f611--
-
+Bandhan Pramanik
 
