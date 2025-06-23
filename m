@@ -4,111 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80145C7115C
-	for <ath10k@archiver.kernel.org>; Mon, 23 Jun 2025 02:27:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C7D8C7115D
+	for <ath10k@archiver.kernel.org>; Mon, 23 Jun 2025 05:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=fv+ixPSJtejQRVxtJoz+UfYuX/HmFheUie4HGlhLBDg=; b=suziNOIGhnGpEM7oYH/Y2aoSjD
-	uZJl6FL2+Zt0FxzXiDR5SZ0Aazyrk1hdlor93Z2lx50Avl0ZuPyZJQuG3tk5Vb3s+bB0AN/lU/8B1
-	MUEtNWK3gnUAnQJcUglL7EKbtS4+E2w9FFetD3Nj0OywkAnF56B7Ke4YDlpn0yqOIQjqm/QilTSzp
-	3YGzqjWAYV010Vyn1QrCqw+rb4qdXNO0Qm/btGRyw8BiZr+dWhHD/FnO2CBLeJ+HHfzIqAb3k6FmY
-	vEtlmNUNPLxeO7ppAte/INGCpsh8KagakljJPEnayce9EqqzoXP7/GaUbfgMXiVy9th/wdz9lt+Ms
-	ZUT44/Kg==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=RJaUpKWaloU/fOL7e/dgz5PF5xRAJF3ZohSH7tC3q8o=; b=fnUxeDd6Ksw05dU4d2XPhRQzwH
+	uIBoVi6Np++tr4h4niRygEYOGSIGmqYDXd89MAFvwZrhy0+69qyvx4rr5fGFu9SsqwW1RRfogvIub
+	TzsGh51iO1L0QwntIwOlVSYv/2FeLb++gl4NAMaauPxBPI1UmLl6obuGjVdyQVei6iDfjK36ZF082
+	+F9yMaGdc5nqFxQesNlItzPIn12auD3n0HeoENdkmbzE7VCMwSx7ne19d14pStG9wyzGvaRMAk+LX
+	tqXCWbC9EFJyUc9xWN+c2FG6RnljCBAE9sEfGNot8KyEv2NCeaBV4YBtji3+HXmpaIEVOAeRzE0U4
+	1aGMacOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uTWuP-00000001RI1-2rsc;
-	Mon, 23 Jun 2025 02:27:45 +0000
+	id 1uTZcM-00000001bfU-3ow0;
+	Mon, 23 Jun 2025 05:21:18 +0000
 Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uTWuN-00000001RHF-2ler
+	id 1uTZcK-00000001beF-1ruk
 	for ath10k@lists.infradead.org;
-	Mon, 23 Jun 2025 02:27:45 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55MNF4Ct027634
-	for <ath10k@lists.infradead.org>; Mon, 23 Jun 2025 02:27:42 GMT
+	Mon, 23 Jun 2025 05:21:17 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55MN1uhB010232
+	for <ath10k@lists.infradead.org>; Mon, 23 Jun 2025 05:21:15 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=qcppdkim1; bh=fv+ixPSJtejQRVxtJoz+UfYuX/HmFheUie4
-	HGlhLBDg=; b=Kg7SeKqeewMhvDNU7A5q5fAWiBEpUgRBJNELcPfhjrtCFWWxy2d
-	Y98T5oU7MowJhAKtgmGNjm+WeQevDJSN3GSdXU7lwIsIcPofeyFnFmVSQAEFA0qL
-	BmseGorrcKqUFkyQTzwh1B0kKSwoSh0dt414OngL9xT/hOucgMmYd+uJRMdPpcIL
-	T/4Rg9j5885ruWl5XNqU5rduuNFetUbWuKkqBng1cMK6uK5BRFpDcc1F8ZzK46C5
-	hZmABr/hfG6wECMQhokFF/bfICZrm24gCSIm3rbdlhOdz9Y1wvD7IA9u0DW3ZKzZ
-	vVYUpf+OPltaASeucAA3/SOgTmZbzUFhfow==
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 47eccdh5nj-1
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	RJaUpKWaloU/fOL7e/dgz5PF5xRAJF3ZohSH7tC3q8o=; b=TownxR+uzJuqqY22
+	KoYUnXvx8s+YZ/yUUriG9339Eb3p/1eyAHQVikqRlU7uZRzzW44XI732s2ouzWw2
+	tYWef19edun8URilL1g2xE0izHw4DsA1jjjwKRwcAv/z2fBTkH6VWOFSiYhWglb9
+	Pzo5zBurDSCljsmldDyb2OjoinnGpmeH/VywkkHmMwTDlwGO9OiCfkTKdAWcohNM
+	SFbEOqf9z9ucvXefHh/SZM/5lahrAvJX31VSaI80ZD1HrtTRjORs6n/S1QTWQpVV
+	HrUjB6apVTGDGd6AelslDd68uv2rVtARtF55Wu10+xibS3p/bQFwGirPo2TOcZGJ
+	nofbyg==
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 47ege0s897-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Mon, 23 Jun 2025 02:27:41 +0000 (GMT)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-235e1d66fa6so40689395ad.0
-        for <ath10k@lists.infradead.org>; Sun, 22 Jun 2025 19:27:41 -0700 (PDT)
+	for <ath10k@lists.infradead.org>; Mon, 23 Jun 2025 05:21:15 +0000 (GMT)
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-b3183193374so2397178a12.1
+        for <ath10k@lists.infradead.org>; Sun, 22 Jun 2025 22:21:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750645660; x=1751250460;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fv+ixPSJtejQRVxtJoz+UfYuX/HmFheUie4HGlhLBDg=;
-        b=nuMrSYC6Fkx6zzxvO876muOBOmjE7T5mxurNPHPegELDAhnte9eJng1prHasI2xdFB
-         CKG+4RN9bspSKNjgYxt4hxNkwUNiG9yDwfE1ZNVFjiuAyV1VFGBJVmGVJAh+YsEtwuZi
-         p4dTRanp1pxZIzkQ9TUXkVbrkIY7h24S73INvWFJJQYOCDLLiIBhWFxWMcQhOTQkJIF3
-         eV1rjri7ujW7V/YSU4aIXxBVxAQuNVLJcxufCjKC/6mTNDi4CFVIlhvQdNKIu8wnVRgy
-         D7Q9lgAfbRl5uFMnKGkRN7cgTm4dhrhW0uJKFKhNqG5T3T6yd3HzgZFlt6yFLPFog/kI
-         /pOQ==
-X-Gm-Message-State: AOJu0Ywd68dfZuFY1fZ5gct3QTz3UmI8OE2fwvv7QrE9uid0g1ySkZPE
-	dHW1p81gIAEZWUdnrdDdpIobaKFUC14Ip2MP26XKqmwacIzJSSHvU/+Dbo/ClXurwrlG4yX7e3m
-	kPN7SjLQ7zyZ8d0Ch0xRtWJaZlHC3lw0XJJATCWmI/l+pTXvD9H1rJRmjLpk+nGqdy2QszUlv
-X-Gm-Gg: ASbGncvu6qrpFE5JNpCbCP2gqFHyMoaHW8ubmEGmo/YBBLuRq/uTnrjMgHXlmLNCsQb
-	o7OD5nf5UfrefL0yg1JGs/wK8NpoWpt9893WWzYoYOpkr2lY9+OdNL8AFgcwHsr1OkhyVnRtK/P
-	91NSvbT10+ij4w6igyqNmGKkJ+xTjOi1Z5NjrI2iiFYkRZ61Macicp4UpnCHb0HfijU2ePr1P76
-	9dcpcFZ9NM7rNsEPeH11qClVnUmWbhQF4f0VrqTLiCwAyJ2dsnoTUv5B9Qx4hyY46cg8V5+4uKy
-	iIInPa/TIPAsoHw/0355CICMfFRdLUjBB6GyGlpld0dCNUS9x7GXnWWbHk++IMZ0DFlFlR2iMUM
-	V+P7nBf1xJodUCd4oFm/yNAOngE97qna7gl4b
-X-Received: by 2002:a17:902:fa4e:b0:234:a033:b711 with SMTP id d9443c01a7336-237dc1d4cafmr113151515ad.50.1750645660362;
-        Sun, 22 Jun 2025 19:27:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHO3xLwcDfFF+8FdVv1bm8qSft+zUbFnRdWwk8fQS8JrzjoriuMczR2Bh5iYmWDptTaDD+zFQ==
-X-Received: by 2002:a17:902:fa4e:b0:234:a033:b711 with SMTP id d9443c01a7336-237dc1d4cafmr113151305ad.50.1750645659810;
-        Sun, 22 Jun 2025 19:27:39 -0700 (PDT)
-Received: from QCOM-kZLYnuwaz1.na.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com. [103.229.16.4])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-237d83936bdsm70645755ad.21.2025.06.22.19.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Jun 2025 19:27:39 -0700 (PDT)
-From: Kang Yang <kang.yang@oss.qualcomm.com>
-To: ath10k@lists.infradead.org, kang.yang@oss.qualcomm.com
-Cc: linux-wireless@vger.kernel.org
-Subject: [PATCH ath-next v2] wifi: ath10k: shutdown driver when hardware is unreliable
-Date: Mon, 23 Jun 2025 10:27:31 +0800
-Message-ID: <20250623022731.509-1-kang.yang@oss.qualcomm.com>
-X-Mailer: git-send-email 2.49.0.windows.1
+        d=1e100.net; s=20230601; t=1750656074; x=1751260874;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RJaUpKWaloU/fOL7e/dgz5PF5xRAJF3ZohSH7tC3q8o=;
+        b=FeMlgYOayKrV2scJP8bblXeqvzB2X1tNO4bKvbbb2PsbKcHlpI1E79juEQJXwHUeVW
+         IXJQ8/tamX/9gtqoQAz6+SUyYL4PWLf/Afp++nlskNUxNCPZSQ6+Ys2EbqmfAX5qV8rZ
+         oqcOfZoAdtr2/XTUGx4ICRiXbsO86h6ny5s1ciFnUXwhIE1VHEvhxwuIx6AUs0vtgY+1
+         MhaboDm/DYruPVFQ6PXRG0OY7Jp9zrWPnCGk7/fk0BWS5I+S5QrM4xi7CXHhgGx/2bbj
+         BOM73GWy3zpb/Sr7AX00ybjesFGauF0Rok7pdo3Q78Htq60LB3iLVMk6KBKWYxK7T1Pn
+         ZmqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW56R/67kHzZL01jDK+LD3y4AFcnexyHPp2mjKZdYckl2CFPqeTkGMDooQHqz22RUyWX4szpTc=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzJOEiRrpmv54L0WOxKhIj/A6zJO66q2JqtUfJBZfN+g1jq3ThU
+	hs4NYjdsYkwvSxaQfDicUXYRQDMhnxVsqOLJmXwuw/RnkHoNFML+rgxZbn493oyOoras3UyjUoq
+	rTOuOUzXRHRobn6Hj9ZnuyVtOWA2rJ/kKQJiDioGlMUp22h1MBP/Unzu3Vol/8FpJ
+X-Gm-Gg: ASbGncuAvdchF4Lir9jlrbBKTHSqaYVHWaoluh6GGb8yxxH/nMByPAFFM3h6T2f7xik
+	vf1YkPw5il1LrtmbCc06CgN+kY/5iVCGKd966++zXaOZye6PvD7SkHrvwJ1lb1GR+W4C4jf/Efo
+	dphD4f9GegQ0HeqSGDQ7dJkZYM3dJSkt8tgX8+j+hwj+4doC6nYlpHMARelYY9CD2vN77nfhA7U
+	T+i3k7qsP+eSdciCpqTBG4cgPXvVlAjxCM2qV1CTP8WNG99RHm0x7qxDnucTyJBq/+LICNYmYNY
+	dGV65R9w2NYef7xnNtps30pUP6lxZYOOCW7meuifvwp7jsHmPIml5OeoEM6NyUoD
+X-Received: by 2002:a05:6a20:438c:b0:21f:62e7:cd08 with SMTP id adf61e73a8af0-22026d62492mr16734645637.8.1750656074021;
+        Sun, 22 Jun 2025 22:21:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGN6sXlv3E9PXQKKHrhj7infmrUZxL1XGkkL3NJcuzzaEVBliA6CDYcfDWdSI/EDBJMpScx2g==
+X-Received: by 2002:a05:6a20:438c:b0:21f:62e7:cd08 with SMTP id adf61e73a8af0-22026d62492mr16734626637.8.1750656073657;
+        Sun, 22 Jun 2025 22:21:13 -0700 (PDT)
+Received: from [10.152.204.0] ([202.46.23.19])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b32075895f6sm4116924a12.21.2025.06.22.22.21.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Jun 2025 22:21:13 -0700 (PDT)
+Message-ID: <aa9c4dfc-5b70-3893-73d8-ef590189f937@oss.qualcomm.com>
+Date: Mon, 23 Jun 2025 10:51:08 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authority-Analysis: v=2.4 cv=LOVmQIW9 c=1 sm=1 tr=0 ts=6858bb9d cx=c_pps
- a=cmESyDAEBpBGqyK7t0alAg==:117 a=nuhDOHQX5FNHPW3J6Bj6AA==:17
- a=6IFa9wvqVegA:10 a=EUspDBNiAAAA:8 a=_pHpjG28dqLtJ1xko5AA:9
- a=1OuFwYUASf3TG4hYMiVC:22
-X-Proofpoint-GUID: LPd52zSCbpNIh27T-iTrtCyhtLGoPM28
-X-Proofpoint-ORIG-GUID: LPd52zSCbpNIh27T-iTrtCyhtLGoPM28
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjIzMDAxMyBTYWx0ZWRfX1wJpKnNv3zlw
- mTIgGXJ1zlvcdZf1tWgUAUNH4Z3psoWQce0saJ4gV7zEqDjESdZsN+GHyMKC9GWA2LBRYMUdT/n
- Vr9Uy3wom4XWwRNOkN3y6wfg614bHeQkT2vR0j0tPqTRXCpa6IrWp4RNmvw8wLBp7BZWMMgAHlf
- 7w49klbhKOQhjyaGNQgQyHSWiACu4kNiVBodPipICnkG7lwhaNP7vgqGAvnTnGEgB4tmIiay9ty
- HSguYa9lJg+PpDpoBxI2t5IsBmoVpz0W8xLBCHQPYNdypUdW1i+DoR53iCwt+ZHf2AkK6+7PiBq
- YI7hPMpZVWmT1WbVAXc5ruWoBY37OyxYlkd/1a9UB1qK0jCM0b0OSneENsBMDxjoIsZ0cGEmE7t
- WoZIpcVOgCPJol/nuF+QXLhxtjmx+bAl3KGn8pc0XAJckFXmj2IjK18MlfHZXRRuc1CiMxTV
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH ath-next 3/5] wifi: ath10k: Add missing include of
+ export.h
+Content-Language: en-US
+To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
+        Jeff Johnson <jjohnson@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?=
+ =?UTF-8?Q?sen?= <toke@toke.dk>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org
+References: <20250611-ath-unused-export-v1-0-c36819df7e7b@oss.qualcomm.com>
+ <20250611-ath-unused-export-v1-3-c36819df7e7b@oss.qualcomm.com>
+From: Vasanthakumar Thiagarajan <vasanthakumar.thiagarajan@oss.qualcomm.com>
+In-Reply-To: <20250611-ath-unused-export-v1-3-c36819df7e7b@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: YHbkP2Um8Gwd15rZwb6ZSSwabC-evs7S
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjIzMDAyOSBTYWx0ZWRfX9MpDfOwh83MF
+ fY1sxqhr/pyXcwQmLpH83m00dqYYHVNCtc2vdTzFHYWTYcpbRD7kzxLka+ILgOwvD6u1hzcZNed
+ ca82IfMhFR3MSeuu9oU0iuEfkpjIJunesV1LJMHjE0rlrL6uLv0oSrF6XvUZRocQYSwnsFMZx7j
+ feqgzraAvIkvy7VobUzlwuxiZU8MkVs4hRnxsDL76wHHv1iqxVnJlbHbFjWLqkRSSkPtNxhat4W
+ edk6Z+GJqZ5Bv8oHD8+NwvxixhfbBatwqrOLCGfNBTLBxzauIdb8DuTRLE40aVyDmDyo68dzClr
+ dIOa/cCvlUYem+MfSTh1yqduCRRze6ltTAudfHT1ixUFFq9DtA/mGKHDMR6i+OCdhyLefiiy6db
+ Ya7ZRxclmgMC/HZB+LO+DMMDdN2BlSNLVt/odcvJadRvNMnTafV6tnC+RlalNoAB9vXv4A2a
+X-Authority-Analysis: v=2.4 cv=CesI5Krl c=1 sm=1 tr=0 ts=6858e44b cx=c_pps
+ a=rz3CxIlbcmazkYymdCej/Q==:117 a=j4ogTh8yFefVWWEFDRgCtg==:17
+ a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=EUspDBNiAAAA:8 a=U89tM0JWt6iRefauG40A:9
+ a=QEXdDO2ut3YA:10 a=bFCP_H2QrGi7Okbo017w:22
+X-Proofpoint-GUID: YHbkP2Um8Gwd15rZwb6ZSSwabC-evs7S
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-06-23_01,2025-06-20_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 bulkscore=0 adultscore=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 spamscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 classifier=spam authscore=0
- authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2505280000 definitions=main-2506230013
+ lowpriorityscore=0 phishscore=0 clxscore=1011 spamscore=0 adultscore=0
+ mlxlogscore=977 suspectscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 bulkscore=0 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2505280000 definitions=main-2506230029
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250622_192743_837644_F36628E8 
-X-CRM114-Status: GOOD (  22.74  )
+X-CRM114-CacheID: sfid-20250622_222116_592501_FB881FEB 
+X-CRM114-Status: UNSURE (   8.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,217 +137,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-In rare cases, ath10k may lose connection with the PCIe bus due to
-some unknown reasons, which could further lead to system crashes during
-resuming due to watchdog timeout:
 
-ath10k_pci 0000:01:00.0: wmi command 20486 timeout, restarting hardware
-ath10k_pci 0000:01:00.0: already restarting
-ath10k_pci 0000:01:00.0: failed to stop WMI vdev 0: -11
-ath10k_pci 0000:01:00.0: failed to stop vdev 0: -11
-ieee80211 phy0: PM: **** DPM device timeout ****
-Call Trace:
- panic+0x125/0x315
- dpm_watchdog_set+0x54/0x54
- dpm_watchdog_handler+0x57/0x57
- call_timer_fn+0x31/0x13c
 
-At this point, all WMI commands will timeout and attempt to restart
-device. So set a threshold for consecutive restart failures. If the
-threshold is exceeded, consider the hardware is unreliable and all
-ath10k operations should be skipped to avoid system crash.
+On 6/11/2025 9:43 PM, Jeff Johnson wrote:
+> Commit a934a57a42f6 ("scripts/misc-check: check missing #include
+> <linux/export.h> when W=1") introduced a new check that is producing
+> the following warnings:
+> 
+> drivers/net/wireless/ath/ath10k/bmi.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/ce.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/core.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/coredump.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/debug.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/htc.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/htt_rx.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/htt_tx.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/mac.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> drivers/net/wireless/ath/ath10k/trace.c: warning: EXPORT_SYMBOL() is used, but #include <linux/export.h> is missing
+> 
+> Add the missing #include to satisfy the check.
+> 
+> Signed-off-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 
-fail_cont_count and pending_recovery are atomic variables, and
-do not involve complex conditional logic. Therefore, even if recovery
-check and reconfig complete are executed concurrently, the recovery
-mechanism will not be broken.
-
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00288-QCARMSWPZ-1
-
-Signed-off-by: Kang Yang <kang.yang@oss.qualcomm.com>
----
-
-v2:
-1. change u8 to u32 for recovery_count.
-2. don't add a new line for debug log.
-
----
- drivers/net/wireless/ath/ath10k/core.c | 49 +++++++++++++++++++++++---
- drivers/net/wireless/ath/ath10k/core.h | 11 ++++--
- drivers/net/wireless/ath/ath10k/mac.c  |  7 +++-
- drivers/net/wireless/ath/ath10k/wmi.c  |  6 ++++
- 4 files changed, 64 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index fe3a8f4a1cc1..7686cf4292e0 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -4,6 +4,7 @@
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
-  */
- 
- #include <linux/module.h>
-@@ -2491,12 +2492,50 @@ static int ath10k_init_hw_params(struct ath10k *ar)
- 	return 0;
- }
- 
-+static bool ath10k_core_needs_recovery(struct ath10k *ar)
-+{
-+	long time_left;
-+
-+	/* Sometimes the recovery will fail and then the next all recovery fail,
-+	 * so avoid infinite recovery.
-+	 */
-+	if (atomic_read(&ar->fail_cont_count) >= ATH10K_RECOVERY_MAX_FAIL_COUNT) {
-+		ath10k_err(ar, "consecutive fail %d times, will shutdown driver!",
-+			   atomic_read(&ar->fail_cont_count));
-+		ar->state = ATH10K_STATE_WEDGED;
-+		return false;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "total recovery count: %d", ++ar->recovery_count);
-+
-+	if (atomic_read(&ar->pending_recovery)) {
-+		/* Sometimes it happened another recovery work before the previous one
-+		 * completed, then the second recovery work will destroy the previous
-+		 * one, thus below is to avoid that.
-+		 */
-+		time_left = wait_for_completion_timeout(&ar->driver_recovery,
-+							ATH10K_RECOVERY_TIMEOUT_HZ);
-+		if (time_left) {
-+			ath10k_warn(ar, "previous recovery succeeded, skip this!\n");
-+			return false;
-+		}
-+
-+		/* Record the continuous recovery fail count when recovery failed. */
-+		atomic_inc(&ar->fail_cont_count);
-+
-+		/* Avoid having multiple recoveries at the same time. */
-+		return false;
-+	}
-+
-+	atomic_inc(&ar->pending_recovery);
-+
-+	return true;
-+}
-+
- void ath10k_core_start_recovery(struct ath10k *ar)
- {
--	if (test_and_set_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags)) {
--		ath10k_warn(ar, "already restarting\n");
-+	if (!ath10k_core_needs_recovery(ar))
- 		return;
--	}
- 
- 	queue_work(ar->workqueue, &ar->restart_work);
- }
-@@ -2532,6 +2571,8 @@ static void ath10k_core_restart(struct work_struct *work)
- 	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
- 	int ret;
- 
-+	reinit_completion(&ar->driver_recovery);
-+
- 	set_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
- 
- 	/* Place a barrier to make sure the compiler doesn't reorder
-@@ -2596,8 +2637,6 @@ static void ath10k_core_restart(struct work_struct *work)
- 	if (ret)
- 		ath10k_warn(ar, "failed to send firmware crash dump via devcoredump: %d",
- 			    ret);
--
--	complete(&ar->driver_recovery);
- }
- 
- static void ath10k_core_set_coverage_class_work(struct work_struct *work)
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 446dca74f06a..85e16c945b5c 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -4,6 +4,7 @@
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
-+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
-  */
- 
- #ifndef _CORE_H_
-@@ -87,6 +88,8 @@
- 				  IEEE80211_IFACE_SKIP_SDATA_NOT_IN_DRIVER)
- #define ATH10K_ITER_RESUME_FLAGS (IEEE80211_IFACE_ITER_RESUME_ALL |\
- 				  IEEE80211_IFACE_SKIP_SDATA_NOT_IN_DRIVER)
-+#define ATH10K_RECOVERY_TIMEOUT_HZ			(5 * HZ)
-+#define ATH10K_RECOVERY_MAX_FAIL_COUNT			4
- 
- struct ath10k;
- 
-@@ -865,9 +868,6 @@ enum ath10k_dev_flags {
- 	/* Per Station statistics service */
- 	ATH10K_FLAG_PEER_STATS,
- 
--	/* Indicates that ath10k device is during recovery process and not complete */
--	ATH10K_FLAG_RESTARTING,
--
- 	/* protected by conf_mutex */
- 	ATH10K_FLAG_NAPI_ENABLED,
- };
-@@ -1211,6 +1211,11 @@ struct ath10k {
- 	struct work_struct bundle_tx_work;
- 	struct work_struct tx_complete_work;
- 
-+	atomic_t pending_recovery;
-+	unsigned int recovery_count;
-+	/* continuous recovery fail count */
-+	atomic_t fail_cont_count;
-+
- 	/* cycle count is reported twice for each visited channel during scan.
- 	 * access protected by data_lock
- 	 */
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 07fe05384cdf..9e6f294cd5b6 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8156,7 +8156,12 @@ static void ath10k_reconfig_complete(struct ieee80211_hw *hw,
- 		ath10k_info(ar, "device successfully recovered\n");
- 		ar->state = ATH10K_STATE_ON;
- 		ieee80211_wake_queues(ar->hw);
--		clear_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags);
-+
-+		/* Clear recovery state. */
-+		complete(&ar->driver_recovery);
-+		atomic_set(&ar->fail_cont_count, 0);
-+		atomic_set(&ar->pending_recovery, 0);
-+
- 		if (ar->hw_params.hw_restart_disconnect) {
- 			list_for_each_entry(arvif, &ar->arvifs, list) {
- 				if (arvif->is_up && arvif->vdev_type == WMI_VDEV_TYPE_STA)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index df6a24f8f8d5..cb8ae751eb31 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4,6 +4,7 @@
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-  * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
-  */
- 
- #include <linux/skbuff.h>
-@@ -1941,6 +1942,11 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
- 	}
- 
- 	wait_event_timeout(ar->wmi.tx_credits_wq, ({
-+		if (ar->state == ATH10K_STATE_WEDGED) {
-+			ret = -ESHUTDOWN;
-+			ath10k_dbg(ar, ATH10K_DBG_WMI,
-+				   "drop wmi command %d, hardware is wedged\n", cmd_id);
-+		}
- 		/* try to send pending beacons first. they take priority */
- 		ath10k_wmi_tx_beacons_nowait(ar);
- 
--- 
-2.34.1
-
+Reviewed-by: Vasanthakumar Thiagarajan <vasanthakumar.thiagarajan@oss.qualcomm.com>
 
