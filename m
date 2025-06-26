@@ -4,120 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 213AEC7EE30
-	for <ath10k@archiver.kernel.org>; Thu, 26 Jun 2025 18:24:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 213A7C7EE31
+	for <ath10k@archiver.kernel.org>; Thu, 26 Jun 2025 18:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wGWJ1Sswd47PGcB2x/iOZY6omMkR+LwiTigIHQ5o8VI=; b=aF52A8zxx1N5TxwmeA+TgsQ0DL
-	N3BLfjcBQv3+aIl8wXMIiVAZ/4FSK+RXNpIpSqFfKVjjxye87k7jaEdP20OU3Q1i3zy9gEmkDeefZ
-	dTo+R+QUk9We1vImrdM3UpQ16ueEuY1Okaoi5PsqnC/y7Aewh6vahK5pIJ10xHceFurlzN96B1iXb
-	SKB8hhm+FjoXoQY7UpEx4BXlMZ1hMIAAiIvqW4FAtzwfwxBAYtsGi195Ef4W+K+pVgCWX4/mnEg2Z
-	HtTGYruNtwRnqGbOYkmvBAZTSkuQvxf8uz5YxsuwiSn8FjEiJWBWj/n4Z9+cGtre+Eiu/6PYm7JaA
-	Bsc6uSkQ==;
+	bh=3DW+isIgbcOam9K3su8rrNYApBVcaHJL5UXxTcvoqeA=; b=ev2U330fvZnXsfra/Ux3cOUeq6
+	XcnciibJlp1aZJPn1v14Ib/lByN3OjJbsWBUkqo9I76nEwyGQtmU8Lf2Dgi2cnKfXo2+x5whWtIJA
+	oawFVOM0ifV2FvlIxxevTc2TMOXMO0I+yyZxmR7ieH/119RCpquFFWOs4PWlOZUiD/qwEf7efuhmq
+	uaXWPD4q5w2h+9RdeP51QLiS4A3LrgjZzm+lzmftfN2uWrwo3UbaL13hRbUqxa8mqvHsUb9haWiuK
+	TK13VKwgZk1N5bxcbeVEG2MciLfCelnlIhxWXw8e+/RTrgUqJybJduyVugSYiU179T3pvZ2neWHUu
+	U8T2bRgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUrGU-0000000CS6n-3MQv;
-	Thu, 26 Jun 2025 18:24:02 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uUrjU-0000000CVxS-0RRe;
+	Thu, 26 Jun 2025 18:54:00 +0000
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUo7q-0000000C2bH-11rI
+	id 1uUqmx-0000000CPMB-1uwu
 	for ath10k@lists.infradead.org;
-	Thu, 26 Jun 2025 15:02:55 +0000
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55Q9pAQc031202
-	for <ath10k@lists.infradead.org>; Thu, 26 Jun 2025 15:02:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	wGWJ1Sswd47PGcB2x/iOZY6omMkR+LwiTigIHQ5o8VI=; b=MLsyhEPS0AYQuE/q
-	0ZLQ6k+sCoYnDpqCYEoTp2zl0ZzzcUeT9AivWKJNd7XNPQ1YShEn8p5Wy19AeSc4
-	1jhl4WVeHB9lOSVr56avIcBvdRUMwGG7lM/TTgYCfwYDpGALy/gi5ezbd+qnKeP1
-	hzRxWpq5SzOiQOueWdA1gsOn2rpYgkJNNquG4wUYoU7JtoLkRU9FcRitf9Rga0gS
-	VKGj5P4jwtn783sQrxHFkhIcmA3NgQf3/hAPn/CVRPxD7z18yFLtgUyPOVljzGRy
-	rDh3hfcmMReJoms0UkcZBGRfogfAHKAEJlMGmIDssaHjffFXLvjc8v44sqFVYSue
-	Y+OW5g==
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 47f4b43mxm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Thu, 26 Jun 2025 15:02:53 +0000 (GMT)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-3141f9ce4e2so1774674a91.1
-        for <ath10k@lists.infradead.org>; Thu, 26 Jun 2025 08:02:52 -0700 (PDT)
+	Thu, 26 Jun 2025 17:53:32 +0000
+Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-235f9e87f78so17485915ad.2
+        for <ath10k@lists.infradead.org>; Thu, 26 Jun 2025 10:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750960411; x=1751565211; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3DW+isIgbcOam9K3su8rrNYApBVcaHJL5UXxTcvoqeA=;
+        b=TU2XFMjravEHcX4TdkALYuDSmBS4eBQMWE1V5M/octzFZhnkqWja9Xc7ZOl98jquTm
+         HlZjcFhszNUxkWY6ZJt4eyVJ5hNOfvTm9FIV2kn9qZjfZ6mAU4mbJgMfNfYiAFWb5xGt
+         51D4xxR/QP6xtvOu9EDK6GPz473kBY1MQG9d1njq3sEZ1kBwzkt9cL8hAwmiErfnINnT
+         ir6zmypHepVtuAmhQleuL93dFMtRAUO9gNU/fiTPC548DtLqmN5Wp1/2vgdYX1NfI2+g
+         E7OZdCDvLfRq4ISPSlbsb6nlvO7a6DCr+DPiw5tINg2AygjidwTKuZybmIXMDq2RnSvp
+         smnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750950171; x=1751554971;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wGWJ1Sswd47PGcB2x/iOZY6omMkR+LwiTigIHQ5o8VI=;
-        b=A+ha/8T2IFMZHmE2o+ebLJ8yHdr3X6JN/6El4hT2pw8/qjdUgRBRlTJ3E/+SlWYBls
-         nTnw7op56j2XqUYDjQZhAf3A4eKS/a9no7aKqZjXp4zlKMDi8QIZk0iffhu1z9ZSPshH
-         UlGDWEGTqSyaLYgQFH+WL/HiWtrQCa73RVRXIseBqaandIdvuFXAh0ki5rqIUAGWAOCR
-         YrXjlW5UpPjnFrdDjQMUjgz+TeB3jtZvJYTUAuVQp8eHoHtiI2Sq4f88zcIRcQkX6iY2
-         I/NIbyFoyerId4hJBS/kZXE2rjkYJy7G6oJTctyd4hUcOPE4H0pVVXrzcEZjVQQ4tnBB
-         WSPA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTCxPeSuW6Ryv85qpcCsHQGs3gJAK6qzULaLATb44UhfN+8HrMo7Av6eadDC9Rr9nokqMyYko=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyuEV+l2jH2BSWZmp3VNaQJSjN6fdTTkq0pvVHSYwda1MSloiXi
-	UTHylyQPaueqQcjsEGXCcFsACmbD34sp2m5QBYgW/VIYNbZZyAAuaogot5qihiyBWs0GuQZF/cn
-	uYAnVnCvP3+pSR9HBDvE0zLWruYYko/cXDVJqMOrgelHCAx0/BSYkX5v1lTZpNw4DApv3JyOS
-X-Gm-Gg: ASbGncvncdKu0YIPaaAkCv4mOmqBUXB9UJI6qfDtrEsJVGsinfWbwIdJE/bz39C7xlP
-	dFoEl6H29ttaqs3h+ps/46JMn2msTaBDhOYK9YGYxHZUDzN3ZEkWA3R5zD3wXjXYPcynsiF2UaX
-	WYyZTYrJeQEfCyL4G5WtN/kKWk7zM9gfvwSCq7oaMfqtg64KVUCYdpGKsJp9N2ltlUWv61Ypzn7
-	JWHfcHpnqlIFid3IRv92bLs3hJfyoDmarhDjN9qWEKj6fYAEvLRKmXVXoRBj/vwn2hbncenKE6U
-	DKfY2IwI2F+L2RX7YTawdtR70AnbiJq2QNrWIYmYGTKRotCQE8tmN01sPYuofZtGsd/lLWOnCUd
-	InQ==
-X-Received: by 2002:a17:90b:3b8f:b0:311:e8cc:4248 with SMTP id 98e67ed59e1d1-315f26d29ffmr11663518a91.33.1750950170808;
-        Thu, 26 Jun 2025 08:02:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFdptXbuCusOcSSm1v4l2+op7oqmsQT4Ib4rFlDAj00T7SkOzlBe2kguaZuOM+pV5f/S3t6xw==
-X-Received: by 2002:a17:90b:3b8f:b0:311:e8cc:4248 with SMTP id 98e67ed59e1d1-315f26d29ffmr11663420a91.33.1750950169970;
-        Thu, 26 Jun 2025 08:02:49 -0700 (PDT)
-Received: from [10.227.110.203] (i-global254.qualcomm.com. [199.106.103.254])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-315f539e6aasm4593623a91.15.2025.06.26.08.02.48
+        d=1e100.net; s=20230601; t=1750960411; x=1751565211;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3DW+isIgbcOam9K3su8rrNYApBVcaHJL5UXxTcvoqeA=;
+        b=XPOjdq31dUTz/8rnFo4hqCkBsb180mhtCG4FcCzl2QHCv77KAIvFr21l/GoyBvpQo9
+         RdHDX/ZnHfI1rUrRIR5ZusCxEvHJ/thCzupfy+NEWMc3JIjgDl7r8PSxM5UzyQ0KGB6Q
+         UvLcCtcKRYVLtjS53aLs7kA+tIlDy4VQVwGz41TmZXuPKM8cD0alP8W84AqqbRFsZFIy
+         iOkK4nedrrD0kEbuWZoPW8bdoi3CfTXVJ4cSZmn6T3NYrRzNql8btUm8qwP7vOzlXxza
+         Ux0k1L+//+9uo/HYKw5rTcgA5LJezhEpGWRzqSPxuUxh5S3yS2bTmo0u3B0E/et/lgKY
+         laAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUsTLwLz9sp8KdcTZ3cx4geUdEQ8t7QM7aEsjoBkUIgPTxT1rdF5mW+SCarGcH+Bi+sVSnXT0s=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwzSTkBO6NscZLMyU1x++gbua7DRvtxJyqze9tv/6ztBtD7gXwm
+	VFob3CjlCMaMlGbsdv15BXuI5cwiZ7IKpbIE/sY/Dlk5HOfLxTv28FnX
+X-Gm-Gg: ASbGncuL8GkLFPC/N+8gfuxU+YmZPyJGOY7qZSm5K5j2We6k9vZybLi2TPaBOkOhlFI
+	xEkUjtZu71xFbF/MLU5gRWQyIdPNYy3cOJ1jWqLwc3cTS2jiMW12nB6U2FclHARb4PvrgkhBriH
+	Yiw22xwqJZG6GlBeB++2dN1c+w4pmMZFF03CMHUKlIHpBPJTLceMq+gFnvgS/c3oLfeyRo//sQm
+	y+waCz3mDhSXAcD8qpSjxEDEskHPc459V1ATyBLrDjPZvG22EL0L1rtb11yjzTJakQQd32zzzkd
+	Pean3L9EWNWYwa7/gQEhbIrc0KjPTNffa0rKBPqZ/CAL2nEZFGFW6uWRafQMKnJqhFGxJunVLOr
+	9p+w=
+X-Google-Smtp-Source: AGHT+IGMAGEXF0yV0ZZzuhQSFlpR4GVzlRjXoSxE+CF+J+ar1VbxUo+RYXwsDYzu1MLVP4aLNgLoyA==
+X-Received: by 2002:a17:902:c950:b0:235:799:eca5 with SMTP id d9443c01a7336-23ac463e850mr3573485ad.44.1750960410691;
+        Thu, 26 Jun 2025 10:53:30 -0700 (PDT)
+Received: from [127.0.0.1] ([116.206.223.154])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23abe312819sm3768515ad.34.2025.06.26.10.53.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Jun 2025 08:02:48 -0700 (PDT)
-Message-ID: <3f6c106f-cbd3-4f9a-8e7c-e43b51457bfb@oss.qualcomm.com>
-Date: Thu, 26 Jun 2025 08:02:47 -0700
+        Thu, 26 Jun 2025 10:53:30 -0700 (PDT)
+Date: Thu, 26 Jun 2025 23:23:14 +0530
+From: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+CC: Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org,
+ linux-acpi@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, stable@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_Instability_in_ALL_stable_an?=
+ =?US-ASCII?Q?d_LTS_distro_kernels_=28IRQ_=2316_be?=
+ =?US-ASCII?Q?ing_disabled=2C_PCIe_bus_errors=2C_a?=
+ =?US-ASCII?Q?th10k=5Fpci=29_in_Dell_Inspiron_5567?=
+User-Agent: Thunderbird for Android
+In-Reply-To: <CAEmM+Qg+xxMfXb=704OfwYLou7Mh_BNaTevLaGfiG2peZotJoA@mail.gmail.com>
+References: <CAEmM+Qi-Waxk5qcR+nfip-QGXaKk0-Kq7QSq890e9oYOPjW+bA@mail.gmail.com> <20250625202014.GA1585022@bhelgaas> <CAEmM+Qg+xxMfXb=704OfwYLou7Mh_BNaTevLaGfiG2peZotJoA@mail.gmail.com>
+Message-ID: <E8A26FD9-13E3-474A-87FF-ED8D27A1F27B@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [question, bug] regularly disconnecting wifi on RB1 and RB2
- boards, ath10
-To: Alexey Klimov <alexey.klimov@linaro.org>, jjohnson@kernel.org,
-        ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <DAWJQ2NIKY28.1XOG35E4A682G@linaro.org>
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Content-Language: en-US
-In-Reply-To: <DAWJQ2NIKY28.1XOG35E4A682G@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjI2MDEyNyBTYWx0ZWRfX9YnIVBquACrT
- mAuLZu8G9bIJhhwWWcrhq/bVrEHhN3Fic35w6xf0icMQCTdIDOXv/1Eqvll9hKTsk8yBMm7Ec2V
- 53yXz7+YtRQlI38qxBpcHbDM8Nu08RmR0AlBLh0QoBCb84jTcYVM8aDsbaBt6M7h9ZRQaXfjhzK
- PYhwjExZr//15h2Kr5ljk+tPcxXhQn9cAFGKGCH0Z6QkibgPiueCtAyca/AtYzgw6WADV2zfNBX
- +w9U8gMbhB6vs1Rv6x84GwcrDBdlSNOxqG7BTYgwyM8BfXpZ3qLkvhKjvYwLrJ6Sy9o66Gh1H+t
- /p8/j8qpt7tunjeEFxp/Jdx1wcmNl1QqNyyOquO/vda1fZHzaqhxzhlOVD5LU/HZY5/9Tqvdh/z
- 1hs2O+cCXd8a4aKHMOhvE+PFjoSw017NTIGBihU8N29EbJ2J44qTmmyaZGP/Vlfzqa4kmtWx
-X-Proofpoint-ORIG-GUID: A1SvhUOs1lT9q4L3KEI1sg94hcE_VP-c
-X-Proofpoint-GUID: A1SvhUOs1lT9q4L3KEI1sg94hcE_VP-c
-X-Authority-Analysis: v=2.4 cv=A8BsP7WG c=1 sm=1 tr=0 ts=685d611d cx=c_pps
- a=UNFcQwm+pnOIJct1K4W+Mw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
- a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=VwQbUJbxAAAA:8 a=sXrhvLzian3437fu5cAA:9
- a=QEXdDO2ut3YA:10 a=B0GORZ8-IyoA:10 a=uKXjsCUrEbL0IQVhDsJ9:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-06-26_06,2025-06-26_04,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 mlxlogscore=811 malwarescore=0 spamscore=0 bulkscore=0
- phishscore=0 adultscore=0 impostorscore=0 suspectscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 classifier=spam authscore=0 authtc=n/a
- authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2505280000 definitions=main-2506260127
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250626_080254_383196_677F3370 
-X-CRM114-Status: UNSURE (   7.85  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250626_105331_495623_30CDE495 
+X-CRM114-Status: GOOD (  20.02  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,11 +104,68 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 6/26/2025 7:48 AM, Alexey Klimov wrote:
-...
-> Any hints on how to debug this? Any debug switches I can toggle to debug this?
-> I am happy to provide more info or test changes/patches if any.
+Hello everyone,
 
-https://wireless.docs.kernel.org/en/latest/en/users/drivers/ath10k/debug.html
+I think I found it=2E I used irqpoll and I didn't experience any hiccups w=
+ith my mouse performance=2E But the Wi-Fi was still malfunctioning=2E
 
+To linux-pci and linux-acpi:
+
+It's an ath10k problem, sure, but there's something definitely problematic=
+ happening if, in the normal state, these Wi-Fi bugs hamper the touchpad mo=
+vement=2E
+
+To ath10k and linux-wireless:
+
+I tried out "options ath10k_core rawmode =3D 0" along with "skip_otp=3Dy' =
+and the Wi-Fi seems to work perfectly as of now=2E It might be the fix, it =
+might not be either=2E But I think there's something more important to ask:=
+ Are there any good resources/documentation on referring to what the differ=
+ent key-value pairs mean? Like, what's the exact documentation through whic=
+h people arrive at "rawmode=3D0" or "skip_otp=3Dy"?
+
+
+
+Bandhan
+
+
+On 26 June 2025 4:20:13=E2=80=AFam IST, Bandhan Pramanik <bandhanpramanik0=
+6=2Efoss@gmail=2Ecom> wrote:
+> Please ignore the last email (I haven't replied to everyone)=2E Also,
+> here's the actual updated dmesg (the previous one was the old one):
+> https://gist=2Egithub=2Ecom/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a1=
+6180/raw/78460e6931a055b6776afe756a95d467913d5ebd/updated-dmesg
+>=20
+> On Thu, Jun 26, 2025 at 4:16=E2=80=AFAM Bandhan Pramanik
+> <bandhanpramanik06=2Efoss@gmail=2Ecom> wrote:
+> >
+> > Hello Bjorn,
+> >
+> > First of all, thanks a LOT for replying=2E
+> >
+> > I have included the files in my previous GitHub Gist=2E Sharing the ra=
+w
+> > files for easier analysis=2E
+> >
+> > lspci -vv: https://gist=2Egithub=2Ecom/BandhanPramanik/ddb0cb23eca03ca=
+2ea43a1d832a16180/raw/78460e6931a055b6776afe756a95d467913d5ebd/detailed-lsp=
+ci=2Etxt
+> > dmesg: https://gist=2Egithub=2Ecom/BandhanPramanik/ddb0cb23eca03ca2ea4=
+3a1d832a16180/raw/78460e6931a055b6776afe756a95d467913d5ebd/dmesg=2Elog
+> >
+> > On a different note, I had to use pci=3Dnoaer, so that the ring buffer
+> > wouldn't get cleared that fast=2E
+> >
+> > Regarding the ath10k thing, none of the fixes worked this time=2E Only
+> > irqpoll worked=2E I don't know if it's because of a disparity b/w GNOM=
+E
+> > and KDE (because my daily driver is Fedora 42), but I'm 300% sure that
+> > it's not just the Wi-Fi that's the issue here=2E It's most probably a
+> > lot of issues here, and the harder issues to fix are usually the ones
+> > closer to the hardware=2E
+> >
+> > Anyway, if you get something, please let me know=2E
+> >
+> > Bandhan
+> >
 
