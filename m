@@ -4,58 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E442C83F09
-	for <ath10k@archiver.kernel.org>; Wed,  9 Jul 2025 02:22:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79707C83F03
+	for <ath10k@archiver.kernel.org>; Wed,  9 Jul 2025 09:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-Type:MIME-Version:Subject:To:From:Date:Message-ID:Reply-To:Cc:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=jXrtrYFEhYlzt5UZp6LFKbKXrT6KmTSQDgeF5Rd5AWo=; b=1k87duWfKRQIODoonAkKdGdC9l
-	xtpC2aPyK3yBn7cZOmXesojdtTPq7kYrOkAEq9feAAnLicIhJYG2FoS+TyQHWvs7TvKLjPScDJ1l+
-	Mda4aQzth2IcBzl8uXZro2dnbFQ7XFJIGrsRBGhtbsXZYRy00Vu+xU8G2z4NDiJeiABXn1msJ6twH
-	wxPfnWCz3xfZd2G3n72FZ7o2AFBThscTW9K7k1ag3GpjEfTon9RWr+MGfHpwFyrWTpu6vF9yw8Xtd
-	qbLtBF/dvowFWxgmooe+GibpMvL7Ta9N2jw/+9jLU97CAkKq9mWOORlOcRtqsTpBFpGZy7JtuSjbx
-	+Bki2aSA==;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=; b=jj0PDAVpXbFw8GosXX38PPvuZz
+	KVomepr9yJWzTlH08vmugPSUPKE1zFq1zlLTE+xSq1y6C6S5fvF7+zg0oC5LGI5GsYrMZ/T1mxFrl
+	Y14fHVZdl0Lx/rm6w4fF4nMsfRhWfpR8b19wfw+srVzYxLb8r/bxN6XF6JVNGXz/+kQTgE/4BN5d0
+	Z51tqJWvMuoY/EXMjo1OZ27wWmxyxCTiY+TByWez3BIAy3Wzu56hgrt51yjDml7Za9r18DAaksamy
+	vUr5DscGKCngIy97nNP+UGUA7Kg1J+ZNUj9hkIFImBTmdP7rSXrutPQePo3qBdM9RAj+uRGG0uLYs
+	b9MikeSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZKRd-00000007AVN-1uc1;
-	Wed, 09 Jul 2025 02:22:01 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1uZRYZ-00000008CHd-1Dc9;
+	Wed, 09 Jul 2025 09:57:39 +0000
+Received: from mail.krediq.pl ([51.210.151.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZKRc-00000007AUy-00X1;
-	Wed, 09 Jul 2025 02:22:01 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9591144DCC;
-	Wed,  9 Jul 2025 02:21:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50B4EC4CEED;
-	Wed,  9 Jul 2025 02:21:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752027719;
-	bh=WVnCMirBoe/sRlO5FFxK0aMqkw1TVZvzSz18OUJ96So=;
-	h=From:To:Cc:Subject:Date:From;
-	b=a0k/quRHTU6fbPFnwo3t93nfjhugf1HwI8LOZLIWd0Th7GcWeO8EodpJojQOHHhh7
-	 NsYJgl/IqYBb6EwY0xBjBw0fWojOBRsiFrNNiyCASf3LAUWcmO+fc4DlpiZ7pyUJ8Z
-	 etoZacMryOMpuYROtQ2uZWl3mFD4+JGUUIrgybvPWoyqGhzaj71U0Q4at/5OpU+U80
-	 DSBcepMZSdnKpimea37kYILhuUPoa/Uxz5lXf2ZSm4gc3Ftl7eN7VjXhW5bv5X5RKs
-	 6RPbnNBRkb45YEvoXZW6WmU9hv8V4dHbouB+D0bc4RE02UnFCwot0w96/ScFJzMHI6
-	 xrsvd22ZiKCWQ==
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Jeff Johnson <jjohnson@kernel.org>
-Cc: linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	ath11k@lists.infradead.org
-Subject: [PATCH v2] wifi: ath: Use of_reserved_mem_region_to_resource() for "memory-region"
-Date: Tue,  8 Jul 2025 21:21:50 -0500
-Message-ID: <20250709022151.2090523-1-robh@kernel.org>
-X-Mailer: git-send-email 2.47.2
+	id 1uZPWU-00000007qtO-0qH3
+	for ath10k@lists.infradead.org;
+	Wed, 09 Jul 2025 07:47:23 +0000
+Authentication-Results: revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+ARC-Seal: i=1; d=revenueraft.com; s=default; a=rsa-sha256; cv=none;
+	t=1752046871;
+	b=C8iVT3EJqBPuHWFimNPz6KHYwEnFDgcYvDKS/pTnvyPc96GtWlmkSfZx2dsW9/hY1his
+	 Bn06O0N9ZXGfQs7ZbM2T8+kJL5smp1KNuLguGu1J5M8TYv24cISl+iX1RMdsQa1Sb5y4k
+	 9ynSOLhC5sJqBYA7acMRixkUySGnUUwzeDY/u1WC4yfwoatu5j7m9W9ZWuFDj/VjHWAtg
+	 8VWZVggWK/VwybVGJdjb4nWKRoo0BboxRtUo7lYpmNuqDMJCqVTlXje5N9KvDhpebYluy
+	 N/6zFwZ3lYNlcqIBUzlu4j1MsPU4e1UaTwc9Tf4pifeqDPUSRBBVEcznCcZmzsOyb+Q==
+ARC-Message-Signature: i=1; d=revenueraft.com; s=default; a=rsa-sha256;
+	c=relaxed/simple; t=1752046871;
+	h=Message-ID:Date:From:Subject:From;
+	bh=HboKc8tVcCMzdhFeulcEm0W5YkHDy5R25XRa05nasQk=;
+	b=WfWl2xlpD4cYE0JSKl6ENiGYwn6KwooZQSDY7duYxiTSWj85hc9tqgtnMNvARhliniGR
+	 Xg/+4wrMsq4tUS1l1kZhWTDGg/OTD1wbXdA0fzVS2ldQQYx/lW7pCOOZKDMUiiHN8nVGY
+	 tT310DGZ4CZwYRrs+BxHi/OlkgZnaryzYdrdX6MLUni2y6myr6S8L+wZa0wFRXjlvqbhC
+	 bvRPPH6ejCK60/tCAI+QWwFBleAJUh6VSp8HrHnu5mt3AwY5buzCuS3ofAcSggFSyRttp
+	 pE9ac2sMqh4uycZ1j8hez3bYuRU5zVBs8HM/Sr2ppIk60N/I3evZs1tOdMcMGhSJ76w==
+ARC-Authentication-Results: i=1; revenueraft.com; arc=none smtp.remote-ip=127.0.0.1
+Received: by mail.krediq.pl (Postfix, from userid 1002)
+	id 4D0E723226; Wed,  9 Jul 2025 07:40:56 +0000 (UTC)
+Received: by mail.krediq.pl for <ath10k@lists.infradead.org>; Wed,  9 Jul 2025 07:40:45 GMT
+Message-ID: <20250709064500-0.1.89.mkmv.0.ahezmw09ah@krediq.pl>
+Date: Wed,  9 Jul 2025 07:40:45 GMT
+From: "Konrad Olkiewicz" <konrad.olkiewicz@krediq.pl>
+To: <ath10k@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
+X-Mailer: mail.krediq.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250708_192200_084299_3BD14EE8 
-X-CRM114-Status: GOOD (  15.16  )
+X-CRM114-CacheID: sfid-20250709_004722_380724_E47DE470 
+X-CRM114-Status: UNSURE (   0.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,156 +75,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Use the newly added of_reserved_mem_region_to_resource() function to
-handle "memory-region" properties.
+Dzie=C5=84 dobry,
 
-The error handling is a bit different for ath10k. "memory-region" is
-optional, so failed lookup is not an error. But then an error in
-of_address_to_resource() is treated as an error. However, that
-distinction is not really important. Either the region is available
-and usable or it is not. So now, it is just
-of_reserved_mem_region_to_resource() which is checked for an error.
+Czy potrzebuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w?
 
-Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
----
-v2:
-  - Split to separate patch
----
- drivers/net/wireless/ath/ath10k/snoc.c | 14 +++-----------
- drivers/net/wireless/ath/ath11k/ahb.c  | 17 +++--------------
- drivers/net/wireless/ath/ath11k/qmi.c  | 17 ++++-------------
- 3 files changed, 10 insertions(+), 38 deletions(-)
+Skutecznie pomagamy rozpoczyna=C4=87 rozmowy handlowe z klientami zainter=
+esowanymi Pa=C5=84stwa ofert=C4=85.
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index b2bf9d72b92f..5c61a3abd33b 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -13,7 +13,7 @@
- #include <linux/property.h>
- #include <linux/regulator/consumer.h>
- #include <linux/remoteproc/qcom_rproc.h>
--#include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/iommu.h>
- 
- #include "ce.h"
-@@ -1557,19 +1557,11 @@ static void ath10k_modem_deinit(struct ath10k *ar)
- static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
- {
- 	struct device *dev = ar->dev;
--	struct device_node *node;
- 	struct resource r;
- 	int ret;
- 
--	node = of_parse_phandle(dev->of_node, "memory-region", 0);
--	if (node) {
--		ret = of_address_to_resource(node, 0, &r);
--		of_node_put(node);
--		if (ret) {
--			dev_err(dev, "failed to resolve msa fixed region\n");
--			return ret;
--		}
--
-+	ret = of_reserved_mem_region_to_resource(dev->of_node, 0, &r);
-+	if (!ret) {
- 		ar->msa.paddr = r.start;
- 		ar->msa.mem_size = resource_size(&r);
- 		ar->msa.vaddr = devm_memremap(dev, ar->msa.paddr,
-diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
-index fde1ce43c499..2e8a77ceb8bb 100644
---- a/drivers/net/wireless/ath/ath11k/ahb.c
-+++ b/drivers/net/wireless/ath/ath11k/ahb.c
-@@ -9,8 +9,8 @@
- #include <linux/property.h>
- #include <linux/of_device.h>
- #include <linux/of.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/dma-mapping.h>
--#include <linux/of_address.h>
- #include <linux/iommu.h>
- #include "ahb.h"
- #include "debug.h"
-@@ -919,16 +919,10 @@ static int ath11k_ahb_setup_msa_resources(struct ath11k_base *ab)
- {
- 	struct ath11k_ahb *ab_ahb = ath11k_ahb_priv(ab);
- 	struct device *dev = ab->dev;
--	struct device_node *node;
- 	struct resource r;
- 	int ret;
- 
--	node = of_parse_phandle(dev->of_node, "memory-region", 0);
--	if (!node)
--		return -ENOENT;
--
--	ret = of_address_to_resource(node, 0, &r);
--	of_node_put(node);
-+	ret = of_reserved_mem_region_to_resource(dev->of_node, 0, &r);
- 	if (ret) {
- 		dev_err(dev, "failed to resolve msa fixed region\n");
- 		return ret;
-@@ -937,12 +931,7 @@ static int ath11k_ahb_setup_msa_resources(struct ath11k_base *ab)
- 	ab_ahb->fw.msa_paddr = r.start;
- 	ab_ahb->fw.msa_size = resource_size(&r);
- 
--	node = of_parse_phandle(dev->of_node, "memory-region", 1);
--	if (!node)
--		return -ENOENT;
--
--	ret = of_address_to_resource(node, 0, &r);
--	of_node_put(node);
-+	ret = of_reserved_mem_region_to_resource(dev->of_node, 1, &r);
- 	if (ret) {
- 		dev_err(dev, "failed to resolve ce fixed region\n");
- 		return ret;
-diff --git a/drivers/net/wireless/ath/ath11k/qmi.c b/drivers/net/wireless/ath/ath11k/qmi.c
-index 2782f4723e41..fb53efbc5b68 100644
---- a/drivers/net/wireless/ath/ath11k/qmi.c
-+++ b/drivers/net/wireless/ath/ath11k/qmi.c
-@@ -11,7 +11,7 @@
- #include "debug.h"
- #include "hif.h"
- #include <linux/of.h>
--#include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/ioport.h>
- #include <linux/firmware.h>
- #include <linux/of_irq.h>
-@@ -2038,23 +2038,14 @@ static int ath11k_qmi_alloc_target_mem_chunk(struct ath11k_base *ab)
- static int ath11k_qmi_assign_target_mem_chunk(struct ath11k_base *ab)
- {
- 	struct device *dev = ab->dev;
--	struct device_node *hremote_node = NULL;
--	struct resource res;
-+	struct resource res = {};
- 	u32 host_ddr_sz;
- 	int i, idx, ret;
- 
- 	for (i = 0, idx = 0; i < ab->qmi.mem_seg_count; i++) {
- 		switch (ab->qmi.target_mem[i].type) {
- 		case HOST_DDR_REGION_TYPE:
--			hremote_node = of_parse_phandle(dev->of_node, "memory-region", 0);
--			if (!hremote_node) {
--				ath11k_dbg(ab, ATH11K_DBG_QMI,
--					   "fail to get hremote_node\n");
--				return -ENODEV;
--			}
--
--			ret = of_address_to_resource(hremote_node, 0, &res);
--			of_node_put(hremote_node);
-+			ret = of_reserved_mem_region_to_resource(dev->of_node, 0, &res);
- 			if (ret) {
- 				ath11k_dbg(ab, ATH11K_DBG_QMI,
- 					   "fail to get reg from hremote\n");
-@@ -2093,7 +2084,7 @@ static int ath11k_qmi_assign_target_mem_chunk(struct ath11k_base *ab)
- 			}
- 
- 			if (ath11k_core_coldboot_cal_support(ab)) {
--				if (hremote_node) {
-+				if (resource_size(&res)) {
- 					ab->qmi.target_mem[idx].paddr =
- 							res.start + host_ddr_sz;
- 					ab->qmi.target_mem[idx].iaddr =
--- 
-2.47.2
+Zapraszam do kontaktu zwrotnego.
 
+
+Pozdrawiam serdecznie
+Konrad Olkiewicz
 
