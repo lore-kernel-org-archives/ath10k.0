@@ -4,59 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB41DC83F1A
-	for <ath10k@archiver.kernel.org>; Fri, 11 Jul 2025 12:17:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2089C83F1A
+	for <ath10k@archiver.kernel.org>; Fri, 11 Jul 2025 16:48:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	bh=eWwUzpVYQUI62mb+6hVlZCrd2jqUZ65TL/WySYS0eLg=; b=J1xfSNQ8T92u7E4FLdAeUnXu9s
-	3tCMIpJdKAjgm0zvFAAV5sZCYnpzsl0urdN6y0OvDjTuhZzG8E+6hcDOBcxVI4x83nUjVgP3kAA9Y
-	y8DP6AkuGzutGgjYTHJ7JFnZnZ/0GkeWY0e3aD+QF5VvdllRDAkRSYCVeevT8xTVvnH6G76FtG/2C
-	11ZzC8Trcd0gW9SFNWXjpnMqdqqJfzb6LTcHZpoNECLc1Ma/rEOc2Kv7f7Ww3zNC4wZwZ7I2RAMCX
-	83+YfCZIx36w6Zj9Ci3sJM+nP4W2PdKlejbgiyB+KzhJT1FVvSGgN7ul/VPFCUYeXbrBmARovnmig
-	3RDbGShg==;
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=/BGqM330Q0S9LfM4RTN9305y8KJx7EcufJSqEP9f9Nw=; b=WNrX7J6ARN57xr4lV/AY1O7Y8Z
+	eJIK1qSNWNQkffJUg3kKswNKbKR4aQvjNOi4vm58h1GAez6YljfteyuKAgEXNBH4+GcG/ymB23Anu
+	l7JwpePDEy4L7nYnR/5RZScd5BzuASItdPfVBmfLdRZj9mw6oPJRkSitMPcDWMOg+0yE5jQnKdwKc
+	sQBzxflrwgE7jZoAU7E0O43CHY6yLAIl579ERC3Y7VDIvykBKN8WFiPAALlpO9For8hsRV81rZ2nT
+	fFzYtuuZ0X6YQ3PUpW62BfhuIYNJXYJ8tpHrY3bf4m6rCVDyYQi7s7tJSTz5ZCH1d+OsfPib/53OZ
+	YHJciPlQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uaCh7-0000000Einv-2Cc0;
-	Fri, 11 Jul 2025 12:17:37 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1uaGvc-0000000FKhV-0fmM;
+	Fri, 11 Jul 2025 16:48:52 +0000
+Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uaCfD-0000000EiWH-3Kjq
+	id 1uaGF2-0000000FDzd-0Xr2
 	for ath10k@lists.infradead.org;
-	Fri, 11 Jul 2025 12:15:39 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id D80E96115D;
-	Fri, 11 Jul 2025 12:15:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EC62C4CEED;
-	Fri, 11 Jul 2025 12:15:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752236138;
-	bh=n82RM4cgT4El7yNKeOkJ1+B9gFq+IBgDJwiJGDyoQKw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=ilwu63lFCyYgGCXpzoljE+Ssp/LjbyGVktjqkhe+S5vf8WIYt7R/1iHH6nC9IYpeA
-	 EdfwpsLFcWOrzMG5Juf5bLwjvC/feIl6gtjDVaA2TLTFL+wtS7riYM33x722uYj6Vx
-	 F9yOIimLMfCqg27rzoHqdggfrY/JFn3HUFWQCcN4GUIYYkfeQUqosBqEyMRVpKEBAi
-	 smbmkHQXo+rpfwcXwSUHjQ9ZCODE7C2pE0XJdB3EYNh0II9jPPSxwguXeUgDHSnBVP
-	 dlBsXWSjJg11MpoMcum2NRMu9SWjdJqHk/8htJFweRk0lp3dYqXTNIyaokJyzPjeCb
-	 kj5Gb/1ABU+xw==
-Date: Fri, 11 Jul 2025 07:15:37 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
-	Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org, ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: Instability in ALL stable and LTS distro kernels (IRQ #16 being
- disabled, PCIe bus errors, ath10k_pci) in Dell Inspiron 5567
-Message-ID: <20250711121537.GA2289649@bhelgaas>
+	Fri, 11 Jul 2025 16:04:53 +0000
+Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-235f9ea8d08so21592485ad.1
+        for <ath10k@lists.infradead.org>; Fri, 11 Jul 2025 09:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752249891; x=1752854691; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/BGqM330Q0S9LfM4RTN9305y8KJx7EcufJSqEP9f9Nw=;
+        b=GymbWaFFqa6rvr1sGaMOFp3bXRsVz6u5h/G7WONmu/NR6Wl4Pn3Df8EEchwZ+QfFsR
+         d6vv2asEPbH2ug9sWR6cw4pAc0PsyTzAyv68bQ5KTT1MBLuU4h52Vnn1dKzQWJvp8/cS
+         zWFXxEslYDODGuE9OzdAsUdg3tMO4qJrU/iWcSkx95jPpYya4ggJUWfvfuoVXKH929in
+         9MDlBKCWcfB/x7/3eFdvTLxVhn5P+adT95t0UEkaBhnvkjXKSB+6QkzOvVOkdewKoxXl
+         DCsvufN8LixjKE00zWx31gh5V0bFaFqjdELPzI9Kxx2xyMI2FYy4swhIfM4ViXh51cM0
+         XWwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752249891; x=1752854691;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/BGqM330Q0S9LfM4RTN9305y8KJx7EcufJSqEP9f9Nw=;
+        b=U0M7dMqHBPCHybWTwYW6nTpqchC35CHkzGVvnKaUwqFhL7bq8dgEg9aUUxQGi1iU2+
+         1Fp2VinRV/LgFBJks8S6at7fc/eC6AsWSZpMbS/JJdLmlSJCOBSWSBseTDSyyFmz6ooI
+         A0bS0Tmw439YW63qTqqp4jDlM1Gd8tnNwiohGw+n5p8QNYJntAxe4y97/qZI+9yZW4pV
+         N/u0WdQxBXY7wbl4nigx0ze/QZC34qiEoYH8ia82Dc6tw8gCA74jlX+gD9zRTbXgh67j
+         uADWm8bYblolFSr3Mmm8GARG/OjPKrpL9HAkekSOYzxZnmMQf7Czp/gFG5U/yRz7WqXn
+         RWQg==
+X-Forwarded-Encrypted: i=1; AJvYcCVH82RD8KG6AX2JLVz33FswzYbSqF/ZHZNYswl/ldueu5NTN4z0kykNOv2M0GGVkLKvmLu2RXQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzINjZe7i11RQF2FS2mkWLRSMdR4TEoBsOjEwArVFYUUPEUHy7P
+	x4pBbYo2Vv2pzRlY+g/CSejuswfp84oc+CaxD8ng2qL5k2vw/RZZTE4E
+X-Gm-Gg: ASbGncvsNR2UhpjS4f6GCJOTwFGXGzhiLV+sJKMinflO8o8tzhGQdUf0wTAz5wKbHCE
+	qgq+ZTsnXkFU+0mvocUTaldRVmC/su6VoMuafF4h0rc9HPORxrikV/wvUAbUbBKcbDLwEILLzi7
+	SxM/lNrRDUpbrzhvTqCmSFIm4vWs5rczSLXwNAQ8vQl4q/DohfbFkkbDFJ1/OrwLGlGxAWo8Ls5
+	MO/MOQs/pHFwks69dQL9MyuxW/DpS3ASu2KW+0XYEjt6CMGWG/cYkGX+pTcuKlBgjQf/OMR8fIR
+	GDTTC5/yF2+S6lbB8qfdYetTt60QdXZgyjx1r7XHvkfiX5ViT22rRXz7XfbCvOU2Ngta+z7L/GF
+	cCWCJzuc4AB/eK4n2FWk4jJxfww+hBDX1ziArJ+M=
+X-Google-Smtp-Source: AGHT+IEJ3oNx5cIlUjLOmHFUNTHkmdkqAsMISfC7Mxkw9B+ThDVLGY3uFMXn7GPvV+fHnVNaD+WHOg==
+X-Received: by 2002:a17:902:db0e:b0:234:9656:7db9 with SMTP id d9443c01a7336-23dede7d62emr65105805ad.32.1752249891094;
+        Fri, 11 Jul 2025 09:04:51 -0700 (PDT)
+Received: from [127.0.0.1] ([116.206.223.154])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de4346187sm55118985ad.193.2025.07.11.09.04.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jul 2025 09:04:50 -0700 (PDT)
+Date: Fri, 11 Jul 2025 21:34:43 +0530
+From: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+CC: Manivannan Sadhasivam <mani@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+ linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ stable@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_Instability_in_ALL_stable_an?=
+ =?US-ASCII?Q?d_LTS_distro_kernels_=28IRQ_=2316_be?=
+ =?US-ASCII?Q?ing_disabled=2C_PCIe_bus_errors=2C_a?=
+ =?US-ASCII?Q?th10k=5Fpci=29_in_Dell_Inspiron_5567?=
+User-Agent: Thunderbird for Android
+In-Reply-To: <20250711121537.GA2289649@bhelgaas>
+References: <20250711121537.GA2289649@bhelgaas>
+Message-ID: <FB546B0D-2209-4FA0-9DC9-A75C0BC9FA4F@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEmM+Qj=TA=WtQAXQZx6wCUpdsOQ4j66Kpyze3KNZHC79KfyRA@mail.gmail.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250711_090452_185912_0037F7D0 
+X-CRM114-Status: UNSURE (   4.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,33 +106,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jul 11, 2025 at 12:36:12AM +0530, Bandhan Pramanik wrote:
-> Ok, we did it. Could reproduce the errors properly.
-> 
-> Here are the journalctl logs:
-> 
-> Kernel level: https://gist.githubusercontent.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180/raw/a9e93c4ba41fb0b3d7602e6bfddce9aa5f3a19b2/KERNEL%2520journalctl%2520v6.16-rc4
-> User level: https://gist.githubusercontent.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180/raw/a9e93c4ba41fb0b3d7602e6bfddce9aa5f3a19b2/NON-KERNEL%2520journalctl%2520v6.16-rc4
+Hello,
 
-Thanks.  These logs look like the kernel doesn't include the patch I
-sent at https://lore.kernel.org/r/20250705195846.GA2011829@bhelgaas
+I really couldn't find on the internet how to compile a single file now th=
+at I have compiled the whole kernel=2E
 
-Can you please try with that patch?
-
-> Just so you know, I have used v6.16-rc4.
-> 
-> Bandhan.
-> 
-> On Wed, Jul 9, 2025 at 11:00 PM Bandhan Pramanik
-> <bandhanpramanik06.foss@gmail.com> wrote:
-> >
-> > Hello,
-> >
-> > I was actually a bit distracted by the things caused by the Automatic Partitioning of Fedora. I'll inform that in Fedora Bugzilla... anyway.
-> >
-> > I realised that making the modules will take 8-9 hours, I didn't even have much of a success (because all the modules didn't properly load, particularly the firmware-N.bin files couldn't be found).
-> >
-> > But I'll try to recompile the kernel, I'll just have to give it overnight time.
-> >
-> > Bandhan
+Any ways to do that?
 
