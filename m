@@ -4,70 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDE2BC83F10
-	for <ath10k@archiver.kernel.org>; Sat, 12 Jul 2025 19:18:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C908C83F1D
+	for <ath10k@archiver.kernel.org>; Sun, 13 Jul 2025 16:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9+SeksEJ/B3oHTmDXitUpaGe7BOdYyJw+AFYp5mL8xg=; b=P+Yn0uL3NPLE5C/Q85k+wpC3h9
-	OeItJkP1n9orCUzQDSsbWOmDXFqUxMqizr5zhfv9gFChAE9GmnjL1HNU5a0Ds3Zh+QDPlgwdx4i9k
-	qMLtVjlYyN/0Ne67xFqRDO7BqEDXQBmC5NVR0XPL/xfG7kl1u3dzyqsMG5JLQZmDYOHTo/WxfE3QQ
-	13X1HNHvokXmC0C14MCsgR6hlYFzpyRnNdx22QqG9HQfMv3dj+JR7Rn2X9gMIFv0vxT860l0/yooH
-	YdYJ9PRFn31jHriBrMwkpyTxJXK4255gfvN19jDUi3syd5oE9g8rQl79muEQo41azNEHmu745T8Yp
-	4F2j93fQ==;
+	bh=+0l/VqiYxdBHMF99eNFwntJM2bY7LDqgmFNd0DnCAi4=; b=rvQSaLFqnCllM/UGsY7IN8UJ2Z
+	nEm63rwA+r7m9pgZcVEhx1+hivkftIerce65iNBzR497DIkXZ2Rx4/kY1rPB3Bcdn+KYJNpC2X/mi
+	UN+Mq4diNUXl9S5NxozSodi7UPmSVxUhLj7AvPT53H692MFIdT8DPd+d2/jP2y7imhyY9RCJgX9E/
+	XgP/rBBWT/lzpY/dQjAxagh1QGMyAzh/cw1DeWRm6FxxZHj2VzmDCtQZ4q5Bq4wr25QO5MjAsTdVf
+	AK5yhZRgz3KIotT3JOis4X05ztOZ6Y5tEAb0dNLQK1feXVmDBW8X/wJr4VqRBU8ZEj4P9AEnsTC1S
+	wKv/FArg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uafjq-0000000Gw6c-1NyI;
-	Sat, 12 Jul 2025 19:18:22 +0000
-Received: from sender4-pp-o94.zoho.com ([136.143.188.94])
+	id 1uazCM-00000000MLI-1SgB;
+	Sun, 13 Jul 2025 16:05:06 +0000
+Received: from mail-yw1-x1144.google.com ([2607:f8b0:4864:20::1144])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uafjn-0000000Gw6A-17g4
+	id 1uazCJ-00000000MKn-3Bwy
 	for ath10k@lists.infradead.org;
-	Sat, 12 Jul 2025 19:18:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1752347895; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=nSSMwY6QoRfCv7c8n/fwv9DdtZ4wlMS8DfNS5NGnSynC0A1xa5a+RfN3M6bg7YH/NcW9DHfMDRULO7iOfy7KtOHU+cC8vkyXX21Un5VE840iGe+T/QFqkuAD/DC1xIHKsdcjTFhaD7y5qCwqEPSJqCF5QASW/r/4HrClZW7Kq7w=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1752347895; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=9+SeksEJ/B3oHTmDXitUpaGe7BOdYyJw+AFYp5mL8xg=; 
-	b=hTazcVIgPz4ZMjQFNIHUI45aKOzeZsobcNxZddBxFSA8IyWMHtF3Ijun4Lar3ficu8npVzFCL64FQKZdXmJDrLZcSIqlDvynY+Q0/RKJb2tqoBoZT+dxxivCavhauJAThG/L/c9gAlOaS3K6Sl4/CrvRvH1wmqM9K1PkAgBj4l4=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=zohomail.com;
-	spf=pass  smtp.mailfrom=safinaskar@zohomail.com;
-	dmarc=pass header.from=<safinaskar@zohomail.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1752347895;
-	s=zm2022; d=zohomail.com; i=safinaskar@zohomail.com;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID:Reply-To;
-	bh=9+SeksEJ/B3oHTmDXitUpaGe7BOdYyJw+AFYp5mL8xg=;
-	b=UULzpoNCpzcKryXoJdv8lA2NrO96lXYnyMIistFO2TbdHr5ZrXZQy7Fszor2gpyR
-	ogygrNCplebqedGOC9HywNPS/fMTuGF5fF+sMcrXqUrgJ432meNhee0nEbYr0NH9U43
-	oMcZgzZxwYsyOLgS8I0/rs4AU7BLN4e6j8icWj+E=
-Received: by mx.zohomail.com with SMTPS id 1752347892628997.4685098189007;
-	Sat, 12 Jul 2025 12:18:12 -0700 (PDT)
-From: Askar Safin <safinaskar@zohomail.com>
-To: bandhanpramanik06.foss@gmail.com
-Cc: ath10k@lists.infradead.org,
-	linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: Instability in ALL stable and LTS distro kernels (IRQ #16 being disabled, PCIe bus errors, ath10k_pci) in Dell Inspiron 5567
-Date: Sat, 12 Jul 2025 22:18:05 +0300
-Message-Id: <20250712191805.5238-1-safinaskar@zohomail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <CAEmM+Qi-Waxk5qcR+nfip-QGXaKk0-Kq7QSq890e9oYOPjW+bA@mail.gmail.com>
-References: <CAEmM+Qi-Waxk5qcR+nfip-QGXaKk0-Kq7QSq890e9oYOPjW+bA@mail.gmail.com>
+	Sun, 13 Jul 2025 16:05:04 +0000
+Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-713fba639f3so29896377b3.1
+        for <ath10k@lists.infradead.org>; Sun, 13 Jul 2025 09:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752422702; x=1753027502; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+0l/VqiYxdBHMF99eNFwntJM2bY7LDqgmFNd0DnCAi4=;
+        b=hc1AW6+VYLn0HMMZa2GCHmcKm09dRifOUOc46kRP1zBiYHNW6Iz5z0si5nrMZH1M91
+         ZiOCqCLfvGaZCOfVDfuoiFswtzIJ7WhQVQJONRPcoc22HAGLWGDfojuchUZGoF065o6T
+         KoB+6L5/YFyh/Cc38a0seF37kqBA5x/EUQGm0/Nqv+xKd9lZ6vPejDBjZ0tHbXg32jWD
+         pbxXGYOcgoHeueJwJ4OrRjqP/y09nphgZunLpp3nZPs7NnfJLGaOnV5L8UzBopwJXFD8
+         LPcUEmY0RJfVHNznMBg3C9lXNbid5Gwwt+R0aA0DU3Gimi01ZAAvfOF8zx18Bm08ezGe
+         OBZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752422702; x=1753027502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+0l/VqiYxdBHMF99eNFwntJM2bY7LDqgmFNd0DnCAi4=;
+        b=pdUBBxrcBa2n2a0p7kIKcLp4ZsO9RMO12eFk7a4K+9k3vVL/T38b8VvF61qFf7qT/6
+         +BCTFUJG59Jgcn8oWCAub3r+TmND8OpUPXQVFlQ7EjQcAa5/+FoggWDHbG6Y6aCOqyiS
+         vzMYaCqFnSsIs4iAKyy6KtH661hHhADlEPjapJKi9IW5WLf9G3UYv4pYB4LA6kPF8va4
+         XX2qu67mgnU50fNjK94AApvriR/5FL7Asmwjs+MPcB/emQewxF60gPWQvOohtkUrsERA
+         t7ZS2s96PDI/RAE+Pfq2IBZ7q+lVIy5O2ohyFqWNR/gxyleVmCJPEEYnoR34vySw1m45
+         p/9A==
+X-Gm-Message-State: AOJu0YxlvWv7JZZ+SAhkETAqaYFKB75BmlbIwqGOfXG37LouaLTY6m2a
+	GWRizgGlB9SxODdfgbAjTc5ef885/02FbJypVif38eA1QSUmP7ofq1wa5RpH/XMBF5/9ICbqTGU
+	wPuX1SK6zSY5PBCKNdqPXHhovcNMQ+/A=
+X-Gm-Gg: ASbGnctFPYsyXep9qKJxWVo/u0X1SgKS5zgk1rk9d6YwntXdyDpEy/JtsN2FS1oZ/Pw
+	sEPGH3El66XSjeTwAonsLBADPTq5Us54tRPL+Xg9zXJDkXjXc3Wtx0UrEcbG3cgJhOFeqYcHutv
+	BnS9JdgaOenCzPwdm/Je1ocJbF0khEpdGqg41+Ep+i8MvEPqGQVe/xzG4aKPzs03O4JsT/O3SMN
+	nVruJoQwQ==
+X-Google-Smtp-Source: AGHT+IH2LeIiglYC9Tun6YOS0JGqjbS6y7L8l2v4pYn+yw4nEo+noWt27UHB4T0XUvebiJpgOLMtt6+dbcW6ZN3bMKI=
+X-Received: by 2002:a05:690c:6713:b0:6fb:b1dd:a00d with SMTP id
+ 00721157ae682-717d5ee1ddbmr173765917b3.30.1752422702009; Sun, 13 Jul 2025
+ 09:05:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Feedback-ID: rr0801122753e21b1af32df72693f2c21c0000b81c9656ebead32314845f469649a9d58a1a6645690a316cce:zu08011227d26e261832766660a9590e3e00003488e544a1fbd2c6ea5fa976174713694cc20ba307517d9038:rf0801122c8eb209f952fe2d65418d80310000afa7de5bb988db7dd39c0f1f677807fc98d39697c23099823dfb1141c821:ZohoMail
-X-ZohoMailClient: External
+References: <CAEmM+Qi-Waxk5qcR+nfip-QGXaKk0-Kq7QSq890e9oYOPjW+bA@mail.gmail.com>
+ <20250712191805.5238-1-safinaskar@zohomail.com>
+In-Reply-To: <20250712191805.5238-1-safinaskar@zohomail.com>
+From: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
+Date: Sun, 13 Jul 2025 21:34:50 +0530
+X-Gm-Features: Ac12FXxwluBZCmPP36mlKAZmIh6T5KqX9xngXXsjA_2HI0FsRYjIiDSQjP17RPs
+Message-ID: <CAEmM+Qij=SYXmt=Ea+gK3jMoeY=Sn=0QD17q9jn5YS0BupbXrA@mail.gmail.com>
+Subject: Re: Instability in ALL stable and LTS distro kernels (IRQ #16 being
+ disabled, PCIe bus errors, ath10k_pci) in Dell Inspiron 5567
+To: Askar Safin <safinaskar@zohomail.com>
+Cc: ath10k@lists.infradead.org, linux-acpi@vger.kernel.org, 
+	linux-pci@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250712_121819_729985_8FB2B9EC 
-X-CRM114-Status: UNSURE (   6.31  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250713_090503_820276_2FF78422 
+X-CRM114-Status: GOOD (  14.19  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,30 +97,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-I saw problems with Atheros on my Dell Inspiron, too.
+Hello Askar,
 
-These instructions helped me to reset the device without reboot:
+I appreciate your response. However, we're mainly trying to find out
+exactly 'why' this problem occurs. You might say that it's some kind
+of "Root Cause Analysis," so that this error goes away from the
+Inspiron laptops once and for all. If you keep on reading the messages
+in the other thread, you'll realise just how deep this error goes.
 
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1730331/comments/40
+But still, thanks a lot for the response.
 
-I used modified script based on the one above (run as root):
+Bandhan
 
-set -e
-rmmod ath10k_pci 2> /dev/null || :
-rmmod ath10k_core 2> /dev/null || :
-rmmod ath 2> /dev/null || :
-{ echo 1 > /sys/bus/pci/devices/0000\:03\:00.0/remove; } 2> /dev/null || :
-sleep 2
-echo 1 > /sys/bus/pci/rescan
-
-Try both scripts, one of them should work.
-
-If still doesn't work, try to run original script, then do hibernate, if still doesn't work, run script again.
-
-I finally was able to solve my problem by replacing Wi-Fi adapter. :) Here is my new Wi-Fi adapter:
-
-[    7.136347] iwlwifi 0000:03:00.0: Detected Intel(R) Dual Band Wireless AC 3160, REV=0x164
-
---
-Askar Safin
+On Sun, Jul 13, 2025 at 12:48=E2=80=AFAM Askar Safin <safinaskar@zohomail.c=
+om> wrote:
+>
+> I saw problems with Atheros on my Dell Inspiron, too.
+>
+> These instructions helped me to reset the device without reboot:
+>
+> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1730331/comments/40
+>
+> I used modified script based on the one above (run as root):
+>
+> set -e
+> rmmod ath10k_pci 2> /dev/null || :
+> rmmod ath10k_core 2> /dev/null || :
+> rmmod ath 2> /dev/null || :
+> { echo 1 > /sys/bus/pci/devices/0000\:03\:00.0/remove; } 2> /dev/null || =
+:
+> sleep 2
+> echo 1 > /sys/bus/pci/rescan
+>
+> Try both scripts, one of them should work.
+>
+> If still doesn't work, try to run original script, then do hibernate, if =
+still doesn't work, run script again.
+>
+> I finally was able to solve my problem by replacing Wi-Fi adapter. :) Her=
+e is my new Wi-Fi adapter:
+>
+> [    7.136347] iwlwifi 0000:03:00.0: Detected Intel(R) Dual Band Wireless=
+ AC 3160, REV=3D0x164
+>
+> --
+> Askar Safin
 
