@@ -4,73 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5ED9C83F3B
-	for <ath10k@archiver.kernel.org>; Fri, 18 Jul 2025 12:23:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1824C83F1A
+	for <ath10k@archiver.kernel.org>; Fri, 18 Jul 2025 16:46:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XVIW/bZ7n/cieH0xV9WaWiiuzALisd7OqvHHXRzEt1E=; b=323pwXI9xRcbszFVKxOb8rShxZ
-	B0hiEvwVojHyOP84afqc319RShXIft39gMHSVWX+qNGJz3OqZkAakggPzpa0YFDpsxuQYvauk+U2h
-	tVgQPAOQDE+rPj3E1v+VjXXSV8ofN3ZLv6Ybugiedpi5iGpVTZG3VXt8pMNadYYKhALCmIy3NhDVQ
-	DDuANMY5Irtr4bBHWnDlUCDNVbOGedfy9g0bXBJZR4ywFKLeCrHeFTArd9seqddLMvYMGI6o0a9Yj
-	WpCjEv3BNQXJPaqKOiirELEkA8BpcmIxYbuW921zpunclX04wsgUuqGINeBmfUnQz08oQVjn87Ra6
-	jJJ5MpmQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=dCEM8aWN+j09CDRWVG7/dnusk4+88HZYwOw99R8RwOY=; b=DnZdCYh3uqD5Vo
+	tTeNu1SxAESYEj68WHXC1l5qeSkLKW6ukA/A9rt4pHfXg8LxNFIBKUi8WICxY5N1dSuCuf7IgD8dr
+	hZXClFieyn+u1ErBUQHjI/sLz3ZbzMLOtkEJj2rWkLwZNaN8FJvBygh5WWLuB+7f6p7XFDIqtjBa9
+	5uPDY+do1qaqyt9QC1CRRdAfdFeJIHPMwWA2pltRCqqLydukKGi2Efz5QQoZOsJN62p4OI7u/kpfq
+	znLWZ3RGP2M1guS5Vk1PlAHVyuPwqGTSZTeTdRYqHv3up+ksLznkiKsj03IB8j9G6+Q5YGHdOjilY
+	u4odgyJTZgqfuDIS6nNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uck7K-0000000CZaP-09wW;
-	Fri, 18 Jul 2025 12:23:10 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1ucoER-0000000D90R-284w;
+	Fri, 18 Jul 2025 16:46:47 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ucjax-0000000CVIQ-25fp;
-	Fri, 18 Jul 2025 11:49:43 +0000
+	id 1ucnuO-0000000D5OB-2DyE;
+	Fri, 18 Jul 2025 16:26:05 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9F1C3601D9;
-	Fri, 18 Jul 2025 11:49:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8035C4CEEB;
-	Fri, 18 Jul 2025 11:49:35 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id E949540BD3;
+	Fri, 18 Jul 2025 16:26:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 812F3C4CEEB;
+	Fri, 18 Jul 2025 16:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752839382;
-	bh=brnIQKO+k671IytUQOcvFc/YtZw2YsaVUB7/hwCJ4Og=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JB+JFFDAXTlnRS4Z+CB4KzaASA/lRSl0akwPbIGypV5TL6xotGMMcx0yekHa//dQH
-	 dmAMeryoXQtvixnT6Cmjyx9kKA4UDmlKcLNMBYegnul9JgjJDGNhkUx7m99q45YnWn
-	 nVpw4VGDKPVoi43G1pjvDA/wflXVneWXyn0Qh00Fqbpj+isk5CGIiPzyqcKwZgonBM
-	 D7izHy+QPZgpBRq/0WsMG/VEoaKULIuw0jlgdglFEubWEdmOv0QXD94bwBIXfS/HQJ
-	 qp0ad+lSvUsxtwHnpOiWMAV3BGcbRXHnWy5LCIAc6LHprB97yy2ahBZ3996t4xpFN+
-	 GV4mLvh3b3uMw==
-Date: Fri, 18 Jul 2025 17:19:28 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-Cc: manivannan.sadhasivam@oss.qualcomm.com, 
-	Jeff Johnson <jjohnson@kernel.org>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Nirmal Patel <nirmal.patel@linux.intel.com>, 
-	Jonathan Derrick <jonathan.derrick@linux.dev>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	ath12k@lists.infradead.org, ath11k@lists.infradead.org, ath10k@lists.infradead.org, 
-	Bjorn Helgaas <helgaas@kernel.org>, ilpo.jarvinen@linux.intel.com, linux-arm-msm@vger.kernel.org, 
-	linux-pci@vger.kernel.org, Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>, 
+	s=k20201202; t=1752855963;
+	bh=aXCC6a0BRcLONBCEG+qLtT+Rm3FPzL7V91riur1H9Xg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=VitDl0P293UBhnBWTfwW9kVJK0g1L/RqqX2mGlwmW2JmETRPxtereKE2Vuq0LK+EG
+	 bf8x/QDXwtgdesGEGkf9l3+tOv/u5eMPMLfDd5Jm8tmNgi/l9dkuuL+h79ov7lthlp
+	 UFI2NSU7GD4fAKI/DAVKgV5+ZvEGjKu37s3kDh3BO2tZWRiDjhL2lKGk1Q0vG+z9uf
+	 wI7zXsu3ola9AnO/2kZYI7KblB/WNrwX/y89x0GMfAWLCxdr3YZUcYLqkv2y4YdPhH
+	 a+Wk/8evsszEwS9hOiOwuRm74mqj4lvhO6udfWVIb4fa6/y07B1q7rkveAwQJ6a9dO
+	 Qcy/kMyM8zjbQ==
+Date: Fri, 18 Jul 2025 11:26:00 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Baochen Qiang <baochen.qiang@oss.qualcomm.com>,
+	manivannan.sadhasivam@oss.qualcomm.com,
+	Jeff Johnson <jjohnson@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ath12k@lists.infradead.org, ath11k@lists.infradead.org,
+	ath10k@lists.infradead.org, ilpo.jarvinen@linux.intel.com,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>,
 	Qiang Yu <qiang.yu@oss.qualcomm.com>
 Subject: Re: [PATCH 4/6] wifi: ath12k: Use pci_{enable/disable}_link_state()
  APIs to enable/disable ASPM states
-Message-ID: <wkapzhyr6hzp5az4jae3y5c77c3fg4uwrmyyipbq4uosamcivq@z7nv6w7nbyrp>
-References: <20250716-ath-aspm-fix-v1-0-dd3e62c1b692@oss.qualcomm.com>
- <20250716-ath-aspm-fix-v1-4-dd3e62c1b692@oss.qualcomm.com>
- <38ace6a3-d594-4438-a193-cf730a7b87d6@oss.qualcomm.com>
- <wyqtr3tz3k2zdf62kgtcepf3sedm7z7wacv27visl2xsrqspmq@wi4fgef2mn2m>
- <03806d02-1cfc-4db2-8b63-c1e51f5456e2@oss.qualcomm.com>
- <o2gqqty6lakc4iw7vems2dejh6prjyl746gnq4gny4sxdxl65v@zmqse3244afv>
- <1db7c119-882f-4184-9ca4-9dbe5a49cb16@oss.qualcomm.com>
- <gx5gruyhrhwhvwkiqlkp2bggqd4oqe4quvqiiphfzolhjtzun6@okogvabkqah3>
- <otdgyzdymraa3f33vyb445kmssi3mqf5z2mw7w5pib4q4sb7vz@qbrzvrojqji3>
- <30fe1325-16d6-4621-a7d2-811d9c958e04@oss.qualcomm.com>
+Message-ID: <20250718162600.GA2700538@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <30fe1325-16d6-4621-a7d2-811d9c958e04@oss.qualcomm.com>
+In-Reply-To: <wkapzhyr6hzp5az4jae3y5c77c3fg4uwrmyyipbq4uosamcivq@z7nv6w7nbyrp>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250718_092604_617775_13551233 
+X-CRM114-Status: GOOD (  47.85  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,152 +82,157 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jul 18, 2025 at 07:05:03PM GMT, Baochen Qiang wrote:
-> 
-> 
-> On 7/18/2025 6:20 PM, Manivannan Sadhasivam wrote:
-> > On Fri, Jul 18, 2025 at 01:27:27PM GMT, Manivannan Sadhasivam wrote:
-> >> On Fri, Jul 18, 2025 at 10:05:02AM GMT, Baochen Qiang wrote:
-> >>>
-> >>>
-> >>> On 7/17/2025 7:29 PM, Manivannan Sadhasivam wrote:
-> >>>> On Thu, Jul 17, 2025 at 06:46:12PM GMT, Baochen Qiang wrote:
-> >>>>>
-> >>>>>
-> >>>>> On 7/17/2025 6:31 PM, Manivannan Sadhasivam wrote:
-> >>>>>> On Thu, Jul 17, 2025 at 05:24:13PM GMT, Baochen Qiang wrote:
-> >>>>>>
-> >>>>>> [...]
-> >>>>>>
-> >>>>>>>> @@ -16,6 +16,8 @@
-> >>>>>>>>  #include "mhi.h"
-> >>>>>>>>  #include "debug.h"
-> >>>>>>>>  
-> >>>>>>>> +#include "../ath.h"
-> >>>>>>>> +
-> >>>>>>>>  #define ATH12K_PCI_BAR_NUM		0
-> >>>>>>>>  #define ATH12K_PCI_DMA_MASK		36
-> >>>>>>>>  
-> >>>>>>>> @@ -928,8 +930,7 @@ static void ath12k_pci_aspm_disable(struct ath12k_pci *ab_pci)
-> >>>>>>>>  		   u16_get_bits(ab_pci->link_ctl, PCI_EXP_LNKCTL_ASPM_L1));
-> >>>>>>>>  
-> >>>>>>>>  	/* disable L0s and L1 */
-> >>>>>>>> -	pcie_capability_clear_word(ab_pci->pdev, PCI_EXP_LNKCTL,
-> >>>>>>>> -				   PCI_EXP_LNKCTL_ASPMC);
-> >>>>>>>> +	pci_disable_link_state(ab_pci->pdev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
-> >>>>>>>
-> >>>>>>> Not always, but sometimes seems the 'disable' does not work:
-> >>>>>>>
-> >>>>>>> [  279.920507] ath12k_pci_power_up 1475: link_ctl 0x43 //before disable
-> >>>>>>> [  279.920539] ath12k_pci_power_up 1482: link_ctl 0x43 //after disable
-> >>>>>>>
-> >>>>>>>
-> >>>>>>>>  
-> >>>>>>>>  	set_bit(ATH12K_PCI_ASPM_RESTORE, &ab_pci->flags);
-> >>>>>>>>  }
-> >>>>>>>> @@ -958,10 +959,7 @@ static void ath12k_pci_aspm_restore(struct ath12k_pci *ab_pci)
-> >>>>>>>>  {
-> >>>>>>>>  	if (ab_pci->ab->hw_params->supports_aspm &&
-> >>>>>>>>  	    test_and_clear_bit(ATH12K_PCI_ASPM_RESTORE, &ab_pci->flags))
-> >>>>>>>> -		pcie_capability_clear_and_set_word(ab_pci->pdev, PCI_EXP_LNKCTL,
-> >>>>>>>> -						   PCI_EXP_LNKCTL_ASPMC,
-> >>>>>>>> -						   ab_pci->link_ctl &
-> >>>>>>>> -						   PCI_EXP_LNKCTL_ASPMC);
-> >>>>>>>> +		pci_enable_link_state(ab_pci->pdev, ath_pci_aspm_state(ab_pci->link_ctl));
-> >>>>>>>
-> >>>>>>> always, the 'enable' is not working:
-> >>>>>>>
-> >>>>>>> [  280.561762] ath12k_pci_start 1180: link_ctl 0x43 //before restore
-> >>>>>>> [  280.561809] ath12k_pci_start 1185: link_ctl 0x42 //after restore
-> >>>>>>>
-> >>>>>>
-> >>>>>> Interesting! I applied your diff and I never see this issue so far (across 10+
-> >>>>>> reboots):
-> >>>>>
-> >>>>> I was not testing reboot. Here is what I am doing:
-> >>>>>
-> >>>>> step1: rmmod ath12k
-> >>>>> step2: force LinkCtrl using setpci (make sure it is 0x43, which seems more likely to see
-> >>>>> the issue)
-> >>>>>
-> >>>>> 	sudo setpci -s 02:00.0 0x80.B=0x43
-> >>>>>
-> >>>>> step3: insmod ath12k and check linkctrl
-> >>>>>
-> >>>>
-> >>>> So I did the same and got:
-> >>>>
-> >>>> [ 3283.363569] ath12k_pci_power_up 1475: link_ctl 0x43
-> >>>> [ 3283.363769] ath12k_pci_power_up 1480: link_ctl 0x40
-> >>>> [ 3284.007661] ath12k_pci_start 1180: link_ctl 0x40
-> >>>> [ 3284.007826] ath12k_pci_start 1185: link_ctl 0x42
-> >>>>
-> >>>> My host machine is Qcom based Thinkpad T14s and it doesn't support L0s. So
-> >>>> that's why the lnkctl value once enabled becomes 0x42. This is exactly the
-> >>>> reason why the drivers should not muck around LNKCTL register manually.
-> >>>
-> >>> Thanks, then the 0x43 -> 0x40 -> 0x40 -> 0x42 sequence should not be a concern. But still
-> >>> the random 0x43 -> 0x43 -> 0x43 -> 0x42 sequence seems problematic.
-> >>>
-> >>> How many iterations have you done with above steps? From my side it seems random so better
-> >>> to do some stress test.
-> >>>
-> >>
-> >> So I ran the modprobe for about 50 times on the Intel NUC that has QCA6390, but
-> >> didn't spot the disparity. This is the script I used:
-> >>
-> >> for i in {1..50} ;do echo "Loop $i"; sudo setpci -s 01:00.0 0x80.B=0x43;\
-> >> sudo modprobe -r ath11k_pci; sleep 1; sudo modprobe ath11k_pci; sleep 1;done
-> >>
-> >> And I always got:
-> >>
-> >> [ 5862.388083] ath11k_pci_aspm_disable: 609 lnkctrl: 0x43
-> >> [ 5862.388124] ath11k_pci_aspm_disable: 614 lnkctrl: 0x40
-> >> [ 5862.876291] ath11k_pci_start: 880 lnkctrl: 0x40
-> >> [ 5862.876346] ath11k_pci_start: 886 lnkctrl: 0x42
-> >>
-> >> Also no AER messages. TBH, I'm not sure how you were able to see the random
-> >> issues with these APIs. That looks like a race, which is scary.
-> >>
-> >> I do not want to ignore your scenario, but would like to reproduce and get to
-> >> the bottom of it.
-> >>
+On Fri, Jul 18, 2025 at 05:19:28PM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Jul 18, 2025 at 07:05:03PM GMT, Baochen Qiang wrote:
+> > On 7/18/2025 6:20 PM, Manivannan Sadhasivam wrote:
+> > > On Fri, Jul 18, 2025 at 01:27:27PM GMT, Manivannan Sadhasivam wrote:
+> > >> On Fri, Jul 18, 2025 at 10:05:02AM GMT, Baochen Qiang wrote:
+> > >>> On 7/17/2025 7:29 PM, Manivannan Sadhasivam wrote:
+> > >>>> On Thu, Jul 17, 2025 at 06:46:12PM GMT, Baochen Qiang wrote:
+> > >>>>> On 7/17/2025 6:31 PM, Manivannan Sadhasivam wrote:
+> > >>>>>> On Thu, Jul 17, 2025 at 05:24:13PM GMT, Baochen Qiang wrote:
+> > >>>>>>
+> > >>>>>> [...]
+> > >>>>>>
+> > >>>>>>>> @@ -16,6 +16,8 @@
+> > >>>>>>>>  #include "mhi.h"
+> > >>>>>>>>  #include "debug.h"
+> > >>>>>>>>  
+> > >>>>>>>> +#include "../ath.h"
+> > >>>>>>>> +
+> > >>>>>>>>  #define ATH12K_PCI_BAR_NUM		0
+> > >>>>>>>>  #define ATH12K_PCI_DMA_MASK		36
+> > >>>>>>>>  
+> > >>>>>>>> @@ -928,8 +930,7 @@ static void ath12k_pci_aspm_disable(struct ath12k_pci *ab_pci)
+> > >>>>>>>>  		   u16_get_bits(ab_pci->link_ctl, PCI_EXP_LNKCTL_ASPM_L1));
+> > >>>>>>>>  
+> > >>>>>>>>  	/* disable L0s and L1 */
+> > >>>>>>>> -	pcie_capability_clear_word(ab_pci->pdev, PCI_EXP_LNKCTL,
+> > >>>>>>>> -				   PCI_EXP_LNKCTL_ASPMC);
+> > >>>>>>>> +	pci_disable_link_state(ab_pci->pdev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
+> > >>>>>>>
+> > >>>>>>> Not always, but sometimes seems the 'disable' does not work:
+> > >>>>>>>
+> > >>>>>>> [  279.920507] ath12k_pci_power_up 1475: link_ctl 0x43 //before disable
+> > >>>>>>> [  279.920539] ath12k_pci_power_up 1482: link_ctl 0x43 //after disable
+> > >>>>>>>
+> > >>>>>>>
+> > >>>>>>>>  
+> > >>>>>>>>  	set_bit(ATH12K_PCI_ASPM_RESTORE, &ab_pci->flags);
+> > >>>>>>>>  }
+> > >>>>>>>> @@ -958,10 +959,7 @@ static void ath12k_pci_aspm_restore(struct ath12k_pci *ab_pci)
+> > >>>>>>>>  {
+> > >>>>>>>>  	if (ab_pci->ab->hw_params->supports_aspm &&
+> > >>>>>>>>  	    test_and_clear_bit(ATH12K_PCI_ASPM_RESTORE, &ab_pci->flags))
+> > >>>>>>>> -		pcie_capability_clear_and_set_word(ab_pci->pdev, PCI_EXP_LNKCTL,
+> > >>>>>>>> -						   PCI_EXP_LNKCTL_ASPMC,
+> > >>>>>>>> -						   ab_pci->link_ctl &
+> > >>>>>>>> -						   PCI_EXP_LNKCTL_ASPMC);
+> > >>>>>>>> +		pci_enable_link_state(ab_pci->pdev, ath_pci_aspm_state(ab_pci->link_ctl));
+> > >>>>>>>
+> > >>>>>>> always, the 'enable' is not working:
+> > >>>>>>>
+> > >>>>>>> [  280.561762] ath12k_pci_start 1180: link_ctl 0x43 //before restore
+> > >>>>>>> [  280.561809] ath12k_pci_start 1185: link_ctl 0x42 //after restore
+> > >>>>>>>
+> > >>>>>>
+> > >>>>>> Interesting! I applied your diff and I never see this issue so far (across 10+
+> > >>>>>> reboots):
+> > >>>>>
+> > >>>>> I was not testing reboot. Here is what I am doing:
+> > >>>>>
+> > >>>>> step1: rmmod ath12k
+> > >>>>> step2: force LinkCtrl using setpci (make sure it is 0x43, which seems more likely to see
+> > >>>>> the issue)
+> > >>>>>
+> > >>>>> 	sudo setpci -s 02:00.0 0x80.B=0x43
+> > >>>>>
+> > >>>>> step3: insmod ath12k and check linkctrl
+> > >>>>>
+> > >>>>
+> > >>>> So I did the same and got:
+> > >>>>
+> > >>>> [ 3283.363569] ath12k_pci_power_up 1475: link_ctl 0x43
+> > >>>> [ 3283.363769] ath12k_pci_power_up 1480: link_ctl 0x40
+> > >>>> [ 3284.007661] ath12k_pci_start 1180: link_ctl 0x40
+> > >>>> [ 3284.007826] ath12k_pci_start 1185: link_ctl 0x42
+> > >>>>
+> > >>>> My host machine is Qcom based Thinkpad T14s and it doesn't
+> > >>>> support L0s. So that's why the lnkctl value once enabled
+> > >>>> becomes 0x42. This is exactly the reason why the drivers
+> > >>>> should not muck around LNKCTL register manually.
+> > >>>
+> > >>> Thanks, then the 0x43 -> 0x40 -> 0x40 -> 0x42 sequence should
+> > >>> not be a concern. But still the random 0x43 -> 0x43 -> 0x43 ->
+> > >>> 0x42 sequence seems problematic.
+> > >>>
+> > >>> How many iterations have you done with above steps? From my
+> > >>> side it seems random so better to do some stress test.
+> > >>>
+> > >>
+> > >> So I ran the modprobe for about 50 times on the Intel NUC that
+> > >> has QCA6390, but didn't spot the disparity. This is the script
+> > >> I used:
+> > >>
+> > >> for i in {1..50} ;do echo "Loop $i"; sudo setpci -s 01:00.0 0x80.B=0x43;\
+> > >> sudo modprobe -r ath11k_pci; sleep 1; sudo modprobe ath11k_pci; sleep 1;done
+> > >>
+> > >> And I always got:
+> > >>
+> > >> [ 5862.388083] ath11k_pci_aspm_disable: 609 lnkctrl: 0x43
+> > >> [ 5862.388124] ath11k_pci_aspm_disable: 614 lnkctrl: 0x40
+> > >> [ 5862.876291] ath11k_pci_start: 880 lnkctrl: 0x40
+> > >> [ 5862.876346] ath11k_pci_start: 886 lnkctrl: 0x42
+> > >>
+> > >> Also no AER messages. TBH, I'm not sure how you were able to
+> > >> see the random issues with these APIs. That looks like a race,
+> > >> which is scary.
+> > >>
+> > >> I do not want to ignore your scenario, but would like to
+> > >> reproduce and get to the bottom of it.
+> > > 
+> > > I synced with Baochen internally and able to repro the issue.
+> > > Ths issue is due to hand modifying the LNKCTL register from
+> > > userspace. The PCI core maintains the ASPM state internally and
+> > > uses it to change the state when the
+> > > pci_{enable/disable}_link_state*() APIs are called.
+> > > 
+> > > So if the userspace or a client driver modifies the LNKCTL
+> > > register manually, it makes the PCI cached ASPM states invalid.
+> > > So while this series fixes the driver from doing that, nothing
+> > > prevents userspace from doing so using 'setpci' and other tools.
+> > > Userspace should only use sysfs attributes to change the state
+> > > and avoid modifying the PCI registers when the PCI core is
+> > > controlling the device.  So this is the reason behind the
+> > > errantic behavior of the API and it is not due to the issue with
+> > > the API or the PCI core.
 > > 
-> > I synced with Baochen internally and able to repro the issue. Ths issue is due
-> > to hand modifying the LNKCTL register from userspace. The PCI core maintains
-> > the ASPM state internally and uses it to change the state when the
-> > pci_{enable/disable}_link_state*() APIs are called.
-> > 
-> > So if the userspace or a client driver modifies the LNKCTL register manually, it
-> > makes the PCI cached ASPM states invalid. So while this series fixes the driver
-> > from doing that, nothing prevents userspace from doing so using 'setpci' and
-> > other tools. Userspace should only use sysfs attributes to change the state and
-> > avoid modifying the PCI registers when the PCI core is controlling the device.
-> > So this is the reason behind the errantic behavior of the API and it is not due
-> > to the issue with the API or the PCI core.
+> > IMO we can not rely on userspace doing what or not doing what, or
+> > on how it is doing, right? So can we fix PCI core to avoid this?
 > 
-> IMO we can not rely on userspace doing what or not doing what, or on how it is doing,
-> right? So can we fix PCI core to avoid this?
+> I'm not sure it is possible to *fix* the PCI core here. Since the
+> PCI core gives userspace access to the entire config space of the
+> device, the userspace reads/writes to any of the registers it want.
+> So unless the config space access if forbidden if a driver is bound
+> to the device, it is inevitable. And then there is also /dev/mem...
 > 
+> Interestingly, there is an API available for this purpose:
+> pci_request_config_region_exclusive(), but it is used only by the
+> AMD arch driver to prevent userspace from writing to the entire
+> config space of the device.
+> 
+> Maybe it makes sense to use something like this to prevent the
+> userspace access to the entire config space if the driver is bind to
+> the device.
 
-I'm not sure it is possible to *fix* the PCI core here. Since the PCI core gives
-userspace access to the entire config space of the device, the userspace
-reads/writes to any of the registers it want. So unless the config space access
-if forbidden if a driver is bound to the device, it is inevitable. And then
-there is also /dev/mem...
+I'm not really a fan of pci_request_config_region_exclusive() because
+it's such a singleton thing.  I don't like to be one of only a few
+users of an interface.
 
-Interestingly, there is an API available for this purpose:
-pci_request_config_region_exclusive(), but it is used only by the AMD arch
-driver to prevent userspace from writing to the entire config space of the
-device.
+Linux has a long tradition of allowing root users to shoot themselves
+in the foot, and setpci is very useful as a debugging tool.  Maybe
+tainting the kernel for config writes from userspace, and possibly
+even a WARN_ONCE() at the time, would be a compromise.
 
-Maybe it makes sense to use something like this to prevent the userspace access
-to the entire config space if the driver is bind to the device.
-
-Bjorn, thoughts?
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+Bjorn
 
