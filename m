@@ -4,68 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CD64C83F1A
-	for <ath10k@archiver.kernel.org>; Fri, 18 Jul 2025 17:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77982C83F1A
+	for <ath10k@archiver.kernel.org>; Sun, 20 Jul 2025 08:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uQOPmJA7K+xj6UEr8wLchEMP+OoeZCyb98dWHrMrlTw=; b=ZQzu13Mb8IvxOTemQ8aNKKUMqU
-	8QqEu8gJrvkMi8osXRP5voUzcZqREyo5RWiS8LHUr8l26kck1IxDgfYElRmTXKjxAPtAxV8j553n3
-	cEL2Zo4Gsi5Z8psVVKpmXN9YFlbJeQp6o94aL3XCBTUdu1GLqGgV+bnk4V2h3zi5unw5M36GeZCea
-	qXcjoPxJV2+P9GJZcQAoOu7udxQjEBT6nO+r0y0TsGbPvy28H1MYmpnCSOzaQ/Y9VeQGXSGcaRah8
-	HtJtxzio4Wg8SsJbdqpRyJ/6VJq5VQDKgNv78cIen76FpfbkQUkXBKxzi2nl5CfwBrZ1zfJgMdsn8
-	kOnX960g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tOpoysfKu8dqShdYoM/tOfN5oPofb351+a6KL8PxgJo=; b=4T12V+L4fswhj7oHPM2bt7AB5r
+	tO+Yh1JHkaJHVIJu5MTgMgpIHtprJpViOjfp49N3YrQ2h6NEmeVvz0A6YvAclUoo8/FdBn/kF2mWe
+	kFz/EOsOPJPjH4SBHDD3Y4owL/1E4RQ5djbkEP3ZRsL9cRLjbWZctyQWXjtuYN9iJjlYm8tcdnVTu
+	/iY36IokDEnFPUywCjgqDoAUmPSbzzG7HK4LcrLpt/ebonSGeRWpsnIb8MPBGlCPT/zBFK6kYlZ+7
+	9YWZSoZ8d73TevJHR54266akhQdXsA6WDyUmpFEJ+rxYoG++hnmQMQkCvY9W46yV+Zh9WPBfK1vZm
+	vQ/rB9YQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ucopz-0000000DDJJ-2pF4;
-	Fri, 18 Jul 2025 17:25:35 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1udPeX-0000000F3CW-2aBf;
+	Sun, 20 Jul 2025 08:44:13 +0000
+Received: from mx3.molgen.mpg.de ([141.14.17.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ucojt-0000000DCi3-0eiX;
-	Fri, 18 Jul 2025 17:19:18 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7F8FD419BF;
-	Fri, 18 Jul 2025 17:19:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D492EC4CEEB;
-	Fri, 18 Jul 2025 17:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752859156;
-	bh=mljt/m6pDjyin7CmecUSJC0AWe2g4NWfh4t5P5lPJlo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kEP8lrnMy3WJ5T+X/JwfsKsMsFjX7gn1+L/uaIurjVW/b8RNxluNmMoHNt7Shp78b
-	 Nb+HTeUL0DGh7jVbzarEdbA/mNHEbaupxLvUCxwFE+BW1ViuqsxwOQPnGlsQgDlY/4
-	 xKwxnN+T+mqgmuzSOfw8XNE9SHnr+2SlYHfY5mQgXXz5bESvF+H0ppY0a5fuxH59N9
-	 zLIgD3fOTKPdzsqFnHOAQYJR3z91+O1sLXzKAoRv1YMVEF+Xf2QnciVQEXBbvsMWip
-	 k4ctmJp/td2uN+CrX4jooN0ifp99j1Q0a4WsRLDYVXr60ZAB/VffyBZ6HZ903CJQnr
-	 Rpb3fk9b44qvQ==
-Date: Fri, 18 Jul 2025 22:49:05 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Baochen Qiang <baochen.qiang@oss.qualcomm.com>, 
-	manivannan.sadhasivam@oss.qualcomm.com, Jeff Johnson <jjohnson@kernel.org>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Nirmal Patel <nirmal.patel@linux.intel.com>, Jonathan Derrick <jonathan.derrick@linux.dev>, 
-	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath12k@lists.infradead.org, 
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org, ilpo.jarvinen@linux.intel.com, 
-	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org, 
-	Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>, Qiang Yu <qiang.yu@oss.qualcomm.com>
-Subject: Re: [PATCH 4/6] wifi: ath12k: Use pci_{enable/disable}_link_state()
- APIs to enable/disable ASPM states
-Message-ID: <qqskde7ar4dthidew2wrwbu5zzqhna7b27ivsyngzdanztdzwf@nvmxi7kzqkgv>
-References: <wkapzhyr6hzp5az4jae3y5c77c3fg4uwrmyyipbq4uosamcivq@z7nv6w7nbyrp>
- <20250718162600.GA2700538@bhelgaas>
+	id 1udPeU-0000000F3BS-2eOv
+	for ath10k@lists.infradead.org;
+	Sun, 20 Jul 2025 08:44:12 +0000
+Received: from [192.168.2.202] (p5dc553bb.dip0.t-ipconnect.de [93.197.83.187])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 00F6D61E647AC;
+	Sun, 20 Jul 2025 10:43:40 +0200 (CEST)
+Message-ID: <d8145c41-1e61-454f-a343-be0a7239e36e@molgen.mpg.de>
+Date: Sun, 20 Jul 2025 10:43:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff: firmware
+ crashed!
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+To: Baochen Qiang <quic_bqiang@quicinc.com>,
+ Jeff Johnson <jjohnson@kernel.org>
+Cc: ath10k@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+ jamie@stimulussoft.com
+References: <5aa2dae4-94ba-45cb-b138-bb40c89a85eb@molgen.mpg.de>
+ <486e9f27-3b03-4317-a1fc-1bd92235db1c@molgen.mpg.de>
+ <90a764d0-c230-43bb-b7e5-189544839f8d@quicinc.com>
+ <e2e58098-4589-4ae4-bc38-6b009823b071@molgen.mpg.de>
+ <82b9e966-5e12-4a13-98d4-0ffa88505f97@molgen.mpg.de>
+Content-Language: en-US
+In-Reply-To: <82b9e966-5e12-4a13-98d4-0ffa88505f97@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250718162600.GA2700538@bhelgaas>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250718_101917_237176_64EA2220 
-X-CRM114-Status: GOOD (  54.64  )
+X-CRM114-CacheID: sfid-20250720_014410_968991_1CC061ED 
+X-CRM114-Status: GOOD (  14.24  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,174 +71,247 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jul 18, 2025 at 11:26:00AM GMT, Bjorn Helgaas wrote:
-> On Fri, Jul 18, 2025 at 05:19:28PM +0530, Manivannan Sadhasivam wrote:
-> > On Fri, Jul 18, 2025 at 07:05:03PM GMT, Baochen Qiang wrote:
-> > > On 7/18/2025 6:20 PM, Manivannan Sadhasivam wrote:
-> > > > On Fri, Jul 18, 2025 at 01:27:27PM GMT, Manivannan Sadhasivam wrote:
-> > > >> On Fri, Jul 18, 2025 at 10:05:02AM GMT, Baochen Qiang wrote:
-> > > >>> On 7/17/2025 7:29 PM, Manivannan Sadhasivam wrote:
-> > > >>>> On Thu, Jul 17, 2025 at 06:46:12PM GMT, Baochen Qiang wrote:
-> > > >>>>> On 7/17/2025 6:31 PM, Manivannan Sadhasivam wrote:
-> > > >>>>>> On Thu, Jul 17, 2025 at 05:24:13PM GMT, Baochen Qiang wrote:
-> > > >>>>>>
-> > > >>>>>> [...]
-> > > >>>>>>
-> > > >>>>>>>> @@ -16,6 +16,8 @@
-> > > >>>>>>>>  #include "mhi.h"
-> > > >>>>>>>>  #include "debug.h"
-> > > >>>>>>>>  
-> > > >>>>>>>> +#include "../ath.h"
-> > > >>>>>>>> +
-> > > >>>>>>>>  #define ATH12K_PCI_BAR_NUM		0
-> > > >>>>>>>>  #define ATH12K_PCI_DMA_MASK		36
-> > > >>>>>>>>  
-> > > >>>>>>>> @@ -928,8 +930,7 @@ static void ath12k_pci_aspm_disable(struct ath12k_pci *ab_pci)
-> > > >>>>>>>>  		   u16_get_bits(ab_pci->link_ctl, PCI_EXP_LNKCTL_ASPM_L1));
-> > > >>>>>>>>  
-> > > >>>>>>>>  	/* disable L0s and L1 */
-> > > >>>>>>>> -	pcie_capability_clear_word(ab_pci->pdev, PCI_EXP_LNKCTL,
-> > > >>>>>>>> -				   PCI_EXP_LNKCTL_ASPMC);
-> > > >>>>>>>> +	pci_disable_link_state(ab_pci->pdev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
-> > > >>>>>>>
-> > > >>>>>>> Not always, but sometimes seems the 'disable' does not work:
-> > > >>>>>>>
-> > > >>>>>>> [  279.920507] ath12k_pci_power_up 1475: link_ctl 0x43 //before disable
-> > > >>>>>>> [  279.920539] ath12k_pci_power_up 1482: link_ctl 0x43 //after disable
-> > > >>>>>>>
-> > > >>>>>>>
-> > > >>>>>>>>  
-> > > >>>>>>>>  	set_bit(ATH12K_PCI_ASPM_RESTORE, &ab_pci->flags);
-> > > >>>>>>>>  }
-> > > >>>>>>>> @@ -958,10 +959,7 @@ static void ath12k_pci_aspm_restore(struct ath12k_pci *ab_pci)
-> > > >>>>>>>>  {
-> > > >>>>>>>>  	if (ab_pci->ab->hw_params->supports_aspm &&
-> > > >>>>>>>>  	    test_and_clear_bit(ATH12K_PCI_ASPM_RESTORE, &ab_pci->flags))
-> > > >>>>>>>> -		pcie_capability_clear_and_set_word(ab_pci->pdev, PCI_EXP_LNKCTL,
-> > > >>>>>>>> -						   PCI_EXP_LNKCTL_ASPMC,
-> > > >>>>>>>> -						   ab_pci->link_ctl &
-> > > >>>>>>>> -						   PCI_EXP_LNKCTL_ASPMC);
-> > > >>>>>>>> +		pci_enable_link_state(ab_pci->pdev, ath_pci_aspm_state(ab_pci->link_ctl));
-> > > >>>>>>>
-> > > >>>>>>> always, the 'enable' is not working:
-> > > >>>>>>>
-> > > >>>>>>> [  280.561762] ath12k_pci_start 1180: link_ctl 0x43 //before restore
-> > > >>>>>>> [  280.561809] ath12k_pci_start 1185: link_ctl 0x42 //after restore
-> > > >>>>>>>
-> > > >>>>>>
-> > > >>>>>> Interesting! I applied your diff and I never see this issue so far (across 10+
-> > > >>>>>> reboots):
-> > > >>>>>
-> > > >>>>> I was not testing reboot. Here is what I am doing:
-> > > >>>>>
-> > > >>>>> step1: rmmod ath12k
-> > > >>>>> step2: force LinkCtrl using setpci (make sure it is 0x43, which seems more likely to see
-> > > >>>>> the issue)
-> > > >>>>>
-> > > >>>>> 	sudo setpci -s 02:00.0 0x80.B=0x43
-> > > >>>>>
-> > > >>>>> step3: insmod ath12k and check linkctrl
-> > > >>>>>
-> > > >>>>
-> > > >>>> So I did the same and got:
-> > > >>>>
-> > > >>>> [ 3283.363569] ath12k_pci_power_up 1475: link_ctl 0x43
-> > > >>>> [ 3283.363769] ath12k_pci_power_up 1480: link_ctl 0x40
-> > > >>>> [ 3284.007661] ath12k_pci_start 1180: link_ctl 0x40
-> > > >>>> [ 3284.007826] ath12k_pci_start 1185: link_ctl 0x42
-> > > >>>>
-> > > >>>> My host machine is Qcom based Thinkpad T14s and it doesn't
-> > > >>>> support L0s. So that's why the lnkctl value once enabled
-> > > >>>> becomes 0x42. This is exactly the reason why the drivers
-> > > >>>> should not muck around LNKCTL register manually.
-> > > >>>
-> > > >>> Thanks, then the 0x43 -> 0x40 -> 0x40 -> 0x42 sequence should
-> > > >>> not be a concern. But still the random 0x43 -> 0x43 -> 0x43 ->
-> > > >>> 0x42 sequence seems problematic.
-> > > >>>
-> > > >>> How many iterations have you done with above steps? From my
-> > > >>> side it seems random so better to do some stress test.
-> > > >>>
-> > > >>
-> > > >> So I ran the modprobe for about 50 times on the Intel NUC that
-> > > >> has QCA6390, but didn't spot the disparity. This is the script
-> > > >> I used:
-> > > >>
-> > > >> for i in {1..50} ;do echo "Loop $i"; sudo setpci -s 01:00.0 0x80.B=0x43;\
-> > > >> sudo modprobe -r ath11k_pci; sleep 1; sudo modprobe ath11k_pci; sleep 1;done
-> > > >>
-> > > >> And I always got:
-> > > >>
-> > > >> [ 5862.388083] ath11k_pci_aspm_disable: 609 lnkctrl: 0x43
-> > > >> [ 5862.388124] ath11k_pci_aspm_disable: 614 lnkctrl: 0x40
-> > > >> [ 5862.876291] ath11k_pci_start: 880 lnkctrl: 0x40
-> > > >> [ 5862.876346] ath11k_pci_start: 886 lnkctrl: 0x42
-> > > >>
-> > > >> Also no AER messages. TBH, I'm not sure how you were able to
-> > > >> see the random issues with these APIs. That looks like a race,
-> > > >> which is scary.
-> > > >>
-> > > >> I do not want to ignore your scenario, but would like to
-> > > >> reproduce and get to the bottom of it.
-> > > > 
-> > > > I synced with Baochen internally and able to repro the issue.
-> > > > Ths issue is due to hand modifying the LNKCTL register from
-> > > > userspace. The PCI core maintains the ASPM state internally and
-> > > > uses it to change the state when the
-> > > > pci_{enable/disable}_link_state*() APIs are called.
-> > > > 
-> > > > So if the userspace or a client driver modifies the LNKCTL
-> > > > register manually, it makes the PCI cached ASPM states invalid.
-> > > > So while this series fixes the driver from doing that, nothing
-> > > > prevents userspace from doing so using 'setpci' and other tools.
-> > > > Userspace should only use sysfs attributes to change the state
-> > > > and avoid modifying the PCI registers when the PCI core is
-> > > > controlling the device.  So this is the reason behind the
-> > > > errantic behavior of the API and it is not due to the issue with
-> > > > the API or the PCI core.
-> > > 
-> > > IMO we can not rely on userspace doing what or not doing what, or
-> > > on how it is doing, right? So can we fix PCI core to avoid this?
-> > 
-> > I'm not sure it is possible to *fix* the PCI core here. Since the
-> > PCI core gives userspace access to the entire config space of the
-> > device, the userspace reads/writes to any of the registers it want.
-> > So unless the config space access if forbidden if a driver is bound
-> > to the device, it is inevitable. And then there is also /dev/mem...
-> > 
-> > Interestingly, there is an API available for this purpose:
-> > pci_request_config_region_exclusive(), but it is used only by the
-> > AMD arch driver to prevent userspace from writing to the entire
-> > config space of the device.
-> > 
-> > Maybe it makes sense to use something like this to prevent the
-> > userspace access to the entire config space if the driver is bind to
-> > the device.
+Dear Baochen, dear Jeff,
+
+
+Am 14.05.25 um 10:08 schrieb Paul Menzel:
+
+> another crash happened yesterday after six weeks of silence.
 > 
-> I'm not really a fan of pci_request_config_region_exclusive() because
-> it's such a singleton thing.  I don't like to be one of only a few
-> users of an interface.
+> Am 25.03.25 um 08:01 schrieb Paul Menzel:
 > 
+>> Am 24.03.25 um 04:29 schrieb Baochen Qiang:
+>>
+>>> On 3/23/2025 7:41 PM, Paul Menzel wrote:
+>>
+>>>> Am 08.12.24 um 23:21 schrieb Paul Menzel:
+>>>>
+>>>>> Today the Wi-Fi connection stopped working, and the logs contained:
+>>>>>
+>>>>>       [44177.000699] ath10k_pci 0000:3a:00.0: firmware crashed! (guid 1b4a40c5-4495-4c5b-9df9-b7395848239c)
+>>>>>       [44177.000720] ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+>>>>>       [44177.000731] ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+>>>>>       [44177.002450] ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+>>>>>       [44177.004168] ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
+>>>>>       [44177.004176] ath10k_pci 0000:3a:00.0: htt-ver 3.87 wmi-op 4 htt- op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+>>>>>       [44177.014494] ath10k_pci 0000:3a:00.0: failed to get memcpy hi address for firmware address 4: -16
+>>>>>       [44177.014498] ath10k_pci 0000:3a:00.0: failed to read firmware dump area: -16
+>>>>>       [44177.014500] ath10k_pci 0000:3a:00.0: Copy Engine register dump:
+>>>>>       [44177.014508] ath10k_pci 0000:3a:00.0: [00]: 0x00034400  12 12  3   3
+>>>>>       [44177.014517] ath10k_pci 0000:3a:00.0: [01]: 0x00034800  19 19 64  65
+>>>>>       [44177.014525] ath10k_pci 0000:3a:00.0: [02]: 0x00034c00  39 37 36  37
+>>>>>       [44177.014532] ath10k_pci 0000:3a:00.0: [03]: 0x00035000  20 20 22  20
+>>>>>       [44177.014540] ath10k_pci 0000:3a:00.0: [04]: 0x00035400 6457 6457 222 158
+>>>>>       [44177.014548] ath10k_pci 0000:3a:00.0: [05]: 0x00035800   0  0 64   0
+>>>>>       [44177.014556] ath10k_pci 0000:3a:00.0: [06]: 0x00035c00  29 29  0   0
+>>>>>       [44177.014563] ath10k_pci 0000:3a:00.0: [07]: 0x00036000   1  0  1   0
+>>>>>       [44177.109219] ieee80211 phy0: Hardware restart was requested
+>>>>>       [44177.429445] ath10k_pci 0000:3a:00.0: device successfully recovered
+>>>>>
+>>>>> Please find the output of `dmesg` with two firmware crashes attached. Looking
+>>>>> through my logs since September 20th with Linux 6.11-rcX, this is 
+>>>>> not the first firmware crash. The `guid` value differs pairwaise 
+>>>>> between each of them.
+>>>>
+>>>> Since my message in December I found two more crashes in the logs:
+>>>>
+>>>>      Jan 20 13:11:11 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid 0290afa9-63d2-4d66-b355-de2e12f96f4b)
+>>>>
+>>>>      Feb 02 20:34:20 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid 4c1fb23a-8d0e-4c03-8dfb-a5fa9ad3d2bc)
+>>>>
+>>>> I am now in a WLAN with Cisco access points, and get a few crashes:
+>>>>
+>>>>      Mär 21 14:01:36 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid bc05fa56-0033-4fca-bfc0-660568f560fd)
+>>>>      Mär 23 11:54:24 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid b6eb8244-0e48-4785-8247-901e833ed59a)
+>>>>
+>>>>      [42307.272046] ath10k_pci 0000:3a:00.0: firmware crashed! (guid bc05fa56-0033-4fca-bfc0-660568f560fd)
+>>>>      [42307.272078] ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+>>>>      [42307.272094] ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+>>>>      [42307.272452] ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+>>>>      [42307.272825] ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
+>>>>      [42307.272834] ath10k_pci 0000:3a:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+>>>>      [42307.283011] ath10k_pci 0000:3a:00.0: failed to get memcpy hi address for firmware address 4: -16
+>>>>      [42307.283024] ath10k_pci 0000:3a:00.0: failed to read firmware dump area: -16
+>>>>      [42307.283034] ath10k_pci 0000:3a:00.0: Copy Engine register dump:
+>>>>      [42307.283050] ath10k_pci 0000:3a:00.0: [00]: 0x00034400  12  12  3   3
+>>>>      [42307.283070] ath10k_pci 0000:3a:00.0: [01]: 0x00034800   5   5 82  83
+>>>>      [42307.283088] ath10k_pci 0000:3a:00.0: [02]: 0x00034c00  53  47 45  46
+>>>>      [42307.283104] ath10k_pci 0000:3a:00.0: [03]: 0x00035000  13  13 14  12
+>>>>      [42307.283120] ath10k_pci 0000:3a:00.0: [04]: 0x00035400  67  67 98  34
+>>>>      [42307.283135] ath10k_pci 0000:3a:00.0: [05]: 0x00035800   0   0 64   0
+>>>>      [42307.283151] ath10k_pci 0000:3a:00.0: [06]: 0x00035c00  22  22 24  24
+>>>>      [42307.283167] ath10k_pci 0000:3a:00.0: [07]: 0x00036000   1   1  1   0
+>>>>      [42307.371777] ieee80211 phy0: Hardware restart was requested
+>>>>      [42309.383940] ath10k_pci 0000:3a:00.0: timed out waiting peer stats info
+>>>>      [42309.690205] ath10k_pci 0000:3a:00.0: device successfully recovered
+>>>>      [43924.050746] wlp58s0: deauthenticating from 48:2f:6b:7a:61:54 by local choice (Reason: 3=DEAUTH_LEAVING)
+>>>>
+>>>> Baochen, do you have an idea? Also how to fix the dump errors?
+>>>
+>>> could you share AP model? and any specific test steps you hit it?
+>>
+>> Sorry, I do not know the AP model. It was at a university network. 
+>> After sending my email it also happened with a FRITZ!Box 7590. It all 
+>> was the same boot cycle and over 70 ACPI S3 suspend/resume cycles 
+>> happened.
+>>
+>> ```
+>> […]
+>> Mar 23 21:26:32 abreu kernel: PM: suspend entry (deep)
+>> Mar 23 21:26:32 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-DSCP-POLICY clear_all
+>> Mar 23 21:26:32 abreu wpa_supplicant[572998]: nl80211: deinit ifname=wlp58s0 disabled_11b_rates=0
+>> […]
+>> Mar 23 21:58:07 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT- CONNECTED - Connection to dc:15:c8:46:1c:4b completed [id=0 id_str=]
+>> […]
+>> Mar 23 21:58:10 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:14 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:17 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:18 abreu systemd[1]: NetworkManager-dispatcher.service: Deactivated successfully.
+>> Mar 23 21:58:20 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT- REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:23 abreu rtkit-daemon[932]: Supervising 1 threads of 1 processes of 1 users.
+>> Mar 23 21:58:23 abreu rtkit-daemon[932]: Supervising 1 threads of 1 processes of 1 users.
+>> Mar 23 21:58:24 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:27 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:30 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:34 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:37 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:40 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 21:58:44 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> […]
+>> Mar 23 22:01:07 abreu wpa_supplicant[572998]: wlp58s0: WPA: Group rekeying completed with dc:15:c8:46:1c:4b [GTK=CCMP]
+>> Mar 23 22:03:09 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> Mar 23 22:03:09 abreu wpa_supplicant[572998]: wlp58s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>> […]
+>> Mar 23 22:10:31 abreu systemd[1456]: Started app-gnome-ptyxis-1551384.scope - Application launched by gsd-media-keys.
+>> Mar 23 22:10:32 abreu systemd[1456]: Started ptyxis-spawn-aec65fc6-84bf-4f85-8dad-c6c4e1e39e99.scope - [systemd-run] /usr/bin/bash.
+>> Mar 23 22:11:07 abreu wpa_supplicant[572998]: wlp58s0: WPA: Group rekeying completed with dc:15:c8:46:1c:4b [GTK=CCMP]
+>> Mar 23 22:11:35 abreu rtkit-daemon[932]: Supervising 1 threads of 1 processes of 1 users.
+>> […]
+>> Mar 23 22:21:07 abreu wpa_supplicant[572998]: wlp58s0: WPA: Group rekeying completed with dc:15:c8:46:1c:4b [GTK=CCMP]
+>> […]
+>> Mar 23 22:27:24 abreu gnome-shell[1647]: JS ERROR: TypeError: event is null addClickAction/<@resource:///org/gnome/shell/ui/dnd.js:151:13 @resource:///org/gnome/shell/ui/init.js:21:20
+>> Mar 23 22:31:07 abreu wpa_supplicant[572998]: wlp58s0: WPA: Group rekeying completed with dc:15:c8:46:1c:4b [GTK=CCMP]
+>> Mar 23 22:32:13 abreu systemd-timesyncd[410]: Contacted time server 17.253.14.251:123 (0.debian.pool.ntp.org).
+>> Mar 23 22:35:01 abreu CRON[1553601]: pam_unix(cron:session): sessionopened for user root(uid=0) by root(uid=0)
+>> Mar 23 22:35:01 abreu CRON[1553603]: (root) CMD (command -v debian-sa1 > /dev/null && debian-sa1 1 1)
+>> Mar 23 22:35:01 abreu CRON[1553601]: pam_unix(cron:session): session closed for user root
+>> Mar 23 22:36:09 abreu kernel: i915 0000:00:02.0: [drm] *ERROR* Atomic update failure on pipe A (start=6 end=7) time 266 us, min 1788, max 1799, scanline start 1781, end 1810
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid 45f495a9-56a5-48e5-aa94-1d8ff413720e)
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: failed to get memcpy hi address for firmware address 4: -16
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: failed to readfirmware dump area: -16
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: Copy Engine register dump:
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: [00]: 0x00034400   12   12   3   3
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: [01]: 0x00034800   23   23  36  37
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: [02]: 0x00034c00   31   27  89  90
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: [03]: 0x00035000   22   22  24  22
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: [04]: 0x00035400 4329 4329 181 117
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: [05]: 0x00035800    0    0  64   0
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: [06]: 0x00035c00   10   10  16  16
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: [07]: 0x00036000    1    1   1   0
+>> Mar 23 22:37:35 abreu kernel: ieee80211 phy0: Hardware restart was requested
+>> Mar 23 22:37:35 abreu kernel: ath10k_pci 0000:3a:00.0: device successfully recovered
+>> Mar 23 22:38:00 abreu gnome-shell[1647]: JS ERROR: TypeError: event is null addClickAction/<@resource:///org/gnome/shell/ui/dnd.js:151:13 @resource:///org/gnome/shell/ui/init.js:21:20
+>> […]
+>> ```
+>>
+>> Unfortunately, I do not know how to reproduce it. I was browsing and 
+>> had some SSH sessions running. I also did some bandwidth tests by 
+>> downloading some files, and sometimes it went up to 30 MB/s.
+>>
+>>      wget -O /dev/null http://deb.debian.org/debian/pool/main/f/flightgear-data/flightgear-data-base_2020.3.19+dfsg-1_all.deb
+>>
+>> But I do *not* know, when the hang happened, and if it is related at 
+>> all. The crash with the FRITZ!Box did also not involve any large 
+>> downloads during this time.
+>>
+>> So, I unfortunately, do not know how to reproduce it.
+>>
+>> I was hoping the firmware dump could shed more light on it, and ease 
+>> debugging on your and my end.
+>>
+>>> regarding the dump error, I think it is due to unresponsive firmware 
+>>> since it crashes. We'd better focus on the crash first.
+>>>
+>>>> Jamie (Cc:) also reported this this January 2025 *Ath10k firmware 
+>>>> crash* [1].
 
-If the API is serving the purpose, I don't see why we cannot be 'one among the
-few users'.
+[As per Jamie’s reply, it was a voltage setting problem there.]
 
-> Linux has a long tradition of allowing root users to shoot themselves
-> in the foot, and setpci is very useful as a debugging tool.  Maybe
-> tainting the kernel for config writes from userspace, and possibly
-> even a WARN_ONCE() at the time, would be a compromise.
+> Yesterday it crashed when connected to an Aruba AP-205:
 > 
+> ```
+> May 13 09:19:51.379037 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid 6112a2e3-7e6d-4f80-8145-421da9708ee0)
+> May 13 09:19:51.379992 abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+> May 13 09:19:51.380564 abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+> May 13 09:19:51.381091 abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+> May 13 09:19:51.381585 abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
+> May 13 09:19:51.382098 abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> May 13 09:19:51.391018 abreu kernel: ath10k_pci 0000:3a:00.0: failed to get memcpy hi address for firmware address 4: -16
+> May 13 09:19:51.391856 abreu kernel: ath10k_pci 0000:3a:00.0: failed to read firmware dump area: -16
+> May 13 09:19:51.392469 abreu kernel: ath10k_pci 0000:3a:00.0: Copy Engine register dump:
+> May 13 09:19:51.393029 abreu kernel: ath10k_pci 0000:3a:00.0: [00]: 0x00034400  12  12   3   3
+> May 13 09:19:51.393542 abreu kernel: ath10k_pci 0000:3a:00.0: [01]: 0x00034800  27  27 264 265
+> May 13 09:19:51.394036 abreu kernel: ath10k_pci 0000:3a:00.0: [02]: 0x00034c00   2  63  62  63
+> May 13 09:19:51.394574 abreu kernel: ath10k_pci 0000:3a:00.0: [03]: 0x00035000  29  29  31  29
+> May 13 09:19:51.395137 abreu kernel: ath10k_pci 0000:3a:00.0: [04]: 0x00035400 505 505  62 254
+> May 13 09:19:51.395633 abreu kernel: ath10k_pci 0000:3a:00.0: [05]: 0x00035800   0   0  64   0
+> May 13 09:19:51.396126 abreu kernel: ath10k_pci 0000:3a:00.0: [06]: 0x00035c00   0   0  26  26
+> May 13 09:19:51.396609 abreu kernel: ath10k_pci 0000:3a:00.0: [07]: 0x00036000   1   0   1   0
+> May 13 09:19:51.475013 abreu kernel: ieee80211 phy0: Hardware restart was requested
+> May 13 09:19:51.783041 abreu kernel: ath10k_pci 0000:3a:00.0: device successfully recovered
+> ```
+> 
+> Were you or the firmware team able to pinpoint the problem, and come up 
+> with a fix? Is there any logging I can enable to help with debugging?
 
-I really do not see a need to let the userspace modify the config space when a
-driver is bind to it. It fully makes sense when there is no driver attached to
-the device. But if there is one, then it just warrants trouble.
+It also happens with a Telekom Speedport Smart 3 (Arcadyan Corporation) 
+router. The firmware crashed five more times since June. A reliable 
+Wi-Fi connection would be really appreciated. Could you send me a debug 
+firmware, so the firmware developers have it easier to fix it?
 
-If we want to be really cautious with userspace tooling, then we can introduce
-a kernel config option similar to CONFIG_IO_STRICT_DEVMEM and keep it disabled
-by default.
 
-- Mani
+Kind regards,
 
--- 
-மணிவண்ணன் சதாசிவம்
+Paul
+
+
+>>>>> PS: Other times:
+>>>>>
+>>>>> -- Boot caea92a03f6d4776926f451f8281ea31 --
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid 6eb9dc57-1295-4a53-b71d-a8aeba7281a1)
+>>>>> Sep 26 12:32:58 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid c4a6c6a2-3cf4-445e-b16b-2baa35d547f3)
+>>>>> Sep 26 12:46:02 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid b8c8a5f0-7ff7-45c3-8ecb-7ba8074ba6f7)
+>>>>>
+>>>>> -- Boot 26e7175e65254625bf58276e9532773e --
+>>>>> Okt 23 12:11:20 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid 1b3f438c-339c-4ad1-9d82-92a96a07c3c2)
+>>>>>
+>>>>> Earliest crash:
+>>>>>
+>>>>> Sep 26 10:41:36 abreu kernel: Linux version 6.11.0-07273-g1e7530883cd2 (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 14.2.0-5) 14.2.0, GNU ld (GNU Binutils for Debian) 2.43.1) #12 SMP PREEMPT_DYNAMIC Sun Sep 22 09:57:36 CEST 2024
+>>>>> […]
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: firmware crashed! (guid 6eb9dc57-1295-4a53-b71d-a8aeba7281a1)
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4.1-00309- api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: failed to get memcpy hi address for firmware address 4: -16
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: failed to read firmware dump area: -16
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: Copy Engine register dump:
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: [00]: 0x00034400 12  12   3   3
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: [01]: 0x00034800 28  28 265 266
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: [02]: 0x00034c00 29  27  90  91
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: [03]: 0x00035000 15  15  17  15
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: [04]: 0x00035400 3887 3887 217 153
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: [05]: 0x00035800   0   0  64   0
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: [06]: 0x00035c00 20  20  16  16
+>>>>> Sep 26 12:12:01 abreu kernel: ath10k_pci 0000:3a:00.0: [07]: 0x00036000   1   0   1   0
+>>>>
+>>>>
+>>>> [1]: https://lore.kernel.org/all/a5b15899-b214-403b-a1b2-84a948e776ef@stimulussoft.com/
 
