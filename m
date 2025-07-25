@@ -4,55 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EDA1C87FD1
-	for <ath10k@archiver.kernel.org>; Fri, 25 Jul 2025 12:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC4AEC87FCA
+	for <ath10k@archiver.kernel.org>; Fri, 25 Jul 2025 21:58:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:
-	Cc:To:Subject:MIME-Version:Date:Message-ID:Content-Type:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=D0gjNThFi0+S0gW0KXu0QtHNwCrnk+Jm/at9TVIKL2I=; b=zjfyD6dnR+hbz7zec26dqKezoi
-	3ZcPQltkdLFBi/BWihpx+WDjdnoT5NIHCBgHdh96abmrua1p8KydbyKYDqODiSgb9ctv+Q2osm73c
-	UIN/XfLlAU7cm9W9UbpenlLRgmjb+OetXvbKXLadgozL3kOl8gNMi3HPrt1oOivW0dxOscmC7I88t
-	8gNx+OA/qKiK2QHIgbgZMRoKDszcUQ3u/khnofJ7NY3U05pbRs2K565yR6oOdY9yMYBcBhGBoV+mT
-	HddpbPJ1vClD+9iKr1a3bm76p1o3TxgiQlDs9ZRTGMosUS4+2VUCN1nUxCxYX8jkHt+XpBX8sujSe
-	9vZSUWSQ==;
+	bh=Iwfk3iweR65hBlWEBEdFE8Pg5eePgmxfx1uhGL+EOWs=; b=4sd8BPt3f7UL2R+ieLEsQ22B0t
+	gvyL3scC1Oh0pfLT6WTrN1tgLJCt6GCBj1Z/6evdWzqXvEGP6y4JAaoOevKVAt2327FdMj+Nkwg3S
+	/0iHgVe/jw3wvSSYHQC+im0m3zZXLcg4W7prYz5wjbPFwJgSNczRc5I4EAre3Qjglq17n/WKYw+bn
+	GowcVX0cBN4viu7NtICd7QR6cq1KmCzMOgxyuvZDeIPjplghf417UXCxXptG72/n8BweoS/vq6ZxI
+	dUIwWQ6x06V9uaDufm0f2SHk4NpkhBUb5In3Hedl8j3fgM9YJkkl2Jv1hkgQnmxxmPFGx5bgy02UU
+	KlJTivMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ufHSQ-00000009oOt-2PIk;
-	Fri, 25 Jul 2025 12:23:26 +0000
-Received: from mx3.molgen.mpg.de ([141.14.17.11])
+	id 1ufQQh-0000000Ajql-0tvq;
+	Fri, 25 Jul 2025 21:58:15 +0000
+Received: from mail-out-3.itc.rwth-aachen.de ([2a00:8a60:1:e501::5:48])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ufHLQ-00000009nVi-1dTn
+	id 1ufQQc-0000000AjqD-478l
 	for ath10k@lists.infradead.org;
-	Fri, 25 Jul 2025 12:16:14 +0000
-Received: from [141.14.220.42] (g42.guest.molgen.mpg.de [141.14.220.42])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2341B61E647AC;
-	Fri, 25 Jul 2025 14:15:43 +0200 (CEST)
-Content-Type: multipart/mixed; boundary="------------IWKL2dzaL8eep60TKGXgoNZv"
-Message-ID: <8716a67c-6e33-4a35-8d96-33f81c07c8e0@molgen.mpg.de>
-Date: Fri, 25 Jul 2025 14:15:42 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: athk10: Poll service ready completion by default to avoid warning
- `failed to receive service ready completion, polling..`?
-To: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-Cc: Baochen Qiang <quic_bqiang@quicinc.com>,
- Jeff Johnson <jjohnson@kernel.org>, ath10k@lists.infradead.org,
- James Prestwood <prestwoj@gmail.com>
-References: <97a15967-5518-4731-a8ff-d43ff7f437b0@molgen.mpg.de>
- <3cbe13e1-a820-4804-a28c-a57e2ee7a020@oss.qualcomm.com>
+	Fri, 25 Jul 2025 21:58:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fh-aachen.de; i=@fh-aachen.de; q=dns/txt;
+  s=20171124-fh; t=1753480691; x=1785016691;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Iwfk3iweR65hBlWEBEdFE8Pg5eePgmxfx1uhGL+EOWs=;
+  b=xOKa3+2LBN9KvvH4CSEu8X9Zz7KVWYJe781CBXvbv9QdWuUvYaEJBjBQ
+   4asrxIvekAv8TnAp+FTgBIFXDM4V4l/QKyT5K2OsTlLCBvSFAOUCyYSQN
+   U1fIWUxgjvSB+k0wZFheCT4yC1PlY99Tc/0iIO9e8qsFdh2fvwy7CNfU/
+   1UOyZRsFpMxGEbWFwGDL9xCxcjP/gt9U+Hcm9acWvY+kLrSldibtCYvoB
+   m3///xYnDmJSi59eTa35mjRd3knnEqTdxBaL6oQN9uJjl5mS/K2PyjT0Z
+   eERi4eR2zH4BfaY2ymszcyGDIILxxtJGv+7LAE9yBjGTVm5jfTLAbdecO
+   Q==;
+X-CSE-ConnectionGUID: VANXXjDjR86CNtKZ/jTCgw==
+X-CSE-MsgGUID: Ei7kWuGgT8+y2YSg2Gih2g==
+X-IPAS-Result: =?us-ascii?q?A2D9CQAFnnto/7sagoZaHQEBPAEFBQECAQkBFQmBSgKDQ?=
+ =?us-ascii?q?oFlBBmEN5FxA4tkhWWOTg8BAQEBAQEBAQEIARQCLg0EAQGFBwIWi30nNwYOA?=
+ =?us-ascii?q?QIEAQEBAQMCAwEBAQEBAQEBAQEBCwEBBgEBAQEBAQYFgSGFNUYNhlsBBSMED?=
+ =?us-ascii?q?UUQAgEIDQsCAiYCAgIeERUQAgQBDQWDA4I5AzIUsQR/MxoCZd09DYJVBoEbL?=
+ =?us-ascii?q?gGDD4UjHgGBbXKDDRuEXEKCDYJQgW8+gQUBgRmCAgEBAh4Xg0SCaQSCIkRSi?=
+ =?us-ascii?q?GKDUYQ3h3wJSXh4LAFVExcLBwUlOUIQMwMgCjQVHAIUDRASDwQWBS0dcwwoE?=
+ =?us-ascii?q?myEGIQoK0+CInWBAQ8BaEEZP4NTHgZtDwaBGBpKAgICBQIsF0UlUkADC209F?=
+ =?us-ascii?q?CMGDhsGPZJhgwYggQ8rCRc0BJRlHYM0So99nmZxAweCNYFnjB6PPIZJl18dA?=
+ =?us-ascii?q?5JqLphYIo1mhAiRWB8YhHUCBAIEBQIYgX6Bf3EUgyJSFwKOPAsLHIhVvG14A?=
+ =?us-ascii?q?gE5AgcLAQEDCY8xAYEcAQE?=
+IronPort-Data: A9a23:NDvFb6zR6cw+AlNe9fl6t+fJxyrEfRIJ4+MujC+fZmUNrF6WrkUBy
+ TFLWD2FOKnfM2Sgctp3a4ngp0sB65DUz9A2QAJvqVhgHilAwSbn6XV1DW+tZX/Ifp2bJK5Dx
+ 59DAjUVBJlsFhcwnj/0bP656yA6jfjZLlbFILasEjhrQgN5QzsWhxtmmuoo6qZlmtHR7zml4
+ LsemOWBfgb7s9JIGjhMsf/b90o+5K2aVA4w5zTSW9ga5DcyqFFIVPrzFYnpR1PkT49dGPKNR
+ uqr5NmR4mPD8h4xPcium7D9f1diaua60d+m0yc+twCK23CulwRqukoJHKN0hXR/111lq+tMJ
+ OBl7vRcfy90ZPGWyLRFO/VvO3oW0aVuoNcrKJUk2CCZ5xWun3DEm52CAKyqVGEV0r4fPI1Ay
+ RAXAA4kSCCzhc60+uLlYc9wpfZkLvXAM5xK7xmMzRmBZRonaZ7DTrWP/oUd1XE5ioZAHbPXb
+ sEZZDwpYBmojx9nYwxLTstlxKHy2D+mI2IwRFG9/MLb50DWxRFr3aLFPtqQc9WBRchT2EqVz
+ o7D1z6pXkpHbo3Ak1Jp9FqBh7DMoj7UV75CV6zix8Vl2nKSxjYcXUh+uVyT5KPRZlSFc9ZeL
+ VEEvzUvt6U2+VewZsfyUgf+o3OeuBMYHd1KHIUS8gyVyYLI+QeBAmUKRyMHbMBOnMYqRWVy1
+ XeNnsj1HnputrOPQH6Q/7vSqim9UQARLGkfdWoHQBED7t3Lvo4+lFTMQ8xlHarzicf6cRnz3
+ TmOqwA9iq8VgMpN0L+0lXjZjjOoopXUXkg+6wnNX2mN4QZwZYrjbIutgXDZ7/FAKp2eSHGCs
+ WIClszY6/oBZbmUiS2Gd/sRHLCg6P+fGCTBgFVuGZJn/DOok0NPZqgJu204fRwxdJxaP2a5P
+ yc/pD9s2XOaB1PyBYcfXm57I51CIXTIfTg9as3pUw==
+IronPort-HdrOrdr: A9a23:nQZdUKuea+Wwmeh6s7g2IwGl7skDrdV00zEX/kB9WHVpm5Sj5q
+ eTdPRy73DJYK54YgBcpTnyAtjnfZq6z+8I3WBxB8bZYOCIghrKEGgP1+bfKnjbaknDH41mpN
+ hdmspFeb/N5DFB5K6QijVQUexQpeVvm5rHuQ6q9RdQpHZRCp2IgT0UNu/RKDwOeOAPP+tAKH
+ Oz3Ls9mwad
+X-Talos-CUID: =?us-ascii?q?9a23=3AcC6p1WsfKWUQxLN6TqgRgh856IsbW1vt/HX8IXX?=
+ =?us-ascii?q?oV01PVJ6nDl2s06x7xp8=3D?=
+X-Talos-MUID: 9a23:1tWVqQuxLNMnzVND482nqTA9N/h1zKuSWAMcy6Q9tJOrNCwqNGLI
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.16,324,1744063200"; 
+   d="scan'208";a="284352972"
+Received: from unknown (HELO fhex-s2-a.ad.fh-aachen.de) ([134.130.26.187])
+  by mail-in-3.itc.rwth-aachen.de with ESMTP; 25 Jul 2025 23:58:00 +0200
+Received: from fhex-w2-a.ad.fh-aachen.de (134.130.26.189) by
+ fhex-s2-a.ad.fh-aachen.de (134.130.26.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Fri, 25 Jul 2025 23:57:59 +0200
+Received: from fhex-w2-a.ad.fh-aachen.de ([fe80::d79a:cbcf:214:4a68]) by
+ fhex-w2-a.ad.fh-aachen.de ([fe80::d79a:cbcf:214:4a68%2]) with mapi id
+ 15.02.1748.026; Fri, 25 Jul 2025 23:57:59 +0200
+From: "Maurer, Florian" <maurer@fh-aachen.de>
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+	"repk@triplefau.lt" <repk@triplefau.lt>, "ath10k@lists.infradead.org"
+	<ath10k@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: "kvalo@kernel.org" <kvalo@kernel.org>, "veilleux.cedric@gmail.com"
+	<veilleux.cedric@gmail.com>, "jjohnson@kernel.org" <jjohnson@kernel.org>,
+	"quic_vthiagar@quicinc.com" <quic_vthiagar@quicinc.com>
+Subject: Re: [RESEND PATCH v3 2/2] wifi: ath10k: Flush only requested txq in
+ ath10k_flush()
+Thread-Topic: [RESEND PATCH v3 2/2] wifi: ath10k: Flush only requested txq in
+ ath10k_flush()
+Thread-Index: AQHb/a6Iyt5rwuP9GUe6v2aiLI8tS7RDQXkA
+Date: Fri, 25 Jul 2025 21:57:59 +0000
+Message-ID: <c5ec36c2692184a154ad07000c15492c4f37f141.camel@fh-aachen.de>
+References: <cover.1732293922.git.repk@triplefau.lt>
+	 <01d859e8e574a1f5d0b916333fe0b5cda859af9b.1732293922.git.repk@triplefau.lt>
+In-Reply-To: <01d859e8e574a1f5d0b916333fe0b5cda859af9b.1732293922.git.repk@triplefau.lt>
+Accept-Language: de-DE, en-US
 Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <3cbe13e1-a820-4804-a28c-a57e2ee7a020@oss.qualcomm.com>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [87.123.0.115]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FE44D28FF429BC419FC569BB750831E0@ad.fh-aachen.de>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250725_051612_834863_8F3BED01 
-X-CRM114-Status: GOOD (  27.12  )
+X-CRM114-CacheID: sfid-20250725_145811_466297_4CBDD67F 
+X-CRM114-Status: GOOD (  25.34  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,241 +130,177 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-This is a multi-part message in MIME format.
---------------IWKL2dzaL8eep60TKGXgoNZv
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-Dear Baochen,
-
-
-Thank you for your answer.
-
-
-Am 22.07.25 um 11:38 schrieb Baochen Qiang:
-
-> On 7/22/2025 4:37 PM, Paul Menzel wrote:
-
->> Today, on the Intel Kaby Lake laptop Dell XPS 13 9360 with
->>
->>      $ lspci -nn -s 3a:
->>      3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter [168c:003e] (rev 32)
->>
->> resuming from ACPI S3 took longer, as it sometimes does, and looking into this, I see
->> `failed to receive service ready completion, polling..` after a delay of five seconds:
->>
->> ```
->> [    0.000000] Linux version 6.16.0-rc6-00253-g4871b7cb27f4 (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44) #90 SMP PREEMPT_DYNAMIC Sat Jul 19 08:53:39 CEST 2025
->> […]
->> [    8.588020] abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
->> [    8.588372] abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
->> [    8.588603] abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4.1-00309-api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
->> […]
->> [    9.113550] Bluetooth: hci0: QCA: patch rome 0x302 build 0x3e8, firmware rome 0x302 build 0x111
->> […]
->> [41804.953487] PM: suspend entry (deep)
->> [41804.988361] Filesystems sync: 0.034 seconds
->> [41805.007216] Freezing user space processes
->> [41805.009650] Freezing user space processes completed (elapsed 0.002 seconds)
->> [41805.009663] OOM killer disabled.
->> [41805.009666] Freezing remaining freezable tasks
->> [41805.011383] Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
->> [41805.011502] printk: Suspending console(s) (use no_console_suspend to debug)
->> [41805.523883] ACPI: EC: interrupt blocked
->> [41805.545779] ACPI: PM: Preparing to enter system sleep state S3
->> [41805.556040] ACPI: EC: event blocked
->> [41805.556045] ACPI: EC: EC stopped
->> [41805.556046] ACPI: PM: Saving platform NVS memory
->> [41805.559408] Disabling non-boot CPUs ...
->> [41805.562480] smpboot: CPU 3 is now offline
->> [41805.567105] smpboot: CPU 2 is now offline
->> [41805.572122] smpboot: CPU 1 is now offline
->> [41805.582034] ACPI: PM: Low-level resume complete
->> [41805.582079] ACPI: EC: EC started
->> [41805.582080] ACPI: PM: Restoring platform NVS memory
->> [41805.583986] Enabling non-boot CPUs ...
->> [41805.584009] smpboot: Booting Node 0 Processor 1 APIC 0x2
->> [41805.584734] CPU1 is up
->> [41805.584749] smpboot: Booting Node 0 Processor 2 APIC 0x1
->> [41805.585514] CPU2 is up
->> [41805.585530] smpboot: Booting Node 0 Processor 3 APIC 0x3
->> [41805.586216] CPU3 is up
->> [41805.589070] ACPI: PM: Waking up from system sleep state S3
->> [41805.623652] ACPI: EC: interrupt unblocked
->> [41805.640074] ACPI: EC: event unblocked
->> [41805.651951] nvme nvme0: 4/0/0 default/read/poll queues
->> [41805.865391] atkbd serio0: Failed to deactivate keyboard on isa0060/serio0
->> [41810.933639] ath10k_pci 0000:3a:00.0: failed to receive service ready completion, polling..
->> [41810.933769] ath10k_pci 0000:3a:00.0: service ready completion received, continuing normally
->> [41810.986330] OOM killer enabled.
->> [41810.986332] Restarting tasks: Starting
->> […]
->> ```
->>
->> Commit e57b7d62a1b2 (wifi: ath10k: poll service ready message before failing) [1][2],
->> present since Linux v6.10-rc1, added this to avoid the hardware not being initialized:
->>
->>          time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
->>                                                  WMI_SERVICE_READY_TIMEOUT_HZ);
->>          if (!time_left) {
->>                  /* Sometimes the PCI HIF doesn't receive interrupt
->>                   * for the service ready message even if the buffer
->>                   * was completed. PCIe sniffer shows that it's
->>                   * because the corresponding CE ring doesn't fires
->>                   * it. Workaround here by polling CE rings once.
->>                   */
->>                  ath10k_warn(ar, "failed to receive service ready completion, polling..\n");
->>
->>                  for (i = 0; i < CE_COUNT; i++)
->>                          ath10k_hif_send_complete_check(ar, i, 1);
->>
->>                  time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
->>                                                          WMI_SERVICE_READY_TIMEOUT_HZ);
->>                  if (!time_left) {
->>                          ath10k_warn(ar, "polling timed out\n");
->>                          return -ETIMEDOUT;
->>                  }
->>
->>                  ath10k_warn(ar, "service ready completion received, continuing normally\n");
->>          }
->>
->> The comment says, it’s a hardware issue. I guess from the Qualcomm device and not the
->> board design, as it happens with several devices like James’?
->>
->> Anyway, should polling be used by default then to avoid the delay?
-> 
-> Adding additional polling before wait seems OK to me
-
-With the attached diff, I didn’t notice any issue on the Dell XPS 13 
-9360 with QCA6174.
-
-Unrelated: The only thing I noticed is, that during boot (not resume) 
-the function seems to be called twice. It looks like once for Wi-Fi and 
-once for Bluetooth:
-
-```
-[   35.507604] ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A 
-crc32 d2863f91
-[   35.516010] usb 1-5: New USB device found, idVendor=0c45, 
-idProduct=670c, bcdDevice=56.26
-[   35.516022] usb 1-5: New USB device strings: Mfr=2, Product=1, 
-SerialNumber=0
-[   35.516026] usb 1-5: Product: Integrated_Webcam_HD
-[   35.516029] usb 1-5: Manufacturer: CN09GTFMLOG008C8B7FWA01
-[   35.587852] ath10k_pci 0000:3a:00.0: service ready completion 
-received, continuing normally
-[   35.606632] ath10k_pci 0000:3a:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 
-cal otp max-sta 32 raw 0 hwcrypto 1
-[   35.628744] mc: Linux media interface: v0.10
-[   35.651301] nvme nvme0: using unchecked data buffer
-[   35.687466] Bluetooth: Core ver 2.22
-[   35.687493] NET: Registered PF_BLUETOOTH protocol family
-[   35.687495] Bluetooth: HCI device and connection manager initialized
-[   35.687499] Bluetooth: HCI socket layer initialized
-[   35.687501] Bluetooth: L2CAP socket layer initialized
-[   35.687505] Bluetooth: SCO socket layer initialized
-[   35.696050] ath: EEPROM regdomain: 0x6c
-[   35.696055] ath: EEPROM indicates we should expect a direct regpair map
-[   35.696057] ath: Country alpha2 being used: 00
-[   35.696058] ath: Regpair used: 0x6c
-[   35.712821] ath10k_pci 0000:3a:00.0 wlp58s0: renamed from wlan0
-[   35.716790] input: ELAN Touchscreen as 
-/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4:1.0/0003:04F3:2234.0002/input/input40
-[   35.718912] videodev: Linux video capture interface: v2.00
-[   35.719492] input: ELAN Touchscreen UNKNOWN as 
-/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4:1.0/0003:04F3:2234.0002/input/input41
-[   35.719595] input: ELAN Touchscreen UNKNOWN as 
-/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4:1.0/0003:04F3:2234.0002/input/input42
-[   35.720899] hid-multitouch 0003:04F3:2234.0002: 
-input,hiddev0,hidraw1: USB HID v1.10 Device [ELAN Touchscreen] on 
-usb-0000:00:14.0-4/input0
-[   35.720947] usbcore: registered new interface driver usbhid
-[   35.720949] usbhid: USB HID core driver
-[   35.812081] usbcore: registered new interface driver btusb
-[   35.815263] Bluetooth: hci0: using rampatch file: 
-qca/rampatch_usb_00000302.bin
-[   35.815270] Bluetooth: hci0: QCA: patch rome 0x302 build 0x3e8, 
-firmware rome 0x302 build 0x111
-[   36.174345] Bluetooth: hci0: using NVM file: qca/nvm_usb_00000302.bin
-[   36.199643] Bluetooth: hci0: HCI Enhanced Setup Synchronous 
-Connection command is advertised, but not supported.
-[   36.398657] ath10k_pci 0000:3a:00.0: service ready completion 
-received, continuing normally
-```
-
->> Additionally I have two questions regarding the code:
->>
->> 1.  Is `WMI_SERVICE_READY_TIMEOUT_HZ` the right value to pass to
->> `wait_for_completion_timeout(struct completion *done, unsigned long timeout)`?
->>
->> The macro is defined as:
->>
->>      drivers/net/wireless/ath/ath10k/wmi.h:#define WMI_SERVICE_READY_TIMEOUT_HZ (5 * HZ)
->>
->> `timeout` is supposed to be in jiffies, and `CONFIG_HZ_250=y` on my system. I wonder how
->> that amounts to five seconds on my system.
-> 
-> HZ is defined as jiffies per second, so 5 * HZ equals 5 seconds.
-> 
->>
->> The timeout should probably be defined in seconds? Does the WMI specification say
->> something about this?
->>
->> 2.  Is the task interruptable and should `wait_for_completion_interruptible_timeout(struct
->> completion *done, unsigned long timeout)` be used?
-> 
-> While I am not sure for now, may I ask why the question?
-
-I was just reading up on `wait_for_completion_*()`, and so the different 
-variants.
-
-
-Kind regards,
-
-Paul
-
-
->> [1]: https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e57b7d62a1b2f496caf0beba81cec3c90fad80d5
->> [2]: https://lore.kernel.org/all/20240227030409.89702-1-quic_bqiang@quicinc.com/
---------------IWKL2dzaL8eep60TKGXgoNZv
-Content-Type: text/x-patch; charset=UTF-8;
- name="ath10k-poll-uninterruptible.diff"
-Content-Disposition: attachment; filename="ath10k-poll-uninterruptible.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMgYi9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCmluZGV4IGRmNmEyNGY4Zjhk
-NS4uZWNmNjUwYjUyZGQyIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL3dtaS5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21p
-LmMKQEAgLTE3NjUsMzAgKzE3NjUsMjQgQEAgaW50IGF0aDEwa193bWlfd2FpdF9mb3Jfc2Vy
-dmljZV9yZWFkeShzdHJ1Y3QgYXRoMTBrICphcikKIHsKIAl1bnNpZ25lZCBsb25nIHRpbWVf
-bGVmdCwgaTsKIAotCXRpbWVfbGVmdCA9IHdhaXRfZm9yX2NvbXBsZXRpb25fdGltZW91dCgm
-YXItPndtaS5zZXJ2aWNlX3JlYWR5LAorCS8qIFNvbWV0aW1lcyB0aGUgUENJIEhJRiBkb2Vz
-bid0IHJlY2VpdmUgaW50ZXJydXB0CisJICogZm9yIHRoZSBzZXJ2aWNlIHJlYWR5IG1lc3Nh
-Z2UgZXZlbiBpZiB0aGUgYnVmZmVyCisJICogd2FzIGNvbXBsZXRlZC4gUENJZSBzbmlmZmVy
-IHNob3dzIHRoYXQgaXQncworCSAqIGJlY2F1c2UgdGhlIGNvcnJlc3BvbmRpbmcgQ0Ugcmlu
-ZyBkb2Vzbid0IGZpcmVzCisJICogaXQuIFdvcmthcm91bmQgaGVyZSBieSBwb2xsaW5nIENF
-IHJpbmdzIG9uY2UuCisJICovCisJZm9yIChpID0gMDsgaSA8IENFX0NPVU5UOyBpKyspCisJ
-CWF0aDEwa19oaWZfc2VuZF9jb21wbGV0ZV9jaGVjayhhciwgaSwgMSk7CisKKwl0aW1lX2xl
-ZnQgPSB3YWl0X2Zvcl9jb21wbGV0aW9uX2ludGVycnVwdGlibGVfdGltZW91dCgmYXItPndt
-aS5zZXJ2aWNlX3JlYWR5LAogCQkJCQkJV01JX1NFUlZJQ0VfUkVBRFlfVElNRU9VVF9IWik7
-CiAJaWYgKCF0aW1lX2xlZnQpIHsKLQkJLyogU29tZXRpbWVzIHRoZSBQQ0kgSElGIGRvZXNu
-J3QgcmVjZWl2ZSBpbnRlcnJ1cHQKLQkJICogZm9yIHRoZSBzZXJ2aWNlIHJlYWR5IG1lc3Nh
-Z2UgZXZlbiBpZiB0aGUgYnVmZmVyCi0JCSAqIHdhcyBjb21wbGV0ZWQuIFBDSWUgc25pZmZl
-ciBzaG93cyB0aGF0IGl0J3MKLQkJICogYmVjYXVzZSB0aGUgY29ycmVzcG9uZGluZyBDRSBy
-aW5nIGRvZXNuJ3QgZmlyZXMKLQkJICogaXQuIFdvcmthcm91bmQgaGVyZSBieSBwb2xsaW5n
-IENFIHJpbmdzIG9uY2UuCi0JCSAqLwotCQlhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byBy
-ZWNlaXZlIHNlcnZpY2UgcmVhZHkgY29tcGxldGlvbiwgcG9sbGluZy4uXG4iKTsKLQotCQlm
-b3IgKGkgPSAwOyBpIDwgQ0VfQ09VTlQ7IGkrKykKLQkJCWF0aDEwa19oaWZfc2VuZF9jb21w
-bGV0ZV9jaGVjayhhciwgaSwgMSk7Ci0KLQkJdGltZV9sZWZ0ID0gd2FpdF9mb3JfY29tcGxl
-dGlvbl90aW1lb3V0KCZhci0+d21pLnNlcnZpY2VfcmVhZHksCi0JCQkJCQkJV01JX1NFUlZJ
-Q0VfUkVBRFlfVElNRU9VVF9IWik7Ci0JCWlmICghdGltZV9sZWZ0KSB7Ci0JCQlhdGgxMGtf
-d2FybihhciwgInBvbGxpbmcgdGltZWQgb3V0XG4iKTsKLQkJCXJldHVybiAtRVRJTUVET1VU
-OwotCQl9Ci0KLQkJYXRoMTBrX3dhcm4oYXIsICJzZXJ2aWNlIHJlYWR5IGNvbXBsZXRpb24g
-cmVjZWl2ZWQsIGNvbnRpbnVpbmcgbm9ybWFsbHlcbiIpOworCQlhdGgxMGtfd2Fybihhciwg
-InBvbGxpbmcgdGltZWQgb3V0XG4iKTsKKwkJcmV0dXJuIC1FVElNRURPVVQ7CiAJfQogCisJ
-YXRoMTBrX3dhcm4oYXIsICJzZXJ2aWNlIHJlYWR5IGNvbXBsZXRpb24gcmVjZWl2ZWQsIGNv
-bnRpbnVpbmcgbm9ybWFsbHlcbiIpOworCiAJcmV0dXJuIDA7CiB9CiAK
-
---------------IWKL2dzaL8eep60TKGXgoNZv--
+SGkgZXZlcnlvbmUsDQoNCndlIHRlc3RlZCB0aGlzIFBhdGNoIGluIEZyZWlmdW5rIEFhY2hlbiB1
+c2luZyBHbHVvbi9PcGVuV3J0Lg0KDQpXZSBoYWQgdGhlIGlzc3VlIHRoYXQgdGhlIEV4dHJlbWUg
+TmV0d29ya3MgV1MtQVAzODI1aSBkaWQgaGF2ZSBhIGhpZ2gNCmxvYWQgaW4gYSBidXN5IGVudmly
+b25tZW50LCBtYWtpbmcgdGhlIG5vZGUgdW5yZXNwb25zaXZlLg0KVGhpcyBpc3N1ZSBpcyByZXNv
+bHZlZCB3aXRoIHRoaXMgcGF0Y2gsIGltcHJvdmluZyB0aGUgd2lmaSBzdGFiaWxpdHkNCm5vdGlj
+ZWFibHkuDQoNClRoYW5rcywNCkZsb3JpYW4gTWF1cmVyDQoNCg0KVGVzdGVkLWJ5OiBGbG9yaWFu
+IE1hdXJlciA8bWF1cmVyQGZoLWFhY2hlbi5kZT4NCg0KT24gRnJpLCAyMDI0LTExLTIyIGF0IDE3
+OjQ4ICswMTAwLCBSZW1pIFBvbW1hcmVsIHdyb3RlOg0KPiBUaGUgaWVlZTgwMjExIGZsdXNoIGNh
+bGxiYWNrIGNhbiBiZSBjYWxsZWQgdG8gZmx1c2ggb25seSBwYXJ0IG9mIGFsbCBodw0KPiBxdWV1
+ZXMuIFRoZSBhdGgxMGsncyBmbHVzaCBjYWxsYmFjayBpbXBsZW1lbnRhdGlvbiAoaS5lLiBhdGgx
+MGtfZmx1c2goKSkNCj4gd2FzIHdhaXRpbmcgZm9yIGFsbCBwZW5kaW5nIGZyYW1lcyBvZiBhbGwg
+cXVldWVzIHRvIGJlIGZsdXNoZWQgaWdub3JpbmcNCj4gdGhlIHF1ZXVlIHBhcmFtZXRlci4gQmVj
+YXVzZSBvbmx5IHRoZSBxdWV1ZXMgdG8gYmUgZmx1c2hlZCBhcmUgc3RvcHBlZA0KPiBieSBtYWM4
+MDIxMSwgc2tiIGNhbiBzdGlsbCBiZSBxdWV1ZWQgdG8gb3RoZXIgcXVldWVzIG1lYW53aGlsZS4g
+VGh1cw0KPiBhdGgxMGtfZmx1c2goKSBjb3VsZCBmYWlsIChhbmQgd2FpdCA1c2VjIGhvbGRpbmcg
+YXItPmNvbmYgbG9jaykgZXZlbiBpZg0KPiB0aGUgcmVxdWVzdGVkIHF1ZXVlcyBhcmUgZmx1c2hl
+ZCBjb3JyZWN0bHkuDQo+IA0KPiBBIHdheSB0byByZXByb2R1Y2UgdGhlIGlzc3VlIGlzIHRvIHVz
+ZSB0d28gZGlmZmVyZW50IEFQcyBiZWNhdXNlDQo+IGVhY2ggdmRldiBoYXMgaXRzIG93biBodyBx
+dWV1ZSBpbiBhdGgxMGsuIENvbm5lY3QgU1RBMCB0byBBUDAgYW5kIFNUQTENCj4gdG8gQVAxLiBU
+aGVuIGdlbmVyYXRlIHRyYWZmaWMgZnJvbSBBUDAgdG8gU1RBMCBhbmQga2lsbCBTVEEwIHdpdGhv
+dXQNCj4gY2xlYW4gZGlzYXNzb2NpYXRpb24gZnJhbWUgKGUuZy4gdW5wbHVnIHBvd2VyIGNhYmxl
+LCByZWJvb3QgLWYsIC4uLikuDQo+IE5vdyBpZiB3ZSB3ZXJlIHRvIGZsdXNoIEFQMSdzIHF1ZXVl
+LCBhdGgxMGtfZmx1c2goKSB3b3VsZCBmYWlsIChhbmQNCj4gZWZmZWN0aXZlbHkgYmxvY2sgNSBz
+ZWNvbmRzIHdpdGggYXItPmNvbmYgb3IgZXZlbiB3aXBoeSdzIGxvY2sgaGVsZCkNCj4gd2l0aCB0
+aGUgZm9sbG93aW5nIHdhcm5pbmc6DQo+IA0KPiAgYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZh
+aWxlZCB0byBmbHVzaCB0cmFuc21pdCBxdWV1ZSAoc2tpcCAwIGFyLXN0YXRlIDIpOiAwDQo+IA0K
+PiBXYWl0IG9ubHkgZm9yIHBlbmRpbmcgZnJhbWVzIG9mIHRoZSByZXF1ZXN0ZWQgcXVldWVzIHRv
+IGJlIGZsdXNoZWQgaW4NCj4gYXRoMTBrX2ZsdXNoKCkgdG8gYXZvaWQgdGhhdCBsb25nIGJsb2Nr
+aW5nLg0KPiANCj4gUmVwb3J0ZWQtYnk6IENlZHJpYyBWZWlsbGV1eCA8dmVpbGxldXguY2Vkcmlj
+QGdtYWlsLmNvbT4NCj4gQ2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvQ0ErWGZl
+NEZqVW16TTVtdlB4R2JwSnNGM1N2U2RFNV93Z3h2Z0ZKMGJzZHJLT0RWWENRQG1haWwuZ21haWwu
+Y29tLw0KPiBTaWduZWQtb2ZmLWJ5OiBSZW1pIFBvbW1hcmVsIDxyZXBrQHRyaXBsZWZhdS5sdD4N
+Cj4gLS0tDQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dC5oICAgIHwgIDcg
+KysrLS0NCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3R4LmMgfCAxOCAr
+KysrKysrKysrLS0NCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMgICAg
+fCAzNSArKysrKysrKysrKysrKysrLS0tLS0tLS0NCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvdHhyeC5jICAgfCAgMiArLQ0KPiAgNCBmaWxlcyBjaGFuZ2VkLCA0NSBpbnNlcnRp
+b25zKCspLCAxNyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL2h0dC5oIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9odHQuaA0KPiBpbmRleCBkMTUwZjkzMzA5NDEuLmNhOGJmM2I2NzY2ZCAxMDA2NDQNCj4gLS0t
+IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHQuaA0KPiArKysgYi9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dC5oDQo+IEBAIC0xODcwLDYgKzE4NzAsNyBAQCBz
+dHJ1Y3QgYXRoMTBrX2h0dCB7DQo+ICAJc3BpbmxvY2tfdCB0eF9sb2NrOw0KPiAgCWludCBtYXhf
+bnVtX3BlbmRpbmdfdHg7DQo+ICAJaW50IG51bV9wZW5kaW5nX3R4Ow0KPiArCWludCBudW1fcGVu
+ZGluZ19wZXJfcXVldWVbSUVFRTgwMjExX01BWF9RVUVVRVNdOw0KPiAgCWludCBudW1fcGVuZGlu
+Z19tZ210X3R4Ow0KPiAgCXN0cnVjdCBpZHIgcGVuZGluZ190eDsNCj4gIAl3YWl0X3F1ZXVlX2hl
+YWRfdCBlbXB0eV90eF93cTsNCj4gQEAgLTI0NDcsOCArMjQ0OCwxMCBAQCB2b2lkIGF0aDEwa19o
+dHRfdHhfdHhxX3VwZGF0ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywNCj4gIHZvaWQgYXRoMTBr
+X2h0dF90eF90eHFfcmVjYWxjKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LA0KPiAgCQkJICAgICAg
+c3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSk7DQo+ICB2b2lkIGF0aDEwa19odHRfdHhfdHhxX3N5
+bmMoc3RydWN0IGF0aDEwayAqYXIpOw0KPiAtdm9pZCBhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5n
+KHN0cnVjdCBhdGgxMGtfaHR0ICpodHQpOw0KPiAtaW50IGF0aDEwa19odHRfdHhfaW5jX3BlbmRp
+bmcoc3RydWN0IGF0aDEwa19odHQgKmh0dCk7DQo+ICt2b2lkIGF0aDEwa19odHRfdHhfZGVjX3Bl
+bmRpbmcoc3RydWN0IGF0aDEwa19odHQgKmh0dCwNCj4gKwkJCSAgICAgICBzdHJ1Y3QgaWVlZTgw
+MjExX3R4cSAqdHhxKTsNCj4gK2ludCBhdGgxMGtfaHR0X3R4X2luY19wZW5kaW5nKHN0cnVjdCBh
+dGgxMGtfaHR0ICpodHQsDQo+ICsJCQkgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3R4cSAqdHhxKTsN
+Cj4gIHZvaWQgYXRoMTBrX2h0dF90eF9tZ210X2RlY19wZW5kaW5nKHN0cnVjdCBhdGgxMGtfaHR0
+ICpodHQpOw0KPiAgaW50IGF0aDEwa19odHRfdHhfbWdtdF9pbmNfcGVuZGluZyhzdHJ1Y3QgYXRo
+MTBrX2h0dCAqaHR0LCBib29sIGlzX21nbXQsDQo+ICAJCQkJICAgYm9vbCBpc19wcmVzcCk7DQo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF90eC5jIGIv
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfdHguYw0KPiBpbmRleCAyMTE3NTJi
+ZDBmNjUuLmVmNWE5OTJlOGNjZSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9odHRfdHguYw0KPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL2h0dF90eC5jDQo+IEBAIC0xNDAsMTkgKzE0MCwyNiBAQCB2b2lkIGF0aDEwa19odHRfdHhf
+dHhxX3VwZGF0ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywNCj4gIAlzcGluX3VubG9ja19iaCgm
+YXItPmh0dC50eF9sb2NrKTsNCj4gIH0NCj4gIA0KPiAtdm9pZCBhdGgxMGtfaHR0X3R4X2RlY19w
+ZW5kaW5nKHN0cnVjdCBhdGgxMGtfaHR0ICpodHQpDQo+ICt2b2lkIGF0aDEwa19odHRfdHhfZGVj
+X3BlbmRpbmcoc3RydWN0IGF0aDEwa19odHQgKmh0dCwNCj4gKwkJCSAgICAgICBzdHJ1Y3QgaWVl
+ZTgwMjExX3R4cSAqdHhxKQ0KPiAgew0KPiArCWludCBxbnIgPSAtMTsNCj4gKw0KPiAgCWxvY2tk
+ZXBfYXNzZXJ0X2hlbGQoJmh0dC0+dHhfbG9jayk7DQo+ICANCj4gIAlodHQtPm51bV9wZW5kaW5n
+X3R4LS07DQo+ICAJaWYgKGh0dC0+bnVtX3BlbmRpbmdfdHggPT0gaHR0LT5tYXhfbnVtX3BlbmRp
+bmdfdHggLSAxKQ0KPiAgCQlhdGgxMGtfbWFjX3R4X3VubG9jayhodHQtPmFyLCBBVEgxMEtfVFhf
+UEFVU0VfUV9GVUxMKTsNCj4gIA0KPiAtCWlmIChodHQtPm51bV9wZW5kaW5nX3R4ID09IDApDQo+
+ICsJaWYgKHR4cSkNCj4gKwkJcW5yID0gLS1odHQtPm51bV9wZW5kaW5nX3Blcl9xdWV1ZVt0eHEt
+PnZpZi0+aHdfcXVldWVbdHhxLT5hY11dOw0KPiArDQo+ICsJaWYgKGh0dC0+bnVtX3BlbmRpbmdf
+dHggPT0gMCB8fCBxbnIgPT0gMCkNCj4gIAkJd2FrZV91cCgmaHR0LT5lbXB0eV90eF93cSk7DQo+
+ICB9DQo+ICANCj4gLWludCBhdGgxMGtfaHR0X3R4X2luY19wZW5kaW5nKHN0cnVjdCBhdGgxMGtf
+aHR0ICpodHQpDQo+ICtpbnQgYXRoMTBrX2h0dF90eF9pbmNfcGVuZGluZyhzdHJ1Y3QgYXRoMTBr
+X2h0dCAqaHR0LA0KPiArCQkJICAgICAgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSkNCj4gIHsN
+Cj4gIAlsb2NrZGVwX2Fzc2VydF9oZWxkKCZodHQtPnR4X2xvY2spOw0KPiAgDQo+IEBAIC0xNjMs
+NiArMTcwLDExIEBAIGludCBhdGgxMGtfaHR0X3R4X2luY19wZW5kaW5nKHN0cnVjdCBhdGgxMGtf
+aHR0ICpodHQpDQo+ICAJaWYgKGh0dC0+bnVtX3BlbmRpbmdfdHggPT0gaHR0LT5tYXhfbnVtX3Bl
+bmRpbmdfdHgpDQo+ICAJCWF0aDEwa19tYWNfdHhfbG9jayhodHQtPmFyLCBBVEgxMEtfVFhfUEFV
+U0VfUV9GVUxMKTsNCj4gIA0KPiArCWlmICghdHhxKQ0KPiArCQlyZXR1cm4gMDsNCj4gKw0KPiAr
+CWh0dC0+bnVtX3BlbmRpbmdfcGVyX3F1ZXVlW3R4cS0+dmlmLT5od19xdWV1ZVt0eHEtPmFjXV0r
+KzsNCj4gKw0KPiAgCXJldHVybiAwOw0KPiAgfQ0KPiAgDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway9tYWMuYw0KPiBpbmRleCA4YjhkNGYyNGU1ZmIuLjdjNWY5NWYyODU4ZiAxMDA2NDQN
+Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYw0KPiArKysgYi9k
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jDQo+IEBAIC00Mzg1LDcgKzQzODUs
+NyBAQCBpbnQgYXRoMTBrX21hY190eF9wdXNoX3R4cShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywN
+Cj4gIAl1MTYgYWlydGltZTsNCj4gIA0KPiAgCXNwaW5fbG9ja19iaCgmYXItPmh0dC50eF9sb2Nr
+KTsNCj4gLQlyZXQgPSBhdGgxMGtfaHR0X3R4X2luY19wZW5kaW5nKGh0dCk7DQo+ICsJcmV0ID0g
+YXRoMTBrX2h0dF90eF9pbmNfcGVuZGluZyhodHQsIHR4cSk7DQo+ICAJc3Bpbl91bmxvY2tfYmgo
+JmFyLT5odHQudHhfbG9jayk7DQo+ICANCj4gIAlpZiAocmV0KQ0KPiBAQCAtNDM5NCw3ICs0Mzk0
+LDcgQEAgaW50IGF0aDEwa19tYWNfdHhfcHVzaF90eHEoc3RydWN0IGllZWU4MDIxMV9odyAqaHcs
+DQo+ICAJc2tiID0gaWVlZTgwMjExX3R4X2RlcXVldWVfbmkoaHcsIHR4cSk7DQo+ICAJaWYgKCFz
+a2IpIHsNCj4gIAkJc3Bpbl9sb2NrX2JoKCZhci0+aHR0LnR4X2xvY2spOw0KPiAtCQlhdGgxMGtf
+aHR0X3R4X2RlY19wZW5kaW5nKGh0dCk7DQo+ICsJCWF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmco
+aHR0LCB0eHEpOw0KPiAgCQlzcGluX3VubG9ja19iaCgmYXItPmh0dC50eF9sb2NrKTsNCj4gIA0K
+PiAgCQlyZXR1cm4gLUVOT0VOVDsNCj4gQEAgLTQ0MTYsNyArNDQxNiw3IEBAIGludCBhdGgxMGtf
+bWFjX3R4X3B1c2hfdHhxKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LA0KPiAgCQlyZXQgPSBhdGgx
+MGtfaHR0X3R4X21nbXRfaW5jX3BlbmRpbmcoaHR0LCBpc19tZ210LCBpc19wcmVzcCk7DQo+ICAN
+Cj4gIAkJaWYgKHJldCkgew0KPiAtCQkJYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZyhodHQpOw0K
+PiArCQkJYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZyhodHQsIHR4cSk7DQo+ICAJCQlzcGluX3Vu
+bG9ja19iaCgmYXItPmh0dC50eF9sb2NrKTsNCj4gIAkJCXJldHVybiByZXQ7DQo+ICAJCX0NCj4g
+QEAgLTQ0MzAsNyArNDQzMCw3IEBAIGludCBhdGgxMGtfbWFjX3R4X3B1c2hfdHhxKHN0cnVjdCBp
+ZWVlODAyMTFfaHcgKmh3LA0KPiAgCQlhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byBwdXNoIGZy
+YW1lOiAlZFxuIiwgcmV0KTsNCj4gIA0KPiAgCQlzcGluX2xvY2tfYmgoJmFyLT5odHQudHhfbG9j
+ayk7DQo+IC0JCWF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmcoaHR0KTsNCj4gKwkJYXRoMTBrX2h0
+dF90eF9kZWNfcGVuZGluZyhodHQsIHR4cSk7DQo+ICAJCWlmIChpc19tZ210KQ0KPiAgCQkJYXRo
+MTBrX2h0dF90eF9tZ210X2RlY19wZW5kaW5nKGh0dCk7DQo+ICAJCXNwaW5fdW5sb2NrX2JoKCZh
+ci0+aHR0LnR4X2xvY2spOw0KPiBAQCAtNDY5Myw3ICs0NjkzLDcgQEAgc3RhdGljIHZvaWQgYXRo
+MTBrX21hY19vcF90eChzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywNCj4gIAkJCWlzX3ByZXNwID0g
+aWVlZTgwMjExX2lzX3Byb2JlX3Jlc3AoaGRyLT5mcmFtZV9jb250cm9sKTsNCj4gIAkJfQ0KPiAg
+DQo+IC0JCXJldCA9IGF0aDEwa19odHRfdHhfaW5jX3BlbmRpbmcoaHR0KTsNCj4gKwkJcmV0ID0g
+YXRoMTBrX2h0dF90eF9pbmNfcGVuZGluZyhodHQsIHR4cSk7DQo+ICAJCWlmIChyZXQpIHsNCj4g
+IAkJCWF0aDEwa193YXJuKGFyLCAiZmFpbGVkIHRvIGluY3JlYXNlIHR4IHBlbmRpbmcgY291bnQ6
+ICVkLCBkcm9wcGluZ1xuIiwNCj4gIAkJCQkgICAgcmV0KTsNCj4gQEAgLTQ3MDYsNyArNDcwNiw3
+IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19tYWNfb3BfdHgoc3RydWN0IGllZWU4MDIxMV9odyAqaHcs
+DQo+ICAJCWlmIChyZXQpIHsNCj4gIAkJCWF0aDEwa19kYmcoYXIsIEFUSDEwS19EQkdfTUFDLCAi
+ZmFpbGVkIHRvIGluY3JlYXNlIHR4IG1nbXQgcGVuZGluZyBjb3VudDogJWQsIGRyb3BwaW5nXG4i
+LA0KPiAgCQkJCSAgIHJldCk7DQo+IC0JCQlhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nKGh0dCk7
+DQo+ICsJCQlhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nKGh0dCwgdHhxKTsNCj4gIAkJCXNwaW5f
+dW5sb2NrX2JoKCZhci0+aHR0LnR4X2xvY2spOw0KPiAgCQkJaWVlZTgwMjExX2ZyZWVfdHhza2Io
+YXItPmh3LCBza2IpOw0KPiAgCQkJcmV0dXJuOw0KPiBAQCAtNDcxOSw3ICs0NzE5LDcgQEAgc3Rh
+dGljIHZvaWQgYXRoMTBrX21hY19vcF90eChzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywNCj4gIAkJ
+YXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8gdHJhbnNtaXQgZnJhbWU6ICVkXG4iLCByZXQpOw0K
+PiAgCQlpZiAoaXNfaHR0KSB7DQo+ICAJCQlzcGluX2xvY2tfYmgoJmFyLT5odHQudHhfbG9jayk7
+DQo+IC0JCQlhdGgxMGtfaHR0X3R4X2RlY19wZW5kaW5nKGh0dCk7DQo+ICsJCQlhdGgxMGtfaHR0
+X3R4X2RlY19wZW5kaW5nKGh0dCwgdHhxKTsNCj4gIAkJCWlmIChpc19tZ210KQ0KPiAgCQkJCWF0
+aDEwa19odHRfdHhfbWdtdF9kZWNfcGVuZGluZyhodHQpOw0KPiAgCQkJc3Bpbl91bmxvY2tfYmgo
+JmFyLT5odHQudHhfbG9jayk7DQo+IEBAIC04MDU5LDEwICs4MDU5LDEyIEBAIHN0YXRpYyBpbnQg
+YXRoMTBrX21hY19vcF9zZXRfZnJhZ190aHJlc2hvbGQoc3RydWN0IGllZWU4MDIxMV9odyAqaHcs
+IHUzMiB2YWx1ZSkNCj4gIAlyZXR1cm4gLUVPUE5PVFNVUFA7DQo+ICB9DQo+ICANCj4gLXZvaWQg
+YXRoMTBrX21hY193YWl0X3R4X2NvbXBsZXRlKHN0cnVjdCBhdGgxMGsgKmFyKQ0KPiArc3RhdGlj
+IHZvaWQgX2F0aDEwa19tYWNfd2FpdF90eF9jb21wbGV0ZShzdHJ1Y3QgYXRoMTBrICphciwNCj4g
+KwkJCQkJIHVuc2lnbmVkIGxvbmcgcXVldWVzKQ0KPiAgew0KPiAgCWJvb2wgc2tpcDsNCj4gIAls
+b25nIHRpbWVfbGVmdDsNCj4gKwl1bnNpZ25lZCBpbnQgcTsNCj4gIA0KPiAgCS8qIG1hYzgwMjEx
+IGRvZXNuJ3QgY2FyZSBpZiB3ZSByZWFsbHkgeG1pdCBxdWV1ZWQgZnJhbWVzIG9yIG5vdA0KPiAg
+CSAqIHdlJ2xsIGNvbGxlY3QgdGhvc2UgZnJhbWVzIGVpdGhlciB3YXkgaWYgd2Ugc3RvcC9kZWxl
+dGUgdmRldnMNCj4gQEAgLTgwNzIsMTAgKzgwNzQsMTQgQEAgdm9pZCBhdGgxMGtfbWFjX3dhaXRf
+dHhfY29tcGxldGUoc3RydWN0IGF0aDEwayAqYXIpDQo+ICAJCXJldHVybjsNCj4gIA0KPiAgCXRp
+bWVfbGVmdCA9IHdhaXRfZXZlbnRfdGltZW91dChhci0+aHR0LmVtcHR5X3R4X3dxLCAoew0KPiAt
+CQkJYm9vbCBlbXB0eTsNCj4gKwkJCWJvb2wgZW1wdHkgPSB0cnVlOw0KPiAgDQo+ICAJCQlzcGlu
+X2xvY2tfYmgoJmFyLT5odHQudHhfbG9jayk7DQo+IC0JCQllbXB0eSA9IChhci0+aHR0Lm51bV9w
+ZW5kaW5nX3R4ID09IDApOw0KPiArCQkJZm9yX2VhY2hfc2V0X2JpdChxLCAmcXVldWVzLCBhci0+
+aHctPnF1ZXVlcykgew0KPiArCQkJCWVtcHR5ID0gKGFyLT5odHQubnVtX3BlbmRpbmdfcGVyX3F1
+ZXVlW3FdID09IDApOw0KPiArCQkJCWlmICghZW1wdHkpDQo+ICsJCQkJCWJyZWFrOw0KPiArCQkJ
+fQ0KPiAgCQkJc3Bpbl91bmxvY2tfYmgoJmFyLT5odHQudHhfbG9jayk7DQo+ICANCj4gIAkJCXNr
+aXAgPSAoYXItPnN0YXRlID09IEFUSDEwS19TVEFURV9XRURHRUQpIHx8DQo+IEBAIC04MDkwLDYg
+KzgwOTYsMTMgQEAgdm9pZCBhdGgxMGtfbWFjX3dhaXRfdHhfY29tcGxldGUoc3RydWN0IGF0aDEw
+ayAqYXIpDQo+ICAJCQkgICAgc2tpcCwgYXItPnN0YXRlLCB0aW1lX2xlZnQpOw0KPiAgfQ0KPiAg
+DQo+ICt2b2lkIGF0aDEwa19tYWNfd2FpdF90eF9jb21wbGV0ZShzdHJ1Y3QgYXRoMTBrICphcikN
+Cj4gK3sNCj4gKwl1bnNpZ25lZCBpbnQgcXVldWVzID0gR0VOTUFTSyhhci0+aHctPnF1ZXVlcyAt
+IDEsIDApOw0KPiArDQo+ICsJX2F0aDEwa19tYWNfd2FpdF90eF9jb21wbGV0ZShhciwgcXVldWVz
+KTsNCj4gK30NCj4gKw0KPiAgc3RhdGljIHZvaWQgYXRoMTBrX2ZsdXNoKHN0cnVjdCBpZWVlODAy
+MTFfaHcgKmh3LCBzdHJ1Y3QgaWVlZTgwMjExX3ZpZiAqdmlmLA0KPiAgCQkJIHUzMiBxdWV1ZXMs
+IGJvb2wgZHJvcCkNCj4gIHsNCj4gQEAgLTgxMTEsNyArODEyNCw3IEBAIHN0YXRpYyB2b2lkIGF0
+aDEwa19mbHVzaChzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywgc3RydWN0IGllZWU4MDIxMV92aWYg
+KnZpZiwNCj4gIAl9DQo+ICANCj4gIAltdXRleF9sb2NrKCZhci0+Y29uZl9tdXRleCk7DQo+IC0J
+YXRoMTBrX21hY193YWl0X3R4X2NvbXBsZXRlKGFyKTsNCj4gKwlfYXRoMTBrX21hY193YWl0X3R4
+X2NvbXBsZXRlKGFyLCBxdWV1ZXMpOw0KPiAgCW11dGV4X3VubG9jaygmYXItPmNvbmZfbXV0ZXgp
+Ow0KPiAgfQ0KPiAgDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3R4cnguYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdHhyeC5jDQo+IGlu
+ZGV4IDViNjc1MGVmN2QxOS4uYjg0ODk2MmZjOGZiIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYw0KPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL3R4cnguYw0KPiBAQCAtODIsNyArODIsNyBAQCBpbnQgYXRoMTBrX3R4cnhf
+dHhfdW5yZWYoc3RydWN0IGF0aDEwa19odHQgKmh0dCwNCj4gIA0KPiAgCWZsYWdzID0gc2tiX2Ni
+LT5mbGFnczsNCj4gIAlhdGgxMGtfaHR0X3R4X2ZyZWVfbXNkdV9pZChodHQsIHR4X2RvbmUtPm1z
+ZHVfaWQpOw0KPiAtCWF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmcoaHR0KTsNCj4gKwlhdGgxMGtf
+aHR0X3R4X2RlY19wZW5kaW5nKGh0dCwgdHhxKTsNCj4gIAlzcGluX3VubG9ja19iaCgmaHR0LT50
+eF9sb2NrKTsNCj4gIA0KPiAgCXJjdV9yZWFkX2xvY2soKTsNCg==
 
