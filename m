@@ -4,89 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AB8DC87FC5
-	for <ath10k@archiver.kernel.org>; Thu, 24 Jul 2025 17:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EDA1C87FD1
+	for <ath10k@archiver.kernel.org>; Fri, 25 Jul 2025 12:23:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:
-	From:Subject:Cc:Message-Id:Date:Content-Type:Content-Transfer-Encoding:
-	Mime-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TSQ2e5Ukh+OSMFXmOt+aMGcava2/LQ659PBJk/zaZDA=; b=EkPGxqURroIlHjrSOS/mP2GlWt
-	AoQTkB0eQvZ9FsKHjZu91sFXJ9/YuAtBTXIUG+WTMgYiwrxrc4nmysV3L+Fjqr6t5YRyEeaBaq/Zv
-	k6H9B0aBVrX6/Rgz6sfj2ZdzV/XiXiUAxl3DnwK0rJ2ZpTkdZMu819l3hI0ucIL+CrzwkoY9JH/7A
-	KAkdFaaatrBwdvU1CIB/V4SMtxI+j8IRA+PuwLbhk1g4RnIfJ5RDr/cLZpB1wVEP3hfae4xIwzV3y
-	7XitJ7vHTu5QmTYYtuEFytrWMkWgDKuXFUnwn6pLtWwFg3qwdO6kdUhlyMxt0SnuYLxam2cgkJkUR
-	72R5cZsA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:
+	Cc:To:Subject:MIME-Version:Date:Message-ID:Content-Type:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=D0gjNThFi0+S0gW0KXu0QtHNwCrnk+Jm/at9TVIKL2I=; b=zjfyD6dnR+hbz7zec26dqKezoi
+	3ZcPQltkdLFBi/BWihpx+WDjdnoT5NIHCBgHdh96abmrua1p8KydbyKYDqODiSgb9ctv+Q2osm73c
+	UIN/XfLlAU7cm9W9UbpenlLRgmjb+OetXvbKXLadgozL3kOl8gNMi3HPrt1oOivW0dxOscmC7I88t
+	8gNx+OA/qKiK2QHIgbgZMRoKDszcUQ3u/khnofJ7NY3U05pbRs2K565yR6oOdY9yMYBcBhGBoV+mT
+	HddpbPJ1vClD+9iKr1a3bm76p1o3TxgiQlDs9ZRTGMosUS4+2VUCN1nUxCxYX8jkHt+XpBX8sujSe
+	9vZSUWSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uezNr-000000083SZ-3GdC;
-	Thu, 24 Jul 2025 17:05:31 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1ufHSQ-00000009oOt-2PIk;
+	Fri, 25 Jul 2025 12:23:26 +0000
+Received: from mx3.molgen.mpg.de ([141.14.17.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uexH8-00000007mj0-1kh9
+	id 1ufHLQ-00000009nVi-1dTn
 	for ath10k@lists.infradead.org;
-	Thu, 24 Jul 2025 14:50:27 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4550709f2c1so8471865e9.3
-        for <ath10k@lists.infradead.org>; Thu, 24 Jul 2025 07:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1753368624; x=1753973424; darn=lists.infradead.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TSQ2e5Ukh+OSMFXmOt+aMGcava2/LQ659PBJk/zaZDA=;
-        b=kCWdYHomZ52uwrJhr8VOhHtIvtNXGvYWJGSUa1USw+rGY8XU19vTqtVsxfw027dwFE
-         nj2Kjww/SNJvUgdo7xEW7gxQNqrV7T7tY7XLYLFhGOYGcGTus8sTERHHeg00LuxXJSLf
-         2j4DxPAuyDPWkhpvhE6OoakW809Eaudx3azmu9eggCILvkFIpirJ0VOiRgpSO25fgYmL
-         tr3sJouazLUmgA8PFZjjyjtMvKMsiXU00viqTMTcnBooPyYm5Lt3hZaovXhR6IqIpNdp
-         a6pf1zpo8l5/mMoOQzRnC/XOyDPvjj5nhLWWLYmJqMFN/6+dwPJRJUl1/tm5qcAgCPn4
-         BgqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753368624; x=1753973424;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TSQ2e5Ukh+OSMFXmOt+aMGcava2/LQ659PBJk/zaZDA=;
-        b=fQqXXkbx/oPT8XLs7WhE0VXMZKFFJEKOh3EwpRLbgNUgu3xgfKmLIN+7WK93XAhDCc
-         eSpSVuGzK79+XHw7KGhXE3z2kl0gz06ABtVzNxFM2xnLuCh4QFkZYU8jcuUViRNpFNuD
-         iEsATphUSLGnChz55KqkgCk0136aTt0SDBkOWP27p7pDPNlEfWgwUvXMu9Y4jXrzj00d
-         2cbswUxjPwtCcqe54noRpuoph4W+j0O03XK/hLrFe1nOe01ZnTYvzp7FTclR5Le+1NiX
-         6jU+Cu67mD8ilUHCdR5oz0ybiMfGPMVdSJd35+KMRSn+/64iV4IwWTc7f/P1hS8WWqJH
-         FZaA==
-X-Forwarded-Encrypted: i=1; AJvYcCVvcCx6YpBvKML1QGEzEyORU4xKzpakwss9UUUVAqy1X8baGeTv4U2NA8VaD0l2v/J6EynlYgA=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz0HB7gzsk/zVkroHaie2PY2YXY8j5kq4XCJa5SUopq+gacG9pg
-	9sUOjP0fhNu+oDaly9mMyz0qX4Ld1EYVi6auf/hktYrLDP5mnkLwe+5+vOT92QS9a90=
-X-Gm-Gg: ASbGncuLTtmTQZCJtJYDsaUwmXOp+0eVJSe5vyA8yRcI8bhlWmRLVtMypuxwfp0hDFd
-	HPInulHmRQEivyLv+/IKKHmoQfD+WiloO8r8C9Dv6N9nmP2oasPkKZQmdo7osX0XkDZs1HFhtMU
-	xT24TfHQpSm7Pt/6SxyeeyQFzkl1CHGyQhdhFDCUnvkYWjCdM5TaKoAggLkkf+SyO+cvnDo/CM/
-	RHNlAHb5grn2lyf6glpOLiO0uoeXp1QgRuic1H26oS0OnY/FWXbraenSa9zEIwyKHxYFw26Q3hn
-	5vp+XEwjZV7JbYfhkweXzUgOCh8b62eiLzaV+CUOd9r2bJV6CvUyMOcLUZc8Yul8oqrVRWVDgWp
-	lUF5HeV5rM9ImybHdxjyXhv2e1MI=
-X-Google-Smtp-Source: AGHT+IFqO4ntehoEF4kO6OCrr9ISOQHx6+YtV7vjh6jjeQE1JlhK4Ccrv+abJqQBg4d7I+32KHeQZg==
-X-Received: by 2002:a05:600c:45c3:b0:43d:b3:fb1 with SMTP id 5b1f17b1804b1-45868d69d8emr64877745e9.27.1753368624162;
-        Thu, 24 Jul 2025 07:50:24 -0700 (PDT)
-Received: from localhost ([2a00:2381:fd67:101:6c39:59e6:b76d:825])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-458705c4dbdsm23975875e9.25.2025.07.24.07.50.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jul 2025 07:50:23 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 24 Jul 2025 15:50:22 +0100
-Message-Id: <DBKDAXJ0V9U0.10YYX5H5HAJBT@linaro.org>
-Cc: <jjohnson@kernel.org>, "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
- <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
- <jeff.johnson@oss.qualcomm.com>, <linux-arm-msm@vger.kernel.org>
-Subject: Re: [question, bug] regularly disconnecting wifi on RB1 and RB2
- boards, ath10
-From: "Alexey Klimov" <alexey.klimov@linaro.org>
-To: "Loic Poulain" <loic.poulain@oss.qualcomm.com>
-X-Mailer: aerc 0.20.0
-References: <Zgp0ym-MGzX2eSZdlkVYbgvjkJ0CzKItjaC5pafzQnj1AOZnVAqvCIZfYoK7nwDhUgOA0U8eNolNtaWXbExOAQ==@protonmail.internalid> <DAWJQ2NIKY28.1XOG35E4A682G@linaro.org> <5df11ee4-d645-4be2-841f-715343f1b7a4@linaro.org> <CAFEp6-0zwy2JdFOvRQ5ghMwD-J6b7F5YcVKNf-5R=8XdEpGDSw@mail.gmail.com> <CAFEp6-1wO9xwisOAtv6D__nb3Uo=8_f9rHifi-JAQ0oPD+JSVg@mail.gmail.com>
-In-Reply-To: <CAFEp6-1wO9xwisOAtv6D__nb3Uo=8_f9rHifi-JAQ0oPD+JSVg@mail.gmail.com>
+	Fri, 25 Jul 2025 12:16:14 +0000
+Received: from [141.14.220.42] (g42.guest.molgen.mpg.de [141.14.220.42])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2341B61E647AC;
+	Fri, 25 Jul 2025 14:15:43 +0200 (CEST)
+Content-Type: multipart/mixed; boundary="------------IWKL2dzaL8eep60TKGXgoNZv"
+Message-ID: <8716a67c-6e33-4a35-8d96-33f81c07c8e0@molgen.mpg.de>
+Date: Fri, 25 Jul 2025 14:15:42 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: athk10: Poll service ready completion by default to avoid warning
+ `failed to receive service ready completion, polling..`?
+To: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
+Cc: Baochen Qiang <quic_bqiang@quicinc.com>,
+ Jeff Johnson <jjohnson@kernel.org>, ath10k@lists.infradead.org,
+ James Prestwood <prestwoj@gmail.com>
+References: <97a15967-5518-4731-a8ff-d43ff7f437b0@molgen.mpg.de>
+ <3cbe13e1-a820-4804-a28c-a57e2ee7a020@oss.qualcomm.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <3cbe13e1-a820-4804-a28c-a57e2ee7a020@oss.qualcomm.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250724_075026_467439_FADCEB2D 
-X-CRM114-Status: GOOD (  40.95  )
+X-CRM114-CacheID: sfid-20250725_051612_834863_8F3BED01 
+X-CRM114-Status: GOOD (  27.12  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,227 +67,241 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi Loic,
+This is a multi-part message in MIME format.
+--------------IWKL2dzaL8eep60TKGXgoNZv
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed Jul 23, 2025 at 11:42 AM BST, Loic Poulain wrote:
-> Hi Alexey,
->
-> On Tue, Jul 22, 2025 at 5:53=E2=80=AFPM Loic Poulain
-> <loic.poulain@oss.qualcomm.com> wrote:
->>
->> On Fri, Jun 27, 2025 at 1:09=E2=80=AFAM Bryan O'Donoghue
->> <bryan.odonoghue@linaro.org> wrote:
->> >
->> > On 26/06/2025 15:48, Alexey Klimov wrote:
->> > > Hi all,
->> > >
->> > > After a long time of testing it seems the problem narrows down to qr=
-b2210 rb1
->> > > and qrb4210 rb2 boards.
->> > >
->> > > After booting, the board connects to the wifi network and after arou=
-nd ~5-10
->> > > minutes it loses the connection (nothing in dmesg). A simple ping of=
- another
->> > > machine on the local network doesn't work. After, I guess, around 50=
-00
->> > > seconds the GROUP_KEY_HANDSHAKE_TIMEOUT message is printked:
->> > >
->> > > [ 5064.093748] wlan0: deauthenticated from 8c:58:72:d4:d1:8d (Reason=
-: 16=3DGROUP_KEY_HANDSHAKE_TIMEOUT)
->> > > [ 5067.083790] wlan0: authenticate with 8c:58:72:d4:d1:8d (local add=
-ress=3D82:95:77:b1:05:a5)
->> > > [ 5067.091971] wlan0: send auth to 8c:58:72:d4:d1:8d (try 1/3)
->> > > [ 5067.100192] wlan0: authenticated
->> > > [ 5067.104734] wlan0: associate with 8c:58:72:d4:d1:8d (try 1/3)
->> > > [ 5067.113230] wlan0: RX AssocResp from 8c:58:72:d4:d1:8d (capab=3D0=
-x11 status=3D0 aid=3D2)
->> > > [ 5067.193624] wlan0: associated
->> > >
->> > > and after that wireless connection works for ~5-10 minutes and then =
-the cycle
->> > > repeats. The longer log with more info and some info with firmware v=
-ersions,
->> > > ids, etc is at the end of this email [1]. Simple wlan0 down and wlan=
-0 up fixes
->> > > things for a few minutes.
->> > >
->> > > iw wlan0 link reports the following when wireless network is working=
-:
->> > >
->> > > root@rb1:~# iw wlan0 link
->> > > Connected to 8c:58:72:d4:d1:8d (on wlan0)
->> > >          SSID: void
->> > >          freq: 5300
->> > >          RX: 45802 bytes (424 packets)
->> > >          TX: 71260 bytes (125 packets)
->> > >          signal: -66 dBm
->> > >          rx bitrate: 433.3 MBit/s VHT-MCS 9 80MHz short GI VHT-NSS 1
->> > >
->> > > bss flags:      short-slot-time
->> > > dtim period:    1
->> > > beacon int:     100
->> > >
->> > > and this when wireless connection doesn't work:
->> > >
->> > > Connected to 8c:58:72:d4:d1:8d (on wlan0)
->> > >          SSID: void
->> > >          freq: 5300
->> > >          RX: 850615 bytes (9623 packets)
->> > >          TX: 20372 bytes (247 packets)
->> > >          signal: -61 dBm
->> > >          rx bitrate: 6.0 MBit/s
->> > >
->> > >      bss flags:      short-slot-time
->> > >      dtim period:    1
->> > >      beacon int:     100
->> > >
->> > > This was tested with three different routers and different wifi netw=
-orks.
->> > > Other devices here do not exhibit this behaviour.
->> > >
->> > > Any hints on how to debug this? Any debug switches I can toggle to d=
-ebug this?
->> > > I am happy to provide more info or test changes/patches if any.
->> > >
->> > > Thanks in advance.
->> > > Best regards,
->> > > Alexey
->> > >
->> > > [1]:
->> > >
->> > > [    7.758934] ath10k_snoc c800000.wifi: qmi chip_id 0x120 chip_fami=
-ly 0x4007 board_id 0xff soc_id 0x40670000
->> > > [    7.769740] ath10k_snoc c800000.wifi: qmi fw_version 0x337703a3 f=
-w_build_timestamp 2023-10-14 01:26 fw_build_id QC_IMAGE_VERSION_STRING=3DWL=
-AN.HL.3.3.7.c2-00931-QCAHLSWMTPLZ-1
->> > > [   11.086123] ath10k_snoc c800000.wifi: wcn3990 hw1.0 target 0x0000=
-0008 chip_id 0x00000000 sub 0000:0000
->> > > [   11.095622] ath10k_snoc c800000.wifi: kconfig debug 0 debugfs 0 t=
-racing 0 dfs 0 testmode 0
->> > > [   11.103998] ath10k_snoc c800000.wifi: firmware ver  api 5 feature=
-s wowlan,mgmt-tx-by-reference,non-bmi,single-chan-info-per-channel crc32 a7=
-9c5b24
->> > > [   11.144810] ath10k_snoc c800000.wifi: htt-ver 3.128 wmi-op 4 htt-=
-op 3 cal file max-sta 32 raw 0 hwcrypto 1
->> > > [   11.230894] ath10k_snoc c800000.wifi: invalid MAC address; choosi=
-ng random
->> > > [   11.238128] ath: EEPROM regdomain: 0x0
->> > > [   11.242060] ath: EEPROM indicates default country code should be =
-used
->> > > [   11.248582] ath: doing EEPROM country->regdmn map search
->> > > [   11.253950] ath: country maps to regdmn code: 0x3a
->> > > [   11.258805] ath: Country alpha2 being used: US
->> > > [   11.263466] ath: Regpair used: 0x3a
->> > > [   15.355756] wlan0: authenticate with 8c:58:72:d4:d1:8d (local add=
-ress=3D82:95:77:b1:05:a5)
->> > > [   15.363942] wlan0: send auth to 8c:58:72:d4:d1:8d (try 1/3)
->> > > [   15.372142] wlan0: authenticated
->> > > [   15.377928] wlan0: associate with 8c:58:72:d4:d1:8d (try 1/3)
->> > > [   15.386338] wlan0: RX AssocResp from 8c:58:72:d4:d1:8d (capab=3D0=
-x11 status=3D0 aid=3D2)
->> > > [   15.466514] wlan0: associated
->> > > [   23.167251] systemd-journald[195]: Oldest entry in /var/log/journ=
-al/ec3e0078e5e0499bac67949f3edf3fcf/system.journal is older than the config=
-ured file retention duration (1month), suggesting rotation.
->> > > [   23.185186] systemd-journald[195]: /var/log/journal/ec3e0078e5e04=
-99bac67949f3edf3fcf/system.journal: Journal header limits reached or header=
- out-of-date, rotating.
->> > > [   31.750177] l5: disabling
->> > > [   31.753382] l11: disabling
->> > > [   31.756385] l16: disabling
->> > > [ 5064.093748] wlan0: deauthenticated from 8c:58:72:d4:d1:8d (Reason=
-: 16=3DGROUP_KEY_HANDSHAKE_TIMEOUT)
->> >
->> > So.
->> >
->> > I wonder what state the GTK - offload is in here.
->> >
->> >          WMI_GTK_OFFLOAD_CMDID =3D WMI_CMD_GRP(WMI_GRP_GTK_OFL),
->> >
->> > drivers/net/wireless/ath/ath10k/wmi-tlv.c:      cfg->gtk_offload_max_v=
-dev =3D
->> > __cpu_to_le32(2);
->> >
->> > Try toggling that offload off or on and see what happens.
->> >
->> > > [ 5067.083790] wlan0: authenticate with 8c:58:72:d4:d1:8d (local add=
-ress=3D82:95:77:b1:05:a5)
->> > > [ 5067.091971] wlan0: send auth to 8c:58:72:d4:d1:8d (try 1/3)
->> > > [ 5067.100192] wlan0: authenticated
->> > > [ 5067.104734] wlan0: associate with 8c:58:72:d4:d1:8d (try 1/3)
->> > > [ 5067.113230] wlan0: RX AssocResp from 8c:58:72:d4:d1:8d (capab=3D0=
-x11 status=3D0 aid=3D2)
->> > > [ 5067.193624] wlan0: associated
->> > > [10437.346541] wlan0: deauthenticated from 8c:58:72:d4:d1:8d (Reason=
-: 16=3DGROUP_KEY_HANDSHAKE_TIMEOUT)
->> > > [10440.340111] wlan0: authenticate with 8c:58:72:d4:d1:8d (local add=
-ress=3D82:95:77:b1:05:a5)
->> > > [10440.348408] wlan0: send auth to 8c:58:72:d4:d1:8d (try 1/3)
->> > > [10440.356698] wlan0: authenticated
->> > > [10440.361077] wlan0: associate with 8c:58:72:d4:d1:8d (try 1/3)
->> > > [10440.369516] wlan0: RX AssocResp from 8c:58:72:d4:d1:8d (capab=3D0=
-x11 status=3D0 aid=3D2)
->> > > [10440.446661] wlan0: associated
->> > >
->> > You can put another device on your WiFi network into monitor mode and
->> > sniff what is taking place.
->> >
->> > Kali Linux I've used in the past on an RPI for this purpose and it was
->> > very easy todo.
->> >
->> > https://cyberlab.pacific.edu/resources/lab-network-wireless-sniffing
->> >
->> > Another thing to try is to do this same test on an open - unencrypted =
-link.
->> >
->> > If we really suspect firmware here, lets try switching off firmware
->> > offload features one-by-one, starting with GTK offload.
->> >
->> > ---
->> > bod
->> >
->>
->> I configured the GTK rekey interval to one minute and encountered a
->> similar issue. It appears that something may be going wrong after the
->> GTK rekeying process completes.
->>
->> The GTK update is handled entirely by wpa_supplicant (not offloaded),
->> and while the new key seems to be installed correctly, with frames
->> still being transmitted and received (from aircap perspective), they
->> appear to be dropped or mishandled in the RX firmware path.
->>
->> This suggests there might be an issue with how the new keys are being
->> applied or interpreted by the firmware. I=E2=80=99ll continue debugging =
-to
->> pinpoint the root cause.
->>
->> Regards,
->> Loic
->
-> Could you check if this change helps:
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
-> b/drivers/net/wireless/ath/ath10k/mac.c
-> index c61b95a928da..4fa7dd62aeac 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -288,8 +288,10 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
->                 key->flags |=3D IEEE80211_KEY_FLAG_GENERATE_IV;
->
->         if (cmd =3D=3D DISABLE_KEY) {
-> -               arg.key_cipher =3D ar->wmi_key_cipher[WMI_CIPHER_NONE];
-> -               arg.key_data =3D NULL;
-> +               /*  Not all hardware supports key deletion operations. so=
- we
-> +                *  replace the key with a junk value to invalidate it.
-> +                */
-> +               memset(arg.key_data, 0, arg.key_len);
->         }
+Dear Baochen,
 
-Thank you. I'll check and respond.
 
-Best regards,
-Alexey
+Thank you for your answer.
 
+
+Am 22.07.25 um 11:38 schrieb Baochen Qiang:
+
+> On 7/22/2025 4:37 PM, Paul Menzel wrote:
+
+>> Today, on the Intel Kaby Lake laptop Dell XPS 13 9360 with
+>>
+>>      $ lspci -nn -s 3a:
+>>      3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter [168c:003e] (rev 32)
+>>
+>> resuming from ACPI S3 took longer, as it sometimes does, and looking into this, I see
+>> `failed to receive service ready completion, polling..` after a delay of five seconds:
+>>
+>> ```
+>> [    0.000000] Linux version 6.16.0-rc6-00253-g4871b7cb27f4 (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44) #90 SMP PREEMPT_DYNAMIC Sat Jul 19 08:53:39 CEST 2025
+>> […]
+>> [    8.588020] abreu kernel: ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+>> [    8.588372] abreu kernel: ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
+>> [    8.588603] abreu kernel: ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4.1-00309-api 6 features wowlan,ignore-otp,mfp crc32 0793bcf2
+>> […]
+>> [    9.113550] Bluetooth: hci0: QCA: patch rome 0x302 build 0x3e8, firmware rome 0x302 build 0x111
+>> […]
+>> [41804.953487] PM: suspend entry (deep)
+>> [41804.988361] Filesystems sync: 0.034 seconds
+>> [41805.007216] Freezing user space processes
+>> [41805.009650] Freezing user space processes completed (elapsed 0.002 seconds)
+>> [41805.009663] OOM killer disabled.
+>> [41805.009666] Freezing remaining freezable tasks
+>> [41805.011383] Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
+>> [41805.011502] printk: Suspending console(s) (use no_console_suspend to debug)
+>> [41805.523883] ACPI: EC: interrupt blocked
+>> [41805.545779] ACPI: PM: Preparing to enter system sleep state S3
+>> [41805.556040] ACPI: EC: event blocked
+>> [41805.556045] ACPI: EC: EC stopped
+>> [41805.556046] ACPI: PM: Saving platform NVS memory
+>> [41805.559408] Disabling non-boot CPUs ...
+>> [41805.562480] smpboot: CPU 3 is now offline
+>> [41805.567105] smpboot: CPU 2 is now offline
+>> [41805.572122] smpboot: CPU 1 is now offline
+>> [41805.582034] ACPI: PM: Low-level resume complete
+>> [41805.582079] ACPI: EC: EC started
+>> [41805.582080] ACPI: PM: Restoring platform NVS memory
+>> [41805.583986] Enabling non-boot CPUs ...
+>> [41805.584009] smpboot: Booting Node 0 Processor 1 APIC 0x2
+>> [41805.584734] CPU1 is up
+>> [41805.584749] smpboot: Booting Node 0 Processor 2 APIC 0x1
+>> [41805.585514] CPU2 is up
+>> [41805.585530] smpboot: Booting Node 0 Processor 3 APIC 0x3
+>> [41805.586216] CPU3 is up
+>> [41805.589070] ACPI: PM: Waking up from system sleep state S3
+>> [41805.623652] ACPI: EC: interrupt unblocked
+>> [41805.640074] ACPI: EC: event unblocked
+>> [41805.651951] nvme nvme0: 4/0/0 default/read/poll queues
+>> [41805.865391] atkbd serio0: Failed to deactivate keyboard on isa0060/serio0
+>> [41810.933639] ath10k_pci 0000:3a:00.0: failed to receive service ready completion, polling..
+>> [41810.933769] ath10k_pci 0000:3a:00.0: service ready completion received, continuing normally
+>> [41810.986330] OOM killer enabled.
+>> [41810.986332] Restarting tasks: Starting
+>> […]
+>> ```
+>>
+>> Commit e57b7d62a1b2 (wifi: ath10k: poll service ready message before failing) [1][2],
+>> present since Linux v6.10-rc1, added this to avoid the hardware not being initialized:
+>>
+>>          time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
+>>                                                  WMI_SERVICE_READY_TIMEOUT_HZ);
+>>          if (!time_left) {
+>>                  /* Sometimes the PCI HIF doesn't receive interrupt
+>>                   * for the service ready message even if the buffer
+>>                   * was completed. PCIe sniffer shows that it's
+>>                   * because the corresponding CE ring doesn't fires
+>>                   * it. Workaround here by polling CE rings once.
+>>                   */
+>>                  ath10k_warn(ar, "failed to receive service ready completion, polling..\n");
+>>
+>>                  for (i = 0; i < CE_COUNT; i++)
+>>                          ath10k_hif_send_complete_check(ar, i, 1);
+>>
+>>                  time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
+>>                                                          WMI_SERVICE_READY_TIMEOUT_HZ);
+>>                  if (!time_left) {
+>>                          ath10k_warn(ar, "polling timed out\n");
+>>                          return -ETIMEDOUT;
+>>                  }
+>>
+>>                  ath10k_warn(ar, "service ready completion received, continuing normally\n");
+>>          }
+>>
+>> The comment says, it’s a hardware issue. I guess from the Qualcomm device and not the
+>> board design, as it happens with several devices like James’?
+>>
+>> Anyway, should polling be used by default then to avoid the delay?
+> 
+> Adding additional polling before wait seems OK to me
+
+With the attached diff, I didn’t notice any issue on the Dell XPS 13 
+9360 with QCA6174.
+
+Unrelated: The only thing I noticed is, that during boot (not resume) 
+the function seems to be called twice. It looks like once for Wi-Fi and 
+once for Bluetooth:
+
+```
+[   35.507604] ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A 
+crc32 d2863f91
+[   35.516010] usb 1-5: New USB device found, idVendor=0c45, 
+idProduct=670c, bcdDevice=56.26
+[   35.516022] usb 1-5: New USB device strings: Mfr=2, Product=1, 
+SerialNumber=0
+[   35.516026] usb 1-5: Product: Integrated_Webcam_HD
+[   35.516029] usb 1-5: Manufacturer: CN09GTFMLOG008C8B7FWA01
+[   35.587852] ath10k_pci 0000:3a:00.0: service ready completion 
+received, continuing normally
+[   35.606632] ath10k_pci 0000:3a:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 
+cal otp max-sta 32 raw 0 hwcrypto 1
+[   35.628744] mc: Linux media interface: v0.10
+[   35.651301] nvme nvme0: using unchecked data buffer
+[   35.687466] Bluetooth: Core ver 2.22
+[   35.687493] NET: Registered PF_BLUETOOTH protocol family
+[   35.687495] Bluetooth: HCI device and connection manager initialized
+[   35.687499] Bluetooth: HCI socket layer initialized
+[   35.687501] Bluetooth: L2CAP socket layer initialized
+[   35.687505] Bluetooth: SCO socket layer initialized
+[   35.696050] ath: EEPROM regdomain: 0x6c
+[   35.696055] ath: EEPROM indicates we should expect a direct regpair map
+[   35.696057] ath: Country alpha2 being used: 00
+[   35.696058] ath: Regpair used: 0x6c
+[   35.712821] ath10k_pci 0000:3a:00.0 wlp58s0: renamed from wlan0
+[   35.716790] input: ELAN Touchscreen as 
+/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4:1.0/0003:04F3:2234.0002/input/input40
+[   35.718912] videodev: Linux video capture interface: v2.00
+[   35.719492] input: ELAN Touchscreen UNKNOWN as 
+/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4:1.0/0003:04F3:2234.0002/input/input41
+[   35.719595] input: ELAN Touchscreen UNKNOWN as 
+/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4:1.0/0003:04F3:2234.0002/input/input42
+[   35.720899] hid-multitouch 0003:04F3:2234.0002: 
+input,hiddev0,hidraw1: USB HID v1.10 Device [ELAN Touchscreen] on 
+usb-0000:00:14.0-4/input0
+[   35.720947] usbcore: registered new interface driver usbhid
+[   35.720949] usbhid: USB HID core driver
+[   35.812081] usbcore: registered new interface driver btusb
+[   35.815263] Bluetooth: hci0: using rampatch file: 
+qca/rampatch_usb_00000302.bin
+[   35.815270] Bluetooth: hci0: QCA: patch rome 0x302 build 0x3e8, 
+firmware rome 0x302 build 0x111
+[   36.174345] Bluetooth: hci0: using NVM file: qca/nvm_usb_00000302.bin
+[   36.199643] Bluetooth: hci0: HCI Enhanced Setup Synchronous 
+Connection command is advertised, but not supported.
+[   36.398657] ath10k_pci 0000:3a:00.0: service ready completion 
+received, continuing normally
+```
+
+>> Additionally I have two questions regarding the code:
+>>
+>> 1.  Is `WMI_SERVICE_READY_TIMEOUT_HZ` the right value to pass to
+>> `wait_for_completion_timeout(struct completion *done, unsigned long timeout)`?
+>>
+>> The macro is defined as:
+>>
+>>      drivers/net/wireless/ath/ath10k/wmi.h:#define WMI_SERVICE_READY_TIMEOUT_HZ (5 * HZ)
+>>
+>> `timeout` is supposed to be in jiffies, and `CONFIG_HZ_250=y` on my system. I wonder how
+>> that amounts to five seconds on my system.
+> 
+> HZ is defined as jiffies per second, so 5 * HZ equals 5 seconds.
+> 
+>>
+>> The timeout should probably be defined in seconds? Does the WMI specification say
+>> something about this?
+>>
+>> 2.  Is the task interruptable and should `wait_for_completion_interruptible_timeout(struct
+>> completion *done, unsigned long timeout)` be used?
+> 
+> While I am not sure for now, may I ask why the question?
+
+I was just reading up on `wait_for_completion_*()`, and so the different 
+variants.
+
+
+Kind regards,
+
+Paul
+
+
+>> [1]: https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e57b7d62a1b2f496caf0beba81cec3c90fad80d5
+>> [2]: https://lore.kernel.org/all/20240227030409.89702-1-quic_bqiang@quicinc.com/
+--------------IWKL2dzaL8eep60TKGXgoNZv
+Content-Type: text/x-patch; charset=UTF-8;
+ name="ath10k-poll-uninterruptible.diff"
+Content-Disposition: attachment; filename="ath10k-poll-uninterruptible.diff"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMgYi9k
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCmluZGV4IGRmNmEyNGY4Zjhk
+NS4uZWNmNjUwYjUyZGQyIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3dtaS5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21p
+LmMKQEAgLTE3NjUsMzAgKzE3NjUsMjQgQEAgaW50IGF0aDEwa193bWlfd2FpdF9mb3Jfc2Vy
+dmljZV9yZWFkeShzdHJ1Y3QgYXRoMTBrICphcikKIHsKIAl1bnNpZ25lZCBsb25nIHRpbWVf
+bGVmdCwgaTsKIAotCXRpbWVfbGVmdCA9IHdhaXRfZm9yX2NvbXBsZXRpb25fdGltZW91dCgm
+YXItPndtaS5zZXJ2aWNlX3JlYWR5LAorCS8qIFNvbWV0aW1lcyB0aGUgUENJIEhJRiBkb2Vz
+bid0IHJlY2VpdmUgaW50ZXJydXB0CisJICogZm9yIHRoZSBzZXJ2aWNlIHJlYWR5IG1lc3Nh
+Z2UgZXZlbiBpZiB0aGUgYnVmZmVyCisJICogd2FzIGNvbXBsZXRlZC4gUENJZSBzbmlmZmVy
+IHNob3dzIHRoYXQgaXQncworCSAqIGJlY2F1c2UgdGhlIGNvcnJlc3BvbmRpbmcgQ0Ugcmlu
+ZyBkb2Vzbid0IGZpcmVzCisJICogaXQuIFdvcmthcm91bmQgaGVyZSBieSBwb2xsaW5nIENF
+IHJpbmdzIG9uY2UuCisJICovCisJZm9yIChpID0gMDsgaSA8IENFX0NPVU5UOyBpKyspCisJ
+CWF0aDEwa19oaWZfc2VuZF9jb21wbGV0ZV9jaGVjayhhciwgaSwgMSk7CisKKwl0aW1lX2xl
+ZnQgPSB3YWl0X2Zvcl9jb21wbGV0aW9uX2ludGVycnVwdGlibGVfdGltZW91dCgmYXItPndt
+aS5zZXJ2aWNlX3JlYWR5LAogCQkJCQkJV01JX1NFUlZJQ0VfUkVBRFlfVElNRU9VVF9IWik7
+CiAJaWYgKCF0aW1lX2xlZnQpIHsKLQkJLyogU29tZXRpbWVzIHRoZSBQQ0kgSElGIGRvZXNu
+J3QgcmVjZWl2ZSBpbnRlcnJ1cHQKLQkJICogZm9yIHRoZSBzZXJ2aWNlIHJlYWR5IG1lc3Nh
+Z2UgZXZlbiBpZiB0aGUgYnVmZmVyCi0JCSAqIHdhcyBjb21wbGV0ZWQuIFBDSWUgc25pZmZl
+ciBzaG93cyB0aGF0IGl0J3MKLQkJICogYmVjYXVzZSB0aGUgY29ycmVzcG9uZGluZyBDRSBy
+aW5nIGRvZXNuJ3QgZmlyZXMKLQkJICogaXQuIFdvcmthcm91bmQgaGVyZSBieSBwb2xsaW5n
+IENFIHJpbmdzIG9uY2UuCi0JCSAqLwotCQlhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byBy
+ZWNlaXZlIHNlcnZpY2UgcmVhZHkgY29tcGxldGlvbiwgcG9sbGluZy4uXG4iKTsKLQotCQlm
+b3IgKGkgPSAwOyBpIDwgQ0VfQ09VTlQ7IGkrKykKLQkJCWF0aDEwa19oaWZfc2VuZF9jb21w
+bGV0ZV9jaGVjayhhciwgaSwgMSk7Ci0KLQkJdGltZV9sZWZ0ID0gd2FpdF9mb3JfY29tcGxl
+dGlvbl90aW1lb3V0KCZhci0+d21pLnNlcnZpY2VfcmVhZHksCi0JCQkJCQkJV01JX1NFUlZJ
+Q0VfUkVBRFlfVElNRU9VVF9IWik7Ci0JCWlmICghdGltZV9sZWZ0KSB7Ci0JCQlhdGgxMGtf
+d2FybihhciwgInBvbGxpbmcgdGltZWQgb3V0XG4iKTsKLQkJCXJldHVybiAtRVRJTUVET1VU
+OwotCQl9Ci0KLQkJYXRoMTBrX3dhcm4oYXIsICJzZXJ2aWNlIHJlYWR5IGNvbXBsZXRpb24g
+cmVjZWl2ZWQsIGNvbnRpbnVpbmcgbm9ybWFsbHlcbiIpOworCQlhdGgxMGtfd2Fybihhciwg
+InBvbGxpbmcgdGltZWQgb3V0XG4iKTsKKwkJcmV0dXJuIC1FVElNRURPVVQ7CiAJfQogCisJ
+YXRoMTBrX3dhcm4oYXIsICJzZXJ2aWNlIHJlYWR5IGNvbXBsZXRpb24gcmVjZWl2ZWQsIGNv
+bnRpbnVpbmcgbm9ybWFsbHlcbiIpOworCiAJcmV0dXJuIDA7CiB9CiAK
+
+--------------IWKL2dzaL8eep60TKGXgoNZv--
 
