@@ -4,129 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 320B6C87FCB
-	for <ath10k@archiver.kernel.org>; Thu, 31 Jul 2025 00:12:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13423C87FCA
+	for <ath10k@archiver.kernel.org>; Thu, 31 Jul 2025 18:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=n5TfsdIq0q4y4VvFqmZw5jjnclAjOmVGqCrD0ePejn4=; b=JFUhRQhkmsu2yBl2z+d8pZGvyw
-	rnXjxTZPzZG3HgteZPyHe0ewc8d2Q8v6N8r0OKmM8HFlEHfeX37NnKCvVTS62qBNkOGmi6++C6NXL
-	uL7tQSMn01OpN4SzFtP7sUw2zXAaHAuZjTbtdOh8deL3yy25UlZnu3QtFfEsHsJZjZw2GUAfQrdXq
-	N2gM9Pg8S87XF5fvL26eSAZxSxT+M8g2l8VMVD7MfLAvptH+iTR0vSupcCOk85nOc1y4tqefGuL3p
-	WVShzY7TQRUdtEqlhMbDtKHF3Hri5k/jmt7RgvqKF73rYWkhYc+x17bi4zzSZrw84y7SkZ632Xep8
-	xwLU6SvQ==;
+	Content-Type:Subject:From:To:MIME-Version:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=08+kTVK5TnP77fGcL4psx1wkPldZFq12gIluqSusvjE=; b=TE394K9gBbLqP3n9SMOn985Cnj
+	7QooiRWDZIRVcy2PMC5URPb1yDTvno7sq7FdBxeufxCxdhcUGTIbmX1qXBr8t8PTExsvTWkpwYQSe
+	qv6vGOxdvtBI5vhx1/ZR0QW5KrOD2/1fBClOyPXKfiggsV1K16TzZdpidjGyhHMzHMIM/Of19CQfb
+	T3MIBndCtz23LJ88YjW/+HT0NlpuAZyosoEXiW4BWj7neJi4ZimHTIvznD3EV8WaIpT/b3JZGq0vR
+	XhmdN47wEm9EbtODM8miA0Wj+QyHehnugOKsznfmTbzQQfTiTmLfG6rXDg+E3DkxrFGaV0o6PWxhg
+	MnuZLSEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uhGuY-00000002eVK-40gL;
-	Thu, 31 Jul 2025 00:12:42 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1uhYDo-00000004GH4-3yAD;
+	Thu, 31 Jul 2025 18:41:44 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uhGuW-00000002eUv-0gB7
+	id 1uhYBG-00000004G67-2HEY
 	for ath10k@lists.infradead.org;
-	Thu, 31 Jul 2025 00:12:41 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56UCbBgu012755
-	for <ath10k@lists.infradead.org>; Thu, 31 Jul 2025 00:12:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	n5TfsdIq0q4y4VvFqmZw5jjnclAjOmVGqCrD0ePejn4=; b=dtCKjQAHrVciGFNB
-	gpCOpCL5kV7R2CfKsk8Ut09tpimu1DK/3Hk8HFNgWu700uQYOcCidacWdG7N9PVD
-	CrWGB7Fm4JP+ZG30+LavDRTOvUnKHFUIv0Dv76uR8fMasi3Y7QsQcqk9+ZAhDZg+
-	KVeR3J7CD5fP9Ufzcl/tpKp54IlUjwoIyoBqbw7puXH6bQAU/wybs210Gw7VAbPY
-	+iz4FoseS1J6W0ihgW2ZpDr/QxdvJNpjNPWofQfN1EZuWuMlwUVL2QVYq1UjZi2O
-	4l44yBIe8KwdvSR6KKXdSBhLu5GQCJd81OdRTs1eQpglc+5HEwPGdh+MRjzH4Pce
-	ET+kUQ==
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 484pbm5j0g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Thu, 31 Jul 2025 00:12:38 +0000 (GMT)
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-74d15d90cdbso376284b3a.0
-        for <ath10k@lists.infradead.org>; Wed, 30 Jul 2025 17:12:38 -0700 (PDT)
+	Thu, 31 Jul 2025 18:39:07 +0000
+Received: by mail-pf1-x444.google.com with SMTP id d2e1a72fcca58-74924255af4so96235b3a.1
+        for <ath10k@lists.infradead.org>; Thu, 31 Jul 2025 11:39:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753987145; x=1754591945; darn=lists.infradead.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=08+kTVK5TnP77fGcL4psx1wkPldZFq12gIluqSusvjE=;
+        b=O3/IY67HCmEL5wNJ0l6DFYW/mImu4tVoWRn3pyc7RoXoLlwyo5mqWW1QwNZyzwgIFO
+         8eT6mmJMhcfUU4eW1b5zqLGNgLrcu65fcPjsD3WTNc9tOuCLK3UZ4f6fEMURb+OnDciX
+         2Y9hMQVKi3utovuAjQfyEfuRZkAlI5T+zYhb8nRGh5STK6+VINpNwRpezepaxu1ceGws
+         eUwh6LL0Ap1xsgWcW2DlIXi140rSTdVEBfpkT5FKCjyro/2d3xwOlPCLZa7iReoFFHPe
+         mX4shruvZNfwSAOzIAlCAaHvlI09KaXSt8ogNS3NqlYJ1/gP16fBxdJVrjutP+720Jc+
+         DQeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753920757; x=1754525557;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n5TfsdIq0q4y4VvFqmZw5jjnclAjOmVGqCrD0ePejn4=;
-        b=BNKCb/wiDn62rcT4bhZo+tFvVO+MPdAuUVbHe6B3+flvzrJ8w65iJEi9jzioKxwkVV
-         Zuw8vqLaATXkBTTj3OtM2m7E1iJaTNk5IBrtluc87o7MbrZc35ul3Em0ongF1AXOakvV
-         5sqcwhnnpe2jv1pr+E9QF2saXXjWEDhxyq5PutABYXBm7C5grJVwdAA1Uux0fGje338h
-         6yuj0oEcQl2ppXec47hpP3wmSNYoNk+k4p4FdzeVncb/6JSYZCZs/bOCnapeR5k/SPtJ
-         5FPKKvxDk1wrr7GTyPHbn+QIs3r3DgGtiW6z53OVbmYZvKzdojgTZOvDeqIX+Ew+jp+1
-         juPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWlWLu1FSMWGMMzFm4PX9i8AR5JPGn0W4sFJBP3FIvexj+vBF3fvP6U2H9DlPk0SzMEd30Ccq0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzboTW5vw/0lI+FGLPfQQDqK6oZ0R54bTg6hIb7qRqpNdnKFDzI
-	4fnP2pn+/MeCmn3qMnHm4VytmTaLuzQ82wGVOIp9gkGhzR/bheZbVQoOLLfWU1b0Vh2keCTXGMs
-	UXBNeAefHxD9FS14I8azHCFnxWYrWsFsxHIf+vitcJHK9ZYDi+leAU2OlVKrjLfQS
-X-Gm-Gg: ASbGncuVGRxW2JcbRIImR7G3ivhO3WuV00OZDrDSlpLXh8koRBJDDRjDBTaWGh84q5s
-	hvN8gyh/WKEXQJP2V3OeXEMLBA4QkIhi0xxthT95MCmLUAKiQGtju09C+FEnkjd9W5mD4P2FG1E
-	aKltQNaWw/ASdTF7YlpcnoqU88FUiw+wq/B4sLvVNbPcDOiMEUIeqmSS052idL2g75IJi/OrgcF
-	Zqw33chJJIcVAueKRSCgU1X7gseU01gOFH11S2WDOUfunE0azikz7IScbvJM5ICU1+EZk1XDci7
-	ZxFPGCy1mev1HiyWw5Ec0DJ0IZsGf5DBPQlBjmGC0qvFqVVnIaKUP39E2QhTabUjQw7iOFGe9F8
-	9AU3thZujIBON3I51vcLCvWnHMQWn9Q6E
-X-Received: by 2002:a05:6a00:2450:b0:74c:f1d8:c402 with SMTP id d2e1a72fcca58-76ab101929fmr8483258b3a.8.1753920756767;
-        Wed, 30 Jul 2025 17:12:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGtA26SksYevn+Vt0DHMEQW8M32DRyJS68mendQzQAaKQ+8c5uR6z29tGwXyKJ/Xeb6Dd50rw==
-X-Received: by 2002:a05:6a00:2450:b0:74c:f1d8:c402 with SMTP id d2e1a72fcca58-76ab101929fmr8483215b3a.8.1753920756244;
-        Wed, 30 Jul 2025 17:12:36 -0700 (PDT)
-Received: from [10.133.33.139] (tpe-colo-wan-fw-bordernet.qualcomm.com. [103.229.16.4])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bccfe9172sm64126b3a.126.2025.07.30.17.12.34
+        d=1e100.net; s=20230601; t=1753987145; x=1754591945;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=08+kTVK5TnP77fGcL4psx1wkPldZFq12gIluqSusvjE=;
+        b=bPmkjiDENT5fdk5NKg8LCwg8sBr5OLJFYviyyRGhCGgkT1m01YkWVHsu9cD9oeYInA
+         hMAuKofwTxofXVrjJ3rVnEdO7nNezY4+jRhqjcE21bEUdlLGCxgz+xfIMMq46Oix1dWn
+         WqeYoE7YCepYRJMXN8b3xsUtwjFvQerSm5wfuZlLjrpR3klzwwVTezK0nHaok6MKFkR2
+         Rrm7dMVX4e7CUc16lnX8/Q+SaOZd9jtuBnzVoObLrNrmYABVcVwxAPa+5kfOPzgDNPiT
+         zJ1XH5ChmI6n4NHjxlXHSlC90bkV0em8yn1WmoO6EUbxW0GlM66LnBG9d2UgkQNI6YGQ
+         l6IA==
+X-Forwarded-Encrypted: i=1; AJvYcCWHKvXeMhNuI1DSUQgClBedNz/2cQEU8XlSL7cU1Lw6BalbWoI3eLzqApqsQxwbexuBSlP0s6o=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwsidZ7EWTA2LHwlIXDVIeaEcVV5tApdDkb96pi/IuX0N2Iasps
+	ef1wyZ1RWzrBlbdcxRq8iU6wGPfC+BIQG84FoqYl/C1fM9o8D7OOkE4+
+X-Gm-Gg: ASbGncudySZbuDua3w5UYanfAth5Vx4ZcyUZwf4TImHbbVCae6ewogFj4Sttat0rkrQ
+	pty+VDOmNV1F5clbI5oI899sKNBcE8oLo645BqL7G8spdmMZMZkGD0X8PbeiNKiKIOI3Qp4vfOm
+	qcUDuKR9RbzvEGNcN+KO1mk9FMHxtWeNkiiyIJs+zuS8bLSZCczi7js41yeJC0Sr/qHvrDn8nm3
+	1pUwx0nMmH/R69H68ioUydzrnVgbCxW73qcawuYrlyqScEjX1E3nM9GSZKPjVHOHWhS2Rc7d6w+
+	pXCWWo4RQj+kNE1FZY0VBFRPpg6S7vL+9lkL2yXdviGwyGWUWhMlQ2SQ9NGj7hIC7MIxu2iyvLD
+	5zZupDHpV81yqRkBIVZa0R6hNlLxCbZXmJ+mvdZoaS0bP
+X-Google-Smtp-Source: AGHT+IHj63wzFIZza3bhFHHm2SuHQrXkq+NcdithZPzDBHtJMrcMqRLH/EYYvu3LV+cDzB36l9LcKA==
+X-Received: by 2002:a05:6a00:1486:b0:76a:d724:d71d with SMTP id d2e1a72fcca58-76ad724dd83mr13778547b3a.8.1753987145482;
+        Thu, 31 Jul 2025 11:39:05 -0700 (PDT)
+Received: from [192.168.0.119] ([115.187.48.187])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bccfecf2fsm2238064b3a.129.2025.07.31.11.39.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Jul 2025 17:12:35 -0700 (PDT)
-Message-ID: <55db7f5a-89d1-41b8-9e63-89bb7ec18778@oss.qualcomm.com>
-Date: Thu, 31 Jul 2025 08:12:31 +0800
+        Thu, 31 Jul 2025 11:39:05 -0700 (PDT)
+Message-ID: <2b41300c-2034-4cad-8549-2622c224330f@gmail.com>
+Date: Fri, 1 Aug 2025 00:09:01 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: ath10k: ath10k_wmi_wait_for_service_ready() called twice during
- boot
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Baochen Qiang <quic_bqiang@quicinc.com>,
-        Jeff Johnson <jjohnson@kernel.org>, ath10k@lists.infradead.org,
-        James Prestwood <prestwoj@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <97a15967-5518-4731-a8ff-d43ff7f437b0@molgen.mpg.de>
- <3cbe13e1-a820-4804-a28c-a57e2ee7a020@oss.qualcomm.com>
- <8716a67c-6e33-4a35-8d96-33f81c07c8e0@molgen.mpg.de>
- <1e797dea-d2e1-4947-8ef3-d2ac5ea0c156@oss.qualcomm.com>
- <4e5a3a4d-9b6b-443b-b3c2-eac1b44e96e0@molgen.mpg.de>
- <4f00e46c-598e-4661-87fe-cabc6a678be0@oss.qualcomm.com>
- <04cd7aaa-e1f6-410c-98e7-49cb7ec8e582@molgen.mpg.de>
- <c085b770-36a2-4c7c-a841-b47d7aa3768d@oss.qualcomm.com>
- <10298561-8016-478f-aa82-bf2ea9b33db9@molgen.mpg.de>
 Content-Language: en-US
-From: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-In-Reply-To: <10298561-8016-478f-aa82-bf2ea9b33db9@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8
+To: linux-wireless@vger.kernel.org, linux-pci@vger.kernel.org,
+ ath10k@lists.infradead.org
+From: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
+Subject: Packet loss with QCA9377 (ath10k) on ASUS VivoBook E410KA
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Authority-Analysis: v=2.4 cv=LsaSymdc c=1 sm=1 tr=0 ts=688ab4f6 cx=c_pps
- a=mDZGXZTwRPZaeRUbqKGCBw==:117 a=nuhDOHQX5FNHPW3J6Bj6AA==:17
- a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=8-oeUsj2rOlVhVxQr9IA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=zc0IvFSfCIW2DFIPzwfm:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzMwMDE3OSBTYWx0ZWRfXxuX9j49WXuQL
- txecm+iQmwIfu+Fi06paHceLx3+EX0Ykesh6mdjgu/He8vcJKx2RfQ11/OP+VDqGL6rCbMk5Lsd
- aQqQJfKHpC1U+2ZJ8cW2zTRHh14Rvw0Oq7T4NVpzvEqpMMg99ssUPhyDcJdKuZwXiY/+BdncLsz
- GLEPL6fcvfwvYhudAlkdEtvf3yF006Ru9eEjcvGrJFpACRv7ClgaZg0evIiSizkxexYFnW0lUbh
- QHd6n34bG1LvRXSF6Q3+cPgUVsvJO2L+r36xis8CuxEyHeA3B4cGtUrIiiywbhCAypX/zLM+b9t
- NQfrQPzgbwFB/w29apzjTNh01xsJ6oF0VatDF+LkihDadtvSf2tjBsIBPishVoXHxr0TYtUM9hy
- g9MTb6cKTO/t7804QY44rfHSzpPUELRG8cwSDjQQIqghpTstc6qQdp4+SoN1U2g5zejpBL2w
-X-Proofpoint-ORIG-GUID: cj972-C3_CuO7A7V3QcH_YXvt1JNT2sH
-X-Proofpoint-GUID: cj972-C3_CuO7A7V3QcH_YXvt1JNT2sH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-07-30_06,2025-07-30_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 mlxlogscore=999 spamscore=0 phishscore=0 suspectscore=0
- impostorscore=0 adultscore=0 lowpriorityscore=0 priorityscore=1501
- bulkscore=0 mlxscore=0 malwarescore=0 classifier=spam authscore=0 authtc=n/a
- authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2505280000 definitions=main-2507300179
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250730_171240_344537_084CA466 
-X-CRM114-Status: GOOD (  18.84  )
+X-CRM114-CacheID: sfid-20250731_113906_580982_6B76BB7D 
+X-CRM114-Status: UNSURE (   5.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,213 +98,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Hello,
 
+I'm helping someone who was having trouble with their Wi-Fi on Asus 
+VivoBook E410KA. The device uses the QCA9377 Wireless Chip.
 
-On 7/30/2025 6:40 PM, Paul Menzel wrote:
-> [Cc: remove scheduler folks]
-> 
-> Dear Baochen,
-> 
-> 
-> Thank you for your reply, and let’s fork this thread.
-> 
-> 
-> Am 29.07.25 um 04:27 schrieb Baochen Qiang:
-> 
-> […]
-> 
->> Never mind, since you can modify the source code, you can simply get
->> call stack with:
->>
->> $ git diff
->> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
->> index cb8ae751eb31..eb591e059103 100644
->> --- a/drivers/net/wireless/ath/ath10k/wmi.c
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
->> @@ -1766,6 +1766,8 @@ int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
->>   {
->>          unsigned long time_left, i;
->>
->> +       dump_stack();
->> +
->>          time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
->>                                                  WMI_SERVICE_READY_TIMEOUT_HZ);
->>          if (!time_left) {
-> 
-> Thanks, yes, I wanted to avoid it, but now added it to the end, and started the Linux kernel.
-> 
-> With that, I got:
-> 
-> ```
-> [    0.000000] Linux version 6.16.0-04406-g154cace907b6
-> (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU
-> Binutils for Debian) 2.44) #98 SMP PREEMPT_DYNAMIC Wed Jul 30 11:59:36 CEST 2025
-> [    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.16.0-04406-g154cace907b6
-> root=UUID=32e29882-d94d-4a92-9ee4-4d03002bfa29 ro quiet pci=noaer mem_sleep_default=deep
-> log_buf_len=16M cryptomgr.notests usbcore.quirks=0cf3:e300:e,04f3:2234:e,0c45:670c:e
-> […]
-> [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> […]
-> [   14.624206] ath10k_pci 0000:3a:00.0: enabling device (0000 -> 0002)
-> [   14.633316] ath10k_pci 0000:3a:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-> [   14.662181] audit: type=1400 audit(1753869969.819:2): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name=4D6F6E676F444220436F6D70617373 pid=516
-> comm="apparmor_parser"
-> [   14.662313] audit: type=1400 audit(1753869969.819:3): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="QtWebEngineProcess" pid=518
-> comm="apparmor_parser"
-> [   14.663112] audit: type=1400 audit(1753869969.819:4): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="1password" pid=514 comm="apparmor_parser"
-> [   14.664059] audit: type=1400 audit(1753869969.819:5): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="Discord" pid=515 comm="apparmor_parser"
-> [   14.664963] audit: type=1400 audit(1753869969.819:6): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="balena-etcher" pid=523
-> comm="apparmor_parser"
-> [   14.665357] audit: type=1400 audit(1753869969.819:7): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="buildah" pid=525 comm="apparmor_parser"
-> [   14.665479] audit: type=1400 audit(1753869969.819:8): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="brave" pid=524 comm="apparmor_parser"
-> [   14.666813] audit: type=1400 audit(1753869969.823:9): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="cam" pid=527 comm="apparmor_parser"
-> [   14.666817] audit: type=1400 audit(1753869969.823:10): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="busybox" pid=526 comm="apparmor_parser"
-> [   14.667174] audit: type=1400 audit(1753869969.823:11): apparmor="STATUS"
-> operation="profile_load" profile="unconfined" name="ch-checkns" pid=528
-> comm="apparmor_parser"
-> [   14.719843] usbcore: registered new interface driver uvcvideo
-> [   14.792965] snd_hda_intel 0000:00:1f.3: enabling device (0000 -> 0002)
-> [   14.793498] snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops
-> intel_audio_component_bind_ops [i915])
-> [   14.837438] snd_hda_codec_generic hdaudioC0D0: autoconfig for Generic: line_outs=1
-> (0x14/0x0/0x0/0x0/0x0) type:speaker
-> [   14.837458] snd_hda_codec_generic hdaudioC0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-> [   14.837467] snd_hda_codec_generic hdaudioC0D0:    hp_outs=1 (0x21/0x0/0x0/0x0/0x0)
-> [   14.837475] snd_hda_codec_generic hdaudioC0D0:    mono: mono_out=0x0
-> [   14.837480] snd_hda_codec_generic hdaudioC0D0:    inputs:
-> [   14.837485] snd_hda_codec_generic hdaudioC0D0:      Mic=0x12
-> [   14.870772] ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff
-> sub 1a56:1535
-> [   14.870778] ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
-> [   14.870853] ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4.1-00309- api 6 features
-> wowlan,ignore-otp,mfp crc32 0793bcf2
-> [   14.877651] input: HDA Intel PCH Front Headphone as /devices/pci0000:00/0000:00:1f.3/
-> sound/card0/input24
-> [   14.877724] input: HDA Intel PCH HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:1f.3/
-> sound/card0/input25
-> [   14.877788] input: HDA Intel PCH HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/
-> sound/card0/input26
-> [   14.877872] input: HDA Intel PCH HDMI/DP,pcm=8 as /devices/pci0000:00/0000:00:1f.3/
-> sound/card0/input27
-> [   14.944938] Bluetooth: hci0: using NVM file: qca/nvm_usb_00000302.bin
-> [   14.946658] ath10k_pci 0000:3a:00.0: board_file api 2 bmi_id N/A crc32 d2863f91
-> [   14.967545] Bluetooth: hci0: HCI Enhanced Setup Synchronous Connection command is
-> advertised, but not supported.
-> [   15.027036] CPU: 1 UID: 0 PID: 41 Comm: kworker/u16:2 Not tainted 6.16.0-04406-
-> g154cace907b6 #98 PREEMPT(voluntary)
-> [   15.027044] Hardware name: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> [   15.027046] Workqueue: ath10k_wq ath10k_core_register_work [ath10k_core]
-> [   15.027084] Call Trace:
-> [   15.027088]  <TASK>
-> [   15.027091]  dump_stack_lvl+0x5d/0x80
-> [   15.027100]  ath10k_wmi_wait_for_service_ready.cold+0x5/0xc [ath10k_core]
-> [   15.027136]  ath10k_core_start+0xaec/0x1090 [ath10k_core]
-> [   15.027169]  ath10k_core_register_work+0x5c4/0x930 [ath10k_core]
-> [   15.027198]  process_one_work+0x185/0x340
-> [   15.027205]  worker_thread+0x252/0x3a0
-> [   15.027210]  ? rescuer_thread+0x4b0/0x4b0
-> [   15.027215]  kthread+0xf9/0x240
-> [   15.027219]  ? kthreads_online_cpu+0x120/0x120
-> [   15.027223]  ? kthreads_online_cpu+0x120/0x120
-> [   15.027227]  ret_from_fork+0x198/0x1d0
-> [   15.027232]  ? kthreads_online_cpu+0x120/0x120
-> [   15.027235]  ret_from_fork_asm+0x11/0x20
-> [   15.027243]  </TASK>
+The device suffered from a single packet loss within 33 seconds while 
+running a continuous ping. There might be some PCIe-level communication 
+problems too.
 
-OK, so this is from driver load.
+All the relevant logs can be found here in a redacted form:
 
-> [   15.046899] ath10k_pci 0000:3a:00.0: htt-ver 3.87 wmi-op 4 htt-op 3 cal otp max-sta 32
-> raw 0 hwcrypto 1
-> [   15.053439] nvme nvme0: using unchecked data buffer
-> [   15.120478] ath: EEPROM regdomain: 0x6c
-> [   15.120483] ath: EEPROM indicates we should expect a direct regpair map
-> [   15.120485] ath: Country alpha2 being used: 00
-> [   15.120486] ath: Regpair used: 0x6c
-> [   15.153053] ath10k_pci 0000:3a:00.0 wlp58s0: renamed from wlan0
-> [   15.644071] CPU: 0 UID: 0 PID: 675 Comm: NetworkManager Not tainted 6.16.0-04406-
-> g154cace907b6 #98 PREEMPT(voluntary)
-> [   15.644075] Hardware name: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> [   15.644077] Call Trace:
-> [   15.644079]  <TASK>
-> [   15.644082]  dump_stack_lvl+0x5d/0x80
-> [   15.644089]  ath10k_wmi_wait_for_service_ready.cold+0x5/0xc [ath10k_core]
-> [   15.644104]  ath10k_core_start+0xaec/0x1090 [ath10k_core]
-> [   15.644115]  ath10k_start+0xb8/0x840 [ath10k_core]
-> [   15.644125]  drv_start+0x3c/0xf0 [mac80211]
-> [   15.644165]  ieee80211_do_open+0x2c2/0x7f0 [mac80211]
-> [   15.644197]  ieee80211_open+0x84/0x90 [mac80211]
-> [   15.644230]  __dev_open+0xee/0x200
-> [   15.644233]  __dev_change_flags+0x1ef/0x230
-> [   15.644234]  ? prep_new_page+0xcc/0x1d0
-> [   15.644237]  netif_change_flags+0x26/0x60
-> [   15.644238]  do_setlink.isra.0+0x348/0x1150
-> [   15.644241]  ? __nla_validate_parse+0x5e/0xc70
-> [   15.644243]  ? security_capable+0x66/0xa0
-> [   15.644245]  rtnl_newlink+0x892/0xc20
-> [   15.644247]  ? update_load_avg+0x80/0x760
-> [   15.644249]  ? update_curr+0x90/0x170
-> [   15.644250]  ? mod_memcg_lruvec_state+0x191/0x1d0
-> [   15.644253]  ? do_setlink.isra.0+0x1150/0x1150
-> [   15.644254]  rtnetlink_rcv_msg+0x348/0x3e0
-> [   15.644257]  ? rtnl_calcit.isra.0+0x120/0x120
-> [   15.644260]  netlink_rcv_skb+0x4f/0x100
-> [   15.644263]  netlink_unicast+0x273/0x3d0
-> [   15.644265]  netlink_sendmsg+0x228/0x470
-> [   15.644267]  __sock_sendmsg+0x38/0x70
-> [   15.644270]  ? __import_iovec+0x139/0x180
-> [   15.644272]  ____sys_sendmsg+0x1c0/0x260
-> [   15.644275]  ? import_iovec+0xb/0x10
-> [   15.644277]  ___sys_sendmsg+0x95/0xd0
-> [   15.644279]  __sys_sendmsg+0x7b/0xd0
-> [   15.644282]  do_syscall_64+0x84/0xae0
-> [   15.644284]  ? pollwake+0x77/0x90
-> [   15.644287]  ? wake_up_state+0x10/0x10
-> [   15.644288]  ? __wake_up_common+0x72/0x90
-> [   15.644290]  ? eventfd_write+0xe1/0x210
-> [   15.644292]  ? security_file_permission+0x35/0x70
-> [   15.644294]  ? vfs_write+0xcc/0x460
-> [   15.644296]  ? ___sys_sendmsg+0xa1/0xd0
-> [   15.644297]  ? ksys_write+0xc7/0xe0
-> [   15.644298]  ? do_syscall_64+0xbc/0xae0
-> [   15.644301]  ? __sys_sendmsg+0xb6/0xd0
-> [   15.644303]  ? do_syscall_64+0xbc/0xae0
-> [   15.644304]  ? do_syscall_64+0xbc/0xae0
-> [   15.644306]  ? do_syscall_64+0xbc/0xae0
-> [   15.644308]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-> [   15.644310] RIP: 0033:0x7fa5c3ca49ee
-> [   15.644334] Code: 08 0f 85 f5 4b ff ff 49 89 fb 48 89 f0 48 89 d7 48 89 ce 4c 89 c2 4d
-> 89 ca 4c 8b 44 24 08 4c 8b 4c 24 10 4c 89 5c 24 08 0f 05 <c3> 66 2e 0f 1f 84 00 00 00 00
-> 00 0f 1f 80 00 00 00 00 48 83 ec 08
-> [   15.644335] RSP: 002b:00007ffc2e929548 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> [   15.644338] RAX: ffffffffffffffda RBX: 00007fa5c3094580 RCX: 00007fa5c3ca49ee
-> [   15.644339] RDX: 0000000000000000 RSI: 00007ffc2e9295d0 RDI: 000000000000000d
-> [   15.644340] RBP: 00007ffc2e9295d0 R08: 0000000000000000 R09: 0000000000000000
-> [   15.644340] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001c
-> [   15.644341] R13: 00007ffc2e9297c8 R14: 00007ffc2e9297bc R15: 0000000000000000
-> [   15.644343]  </TASK>
-> [   18.369625] pci 0000:01:00.0: [8086:1576] type 01 class 0x060400 PCIe Switch Upstream Port
-> [   18.369702] pci 0000:01:00.0: PCI bridge to [bus 02-39]
+First part (ping, hostnamectl, ip addr, lspci): 
+https://gist.github.com/BandhanPramanik/7eefd192c3a728d2473687a786fbbc01/raw/e77f0fa1cf35c748730df220b0057399ac78f539/miscellaneous
 
-and this is from userspace starting to bringup the WLAN interface: calling the _start() ops.
+Second part (cat /proc/interrupts, modinfo ath10k_pci): 
+https://gist.github.com/BandhanPramanik/7eefd192c3a728d2473687a786fbbc01/raw/e77f0fa1cf35c748730df220b0057399ac78f539/miscellaneous%25202
 
+dmesg: 
+https://gist.github.com/BandhanPramanik/7eefd192c3a728d2473687a786fbbc01/raw/e77f0fa1cf35c748730df220b0057399ac78f539/dmesg
 
-In summary, the two instances of 'wait for service ready' are expected behavior.
+We’re not sure if this is a driver issue, a firmware problem, or maybe 
+something hardware-specific.
 
-> […]
-> ```
-> 
-> 
-> Kind regards,
-> 
-> Paul
+Has anyone seen something similar with this chip? Any tips on how to 
+troubleshoot or fix the packet loss?
+
+Thanks,
+
+Bandhan Pramanik
+
+বন্ধন প্রামাণিক
 
 
