@@ -4,84 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F0E6C87FCA
-	for <ath10k@archiver.kernel.org>; Wed,  6 Aug 2025 07:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38225C87FD3
+	for <ath10k@archiver.kernel.org>; Wed,  6 Aug 2025 14:28:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=+PJ2Y4D5wbasdWs8LHDv5pP2x0H5risjGvi7zm5xR5M=; b=lsRV36m/5+5gDcRgByAOTdfG87
-	TYq72uiPwCPp7qlcNfdax2NYxWouQ+piVIP74I1zSQNG2yY70Eseji2ns7kq9sW/U8dWPm7BWLoUy
-	5tbJ3ZXb01WS7+ZXScE5v8LAoj3iGSAi4aQz5v8wjNlAL+Sv0P9Qvg4r3BwyB72+y1zuk64nT/s8v
-	mn58WGTBK0OvpY4dXnc6lJAu1pmkrsS0SfxT+AeLYoULXvQJadEbF1PKDDTNh9wd/TWyapE/gqYA5
-	SC82vDySyxlwYKwCAOAIIyUJ43hUuTrLDJUL+gY7tHq4FqRB4pKMQBhaRgVW3/3YGj29DyOMmhefD
-	0l+7RpNw==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=uaPV/AZfNgwCFIWFD6wxN7pO1VLtWRJoYaxtb6nyD8A=; b=EOvbcoPFEUGczSFPqDSNLkYU0s
+	jUfkBZd2tHw34ma0ih0oW+hT+dJ1sMPaZq6XW/MujIkSYXDsl7a79NsK0Sl1056GAeoIKnQq7YID9
+	uEuI0bwg60e3ByrkZlGAAioNrnsHdYhPywacoAEq0QimQDzRt6C9NXiebYw6MNUmtCHmpx1nDsHU/
+	4SMHgafVcexe9DmrjzEBDS1k+2Uor3KFJsz/DOe2l5yp1+ut/Wh4Ohz+LgWj6WlV3Yt39lOQeTAw+
+	bG6bkn7pi7QHF8ErzOSg08UgG3gqLY/7+NVU64uypMJqs8F2uj3lAw7WMOtCscPX3cUHa6lY8fOxp
+	Mj/mHOfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ujYDh-0000000ETYd-1rv9;
-	Wed, 06 Aug 2025 07:05:53 +0000
-Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
+	id 1ujf84-0000000FRfN-0ds0;
+	Wed, 06 Aug 2025 14:28:32 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ujY8G-0000000ESYa-1o5q
+	id 1ujf3d-0000000FRGL-2GMh
 	for ath10k@lists.infradead.org;
-	Wed, 06 Aug 2025 07:00:17 +0000
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-2429d9d3755so7089275ad.3
-        for <ath10k@lists.infradead.org>; Wed, 06 Aug 2025 00:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754463615; x=1755068415; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+PJ2Y4D5wbasdWs8LHDv5pP2x0H5risjGvi7zm5xR5M=;
-        b=kRSu52T2kAc5aH4KOSQzFSsaPHzYEbg0f9Ad2SCX9+2iusGYVFrCdtxLGBaw5kkK9c
-         tCdYBvKuU2dsPxMW2SKEChC54Hy/4tDHUJ71dt/NIbAxiRdQifOwRevt9Max7xAiwpUd
-         btMiKXHEhlQ0cK6YwepQ/w5bcTs61Ud+hgBiRXNIP6aIihLsRsK98PbvnVrtUhyyyz6v
-         qXRxxLImlsAvKTgXebasfyT6o/XHKa0OyHV21uCaU3f4t5vrwoB/38d10s1t6ERjPNMY
-         fpOwL40qp3Nv43aSxD1JrTNJTkhI5Geg97dvPIJfS1rMiJqTvnDT0ff09XIOv/1zqG/y
-         SR8Q==
+	Wed, 06 Aug 2025 14:23:58 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 576AMhuS017305
+	for <ath10k@lists.infradead.org>; Wed, 6 Aug 2025 14:23:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	uaPV/AZfNgwCFIWFD6wxN7pO1VLtWRJoYaxtb6nyD8A=; b=Wd6ICaGbjqFSkgZW
+	UvGOTFboPSqVVAJyEzmx8AmjApiOBZieY6GyDDQlCKHt4xWblakSCwfuOVXLj+38
+	oLue6Lz3tz434yMG8NEcZpNfCM5S4hny88PivQvojrnmaz7r0Gn0J3Qw49qMzjfI
+	RH0v7Ns+cjqihP1J/0efGp0EkgUyuFfCkCN3hjBD4XA9/AswFB2mezjBuRFFcYjZ
+	PTMUtWlkdpkf3/SaN23UB3VIKzbbU9jPq92Zep6Q0LEe+D8w1v0cYe4/5MSKc4l2
+	V7BKyPIKCO0wEYsfgGp7v61Fk3vFC1D6EPtEHcX1bxOGa3b687HLH2i+cJtoi3J4
+	IekmAQ==
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 48c5868jyr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Wed, 06 Aug 2025 14:23:56 +0000 (GMT)
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-b421892319cso4194859a12.1
+        for <ath10k@lists.infradead.org>; Wed, 06 Aug 2025 07:23:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754463615; x=1755068415;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+PJ2Y4D5wbasdWs8LHDv5pP2x0H5risjGvi7zm5xR5M=;
-        b=MDDKtWaT65zh/VhpaOZYVaB7YOFenvtJRlwpH0NKVzhvjPhTnyG7p+iQn9Mg2na3Mi
-         Drk3jPNKOzmmaOxilfrRk+oZacnaAM6UwZ2tTeoc9nPkTHG4ieqdRLFxkws+qNtwBZ3A
-         bV7UfiniL0IpbbIxGEZSiC/5aUD5KpTGYkNpgeacH6KYbpaLSUk62tePMXxk4lxCZMob
-         VAsEGezCuOeJLeQEZwV0p2vcNzdUd5TXbBI7DnEQf2DaG1AVIIFLO3zQ+3u6ADKZU2y1
-         LNuVbL2UmKhx0hm/GyiD6EJDcDzE43Tqn7V6q9jvbjQx0BsEzmrPam2BDae7Z+FC7X2l
-         W7sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW8z/zjHUp9yq0Gs+2qF4tP+whqlztfuJwnxgYmOH8irhScz2wtB0sE+ZdZpDvastl5guRPvFY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxYWFNkNOwbVuiiXMKKGbh48AnHcL3Gfrr9CauYwnFjQYk/lIwJ
-	iIcelG/eRgiCTcA6+i4LMnxXN1jXQPWV/9UibqZr6wGHTZ4IFzpY0vt81nSzxw5K
-X-Gm-Gg: ASbGnctwJz+wna/UKyAUPt7FCqtrF7rtOINcYxJ4FRJFDmQMD5zs9am0EWi0igB+0Ca
-	8UhELcCWWk95LsXonfbKitInbfa618T7iLJ8j9bev7TQoSS24a23lXthO7JmFWNGsGm1WUEKXz9
-	4SkVDZC/mBin7fPJ2Yq2P66j6NfydnAv0ATMFkq23qFJCNx0Ymbyop0xGKsXPZyZLpvRQKnq3kv
-	xWvldgMW8HnerkcWLu/u9f9PIKQgxzXZa1XqG3AApdc6lEFdRCDzz9k5CL88MwdFSlKCenftZZp
-	5z1u5+JB8P+AbIoD5Hkk5bDGuxGFavAJbzAonCnPdf20xRNQ2IaP7mTBvKmInBCAO02wlv41aMK
-	H3CEc9TAORl51P2kVeQwg3x66XH0pz0Hc4AizmCDvTbTHpcu39N8YP1w/5NeWRUcq6U8qaNU=
-X-Google-Smtp-Source: AGHT+IGSiEGveSXvbNV7nv1GqbabWBisxgG67FjmM9mmfQlGUUDu3fktEJqByYD62CtQBDJOH43LEg==
-X-Received: by 2002:a17:902:c94b:b0:240:22af:91c7 with SMTP id d9443c01a7336-2429ee84360mr21550685ad.14.1754463614823;
-        Wed, 06 Aug 2025 00:00:14 -0700 (PDT)
-Received: from NT123328-PC02.ZyXEL.com (114-33-191-187.hinet-ip.hinet.net. [114.33.191.187])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31f63f36311sm18692998a91.34.2025.08.06.00.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Aug 2025 00:00:14 -0700 (PDT)
-From: Zhi-Jun You <hujy652@gmail.com>
-To: jjohnson@kernel.org
-Cc: linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	Zhi-Jun You <hujy652@gmail.com>
-Subject: [RFC PATCH] wifi: ath10k: support flush_sta method
-Date: Wed,  6 Aug 2025 15:00:05 +0800
-Message-ID: <20250806070005.1429-1-hujy652@gmail.com>
-X-Mailer: git-send-email 2.50.1
+        d=1e100.net; s=20230601; t=1754490235; x=1755095035;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uaPV/AZfNgwCFIWFD6wxN7pO1VLtWRJoYaxtb6nyD8A=;
+        b=Kh+lhNSY1UOjGY6AhJxNH21SjEVe7HmMBy1edleYC/NX8WAx7eAwpJzolH4JQCSXT0
+         OWRCSJMtkp8vC9b2LfbiD/PYef9QU3h4zJUtq0PnfZrRffgNLEKWczimHSGjlwx2C1+I
+         q/sVuqFh3e5BnqclluGYPAIdv+gT36V28pE/tSCj5WSZfY8KvtmPjmngEhKhBBkAZz3Q
+         XeIbS2hRq6GuIm/7g4YtGGD0eSxMZt/bG9hnpCVw+AlA/o5ug5W5Ui5XlWy8Whd4E1Az
+         TZKrdKaCSOTY+gMA9B8oIvUmT+9ZSUhnh2Vq1UJ8Z7/ApDd8NgRnFlrtVUNr0tPE2RCw
+         jKsA==
+X-Forwarded-Encrypted: i=1; AJvYcCVnDNblvWMnf7WDT+lq7no2W/C3ux3gmnsBHVbF8xFWiFtb8O+iw6gh7FSn2N0bHvwF5mvl16U=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxoNftOrws2j+zCtnQBBXspFNox5bmX4QnHSsOL9TO17bwWc/Bh
+	hrRPrXeKst8rwcm+SIIZsKxC4NSsHv/5EeT2uQMRudhBeOJc2xbDgJyVtbQIE/JcXw652XQDHJx
+	dv+qD7tDBzbXHSUXd2Su/z01pmsr1fG+2264+ONQvk8dx1kNXPHqUbiJzK9saA27d
+X-Gm-Gg: ASbGncuDqvsfeYRmOCKbIjm5sUox6YKZ287IthEOt8O5orHubWmB+ICYDZkBoGlDDNX
+	vgkEF/JK76jUu4myiOwv1mYGRrH0eNaSrJqHHtpxGHlpTsUGp1FBk1C19P+s+1WNRZE0UVbiAku
+	L7Bwlo4BrsNwKPzU4DpfdH/NkFbzfvq648sdwUXP/S1YAAeLFYAbXBPGgjdxht88Bzd4Va24ZJk
+	0eo17yFXr/1mNr8Qb32nETe1UDzoLH8/DlMA1FSINKuTD+IctU3B+ko86CefuSaRcizhrRoUc5e
+	EuMThgIw5wY4r+5X+apGBPxTuevUMltBWJgodNX3kHqIFoxacgMUMNiKH6N3GUzBQQ2Lh7RQVFN
+	DtHON9IMuNdcZpJR8vKk=
+X-Received: by 2002:a17:902:d4c9:b0:23f:dc56:66e2 with SMTP id d9443c01a7336-242a0b60289mr37054205ad.38.1754490235127;
+        Wed, 06 Aug 2025 07:23:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHq/swoMhIdNOjXdIXnOXzyW6K59WDzzzrR4ReGp34jAMiAKMy+WZB/S/0f/j3QY0gpdGOqjw==
+X-Received: by 2002:a17:902:d4c9:b0:23f:dc56:66e2 with SMTP id d9443c01a7336-242a0b60289mr37053735ad.38.1754490234627;
+        Wed, 06 Aug 2025 07:23:54 -0700 (PDT)
+Received: from [10.227.110.203] (i-global254.qualcomm.com. [199.106.103.254])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1ef8204sm160476135ad.34.2025.08.06.07.23.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Aug 2025 07:23:54 -0700 (PDT)
+Message-ID: <29ef8aab-06a3-48e2-a370-86b1b2107143@oss.qualcomm.com>
+Date: Wed, 6 Aug 2025 07:23:53 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] wifi: ath10k: support flush_sta method
+To: Zhi-Jun You <hujy652@gmail.com>, jjohnson@kernel.org,
+        Remi Pommarel <repk@triplefau.lt>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+        Loic Poulain <loic.poulain@oss.qualcomm.com>
+References: <20250806070005.1429-1-hujy652@gmail.com>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20250806070005.1429-1-hujy652@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: ytehNcxzCznNdyppC6gS70VIOLK-CFuW
+X-Authority-Analysis: v=2.4 cv=MZpsu4/f c=1 sm=1 tr=0 ts=6893657c cx=c_pps
+ a=Qgeoaf8Lrialg5Z894R3/Q==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=bC-a23v3AAAA:8 a=VwQbUJbxAAAA:8
+ a=pGLkceISAAAA:8 a=00e0whw43lWyotVrT1oA:9 a=QEXdDO2ut3YA:10
+ a=x9snwWr2DeNwDh03kgHS:22 a=FO4_E8m0qiDe52t0p3_H:22
+X-Proofpoint-ORIG-GUID: ytehNcxzCznNdyppC6gS70VIOLK-CFuW
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA2MDA2NCBTYWx0ZWRfX4vz/kke+az/5
+ kuWkD6Ti9OGjJJVon0gKJ5kOWWL0m0VHaKjEiUNQT/7pv3Ub5Dzggggh98Sbj42ct1rt3iA6OnH
+ JA/h+/WveDos+mwtcnUK/vrcaA49fuaWjFSuuE7oW2xh/1s8lnaVWWb0+bDwowgh1HgwHe+a5cQ
+ Yxy2cTN4UsLpFQ39FJXWu8NwDF5r2yAS/dAv2qJy4n9gfWbUJevTodDUF9Ug/8KVESDY+BzE2gf
+ XvAcG+6nflJRTZuQdZtjiftZ2FL/fH7lql3Lyi+ZruetvfmmuefpI+gZO09o4+z0syzOtK4yj7Y
+ lCpZmwX5s2/KAyqV23VMwldQfI1FDePCyRFAvt0a/6lTJGt0mvkPithfEIarYzp+yIkeuPUHA/i
+ pG6tVx3u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-06_04,2025-08-06_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 malwarescore=0 spamscore=0 clxscore=1015 bulkscore=0
+ adultscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2508060064
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250806_000016_471879_3D0930BA 
-X-CRM114-Status: GOOD (  12.32  )
+X-CRM114-CacheID: sfid-20250806_072357_703773_8ABABE9C 
+X-CRM114-Status: GOOD (  15.77  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,73 +131,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-When a STA is marked as no longer authorized, if the driver doesn't
-implement flush_sta(), mac80211 calls ieee80211_flush_queues() to
-flush hardware queues to avoid sending unencrypted frames.
+On 8/6/2025 12:00 AM, Zhi-Jun You wrote:
+> When a STA is marked as no longer authorized, if the driver doesn't
+> implement flush_sta(), mac80211 calls ieee80211_flush_queues() to
+> flush hardware queues to avoid sending unencrypted frames.
+> 
+> This has became a problem for ath10k because ieee80211_flush_queues()
+> will stop all traffic and call ath10k_flush, which waits until the
+> whole HW queue is empty. In a busy environment this will trigger a
+> timeout warning and stalls other STAs.
+> 
+> Fix this by implementing flush_sta method using WMI command to flush
+> frames of a specific STA.
+> Flushed frames will be marked as discard in tx complete indication.
+> 
+> ops->flush_sta will be set to NULL if htt.disable_tx_comp is set to
+> true.
+> 
+> Tested-on: QCA9984 hw1.0 PCI 10.4-3.9.0.2-00157
+> 
+> Signed-off-by: Zhi-Jun You <hujy652@gmail.com>
+> ---
 
-This has became a problem for ath10k because ieee80211_flush_queues()
-will stop all traffic and call ath10k_flush, which waits until the
-whole HW queue is empty. In a busy environment this will trigger a
-timeout warning and stalls other STAs.
+There is already a patch from Remi pending for this, see:
+https://msgid.link/cover.1732293922.git.repk@triplefau.lt
 
-Fix this by implementing flush_sta method using WMI command to flush
-frames of a specific STA.
-Flushed frames will be marked as discard in tx complete indication.
+Please see if that series addresses your needs.
 
-ops->flush_sta will be set to NULL if htt.disable_tx_comp is set to
-true.
+First Kalle, and then I, held this back due to lack of internal validation
+across supported platforms, but it is actually still on my TODO list:
+https://patchwork.kernel.org/project/linux-wireless/list/?series=911851
 
-Tested-on: QCA9984 hw1.0 PCI 10.4-3.9.0.2-00157
+Let me make one more validation request internally since I know there is at
+least one ath10k-based project with active development.
 
-Signed-off-by: Zhi-Jun You <hujy652@gmail.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 24dd794e31ea..6959f20334a7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8135,6 +8135,20 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-+static void ath10k_mac_op_flush_sta(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-+			     struct ieee80211_sta *sta)
-+{
-+	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-+	struct ath10k *ar = hw->priv;
-+	u32 bitmap = 0xFFFFFFFF;
-+	int ret = 0;
-+
-+	ret = ath10k_wmi_peer_flush(ar, arvif->vdev_id, sta->addr, bitmap);
-+	if (ret)
-+		ath10k_warn(ar, "failed to flush sta (sta %pM)\n",
-+			    sta->addr);
-+}
-+
- /* TODO: Implement this function properly
-  * For now it is needed to reply to Probe Requests in IBSS mode.
-  * Probably we need this information from FW.
-@@ -9487,6 +9501,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.set_rts_threshold		= ath10k_set_rts_threshold,
- 	.set_frag_threshold		= ath10k_mac_op_set_frag_threshold,
- 	.flush				= ath10k_flush,
-+	.flush_sta			= ath10k_mac_op_flush_sta,
- 	.tx_last_beacon			= ath10k_tx_last_beacon,
- 	.set_antenna			= ath10k_set_antenna,
- 	.get_antenna			= ath10k_get_antenna,
-@@ -10294,6 +10309,9 @@ int ath10k_mac_register(struct ath10k *ar)
- 	if (!ar->hw_params.hw_ops->set_coverage_class)
- 		ar->ops->set_coverage_class = NULL;
- 
-+	if (ar->htt.disable_tx_comp)
-+		ar->ops->flush_sta = NULL;
-+
- 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
- 			    ath10k_reg_notifier);
- 	if (ret) {
--- 
-2.50.1
-
+/jeff
 
