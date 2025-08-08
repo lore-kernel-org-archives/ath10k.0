@@ -4,90 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13DD0C87FCA
-	for <ath10k@archiver.kernel.org>; Thu,  7 Aug 2025 22:04:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A13EC87FD3
+	for <ath10k@archiver.kernel.org>; Fri,  8 Aug 2025 12:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ifGUVYPRQoynFHz12tbMQrqd7GTUJ+TmyWzhPo9UjYs=; b=4Xhh5MqVym6fU1oOwe4IXz8b5X
-	HDIpPSSBwM6crJcwhp4hbQUKhI1c1rbOPb+DB279ocagpWGgi64jqv9gA9xoqZh7TDGoRI1zbKzPr
-	ERYsIGKBvEMRthmcuFvwO62SQAI1kobXt85Ctrblh68JZ/DtPMsrsofXjDOBjUGCbIZPyp1jjroAQ
-	tTqginJdffVYI6xMLrzKmoU6LnPQaMFuNn0FnjS4ZvwBUO2Ssp1zUzB2SgK462g+yYpvGSYjKbSoy
-	8ZgUkHPp67N85jEbpMStkPWUooe7ckhtQdXEJubzkinnbJNNLAg1mboufTV7tdLSkdyXBZViahUqG
-	/EIHz84Q==;
+	bh=T8XsdUDpExEz1FxCipst479bMSeLq7VvFWtp5SdXkkM=; b=Ng+l4ICXhvhQhkXxbtJcz1fbYa
+	IivfD9AgMTplbT6Q7D0pEnyCofuisBcBwstY2+H1ch5U7p0OFI2LgEn8A81WsO1aJUGfag8xtcPGX
+	/EieR7a4s0CaFJ6QWM0A/3ifhzyBtetUFnmxkd+skvhmuiqJ5dN+U+rDQ0PHpsiR2BPi1MbyRSSpf
+	dl/Pjo8WzwuanUyzlWXW4UCM+e/pp+lNXonyDbxZszlCGIkDC6kyC7NpyhyfWlf73dw0fMg2riYqS
+	9TUfvE9DpfANrNVRYIRoDM6DA13ed6JtwvmMlgKTayupyUJWnPGa3qBeaSJsOo6Lz9574clC8/dg7
+	SjNhrT7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uk8if-00000001bMK-0B67;
-	Thu, 07 Aug 2025 22:04:17 +0000
-Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
+	id 1ukM6l-00000002n82-3sCf;
+	Fri, 08 Aug 2025 12:22:03 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uk8ic-00000001bLw-2n2h
-	for ath10k@lists.infradead.org;
-	Thu, 07 Aug 2025 22:04:15 +0000
-Received: by mail-pj1-x1042.google.com with SMTP id 98e67ed59e1d1-32128c1bf32so2082866a91.2
-        for <ath10k@lists.infradead.org>; Thu, 07 Aug 2025 15:04:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754604254; x=1755209054; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ifGUVYPRQoynFHz12tbMQrqd7GTUJ+TmyWzhPo9UjYs=;
-        b=gSJS5bqJ0qdfhcu2hw/IqFXLzL7En0G3rhFngecvgtzt8jTjI9snnJOvOsT/5//o2x
-         Z+Q0bcs3kumTdjScJF97pvf/AhYj8aBbhl3IuxaFAWY8rbTzTf8zJc+u55Tbz7FHwiqi
-         6ozG3vVp4071uRY85H4035WxVtn3CDT/WuA5qL6vxNQ8mL4Mc3BACyd/QRffc0uC+OO0
-         np+1wNXXlpgbPyfnscOBHADJTyt3TRGW6qJMooyXhBmy2x5mkn/uiRscSxQyYnbtdpyZ
-         DaUa/Uddqv5ki+I99+HGGu1Ay+751CusaUmYED0zoLEoenwnnmyXFDqWcMsJUoB0pp76
-         XacQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754604254; x=1755209054;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ifGUVYPRQoynFHz12tbMQrqd7GTUJ+TmyWzhPo9UjYs=;
-        b=TvcxDhbLLnSruWn8Cj5fZJfR6iXTJg33Molai/JN+H+rBhtJk0URkCscVz/bzC86en
-         OIBx/WSnReu8oxj5cfbKrJRqXL6T3cxD2FAJo7QK6km8NmHfCuYs+/2+qCumvKOPghbH
-         Qg8tVxeEgL48yc3awAEndcqL4feGJ8r5x+YlVta6Kleop+DcFzNyhc+N3PQY2RQpPZOR
-         g55xaB0ct9hVgR4AsQwPewrIwsy62Z/DQDpAUMTvcZyUwnICBOz93HGr+VgvNUEYhLgS
-         iMOMpS4q5SeyZAkmnxmHsrPkANQTl5X3MoopIY3fw7pHHSMyRkyx2QCVyHYjT+pY5K6H
-         yzIg==
-X-Forwarded-Encrypted: i=1; AJvYcCX86cuR4FW3+lVhCIssp14EzFRjhD6udZ3UTh/rVoQdwE6hMGnfl9+iwx2WAJ/yk8DF1BgIfr8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxumJrxQM9HtRdFtC7+x+Xrf5nP3BLEsmc05mAsCrRO4XJi9b2/
-	4VoxfDIXmRDi5nmOjRMrLL/A8Sq292moclvBAxnzhJt4dB3nPevYBUeW
-X-Gm-Gg: ASbGncvmikXG1PABWC/jxYoCCN5l5Z9U0RdWPTF2LRepZdV4BgEOwB+f5t96taDuRvu
-	TyNt3j+SOCGyURIWANwCPjLvcCzHQ+BdXvZCnbl86XnBghBIy8aRQKJAJTihrGljwn8iRLZkjvx
-	IO0ZxlmxP5Dk/mFJB+9VQLfXunL2V15tkinbOTxxa4p910oNs6rhB5DOuQnOfk0L2ehDGrVsWFW
-	+Wp3X0PlaLZD3cCDm3qxJvMhUQ+n5gxds2CsE0EWlRGAthupyRMXpbYeG+uehqaOfmVBIg2nIqq
-	kPu3kKth8Pe11rP0q8q/3f1Clkht7TZpvDmchjuyoF48KF9ZrakKFyEXfQxNCYW2S2YljS8MzdB
-	WRiwzJwHMji3zyLl6YB40RNtDb1mrAWxMJ9V3CxfNGYPXM+1l
-X-Google-Smtp-Source: AGHT+IGGPVIaalaGEXnZpDCIqt2E6rbMu+NvzCNol0RFWT2Q1ikoELaGZ/qbA2/kE8Zg2b7t2+yCpA==
-X-Received: by 2002:a17:90b:2ccc:b0:31f:484f:7075 with SMTP id 98e67ed59e1d1-32183e6d968mr799203a91.26.1754604253711;
-        Thu, 07 Aug 2025 15:04:13 -0700 (PDT)
-Received: from [127.0.0.1] ([115.187.48.187])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bccead450sm18919860b3a.54.2025.08.07.15.04.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Aug 2025 15:04:13 -0700 (PDT)
-Date: Fri, 08 Aug 2025 03:34:00 +0530
-From: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
-To: Manivannan Sadhasivam <mani@kernel.org>
-CC: Bjorn Helgaas <helgaas@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
- linux-wireless@vger.kernel.org, linux-pci@vger.kernel.org,
- ath10k@lists.infradead.org
-Subject: Re: Packet loss with QCA9377 (ath10k) on ASUS VivoBook E410KA
-User-Agent: Thunderbird for Android
-In-Reply-To: <l3iebypcyxpqxod5os3mn6465cwdlbnmlkbjnx3vu5bzyb4vhl@3dxnam2a7c2t>
-References: <20250806204018.GA14933@bhelgaas> <BBAB0136-BB7C-4D59-B29D-2F35FC29D7AC@gmail.com> <l3iebypcyxpqxod5os3mn6465cwdlbnmlkbjnx3vu5bzyb4vhl@3dxnam2a7c2t>
-Message-ID: <176B76BC-6801-4C3F-A774-9611B43ED4AF@gmail.com>
+	id 1ukLXt-00000002iGN-3WLd;
+	Fri, 08 Aug 2025 11:46:03 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 2772A43AE7;
+	Fri,  8 Aug 2025 11:46:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 098E3C4CEF6;
+	Fri,  8 Aug 2025 11:46:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754653561;
+	bh=YwgJ4W0yz/3U7CZDEb+pmN3xlnIzTMSoc9qyKFnxOfQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
+	b=I8NYN2fmgNFMtr67TFvKJS81k2mk4lRbgU/aLVNCBloZ2ky0dgUaPt59EWfC6HdGY
+	 myj+Ny8SRdQfBSuW9xdKj3MHfkI+zOIT/rbEWpUNuj0Y7PwuRIj36Azdu9oXi8wvEt
+	 5UxHWDlt1PcTiWrVuA8Vlva7f0c+6JtujG8hGEfqB9XvzClEgqhzS0RH/10PdwOZ1l
+	 wsKWRh4lygemJzHFP+jP2/7+eILqVqe/I5wlwLQZzx/mNPu2OiZWxy1bo/ELAVWW3m
+	 pJP/DhM9fsPVUIHTyToHxm5xGI4vCkWHgQ4YYee0NaWE+YkQwLnCnMrgqzJMEBVD5i
+	 9/8PJa2xRkxgw==
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-71b6703ba32so19953457b3.3;
+        Fri, 08 Aug 2025 04:46:00 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV65DvcHrEXBedP/J3HwBHs6LNh1qsg4HW7wnE4w1GncWqruashfHHqkHXEjqGc42ZXE+GnJn4=@lists.infradead.org, AJvYcCVjWMn2IRvjr2Zpgjv3izCo5qB3zsrsyYxgZzx/UMFs8qSr2BlsrI0D3rXqZV0vLbYeh2O9bx29@lists.infradead.org, AJvYcCXYbpr0v0hFb3ujuRnMor7Ya08sXs+pYCTCgLRckwtwhwSA9pOExqSsNf3EaOAC/nNyIbAo4y2p@lists.infradead.org
+X-Gm-Message-State: AOJu0YxUt9SvsAJfXqtJiH5fXmqNbjXx1pYOCbktSr3324qVJaSSGlq7
+	iLnCH6vyqYKZdGZsuX+9F7VVJu7MJUnyjzvd8R7bVo3HFSt98U4mjcWuGDl6y2OSFPPKlABzb+O
+	PtyX8fJ4YGBmz/BIRejTZjfB2QoNl7oo=
+X-Google-Smtp-Source: AGHT+IFFl8Yogl/jKz3XpUVYcblZSE0Vjd1MxzRMkjBSnZJloREpmQubm0b1JY7EOyr/OXIxMNRYZLiJ0sdD+ACvgdI=
+X-Received: by 2002:a05:690c:4989:b0:71b:6c7b:c802 with SMTP id
+ 00721157ae682-71bf0cddb9fmr32662157b3.6.1754653560280; Fri, 08 Aug 2025
+ 04:46:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <6e3e8199-814d-4969-a951-d6b60f60257d@oss.qualcomm.com>
+In-Reply-To: <6e3e8199-814d-4969-a951-d6b60f60257d@oss.qualcomm.com>
+From: Josh Boyer <jwboyer@kernel.org>
+Date: Fri, 8 Aug 2025 07:45:49 -0400
+X-Gmail-Original-Message-ID: <CA+5PVA7RqfOjP612_Miy-JTp-56oi24utAV7pBtpjvejqw0aqw@mail.gmail.com>
+X-Gm-Features: Ac12FXxkFAZR0HWfVSFeG8aD6tgL6AjCIDf1XZqFSufHmaZxsq5D_8VEwNwvaAU
+Message-ID: <CA+5PVA7RqfOjP612_Miy-JTp-56oi24utAV7pBtpjvejqw0aqw@mail.gmail.com>
+Subject: Re: [PULL linux-firmware] ath11k and ath12k firmware ath-20250807
+To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Cc: linux-firmware@kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
+	ath12k@lists.infradead.org, jjohnson@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250807_150414_706552_F1257A05 
-X-CRM114-Status: UNSURE (   3.30  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250808_044601_923339_FB5DC114 
+X-CRM114-Status: GOOD (  12.48  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,5 +83,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Thanks, I will update you guys as soon as I get the logs=2E
+On Thu, Aug 7, 2025 at 5:43=E2=80=AFPM Jeff Johnson
+<jeff.johnson@oss.qualcomm.com> wrote:
+>
+> The following changes since commit d30c7b425f6d9c9e9f54bcafa99b375342b3a7=
+74:
+>
+>   Merge branch 'robot/pr-22-1754588181' into 'main' (2025-08-07 17:52:32 =
++0000)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/ath/linux-firmware.git at=
+h-20250807
+
+Merged and pushed out.
+
+https://gitlab.com/kernel-firmware/linux-firmware/-/merge_requests/640
+
+josh
+
+>
+> for you to fetch changes up to 35abebaa15c1ff1a141b7c24d79220ef70f48548:
+>
+>   ath12k: WCN7850 hw2.0: update to WLAN.HMT.1.1.c5-00302-QCAHMTSWPL_V1.0_=
+V2.0_SILICONZ-1.115823.3 (2025-08-07 14:32:02 -0700)
+>
+> ----------------------------------------------------------------
+> Jeff Johnson (6):
+>       ath11k: QCA2066 hw2.1: update board-2.bin
+>       ath11k: QCA2066 hw2.1: update to WLAN.HSP.1.1-03926.13-QCAHSPSWPL_V=
+2_SILICONZ_CE-2.52297.9
+>       ath11k: QCA6698AQ hw2.1: update to WLAN.HSP.1.1-04650-QCAHSPSWPL_V1=
+_V2_SILICONZ_IOE-2
+>       ath11k: WCN6855 hw2.0: update board-2.bin
+>       ath12k: QCN9274 hw2.0: update to WLAN.WBE.1.5-01651-QCAHKSWPL_SILIC=
+ONZ-1
+>       ath12k: WCN7850 hw2.0: update to WLAN.HMT.1.1.c5-00302-QCAHMTSWPL_V=
+1.0_V2.0_SILICONZ-1.115823.3
+>
+>  WHENCE                              |   8 ++++----
+>  ath11k/QCA2066/hw2.1/amss.bin       | Bin 5349376 -> 5349376 bytes
+>  ath11k/QCA2066/hw2.1/board-2.bin    | Bin 685144 -> 745408 bytes
+>  ath11k/QCA6698AQ/hw2.1/amss.bin     | Bin 5140480 -> 5005312 bytes
+>  ath11k/WCN6855/hw2.0/board-2.bin    | Bin 6429240 -> 7056532 bytes
+>  ath12k/QCN9274/hw2.0/firmware-2.bin | Bin 15392824 -> 15183928 bytes
+>  ath12k/WCN7850/hw2.0/amss.bin       | Bin 6078528 -> 6082624 bytes
+>  7 files changed, 4 insertions(+), 4 deletions(-)
 
