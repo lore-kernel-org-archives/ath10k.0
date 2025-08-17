@@ -4,72 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E2FBC87FCF
-	for <ath10k@archiver.kernel.org>; Wed, 13 Aug 2025 22:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9885ACA0EDC
+	for <ath10k@archiver.kernel.org>; Sun, 17 Aug 2025 09:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=OS5cU5c4w/EwjEmywL/2IEMqEDK30q6X7fzmSHMSQkE=; b=nf/PFx2Uc+ztTDbW/mxaQctQNI
-	2vDAVE8CP+XNPnGns4YnYK/8oRYJtb/MD46iYdxsXMGAesYr3qS7nVtpsuSCpB4+hkCUKR5zjzpeO
-	JYjoDvkjUN9IJKjgYOl7p8XlhD8dqIFMKcSn/RxLBzKKATYjkTVNP8CHjrC1oZBqHVKnzrYFCfJyE
-	hExEVtrCV8LabLXq8XCOoVOoO8poShr40L6Lwe+alUlbtvIG+n4LBVuQ+eAnn+MlGv3lQQxnr32Pr
-	posNJ+0XgWMXt1GNe1u1Gp4zTHWl2K6049nzx3z0rwU8Dh0ffYiltYUmxK1e2b4YQ0Lz/NK3UJH7p
-	SOYn44Tw==;
+	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=V+glvcUxBNLETyj4EbzaF6Mcl14MmSj24IXXGqr4BWU=; b=MfkahzwwUdu6wGgmdUsmXEaqaT
+	YShbYJJGudb4y7bZCb8KykNrAEKWgqT2tJYvG0yHFAr9N1WpgDXxpKxzC/I/uJ7SV4g3d9uF5by5w
+	rxqYNUTN5qeveUQkvS1orINS4xRELlaS+bgTE/Bd6qVYgaSVwWLxoiWv4yY4ghIW9aJRT0vogkoTo
+	7f/PYslVf/s25TaB81P+Od0zllVkYJY6ZYhdsl7+WRDc9+6G3EUBbFXLn6GqJIzbO498M/LmHRq51
+	VODSbQEO5bBlSlcBRQWanjoQF+h4HgkaRrfr3Jfk1s83EjP6nhSH1Lm0/TwtFgGstpfK++9fPnpuR
+	HBeKJFDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umJiE-0000000F7ut-3zIM;
-	Wed, 13 Aug 2025 22:12:50 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1unZqW-00000005WLF-216g;
+	Sun, 17 Aug 2025 09:38:36 +0000
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umJLw-0000000F4zw-0jfL;
-	Wed, 13 Aug 2025 21:49:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=OS5cU5c4w/EwjEmywL/2IEMqEDK30q6X7fzmSHMSQkE=; b=g0ThF+fAv5CR3HR3qaLFbyqEpG
-	++V+wrfX7Q8O5c/+p4jlQFo14rji45g082uxM5z+yrxcdSyQ25Pqi+xCmHDcdosxhtUpaEPl84hpk
-	s0tZmBjcOw9jbrJSq/U4HW4WtJXZ9N3knZiWG8daxQQ00UrAQArHQJwNGTPNJ22Irx1F6+hgev0If
-	Olq4QyARJxe2dZIyneBdPvyOO0Eg0lnkTbSdxP0PG7w/6nIV1SXli4CD9JX71EIrPFrXw3nnsiCLx
-	4GomyYtDcUu1MIEAAeYh7N0PR7Y7v1Q1eM8IUHi2yUqJXdtalxtzZmln+vJ9mvx1+1WYgo6RlSBbP
-	LxAMdleg==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umJLq-0000000GDAE-0CWE;
-	Wed, 13 Aug 2025 21:49:44 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 698725C4B3C;
-	Wed, 13 Aug 2025 21:49:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F38AEC4CEED;
-	Wed, 13 Aug 2025 21:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755121780;
-	bh=NclLB94FEads0s4wh/ojsqj8Dq8b0xrIiaxPQNruk1g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=bMKXxF1hFhVnUL6Dcj0fqhs2g+ajhAFtv9QdVA4QyOQaRp+Q+ilC/aDYYFyj6zj3a
-	 m9elP7www1VkNZunGrBSI8TXMHp0KJWBGH3PjFpa6P7IOZgq5DixpGJQSz8Bx0SOx/
-	 3VnYXfDdXUQVtCNL5oVplDxlBogjQ2Rcn444E/dmXvlwkyVgTodNP6rSHLMNjJqfFR
-	 zvoPVymioIggCrdawoBz6BWbM5rCzfb6lFR53tPHXUV8PlHCFB+5QUgZ7JInhLiFEg
-	 vKKzRO1rD6uhlsdHsH+Auztfj30L+CsMAD5PTx1DNfMdt9vCmJPz8Nd6+0N8Ca633O
-	 GtUiiwv2M5RsA==
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Jeff Johnson <jjohnson@kernel.org>
-Cc: linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	ath11k@lists.infradead.org
-Subject: [PATCH v3] wifi: ath: Use of_reserved_mem_region_to_resource() for "memory-region"
-Date: Wed, 13 Aug 2025 16:49:32 -0500
-Message-ID: <20250813214933.897486-1-robh@kernel.org>
-X-Mailer: git-send-email 2.47.2
+	id 1unZqU-00000005WKv-0Ukt
+	for ath10k@lists.infradead.org;
+	Sun, 17 Aug 2025 09:38:35 +0000
+Received: by mail-pl1-x643.google.com with SMTP id d9443c01a7336-2430c5b1b32so26049355ad.1
+        for <ath10k@lists.infradead.org>; Sun, 17 Aug 2025 02:38:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755423513; x=1756028313; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=V+glvcUxBNLETyj4EbzaF6Mcl14MmSj24IXXGqr4BWU=;
+        b=UvzXCJ1/3sCp67iQjgJAENrcflsFmnrG9kVWsY1VKXRbrT4rxOjaG1r1UPkwJ8yOp0
+         8WRQ+d4+2tVh9La7+Ov3HM8SN123JQj3B9wIbwe6Ne13C6YSmoG0KnW07E4wACn6mSo7
+         oMUyG2aGnIF4n3s7bmId49Jh4+LJUJBUhaKbFHvDP64ckMcG1GTfv5p5kJElZKMFmcXJ
+         11nl0VNGXrPKq8Lcr8x07JMnvh8MbZkanjb4++5Zss5ojK5X2asblIKydI3rVHnx/LDW
+         liv+XhVp9u3GG1qUZ8jdGS6vVLbhyR7FdjwOs2edpN5M14aIYE9aX7i8X7th5l22onqz
+         6SFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755423513; x=1756028313;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V+glvcUxBNLETyj4EbzaF6Mcl14MmSj24IXXGqr4BWU=;
+        b=v+q2Wry23pQxifSbo8kMuea6RbxCe7xxYl+RBlRm1kijSZ9yr4fpOTQdthq02ksCez
+         TMpi1wOrBRgxhs7TL7bJOiuTSvDzktPHUNMto/SBwHic6BIIcWbMWDuwt1RqEpFSAYhS
+         QOH06XTekGzkQW8qSKjRIeBlLISyPMXfH9f21O/SgKCa+tim8v6tvZPPOBEvqbPXcAeZ
+         xpQyPEPTxRskqp6ZmXr+TYvQj2Y1PhnSQ0u50zhNfGL+XYGQZLUyMpQGKkZ1d16S2M2C
+         zBGoXLeyaMI2xAYjYp6F3hImLGhBzgMVC0WvGv10JpDD30ldAF7AHueJcaLnLr85sJ3H
+         HqGg==
+X-Forwarded-Encrypted: i=1; AJvYcCWjAR8TTkAN+blwaiNfP5ZYzmg1lYKDlPuTxal2SSeIs2+0wCHOmaY4BZYZKkOLn706FntqOxI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwcOEIsWPfXsCAlXTb2PRJrzNaCBfo95ruuniE7zEq6rklcCpcJ
+	v9oWm9gtA8Qc80CXn2nfjJqwOfUMFYu4JLoWlBK93pkE41Xua/iEMKxv
+X-Gm-Gg: ASbGncvq9zoV2U6lxuqoZ66V9Wyw6teERLfNGwdn8U8P+5KCJba3YaIcy5lE0RXyw+D
+	XTUfkcnYKoHfUFWRCsmEWbp7RW7DRPsvwnIJ0Brs/sEBTlzF6muhTIHCnBAcWC+CZ4NcPPWecDN
+	xl7p2XmTTtStM1Euw7tYIrT8STeiGifRv+p4HMwTPoF6/ZqFkAgUOSEZP7gXe4dDhwPKzOiZ/J9
+	+CEpICEgJU83p9Fpdcj7eXcp/e1QwR/V8Ct5WvFr40rRMa8JtB60ITAf2XAOxfcajhajKWc3kDm
+	GTgEH3baNjjlF1rrSRVWNoZzzNj7DJVxupNkOTiofTsnRS+MCRo8veNx5rDXPysYX8D04YUEXwo
+	J8kSl11xT/Nu2kNRTxn1aNphi3TQcIZ+Q3s8u0JfyEjVKzOVPS3FfQZU/
+X-Google-Smtp-Source: AGHT+IHkGdbvw5mBqyT/2JEfiXA/xt9ZKA48sqXHZkrOlalPiagbZZCBEljY1VqxFuyOzhpXRp8Wcw==
+X-Received: by 2002:a17:902:da82:b0:242:b138:8119 with SMTP id d9443c01a7336-2445988787emr180301885ad.26.1755423512654;
+        Sun, 17 Aug 2025 02:38:32 -0700 (PDT)
+Received: from [192.168.0.218] ([116.206.223.216])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2446ca9d02csm51916845ad.7.2025.08.17.02.38.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Aug 2025 02:38:32 -0700 (PDT)
+Message-ID: <db9749a0-9c6a-4781-b5fd-82eb129a9c36@gmail.com>
+Date: Sun, 17 Aug 2025 15:08:27 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH TEST] ath10k: Testing Mani's ASPM patch (QCA9377, v6.16-rc1)
+From: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Manivannan Sadhasivam <mani@kernel.org>,
+ Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org,
+ linux-acpi@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, stable@vger.kernel.org
+References: <FB546B0D-2209-4FA0-9DC9-A75C0BC9FA4F@gmail.com>
+ <20250711163645.GA2294895@bhelgaas>
+ <CAEmM+QiSZBoJV2n6944tYU7fcrzKRTUgsKRdqwDEkKkZiPVCMw@mail.gmail.com>
+ <04489490-aca2-4e67-8eb2-e95f223ead3c@gmail.com>
+Content-Language: en-US
+In-Reply-To: <04489490-aca2-4e67-8eb2-e95f223ead3c@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250813_224942_549496_2B9A8ABF 
-X-CRM114-Status: GOOD (  15.17  )
+X-CRM114-CacheID: sfid-20250817_023834_157193_8DBD13AD 
+X-CRM114-Status: UNSURE (   8.10  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,159 +106,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Use the newly added of_reserved_mem_region_to_resource() function to
-handle "memory-region" properties.
+Hello everyone,
 
-The error handling is a bit different for ath10k. "memory-region" is
-optional, so failed lookup is not an error. But then an error in
-of_address_to_resource() is treated as an error. However, that
-distinction is not really important. Either the region is available
-and usable or it is not. So now, it is just
-of_reserved_mem_region_to_resource() which is checked for an error.
+I was actually trying to build a kernel for someone else using build 
+automation scripts. They still didn't compile. (Here's the relevant 
+thread I'm referring to: 
+https://lore.kernel.org/ath10k/176B76BC-6801-4C3F-A774-9611B43ED4AF@gmail.com/T/#t) 
 
-Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
----
-v3:
- - Rebase on v6.17-rc1
+Regardless, I tested the patches by Mani 
+(https://lore.kernel.org/r/20250716-ath-aspm-fix-v1-0-dd3e62c1b692@oss.qualcomm.com).
 
-v2:
-  - Split to separate patch
----
- drivers/net/wireless/ath/ath10k/snoc.c | 14 +++-----------
- drivers/net/wireless/ath/ath11k/ahb.c  | 17 +++--------------
- drivers/net/wireless/ath/ath11k/qmi.c  | 17 ++++-------------
- 3 files changed, 10 insertions(+), 38 deletions(-)
+Here are the logs:
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index f0713bd36173..b3f6424c17d3 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -13,7 +13,7 @@
- #include <linux/property.h>
- #include <linux/regulator/consumer.h>
- #include <linux/remoteproc/qcom_rproc.h>
--#include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/iommu.h>
- 
- #include "ce.h"
-@@ -1559,19 +1559,11 @@ static void ath10k_modem_deinit(struct ath10k *ar)
- static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
- {
- 	struct device *dev = ar->dev;
--	struct device_node *node;
- 	struct resource r;
- 	int ret;
- 
--	node = of_parse_phandle(dev->of_node, "memory-region", 0);
--	if (node) {
--		ret = of_address_to_resource(node, 0, &r);
--		of_node_put(node);
--		if (ret) {
--			dev_err(dev, "failed to resolve msa fixed region\n");
--			return ret;
--		}
--
-+	ret = of_reserved_mem_region_to_resource(dev->of_node, 0, &r);
-+	if (!ret) {
- 		ar->msa.paddr = r.start;
- 		ar->msa.mem_size = resource_size(&r);
- 		ar->msa.vaddr = devm_memremap(dev, ar->msa.paddr,
-diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
-index 50809cc1dad4..8dfe9b40c126 100644
---- a/drivers/net/wireless/ath/ath11k/ahb.c
-+++ b/drivers/net/wireless/ath/ath11k/ahb.c
-@@ -9,8 +9,8 @@
- #include <linux/property.h>
- #include <linux/of_device.h>
- #include <linux/of.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/dma-mapping.h>
--#include <linux/of_address.h>
- #include <linux/iommu.h>
- #include "ahb.h"
- #include "debug.h"
-@@ -919,16 +919,10 @@ static int ath11k_ahb_setup_msa_resources(struct ath11k_base *ab)
- {
- 	struct ath11k_ahb *ab_ahb = ath11k_ahb_priv(ab);
- 	struct device *dev = ab->dev;
--	struct device_node *node;
- 	struct resource r;
- 	int ret;
- 
--	node = of_parse_phandle(dev->of_node, "memory-region", 0);
--	if (!node)
--		return -ENOENT;
--
--	ret = of_address_to_resource(node, 0, &r);
--	of_node_put(node);
-+	ret = of_reserved_mem_region_to_resource(dev->of_node, 0, &r);
- 	if (ret) {
- 		dev_err(dev, "failed to resolve msa fixed region\n");
- 		return ret;
-@@ -937,12 +931,7 @@ static int ath11k_ahb_setup_msa_resources(struct ath11k_base *ab)
- 	ab_ahb->fw.msa_paddr = r.start;
- 	ab_ahb->fw.msa_size = resource_size(&r);
- 
--	node = of_parse_phandle(dev->of_node, "memory-region", 1);
--	if (!node)
--		return -ENOENT;
--
--	ret = of_address_to_resource(node, 0, &r);
--	of_node_put(node);
-+	ret = of_reserved_mem_region_to_resource(dev->of_node, 1, &r);
- 	if (ret) {
- 		dev_err(dev, "failed to resolve ce fixed region\n");
- 		return ret;
-diff --git a/drivers/net/wireless/ath/ath11k/qmi.c b/drivers/net/wireless/ath/ath11k/qmi.c
-index 378ac96b861b..2b547b26ed20 100644
---- a/drivers/net/wireless/ath/ath11k/qmi.c
-+++ b/drivers/net/wireless/ath/ath11k/qmi.c
-@@ -13,7 +13,7 @@
- #include "debug.h"
- #include "hif.h"
- #include <linux/of.h>
--#include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/ioport.h>
- #include <linux/firmware.h>
- #include <linux/of_irq.h>
-@@ -2040,23 +2040,14 @@ static int ath11k_qmi_alloc_target_mem_chunk(struct ath11k_base *ab)
- static int ath11k_qmi_assign_target_mem_chunk(struct ath11k_base *ab)
- {
- 	struct device *dev = ab->dev;
--	struct device_node *hremote_node = NULL;
--	struct resource res;
-+	struct resource res = {};
- 	u32 host_ddr_sz;
- 	int i, idx, ret;
- 
- 	for (i = 0, idx = 0; i < ab->qmi.mem_seg_count; i++) {
- 		switch (ab->qmi.target_mem[i].type) {
- 		case HOST_DDR_REGION_TYPE:
--			hremote_node = of_parse_phandle(dev->of_node, "memory-region", 0);
--			if (!hremote_node) {
--				ath11k_dbg(ab, ATH11K_DBG_QMI,
--					   "fail to get hremote_node\n");
--				return -ENODEV;
--			}
--
--			ret = of_address_to_resource(hremote_node, 0, &res);
--			of_node_put(hremote_node);
-+			ret = of_reserved_mem_region_to_resource(dev->of_node, 0, &res);
- 			if (ret) {
- 				ath11k_dbg(ab, ATH11K_DBG_QMI,
- 					   "fail to get reg from hremote\n");
-@@ -2095,7 +2086,7 @@ static int ath11k_qmi_assign_target_mem_chunk(struct ath11k_base *ab)
- 			}
- 
- 			if (ath11k_core_coldboot_cal_support(ab)) {
--				if (hremote_node) {
-+				if (resource_size(&res)) {
- 					ab->qmi.target_mem[idx].paddr =
- 							res.start + host_ddr_sz;
- 					ab->qmi.target_mem[idx].iaddr =
--- 
-2.47.2
+Without pcie_aspm=off (did not work): 
+https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180/raw/84edf89740919e3cba2ac33e567110b14e2d3627/patch-dmesg
+
+With pcie_aspm=off (worked, no issues observed): 
+https://gist.github.com/BandhanPramanik/ddb0cb23eca03ca2ea43a1d832a16180/raw/84edf89740919e3cba2ac33e567110b14e2d3627/patch-dmesg-pcie_aspm_off
+
+I'm not fully sure what the logs imply, but thanks, it did work even 
+after playing YouTube videos for two hours (might not even work in the 
+future, cannot be certain). Earlier, my laptop had its Wi-Fi turning off 
+within minutes because of IRQ #16 being flooded, in every kernel I 
+tested so far. Now, it does work.
+
+There can be seen certain stuff in the second log, where it took some 
+time to connect to Wi-Fi, but I think it is mostly fine.
+
+Thanks to those who have prepared the patches and those who did bear 
+with me, but there's one request I still need to make.
+
+For anyone who has built patched kernels for Ubuntu and exported in DEB 
+files, I would appreciate any guidance or pointers on how to do the 
+same, as my efforts to use "make deb-pkg" have been futile: 
+https://github.com/BandhanPramanik/ath10k-patched-kernel-ppa/actions/runs/16975573959/job/48123563881
+
+
+Bandhan Pramanik
+বন্ধন প্রামাণিক
 
 
