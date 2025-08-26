@@ -4,82 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86F6ECA0FE7
-	for <ath10k@archiver.kernel.org>; Tue, 26 Aug 2025 13:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 446A0CA0FF0
+	for <ath10k@archiver.kernel.org>; Tue, 26 Aug 2025 15:19:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-ID:Content-Type:
-	MIME-Version:References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:
-	Reply-To:Content-Transfer-Encoding:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LkWRgKKm9FxeOFnQsAZESgl378dIsMxSS/KweLozGsQ=; b=oZEjXHtclFWjQiRiI8p0Iv7kvD
-	c4AAKRSupTnHMD4A4aMmKHXVzbQb6Cm2TKnHnYLDMepPPI5k7cc1v43gacZC0BszXVjWl/5vdKO7y
-	9bficWvWsjgN2sOALfLpX0MOHmeBjGwGMCBmqldqPnbSjyxiEXkXfNNMIUXnEfLnzAV63/viTTbNt
-	5RLXEHsnr4Ebj8WGrfVoeTL/T1oETUmB/mMhf3aiXS0zU0bIYHFSgzJO3eoP7999HgNSXgIfFaMyj
-	0CrKCSj9bmdcH9zFW8AP04fgY9VGPL61xfJdRzi4SbdC97zji0NwsUDj+iLRlSp4Bk79yvSOPr/2h
-	DMxwTByg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=SwQL66e3Nu9k+2rWN9KxTqPiCmr+WouftcMZ22iOrnk=; b=EQLBy6B5NRbmzPGQTP9QV1xNuz
+	n6d3uPANC7A3uwEDcYStdMZzx8EzuqoEQLVCqaJrkOg/KcUn6UxG94WrzpWzZokAWami6k6EZxDSo
+	EnUsUZzNcp/4S6WJwAMlqXan4IZ5/TsZVf1Kyh7EYu/yRx60OuDfEaqVURvqm+C2enSb6pzbrQ8qW
+	I/Wt6PGcuBeolOQf18RgseeuZvBiLOtIPnKvaHT3dYxghG/6WLA32K6WmFnWUIbkb11hCjLu6Nqsw
+	N72OZfsvrX727UYhRxqof4mLNVzONoCGwz04U1J+/ceGMoMpGtAh2qmbboD6Dyh6JWXoRb2yiuqN4
+	cv/i4y1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uqtJf-0000000C1Pi-012b;
-	Tue, 26 Aug 2025 13:02:23 +0000
-Received: from mgamail.intel.com ([192.198.163.10])
+	id 1uqvSC-0000000CQYO-18Ed;
+	Tue, 26 Aug 2025 15:19:20 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uqtDR-0000000C0T5-1AQ2;
-	Tue, 26 Aug 2025 12:55:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1756212957; x=1787748957;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=R4iU1jfyixe8o3Lo4PGR4XGLQyegIIrVAMccWj8FMcM=;
-  b=CZkEIP5GFcymLrdX+w97I/kQQGjNQRy/SM7RK/3nVdgDgyS+5JbN7ctb
-   9g03BeyZbliV8AJOTJmd/EKgXO6V6XPeidnlpA+j3b7sgyly3buzTzjop
-   bAtOmDT0QuHX+9GAqKvNIQSB9ia1i0lF/TEijJwz6cqy5/EVZw0FwqDQF
-   7tzD6UKLO9pX+AukCCDuNh0dnd1/i61FJuir8Th40cC3ZOD8BXzWuoj/A
-   AwMI1LSuEQKk+cJ70wmbINDKOqE/61Mn4nUCr2zv8uOLoMSW8ZjWHK1ZC
-   Q6Y7iG0LseaXolBJwt14KtAHlc3oA+5vje9W3GZ2GJ9sZiUHWylFjukPw
-   A==;
-X-CSE-ConnectionGUID: tgJv800dRpKcebMedKl5yw==
-X-CSE-MsgGUID: tPZl8uW8SC6C5KkFPPkwBA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11534"; a="69814754"
-X-IronPort-AV: E=Sophos;i="6.18,214,1751266800"; 
-   d="scan'208";a="69814754"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2025 05:55:53 -0700
-X-CSE-ConnectionGUID: auHUum6tRHS2IljYMCxSQg==
-X-CSE-MsgGUID: o1h+Y04mS+OxNUWKpynnLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,214,1751266800"; 
-   d="scan'208";a="206733326"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.4])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2025 05:55:46 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 26 Aug 2025 15:55:42 +0300 (EEST)
-To: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>, 
-    David Box <david.e.box@linux.intel.com>
-cc: Bjorn Helgaas <bhelgaas@google.com>, 
-    Manivannan Sadhasivam <mani@kernel.org>, 
-    Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kwilczynski@kernel.org>, 
-    Rob Herring <robh@kernel.org>, Nirmal Patel <nirmal.patel@linux.intel.com>, 
-    Jonathan Derrick <jonathan.derrick@linux.dev>, 
-    Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, linux-arm-msm@vger.kernel.org, 
-    linux-wireless@vger.kernel.org, ath12k@lists.infradead.org, 
-    ath11k@lists.infradead.org, ath10k@lists.infradead.org, 
-    Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>, 
-    "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v2 2/8] PCI/ASPM: Fix the behavior of pci_enable_link_state*()
- APIs
-In-Reply-To: <20250825-ath-aspm-fix-v2-2-61b2f2db7d89@oss.qualcomm.com>
-Message-ID: <f644fc83-31cc-1f0e-58cf-7c007e6173e4@linux.intel.com>
-References: <20250825-ath-aspm-fix-v2-0-61b2f2db7d89@oss.qualcomm.com> <20250825-ath-aspm-fix-v2-2-61b2f2db7d89@oss.qualcomm.com>
+	id 1uqvS8-0000000CQWZ-2yN3
+	for ath10k@lists.infradead.org;
+	Tue, 26 Aug 2025 15:19:18 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57Q8YcTK019757
+	for <ath10k@lists.infradead.org>; Tue, 26 Aug 2025 15:19:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	SwQL66e3Nu9k+2rWN9KxTqPiCmr+WouftcMZ22iOrnk=; b=eIgUxzswlkZHaCJj
+	rnGJn/nm+urEM+YqiKmfCGzN9GianKouzNyZ4SMpX/5oHoXQBdOD92gtcvaJyGHJ
+	HYcIwvtBb3wL+6ClPuis+8ZugT820zeUWhxaAf/J8MFqajlb0f8yyom/5qH5LcMG
+	MPAUcLqG5oXx2rNdeim+dtqRMpnKQN3VNzUkXKaqRqHcyyoEQYQ32v2vAd5GIvcj
+	I/rZmy9gjqo6fhYhEZZ7aPePWpgmlf8i9yjFrk4UWnkuiUfZKWJqX5k3ICVl6duZ
+	fkRGBAvgp9w8u/ByXFJ3YR7qq/jxHiPjhtl5ldeR9VJji7FtqxQDrB7rFCfZIW9A
+	ZrE4EQ==
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 48q5uns6n9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Tue, 26 Aug 2025 15:19:14 +0000 (GMT)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-3274f7e6c1fso591380a91.0
+        for <ath10k@lists.infradead.org>; Tue, 26 Aug 2025 08:19:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756221553; x=1756826353;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SwQL66e3Nu9k+2rWN9KxTqPiCmr+WouftcMZ22iOrnk=;
+        b=Z8kDqWxo16w20VZsn9Ra6mKfVIWBS2hsv+3JGh7fkJgLfzGLp8zs465yvqIBNCLaxa
+         xe7EYVFWysJAFNcQWgw0tZOuelC+cWa8wxsNAv1T5n+tBGBfduqqySkt6NMWkYmXHjmW
+         FjiueFeVSJoGvi8D9bWlj4XhLCLNyH/dHwEsX97x1QFwSNkvDpTiPLo4Ss75ecB39naI
+         ldUpFHwWb3xdZmsoxX7qpSOrCV/BoWyFDT4U4xZ7cMdqWYx4QdOSc34zkj3uJWnkEvt4
+         CjLCtXz4CEJXyWwNBETzGOESxEKJ4AA6MDPEBvxb2IUXE0xXG8rJHzzIujI4MdMf/Sg9
+         Zf+g==
+X-Forwarded-Encrypted: i=1; AJvYcCUqQrFevdzi+LBJYHhojjUMTMRCQCo9MgIFpjTTV00a1K1ioj5Rrqo7U7AWuvGND+oZWg1RK6o=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyQ5n1WGydHf5jTcsV1Gnlp1Ywp6SJJTGn/trvCo6BtxPIyucjL
+	HmiZNpWPgzbSOTBQTJ/ZYirkPdJ7H9JDQb1wGhMFG4fYgWtbv0lb5lOvxkop7CnM3+89+yUV0+E
+	jU+dtFQWPUeIRmc+GTqhmsR9aaBdZ3wK9VEf2vmwmWEp2J20mSEBsn/5yoOEGsbUj
+X-Gm-Gg: ASbGncuptCwAlNdaFIZKqd09bDShhWvwsyBIIf4T0wi39RnUpxOC8VsfcMMhZfM/2e3
+	ZQrXhdZSaI2Yv0L5nO2MnMKFgwLtqJAcYT/wEKdtSvgF5VqrKvmUcDyIUBgGbDUobaFDTqa334C
+	UBieMvja61OoK2c+X5O1+BFcXCdLG5x1B+cR3ADX/roWoasPvIjIiHQy2RubP5e4InxAztWaFH0
+	oMpG5+LZtWOPzAOxLcAcQhSe6zL+c0vH2rDt0Bmjkeg7ntkajpjI3MVwPqFFLiu9rwXZNrr2T0L
+	PNz1SsSmVR7x+PQNAzJH77UK4Qqrz/+SLvtWhd6vEq2/+Earf/8n/IQsuAaAYnFYpIG7SMIkpFK
+	28UUKjo08NdQHvB2ScsA=
+X-Received: by 2002:a17:90b:39cf:b0:325:17e1:ab69 with SMTP id 98e67ed59e1d1-32517e1b5a7mr19762816a91.3.1756221553077;
+        Tue, 26 Aug 2025 08:19:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHBFCqB9ocm/fFjwbsOzFsZHFiZH3GbPHYwnLpzF4CEcjFDhaSfsGGNUpwdAdtaM5f+IRrboQ==
+X-Received: by 2002:a17:90b:39cf:b0:325:17e1:ab69 with SMTP id 98e67ed59e1d1-32517e1b5a7mr19762764a91.3.1756221552537;
+        Tue, 26 Aug 2025 08:19:12 -0700 (PDT)
+Received: from [10.227.110.203] (i-global254.qualcomm.com. [199.106.103.254])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3254aa708cdsm10154132a91.26.2025.08.26.08.19.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Aug 2025 08:19:12 -0700 (PDT)
+Message-ID: <0993bd25-3cab-4f96-9398-bf5b5f7770cd@oss.qualcomm.com>
+Date: Tue, 26 Aug 2025 08:19:09 -0700
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-846575285-1756206986=:934"
-Content-ID: <ed51a60b-2da2-8824-e685-a71851c626aa@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/8] PCI/ASPM: Return enabled ASPM states from
+ pcie_aspm_enabled() API
+To: manivannan.sadhasivam@oss.qualcomm.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Manivannan Sadhasivam
+ <mani@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        Jeff Johnson <jjohnson@kernel.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org,
+        ath12k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath10k@lists.infradead.org,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>,
+        Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20250825-ath-aspm-fix-v2-0-61b2f2db7d89@oss.qualcomm.com>
+ <20250825-ath-aspm-fix-v2-5-61b2f2db7d89@oss.qualcomm.com>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20250825-ath-aspm-fix-v2-5-61b2f2db7d89@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: E2x59QhPEahCqrvLOM-S3g95IwsypjmJ
+X-Proofpoint-ORIG-GUID: E2x59QhPEahCqrvLOM-S3g95IwsypjmJ
+X-Authority-Analysis: v=2.4 cv=JJo7s9Kb c=1 sm=1 tr=0 ts=68add072 cx=c_pps
+ a=vVfyC5vLCtgYJKYeQD43oA==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=guytT1_IP8q0_Fb2ReoA:9
+ a=QEXdDO2ut3YA:10 a=rl5im9kqc5Lf4LNbBjHf:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODIzMDAzMSBTYWx0ZWRfX/faGNBbkr7NA
+ DLhlCaNwyoHnJNQwarPqfUQ6gTcipiidbfTa5IAgWVpHiyHvzLJCB/Q5RASJF6P1+CSC0m3VDRm
+ I4lF5Q/5IfbcNy58GR9ZhRA+YIJR8zEkLzSHKBZAeBNAk+eTGOh06yI2NK3NvvGynYphahVbCJG
+ e3i2WpyyXmldc7SW/UdefEtcY8NTExQRqQFhwdoqlwCWMHWcD/Cyeg3DnQ8lhdfZJfLJep6BtKR
+ GvvADCZFdfTZpygz+0JppBwLfcE3CT3y666ZvpLOX+No74NGMw4T0cOtaflo/sALdwyIL8tzjqn
+ BAsj0FB9h0c0alv5wXTY38cJGgxY7/SV1h6Ov0ip9rGffs1OayqOSt8YaJmD/P4i3KVCTdBSUvl
+ WP2oUSW3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-26_02,2025-08-26_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 adultscore=0 bulkscore=0 spamscore=0 impostorscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2508230031
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250826_055557_330415_343B59C5 
-X-CRM114-Status: GOOD (  31.78  )
+X-CRM114-CacheID: sfid-20250826_081916_877493_527F4E5E 
+X-CRM114-Status: UNSURE (   9.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,167 +147,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 8/25/2025 10:44 AM, Manivannan Sadhasivam via B4 Relay wrote:
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1851,7 +1851,7 @@ int pci_enable_link_state(struct pci_dev *pdev, int state);
+>  int pci_enable_link_state_locked(struct pci_dev *pdev, int state);
+>  void pcie_no_aspm(void);
+>  bool pcie_aspm_support_enabled(void);
+> -bool pcie_aspm_enabled(struct pci_dev *pdev);
+> +u32 pcie_aspm_enabled(struct pci_dev *pdev);
+>  #else
+>  static inline int pci_disable_link_state(struct pci_dev *pdev, int state)
+>  { return 0; }
+> @@ -1863,7 +1863,7 @@ static inline int pci_enable_link_state_locked(struct pci_dev *pdev, int state)
+>  { return 0; }
+>  static inline void pcie_no_aspm(void) { }
+>  static inline bool pcie_aspm_support_enabled(void) { return false; }
+> -static inline bool pcie_aspm_enabled(struct pci_dev *pdev) { return false; }
+> +static inline u32 pcie_aspm_enabled(struct pci_dev *pdev) { return false; }
 
---8323328-846575285-1756206986=:934
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <96a2aa14-031e-f827-2cad-088a1b047808@linux.intel.com>
+return 0?
 
-+David
+>  #endif
+>  
+>  #ifdef CONFIG_HOTPLUG_PCI
+> 
 
-On Mon, 25 Aug 2025, Manivannan Sadhasivam via B4 Relay wrote:
-
-> From: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
->=20
-> pci_enable_link_state() and pci_enable_link_state_locked() APIs are
-> supposed to be symmectric with pci_disable_link_state() and
-> pci_disable_link_state_locked() APIs.
->=20
-> But unfortunately, they are not symmetric. This behavior was mentioned in
-> the kernel-doc of these APIs:
->=20
-> " Clear and set the default device link state..."
->=20
-> and
->=20
-> "Also note that this does not enable states disabled by
-> pci_disable_link_state()"
->=20
-> These APIs won't enable all the states specified by the 'state' parameter=
-,
-> but only enable the ones not previously disabled by the
-> pci_disable_link_state*() APIs. But this behavior doesn't align with the
-> naming of these APIs, as they give the impression that these APIs will
-> enable all the specified states.
->=20
-> To resolve this ambiguity, allow these APIs to enable the specified state=
-s,
-> regardeless of whether they were previously disabled or not. This is
-> accomplished by clearing the previously disabled states from the
-> 'link::aspm_disable' parameter in __pci_enable_link_state() helper. Also,
-> reword the kernel-doc to reflect this behavior.
->=20
-> The current callers of pci_enable_link_state_locked() APIs (vmd and
-> pcie-qcom) did not disable the ASPM states before calling this API. So it
-> is evident that they do not depend on the previous behavior of this API a=
-nd
-> intend to enable all the specified states.
-
-While it might be "safe" in the sense that ->aspm_disable is not set by=20
-anything, I'm still not sure if overloading this function for two=20
-different use cases is a good idea.
-
-I'd like to hear David's opinion on this as he grasps the ->aspm_default=20
-vs ->aspm_disable thing much better than I do.
-
-> And the other API, pci_enable_link_state() doesn't have a caller for now,
-> but will be used by the 'atheros' WLAN drivers in the subsequent commits.
->=20
-> Suggested-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
-This tag sound like I'm endorsing this approach which is not the case. I'd=
-=20
-prefer separate functions for each use case, setting aspm_default and=20
-another for the enable state.
-
---=20
- i.
-
-> Co-developed-by: Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.=
-com>
-> Signed-off-by: Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.co=
-m>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.=
-com>
-> ---
->  drivers/pci/pcie/aspm.c | 33 ++++++++++++++++++---------------
->  1 file changed, 18 insertions(+), 15 deletions(-)
->=20
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index be9bd272057c3472f3e31dc9568340b19d52012a..fac46113a90c7fac6c97125e6=
-a7e385045780005 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1459,6 +1459,7 @@ static int __pci_enable_link_state(struct pci_dev *=
-pdev, int state, bool locked)
->  =09=09down_read(&pci_bus_sem);
->  =09mutex_lock(&aspm_lock);
->  =09link->aspm_default =3D pci_calc_aspm_enable_mask(state);
-> +=09link->aspm_disable &=3D ~state;
->  =09pcie_config_aspm_link(link, policy_to_aspm_state(link));
-> =20
->  =09link->clkpm_default =3D (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
-> @@ -1471,17 +1472,18 @@ static int __pci_enable_link_state(struct pci_dev=
- *pdev, int state, bool locked)
->  }
-> =20
->  /**
-> - * pci_enable_link_state - Clear and set the default device link state s=
-o that
-> - * the link may be allowed to enter the specified states. Note that if t=
-he
-> - * BIOS didn't grant ASPM control to the OS, this does nothing because w=
-e can't
-> - * touch the LNKCTL register. Also note that this does not enable states
-> - * disabled by pci_disable_link_state(). Return 0 or a negative errno.
-> + * pci_enable_link_state - Enable device's link state
-> + * @pdev: PCI device
-> + * @state: Mask of ASPM link states to enable
-> + *
-> + * Enable device's link state, so the link will enter the specified stat=
-es.
-> + * Note that if the BIOS didn't grant ASPM control to the OS, this does
-> + * nothing because we can't touch the LNKCTL register.
->   *
->   * Note: Ensure devices are in D0 before enabling PCI-PM L1 PM Substates=
-, per
->   * PCIe r6.0, sec 5.5.4.
->   *
-> - * @pdev: PCI device
-> - * @state: Mask of ASPM link states to enable
-> + * Return: 0 on success, a negative errno otherwise.
->   */
->  int pci_enable_link_state(struct pci_dev *pdev, int state)
->  {
-> @@ -1490,19 +1492,20 @@ int pci_enable_link_state(struct pci_dev *pdev, i=
-nt state)
->  EXPORT_SYMBOL(pci_enable_link_state);
-> =20
->  /**
-> - * pci_enable_link_state_locked - Clear and set the default device link =
-state
-> - * so that the link may be allowed to enter the specified states. Note t=
-hat if
-> - * the BIOS didn't grant ASPM control to the OS, this does nothing becau=
-se we
-> - * can't touch the LNKCTL register. Also note that this does not enable =
-states
-> - * disabled by pci_disable_link_state(). Return 0 or a negative errno.
-> + * pci_enable_link_state_locked - Enable device's link state
-> + * @pdev: PCI device
-> + * @state: Mask of ASPM link states to enable
-> + *
-> + * Enable device's link state, so the link will enter the specified stat=
-es.
-> + * Note that if the BIOS didn't grant ASPM control to the OS, this does
-> + * nothing because we can't touch the LNKCTL register.
->   *
->   * Note: Ensure devices are in D0 before enabling PCI-PM L1 PM Substates=
-, per
->   * PCIe r6.0, sec 5.5.4.
->   *
-> - * @pdev: PCI device
-> - * @state: Mask of ASPM link states to enable
-> - *
->   * Context: Caller holds pci_bus_sem read lock.
-> + *
-> + * Return: 0 on success, a negative errno otherwise.
->   */
->  int pci_enable_link_state_locked(struct pci_dev *pdev, int state)
->  {
->=20
->=20
---8323328-846575285-1756206986=:934--
 
