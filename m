@@ -4,80 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55014CA0EED
-	for <ath10k@archiver.kernel.org>; Thu, 28 Aug 2025 01:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44167CA0FF9
+	for <ath10k@archiver.kernel.org>; Sat, 30 Aug 2025 00:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:In-Reply-To:Message-ID:To:From:Date:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	bh=rSzLGnoNLaSk1a2U8PHAM5rUvrguAVULmLVroN6J2Bk=; b=tFlzDCRbpbGJ1cJg4OAVTo5pEI
-	V4zkUhk6rC1STYlnp+Z13na85tkidtyTJ4r0KQGu3qR4G2ML8eFUO7Ye0553VjgiUBrGPyXWcdD+v
-	3wPoHtKKoYCD2oRL8OkGMCyB+pAA5Syl38kfWu7xYeDCOQXfPSmanK1P19adH10sLbeFo6lC0idGz
-	oQz4uT2jVUXJKnWTzqzKCU+ARlMHZV9UtBCDMb11JQG0vLH7QDedDVSPpEIaEBR4iC+TSHhGA8Zad
-	NSpr39j0qih1pSI7DeCY4ct5rRnBkcc7pIBY9sliUu3EbEitMYoINLXQ+RmO6F2EwuV9H6p4ZOvxI
-	yKRhIpLg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:
+	To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=IZxtw3z/9CaxWzHuOMx6eYG39iga0noJxPVFtMhYG7k=; b=ekfUw2iiXvHlqG
+	75vJ6SI6VwKKdjwAygDbPesAkt75IYVRyq93XBTjuR9IKkLtsFINNULM5+8Och1P0PsSQiI8CtS7S
+	jSn5xaRi/kgc6HXbvmKUBjjJryxD9I/5G10TICAA2gLkrpS6lRIWh8MTuDYqwowtUOPUb1CLydb9F
+	IwgUW5c8niFxeIfrPnubeSENWmtcYcsQbyqLUacSy61HJsFxyaOxpWn5uJjhp/cPVvZBLBRpky0J+
+	zxMP7hvhvwOMiFnCVvgNcmr4fH75Y4XF4y8sUIXm83is2zqWPTayW8spfQZc6S4jftA3lhw3avq9Y
+	U+QqZTFasQIHTRBzRlSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urRRx-0000000HV1m-2BAo;
-	Thu, 28 Aug 2025 01:29:13 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1us9lj-00000007AfK-3sgj;
+	Sat, 30 Aug 2025 00:48:35 +0000
+Received: from mail.notificacionesdecoperu.com ([190.116.59.194])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urRRw-0000000HV1D-2v3r
-	for ath10k@bombadil.infradead.org;
-	Thu, 28 Aug 2025 01:29:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Subject:In-Reply-To:Message-ID:To:From:Date:Sender:Reply-To:Cc:
-	Content-ID:Content-Description:References;
-	bh=rSzLGnoNLaSk1a2U8PHAM5rUvrguAVULmLVroN6J2Bk=; b=cajT7PtTJtr8uWw0PqyyCh5f9N
-	nOvGBWCmwjHqoylvZkSs4MkUsGP8L3g1uVkt/OjG06QR0o6y3bfNY5YHrARmjzVTWIcfH0s7ps8Wr
-	rtYUwC4+okRaUnf02D7LMa6aF8WR3KFG07LGUbliAMVXafCnzcuPqMY74yPABGthMglY1kFrJ8DEN
-	t8WS5rVqvSHkHfupJzRl2hrWaDKB/0UNmnztP58ODylkixQEXwWHjCpyK8VyKW6vFjvO+BPKSpQ/8
-	I2BwdFtniBYvGa00uPG09PHvgYmQU76w36/+FFuE0Bm97sJPu7pRk0UfrDHXrsUs5odumkLLzmCE6
-	tMhxPONg==;
-Received: from sender4-op-o11.zoho.com ([136.143.188.11])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urRRs-00000002arV-34Yx
+	id 1us317-00000006YAe-3zKO
 	for ath10k@lists.infradead.org;
-	Thu, 28 Aug 2025 01:29:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1756344543; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=b46aTbpQHjKRRvS5DX4XgDuNZZfyhB5Gu5EgfIUHTNDR8VrhP7JEjVVl5U7KiTb2zXHCTbsah2VG41M9QGOnTA5A18sqT6dQmvmB0557bzpQGVDwkp0pSzqYjS/c5pJV330c9sBFCiMOUu5JPM4QUM4cjADNT773+vULWOxy+kw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1756344543; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
-	bh=rSzLGnoNLaSk1a2U8PHAM5rUvrguAVULmLVroN6J2Bk=; 
-	b=M1xg95c4pobM6izEKabI77X9ADFvydHD4Bx/WzEHgIW8s4r1VjvpLFo3IChcjbXbq9DixLSZ0v7H5EieLH+ZpRBFEXemOkg3+tCpLrQneQeUtBrmyh+JFt+OKx26Tuqe70F+SQYT796DwLYd2ljQVRIItmA6MlWWu5sqKB/bWCk=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=mcqueen.au;
-	spf=pass  smtp.mailfrom=craig@mcqueen.au;
-	dmarc=pass header.from=<craig@mcqueen.au>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1756344543;
-	s=zmail; d=mcqueen.au; i=craig@mcqueen.au;
-	h=Date:Date:From:From:To:To:Message-ID:In-Reply-To:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
-	bh=rSzLGnoNLaSk1a2U8PHAM5rUvrguAVULmLVroN6J2Bk=;
-	b=bAVciQMZeutEmZB9yul906oX8+2PtRSFnOP+EAFU3XUoL7i8Uj5gdz4dXGcDtBdj
-	alJVnPe3TYMRULVok/JIue+CogMUtTHxG7ZVLBH6k3WccetlNpwL03JEEyqWH4Dxy3I
-	k/wqAzQjgqXF4BrppW3g68KqG/+CJO/+M9vw2Aso=
-Received: from mail.zoho.com by mx.zohomail.com
-	with SMTP id 1756344542116679.2165482523119; Wed, 27 Aug 2025 18:29:02 -0700 (PDT)
-Date: Thu, 28 Aug 2025 11:29:02 +1000
-From: Craig McQueen <craig@mcqueen.au>
-To: "ath10k" <ath10k@lists.infradead.org>
-Message-ID: <198ee4ae393.6baf8d9a2862139.411061161396944784@mcqueen.au>
-In-Reply-To: 
-Subject: QCA9377 hw1.1 SDIO failed to read from address 0x874 etc
+	Fri, 29 Aug 2025 17:36:03 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mail.notificacionesdecoperu.com (Postfix) with ESMTP id 78D0F1CD67AC
+	for <ath10k@lists.infradead.org>; Fri, 29 Aug 2025 12:24:32 -0500 (-05)
+Received: from mail.notificacionesdecoperu.com ([127.0.0.1])
+ by localhost (mail.notificacionesdecoperu.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id VjYR8N2Kpioe for <ath10k@lists.infradead.org>;
+ Fri, 29 Aug 2025 12:24:32 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.notificacionesdecoperu.com (Postfix) with ESMTP id 437D51CD67AB
+	for <ath10k@lists.infradead.org>; Fri, 29 Aug 2025 12:24:32 -0500 (-05)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.notificacionesdecoperu.com 437D51CD67AB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=notificacionesbys.com; s=804FB474-00E8-11EF-9D29-D8BF0EF47FA2;
+	t=1756488272; bh=IZxtw3z/9CaxWzHuOMx6eYG39iga0noJxPVFtMhYG7k=;
+	h=From:To:Date:Message-ID:MIME-Version;
+	b=QF3drcweF5H32Lpm8XCd9RsrnK4sVsva9tngMZjosedVTho8OlCFDI3ND4nPu9nYd
+	 hxkoy36mmqqfPyG9rHKYZRsOrhk40tYNLrsQVpjRKlDC6aoWqwezj7tknnbl1hkGCo
+	 MlQSfaeus2xdWgwJ24NPJH9KVZRL2hzpuOVhcJzjF3r0ldXcLieEUzUzH3drQQNlph
+	 O85JqSHukf3gDcjz/qtNb93gPVFndXcV0Hk6YNezmOuVmASPT2uu44GbfjIeadeA1g
+	 ysuWZDl+N3Mv3R6BYZLNuh77zZlkdvJH06w0a+bluCOFHU5+Xj1/oDREObW+bzqTCK
+	 UpdIhFL+6wNEg==
+X-Virus-Scanned: amavis at notificacionesdecoperu.com
+Received: from mail.notificacionesdecoperu.com ([127.0.0.1])
+ by localhost (mail.notificacionesdecoperu.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id FEQh2m3F4xBt for <ath10k@lists.infradead.org>;
+ Fri, 29 Aug 2025 12:24:32 -0500 (-05)
+Received: from [45.250.255.20] (unknown [45.250.255.30])
+	by mail.notificacionesdecoperu.com (Postfix) with ESMTPSA id AE0E41CD67A6
+	for <ath10k@lists.infradead.org>; Fri, 29 Aug 2025 12:24:30 -0500 (-05)
+From: Luis Fernandez Consultant <test@notificacionesbys.com>
+To: ath10k@lists.infradead.org
+Subject: Re:Good Investment Proposal
+Date: 29 Aug 2025 19:25:19 +0200
+Message-ID: <20250829192519.8C509FB182E5C4A7@notificacionesbys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
-X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bad-Reply: 'Re:' in Subject but no References or In-Reply-To headers
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250828_022909_276395_AB1746BD 
-X-CRM114-Status: UNSURE (   9.36  )
+X-CRM114-CacheID: sfid-20250829_103602_126313_812B45EC 
+X-CRM114-Status: UNSURE (  -3.47  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -90,43 +81,20 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Reply-To: luisfernandezconsultant@gmail.com
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-I am trying to set up a Quectel FC900E on a Rockchip RK3328 system using Yocto kirkstone or scarthgap.
+Good Day, 
 
-The FC900E connects to SDIO. I have done configuration of the device tree. When I boot it, I see:
 
-[    2.650793] ath10k_sdio mmc1:0001:1: qca9377 hw1.1 sdio target 0x05020001 chip_id 0x00000000 sub 0000:0000
-[    2.651689] ath10k_sdio mmc1:0001:1: kconfig debug 1 debugfs 1 tracing 0 dfs 0 testmode 0
-[    2.653382] ath10k_sdio mmc1:0001:1: firmware ver WLAN.TF.1.1.1-00061-QCATFSWPZ-1 api 5 features ignore-otp crc32 7746e551
-[    2.816274] ath10k_sdio mmc1:0001:1: failed to fetch board data for bus=sdio,vendor=0271,device=0701,subsystem-vendor=0000,subsystem-device=0000 from ath10k/QCA9377/hw1.0/board-2.bin
-[    2.819785] ath10k_sdio mmc1:0001:1: board_file api 1 bmi_id N/A crc32 544289f7
-[    6.538676] ath10k_sdio mmc1:0001:1: htt-ver 3.32 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-[    6.875686] ath10k_sdio mmc1:0001:1: failed to read from address 0x874: -110
-[    6.876506] ath10k_sdio mmc1:0001:1: failed to read from mbox window data address: -110
-[    6.876732] ath10k_sdio mmc1:0001:1: failed to read from address 0x868: -110
-[    6.877234] ath10k_sdio mmc1:0001:1: failed to read calibration data: -110
-[    6.877877] ath10k_sdio mmc1:0001:1: failed to read fifo/chip control register: -110
-[    7.517279] ath10k_sdio mmc1:0001:1: failed to write to address 0x1c7e8: -16
-[    7.517963] ath10k_sdio mmc1:0001:1: failed to write skb to 0x1c7e8 asynchronously: -16
-[    7.908301] ath10k_sdio mmc1:0001:1: suspend timed out - target pause event never came
-[    8.155419] ath10k_sdio mmc1:0001:1: failed to read from address 0x868: -16
-[    8.156081] ath10k_sdio mmc1:0001:1: failed to read fifo/chip control register: -16
-[   11.342898] ath: EEPROM regdomain: 0x0
-[   11.342938] ath: EEPROM indicates default country code should be used
-[   11.342947] ath: doing EEPROM country->regdmn map search
-[   11.342959] ath: country maps to regdmn code: 0x3a
-[   11.342971] ath: Country alpha2 being used: US
-[   11.342982] ath: Regpair used: 0x3a
+My name is Luis Fernandez, I am contacting you because we have investors th=
+at have the capacity to invest in any massive project in your country or in=
+vest in your existing project that requires funding. Kindly get back to me =
+for more details. 
 
-I have confirmed that the FC900E is being fed a 32 kHz signal on its WLAN_SLP_CLK input.
 
-I saw a previous message from Anthony Needles from August 2022 which sounded almost the same. But there was no resolution for the issue then.
+Best Regards,=20
 
-I would appreciate any advice on diagnosing this.
-
--- 
-Craig McQueen
-
+Luis Fernandez
 
