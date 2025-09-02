@@ -4,112 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CFFCCA1005
-	for <ath10k@archiver.kernel.org>; Tue,  2 Sep 2025 08:40:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E80B5CA1005
+	for <ath10k@archiver.kernel.org>; Tue,  2 Sep 2025 19:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=WgIyomiDGYBeb6Ioi8MhbYgA0ptZ7Qj5Q0VJcD6VFc0=; b=IdnkI/AdVFSYOekV3QoyOpaOQy
-	mSaWZrezE7bde/KbylxYyVA71oHcHWJDn5wc/zaus1QJmYA1W6CRpldyZKySJdEwLm2V8MFoQcc8k
-	SNAdHC0EYcbkq9C9PxBKrSSs8sk2zZ352wSkUyslrdx03XUtmyGXi8DlwXMo3HoRBxC1fm9UO7BZc
-	XbNVa4TF/R+YMm9dayQ8bfJyauX9ZeOpbzfrXC6BG7jKyK9DmU8cr8VyN4jAWqnAqUmYDilL26PHJ
-	2pMpIu+YOFTN1a7s+b7m8MAWr8R186OM4K9CJpaFtfSuXyzHdPB0xTQQSSsN9rBhip5TghbVPmh2l
-	cuLU3M3g==;
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=csusaucqTmzk17SeeOJaLqL2TcfNjobPHirLjmjAGww=; b=s6jff1Fe1odL5Kouo+tFmdYr8X
+	2Zff2m2we8/7OLx681mEtUZwRYI4aP+EJsU0+gsRDZIto2IB860Ko0MNsEviwIBQCfC5blqqmk3/N
+	G2nQjUN568gsilZP6rbXwU3gwcgDjERsHKpu+sPnPCzCCGptbeQzji3MUUMY9WOIfQsO+OMN/jG/3
+	Hx/YcI0jGqU3Yl5ZjkrRmuSMm0d5y+lYcihUgVgdLraNZJa1CTN8ZxyOgfeoxhqPMC032EOtiKX7I
+	dnORkZrmWY68j0100Fa7SN3HTHaDkmO5c6I7mqdX6wZ5KbRXlziA6O1re2InS+u2GpFdRlmHE4+Lg
+	ETDz4ogg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utMZN-0000000G7II-3kw6;
-	Tue, 02 Sep 2025 08:40:49 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1utWQJ-00000001d99-1OO0;
+	Tue, 02 Sep 2025 19:12:07 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utLzq-0000000FudY-3PPB
+	id 1utRYh-00000000DgM-2saV
 	for ath10k@lists.infradead.org;
-	Tue, 02 Sep 2025 08:04:08 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5822Rt6o010115
-	for <ath10k@lists.infradead.org>; Tue, 2 Sep 2025 08:04:04 GMT
+	Tue, 02 Sep 2025 14:00:28 +0000
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 582B04Gl013850
+	for <ath10k@lists.infradead.org>; Tue, 2 Sep 2025 14:00:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=qcppdkim1; bh=WgIyomiDGYBeb6Ioi8MhbYgA0ptZ7Qj5Q0V
-	JcD6VFc0=; b=St+jrdbInGJVPtY+eqAi8+mmpgllzP5yQmz3VawAPq8kIijP6Mt
-	kYFx9ZONMCvlf48a8LtpkTwUWmlAWRdUmaP5xpM8hK7zBHm6Wcfdkh6mVnEJRBGw
-	bk1YUaO01Op8vVzh2FM/Jg2vrYBQOMU7Cb8l+r7ZQQvpViDuexsbWQjkEyf1b1xu
-	zw5pDUCyh4nfMaY9AzHenVbuwXBYJbd5FXqAbUSAjn7mhkcSh99tournldoO74eF
-	Sxg3JfmefpdaJRwGOllR97Q4PSYlpy4FlPWGTF7cp11ixmnyx8pldOs2Ok20NHLX
-	YXTE1xILhCsvbUKRWtTyWUuULrZMEqHlGXA==
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com [209.85.222.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 48urmjf156-1
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	csusaucqTmzk17SeeOJaLqL2TcfNjobPHirLjmjAGww=; b=VRxMtpHDll9fc9A3
+	ta02jSVe4EMmN39ro05+m01qqFhoHEoadcUMPOIuElI9WVmdrxf/KO/31cR2DibG
+	A2cA1UfpKvH8HnS0wDkjiMnonbOnrfBQpHMsGEieODCCgQJUwOf1uZ7CKw5PXTGk
+	+kUPE3H8mRuLTI3/e6bhgB5Wu8RRHbN11NCteGmUUcgvNBHZz4bvhUlGHMtQ5kvr
+	xRPGt/OIK74bC86UeiYIfjYjo+xFnPW0kpDrgx0FUdepgY+llQC8qDK6pAfYA5a/
+	2HwRwbPuMWh5MhPGlzojyFm8pog00Ii+XT8yKCkYLVL60D1mXbozyR/ubHZHEFH9
+	E9TGIA==
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com [209.85.222.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 48uq0eg5tw-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Tue, 02 Sep 2025 08:04:04 +0000 (GMT)
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-807056330b6so41402085a.0
-        for <ath10k@lists.infradead.org>; Tue, 02 Sep 2025 01:04:04 -0700 (PDT)
+	for <ath10k@lists.infradead.org>; Tue, 02 Sep 2025 14:00:26 +0000 (GMT)
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-80483ad2704so314326485a.0
+        for <ath10k@lists.infradead.org>; Tue, 02 Sep 2025 07:00:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756800244; x=1757405044;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WgIyomiDGYBeb6Ioi8MhbYgA0ptZ7Qj5Q0VJcD6VFc0=;
-        b=bqZte7UTJtPGhECACqFPJ5RdUq6HKAY/7XlPUj8R0sEPgb4YFgOUWpGRZr9rHba7eo
-         GBM3kC0Zyu/5wm8qDFjPuc8uHmK8az2kgyltAyQ4lQmY/OdZRrAesjJadLfcYKXbHNuf
-         e9GJ5I1cC6Hq7sB1YGHqlMwIQF+rPWaSHh+xeocUo1m6wUSBscjnmAR4KD4p1sRz7KQ2
-         2jbkkYdrXyaov7TKn9hbtIKTJLxKEpbnd75KrIFxvIUKIJ4/zoocSrlYGmhYVEIm6r+S
-         T1NZC7HJsIeIcmJMqaI1WzzwomX97efH+QhJc7Pqz3IxlZIg9UnI6MHhUj3YeGWT4AEw
-         yBIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMM+c8F2DwAykfaclce0MYVzebsw5pAdOlQRjKGN+kqIW5dTdR4iboZcbpO3ZWiAfwSdDAdsU=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy7cTu5MfX0JPeKQpHT0RhEh1yaRLNnEsEwhRi6QiAKphDKo2wr
-	vyS0XunZg4Lmmq6BLgKjdAJTR/UC8BspKGYJq60nefLV8S8/ZiIyJi6xPt/OfgpuOEawGdViEbQ
-	5ZQS0OEcG7M2DJIDZa3xyb1w5yrV986UsSslZp7lcJR1+tCoYHP/kelrErK2WZHIs
-X-Gm-Gg: ASbGncuMds4yVl1Nq2pB5e8RmRTNpGkirGitKMq5b9/sSdolexhDqfO2zrs/Mc0czyB
-	N5DjZKg/gkaaUYfPlzusomIh4MTHb3j22vDfPHiye3wXvlMWXDQ0efS1ol1aLT8238UcKJkVqZI
-	RGf0QE8lboXAm8/bMcxg8EbQR4pdiw/0XG5v1KgF5ppHPQn7PZieav7Z1uNeruuG6OU/XTaDsgn
-	SD7ZRbTDg2hOwEvn2OvgByhwwEqc3aQc0Qc+LcUdcqjR5Zai2/VPj0Yvacy0ZnOiV1bXmPujMmG
-	zIYOm00GLRT2ZbwPf5PRL58JbLMtlIc/2NoIEpAXReICXngL5lusnDGvA3UlLR9D+rCsIJN3DTk
-	=
-X-Received: by 2002:a05:6214:1cc8:b0:70d:f64e:d499 with SMTP id 6a1803df08f44-70fac6f8a66mr145364456d6.4.1756800243724;
-        Tue, 02 Sep 2025 01:04:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGKUomnfMNjYM9WFOvNk1clEAei1+fpKQQfJ0feRVEWDXTGiUE/1odwLcUTyZXAzdkg0MGjWw==
-X-Received: by 2002:a05:6214:1cc8:b0:70d:f64e:d499 with SMTP id 6a1803df08f44-70fac6f8a66mr145364016d6.4.1756800243034;
-        Tue, 02 Sep 2025 01:04:03 -0700 (PDT)
-Received: from QCOM-eG0v1AUPpu.qualcomm.com ([2a01:e0a:82c:5f0:c58f:9eab:48e7:40ef])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aff9918dbd2sm831672366b.103.2025.09.02.01.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Sep 2025 01:04:02 -0700 (PDT)
-From: Loic Poulain <loic.poulain@oss.qualcomm.com>
-To: jjohnson@kernel.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
-        alexey.klimov@linaro.org, Loic Poulain <loic.poulain@oss.qualcomm.com>
-Subject: [PATCH ath-current] wifi: ath10k: Fix connection after GTK rekeying
-Date: Tue,  2 Sep 2025 10:04:00 +0200
-Message-Id: <20250902080400.635818-1-loic.poulain@oss.qualcomm.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1756821625; x=1757426425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=csusaucqTmzk17SeeOJaLqL2TcfNjobPHirLjmjAGww=;
+        b=v0O5RDSEc/IpAdhwkfSxbJuEOZvT4c5ya1wX/ME1r0SWsdaEAV00PHAVpzthqAZsq9
+         aJdruujdDicMbXN7Y0z3yZhFVdaWxl5VDdLDDgM+/hib5YSL7vkgsas7xsYVcHkbSiMO
+         xcn14P7aBTr1zGEKIP2xshFNMwnbVBKNrsUqSriCb36TOTqT6ufmJsFuppn9+fevy2lF
+         eXEZdBOiLc027Q63/YyT0CICie+5Y83rtx649yynUsh4YwAv7NOKdQIdTVfrZuOKt0Cm
+         iNlA7JHsfa4a8QjBvTv6QzQQ+YBiyPGwjBXHEy1yj8NQOuHL3DJPzRLdJUYHEEhPF1NX
+         4luQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVR0aPzZvWA6uj/jzeHTH3w1M89h7pqp5DIvFxdHPYDsw6WqQWEj5hlKtYIAERBsNHMpOtUPLg=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxJysAioQxFfhPnVkukz3lk/jEh9KI4WMhgGczfslDUinLiExDE
+	eXsYaeInCLlzkhmxIChDco09vY2tFPyZUwx9BDBZrQ30/eHsLB2VCFBzRzx46aZYi3qlrmzKS9v
+	IlyIbG9q0HueJx6eEs0+tMOelz0mrtbGwAtIZvxfLtsEXxmFPes/YbM40LP73476jAiQE3NdLJ+
+	i7+7/FfRvKk46EyNkCkGHI/wWnSyLQoWOMUYqsdxU=
+X-Gm-Gg: ASbGncuScWgtOi7gxI6hvVti9HV/CvtBOHLOjx3hwyvIQ77we0MhdKg6YlWq5/6xDrT
+	LVmzQwe9UF3KjER8XRlxBCPgHaPLuGaCs+wDJW05+R+Tfq/ShHE2l4GYDpIYwrd7E/erxbHiNAF
+	GDEWnIMh6RksHWSeG3QIkQ3g==
+X-Received: by 2002:a05:620a:bca:b0:7f6:e8c9:2ab9 with SMTP id af79cd13be357-7ff2b4b0029mr1278702685a.39.1756821623582;
+        Tue, 02 Sep 2025 07:00:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFdWWZMQ6aOZzdLiT+Un0WMDnOkgUs5Qx1fi85wGxKKPJPLxThT/sZyXwCh2//MRN4U8HhD58o5y53D7lFknCk=
+X-Received: by 2002:a05:620a:bca:b0:7f6:e8c9:2ab9 with SMTP id
+ af79cd13be357-7ff2b4b0029mr1278671285a.39.1756821620917; Tue, 02 Sep 2025
+ 07:00:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authority-Analysis: v=2.4 cv=OemYDgTY c=1 sm=1 tr=0 ts=68b6a4f4 cx=c_pps
- a=HLyN3IcIa5EE8TELMZ618Q==:117 a=xqWC_Br6kY4A:10 a=yJojWOMRYYMA:10
- a=VwQbUJbxAAAA:8 a=KKAkSRfTAAAA:8 a=EUspDBNiAAAA:8 a=shBBdOEUAhiFnM6U-_8A:9
- a=bTQJ7kPSJx9SKPbeHEYW:22 a=cvBusfyB2V15izCimMoJ:22
-X-Proofpoint-GUID: k7Q2ftZai9TloumeDTKO0vktTbjdajJn
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODMwMDAyNCBTYWx0ZWRfX1YFS7LB/p7uF
- wIywvvDtNGP3ssbnBvfc2rjNknWkiMtr27gomEAuffB96q9cZN8n0k2GVbJSi2wavj+Nlg94Lp7
- UHAE0/vGdl4NAct91zqzRqmJzlUvN/MXytXGimH146saiWbFfy6qBtzOIGS3kcPV/vs/ST6aah6
- NelbjIe3qrruLN5EkfzQma4G3d/DA+oR6mGsX/iweTnlNEgyEo2eawXOyatkuq6hqchRm+DJ3TU
- 1mMIAwmIynaRfIbE5BCNkxjnaWQFIqhBH2K1jXIOtQ/jrcMIEtcakXBa280cuJIi2g6aqELyZr3
- WcBEge0BgpHTEPi/nOL8OU8DE3LJO4NSTjtXZtsALzciZ+wpsEiMSH918h3qLk/Z7YjMOakf7cq
- 5tRxlTj/
-X-Proofpoint-ORIG-GUID: k7Q2ftZai9TloumeDTKO0vktTbjdajJn
+References: <20250902080400.635818-1-loic.poulain@oss.qualcomm.com> <87b92cbeb6c672600ab3530513d8aba5f4b0eb63.camel@sipsolutions.net>
+In-Reply-To: <87b92cbeb6c672600ab3530513d8aba5f4b0eb63.camel@sipsolutions.net>
+From: Loic Poulain <loic.poulain@oss.qualcomm.com>
+Date: Tue, 2 Sep 2025 16:00:09 +0200
+X-Gm-Features: Ac12FXwzJQUvQoUWUqvMRrIXFykv3yJhrIuOXl3mgQl_CpVei1qt-s1e8nKX650
+Message-ID: <CAFEp6-3vgYLFrkmiO2U2HKRFwYY+_UKt0pkLB9i558E5SNNeig@mail.gmail.com>
+Subject: Re: [PATCH ath-current] wifi: ath10k: Fix connection after GTK rekeying
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: jjohnson@kernel.org, linux-wireless@vger.kernel.org,
+        ath10k@lists.infradead.org, alexey.klimov@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-GUID: IOgsj_FTcu-Izkav2X8jHSbIiki4hn26
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODMwMDAwNCBTYWx0ZWRfXzbdImvyew8Ji
+ kOWk4JFupphSzWwBpAscz162k846il91jf4uBEwTzEgIdBJE6kVE/revA9ByPv99QxtaXv6v/2S
+ d3RHOLzAY+d/Bg1yuluq/nJed1+Ym440n/2NLHYI06e+rLh7M8hi5xjr53o0E63R8+Zrw9ww9JC
+ jPvb/xYFDGABfD4sdravuIvwQNtUymm+N0Tf2d1vNGEbNUPqh4Ryw6REujkddP2EEeg+iwKMZgd
+ LoTOGXH/CcOFYmGvdHjXVqCgZYFeCMaaWeSK6/p2yDZrxDo9OC7OUE34099DMaxK9PmCZVZP5fB
+ u20UQZWbz9MFPGrtrLojmuJFXz5MA/ZTw6SHhA3vuxDeP/vGZuEnmxNH69fxC9/HaqQ0nUK+C5J
+ ccuXDx94
+X-Proofpoint-ORIG-GUID: IOgsj_FTcu-Izkav2X8jHSbIiki4hn26
+X-Authority-Analysis: v=2.4 cv=ea09f6EH c=1 sm=1 tr=0 ts=68b6f87a cx=c_pps
+ a=50t2pK5VMbmlHzFWWp8p/g==:117 a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10
+ a=stkexhm8AAAA:8 a=rTrHpxIYefey2SYKP94A:9 a=QEXdDO2ut3YA:10 a=zZCYzV9kfG8A:10
+ a=IoWCM6iH3mJn3m4BftBB:22 a=pIW3pCRaVxJDc-hWtpF8:22
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-02_02,2025-08-28_01,2025-03-28_01
+ definitions=2025-09-02_04,2025-08-28_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 suspectscore=0 spamscore=0 bulkscore=0 priorityscore=1501
- adultscore=0 clxscore=1011 phishscore=0 impostorscore=0
+ impostorscore=0 suspectscore=0 clxscore=1015 malwarescore=0 phishscore=0
+ bulkscore=0 spamscore=0 priorityscore=1501 adultscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2508300024
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2508300004
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250902_010406_969787_81DFE3AD 
-X-CRM114-Status: GOOD (  14.39  )
+X-CRM114-CacheID: sfid-20250902_070027_758872_8008CA32 
+X-CRM114-Status: GOOD (  16.92  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,46 +123,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-It appears that not all hardware/firmware implementations support
-group key deletion correctly, which can lead to connection hangs
-and deauthentication following GTK rekeying (delete and install).
+On Tue, Sep 2, 2025 at 10:09=E2=80=AFAM Johannes Berg <johannes@sipsolution=
+s.net> wrote:
+>
+> On Tue, 2025-09-02 at 10:04 +0200, Loic Poulain wrote:
+> > It appears that not all hardware/firmware implementations support
+> > group key deletion correctly, which can lead to connection hangs
+> > and deauthentication following GTK rekeying (delete and install).
+> >
+> > To avoid this issue, instead of attempting to delete the key using
+> > the special WMI_CIPHER_NONE value, we now replace the key with an
+> > invalid (zeroed) value.
+>
+> Maybe better use a random value,
 
-To avoid this issue, instead of attempting to delete the key using
-the special WMI_CIPHER_NONE value, we now replace the key with an
-invalid (zeroed) value.
+Good point!
 
-This behavior has been observed with WCN3950 and WCN3980 chipsets.
+> and even try to delete it anyway afterwards?
 
-Reported-by: "Alexey Klimov" <alexey.klimov@linaro.org>
-Closes: https://lore.kernel.org/all/DAWJQ2NIKY28.1XOG35E4A682G@linaro.org
-Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+It would still trigger the initial issue this patch addresses.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 24dd794e31ea..f33860784c82 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -290,8 +290,15 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
- 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV;
- 
- 	if (cmd == DISABLE_KEY) {
--		arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_NONE];
--		arg.key_data = NULL;
-+		if (flags & WMI_KEY_GROUP) {
-+			/* Not all hardware handles group-key deletion operation
-+			 * correctly. Replace the key with a junk value to invalidate it.
-+			 */
-+			memset(key->key, 0, key->len);
-+		} else {
-+			arg.key_cipher = ar->wmi_key_cipher[WMI_CIPHER_NONE];
-+			arg.key_data = NULL;
-+		}
- 	}
- 
- 	return ath10k_wmi_vdev_install_key(arvif->ar, &arg);
--- 
-2.34.1
+> If it's all zeroes then an attacker can predict it and might
+> be able to inject frames into the system that way?
 
+Indeed, will fix that in v2.
+
+Thanks,
+Loic
 
