@@ -4,119 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23C8ACAC59A
-	for <ath10k@archiver.kernel.org>; Thu, 18 Sep 2025 15:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FDE3CAC59A
+	for <ath10k@archiver.kernel.org>; Thu, 18 Sep 2025 18:42:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bhSX98HuJMkyrMaoMiSuQu57olFpyJn5Wru3dPmWuJo=; b=jrb+zItCr6yku0SB5nkLxgwg60
-	AM9XRH38ON9e4MEywDZB/R6zIGj21TwZvS3CpXj0IF+wrmfmepOKePHSulWUmjBYL2L1Ud9K9LK/K
-	X67ObwnyzuSEdyy8aBknVLkALLpS8hYUeocyEihTEeFGXYxI7EvwQvcHipl47gyBeAefHd0WX23R0
-	ouNKCP91UE3UYVVIQMSww1wZvh1XWgnpRju3DpobZx2fF3+BIBRqMElDIV6cc5EjXXj8sNcBQ9jWj
-	oHKlHtP0lIWtERd4evI0isdYsrVlHGKNgpC0w2pHstXqUXV/mZPwoI6uEUq7oanlLSuzFC7qwhleb
-	U6WLybSA==;
+	bh=nF1fA0zbp7Djqf2UTk7dkerj+IhERcStYJUK4pvZ96Y=; b=RRyeBVU+TB6ryptQbQkmndkQCW
+	uj1vFB7lV/3fzePcqlOEfXc7lFWJd1fYwDVVCQfjUavSoDl20uSdVpUMxjTLOp4ZzEXfuD4WiLYA9
+	ev8SFqEXFsVpQuNdfCfehiMDBotEQtouc6tfyZAl4mQr07MvtNOSY6E/dkHG5AoJQvC08W6lRyHNC
+	HkO0t0gf6naCY77djwNm7Hj7DE0sUa4RhBo0RZgN+9nYRGOYGOqFF3d5vTHGMGqrgyOWlQaoZ9MMo
+	FjftvHaODcZOObgBLXJYkXsk8l6443/yW+IXUIIdSvajok5tfQllh8ZVxNg2MWZETIgLxGbkXIlYd
+	TPF1rSRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzGar-00000000O0a-0j54;
-	Thu, 18 Sep 2025 15:30:45 +0000
+	id 1uzJaD-00000000snM-138C;
+	Thu, 18 Sep 2025 18:42:17 +0000
 Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzGao-00000000NyG-0Xqm
+	id 1uzJaA-00000000smW-1lhM
 	for ath10k@lists.infradead.org;
-	Thu, 18 Sep 2025 15:30:43 +0000
+	Thu, 18 Sep 2025 18:42:15 +0000
 Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58IBPY2L018269
-	for <ath10k@lists.infradead.org>; Thu, 18 Sep 2025 15:30:41 GMT
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58II58wv018237
+	for <ath10k@lists.infradead.org>; Thu, 18 Sep 2025 18:42:14 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	bhSX98HuJMkyrMaoMiSuQu57olFpyJn5Wru3dPmWuJo=; b=dFi9e74jPDRlKBq9
-	wyuv/FewfFCifXgDzVQNKatQxQ/gGqnQVf0D51B/j4e0LDOgDPm6FB9Pf1wHg26Y
-	7XtX047T9jmYvLYORZjmXPWzDIuvE/WEAptzPhFj+lxn2J6av7XgMAtof0ThpoSR
-	XUC/dPUpYXnV5hI+wCoHNetm43pcvQOKHH/9obHjSYCi+pCBUKFpR+JT73vW85TR
-	Vy3XQOpFCKmRxk+ZwVjxLsP58ib2qr8yMc8F98JVXGTvEYNXleDneff21Bv+w9EP
-	tQf0BueKnMnV4owOWYel4dgxDEqxKZUGfe+BDnBSscIFwOTFJrkRjXPe1u+NAngh
-	Rn26sA==
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 497fxwew73-1
+	nF1fA0zbp7Djqf2UTk7dkerj+IhERcStYJUK4pvZ96Y=; b=KH28pdFFlHijuxsQ
+	Tkqdw1reTQqEDndBc+MUD9qCFuM2XNpbvqD4c2uEhhH2V4OCR919S5v1UB7AQEy5
+	3RlVlVzpTBlZBZONRaTU+84KuVpp9SAY40yGm11mLbRM+bgbzopewjHgb0LbM7Ya
+	FGdvtXNzsSTxKCxYO6qfrRFKwN8VwBRaNcPsdcqePqFsn1WGtNZVRw5MqexVIaE/
+	iARYmzkEdCwMMREiX/9LTzrhlVHScA/zUXa9hLhVecVVL/hE33NyS+UkgoQRZ4Lw
+	tdQryztVonOH63nY8jL4OttMdwwXTOVb/VIThGwyw36RIhVMGDrER0/sPyJn89d8
+	9H/keQ==
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 497fxwfjst-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Thu, 18 Sep 2025 15:30:41 +0000 (GMT)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-3305c08d975so1076581a91.3
-        for <ath10k@lists.infradead.org>; Thu, 18 Sep 2025 08:30:41 -0700 (PDT)
+	for <ath10k@lists.infradead.org>; Thu, 18 Sep 2025 18:42:13 +0000 (GMT)
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-77e5a77a25aso77668b3a.3
+        for <ath10k@lists.infradead.org>; Thu, 18 Sep 2025 11:42:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758209441; x=1758814241;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1758220933; x=1758825733;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bhSX98HuJMkyrMaoMiSuQu57olFpyJn5Wru3dPmWuJo=;
-        b=ttNI5OyWVFHAyEDnga1Mf9tp3QdoIc8KrWG3gVPAxb/tEz7FAPSa3c4XTa7QUF20RU
-         y8Grfue5tjW/YB4SY7Rsl24EmHnZLg6Q2+n0aPIq00nQhHRB0PWIRP34chQ1zOvv5pz9
-         447MSkf4ix9bEiqVoO+o5vBnjzZYJEyRh9RFE0RT56n1OIJhz7DmwSPUZYkm+FRHHJYr
-         My+S9/uzz1zoim/TgxcYra/GUkTZQI4+USre//ePsF5LFUr+xvXr0Wz60L9/AB/Hcep1
-         aFsR0FJPA4oERHpc9qMH2LDG++TIlWQWymaRln48Kvsfh4k1AhMh+mDJVb6xOvbs/A/k
-         FO2w==
-X-Forwarded-Encrypted: i=1; AJvYcCUc2szQQf4T8pnezfklaBHGe+oz+9WfwwnZsbyYWAnAIj5EKa3NBdoW8xv9Q0ItSlB9F5A6twk=@lists.infradead.org
-X-Gm-Message-State: AOJu0YytrlWVns9qWawJdZirwOsgJsOcbUnlgRpsZLh3Ne6ApQ8hkZ7H
-	OsvMjnUGEKEp0Z8Cf5+cfMxoF3rmQUo1dy/f4+ewnGGctmQr9wcDBTOkygYVK14s0g++9YFUvsQ
-	rUu1FJnCv4EOUsSCjdTAHQsoNhXaHD4ZEEwsUBxTPM7NTXy0Zt+o7fAzU890vh6Lb
-X-Gm-Gg: ASbGncuA3E95cUQQC7gFytTJWVYvk9vlxleEHtwXHhCFEk8WIdpgPpX9ej3RX5aJEGQ
-	Oco+i6Ze9+R4+tJXuft9AQKSeoWIBWYWkcIqYSpMyVd0MSidJQ3MLXrmWFnpdtpereRz8EqMHCS
-	faeLT7vHr4Vp8nZUp3qyEWpjWl4yxWfyqcdYGmsFpWCc/Pygbw2cwxNc/i2kdorIAjsLZ8Yjyv9
-	MhjedIVrkiJRYoLHcCEAaIOBUJAsWvIp/v6cayAui49pdgAvpnBANENxiLT8a34kUrCS7A91zpy
-	ORscVTLdWtMipMYs75RtKj+waQHSDgiN+X/DS5Ff8d+Ijt6DQ5lMVzJZjyoCQGAdve7RiX1ZJkR
-	ak3r4ynY1NAk=
-X-Received: by 2002:a17:90b:5590:b0:32e:d282:3672 with SMTP id 98e67ed59e1d1-32ee3f68353mr7443674a91.23.1758209440717;
-        Thu, 18 Sep 2025 08:30:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFJtZalFVe+kGAbPWvX/SFNLY4dbFllQVIHjbFGW3Gqec+5jAn3kcNmX6T2JYXIMtSPBWimIQ==
-X-Received: by 2002:a17:90b:5590:b0:32e:d282:3672 with SMTP id 98e67ed59e1d1-32ee3f68353mr7443610a91.23.1758209440202;
-        Thu, 18 Sep 2025 08:30:40 -0700 (PDT)
-Received: from [192.168.225.142] ([157.49.98.120])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3306061925esm2937000a91.2.2025.09.18.08.30.37
+        bh=nF1fA0zbp7Djqf2UTk7dkerj+IhERcStYJUK4pvZ96Y=;
+        b=Qjt22S0ewfRCPl78VxHbO2mIj6I50hYWhOWD13EM4Mjpbxiq2VHPFlHBn6Ao76TUGj
+         BW4OR+nqKSaME4lvxhfoaDQRDj50jEupjVfSVDucV617VCMMvEphzE3UTDrAqTWuJjez
+         7BrlwpEIRY3FDsQFqXOpFEQ1iMjFbBueTkKZU99QVs78+op/jiAJyxz0JO21gyLRj28u
+         WEDUOPTC8M4ODe+t1ALhwehtTFJ3p2r+7ipuTSjsP/8GUMQtfo7SfUHKrDbLnfU9/bAm
+         h023DHsJVAXkH0Gv35rSBrjyiaGbS/lgPoHGCkoXXuFkHP6SCUdXsFWL23isXI3SVF0o
+         Rufw==
+X-Forwarded-Encrypted: i=1; AJvYcCUHpfhHUgi0Goobl7ihU/PJWOgxRsXkVyrrIGSoKlrkpiyDfYzn4yYBkN0RMKZvRTbCmIjLkvw=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyPy52iE0LEjX+Kdeq6gpHwHhDPzwjgUqMJWAH3VUsJq4pL5kZ2
+	28AZjfZRoyvrwWVsHqWet0bYHOToJjuUxf5FwWKb/g6M2u+0q24Tb51722hY/uhu0+1od+aabhj
+	7w2A/FCnCruImwu7OXlM38Q1fXur15PZEKRCxrFFs7DFRcAVWvrg+Ym8Anm1AZ4GU
+X-Gm-Gg: ASbGncvudsO1/eBtSpdXC71tBdz+C7jMwcEg2+vqnmFr5IkExgmMJVHMCz/fDl99Bkn
+	wemgARa2REQG5DPfj5tI/v/xLczNQ/seiA+kXf6cMUJL98bQHcW152Q9U9jOfvUiVK/rZ+1hjFw
+	5ktgR6syvOKZIlx8vgh+dFlEaWcJk0FFJI7UV7k5c+DyPz+Qgb3UP6HhCh1B8kbCg0fLEewx6iZ
+	DWIFQ6Pludhmidu6yFuB9Q8Cv+WdZ467aG1CAMlQDYjwxwj23Q5zjGeiqYGJFDIOHdyX/Dr9Xmw
+	fZkSRTASiQvlsWLIIaGA0TziKctAT/auJkaUA7nN7nLC90hJ+fqfvntQX6Du9yJcHHwqr3T75SM
+	JcYLF58KzT9T/l2hnnVs1gamOiDLHiD1s+RCn
+X-Received: by 2002:a05:6a00:3cc9:b0:776:8b9d:85ad with SMTP id d2e1a72fcca58-77e4e8ae21dmr394525b3a.19.1758220932889;
+        Thu, 18 Sep 2025 11:42:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGzBPxPNDF/BcchRmyd2ICCvlhe8W1SbwWFUAF0xA+HbKxZJwRAh+LwrobiAdxKNso5yJHRKQ==
+X-Received: by 2002:a05:6a00:3cc9:b0:776:8b9d:85ad with SMTP id d2e1a72fcca58-77e4e8ae21dmr394497b3a.19.1758220932404;
+        Thu, 18 Sep 2025 11:42:12 -0700 (PDT)
+Received: from [192.168.1.111] (c-73-202-227-126.hsd1.ca.comcast.net. [73.202.227.126])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77cfec40601sm3020533b3a.87.2025.09.18.11.42.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Sep 2025 08:30:39 -0700 (PDT)
-Message-ID: <3ecf5010-7480-c780-1bf7-b0e762bf293d@oss.qualcomm.com>
-Date: Thu, 18 Sep 2025 21:00:35 +0530
+        Thu, 18 Sep 2025 11:42:12 -0700 (PDT)
+Message-ID: <eb3a2ef9-3f93-48be-b6d4-28eeeba84f04@oss.qualcomm.com>
+Date: Thu, 18 Sep 2025 11:42:10 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] wifi: ath: Use of_reserved_mem_region_to_resource()
- for "memory-region"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 16/21] ath10k: remove gpio number assignment
+To: Vasanthakumar Thiagarajan <quic_vthiagar@quicinc.com>,
+        Arnd Bergmann <arnd@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
+        Jeff Johnson <jjohnson@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20250808151822.536879-1-arnd@kernel.org>
+ <20250808151822.536879-17-arnd@kernel.org>
+ <27c1274c-e021-ba69-175d-a1271c33498b@quicinc.com>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 Content-Language: en-US
-To: "Rob Herring (Arm)" <robh@kernel.org>, Jeff Johnson <jjohnson@kernel.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
-References: <20250813214933.897486-1-robh@kernel.org>
-From: Vasanthakumar Thiagarajan <vasanthakumar.thiagarajan@oss.qualcomm.com>
-In-Reply-To: <20250813214933.897486-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <27c1274c-e021-ba69-175d-a1271c33498b@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Authority-Analysis: v=2.4 cv=HbIUTjE8 c=1 sm=1 tr=0 ts=68cc25a1 cx=c_pps
- a=vVfyC5vLCtgYJKYeQD43oA==:117 a=31WDjHDmXr0yx5AvGNnQTg==:17
- a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8
- a=VjuCZWrZiTeoWwOd-AYA:9 a=QEXdDO2ut3YA:10 a=rl5im9kqc5Lf4LNbBjHf:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwMiBTYWx0ZWRfX8K3N5avnPn0P
- B7pT35tl+2SsmgoTRjvoQFSH3TBXm7m/S9Le7u85xm0iFTAIiUGk1nDh2Y2lSAXeXjJSLso/AtV
- GLwlGnTPo1DrBHn9vY+nPq5EfUGNLPmK8xijx86NQb4NlZcNYWMiDNrtI50vjgZLhqtasKIMaJE
- OIcVPu3rQGpXMeShBklzh6F6980oz9bUkfOnowiADijmv9Zf+sayoMUS+qe8FqfiEtbLWWcAWWG
- wAqLChd8R5dcd+1fDhl/PxFXR7DD13x9BWOjGdDe5IXtUAnvUKrO14MNdeeT8Wv5mtTFwxJDOQS
- TB00sFl7m5almt0dRooUf2HL9sQEw2WrNLxJgQGtxPjYPW5zAhGRbYx1pNvXYmmeqDx1JNqcUNq
- NX9AbSNY
-X-Proofpoint-GUID: UAnf1snuP2rrPrpjhama4YULQZEmXW7o
-X-Proofpoint-ORIG-GUID: UAnf1snuP2rrPrpjhama4YULQZEmXW7o
+X-Authority-Analysis: v=2.4 cv=HbIUTjE8 c=1 sm=1 tr=0 ts=68cc5285 cx=c_pps
+ a=WW5sKcV1LcKqjgzy2JUPuA==:117 a=e70TP3dOR9hTogukJ0528Q==:17
+ a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=FtxLtjK2MU5K6IsP0WQA:9
+ a=QEXdDO2ut3YA:10 a=OpyuDcXvxspvyRM73sMx:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwMiBTYWx0ZWRfXy0AHaZWSnppG
+ eWe4DJxxF9BWCa1nW3fbtTfpxy5q9kSH08FSQsaak5nuVjaJyvutBMkCn1Zavf61/NgLEsxZYQc
+ JzgLAjRYcWFUy929zdn0ilMHofLkJHnjQUQ6jfkEXvEkQvTGh2NK/CeBA2S9p7Uc4wu8Zi3zQFl
+ 3IEdRe9HnBlxsmcciZk8FMpcShvbGsuvsCEFCD7+MdU0hzn00oaB8tBkpM6JTg1+d7oC/tiOx8n
+ 8tbVvMLhzlphAXa4BKlpyt7zysj4rR+/lvL0IxEo2+WCzgxlstnnd9ZNSg2TKkZ5HwBwAYuixgw
+ u2at4ZZHec7LP4WBiVJlw1lRWlR8n4yvw+eQ6DEL8Xo1a9Bhi0NANTKfj1NiJgIOhOMRF8TWToi
+ Fo9hMddf
+X-Proofpoint-GUID: KqSAF6gxIgiF3qJZ6X4fY-0NoVztpbUm
+X-Proofpoint-ORIG-GUID: KqSAF6gxIgiF3qJZ6X4fY-0NoVztpbUm
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-18_01,2025-09-18_02,2025-03-28_01
+ definitions=2025-09-18_02,2025-09-18_02,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  spamscore=0 impostorscore=0 bulkscore=0 suspectscore=0 clxscore=1015
  adultscore=0 priorityscore=1501 phishscore=0 malwarescore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509160202
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250918_083042_188608_BF07BFBA 
-X-CRM114-Status: GOOD (  12.03  )
+X-CRM114-CacheID: sfid-20250918_114214_473896_A20B48FF 
+X-CRM114-Status: GOOD (  16.16  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,20 +134,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-
-
-On 8/14/2025 3:19 AM, Rob Herring (Arm) wrote:
-> Use the newly added of_reserved_mem_region_to_resource() function to
-> handle "memory-region" properties.
+On 9/17/2025 10:22 PM, Vasanthakumar Thiagarajan wrote:
 > 
-> The error handling is a bit different for ath10k. "memory-region" is
-> optional, so failed lookup is not an error. But then an error in
-> of_address_to_resource() is treated as an error. However, that
-> distinction is not really important. Either the region is available
-> and usable or it is not. So now, it is just
-> of_reserved_mem_region_to_resource() which is checked for an error.
 > 
-> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> On 8/8/2025 8:48 PM, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> The leds-gpio traditionally takes a global gpio number in its platform
+>> data, but the number assigned here is not actually such a number but
+>> only meant to be used internally to this driver.
+>>
+>> As part of the kernel-wide cleanup of the old gpiolib interfaces, the
+>> 'gpio' number field is going away, so to keep ath10k building, move
+>> the assignment into a private structure instead.
+>>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/leds.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> wifi tag is missing in the patch title.
+> 
 
-Reviewed-by: Vasanthakumar Thiagarajan <vasanthakumar.thiagarajan@oss.qualcomm.com>
+I'll fix this when I apply the patch
 
