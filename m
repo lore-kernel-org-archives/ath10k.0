@@ -4,57 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0404ACAC5BB
-	for <ath10k@archiver.kernel.org>; Wed,  1 Oct 2025 06:23:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 769A2CAC5B8
+	for <ath10k@archiver.kernel.org>; Mon,  6 Oct 2025 16:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xdheHrQW9kxZXh8tDuztO/Q3VZmSSOhMglvh4bhim+o=; b=oPaHpcszNwB+mKrCVlLIBUWHtP
-	w64nIg52NH0SOcaDmaHTWLTjCEjJL9UgWbC2jKAzPU+DNRJBm0G+ZBgeOoAEQUr2c7YIcthTpOuyf
-	58f9zeVCxl6KYLHI6jlQzTDCHUliXXuFrzZl4LRyUFpHI3oT7rps2z5yFdKM3xCAfNrrgERgE7G0i
-	fOClDtMq09FEF3K0BusgsP1/NJU30/z5XWiTaiMQFzB21VyT+o6+UyWRPKwW9tmynp9wpJZoCcxpY
-	hfu2FoCB97a3NpIoH/ZP4T5sVvlpCQaH4/TV/zNMWdlYswWnOiOb4orXb5zycYldf1odrmgVB4xxt
-	I2z6ydug==;
+	bh=aCx5vCUHglohbFtZcwRnf+9BWw1KFYF96ZfRMd8b8e0=; b=Rz6K2jrLsH7/bGZJ8rElZcj28b
+	12G4g/2zyd/5CpVFlM45TLuxC62XOKfOBRv/69X2+JfILKNgDCC8+RBpEDYVv0+ybdi0eA+bv+7Vp
+	ur3v5oWwoKw7fvUY9z0O97iUhPMCEmIo4+GsYdpwuuupMT1m8W60RWRgvEoEege/eUzzhBJOAUnL6
+	gMYBEIipZo8iXizVK3eP60vsE9D/J6JfiRxC+OhdJvLeR/50Tc4Pomdqakm1AP0Y5kMaulwkWiWIh
+	qEwy5XSBRpBTVIweqAGDn3aMC/ymsjliwlz1ETrBL1HRHaBRLaZVl44O+Ng2uVCiOXxiUrHNT1Tcj
+	xIIeDNXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3qEq-00000006nWc-0AkI;
-	Wed, 01 Oct 2025 06:22:56 +0000
-Received: from mx3.molgen.mpg.de ([141.14.17.11])
+	id 1v5oRJ-00000000S0g-3DRC;
+	Mon, 06 Oct 2025 16:51:57 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3qEn-00000006nVO-0o11
+	id 1v5oRG-00000000Rz6-3Tqn
 	for ath10k@lists.infradead.org;
-	Wed, 01 Oct 2025 06:22:54 +0000
-Received: from [192.168.2.212] (p57bd9782.dip0.t-ipconnect.de [87.189.151.130])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id CBA3D6028F357;
-	Wed, 01 Oct 2025 08:22:38 +0200 (CEST)
-Message-ID: <73fdb56c-df62-4576-8602-fb330cac0dd7@molgen.mpg.de>
-Date: Wed, 1 Oct 2025 08:22:37 +0200
+	Mon, 06 Oct 2025 16:51:56 +0000
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 596E7VuB012993
+	for <ath10k@lists.infradead.org>; Mon, 6 Oct 2025 16:51:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	aCx5vCUHglohbFtZcwRnf+9BWw1KFYF96ZfRMd8b8e0=; b=hx7D1XsHjCv39C4W
+	CEJCdZg4wawRx/rAy+XwOXJfKjLtnSOjh5QrLdsKBW7S4Z6A6NBQmFrIkhUi/6qw
+	sLM/e+huxK+FWs927m8kmqbcD9Z8zyFctqX6NmC/Fn12Rx0WBuzhJcaMxgGSvzHM
+	D8Fm47Qa6KFGcJXzJKcB7V6/ISlmBIwA58KERmTP0HNA4nooGjRe7TxgyZTdUhXN
+	Di6t9lbE9IHW0j9+P5OtM/dTU2itDNzqNvyEBoD9M/N8MmPnKuul/x3kwzKXuzFH
+	elevAkZzWekMCL5Ve2EQwmHd8k/tZkyrCj5GjDVQK3fZkLvlfaQndllPtcJw36kK
+	qXGDew==
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 49js9dvqrb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Mon, 06 Oct 2025 16:51:53 +0000 (GMT)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-781269a9049so8696170b3a.2
+        for <ath10k@lists.infradead.org>; Mon, 06 Oct 2025 09:51:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759769513; x=1760374313;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aCx5vCUHglohbFtZcwRnf+9BWw1KFYF96ZfRMd8b8e0=;
+        b=YDVqpwWAiy2fT4BowwPdZfU2f54W6q6vSxb1VQw2r8HE/x4ZHZiuvwzYRPC6mhbaNi
+         CEcBsc2AzS7MQr1xOYGRmfKvfP1CNX1p6Cm6asXQvuh5tGYy3u0Ib7Q1HBvmC+1fenWn
+         mKEvPXjcgwbGuPtsLmDEXZuhc89wVz4ETMTLbulW9d3pDF655qUMH+r0ZkqsNGXSuOmF
+         GfphcBcTa6XzG+2Qo3mBnWP2CH3hBqtcRYWp9VxnHKWFh8mspoEusM9XpzE9xhMHVPKO
+         EPxGQoVFuJoEVIR2N7RVZB7UkkqOg7reMGIvv7ISz2azLQebHKYmaDSa/ya1kf0rx4x/
+         4U2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVcPmjHC2eCC0gwpIfOlztdXIhk2Tq5WnaOLmYoAQKlgilWmCetuIVrswB5kIpVryd2o2dgaNI=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx7I6ogI9QUAJjli+CSJBXcK1PdhEVKGYMeiT+ZEznqklxL8VqQ
+	vWskyEGbR4XFcIvMxJYoGAOFAFhIY40SafbzlOYTA4dAzC89trrF0wOEnhBA+ZMNa/1j38/mcqt
+	UJzl0Sn9rGE/eb4W3P9RVK6WqMaXU6aiTbp8xPkycnIiBFr+NXyDC6NwuqMZSh72q
+X-Gm-Gg: ASbGncvF2xlswavc6sgzUVsz592wyzULGVcrEBFc5/e6hw78pXDz/Vo7nEisF1yIkTz
+	i09Yf2udxiJRCEqpv03iNRQFJ/liyHnp1a0ClgyF0xa1HmIvXMQSAR4O1ybVhn6VaZHXBe4l0Zy
+	FJzLsNzul0vbbLfBPuiImpiJp6HkTmWqaKlVCKhnK6Xwsf7NKNy+fjneQU3brPjByOofkV/0fT2
+	e/eNgudBv47Gy37ZbFoBg5uE0D/dzDQcPZlmByytwwziSWdcyfZN85rN6vvs27R/bXi51OgINbE
+	BVIdzS6mnQ7x8V4kUxKeGOZl/Ctgs0xaqi2hpJ5EmeuQZJmzwH2JC286c2mLIrCRjYXchXP49r3
+	5wf1lDQ==
+X-Received: by 2002:a05:6a00:cc3:b0:77c:6621:6168 with SMTP id d2e1a72fcca58-78c98cfe33cmr12970352b3a.30.1759769512650;
+        Mon, 06 Oct 2025 09:51:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEjnzLkv6OnvbfH2XheORbcoIkytkatzvBBOtJvnWxceAZbgVilRU6aprK7/tQRV5PadLpY+w==
+X-Received: by 2002:a05:6a00:cc3:b0:77c:6621:6168 with SMTP id d2e1a72fcca58-78c98cfe33cmr12970329b3a.30.1759769512183;
+        Mon, 06 Oct 2025 09:51:52 -0700 (PDT)
+Received: from [169.254.0.1] (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-78b0205336csm13293176b3a.45.2025.10.06.09.51.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Oct 2025 09:51:51 -0700 (PDT)
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+To: jjohnson@kernel.org, kvalo@qca.qualcomm.com,
+        Loic Poulain <loic.poulain@oss.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+In-Reply-To: <20250926195656.187970-1-loic.poulain@oss.qualcomm.com>
+References: <20250926195656.187970-1-loic.poulain@oss.qualcomm.com>
+Subject: Re: [PATCH ath-current v2] wifi: ath10k: Fix memory leak on
+ unsupported WMI command
+Message-Id: <175976951148.3451922.9085792171850947526.b4-ty@oss.qualcomm.com>
+Date: Mon, 06 Oct 2025 09:51:51 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH ath-next] wifi: ath10k: avoid unnecessary wait for service
- ready message
-To: Baochen Qiang <baochen.qiang@oss.qualcomm.com>,
- Jeff Johnson <jjohnson@kernel.org>, Kalle Valo <kvalo@kernel.org>,
- Baochen Qiang <quic_bqiang@quicinc.com>
-Cc: Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
- linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20250811-ath10k-avoid-unnecessary-wait-v1-1-db2deb87c39b@oss.qualcomm.com>
-Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20250811-ath10k-avoid-unnecessary-wait-v1-1-db2deb87c39b@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.3
+X-Authority-Analysis: v=2.4 cv=Hrl72kTS c=1 sm=1 tr=0 ts=68e3f3a9 cx=c_pps
+ a=m5Vt/hrsBiPMCU0y4gIsQw==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=EUspDBNiAAAA:8 a=wXeUjoMwVmF5acqhv3kA:9
+ a=QEXdDO2ut3YA:10 a=IoOABgeZipijB_acs4fv:22
+X-Proofpoint-GUID: i69eBXIZDPOJVxhQzfa4Cpq4qH5QGMd0
+X-Proofpoint-ORIG-GUID: i69eBXIZDPOJVxhQzfa4Cpq4qH5QGMd0
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDA0MDAwNCBTYWx0ZWRfX1RINGYCh7kRq
+ ZU3tZe777YkJ0yItcuX6FQayKVvdb5Hqr/ALly2wuFTUDNEpcIXreu7INEl3EGTgh8SOeilrWmL
+ 2pQSpy7MXV9BoOpTNcdXXiTJhUuhXPoX2wNdkXAzA6116G3phPs0q1X33YOxTw8Jtm9cEgrd2Pi
+ sNnIsVwLDdgGlWziJRSdiFeYzp2rpssKxvft2lfq7EoxUMfxSGNP7vA1K5WFjZcPJDTcpeiBarO
+ X58R7Sgpa1I355ijz03OQg1r2ZHZ4ywGnSziQu6n2tA771BflGlqQW0z38MycfGi8ZsMDqS0p9m
+ fnaIqqBielN5A/IlOn805j83XLf5Wmrb2TzSvnCn+F+A9P0wJo+LvI2zOt9s9EUeihTZQJaU2xG
+ cHUGY3w0o77lh6wDruxmt1ONP2uT3Q==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-06_05,2025-10-06_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 phishscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
+ bulkscore=0 priorityscore=1501 malwarescore=0 impostorscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2509150000 definitions=main-2510040004
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250930_232253_379062_68251D62 
-X-CRM114-Status: GOOD (  22.17  )
+X-CRM114-CacheID: sfid-20251006_095154_878054_ADADC9B9 
+X-CRM114-Status: UNSURE (   9.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,100 +130,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dear Baochen,
 
-
-Thank you for your patch, and sorry for the late reply.
-
-
-Am 11.08.25 um 11:26 schrieb Baochen Qiang:
-> Commit e57b7d62a1b2 ("wifi: ath10k: poll service ready message before
-> failing") works around the failure in waiting for the service ready
-> message by active polling. Note the polling is triggered after initial
-> wait timeout, which means that the wait-till-timeout can not be avoided
-> even the message is ready.
+On Fri, 26 Sep 2025 21:56:56 +0200, Loic Poulain wrote:
+> ath10k_wmi_cmd_send takes ownership of the passed buffer (skb) and has the
+> responsibility to release it in case of error. This patch fixes missing
+> free in case of early error due to unhandled WMI command ID.
 > 
-> A possible fix is to do polling once before wait as well, however this
-> can not handle the race that the message arrives right after polling.
-> So the solution is to do periodic polling until timeout.
+> Tested-on: WCN3990 hw1.0 WLAN.HL.3.3.7.c2-00931-QCAHLSWMTPLZ-1
 > 
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00309-QCARMSWPZ-1
 > 
-> Fixes: e57b7d62a1b2 ("wifi: ath10k: poll service ready message before failing")
-> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> Closes: https://lore.kernel.org/all/97a15967-5518-4731-a8ff-d43ff7f437b0@molgen.mpg.de
-> Signed-off-by: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/ath10k/wmi.c | 39 +++++++++++++++++------------------
->   1 file changed, 19 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index cb8ae751eb312109f74985580065c3b9d3806d51..e595b0979a56d3110ce0acf534e718a4a1f36a0b 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -1764,33 +1764,32 @@ void ath10k_wmi_put_wmi_channel(struct ath10k *ar, struct wmi_channel *ch,
->   
->   int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
->   {
-> +	unsigned long timeout = jiffies + WMI_SERVICE_READY_TIMEOUT_HZ;
->   	unsigned long time_left, i;
->   
-> -	time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
-> -						WMI_SERVICE_READY_TIMEOUT_HZ);
-> -	if (!time_left) {
-> -		/* Sometimes the PCI HIF doesn't receive interrupt
-> -		 * for the service ready message even if the buffer
-> -		 * was completed. PCIe sniffer shows that it's
-> -		 * because the corresponding CE ring doesn't fires
-> -		 * it. Workaround here by polling CE rings once.
-> -		 */
-> -		ath10k_warn(ar, "failed to receive service ready completion, polling..\n");
-> -
-> +	/* Sometimes the PCI HIF doesn't receive interrupt
-> +	 * for the service ready message even if the buffer
-> +	 * was completed. PCIe sniffer shows that it's
-> +	 * because the corresponding CE ring doesn't fires
-> +	 * it. Workaround here by polling CE rings. Since
-> +	 * the message could arrive at any time, continue
-> +	 * polling until timeout.
+> [...]
 
-I would have also re-flowed the comment to make it take up less lines.
+Applied, thanks!
 
-> +	 */
-> +	do {
->   		for (i = 0; i < CE_COUNT; i++)
->   			ath10k_hif_send_complete_check(ar, i, 1);
->   
-> +		/* The 100 ms granularity is a tradeoff considering scheduler
-> +		 * overhead and response latency
-> +		 */
->   		time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
-> -							WMI_SERVICE_READY_TIMEOUT_HZ);
-> -		if (!time_left) {
-> -			ath10k_warn(ar, "polling timed out\n");
-> -			return -ETIMEDOUT;
-> -		}
-> -
-> -		ath10k_warn(ar, "service ready completion received, continuing normally\n");
-> -	}
-> +							msecs_to_jiffies(100));
-> +		if (time_left)
-> +			return 0;
-> +	} while (time_before(jiffies, timeout));
->   
-> -	return 0;
-> +	ath10k_warn(ar, "failed to receive service ready completion\n");
-> +	return -ETIMEDOUT;
->   }
->   
->   int ath10k_wmi_wait_for_unified_ready(struct ath10k *ar)
+[1/1] wifi: ath10k: Fix memory leak on unsupported WMI command
+      commit: 2e9c1da4ee9d0acfca2e0a3d78f3d8cb5802da1b
 
-Great to have this improved upstream!
+Best regards,
+-- 
+Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-
-
-Kind regards,
-
-Paul
 
