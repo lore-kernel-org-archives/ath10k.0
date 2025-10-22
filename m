@@ -4,97 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97D6CCCD1BB
-	for <ath10k@archiver.kernel.org>; Wed, 22 Oct 2025 17:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E924CCD1AB
+	for <ath10k@archiver.kernel.org>; Wed, 22 Oct 2025 17:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1nFCN9pLEfI7dNTPvL0mUSRHrfYXPoZtHDehAzFK4eA=; b=ooeuJ4ciFzMb0tkN1uQFdJRBAA
-	xDXIfC5FBrBQziTv/uDeUqp56T2CyRuUEKblnNhpyTzztnapY+NDxvSu0slMWVmf+ThHlnUJRQT3K
-	EBpoLLODhdSRbnp1aQz4irDAzd2M0OEyae3u0reedYFPluaWz5dsmKNy+8hj9ilFXiB899uLcIWZm
-	5yujFkrPKIIVrjD1n5883Gpl74rZ4J5E+U63ZIkyedToZuvswfo/f/xVqr36ZXrYbjGfKaA/tWxYd
-	hUcLQ4mGYQwKZx+wdLXkGQmhYZ0TzVnzF5BgwRiibP+4tl/QIJoCHo0yyeG3J9VbTWxyQG4LHjxaE
-	UkCnHVzg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=YVTDxUa5MCBjwGzNjh1dYppHFtbwKyHbDkblvk32S5U=; b=3twvoDCRckjmRfbgM/ci51i0vM
+	gw4xy58yS6C/BAWDnW95yVZAm/jGoHxK1vDZu5IGzPyry5ymJ7Frm3ZD4kti29SO56T1RshSLmcNK
+	y2YDidvfThM2owjrk1U70IKStWnQNZ/s8GwdPfHR90tt6TVAuYh7rcYnLo/LXG0YQZ78KivRPSayB
+	+RjLjOEiee6bjZ5m2ddkoi3FWSLKcvoajhjFxJA2H9ffgZvFozEELs45M82PMsAk5NWNGHw5mv8in
+	633u20bDDoRSRWJl8rGEByvysFUIe4JE43j6cMgykQMZT1U9BSYlP4WPrxX7iUJCKvmcEaAdV7VBd
+	+ld4U00g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vBcfc-00000003nIe-1F8z;
-	Wed, 22 Oct 2025 17:30:44 +0000
-Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
+	id 1vBd7J-00000003v6G-1qBA;
+	Wed, 22 Oct 2025 17:59:21 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vBcfZ-00000003nI5-2nYo
+	id 1vBd7G-00000003v5o-3UJZ
 	for ath10k@lists.infradead.org;
-	Wed, 22 Oct 2025 17:30:42 +0000
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-427091cd4fdso3541067f8f.1
-        for <ath10k@lists.infradead.org>; Wed, 22 Oct 2025 10:30:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761154239; x=1761759039; darn=lists.infradead.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1nFCN9pLEfI7dNTPvL0mUSRHrfYXPoZtHDehAzFK4eA=;
-        b=GO6n2O6VWBKEyGYpdzNUHHKVJRG/3qReK7FwvHDmfgwNpO5zzrB5s2PQQS/EDp6WmF
-         NfxbOMRApR257+qymxWYEbokmoaGDXVLwqgmNw620KmyTrOfERvNSXcc8ypaRPYkkKVg
-         N3ofCMFWMNsDQjTmM5CKy0YYXLazZsCKw2iw5O/IXkBGXXKp3SNfOlGeLp0wzws/EzbA
-         RyEj38uQhqE8emIORrQDSmqQpCVBBKgDrdnTk4ICF3tlRXCYuPDv80Wa5HXYd0ANXFzM
-         YTlpXV/8GyAa/70Q8Xx3kJ9vSVDM1FpLA0DlYPB7TkaYd95Is353Sa5qPEgclzj2i1G7
-         FcBg==
+	Wed, 22 Oct 2025 17:59:20 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59MA5R3i020184
+	for <ath10k@lists.infradead.org>; Wed, 22 Oct 2025 17:59:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	YVTDxUa5MCBjwGzNjh1dYppHFtbwKyHbDkblvk32S5U=; b=nobq8lgHykBF7Ui0
+	92NzON6L1iETVxwcgtgXraWJbEsEE5sP/u2wOpHRSstUolkxBNli6Jc/cs5nwJzn
+	GTwXyoWVaDp3q6BbUTJJGcWlhq8vER92w9+mZIsYkFzNhZYMGBZZjFgPAdkb6fs+
+	rB1ypcz/j6VLBy9j+1Nwds54Maosf0nAyw9813lzdJVknBmjubMdP8TVDwa9AHSb
+	1WaBFruQcdMuwmU9mwHdtt5pA4+x+pUh4k4IZZi7oGKTmOVF/UxYmdqSgOHj3pQP
+	cBWMDs0oelx3qCnK2Co1uJs/MQvPS3K3zeu4D0QgNKHnbhcoRf6TxQ2UXp2vKSU8
+	eR8geQ==
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 49v3445ncw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Wed, 22 Oct 2025 17:59:18 +0000 (GMT)
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-798920399a6so1186336b3a.0
+        for <ath10k@lists.infradead.org>; Wed, 22 Oct 2025 10:59:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761154239; x=1761759039;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1nFCN9pLEfI7dNTPvL0mUSRHrfYXPoZtHDehAzFK4eA=;
-        b=QCJVVng4sL5W8OIcdeLZG8Z6mfFVp/BcBJsY9EflM9T+nXdlNGFtobmGc95BNUfnO1
-         wXlX7+Q9mehkL0S67TxhIc/tFDUU7Dg3PEEizLQE6EEzVTrRfsiiDOBaYJLpOIJ2c8LS
-         M1mlAvfZDdqq/3vxodN2sVIcaVaP56IAQ+hFgWFHr9CB41r5/p9X4bvV67Doc1UvtpwW
-         Lm6vqHKL8VMZnSDPCGMSyN3qMIdq0tqIGmjHtfcIXRYcwKQt+SNoMi54XgEcJMcPSLb0
-         jm+s1HEXGId9wmWAqr93S4WnCyhrNPYt/JWvAgcnKVyGp1gojQxn3ZyJE/Y7p7v9b2iA
-         qRdA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKB8IzhAM/INIcDUWTIkJGzI9yb6YxunkRc6b4AuyEretmSAXqLPx+u2FulexK12EO+T4uxv4=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx57amo+41YHRJXO2SjVZ7xYlKv5KzIorNcfbFC9tMjBPzi8jZn
-	j93mHUw5E1Oa6vcdqcFgZ0mhaSArr1PxpVhdtKe71qp9Z78iH9XB/s9T
-X-Gm-Gg: ASbGncv19tcvcS0GwnlUyRgJqTejfLi6CpoDBjJ607xqyy10MkEvO/EVt+aYmF5LyYX
-	4HfCNYkizKicI/ANM52CGR+PvcM9smEfQx4gCbK1NQ94tauTeHjxMBxLVeoq82deZBlA34haJCe
-	RUxB07DRaUo8A53VC4YZKc5CK9fz2QE92AwlGmVFYRgldqtWpmAtbiCqU87O1ZZLLFJ1QTSGM6k
-	vKNChKIuzNc2DrEwMH5212nDPB6B6e7cVU53z5h9Plqm17m1eTups4hhfxR+Nv4xdJbJWw8d+LA
-	g9XMi0UeX9CFqe0kExvqcbUvgqyM8XjFY4yDGJ5ahGrYeeiKQ2x16CJzpj1IDVJr/MXUnN1ci+L
-	tr8FblhNsS/E4RGQahNkQVsyr4zSM2iB69LgDL2Ra8ITpzGyWT8gbQU6PED5QfR22GwUfioAZOS
-	BLnWS51+qEZ44sxQq818YjRjXwFhAyrKGiP2B19nP+iwZsOhLuFRGqwSeSwQ==
-X-Google-Smtp-Source: AGHT+IGpzLyeFOtu3WGWo07Zjf+OlCN6M5eusYAHPhvOlsQ5WxNrnoYQLWAS9/q733puojsFm3TO7g==
-X-Received: by 2002:adf:e19a:0:b0:427:613:7772 with SMTP id ffacd0b85a97d-42706137842mr12906996f8f.32.1761154239253;
-        Wed, 22 Oct 2025 10:30:39 -0700 (PDT)
-Received: from ?IPv6:2a02:168:6806:0:5a8f:8582:c21f:f389? ([2a02:168:6806:0:5a8f:8582:c21f:f389])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-427ea5b3c56sm26280266f8f.18.2025.10.22.10.30.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 10:30:38 -0700 (PDT)
-Message-ID: <68dd3d93509b627dbdf907332a703443f46aff6c.camel@gmail.com>
-Subject: Re: [REGRESSION] ath10k fails initialization, bisected to "wifi:
- ath10k: avoid unnecessary wait for service ready message"
-From: Klaus Kudielka <klaus.kudielka@gmail.com>
-To: Baochen Qiang <baochen.qiang@oss.qualcomm.com>, Jeff Johnson	
- <jeff.johnson@oss.qualcomm.com>, Jeff Johnson <jjohnson@kernel.org>, Kalle
- Valo	 <kvalo@kernel.org>, Baochen Qiang <quic_bqiang@quicinc.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>, 
-	regressions@lists.linux.dev
-Date: Wed, 22 Oct 2025 19:30:38 +0200
-In-Reply-To: <5466e122-9143-482e-a9ab-7f956e19bf86@oss.qualcomm.com>
-References: <20250811-ath10k-avoid-unnecessary-wait-v1-1-db2deb87c39b@oss.qualcomm.com>
-	 <175823924851.3217488.17742065327824732992.b4-ty@oss.qualcomm.com>
-	 <6d41bc00602c33ffbf68781f563ff2e6c6915a3e.camel@gmail.com>
-	 <76d4235d-db4e-40f4-9ede-8cb536b82fbd@oss.qualcomm.com>
-	 <10919281648e306fd3f6713437b4793c50bb6692.camel@gmail.com>
-	 <5466e122-9143-482e-a9ab-7f956e19bf86@oss.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2-5 
+        d=1e100.net; s=20230601; t=1761155957; x=1761760757;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YVTDxUa5MCBjwGzNjh1dYppHFtbwKyHbDkblvk32S5U=;
+        b=nMddXb5Da+Gb2xezr2dTScUACgGQEd/X/r0cIgu5ttot7Jle5oW2GF0NdB9yJKJs4/
+         dF96k1l1eLeC5MdgQSs5Okyajn5hHZ97gKN/vZSsw6FJL2hHo8g05aEGUKfIR2D1DwfI
+         RoJa0mlPTAkh2IBD0AX2wV7DErdFkMb5lvkNr/H3BTAKHUKwL8iEVuxRvu8rdd8PGBKx
+         1hqJ57DB2C0VOoajlonwRVl5yw+a3zzjRM7Fw1iyyqw5jgokQjtweQUmIcY/jdpivxqo
+         EeP9IDBAfKUBWuwjmWwyfWV0koKx/vIeCAt1C2b9RzcFDOY1H9jZ8nRerkRmg0vko/bi
+         Vz7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXKgpeJF8B2dKkfKNYrvd9HZy6ntK1u/CgBfFklgGvUtob4x5ADn/ZjhNRJiVWp1JLaKh/pLLY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YywV5fNIE5p+6bWoXMBcn7pDykNLQJ58Ud3EC50iadkqM6MNxRW
+	cFHgdgB1KYqZCnuBEYtB3K6HsRzi9AZD230i5n5gnp9R00Tpd8Mt9TzBYmipnD1ETThaLlk2Psr
+	FjxO70v7Q8lfCxoTghywiDullFU18tFmaBXGavHpOkRH3ufz8bAHpkJioNQ86OEGK
+X-Gm-Gg: ASbGncs95LB39TAUThe/amAf6/IuhnsxmiW1hwpx8VKMIPtZbXndDpIuus5a1KeIYur
+	mop90FssOhMvgRbNW+/b3HxviBAsRqvrF7BbjOQklVAuqb8ssn7pDnZktUUwiNyAoXFBPi6+ObT
+	RDLykrNnLSyUbN/teKX4aV734gmITjRqcTrzixzQrvInXt9LK2QvN8gYEjHSDazSHFAhAoiZYZk
+	Sff0o7a0i0CGwSd69TEXx29/Is3Wbs0t15Pa3iTmm6pUFu8RJFGbd3lPFI2HBkjYzmiCvgvtRpp
+	qzXQlyL5MB4KB75x2A0JHkgt45TLUcjf+G/fruwR42gpjnP1y6kFHe2BkPFsCw33PQmlUREc8mE
+	0McnkNpPYhzcll68FpW1XVZBb9P02vfdnxyk=
+X-Received: by 2002:a05:6a21:6d9c:b0:339:bdbe:df98 with SMTP id adf61e73a8af0-33aa81c4325mr5628878637.28.1761155957190;
+        Wed, 22 Oct 2025 10:59:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH5y3u0xzYCHWDSlNnoOWL1sz7J3kf4Fz0/YdQwwpxY8t+Cj2GW2WwYobgvQLg6BVs7jiFv3w==
+X-Received: by 2002:a05:6a21:6d9c:b0:339:bdbe:df98 with SMTP id adf61e73a8af0-33aa81c4325mr5628842637.28.1761155956737;
+        Wed, 22 Oct 2025 10:59:16 -0700 (PDT)
+Received: from [10.81.24.74] (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a2301230bdsm15132413b3a.75.2025.10.22.10.59.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Oct 2025 10:59:16 -0700 (PDT)
+Message-ID: <28db1c63-c87d-41fb-aeb7-9cce0f083f2d@oss.qualcomm.com>
+Date: Wed, 22 Oct 2025 10:59:15 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] wifi: ath10k: Removed atomic iteration in bitrate
+ mask clear.
+To: Rory Little <rory@candelatech.com>, johannes@sipsolutions.net,
+        Loic Poulain <loic.poulain@oss.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+References: <20240806004024.2014080-1-rory@candelatech.com>
+ <20240806004024.2014080-3-rory@candelatech.com>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20240806004024.2014080-3-rory@candelatech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: EWeEuXn2RJ2R14I0gig9Rze350deesv4
+X-Proofpoint-ORIG-GUID: EWeEuXn2RJ2R14I0gig9Rze350deesv4
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMyBTYWx0ZWRfX74eWiNcjem9B
+ tb5sJRAzPn+vr64xjzwzp6eCWiP+F0rOfNlIDxq9sFkGtTm2rhYDkBNecqhuIECMQ9wX4/AvSbK
+ ugVsamMfoKSnftubd+aUCjWSoyVh5bTccDN6l/uhvoOFr/876FSLY5WyvPJYjGkherNj29OMzLt
+ sEIjj7JmS2hemIWWvR0bQZBPS1CzYneZ023O3Gt53RFw3D/oSTbk+dsbgnjFHZdrW9fX7chQ3s9
+ KOIwnyH52W/Wi5yj6lSRDWiV5P/0UTPoejLS63Dj3KUF5pBOxRMHmz0sYRhhAk9OMzpwhYJhDPU
+ PssOGSLKFI+kC1Lb4ef6IRJ5qJWfB0GVF1TbGPjTUyke26IWX2eSurw/pRDjQSnhtjzXeTGjsjs
+ /eKgYYdJEFfb7cfjQns5Nqrc9g7SNg==
+X-Authority-Analysis: v=2.4 cv=E/vAZKdl c=1 sm=1 tr=0 ts=68f91b76 cx=c_pps
+ a=rEQLjTOiSrHUhVqRoksmgQ==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=uYVGJH5IAAAA:8 a=I2mjh__s8OsZQkTd-rwA:9 a=QEXdDO2ut3YA:10
+ a=2VI0MkxyNR6bbpdq8BZq:22 a=ZkEWZNUrOYKkpCLSUeX7:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-22_07,2025-10-22_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 spamscore=0 priorityscore=1501 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510020000 definitions=main-2510180023
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251022_103041_734107_BB014BEA 
-X-CRM114-Status: GOOD (  12.51  )
+X-CRM114-CacheID: sfid-20251022_105918_876781_DE8ED642 
+X-CRM114-Status: GOOD (  16.80  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,96 +132,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2025-10-22 at 16:00 +0800, Baochen Qiang wrote:
-> Thank you Klaus, can you please try if below diff can fix this regression=
-?
->=20
-> diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/=
-ath/ath10k/ce.c
-> index 7bbda46cfd93..1a981d333b5c 100644
-> --- a/drivers/net/wireless/ath/ath10k/ce.c
-> +++ b/drivers/net/wireless/ath/ath10k/ce.c
-> @@ -1256,6 +1256,19 @@ void ath10k_ce_per_engine_service(struct ath10k *a=
-r, unsigned int
-> ce_id)
-> =C2=A0}
-> =C2=A0EXPORT_SYMBOL(ath10k_ce_per_engine_service);
->=20
-> +void ath10k_ce_per_engine_check(struct ath10k *ar, unsigned int ce_id)
-> +{
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ath10k_ce *ce =3D ath10k_ce_=
-priv(ar);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ath10k_ce_pipe *ce_state =3D=
- &ce->ce_states[ce_id];
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ce_state->recv_cb)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 ce_state->recv_cb(ce_state);
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ce_state->send_cb)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 ce_state->send_cb(ce_state);
-> +}
-> +EXPORT_SYMBOL(ath10k_ce_per_engine_check);
-> +
-> =C2=A0/*
-> =C2=A0 * Handler for per-engine interrupts on ALL active CEs.
-> =C2=A0 * This is used in cases where the system is sharing a
-> diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/=
-ath/ath10k/ce.h
-> index 27367bd64e95..9923530e51eb 100644
-> --- a/drivers/net/wireless/ath/ath10k/ce.h
-> +++ b/drivers/net/wireless/ath/ath10k/ce.h
-> @@ -255,6 +255,7 @@ int ath10k_ce_cancel_send_next(struct ath10k_ce_pipe =
-*ce_state,
-> =C2=A0/*=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DCE Interrup=
-t Handlers=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D*/
-> =C2=A0void ath10k_ce_per_engine_service_any(struct ath10k *ar);
-> =C2=A0void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int c=
-e_id);
-> +void ath10k_ce_per_engine_check(struct ath10k *ar, unsigned int ce_id);
-> =C2=A0void ath10k_ce_disable_interrupt(struct ath10k *ar, int ce_id);
-> =C2=A0void ath10k_ce_disable_interrupts(struct ath10k *ar);
-> =C2=A0void ath10k_ce_enable_interrupt(struct ath10k *ar, int ce_id);
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless=
-/ath/ath10k/pci.c
-> index 97b49bf4ad80..ce8e0c2fb975 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.c
-> +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> @@ -1812,7 +1812,7 @@ void ath10k_pci_hif_send_complete_check(struct ath1=
-0k *ar, u8 pipe,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 if (resources > (ar_pci->attr[pipe].src_nentries >> 1))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ath10k_ce_per_engine_service(ar, pi=
-pe);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ath10k_ce_per_engine_check(ar, pipe=
-);
-> =C2=A0}
->=20
-> =C2=A0static void ath10k_pci_rx_retry_sync(struct ath10k *ar)
->=20
->=20
+On 8/5/24 17:40, Rory Little wrote:
+> This operation requires some blocking calls, which causes issues when
+> attempting to guard this iteration's critical section with an RCU lock.
+> Instead, we will take advantage of the held wiphy mutex to protect this
+> operation.
+> 
+> Signed-off-by: Rory Little <rory@candelatech.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 7579a1cd7d15..a1a13b9ad465 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -9502,9 +9502,9 @@ static int ath10k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
+>  			     ar->normal_mode_fw.fw_file.fw_features);
+>  	if (allow_pfr) {
+>  		mutex_lock(&ar->conf_mutex);
+> -		ieee80211_iterate_stations_atomic(ar->hw,
+> -						  ath10k_mac_clr_bitrate_mask_iter,
+> -						  arvif);
+> +		ieee80211_iterate_stations_mtx(ar->hw,
+> +					       ath10k_mac_clr_bitrate_mask_iter,
+> +					       arvif);
+>  		mutex_unlock(&ar->conf_mutex);
+>  	}
+>  
 
-Thanks for looking into this.
-I applied that patch on top of current mainline, but unfortunately the resu=
-lt is still the same:
++ ath10k list
 
-[    6.094149] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mod=
-e 0 reset_mode 0
-[    6.241457] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chi=
-p_id 0x043202ff sub 0000:0000
-[    6.241476] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 0 tracing 0=
- dfs 1 testmode 0
-[    6.242901] ath10k_pci 0000:02:00.0: firmware ver 10.2.4-1.0-00047 api 5=
- features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 35bd9258
-[    6.309202] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 b=
-ebc7c08
-[   12.509266] ath10k_pci 0000:02:00.0: wmi unified ready event not receive=
-d
-[   12.581057] ath10k_pci 0000:02:00.0: could not init core (-110)
-[   12.587057] ath10k_pci 0000:02:00.0: could not probe fw (-110)
+This was deferred back when Kalle was maintainer, and I'm now revisiting the backlog.
+Is this still needed? And if so, is there a reason why the other instance of
+ieee80211_iterate_stations_atomic() (which sets the mask) does not need to be
+modified?
 
+/jeff
 
