@@ -4,143 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58D77CCF9F0
-	for <ath10k@archiver.kernel.org>; Thu, 30 Oct 2025 21:57:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D26AACCF9F8
+	for <ath10k@archiver.kernel.org>; Fri, 31 Oct 2025 11:17:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=x0YbvCREchJI8qwKRV6FazI6CbTuSXVx8wiILVgQiUY=; b=mpYryIAGsVJ5+C47+2ZPs/j8Z5
-	EOFbg+H2DZh05qdDzN/XAo37T5DuPM19x1W0azRl2TGljJWvFtXlUzbav73OlwDDs2eUNPDX+FJ/Y
-	N6YfpmLYmpenSAiS5/0wp+YL/c/kxkcVrTwJSEkcu4jyirLbY6i13F4WeaJYTKfmZgMWvHTKrxAEQ
-	3Cu5OW9Sl3+9d1czCrI3B8T5Wg302G9sTHdHmBFbTH4fz1Dytrn8eLVJ97XZAoYQ9utoCoTt3DOdO
-	/2+zRWA52C8p0mjm3BHoa4naV9vyTBv2FdpLvIdBsmQw6+DhgI9EluB95NuWRud4I/liFV/nXGn7U
-	TBCnNe7Q==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=+e+UAk578qZgTiUOAdHLd6XVTShCxhiEWjVV/FznGz0=; b=zjgjXfODmlXfeWYCEd/5KLZdMl
+	HhDkq9cyNjS5EKQElpY+SlY5SnuC3Lpm40Aqidb+tQBVN2RdVnOcRwR4IeBe5+rzb2Kr+8dR8Z/vC
+	j/4GJ4FaQj25jh2bsqIjiFtHU85X8OdBYfLeDnspYrwuYCs+i5YIX/BHry5y2U/AXi2snyXiqIWUM
+	XEDhphVGe19dxW+Fj92dd166/4KOTCueD3745/K11JZ1WxicPoWI9JxY6Ca0Vuy/KpjWaVr1QnAnw
+	8xEzYyRKtgaruAwpBzZDpncTOc9h9ahm1DfwMSONV56hRrW7hO1vO++Y/UgFkS7F4ygrPP0+eXdU8
+	oeOlCRfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEaeX-00000004zqx-1iVF;
-	Thu, 30 Oct 2025 21:57:53 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vEn8Y-0000000609x-2BGz;
+	Fri, 31 Oct 2025 11:17:42 +0000
+Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEaeV-00000004zpo-2d2m
-	for ath10k@bombadil.infradead.org;
-	Thu, 30 Oct 2025 21:57:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=x0YbvCREchJI8qwKRV6FazI6CbTuSXVx8wiILVgQiUY=; b=I6MbT8MxOnByEhrEn9m6RxahpF
-	cYGMC0bia0ayHXgjKQmLZDx3A7fvyMpg7QgyvYL9WK0xizu0jHjt8HiVB7DNrOZzINxOiz8a7NSPQ
-	dT2/8wCZew7Ymk/402C6TxkiFnmF2TSAVqcYmTy3BNIKoIo6MmOamQ4yNi6Ua2uj3LNa//hwO8KF7
-	CSibm8nr/bpXVMEqW6627wk+8Twb+1P11YtTQFL8rCOoQEAR8JcaW6AUQbTT+9eaYOw//YMs3x16i
-	Ey/trihUT3juOyxVRYBt36Myc7Pm910HQi/L+n5+juqSQkB+guMkgCDd2hrFScj4DTZrCwm9zv8Sh
-	h2TBd41g==;
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEZmi-0000000A5Je-1DVa
+	id 1vEn8W-00000006099-1R2Y
 	for ath10k@lists.infradead.org;
-	Thu, 30 Oct 2025 21:02:19 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 59UKsFn4832599
-	for <ath10k@lists.infradead.org>; Thu, 30 Oct 2025 21:57:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	x0YbvCREchJI8qwKRV6FazI6CbTuSXVx8wiILVgQiUY=; b=L0gi37WuTWX/M0DS
-	WKeZTDhKeqPTxyhbCh1kKdLj3LUtTKvV85X3Aeclk7kdBFDfxD4wP6wTWACykjxQ
-	Lzmuh1d68uhI0eCTGiqkLMz/7hg4WxFW/xObxjHn1dinfhjQe/sVGR/OUCtqgWFH
-	xHmri/ehfr3SbJODpCE7k13yPfMB27c8HUchJO/s+hKjkrDy36Dxz3XySJPGL3Wp
-	YFPR0av6Cd1SJF1cwIB6oYztZQ015lJHJFA5nmznPdr60XYFpvwn2+LNltrHHh1T
-	FO8/TLqFRSW0c1kkedY5cPR6U7cU/M1HLDUYRDpHeV4Aig6b9bH5ZQNdNiefdCR4
-	siXPYg==
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4a4ffb04uy-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Thu, 30 Oct 2025 21:57:45 +0000 (GMT)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-29523ed27e0so733875ad.1
-        for <ath10k@lists.infradead.org>; Thu, 30 Oct 2025 14:57:45 -0700 (PDT)
+	Fri, 31 Oct 2025 11:17:41 +0000
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-2698384978dso17769645ad.0
+        for <ath10k@lists.infradead.org>; Fri, 31 Oct 2025 04:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1761861465; x=1762466265; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x0YbvCREchJI8qwKRV6FazI6CbTuSXVx8wiILVgQiUY=;
-        b=a3vHamRL7/cnIKEZowPOcvZjKm3qC//UmPwLaQf99+DLLIIgwzizZ73LGWaWtnibuq
-         seFss2wLhRpW0V/tjHk5fxO/1rMQY1DyBlgcaVlxuaV72gXAz6ju4NhEKAcRdOVQnT3C
-         PyuqGcKuVNJQKVVykbuZZKAbI4TrjRa9o/kq6sAGiaisfNpx6IvWj1Q0KMHS5O3xyLiL
-         SemD/8dEhWZk5UKldFGpjLsK78vmBRI7y57Vnd+7f0qjx9EeLtUluWZhnu2vMesJKSnQ
-         Jtcm9qB3jbUCmhriTF8yf0spjHv+QbLS7OtvlNPIsto7OtPLoT6mKHRIr451x581TWv9
-         wglg==
+        d=gmail.com; s=20230601; t=1761909458; x=1762514258; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+e+UAk578qZgTiUOAdHLd6XVTShCxhiEWjVV/FznGz0=;
+        b=d+4Xvv3zSvqk1PDLHinrbRAfIxsbXfSfbVzo44As5DD8EqA5eL6za82u//Xi0T1fVl
+         FY45Yzok9+5kj1+WLo8QWeCTkZK1Rev+oSxblVYfGNXzSVbBM3TnZZ2h8SPs4TV8nfya
+         +JTSyUlWWmTH3SYaa8y0GBFWpAK5OaOt+nRp1Sg3ukMgyjK5f6YaYAGDKCHuo8c1SFZh
+         7THs6ovM72lFvxfDXSKS2SMOW7vPfFvUNOO0BsXW7c8rYikw0NcFMaGAsqnioL4uj2jO
+         o2f1Rtz/oEDQzzpOI/iBDeD4dTYu4bTpWGzbzccyYNCsQtp0XtLNGkWL/vSZ/b41j4XW
+         eEIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761861465; x=1762466265;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x0YbvCREchJI8qwKRV6FazI6CbTuSXVx8wiILVgQiUY=;
-        b=v7sNQ8canJ2w6vEOKyczRFqiNEKlSisA/7nEJdXR+wplg/gDrniPLpUyJz129FP9/A
-         6pBONOBEcPb2lNzRf98TNsgfzm9GdSd2ACmG8OQfxY6U63KlwpFykxeX2So59YRvkazu
-         pfZ3NJoiJEWiGrHmYi+qClCfUFIPP+oGIkqARMHbFW04FZcLSY2aLNJoYs5wQ50plWLk
-         lAnbTpHAYcoOz4nEOnjETL/E7Ati+C38fsEUerANJUD3KSezh27X48DSe3OhTj/DbnCS
-         5c+F1Tc4blFF9KftT8aWyHa26ph4QOrIuxmzryBxLJJTSzfA5XpXZWJnGsStDarQnu7U
-         WOJQ==
-X-Gm-Message-State: AOJu0YzExEK60sezVnNO0TYgMa928ZVxncNCAAH6Xx7L5WQZKd1n+xZr
-	lnXUrNSlgGI5MUSZfOPK3KdxF2rmlc7NvAlBdmrMbCJWpunvkyHy87ZIMPc+3pXk0psbgSBF1c7
-	KW72+1K7EIyE3zm8wVWUH4fi19RPRCl49U7l8N4uPiPE2O13Z05gV3CtxaPLlEU39HgPGy0MF
-X-Gm-Gg: ASbGnctsYWEe7/BO54xkyEvoS3Uw9hZC7TQonMMd7O8YNAa4nUfBBAnPByqomulVXW0
-	Rr68ttdepBRC9AT4XUPKPtjfqStGvJYtpfXy85HCrtTiZim1rB/pDiTsn5XAUKjqDX56qXDPayu
-	CJxnw8nQcIVZvtBMI2AJVjRI4C3X92xT0xuOqCYbm2M05KQf8l2bpKgHRoJpw+KwreG3EVRsjH1
-	ETmeIXLUNWxDY9e1A+UUZe0vL4PoRK80pnZXzw3UUTNZ5qVNzW4n3s4dr/hyf+cc10TwlWIUGa+
-	vhijtn9ifkeEkVrWFWl1OL6kurOvTuYAZmid9sokLV8kyG7jETkzmlgbzHxA6Y9ZDj/9je+AXwZ
-	RxKfibdvXoM+5dhAXcTzRusHzsGwJLdaADGw=
-X-Received: by 2002:a17:903:187:b0:295:1277:7926 with SMTP id d9443c01a7336-2951a4976f9mr17416265ad.23.1761861464675;
-        Thu, 30 Oct 2025 14:57:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF3QS9ZHlD/2JfJsKFJfl78n9pTNSfLsEEv+V2BKfr8XOEJAWn3kAqkmxy7fqEgwCK0M3sJPA==
-X-Received: by 2002:a17:903:187:b0:295:1277:7926 with SMTP id d9443c01a7336-2951a4976f9mr17415995ad.23.1761861464081;
-        Thu, 30 Oct 2025 14:57:44 -0700 (PDT)
-Received: from [169.254.0.1] (Global_NAT1.qualcomm.com. [129.46.96.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498cf4a53sm201868405ad.6.2025.10.30.14.57.43
+        d=1e100.net; s=20230601; t=1761909458; x=1762514258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+e+UAk578qZgTiUOAdHLd6XVTShCxhiEWjVV/FznGz0=;
+        b=vmzdkJUXcUaMxfPGDUaPOppraVBkSjp6QYdMas+YuQ686qqSnLYwlaTpCxvAQjwiFN
+         MFSK50Q6QO2ma3wPCgjz1wPKRq/TFXAcINCB33LSvxubMHkOph1nTmENHh5EXd2nZTMI
+         U/5sk7EWEOHCwpMAAZTS/XVFApWM3TyiOIctjdSHhUc9j3JbmRHbLRJji2r4ZCO7I6Jf
+         6Ef2UTAf5SpD38nVdoRQOGFPHSief/gD0Nt9GY8qGAmUsFb+WWg+RtVcVpyG1sqC/Txs
+         HQI/4uLh5oYlU+eI9z09VvEvy2XsycFsdeSuVOc1n6Tl9ZiS6+WubpEL1sWY9zqNA9F0
+         aZog==
+X-Gm-Message-State: AOJu0YxoRdVyop5uymFoZ7CUwEr1iErTglU3MDodu/CE+18y1EOhnUWB
+	w17N//EvJR4u7eobCjel+PdhlxygKdglZKmn2bYldKqry+z0AdDhZITN
+X-Gm-Gg: ASbGncv7dKQH/RLKPfL+4oNJJmKGJTqZTsNoIXBCOoGnqgA8sOYO4lKEe/TsnQkMF5N
+	g5vSdI9NU5k8E32vx0ePtoKzeNtvOCTAuXQKq5ST6VYU0Z/32GN6Gxxq/gnElXRE5+ft8IOMZT9
+	Nb7zJ6UAu3AH7xHSkUu0yHbQcDP4fsFyHCDwvqVDnVKKGHQ0QTNU6VnvQAOz/q1gwyA71VGcqB0
+	1vdV4iwBdvDZbAEtOJjWqQuyYtDvS2nQQouaDNYDYcHA041O+XbSkfuCdD8fQhqtF+m4/V5836+
+	oH4LEHYjTtg7nRUuYHqJdarVaHKKHwsRsM61JfaT2UKqyi1PuhiYRkQSyAzsM9zcx0kOKeeRE2V
+	NG/ys96P1Pi8NgNd2CwyXLaEmcInt8daFh4XGAYm+W6MXlaKG0rhWoGIdFkjfZQIuNyQKQziB4P
+	qO9fC8shbV6y4QYkn7NPaTs+YFi/NRIgBrA+GfR6/ieJWqOnNA
+X-Google-Smtp-Source: AGHT+IHDqFb6gR3IjGUQRse71p5ISdIE1cA0yF0w/b7oVCBs5q2wxqjLzKdDydo1C/6WO9/1B2HbeQ==
+X-Received: by 2002:a17:902:7608:b0:290:a32b:9095 with SMTP id d9443c01a7336-2951a5c201bmr29211485ad.54.1761909458309;
+        Fri, 31 Oct 2025 04:17:38 -0700 (PDT)
+Received: from NT123328-PC02.ZyXEL.com (114-33-191-187.hinet-ip.hinet.net. [114.33.191.187])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-295268a96fdsm20220115ad.31.2025.10.31.04.17.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Oct 2025 14:57:43 -0700 (PDT)
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-To: jjohnson@kernel.org, Zhongqiu Han <zhongqiu.han@oss.qualcomm.com>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20251030130023.1836808-1-zhongqiu.han@oss.qualcomm.com>
-References: <20251030130023.1836808-1-zhongqiu.han@oss.qualcomm.com>
-Subject: Re: [PATCH 0/2] wifi: ath10k: clean up structure initialization
-Message-Id: <176186146337.3489476.10061776463232373681.b4-ty@oss.qualcomm.com>
-Date: Thu, 30 Oct 2025 14:57:43 -0700
+        Fri, 31 Oct 2025 04:17:37 -0700 (PDT)
+From: Zhi-Jun You <hujy652@gmail.com>
+To: jjohnson@kernel.org
+Cc: ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	Zhi-Jun You <hujy652@gmail.com>
+Subject: [PATCH ath-next] wifi: ath10k: simplify ath10k_htt_tx_mgmt_inc_pending
+Date: Fri, 31 Oct 2025 19:16:39 +0800
+Message-ID: <20251031111639.406873-1-hujy652@gmail.com>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3
-X-Proofpoint-GUID: Ymk9oHB7fqDM7vVRhqFvSRhKh-J_IHOU
-X-Authority-Analysis: v=2.4 cv=fpjRpV4f c=1 sm=1 tr=0 ts=6903df59 cx=c_pps
- a=MTSHoo12Qbhz2p7MsH1ifg==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=EUspDBNiAAAA:8 a=cMOJL1K5Z7ST7ju7w8YA:9
- a=QEXdDO2ut3YA:10 a=GvdueXVYPmCkWapjIL-Q:22
-X-Proofpoint-ORIG-GUID: Ymk9oHB7fqDM7vVRhqFvSRhKh-J_IHOU
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDMwMDE4NiBTYWx0ZWRfXwYQ9MoyGjH/a
- Eb1VeFQQgAKa3p9ChAqoutGpoJyprMuyQ4pFCUqxyEWzi7DLSbjtI8UG9QRB7q5DBEPsP/c0gu0
- E6XchVifENQRE5cu0Ud/zA9gzRFT7I1mXTTGRVAEKd4ZO32oxrdW4KJI6YuBdX9XeFRXxdChmhq
- IQaNzzM4hJvz75kgxMz9stVGPperUOvFdmxmkhDDqIkObYt5hU++q8yEscrBqwCmQ8roN7sFTH8
- RYKhS4u/XkcdznVzeY/kBSHzkV9z0XqNd7mElIRY+qnJJFdm5WGORXwP/H8dN3da7Gtb2ytnJjh
- E4H8G4iO5E2AylMILQEgygRP37zkkuABwUa6KDgUHQeXy52Nx3wvarKHBbh8dctmn/JuiOSNBZZ
- 1atG8gYocbqntY57+UUoT0N+03WWsQ==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-10-30_07,2025-10-29_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0 impostorscore=0
- bulkscore=0 priorityscore=1501 phishscore=0 malwarescore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2510300186
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251030_210216_790351_7566F7CF 
-X-CRM114-Status: UNSURE (   8.38  )
+X-CRM114-CacheID: sfid-20251031_041740_387658_7AD30DB9 
+X-CRM114-Status: UNSURE (   9.82  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -156,26 +97,90 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Remove is_mgmt from ath10k_htt_tx_mgmt_inc_pending and make sure we only
+call it when it's a mgmt frame.
 
-On Thu, 30 Oct 2025 21:00:21 +0800, Zhongqiu Han wrote:
-> This patchset simplifies structure initialization in ath10k by replacing
-> explicit memset() calls with zero initializers (`= {}`) for local
-> variables.
-> 
-> Patch 1 updates the initialization of `pm_qos_request` in
-> ath10k_download_fw().
-> 
-> [...]
+Signed-off-by: Zhi-Jun You <hujy652@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/htt.h    |  3 +--
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  5 ++---
+ drivers/net/wireless/ath/ath10k/mac.c    | 20 +++++++++++---------
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
-Applied, thanks!
-
-[1/2] wifi: ath10k: use = {} to initialize pm_qos_request instead of memset
-      commit: 877f9c22fdf424c657de757bfe8543cf77461324
-[2/2] wifi: ath10k: use = {} to initialize bmi_target_info instead of memset
-      commit: 059ca8fd692b67a77fb89e9d4e8f57cf08e32b08
-
-Best regards,
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 603f6de62b0a..d94f63637810 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -2450,8 +2450,7 @@ void ath10k_htt_tx_txq_sync(struct ath10k *ar);
+ void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
+ int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt);
+ void ath10k_htt_tx_mgmt_dec_pending(struct ath10k_htt *htt);
+-int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
+-				   bool is_presp);
++int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_presp);
+ 
+ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
+ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index d6f1d85ba871..0cf30068447b 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -168,14 +168,13 @@ int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt)
+ 	return 0;
+ }
+ 
+-int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
+-				   bool is_presp)
++int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_presp)
+ {
+ 	struct ath10k *ar = htt->ar;
+ 
+ 	lockdep_assert_held(&htt->tx_lock);
+ 
+-	if (!is_mgmt || !ar->hw_params.max_probe_resp_desc_thres)
++	if (!ar->hw_params.max_probe_resp_desc_thres)
+ 		return 0;
+ 
+ 	if (is_presp &&
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index da6f7957a0ae..6d77d451988a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4442,7 +4442,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 		is_presp = ieee80211_is_probe_resp(hdr->frame_control);
+ 
+ 		spin_lock_bh(&ar->htt.tx_lock);
+-		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
++		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_presp);
+ 
+ 		if (ret) {
+ 			ath10k_htt_tx_dec_pending(htt);
+@@ -4728,14 +4728,16 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 			return;
+ 		}
+ 
+-		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
+-		if (ret) {
+-			ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
+-				   ret);
+-			ath10k_htt_tx_dec_pending(htt);
+-			spin_unlock_bh(&ar->htt.tx_lock);
+-			ieee80211_free_txskb(ar->hw, skb);
+-			return;
++		if (is_mgmt) {
++			ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_presp);
++			if (ret) {
++				ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
++					   ret);
++				ath10k_htt_tx_dec_pending(htt);
++				spin_unlock_bh(&ar->htt.tx_lock);
++				ieee80211_free_txskb(ar->hw, skb);
++				return;
++			}
+ 		}
+ 		spin_unlock_bh(&ar->htt.tx_lock);
+ 	}
 -- 
-Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+2.51.0
 
 
