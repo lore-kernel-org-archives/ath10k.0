@@ -4,83 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5355FCCF9F8
-	for <ath10k@archiver.kernel.org>; Sat,  1 Nov 2025 08:34:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3038BCCF9F8
+	for <ath10k@archiver.kernel.org>; Mon,  3 Nov 2025 15:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=T6FDRMvNjCpM5LhW8oA1BhHC3fA7lHDvd289NfjuJEk=; b=q8tMNgXQ2+SKGQaA5BvKEQiCpJ
-	8meN0QqnCvwmj3xzhEbfIcv947KUAt4xrAEC7cvYv2EP/WAJGxkVD6WNNGpq42oy0t5kuKUwnO1G/
-	j0IuUz1BF0R2PsmNkzKnftltU0ccgBjILsRw0+unX26RV2dvwD2G8TNYlcc8yZNISTR9oSqz1JEH8
-	n6CF5Y3DkzAZEEhzAoZMxnnWqSuEjXzeSlMVrLhVv+J8SkQY713rQuowsifbSI4Cp31UnL7Xptawk
-	rnEYTETneAs07ZzmbXeeALyQGBW+gq1eCtS2dIZsL1q8zLXn5Nulf29YFL47m/yO/7cAtSa/XLeFr
-	dk/IGZPA==;
+	Content-Type:From:Subject:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=O4woRQI0jpUKcLl/l0yKE3wmuW3/I5wz2p+nBq08PBE=; b=CL9AwzbY4J+Cy5YURaYqCGgvIW
+	exgzBp15Br8jQomPhvVMZubx1G4ALEoXKs9VtqYp/mejmHN90B3sSUOg+Vtm1kp0NYr1FWgLt76P/
+	WpX9DQSMzDK1HSYbygtYnXKVnioyB3v6fp2/Ffj1kYcnsmWLVjZ/Df0UfIHuap6pukxhQwQAikCNT
+	JbIwe1vpcheCgoy6SFdKvCDEVJGbPc+dGXX2K7prPYe2SVco8Wqm1+Ov7XwQK1xjM2AxAkUDlgn7x
+	Gr3EIv0fRhHWPUWmyUKtKCRN+pHjuzy7EOfixafB8lLXnxlmsV6Y7kdbI1EZpWrWovfVi+5EJZWXJ
+	EL5+xKkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vF73d-00000007Bg1-0nNi;
-	Sat, 01 Nov 2025 08:33:57 +0000
-Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+	id 1vFwPc-0000000A8Wu-3Cnv;
+	Mon, 03 Nov 2025 15:24:04 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vF73b-00000007BfY-1dFe
+	id 1vFwPa-0000000A8Vh-2ugt
 	for ath10k@lists.infradead.org;
-	Sat, 01 Nov 2025 08:33:56 +0000
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-b6d83bf1077so609204466b.3
-        for <ath10k@lists.infradead.org>; Sat, 01 Nov 2025 01:33:54 -0700 (PDT)
+	Mon, 03 Nov 2025 15:24:04 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5A3AILGo2755521
+	for <ath10k@lists.infradead.org>; Mon, 3 Nov 2025 15:24:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=O4woRQI0jpUKcLl/l0yKE3
+	wmuW3/I5wz2p+nBq08PBE=; b=VFBx+cYXc8mTm/lZT6D4kFPFX55ZbrmDryGiBK
+	2HCSU1WxAaKJqOalF6fwVYSzExQvLq+L9ZxOTWquqSWSppFdgDgD/y57JTu14MDH
+	LBkmUg2JwSZJcUlY8gU47Eh85aaqoRNi2BRmvJm+8zqxYEYjPGIefJS8VgAbQv1g
+	SnmGKe+F+4vekBPw5PR8qDXlfK7I8lwGY3B95FSqakXa+HdFzPTkjKwPtXu2M98u
+	l2yacHrEZ+/NyMzu/hiJfY7zlBQNkm3S76IRiA944pOnyusNAX6UUwU234hFjSAH
+	fIJHM8ESnFuuGBk+W/AoyBYQ5v0upqW34DYWMXHZqugLav8w==
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4a6th9rs2s-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Mon, 03 Nov 2025 15:24:02 +0000 (GMT)
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-b9ceccbd7e8so922640a12.0
+        for <ath10k@lists.infradead.org>; Mon, 03 Nov 2025 07:24:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761986033; x=1762590833; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=oss.qualcomm.com; s=google; t=1762183441; x=1762788241; darn=lists.infradead.org;
+        h=content-transfer-encoding:from:content-language:subject:cc:to
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T6FDRMvNjCpM5LhW8oA1BhHC3fA7lHDvd289NfjuJEk=;
-        b=hxTo3QmnyKTkvw2dX8DItMB6MWCAxuprXT+q4Ib+ZA5X4iQ5KqOOUcrWcedARjpiHw
-         c8dHvoBOAuXSuezjQPyF3cyuej7Ou9gr6I3h6//uDvNtS6nzuqOq2KqmFdzNHNAHT/5q
-         d1mfGbkqFT8HYMqzp7sjl29ixplfV4WGaCADhRqGOhIe0ZDwpPzCvqnlYcH6ybrbyDj4
-         OzE+9a5vdNPUgFPQ6fxVdb1tXvdwi8EJxe0tUYxDTxYPGX5PMHEslEwoImRXLZqeSvxx
-         3m2VT/7eEtT1TfVuvtS5CBhya8G18scJe/Px7UGyQCmHzMH9T7JjibNNKDQJLnT+Ik9E
-         YlUQ==
+        bh=O4woRQI0jpUKcLl/l0yKE3wmuW3/I5wz2p+nBq08PBE=;
+        b=YM1ZhEPqdv9QkQ9isMb2CZxsfq8VbwBZvSN63TkDCnv+tOXuECTAdzdM/YI8qX04Ws
+         AvmcRuKBGdHmXuazh9t6qtd/5Y1aQ+s7CZYu0JiGEjhd1ViayaF0VdztZSWK42s4lNBh
+         GEAe5GrEgoMW3nYiQ49rhnaWCUFU3DJzTsFigoRK5CZAwkXqk9PTio8bZviWB5K4UlL0
+         hxtE4vrLnB6Gc8DkssCjvtPZSaX6FmKtN+w82zaD8FTWuVkvmz42N7FpdrmArodBzMPK
+         Ent87h3uUnjve4XaV1rURBiK+KUDvMIExYwlctXJuR4q0VXf+kOJ9cGUUd9+/1qpbKl+
+         AQ8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761986033; x=1762590833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T6FDRMvNjCpM5LhW8oA1BhHC3fA7lHDvd289NfjuJEk=;
-        b=wxls1kMpYriE2r5+aIUqJSPd7GwmZVJ6UMNeQqBrdjo3od1tv/L7CD5HP8Jg6qN/3e
-         Qipdml/IA4/QCgrdijcEuwHBUSNORSfeqAHZPsql8iB+bckroN91rv/AuRdMnrl5XzjN
-         7P/t+fudShHtj//HyCqsKcjKcKhAEu5TjC5GT29zgx9TNBdUITO/rqlDMIhSHB25KlIx
-         z5W7bBOGz9xezrRK/lzUklvWghrILAvJKSk0cmy78bWAruknet1YYZobPqKGWLIS8kS+
-         NSamD8sYvVwL7qp2GQPZAU6EynbM2HewWwfzCqx0Oe0vCA1r+WZ+HS4dgQNZNzkIXLWk
-         IUiw==
-X-Forwarded-Encrypted: i=1; AJvYcCV32LT3JsQLxnsBmX1jAn8g5CDTmq6Jxd6bHkEhSTeP7LnEp4nmZYT/vZrEUedzyH8ZMR3yM7g=@lists.infradead.org
-X-Gm-Message-State: AOJu0Ywd/6sQ5gF8+2EhHiIcB81s83ej9DBOY0NjEiE484HGz7WY0S3r
-	ac4MC5orHDd3Z0LkUkay5U6kMCByLur5jB0MbLZy2sH6O4CIlXC3o+oon8U0lwUBAGZXlF8VDGM
-	Gl9VvqdFrn2I8RiIJC99vFCROYEyfay4=
-X-Gm-Gg: ASbGnctzehCMcPgbtAPAcp4N4ywIkaL5COI64hxIJfmMuq8Dl207n1PFyox3UnXbJSb
-	LakMoiu9F2UMR/fBzY8ngAb1SVCbrb1zT8b+ePLqdfju5grfQmPXRwDPnnHilKbT9ozCfRK18Ku
-	X3aISfH0m2PknbJh2G5C7nRihfKXkbnmHHMIquLyXRJ4Ww+/+XIS4cCPn+NpCW1Qcu0RH5nBZzR
-	XJU+ZTkjaFI/68+LmijxYwh6YtHL9/dzUbY0Jrhs5ZrWwjwH+CaLODcszAIbZLeRge5QPw=
-X-Google-Smtp-Source: AGHT+IFFNpeJR9dbHOFQiQ7dl2HrM0sefQRNzTRSLtFVnX83H6VZ3RyD1DGUtnaezdZpBQrS3kk9GBbj9+zKnfj/3K0=
-X-Received: by 2002:a17:907:6d19:b0:b6d:6a35:99a0 with SMTP id
- a640c23a62f3a-b70705e3de7mr643662466b.33.1761986028413; Sat, 01 Nov 2025
- 01:33:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1762183441; x=1762788241;
+        h=content-transfer-encoding:from:content-language:subject:cc:to
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=O4woRQI0jpUKcLl/l0yKE3wmuW3/I5wz2p+nBq08PBE=;
+        b=CLzijapjx+wjldWrqewCdPxu4XACfyR1oVmZcvrihozRe7HHjAuEwLaC+LZepRhoyw
+         vLAA/b1k8WF+UmfD924uFqrQzjdSHrBbw+dvhh9hjNYxegm1jMLImjZnSSoKNW5QtLJb
+         vSwgDOTc+fSHYD1RTOfmYrpaL/T19lt8QexN47Lc3rm1jwg3MnOGx60VRIzY3HVf7c50
+         Dc33mhPYjyerIPHAyrxGQt7EtGIdDH2LdMQrS79SHO1OagurO6KKQrL9Ai8gCajmaRIg
+         eLgPBpwRZ3b3EScMCPPEXK+lQG/tC2hKL+euDaGk8VKBQRlOB+6yy9amZO4Eja4GP+nu
+         jSHQ==
+X-Gm-Message-State: AOJu0Yz9NBlWLvCYCYgN6kSsm9zoO5C5Ip7vv0qsmxfE0qCtjHpYpGn5
+	yDVh4dDfI5V1jy1W51Rfr2QbKk4TjHQVqHtiU26nM+Isl0Yu2anA4XNIC7lCzRRDosehzTBd/KJ
+	WDJGF8iUhROX3iBYlLUh/JWXJpjRP8PHyPs9P498SJWr0OQdjNi4WVdODZ5iAgju/
+X-Gm-Gg: ASbGnct6lBrYViaGegCDuCPVz56Iag2Q9CCyrnWiQwBHKBYnFkyc+4J0Vq/VjwsROTr
+	XDs7v4e/Bp67VMoOTgGraaOIjEhQLFidGLTJtbvyJBmPAYU24fqpFtapXYKgGR+kNyGxwenxX0P
+	eF3YefjlAEnrnbjPvncEJaa7bHkI1SQ2T86pGL0z8Po3YhCUUTSzC2+J7Rlm/hdj0OEGE9vijZt
+	xEmQRbQVCqXPscmT3EjVzwJ+h/bPtzouqMLBZpZOUx33xiVJ8XBehtt7hIscSnMGTzMajZAMZ7P
+	FJrUzqRMUu+zlxeBtaXugK5uT7ePvkxFacOkev/7FO6JbzWmLQ2XDZDKMd7/x3mtlCaxVLb01u8
+	MgoxovFb8QDTxtvz9pUu1PfQUv2uV4WV+ZGI=
+X-Received: by 2002:a17:903:1ce:b0:27e:ec72:f6d with SMTP id d9443c01a7336-2951a36e6f8mr196389215ad.11.1762183441197;
+        Mon, 03 Nov 2025 07:24:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE81KX5Dw/Ser8slGU94o0wfgS7d8oR2J9GcPMTjt9tMgbij5CwCOQwqqb6pSnep8GEANLVTA==
+X-Received: by 2002:a17:903:1ce:b0:27e:ec72:f6d with SMTP id d9443c01a7336-2951a36e6f8mr196388845ad.11.1762183440630;
+        Mon, 03 Nov 2025 07:24:00 -0800 (PST)
+Received: from [10.81.24.74] (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29530aac357sm117914315ad.86.2025.11.03.07.23.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Nov 2025 07:24:00 -0800 (PST)
+Message-ID: <30db167b-0ebb-40f3-8beb-e3966a4922f0@oss.qualcomm.com>
+Date: Mon, 3 Nov 2025 07:23:59 -0800
 MIME-Version: 1.0
-References: <20251031111639.406873-1-hujy652@gmail.com> <6de0a467-14f3-43e1-952c-b8cc7eb4801c@oss.qualcomm.com>
-In-Reply-To: <6de0a467-14f3-43e1-952c-b8cc7eb4801c@oss.qualcomm.com>
-From: Zhi-Jun You <hujy652@gmail.com>
-Date: Sat, 1 Nov 2025 16:33:37 +0800
-X-Gm-Features: AWmQ_bkotIWEYeL4LFQRHlK9ja_7OBUjk7WwHRpeWL4qz8dPtvmOxKYUFA5-LAc
-Message-ID: <CAHGaMk8BZiA+_ucfqZ+AnBe1ewuagADJfMK3UjECU3rutOW-kw@mail.gmail.com>
-Subject: Re: [PATCH ath-next] wifi: ath10k: simplify ath10k_htt_tx_mgmt_inc_pending
-To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Cc: jjohnson@kernel.org, ath10k@lists.infradead.org, 
-	linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+To: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>
+Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, jjohnson@kernel.org
+Subject: pull-request: ath-next-20251103
+Content-Language: en-US
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: 4Y5PkYBbMSNHFcFG-rF69cYXTpQ_P3mW
+X-Authority-Analysis: v=2.4 cv=ea8wvrEH c=1 sm=1 tr=0 ts=6908c912 cx=c_pps
+ a=Qgeoaf8Lrialg5Z894R3/Q==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=NlKQ8RDDprgilyjO-nkA:9
+ a=QEXdDO2ut3YA:10 a=x9snwWr2DeNwDh03kgHS:22
+X-Proofpoint-ORIG-GUID: 4Y5PkYBbMSNHFcFG-rF69cYXTpQ_P3mW
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAzMDEzOSBTYWx0ZWRfX+vU9E+pYReLB
+ 43P9I6y88kqhgSYt3Bjfej0dmfjF929otkl6fBAMzfNvdNufLnv/VzPlNqtaCr5I/H2dmZSm+5X
+ Sg4a80xyZRyznrsbx3iPFDgCY2JYAtE6yTDhL+rpfsxRHDMmpTFJVcvtskZzzRaZTFfBWuKtBYl
+ oCuBRb/vsRexiCsPiUY764KsmN+PpJSmszDk4WKHuT7qKF7morstaNK+yR4UwPkxH2q8Mr56aVx
+ XtfSOYPut5DqX2/oyu0RIdMBHEshlbtLe/OroJ9OdApZ8MWZRM3aonbjhErGcWJ9y/wSq2HiEuc
+ uFKQj8cTw9zQRxMl2Aqy2gEQCuBp4KEdIbnXF9E1S8ow9BVcRocKvfRS0ei4fSxCREjHQofHkVk
+ z6sdUgNeVYbYdq42MQXfY1N5tZDXVw==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-03_02,2025-11-03_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0
+ adultscore=0 spamscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511030139
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251101_013355_434067_4802F180 
-X-CRM114-Status: GOOD (  11.12  )
+X-CRM114-CacheID: sfid-20251103_072402_757236_ABC4305D 
+X-CRM114-Status: GOOD (  13.99  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,37 +138,148 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 31, 2025 at 11:00=E2=80=AFPM Jeff Johnson
-<jeff.johnson@oss.qualcomm.com> wrote:
->
-> On 10/31/2025 4:16 AM, Zhi-Jun You wrote:
-> > Remove is_mgmt from ath10k_htt_tx_mgmt_inc_pending and make sure we onl=
-y
-> > call it when it's a mgmt frame.
->
-> This fails to describe WHY the patch is needed
->
-> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#de=
-scribe-your-changes
+The following changes since commit 94aced6ed9e2630bae0b5631e384a5302c4b6783:
 
-Hi Jeff,
+  Merge tag 'wireless-next-2025-09-25' of https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next (2025-09-26 14:27:28 -0700)
 
-My apologies. I will try to describe it in this mail and update it in
-v2 if it looks good to you.
+are available in the Git repository at:
 
-ath10k_htt_tx_mgmt_inc_pending() is called in ath10k_mac_tx_push_txq()
-and ath10k_mac_op_tx().
-In ath10k_mac_tx_push_txq(), it checks is_mgmt before calling
-ath10k_htt_tx_mgmt_inc_pending() but there's another is_mgmt check
-inside which looks redundant.
-The function name itself already indicates that it's for mgmt frame only.
+  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20251103
 
-This patch removed the is_mgmt check in
-ath10k_htt_tx_mgmt_inc_pending() and add an is_mgmt check in
-ath10k_mac_op_tx() to make sure it's only called for mgmt frames.
+for you to fetch changes up to 059ca8fd692b67a77fb89e9d4e8f57cf08e32b08:
 
-Thanks for taking your time.
+  wifi: ath10k: use = {} to initialize bmi_target_info instead of memset (2025-10-30 14:55:08 -0700)
 
-Best regards,
-Zhi-Jun
+----------------------------------------------------------------
+ath.git patches for v6.19
+
+Highlights for some specific drivers include:
+
+ath10k:
+Add support for Factory Test TLV commands
+
+ath11k:
+Add support for Tx Power insertion
+
+ath12k:
+Add support for BSS color change
+
+And of course there is the usual set of cleanups and bug fixes across
+the entire family of "ath" drivers.
+
+We do expect to have one more pull request before the v6.19 merge
+window to pull in the refactored ath12k driver from the ath12k-ng
+branch.
+
+---
+
+Note to maintainers:
+
+There is a trivial conflict between two patches:
+
+From ath-current => wireless => net
+9222582ec524 ("Revert "wifi: ath12k: Fix missing station power save configuration"")
+
+From ath-next => wireless-next => net-next
+6917e268c433 ("wifi: ath12k: Defer vdev bring-up until CSA finalize to avoid stale beacon")
+
+The resolution is to take both hunks, ordering them in reverse xmas tree style.
+
+----------------------------------------------------------------
+Abdun Nihaal (1):
+      wifi: ath12k: fix potential memory leak in ath12k_wow_arp_ns_offload()
+
+Aditya Kumar Singh (5):
+      wifi: ath12k: Defer vdev bring-up until CSA finalize to avoid stale beacon
+      wifi: ath11k: relocate some Tx power related functions in mac.c
+      wifi: ath11k: wrap ath11k_mac_op_get_txpower() with lock-aware internal helper
+      wifi: ath11k: add support for Tx Power insertion in RRM action frame
+      wifi: ath11k: advertise NL80211_FEATURE_TX_POWER_INSERTION
+
+Baochen Qiang (7):
+      wifi: ath11k: restore register window after global reset
+      wifi: ath12k: fix VHT MCS assignment
+      wifi: ath11k: fix VHT MCS assignment
+      wifi: ath11k: fix peer HE MCS assignment
+      wifi: ath12k: restore register window after global reset
+      wifi: ath12k: fix reusing m3 memory
+      wifi: ath12k: fix error handling in creating hardware group
+
+Dr. David Alan Gilbert (1):
+      wifi: wcn36xx: Remove unused wcn36xx_smd_update_scan_params
+
+Jeff Johnson (3):
+      wifi: ath11k: Remove struct wmi_bcn_send_from_host_cmd
+      wifi: ath12k: Remove struct wmi_bcn_send_from_host_cmd
+      wifi: ath11k: Correctly use "ab" macro parameter
+
+Kang Yang (1):
+      wifi: ath10k: move recovery check logic into a new work
+
+Loic Poulain (1):
+      wifi: ath10k: Support for FTM TLV test commands
+
+Muna Sinada (6):
+      wifi: ath12k: generalize GI and LTF fixed rate functions
+      wifi: ath12k: add EHT rate handling to existing set rate functions
+      wifi: ath12k: Add EHT MCS/NSS rates to Peer Assoc
+      wifi: ath12k: Add EHT fixed GI/LTF
+      wifi: ath12k: add EHT rates to ath12k_mac_op_set_bitrate_mask()
+      wifi: ath12k: Set EHT fixed rates for associated STAs
+
+Pradeep Kumar Chitrapu (1):
+      wifi: ath12k: fix TX and RX MCS rate configurations in HE mode
+
+Rameshkumar Sundaram (2):
+      wifi: ath12k: enforce vdev limit in ath12k_mac_vdev_create()
+      wifi: ath12k: unassign arvif on scan vdev create failure
+
+Sarika Sharma (3):
+      wifi: ath12k: Fix MSDU buffer types handling in RX error path
+      wifi: ath12k: track dropped MSDU buffer type packets in REO exception ring
+      wifi: ath12k: Assert base_lock is held before allocating REO update element
+
+Takashi Iwai (1):
+      wifi: ath12k: Add MODULE_FIRMWARE() entries
+
+Thiraviyam Mariyappan (1):
+      wifi: ath12k: Fix NSS value update in ext_rx_stats
+
+Wei Zhang (1):
+      wifi: ath12k: add support for BSS color change
+
+Zhongqiu Han (2):
+      wifi: ath10k: use = {} to initialize pm_qos_request instead of memset
+      wifi: ath10k: use = {} to initialize bmi_target_info instead of memset
+
+ drivers/net/wireless/ath/ath10k/core.c       |  28 +-
+ drivers/net/wireless/ath/ath10k/core.h       |   6 +-
+ drivers/net/wireless/ath/ath10k/mac.c        |   2 +-
+ drivers/net/wireless/ath/ath10k/testmode.c   | 253 +++++++--
+ drivers/net/wireless/ath/ath10k/testmode_i.h |  15 +
+ drivers/net/wireless/ath/ath10k/wmi.h        |  19 +-
+ drivers/net/wireless/ath/ath11k/hal.h        |  38 +-
+ drivers/net/wireless/ath/ath11k/mac.c        | 455 +++++++++++-----
+ drivers/net/wireless/ath/ath11k/pci.c        |  20 +-
+ drivers/net/wireless/ath/ath11k/pci.h        |  18 +-
+ drivers/net/wireless/ath/ath11k/wmi.c        |  20 +-
+ drivers/net/wireless/ath/ath11k/wmi.h        |  18 +-
+ drivers/net/wireless/ath/ath12k/core.c       |  22 +-
+ drivers/net/wireless/ath/ath12k/core.h       |   3 +
+ drivers/net/wireless/ath/ath12k/debugfs.c    |   5 +-
+ drivers/net/wireless/ath/ath12k/dp_mon.c     |  19 +-
+ drivers/net/wireless/ath/ath12k/dp_rx.c      |  74 ++-
+ drivers/net/wireless/ath/ath12k/hal_rx.c     |  10 +-
+ drivers/net/wireless/ath/ath12k/mac.c        | 755 ++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath12k/mac.h        |  14 +-
+ drivers/net/wireless/ath/ath12k/pci.c        |  24 +-
+ drivers/net/wireless/ath/ath12k/qmi.c        |  11 +-
+ drivers/net/wireless/ath/ath12k/qmi.h        |   5 +-
+ drivers/net/wireless/ath/ath12k/wmi.c        |  86 ++-
+ drivers/net/wireless/ath/ath12k/wmi.h        |  55 +-
+ drivers/net/wireless/ath/ath12k/wow.c        |   1 +
+ drivers/net/wireless/ath/wcn36xx/hal.h       |  74 ---
+ drivers/net/wireless/ath/wcn36xx/smd.c       |  60 ---
+ drivers/net/wireless/ath/wcn36xx/smd.h       |   1 -
+ 29 files changed, 1554 insertions(+), 557 deletions(-)
 
