@@ -4,140 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D7F4CCF9E3
-	for <ath10k@archiver.kernel.org>; Mon, 10 Nov 2025 20:04:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EDE0CCF9E3
+	for <ath10k@archiver.kernel.org>; Mon, 10 Nov 2025 20:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wywLQuZS84UaCfivN9hBRyvo1mTqLh2yeP1DKGiRq6I=; b=3KCZPlByDCHaaGjkpryCqXugOl
-	stR3R+tuRAaval3em7fWcwCXmpLz3fomaYLO64KrF3fHJunNkfbimHdENpCjyyqIlF2tLEJ9HQ+1Y
-	wypMM9YcWZVVJfTrXVTK8LpwfJnXVvL6Pv1pbW7vvrqw7BcnTBc+PFXQNi6qGwOK/42WcHxtVUmGW
-	p/hCCIvF9dCbzil1zFshHE3tQZieYDtVSYY+WnF8yj3ASJ6kLImTUav6BC3sTG6r/y4axvN0isR3H
-	CHImsyvj7ZV74SkxpW6k4aAqsJhb5CmujrwAycp3H1gkRPD2WYXLco3dyVjkJwuX+FjzvH70jg0M7
-	BzAwLHZQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=HrusHWa4xpz02NNq9Rv00ajzhsc5feN0A2MEhrWFj7Q=; b=rIsgymSRdvkHt6L/ZVqMzCLV3T
+	qfA7Zxa/MR3UWJ2qt7EIEmaJkR4hrD3torq6M2cUnpS846EpOglKc/2aeOMjg3caNzbiZI6X0Gzga
+	JLSDJJ0jXUdnpomUXGqPjTBFAYhoYKvqwyjaPmerXjHHucx8TrQr5tH0NDmrxzSC4CFHCVjiWa2OC
+	DM8UyC3xWOAWsF7+cvjLJ/J9hjjB5QCZb551jd/GdXlhbQn9GbYjM2FJ7A8KpW5ucZANe8q1PWEML
+	+0BYNn2ed8rHL65EVdE1etzWAJBixIy+ltssglt5ETrRTMOwYcSUpstqSI1pqafPc8cbuVaauySvC
+	Z2iL4ekA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vIY7x-000000063uK-3jSd;
-	Mon, 10 Nov 2025 20:04:37 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1vIYcK-000000066e5-0HUF;
+	Mon, 10 Nov 2025 20:36:00 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vIY7v-000000063tw-1Ere
+	id 1vIYcH-000000066cZ-3ov7
 	for ath10k@lists.infradead.org;
-	Mon, 10 Nov 2025 20:04:36 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AAGYNet4070712
-	for <ath10k@lists.infradead.org>; Mon, 10 Nov 2025 20:04:34 GMT
+	Mon, 10 Nov 2025 20:35:59 +0000
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AAKI4fK212391
+	for <ath10k@lists.infradead.org>; Mon, 10 Nov 2025 20:35:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	wywLQuZS84UaCfivN9hBRyvo1mTqLh2yeP1DKGiRq6I=; b=iHZoEb+7rvrtIGQY
-	ZdifNm7zQg6ObBnG36sLNVmkMToc6JglIPMxJy+j4phnAhWq8JdOK3rZqcOuCjsE
-	DiVo5rYj7xi8eg/Un7A7vRRh3TM1+tSH2+nAdhMWS+qF28anMvbdkLpLngazP6wI
-	E+diKjovVkFr9MyuLeBfj3Bei45WdSbnWWoJKu/cK0vruY7q/cX1DJpClJfaiUOh
-	c95agm6xEj3zDG/f3oVL9T6UfIDhxsUFJ8oi6otHx0T0ttsMtMP4LFNPElBZx/MP
-	21YUa7uKEC1qe8PF+x8gaiT8YwV8G/kYqHSFY0UlOInvwhnVsdGaVd/A0146OewZ
-	NO3//g==
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4abkpj8md2-1
+	cc:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=qcppdkim1; bh=HrusHWa4xpz02NNq9Rv00ajz
+	hsc5feN0A2MEhrWFj7Q=; b=h8QbNoBrG44TqkkpXtfasvkklbUzYf28BBnTtLPd
+	CVq0Gch/ivO9Z86GYUrPpG6y7SDtJBZvkdDPeQI2zrhP5LxpDO1zR4ACotuTaO6N
+	2yoY+57FkIBCWaPs2Z5fbg8/okriYWLgZELUfCVTFCyzWKgCYT9ltpSE/dhpplLF
+	JB7J2XG2WsCJHMh5/+0fg7D7GfJe9Kf17kUYhyG5SNrUclP7ATSVEA/+IzZFb/go
+	yXMwQd10dGgodh6eqzdshBR8pV3fMzk7nbDWV49RvrsaZHH2P5Q4MDiuCXjUD2Hm
+	JrH/eFeMAJWGegHu6rtMwwSFhZNdk8Tg3w3trcRQIGdX2Q==
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4abpy8g18d-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Mon, 10 Nov 2025 20:04:34 +0000 (GMT)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-b969f3f5bb1so7462658a12.0
-        for <ath10k@lists.infradead.org>; Mon, 10 Nov 2025 12:04:34 -0800 (PST)
+	for <ath10k@lists.infradead.org>; Mon, 10 Nov 2025 20:35:56 +0000 (GMT)
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4ed7591799eso97979821cf.0
+        for <ath10k@lists.infradead.org>; Mon, 10 Nov 2025 12:35:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1762805073; x=1763409873; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wywLQuZS84UaCfivN9hBRyvo1mTqLh2yeP1DKGiRq6I=;
-        b=EOSeXe/BqpGtOw9HwyIxeW1IcDo83PcllvFiqm5wrcpanUSoaFqFMZTDkRCFtGKGIZ
-         wKXD4hDCdvXYD+LM4szzKx/am3hTyx4XA9iK+V/vWWYxx0SNkDkW+E5/pTmd9Tao6U+T
-         sIKFtH0+GEZ2zXRYcNtHBCnEgBKDe+4yTxmnogx/82QdSZ90YYNMS1/Ta3ij6jNdLFOY
-         zvy989Ypnaogt38gpcpg98S+4HF56VWw/B9nCIpH6dsVg2i+tZC+IOINNoDhHrNT/Xba
-         n2i9B5ZFm/kAdqsSalqc6+PM9ZQxeDxyUF9u+Cl2DqHR8pL7N08gardivIwL9z1JQEyN
-         kJZA==
+        d=oss.qualcomm.com; s=google; t=1762806955; x=1763411755; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HrusHWa4xpz02NNq9Rv00ajzhsc5feN0A2MEhrWFj7Q=;
+        b=P3cw27jOnPNdps1z4jzLouiDvYJmipT8ySr3KVFO/YphQg61P4WXABC6uW5NUMri0p
+         ukwtggQq4eLG4JuTHFt5qzW415xL1D/DDdOAROCzAqszRYkIyLJgECqUDzkbjPlF4ObL
+         OwzIiZ4odHxlm9c1jfWI5k85sILsKAKxpqGUtoy2RLvGmEAqiMba780WQLwY67OJx/H7
+         CkEKQI7B4T1clJw4STh5TXqkQYXsG4BXZ2N4y04Ed8w3e1lXeuTfbYLhlkikbG8H9vXW
+         74BCNjbwabSLO8baYLlYRoJ1CyqFx2KsTEh/aXx6Js/bLwLlEVoA9GJJWPx5txGK//hZ
+         HaKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762805073; x=1763409873;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wywLQuZS84UaCfivN9hBRyvo1mTqLh2yeP1DKGiRq6I=;
-        b=p9oqwnorVkY6MPI9W/n6sj+HfyG8DEuFZQGGE3VJwY6w2qh6l7eaiyx1sFVl2ZbEKV
-         zrN9MArzFIN+KEsjv0fHnTtsxgiUhIXiTMPP2oBwYOYnawff+XSZiJXTVgKA6ebybT4F
-         kQ91vNiJJM2E7PL3yvJyDhf3VEtyJB0H5w9sDw2xYIzXmzKvSi1TJlWCzlAnb9NKtSu4
-         kaz9aulbb4FOfKxHQro1NjzFe2DPtABvTFwEOo1/vpV7j8x2/J4b02+/0BbcCAVfr6rA
-         2zcRxbwxZWbpWeqvZM5+gTOOo6qtF1KpwUg3CTrdItDrd7m2evBFBR3oYC7vpsm9RzZP
-         DWFg==
-X-Forwarded-Encrypted: i=1; AJvYcCX036HZhaZLUSJBFB8A+4KefL+5Bqm7keGtR3WDz+mm9Rke+S3ae3uzkr9vAS3YnKI/dpdImjw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxhkEin5t3coNoUB2LisSP4e1TPKQphdSz43AbzJKG7yWQapSH2
-	dxV6VtL9ZGlobRRZ247J7C+jnOQfzrCMBklRDjQ9nTD7MsLXZC2NrtB/Me0hIl9PjNzXxhq92gc
-	osfxl9hBvAjQhEIJ5slx1L1VVUIDfxCp8t+4IOy6eIPcK3GFzG7qI51tUcf5vmH9D
-X-Gm-Gg: ASbGncvGpjreJ3xtfnDrDcUvbfXCGHPYhTya1Il4M01JEmziGWdFvi6+sfJbjZgjqOT
-	1x6nQ7+slblAQKxXRibdB9/pZSNEDVVUQD+iL42OhfkRgwbDO5KAHHIDjQN+5/hdCS6CEd1VjRn
-	c6isjoBtMhxGOf+0j0qEwrDglTU9Ppo4bc/f+fZfIcQjPQi8CIhRN8FSCi8LU6NE0yZ9+KNI65+
-	imsu04Jie9pOqPFRkT8LOdRqL7EAEc4urZbePZDq8g5qkS9zxS4jxZccsO68QuCdXfdDbHYx5Be
-	dUC1AxTwBGOjcBZKIJZWWECz8Um4MJU2Gy8hVqb7WyLEL0D5SAjhN//mNHw4VmTycW5DSCLbcrR
-	/kRG0UzIJu8iRK3OzaIAyLwX5H9WV6+DofhLORN5vgoORtkRsfsvwYl2vuZKTV2ZdXA==
-X-Received: by 2002:a17:902:c94b:b0:294:9813:4512 with SMTP id d9443c01a7336-297e540dd6fmr127849595ad.3.1762805073093;
-        Mon, 10 Nov 2025 12:04:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGgRlu+QHDT2qRkN8FN4ZfcELPFfekO3p0qsOXqvaypumnws68i1D7DWIV/z8geDOvCYuPmxQ==
-X-Received: by 2002:a17:902:c94b:b0:294:9813:4512 with SMTP id d9443c01a7336-297e540dd6fmr127849065ad.3.1762805072440;
-        Mon, 10 Nov 2025 12:04:32 -0800 (PST)
-Received: from [192.168.1.3] (c-24-130-122-79.hsd1.ca.comcast.net. [24.130.122.79])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-297ed6808ddsm81285505ad.17.2025.11.10.12.04.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Nov 2025 12:04:32 -0800 (PST)
-Message-ID: <2b34ceae-5e31-4dba-93e5-3fa35754fab6@oss.qualcomm.com>
-Date: Mon, 10 Nov 2025 12:04:30 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] ath10k: Introduce a devicetree quirk to skip host
- cap QMI requests
-To: david@ixit.cz, Johannes Berg <johannes@sipsolutions.net>,
-        Rob Herring <robh@kernel.org>,
+        d=1e100.net; s=20230601; t=1762806955; x=1763411755;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HrusHWa4xpz02NNq9Rv00ajzhsc5feN0A2MEhrWFj7Q=;
+        b=Qyn+OkdebQhkzBNmJ2Oxshdp9IwFg9Sg0cVx2bT9joDrd8uAylm2RG5IgAe5UPKg/L
+         2g0PZTnZGUorxDPkQcEek40Kp8eQVCZGbyU6ZzpuNJOPpw3croXoRGxVGqlC1BXFUtuh
+         lTPgWBEhVoTKIsMJQM2K4H2RJZHzc9/bcTrh1y5EwIq/jemOH1wscSnkFyDsexwzwepe
+         dO5FWIOVQQrA8WUiLnWtO3s0VcFuOFq60wtFDhoU3cKFL8PF9iWQ9io7chIPPT+Y2EsY
+         /v/lEpbkAU7p9gs7oQ78LinNiWYpfPj3dSlCFOG5jJ2tapS1RS0c0w7nT0szTpSgDiOs
+         uQkA==
+X-Forwarded-Encrypted: i=1; AJvYcCXX1EfJHTEEZDxx0IPE0j0UaCRbPjx5lczgoTOjV6PSnO6wu3mJbvh/+Jjhftehe0V0vNxwJTM=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy3IClaFcpUBVpuvLR/WFl+vggklq4NsFNJ+HHsNRpJu1HWMFrF
+	aTiwHp7CWIHJ35zyAdLuyPD7NU1MsftjczjjUjGRPehT3CmDcOyB3ezwcmv8nEGF9hfNnvg++Fl
+	xhfOcMFFf3tkpvnXZOqPd8u0h/r9LQyZsE1x8z9tcsK41c/oHJOXzvPCc7bb/4jKx
+X-Gm-Gg: ASbGnctu/JFHX86DwBxoJ6Ax7U2cpufd05ssqG9mzgKy06e9csdGx26S4UywX0T15Oe
+	DzfiEG7lmr6GXsrSSMVodxb2caOlPPRSPXoC4+JJCbtGzLs0Z7lRfWHHzY61t9mIzfeuG2o7g5N
+	+BTRSfEwOXykkyp0RuRW540BkTIGyPg5jw8PqduWO9hobCras6nXWAc8I0v97guMzGSqlwNoEvT
+	IKNLwov/P8z7HBL2QGlx32+fLzWhqvzHDYvPy3tLgR4GJTl8xsZYTy4URHJp585u6qJBNlr/3VS
+	nV2zoVr79rVdTgKnftFX0T+LNfAzP4ErIW/Eb1r6U+Qdg136hw7DXDdc+AV80YeV2O9NJtev3MP
+	CoA4P+dV+QULQJ88KbWLL47kRzvOl3oX0ayiQJw+x7bbqKuLJrgaWI7lNqbAkkCUiBhrpjSc6a0
+	ogNtZBPOn5ZszN
+X-Received: by 2002:a05:622a:15d1:b0:4ed:67bc:50de with SMTP id d75a77b69052e-4eda4ec8bf8mr113489761cf.24.1762806955279;
+        Mon, 10 Nov 2025 12:35:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHJ5ssDcgmggW4lpYvEvrEq74tSuo8cOVQiuKY1y0jHjepaZLONK7Do79X9y4s2nxZqgmpA+A==
+X-Received: by 2002:a05:622a:15d1:b0:4ed:67bc:50de with SMTP id d75a77b69052e-4eda4ec8bf8mr113489431cf.24.1762806954848;
+        Mon, 10 Nov 2025 12:35:54 -0800 (PST)
+Received: from umbar.lan (2001-14ba-a0c3-3a00-264b-feff-fe8b-be8a.rev.dnainternet.fi. [2001:14ba:a0c3:3a00:264b:feff:fe8b:be8a])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5944a013bd8sm4360891e87.1.2025.11.10.12.35.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Nov 2025 12:35:54 -0800 (PST)
+Date: Mon, 10 Nov 2025 22:35:52 +0200
+From: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+To: david@ixit.cz
+Cc: Johannes Berg <johannes@sipsolutions.net>, Rob Herring <robh@kernel.org>,
         Krzysztof Kozlowski <krzk+dt@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>
-Cc: linux-wireless@vger.kernel.org, devicetree@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        Amit Pundir <amit.pundir@linaro.org>
+        Konrad Dybcio <konradybcio@kernel.org>, linux-wireless@vger.kernel.org,
+        devicetree@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        phone-devel@vger.kernel.org, Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: wireless: ath10k: Introduce quirk to
+ skip host cap QMI requests
+Message-ID: <xgyd3ofvv7blcfo2iw26p7sh3p7lkb5w6kkbogryzrgytkrmva@foo72an5qs3y>
 References: <20251110-skip-host-cam-qmi-req-v2-0-0daf485a987a@ixit.cz>
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Content-Language: en-US
-In-Reply-To: <20251110-skip-host-cam-qmi-req-v2-0-0daf485a987a@ixit.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: Kl_mggjoHSugx_2Tr9_sDHtHSfL5iXV7
-X-Authority-Analysis: v=2.4 cv=GZoaXAXL c=1 sm=1 tr=0 ts=69124552 cx=c_pps
- a=Qgeoaf8Lrialg5Z894R3/Q==:117 a=Tg7Z00WN3eLgNEO9NLUKUQ==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=p0WdMEafAAAA:8
- a=V89vUnNgf5GAzAs4dTEA:9 a=QEXdDO2ut3YA:10 a=x9snwWr2DeNwDh03kgHS:22
- a=poXaRoVlC6wW9_mwW8W4:22 a=pHzHmUro8NiASowvMSCR:22 a=n87TN5wuljxrRezIQYnT:22
-X-Proofpoint-GUID: Kl_mggjoHSugx_2Tr9_sDHtHSfL5iXV7
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTEwMDE3MCBTYWx0ZWRfXwNzE8UXhBb5h
- MDBy88e7wIgXy9xfcJQpfrCs94mXjiS5bLsOvv5xhFomVlcJcKGlu4jslLWZd39M2SmOquYqnoa
- 0FBi8OxE5qYBRGkrvVTwdoAwK+wz/aS/evX1UKV+hnZvGoDlQIwh6pk+a8cOhPI97CmvUl7sT0a
- cNR3HQCGPSgl3ASEEIFBkQAQ/lgYhJcqr/SUtYJTFtpLhn0flNdBj12IWnU3SPD7HxxBeYs3AAf
- LYnZiXpuPhXtKuJY5c7hPgoXf8B75ZQxsr5RnW/azTQx1Yfl/NDb0pagxrZVYXSCsAjYsCiJPjR
- SRXL8KlrFsKyYlA5WJSI/ZgrTMkb+iBFOmBrqomPMrkEG5YZS13Z/h8nNb5Eucsx1GfN2oKFNCA
- 9IrcyRRBURI5eNfL6mex5hW6xgdVWg==
+ <20251110-skip-host-cam-qmi-req-v2-1-0daf485a987a@ixit.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251110-skip-host-cam-qmi-req-v2-1-0daf485a987a@ixit.cz>
+X-Proofpoint-ORIG-GUID: z58t5zVwdlmmMQA0moSLDoK7GoA727Wo
+X-Authority-Analysis: v=2.4 cv=AYW83nXG c=1 sm=1 tr=0 ts=69124cac cx=c_pps
+ a=WeENfcodrlLV9YRTxbY/uA==:117 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
+ a=6UeiqGixMTsA:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=KKAkSRfTAAAA:8 a=bBTs48EDRqzxHWfT9_gA:9 a=CjuIK1q_8ugA:10
+ a=kacYvNCVWA4VmyqE58fU:22 a=cvBusfyB2V15izCimMoJ:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTEwMDE3NSBTYWx0ZWRfXxnIGP8DxJt2E
+ JqJ980RyVHU75BvFZPGT8BkxrURMzr5tCODZ7TNS+1+XrI6NavSbUceRGjkBYAY/olA6aCqbqFF
+ 7yuBJGlrea8CCjPgdEbIGVGyQzA/qSldrf843BzSRVfCsmOxEY04WOjpoIJva+AywgtpZEFtkjw
+ f8GgqoDsDH+OwmyOY9q1WTRG8RsNIzKq0lTP4AV94bCR6WVpQEMOFmO/U2rTrUxKERm/ltcw+Zs
+ OOgyIin1BXNVTya4+JApNDDwK+d0dT0WZGSParfXkKx6gfybFf1KFQrUudem/RAeDv+QfAdAgyE
+ 9jAuYFwF0KdALJ/dsFPQtplRilLg2EUmsSY2YlcqAg28HFdtCmDsVn0sKq5ULWRFyNZ2vQJFg8g
+ lkz9iLkzfbYTKqObhthMkOwB/nfnVA==
+X-Proofpoint-GUID: z58t5zVwdlmmMQA0moSLDoK7GoA727Wo
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2025-11-10_07,2025-11-10_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 phishscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 spamscore=0 adultscore=0 impostorscore=0
+ spamscore=0 impostorscore=0 malwarescore=0 adultscore=0 clxscore=1011
+ suspectscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0 phishscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511100170
+ reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511100175
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251110_120435_483620_92990FF1 
-X-CRM114-Status: GOOD (  21.36  )
+X-CRM114-CacheID: sfid-20251110_123557_956463_42B98C85 
+X-CRM114-Status: GOOD (  15.67  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,52 +147,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 11/10/2025 6:26 AM, David Heidelberg via B4 Relay wrote:
-> This quirk is used so far for Xiaomi Poco F1.
+On Mon, Nov 10, 2025 at 03:26:24PM +0100, David Heidelberg via B4 Relay wrote:
+> From: Amit Pundir <amit.pundir@linaro.org>
 > 
-> I'm resending it after ~ 4 years since initial send due to Snapdragon
-> 845 being one of best supported platform for mobile phones running
-> Linux, so it would be shame to not have shiny support.
+> Introducing this quirk to skip host capability QMI request for the firmware
+> versions which do not support this feature.
+
+If it is a firmware mis-feature, why don't we describe it in the
+firmware-N.bin file?
+
 > 
-> I'm very much open to suggestions how to solve this in a different way,
-> as the original discussion thread got quiet, see
->   https://lore.kernel.org/all/b796bfee-b753-479a-a8d6-ba1fe3ee6222@ixit.cz/
-> 
-> There could be other devices in need of this quirk, but if they're not,
-> we could make it compatible specific quirk.
-> 
-> Until merged, available also at:
->   https://gitlab.com/dhxx/linux/-/commits/b4/skip-host-cam-qmi-req
-> 
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 > Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
-> Amit Pundir (3):
->       dt-bindings: wireless: ath10k: Introduce quirk to skip host cap QMI requests
->       ath10k: Introduce a devicetree quirk to skip host cap QMI requests
->       arm64: dts: qcom: sdm845-xiaomi-beryllium: Enable ath10k host-cap skip quirk
-> 
->  .../devicetree/bindings/net/wireless/qcom,ath10k.yaml       |  6 ++++++
->  .../arm64/boot/dts/qcom/sdm845-xiaomi-beryllium-common.dtsi |  2 ++
->  drivers/net/wireless/ath/ath10k/qmi.c                       | 13 ++++++++++---
->  drivers/net/wireless/ath/ath10k/snoc.c                      |  3 +++
->  drivers/net/wireless/ath/ath10k/snoc.h                      |  1 +
->  5 files changed, 22 insertions(+), 3 deletions(-)
-> ---
-> base-commit: ab40c92c74c6b0c611c89516794502b3a3173966
-> change-id: 20251110-skip-host-cam-qmi-req-e155628ebc39
-> 
-> Best regards,
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-The original thread predates me becoming an ath.git maintainer.
-Just for my information, is the firmware and board files for this platform
-available in linux-firmware? Or does it leverage the files already present
-from the original (Android?) installation?
-
-I ask because the alternative solution suggested by Kalle would require
-modification of the board file on the device, and that seems more of a hassle
-than just modifying the DT.
-
-So I'm personally OK with this suggested approach.
-
-/jeff
+-- 
+With best wishes
+Dmitry
 
