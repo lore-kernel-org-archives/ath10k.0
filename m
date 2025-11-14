@@ -4,162 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E8B2CE8D60
-	for <ath10k@archiver.kernel.org>; Fri, 14 Nov 2025 17:30:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9718BCEACD6
+	for <ath10k@archiver.kernel.org>; Fri, 14 Nov 2025 21:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5IZF97taFsnmh5b8jmQL9+OMw+OoZEfr16LawJYCtrc=; b=LOGqq2gWWywKPhQwrJzkJ83zJW
-	xThhEgxQAMpnCXbsr25tjz1aQ05p+1ud+Cy1E+lQJBoaAdoxicSmF2m/ah8zURrqQLn5Ra7vTFtfb
-	hXrqmKeLwXiwgO8NnAmjejuZC+PuCidnZlHr9wz7upimYkr1KZgPMWo/kG+oyVBTgfwqeHD6YPP2p
-	Ql6RbENGuqasqkxNZf70GLyDhSvFjuwcR1MdLetbdRFY4tKvyfIkOVEjD+J405R28pSYzPU4hfL4E
-	K3SX5uPHR8khzqfOswGgy4mM6YxQmtlY1/PHN26sGvgtCwBDxqijrz3OFwlw8UOwWKlgih1JVDzTt
-	dHJwpKdQ==;
+	Content-Type:In-Reply-To:References:To:From:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=lBzw9/79/QPfcWGFG2BWQFjy8N10Vm14Ce5F2O5dqjE=; b=mylkfPrvz+j+ppMJU5MkKvW4e7
+	hSzkcnjW94cKnTx2jVe5zQNjI2zXVKegR4e9k2e4ujGjvggKVJsRBDqy2XFriTgE4lnPNWur79HbD
+	YvaesJLzC+Y6yzEESavcUE3Hm5yoG8HhH4r8ge82rh86YAg1AR0UP+jWxPnsn+5yufDNkaa+ROg4y
+	8KYHLIGPK3hovrX40Ojk+/mJ2MlURgerNNObPbYDQ0DCvlcOqwgWKGVcd4+ugcfkhDCS9UuC6WFqb
+	86QbM+r3kKAger6yJ72eIzwxX75GaMou7A041yv34+OJYO9cu9+AJANmHCVeVY4nBapQKcflv4Zjc
+	ZflfCWSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJxcV-0000000CqhB-0jRT;
-	Fri, 14 Nov 2025 17:29:59 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vK1iZ-0000000D9NA-0GLR;
+	Fri, 14 Nov 2025 21:52:31 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJxcS-0000000CqgU-2MfX
-	for ath10k@bombadil.infradead.org;
-	Fri, 14 Nov 2025 17:29:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=5IZF97taFsnmh5b8jmQL9+OMw+OoZEfr16LawJYCtrc=; b=q43lFCga5ak70JpZrCoJUJV5XI
-	johGHsCUl6FEcTwV/pGMTe2tcc0mavsZVGMa64H5m4BJ/yhNk/g5SgWgfmG1Bf6rJ49xCRqB2KCMo
-	brUHYMycyo7kvr7BYldhHRL8H/1DN95WgWBW+EAWV9qvfD8zW4PbbxBQ5BucLThuV43k1ZoxNBUtd
-	UxNX513Jc4Xxx9XHOMHIq+kZNPVyfjUJjS4TZiW6gtzJ27Q4w05OUuaJF2r6n3SlrX/W56a1BZ8i4
-	f3jNcj4nsbGRN6MJ2WQ9yyIwvrjfkwQMZOY41DcAACL7exvFIh+I86q9cx4IBrkjFwS7ZOWaY3YVG
-	zT4okOmQ==;
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJwkk-000000038XK-3Dzk
+	id 1vK1iW-0000000D9Ml-3a5s
 	for ath10k@lists.infradead.org;
-	Fri, 14 Nov 2025 16:34:28 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AEHSoIA120611
-	for <ath10k@lists.infradead.org>; Fri, 14 Nov 2025 17:29:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	5IZF97taFsnmh5b8jmQL9+OMw+OoZEfr16LawJYCtrc=; b=EaLiE5v06eBoNWRH
-	8f56DbeDfkYWz3OMQBUgnuNoeXpa4G65cGHMTg9RxojgAFMuFkYgwuidOeagGRXc
-	RVSnIxxvJJN+VugWx4yAZnSlaqeW2iwL606y7mSR+t3Mdx8+XXBJmUwNK4CHqbqA
-	d2uU7vQYBnkKWfNYTNX/9E1kiOf8BkJuxj8jznKreL37Kk1N+5llyRfaGL+DQINS
-	ip4JRKdc5lwg5cC6q2sZslmo/CNfsYEivSETJR+Hz4Q/ks+VsDrPTLDGQvkhXAlN
-	PCWDo1WqvwywPl/lNl7LJX/P/qVy8fZZh9elm/WwXLKYZbPQI8VJ3tflDRCUNsCW
-	JyJ6yA==
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4ae7pj07c1-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Fri, 14 Nov 2025 17:29:49 +0000 (GMT)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-295595cd102so52526805ad.3
-        for <ath10k@lists.infradead.org>; Fri, 14 Nov 2025 09:29:49 -0800 (PST)
+	Fri, 14 Nov 2025 21:52:30 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-297dd95ffe4so21410495ad.3
+        for <ath10k@lists.infradead.org>; Fri, 14 Nov 2025 13:52:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1763141389; x=1763746189; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5IZF97taFsnmh5b8jmQL9+OMw+OoZEfr16LawJYCtrc=;
-        b=McQPASHgKpJV5rNRu2WzzhDLeNQKhWQobBa55qPfEaM/w+gvLRVPQAiY7fwdPeyGoN
-         cttcXJokPTqUywU/OWsV0sContlBv6HJm4hG9zdK5fhN23RPNgkY+R+2h9kb8h2VPYrB
-         /1C79KpBMzoIlBrVzyv2R4m6SNPO4hoEWhRX9vdgqnQPMSy1WiaDqmlTZGN9q96QbEZg
-         V8jyjSmulXuUWGKgH2YaOrf+281Dbh9pEDj0E1azZ+IgpKTjWhuNrN6Hfoh9fxDO4Dx8
-         5sJpf2IViWvmCWAHN0pyrpaVlseQOugZou3QI3//0g21xYBwVWKKAAlRk1v2vmWsJ8GS
-         mN8Q==
+        d=gmail.com; s=20230601; t=1763157148; x=1763761948; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:from:subject:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lBzw9/79/QPfcWGFG2BWQFjy8N10Vm14Ce5F2O5dqjE=;
+        b=W3dhnuYKSw/9WgJerHJbDCCQ9lruC1s5aBuhmFTLPCaC/w7ZT/aBTzmmr7o8xS0QIt
+         2n5tbxmLVJkt6Qyhn3+g1kzMguXCmajbJ5aqYFmsLyTYaQbbknvoOfXh6+2FLSiBLI3h
+         hDTMJ4UZ1x2kr6rulm/4huwwU++zs+sVSA9HgwlJiE/KNv/iD1c/N0aqE78hesLzi7jA
+         YJhmDBX4Ug+FhrKGw/Kq0kVa7ydpchtvMhfEXe9bcaqG/BeBDR/Dfxer5Xd2Mq1WGMJh
+         azgs3mZuR5t0IcXHOdraAYXn+tdcEHiG/2I2ka6Xs2IJ2zGHqjvk6g2TgPdw9tWO2sv1
+         GUjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763141389; x=1763746189;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5IZF97taFsnmh5b8jmQL9+OMw+OoZEfr16LawJYCtrc=;
-        b=k/IDNLAonAHnkoLPSlsMBwwwBiARksG7fBmLOduN5lnvU8M5WD59MG0tZ35jMKspPz
-         fc9NGxqDj7aDNuSAs5ul0bbvrQtAepi/fEn4AcskBH9a+KRgz5NAncSo8GdXEN/R3Z2D
-         utj3SR4V8qJwuhIPilkIhi2FOXqp0M3aM8u/3evaku6xNQ/w0mEFMilqDRBJZhGZ77Mv
-         rRWJF+33nUkMowJxitX1VcDGyr1a/IoGoUKFIFKUWs2sCchQ/QeD2rAo8WDB7ci1QvKs
-         qYCUVhJkj+v8/Ij0mEj72P/2/T8E8Qdipz6RT3JgSlXIUIw2Y+nqdR17dxy56HrE7C5v
-         eP/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWFMTEtclDARf9AmDpytHife+EGoVfQ5B9xX5Bi8Ux8OpoKrTM6nNFmv3JCHQUNMxGwcGjfXAU=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz2G/12ziPt+xcgiWbSMoaQf0+Ju4NSwSpLw/0UL7YLvjjAVol9
-	qobnoMvkdVNLzOEcwT2tubX2cSiOQacW93ctnFewteYtNMkcCRo5J0mMuJOxnaBihDewsCPORSf
-	MhcElan2hAeTgTykqEFBv5kECIBd6rEx4x+aZbF6XlSf+p0GLGRooSH9a0JRQOVNc
-X-Gm-Gg: ASbGncti2VFk/mxrnv1toBVQkqsPzMOmoGZLkZzYJAaLZfNy4OHZESlgzOHKpwgr5wr
-	j2bRDet4G4EgfZavavlnkeOL/XtjJGyQNea+sFxzLUgJObVh+qbZaXTUPV6GZAGV6zZg3llUoI8
-	KFXGECcUK0OAiKSGXJ4XA/ju+zb8pmdDcS47G9KNz9aE8mY9i0PF5qAVXGNXEJU6F3Gsc2EQwaG
-	7Ccdx81aTqfWjPLAQVBD0bdtpdVsLxDypqLq+l4cdw4brx1veXV97e6uAioR6y8oF6HAe2dKV2k
-	yhsRaSk769wkmL4C+GC79SMUezEEsoJHjErVBaQbD1FUMFQpvC/gtBoBaiWBEUYAkEsGbOhli+f
-	dU4JKdx3bcsvSTTtQIjFOxyzMrkfw2WsOPFOOd81irLaIp92Wc2fedDlMIOJQq1wi8uTVG33q+p
-	in
-X-Received: by 2002:a17:902:f705:b0:295:9871:81dd with SMTP id d9443c01a7336-2986a6f3f40mr46120985ad.25.1763141388602;
-        Fri, 14 Nov 2025 09:29:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF5PNiK7CQR10eCNgq3oo/oD5kyy0U8463HcRT84zlTmppSmWLyBUIeJxcQWwOn0JbTobSH0g==
-X-Received: by 2002:a17:902:f705:b0:295:9871:81dd with SMTP id d9443c01a7336-2986a6f3f40mr46120635ad.25.1763141388095;
-        Fri, 14 Nov 2025 09:29:48 -0800 (PST)
-Received: from [192.168.1.3] (c-24-130-122-79.hsd1.ca.comcast.net. [24.130.122.79])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c24941csm61501935ad.41.2025.11.14.09.29.46
+        d=1e100.net; s=20230601; t=1763157148; x=1763761948;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:from:subject:user-agent:mime-version:date:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lBzw9/79/QPfcWGFG2BWQFjy8N10Vm14Ce5F2O5dqjE=;
+        b=cXbo9oAlwJAAVx1TwQJBNy7EVlJ0roXhBt+AejiCYbBFlYplHY1Fg1Yl7Hd2EHdpvu
+         AsbEaj18KG/FwSVRAxCBOfWTPBtVbIQsdN8JVdco1ynwO3GT4BSJ2vhlPrryaZe17akK
+         IpBBkYbbbtIIS28OQIGbi+VoNXUkziNqO6tmYKpLIdr/JwA2y88JC1sBGEsJBhTsOG9w
+         9E2+LIHKHSzS5uz3MseBo2CvE/UD7tk89nGZWgiW0XdjftVw69OldID0PYMx8zVTpvAu
+         S5s3AHe/Yw84/pHa3Dk8kDfgo8RgjIwYO76W7xR3ERxvY8bKc1X3kw/QxO6vnWL/J9B3
+         qZnw==
+X-Forwarded-Encrypted: i=1; AJvYcCW8OXA2Hj124NjI+EEjYTLfOCTVmFDHe+dYfyqnpmAGftr/q+PUbR8dH49Aq28XNlHBXEIUM30=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzCtF6rTMXfENPHyA+0DkimkH1SirVoqlBnXFb5VAE78wWFxl2F
+	lzjmiE/YqRMGQbbC07oKXhvem8rHoPDI/nLoh3LzVpWm04Dv168nmBSX
+X-Gm-Gg: ASbGncvK0lFNxzHjFoXUPPuvbnr/fEbzSc75SUj7D4mqFWUODZ36hI8r9bEqgnIDoDO
+	WLrHEIwEt2VqHMRdWTrVxV4pjZF/rLKa0RStcM0eaTy9LwV/EMIO8PoHimbSMl4GyLS/fbImOyw
+	vgxh3PvpwNAM7zt5Y4DIEdYaQVZv2iKSqW7So1KxfHOOHm8cUrWkp9hIbN9VGV3nIfkdHUcGfJN
+	Crc+vIWghMb1TwUodPvrzx84pjoIE8q+3VVyLOhc6f/YXFQavrF+zNqW63yo4mBsLsegKjnVtkG
+	L+r7gS+1EfmAovg2bUL+7VBmrDITSizXjyTo5Gbm4NGTlP8nI+AR0MZqi1XD3s1N1DXd77MiII1
+	64Ylf4xGDlybql/AJh2o5Z8eGm2x5aKZNiysVYIE+Vudf7wTKRLGB3iVbKtVA3fHoaCGhxOzOsm
+	fbWDok7B8h4xY1aQRLl2cBBVyC
+X-Google-Smtp-Source: AGHT+IFzG5G8loVPrt2m99Vf9liH4+Os353C7jesl5WB/ulucNS7A9E/E7KQAAQHqOfMxC4w0C9YHg==
+X-Received: by 2002:a17:90b:17cc:b0:33b:bf8d:6172 with SMTP id 98e67ed59e1d1-343fa74be0amr4908759a91.34.1763157146855;
+        Fri, 14 Nov 2025 13:52:26 -0800 (PST)
+Received: from [10.100.121.195] ([152.193.78.90])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3456516cf89sm1487932a91.10.2025.11.14.13.52.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Nov 2025 09:29:47 -0800 (PST)
-Message-ID: <7757501b-2576-4f5d-a16a-40e06f12cb5f@oss.qualcomm.com>
-Date: Fri, 14 Nov 2025 09:29:46 -0800
+        Fri, 14 Nov 2025 13:52:26 -0800 (PST)
+Message-ID: <b2838a23-ea30-4dee-b513-f5471d486af2@gmail.com>
+Date: Fri, 14 Nov 2025 13:52:22 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: wireless: ath: Deprecate
- 'qcom,calibration-variant' property
-To: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Jeff Johnson <jjohnson@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
- <conor+dt@kernel.org>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
-        ath11k@lists.infradead.org, devicetree@vger.kernel.org,
-        ath12k@lists.infradead.org,
-        Miaoqing Pan <miaoqing.pan@oss.qualcomm.com>
-References: <20251114-ath-variant-tbl-v1-0-a9adfc49e3f3@oss.qualcomm.com>
- <20251114-ath-variant-tbl-v1-2-a9adfc49e3f3@oss.qualcomm.com>
- <b9b4f1bb-45ef-404e-b75e-962e85a557a2@kernel.org>
- <fmumja63j3xvbvfxlmtnkfubgw4jwo5f43srrpfgqrxyqknrj4@izsqazgbiehp>
- <1703d8d7-5105-4585-b8f0-82bb54809718@kernel.org>
- <kve3f7zkywwsfkylom3jp4e3ejlspnlvnmlkuq77uy6fqsy5dt@gaitvppj2jcw>
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Subject: Re: ath10k "failed to install key for vdev 0 peer <mac>: -110"
+From: James Prestwood <prestwoj@gmail.com>
+To: Baochen Qiang <quic_bqiang@quicinc.com>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>, linux-wireless@vger.kernel.org,
+ ath10k@lists.infradead.org
+References: <e780560a-86eb-4189-ab5d-3bed3ee5825e@gmail.com>
+ <54fac081-7d70-4d31-9f2a-07f5d75d675d@quicinc.com>
+ <ea2e7c62-f6e9-4cba-ae81-19fc9abed8b7@gmail.com>
+ <22978701-ca79-4e90-8ceb-16bdaf230e8f@quicinc.com>
+ <dda85730-3f19-490e-bb0f-99b13511c062@quicinc.com>
+ <54f29515-047d-483d-8d9f-a0315a71ad7a@quicinc.com>
+ <d5587bb4-4622-4ba2-bb4d-71a21e237021@gmail.com>
+ <0e474fe5-cebc-487e-8884-ba505d83711a@quicinc.com>
+ <69232460-cd7b-4723-9ed4-b4473a7c5d90@gmail.com>
 Content-Language: en-US
-In-Reply-To: <kve3f7zkywwsfkylom3jp4e3ejlspnlvnmlkuq77uy6fqsy5dt@gaitvppj2jcw>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: HYlLCm-52Yg4qCIF4fKECeK4gkOjLJZa
-X-Authority-Analysis: v=2.4 cv=Z53h3XRA c=1 sm=1 tr=0 ts=6917670d cx=c_pps
- a=cmESyDAEBpBGqyK7t0alAg==:117 a=Tg7Z00WN3eLgNEO9NLUKUQ==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=EUspDBNiAAAA:8 a=LHIKCdfOQfCGPyi8WdcA:9
- a=QEXdDO2ut3YA:10 a=1OuFwYUASf3TG4hYMiVC:22
-X-Proofpoint-GUID: HYlLCm-52Yg4qCIF4fKECeK4gkOjLJZa
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE0MDE0MSBTYWx0ZWRfX2FREqoQ6B38j
- r0doi8HkcesN7CINYf+m87MSXHQrgSIPusKEYRrOmVXpi8gY8BCTAedEH5/V6ug3/mHoAwsX+KQ
- RTuaWur588NBLRjIHcZmhTWbdjK5Rbz1ArilfoIEq+ot8w00jnTMYD5YU14bzDIOR/EtrtM4krH
- 3hQHTnb1SuX1cbUU9znhx8PLwrb75XTvhWw6dNN0hru8VEvCesPFhbJf2Pb/jnlaP4RHAH3VJr4
- qXVoKnOlpM2gf6bmMx4rEt8WYhnbhxrMqLAAnjHmG+3TQg+c5sN6RL6+8Lcz3YQmMYEXfyf9Em3
- rVxOM1fLdLASy0AR3NOra5sRs1m4a3qwDBYeQXADmIOXUWFd3+oa8358Xg6Ycl3Z7eesKBkD9RQ
- YcaTf9cmKYGSc7du9kW+Zqj2Eb8lvQ==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-14_05,2025-11-13_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 phishscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
- spamscore=0 malwarescore=0 suspectscore=0 impostorscore=0 clxscore=1015
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511140141
+In-Reply-To: <69232460-cd7b-4723-9ed4-b4473a7c5d90@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251114_163427_119764_B67FABD2 
-X-CRM114-Status: GOOD (  16.82  )
+X-CRM114-CacheID: sfid-20251114_135228_926815_830D1BFF 
+X-CRM114-Status: GOOD (  29.26  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -174,60 +109,195 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 11/14/2025 3:18 AM, Manivannan Sadhasivam wrote:
-> On Fri, Nov 14, 2025 at 12:04:55PM +0100, Krzysztof Kozlowski wrote:
->> On 14/11/2025 12:02, Manivannan Sadhasivam wrote:
->>> On Fri, Nov 14, 2025 at 11:47:25AM +0100, Krzysztof Kozlowski wrote:
->>>> On 14/11/2025 11:22, Manivannan Sadhasivam wrote:
->>>>> On devicetree platforms, ath{10k/11k} drivers rely on the presence of the
->>>>> 'qcom,calibration-variant' property to select the correct calibration data
->>>>> for device variants with colliding IDs.
->>>>>
->>>>> But this property based selection has its own downside that it needs to be
->>>>> added to the devicetree node of the WLAN device, especially for PCI based
->>>>> devices. Currently, the users/vendors are forced to hardcode this property
->>>>> in the PCI device node. If a different device need to be attached to the
->>>>> slot, then the devicetree node also has to be changed. This approach is not
->>>>> scalable and creates a bad user experience.
->>>>>
->>>>> So deprecate this property from WLAN devicetree nodes and let the drivers
->>>>> do the devicetree model based calibration variant lookup using a static
->>>>> table.
->>>>>
->>>>> This also warrants removing the property from examples in the binding.
->>>>>
->>>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
->>>>> ---
->>>>
->>>> The problem - visible in one of the examples here - is that one board
->>>> has multiple WiFi chips and they use different calibration-variant
->>>> properties. How do you find the right calibration variant for such case
->>>> based on board machine match?
->>>>
+
+On 12/9/24 4:37 AM, James Prestwood wrote:
+>
+> On 12/8/24 10:48 PM, Baochen Qiang wrote:
+>>
+>> On 12/6/2024 8:27 PM, James Prestwood wrote:
+>>> Hi Baochen,
 >>>
->>> I suspect the legitimacy of the example here. I don't understand how a single
->>> machine can have same devices with 3 different calibration data.
+>>> On 12/5/24 6:47 PM, Baochen Qiang wrote:
+>>>> On 9/5/2024 9:46 AM, Baochen Qiang wrote:
+>>>>> On 9/5/2024 2:03 AM, Jeff Johnson wrote:
+>>>>>> On 8/16/2024 5:04 AM, James Prestwood wrote:
+>>>>>>> Hi Baochen,
+>>>>>>>
+>>>>>>> On 8/16/24 3:19 AM, Baochen Qiang wrote:
+>>>>>>>> On 7/12/2024 9:11 PM, James Prestwood wrote:
+>>>>>>>>> Hi,
+>>>>>>>>>
+>>>>>>>>> I've seen this error mentioned on random forum posts, but its 
+>>>>>>>>> always associated
+>>>>>>>>> with a kernel crash/warning or some very obvious negative 
+>>>>>>>>> behavior. I've noticed
+>>>>>>>>> this occasionally and at one location very frequently during 
+>>>>>>>>> FT roaming,
+>>>>>>>>> specifically just after CMD_ASSOCIATE is issued. For our 
+>>>>>>>>> company run networks I'm
+>>>>>>>>> not seeing any negative behavior apart from a 3 second delay 
+>>>>>>>>> in sending the re-
+>>>>>>>>> association frame since the kernel waits for this timeout. But 
+>>>>>>>>> we have some
+>>>>>>>>> networks our clients run on that we do not own (different 
+>>>>>>>>> vendor), and we are
+>>>>>>>>> seeing association timeouts after this error occurs and in 
+>>>>>>>>> some cases the AP is
+>>>>>>>>> sending a deauthentication with reason code 8 instead of 
+>>>>>>>>> replying with a
+>>>>>>>>> reassociation reply and an error status, which is quite odd.
+>>>>>>>>>
+>>>>>>>>> We are chasing down this with the vendor of these APs as well, 
+>>>>>>>>> but the behavior
+>>>>>>>>> always happens after we see this key removal failure/timeout 
+>>>>>>>>> on the client side. So
+>>>>>>>>> it would appear there is potentially a problem on both the 
+>>>>>>>>> client and AP. My guess
+>>>>>>>>> is _something_ about the re-association frame changes when 
+>>>>>>>>> this error is
+>>>>>>>>> encountered, but I cannot see how that would be the case. We 
+>>>>>>>>> are working to get
+>>>>>>>>> PCAPs now, but its through a 3rd party, so that timing is out 
+>>>>>>>>> of my control.
+>>>>>>>>>
+>>>>>>>>>    From the kernel code this error would appear innocuous, the 
+>>>>>>>>> old key is failing to
+>>>>>>>>> be removed but it gets immediately replaced by the new key. 
+>>>>>>>>> And we don't see that
+>>>>>>>>> addition failing. Am I understanding that logic correctly? 
+>>>>>>>>> I.e. this logic:
+>>>>>>>>>
+>>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/ 
+>>>>>>>>>
+>>>>>>>>> mac80211/key.c#n503
+>>>>>>>>>
+>>>>>>>>> Below are a few kernel logs of the issue happening, some with 
+>>>>>>>>> the deauth being sent
+>>>>>>>>> by the AP, some with just timeouts:
+>>>>>>>>>
+>>>>>>>>> --- No deauth frame sent, just association timeouts after the 
+>>>>>>>>> error ---
+>>>>>>>>>
+>>>>>>>>> Jul 11 00:05:30 kernel: wlan0: disconnect from AP <previous 
+>>>>>>>>> BSS> for new assoc to
+>>>>>>>>> <new BSS>
+>>>>>>>>> Jul 11 00:05:33 kernel: ath10k_pci 0000:02:00.0: failed to 
+>>>>>>>>> install key for vdev 0
+>>>>>>>>> peer <previous BSS>: -110
+>>>>>>>>> Jul 11 00:05:33 kernel: wlan0: failed to remove key 
+>>>>>>>>> (0, <previous BSS>) from
+>>>>>>>>> hardware (-110)
+>>>>>>>>> Jul 11 00:05:33 kernel: wlan0: associate with <new BSS> (try 1/3)
+>>>>>>>>> Jul 11 00:05:33 kernel: wlan0: associate with <new BSS> (try 2/3)
+>>>>>>>>> Jul 11 00:05:33 kernel: wlan0: associate with <new BSS> (try 3/3)
+>>>>>>>>> Jul 11 00:05:33 kernel: wlan0: association with <new BSS> 
+>>>>>>>>> timed out
+>>>>>>>>> Jul 11 00:05:36 kernel: wlan0: authenticate with <new BSS>
+>>>>>>>>> Jul 11 00:05:36 kernel: wlan0: send auth to <new BSS>a (try 1/3)
+>>>>>>>>> Jul 11 00:05:36 kernel: wlan0: authenticated
+>>>>>>>>> Jul 11 00:05:36 kernel: wlan0: associate with <new BSS> (try 1/3)
+>>>>>>>>> Jul 11 00:05:36 kernel: wlan0: RX AssocResp from <new BSS> 
+>>>>>>>>> (capab=0x1111 status=0
+>>>>>>>>> aid=16)
+>>>>>>>>> Jul 11 00:05:36 kernel: wlan0: associated
+>>>>>>>>>
+>>>>>>>>> --- Deauth frame sent amidst the association timeouts ---
+>>>>>>>>>
+>>>>>>>>> Jul 11 00:43:18 kernel: wlan0: disconnect from AP <previous 
+>>>>>>>>> BSS> for new assoc to
+>>>>>>>>> <new BSS>
+>>>>>>>>> Jul 11 00:43:21 kernel: ath10k_pci 0000:02:00.0: failed to 
+>>>>>>>>> install key for vdev 0
+>>>>>>>>> peer <previous BSS>: -110
+>>>>>>>>> Jul 11 00:43:21 kernel: wlan0: failed to remove key (0, 
+>>>>>>>>> <previous BSS>) from
+>>>>>>>>> hardware (-110)
+>>>>>>>>> Jul 11 00:43:21 kernel: wlan0: associate with <new BSS> (try 1/3)
+>>>>>>>>> Jul 11 00:43:21 kernel: wlan0: deauthenticated from <new BSS> 
+>>>>>>>>> while associating
+>>>>>>>>> (Reason: 8=DISASSOC_STA_HAS_LEFT)
+>>>>>>>>> Jul 11 00:43:24 kernel: wlan0: authenticate with <new BSS>
+>>>>>>>>> Jul 11 00:43:24 kernel: wlan0: send auth to <new BSS> (try 1/3)
+>>>>>>>>> Jul 11 00:43:24 kernel: wlan0: authenticated
+>>>>>>>>> Jul 11 00:43:24 kernel: wlan0: associate with <new BSS> (try 1/3)
+>>>>>>>>> Jul 11 00:43:24 kernel: wlan0: RX AssocResp from <new BSS> 
+>>>>>>>>> (capab=0x1111 status=0
+>>>>>>>>> aid=101)
+>>>>>>>>> Jul 11 00:43:24 kernel: wlan0: associated
+>>>>>>>>>
+>>>>>>>> Hi James, this is QCA6174, right? could you also share firmware 
+>>>>>>>> version?
+>>>>>>> Yep, using:
+>>>>>>>
+>>>>>>> qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1dac:0261
+>>>>>>> firmware ver WLAN.RM.4.4.1-00288- api 6 features 
+>>>>>>> wowlan,ignore-otp,mfp
+>>>>>>> crc32 bf907c7c
+>>>>>>>
+>>>>>>> I did try in one instance the latest firmware, 309, and still 
+>>>>>>> saw the
+>>>>>>> same behavior but 288 is what all our devices are running.
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>>
+>>>>>>> James
+>>>>>> Baochen, are you looking more into this? Would prefer to fix the 
+>>>>>> root cause
+>>>>>> rather than take "[RFC 0/1] wifi: ath10k: improvement on key 
+>>>>>> removal failure"
+>>>>> I asked CST team to try to reproduce this issue such that we can 
+>>>>> get firmware dump for
+>>>>> debug further. What I got is that CST team is currently busy at 
+>>>>> other critical
+>>>>> schedules and they are planning to debug this ath10k issue after 
+>>>>> those schedules get
+>>>>> finished.
+>>>>>
+>>>> Jeff, I am notified that CST team can not reproduce this issue.
+>>> Thanks for reaching out to them at least. Maybe the firmware team 
+>>> can provide some info
+>>> about how long it _should_ take to remove a key and we can make the 
+>>> timeout reflect that?
+>> are you implying that the failure is due to a not-long-enough wait in 
+>> host driver? or you
+>> want to know the maximum time firmware needs in removing key, and if 
+>> it is less than 3s we
+>> can reduce current timeout to WAR the issue you hit?
+> No I'm not implying the wait isn't long enough. I would like to know 
+> the maximum time the firmware should take normally and only wait that 
+> amount of time, which would fix the issues we see with Cisco APs.
 >>
->> Me neither but I am not the domain expert here.
->>
+>>> Thanks,
 >>>
->>> AFAIU, calibration data is specific to the platform design. And I don't see any
->>> upstream supported devicetree having similar properties.
->> Deprecating these is fine with me, but I would prefer if we get here
->> some clear answers that mentioned case cannot happen. If you are sure of
->> that, please mention it in commit msg.
->>
-> 
-> I'm pretty sure that this example is wrong. But I will wait for Jeff or other
-> ath developers to confirm.
+>>> James
+>>>
+>>>
+Attempting to revive this thread again with additional information. 
+After initially discovering this I have been carrying a patch which 
+lowers the timeout to 1 second instead of 3. Though undesirable (since 
+it delays roams by 1 second) it did work around the issue with Cisco 
+APs. Unfortunately we now see the same issue with another vendor, 
+"Extreme Networks", despite the delay being only 1 second.
 
-As discussed privately this is a valid example. This is a single-band chip. So
-a tri-band router platform will have 3 boards, one that is supporting 2 GHz,
-one supporting 5 GHz, and one supporting 6 GHz, and each frequency range will
-have different calibration data.
+I can't remember if it was mentioned but we do not see this failure with 
+other AP vendors like Meraki or Aruba, and even some clients that use 
+Cisco don't experience it. But it appears to happen more (sometimes 90%+ 
+of the time) with certain AP vendors. I cannot begin to imagine how the 
+AP would have any effect on the driver/firmware's ability to remove a 
+key locally, but here we are.
 
-So we still need to support slot-specific configuration in cases where the
-slot to board mapping really is fixed in the platform.
+Currently I'm thinking I have 2 options:
 
-/jeff
+   - Further reduce the wait, but given the failure happens so 
+consistently the roaming time will be at minimum whatever I set the 
+timeout to.
+
+   - Remove the wait entirely for DISABLE_KEY. I have no idea if this is 
+safe/recommenced but given the failure isn't handled (only an error log) 
+it feels like I could remove it.
+
+Thanks,
+
+James
+
 
