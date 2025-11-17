@@ -4,142 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79D19CEBF96
-	for <ath10k@archiver.kernel.org>; Mon, 17 Nov 2025 09:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC40BCEBF96
+	for <ath10k@archiver.kernel.org>; Mon, 17 Nov 2025 12:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Xbd/M+85Vw8s1cKki8JfY2ECZPNgUg55KrvYQLAi4hU=; b=f5AZjz4xoKIljHLn+w0rmYnWg8
-	0ngdZg/5sePl1o9RFeQoJPfO1KWE2EiwGhB40QDDbYjHycSGITYV0v9iABmQm15h29HcUqKTSSvmG
-	w0ywGaUP2nQpPaXGkmpV9awVEbFDrt1fLDya38kl6Z4Ot8ynsaOyh8izffkgNpIjqPRYBjjwB+jjo
-	n4G6d2SrzmDaONB/0B5BhizdB09ZFjLA8MEXhs97M29LDtK2SNjddbyfyuK2ODvCcrKjO2sr/I51S
-	dW/cUkRmH3WINfH7/aYekd5rcl+Nt8Nvg9CPNdQu5MIYriTOCsNF0XjdunIqs/icY/e3I1UntmR1h
-	sYXspHqQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=t2GIxjzEPgQtngG3qU0WnH6UZPnhzUOgfRwXYNTAgcQ=; b=mGHUxu8idTY/yjxmyOhfdW7v2C
+	DJg4g26Wa653qr2PpjVfOkaQo3bFCBKb1rV9/QAcRjbU96rSOngAfK7cHn6sbZXWCI1X2I20AGBCB
+	kel4eyqpH79uTmtlG7AAkimQhqANvC9q0dTCgnIfPx23LUI/16GGKZIW1Gu8hAMOVHTC0fTLEekW2
+	J8lzVMVZwgR6KChBAsNLtfYq+7hc+gU+lGLqt+it6dzvizxit0npc3LYjufe/kNUGDYrgWYJBX94Q
+	9uXjUlaWWAH0LgTf+Ag+9jzHtOLysNOfW/8SHJ4ekCgio10gmB6dUXNUJSbT5EDN32NfF/6GtqgeK
+	oXuYhIiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vKvic-0000000FoFP-3JPz;
-	Mon, 17 Nov 2025 09:40:18 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1vKyby-0000000G7DI-05Xv;
+	Mon, 17 Nov 2025 12:45:38 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vKvia-0000000FoEI-0Lu4
+	id 1vKybu-0000000G7An-1yRz
 	for ath10k@lists.infradead.org;
-	Mon, 17 Nov 2025 09:40:17 +0000
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AH4npsx2851535
-	for <ath10k@lists.infradead.org>; Mon, 17 Nov 2025 09:40:15 GMT
+	Mon, 17 Nov 2025 12:45:35 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AHAKNHo3932608
+	for <ath10k@lists.infradead.org>; Mon, 17 Nov 2025 12:45:33 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	Xbd/M+85Vw8s1cKki8JfY2ECZPNgUg55KrvYQLAi4hU=; b=LPELYkN0qPh8NQVx
-	ho7nt7iBoDbMmvC5nuYX1Oom10iPvtqeX4anvlzr66M0t7I7FF5asu0UWTakDuY0
-	vzoHVQy7k4K2WOusrA+kkwFDoFFdwSZdweenQpAxzTAlmlKs3gTRCW6A8kfNJdOW
-	hXp2DY/Jd1uZcg2CJpbh6ZzBnbXF2S+Ny9l8ca7MvpGCM+cEY8PpnhTt8EgVRvrb
-	XW9iANvWA/m3NMVMmdRSxHngAKgON8uZCbPox00Ugg8lIJ1RhanZ9qp+0avsLV2M
-	RHbG0iaQJg3gVJWPJYFyPYQus75wz+GgaFF7PmR7wzuOT7cSttH5EmlNs8PQ4pvB
-	YTn8Jg==
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4aejh0c65j-1
+	t2GIxjzEPgQtngG3qU0WnH6UZPnhzUOgfRwXYNTAgcQ=; b=b5Zq0zE+HoTRx7U8
+	Ga+WXsu9BEEPjmBusOHFWVBmLXW3BSW2uw44nr843afrfN0mxsII8nzAxMSHI8oj
+	ehx9lkwRw9jkh76b6Rwv//xgQ2mUlKwv9QOyBGpjujC11LtgBxZGaU1cSa8y4tsu
+	1KNilYP/9ar1T6dWQGjrJzCQxD0FtYLLFtP6gH636kKbOse+v75RgmngtrxDBBIQ
+	ROu72b34H5K26MWZqPnsauXscNBxnU57ApIF+EQWZRFkAmee94RhzsFbfizJT/zB
+	ItN0d2Zlc7VVbgDpaVY7Y+lB5vkrAkIqL5gMl81YrkjTouxvRyHqOST27MCpjjIm
+	hqlIMA==
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4ag1v90cu3-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Mon, 17 Nov 2025 09:40:15 +0000 (GMT)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-297e66542afso137982505ad.3
-        for <ath10k@lists.infradead.org>; Mon, 17 Nov 2025 01:40:15 -0800 (PST)
+	for <ath10k@lists.infradead.org>; Mon, 17 Nov 2025 12:45:32 +0000 (GMT)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-7b873532cc8so4932489b3a.1
+        for <ath10k@lists.infradead.org>; Mon, 17 Nov 2025 04:45:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1763372415; x=1763977215; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Xbd/M+85Vw8s1cKki8JfY2ECZPNgUg55KrvYQLAi4hU=;
-        b=BkXdQMLetQvxDZo6Qb6BFj7WcPfPTwPMeK1uCWUJ5F/j/9PxY+vc+U96brYlH7Q2pf
-         oJ+VeCULe5OJFRZoJQrnr7HBAW+j5TBj0BUoPwWGLbsiQpGl7dtQo6RpGVJFXfUI15fu
-         Vu34SAkXivkMGx5tNvtf+EvVbf4b2Ft6ZROSOMz18oa3mZYxTHTQouzjcyRgcmNkZ6wO
-         +57WwShmUHoJ86g+rzLNmzGeXOs/Zv9zUqMdunDs7N82+jVbDvLDiFKJ2sg/eK8wilmN
-         q5HMZ+nDokLrLdc3WR4SJY8MnaDsbApZOcJDEnWnrx+9KRaXoerQv15Y6gKI0TGk0PsG
-         PHRA==
+        d=oss.qualcomm.com; s=google; t=1763383531; x=1763988331; darn=lists.infradead.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=t2GIxjzEPgQtngG3qU0WnH6UZPnhzUOgfRwXYNTAgcQ=;
+        b=i0eN0GYE9h6CWU9sprflW94F0uT+wGTg+tGN0Vmyeoj+oBqECJ7aSP8CcFPhjQSZEl
+         YDPIaQV74jsdH6LXYPTPPg95PzaA99o/xY+rjunFGyvMR1+kwyabxZcxMt0AXIBgDKGY
+         1XmFKnQyjhApJu628qlFpAUS60J9fcVx/GK11xqEsD684MJ4H3xnwp2oJg+6OaJTKC8V
+         fjM6BvLX3gS7YcTcMelZRygis1WS6YQ04jyCehB0YVzE7zJxn35k9HUgWTUryEnIEOT7
+         ZS/H60+8fXg3OBJfb0gb0BJaXWLmvydnCgHpZE/8XKai92KOgjePbtPGMAL1MvPIzjSE
+         c74g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763372415; x=1763977215;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xbd/M+85Vw8s1cKki8JfY2ECZPNgUg55KrvYQLAi4hU=;
-        b=L6pUv4VnuUzBvVPNMXJK/DQjicXU4mi9opAB8hU2aA2Rb9c55weCx1K5+16XNZnfTo
-         iU4N0iIAKhOR8RFM8zbhl3NTZ8cFXxFWhLWwm+WivngWVvcMKW+8ksKapZkxpGxwhJ33
-         tVonilj34gJf5rODmzWmhyE0nWUolYyprPcgkSEjH22vRw0oA6AcgeqCZag9p37C75Uk
-         x8z1g2pAEMpwFiSMTrFblpia65OYp0EzY0WwX/cEa4PvGegJ/8cS4ufaFFr31cdoSNgZ
-         ucueIal2+WgBYX4/FIey17lV5KN85jKRCDOOr+2G2cuugUqeH7fCF6n41umTI0HRfD6f
-         GnTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWMbEzvfY/8ZZ33/qXGFOiW6u96CAqTOXZU4p4QPpwh/qs+YGgpQ0aNV5jDqE6lMTSVSheNkmg=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw2MJZkFg3LzPv2J7YKi4A/1xz7ovMx+BksRB+VJznv2zedsVLE
-	crnxU6J97BXIRESnf/Oc8WuRW3/D1t3+J3lGSMpoHAcYut3HNVeE4Qa/OL6FSR4LZ99p4aJcQey
-	qT7YpeievGadTlGIcQAa0WNase2stEdXDZBfqz2TGs4nsM4Zl/RIMnSmk/3jjlDcxO8ojVYQS
-X-Gm-Gg: ASbGncsH65maf0WFBc/92ktqz8vqyP8BIl6DtGFmwqMr5UcEHQ13eLi6qNiOhbHDeHu
-	DWqF+EsU8AOCYMNvtF34PKSu7NyJufWo21+EXaIRI53pDdXgRDP7sISYoWwEMV8U/5I1q/JdFau
-	c4KWvaEB8z8AZZUDlPgrfhDH3As3YYtrlqJsD1BwKeOQK6HhxGKOofdKe7cof9tYvwX1Sut5WO1
-	WraEx7ll1B90LYGgC2Li2z47fvA5mBcBHx2bn1lfgz0oxYtbhsPoWgq8cUNu74ztdGadEfSK9lU
-	82Ltp7EynxfZ52va0nz53EHFN4JQ0XceJhOeqMV1EixCCoHMPhkold9I6x3hjq7QsjiSmaH0XEx
-	pzKtcJVg7U7LTOuY2VDz5bIuPWBOfRU+ejWx254LlyLHBQT8ZPzoHmRn02xZX5h5E1SZbgwFi
-X-Received: by 2002:a17:903:286:b0:290:ab61:6a4a with SMTP id d9443c01a7336-2986a6d0441mr128562305ad.13.1763372414779;
-        Mon, 17 Nov 2025 01:40:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFddAeopk9ZsDGbTtYli77j8FC4dnPHKzaKqbT7rUM+u8ZEVTzlfZ/5emnD6ZwaUr3gOC+XcQ==
-X-Received: by 2002:a17:903:286:b0:290:ab61:6a4a with SMTP id d9443c01a7336-2986a6d0441mr128562025ad.13.1763372414315;
-        Mon, 17 Nov 2025 01:40:14 -0800 (PST)
-Received: from [10.133.33.104] (tpe-colo-wan-fw-bordernet.qualcomm.com. [103.229.16.4])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2b11bfsm134601665ad.53.2025.11.17.01.40.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Nov 2025 01:40:14 -0800 (PST)
-Message-ID: <b8277024-f9d4-4f17-946f-c2c390669067@oss.qualcomm.com>
-Date: Mon, 17 Nov 2025 17:40:06 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] wifi: ath: Use static calibration variant table for
- devicetree platforms
-To: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
+        d=1e100.net; s=20230601; t=1763383531; x=1763988331;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t2GIxjzEPgQtngG3qU0WnH6UZPnhzUOgfRwXYNTAgcQ=;
+        b=w6vI8vADLXNaKPRDo76+gGvkpancPPgBtwUUOmNwRgyyTxUHID4eOC5eZrltGgMkVr
+         /7AvWt7dRpHZEmXgdP3YdrbUDeEQhswcKtozmYrosrBYqSYZZwOScOcYTv0GOA8vEP9a
+         +toKqRN0NFFUhtBCkldVCpGRrYHeiQZqnQyJQsw5C/irlyS16JifcFfcfydhE3PsleaQ
+         2wD8KmfZDW+3UJ9URGcPhgQIzBuLdlNlaVsfesB4cIYGRuvnmAg0h/2nMMQWTreyWeJm
+         fjmFn3ysNJv3zksBFg2jjJmkTm3obsmvSGgE79TasXk881SJooFUuo8jkrmnyokEcatd
+         gv6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXOihTNQciRNXjmm5JneWTW3O1uT+xvuNfg4tZyDQrqKig5sABN+hXg8NV7RvkUBfqEOpgFHP0=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy4/EZ6XliDW9nIHa5fAhHjHf4GafauSC4tO0pZ5ZQIw0+DdrbG
+	6WX48gCVwpBAudAi3TM0iKUEKUrfEplfl9tNd3n2sD3/PMKb4zNNixZicJ0hxAcopgvBf82BUiI
+	waHfje5t+6v5PNeHbomWx0S6gU/4SjiBcB9J8FmFDkt/tOx4/ZJJqsyWDmwv44Vss
+X-Gm-Gg: ASbGncuAOF0b8AxcngnGkSyVtmq+aVczBFRjMxyCt5jt0KqB9dKHRxyGhm7G7p+f9I8
+	Ut3cscvMCo6hDhw1VRMTjN7/JRGloqqqiJ7zNlO4bJQBoIPI/2CZoWbrNaZFKIqTuB0cme0chc8
+	oEDwKZgqchjl2+VjpP0wie+N+RxPhOxC+B43gbiWDRtyL8dEO7iuHKgbga6poM9swhWB1+m+yfW
+	VLr8koGip7m3bfR3oPLkPNzeJ2OvwCzFOOfRYOUzySd0S8Og95FZeLE+evoMLpQR3U2PpVUM5Pp
+	HTLxMMyeml2Xo3YYoLLCpu7/0f3cMOWRuWrbedgt0mo8Cf95z9afVRNUvxpayqj01sDZQNSg6ex
+	vzs5YKRxkzv5r
+X-Received: by 2002:a05:6a00:148a:b0:7a9:7887:f0fa with SMTP id d2e1a72fcca58-7ba323d6167mr15472542b3a.1.1763383531503;
+        Mon, 17 Nov 2025 04:45:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGDJbvN6jOsObid0beCDZHvRVXCcF/Syx9OjNHftPL31GJDCaNOSy040plNENpYw9lQsUyY0w==
+X-Received: by 2002:a05:6a00:148a:b0:7a9:7887:f0fa with SMTP id d2e1a72fcca58-7ba323d6167mr15472502b3a.1.1763383531025;
+        Mon, 17 Nov 2025 04:45:31 -0800 (PST)
+Received: from work ([120.60.57.34])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b927c23103sm12814553b3a.65.2025.11.17.04.45.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 04:45:30 -0800 (PST)
+Date: Mon, 17 Nov 2025 18:15:20 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
+To: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
 Cc: Jeff Johnson <jjohnson@kernel.org>,
         Johannes Berg <johannes@sipsolutions.net>,
         Rob Herring <robh@kernel.org>,
         Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
- <conor+dt@kernel.org>, linux-wireless@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>, linux-wireless@vger.kernel.org,
         linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
         ath11k@lists.infradead.org, devicetree@vger.kernel.org,
         ath12k@lists.infradead.org,
         Miaoqing Pan <miaoqing.pan@oss.qualcomm.com>
+Subject: Re: [PATCH 0/2] wifi: ath: Use static calibration variant table for
+ devicetree platforms
+Message-ID: <exfmj52dqu3uctwsb2gopcjg7744vq5avlkahtmgfw4opw4mfl@t2svrln72u53>
 References: <20251114-ath-variant-tbl-v1-0-a9adfc49e3f3@oss.qualcomm.com>
  <2fd84ab2-2e3e-4d05-add5-17930a35fedf@oss.qualcomm.com>
  <jnggqxqv3rjzhyevovnnxzplfhl3t6auhhvmoz7wxmsf6awgdx@dusdgxwsxvts>
-From: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-Content-Language: en-US
-In-Reply-To: <jnggqxqv3rjzhyevovnnxzplfhl3t6auhhvmoz7wxmsf6awgdx@dusdgxwsxvts>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: krtv50ysqN2qAW_a9sBlZx_qj4SCHIeT
-X-Authority-Analysis: v=2.4 cv=A8lh/qWG c=1 sm=1 tr=0 ts=691aed7f cx=c_pps
- a=cmESyDAEBpBGqyK7t0alAg==:117 a=nuhDOHQX5FNHPW3J6Bj6AA==:17
+ <b8277024-f9d4-4f17-946f-c2c390669067@oss.qualcomm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b8277024-f9d4-4f17-946f-c2c390669067@oss.qualcomm.com>
+X-Proofpoint-ORIG-GUID: Rgc5FSAwGBi0RuxTZUaPKaC6qr_R0USx
+X-Proofpoint-GUID: Rgc5FSAwGBi0RuxTZUaPKaC6qr_R0USx
+X-Authority-Analysis: v=2.4 cv=acVsXBot c=1 sm=1 tr=0 ts=691b18ec cx=c_pps
+ a=m5Vt/hrsBiPMCU0y4gIsQw==:117 a=SvArCPxluHhT4bP621h3eQ==:17
  a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=EUspDBNiAAAA:8 a=DkQbIERv6x4r1F1n8LQA:9
- a=QEXdDO2ut3YA:10 a=1OuFwYUASf3TG4hYMiVC:22 a=HhbK4dLum7pmb74im6QT:22
-X-Proofpoint-GUID: krtv50ysqN2qAW_a9sBlZx_qj4SCHIeT
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE3MDA4MCBTYWx0ZWRfX2Wefbafjw7Qe
- jscL3j6KUn8KHdmTDocy2PjcdHEsd1eiF4hn7Dz9SvSY2y8SctTbZ8y5nm2KtW6IoSBNjgWCFCI
- XDWp2IPr11yN85DnaMeRLi8fyvWmNrp5yyRDZohmRUOSj+4b1FmK6VHgzSZ0DD0uWqAcQlL6e7R
- uXJciGci/asp89eYlUp+WO2l6aN8y75OjcqDK6YywBCRGxD+TS9mACVN6VAVXy+VkqmJmpLFMNa
- hvRm1DVHylr6JKcWBPAjFYBV97DaeGvuk24lz1Li1yCu+wPKXtcxmDlLD8OTZedHOwEye8fxBJz
- 5dBl1IvD76PKLNmuXmZkRqr7lEIN4xM1F4cx6AuCcvyMdz1NAbVZTlb/zwHeU1dogwW2jgZi+Bu
- MeCfvk6g1dVXN0GdVOfCw3nJPrZ1Ew==
+ a=VkNPw1HP01LnGYTKEx00:22 a=EUspDBNiAAAA:8 a=W1PEZSGAYdG1hK9pKucA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=IoOABgeZipijB_acs4fv:22
+ a=HhbK4dLum7pmb74im6QT:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE3MDEwOCBTYWx0ZWRfX6sKWvkNpOxvh
+ RaV+cHl3JCfQk+X9SDP2no4++FjpGN+qpSg+Ncl1QjKqTS3ok7dBkrvGvnIMqcnKRRRGV/CarL1
+ fTpKq96vMIC5Xe3ItNf5oX6I1Jlf857udIBR8jcVk3+OA6ZwIBL5i2F2+k39nznFlZfTiYgAA+p
+ +Q4YSUGXsjER5fQsdfDpybwIHMz/WcOhwYkV6t+Nh2IP4gDSby3rG7IX5QuZVFWWdKlhwgZmlF9
+ i9nhCoUl3xOT9Y52Awuw5Tq8OqlmVn8PenyLPTlIi3LdhD1nFlFAmT+cDFEqNVWj3kSlgo7k7qm
+ RTCmpKU76pp6w5xfMu6aawsLuF2iyWF1ruJ2GyD3RJqbrvBM3dGru6HucPCXIDI6wq++sZhlDMt
+ vtU76QMWtiV6xJ0ozKBKuxqU/p/BKQ==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-17_02,2025-11-13_02,2025-10-01_01
+ definitions=2025-11-17_03,2025-11-13_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0
- adultscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 clxscore=1015
+ adultscore=0 suspectscore=0 clxscore=1015 priorityscore=1501 malwarescore=0
+ spamscore=0 bulkscore=0 impostorscore=0 phishscore=0 lowpriorityscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511170080
+ reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511170108
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251117_014016_124177_1E3449CB 
-X-CRM114-Status: GOOD (  29.68  )
+X-CRM114-CacheID: sfid-20251117_044534_655767_328391C8 
+X-CRM114-Status: GOOD (  40.29  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,89 +153,100 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+On Mon, Nov 17, 2025 at 05:40:06PM +0800, Baochen Qiang wrote:
+> 
+> 
+> On 11/17/2025 5:00 PM, Manivannan Sadhasivam wrote:
+> > On Mon, Nov 17, 2025 at 10:36:39AM +0800, Baochen Qiang wrote:
+> >>
+> >>
+> >> On 11/14/2025 6:22 PM, Manivannan Sadhasivam wrote:
+> >>> Hi,
+> >>>
+> >>> This series aims to deprecate the usage of "qcom,*calibration-variant"
+> >>> devicetree property to select the calibration variant for the WLAN devices. This
+> >>> is necessary for WLAN devices connected using PCI bus, as hardcoding the device
+> >>> specific information in PCI devicetree node causes the node to be updated every
+> >>> time when a new device variant is attached to the PCI slot. This approach is not
+> >>> scalable and causes bad user experience.
+> >>
+> >> I am not very clear about the problem here: is calibration variant device/module specific,
+> >> or platform specific? If it is module specific, why the lookup is based on the machine
+> >> 'model' property? While if it is platform specific, why do we need to update devicetree
+> >> node whenever a new device is attached?
+> >>
+> > 
+> > I think I mixed the usecase of the 'firmware-name' property in the above
+> > description.
+> > 
+> > But nevertheless, the calibration info platform specific, and hardcoding the DT
+> > property fixes the location of the WLAN card with a specific slot. For instance,
+> > if the board has a couple of M.2 slots, users should be free to plug the WLAN in
+> > any slot, not just a single slot where the property was defined in DT.
+> > 
+> > Also, if the users plug-in the WLAN card of another vendor, not Qcom, this
+> > property is irrelevant/wrong.
+> > 
+> > PCIe slots should be plug and play i.e., users should plug-in any M.2 card and
+> > expect it to work.
+> > 
+> 
+> correct
+> 
+> > However, as I learned from Jeff, calibration variant property is also going to
+> > be required in cases like router boards where each slot is dedicated to a fixed
+> > band and the calibration variant is going to be different for each band for the
+> > platform. So unlike I thought, this DT property cannot be deprecated. But going
+> > forward, I'd like it to be used only in these special usecases. Most of the
+> > upstream DTS have a single calibration variant for the platform and for those
+> > generic usecases, this static table should be used.
+> 
+> If that property is not going to be deprecated, should it take precedence?
+> 
 
+If you mean 'it' by this static table, yes, it is going to take precedence as it
+should cover the generic usecases. For special cases like the multi-band
+routers, existing DT node fallback will cover.
 
-On 11/17/2025 5:00 PM, Manivannan Sadhasivam wrote:
-> On Mon, Nov 17, 2025 at 10:36:39AM +0800, Baochen Qiang wrote:
->>
->>
->> On 11/14/2025 6:22 PM, Manivannan Sadhasivam wrote:
->>> Hi,
->>>
->>> This series aims to deprecate the usage of "qcom,*calibration-variant"
->>> devicetree property to select the calibration variant for the WLAN devices. This
->>> is necessary for WLAN devices connected using PCI bus, as hardcoding the device
->>> specific information in PCI devicetree node causes the node to be updated every
->>> time when a new device variant is attached to the PCI slot. This approach is not
->>> scalable and causes bad user experience.
->>
->> I am not very clear about the problem here: is calibration variant device/module specific,
->> or platform specific? If it is module specific, why the lookup is based on the machine
->> 'model' property? While if it is platform specific, why do we need to update devicetree
->> node whenever a new device is attached?
->>
-> 
-> I think I mixed the usecase of the 'firmware-name' property in the above
-> description.
-> 
-> But nevertheless, the calibration info platform specific, and hardcoding the DT
-> property fixes the location of the WLAN card with a specific slot. For instance,
-> if the board has a couple of M.2 slots, users should be free to plug the WLAN in
-> any slot, not just a single slot where the property was defined in DT.
-> 
-> Also, if the users plug-in the WLAN card of another vendor, not Qcom, this
-> property is irrelevant/wrong.
-> 
-> PCIe slots should be plug and play i.e., users should plug-in any M.2 card and
-> expect it to work.
-> 
+- Mani
 
-correct
+> > 
+> > - Mani
+> > 
+> >>>
+> >>> So to avoid relying on the "qcom,*calibration-variant" property, this series
+> >>> introduces a new static calibration variant table based lookup. The newly
+> >>> introduced helper, ath_get_calib_variant() will parse the model name from
+> >>> devicetree and use it to do the variant lookup during runtime. The
+> >>> ath_calib_variant_table[] will hold all the model and calibration variant
+> >>> entries for the supported devices.
+> >>>
+> >>> Going forward, new entries will be added to this table to support calibration
+> >>> variants.
+> >>>
+> >>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
+> >>> ---
+> >>> Manivannan Sadhasivam (2):
+> >>>       wifi: ath: Use static calibration variant table for devicetree platforms
+> >>>       dt-bindings: wireless: ath: Deprecate 'qcom,calibration-variant' property
+> >>>
+> >>>  .../bindings/net/wireless/qcom,ath10k.yaml         |  1 +
+> >>>  .../bindings/net/wireless/qcom,ath11k-pci.yaml     |  3 +-
+> >>>  .../bindings/net/wireless/qcom,ath11k.yaml         |  1 +
+> >>>  .../bindings/net/wireless/qcom,ath12k-wsi.yaml     |  6 +-
+> >>>  .../bindings/net/wireless/qcom,ipq5332-wifi.yaml   |  2 +-
+> >>>  drivers/net/wireless/ath/ath.h                     | 98 ++++++++++++++++++++++
+> >>>  drivers/net/wireless/ath/ath10k/core.c             |  5 ++
+> >>>  drivers/net/wireless/ath/ath11k/core.c             |  7 ++
+> >>>  8 files changed, 115 insertions(+), 8 deletions(-)
+> >>> ---
+> >>> base-commit: 3a8660878839faadb4f1a6dd72c3179c1df56787
+> >>> change-id: 20251114-ath-variant-tbl-22865456a527
+> >>>
+> >>> Best regards,
+> >>
+> > 
 
-> However, as I learned from Jeff, calibration variant property is also going to
-> be required in cases like router boards where each slot is dedicated to a fixed
-> band and the calibration variant is going to be different for each band for the
-> platform. So unlike I thought, this DT property cannot be deprecated. But going
-> forward, I'd like it to be used only in these special usecases. Most of the
-> upstream DTS have a single calibration variant for the platform and for those
-> generic usecases, this static table should be used.
-
-If that property is not going to be deprecated, should it take precedence?
-
-> 
-> - Mani
-> 
->>>
->>> So to avoid relying on the "qcom,*calibration-variant" property, this series
->>> introduces a new static calibration variant table based lookup. The newly
->>> introduced helper, ath_get_calib_variant() will parse the model name from
->>> devicetree and use it to do the variant lookup during runtime. The
->>> ath_calib_variant_table[] will hold all the model and calibration variant
->>> entries for the supported devices.
->>>
->>> Going forward, new entries will be added to this table to support calibration
->>> variants.
->>>
->>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
->>> ---
->>> Manivannan Sadhasivam (2):
->>>       wifi: ath: Use static calibration variant table for devicetree platforms
->>>       dt-bindings: wireless: ath: Deprecate 'qcom,calibration-variant' property
->>>
->>>  .../bindings/net/wireless/qcom,ath10k.yaml         |  1 +
->>>  .../bindings/net/wireless/qcom,ath11k-pci.yaml     |  3 +-
->>>  .../bindings/net/wireless/qcom,ath11k.yaml         |  1 +
->>>  .../bindings/net/wireless/qcom,ath12k-wsi.yaml     |  6 +-
->>>  .../bindings/net/wireless/qcom,ipq5332-wifi.yaml   |  2 +-
->>>  drivers/net/wireless/ath/ath.h                     | 98 ++++++++++++++++++++++
->>>  drivers/net/wireless/ath/ath10k/core.c             |  5 ++
->>>  drivers/net/wireless/ath/ath11k/core.c             |  7 ++
->>>  8 files changed, 115 insertions(+), 8 deletions(-)
->>> ---
->>> base-commit: 3a8660878839faadb4f1a6dd72c3179c1df56787
->>> change-id: 20251114-ath-variant-tbl-22865456a527
->>>
->>> Best regards,
->>
-> 
+-- 
+மணிவண்ணன் சதாசிவம்
 
