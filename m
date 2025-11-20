@@ -4,143 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EBF8CEBF93
-	for <ath10k@archiver.kernel.org>; Tue, 18 Nov 2025 06:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA3D5CF64B2
+	for <ath10k@archiver.kernel.org>; Thu, 20 Nov 2025 03:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DX+0M+0mWy/BPLyBS36f3e9yT2ekaLn5n3Ig+Sg3x3Y=; b=qlGkS+GZ4UJsoLO6A/iX6a+jut
-	t102E63QS/MfArXzvX/LyUZK9A44erp1MTLLgPNeZON9p4pAh5STuyUw+I4Ptr5n/uDoUl00Nhi3J
-	CepQOKNIsz0Nrka5jl9E5thUkFt4Csuv9L81noRdiTc2lKBRIst84F+JBxLkgL1jMftOmM2ZX8zHP
-	e5nl6uvhZYxnOc9NLsvtTU0MALAemqtyqUGoeqUFpPTNe3VBjtOMwdOLZPyXeHy4dTIv6X8gLC7AR
-	DSqn6zpfHQTe1auDKM6dPpAtF1viQnbVaQL771WSkM5cxG4IYbn4W0G1cwXqtR8Agj5/9fFr7yzMO
-	aBsVRMng==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=w2Nfv//wKfgQYjOWaBmhUaOG3ji2GxiPpvMEXNJkovk=; b=SmeTKxpKv7CwxX3o5zC+3PXoCK
+	RdKoFzYWyLNIiNTJT8R2HunTuxAJ3+d1GQPAl7vbbgsUFicXjJBfWFTTANkUphQ8iADcL/O+aH5VW
+	WQr0pnwLrpOiJIsWw63j0vwNZ4HGcMSokf7lcCMj6cly3sXzQ8mI6qVJRTqlx0OTeozLFJQFPEb+B
+	1ip7laGqj52WoY+2PvkDoTrT5kyvduAO/OA7wxpg+FifZwpeRlQNgvaGdC5SJMH+fOcZ46MuXd1TR
+	to1pEB4EHlxO6FKjLIRUq9ls9HTZAI6/QnJrXhyFUGFiF1Sgro4pbLVBmkrx8DELY365GwW247pw8
+	Gdyc5S/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLFaq-0000000HW1c-4ASV;
-	Tue, 18 Nov 2025 06:53:36 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1vLvY2-000000063ph-48n0;
+	Thu, 20 Nov 2025 03:41:30 +0000
+Received: from mout.gmx.net ([212.227.17.21])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLFao-0000000HW0f-2vPo
-	for ath10k@lists.infradead.org;
-	Tue, 18 Nov 2025 06:53:36 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AI3JrTN375672
-	for <ath10k@lists.infradead.org>; Tue, 18 Nov 2025 06:53:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	DX+0M+0mWy/BPLyBS36f3e9yT2ekaLn5n3Ig+Sg3x3Y=; b=htY29goY3toDJbWU
-	0z5wnuM+bTc6MZbOrVPEAW6XsBSUOHMS9nOr4D7Tl5kBIk/Q87p2UhE1xsRJuxLM
-	OPdnWbnxes4VxBSz86UlyCN8VZHbtUAUQqfBYjaZG84XAwn1pCRiYx/2WcBOF5Iz
-	X57R4jlyleztfKlQYesTgnuIjkJ/nhM8AobhyneA4Y5sHbgdIAM5MhTmYc3dmYw/
-	6ZpJxfgnbUHK5lka6SBuCD32TJcK1K8m8V9iQL85JJSR9jk9oGV37Bkq4/Z35knE
-	mjRRu6f2rkKslgON7L1chth/Pjpvtwjf6wIKzCMMOyC03rJlfVdG98j5efcKzXnM
-	jRtsFQ==
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4ag76nj4kp-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Tue, 18 Nov 2025 06:53:33 +0000 (GMT)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-29809acd049so88750475ad.3
-        for <ath10k@lists.infradead.org>; Mon, 17 Nov 2025 22:53:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1763448812; x=1764053612; darn=lists.infradead.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DX+0M+0mWy/BPLyBS36f3e9yT2ekaLn5n3Ig+Sg3x3Y=;
-        b=BGKGseiKSkOpasrLsDyQVkGRHDFBBCz0AV4lK00rLiHHcN92tECNOkXRM0ONMc7xyN
-         VAjrRbD3pPn+xJXdI852qxPist5OkP+fq5cxpoNHhizfDVXRu7aUMBgVx0ADnqOLvldQ
-         4YG2ZhYoe3UOPWNS4EQXjxR0JWNsx21IAUpW4SeyOc9xbpMtAfoEpyi856nXjWjFli21
-         lLtLSeRDZLPPPoWwQWzxwdoXIOaU5yu/rGmIFZ/0WVuIRwWp11/BzOtlo6oJOR4gKokj
-         YxW37esbtGeC85OWe1KpD4SNiEQF7bOzqqnySd+NtoFSrxeci5xl9JJEgNx23DyUOQqB
-         WbJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763448812; x=1764053612;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DX+0M+0mWy/BPLyBS36f3e9yT2ekaLn5n3Ig+Sg3x3Y=;
-        b=hFbfVk2C3KoxqBO+VRgILoaMq/zjFTczOYXuxVpVrYIBbcy3z1jLYGRVd4+p4SbcZc
-         kswB0B3kM+Xpzr2arJyQ7VjcFQA9pYD3lKrS/uPNTXUDOTFXbQ5BUX0AJ25W23qHuqa2
-         6mu35HT5G/cu4gXWrWBi/+8lsh2t/8lN4ZThkGo6GI968TvoncskM/ZuQXIzBTCo8GRF
-         z7w3M2Fr0J6drSTNBGOrrOzlLvt45QwxLxIWl3D6qpJFsyIegTzbSU6lYeypcptJ7e1Q
-         9Lz9cltOJcxtbq/8BS+fecfos9idyhwasuVU24iHxhiCV4D9Jr2dfeg9hizpWqsCgrkK
-         DWhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVcJpEy3p0wktsTQeFQDQvU07X56bH4//Q8xH/oV8DU8yjx4snqxdXIJKf4LDeJLEzyDZKIGMs=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxRj7KWM3mvpbZba4C/fkd67FnqYuWRb+OKvSs+pvHqnPXHD6ee
-	ckYVwPnbZtrWrsGLcP2oYApsesUK4eJDoPKAysaS0mt0Ai0oKK8Cc4RdFYeH964oTDy5eWq1BfQ
-	SgO3iXXesgzsvf5cPY5HsZWTmKVDTBqcWJ6R319Hm71sD8vSiXDqGztLUghjZHrqi
-X-Gm-Gg: ASbGnctLuu9wWhLbKNtg+Xixr7vqwIJ5XUitaHTMHTowud04X2k4FlyX31Qo4/rVpfS
-	cbNbA34W0bENcxTda9Gva9KwDWsJISIqG8KVcUjebXDrRCcAKVKJdIaXprzQDBprcIo3kzcmCVn
-	HTzG+1glI1UBjLgUfIZoxmVZgbFl7pCoMcy6kMHPS0ijmIfX/klbNBRWyw4cscsmzt3rNO4XmtV
-	eRju58C8cwgOAQ/abhlvmW6+vEtH+qkeT9VA4GeZ3wDWxW/E8vDS8usToOuYreDCUqMST5Jj/Ae
-	GLES8zkyZKll5zcFO9c36NNOO2vHfKBmWWzgyD5rxCkHJ4lXBheo2sZ/4Qj1CCukaXX6w8tNREP
-	o9JPdv5uRY8OkJg==
-X-Received: by 2002:a17:902:e84c:b0:297:ebb2:f4a1 with SMTP id d9443c01a7336-2986a73bb6amr162660785ad.38.1763448811924;
-        Mon, 17 Nov 2025 22:53:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEwLzQEHhETj6zRkHw+TFy4NsmE2cQhY/5PkFmJnlUFOaaGzYA6d6q2qBji1rRTv2fZXXmQCQ==
-X-Received: by 2002:a17:902:e84c:b0:297:ebb2:f4a1 with SMTP id d9443c01a7336-2986a73bb6amr162660405ad.38.1763448811396;
-        Mon, 17 Nov 2025 22:53:31 -0800 (PST)
-Received: from work ([120.60.70.176])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c245da0sm160489625ad.26.2025.11.17.22.53.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Nov 2025 22:53:30 -0800 (PST)
-Date: Tue, 18 Nov 2025 12:23:20 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
-To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Cc: Baochen Qiang <baochen.qiang@oss.qualcomm.com>,
-        Jeff Johnson <jjohnson@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
-        ath11k@lists.infradead.org, devicetree@vger.kernel.org,
-        ath12k@lists.infradead.org,
-        Miaoqing Pan <miaoqing.pan@oss.qualcomm.com>
-Subject: Re: [PATCH 0/2] wifi: ath: Use static calibration variant table for
- devicetree platforms
-Message-ID: <trr5j57vwk2dhoibdgdxnlkftnmfcmjkwmicsiltmhybxanjaf@tzaeeqcyz56l>
-References: <20251114-ath-variant-tbl-v1-0-a9adfc49e3f3@oss.qualcomm.com>
- <2fd84ab2-2e3e-4d05-add5-17930a35fedf@oss.qualcomm.com>
- <jnggqxqv3rjzhyevovnnxzplfhl3t6auhhvmoz7wxmsf6awgdx@dusdgxwsxvts>
- <b8277024-f9d4-4f17-946f-c2c390669067@oss.qualcomm.com>
- <exfmj52dqu3uctwsb2gopcjg7744vq5avlkahtmgfw4opw4mfl@t2svrln72u53>
- <f853d9b2-47f8-47b5-a02d-6aa8f12a4283@oss.qualcomm.com>
+	id 1vLvXz-000000063og-24YQ;
+	Thu, 20 Nov 2025 03:41:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1763610082; x=1764214882; i=w_armin@gmx.de;
+	bh=w2Nfv//wKfgQYjOWaBmhUaOG3ji2GxiPpvMEXNJkovk=;
+	h=X-UI-Sender-Class:From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=QI/Fub525wDohQgrQZJy5ZGp8vcwn40gJOPbT3X67Wz3mcytu+sSkKm+/liAXaF/
+	 ze5WJNam4JEBz9EvtkmEzVyuR57mBKFa9Jqt1l7RuJOJaqTil8BSmZQm2pK/X1nXE
+	 haJGM77SqXmQY7+kQVVFyy8y0wqfCsnSmnLuWJUOVJotxqk3p0intCgNvuDa5Ju6e
+	 Yt/pILqQOXJIspRJxtrPtGdM37tHWRemFt/RMkc6/8kmbqqg1dSse/LkXsZ31awVL
+	 YEDEvZYeHzsDif/aKGKSFsZiQ53dxNiF3ripIR4vdnr6GBhiZfrbvMXp6iQYit5JP
+	 eQhthGQgTH/PDrHChA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [127.0.0.1] ([93.202.247.91]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MMXUN-1vcDTi2rZ9-00LXG9; Thu, 20
+ Nov 2025 04:41:21 +0100
+From: Armin Wolf <W_Armin@gmx.de>
+Date: Thu, 20 Nov 2025 04:41:11 +0100
+Subject: [PATCH RFC RESEND 1/8] thermal: core: Allow setting the parent
+ device of cooling devices
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f853d9b2-47f8-47b5-a02d-6aa8f12a4283@oss.qualcomm.com>
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE4MDA1MyBTYWx0ZWRfX5ms6woobz3i0
- NqrNrLo/tqncWEgsmW3oOXQwlVbftR2MvuTag4kQB6QKwz5BE8q444127oaPSKsZ+FZbITIqd1c
- Pb0uA1LKnP9OcBoD0xwBL13vWqn41Qw+TVExKHjz38uH9MSxXScO7HJn85NFpn5fb4GDS9EATJW
- GbiwKGMiRRWviUIXkdVcvLSvYkwCpfl85YTaznti1Q3rh5CXWNJWoNlE+eXCJXcQBkrsczmxpxV
- S48Ow/mCoNbPLNkb8an52TQjTf+h1c0TFTvBjNb/4+z5A1fJKFUHu780jSCENlNu0G2VDS+f1E4
- VQ3b/YOtq0wkqrdHKD4IdImbzdGr0Og66gPfruYHQ/YcTO20C3grl7tbKbbRgDQoZK56EJhMi9x
- VRuCpzlR4kCDYXTgIgzImQxNmNu6mA==
-X-Proofpoint-GUID: CyENu-wdKDcLAaFwE6RcMDcXFgWC2IfE
-X-Proofpoint-ORIG-GUID: CyENu-wdKDcLAaFwE6RcMDcXFgWC2IfE
-X-Authority-Analysis: v=2.4 cv=a4I9NESF c=1 sm=1 tr=0 ts=691c17ed cx=c_pps
- a=MTSHoo12Qbhz2p7MsH1ifg==:117 a=0K+2RuW+WQ0nQqINzVEGqg==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=XiUpprS5y50ibpukT4MA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=GvdueXVYPmCkWapjIL-Q:22 a=HhbK4dLum7pmb74im6QT:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-17_04,2025-11-13_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 clxscore=1015 bulkscore=0
- adultscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511180053
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <20251120-thermal-device-v1-1-bbdad594d57a@gmx.de>
+References: <20251120-thermal-device-v1-0-bbdad594d57a@gmx.de>
+In-Reply-To: <20251120-thermal-device-v1-0-bbdad594d57a@gmx.de>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
+ Lukasz Luba <lukasz.luba@arm.com>, Len Brown <lenb@kernel.org>, 
+ Jonathan Corbet <corbet@lwn.net>, Ido Schimmel <idosch@nvidia.com>, 
+ Petr Machata <petrm@nvidia.com>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+ linux-tegra@vger.kernel.org, linux-acpi@vger.kernel.org, 
+ linux-doc@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
+ ath11k@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
+ linux-pci@vger.kernel.org, imx@lists.linux.dev, 
+ linux-renesas-soc@vger.kernel.org
+X-Mailer: b4 0.14.3
+X-Provags-ID: V03:K1:DWBT/C9r0u0GJbnfM2x6xD+VPAcKYxVi3FSehphoX9P+PP9QP40
+ H1l/LJwjFLMySZKWql7wwYEqHZyDutpIpBTgGBKEh2J88LfH30owsDkDNqR6bHSrBuTRbf6
+ Kl+PZlhIRv/dziKbjlpllqBNeLTfwcmKKbnRw5NROE93Ahsf+EfgRcHUnCNUJXv4F+hTDU4
+ HyxqaIXpHJbzFhFdy/jiA==
+UI-OutboundReport: notjunk:1;M01:P0:ysKf264By68=;oa9a8ZuzYONRxmuvwwbz4iIX39i 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 /UEweJKU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251117_225334_884080_BDAB6BE6 
-X-CRM114-Status: GOOD (  36.66  )
+X-CRM114-CacheID: sfid-20251119_194127_815074_B2CE4D9E 
+X-CRM114-Status: GOOD (  10.98  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,76 +91,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 17, 2025 at 09:13:04AM -0800, Jeff Johnson wrote:
-> On 11/17/2025 4:45 AM, Manivannan Sadhasivam wrote:
-> > On Mon, Nov 17, 2025 at 05:40:06PM +0800, Baochen Qiang wrote:
-> >> On 11/17/2025 5:00 PM, Manivannan Sadhasivam wrote:
-> >>> On Mon, Nov 17, 2025 at 10:36:39AM +0800, Baochen Qiang wrote:
-> >>>> On 11/14/2025 6:22 PM, Manivannan Sadhasivam wrote:
-> >>>>> Hi,
-> >>>>>
-> >>>>> This series aims to deprecate the usage of "qcom,*calibration-variant"
-> >>>>> devicetree property to select the calibration variant for the WLAN devices. This
-> >>>>> is necessary for WLAN devices connected using PCI bus, as hardcoding the device
-> >>>>> specific information in PCI devicetree node causes the node to be updated every
-> >>>>> time when a new device variant is attached to the PCI slot. This approach is not
-> >>>>> scalable and causes bad user experience.
-> >>>>
-> >>>> I am not very clear about the problem here: is calibration variant device/module specific,
-> >>>> or platform specific? If it is module specific, why the lookup is based on the machine
-> >>>> 'model' property? While if it is platform specific, why do we need to update devicetree
-> >>>> node whenever a new device is attached?
-> >>>>
-> >>>
-> >>> I think I mixed the usecase of the 'firmware-name' property in the above
-> >>> description.
-> >>>
-> >>> But nevertheless, the calibration info platform specific, and hardcoding the DT
-> >>> property fixes the location of the WLAN card with a specific slot. For instance,
-> >>> if the board has a couple of M.2 slots, users should be free to plug the WLAN in
-> >>> any slot, not just a single slot where the property was defined in DT.
-> >>>
-> >>> Also, if the users plug-in the WLAN card of another vendor, not Qcom, this
-> >>> property is irrelevant/wrong.
-> >>>
-> >>> PCIe slots should be plug and play i.e., users should plug-in any M.2 card and
-> >>> expect it to work.
-> >>>
-> >>
-> >> correct
-> >>
-> >>> However, as I learned from Jeff, calibration variant property is also going to
-> >>> be required in cases like router boards where each slot is dedicated to a fixed
-> >>> band and the calibration variant is going to be different for each band for the
-> >>> platform. So unlike I thought, this DT property cannot be deprecated. But going
-> >>> forward, I'd like it to be used only in these special usecases. Most of the
-> >>> upstream DTS have a single calibration variant for the platform and for those
-> >>> generic usecases, this static table should be used.
-> >>
-> >> If that property is not going to be deprecated, should it take precedence?
-> >>
-> > 
-> > If you mean 'it' by this static table, yes, it is going to take precedence as it
-> > should cover the generic usecases. For special cases like the multi-band
-> > routers, existing DT node fallback will cover.
-> Does there need to be a PCI Vendor ID & Device ID as part of this lookup?
-> 
+Currently, cooling devices have no parent device, potentially causing
+issues with suspend ordering and making it impossible for consumers
+(thermal zones and userspace appications) to associate a given cooling
+device with its parent device.
 
-I don't think so.
+Extend __thermal_cooling_device_register() to also accept a parent
+device pointer. For now only devm_thermal_of_cooling_device_register()
+uses this, as the other wrapper functions need to be extended first.
 
-> For example, start with a device that has an ath11k chipset with calibration
-> data for that chipset. If the end user replaces that chipset with an ath12k
-> chipset then with the current proposal the same calibration variant will
-> attempt to be used. But there will not be any calibration data with that
-> variant for that chipset.
-> 
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+ drivers/thermal/thermal_core.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-ath12k doesn't seem to require a calibration variant. But even if the user
-replaces ath11k chipset with ath10k one, the calibration variant should be the
-same as it is platform specific except for WSI.
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core=
+.c
+index 17ca5c082643..c8b720194b44 100644
+=2D-- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -1040,6 +1040,7 @@ static void thermal_cooling_device_init_complete(str=
+uct thermal_cooling_device *
+=20
+ /**
+  * __thermal_cooling_device_register() - register a new thermal cooling d=
+evice
++ * @parent:	parent device pointer.
+  * @np:		a pointer to a device tree node.
+  * @type:	the thermal cooling device type.
+  * @devdata:	device private data.
+@@ -1055,7 +1056,7 @@ static void thermal_cooling_device_init_complete(str=
+uct thermal_cooling_device *
+  * ERR_PTR. Caller must check return value with IS_ERR*() helpers.
+  */
+ static struct thermal_cooling_device *
+-__thermal_cooling_device_register(struct device_node *np,
++__thermal_cooling_device_register(struct device *parent, struct device_no=
+de *np,
+ 				  const char *type, void *devdata,
+ 				  const struct thermal_cooling_device_ops *ops)
+ {
+@@ -1092,6 +1093,7 @@ __thermal_cooling_device_register(struct device_node=
+ *np,
+ 	cdev->ops =3D ops;
+ 	cdev->updated =3D false;
+ 	cdev->device.class =3D thermal_class;
++	cdev->device.parent =3D parent;
+ 	cdev->devdata =3D devdata;
+=20
+ 	ret =3D cdev->ops->get_max_state(cdev, &cdev->max_state);
+@@ -1158,7 +1160,7 @@ struct thermal_cooling_device *
+ thermal_cooling_device_register(const char *type, void *devdata,
+ 				const struct thermal_cooling_device_ops *ops)
+ {
+-	return __thermal_cooling_device_register(NULL, type, devdata, ops);
++	return __thermal_cooling_device_register(NULL, NULL, type, devdata, ops)=
+;
+ }
+ EXPORT_SYMBOL_GPL(thermal_cooling_device_register);
+=20
+@@ -1182,7 +1184,7 @@ thermal_of_cooling_device_register(struct device_nod=
+e *np,
+ 				   const char *type, void *devdata,
+ 				   const struct thermal_cooling_device_ops *ops)
+ {
+-	return __thermal_cooling_device_register(np, type, devdata, ops);
++	return __thermal_cooling_device_register(NULL, np, type, devdata, ops);
+ }
+ EXPORT_SYMBOL_GPL(thermal_of_cooling_device_register);
+=20
+@@ -1222,7 +1224,7 @@ devm_thermal_of_cooling_device_register(struct devic=
+e *dev,
+ 	if (!ptr)
+ 		return ERR_PTR(-ENOMEM);
+=20
+-	tcd =3D __thermal_cooling_device_register(np, type, devdata, ops);
++	tcd =3D __thermal_cooling_device_register(dev, np, type, devdata, ops);
+ 	if (IS_ERR(tcd)) {
+ 		devres_free(ptr);
+ 		return tcd;
 
-- Mani
+=2D-=20
+2.39.5
 
--- 
-மணிவண்ணன் சதாசிவம்
 
