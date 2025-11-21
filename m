@@ -4,92 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 407FBCFC279
-	for <ath10k@archiver.kernel.org>; Fri, 21 Nov 2025 13:29:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C44CCCFC29F
+	for <ath10k@archiver.kernel.org>; Fri, 21 Nov 2025 20:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4E4qgWLZbJvc0nks66Kf2sl/KD3LP6StGpvCGYDfDXY=; b=LAeSD/05D4pSTCHC7NhDDCruOS
-	910fHZPyUDAFPg03VudslBSht3h/70dAebn0o3kUUtZV8oWydD2wusoOJOVlU4/xO8DtiVbTtu6ae
-	a7BEuFzM+FB78UFWn+4oCRnkeOTBItiHKhqTsEce2/tshdu+sPVDI5IJoDtcuDiYe3j6DyoSM4TS4
-	kAPcP0HDAekeT5CkU8Kpk+HURjOr1I4386bxQoyGtS20DfgDfQMsYCSbFjmthln6cjqldU5Y21ZMn
-	QYS4B9cgc+rfbTn51CKQX+pl/QjlUTXSEXKvvY6xn3pc9G8GMpSNtwWsPsh2s5AKikk9P6K9j8hfF
-	AMRRSGLg==;
+	bh=FsE68aBeWQv7ok/egjq60UEqiYlK9UY9L086weOplk0=; b=35qgn4DLPNaNbDmXDCV+Mtml3l
+	3SmOinpxQxRDraV8DW5SXbdTL8nMPiz8XEDPS/u/g2HbHXuNNpg2tDSdpgol4n6sD6JjrwRxZYaeg
+	A4CF7WwWXGgTfhLdBn5SmN/sJWc3nudoKdyr0JEudQriA0S7+/D8mrTCfbiZvLdFN6am3wAQ9iou7
+	IG/yZraP+wo60GpzZNAoSpXpgqKjFSI2BbqxXCPgcMTnLvdKpnUhtoBDjhZXigCl09toBMedGx+9B
+	8Iouu17fbBkVoSmgwf/dKGnduoC/ezo24Chu/SJTWhH5z3Kxbt8navH6qiAgipgQLrRhbc0KWW33h
+	W+cQ4eRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vMRCM-00000008PcY-24ol;
-	Fri, 21 Nov 2025 13:29:14 +0000
-Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
+	id 1vMXrN-00000008xaz-3M8m;
+	Fri, 21 Nov 2025 20:36:01 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vMRCJ-00000008PbP-0Atm
+	id 1vMXrL-00000008xZr-47lr
 	for ath10k@lists.infradead.org;
-	Fri, 21 Nov 2025 13:29:13 +0000
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-b75c7cb722aso300928566b.1
-        for <ath10k@lists.infradead.org>; Fri, 21 Nov 2025 05:29:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763731749; x=1764336549; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4E4qgWLZbJvc0nks66Kf2sl/KD3LP6StGpvCGYDfDXY=;
-        b=AWolaUjX4sYRdipBZzETXgd4PZKzgXltuCuHTEMtwZBPutkMcVj1DuFQaqEeVJE7X2
-         Py3Z8P18LQWaRS/V+O7V6/TvA9EEYPrL8q3ZQ4EeknHuvyIWjnvLcigCdnh5KPL+DOZu
-         wh8qsxql/AVqCobSqLkd8Irw73lHJfob6hWZV4l2ZLSsKJ29FuTWkQO7pL2c9zZ04MQ8
-         zv3vWjud1POG/zzCttSJ6hQpLZYbanqDiNKLPqsMqXTh5BLOjZ945CQSmX4hHBRGGzPU
-         rn4ob8qrQU4qHaDEbRWZTK9dWMfK/hGVYHX2tL71Z3I0bfJK6CEBCFwNxINwMFqK3mb7
-         S96A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763731749; x=1764336549;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=4E4qgWLZbJvc0nks66Kf2sl/KD3LP6StGpvCGYDfDXY=;
-        b=wFAhQyGBBqx5U0tRQNKH5y+l3S4WY3DNvqbEvthfbpo5BeMziOLJujsIhz1Zcqswr5
-         nRlHhNMxafE4+Z59VwbLIyfzAw3t4sGMw9SYuSgex4kTSai3DImaf0ed7LDGhzYoDnVW
-         JeiB6zq/OWmMohmez3/8qiI6a7yqm/XPHqUlNpMPG0qVTrJbN1PTlFZ6HA0tltUFhQ2j
-         RV5wApKA3dTmiQd8jEITE43fItTThGV7O9bhJIZKd8O/q819wKhsEJPshNjABBCxOoaC
-         Che60kH8IceTVN1D1ZZMt+eo4IM64HTkmEQJ2Q8bGdoartS3KLbrmUgloB+UTfiA0TbJ
-         LbDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWK2ma/2j/Q8+eDuPRjq6nu1cZ+KY2EhdEumZyzLdeweiyGXonZq1lNwVeUQij0scbVapVGbPM=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxpV6UQDFHBkXuLRMX3e8drlykKskzrIcW/bxPUMWTxAW+uMGa8
-	V9wTnQRi7oj6S/H8SUzNTaB5mn1AtwoPakI5Y2RUtmu8TOYka1ARrqiiX8D7ZI0=
-X-Gm-Gg: ASbGncsjK8Z1Za5FZjYZ2wkjUJhfS7fhTbItb7h5jyKWH2jXxrMMy2Hz/1Ut6n9Z807
-	C/dTPvH7Q8cGXxsEGd+u9l6ArmoMG95YwQFMIjqhzUvxPsiBHuOmdaoTSK74+A0JTMgM/uxBLey
-	V0w4wDOgbYFfpY4zjti9nwoLVlPNIwcpCKyJxmcQB6Mjj/Vc+S4nx6wHgSS+eltH/5h67B8ro15
-	+0ZigLXBwcmbrENTTZdIjzxV0m6CoXaZwoEr0KlzwV4xeqG2y96wHZiwwirU2qUwTfbSkAcIF43
-	ADZQLr+oMdPDllipyyKdLXZsck7VgsFjgm7dHXz9mzu99QnY7IzUH0PVxLFLH6q6aatLP1K+7XL
-	X3XWJK0u6zm2oe0ffnyaunwf70E169yLJX4n+EUgQC+vC5Tr+0gEeEEMlXeb4TMNwCB6qtfOew2
-	dlWAzmuPZI2jPLhw0X8oumNksDNCctyWoTPbjtjM6y9wZKeRo=
-X-Google-Smtp-Source: AGHT+IF+fRHUXtIbFHexbW+bX7vS6xhtJysRXvMNTGrbcAbQOhcG/TSSGP78YliQlRoGmwcWofF6oQ==
-X-Received: by 2002:a17:907:da4:b0:b73:3ced:2f66 with SMTP id a640c23a62f3a-b767159eea3mr272040066b.14.1763731748949;
-        Fri, 21 Nov 2025 05:29:08 -0800 (PST)
-Received: from frutis-latitude7490 (public-gprs376887.centertel.pl. [37.47.103.120])
-        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-b7654cefe53sm459963266b.13.2025.11.21.05.29.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Nov 2025 05:29:08 -0800 (PST)
-From: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>,
-	ath10k <ath10k@lists.infradead.org>,
-	ath11k <ath11k@lists.infradead.org>,
-	ath12k <ath12k@lists.infradead.org>,
-	linux-wireless <linux-wireless@vger.kernel.org>,
-	Kalle Valo <quic_kvalo@quicinc.com>
-Subject: Re: New staging repos for ath1*k firmware
-Date: Fri, 21 Nov 2025 14:28:25 +0100
-Message-ID: <20251121132825.1663248-1-frut3k7@gmail.com>
-X-Mailer: git-send-email 2.50.0
-In-Reply-To: <bac97f31-4a70-4c4c-8179-4ede0b32f869@quicinc.com>
-References: 
+	Fri, 21 Nov 2025 20:36:00 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 31F2A60172
+	for <ath10k@lists.infradead.org>; Fri, 21 Nov 2025 20:35:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFBCAC2BCAF
+	for <ath10k@lists.infradead.org>; Fri, 21 Nov 2025 20:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763757358;
+	bh=meSktXQNs/zDvTr1rLs7LeQfxQysPHSbGkzQDId9XMY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=L+zvWL/Nh94FkM1rZrXcBtTOzgK+mkJwTDosBcBijCdV34X53/cdtFJtiuZ0Md/WM
+	 GcqhqeRjUC0vm45dWjFBz6XmwGZdDlx/1YsRu2QyrzPY+3hCmTjo6+j5LM3zBib4I4
+	 J6tKQx3AUF2IB07P8TFo+IWDzck0Yp3oj5x5qK+1dMshchSxQDW1aIOTW5EmLdVjPD
+	 3zqNL5lRPlgjWSvClhgdnUG+fb4P2UmRkId3/JrLTerz93MIgGIWp8gL3/SUNNbMpt
+	 Z0A6qD2K62qoXRs1K/9ABvtlMFte9d0O1sWFPTl8RY6sAvXTCprA/RgDr/i7m3fD6z
+	 YI+JdDMM/fmQg==
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-657244ed2c2so521623eaf.1
+        for <ath10k@lists.infradead.org>; Fri, 21 Nov 2025 12:35:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU8TZmR2WA5TxfAG2OtCLPazn2/lxLe+QWwviZClFmy38s5Zo/mamUUEzqfVDqyXoOkZwRLEyQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy4vNRSIHQEorCXMSrmZwahRIiQfQHJ5t/8+8KIbdOmCYeBJWbW
+	DKpbov/SGxhD/Vic6CmCFS1fJvqesFyKLunteL7E6CeV9eilecpsdeenkJb0zoD8/p/GEwv456U
+	S+PbCRNVyjkhPetwaGK+fXeOXGJG0RQo=
+X-Google-Smtp-Source: AGHT+IEGV1wW0AyQ4uV5rOeWs+mu0pohToH8QfmqGgzcM1nDvWFgodvXp8dfzsS7PUq8QlplylLWmLPmTb2ii+XtGZ8=
+X-Received: by 2002:a05:6820:4d57:10b0:657:7289:b1dc with SMTP id
+ 006d021491bc7-65792596028mr1028369eaf.6.1763757357967; Fri, 21 Nov 2025
+ 12:35:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251121_052911_107504_6D06642B 
-X-CRM114-Status: UNSURE (   5.35  )
-X-CRM114-Notice: Please train this message.
+References: <20251120-thermal-device-v1-0-bbdad594d57a@gmx.de>
+In-Reply-To: <20251120-thermal-device-v1-0-bbdad594d57a@gmx.de>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 21 Nov 2025 21:35:47 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0jOPrBcozzJMsB1eE12MuZRWDAV-+=jfrhJbi=S0p5J9Q@mail.gmail.com>
+X-Gm-Features: AWmQ_bmY4Rgl1Z4nj5ks6gNTVnBjHocEaNjk9D0MQSLHqvtZo8fqobTCygtTNLc
+Message-ID: <CAJZ5v0jOPrBcozzJMsB1eE12MuZRWDAV-+=jfrhJbi=S0p5J9Q@mail.gmail.com>
+Subject: Re: [PATCH RFC RESEND 0/8] thermal: core: Allow setting the parent
+ device of thermal zone/cooling devices
+To: Armin Wolf <W_Armin@gmx.de>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Len Brown <lenb@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-tegra@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	linux-doc@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
+	ath11k@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
+	linux-pci@vger.kernel.org, imx@lists.linux.dev, 
+	linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,9 +91,91 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi, is it possible to release the new firmware version (2.12) for the IPQ8074?
-There's a problem with the latest ath11k driver on version 2.9:
-https://lore.kernel.org/linux-wireless/CAKEyCaD8RMqPvwZOxgwAT4G=h-M94ToxoSdYwCjfvZMiM8mB-g@mail.gmail.com/
+On Thu, Nov 20, 2025 at 4:41=E2=80=AFAM Armin Wolf <W_Armin@gmx.de> wrote:
+>
+> Drivers registering thermal zone/cooling devices are currently unable
+> to tell the thermal core what parent device the new thermal zone/
+> cooling device should have, potentially causing issues with suspend
+> ordering
 
-Regards,
+This is one potential class of problems that may arise, but I would
+like to see a real example of this.
+
+As it stands today, thermal_class has no PM callbacks, so there are no
+callback execution ordering issues with devices in that class and what
+other suspend/resume ordering issues are there?
+
+Also, the suspend and resume of thermal zones is handled via PM
+notifiers.  Is there a problem with this?
+
+> and making it impossible for user space applications to
+> associate a given thermal zone device with its parent device.
+
+Why does user space need to know the parent of a given cooling device
+or thermal zone?
+
+> This patch series aims to fix this issue by extending the functions
+> used to register thermal zone/cooling devices to also accept a parent
+> device pointer. The first six patches convert all functions used for
+> registering cooling devices, while the functions used for registering
+> thermal zone devices are converted by the remaining two patches.
+>
+> I tested this series on various devices containing (among others):
+> - ACPI thermal zones
+> - ACPI processor devices
+> - PCIe cooling devices
+> - Intel Wifi card
+> - Intel powerclamp
+> - Intel TCC cooling
+
+What exactly did you do to test it?
+
+> I also compile-tested the remaining affected drivers, however i would
+> still be happy if the relevant maintainers (especially those of the
+> mellanox ethernet switch driver) could take a quick glance at the
+> code and verify that i am using the correct device as the parent
+> device.
+
+I think that the above paragraph is not relevant any more?
+
+> This work is also necessary for extending the ACPI thermal zone driver
+> to support the _TZD ACPI object in the future.
+
+I'm still unsure why _TZD support requires the ability to set a
+thermal zone parent device.
+
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
+> Armin Wolf (8):
+>       thermal: core: Allow setting the parent device of cooling devices
+>       thermal: core: Set parent device in thermal_of_cooling_device_regis=
+ter()
+>       ACPI: processor: Stop creating "device" sysfs link
+
+That link is not to the cooling devices' parent, but to the ACPI
+device object (a struct acpi_device) that corresponds to the parent.
+The parent of the cooling device should be the processor device, not
+its ACPI companion, so I'm not sure why there would be a conflict.
+
+>       ACPI: fan: Stop creating "device" sysfs link
+>       ACPI: video: Stop creating "device" sysfs link
+
+Analogously in the above two cases AFAICS.
+
+The parent of a cooling device should be a "physical" device object,
+like a platform device or a PCI device or similar, not a struct
+acpi_device (which in fact is not a device even).
+
+>       thermal: core: Set parent device in thermal_cooling_device_register=
+()
+>       ACPI: thermal: Stop creating "device" sysfs link
+
+And this link is to the struct acpi_device representing the thermal zone it=
+self.
+
+>       thermal: core: Allow setting the parent device of thermal zone devi=
+ces
+
+I'm not sure if this is a good idea, at least until it is clear what
+the role of a thermal zone parent device should be.
 
