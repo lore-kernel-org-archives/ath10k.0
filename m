@@ -4,140 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CB83D0E6F1
-	for <ath10k@archiver.kernel.org>; Tue, 25 Nov 2025 14:42:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 949D1D116F3
+	for <ath10k@archiver.kernel.org>; Thu, 27 Nov 2025 17:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QGiwTpNXLbFpjJZpDWsxtZ5m7PWHYuQFZ45Lny0LXjc=; b=YIAQIl+aqzqYOhB51UH+vmRtlP
-	y8iLjhEx+rStVS+rfirFJ8Ud0wPtqo+ZcysXhZQ6RTneXyiZOFY7dGXfrrU3/apTDQyFCCPpU7Nq5
-	Q7NL+uhjRzRXKFoyDhgmS6vUB1yWHACYiwprfQuhxmcPArEh3740KtEzA57FbQFwWpdymx0j+FyHA
-	wd22haK3WN62PwhbQXKHXQnI/0DQPq6uVi1o2S3qoEcWshDzsxst4KZrCbyRVX26KvXVgduT7IsAw
-	6JQ0jAk2s8Pt7LJvdoz7SEHV0VY7dFlXwGkzeB/mRDRcOiHBMSBVypCSyn6IdHPeHBwcYph4SCgx7
-	W5Q+ydtw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=8bsiA+7jVFgPqmnKeFG9KW6tU0ft/RGHgNVYPhwHLYU=; b=xmNg39J5F6HU66k7X2z535FwD6
+	6psHmVwDMzkZH2pJIg61PticEIAPZFgvFBN6eXkgbZCA965ijR8ZE0rg9G3yJE7OqmyLhTZT0jaR/
+	TXpW1P9OsjDAilJfJg9OU1sIIW+tYBVlSy8Wl8noM2dBsHYQ47Sd5jC1bY4EQ0oE7ua/niIjvG4pf
+	ty6CMaEWttrCZ2fOgodiIsQ4m86jqp9HPUp+w3qGe5vXqmPStq03R5foPvDbnbS0wiOkG3ttK+TzI
+	/vk88icwAyftBcWTWWghM1AoimZA9dz/0fUqknDIjfPH0ksOERjH+nO8lWW6xkNtLjLRKbUCtXGFB
+	O8Pwc6+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vNuFK-0000000DS6i-38VM;
-	Tue, 25 Nov 2025 14:42:22 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1vOfzj-0000000H1NX-1VA9;
+	Thu, 27 Nov 2025 17:41:27 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vNuFI-0000000DS6M-12Ys
+	id 1vOfzg-0000000H1Ln-09X5
 	for ath10k@lists.infradead.org;
-	Tue, 25 Nov 2025 14:42:22 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5APE0Yj93706640
-	for <ath10k@lists.infradead.org>; Tue, 25 Nov 2025 14:42:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=qcppdkim1; bh=QGiwTpNXLbFpjJZpDWsxtZ5m
-	7PWHYuQFZ45Lny0LXjc=; b=QkqsvkamoioRLoTPiH+BFPO+NFd4MlTFdH04DBZ0
-	ieXoLFG/nmpwbjBLU13avleDcVdB68GGXqqBQDODFySbYIwrXvSwVfNEkYonJxoB
-	vY4mdD4QW8r1FlSdZjH74sFAtKeCPQikEVdcqVdkP8s91HTo5XDtkK97BSwWVzb7
-	7avs30zshdPDW7aXrBQCXeKv9eVONYgvv2w1SkoqPY1F8qKznEYuAFxGbsdDzIqh
-	l+vn/2Lfu33eQ3jSI9mN3MrJQjgNkTfZpTiU1RCVXQ4vDOx4n+6Jwbhug2+Az7Qi
-	oBTGUwsxqJCtmtgRA2Xy9xpYazB4c5Yq/SwB0pVQLeLn3g==
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com [209.85.222.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4andufr3ud-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Tue, 25 Nov 2025 14:42:18 +0000 (GMT)
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-8b2f0be2cf0so1887936885a.0
-        for <ath10k@lists.infradead.org>; Tue, 25 Nov 2025 06:42:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1764081738; x=1764686538; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QGiwTpNXLbFpjJZpDWsxtZ5m7PWHYuQFZ45Lny0LXjc=;
-        b=Gj1kCcn8iERT/byfxAq3EZL512qveLxjP3Zq/RXUM+AIMlheLIfcUPFgeWT7GouKlM
-         oecwLOuiP5OZvZRxKWZXpG0VpQDW4J9XWZWvofCP13WRHNkqhi5OYGTIS7JTLzAgCajQ
-         DQLqITfxkojN0pf4aHXRLYuDfVQt8hiJxjZVNjE76wvwrN5CX/spep42k0w3xeHhT0EW
-         2y1dfzUmH6+aZKi3nnc0YrPj0BPwcxN5M+Oa1idnzjNUE3V00Eiz1AjdsVUOH4UtrU9g
-         bEj3mxxCEDZehTbWNQsw6oWZ2IL+Ho/sgGg834ZDV2R5h8g4aUKSlzi3IVBkN6eIY/ZM
-         m+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764081738; x=1764686538;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QGiwTpNXLbFpjJZpDWsxtZ5m7PWHYuQFZ45Lny0LXjc=;
-        b=CsRtj50yigS08RXV9NLU1H75+eEpGyuzRD1Ld20A9OUSPag9UvNp4qcRlI4pEDi5PP
-         M8XSdWu61J1OD/hsuPvMe+/UB36pOd8c8oVPs3ui045yZlnpe0VQbFD1aFafXfq8fgod
-         xxNnwbxbo6slCWePh1VNh4uwRjoYFnGQbopbT6sUTCy81zOiYh7ZgvAWO9wp8oevOREc
-         2GTc6vbiIf9ijBVuHZfLkNtn6o99+SogbQhGFgsZJW9FAUdsbIs2KMGGQ9J8nXkcwita
-         O2d8F9XvlNQf0wBWhHc+A/rcfseQ3RL94RWuN81nKs3EKDRnQgSWbVTtZBH9HoruUlHG
-         O22A==
-X-Forwarded-Encrypted: i=1; AJvYcCVVnsaygDPrv58QDHzbqE/eFjIiM/InP4owvW+o0C6/cmuibf6Ri5/xlxN1Dvr9+7gZwDH6Vp8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxZTeSCeiZAyEmc2o0J9GLCB07pURVTJjaEtpyNdhIfY/qVxTrd
-	sQvmuN25Jo0SnX75zyP5DJf6M5mgIYT+B62vOl89o+XHpZDKxVwPHueTjaKWK+TOIte/Z6iFwhk
-	Ez9OILsqLMLxO1sBKyeM0LGjYeWKk7hG5n4rRj06f+3NNUI3NTxhqOj1jox9wYOWi
-X-Gm-Gg: ASbGncs1VnGIpdECXjzpSV3jHjlpxdqCPaBdMidoBGuoWvj4C9W1G/nCYk6xbn3P9xa
-	JUYLfbV/P4N7vVOzg6FBDeJzfxzC9viVSYeNcc4wX1Do/loBE09wxEqEegezhnjZl+Ny5DnygNo
-	aAK3IaIQGw3IK+LzymEPpMgGuC81h8j/Sr6EvmagwcmouPZHaSRgUiCf/YLUIiuUpJN0yPeEMRG
-	BMzIaWhOh0CaI/bbVYR2H2whu4lGW+49cyNnAuYQJjKHQ2cE+BF3FBl4lYnNgeNKN9a9ACwR35A
-	6lMR1cKR0FEOHd+/jv5BJRe+S6Qv0JRBT6j6iyH+U64OT+xskR2X3F/YJjmIlRLYvvb0WP3hqbG
-	4hXkG45aPu8i9PeXxGsv4Q2wHF3hX70AKd4UZsGBcDbipkZeO+b0Hf+9KOTQxIn1GbjHTY5j5cR
-	A4/6mVYZ/v0AiB0L02gFwBCDo=
-X-Received: by 2002:a05:620a:3728:b0:85c:bb2:ad9c with SMTP id af79cd13be357-8b33d4773f4mr1898796285a.53.1764081738330;
-        Tue, 25 Nov 2025 06:42:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHmlMTG7Ip2VPXHNDOOA0wwV0LI0Qd7VntPvkheaXH/P/uFMCXTQC2rYLbRyXf/+XgeIt2wlw==
-X-Received: by 2002:a05:620a:3728:b0:85c:bb2:ad9c with SMTP id af79cd13be357-8b33d4773f4mr1898792185a.53.1764081737894;
-        Tue, 25 Nov 2025 06:42:17 -0800 (PST)
-Received: from umbar.lan (2001-14ba-a0c3-3a00-264b-feff-fe8b-be8a.rev.dnainternet.fi. [2001:14ba:a0c3:3a00:264b:feff:fe8b:be8a])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5969db756e2sm5214752e87.10.2025.11.25.06.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Nov 2025 06:42:17 -0800 (PST)
-Date: Tue, 25 Nov 2025 16:42:15 +0200
-From: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-To: David Heidelberg <david@ixit.cz>
-Cc: Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>, linux-wireless@vger.kernel.org,
-        devicetree@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        phone-devel@vger.kernel.org, Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH v2 0/3] ath10k: Introduce a devicetree quirk to skip host
- cap QMI requests
-Message-ID: <b7gibtoind5srjk6ncybnen3ikdvwnktg4epyzbltg7alipmex@k5zzpbnmzlso>
-References: <20251110-skip-host-cam-qmi-req-v2-0-0daf485a987a@ixit.cz>
- <2b34ceae-5e31-4dba-93e5-3fa35754fab6@oss.qualcomm.com>
- <ttka4uevai7tzf4c3r7rgozzpd3hsdhjzf5uyysfzj24ex2o2v@r64z6pvxb6sv>
- <6a3448cf-dd18-4b3d-a8fa-fe282ee779de@ixit.cz>
+	Thu, 27 Nov 2025 17:41:25 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 936E1441EB
+	for <ath10k@lists.infradead.org>; Thu, 27 Nov 2025 17:41:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71F0AC19422
+	for <ath10k@lists.infradead.org>; Thu, 27 Nov 2025 17:41:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764265282;
+	bh=YRwpnmivmIGfSil+ZD1aGlxCYo+UU/QzrOBg9t1fcoE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GQo4zWhWFwuM7yaQm/G6MoYrO1sGCe63LiivwvpbJXTuD4bpwtx7vVrjJq/jO3yNT
+	 /glPNOmTyEyuQgFnjW09IwIDuzYIhIp82Bq5tDcMxZ2FYvQimg6WzJuHjpMmBtLdRC
+	 7UHkgkhDXiAZGbYaljkVGuyQaHao2d5pJkHVYaTTRtcd/n5x9+u6+lZm+cbLEo/yUI
+	 r91c8vZQfOXME3t0aQ3s8j0vLUmV7g0L5ZqU6BMJPCG7P1VcW7pspVtnA3oNfQZt9a
+	 wFzr4/a6G8flzMAgfLEhY9Cq1WfAqIZxQ26MOBUnGa6tT8wSG9PPUc+wOdGDq10Lp1
+	 5jvmWmWflox3A==
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-7c6da5e3353so748857a34.3
+        for <ath10k@lists.infradead.org>; Thu, 27 Nov 2025 09:41:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWx3VEMnCcvPk5R0KgB5gKMByo0cuc499hurZ7P1dZZNyq19CnL53EaOqrDBIWz4ZXw8HbraYo=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzAT9HSAKUSkc1mC0eKz60Nfwzb9qf+Bq1in0Oq+wbXo/cWF4fh
+	KXnirpitxup+Lyp/UvkL3fAL22KsZONiIMTiTL6dMQs523LLgn4Q6QJtIZ6NeIXfdzR1aEBU9H7
+	TNrGjC/ulZnOmOOdz8rBf5vFpttc9qns=
+X-Google-Smtp-Source: AGHT+IHbfQ5CxJ+BeKUIRbyKYrpAVhmzQHngDVOs0E2Nv7PPmdkB/EPrjv3dEJtB2ATSYwuHhVrLlp/6B/DbEuYhyUY=
+X-Received: by 2002:a05:6808:14d3:b0:450:d7fb:85c2 with SMTP id
+ 5614622812f47-4514e6e1593mr4705868b6e.19.1764265281611; Thu, 27 Nov 2025
+ 09:41:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6a3448cf-dd18-4b3d-a8fa-fe282ee779de@ixit.cz>
-X-Authority-Analysis: v=2.4 cv=C53kCAP+ c=1 sm=1 tr=0 ts=6925c04b cx=c_pps
- a=qKBjSQ1v91RyAK45QCPf5w==:117 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=6UeiqGixMTsA:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=Gbw9aFdXAAAA:8 a=pvefKgMU93j4ZQig1qcA:9 a=CjuIK1q_8ugA:10
- a=NFOGd7dJGGMPyQGDc5-O:22 a=9vIz8raoGPyDa4jBFAYH:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI1MDEyMiBTYWx0ZWRfX2LExOBtcfY1g
- G4+llqqF0QjkpXd688hDWKAVw6euqs55CZWOR+EPXjJARMXlAuI18gFOV/6sfCu9lZ13YQdTec0
- 3wh+eumopEaGRV1lneVAFaEb2trxCGXaOhf+nhy65pB+jjMnjaQxAbgFDdfqFV4tKSjg64galct
- Zyj4XMYrk0eM362Ur3XFW5USRuR+oNVHj0dpcm+sCmR9W4hmE9CUvuJiWyw3LQ6Jj3cJuWuowui
- ATwkU91ay4vFSET3kzN0jSASc4SoI6jWBAgapRvg31XP658jvCKUYoln+/cfnmgCcNx/faX0r6W
- FJV6IfN5P8CM3LmvwOsv+2rhrt60FfEeKNVi5/0BsLLnHSwImHXvbWj8BUCu8wujCcdmjuP89hj
- rRGZGmXoPTMZuiMWi5pH0i+RjK4s1w==
-X-Proofpoint-ORIG-GUID: _ASAh4gAOBbmolVKQIsl0jWFmjO7fq1g
-X-Proofpoint-GUID: _ASAh4gAOBbmolVKQIsl0jWFmjO7fq1g
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-25_02,2025-11-25_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 priorityscore=1501 suspectscore=0 lowpriorityscore=0
- impostorscore=0 clxscore=1015 adultscore=0 phishscore=0 spamscore=0
- malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2510240001
- definitions=main-2511250122
+References: <20251120-thermal-device-v1-0-bbdad594d57a@gmx.de>
+ <CAJZ5v0jOPrBcozzJMsB1eE12MuZRWDAV-+=jfrhJbi=S0p5J9Q@mail.gmail.com> <5f3ef610-4024-4ca0-a934-2649f5d25f40@gmx.de>
+In-Reply-To: <5f3ef610-4024-4ca0-a934-2649f5d25f40@gmx.de>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 27 Nov 2025 18:41:10 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0iJVV=kf-aJBx8F8dtGfaZpGVyhfi6DBWEg4j3c_nH8_A@mail.gmail.com>
+X-Gm-Features: AWmQ_bnNFzjNLr4ZD-k1rd8sHstOmmRzRHvS_v-U6yiSpHx7MBaeEIqIodGMGBQ
+Message-ID: <CAJZ5v0iJVV=kf-aJBx8F8dtGfaZpGVyhfi6DBWEg4j3c_nH8_A@mail.gmail.com>
+Subject: Re: [PATCH RFC RESEND 0/8] thermal: core: Allow setting the parent
+ device of thermal zone/cooling devices
+To: Armin Wolf <W_Armin@gmx.de>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Len Brown <lenb@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-tegra@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	linux-doc@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
+	ath11k@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
+	linux-pci@vger.kernel.org, imx@lists.linux.dev, 
+	linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251125_064220_430409_7AE6973C 
-X-CRM114-Status: GOOD (  21.67  )
+X-CRM114-CacheID: sfid-20251127_094124_123503_404EDB71 
+X-CRM114-Status: GOOD (  59.85  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,45 +95,231 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue, Nov 25, 2025 at 10:29:23AM +0100, David Heidelberg wrote:
-> On 10/11/2025 21:41, Dmitry Baryshkov wrote:
-> 
-> [...]
-> 
-> > I think this should go to the firmware-N file. SNOC platforms now allow
-> > per-platform firmware description files, so it's possible to describe
-> > quirks for the particular firmware file.
-> 
-> Since the approach to put it into the firmware failed due to early
-> initialization, see
-> https://lore.kernel.org/linux-wireless/20251111-xiaomi-beryllium-firmware-v1-0-836b9c51ad86@ixit.cz/
+On Sat, Nov 22, 2025 at 3:18=E2=80=AFPM Armin Wolf <W_Armin@gmx.de> wrote:
+>
+> Am 21.11.25 um 21:35 schrieb Rafael J. Wysocki:
+>
+> > On Thu, Nov 20, 2025 at 4:41=E2=80=AFAM Armin Wolf <W_Armin@gmx.de> wro=
+te:
+> >> Drivers registering thermal zone/cooling devices are currently unable
+> >> to tell the thermal core what parent device the new thermal zone/
+> >> cooling device should have, potentially causing issues with suspend
+> >> ordering
+> > This is one potential class of problems that may arise, but I would
+> > like to see a real example of this.
+> >
+> > As it stands today, thermal_class has no PM callbacks, so there are no
+> > callback execution ordering issues with devices in that class and what
+> > other suspend/resume ordering issues are there?
+>
+> Correct, that is why i said "potentially".
+>
+> >
+> > Also, the suspend and resume of thermal zones is handled via PM
+> > notifiers.  Is there a problem with this?
+>
+> The problem with PM notifiers is that thermal zones stop working even bef=
+ore
+> user space is frozen. Freezing user space might take a lot of time, so ha=
+ving
+> no thermal management during this period is less than ideal.
 
-Is it required before we load the firmware? If so, it must be clearly
-explained in the commit messages. In the end, if it happens before
-firmware load, there is little you can do. That was the reason why
-qcom,no-msa-ready-indicator was implemented as a DT property.
+This can be addressed by doing thermal zone suspend after freezing
+tasks and before starting to suspend devices.  Accordingly, thermal
+zones could be resumed after resuming devices and before thawing
+tasks.  That should not be an overly complex change to make.
 
-> 
-> I wondering if I should get back on this series?
-> 
-> Also, meanwhile Paul found another device [1] in need of this quirk.
-> 
-> David
-> 
-> [1] https://lore.kernel.org/all/20250928-judyln-dts-v3-0-b14cf9e9a928@postmarketos.org/T/#m90e8087d4388e588b71a0eff01b88f1721f73b73
-> 
-> > 
-> > > 
-> > > So I'm personally OK with this suggested approach.
-> > > 
-> > > /jeff
-> > 
-> 
-> -- 
-> David Heidelberg
-> 
+> This problem would not occur when using dev_pm_ops, as thermal zones woul=
+d be
+> suspended after user space has been frozen successfully. Additionally, wh=
+en using
+> dev_pm_ops we can get rid of thermal_pm_suspended, as the device core alr=
+eady mandates
+> that no new devices (including thermal zones and cooling devices) be regi=
+stered during
+> a suspend/resume cycle.
+>
+> Replacing the PM notifiers with dev_pm_ops would of course be a optimizat=
+ion with
+> its own patch series.
 
--- 
-With best wishes
-Dmitry
+Honestly, I don't see much benefit from using dev_pm_ops for thermal
+zone devices and cooling devices.  Moreover, I actually think that
+they could be "no PM" devices that are not even put on the
+suspend-resume device list.  Technically, they are just interfaces on
+top of some other devices allowing the user space to interact with the
+latter and combining different pieces described by the platform
+firmware.  They by themselves have no PM capabilities.
+
+> >> and making it impossible for user space applications to
+> >> associate a given thermal zone device with its parent device.
+> > Why does user space need to know the parent of a given cooling device
+> > or thermal zone?
+>
+> Lets say that we have two thermal zones registered by two instances of th=
+e
+> Intel Wifi driver. User space is currently unable to find out which therm=
+al zone
+> belongs to which Wifi adapter, as both thermal zones have the (nearly) sa=
+me type string ("iwlwifi[0-X]").
+
+But the "belong" part is not quite well defined here.  I think that
+what user space needs to know is what devices are located in a given
+thermal zone, isn't it?  Knowing the parent doesn't necessarily
+address this.
+
+> This problem would be solved once we populate the parent device pointer i=
+nside the thermal zone
+> device, as user space can simply look at the "device" symlink to determin=
+e the parent device behind
+> a given thermal zone device.
+
+I'm not convinced about this.
+
+> Additionally, being able to access the acpi_handle of the parent device w=
+ill be necessary for the
+> ACPI thermal zone driver to support cooling devices other than ACPI fans =
+and ACPI processors.
+
+I guess by the "parent" you mean the device represented in the ACPI
+namespace by a ThermalZone object, right?  But this is not the same as
+the "parent" in the Wifi driver context, is it?
+
+> >> This patch series aims to fix this issue by extending the functions
+> >> used to register thermal zone/cooling devices to also accept a parent
+> >> device pointer. The first six patches convert all functions used for
+> >> registering cooling devices, while the functions used for registering
+> >> thermal zone devices are converted by the remaining two patches.
+> >>
+> >> I tested this series on various devices containing (among others):
+> >> - ACPI thermal zones
+> >> - ACPI processor devices
+> >> - PCIe cooling devices
+> >> - Intel Wifi card
+> >> - Intel powerclamp
+> >> - Intel TCC cooling
+> > What exactly did you do to test it?
+>
+> I tested:
+> - the thermal zone temperature readout
+> - correctness of the new sysfs links
+> - suspend/resume
+>
+> I also verified that ACPI thermal zones still bind with the ACPI fans.
+
+I see, thanks.
+
+> >> I also compile-tested the remaining affected drivers, however i would
+> >> still be happy if the relevant maintainers (especially those of the
+> >> mellanox ethernet switch driver) could take a quick glance at the
+> >> code and verify that i am using the correct device as the parent
+> >> device.
+> > I think that the above paragraph is not relevant any more?
+>
+> You are right, however i originally meant to CC the mellanox maintainers =
+as
+> i was a bit unsure about the changes i made to their driver. I will rewor=
+k
+> this section in the next revision and CC the mellanox maintainers.
+>
+> >
+> >> This work is also necessary for extending the ACPI thermal zone driver
+> >> to support the _TZD ACPI object in the future.
+> > I'm still unsure why _TZD support requires the ability to set a
+> > thermal zone parent device.
+>
+> _TZD allows the ACPI thermal zone to bind to cooling devices other than A=
+CPI fans
+> and ACPI processors, like ACPI batteries.
+
+No, it is not for cooling devices if my reading of the specification
+is correct.  It says:
+
+"_TZD (Thermal Zone Devices)
+
+This optional object evaluates to a package of device names. Each name
+corresponds to a device in the ACPI namespace that is associated with
+the thermal zone. The temperature reported by the thermal zone is
+roughly correspondent to that of each of the devices."
+
+And then
+
+"The list of devices returned by the control method need not be a
+complete and absolute list of devices affected by the thermal zone.
+However, the package should at least contain the devices that would
+uniquely identify where this thermal zone is located in the machine.
+For example, a thermal zone in a docking station should include a
+device in the docking station, a thermal zone for the CD-ROM bay,
+should include the CD-ROM."
+
+So IIUC this is a list of devices allowing the location of the thermal
+zone to be figured out.  There's nothing about cooling in this
+definition.
+
+> This however will currently not work as
+> the ACPI thermal zone driver uses the private drvdata of the cooling devi=
+ce to
+> determine if said cooling device should bind. This only works for ACPI fa=
+ns and
+> processors due to the fact that those drivers store a ACPI device pointer=
+ inside
+> drvdata, something the ACPI thermal zone expects.
+
+I'm not sure I understand the above.
+
+There is a list of ACPI device handles per trip point, as returned by
+either _PSL or _ALx.  Devices whose handles are in that list will be
+bound to the thermal zone, so long as there are struct acpi_device
+objects representing them which is verified with the help of the
+devdata field in struct thermal_cooling_device.
+
+IOW, cooling device drivers that create struct thermal_cooling_device
+objects representing them are expected to set devdata in those objects
+to point to struct acpi_device objects corresponding to their ACPI
+handles, but in principle acpi_thermal_should_bind_cdev() might as
+well just use the handles themselves.  It just needs to know that
+there is a cooling driver on the other side of the ACPI handle.
+
+The point is that a cooling device to be bound to an ACPI thermal zone
+needs an ACPI handle in the first place to be listed in _PSL or _ALx.
+
+> As we cannot require all cooling devices to store an ACPI device pointer =
+inside
+> their drvdata field in order to support ACPI,
+
+Cooling devices don't store ACPI device pointers in struct
+thermal_cooling_device objects, ACPI cooling drivers do, and there are
+two reasons to do that: (1) to associate a given struct
+thermal_cooling_device with an ACPI handle and (2) to let
+acpi_thermal_should_bind_cdev() know that the cooling device is
+present and functional.
+
+This can be changed to store an ACPI handle in struct
+thermal_cooling_device and acpi_thermal_should_bind_cdev() may just
+verify that the device is there by itself.
+
+> we must use a more generic approach.
+
+I'm not sure what use case you are talking about.
+
+Surely, devices with no representation in the ACPI namespace cannot be
+bound to ACPI thermal zones.  For devices that have a representation
+in the ACPI namespace, storing an ACPI handle in devdata should not be
+a problem.
+
+> I was thinking about using the acpi_handle of the parent device instead o=
+f messing
+> with the drvdata field, but this only works if the parent device pointer =
+of the
+> cooling device is populated.
+>
+> (Cooling devices without a parent device would then be ignored by the ACP=
+I thermal
+> zone driver, as such cooling devices cannot be linked to ACPI).
+
+It can be arranged this way, but what's the practical difference?
+Anyone who creates a struct thermal_cooling_device and can set its
+parent pointer to a device with an ACPI companion, may as well set its
+devdata to point to that companion directly - or to its ACPI handle if
+that's preferred.
 
