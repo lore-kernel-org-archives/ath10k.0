@@ -4,87 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44F37CFD376
-	for <ath10k@archiver.kernel.org>; Sun, 30 Nov 2025 12:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70DB1CFD376
+	for <ath10k@archiver.kernel.org>; Tue,  2 Dec 2025 04:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BweNKXTXyBjbxRpgGJRd78cP5vj9K3Mx0pI5VkyxFf8=; b=DSmW2LC8y5MWi+NFVoJ/DeG+ZX
-	IOKQERlfkpakvaP+qzK9LeQc/XQmjpUOLMXNmb1UgcIb44DzyoHdQPpt06qQQ/+M3iSBGLwkJMTI2
-	R+QrHmp5nlYqadx1IBxeyAOAIjSNkCiO6BCsXNQJ9JECR1jWIrrk+/0Iiuop6++K13lJfzEGpUqNP
-	gceJyXLX8MtyOASBjSyUN2FzDnrZQBNE54Yf5vRCUPQwXIbD0LNJD8LEs7I3l8iD7zS2qBvjx66L3
-	r3x6VeevjgMLvs04W5sHxpIj9UilmPTRPQZcGasuOCWzX9DJ5VG8Zig46mGMttkJuc2AfFZ6l9XLI
-	DQAkZhZA==;
+	Content-Type:Message-ID:Subject:To:From:Date:MIME-Version:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=Z1iAOB/c/xsU+Qz+0O2Cf+5+H431ajiOVJgeWqsHoz8=; b=h0BqEQWkrvVb/7Ag9HBgn6u+46
+	9tgGAn61Q/FKQB2bop2p3fioOknCbFd6BHmFiUP909RoTTOHWtlayf9WmVeYmHJpgjPeBTzUlSsqt
+	O5BWhvlhrenjQ9tTkAgHIN4Ne2MGnSPDwbqTwEabJLQ3+lIjsKv0sQRI0YrhwNyNL2/wKT8rWcY49
+	6sAzvQy1WIp+YyWLdlQ9/kEfzn+hrk39d1KnAcrvM0uGc+sEeTWAMXhMC+HbI3t2seYqWnGxgddtY
+	10AC7p4PwFF3Xa29MrWhIeVI42l7p72MklnUy8OdLspDaTptRYCUqkvhllbLFZYf0o9yvqVeDQ9oO
+	Z6dOLKdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vPgxs-00000002JBC-1jEl;
-	Sun, 30 Nov 2025 12:55:44 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vQITy-00000004oCg-0EB6;
+	Tue, 02 Dec 2025 04:59:22 +0000
+Received: from mail.mainlining.org ([5.75.144.95])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vPgxp-00000002J9o-3AJj
+	id 1vQITv-00000004oCE-3uZC
 	for ath10k@lists.infradead.org;
-	Sun, 30 Nov 2025 12:55:42 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 12FE743FB1
-	for <ath10k@lists.infradead.org>; Sun, 30 Nov 2025 12:55:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D58BEC2BCB3
-	for <ath10k@lists.infradead.org>; Sun, 30 Nov 2025 12:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764507339;
-	bh=+CUU91VE9U+UPRFztWIsw6a0HFlxr+X7N2lteq6FDVE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Gww/dvdD+675GJvFeEUzoJ9+9j1fimzRlqZN4XMYb6eQ22Y67C+MtVRScVEvjgMj1
-	 ZpYvL+nwB2pztVPvokl4UbEkKUzonZlmU5BFppJ+9Lj4kIxmWwfdBjPYKKj54W7re6
-	 pCCNXn8T8DUMXZbwGdNQTa6g0p5S1DYOA0f5Hfr506b7n58qIcvUcbv8I+2GP1lQr/
-	 zN1r7Jpu0BI8REbIRc1G32Hi5dMOEcFzmasdNLVlXuv3R46/uzyCsVukiB757JeGhN
-	 2uDujYZ14AcjgVrLFPsqEQlrLMsGQFouXavU4LbUHBbzAin4+3g/0GH9NV7GhWXo1f
-	 wmvNB24EyWnFw==
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-7c76f65feb5so2452552a34.0
-        for <ath10k@lists.infradead.org>; Sun, 30 Nov 2025 04:55:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUCsoBiXL3elbtYI7+4VFvOiVefxnZiNA7l6APhlZAqbmvOaG4NbCccw8m++6K1ALk+Kf0icis=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwEbn5LsjGq5LcJgV+N8LuZzsKwQSHMAAkY5x5sWjB1YZ2GpTDv
-	oX7eWpc4AY8xu5kH4rqdjBpRJnlra/tsA3oP3Jt0Rkeil92P801BAeHjRWm/Gka/B4Aji2AY8rM
-	9BhRf/ln3+4VZi1ZiDoNndHBXrYCUAGI=
-X-Google-Smtp-Source: AGHT+IGgWthYmyiiRHTuIz/8bWmUoFRUwbcURTcZh3qG98AznU0lJvk231Fz5Su9DD5JkuIHGit6aHtLEtrfKZseF8E=
-X-Received: by 2002:a05:6830:924:b0:7c7:dff:2ac1 with SMTP id
- 46e09a7af769-7c798b8a7dbmr18909653a34.3.1764507338846; Sun, 30 Nov 2025
- 04:55:38 -0800 (PST)
+	Tue, 02 Dec 2025 04:59:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1764651554; bh=Z1iAOB/c/xsU+Qz+0O2Cf+5
+	+H431ajiOVJgeWqsHoz8=; b=Qv3jU2yfuWO7tqTD2G26dUuPiKr5yUuXIK/kla3Lyno0bUDXk1
+	Lbb5MpHQiHP8co54cBNZuPDsQGRloOqQ0lwjK6G6WeV7ByThguBXXx2PAA0APHeefYeUWMC+ssH
+	GLBMiAxJ8tcsfdVEIz7y/7VwlIn9DFnLDnY9RwYR3BNh/zKBcqSdK2KghBB8hWy2ZuiJEXSP3Zf
+	QtCo52buFrJv7ddJ6j3rJvgYmpJHktvkUdutvO2u0JNtuE0VUDGjs9Zh/MF8HY1twKsAXsDzLvB
+	A/GvauHv9i0xQCkI+pag6hFVoX8fWqrBBkjXWBwBNNWy/7ZLGeJSx/8y9QFMoK8XtiQ==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1764651554; bh=Z1iAOB/c/xsU+Qz+0O2Cf+5
+	+H431ajiOVJgeWqsHoz8=; b=/VJCS08EVeaEuRme0FkX1rovOgF+g/yZ8PFIhg0Z7AKl8HNeOQ
+	PzZgzKF2N8GSEiP6nGZMMvAD20IWlxHNEQAw==;
 MIME-Version: 1.0
-References: <20251120-thermal-device-v1-0-bbdad594d57a@gmx.de>
- <CAJZ5v0jOPrBcozzJMsB1eE12MuZRWDAV-+=jfrhJbi=S0p5J9Q@mail.gmail.com>
- <5f3ef610-4024-4ca0-a934-2649f5d25f40@gmx.de> <CAJZ5v0iJVV=kf-aJBx8F8dtGfaZpGVyhfi6DBWEg4j3c_nH8_A@mail.gmail.com>
- <e360b9b3-ada4-4cd1-8971-097484cf3f5f@gmx.de> <CAJZ5v0ij_Frdrya3=FaekbU2DFHUyBJnBq-oe9jRsB9eqXDisA@mail.gmail.com>
- <ed619280-6f25-4df6-98ca-890bdc343435@gmx.de> <CAJZ5v0hMPCRU_p_krX3nKzB=5TX7hGU38iyNmhSJSHO2j7K3eA@mail.gmail.com>
- <de14f2c4-e7b3-43a1-a9ee-9caba196b0f5@gmx.de>
-In-Reply-To: <de14f2c4-e7b3-43a1-a9ee-9caba196b0f5@gmx.de>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Sun, 30 Nov 2025 13:55:24 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0h3=9V8FFehyaPiG2SreRgeyvKK+oAkR_gzKQQNDBmczQ@mail.gmail.com>
-X-Gm-Features: AWmQ_bm74BLkYigBlEZwhgK9orhm-MSGQUfAzuwxqXDI_Qt7_9TxZm-rm-hXNS4
-Message-ID: <CAJZ5v0h3=9V8FFehyaPiG2SreRgeyvKK+oAkR_gzKQQNDBmczQ@mail.gmail.com>
-Subject: Re: [PATCH RFC RESEND 0/8] thermal: core: Allow setting the parent
- device of thermal zone/cooling devices
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Len Brown <lenb@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
-	linux-tegra@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	linux-doc@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
-	ath11k@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
-	linux-pci@vger.kernel.org, imx@lists.linux.dev, 
-	linux-renesas-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date: Tue, 02 Dec 2025 05:59:14 +0100
+From: David Wronek <david.wronek@mainlining.org>
+To: ath10k@lists.infradead.org
+Subject: SPF Test (ignore me)
+Message-ID: <b0b82c603d1af0ef9f0d5a7ff9d4c57a@mainlining.org>
+X-Sender: david.wronek@mainlining.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251130_045541_860109_6F22265D 
-X-CRM114-Status: GOOD (  20.54  )
+X-CRM114-CacheID: sfid-20251201_205920_138374_A8E09B6A 
+X-CRM114-Status: UNSURE (   1.19  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,39 +66,11 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Sat, Nov 29, 2025 at 12:36=E2=80=AFPM Armin Wolf <W_Armin@gmx.de> wrote:
->
-> Am 28.11.25 um 12:40 schrieb Rafael J. Wysocki:
->
-> > On Fri, Nov 28, 2025 at 12:50=E2=80=AFAM Armin Wolf <W_Armin@gmx.de> wr=
-ote:
-> >> Am 27.11.25 um 22:46 schrieb Rafael J. Wysocki:
+Hello,
 
-[cut]
+just testing if mainlining.org can reach this mailing list.
 
-> >> What do you think?
-> > One advantage of using parents is that it will help user space to
-> > figure out connections between the abstract cooling devices and the
-> > associated hardware or firmware entities.  I think that this is an
-> > important one.
-> >
-> > It also doesn't prevent fwnode_handle from being used because the
-> > fwnode_handle may just be stored in the parent.  I like this more than
-> > associating fwnode_handles directly with abstract cooling devices.
-> >
-> > If the cooling device parent (that is, the provider of the cooling
-> > mechanism used by it) does not have an fwnode_handle, then either it
-> > needs to be driven directly from user space, or the driver creating a
-> > thermal zone device needs to provide a specific .should_bind()
-> > callback that will know what to look for.
-> >
-> OK. When sending the next revision of this patch series, should i also ke=
-ep
-> the patches for the thermal zone device or should i only keep the patches
-> concerning the cooling devices?
-
-The cooling device changes are kind of unrelated to the thermal zone
-device changes, so it would be better to send them as separate series,
-but you may as well send those series at the same time as far as I'm
-concerned.
+-- 
+Best regards,
+David Wronek <david.wronek@mainlining.org>
 
