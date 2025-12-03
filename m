@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BC82D1BDC7
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F8C3D1BDC2
 	for <ath10k@archiver.kernel.org>; Wed,  3 Dec 2025 17:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,123 +12,123 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
 	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Qu56B6CVocPahpNKlC/P8lCJtLvQZLyGvBE9xegdPTM=; b=Kg8isssynXBdBoGUpe4v3etP2s
-	mTeFgj/UjzKXXUZV7Rd6+hnmRask8keSkjr3q6Fv+w8r56P24MWCCyDd5/y1yKxg2pxdOWc3fJ58R
-	ej3V+lLrmySp0L0i4Le+7iadFBakUKYckn+zND35ZkapVkKnmTKIBTBzWCud60HNUz7cMywOKkLaD
-	qQdYEOjxzDenBv3NUYUJ7so6+iKPV7now/K0DQRA7IZzLAUikf5opEbj01aphggsBgIuk+ElL5sq2
-	B2XpZ+4sIv3kIOQhlS8u8F792d8/facX0du3lw2HyKoHUY76DrpReumvdXguzBY8V58KKTeoohZx+
-	8e51+Vpw==;
+	bh=TvBhT/TzYx/jD3pFcwcWB8jJFqnn/bf1UwiNKpyPgs0=; b=Q/2K94Gc8H3OLhTxWbmmuZ+rjx
+	reG+YnXWCvQTnE7Fcd0U+TaPaMwHwLc4h/ecauVQU5WGZLyFHCGlVPpiXW0SCiY2RpGPv6It8+KxQ
+	yEf+7MCHrRnx8hpBBU+DR42Sj+LL3CsZ5Tag0tYuv+UfGytWqmYzpxXfF2IWNj6MDNJJBW/AH7jID
+	qbmFQCE4y9OfTtY+lumso8CTSwFPGKpf/CWCGgXOklUI+9pfIWygjAxcqdNk+94d8E9oSD2XIWHzS
+	iTssjJQwXckKt+f8Ev7JP1OPskscnAJXXLgVK7uzXsDRnu50hcbd0bTFAiNY0nNGaJi01VZ5H5EBG
+	Myjn8CRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vQr7a-00000006tQm-38IK;
-	Wed, 03 Dec 2025 17:58:34 +0000
+	id 1vQr7Z-00000006tQU-1v7n;
+	Wed, 03 Dec 2025 17:58:33 +0000
 Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vQr7Y-00000006tQ0-2i89
+	id 1vQr7W-00000006tPX-3Bsc
 	for ath10k@lists.infradead.org;
-	Wed, 03 Dec 2025 17:58:34 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5B3Bk5mp2436338
-	for <ath10k@lists.infradead.org>; Wed, 3 Dec 2025 17:58:31 GMT
+	Wed, 03 Dec 2025 17:58:32 +0000
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5B3FqXTR3147692
+	for <ath10k@lists.infradead.org>; Wed, 3 Dec 2025 17:58:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	Qu56B6CVocPahpNKlC/P8lCJtLvQZLyGvBE9xegdPTM=; b=TXNQeNsYrRYka9aD
-	DDq6vv0lJgzUWQKRxCq9QTMXz5zwXFxZwZ8BlZqD3PVT/9ySYbT/N23bl7HUzaT1
-	Jjz4hSol5q1w7Xe99748pGpkwXZ7Dlsv6Gu0hNwtmrLCtU+QPFrmBM2tEZB3Qx/C
-	bk54tw/97FjB0mF2vkCUZtCZldzaHcKup8aqMiXZxDhxssP/eYxsZ/Lq+XF2ABIt
-	sAZ2mSgFBa6IIDvj8mO5fUJKcm7GiHlLrbqpqyelOw7kjofkp+QYqbh8rBOKFiUn
-	ik/ja8m4k6aVIKR2GJlEBF2Jfff7V9Z20ooq2E0e2qanRaaCeIxNcYQ1G4vlaiH2
-	ouVSdw==
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4atmmd9431-1
+	TvBhT/TzYx/jD3pFcwcWB8jJFqnn/bf1UwiNKpyPgs0=; b=pCNYjCysGaU8f/2w
+	vnnpoBMQumOeTE4qYpIdfPxwGMPQoz1uknzSw6GepyUgJdtg7Rk2drRGhvkrKGo2
+	J1UpnRHZ+qPFLMIXLulUEcvo44oeWC3iyVpm8y8UzZgLfpO8uX6jMZa6LVfkJscG
+	Mz/3vZ++2uik7V+zoxOhCQmQh3dQhw11ATM0RA4E+GZtL6O8P2yLABLooPpPJBex
+	NSdjzgpgxZPZccTdvhKm3FYRPLFJILZa68rvF7hVKJMhJuZmw3lf1JXZHI+mD4a6
+	mMBccBwPPSNSG8xJdu4JXOsORF3wb2oJ//x10sjSfRBVVv55/Y/aVrcGOwhCCzOW
+	2iKtTA==
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4atr7yge9j-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Wed, 03 Dec 2025 17:58:31 +0000 (GMT)
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-297e66542afso748465ad.3
-        for <ath10k@lists.infradead.org>; Wed, 03 Dec 2025 09:58:31 -0800 (PST)
+	for <ath10k@lists.infradead.org>; Wed, 03 Dec 2025 17:58:29 +0000 (GMT)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-297fbfb4e53so524335ad.1
+        for <ath10k@lists.infradead.org>; Wed, 03 Dec 2025 09:58:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1764784710; x=1765389510; darn=lists.infradead.org;
+        d=oss.qualcomm.com; s=google; t=1764784708; x=1765389508; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Qu56B6CVocPahpNKlC/P8lCJtLvQZLyGvBE9xegdPTM=;
-        b=RSEw9fwB6+S85agMHT2+8RhjpzpEglDHjZH+15GPQMYQG80PTn9N0rqf7RFiq05ZSG
-         WMTSh+hsIJC2NaFWyG2Ct/dLSpzae+8dQVje+psWXIM3nlzerU1FOhTBRQzjzANlS2C6
-         qfRmAwEUmltbK4FuB6tPxv24IFgvnz9p7eF6KoKUizXJvhQusTa+GI1DdO+EiSECcqbK
-         Y4U/j5keoD4lTMbZEM1uDzyRFZOd/vlPwhrhypb0Usoe5w7hPpS29mdvFpKKTzjfd6Cf
-         qli40qlK7X2+V4RwX/RVqNTf9JSSk1Q918HqwcH6BVRSSQPmGSLH2vnbzMD54K1ZSACW
-         Xtlg==
+        bh=TvBhT/TzYx/jD3pFcwcWB8jJFqnn/bf1UwiNKpyPgs0=;
+        b=gqGqDeulxSEyKK2SNgnOGTILenJOtYUjTGr142fKYi6aoMHiUMzm6jNWB9NxeRgkuw
+         +INRvz+Op9X5XmVBIjxHG3cdj9Io9CenwRllMEdZjP+nJ8x+FE1WCJx0WO3UNMsr41wd
+         sVYR/l+Y9lFOVOwooxQkYb5DGetGmd+3FhrTcYGdwy0Sri6qQAXEhpzdPfWQwoW1LX8Q
+         uLpX4vQA3Bjde0pHW0dv8PvLbV250EdYMl4V9lZFnqjT+4y6UKlANzRnE1VSWUDj8Y6R
+         W119tMoGYfd4mAebixc1vl6tuZoPi1EADowSxr0jNqNgpXj9w68w+Rg5uJXNaZ1KI6kb
+         J/qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764784710; x=1765389510;
+        d=1e100.net; s=20230601; t=1764784708; x=1765389508;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Qu56B6CVocPahpNKlC/P8lCJtLvQZLyGvBE9xegdPTM=;
-        b=ix+JmFAAFP2E8joDXkjHMnGdjX541wrBG5Xeo9sqCU+8cM7T7Q7mvvLLdtRELStLOZ
-         HVY07OXcdNge1XghiKKwbCDQt/AwJebmxPzWGUyU7j2+9Kcwqpfy2dqLsR+8OY2Oq5Ko
-         cxFo5MESwwptoGhTMI719vA22gV5foKgkjMHzMy2MSdiAxv6/YK1lu8B2tutivdPZGl8
-         hLAQT1ZpxVb2lGHZUTu1vwrrVA2Z6qJ8q4pHSWB5JYwbCPb7n5GNJvlo5h6wbGj99S9X
-         9t4HOanJSnlN9N+aGJPZIyQ3LBLK/w+troWGuXHL/WNXx3AlJGnR336P7s65HOHWAeGK
-         C4QA==
-X-Forwarded-Encrypted: i=1; AJvYcCXKRmMP9RAa3NQR/Dn+LmtelEd2MaaSvA02YjJdxU4hW2/8a3AdiK+lv9mgO0/ZmTI1bZKXSXg=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy0UKlM3ICO8n20I+ex1r64rIfTJjL6wqKsSgCYNQ15IzrO7qc1
-	OyboDA8AxZcpIqqsudnABHZ/ko20DGsuJH/+2sYm2tHzv6UAhgy3LndAaVPcosswJN0jzj6VqZw
-	3fPbKLnqBqI6grF+rPEHWLxohtgg6sXCfxdgXBBOKBUALCsigLOlIjXo5SWkYr9VqA1RRNMCH
-X-Gm-Gg: ASbGncv8NFSeZWiHC7fnTHbvj4AJJi+RER4Xt7BaUroTaZ8hB+ASqQW+4MpQvk4zCsI
-	6QMplfWdS13R+VKQwHxVxnWo6fT1pZ+w+I1o0yDz/yUdU7wLkvgin4ofTJ4L7U6RK0y6YnE1/Ow
-	sDihN2BIIw6xw2npLSPwfCFB81ikrgyv8wSQ33r7nxxPqZ0recq/n61hVp/p1lH3zLmNwXk537h
-	RhgTAVU8yEacbn5Xhb+4TLW9hj/z9+85AIVw9pM8hAjaON8GBbJ2ARiRli4j7HVWfpIxaRThG9n
-	/2gbyw5u9N9S4UZZzhRMgD4wXThW+9n3Kd1mAmQvB4vyu/RNfKcvsZj+rCRcWzXSwLC0En5985f
-	Zemt4OBoBiWfP4iUrfaRvgxuPJBmLs+h0pMUmi/sYSvwYY+55CI78zcN9vLpYoImOoNFCjg==
-X-Received: by 2002:a17:903:19e3:b0:297:d6c0:90b3 with SMTP id d9443c01a7336-29da0431caamr832755ad.23.1764784710542;
-        Wed, 03 Dec 2025 09:58:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHQkYAWwt2UmAtRaUBjw+wnPHEAfEoFgQskK2ccZLJyNDT7UwRIu0CzWnw3XzS5uH79xHr/7w==
-X-Received: by 2002:a17:903:19e3:b0:297:d6c0:90b3 with SMTP id d9443c01a7336-29da0431caamr832485ad.23.1764784709922;
-        Wed, 03 Dec 2025 09:58:29 -0800 (PST)
+        bh=TvBhT/TzYx/jD3pFcwcWB8jJFqnn/bf1UwiNKpyPgs0=;
+        b=v5fBlSXYUT8wDCTkEvXonwGtF8DrYhH6hq7qpA6TragYO7zFvPmyzA6OliFpjANYWK
+         2gzhULKqkCXCNdIOuZYmqS4aambMqLYbMzb6jIUsHryl5r6OxFG7I36ft0RajwFoIcmh
+         5IWmir76rSsIB9crXN/dw0cQ6rgH9CUpUy7R19AWO5/8nsFLokwdMqxhfjOVIve9bzd7
+         DjHXKYsqHlWB2fg4x1FHsfTH0LVXTbAO2VLD3qbMgW8rBqbuuywKGypjnKpHiJQ1oQAE
+         kSX9zDvQcE7gGdZzuWU9633TtZS7pwUqyR4HKLSSNy4nsfVO/iKOgHb1A85OIc9ef7xT
+         JnPw==
+X-Forwarded-Encrypted: i=1; AJvYcCV1eQMVxgaZ/iMTplYrigC/oGD2ounZeB5zjdQgwbOrMCvn8lT1LfLBnEdhFIqC5OHb8BEy60k=@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywgex5ClWS02sMnil8uTyky4bTODUO6YUORogQ2EayLv4o/CE4a
+	jsnzgt+fN3nWxcibSqgNjhQ72rHEvTIPASUnfaRFTNhfgnK793vHqudpfdOWeyxgSggD41x9yH8
+	LTCLf0u/zQUz2e0I79tySBKmsprGpJwHDojcHB/i7u0Ad4FCnbmSxHZ/HUtS4kyhlJY8Z4M19
+X-Gm-Gg: ASbGnctE+PWKkn6Roj664aCibQPcSEU8K/F8T1vklDNkkMAG8S9KAyUHUX5qMhGOfwf
+	YwvnNqp1raC87o9kluwvKiAU3PsACGOThVE9YAjJ0ST4G13cn2km3E9wR164OYa03CZWy/4yJTw
+	/yr+hyutBni+KImgawKav5TRSHnUoyCbcXlzigslSp9hbgqZuUjN6UjmRYc4lGIrPPRU0v2HvzF
+	9UwVh5Pei5HJTT8pyJ1aA1FbarG7LoprM/Fb7Eh4fbIzIL/t7MU0jkaG5WbfjJHTybYFOC8n0Kh
+	o48uGuYSIkqrCAVlGuw7zX+sgbi0cfZExCajoqU7fpf+TnUA6MAcsvUAUJKi8PXJ7JkPs74LNOk
+	WgcmJJtY4Z4arBot0Lvu6XlRge02uY3JoVWciK3QL07SPr4ar1GPr/Sl3uS1nVN9LxbOAnA==
+X-Received: by 2002:a17:903:41d1:b0:298:5fde:5a90 with SMTP id d9443c01a7336-29da1eea72amr632045ad.58.1764784708232;
+        Wed, 03 Dec 2025 09:58:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEPWA654lCe4pMiBGmHa2r6gdC/kN8Q7UBQXWPZVSEubmmSpztaqxu35T45EcyGdGgfin4h7w==
+X-Received: by 2002:a17:903:41d1:b0:298:5fde:5a90 with SMTP id d9443c01a7336-29da1eea72amr631855ad.58.1764784707713;
+        Wed, 03 Dec 2025 09:58:27 -0800 (PST)
 Received: from [10.227.110.203] (i-global254.qualcomm.com. [199.106.103.254])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bce40ace2sm194533525ad.13.2025.12.03.09.58.29
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bce40ace2sm194533525ad.13.2025.12.03.09.58.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Dec 2025 09:58:29 -0800 (PST)
-Message-ID: <590b4702-cbda-4301-858a-6a63ff451040@oss.qualcomm.com>
-Date: Wed, 3 Dec 2025 09:58:29 -0800
+        Wed, 03 Dec 2025 09:58:27 -0800 (PST)
+Message-ID: <d9d43a35-d6a2-4b5a-ab51-600e900d47ff@oss.qualcomm.com>
+Date: Wed, 3 Dec 2025 09:58:26 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Meraki "underdog" specific
- BDFs
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add Meraki MR30H specific BDFs
 To: Hal Martin <hal.martin@gmail.com>, ath10k@lists.infradead.org
-References: <CAHkvJJLBuwgiwA_Kz7UKnngBuTXQBkNbEkdrenNUfAoKnUfgew@mail.gmail.com>
+References: <CAHkvJJLV1+JxABqO+_ByPdVfAk_bG5pyj+temEXjK8BcAAEg2g@mail.gmail.com>
 Content-Language: en-US
 From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-In-Reply-To: <CAHkvJJLBuwgiwA_Kz7UKnngBuTXQBkNbEkdrenNUfAoKnUfgew@mail.gmail.com>
+In-Reply-To: <CAHkvJJLV1+JxABqO+_ByPdVfAk_bG5pyj+temEXjK8BcAAEg2g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: waPvvbnQzwD1xizngNeDVlx23gAxXYMi
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjAzMDE0MiBTYWx0ZWRfX6/X8LZZTht6m
- AO91qI8ynd77fL08l7owUIHWNn9ucaykIF51m9geaqhXGJ1nZeAdONWP4OEpAcOfDRAdahSUHIZ
- lL3OZ+q9Bn/ANXUnYvL+IL+6C56FWFUojO/Dhq9bd3rkvyoSjs/cz8t6BdQZn5159wuKuVeoKb9
- HI2Qwv5fDFA8uqQPMGWLr+RDoy7uWs0TPJFScTwO0k61JGtbf86WIHLqP3Fyq2WhRjByACWJGXs
- /y/mfZ7WYJTN4P3ZOJadxmHA/rGcNygtyULdHhjhh16u5YxiDI9hS4C6gEfEiBjMiSsjGRdzFZM
- igPaFI6cLn+WPfpYwp9cy83ITK/9oFAjk4YTdJGG7w6YAEsU34X3ZeAs6ou8iBL92JFDlhxfRSK
- tJnxfzDruOqJ3tpgNNMIifK24t4mrA==
-X-Proofpoint-ORIG-GUID: waPvvbnQzwD1xizngNeDVlx23gAxXYMi
-X-Authority-Analysis: v=2.4 cv=Ctays34D c=1 sm=1 tr=0 ts=69307a47 cx=c_pps
- a=JL+w9abYAAE89/QcEU+0QA==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+X-Proofpoint-ORIG-GUID: pnXkLdmBkk8x5DFPmpk9xSTBP7vOLsta
+X-Proofpoint-GUID: pnXkLdmBkk8x5DFPmpk9xSTBP7vOLsta
+X-Authority-Analysis: v=2.4 cv=ZMTaWH7b c=1 sm=1 tr=0 ts=69307a45 cx=c_pps
+ a=MTSHoo12Qbhz2p7MsH1ifg==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
  a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=qC_FGOx9AAAA:8
- a=5chRr2ajmEhlubIYmlkA:9 a=QEXdDO2ut3YA:10 a=324X-CrmTo6CU4MGRt3R:22
+ a=VkNPw1HP01LnGYTKEx00:22 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=qC_FGOx9AAAA:8
+ a=aco8XqjScWJhfLWghr4A:9 a=QEXdDO2ut3YA:10 a=GvdueXVYPmCkWapjIL-Q:22
  a=fsdK_YakeE02zTmptMdW:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjAzMDE0MiBTYWx0ZWRfX/ojXCyVus9aL
+ 7FtbyOZsR78URdMt3XcLi+D2xO3PNCtji1VtzmZ3XuSn0NpuxoKyDoWbwcx3m/3OIz9eWIT5mi8
+ nFFl0MqaAhvJIJK52mTOO49yS9nrCMvZ+xG1wKMXhSK+Xh9MqUzq7dOxRWypr8rwpOHI0NvccOy
+ QijsawMfM0vKb1hq5QkpKoiYvVWSEGCxCucuZW096GebyZxJwljMZLMXZi5d07dLaBSeXbR+Jiu
+ UTR7X0Ig60tL82KQ98O12z/t7Z8YCuwMqZ5cIFHB5CWBjt16lSbBMxaNFHiiCBBmhUHCqHFlRo2
+ 3JOJNaBzu03hs5KXdlS/6Zs7Uf2zeItutYYHAJxffyrvJ2zTmjStIbO1QgbxmINP5DOvd7Rwhng
+ o2pGI0BpovjZrheb22R1wN0vN41Zcw==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2025-12-03_02,2025-12-03_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0
- clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2512030142
+ malwarescore=0 priorityscore=1501 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1015 adultscore=0 impostorscore=0 phishscore=0
+ spamscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2510240001
+ definitions=main-2512030142
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251203_095832_806773_37E9AE97 
-X-CRM114-Status: GOOD (  19.33  )
+X-CRM114-CacheID: sfid-20251203_095830_933550_A46AC0B2 
+X-CRM114-Status: GOOD (  19.79  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,40 +143,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 6/29/2025 1:32 AM, Hal Martin wrote:
+On 6/29/2025 1:23 AM, Hal Martin wrote:
 > Hi,
 > 
-> I am working on support for the Meraki "underdog" APs in OpenWrt. The
-> "underdog" APs appear to cover the models: Meraki MR20/GR10, and
-> MR70/GR60. These APs require
-> two special BDFs to get the Wi-Fi PHYs working. The bmi-board-
-> id='s are not currently present in linux-firmware, so Wi-Fi is
-> non-functional without them.
+> I am adding support for the Meraki MR30H in OpenWrt. [1] This AP requires
+> two special BDFs to get the Wi-Fi PHYs working (correctly). The bmi-board-
+> id='s are the same as the existing MR33, although they are physically
+> different devices (e.g. not just a board revision). The Meraki
+> firmware uses different BDFs for the MR33 and MR30H.
 > 
-> For the questions from the wiki page [1]:
+> For the questions from the wiki page [2]:
 > 
 > * description for what hardware this is:
 > 
->   - IPQ4029 based boards
+>   - IPQ4029 based board
 >   - one QCA40xx radio is used as 2.4GHz radio
 >   - one QCA40xx radio is used as 5GHz radio
 > 
 > * origin of the board file (did you create it yourself or where you
 >   downloaded)
 > 
->   - the files were extracted from the MR20 running a Meraki firmware
+>   - the files were extracted from the MR30H running a Meraki firmware
 > released in late 2024
 > 
 > * ids to be used with the board file (ATH10K_BD_IE_BOARD_NAME in ath10k)
 > 
 >   - QCA4019 hw1.0
 > 
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=22,variant=Meraki-underdog.bin
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Meraki-MR30H.bin
 >       sha256sum:
->       3b196ab4d5cf18ee194b2aafbdfb4b26b144c8f15875274168a4d721bcd6e313
->     + bus=ahb,bmi-chip-id=0,bmi-board-id=23,variant=Meraki-underdog.bin
+>       ed3df7db8129b4f53516c75df40a0a0379c7d90f7030573458a8a618dd22bbab
+>     + bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Meraki-MR30H.bin
 >       sha256sum:
->       ff5654adb55a6aa2ef6ba527090b551af62d5746b5cdc22f43d35b24827f6999
+>       d295477e5c098cef61d74dc7417c435ab6bcef6d8851ca3d21ea1bbf28b00431
 > 
 > * attach the actual board file (board.bin)
 > 
@@ -186,20 +185,22 @@ On 6/29/2025 1:32 AM, Hal Martin wrote:
 > Kind regards,
 > Hal Martin
 > 
-> [1] https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
+> [1] https://github.com/openwrt/openwrt/pull/17026
+> 
+> [2] https://wireless.wiki.kernel.org/en/users/drivers/ath10k/boardfiles
 
 Thanks, added to QCA4019/hw1.0/board-2.bin:
 
 New:
-bus=ahb,bmi-chip-id=0,bmi-board-id=22,variant=Meraki-underdog
-bus=ahb,bmi-chip-id=0,bmi-board-id=23,variant=Meraki-underdog
+bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Meraki-MR30H
+bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Meraki-MR30H
 
 Changed:
 
 
 Deleted:
 
-2 board image(s) added, 0 changed, 0 deleted, 156 in total
+2 board image(s) added, 0 changed, 0 deleted, 154 in total
 
-https://git.codelinaro.org/clo/ath-firmware/ath10k-firmware/-/commit/e6c8f42eea0683d833682389788ce5005d51f9fb
+https://git.codelinaro.org/clo/ath-firmware/ath10k-firmware/-/commit/9a29a8cc856015ff01079a82a8c3554b301c319c
 
