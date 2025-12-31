@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CC47EE6428
-	for <ath10k@archiver.kernel.org>; Wed, 31 Dec 2025 16:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8678EE644C
+	for <ath10k@archiver.kernel.org>; Wed, 31 Dec 2025 16:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=68Auck60GyYj13jsQrKu1d0pmyBuLZkKakUCDN+kvEQ=; b=xEAJNi3H/CAP7NNr1g2rBhW20H
-	AU6hfUqbCLBq+tmNniOcTHD+EzHiEJ6/hhDDaoQGpfXq2rS1KDUliq75+D/kaYSJ2M4IDpjHv+ySS
-	qXbLaLEIY2zRdvhwTlVbLyzi1T0V3oln7rEl3MhssWWfcVah3lDNHmGB7flKw/419rGDfFGc0wy88
-	S4NkvwT9q57gdyNKgcTaNrrkQ/aEvz5MMzQNKXBkQkpbZSbG2mGFBRtB+TG6yrb8KDYeKQ/JoqsAM
-	QdyXD3lOBiZ5N8XfLMIXepLnoYGmoVv9BsysIX9iwzUAkrkV72qfTLCTTWWduE8U91A4eCunR+p0j
-	OjbLzffg==;
+	bh=GCtRj0kGJkzqJqbBi+nzUzz3hAt/gdZ19OL7R78+TBg=; b=UwP/1HrRp1A/h/kScPIMajQeqO
+	8u9bosE0OBS3lcez95Z/mQKdJFroeQ5J+ZXmJvpoHjPjhMFycuZFJzSpmh9ztaN85H3cF7D/CLGUf
+	fhLfWVbG69saCA/C6aAxgxMF30WpD/mv2O+YIMNjkXbh6ANxln8TaykTi0r3vxBlsrzXxqSX2DOjv
+	wSkGX34KWZJmTFjqOt+HCpEGBlBAQ+AkihKeOOz5YBEVkpYEpOa4/hajEYMNyLLETe3OXpf/Lgqm+
+	PmvP4jJE0vpAEl4dpKGxMjkKdttjujtRhvSFXXp72PZXhpk2x7DQi7p1T8F0Qrcv/Phli2n1v1TNy
+	+HaahnIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vayvb-0000000680h-3uNR;
-	Wed, 31 Dec 2025 16:20:03 +0000
+	id 1vaywU-0000000689u-2G4u;
+	Wed, 31 Dec 2025 16:20:58 +0000
 Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vayvZ-000000067zy-1Bfa
+	id 1vaywT-0000000689N-0B7C
 	for ath10k@lists.infradead.org;
-	Wed, 31 Dec 2025 16:20:02 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BVAi4Ys3367077
-	for <ath10k@lists.infradead.org>; Wed, 31 Dec 2025 16:20:00 GMT
+	Wed, 31 Dec 2025 16:20:58 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BVCThtG3216719
+	for <ath10k@lists.infradead.org>; Wed, 31 Dec 2025 16:20:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=qcppdkim1; bh=68Auck60GyYj13jsQrKu1d0p
-	myBuLZkKakUCDN+kvEQ=; b=Y56WiDHy7zvU0OWvNzDvl3lFHBxgcjngMAAiMLl1
-	+0lnLb+eNZ0BAQ+EAwqgX3EBHGSZnAKY4yPPdKbQxB/Mlu8vJ94/SJwlimPu0khg
-	1R0TOG82MaUTqqWMyrUnGtLDUI5BtEn1DjeG8gVTs2XpcxtVrWi5HKPvq8ogxbz7
-	8hxan3I7pKUMR2SUGZk14S1YgMCGYEuahfTmFnCTOgkCiXRW+q1K4ufkf4LonRUI
-	K9hEUpmLOIT7lBgpFoJx5to/ei9oYHx14W9+lH28qlfG2UgC2zGPOsV3ISBsjBBR
-	80A7/vyQ1UEH8qapElypV71/OBFAHyjDjPZtytge8VRmZA==
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bd2bb0gsm-1
+	:references:subject:to; s=qcppdkim1; bh=GCtRj0kGJkzqJqbBi+nzUzz3
+	hAt/gdZ19OL7R78+TBg=; b=PKiaatVkwcqrWuY8DFvYqxHgFWBTdDtGeebn3+7m
+	dTlCiYdpxYrotSGQN3J3EzH5e4Uqi5vyxAys7qOVn9+vYGNtfeuZWRQNZ15gdRyC
+	XTYw5OCExmIoWrDa/699sbcu0o5P0SPvJyCEqg5BbIwNqxv3LlhZRKKIPWd+nR37
+	7J4nR3ki4eRZIcJbFk987EGPu0o2/dG4/payno8QEF0lgpMwVdGmKIO2sZEtQrdv
+	YEfIoIMWUvGxiRfY85cSRrW7NpwXdctXoeNYplYYNxT08Fn9sJNzsGYJ+pFUfd9n
+	kIVFKkeXGsE0T78aGjFK/FvIAeyea8c6iS1YkcUoTMa89Q==
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bd3v8rc9r-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Wed, 31 Dec 2025 16:19:59 +0000 (GMT)
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4edad69b4e8so230545141cf.1
-        for <ath10k@lists.infradead.org>; Wed, 31 Dec 2025 08:19:59 -0800 (PST)
+	for <ath10k@lists.infradead.org>; Wed, 31 Dec 2025 16:20:55 +0000 (GMT)
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4f1d26abbd8so326487911cf.1
+        for <ath10k@lists.infradead.org>; Wed, 31 Dec 2025 08:20:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1767197999; x=1767802799; darn=lists.infradead.org;
+        d=oss.qualcomm.com; s=google; t=1767198055; x=1767802855; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=68Auck60GyYj13jsQrKu1d0pmyBuLZkKakUCDN+kvEQ=;
-        b=MgZzKtPN4TPCnf8Ouv72Gq3UAT5rx7iUTt/wqbhnzGZYNuVnKMaDk1qIKkEo3xQGd4
-         4u4oOFGpgiLk+ULB0/yhlNnT5sg8ZI35dt7qXTKq2pa0ImR3NdIIjuAm9qm1WsbUjOKE
-         5B+uePIiGqq3WXdjY2W7NfRc5jgxPp1d1CtE8hWQh0KZp/gzIIzrBshEk0N/7MvxBCOR
-         xYu/J7leV02iyaAIf1ELmeAeXDB1CyKJn6ePo8+Ge+z2XdbV8vzG8Ld9sVjV7PcJFOcG
-         Pvn8T5JG4GGPcF1riKo3YHIfOpHkLPuG6OCptX8M6zWl/1s1A/mHZfIEW433f+BCGe1U
-         xrfA==
+        bh=GCtRj0kGJkzqJqbBi+nzUzz3hAt/gdZ19OL7R78+TBg=;
+        b=ghzVUUkKV4QG0WzNNgKGwHp3XNq3euRXAs5ZM6E9+6D8yzN0vk7iMnrdNDuObHLTfu
+         CyQDr4MLFOjsTMNdNxQLjb58oG/GmLiLUGb9j3LFebEFkE2/OiPW2VPxDoNjLTVs12qu
+         kjsuJSBu1X3Q5FOZiIq6+8G2S/YLqvj+9SfyRPKS+hFAtI1scD9H9vWiz/SRfGKl4jtn
+         49+0PDM2MvPstBl6Jh0JjUB+t+ZJ3/AJlyYZmxwNRjQP1KgnE3RIgWFmZoh5LVC6Y3KS
+         AxPBYK7LGndUmvQa8Qu1WLUhPdadkRdUtMCcXE9XRE2Hw9lRW0s+v5ze6XAgOUeXcxse
+         2Ohg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767197999; x=1767802799;
+        d=1e100.net; s=20230601; t=1767198055; x=1767802855;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=68Auck60GyYj13jsQrKu1d0pmyBuLZkKakUCDN+kvEQ=;
-        b=sS2578X0i2WPK8c5wV8cHwBsdfkJfoOGHahnnPBzlrJeca97RbDkXDOhoF2a4N4mBk
-         c8GxPQ98g2ptMpNMf6J5rDj2Vl2WB7cYFYHGxbaO5q8yNjIW/euGQOt+dkP/lXG3UzI8
-         sWFD9hKa1/RYjMNHy86W+6RktSNu2/vhk+zB7YgafsWagouRO7NEIQRojrAl8x7XgPjZ
-         CCYopIhmsQvWuwRfrId/JcylHVL8pVmIhBhScjoVeOZ16uyF3MDHrFniBABIrs2j5ujY
-         oH/o9Kgb6sOKr8g00rlzg5TNwqqjsdQ7EBMmoh1ZB0VkpCA5YWnDQVXUOBl9YBZmIJx7
-         V96A==
-X-Forwarded-Encrypted: i=1; AJvYcCXkzYIcghMwJBUjWLga4j8Pd3LS1Rl9uRVTD71DAliJcBnCVhP54mNasmKd+GTNooZMh28jxg8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzBCRBA7KzJlNv3DhmNFVKHjnCoAwYAS7I97FnIDpsFEVMgVxdW
-	trsK4w6ROz0TB7a/eU2QH4I+QLMwUPKEpHDZRkz16yjH+plzFTxnrQK1KuQw3Moc0XJc7C6E8cP
-	CNBk0nY/f+TjIGUHgW3jD7oJlsKtAAX7DSphfpIwfM/MrP4mRJSfAlC0Ciw8TnvcG
-X-Gm-Gg: AY/fxX6WRG5R6Uu4zY2vYAWTK9UH9sbyFvaZxV3acWk3m6mJrZV+qCL4ft33oLgENAa
-	98UdoAWUgy7jCd+9Oq+2rMc86GHCvKoXULY3tbn+oMPoHzV0LGLlTgVsuNZWS4FQW0znqG9d7KS
-	+VssjUKIOvP6bJgvuYtBeu7DeQzsHGAxJLhDC3GXl4m7nir3KhL3YR1Piee3DOWKZlMnCAyKNsy
-	KCbFKaLYzKYCCMEfcxGl/Wq3PiuVWdQ4wCRs02RZkwoXkJ7vb3+Ny/rwXeHOL4diw84K0ngW853
-	NcFc7E528ppB3sDsYwBjvjkWseO/RhzV5iI2n5vJ+e8dnX9HFk5zRfejdAxMrj1VlP3jFadPc0O
-	fh02RgVCDirfhLtW4eIweSMpJUMm065PVexMXsOcgtohD8fS0UGoqaq3hi8/xrKESBODgM0lCNQ
-	4Olw1NQdZPB0iA48g0eiS4Dqo=
-X-Received: by 2002:a05:622a:510:b0:4f1:c1d5:e37e with SMTP id d75a77b69052e-4f35f2b5da0mr569786101cf.0.1767197998979;
-        Wed, 31 Dec 2025 08:19:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHTdCBy+pVg+IDVoeUL7VU7D/QmJWesvdotmIF1p1sLqgL4Z+uXs6v2Khhhh/si8HOFeLlgxQ==
-X-Received: by 2002:a05:622a:510:b0:4f1:c1d5:e37e with SMTP id d75a77b69052e-4f35f2b5da0mr569785601cf.0.1767197998547;
-        Wed, 31 Dec 2025 08:19:58 -0800 (PST)
+        bh=GCtRj0kGJkzqJqbBi+nzUzz3hAt/gdZ19OL7R78+TBg=;
+        b=bhmwjkdre1Ggp9+Bd/YCWr1PNsoAoPAQ7IhxQUqXchJJTBNPjQC74OVgU7jfVT8Mud
+         1Fh1M4vTFoGDaEaGavLvDjrqqfr3T5eENYAntiyct65x4E7V0LJ6nZ1to6aBuFEmV8eG
+         YBr6I6as34ungwGFPoXI1Q120atu++soOX5vghpmiIzCoEKQQCaui+B5cSnFbIxvo1xW
+         uAUlWUnCR6qf9fBqYaTGn07VWH1El6JNPvhRN6IPSvTAE9W+bam8DUWtA5dnNd1hNaT0
+         pMUfJBC+LSa/swEKU36/wNg8fug+Y1gLo5Sk39xl0voECt93FJ1Q0sRzCyNdZivm4W5G
+         dJOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUavQOADJSndbHGFkNPZXu457tO0QgL5IAXjjrujBsUHYU5J11dtHm/cT7tUmoumQRGTgoeAIQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzZZ78GxZJbX38WAdFjyPRSK/9OmrAcd1WizXF5QS7nNP6Bl9ne
+	ndQWudWkM943QJ1+5VW3b2rBOOtKEooDaA76z7RO1qO/9D/tFHd/wls392mXrD+n3Rk4ugLSJbf
+	0dU7JDotC/1mA2qj9sZ4T+E5fAoHZcGyraGVA5fV2/mlwBCmzn8aVVQaajD0gkrIy
+X-Gm-Gg: AY/fxX5C+NK7XXStZiIcwtUWFVVe6i9pkeVGtNPROtsb6Vb4hp7uI0JJXkdnoU5nLJd
+	pfsFA1HRWM+C6uwhUy51mOE4CxP3GvprGjftlUV0dVR8yEzHk9DUy6X2GHr+2hoFA17bA2pVEYK
+	qhzZgcHeh68poBk/gv65TCEsgtpx8y2u100p72D19ZZAd/tcylni8dVgSw6A7nST3fKu/EBPIQX
+	778Qsffbnkfjd2VRIxIuC8vTvlbpXgRPtyP+j8Znj9t6nMRLaS8AJz3I6WfvaMhYKJUA+Jcj56I
+	pp7oXSr/RuSgIJiCM8j88ojFOwDB2QncIJ0SJu6AJIKsAHWzixIMMg8yDbvmsxtOE/M6k8iA0wc
+	BF4AIhwUU2Kz0Id7hqWlLD3CNbYKYz8tphgceuwxExLDzFmHYVMjEeT09SllVbxXPA8E0hRZrYO
+	aXBmv4PKq7GSf+24H0ZNwcPDc=
+X-Received: by 2002:a05:622a:4c15:b0:4f3:59a7:67b3 with SMTP id d75a77b69052e-4f4abcf0be2mr535752971cf.20.1767198055390;
+        Wed, 31 Dec 2025 08:20:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHV93a2/ytBr0yG7s3l17noCqyNn3HiIII00axJsk7y5AoZm/pGqNYSP6VR1gOdPsz+SL1V2A==
+X-Received: by 2002:a05:622a:4c15:b0:4f3:59a7:67b3 with SMTP id d75a77b69052e-4f4abcf0be2mr535752671cf.20.1767198054918;
+        Wed, 31 Dec 2025 08:20:54 -0800 (PST)
 Received: from umbar.lan (2001-14ba-a073-af00-264b-feff-fe8b-be8a.rev.dnainternet.fi. [2001:14ba:a073:af00:264b:feff:fe8b:be8a])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59a18620337sm10855511e87.86.2025.12.31.08.19.57
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59a186282ecsm11179301e87.94.2025.12.31.08.20.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Dec 2025 08:19:57 -0800 (PST)
-Date: Wed, 31 Dec 2025 18:19:55 +0200
+        Wed, 31 Dec 2025 08:20:54 -0800 (PST)
+Date: Wed, 31 Dec 2025 18:20:52 +0200
 From: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 To: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -108,42 +108,43 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
         linux-bluetooth@vger.kernel.org, linux-wireless@vger.kernel.org,
         ath10k@lists.infradead.org, linux-pm@vger.kernel.org,
         Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 08/14] arm64: dts: qcom: sdm845-db845c: specify power for
- WiFi CH1
-Message-ID: <brzdqbu3uiy3gd5a2uyzcgx24wvuhjrrs3fs5b4qbnj5jvmra3@rfbiy5kgwlbn>
+Subject: Re: [PATCH 12/14] arm64: dts: qcom: sda660-ifc6560: describe WiFi/BT
+ properly
+Message-ID: <fk75wduux3dilfx32mlufx7alz7cbz2xa3s5ubdpyosd2t74yh@7x7q7yhogmne>
 References: <20251231-wcn3990-pwrctl-v1-0-1ff4d6028ad5@oss.qualcomm.com>
- <20251231-wcn3990-pwrctl-v1-8-1ff4d6028ad5@oss.qualcomm.com>
- <ab7d6780-4328-4c77-9133-402dd1c4fcaa@oss.qualcomm.com>
+ <20251231-wcn3990-pwrctl-v1-12-1ff4d6028ad5@oss.qualcomm.com>
+ <ed3e9128-cf11-4ba7-a7f5-cac2c537c2e3@oss.qualcomm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ab7d6780-4328-4c77-9133-402dd1c4fcaa@oss.qualcomm.com>
-X-Proofpoint-GUID: I7XCZR4Wz77QRUFPvUrz1DYrO3l1nHo-
-X-Proofpoint-ORIG-GUID: I7XCZR4Wz77QRUFPvUrz1DYrO3l1nHo-
-X-Authority-Analysis: v=2.4 cv=dMKrWeZb c=1 sm=1 tr=0 ts=69554d2f cx=c_pps
- a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
+In-Reply-To: <ed3e9128-cf11-4ba7-a7f5-cac2c537c2e3@oss.qualcomm.com>
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjMxMDE0MyBTYWx0ZWRfX/kAuL/8wDCyp
+ sFYSSSwFfmYK20/M8hR6Zf/2rGE0SknpFsTfHuSod1y+asum3hYa2wNIp/lPGltVyNqpacyct3l
+ WVvfU8o8Fl+c0tM9aaH37r7Qr6a3hbzosirOlfDZyHHPbWQcwj+VMm375ujHcac+MIhWPQA8eZn
+ jXZawDmwptKCI4ZfeO3IjPKkBZD+E3z8WdYokKcI1kmHHH+LrqBe1HDS8xx55OC9LFrEvmBPR2W
+ /NLXbiGNvZc0KPe45Wn9uwGCQdtwTzna5KtmY6Y0DyJc9IqO4GZdwAWCOI1e/Xl1vGAhfjhL9BU
+ 2sATW0HFx+74kf2iUD94mA4dTDtKB34MMLEwtK0UQCdlbTH5RMMd+00YJp85+5/FfxgJNuxXcQu
+ hJftSZNy/3EtCKK7dFnci1cMkqufWYePBShBEZHUiDnLetvTVQXNelTu5CzPSoFH1RyOXpovA22
+ 57pQhe9E6C5iBLsYlZA==
+X-Authority-Analysis: v=2.4 cv=JdOxbEKV c=1 sm=1 tr=0 ts=69554d68 cx=c_pps
+ a=JbAStetqSzwMeJznSMzCyw==:117 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
  a=wP3pNCr1ah4A:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=EUspDBNiAAAA:8 a=VsWXYa84w75D6ua-j4wA:9 a=CjuIK1q_8ugA:10
- a=dawVfQjAaf238kedN5IG:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjMxMDE0MyBTYWx0ZWRfX5epcYbavNEoG
- INW9jDW58gLQYQvGFbnKC9g2sqtLz/zrCGzByL+BdJhmBTfKI++zG1lnPRVYt5gQHvaCgj0zc5e
- tKBwr1AyIRfdBZpM5GGLdGA/qtrmARTeTas9wYD/1YUijdzSv9om6yDR1Z8sYg75w+xoS+PsyHR
- TgrVlZeYn5n1nT2C0zlaP46R1cGb1BKZRtqmVAhRMNR1edyeSBZgfyBrVyaBSyIbjg71PJvq0OK
- WLLfBmEUyRShCfiJ58SX3CP2PuxSiWICKggUFKZAcafV6NpuTMTNDTBhXg08YiNK9nBwjhwHl7Y
- HY9yvLcCR9CiDnFVp49q91PZfwKJ9yNTMC2NrQQ0nw4NtIjlcbgRnI+mdtsRSyMrOVSzXDgkBtf
- W5mEIi6dYw6zIwLBsLXiGeRK4oq6v/mJev14s7bMVmO1C7yGE1eUrVqrD6+8zpP4FuyBWpFmjBf
- 7pzaYMdY5mGM9I07HJg==
+ a=EUspDBNiAAAA:8 a=YM-ir784Kfn1-1I9OqQA:9 a=CjuIK1q_8ugA:10
+ a=uxP6HrT_eTzRwkO_Te1X:22
+X-Proofpoint-GUID: L4rQ1P_HH9ebgA4VRMTdCCIfGfzwrH6g
+X-Proofpoint-ORIG-GUID: L4rQ1P_HH9ebgA4VRMTdCCIfGfzwrH6g
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2025-12-31_05,2025-12-31_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 lowpriorityscore=0 suspectscore=0 spamscore=0 malwarescore=0
- impostorscore=0 adultscore=0 phishscore=0 priorityscore=1501 bulkscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2512120000 definitions=main-2512310143
+ suspectscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2512120000
+ definitions=main-2512310143
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251231_082001_470913_A8F3AC17 
-X-CRM114-Status: GOOD (  22.39  )
+X-CRM114-CacheID: sfid-20251231_082057_204764_07A72C0A 
+X-CRM114-Status: GOOD (  15.60  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -158,42 +159,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Dec 31, 2025 at 01:09:49PM +0100, Konrad Dybcio wrote:
-> On 12/31/25 12:35 AM, Dmitry Baryshkov wrote:
-> > Specify power supply for the second chain / antenna output of the
-> > onboard WiFi chip.
+On Wed, Dec 31, 2025 at 01:19:23PM +0100, Konrad Dybcio wrote:
+> On 12/31/25 12:36 AM, Dmitry Baryshkov wrote:
+> > The onboard WiFi / BT device, WCN3990, has a simple on-chip PMU, which
+> > further spreads generated voltage. Describe the PMU in the device tree.
 > > 
-> > Fixes: 3f72e2d3e682 ("arm64: dts: qcom: Add Dragonboard 845c")
 > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 > > ---
 > 
-> I don't have schematics nearby, but jfyi downstream doesn't do that
+> [...]
+> 
+> > +&pm660_gpios {
+> > +	sw_ctrl_default: sw-ctrl-default-state {
+> > +		pins = "gpio5";
+> > +		function = "normal";
+> > +
+> > +		input-enable;
+> > +		bias-pull-down;
+> 
+> Ideally
+> 
+> func
+> (no \n)
+> bias-pull-down
+> input-enable
 
-I checked in the schematics, it is L23A.
+I'll try remembering this for the next iteration.
 
 > 
-> >  arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> > index ad283a79bcdb..5118b776a9bb 100644
-> > --- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> > +++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> > @@ -379,6 +379,12 @@ vreg_l21a_2p95: ldo21 {
-> >  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> >  		};
-> >  
-> > +		vreg_l23a_3p3: ldo23 {
-> > +			regulator-min-microvolt = <3300000>;
-> > +			regulator-max-microvolt = <3312000>;
+> anyway:
 > 
-> Do we benefit from the 0.012V spread?
-> 
-> (i.e. is there anything else on this rail?)
-
-I must admt jere, I just copied defition of the ch0 regulator. I think,
-they should be the same.
-
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
 > 
 > Konrad
 
