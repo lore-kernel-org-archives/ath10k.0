@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16807E9410B
-	for <ath10k@archiver.kernel.org>; Fri,  2 Jan 2026 10:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00247FA3726
+	for <ath10k@archiver.kernel.org>; Fri,  2 Jan 2026 10:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LEyHPqFv3DA6YQvHPfOh/cYjkTzRnhwKg+vXWLIIHCI=; b=FjwLgt5rKM7o7+w7k5yDWcD9s1
-	dhIbQsCE8+l6QNk6OfgW/ZPreQEajVvOYfvfHuSHXXj7UEI92UclE8JC+lzq6DrDf5Ax4XS58GE+G
-	TAJFbwC11czwj4z9znc9J2ir7pGBat5YTbj3AsBM6wNB+BQ+K7svNaiAMBe4owdIb5YJS41LrDFST
-	Etr+bVrFeq3QXvmNrhkJTrXgeaCcTOgV+MHua0ISDgbVB/aBkNhfQCD9tBhK3TJGTH+Tfqmx3H5tm
-	hLmBVjR9fq1nxAPZHp4dbiFFDy9N+FaM3MCEAOunGuIYZGSBhXCO6k4HvwL9P/q26V1E4X4byIZbs
-	jnegkjOw==;
+	bh=mhZD+26yEtIqCTAfVl9iT6ZYu15zs4sSgg8F7ighC/4=; b=v0JAdMSK6tIi6M/2eY4z/fZ7mx
+	KIc0Jw20FGtVh09et7JDelWUuKTOxsuhsYYwbsN3H4gQJdD+5zmRVVVXM8+jtCUGOxpiJk4mu4ion
+	l+iriDawhLEn+Fbt7vGtHKpAKIJxO3KwdNKFUXN2W5++C68xdOsR5HJwDUPMQwtrHGZLX4gC93I3V
+	JKbzm5TyHN3wUJ2FgDktwCviB+fE5TIW1z2MZcA1k6ObJGjIN3/SqF/swp5uN+xMCYGeBHyLFI7tr
+	ng9+KClxPBxzY5MuZCj3avdZbb8U1X6/GCr6QaAI0PoJns5H1AA1lK42M35tjWwv8W8cKfwYPbCjq
+	sC/beW1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vbclL-000000085W3-3HtW;
-	Fri, 02 Jan 2026 10:52:07 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vbclp-000000085cV-0VIj;
+	Fri, 02 Jan 2026 10:52:37 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vbclK-000000085Vh-0CTV
+	id 1vbcln-000000085bj-0zv2
 	for ath10k@lists.infradead.org;
-	Fri, 02 Jan 2026 10:52:06 +0000
+	Fri, 02 Jan 2026 10:52:36 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 21E0560126
-	for <ath10k@lists.infradead.org>; Fri,  2 Jan 2026 10:52:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBC5DC116B1
-	for <ath10k@lists.infradead.org>; Fri,  2 Jan 2026 10:52:04 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 837CD43DB8
+	for <ath10k@lists.infradead.org>; Fri,  2 Jan 2026 10:52:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63A09C116B1
+	for <ath10k@lists.infradead.org>; Fri,  2 Jan 2026 10:52:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767351124;
-	bh=xXAn347RsD6hgQZouoWZ55FlGcQUQLUmECm4fuYlljE=;
+	s=k20201202; t=1767351154;
+	bh=mhZD+26yEtIqCTAfVl9iT6ZYu15zs4sSgg8F7ighC/4=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=cMcF12wgtYhlzl3OOC513tR9kI9YefWSLw6YLI3AnXUMeelHrOOT4o+H0j0sNKARv
-	 Zs1/81nmx3Wl6bc+FmsVPDXOLJSNr6OfB8t2kkxf5FkgzepQ2iBV1MizSmnuaO7ePC
-	 RQthPeORjpyl49BIEsKNXPi+P7NAqjbOgQz5ugkqFLk/6l4wyphx1FmGJmTQRYH5Lk
-	 +Fk973WN8BwfCra57/+VnE5j+0UHmcYO7HWfIy2hOUjaLtMxQTOOQE+ETLo7ZT7ICW
-	 yxvxwhGJknjpsm3uNDgUAnOP7ywqgZOI+5/ZZhHP4E/Z/2iiSd+nWp/jBNm2pUE79S
-	 SIZRiw6uk26ww==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-37bb8bef4cdso114301901fa.3
-        for <ath10k@lists.infradead.org>; Fri, 02 Jan 2026 02:52:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUx6Z47wkMr0xvbB9nnTuwFOg64wOyuEWvxA7zy/Jvj5InFx8WekKGJvgyUZI6cpgDc+Hk7AJY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzZqrxM14nQzpw1aj3f8FKg8kIL4I1Gt1puL06reOcBbFFCwWJW
-	lFIHRLfDdHstbwkzvuGnb6wt1BFzFSnTiYarXNeHV7DIFjR76HRKA1oLLD7DMnpVGuPjhsRWQxo
-	wZmYVYOb+RRP8sJ7+6Jc2iLWyPF2ua6xVuEuicAxWFQ==
-X-Google-Smtp-Source: AGHT+IGEB230wg4WPQ884wIw4d+xKW3xm3mX9tpow6yKELEID6v10VfXcSi9Pm/TOi4IGufi44ofR27WYzi/tTVG1Cg=
-X-Received: by 2002:a05:651c:3244:b0:37f:cc5b:de41 with SMTP id
- 38308e7fff4ca-3812158ffddmr117742161fa.9.1767351123504; Fri, 02 Jan 2026
- 02:52:03 -0800 (PST)
+	b=InwP9xW1I1ni08BlWGWK+GAPLve+MXWdoKdtr18MdtM9bF83RPLYXTL/LO5wfhsVV
+	 2FVpYHiaVkLTWfu2SFY0Zu6nm4DP53mmoFHo2CIBJsJioSiCxZuN/G63RKPBz89sNO
+	 VygW9iZcIfUvCZqP4BLQd7aooFXJDLzM0upAXsjfDCkWv0pVimk/JKi2BAltZY6j3p
+	 oQJ0Fcbr124+NePC4LKGFpkKcPgUWjDCURZRYMBGQZMWjjGO/xdEtwZBbuxiAKT4P7
+	 FP14WjR4nZmHPP1h4pB6ValPFNTqHR+PcsTiPpqKsZc1hOj7VnOwtMeAnSEk9CeLW6
+	 Cd2yxy7XUDrUA==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-37fccf7035aso97182461fa.1
+        for <ath10k@lists.infradead.org>; Fri, 02 Jan 2026 02:52:34 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWemBolgmnfNJobt7DGEee1QA/LoJdrpcu+gv79pRKPtvezV4nv1t9VF9G4uVTXitFjISI6qGE=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzuqRcHax22LcAvhd8jNF8uTjxveVMwpaVZnPryQUG0CTnVnuDf
+	xcjckux4r8gFZL1qk9FGJCIZSwqgwYuaWjX5WfRett7l7ulF52TT+0eOg8jZVJKd4E3WOkG+W5F
+	ozPlvrA1W5feygWphCAHk1GpHaWuLZj6OXaHYuEGLIQ==
+X-Google-Smtp-Source: AGHT+IEkijWZVdRyZfarXVptLNdfZhckPE7YTk4yGXdpMC27+XXwuO9MbWOVBe2OQdvs7v7NIIGKVSPwU/N6XBL+2jQ=
+X-Received: by 2002:a05:651c:f16:b0:37b:b952:5e4 with SMTP id
+ 38308e7fff4ca-381216a3091mr116221171fa.43.1767351153062; Fri, 02 Jan 2026
+ 02:52:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20251231-wcn3990-pwrctl-v1-0-1ff4d6028ad5@oss.qualcomm.com> <20251231-wcn3990-pwrctl-v1-14-1ff4d6028ad5@oss.qualcomm.com>
-In-Reply-To: <20251231-wcn3990-pwrctl-v1-14-1ff4d6028ad5@oss.qualcomm.com>
+References: <20251231-wcn3990-pwrctl-v1-0-1ff4d6028ad5@oss.qualcomm.com> <20251231-wcn3990-pwrctl-v1-12-1ff4d6028ad5@oss.qualcomm.com>
+In-Reply-To: <20251231-wcn3990-pwrctl-v1-12-1ff4d6028ad5@oss.qualcomm.com>
 From: Bartosz Golaszewski <brgl@kernel.org>
-Date: Fri, 2 Jan 2026 11:51:51 +0100
-X-Gmail-Original-Message-ID: <CAMRc=MeT8PH+TXX9pYgqb3eo61zt0JqorRDSJV-LPNDmuwyYFQ@mail.gmail.com>
-X-Gm-Features: AQt7F2pouAlQJ-sMEsiHWRttM9wH4yG7LpdTIHvF2QWzScSglHBPWDDULB8nrvY
-Message-ID: <CAMRc=MeT8PH+TXX9pYgqb3eo61zt0JqorRDSJV-LPNDmuwyYFQ@mail.gmail.com>
-Subject: Re: [PATCH 14/14] arm64: dts: qcom: sm8150-hdk: describe WiFi/BT properly
+Date: Fri, 2 Jan 2026 11:52:21 +0100
+X-Gmail-Original-Message-ID: <CAMRc=Mc_EMHUAoZo5KhBGkwX4+ahpD6mp1T+C_snZ1OYwyPnkA@mail.gmail.com>
+X-Gm-Features: AQt7F2p_C5Mpx5B7tQglyUSRmxWjVo8OJ-K5UDM9nvA4aAjRO8UklT0vre9Z7fM
+Message-ID: <CAMRc=Mc_EMHUAoZo5KhBGkwX4+ahpD6mp1T+C_snZ1OYwyPnkA@mail.gmail.com>
+Subject: Re: [PATCH 12/14] arm64: dts: qcom: sda660-ifc6560: describe WiFi/BT properly
 To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
 	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
@@ -74,6 +74,10 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
 	linux-pm@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260102_025235_295075_AA09B286 
+X-CRM114-Status: UNSURE (   9.16  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,37 +95,8 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 On Wed, Dec 31, 2025 at 12:36=E2=80=AFAM Dmitry Baryshkov
 <dmitry.baryshkov@oss.qualcomm.com> wrote:
 >
-> Properly describe the PMU present as a part of the onboard WCN3998
-> WiFi/BT chip. Enable Bluetooth part of the chip too.
->
-> [    5.479978] Bluetooth: hci0: setting up wcn399x
-> [    5.633763] Bluetooth: hci0: QCA Product ID   :0x0000000a
-> [    5.645350] Bluetooth: hci0: QCA SOC Version  :0x40010224
-> [    5.650906] Bluetooth: hci0: QCA ROM Version  :0x00001001
-> [    5.665173] Bluetooth: hci0: QCA Patch Version:0x00006699
-> [    5.679356] Bluetooth: hci0: QCA controller version 0x02241001
-> [    5.691109] Bluetooth: hci0: QCA Downloading qca/crbtfw21.tlv
-> [    6.680102] Bluetooth: hci0: QCA Downloading qca/crnv21.bin
-> [    6.842948] Bluetooth: hci0: QCA setup on UART is completed
->
-> [   81.510709] ath10k_snoc 18800000.wifi: qmi chip_id 0x30224 chip_family=
- 0x4001 board_id 0x55 soc_id 0x40060000
-> [   81.521713] ath10k_snoc 18800000.wifi: qmi fw_version 0x32040163 fw_bu=
-ild_timestamp 2019-10-08 05:42 fw_build_id QC_IMAGE_VERSION_STRING=3DWLAN.H=
-L.3.2.0-00355-QCAHLSWMTPLZ-1
-> [   81.554143] ath10k_snoc 18800000.wifi: failed to fetch board data for =
-bus=3Dsnoc,qmi-board-id=3D55,qmi-chip-id=3D30224,variant=3DQualcomm_sm8150h=
-dk from ath10k/WCN3990/hw1.0/board-2.bin
-> [   85.467464] ath10k_snoc 18800000.wifi: wcn3990 hw1.0 target 0x00000008=
- chip_id 0x00000000 sub 0000:0000
-> [   85.478132] ath10k_snoc 18800000.wifi: kconfig debug 0 debugfs 0 traci=
-ng 0 dfs 0 testmode 0
-> [   85.487223] ath10k_snoc 18800000.wifi: firmware ver  api 5 features wo=
-wlan,mgmt-tx-by-reference,non-bmi crc32 b3d4b790
-> [   85.758168] ath10k_snoc 18800000.wifi: htt-ver 3.73 wmi-op 4 htt-op 3 =
-cal file max-sta 32 raw 0 hwcrypto 1
-> [   85.901630] ath10k_snoc 18800000.wifi: invalid MAC address; choosing r=
-andom
+> The onboard WiFi / BT device, WCN3990, has a simple on-chip PMU, which
+> further spreads generated voltage. Describe the PMU in the device tree.
 >
 > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 > ---
