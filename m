@@ -4,160 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DBA5CD042A
-	for <ath10k@archiver.kernel.org>; Tue,  6 Jan 2026 01:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52D72CD042A
+	for <ath10k@archiver.kernel.org>; Tue,  6 Jan 2026 02:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JO4Pi21OVHijpMNbTgyCYWdKmobPiE/rHbiYvQZIfKM=; b=dQWVPneBL7IpnFQm6PGcZJEosw
-	X4fMRnO4sW8aQlNr3U0wev1kY7Oj5OpD9BXRK0Z0jBS9TY1VZXocaHYLH4zoiluFca+GGt9cmqN9+
-	kisEWbsZI/edQo2QlJrkPGcSBaq9lNO4XPetgo2uefIr0BL3qJU/lwRsNzrXdbhGc2+TGJm6v2zm4
-	Lf2oK+iyRQGx3xWh9RyvQp3uL3rC/6+12PuYy9+vKoB4otn403N6Tz3hkS5u0l/jQ8BK+mPa8wWDA
-	HE3yA26ooLrYlalTSpeOijWpTWoSZWKuhPQyPjeyJhHdV51BY4AdnwRJus6v6njxv//lYrS0QE++e
-	2t8+zK7g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:From:Subject:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=fqBVlJP8W0Ul/gyJXZHa7K8iOJjfBhqduGh/v2kAtHM=; b=5C2horEdaxYzuVIiL7PXsHTbX7
+	8jRosNdCygRE5oGgC8D1KKBHC/BYvb23eJigf0uT2aYp35vptuQzGxKp+WUqvHilbGLR1TRXUt8h+
+	PZacBy2Xjmm7Z5o9qzI24+nPchggTAxZwQA2YkA+gJcOV48MFnrVB8AIukPCsYRTFdS4ZBv9Awmgi
+	NDI4h0XA3ipLVAE87CCOM/fDvPPxTVDW700PaZHhWeaQhg2gcnccj7Mlq9ZUkxOid+vvtLTHMlyYk
+	UgyOZNRx5xFiS7FVmPxMd8RmgTy1yLEgAMX6kpRmP+yImVqdMyeQ0dyHBRVkTJu7gaDkORivY8B7k
+	y4PvChgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcvSe-0000000CI4v-0dTf;
-	Tue, 06 Jan 2026 01:02:12 +0000
+	id 1vcwZP-0000000CLBG-1Ux9;
+	Tue, 06 Jan 2026 02:13:15 +0000
 Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcvSL-0000000CHwJ-1dRG
+	id 1vcwZL-0000000CL9h-2gE0
 	for ath10k@lists.infradead.org;
-	Tue, 06 Jan 2026 01:02:10 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6060nbiG2746344
-	for <ath10k@lists.infradead.org>; Tue, 6 Jan 2026 01:01:52 GMT
+	Tue, 06 Jan 2026 02:13:13 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6060niXD2528536
+	for <ath10k@lists.infradead.org>; Tue, 6 Jan 2026 02:13:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	JO4Pi21OVHijpMNbTgyCYWdKmobPiE/rHbiYvQZIfKM=; b=LNjFSgZub+8hN4ZM
-	oZBHpZYo/6RJPJ634S+7e7ATt1GUBrOKOkAQ1dp9D1+tSSMGs3lbJfsd1W+w1uwj
-	g9c8IyKAL2zU/zPkzbcKxNHf7xOztIerRw2FIz3WjCh4/tpMHIHLI15OcQtsjzDP
-	k/nhrq6vObV8Mhy7C0lZ+mFrdOO0u/6wgmjAMZmZbS4tHrIBtSCdqjlqxvq6ExT8
-	8mJF20NydW3iE3klTokDZUWqoHfpE1jHJnP0rPpXnqp2sD11mX2KFLvUyEAlPZzb
-	c/zhj7+K0auhBmBZY+LrcGYv3ypdGKqYOC/gHi9oMflOwTE5ApOccCEWVdvmILzA
-	69T/jA==
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bgg9yschy-1
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=fqBVlJP8W0Ul/gyJXZHa7K
+	8iOJjfBhqduGh/v2kAtHM=; b=bs6X94UwB2x2CjzU1MTqE7iFoxFIai7Y6nRVob
+	tg7yBDZbjG4AvPmuu8czico0S6f7u+SodB5BVyGP0maIwWKxCnmuyIaq8xMXNf5W
+	/JvCI/epX+cwPR6mKBS7jvxmN2IyFdgoFNiABzlaRWrdbEPOitUdlhptUeI10bw8
+	fBH9ImcgNO97Z8YyZsDSRDu+nqro693DnHrskZJYj9yYsDTXaYSXfrTYH9KS63N0
+	sslOvku80d5ZbhXvZO6fpoHG/NppBo56DyN8n0/GdPqDdqz1KskJd81+V/3GJfPK
+	4FfAGh/lfrozmQChLqISGMI8IMOMvVBuuQIS2MktwvMcngXg==
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bgaus2gk7-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Tue, 06 Jan 2026 01:01:52 +0000 (GMT)
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4ee09211413so12108741cf.2
-        for <ath10k@lists.infradead.org>; Mon, 05 Jan 2026 17:01:52 -0800 (PST)
+	for <ath10k@lists.infradead.org>; Tue, 06 Jan 2026 02:13:09 +0000 (GMT)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-34eff656256so1230851a91.2
+        for <ath10k@lists.infradead.org>; Mon, 05 Jan 2026 18:13:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1767661311; x=1768266111; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JO4Pi21OVHijpMNbTgyCYWdKmobPiE/rHbiYvQZIfKM=;
-        b=cyQeG09Wj/NeezByiVIsfDBynZ4OnRaJyx4c+I+Qz0fcSDkGRkEvCn7Du48AFoTFGr
-         lVnXGhYT0LVRL5CnEOGCqZfJmSzspLUloBdAZVq6hIOcIt+xKjMUImd+QcTRlq9KXqE/
-         bBewtWecHQYqTxPyl74t2VdPTgN8BD4RRtz7rgkY2BDqEgoLjaIco7kGskqp6REVATXt
-         C8g8RfBa7U2dkFYCO1KhtGArKyF68YviQOIhLNyiiST7RY35sbBOy/+h3Ydv4S58xUty
-         VOTziH1FDdTyFSjbQ8lxuMpKWZgJjkT/mBOHzVDi9B3kH76mKzs4OOrlyjoXub3uMf24
-         BhSQ==
+        d=oss.qualcomm.com; s=google; t=1767665588; x=1768270388; darn=lists.infradead.org;
+        h=content-transfer-encoding:from:content-language:subject:cc:to
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fqBVlJP8W0Ul/gyJXZHa7K8iOJjfBhqduGh/v2kAtHM=;
+        b=eKq9+1qm1TSF3l2dDgyBH9EPRpk552902g9fKl5WJR/a2bsck9pqY30qO4JLCpyhoV
+         0gQyy1Nvn2db9bYbLPfeU1+9Y1E/5Ml2ZiOr1Fsz3YjLUA0a6y2FMja2D5fZ8/qEjOiW
+         X9iYUlWvk7gDl56Gv2K5vshIRnhCJ6O1vA3lx8pNKXXEugrR8pVTFIhuFX3oVCR1rUmX
+         YFU4Xnipfe8veXBfkh2KeqBCF/GxPkFrtaxlWDUIiiMBmi5oE9XW2row8gFAdFUDyhuX
+         DBieZWTEPIiOc+h3cfyDorJIilGrGRgA1FtfVXjsueKUtW1U1QQMkLn+YoZjRiWPkURN
+         tAoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767661311; x=1768266111;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=JO4Pi21OVHijpMNbTgyCYWdKmobPiE/rHbiYvQZIfKM=;
-        b=tQHM8vwn76FJCIvvJP03z0X/ec40CoeIl2iKMKnJTJHLsKVY7mOpwmmnFSyqRSJ3Rc
-         0v74pjsQ2IkPYHvpY9KCoxtmUht3xBzks3OyWZrOO27V69z2HyLOBEow2I6IpIZXvTEb
-         lXlx9GP45RX+3F7sE3e8iQ4ZHTa94ZzZwWEXQpphMGGnV8uMKzttslxUD7H5/0K2bCyU
-         HTnhupnUo8OFLgauEBwVrq/TwAYGN4QTBuOwr/FQPwByPdWM7/kJAELl7sqY38uGTonm
-         Ve+IB01aGhdVv0iorr98N9VgolkX9kCDFxyJAMlSgi3SpgbqZrErxx2zzBcmYfnqWt12
-         l2+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXj+47yZPw9j6uBOHYLIl+FWrYOZWHVqpNgVIElhdb2cCjYcF3+7c/HvGXr4Dv1yZ/78uZ+KDY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzL+4ulrTva4tLOg68tC0H04u8UzZtEEF2IUoaNuGDvM16ao0Ac
-	vTPxRbKRXHEt/QP+GsCAW/vP8MSgk7Grg+8Bod4SfwfhWM+mjiF4S8NJs4cK3cO8t9EcBVzuteR
-	xgbI8Nz4Gdjso2GNKWmdp1uVJegc8FOdsV58c6mTn4s5T2G9ZWsSb5j/8yVuMbVwP
-X-Gm-Gg: AY/fxX6pj60GXcW7+LK2FU1SnaDYM8v39NAPjnebEzSy47ancjQhsOx8D8HxkA1wtYl
-	O4YOHc9yXlcPT1TO9RhmEsQReVimiGoZLhZybu9D5GHSQVur5kBsEGZq/gsmO7hhBoB8IihZ2ja
-	9qbzzQ4sjUgur4Q6ue1hNOZT0plCNtepHw0IJjRpOGSciRSoK1/mN3gYVQ30ftAdP7p6chdfvFj
-	Ex3kEqMDRiVoOYA/zU8ZLGazDq2CiS4hCzzYjapa1OB29DVYoiXPrlxe8ZxSvH1vPYtFyaxwPO0
-	5eDDk8q8V/pEEdi59wEZwvRz4yhlUHlFnvLYeZuNyHRsNWp5/GxPDQSqkhvTHMnDxh4IxKzrByR
-	FT6AEDyrRcL3rZ1UYzPbn/bXoGrfvuQqZtsZv18SPl49hQ1V90P4K/zLOb9uqJvaDXxIfwlg7ki
-	njTrwAFIkOoe2VyoDfys3wIGs=
-X-Received: by 2002:a05:622a:1b0e:b0:4f1:bdb1:eac7 with SMTP id d75a77b69052e-4ffa77d90b5mr19653311cf.55.1767661311315;
-        Mon, 05 Jan 2026 17:01:51 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH2rfvBff9pcaENAxSLwBaEsGSjWXENSQaskdKeKTaq/4/BVsPJY11d5lKCuvFHjQ51JK1SUw==
-X-Received: by 2002:a05:622a:1b0e:b0:4f1:bdb1:eac7 with SMTP id d75a77b69052e-4ffa77d90b5mr19652881cf.55.1767661310654;
-        Mon, 05 Jan 2026 17:01:50 -0800 (PST)
-Received: from umbar.lan (2001-14ba-a073-af00-264b-feff-fe8b-be8a.rev.dnainternet.fi. [2001:14ba:a073:af00:264b:feff:fe8b:be8a])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59b65cea8b1sm181082e87.6.2026.01.05.17.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 17:01:49 -0800 (PST)
-From: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Date: Tue, 06 Jan 2026 03:01:24 +0200
-Subject: [PATCH v2 14/14] arm64: dts: qcom: sm8150-hdk: describe WiFi/BT
- properly
+        d=1e100.net; s=20230601; t=1767665588; x=1768270388;
+        h=content-transfer-encoding:from:content-language:subject:cc:to
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fqBVlJP8W0Ul/gyJXZHa7K8iOJjfBhqduGh/v2kAtHM=;
+        b=jrDqhy568v31+hLcRMYjwWrZXlezpZKCAy5Ouk1wFQyD7Z2btTz9kYdeuUJp2lJ0Wz
+         cULwV4YLo2S7si4ltmQIUery+8+tQKnnzVL/684OA1aTUzW0Jt6zCwRGEeh+ZPXoGdVC
+         rXC13fGEvgdfK6b1ObFZQxMyMM0CHh1Yyo+bpImjpz4hocZnPnzVnZy/nhD8oXVmVRQ3
+         J/b/W6z2RGhcfboVVY+aH3j8HqXnJUV9fo3rCCYxpZOWmKXAcMkoMRpCp5weFuIXF27Z
+         OIoaTyinernFB2gMlS45m2GAAon7jzl45MNVc3OFhN0tyo3z/i6YS6pwn7wIZplUlVqr
+         wCig==
+X-Gm-Message-State: AOJu0Ywikirs4d0qQXzTy9v4DDmAxzF0fyyb0ekjfvDgCruBIK4Cbi+l
+	5hOa+Co+SJW/k62oc4aB+pF5JWhmrfruM73DCetGdIUziOkbN5lOyVfbAvlAyzS4iSOjWZ2r4Z5
+	WMMl5uJoVYeU3aBGSBTitDtDp8L6Ri86KsQ5sNCN7zNDJ8mZS490bDva9viYnixkv
+X-Gm-Gg: AY/fxX7P3XFm6Nyxxqot8+CnM6HjkBY+TmbCXrpMffKPI2nlnMGCB93zxqwxH9WpP2q
+	4MAZ5WFEZrwYG89KECmt82OreyGRbd0U08H1LeyXiOuzrZEJqaoWg8cZLR89ns1+4QSBYn94L5H
+	KKRieAh/DaUZW3iMiAkzwXhK1Y1Zir7/XtvkG4dKhI7LC+OCZ7EC/grC/wzR0g99winrgb8IfW3
+	GmXI2tOmgNiIj49baBkOOnFfpFj24QC0SYF2dVU2PnKjUNV01VlAGBzviTPOol5eJ0epYO77wqb
+	nTFPU/q1IF7fkOIi+256sHfzvhtaR+GSH6rnjcZ2lORxmgPYOylv6DkKe3DDQDIvEFghMXczUVT
+	LJ5BjZhazlirzX0oR3URZfKztsa6Gi9Y+8bwyXRUVIdBspw==
+X-Received: by 2002:a05:7022:6ba1:b0:11b:1cae:a0fa with SMTP id a92af1059eb24-121f18278e4mr1692583c88.0.1767665588173;
+        Mon, 05 Jan 2026 18:13:08 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFPLYS1SUQRcFX+9WGJoDBCE7WPO/nyvU53n8et8MAyQsi8zio7Bmzx5LEl7PwxE1A8poWzyw==
+X-Received: by 2002:a05:7022:6ba1:b0:11b:1cae:a0fa with SMTP id a92af1059eb24-121f18278e4mr1692553c88.0.1767665587451;
+        Mon, 05 Jan 2026 18:13:07 -0800 (PST)
+Received: from [10.81.91.45] (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121f243ed62sm1755216c88.5.2026.01.05.18.13.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jan 2026 18:13:07 -0800 (PST)
+Message-ID: <4ba3aecf-5194-48e3-a112-31da3a8646aa@oss.qualcomm.com>
+Date: Mon, 5 Jan 2026 18:13:06 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+To: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>
+Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, jjohnson@kernel.org
+Subject: pull-request: ath-next-20260105
+Content-Language: en-US
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260106-wcn3990-pwrctl-v2-14-0386204328be@oss.qualcomm.com>
-References: <20260106-wcn3990-pwrctl-v2-0-0386204328be@oss.qualcomm.com>
-In-Reply-To: <20260106-wcn3990-pwrctl-v2-0-0386204328be@oss.qualcomm.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bartosz Golaszewski <brgl@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Jeff Johnson <jjohnson@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-pm@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
-        Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5744;
- i=dmitry.baryshkov@oss.qualcomm.com; h=from:subject:message-id;
- bh=q9y+Dif9HlWdcnmMDM5hAVRBaWF08BPAccXmvU/QVEU=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBpXF7a6K+/f+otdXC4XFp/otfrE7F6zDF5dXqGY
- p3jobuYaHqJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCaVxe2gAKCRCLPIo+Aiko
- 1bHJCACjyBHBDSElbc7bbb1YtK2V27VbPAlZja5rFSb4UmSUGf4P+/bMIGmkzvWg7VhiwA4AfuW
- zWuGcoDN0a+9YDfIDmOt+OJ3lSpRGzwVdeGlD0lHMm+Mlj//6KiMwpznilDD/vT8m3FsZ6+G0re
- y3KdWUNWmSrYVVFmZecqidWodYLjSVCqbiOW4PDhYRkzQowyaqvQIvDwBKYCgeDY1tm/ml1mk/I
- 93200dHSJdLCidy+XZhi1tNb5DmG5avsiEnsfzMenn7iAR6PfbTg4CIRw71XFqvzzLb/CYWv/iZ
- VnLE/yCXgdBZaZVJU5gkoMhco6O2jM3H/uT41/Sk8jpCgx6B
-X-Developer-Key: i=dmitry.baryshkov@oss.qualcomm.com; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
-X-Authority-Analysis: v=2.4 cv=M89A6iws c=1 sm=1 tr=0 ts=695c5f00 cx=c_pps
- a=EVbN6Ke/fEF3bsl7X48z0g==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=vUbySO9Y5rIA:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=EUspDBNiAAAA:8 a=daeKR1c1ZtUuBhPExssA:9 a=QEXdDO2ut3YA:10
- a=a_PwQJl-kcHnX1M80qC6:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA2MDAwNyBTYWx0ZWRfX1GDRm5VN4wUy
- RXHlKjTfr/hL8ZWnBc6bQ5UbaIlfFRLZfKZRcBnHJrsEivWsH1NAdY45rOqH2kxgpDTcjEP28SF
- AlBd8Lt1uOwArG0JijPGUYew89tic48e8PdfZLO955dgpvo8GB0FOG195ID83DbfXQ1ZGqbG08K
- dmuwBChoRFSl4TPbZaUMQQHDYTvpC7nz2Rql1AlV4iQlv79D5WaSVeWuBUpwAr0JX0R4n1qFdhY
- R025xUg5LuWtxhz2BcRXSBHn2JwomKFbQs3uYLu6QhjtefkzT5/p8AJiXgvEdwBYNkzkfQeYa7t
- Fm2Vn6eI93lf/+A2tDa1HSJPkIeGckFvSuBjsub5yLhy1kQSRmzlZUar3ZEoGG/D/+zdDVU+DPr
- OXqiKrGBe59dCBEHP9kCBa8hafSRyO2F7WpFsvpd97BhnUfXlU5nlzEoXrO+ctI0oO4S5PVpye6
- OxNt2PuxKvPBxK+JJWw==
-X-Proofpoint-ORIG-GUID: n9XtfIQ0ogYIPNQa87vYyhBRvUelz6QC
-X-Proofpoint-GUID: n9XtfIQ0ogYIPNQa87vYyhBRvUelz6QC
+X-Proofpoint-ORIG-GUID: rVaelIX29kCwlbV9gVTuLkUtJeA2lD2a
+X-Authority-Analysis: v=2.4 cv=DP6CIiNb c=1 sm=1 tr=0 ts=695c6fb5 cx=c_pps
+ a=0uOsjrqzRL749jD1oC5vDA==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=rOUgymgbAAAA:8
+ a=hIcQITZmgDee9vmefioA:9 a=QEXdDO2ut3YA:10 a=mQ_c8vxmzFEMiUWkPHU9:22
+ a=MP9ZtiD8KjrkvI0BhSjB:22
+X-Proofpoint-GUID: rVaelIX29kCwlbV9gVTuLkUtJeA2lD2a
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA2MDAxNyBTYWx0ZWRfX+sJIEa5HSPSf
+ JM7nUqMEyDo/Q3nTpi8nUr7kPm1E9Iy5P3FLekJ2mh2iH/LVOmSylFb8kfCNWB9ASUO9POfDpTr
+ 8NqdfrcguAAFMDL5/46s6aAW268CfzViioa9ZKK8haL+2puyFM7XwPe7HDkkQm7V4q2Gt3jFLo+
+ TMU3eqtbxA1OFbU0Ool5KjDakg/sy07UgVOFnNuXvEXxjE63twBy7eidrhyUArOzwGaVqZPQfPk
+ HrmYoMKpSseN/rf1/qqF2bp6ppbyyhcd8sFFyil/y8Tj6o/sm3EVTjgLes4Xuj+wYfca599W5/5
+ Z3YQENuNSLjrP5og3yTiO70UkjPBwFClm30IK/loIHs0aerJ+E/om5p4Prrq9B5jeRxWeFWpetm
+ Ykupx+TpfYd2D9eVwSHi+RClicSF4AAKfYjdpTK0UjGs32cCsddzZBQNvuaW2dkg+L6z6unseNL
+ K2yNPpELR+lZAOfcMqw==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2026-01-05_02,2026-01-05_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 malwarescore=0 priorityscore=1501 phishscore=0 clxscore=1015
- lowpriorityscore=0 impostorscore=0 spamscore=0 adultscore=0 bulkscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2512120000 definitions=main-2601060007
+ lowpriorityscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2512120000
+ definitions=main-2601060017
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260105_170154_166496_6F19025F 
-X-CRM114-Status: GOOD (  14.89  )
+X-CRM114-CacheID: sfid-20260105_181311_703868_8C56BF96 
+X-CRM114-Status: GOOD (  14.12  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -172,224 +141,268 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Properly describe the PMU present as a part of the onboard WCN3998
-WiFi/BT chip. Enable Bluetooth part of the chip too.
+The following changes since commit c99ebb6132595b4b288a413981197eb076547c5a:
 
-[    5.479978] Bluetooth: hci0: setting up wcn399x
-[    5.633763] Bluetooth: hci0: QCA Product ID   :0x0000000a
-[    5.645350] Bluetooth: hci0: QCA SOC Version  :0x40010224
-[    5.650906] Bluetooth: hci0: QCA ROM Version  :0x00001001
-[    5.665173] Bluetooth: hci0: QCA Patch Version:0x00006699
-[    5.679356] Bluetooth: hci0: QCA controller version 0x02241001
-[    5.691109] Bluetooth: hci0: QCA Downloading qca/crbtfw21.tlv
-[    6.680102] Bluetooth: hci0: QCA Downloading qca/crnv21.bin
-[    6.842948] Bluetooth: hci0: QCA setup on UART is completed
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2025-11-13 12:35:38 -0800)
 
-[   81.510709] ath10k_snoc 18800000.wifi: qmi chip_id 0x30224 chip_family 0x4001 board_id 0x55 soc_id 0x40060000
-[   81.521713] ath10k_snoc 18800000.wifi: qmi fw_version 0x32040163 fw_build_timestamp 2019-10-08 05:42 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.3.2.0-00355-QCAHLSWMTPLZ-1
-[   81.554143] ath10k_snoc 18800000.wifi: failed to fetch board data for bus=snoc,qmi-board-id=55,qmi-chip-id=30224,variant=Qualcomm_sm8150hdk from ath10k/WCN3990/hw1.0/board-2.bin
-[   85.467464] ath10k_snoc 18800000.wifi: wcn3990 hw1.0 target 0x00000008 chip_id 0x00000000 sub 0000:0000
-[   85.478132] ath10k_snoc 18800000.wifi: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
-[   85.487223] ath10k_snoc 18800000.wifi: firmware ver  api 5 features wowlan,mgmt-tx-by-reference,non-bmi crc32 b3d4b790
-[   85.758168] ath10k_snoc 18800000.wifi: htt-ver 3.73 wmi-op 4 htt-op 3 cal file max-sta 32 raw 0 hwcrypto 1
-[   85.901630] ath10k_snoc 18800000.wifi: invalid MAC address; choosing random
+are available in the Git repository at:
 
-Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
----
- arch/arm64/boot/dts/qcom/sm8150-hdk.dts | 141 ++++++++++++++++++++++++++++++--
- 1 file changed, 136 insertions(+), 5 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20260105
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-hdk.dts b/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-index 1eea9c5c6684..6ae6e07c37df 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-@@ -20,6 +20,7 @@ / {
- 
- 	aliases {
- 		serial0 = &uart2;
-+		serial1 = &uart13;
- 	};
- 
- 	chosen {
-@@ -66,6 +67,43 @@ hdmi_con: endpoint {
- 			};
- 		};
- 	};
-+
-+	wcn3998-pmu {
-+		compatible = "qcom,wcn3998-pmu";
-+
-+		pinctrl-0 = <&sw_ctrl_default>;
-+		pinctrl-names = "default";
-+
-+		vddio-supply = <&vreg_s4a_1p8>;
-+		vddxo-supply = <&vreg_l7a_1p8>;
-+		vddrf-supply = <&vreg_l2c_1p3>;
-+		vddch0-supply = <&vreg_l11c_3p3>;
-+		vddch1-supply = <&vreg_l10c_3p3>;
-+
-+		swctrl-gpios = <&tlmm 50 GPIO_ACTIVE_HIGH>;
-+
-+		regulators {
-+			vreg_pmu_io: ldo0 {
-+				regulator-name = "vreg_pmu_io";
-+			};
-+
-+			vreg_pmu_xo: ldo1 {
-+				regulator-name = "vreg_pmu_xo";
-+			};
-+
-+			vreg_pmu_rf: ldo2 {
-+				regulator-name = "vreg_pmu_rf";
-+			};
-+
-+			vreg_pmu_ch0: ldo3 {
-+				regulator-name = "vreg_pmu_ch0";
-+			};
-+
-+			vreg_pmu_ch1: ldo4 {
-+				regulator-name = "vreg_pmu_ch1";
-+			};
-+		};
-+	};
- };
- 
- &apps_rsc {
-@@ -598,6 +636,10 @@ &qupv3_id_1 {
- 	status = "okay";
- };
- 
-+&qupv3_id_2 {
-+	status = "okay";
-+};
-+
- &remoteproc_adsp {
- 	status = "okay";
- 
-@@ -630,12 +672,97 @@ lt9611_irq_pin: lt9611-irq-state {
- 		bias-disable;
- 	};
- 
-+	qup_uart13_default: qup-uart13-default-state {
-+		cts-pins {
-+			pins = "gpio43";
-+			function = "qup13";
-+			drive-strength = <2>;
-+			bias-bus-hold;
-+		};
-+
-+		rts-pins {
-+			pins = "gpio44";
-+			function = "qup13";
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+
-+		tx-pins {
-+			pins = "gpio45";
-+			function = "qup13";
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+
-+		rx-pins {
-+			pins = "gpio46";
-+			function = "qup13";
-+			drive-strength = <2>;
-+			bias-pull-up;
-+		};
-+	};
-+
-+	qup_uart13_sleep: qup-uart13-sleep-state {
-+		cts-pins {
-+			pins = "gpio43";
-+			function = "gpio";
-+			drive-strength = <2>;
-+			bias-bus-hold;
-+		};
-+
-+		rts-pins {
-+			pins = "gpio44";
-+			function = "gpio";
-+			drive-strength = <2>;
-+			bias-pull-down;
-+		};
-+
-+		tx-pins {
-+			pins = "gpio45";
-+			function = "gpio";
-+			drive-strength = <2>;
-+			bias-pull-up;
-+		};
-+
-+		rx-pins {
-+			pins = "gpio46";
-+			function = "gpio";
-+			drive-strength = <2>;
-+			bias-pull-up;
-+		};
-+	};
-+
-+	sw_ctrl_default: sw-ctrl-default-state {
-+		pins = "gpio50";
-+		function = "gpio";
-+		bias-pull-down;
-+	};
- };
- 
- &uart2 {
- 	status = "okay";
- };
- 
-+&uart13 {
-+	/delete-property/ interrupts;
-+	interrupts-extended = <&intc GIC_SPI 585 IRQ_TYPE_LEVEL_HIGH>,
-+			      <&tlmm 46 IRQ_TYPE_EDGE_FALLING>;
-+	pinctrl-0 = <&qup_uart13_default>;
-+	pinctrl-1 = <&qup_uart13_sleep>;
-+	pinctrl-names = "default", "sleep";
-+
-+	status = "okay";
-+
-+	bluetooth {
-+		compatible = "qcom,wcn3998-bt";
-+
-+		vddio-supply = <&vreg_pmu_io>;
-+		vddxo-supply = <&vreg_pmu_xo>;
-+		vddrf-supply = <&vreg_pmu_rf>;
-+		vddch0-supply = <&vreg_pmu_ch0>;
-+	};
-+};
-+
- &ufs_mem_hc {
- 	status = "okay";
- 
-@@ -709,12 +836,16 @@ &usb_2_dwc3 {
- };
- 
- &wifi {
--	status = "okay";
--
-+	/* SoC */
- 	vdd-0.8-cx-mx-supply = <&vreg_l1a_0p75>;
--	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
--	vdd-1.3-rfa-supply = <&vreg_l2c_1p3>;
--	vdd-3.3-ch0-supply = <&vreg_l11c_3p3>;
-+
-+	/* WiFi / BT PMU */
-+	vdd-1.8-xo-supply = <&vreg_pmu_xo>;
-+	vdd-1.3-rfa-supply = <&vreg_pmu_rf>;
-+	vdd-3.3-ch0-supply = <&vreg_pmu_ch0>;
-+	vdd-3.3-ch1-supply = <&vreg_pmu_ch1>;
- 
- 	qcom,calibration-variant = "Qualcomm_sm8150hdk";
-+
-+	status = "okay";
- };
+for you to fetch changes up to 631ee338f04db713ba611883f28e94157ebb68e5:
 
--- 
-2.47.3
+  Merge branch 'ath12k-ng' into ath-next (2025-12-15 08:55:21 -0800)
 
+----------------------------------------------------------------
+ath.git patches for v6.20
+
+Propagate the "Next Generation" of the ath12k driver to wireless-next.
+
+NOTE TO MAINTAINERS:
+There is a conflict between this tree and the MHI tree. This conflict
+has already been resolved by Stephen Rothwell in linux-next. Please
+refer to his resolution comments in:
+
+https://lore.kernel.org/all/20260105154243.7cd5d049@canb.auug.org.au/
+
+----------------------------------------------------------------
+Alok Singh (12):
+      wifi: ath12k: Move monitor ring processing to Wi-Fi 7 module
+      wifi: ath12k: Move monitor status processing to Wi-Fi 7 module
+      wifi: ath12k: Move MPDU pop functionality to Wi-Fi 7 module
+      wifi: ath12k: Move RX status TLV parsing to Wi-Fi 7 module
+      wifi: ath12k: Move TX monitor functionality to Wi-Fi 7 module
+      wifi: ath12k: Move HT/VHT SIG processing to Wi-Fi 7 module
+      wifi: ath12k: Move HE SIG processing to Wi-Fi 7 module
+      wifi: ath12k: Move EHT SIG processing to Wi-Fi 7 module
+      wifi: ath12k: Move remaining SIG TLV parsing to Wi-Fi 7 module
+      wifi: ath12k: Move MU user processing to Wi-Fi 7 module
+      wifi: ath12k: Move MSDU END TLV processing to Wi-Fi 7 module
+      wifi: ath12k: Remove Wi-Fi 7 header dependencies from common ath12k module
+
+Baochen Qiang (2):
+      wifi: ath12k: add the missing RCU lock in ath12k_dp_tx_free_txbuf()
+      wifi: ath12k: move firmware stats request outside of atomic context
+
+Harsh Kumar Bijlani (14):
+      wifi: ath12k: Move HTT code in dp.h to newly introduced files
+      wifi: ath12k: Move HTT Rx specific code to newly introduced files
+      wifi: ath12k: Move HTT Tx specific code to newly introduced files
+      wifi: ath12k: Move HTT specific code from dp.c to newly introduced files
+      wifi: ath12k: Refactor ath12k_vif structure
+      wifi: ath12k: Move DP related functions from peer.c to dp_peer.c file
+      wifi: ath12k: Rename ath12k_peer to ath12k_dp_link_peer
+      wifi: ath12k: Add hash table for ath12k_link_sta in ath12k_base
+      wifi: ath12k: Move ath12k_dp_link_peer list from ath12k_base to ath12k_dp
+      wifi: ath12k: Add hash table for ath12k_dp_link_peer
+      wifi: ath12k: Define ath12k_dp_peer structure & APIs for create & delete
+      wifi: ath12k: Attach and detach ath12k_dp_link_peer to ath12k_dp_peer
+      wifi: ath12k: Use ath12k_dp_peer in per packet Tx & Rx paths
+      wifi: ath12k: Move DP specific link stats to DP link peer
+
+Jeff Johnson (1):
+      Merge branch 'ath12k-ng' into ath-next
+
+Kiran Venkatappa (13):
+      wifi: ath12k: Restructure PCI code to common and Wi-Fi 7 specific logic
+      wifi: ath12k: Move Copy Engine configuration to Wi-Fi 7 specific file
+      wifi: ath12k: Move Wi-Fi 7 WMI configuration to dedicated file
+      wifi: ath12k: Move Wi-Fi 7 MHI configuration to dedicated file
+      wifi: ath12k: Rename hw.c to Wi-Fi 7 specific implementation file
+      wifi: ath12k: Rename ahb_hif_ops to reflect generic usage
+      wifi: ath12k: Restructure ahb.c into common and Wi-Fi 7 specific modules
+      wifi: ath12k: Move Wi-Fi 7 specific init routines to dedicated file
+      wifi: ath12k: Move hw_init invocation to target-specific probe
+      wifi: ath12k: Modularize driver into common and Wi-Fi 7 specific components
+      wifi: ath12k: Rename ath12k_* symbols to ath12k_wifi7_* for clarity
+      wifi: ath12k: Remove HAL defines from shared PCI code
+      wifi: ath12k: Remove HAL define dependencies from shared AHB code
+
+Pavankumar Nandeshwar (46):
+      wifi: ath12k: Move hal_tx and hal_rx to wifi7 directory
+      wifi: ath12k: Move hal_tx.h file to wifi7 directory
+      wifi: ath12k: Move hal_rx.h file to wifi7 directory
+      wifi: ath12k: Move HAL Rx wrapper APIs to dp_rx.h
+      wifi: ath12k: Move Rx error related functions to wifi7 directory
+      wifi: ath12k: Move hal_desc.h file to wifi7 directory
+      wifi: ath12k: Move rx_desc.h file to wifi7 directory
+      wifi: ath12k: Move rxdma ring config functions to wifi7 directory
+      wifi: ath12k: Move rx error and defrag functions to wifi7 directory
+      wifi: ath12k: Move regular msdu processing functions to wifi7 directory
+      wifi: ath12k: Move srng processing to wifi7 directory
+      wifi: ath12k: Separate arch specific part of RX APIs
+      wifi: ath12k: Move arch specific REO functions to wifi7 directory
+      wifi: ath12k: Move arch specific rx tid and related functions to wifi7 directory
+      wifi: ath12k: Move arch specific tx APIs to wifi7 directory
+      wifi: ath12k: Move ath12k_dp_tx and related APIs to wifi7 directory
+      wifi: ath12k: Remove non-compact TLV support from QCN
+      wifi: ath12k: Replace ops with direct calls for rxdma ring mask
+      wifi: ath12k: Move hal_rx_ops callbacks to hal_ops
+      wifi: ath12k: Add new infra for the rx path
+      wifi: ath12k: Change the API prefixes to ath12k_wifi7 in tx/rx
+      wifi: ath12k: Move srng config and hal_ops to hw specific hal files
+      wifi: ath12k: Initialize desc_size through hal_init
+      wifi: ath12k: Initialize hal_ops through hal_init
+      wifi: ath12k: Move wbm_rbm_map to hw specific hal files
+      wifi: ath12k: Move hal_params and regs to hal from hw
+      wifi: ath12k: Add direct HAL pointer in ath12k_dp
+      wifi: ath12k: Use hal handle instead of ab handle
+      wifi: ath12k: Move HAL CE setup and SRNG related APIs to wifi7 directory
+      wifi: ath12k: Move HAL SRNG shadow config and get ring id APIs to wifi7 directory
+      wifi: ath12k: Move HAL CE desc related APIs to wifi7 directory
+      wifi: ath12k: Move HAL CE status and set link desc addr APIs to wifi7 directory
+      wifi: ath12k: Move HAL Tx, REO and link idle setup related APIs to wifi7 directory
+      wifi: ath12k: Move HAL REO and Rx buf related APIs to wifi7 directory
+      wifi: ath12k: Move HAL Cookie Conversion and RBM related APIs to wifi7 directory
+      wifi: ath12k: Segregate the common and wifi7 specific structures
+      wifi: ath12k: Remove the unused ring inits in wcn
+      wifi: ath12k: Add callbacks in arch_ops for rx APIs
+      wifi: ath12k: Move DP device stats to ath12k_dp
+      wifi: ath12k: Add helper to free DP link peer
+      wifi: ath12k: Remove the wifi7 header inclusions in common code
+      wifi: ath12k: Move ath12k_dp_rx_frags_cleanup API to Wi-Fi 7
+      wifi: ath12k: Move ath12k_dp_rx_get_peer_id API to Wi-Fi 7
+      wifi: ath12k: Remove arch-specific HAL dependencies from common DP
+      wifi: ath12k: Build all the files in wifi7 directory into ath12k_wifi7.ko
+      wifi: ath12k: Use dp objects in performance critical paths
+
+Ripan Deuri (16):
+      wifi: ath12k: Move the hal APIs to hardware specific files
+      wifi: ath12k: unify HAL ops naming across chips
+      wifi: ath12k: Remove hal_rx_ops and merge into hal_ops
+      wifi: ath12k: Convert ath12k_dp member in ath12k_base to pointer
+      wifi: ath12k: Support arch-specific DP device allocation
+      wifi: ath12k: Rearrange DP fields in ath12k_hw_group struct
+      wifi: ath12k: Add framework for hardware specific ieee80211_ops registration
+      wifi: ath12k: Add framework for hardware specific DP interrupt handler
+      wifi: ath12k: Refactor data path pdev struct
+      wifi: ath12k: Rearrange PPDU radio stats
+      wifi: ath12k: Rename hal_ops to ops
+      wifi: ath12k: Drop hal_ prefix from hardware register names
+      wifi: ath12k: Add lockdep warn for RCU
+      wifi: ath12k: Move ieee80211_ops callback to the arch specific module
+      wifi: ath12k: Replace lock/unlock with guard()
+      wifi: ath12k: Skip DP peer creation for scan vdev
+
+ drivers/net/wireless/ath/ath12k/Makefile           |    8 +-
+ drivers/net/wireless/ath/ath12k/ahb.c              |  165 +-
+ drivers/net/wireless/ath/ath12k/ahb.h              |   31 +-
+ drivers/net/wireless/ath/ath12k/ce.c               |  326 +-
+ drivers/net/wireless/ath/ath12k/ce.h               |    7 +-
+ drivers/net/wireless/ath/ath12k/cmn_defs.h         |   20 +
+ drivers/net/wireless/ath/ath12k/core.c             |   75 +-
+ drivers/net/wireless/ath/ath12k/core.h             |  176 +-
+ drivers/net/wireless/ath/ath12k/dbring.c           |    6 +-
+ drivers/net/wireless/ath/ath12k/debug.c            |    8 +-
+ drivers/net/wireless/ath/ath12k/debugfs.c          |    8 +-
+ .../net/wireless/ath/ath12k/debugfs_htt_stats.h    |    4 +-
+ drivers/net/wireless/ath/ath12k/debugfs_sta.c      |   62 +-
+ drivers/net/wireless/ath/ath12k/dp.c               |  559 +--
+ drivers/net/wireless/ath/ath12k/dp.h               | 1742 ++-------
+ drivers/net/wireless/ath/ath12k/dp_cmn.h           |  106 +
+ drivers/net/wireless/ath/ath12k/dp_htt.c           | 1353 +++++++
+ drivers/net/wireless/ath/ath12k/dp_htt.h           | 1546 ++++++++
+ drivers/net/wireless/ath/ath12k/dp_mon.c           | 3685 +-------------------
+ drivers/net/wireless/ath/ath12k/dp_mon.h           |   58 +-
+ drivers/net/wireless/ath/ath12k/dp_peer.c          |  690 ++++
+ drivers/net/wireless/ath/ath12k/dp_peer.h          |  182 +
+ drivers/net/wireless/ath/ath12k/dp_rx.c            | 3522 ++-----------------
+ drivers/net/wireless/ath/ath12k/dp_rx.h            |  191 +-
+ drivers/net/wireless/ath/ath12k/dp_tx.c            | 1634 +--------
+ drivers/net/wireless/ath/ath12k/dp_tx.h            |   39 +-
+ drivers/net/wireless/ath/ath12k/hal.c              | 2088 +----------
+ drivers/net/wireless/ath/ath12k/hal.h              | 1493 +++++---
+ drivers/net/wireless/ath/ath12k/htc.c              |    3 +-
+ drivers/net/wireless/ath/ath12k/hw.c               | 1680 ---------
+ drivers/net/wireless/ath/ath12k/hw.h               |   94 +-
+ drivers/net/wireless/ath/ath12k/mac.c              | 1076 +++---
+ drivers/net/wireless/ath/ath12k/mac.h              |  139 +-
+ drivers/net/wireless/ath/ath12k/mhi.c              |  132 +-
+ drivers/net/wireless/ath/ath12k/mhi.h              |    5 +-
+ drivers/net/wireless/ath/ath12k/pci.c              |  237 +-
+ drivers/net/wireless/ath/ath12k/pci.h              |   42 +-
+ drivers/net/wireless/ath/ath12k/peer.c             |  453 +--
+ drivers/net/wireless/ath/ath12k/peer.h             |  112 +-
+ drivers/net/wireless/ath/ath12k/testmode.c         |    3 +-
+ drivers/net/wireless/ath/ath12k/wifi7/Makefile     |   19 +
+ drivers/net/wireless/ath/ath12k/wifi7/ahb.c        |   75 +
+ drivers/net/wireless/ath/ath12k/wifi7/ahb.h        |   20 +
+ drivers/net/wireless/ath/ath12k/wifi7/ce.c         |  973 ++++++
+ drivers/net/wireless/ath/ath12k/wifi7/ce.h         |   22 +
+ drivers/net/wireless/ath/ath12k/wifi7/core.c       |   68 +
+ drivers/net/wireless/ath/ath12k/wifi7/core.h       |   11 +
+ drivers/net/wireless/ath/ath12k/wifi7/dp.c         |  181 +
+ drivers/net/wireless/ath/ath12k/wifi7/dp.h         |   20 +
+ drivers/net/wireless/ath/ath12k/wifi7/dp_mon.c     | 3385 ++++++++++++++++++
+ drivers/net/wireless/ath/ath12k/wifi7/dp_mon.h     |   23 +
+ drivers/net/wireless/ath/ath12k/wifi7/dp_rx.c      | 2202 ++++++++++++
+ drivers/net/wireless/ath/ath12k/wifi7/dp_rx.h      |   59 +
+ drivers/net/wireless/ath/ath12k/wifi7/dp_tx.c      |  978 ++++++
+ drivers/net/wireless/ath/ath12k/wifi7/dp_tx.h      |   16 +
+ drivers/net/wireless/ath/ath12k/wifi7/hal.c        |  705 ++++
+ drivers/net/wireless/ath/ath12k/wifi7/hal.h        |  564 +++
+ .../net/wireless/ath/ath12k/{ => wifi7}/hal_desc.h |  298 +-
+ .../net/wireless/ath/ath12k/wifi7/hal_qcn9274.c    | 1032 ++++++
+ .../net/wireless/ath/ath12k/wifi7/hal_qcn9274.h    |   45 +
+ .../net/wireless/ath/ath12k/{ => wifi7}/hal_rx.c   |  221 +-
+ .../net/wireless/ath/ath12k/{ => wifi7}/hal_rx.h   |  422 +--
+ .../ath/ath12k/{rx_desc.h => wifi7/hal_rx_desc.h}  |   55 +-
+ .../net/wireless/ath/ath12k/{ => wifi7}/hal_tx.c   |   23 +-
+ .../net/wireless/ath/ath12k/{ => wifi7}/hal_tx.h   |   30 +-
+ .../net/wireless/ath/ath12k/wifi7/hal_wcn7850.c    |  805 +++++
+ .../net/wireless/ath/ath12k/wifi7/hal_wcn7850.h    |   39 +
+ drivers/net/wireless/ath/ath12k/wifi7/hw.c         |  945 +++++
+ drivers/net/wireless/ath/ath12k/wifi7/hw.h         |   13 +
+ drivers/net/wireless/ath/ath12k/wifi7/mhi.c        |  138 +
+ drivers/net/wireless/ath/ath12k/wifi7/mhi.h        |   11 +
+ drivers/net/wireless/ath/ath12k/wifi7/pci.c        |  191 +
+ drivers/net/wireless/ath/ath12k/wifi7/pci.h        |   12 +
+ drivers/net/wireless/ath/ath12k/wifi7/wmi.c        |  105 +
+ drivers/net/wireless/ath/ath12k/wifi7/wmi.h        |   15 +
+ drivers/net/wireless/ath/ath12k/wmi.c              |  138 +-
+ drivers/net/wireless/ath/ath12k/wmi.h              |    7 +-
+ drivers/net/wireless/ath/ath12k/wow.c              |    5 +-
+ 78 files changed, 20210 insertions(+), 17421 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath12k/cmn_defs.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/dp_cmn.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/dp_htt.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/dp_htt.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/dp_peer.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/dp_peer.h
+ delete mode 100644 drivers/net/wireless/ath/ath12k/hw.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/Makefile
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/ahb.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/ahb.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/ce.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/ce.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/core.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/core.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/dp.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/dp.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/dp_mon.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/dp_mon.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/dp_rx.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/dp_rx.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/dp_tx.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/dp_tx.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/hal.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/hal.h
+ rename drivers/net/wireless/ath/ath12k/{ => wifi7}/hal_desc.h (91%)
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/hal_qcn9274.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/hal_qcn9274.h
+ rename drivers/net/wireless/ath/ath12k/{ => wifi7}/hal_rx.c (84%)
+ rename drivers/net/wireless/ath/ath12k/{ => wifi7}/hal_rx.h (75%)
+ rename drivers/net/wireless/ath/ath12k/{rx_desc.h => wifi7/hal_rx_desc.h} (97%)
+ rename drivers/net/wireless/ath/ath12k/{ => wifi7}/hal_tx.c (87%)
+ rename drivers/net/wireless/ath/ath12k/{ => wifi7}/hal_tx.h (88%)
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/hal_wcn7850.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/hal_wcn7850.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/hw.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/hw.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/mhi.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/mhi.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/pci.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/pci.h
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/wmi.c
+ create mode 100644 drivers/net/wireless/ath/ath12k/wifi7/wmi.h
 
