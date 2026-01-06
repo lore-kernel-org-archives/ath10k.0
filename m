@@ -4,100 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E1D4CD042C
-	for <ath10k@archiver.kernel.org>; Tue,  6 Jan 2026 01:01:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 992E3CD0428
+	for <ath10k@archiver.kernel.org>; Tue,  6 Jan 2026 01:01:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GaHFmXFU2LgOEbPPkpReuSY4xCJ4+sCSY2NisbXzuSg=; b=cYUbfklM5IUkMqbg3IqqKi4Q4f
-	uza8XZmXp0KdRcOkQYXNxO7AjBsKPnp2/ZOYaIiiZFa/kM5QVj4IBup+C6OJGWpKTZb/OpbAohfY9
-	2GT2zhbbWOvDrkmIGsZzoCVhOWn6wNJpNRFLLDwogEMcPn286x1XNv9336fkQVrq4pDH3TPbw2JSH
-	2f0h8pUlrzM7MTCzmRI63Nlq0eeC0Gg/Ynjht8v+TopfDyQakqhTf2xDdDwC4UuwxJlRifsrm/bV1
-	x2jbUwpU6qnUdFtMyuaZ3ilSiKSYt9mRS+ahumPlvvZv82tGra2ro10QhRlZh5Jp6g/1b41XgfBL+
-	XDajcnOQ==;
+	bh=toWGAj7SgswRPrjJQFNYvHcUGCLQpi1FqKeAVpzqbvU=; b=4jWr2HloR0uBC6IyLoFW6GuGiK
+	hmvh/2ev9e72w72aaZsVtiro5AeGtoJGXW9WAtXOoZYamYgunmYL5r70rrZzeYJRuf5wtULNL8ro4
+	8C76+4Bh9x9xTVevSPkXkoLfR64SQJrS3dAi8f6LRpWb65MKAAk5xggne6ulYmMhUfxcRtfnxzBKY
+	jdw3YEersZeyQYKouMc20VbX3VecQbfnBSBObM0ZVqUziM0lLChnav4Y6VTFvgra0IgjX3PiP3qcZ
+	YN5UZUbPRKZeh80up/0f28b4YuM2csSZnWhqi+r/8YCCCPm/41kZwaLRT+qRU8BuYvOzClOe1KdWU
+	pWHzxHkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcvRx-0000000CHYC-4At6;
-	Tue, 06 Jan 2026 01:01:29 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1vcvS0-0000000CHZi-1GGA;
+	Tue, 06 Jan 2026 01:01:32 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcvRv-0000000CHWj-2rrI
+	id 1vcvRy-0000000CHYW-2woN
 	for ath10k@lists.infradead.org;
-	Tue, 06 Jan 2026 01:01:28 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6060nKYr2969871
-	for <ath10k@lists.infradead.org>; Tue, 6 Jan 2026 01:01:26 GMT
+	Tue, 06 Jan 2026 01:01:31 +0000
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6060oMbw2599662
+	for <ath10k@lists.infradead.org>; Tue, 6 Jan 2026 01:01:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	GaHFmXFU2LgOEbPPkpReuSY4xCJ4+sCSY2NisbXzuSg=; b=FNtmA+uqDXK2qSBS
-	BUWgcuR3OppC1hKq3nWeBpTUXK2T71UtYJ153i/xIEdbjpOBSlBElqSkfok6IUUk
-	KoVA0XQ9sC3PUqboONYiMsz3575kuXR9XQ+G42Jmn0vzcEy6JL1pzQHC10Pcwjbm
-	3lm84sMxioth8bpYw0BwhsxrWKSIZWYmmmF1xlKUoPyxwB4LuAdZ6TBZxMrtt2qW
-	Cpcn4fG20r8MMhitTzewqb9YWMYMga/g4vGl23tYeR2ZBYMC7O6AaX9LfaPR0I86
-	ps+zRRoeK4C76VlnfjnrTj7SDESx7BT99udzguI4W4jp7S+fzHWmn5Kuxyn2N0MF
-	DwzfGw==
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bggsvs7pu-1
+	toWGAj7SgswRPrjJQFNYvHcUGCLQpi1FqKeAVpzqbvU=; b=iJND170NW1tlBMQB
+	HYoxumSS2BP8uillqDNEGwEiprL8Z7jNmZVPJApMFMAswdb9bJ5/1fFbcpSsYXM8
+	Bqsy3M6n1ZGBsDyKJvrS9X2Kmt5VPPKKfi/6jeViftU15HfJ0cycqXdrXQHTw2k1
+	KtTh5+2/44vamyxPnAyfJXVhEMmZabVmzQeAi1AdKzkHWnBfF3dYwlXbP2E1N3AU
+	s3iVAyZUUpAD45jQieYRy+3SX6KdHNLSizY6ULzhaaCxQ3JaFittHSPyC3v762Fa
+	PMw+Yj2Km5cWQ2XIReRVz9EZraWD5CGdVvxEnM9FUuEpnOoTj1Y62B/VSv1+WkqB
+	AOazbQ==
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com [209.85.222.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bga8pjern-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Tue, 06 Jan 2026 01:01:26 +0000 (GMT)
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4ee0c1c57bcso15253851cf.2
-        for <ath10k@lists.infradead.org>; Mon, 05 Jan 2026 17:01:26 -0800 (PST)
+	for <ath10k@lists.infradead.org>; Tue, 06 Jan 2026 01:01:30 +0000 (GMT)
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-8c1fa4a1c18so113550085a.3
+        for <ath10k@lists.infradead.org>; Mon, 05 Jan 2026 17:01:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1767661286; x=1768266086; darn=lists.infradead.org;
+        d=oss.qualcomm.com; s=google; t=1767661289; x=1768266089; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GaHFmXFU2LgOEbPPkpReuSY4xCJ4+sCSY2NisbXzuSg=;
-        b=HDH8q4BRqE2fDkwcuh4sG+QyrWrmuwZdLus/BTYedqNIzZpEd7eP4cVZ3fuFQ9Wcao
-         gusbiITQrgnBjizyolux11AhwTtLBM0m9R4pWnc4tf93x2fehVAnsK0xFMtyRGoTp7tN
-         KT9+gK3adYsg8YRW2ORalExt47CoTs8nH8EUVIxuDA2LovR0xLFjnSCkt+nDjRki7fdo
-         U3EwuwejgM6Vrg6RFiYO2PR9q9D2RCGzh64eRyY3Lq6jN7qaN/ttS9jsjNT6FIRNUq0g
-         D5AqaHywi0zw4fYkEDTam67NWX3pVbiBFG8ES4IgvmZx/27v+s6b9qcW3rNWruKcURXY
-         o33A==
+        bh=toWGAj7SgswRPrjJQFNYvHcUGCLQpi1FqKeAVpzqbvU=;
+        b=MI7XXPcJC5quffcMb44yWvFE1cTHPkfeCCXbEMe5jH8waYul8O7oIZI8P61cdnXHxS
+         NWE/ThyI2JKiVsqrkw42zXPtSqSayQMQr8GwEQrXANnuWKya3LXjk71g6T+420wbHF+i
+         2iGSd3NusYIuZGqwXfSC5OjWFLzHJ5i0LhVOpfxNZXaE7G+tUmIO4m6AY7WMHa/5BQRx
+         QwyuFpMyGyx1qrLbGNRX3ZrRtgI/bcah+CBBDU1saiUeCEzY3rTIWLdL5fpJO+AaCUXT
+         v92deDckaj9avw42AYYUZhVnSaERjCq5cNwVuT0jKGBTYXClyd+8ILfHGQECKb1dS+rO
+         rNlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767661286; x=1768266086;
+        d=1e100.net; s=20230601; t=1767661289; x=1768266089;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=GaHFmXFU2LgOEbPPkpReuSY4xCJ4+sCSY2NisbXzuSg=;
-        b=bLpXnCn5SlfUgZeuR3oCfVe7Th+jsI+78A3JME1MMz+APq0Wo8FWsjdnmSQKD+AJlZ
-         2V3G4JYwIEcLh8PU1Vjeux8E+agBuhd4oZ1AAlcaRoZHbvTmk/i0BgaxHKLbzUOIR3v4
-         0dClsO2fRryk69EHzmcB/0lYCCqm3exGjESQhyg0QzCVIoaq2xTOm/rEDwD84m5mGQxb
-         nA5PMtGeIQMfHgVrhgcpYrUI0PCXJ6kKUkKeBjrFnPLnLbTdmgK930gvsNWuphEaXuYK
-         CTvckI38pgMKfkVHbc+Du0/A4t20SU92xj+IsU6toVMhe3KwuMFi/PjvsZRafWfPW9T1
-         1ZQA==
-X-Forwarded-Encrypted: i=1; AJvYcCUoxd6X7XFRjRMHR/SQCKewYmJpFMzY9JO0vgF4R65ypONMGBCQdV9/7m8Eu3oIebBDU2gpJ50=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxIDoJu79EXPIJ7QiqM57de5En7zz/tlixENuvGiudDWQr1SztG
-	CKFmHW9obPpz6VrCa+6k+TS7wOf3k3ev3TDSevdDXRgGyCmgu6EsDuIwAwsLyd14O73Dil4hj+j
-	CVY8AyFf4JrIQMrd4XrTknKWjB2IJa7tBxTSddcboSM3G18tel2tTAn2pVpfAB7l2
-X-Gm-Gg: AY/fxX6mRrFNlQn8t6UvRr0K5oYMvUmG05/5liD4w0sB/3sFt0QT/0tE9ARjYEZXyTf
-	K7LNbyUjAoNqUynAcNG8LD2TOPIC/rQObekC3kW/89Qw9wykSboAvFVF/1Ww2IfMVED1B6FOBE/
-	qKt0wZFLZrbhQTC7mCSAT8W3ksTMEUXmCuuT9d2G4zIDgSmApU90g+HisdIXb4w7jhCob/sU2cJ
-	n0K2dl1Q7muO4e/qicNIGBLq4L01cCBWZZPJ6zQDsmPNj4opjFEALaNE7V9jSXHWJND4QXjjLQn
-	PEaqyskmNaDIHpsPoMKpN93KxnnbCntJqmLQf72wIGLUAOlYxUqBgfdSVe18LQQ6VigvXvzy6FZ
-	tIxWDytZNNs8qwd/O2iM/H9KjIKHBivYZSqJ8PoCPYfuB2D9ghPXezwENH2x4p+MOob2iDCEHhK
-	fTy66WerzJuFvQ2wfX30nJzY4=
-X-Received: by 2002:ac8:5d08:0:b0:4f0:22df:9afe with SMTP id d75a77b69052e-4ffa77afd7amr21505711cf.51.1767661285900;
-        Mon, 05 Jan 2026 17:01:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHs53x/m4TYSBTf7oNnfpXpWQiTG4FUqY7QH3p2oA8FkA/fqepE9/ee56v4AUWgte/Y03Kz2A==
-X-Received: by 2002:ac8:5d08:0:b0:4f0:22df:9afe with SMTP id d75a77b69052e-4ffa77afd7amr21505131cf.51.1767661285458;
-        Mon, 05 Jan 2026 17:01:25 -0800 (PST)
+        bh=toWGAj7SgswRPrjJQFNYvHcUGCLQpi1FqKeAVpzqbvU=;
+        b=vGhHVvZAvSs5U+K/vAIAdcvRIw/RQuNLnnJybAL6/L7SP+Ey1s0/1ihvsd3zVARISf
+         /X0gJlKlnQL3rl1vJjYLbVSGpqi/2G4p8ivY1JSd8wwCCSE1eJiE2WdWR2R+x6AORAVQ
+         pzOzsolDGBGbr5gUMsKSPhsm8TQNgmfuTNq2z92ndOyMGOLJHO9xOM4x19UNfXk6gjDT
+         gLY1SZzbgIU5PeCc4f8pPfKn7zyHx/ykzVGDfSPMrzCfoILc1V7b5ow2J2wTeUFlMw1G
+         EvE81o1QBCCOaII54tcUkaLeKZIdGuGEC9936trc1NmyhbXkrN1io3G78mZwGGy8Dtd8
+         KOFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVqGDrE3CWo/jNQ9zzLYfOTTUlRdfRApnMT3Fo2WdhNTL3gsNmcugJ1nxUNUc2BF6WSx3a9gN4=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yyt8SH4HqGmaVkspmC7O2zbpJaDRhHmLh+Gi4cByRaCmsO3CStw
+	ABbiQi+8Ku8eCJc2Dl+4rQUXEn9ZsYfrXH+zIIaVMee3AHjZrQKwlsjgXph/a/buCyz2PaHmkEx
+	l3jDW8pg+To0hrkRO6/eFbdGxS21Vt/la3/Ekpde33usaeNkdCMsYXbY+XQt6UENI
+X-Gm-Gg: AY/fxX6/MCWP5OHJkayp5+tgv/8EnVZSoUlwvtfffVwZnZt5tIbeAXbtYX5M+9hS08w
+	1YAygpMExnJLRqjAi9kTmZM2u9IVBoTiFxV6K5yDJdg77cDcECXy0Gyp2Ux6yabB/uN4ygSEU9J
+	XD47fWWUqf4kfOIHPWlwcpCPhn2h8+b1hw2cj+oRoXKOnMo/Plwzi01bluCTSEFRj3DvsFGAuiG
+	8BEolY3YHxQxomwuciTOHSJhxgN3cTyECCRJYnb6AUm93JVRDOppbxclPnwEjDtBaTD+4kWBt9Q
+	l5XT0F0byki/oYf3hJ/U+cBuquAzdRwqcZRzAJ6zLg0S0mwI8XHPedLuB6R/lDx9gWI7PG6jndB
+	2XhAKZl9f84grIJZrirQUgR097+9KfybhZWvDUENToWPTJ/YQhh+Ue11FfyF9koLFPmYSCIiPta
+	OnBsSAkgUQ15B24yyacyYgeio=
+X-Received: by 2002:ac8:7d06:0:b0:4ee:24fc:bea3 with SMTP id d75a77b69052e-4ffa770d84fmr20866301cf.35.1767661288623;
+        Mon, 05 Jan 2026 17:01:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFGRIkm3qB3iAMhjMsr9K7RBdmhsGoeWiJuR1zZQW9HRAWrshi4AJ0+6RJy7rL89ggSBiDVrw==
+X-Received: by 2002:ac8:7d06:0:b0:4ee:24fc:bea3 with SMTP id d75a77b69052e-4ffa770d84fmr20865361cf.35.1767661287983;
+        Mon, 05 Jan 2026 17:01:27 -0800 (PST)
 Received: from umbar.lan (2001-14ba-a073-af00-264b-feff-fe8b-be8a.rev.dnainternet.fi. [2001:14ba:a073:af00:264b:feff:fe8b:be8a])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59b65cea8b1sm181082e87.6.2026.01.05.17.01.23
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59b65cea8b1sm181082e87.6.2026.01.05.17.01.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 17:01:23 -0800 (PST)
+        Mon, 05 Jan 2026 17:01:25 -0800 (PST)
 From: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Date: Tue, 06 Jan 2026 03:01:13 +0200
-Subject: [PATCH v2 03/14] Bluetooth: qca: fix ROM version reading on
- WCN3998 chips
+Date: Tue, 06 Jan 2026 03:01:14 +0200
+Subject: [PATCH v2 04/14] wifi: ath10k: snoc: support powering on the
+ device via pwrseq
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260106-wcn3990-pwrctl-v2-3-0386204328be@oss.qualcomm.com>
+Message-Id: <20260106-wcn3990-pwrctl-v2-4-0386204328be@oss.qualcomm.com>
 References: <20260106-wcn3990-pwrctl-v2-0-0386204328be@oss.qualcomm.com>
 In-Reply-To: <20260106-wcn3990-pwrctl-v2-0-0386204328be@oss.qualcomm.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -116,46 +116,47 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
 Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-bluetooth@vger.kernel.org,
         linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-pm@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+        linux-pm@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1411;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4482;
  i=dmitry.baryshkov@oss.qualcomm.com; h=from:subject:message-id;
- bh=dsdXZ95EeYH9C3J7omxSTW2//MbnLXvg26+sdstW5a8=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBpXF7YJdQaWvZTNPcWs2gdp9XunrWj6EarCWIme
- 3YqpUhN4W6JATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCaVxe2AAKCRCLPIo+Aiko
- 1cTICACDFkWrMGC3XZY++CL+qe3yvTY8ryAmNeucwr0WK34X9AKvFdmwRsb6nQ3xCCyBuf/Zxrn
- LrU5qZ7i8x6M3QXeiHcWuEJ55n2SVVjslkCCSKRHJNSUtXZl5SzJ95eOwU4EHRRjzTiY2XpHv94
- fdzBvHkP9YoJlKY/OJFfDFHt4gCOnVZYqNMnMd6/BP+l52Jwst0YJVYLBZHubi1eb+GZ24dOHh9
- yJ0XVU0rS2ENYJj4BE9SpRR/HKSI574v7NDOmJEhtdWhrajQKiEv/iutve/w5HbftIFoRipT6nc
- owAWMs+FBiKwb+rGVEMGBWHljRYcQSGLPf4wK2jfRlAJzbcO
+ bh=vGKw+wEv4m8AuXcSbM8ug5QUp/CDr75AFUCT++yOsvs=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBpXF7Z98G7nWfKXlYg2gNCIQMwgRzHPZzJbxVnJ
+ z1q/ZSkHjaJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCaVxe2QAKCRCLPIo+Aiko
+ 1fEZB/4tvPMVzx1O9X5hVg4SC8qKvMxE3IAdsH/tCrsqATAl0+wRT2TyB9Hn7GAeWvGOctHu3iH
+ Wz1nzZlcEEGfMaeWu5SwWMpltRfuQ30OmP73iSkLDJIyDkaYgNS18F1gFf+O6ny0yTUySKvTrcD
+ yyXDgiHMM2btCQT/nwRoSHoTn9L8puSf+qIsWNnwNXcYhQ//We6KROhs35aw/OlL/hwOSrlP/S/
+ 5HwYUn/Y4mmzJ5Htk1E8M+w9R1szu/pRNZ3IJKY3GuKUB9KSiWfh873JV70NTtpLblRXY42mIM+
+ v4EhUqx2idwTvvn1tfM66om+MAtEwG9gtY9dLCdkm/h9l9Pv
 X-Developer-Key: i=dmitry.baryshkov@oss.qualcomm.com; a=openpgp;
  fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
-X-Proofpoint-GUID: GnXPdM-KpWndI_8u6mWm9AkxTA2PmhOy
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA2MDAwNyBTYWx0ZWRfXwMTp+DCPxHIs
- nusuxQWZ6WkCNoq1UAhnsF2N1PGCiKKAQO5jsujNKg6w6UvX1Qx58KARfKmDH0NtD2BaOjQdpoP
- 4NDqRG03kvvmdK/rPQZZR2gB7X/3FsVdxmuObHxJhXf4AroOjE2WzZt8le/CNjlX3+IPSW0/J+V
- Dp/8/Wmw2Eqa0N3gXAQ22WWovedRKemmTvX0F6XQyJHtsPFZ9l3dwCGR55FIdNWI+Q7CbXxjBt3
- R5uaqS1ZicoHbZll71a58QbUeq2B/562xKDjoNuy3BEj8uBX8yZq7ovYV/HbHa26/82nPXqxrmB
- FHoe4u9ByQ1GXDBQRSUxgZMzONszrAoJO3/Qeo8f5Zv2SuDSEv1nTNfUxKark10qf14rLEWVQsF
- krLLntYuRluQszqr2eY5Rz4OUCw3pxMbQ4iVmgiP4ahOboZ+OjzmIiA8hb7eysurrplbmHmyAVN
- K0z5aAIJFFRx57tC9hQ==
-X-Proofpoint-ORIG-GUID: GnXPdM-KpWndI_8u6mWm9AkxTA2PmhOy
-X-Authority-Analysis: v=2.4 cv=Yv4ChoYX c=1 sm=1 tr=0 ts=695c5ee6 cx=c_pps
- a=EVbN6Ke/fEF3bsl7X48z0g==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA2MDAwNyBTYWx0ZWRfX/YDeDKg6aqP+
+ 4r8Unn4sQJYIPlOkwEqlK6OgP9Cox7FkZlTiN0rIT+AM4kV3mR5iK5QW06dggQwgDdJKKo0w92L
+ kT6ehYpHM9zEdVYMIYIL0LfBcckg8jUpqYDctSP2+A8qgwlWei8mLLIWvQ9ms4Z3pxXMmtlHLH/
+ EMzw4mBN6CDPrjXOllTboi9Smb35J9YSLP+m0grudaJADS5DhqMJVMJV8RecmetTDwXgRiwn5Q7
+ GTd2Wfe2iwxsvdRZSTDqTRzz3yyPR/raXT8ZoYK3WsUZoB7ZlaH7RRuwLfI8oPOKIP5BvPJ1phE
+ +L8Muyi6YZ6ASCkr9tTT+xckqCHE1sUYq77jAbPm+oGTKZ7sUmWVGysIoCwaC1Mztcxb502wo6J
+ 6OZ1sJj0nsHDKomINVZ5fE6FzhE9Zkin2qMiNCsICFL+z4r6ZWWwxqj3nbZ5D3u7cTaWJWChIXG
+ 2CcHq/wIM6kDmdjD6tQ==
+X-Authority-Analysis: v=2.4 cv=JfWxbEKV c=1 sm=1 tr=0 ts=695c5eea cx=c_pps
+ a=hnmNkyzTK/kJ09Xio7VxxA==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
  a=vUbySO9Y5rIA:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=EUspDBNiAAAA:8 a=TaVSYX7Pq2PjI-6xwy8A:9 a=QEXdDO2ut3YA:10
- a=a_PwQJl-kcHnX1M80qC6:22
+ a=EUspDBNiAAAA:8 a=JZG1H6jYz0umZupwJd8A:9 a=QEXdDO2ut3YA:10
+ a=PEH46H7Ffwr30OY-TuGO:22
+X-Proofpoint-ORIG-GUID: DhSQQ3-9CqRkDb2pH_EMDqpmndKIp4Hy
+X-Proofpoint-GUID: DhSQQ3-9CqRkDb2pH_EMDqpmndKIp4Hy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2026-01-05_02,2026-01-05_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 phishscore=0 impostorscore=0 bulkscore=0 clxscore=1015
- lowpriorityscore=0 priorityscore=1501 spamscore=0 suspectscore=0 adultscore=0
+ bulkscore=0 adultscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 spamscore=0 impostorscore=0 phishscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2512120000 definitions=main-2601060007
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260105_170127_845266_C6A014A1 
-X-CRM114-Status: GOOD (  12.84  )
+X-CRM114-CacheID: sfid-20260105_170130_758053_57524190 
+X-CRM114-Status: GOOD (  24.97  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -170,37 +171,136 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-WCN3998 uses a bit different format for rom version:
+The WCN39xx family of WiFi/BT chips incorporates a simple PMU, spreading
+voltages over internal rails. Implement support for using powersequencer
+for this family of ATH10k devices in addition to using regulators.
 
-[    5.479978] Bluetooth: hci0: setting up wcn399x
-[    5.633763] Bluetooth: hci0: QCA Product ID   :0x0000000a
-[    5.645350] Bluetooth: hci0: QCA SOC Version  :0x40010224
-[    5.650906] Bluetooth: hci0: QCA ROM Version  :0x00001001
-[    5.665173] Bluetooth: hci0: QCA Patch Version:0x00006699
-[    5.679356] Bluetooth: hci0: QCA controller version 0x02241001
-[    5.691109] Bluetooth: hci0: QCA Downloading qca/crbtfw21.tlv
-[    6.680102] Bluetooth: hci0: QCA Downloading qca/crnv21.bin
-[    6.842948] Bluetooth: hci0: QCA setup on UART is completed
-
-Fixes: 523760b7ff88 ("Bluetooth: hci_qca: Added support for WCN3998")
+Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 ---
- drivers/bluetooth/btqca.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath10k/snoc.c | 54 ++++++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/snoc.h |  2 ++
+ 2 files changed, 53 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-index 7c958d6065be..86a48d009d1b 100644
---- a/drivers/bluetooth/btqca.c
-+++ b/drivers/bluetooth/btqca.c
-@@ -804,6 +804,8 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 	 */
- 	if (soc_type == QCA_WCN3988)
- 		rom_ver = ((soc_ver & 0x00000f00) >> 0x05) | (soc_ver & 0x0000000f);
-+	else if (soc_type == QCA_WCN3998)
-+		rom_ver = ((soc_ver & 0x0000f000) >> 0x07) | (soc_ver & 0x0000000f);
- 	else
- 		rom_ver = ((soc_ver & 0x00000f00) >> 0x04) | (soc_ver & 0x0000000f);
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index b3f6424c17d3..3600c8eb19a3 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -11,6 +11,7 @@
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
++#include <linux/pwrseq/consumer.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/remoteproc/qcom_rproc.h>
+ #include <linux/of_reserved_mem.h>
+@@ -1023,9 +1024,15 @@ static int ath10k_hw_power_on(struct ath10k *ar)
  
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power on\n");
+ 
++	if (ar_snoc->pwrseq) {
++		ret = pwrseq_power_on(ar_snoc->pwrseq);
++		if (ret)
++			return ret;
++	}
++
+ 	ret = regulator_bulk_enable(ar_snoc->num_vregs, ar_snoc->vregs);
+ 	if (ret)
+-		return ret;
++		goto pwrseq_off;
+ 
+ 	ret = clk_bulk_prepare_enable(ar_snoc->num_clks, ar_snoc->clks);
+ 	if (ret)
+@@ -1035,18 +1042,28 @@ static int ath10k_hw_power_on(struct ath10k *ar)
+ 
+ vreg_off:
+ 	regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
++pwrseq_off:
++	pwrseq_power_off(ar_snoc->pwrseq);
++
+ 	return ret;
+ }
+ 
+ static int ath10k_hw_power_off(struct ath10k *ar)
+ {
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	int ret_seq = 0;
++	int ret_vreg;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power off\n");
+ 
+ 	clk_bulk_disable_unprepare(ar_snoc->num_clks, ar_snoc->clks);
+ 
+-	return regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
++	ret_vreg = regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
++
++	if (ar_snoc->pwrseq)
++		ret_seq = pwrseq_power_off(ar_snoc->pwrseq);
++
++	return ret_vreg ? : ret_seq;
+ }
+ 
+ static void ath10k_snoc_wlan_disable(struct ath10k *ar)
+@@ -1762,7 +1779,38 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 		goto err_release_resource;
+ 	}
+ 
+-	ar_snoc->num_vregs = ARRAY_SIZE(ath10k_regulators);
++	/*
++	 * devm_pwrseq_get() can return -EPROBE_DEFER in two cases:
++	 * - it is not supposed to be used
++	 * - it is supposed to be used, but the driver hasn't probed yet.
++	 *
++	 * There is no simple way to distinguish between these two cases, but:
++	 * - if it is not supposed to be used, then regulator_bulk_get() will
++	 *   return all regulators as expected, continuing the probe
++	 * - if it is supposed to be used, but wasn't probed yet, we will get
++	 *   -EPROBE_DEFER from regulator_bulk_get() too.
++	 *
++	 * For backwards compatibility with DTs specifying regulators directly
++	 * rather than using the PMU device, ignore the defer error from
++	 * pwrseq.
++	 */
++	ar_snoc->pwrseq = devm_pwrseq_get(&pdev->dev, "wlan");
++	if (IS_ERR(ar_snoc->pwrseq)) {
++		ret = PTR_ERR(ar_snoc->pwrseq);
++		ar_snoc->pwrseq = NULL;
++		if (ret != -EPROBE_DEFER)
++			goto err_free_irq;
++
++		ar_snoc->num_vregs = ARRAY_SIZE(ath10k_regulators);
++	} else {
++		/*
++		 * The first regulator (vdd-0.8-cx-mx) is used to power on part
++		 * of the SoC rather than the PMU on WCN399x, the rest are
++		 * handled via pwrseq.
++		 */
++		ar_snoc->num_vregs = 1;
++	}
++
+ 	ar_snoc->vregs = devm_kcalloc(&pdev->dev, ar_snoc->num_vregs,
+ 				      sizeof(*ar_snoc->vregs), GFP_KERNEL);
+ 	if (!ar_snoc->vregs) {
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index d4bce1707696..eeaa1c009cb0 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -53,6 +53,7 @@ enum ath10k_snoc_flags {
+ };
+ 
+ struct clk_bulk_data;
++struct pwrseq_desc;
+ struct regulator_bulk_data;
+ 
+ struct ath10k_snoc {
+@@ -73,6 +74,7 @@ struct ath10k_snoc {
+ 	struct ath10k_snoc_ce_irq ce_irqs[CE_COUNT_MAX];
+ 	struct ath10k_ce ce;
+ 	struct timer_list rx_post_retry;
++	struct pwrseq_desc *pwrseq;
+ 	struct regulator_bulk_data *vregs;
+ 	size_t num_vregs;
+ 	struct clk_bulk_data *clks;
 
 -- 
 2.47.3
