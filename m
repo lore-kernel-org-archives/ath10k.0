@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99A7FD30CFD
-	for <ath10k@archiver.kernel.org>; Wed, 14 Jan 2026 01:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEBE2D31A3B
+	for <ath10k@archiver.kernel.org>; Wed, 14 Jan 2026 09:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=IQeDIqj8yqDMuZVPm/CJmcBQw60eLG8uKw9keDCBPIc=; b=K2k/LJf/8xu17W2pLnxr9u90wd
-	+MJPs8xU08AjSKVOK54BfpFME8UJEyzpFdbRCLs+i44N8App5Fh2RR/0yopEuIU4T4RogujkltwBc
-	eDT5no2LM6dNjPbAp4cfAnhQMHAYFfHCbluzfadS6aJd6llhRLEuhtIBxxOEtcb0Wq181Xxg7so5j
-	/BDeT4m4bZDlzdpiOM261+aXwXx5VCcjZD92z7qc3kH863akWpLSpENIxR9wH9gsxHhBfTxWoHPXj
-	rNlNRw0Amn3fNNLEfBbkqeaDj1hGch2B94DVASmXSQ+Oo+2VoJQEHWH4u5HRcU4w4k6/eCcGpyzDe
-	de6sUZzw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ufpRZ0O09Okc26dzuVpIdsUxMRmkbneXYKpFAjnsc3o=; b=As0/Zqb6qNed5mfZsnJ3tYdS/y
+	Prr3JJGPpIgfR/5ZC37w5dU9n9/xSlLyd3PR3EghsOBr62tv4WDcfTFm4CQRt2Hn3gZb0vHh2W+Xo
+	tqkvq8S8AYNRlkLqzOpm5p8Vc2FfFIjKISHIN75PerpS9GyxgI5EnZUPg1Mr7DSpQDY4hpdX/ByZw
+	TF9kRzex4gtmCeN/HPX/XbREP39LGqCQGvwmO032euDpBrJL4UbuLWTpSMbIr+E++f9xEBiBSR3sM
+	WINh9J6BH752VZa+P3jmy8WRsvvufMKskZ/beG+o7ctIPWg+iTfSCMQVJ8skk4pbkNb3rul0uG1yv
+	56HcaJpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfppi-00000007wtN-1P2z;
-	Wed, 14 Jan 2026 01:38:02 +0000
-Received: from gandalf.ozlabs.org ([150.107.74.76] helo=mail.ozlabs.org)
+	id 1vfxU1-00000008cj8-3WEe;
+	Wed, 14 Jan 2026 09:48:09 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfppe-00000007wsc-1WFk
-	for ath10k@lists.infradead.org;
-	Wed, 14 Jan 2026 01:38:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=202503; t=1768354673;
-	bh=IQeDIqj8yqDMuZVPm/CJmcBQw60eLG8uKw9keDCBPIc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=lGsEtsirMdeLQUpunQ9wsqkP5IrpNH+eDs+23H2jK+GGZ55lr3rswgJlDRem7wOYL
-	 Orjz3AJQ8e9tN8GEx7wQhvmJBDwDeZMf+X//IlHybwavrKr35UaRcG/dBnLhHhjz7K
-	 4ppy0C4gmENzwsOLX9lgeCqzQ+Jf8rijpR9vbAQv3EeN2mW4RmqwuWX+sntbYNY4qh
-	 OZEiuKbz6FFG52dD2r5u40HQ1PPe0ysJoOhkZDtkjk4cBRLV8foRxZ21sV2mQUNou9
-	 8U4ZGob5SmeZzcZVMa5a9Kljp0R+cbPD/XX1OcS7F1qxe7FnrY9DQ4A6HYFT65BpYC
-	 N6P5H/YJJb6HQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4drTJc5KJCz4wRG;
-	Wed, 14 Jan 2026 12:37:51 +1100 (AEDT)
-Date: Wed, 14 Jan 2026 12:37:51 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jeff Johnson <jjohnson@kernel.org>
-Cc: Jeff Johnson <jeff.johnson@oss.qualcomm.com>, Ripan Deuri
- <quic_rdeuri@quicinc.com>, Yingying Tang <yingying.tang@oss.qualcomm.com>,
- Ath10k List <ath10k@lists.infradead.org>, Networking
- <netdev@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the net-next tree with the ath tree
-Message-ID: <20260114123751.6a208818@canb.auug.org.au>
+	id 1vfxU0-00000008chj-0BCq;
+	Wed, 14 Jan 2026 09:48:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=ufpRZ0O09Okc26dzuVpIdsUxMRmkbneXYKpFAjnsc3o=;
+	t=1768384087; x=1769593687; b=JdaGAdE/M7EiZeTYzsilrAOXyrIr3fe4FJqFc7DRzRokCrf
+	hH9+q4Q06a5p6RY4BQq1xtZCpBZsrNAK1v2MHYFRdo59gztVU0e7cDPmd8XeH3KsIsbEUg6gKLb0+
+	RpHev/+Yd+vSZrtP1r1J0/A0E8nyMVVNK+8eOWuel2Sp2fL6YldHdVoks6W5NxmEcHSATayRXw+4U
+	9Z7D9j9u7Ov1qcgZ0RYvN8BlKDCmFe+33gu7x7T/WChrrwMffIwPi+IP5moTLAHdgxTEf0P9KKfhm
+	k2bVUejzkgzRUIPq1ngZ5rzx6WcN01/eSXXXhoikeZ9jAerBjSJYUf8xYbUIfDmg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1vfxTr-0000000BZWw-3PcL;
+	Wed, 14 Jan 2026 10:48:00 +0100
+Message-ID: <33d998cc225a7aeef4731ebc53c28a32b241ca7e.camel@sipsolutions.net>
+Subject: Re: pull-request: ath-current-20260113
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>, 
+	linux-wireless@vger.kernel.org
+Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org, 
+	ath12k@lists.infradead.org, jjohnson@kernel.org
+Date: Wed, 14 Jan 2026 10:47:59 +0100
+In-Reply-To: <98386125-c0bb-495e-b2ba-2765aaed19d8@oss.qualcomm.com> (sfid-20260113_183400_758847_B264F10B)
+References: <98386125-c0bb-495e-b2ba-2765aaed19d8@oss.qualcomm.com>
+	 (sfid-20260113_183400_758847_B264F10B)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6tXw03ZjMuYvongKlANEsNe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260113_173758_812046_CD862234 
-X-CRM114-Status: GOOD (  21.69  )
+X-CRM114-CacheID: sfid-20260114_014808_132698_1454D09F 
+X-CRM114-Status: GOOD (  11.10  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,92 +74,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
---Sig_/6tXw03ZjMuYvongKlANEsNe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2026-01-13 at 09:33 -0800, Jeff Johnson wrote:
+>=20
+> Note to maintainers:
+>=20
+> This tag includes:
+> 31707572108d ("wifi: ath12k: Fix wrong P2P device link id issue")
+>=20
+> That commit contains the following:
+>=20
+> Note to linux-next and netdev maintainers:
 
-Hi all,
+I'm a bit on the fence about this, I hadn't thought about it on the
+prior -next PR much, but I feel like this is a process thing that
+shouldn't get recorded in the tag for posterity?
 
-Today's linux-next merge of the net-next tree got a conflict in:
+I do appreciate the inclusion of this (*especially* when I won't notice
+the merge conflict myself), but I tend to think it should be in the
+email rather than the tag message, since the latter is something I use
+for the merge commit message and it gets recorded.
 
-  drivers/net/wireless/ath/ath12k/mac.c
+Either way I have to preserve it manually to the next level, so it
+doesn't really help all that much, although I guess in the tag there's a
+chance I could see it again when preparing my PR.
 
-between commit:
+I'll just edit it out this time I think since it's so long, but you can
+complain and convince me otherwise for the next time ;-)
 
-  31707572108d ("wifi: ath12k: Fix wrong P2P device link id issue")
-
-from the ath tree and commit:
-
-  c26f294fef2a ("wifi: ath12k: Move ieee80211_ops callback to the arch spec=
-ific module")
-
-from the net-next tree.
-
-I fixed it up (following the directions in commit 31707572108d, I used
-the latter version of the above file and then added the following merge
-fix patch) and can carry the fix as necessary. This is now fixed as far as
-linux-next is concerned, but any non trivial conflicts should be mentioned
-to your upstream maintainer when your tree is submitted for merging.
-You may also want to consider cooperating with the maintainer of the
-conflicting tree to minimise any particularly complex conflicts.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 14 Jan 2026 12:34:25 +1100
-Subject: [PATCH] fix up for "wifi: ath12k: Move ieee80211_ops callback to t=
-he
- arch specific module"
-
-interacting with commit
-
-  31707572108d ("wifi: ath12k: Fix wrong P2P device link id issue")
-
-from the ath tree.
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/net/wireless/ath/ath12k/wifi7/hw.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath12k/wifi7/hw.c b/drivers/net/wirel=
-ess/ath/ath12k/wifi7/hw.c
-index 1f5dda73230d..8ac06b2fc18f 100644
---- a/drivers/net/wireless/ath/ath12k/wifi7/hw.c
-+++ b/drivers/net/wireless/ath/ath12k/wifi7/hw.c
-@@ -705,7 +705,10 @@ static void ath12k_wifi7_mac_op_tx(struct ieee80211_hw=
- *hw,
- 			return;
- 		}
- 	} else {
--		link_id =3D 0;
-+		if (vif->type =3D=3D NL80211_IFTYPE_P2P_DEVICE)
-+			link_id =3D ATH12K_FIRST_SCAN_LINK;
-+		else
-+			link_id =3D 0;
- 	}
-=20
- 	arvif =3D rcu_dereference(ahvif->link[link_id]);
---=20
-2.52.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6tXw03ZjMuYvongKlANEsNe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmlm828ACgkQAVBC80lX
-0GyDnQgAnw6XDBK7GRcPCnBeN6hNRB9efKv+FrXoh5Mn3RvCmgwzdsEi5ZCwVKB3
-1S9jNtU7B/O0VM/dML9ICSL7gp3w5vNIlqAhuGh+jkgGsoDQ47LZzsc7gA+AtWQ3
-r7VIAM8zzjx8rfvMQ2P4UadqmtQjg14WipeoquPbJrGcQnKWKOM23jjggvObxjBA
-kjOHYxpeB7iM8Ccz4T4UCv8e+s37nIJsoO94I25roM/UUMaddbhgpiWiUTGWFKtO
-jacJBCHR4ACkNwsPcYzsfszLb4quZ9rY2W+WwEbo4zeM9qQkVg9iYQ/e4EW+iCFS
-0EphceDTlbEYtLHjTl59nRcx825ugg==
-=seMT
------END PGP SIGNATURE-----
-
---Sig_/6tXw03ZjMuYvongKlANEsNe--
+johannes
 
