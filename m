@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 821A7D6CFC5
-	for <ath10k@archiver.kernel.org>; Fri, 23 Jan 2026 04:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA34DD74EF3
+	for <ath10k@archiver.kernel.org>; Fri, 23 Jan 2026 16:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=7TaN6HO4UpfTa5x1GQ53EAUUeL9sRzG0T0kFV13YYQg=; b=on+3Fe3YxeM6zmAUKjHFsSJQma
-	Ir/VHpJfLElHn0pwjEzdfRYvRLGcOBaHkJru1qOXwVQx4lZai1xVQy/d9pnqEMxpcGKpcbvnFN3Cl
-	KQttQ+aaxZdKj3mvhHwNUxHV86xRQ5Di4vtYkrDtRhX5CF6PX6/swJvVG311W5eyS3NFtMXhj1shZ
-	5rgqR0hEuMap/s+nqpMCxmO4UcqTm0lB0ozMLS1UIRUCX9vzZH3vBF5DJiBrVHdtBHn+MgGNR7qQv
-	aJCqmRuM4AkB/tdQEnVKuE6hyLPGR9rGaqadN8YBWYAbuY6hmoGLJCMNtpy6msvatwg0fs8C40vTE
-	kMHZv65w==;
+	bh=3tVMdOq+RRmPd7zkB4BscKVMh/SgbBpBunr6VSji3Qs=; b=VNc8PD0yC290JaTcYDhNjU0dLp
+	NDbofQ0nnxZcF/SBDRGYQgm3ZXFa17xX7PknWkTbvu6XuAT0Ik4XmMthOvEWFZnX4fscoYFvqqGkx
+	jenwgn6Eo64XZYp3nqgOYGKsM61CqQDm89ZA9pkycJqpLHbwF8tM3fB3ldc/k8GYzogLyXNUxcmq0
+	OVjRWeNe2xzn1UMghgitcmdtyu+w6GwDb39OaiwSGHhjLndQgCehQsH3TcuqzeMCfV8c7qUMmT1Sg
+	A5nWdlEvT3QR5Ye2KmDG6aEEsTIc2V6MmgmFmw75h4/8rkKtVnBg1vK/l1vyH31OAvgv8PuRQwfJy
+	wsRbmxsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vj9Fh-00000008DXV-0sPH;
-	Fri, 23 Jan 2026 04:58:33 +0000
-Received: from mail-oo1-xc2e.google.com ([2607:f8b0:4864:20::c2e])
+	id 1vjJca-000000098kJ-0Ntj;
+	Fri, 23 Jan 2026 16:02:52 +0000
+Received: from mail-oi1-x233.google.com ([2607:f8b0:4864:20::233])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vj9Fd-00000008DX1-1aTZ
+	id 1vjJcX-000000098jy-362C
 	for ath10k@lists.infradead.org;
-	Fri, 23 Jan 2026 04:58:30 +0000
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-6611cab8ca3so618219eaf.3
-        for <ath10k@lists.infradead.org>; Thu, 22 Jan 2026 20:58:28 -0800 (PST)
+	Fri, 23 Jan 2026 16:02:51 +0000
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-459ac606f0bso1651825b6e.0
+        for <ath10k@lists.infradead.org>; Fri, 23 Jan 2026 08:02:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=u-northwestern-edu.20230601.gappssmtp.com; s=20230601; t=1769144307; x=1769749107; darn=lists.infradead.org;
+        d=u-northwestern-edu.20230601.gappssmtp.com; s=20230601; t=1769184168; x=1769788968; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7TaN6HO4UpfTa5x1GQ53EAUUeL9sRzG0T0kFV13YYQg=;
-        b=ctNZ6T2nE4v7GbUdlFm/mF3HogeNpOSPidxS/Q73E0L9rBghepsq+GvMbxKx0Ct5wu
-         4545L0YmZMs0bUwlxdbY7PUzD8dzGG7PClP+c8SUD7ctNmMmGBjDQZNfDpovvv8/NJN/
-         3Ct3Nze4pyWcQiyLw1beAOxjeF0MWvX6JNmh/sXFjwrghg4Eie4XthquxLSOEYv+1VNH
-         +yH2WA6bF+Kv3COuqtEXuH08AsaTO1GPcvf0a/nG7HavjZ4W3NaNLclR3Nlptn5Qt0LS
-         KMEnbg49q/QE7gOC0pFuvBmzFdDVNqa2ZajUdC09Gqa+0DLLA4HGOuB7lqqMnj+Dh9Y1
-         XIww==
+        bh=3tVMdOq+RRmPd7zkB4BscKVMh/SgbBpBunr6VSji3Qs=;
+        b=Ew1R7YIDI1I0y76r3Dlur5intH/hZUbqxkLL3kYMYGl/leAfNwTllTIuy5fBBY1aCo
+         OqRPSIrEi63LHCDC3R/fo9Yoj0txC2A5A20ukvPBbD98k7WtHLrey2jx9OU068fMoO14
+         Wuo/F3IizL1hhWfRcDt7YQT++l4D7ATRga29CoHM9EkwhBfe9PV7QMu7vbHwEPccJr6S
+         yx1augDgmTpYLbWXceiUu/5paUVnjKPl6gGrsHhNVr1l4//9s3jx9e5prwYTA8JRnBGq
+         psWyGgplVGi+HmoWBPgu2NXo/VE1dFQV3If5aqMdFqYuy5IM4WJ9rj0VDiMKaDY0Fu9N
+         5E+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769144307; x=1769749107;
+        d=1e100.net; s=20230601; t=1769184168; x=1769788968;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7TaN6HO4UpfTa5x1GQ53EAUUeL9sRzG0T0kFV13YYQg=;
-        b=RBsztTyalfoumL5CiGJqSVGujmNNbkn/9csYCt7RcOGBfmvHYAJ3FvFfCimXARbPNM
-         82laM2wGeoqWs2ZHoBavYgfxGkWr8W1Hl8g5qYZksAe4xz02PQeqC17b1sQVPGJj75mF
-         vQU73jgAsb94lqVYAc0036JEJzEaU7koGmQ6+xcRsnBB3B66xdZK9XYoUDIZPwDc65x6
-         ExJ7x5nei3qzV2352saIZIxNfopmB6HUyVBfpOtM/XEuhXhgfz/6Ygx5bghyKSGayBwI
-         NCGv7CjfSQyBRvzicOYcIC3+8pQUWfWTko+oAWB25zKKWaaT+s5EVtg/6/gjqZeXLPwa
-         K+Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCWRujaFq8b7NKyCbwyGh+49ZNx7JE+2nHM1KPEmlfDqqWGRDYaSw/n0TkAemZpadNoaERxkP+o=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx/ucZd7MWHaWhQ3KKK6+EjdROsmKfHs0TtgcnCcAoJQ2f/Lwoy
-	ZJ2KLb3idL5Y8zTrRqe6TwsNxWtMp7Vfn7EPcoekPLW1v8TlAsla6k+4sqjELSEVSTo=
-X-Gm-Gg: AZuq6aJFGwm3KM8ZDsNRD4LNLboJLcqJeryiUimJPlBuJzDOZP03ykpSZW4qTO8dpd2
-	I7ZFfTUtY7Ch/C6oSVnTbf18+vu3GX2XT2CbkVn0b8x+CjMQJpC4SkaWuC7Rle4r7d+JYWwxQgK
-	1rqy2q1RlvMUywaZ3SAPk1YBqeKtL27p2Ez2D3A/d52lRR8xCZx59yWoLhWe7enaOquOvcgqBXG
-	UsbIX8CvKkrU2R35RALB/YbnH09WtfFw1fM088MLZg5A/yIeRi+bPwKs919IV13M8bO7Gs5fUzH
-	3jCrnE27l7EZh0h89IH9+7w5637gc1oNLeMXTTjQkx+2Lz4pF5dfLwonk/qT6RzmkNEvOaCzvkW
-	H4ivIFIgibQu84MAYUqNIPrOIUpQ8nE6tR0g3t1BFB7Irfu+t8s9W76tOkgOpAbiOhtIsn/IZxm
-	3dMWs7PIpaTLEV2fABPDUsSHSNtq3Ti+lPu3yhxbTLGew4rt4jc/Fghye9dm3JjE3i79Ob3CSCu
-	5xd7l5d6lwUCB6laSSfEzoVcUeX/jkhk2w23HFJQQ==
-X-Received: by 2002:a05:6820:4c17:b0:659:9a49:8f04 with SMTP id 006d021491bc7-662cab0991fmr870166eaf.21.1769144307361;
-        Thu, 22 Jan 2026 20:58:27 -0800 (PST)
+        bh=3tVMdOq+RRmPd7zkB4BscKVMh/SgbBpBunr6VSji3Qs=;
+        b=H7AoSiaCeqpI4mP2f6yhoVc1JVZEROVmCQKNnnWgYevZvRNiQSgqjGpRRgS9tBplmf
+         jpsaFt3bUgBG43xjr7ZiCeQGnD06VxgjiElSEZZ7JMVzyQwULjXISPu+Qs8K7NCWDy6C
+         iBsLlqZeJG2OLeH6WhbcLV34n0Hgswrso8ReVTmIDJbekivsTJT6bdfOnHQjtjM0TcNr
+         1+YmoUuph4YeXD8RliE+G7myh9N5jZwj/GNkHAYQE/x4ssKFRmXZaXqCw3vGvLZw572o
+         ZSmvkOTXgJ4YAZKNc5AmMeKTUri0AluSDGKAD+XWqszsawKGS8AtBiwnN1R1JksigtS6
+         mShQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWqFlE2T+JQ9KlGNqWzBVxngEf4z+7bVI6bMsy1dYWgMgisw+VxU+xYPCiCyeqA7kh3CZ/vCxk=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw5zEyaRClKsejwKMMD+F4FbfiZiE+bUZpA/+lPDQMq9U3+B4Ki
+	iP20zSptZ0yJcm0MmGgJmdihKBN7vUQS/WMhba7EAClZwda5GSiyUdj7Ij8y4x1m9bM=
+X-Gm-Gg: AZuq6aKBglDa9VKSTw2avxu/+th18PizefJ9lebYvxEMHP80EeeWguNSEc8VeXLHO/+
+	PrXtFvIMCrPQg2x6FDJBBbTlq0P5/iHFhMEi+DduCwRkRoW/RXW2tJUJJqrtFpbvuKzRPK3Y71A
+	1bIw0OA1rxxxwjxhi9katawg2TB/VwDOMsjrNtXQmzKrhyboZwqdVbvygZPu3bIt73sb/k2FYAM
+	RsdFsyOLykUVmSKMHtcKL1WR2aVIqhDFOTTC20Fcu9XT9JLMoh3Q+vRzpvFqJlJRZQ86gHKSayq
+	KGbBNIauRpTxy4ZfChyOCtACuRM+9CyPd0juxbq9pauiwlXLFtnzN6vCcIGQahUwwOgurvjzEBa
+	zNV/s/4U3JPoevXsiGTvOW5QzOArVtpO8iuaDqsIcxlf3AqWE+rNbiTVFN8uWEAczig5xHt1Y9G
+	LQfArXT/L76HMyfUXPLVMDx6h/DSBoLhhWjEJzixVjK0RGorE3hMzxJ6j9DlYzodQF1yih/iC9v
+	ogDWExOlTbyfbyOaHinO2NLKVt/uEw=
+X-Received: by 2002:a05:6808:2226:b0:455:8b5b:c763 with SMTP id 5614622812f47-45eb1ec9619mr1597955b6e.67.1769184168229;
+        Fri, 23 Jan 2026 08:02:48 -0800 (PST)
 Received: from security.cs.northwestern.edu (security.cs.northwestern.edu. [165.124.184.136])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-662cb662e90sm600579eaf.14.2026.01.22.20.58.26
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-45eb42530e9sm1485317b6e.16.2026.01.23.08.02.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jan 2026 20:58:27 -0800 (PST)
+        Fri, 23 Jan 2026 08:02:47 -0800 (PST)
 From: Ziyi Guo <n7l8m4@u.northwestern.edu>
 To: Jeff Johnson <jjohnson@kernel.org>
 Cc: linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Ziyi Guo <n7l8m4@u.northwestern.edu>
-Subject: [PATCH] wifi: ath10k: sdio: add missing lock protection in ath10k_sdio_fw_crashed_dump()
-Date: Fri, 23 Jan 2026 04:58:22 +0000
-Message-Id: <20260123045822.2221549-1-n7l8m4@u.northwestern.edu>
+Subject: [PATCH] wifi: ath10k: fix lock protection in ath10k_wmi_event_peer_sta_ps_state_chg()
+Date: Fri, 23 Jan 2026 16:02:44 +0000
+Message-Id: <20260123160244.262225-1-n7l8m4@u.northwestern.edu>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260122_205829_670904_AFA408CB 
-X-CRM114-Status: UNSURE (   7.71  )
+X-CRM114-CacheID: sfid-20260123_080250_026027_9B3DD0D0 
+X-CRM114-Status: UNSURE (   8.21  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -99,51 +99,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-ath10k_sdio_fw_crashed_dump() calls ath10k_coredump_new() which requires
-ar->dump_mutex to be held, as indicated by lockdep_assert_held() in that
-function. However, the SDIO implementation does not acquire this lock,
-unlike the PCI and SNOC implementations which properly hold the mutex.
+ath10k_wmi_event_peer_sta_ps_state_chg() uses lockdep_assert_held() to
+assert that ar->data_lock should be held by the caller, but neither
+ath10k_wmi_10_2_op_rx() nor ath10k_wmi_10_4_op_rx() acquire this lock
+before calling this function.
 
-Additionally, ar->stats.fw_crash_counter is documented as protected by
-ar->data_lock in core.h, but the SDIO implementation modifies it without
-holding this spinlock.
+The field arsta->peer_ps_state is documented as protected by
+ar->data_lock in core.h, and other accessors (ath10k_peer_ps_state_disable,
+ath10k_dbg_sta_read_peer_ps_state) properly acquire this lock.
 
-Add the missing mutex_lock()/mutex_unlock() around the coredump
-operations, and add spin_lock_bh()/spin_unlock_bh() around the
-fw_crash_counter increment, following the pattern used in
-ath10k_pci_fw_dump_work() and ath10k_snoc_fw_crashed_dump().
+Add spin_lock_bh()/spin_unlock_bh() around the peer_ps_state update,
+following the pattern used by other WMI event handlers in the driver.
 
-Fixes: 3c45f21af84e ("ath10k: sdio: add firmware coredump support")
 Signed-off-by: Ziyi Guo <n7l8m4@u.northwestern.edu>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index c06d50db40b8..00d0556dafef 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2487,7 +2487,11 @@ void ath10k_sdio_fw_crashed_dump(struct ath10k *ar)
- 	if (fast_dump)
- 		ath10k_bmi_start(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index b4aad6604d6d..40259504927c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5305,7 +5305,9 @@ ath10k_wmi_event_peer_sta_ps_state_chg(struct ath10k *ar, struct sk_buff *skb)
+ 	}
  
-+	mutex_lock(&ar->dump_mutex);
-+
+ 	arsta = (struct ath10k_sta *)sta->drv_priv;
 +	spin_lock_bh(&ar->data_lock);
- 	ar->stats.fw_crash_counter++;
+ 	arsta->peer_ps_state = __le32_to_cpu(ev->peer_ps_state);
 +	spin_unlock_bh(&ar->data_lock);
  
- 	ath10k_sdio_disable_intrs(ar);
- 
-@@ -2505,6 +2509,8 @@ void ath10k_sdio_fw_crashed_dump(struct ath10k *ar)
- 
- 	ath10k_sdio_enable_intrs(ar);
- 
-+	mutex_unlock(&ar->dump_mutex);
-+
- 	ath10k_core_start_recovery(ar);
- }
- 
+ exit:
+ 	rcu_read_unlock();
 -- 
 2.34.1
 
