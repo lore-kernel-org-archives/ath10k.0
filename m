@@ -4,133 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B68A1D3F08E
-	for <ath10k@archiver.kernel.org>; Wed, 28 Jan 2026 16:36:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F091E6BF11
+	for <ath10k@archiver.kernel.org>; Fri, 30 Jan 2026 15:15:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=726DQBzhA/EmumloQR+FME9Z+eEVaDFRgktcZxX0gsE=; b=T3C7jZ0/fwnPeULYHDMrQsF+/C
-	c4FNPfC2tXor0N0hlzGO4cfDNU2FJTRGtiCtL40fu4wVXkYqI7fSuC1rxGhVu0OCfQSUCfcCsrcq1
-	1SO5R6IySI/LuLe77Gbujxhcpj+SZo7GvvosDlL21Nc4QvGf1WqcBOBukjP0eV+eZl0TB+Ufqb7Tg
-	vjYkrHp3P/HRtx3pKpLu8he7DtydsI77c5acicZLKmlNSJ8R47/8ODE1Qd4fa+qWt5jjffuH0ufjm
-	1qAMyWZNF5Q0UqvA1vzwXPZVyBuN05nhS2SpjUFOlf0vpoq+A8lgZEpusAm5R/QxpPFhSFZUW2etf
-	pViquRJQ==;
+	bh=AvR+veMNXUN9kD5s1VOKjCZx6VF0YVbXKpl5oiQlJqU=; b=NU0Z/9dOoXLjkftaQO7fBsUSnm
+	NNIFaTQ5/w16MfrQfSaF6E46ykr99FnzIEr27NuFUmslfGOuzahT0ZCA9YcloOd2SZJ7z9RpdTCmL
+	AP7ZYx/M4OAWu7JoZAuVyBCatPa7U15yajP7ZlyQed4hqwJjYU3U3Lc/Lxz0bYRreMqrXNXRnhp5t
+	v8MNmrIknl9OfUnSyFapeQ2BoPwQlKYsiC6/00rGXONJS4bFb3hchQCCTYiF/slrdZHPDS7hQ9gBu
+	WVnZawwpaQze8biBuw2e3BmoChKl/h7yeiiYImNIM5Liq7yJv/0ECRwKV10MGTZV4+O5j3xId5gHE
+	/OZfpVQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vl8Wi-0000000GPKr-3Lbb;
-	Wed, 28 Jan 2026 16:36:20 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1vlqDl-00000001cs1-2WUb;
+	Fri, 30 Jan 2026 15:15:41 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vl8Wd-0000000GPK2-3WVC
+	id 1vlqDj-00000001cqv-17Qs
 	for ath10k@lists.infradead.org;
-	Wed, 28 Jan 2026 16:36:19 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60SFW1ct4008411
-	for <ath10k@lists.infradead.org>; Wed, 28 Jan 2026 16:36:15 GMT
+	Fri, 30 Jan 2026 15:15:40 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60UB4eLn485896
+	for <ath10k@lists.infradead.org>; Fri, 30 Jan 2026 15:15:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	726DQBzhA/EmumloQR+FME9Z+eEVaDFRgktcZxX0gsE=; b=nR4MLXs8PnRpPmqU
-	nbYVgBIRd5rdwk47xM2Ln2D8SeCoWZIwIcQdDJ5vWtu06cB/OMNSeqO3u8GCjNsq
-	g2WreKlURxjauc97Sqy5/DeSXo7Ie7+b32uQyhNuVCXmp4BwCkw1JbSvRe246nnP
-	K20gpQoHHn4/OjZ6rWY472q6ajBuyMP9lDpNhhOphsE0o2+XRUUlbHn8TmHud6Y8
-	Kt/81YatcCvS7Ars82nvbYGoLCH5QM0yNBpi7l6+NQqHXYGmUef/FG0NX/wg2fjy
-	AYpHlGAJlkgXtUpcX3H1nyv5VHP01ZRoceaj8TEBHTdTvoBQaNSLNit9VaWPeDuc
-	F6jZeQ==
-Received: from mail-dl1-f72.google.com (mail-dl1-f72.google.com [74.125.82.72])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4by1jx4dre-1
+	AvR+veMNXUN9kD5s1VOKjCZx6VF0YVbXKpl5oiQlJqU=; b=XEnPMAAhFkGB9oau
+	aRnjV3x10vn2TpqZ7rJHykFaWXzSDf+1h6QZfeFSbVhZiVwbdAnr95f2NGlX9rpm
+	8rUVMU+vFqYKyOK35fCBIwgu+dm+NWyoxuNEFbHfca14i9bXMS04Mabef8dD89sk
+	4qYJ3f5d8Bf65KIIgUf5lAh5/HqBpxGr8Me0cDVBUfPIj3UhgyRUsFb98ZkdoXap
+	sXr2Lk+T/APvmbFGIofq3JNMLFW7siUJnr+9gc0Y+zgENee2UsfRrVtsSLXaS3Ci
+	TlZv7NJwUG5HWyrYIV+c4CnzYHdsRsPf/tyQknP4Se+BL3i0zcI8eD+4SwLKp/8m
+	hEdMJg==
+Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com [74.125.82.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4c0gtnjkwt-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Wed, 28 Jan 2026 16:36:14 +0000 (GMT)
-Received: by mail-dl1-f72.google.com with SMTP id a92af1059eb24-1247bb4db53so9505769c88.1
-        for <ath10k@lists.infradead.org>; Wed, 28 Jan 2026 08:36:14 -0800 (PST)
+	for <ath10k@lists.infradead.org>; Fri, 30 Jan 2026 15:15:38 +0000 (GMT)
+Received: by mail-dy1-f197.google.com with SMTP id 5a478bee46e88-2b71041d135so2244155eec.1
+        for <ath10k@lists.infradead.org>; Fri, 30 Jan 2026 07:15:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1769618174; x=1770222974; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=726DQBzhA/EmumloQR+FME9Z+eEVaDFRgktcZxX0gsE=;
-        b=ZpSjlpfjFr9Xt/irqVmWcD2qOMf9OYlVzUNbe1jV+0tjSzO6bkJufQVpWAm1PyIGfe
-         Fon8QSSO5xUvIW2awGSsk10ICmiyWR6d3XV99Ql0dQq6q0GgQvJJ/9uip19ALEuL3osL
-         mbu0+CKFVLnqQCG/t81UOmic6VRmAopz3hbUHoluZTqe3ZinY4Jq0Tfs6jajxQRueBLC
-         pq5vGYFllZbn658GuIUFDVKvKW7312VCPQM7DiQwURzuRVwu5Uy+LNdOaT+Ypf5x/ttl
-         BYifoK2enQh1HJBUoafjyWCKP80/WqXa6hKhY7DjJMi3o8ZHNTN+RGg50cMAELN03VBo
-         C9tw==
+        d=oss.qualcomm.com; s=google; t=1769786137; x=1770390937; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AvR+veMNXUN9kD5s1VOKjCZx6VF0YVbXKpl5oiQlJqU=;
+        b=M82CSP+//M0gSFY7A009x1EX+05rl85UpcSOxbuYo4HWggN9YCimgIenADRH8aOWnC
+         5j155Kh5lKnZENRSgpfkq87lkmT1zIHjue1RN6mylA/nuTMxTDu8kSKuRXgQU6aSBEsn
+         iPHEcX3R8GltIEP7trW+0B8E2Z7pGx+Rmh0LrHXF8C3QtUD7ir6/vONbYgKMapOvr/NZ
+         P4zENljy2IjePtzbMEJD9FVQoh1oIKZlfiDeUwvugpllnTqUPLxXYMUiMOBGvDLC201S
+         scduk1qycoOsbMn5Bs3U27alwi35qNEXUltvDif4hcPeg1Vim1vIdHrlBtJNWeTvNqhO
+         DXmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769618174; x=1770222974;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=726DQBzhA/EmumloQR+FME9Z+eEVaDFRgktcZxX0gsE=;
-        b=i4jnpgTbdslZ8u64E0EcFXW3F91bhu6EbIOKk93h6Q9lu/cPNsJATsDHWJKvLpwRBw
-         5yrHyRyKOnGSjRdBT3K1muyCwP4GUkoZfyErfnKkTeWQiPE/8563DuZVZGOG2KTBEbNH
-         0lHqAsSGAVI6IXeVdIUe3bO+mLvfZzBEOuwbxNX+7tM6+d8mGiju6SSvpG6TEnuA54yd
-         cKoO1lZyRFPxHUDNeOyYrQ2uhCUy5aMk1/kAW4MNv7IaJSz3oCs1aGI7FKHd5XOTiemn
-         q27ut3KlvFdgS//fp/h1a2cW4KiUFc58UuracD1KRO60mGVn/kYqupaAC4BOzsLMTRL7
-         gB4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVO8s1AYluV486mdpTjEh4VZIKjWm5xdpG6RrllCU+e2O0QVjwM7UMjMBUVEtn0W0FqE9T10dQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz+Te/NYT+58ODvVVop9LIB9rjeco78jOZIinSYaO8EYf9aQEEP
-	c9hxa/8x14bQM114bRQgWyjcpAVM766IVZwEngThZUCtCfX/0YpbQv/DtpGxgkEB7zzB5L5HDYl
-	vVEuCxc1EH92ZNPpnW23+vVviZc6QS21vBST2fdS9JzPDPefj5WiwAkhNj0mR3c5kvxpAJvCi
-X-Gm-Gg: AZuq6aJj68bRQesKwnhgfHANEx4UB8VOEmxU4YqA9LQnPeT5hoPtKQQuSaZzQNzyDK8
-	Y6IXYs/Itz5+mhI7mqBlu31EWANc5TllUuNa5vN05QGI3n1+B7m4JPhVm8vXUkjk9OKPxpKhik0
-	xtfQ24uBKvtB87P3kEmnqBDcffQUcCjMSzdY7hpR17itYIA1S2d7lEvi1saChMfsObDLZFRS1Kz
-	4ywbz+GL4wxZzRqA00/AagpBz4EROrE5mMMNfzLvUzGr1syQxID30sqePiJyWpMJ9nfPv1KzyBE
-	UUcI75xuPqx0ziIM3VzkxKVQPeMqf9UymwyuW302DopcE6sedS4V4Uk+LAOehNEBMpc2Oym6wmB
-	fVjWIGl6qdFxWzxwN3dyF3jtVHE2h8p/bzt0W2BBWnCT+ULrP/5MTq8QnYA0f2AtkMEm7Ng==
-X-Received: by 2002:a05:7022:128c:b0:123:361e:e87c with SMTP id a92af1059eb24-124a0098f90mr3452505c88.11.1769618174046;
-        Wed, 28 Jan 2026 08:36:14 -0800 (PST)
-X-Received: by 2002:a05:7022:128c:b0:123:361e:e87c with SMTP id a92af1059eb24-124a0098f90mr3452478c88.11.1769618173391;
-        Wed, 28 Jan 2026 08:36:13 -0800 (PST)
-Received: from [10.227.110.203] (i-global254.qualcomm.com. [199.106.103.254])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b7a16eab72sm3166931eec.8.2026.01.28.08.36.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jan 2026 08:36:12 -0800 (PST)
-Message-ID: <2bb1ebcf-1874-4b65-b4c6-30489747c594@oss.qualcomm.com>
-Date: Wed, 28 Jan 2026 08:36:11 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] wifi: ath10k: fix lock protection in
- ath10k_wmi_event_peer_sta_ps_state_chg()
-To: Ziyi Guo <n7l8m4@u.northwestern.edu>, Jeff Johnson <jjohnson@kernel.org>
+        d=1e100.net; s=20230601; t=1769786137; x=1770390937;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=AvR+veMNXUN9kD5s1VOKjCZx6VF0YVbXKpl5oiQlJqU=;
+        b=e6+eZghuuvvKHDd9MpH4mESxuP+iNwfUYHoymRlNIJwUb+OrJCrQ914pyNr2cC7YW1
+         krkCBdslvQNMyIw+0CGe4ntjM7LUUIXOKw7qwq5Yp6VKnSBgmpB5lITJ48b3jYzbbpee
+         1wfiQjP782Kj+tMXOHEwKv38NoFF4Pv6xM/pD5a1Me4P5t3i25gbu5pM5/jVUDDAs7V0
+         cKal9QB/10kMINZCEHPpUoSIaMT/IZaJ1GS2sIofeREyRYNnbzMd+3M6wiLAGwihJhZV
+         KSWgbBH+P77b6sUtp7rxiYaJjdGRCtdBrlQnMgUSPFbEhwY1kmv101C+ySAWraxjnrkS
+         Ex+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU9Nlhwy22e91CB9VssfwYXPrbGpaJKXI41RpQXi0oT/gk7w9v9UK/bUiJ9HuiOBzGZeMm6d0s=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyHkMBUeHSlgunXkBExctYbKCkb3cLlVFht5/3Vinj81H5PHUma
+	IMG2eslA8ZvX0dMDNoXAF5QWeyGHVkAdMadPWx/G0HhRoh4CC+0Hcw9/4Yc1GeEF9vUjypr3ifp
+	KG0L4VWtyh9Spr8W1eDLQ5ne278zFriv1PzOlYuAlXelkk6Bo5YzSaIGoMeDKBGjJ
+X-Gm-Gg: AZuq6aLBCPmL3KiwGE7K0vOo3KAccpu06wtovhgQFxVJD42y24ru3CHIIngMZvWd8CT
+	QA3+IJd2A2+vznLbkpKQ3rUKN+t6EJockNnXeDke0aE9e5XAamb93oG1Q3iL6S5x8zt55RBklWt
+	YHPO/tNioVJj2Y5JkRge9zXTKcowHoh2ag9Wkf9KwFMt8laaR0fjkfhAr/Z24PUgUmRhPadmRsY
+	VgcYAx7gaP24oP66unJetXsgRj3Z1lkB/rZZc9SgYXIa0HrcWRawID/ovAcZzVuqhSiuaOZwlpH
+	5bAv2dS7lz+zHKNqopKftED1gAeBgApH0TZA/QLEIdaJ4PAfNlfDVNZcrwLDuudyMhrfu+m5DLk
+	LxotuRXdC9jSIrF9xwSzUpAVUsAFyavS7+6/N5s49ozXDB9GsQq2YCJDAyQ8nQdUe
+X-Received: by 2002:a05:7022:1285:b0:11f:19f9:c5f9 with SMTP id a92af1059eb24-125c19cd9fcmr1148392c88.12.1769786137208;
+        Fri, 30 Jan 2026 07:15:37 -0800 (PST)
+X-Received: by 2002:a05:7022:1285:b0:11f:19f9:c5f9 with SMTP id a92af1059eb24-125c19cd9fcmr1148376c88.12.1769786136559;
+        Fri, 30 Jan 2026 07:15:36 -0800 (PST)
+Received: from hu-jjohnson-lv.qualcomm.com (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-124a9d7f95asm10252849c88.7.2026.01.30.07.15.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jan 2026 07:15:36 -0800 (PST)
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+To: Jeff Johnson <jjohnson@kernel.org>, Ziyi Guo <n7l8m4@u.northwestern.edu>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <20260123175611.767731-1-n7l8m4@u.northwestern.edu>
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Content-Language: en-US
 In-Reply-To: <20260123175611.767731-1-n7l8m4@u.northwestern.edu>
-Content-Type: text/plain; charset=UTF-8
+References: <20260123175611.767731-1-n7l8m4@u.northwestern.edu>
+Subject: Re: [PATCH v2] wifi: ath10k: fix lock protection in
+ ath10k_wmi_event_peer_sta_ps_state_chg()
+Message-Id: <176978613592.3951544.9728416314683408699.b4-ty@oss.qualcomm.com>
+Date: Fri, 30 Jan 2026 07:15:35 -0800
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: zzEtpm0Zt5pZtPgoygps686X37OJXLma
-X-Authority-Analysis: v=2.4 cv=duPWylg4 c=1 sm=1 tr=0 ts=697a3afe cx=c_pps
- a=bS7HVuBVfinNPG3f6cIo3Q==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+X-Mailer: b4 0.14.3
+X-Proofpoint-GUID: yNb4OmswwYhb4RbnM9gaXuHmUgV2xiN1
+X-Authority-Analysis: v=2.4 cv=FPcWBuos c=1 sm=1 tr=0 ts=697ccb1a cx=c_pps
+ a=Uww141gWH0fZj/3QKPojxA==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
  a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=27jATeYspuGomxVIXMEA:9 a=QEXdDO2ut3YA:10
- a=vBUdepa8ALXHeOFLBtFW:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTI4MDEzNiBTYWx0ZWRfX4mR9zadIvSUj
- ngeaX+kMVN3Pb25NFKOMwNqkMepFxOOnwI5F5Fsew21DUGZZ7Xmv44I9AyEYihyMHzrBEJ8tXkV
- AbpmbsNVT1KBH3kyZ6hc2aT+Nx3+O2mDWJDS6rjBj2P9Tx84sXnsbKO7ZPaq4Gw/zg77v0QvEbw
- ahllJRKk3/QPiQ6okYFpVcgfGYOlUDyyNpFFWAlpHD4tYwpwC4dUww0xOPzQ860YU/qgJDH673L
- 9u1+E8060YjtHjw48FIv6q+/l3ESdoE/0BSonXqxPOwlB57GJ+hFsZ0SUL082siMcEDvZM1G8Or
- VYgexqtseS5kQjNa+bA2G8AKOzGg7LWB90xUVQ6ucQLdp+aiZfm0MAxN3cA4wAfS8lM/o9AJEYH
- fm80SCZ0H2//GtVF22IJ+W6LhQdzOuMqTl+u68O8b30R9XyYTl24bWY5YzVZ8b8btvVhovgAVPX
- JdTdgQiakV1IKM4NZZg==
-X-Proofpoint-GUID: zzEtpm0Zt5pZtPgoygps686X37OJXLma
+ a=VkNPw1HP01LnGYTKEx00:22 a=EUspDBNiAAAA:8 a=ng9WqdB7omV95QdvlpsA:9
+ a=QEXdDO2ut3YA:10 a=PxkB5W3o20Ba91AHUih5:22
+X-Proofpoint-ORIG-GUID: yNb4OmswwYhb4RbnM9gaXuHmUgV2xiN1
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTMwMDEyNSBTYWx0ZWRfX6aMQ+klXlXrL
+ Rp93MOIroP78XQk/xgoIn8Se4QZnccPRiJiN3PWI27t+eooKMMmpYYyJaJ+AZpB867Pxy3KyrgC
+ /MOTtzQaDNZKs9Zcosl5HA26pqq/8bzf+v+mczcwJet7OOjSYOqwE8ou1VE/+yqLxbFEm1Hp2p4
+ a7B9i4e75avE7WfMVbtBUhOU2kspRHYXWQ+39EaZpWxIU2kh3bpFodDNuiWXac4F0M6zvm2mgev
+ 4dvrGjbItSZQ9ge3rlBrMFo8oemaHTHUXtVFpcLicvVKXrwWBoxrZUHp84te9bnwQc4NFmtUErQ
+ hGAAlqUTvKY7X64BLju0m5dyjrWruwYSX7hXbu1sXReWD8kJd6kuArrLTlOpHgiGfliRbtkMDTb
+ 667P7XHeOV67eKD7iLPpV0YcyfsW9Xe/NQDhSuaKVfrZJmaG3vGn/SdzteeJneXahC7n76j7AMl
+ gGMJir8cHWMTPRdYP0A==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-01-28_03,2026-01-28_03,2025-10-01_01
+ definitions=2026-01-30_02,2026-01-29_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 phishscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 malwarescore=0
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
- definitions=main-2601280136
+ lowpriorityscore=0 spamscore=0 clxscore=1015 phishscore=0 bulkscore=0
+ impostorscore=0 suspectscore=0 priorityscore=1501 adultscore=0 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2601150000 definitions=main-2601300125
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260128_083617_992678_9482DAD6 
-X-CRM114-Status: GOOD (  20.33  )
+X-CRM114-CacheID: sfid-20260130_071539_425727_62E27EEE 
+X-CRM114-Status: UNSURE (   9.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,7 +143,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 1/23/2026 9:56 AM, Ziyi Guo wrote:
+
+On Fri, 23 Jan 2026 17:56:11 +0000, Ziyi Guo wrote:
 > ath10k_wmi_event_peer_sta_ps_state_chg() uses lockdep_assert_held() to
 > assert that ar->data_lock should be held by the caller, but neither
 > ath10k_wmi_10_2_op_rx() nor ath10k_wmi_10_4_op_rx() acquire this lock
@@ -155,46 +154,15 @@ On 1/23/2026 9:56 AM, Ziyi Guo wrote:
 > ar->data_lock in core.h, and other accessors (ath10k_peer_ps_state_disable,
 > ath10k_dbg_sta_read_peer_ps_state) properly acquire this lock.
 > 
-> Add spin_lock_bh()/spin_unlock_bh() around the peer_ps_state update,
-> and remove the lockdep_assert_held() to be aligned with new locking,
-> following the pattern used by other WMI event handlers in the driver.
-> 
-> Signed-off-by: Ziyi Guo <n7l8m4@u.northwestern.edu>
-> ---
-> v2:
->  - Remove lockdep_assert_held() as suggested, since
->    we are now taking the lock internally.
-> 
->  drivers/net/wireless/ath/ath10k/wmi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index b4aad6604d6d..061a2fa8f00f 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -5289,7 +5289,6 @@ ath10k_wmi_event_peer_sta_ps_state_chg(struct ath10k *ar, struct sk_buff *skb)
->  	struct ath10k_sta *arsta;
->  	u8 peer_addr[ETH_ALEN];
->  
-> -	lockdep_assert_held(&ar->data_lock);
+> [...]
 
-note that removing just this line results in an ath10k-check warning:
-drivers/net/wireless/ath/ath10k/wmi.c:5292: Please don't use multiple blank lines
+Applied, thanks!
 
-I'll also remove one of the blank lines when I apply this patch
+[1/1] wifi: ath10k: fix lock protection in ath10k_wmi_event_peer_sta_ps_state_chg()
+      commit: 820ba7dd6859ef8b1eaf6014897e7aa4756fc65d
 
->  
->  	ev = (struct wmi_peer_sta_ps_state_chg_event *)skb->data;
->  	ether_addr_copy(peer_addr, ev->peer_macaddr.addr);
-> @@ -5305,7 +5304,9 @@ ath10k_wmi_event_peer_sta_ps_state_chg(struct ath10k *ar, struct sk_buff *skb)
->  	}
->  
->  	arsta = (struct ath10k_sta *)sta->drv_priv;
-> +	spin_lock_bh(&ar->data_lock);
->  	arsta->peer_ps_state = __le32_to_cpu(ev->peer_ps_state);
-> +	spin_unlock_bh(&ar->data_lock);
->  
->  exit:
->  	rcu_read_unlock();
+Best regards,
+-- 
+Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 
 
