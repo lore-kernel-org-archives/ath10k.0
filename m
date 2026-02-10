@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17E67E94629
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08DA4E94626
 	for <ath10k@archiver.kernel.org>; Tue, 10 Feb 2026 02:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3TmkS/sB9P0u36IZlhTWRyNkfWxpJICu9oh/U8A60Y0=; b=JSKtUSxxYW8dpg9DbPNlbou4gm
-	tdGUODjwGkgCJAChzs5sZUbDXPQAwgFtWzVqkVIoSz/0pFR1OEXoDKasfNFFF9yzfYCzoQ1atRB/2
-	p8Kl1mwVdg61F66fZzEULOmG+cc+nIDIRoB+bBYDzYTSA4XOsz9DmLcJ9lQSHp2qPDWP/Nca7k4ZA
-	2Gy+3ruhqzzjOWUBJlTmNiKQt9IoF8lKH3bKMNWFh+V4hwxJQw3z9FfcTumltxxFtM1kJsiCTfCho
-	rw03pvUxV1cyXS0urt2bGA3bWuMqYTKrB6Ea7gHJy7hdVgzFdJmeZzX6WEw2OAa4c7g9hSsBYZ9P3
-	/jRJEFLg==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=GgV1JaYKP5qoidYVClUbj04Uc6QjnqpFw08clZ3TjPs=; b=0+0CWrhtAcJ2v1GxVRzFvvVW5M
+	+Z9suBREd73vwfGM0QZKp2+HJbR7CAwoCIgKwL5Ble1suSO8lr2Q+yW/1M6JJOkuF2HEaDlwZ5pti
+	OBrC+QALacsWjNgVcd88GXHNwsiluy17/q9UuBzt7wk4qMj4V25UVE9DluURkuyt0bvO5ynZsCIfn
+	Bl8BAWnha0eu99yOxpfrfEMIXvOBljz+C/Bszt7yWXX/5tAmSCd8p7kjBiWuQdT3vtX7aOx/SWgp8
+	tf94bf9tzZBNueTuMyakjTPnVDsgOoIMPLdMMJOEfZxKVhUX6zlHuD9PrF473LBiCUgv+6nH38Rl9
+	1kVn6Q1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpdEi-0000000GJS3-3mb5;
-	Tue, 10 Feb 2026 02:12:20 +0000
-Received: from mail-qv1-xf29.google.com ([2607:f8b0:4864:20::f29])
+	id 1vpdEg-0000000GJRK-1Ozy;
+	Tue, 10 Feb 2026 02:12:18 +0000
+Received: from mail-qt1-x82b.google.com ([2607:f8b0:4864:20::82b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpdEg-0000000GJRE-1v6g
+	id 1vpdEd-0000000GJQc-2JRL
 	for ath10k@lists.infradead.org;
-	Tue, 10 Feb 2026 02:12:19 +0000
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-896f6d4b6c1so27001646d6.2
-        for <ath10k@lists.infradead.org>; Mon, 09 Feb 2026 18:12:18 -0800 (PST)
+	Tue, 10 Feb 2026 02:12:16 +0000
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-502a789834fso45973861cf.2
+        for <ath10k@lists.infradead.org>; Mon, 09 Feb 2026 18:12:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770689537; x=1771294337; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3TmkS/sB9P0u36IZlhTWRyNkfWxpJICu9oh/U8A60Y0=;
-        b=AnCqmenDTMbDZdpRul/st9jgXf/iRCwWVbG4iwjef4l/7qsXcoKJ7GabhsOTSwfHYF
-         iOU8C8KZJEvZmZlN2q+GxMK8h3qs3blJsGhhk2GqA07X/BSPXKuOAEbr9x03xkqwqiTs
-         EIcF1Pkuzd/TKjay2Gj11aj9UeNcMzmr8dm2cqGkEv8gmJcTKNHbwdzfBZ9iInS4y8sF
-         U926blrJ4usa+jFOqn8lXGbEyOxqVrf8tl9z5X4mdi0Us4/u99Ynf/5WoMHno6HXqwpS
-         QeZHE2xpMd7da3VlJl6GIc9Eol30Y7ir2tb5Ml8aTymCyWkhm+GFyUl9bwFYrp6ougpA
-         I6Pw==
+        d=gmail.com; s=20230601; t=1770689534; x=1771294334; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GgV1JaYKP5qoidYVClUbj04Uc6QjnqpFw08clZ3TjPs=;
+        b=SEVBN8Wcs7XAp+bieW8JDJD6KEOib+TiJA5diKV9vtOPWN/sH0uVem2WPaWITGQCX3
+         lr07KkB1XC426RorICj0L5yWhfAGZl48QEdv6yShh59hk1enGzNN/XmY8p4TjTgvWp+a
+         6nT9QAr9Cljc6xUXmLqvhF7m5Ge732Ah8bSZU4Zqe3e8LNbEmEXxVddg+w0yjzr/owyf
+         tJgAYNaNBFYuBaijVoGHJb1IytsKk89Fs9wiDt77u7lrTke3nNsQ5/rYdqlgkjesuFAw
+         zaeqoFYMb6EqXdPyFQ3acHTHcoOtyNaX+vvjviwfQpJheGnCoRvN2thnL7F3QlQrf2yt
+         zRvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770689537; x=1771294337;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3TmkS/sB9P0u36IZlhTWRyNkfWxpJICu9oh/U8A60Y0=;
-        b=Za2LWkKxn6VHyeB2me3O2B+pmMqWSizXdzrtMYKd4/Fc4jqfyxigzT83ZnrsTYtVja
-         MUkGfzsvsLQIJ/WM8h4LeWuk+DVDdePN7LKaBf2kJ6RO4ipqzaS0CIUHF8EZ4+6cpjAN
-         h0O3JJwCd/KlAQ8sIeRkpCReXZI7qGzUR09/L4ESrFjCOciXGZkWN+mzSQWuvfUDTVAb
-         mXKJjiesB0wX/IpaaVGw9agso2Q54Ag4d54Vm1REzsCZQTx/1EPCpYAi8x5hvFDm6fF5
-         Eei6XSX1+eKkBNnR2ovseVPcsLA/scKjAOFWAbwfcP4oBf1Dh6UvtPlC7DzAenFBncCT
-         /ErA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOmVkrHTIz3+4AaCxP5IbVeR0jhjWk9YdWSpnLJoKkIl35RNcQCLtIce8RPWhC/Iwl9B3u8Nc=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyHVJUmvXl4vuZvPoygETTLcJpKTzd9Oe09REmfmKMPi/dT3nHS
-	FQQqXENQiww7dMCvtwlLPOeJzhdeDEv4H3k2aQMSPiDhZgQXrQ9IPzQTnYAJvA==
-X-Gm-Gg: AZuq6aISAtRzUTvoaKOzq0z51P3iDmXQ+ZF/LXp/TM7YlDJRB9n0uTcYPpQtOq+5fUK
-	V5rSawuMZy0U+txkOGAcUTXML2wZyZlpE2AYojlMcwsK3shnUMiTYtbyrKukxZtNc3Sm2MoTThj
-	e1VsdYrd4kAmISkCWshnd6p0VmP1n0cr++cmzeTwqdDsNpD+st9smObwaUmVKVT313j3OVj7uxI
-	tgAwPvDpv1c3sjyvgiNSiev8HLO50zR2AWdrVL2jP/IvstZXuqRYIiQrQIuoQnd9XYEWWc1SIGQ
-	otUTLpn82A5daCwiPHE0K8fkn8VbYBVgHvPLBRzChUmo/L1BkVxlbjztmpQMGlNMKKGsjARMX/j
-	/I/ZKnNoMZTr5jLard8C9LJzZy758xEzICWH2/9oHgOloVLYDnE1F/yzz7qL1E8zu5RSQfMWgO6
-	jnPzX9aFL/GKMVW5+yh/6Ax2rQWzN3DAafK6xOLy7/pCr3FSaBT2u5JbzWtk491eIFzlSfxOBLf
-	KcE4VLWPUe3q+E=
-X-Received: by 2002:a05:6214:2604:b0:896:ff71:fc74 with SMTP id 6a1803df08f44-8970e515dfemr9778796d6.36.1770689536988;
-        Mon, 09 Feb 2026 18:12:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1770689534; x=1771294334;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GgV1JaYKP5qoidYVClUbj04Uc6QjnqpFw08clZ3TjPs=;
+        b=DDi0nEDaF3vpbhlY6GCk7dM9smLm8DVnhlXUVXsIneukYutMPB6K9LTA0TTkdq1CJu
+         2vVdFr+cP28uHhCqHPZOOdeeT3IgIZYYLuYSTruQDWTgvNRQzw5pJJ0w0/HhzYXcMcR0
+         5f75JEzC5iMO0630dOPmDdw1g0vE0bICDLL5LH1YkRn2eA1/qVtCMmoNcMCcFvii86vC
+         5xMCwIEz6qL1eVOhV8HhSoBJKaNoTV3CO1KfjpBZpggUpZV5LdPBAik+QugQH45K/vlx
+         SU/57+WnJQbBIldn+r1OxKY7WVtdv0GI38aACC3T6edcIWCNuJm6TYyCNMiJx7CiukW/
+         niCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVFCmxomqofu0jwskb2N2YGyehUMtVsosktfa3rUgwfsrX+QdXqmrOqlouIHnKMcqyQ/+JW3rg=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzmbP4LNZyd89r1y5SO1ztJXLLCMtVC56ycnbnNNJh8ricUJtyC
+	NIZjovwGxUOEj+ltvJ66ZBHO4WQwW2K5hx6WH2rODrFvfLdRwTAikZ6s
+X-Gm-Gg: AZuq6aJvv5/VBFK7ZADA3777iRku3naLtIaT8FLvvWF78N3IXPcBdYQeYOWVu9BmhW3
+	qktCM8qhnPvtqYmtbD65NK3zqe/fGpSQt72tV3PlWrDZZDqODGEhgVTegNSgAq5WiXjpM+cUHIC
+	MptTnRu+jyzn6+UeRH4BxgA3ARdJZbaWqF8jfCadQAmhTKFjPlwwiljdwr9mn2606K3FPhwmzlD
+	9hWCRwg2qBj3PRxGQD7wM3nahhwSf95+/v0Q6wTQr2cY4tOubO1V6kVl2DgkkC00Zrv4Tllg3FJ
+	7Ge9rT7Vq29++1YBEYxZFAOnbINFuJgN/MXG4rr2PuUiNBcdqpEbN0MvlSHAdv/2Hx0OBrpmD8N
+	LU3eJBT5/BU1ZzijUDQOBblSSsW+djByoxNqMFjDs9M/L94FWybt9/WDYSKsEvPL99UuNcvs149
+	Eqw70NCVMkGDNCdwFVd4ALiLTE9lVj2WTGangx1mfaa56OyvBRaI5IJThX4dV85BnpYDXA1IREN
+	qQyYFNs24ko+g0=
+X-Received: by 2002:ac8:7fd4:0:b0:4ef:d04e:565 with SMTP id d75a77b69052e-50673d6f048mr5993101cf.56.1770689533566;
+        Mon, 09 Feb 2026 18:12:13 -0800 (PST)
 Received: from localhost (bras-base-toroon21-grc-75-184-144-58-243.dsl.bell.ca. [184.144.58.243])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8953c077a8asm91300896d6.52.2026.02.09.18.12.16
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8caf9ee8593sm928410085a.36.2026.02.09.18.12.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Feb 2026 18:12:16 -0800 (PST)
+        Mon, 09 Feb 2026 18:12:13 -0800 (PST)
 From: Richard Acayan <mailingradian@gmail.com>
 To: Jeff Johnson <jjohnson@kernel.org>,
 	Michal Kazior <michal.kazior@tieto.com>,
@@ -77,17 +76,16 @@ To: Jeff Johnson <jjohnson@kernel.org>,
 	linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org
 Cc: Richard Acayan <mailingradian@gmail.com>
-Subject: [RFC PATCH 2/2] wifi: ath10k: only wait for response to SET_KEY
-Date: Mon,  9 Feb 2026 21:12:49 -0500
-Message-ID: <20260210021249.12132-3-mailingradian@gmail.com>
+Subject: [RFC PATCH 0/2] ath10k wifi fixes
+Date: Mon,  9 Feb 2026 21:12:47 -0500
+Message-ID: <20260210021249.12132-1-mailingradian@gmail.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260210021249.12132-1-mailingradian@gmail.com>
-References: <20260210021249.12132-1-mailingradian@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260209_181218_498909_AE898D51 
-X-CRM114-Status: GOOD (  11.27  )
+X-CRM114-CacheID: sfid-20260209_181215_591877_D0E1A8D3 
+X-CRM114-Status: UNSURE (   8.19  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,39 +100,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-When sending DELETE_KEY, the driver times out waiting for a response
-that doesn't come. Only wait for a response when sending SET_KEY.
+These are WiFi fixes that seem to be helpful on SDM670. There is no
+ath10k support for SDM670, but some similar SoCs also need these fixes.
+This is RFC because there could be better solutions.
 
-Sample dmesg:
+On SDM670 with patches, the MPDU has 32 MSDUs when the last one isn't
+the last in the A-MSDU.
 
-	[  117.285854] wlan0: deauthenticating from XX:XX:XX:XX:XX:XX by local choice (Reason: 3=DEAUTH_LEAVING)
-	[  120.302934] ath10k_snoc 18800000.wifi: failed to install key for vdev 0 peer XX:XX:XX:XX:XX:XX: -110
-	[  120.302996] wlan0: failed to remove key (0, XX:XX:XX:XX:XX:XX) from hardware (-110)
+Richard Acayan (2):
+  wifi: ath10k: make in-order rx amsdu buffers persistent
+  wifi: ath10k: only wait for response to SET_KEY
 
-Signed-off-by: Richard Acayan <mailingradian@gmail.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |  4 +++
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 41 ++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/mac.c    |  8 +++--
+ 3 files changed, 41 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index da6f7957a0ae..73aa93043f8a 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -324,9 +324,11 @@ static int ath10k_install_key(struct ath10k_vif *arvif,
- 	if (ret)
- 		return ret;
- 
--	time_left = wait_for_completion_timeout(&ar->install_key_done, 3 * HZ);
--	if (time_left == 0)
--		return -ETIMEDOUT;
-+	if (cmd != DISABLE_KEY) {
-+		time_left = wait_for_completion_timeout(&ar->install_key_done, 3 * HZ);
-+		if (time_left == 0)
-+			return -ETIMEDOUT;
-+	}
- 
- 	return 0;
- }
 -- 
 2.53.0
 
