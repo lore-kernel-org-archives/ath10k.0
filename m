@@ -4,69 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9388EF5852
-	for <ath10k@archiver.kernel.org>; Sat, 14 Feb 2026 21:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9718AE81A49
+	for <ath10k@archiver.kernel.org>; Mon, 16 Feb 2026 17:05:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lsp8J2fI/v1p9J8sW2g6hOHwVvM3CyEW6vww6USeZ1o=; b=RA5C3HJabS4R+thJ0nRSzi2E0Z
-	P1mu6f4vWRG4yYAAP0gfBC4NWDSaq7MC5c1zaMtqkd0bsHF9a+T2A4eUuFWcKKeAudI1qMjp2CoJ2
-	4NLcFCHHYAwBExftVVXEx1UAlnrY13IBMmKm1JyDNHBUNOBQf2Q2TSrG/VLTSmvRC559aEfTxMJNQ
-	AVyYnP9hZjI1t1nDDOF3MTYxKwpxNJVZDuJWJavacOh82ACWG5cDHh3cDaQYsqZ9QP94E9ixXMM87
-	MnLf1PE3H8E3nLXkHkIjwiL/L5vy35udA789QQVTLpSMwoWrwhvzwSsPtkZJXfRsGHSCHDjuY5t/f
-	ZiXOh0dA==;
+	Content-Type:Subject:From:To:MIME-Version:Date:Message-ID:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=bbySU2aY298dlatuqxfDkqAXu0CIdhl7AM1X7/ysfCw=; b=JfjSJ4LyEvQC1HChdPP19Ol3v4
+	qPScnpewmPpnYjrzqP2zFR9Ies2WYKXdT/81nC0+eDNr/XE1pkIy+gobu9yc8iE0QZ+IRUw7dqJ6W
+	O3tvQ8/npd87NocExGqfMENk9RYqIMmnOVL13BGpkhIviJGL+dc70fPiteY5NL8KMuEe+tKtigBBE
+	X+esQgFZtmjHzgmyw9LTA5lQXTsyElVhVPImTlE8cw3WjDNF1nDVtebQDPYlbpbXG1e2xa9LwXkxJ
+	+CYso4QOp09ExE/JNqgKLgViVvuISwmAlIKgbC2NOOaOKzgMb2mZoy3gSVlRJnBCU4Em0yR8BlGrR
+	cuGb9JXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vrN93-00000004wpy-1uho;
-	Sat, 14 Feb 2026 21:25:41 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vs22c-000000074IA-1NBH;
+	Mon, 16 Feb 2026 17:05:46 +0000
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vrN91-00000004wpc-2dh0
+	id 1vs22Z-000000074Hl-1f1O
 	for ath10k@lists.infradead.org;
-	Sat, 14 Feb 2026 21:25:40 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 42A43402B2;
-	Sat, 14 Feb 2026 21:25:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36753C16AAE;
-	Sat, 14 Feb 2026 21:25:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771104339;
-	bh=b1LD+Xansm2gIBycBh5imiPFd4gz7SExWM2XaWHP+zQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZHgKkXwfVIUJdlnWOFBjl5fb9J5W2iIGjXEJdCsdZDISFVZoCO2MsCZNT1lMAFa0o
-	 71YSxfU2m7W0F+UPOq7C6h4ut7SCmz4bGKKLCwEKveHBdTqC5a3mUYi1PVDZTlu9dT
-	 KmVjSKkm+QRq86g/97Ir8O+a+uzyQ5T73SgVn3+qbqaw1cWFzNEeNmGgoT0uevN6k6
-	 pLT0dSIu/OIU8UjuN9m1qtNTDlAqBuAAUNb7uCbxgappzDgv7+HaLs2k4Kqr7jJ3vT
-	 qFcH9MDtpzzqJka9/6EHs//F4ileZKajiBy69L735cA3yMq3p51+9HQVYsOX/VLN8M
-	 rrtDNPxBDR8EA==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Ziyi Guo <n7l8m4@u.northwestern.edu>,
-	Baochen Qiang <baochen.qiang@oss.qualcomm.com>,
-	Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
-	Sasha Levin <sashal@kernel.org>,
-	jjohnson@kernel.org,
-	linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.19-5.10] wifi: ath10k: fix lock protection in ath10k_wmi_event_peer_sta_ps_state_chg()
-Date: Sat, 14 Feb 2026 16:22:51 -0500
-Message-ID: <20260214212452.782265-26-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260214212452.782265-1-sashal@kernel.org>
-References: <20260214212452.782265-1-sashal@kernel.org>
+	Mon, 16 Feb 2026 17:05:44 +0000
+Received: by mail-pl1-x643.google.com with SMTP id d9443c01a7336-2aaecf9c325so23895505ad.1
+        for <ath10k@lists.infradead.org>; Mon, 16 Feb 2026 09:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1771261542; x=1771866342; darn=lists.infradead.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bbySU2aY298dlatuqxfDkqAXu0CIdhl7AM1X7/ysfCw=;
+        b=Gn+epDPcPGxUhvl8L8PMZge36XeGH14z0j+p/qOyz8EV+0FS6qAP3lwbrsw9on+OeA
+         SBlLANgCYa1C5GHnlvwyVhXzyk2AX00sA4ygt3DAmHfm/b/u/FrlAQLNlbEEv3xiTQe4
+         cSaZp1XrbElDF34eLw0hJ/ldH83ty+zzU6vhp0vCJfSNtA/ob3jvoX+/HHoh7JNF9gy6
+         LPi2NLVd1v5y0eFlTg5fDWlIh7fuz39JFZgd1FLJBSOYzJ4sdfIhU9dQWefgS8sLse1L
+         HVGMZRG8BvtBCwYp9i9idY2i3dWWUFYKzPM6Aur/LmIGMmzZkEKWAMsmUtt3OVqsqQFa
+         15dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771261542; x=1771866342;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bbySU2aY298dlatuqxfDkqAXu0CIdhl7AM1X7/ysfCw=;
+        b=eLM/vQto2O5z/XNJRaU11Cm+0vE+xgPHkZkgJT9fxGakQsRq3VDxR9Gf6OkTYEspGW
+         ZSbrNxpYUmNz87h8skLuqbqrXnY/SP/p5nbcox/1o/wUgZLmhZM6mk9uo0EzDxwTBjPv
+         cGWR3uyLFY9/JpwkhW1cQxQvDRus1QfZCo1YlAaReAqVbq3/7CGzh9iFDcqX3zWtpEmr
+         bY+KJyEFegseRe1EuLlgdg4hczwbwcd55xhnyZKC8wm2uMRxgqbnSYHmqPfqdINWxsYC
+         oWXX+EJuQNMnsA02w1+cxUvm5h6iF2Fe8K0LW5QJVVr3XJI7sLntySMU8RwiAxBiHz7L
+         awTg==
+X-Forwarded-Encrypted: i=1; AJvYcCX9/mqdtnk/48LqlimjaTY8mfVFYLS9qO2mbIKLtsaWV5ib8QLpNykmxqqLyfHusPeiE+W4J84=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxnAgMWqTPF5ItZEETig3A7wao7VvM8lukAfqsuasVZM/UuCG5N
+	sVuRRWc4peGW9x+U1SvAP3c/yvgXBJf5ZtUmNSlLoYO6NLF/3+BJzi/c59Fk3Y/d
+X-Gm-Gg: AZuq6aIoKqlVFeB8aKLw/KigcUzVesgW+aB51iDHOSGISo0uCxr+BhDdHWlWoW+9Ncs
+	xs25MvEf48b28Yuurg7k4vN92Hf45oxE7eIKIzKXPgnsh8Ndu99zRLGftNs8mp8TtfS1Jk01AQu
+	8tkzDx2l0GxERRA4kd/b6jO7yn9AO9jDVBf0ckl6AZoLhpa6ejfqBqlA4laQh5WRQR+Tg8FG3DC
+	2Hgz2wRvllZxK0YtvllFDycTIwiy8fdfKkl6NFY2pXVo5AcEZ/mSokZPghO8J0lfIA2TQ0vaC3W
+	1E97M2+g+u4BP6UIS5SbbokNuBlcQNjZKjYsNhWwu8Y9DEldHrEsfd/6CWntZEq7yBaPBvUwAJR
+	DLDAB01vfiWS00sKO6w4mUmnPIU6ByxNzTojPQWatnLM8kdEXkPXREP8HxSeA/DD5DFLgn0ZTEo
+	Qu7ZOoKR/ZkBzj6cs7CFDcV+WaV6qwotY440+lhzuMwZxqCMQKlP4rm8XpyQ==
+X-Received: by 2002:a17:903:240f:b0:2aa:f5b4:9a2e with SMTP id d9443c01a7336-2ac97445ea2mr115082885ad.11.1771261542068;
+        Mon, 16 Feb 2026 09:05:42 -0800 (PST)
+Received: from [192.168.0.219] ([116.206.223.188])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad1a9d5bc8sm75640325ad.60.2026.02.16.09.05.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Feb 2026 09:05:41 -0800 (PST)
+Message-ID: <c7c5a458-ec8b-457f-893d-1c4b147ebb65@gmail.com>
+Date: Mon, 16 Feb 2026 22:35:38 +0530
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.19
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+From: Bandhan Pramanik <bandhanpramanik06.foss@gmail.com>
+Subject: Wi-Fi quirk found in Dell Inspiron 5567
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260214_132539_709515_A092944C 
-X-CRM114-Status: GOOD (  19.83  )
+X-CRM114-CacheID: sfid-20260216_090543_458274_F6CB8CB7 
+X-CRM114-Status: UNSURE (   5.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,169 +97,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Ziyi Guo <n7l8m4@u.northwestern.edu>
+Hello,
 
-[ Upstream commit 820ba7dd6859ef8b1eaf6014897e7aa4756fc65d ]
+I messaged regarding Dell Inspiron 5567 earlier. This is regarding the 
+QCA9377 chips placed on these devices.
 
-ath10k_wmi_event_peer_sta_ps_state_chg() uses lockdep_assert_held() to
-assert that ar->data_lock should be held by the caller, but neither
-ath10k_wmi_10_2_op_rx() nor ath10k_wmi_10_4_op_rx() acquire this lock
-before calling this function.
+I fixed the issue using "pcie_aspm=off", and I can say that the ASPM 
+configs of the Wi-Fi chip might be problematic on this device.
 
-The field arsta->peer_ps_state is documented as protected by
-ar->data_lock in core.h, and other accessors (ath10k_peer_ps_state_disable,
-ath10k_dbg_sta_read_peer_ps_state) properly acquire this lock.
+The reason is that *these laptops run Wi-Fi erratically if we don't turn 
+off the ASPM*. The result is the overwriting of the dmesg ring buffer 
+within seconds of boot and IRQ #16 being turned off for the influx of 
+multiple correctable errors, which hampers the touchpads too.
 
-Add spin_lock_bh()/spin_unlock_bh() around the peer_ps_state update,
-and remove the lockdep_assert_held() to be aligned with new locking,
-following the pattern used by other WMI event handlers in the driver.
+What are your thoughts on turning off this device's ASPM by default? I 
+will be happy to provide any details as needed.
 
-Signed-off-by: Ziyi Guo <n7l8m4@u.northwestern.edu>
-Reviewed-by: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-Link: https://patch.msgid.link/20260123175611.767731-1-n7l8m4@u.northwestern.edu
-[removed excess blank line]
-Signed-off-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+Bandhan
 
-LLM Generated explanations, may be completely bogus:
-
-## Analysis of wifi: ath10k: fix lock protection in
-ath10k_wmi_event_peer_sta_ps_state_chg()
-
-### 1. Commit Message Analysis
-
-The commit message is clear and well-structured:
-- **Subject**: Explicitly says "fix lock protection" — this is a
-  locking/synchronization bug fix
-- **Body**: Explains that `lockdep_assert_held()` asserted
-  `ar->data_lock` should be held by callers, but **no caller actually
-  held it**. This means the assertion was always wrong (or always
-  disabled), and the field `arsta->peer_ps_state` was being accessed
-  without the required lock protection.
-- **Reviewed-by**: Baochen Qiang from Qualcomm reviewed it, lending
-  credibility
-- The commit references that `core.h` documents `peer_ps_state` as
-  protected by `ar->data_lock`, and other accessors properly acquire it
-  — meaning this was the only broken path.
-
-### 2. Code Change Analysis
-
-The change is minimal and surgical:
-
-1. **Removes** `lockdep_assert_held(&ar->data_lock)` — the callers never
-   held this lock, so the assertion was incorrect (and likely only
-   checked with CONFIG_LOCKDEP enabled, which is why it didn't always
-   trigger)
-
-2. **Adds** `spin_lock_bh(&ar->data_lock)` /
-   `spin_unlock_bh(&ar->data_lock)` around the single line
-   `arsta->peer_ps_state = __le32_to_cpu(ev->peer_ps_state)` — this is
-   the actual fix, properly protecting the field with the documented
-   lock
-
-The lock scope is minimal — only around the single write to
-`peer_ps_state`, placed after the RCU-protected station lookup and
-before the RCU read unlock. This is clean and correct.
-
-### 3. Bug Classification
-
-This is a **data race / missing synchronization** bug:
-- The field `peer_ps_state` is documented as requiring `ar->data_lock`
-  protection
-- Other readers/writers of this field properly acquire the lock
-- This WMI event handler was the only path that didn't hold the lock
-- Without the lock, concurrent reads (from
-  `ath10k_dbg_sta_read_peer_ps_state`) and writes could race, leading to
-  torn reads or inconsistent state
-
-### 4. Scope and Risk Assessment
-
-- **Lines changed**: ~4 lines effective (remove 2 lines, add 3 lines
-  including lock/unlock)
-- **Files changed**: 1 file (`drivers/net/wireless/ath/ath10k/wmi.c`)
-- **Risk**: Very low. The change adds proper locking around a single
-  field access, following the established pattern used by all other
-  accessors. The lock is `spin_lock_bh`, which is safe in this softirq
-  context.
-- **Could it break something?** Extremely unlikely — it adds a lock that
-  was already supposed to be held, and uses the same locking pattern as
-  other paths in the driver.
-
-### 5. User Impact
-
-- **Affected hardware**: ath10k WiFi devices (Qualcomm 802.11ac chipsets
-  — very common in laptops and embedded systems)
-- **Trigger**: WMI peer power-save state change events from firmware
-- **Consequence of bug**: Data race on `peer_ps_state` field. While this
-  is a 32-bit field and the race may not always cause visible corruption
-  on most architectures, it violates the documented locking contract and
-  could cause issues with lockdep-enabled kernels (warnings/splats). On
-  architectures without atomic 32-bit writes, it could cause torn reads.
-- **Severity**: Medium — it's a real locking bug in a commonly-used WiFi
-  driver
-
-### 6. Stability Indicators
-
-- Reviewed by Qualcomm engineer (Baochen Qiang)
-- Accepted by the ath10k maintainer (Jeff Johnson)
-- Small, obvious, and following established patterns in the same driver
-
-### 7. Dependency Check
-
-- No dependencies on other commits
-- The code being modified has existed in ath10k for a long time (the
-  `lockdep_assert_held` suggests the locking was always intended but
-  never correctly implemented in this path)
-- Should apply cleanly to any stable tree that has the ath10k driver
-  with this function
-
-### 8. Stable Kernel Criteria
-
-- **Obviously correct?** Yes — adds the documented lock around a field
-  access
-- **Fixes a real bug?** Yes — data race / missing synchronization
-- **Small and contained?** Yes — 4 lines in 1 file
-- **No new features?** Correct — pure bug fix
-- **Tested?** Reviewed by subsystem experts, accepted by maintainer
-
-### Conclusion
-
-This is a textbook stable-worthy fix: a small, surgical correction to a
-locking bug in a widely-used WiFi driver. It properly adds the lock that
-was always documented as required but never acquired in this code path.
-The risk is minimal and the fix follows established patterns in the same
-driver.
-
-**YES**
-
- drivers/net/wireless/ath/ath10k/wmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index b4aad6604d6d9..ce22141e5efd9 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5289,8 +5289,6 @@ ath10k_wmi_event_peer_sta_ps_state_chg(struct ath10k *ar, struct sk_buff *skb)
- 	struct ath10k_sta *arsta;
- 	u8 peer_addr[ETH_ALEN];
- 
--	lockdep_assert_held(&ar->data_lock);
--
- 	ev = (struct wmi_peer_sta_ps_state_chg_event *)skb->data;
- 	ether_addr_copy(peer_addr, ev->peer_macaddr.addr);
- 
-@@ -5305,7 +5303,9 @@ ath10k_wmi_event_peer_sta_ps_state_chg(struct ath10k *ar, struct sk_buff *skb)
- 	}
- 
- 	arsta = (struct ath10k_sta *)sta->drv_priv;
-+	spin_lock_bh(&ar->data_lock);
- 	arsta->peer_ps_state = __le32_to_cpu(ev->peer_ps_state);
-+	spin_unlock_bh(&ar->data_lock);
- 
- exit:
- 	rcu_read_unlock();
--- 
-2.51.0
 
 
