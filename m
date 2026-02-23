@@ -4,61 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC750E9A04A
-	for <ath10k@archiver.kernel.org>; Wed, 18 Feb 2026 04:14:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 501F6E83847
+	for <ath10k@archiver.kernel.org>; Mon, 23 Feb 2026 02:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=nnmmFg2p9ndQMUp443AkrQMcvSBoRVPETFCCB2R3R5M=; b=igx6jjTbcF+NNeYIU/k+3CJ+Hg
-	upCW7aKbsgfzuUbuMriWu1DkIbt+H4pE///e0rxhbhIVYzBMW5+BF1HvJGMfcO3jgfJuw1RSVg/zz
-	hoX2S2zxddmIo5qZCLKL6aOVhkmvuvMbVjqbKXezoLnjbgSibOca2/fJBGhI5/FNKmFqsp9fvaDQ3
-	zDjci4woaxL/BVba2JuiQ4aYhV78qTldYhmkS07hl2WKAyrWFS9s/1INES0ZerTTLZWMn4ePlHVIF
-	52KdwX/N2HvCjY9shA1+KbAlVPkAtCfutLFnRzY1Px4u2S7i5Q03ayg6DQzRRke0iOP+kLQERomcZ
-	PAO4nI5g==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=MUfZvLCxWQPo9+B+GJatrz7V0AxZAnIHeCpWnwAFuA0=; b=CGEb1v8oaUU5h/bu+x16uAHJhf
+	f6B0I3hz/exkgDxwJDCDTSBX+0zOOyurwtKpRUCUHn3CtXs4Hq7bfcQzhkBqq7dgYpTJwuC5NRB2z
+	J4yn8T7jr/9D4fGQEujVuoHzw+DCIS+Z0c7M2PvPS7i4HdXQeYZLZd2NLQS46Oi1amjKmhMWG6JO9
+	HHZfMm8fLr0Li9vdqdJ4kD153g93ygOlgI12kieqz7C8NjiMU1z14Q2ta13vUe4tt3ffrJxJbuA+W
+	/VP2v7HSib2a1E/S6raHj/R7XiAin9xZKuMJW+p7QPmuMw/W6KeiyfaIyjyMEOrlzeTE2Lt+9/r4A
+	sCI8I1aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vsYxR-00000009GPe-2C8k;
-	Wed, 18 Feb 2026 04:14:37 +0000
-Received: from mail.kaechele.ca ([54.39.219.105])
+	id 1vuM0g-0000000H9gF-3c7P;
+	Mon, 23 Feb 2026 02:49:22 +0000
+Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vsYxO-00000009GP0-4B1h
+	id 1vuM0e-0000000H9fu-0sWe
 	for ath10k@lists.infradead.org;
-	Wed, 18 Feb 2026 04:14:36 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 04618B90A4;
-	Tue, 17 Feb 2026 23:14:23 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaechele.ca; s=201907;
-	t=1771388067; h=from:subject:date:message-id:to:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=nnmmFg2p9ndQMUp443AkrQMcvSBoRVPETFCCB2R3R5M=;
-	b=V3AluvI+yE6k8Wi+GVD2VD/boIwsN9HuMVfwCauQBBHnlpiwALbmPlNCkaQ+/MhD3XfNMi
-	o5XFAC6v5JYTkpGsGMV1RTgWHHJ/ihyxMZXyY/74W/vzSIOJBMF0uVSYNwjRCY5aVOiJ7g
-	UIjcaxGfIunySEGuP3eSwwYBzTjDP8Y=
-Message-ID: <9c4a65a5-aef1-4b6a-95b4-91b4910a6bfc@kaechele.ca>
-Date: Tue, 17 Feb 2026 23:14:22 -0500
+	Mon, 23 Feb 2026 02:49:21 +0000
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-c6e72d7a4d7so2513957a12.0
+        for <ath10k@lists.infradead.org>; Sun, 22 Feb 2026 18:49:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1771814958; x=1772419758; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MUfZvLCxWQPo9+B+GJatrz7V0AxZAnIHeCpWnwAFuA0=;
+        b=fdiBOh007Q26HWOoK6CKogLEEMJGX2k/dfC3ez05D5bOMK59ofAn8iUvUGIwarKQ0x
+         +P6a9kI6v3KaYjIIC2FZiAFqj2uHt4jEdys4X4bCh/63+or14CCm3CWt0mVjssiUjPJe
+         821N8okCY1Hva4/M0AKrxFVBCPxlfBxJ2Zj/dhML7d0otOdxn5TEVIfrDeYcRxekw8rc
+         Ps/vvcKakXF4/9ErieBVNMg5dZACiOvn7VgFtxKOE1WhNacGuQ8PEM8GLZI6D0h8LkqX
+         kAKhnty3zO9mxh7pb0vIAtQbjJ5qBWQuiOrSRuflrAeVD7CRtXRGZ7LRJOs6c1ExR0J2
+         Vk2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771814958; x=1772419758;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MUfZvLCxWQPo9+B+GJatrz7V0AxZAnIHeCpWnwAFuA0=;
+        b=msjeYKfLyAu9JmYI6lzw7hnYfNHCyZVOfXqUhllAuPwjZEFA6KVojjTrLpQP1QgtTm
+         YjQNrlhzJxeGHqIrhzw6+XpPUSPpqQIRhC5rxqpfuNY55Cni3D3ExSoJHCmFCHFKp5nV
+         mB6BR2uLreSSjAjCIsenA0hVkAxnlf0CxtAMo3d5QQhZG++kB7NEnEVqgLe0DJDyGBPg
+         olNvRzXBkH+Emwn5fR9+lbfyI0zGfeLt3rWEj1xx1YOp0EmCvVkH9tx01JIIW7CWuRXp
+         RV/D2Xz3jO3S2YkjV9WwP/efmQqgMLApMWQLwUj75AQVK96bKNnsjj1CDfRmTvvbTPsp
+         4OeA==
+X-Forwarded-Encrypted: i=1; AJvYcCW2LomuIXUvg+lAH46pv7b/1eohWxFVbP+WQXDvkpbhbhGcwMCWZ8DD/V7iScUJwwid2gDVpYQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxeP+dOwzhsdCWJbZxVt/WClbGInI0DGaBWQ1SvyqWaNgV/VoUQ
+	uCvzzFth8j18+EaBnCcJ7/L+22S5+irnxIGrf2SndUpRKraGtADbK/a6
+X-Gm-Gg: AZuq6aKfmiOz+KMfKlZjNTgiQRKcsl6aTSZeHDKQhB6Qh6rWzKPNOtOglOz1lHQ284U
+	Pmwx9BnHU4TlEzgUW8CLchTyhrdDfCso3Pe5QrkJ42lyX8MjcbaeQ9ShDzBaQqSDStovajkKh6l
+	miFltgEv+9oC/znV2LH6sCrV9pFaqQlWFf6ls/G5xCyRSz1qzuqFpvSFaoYB6/7SvgoU7rG//ql
+	0dSVeFjrtYYAYW/SKuevZ477CMmply3Gcgptzg7E0u8IX5gvVBH9jT/j9aRl7VYiDISTljMeT5v
+	Ne4lTEGN8XJR9tquR37dBi+bZfQPy5ttG2TOAUU2I8n8wECDYCfYOOu/2l3940Yty4Coz6S6x8Z
+	8985CN78Mlhslzcm79jvz7Sqqx7MN2o3rLTmV6f6OZWt3nRWMe98GjIRBwDvUWGRJT3ALHW16fz
+	NahM2ukyPSCot3Yt3Ud1CU8bwwY1xWkMB+lBQrV/3BhKsBn33uTYaB+g==
+X-Received: by 2002:a17:903:3b8f:b0:2aa:f2f3:bca1 with SMTP id d9443c01a7336-2ad743e304emr67075485ad.9.1771814958388;
+        Sun, 22 Feb 2026 18:49:18 -0800 (PST)
+Received: from ryzen ([2601:644:8000:56f5::8bd])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad74e350a9sm56126785ad.15.2026.02.22.18.49.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Feb 2026 18:49:17 -0800 (PST)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-wireless@vger.kernel.org
+Cc: Jeff Johnson <jjohnson@kernel.org>,
+	ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH ath-next] wifi: ath10k: use non devm for nvmem_cell_get
+Date: Sun, 22 Feb 2026 18:48:54 -0800
+Message-ID: <20260223024854.18910-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/2] wifi: ath10k: only wait for response to SET_KEY
-To: James Prestwood <prestwoj@gmail.com>,
- Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
- Richard Acayan <mailingradian@gmail.com>, linux-wireless@vger.kernel.org,
- ath10k@lists.infradead.org, Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-References: <20260210021249.12132-1-mailingradian@gmail.com>
- <20260210021249.12132-3-mailingradian@gmail.com>
- <dd019903-f8d9-4bd3-a90d-b4d505f489f3@gmail.com>
- <3e1274fd-fe95-420c-94e3-ac34f497b7ae@oss.qualcomm.com>
- <1c6a4aaa-b450-4843-8c44-930a8c3f6d66@gmail.com>
-Content-Language: en-US
-From: Felix Kaechele <felix@kaechele.ca>
-In-Reply-To: <1c6a4aaa-b450-4843-8c44-930a8c3f6d66@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260217_201435_232677_77F01D43 
-X-CRM114-Status: GOOD (  14.09  )
+X-CRM114-CacheID: sfid-20260222_184920_251160_A0A0CFC6 
+X-CRM114-Status: UNSURE (   8.57  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,55 +97,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hi,
+There's absolutely no need to extend the lifetime of cell to post
+removal of the driver. It's only used in this function.
 
-On 2026-02-13 09:00, James Prestwood wrote:
-> Hi Jeff/Baochen,
-> 
-> On 2/12/26 9:56 AM, Jeff Johnson wrote:
->> On 2/11/2026 6:11 PM, James Prestwood wrote:
->>> On 2/9/26 6:12 PM, Richard Acayan wrote:
->>>> When sending DELETE_KEY, the driver times out waiting for a response
->>>> that doesn't come. Only wait for a response when sending SET_KEY.
->>> We've run into the exact same thing on the QCA6174 and have been
->>> carrying an identical patch to this for at least a year.
->>>
->>> https://lore.kernel.org/linux-wireless/b2838a23-ea30-4dee-b513- 
->>> f5471d486af2@gmail.com/
->> Baochen,
->> Were we ever able to reproduce this?
->> Do we normally always get a response to DELETE_KEY but in some 
->> instances it
->> comes very late (or not at all)?
->> If we remove the wait, is there any concern that a late arriving 
->> DELETE_KEY
->> response might be processed as a response to a subsequent SET_KEY 
->> command?
-> 
-> For some added color, we only see this oddly with some vendors of APs, 
-> primarily "classic" Cisco Aeronet equipment (not Meraki).
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I use Ubiquiti nanoHD APs in my home network and have this issue with 
-those. The device I am focusing on with this (Lenovo ThinkSmart View) 
-originally came with Android and uses qcacld-2.0 there. I do see similar 
-disconnects on group rekeying on Android as well and have reports from 
-other users that WiFi does not consistently stay connected and on 
-Android in some cases may even fail to reconnect at all.
-With ath10k on near mainline Linux I have yet to see a full loss of 
-connectivity.
-To me this suggests that it's possibly a firmware issue.
-I do have ath10k debug traces I can share, if this is helpful.
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5c5bd5ef7175..38c5f5f95433 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1981,13 +1981,14 @@ static int ath10k_download_cal_nvmem(struct ath10k *ar, const char *cell_name)
+ 	size_t len;
+ 	int ret;
 
-dmesg output:
+-	cell = devm_nvmem_cell_get(ar->dev, cell_name);
++	cell = nvmem_cell_get(ar->dev, cell_name);
+ 	if (IS_ERR(cell)) {
+ 		ret = PTR_ERR(cell);
+ 		return ret;
+ 	}
 
-qcom-msm8953 kernel: ath10k_sdio mmc1:0001:1: qca9379 hw1.0 sdio target 
-0x05040000 chip_id 0x00000000 sub 0000:0000
-qcom-msm8953 kernel: ath10k_sdio mmc1:0001:1: kconfig debug 1 debugfs 1 
-tracing 1 dfs 0 testmode 0
-qcom-msm8953 kernel: ath10k_sdio mmc1:0001:1: firmware ver 
-WLAN.NPL.1.6-00163-QCANPLSWPZ-1 api 6 features wowlan,ignore-otp,mfp 
-crc32 ac81ca26
+ 	buf = nvmem_cell_read(cell, &len);
++	nvmem_cell_put(cell);
+ 	if (IS_ERR(buf))
+ 		return PTR_ERR(buf);
 
-Regards,
-Felix
+--
+2.53.0
+
 
