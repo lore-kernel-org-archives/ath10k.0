@@ -4,137 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B050FD45F9
-	for <ath10k@archiver.kernel.org>; Thu, 26 Feb 2026 02:59:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C97AFEFB70
+	for <ath10k@archiver.kernel.org>; Fri, 27 Feb 2026 17:29:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
 	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ApDYTBYwmae7TLEHX3umlqwjGpIiVGPq8syu79mqRSw=; b=PBeLzlPQG11LrXZUbcsR6DgDm5
-	+aeCl2k/WnjzpFDPOnq4y45bc5/UbwZGtdK+yXEZw99UHM6JdtVz6M+eK/NQVPivrIT/F2MoDXyMe
-	sjwJlAMgPD1jArpuQsfeMHtO+M5ck2ZjpvZuGO/44H3rB+zHdO2DFa64sRofVK+T22FtE6Mj+9dOp
-	stMwC2OlFprF5QpWorihNxPBLd8Vz5QBmDFTLU+erChuqKnPyl574aBffewVwVnat7A+kDs7iZj3L
-	W6ZUvzNOik2jiE1MXSt2VPKvsmAtlYvN/57+DX/RGMDC1Dfzt3S4b5e38GYUG9LetyoqzgxtbLj5u
-	xKTUN+KA==;
+	bh=WVkc6ZPyuoqOkhwVhzdZ8Ion5jcRGNGi3A9fSjWSfmA=; b=sIcqd/ZQHUYDSzX2Top7wS2Uiy
+	Q720IIvrzjbcC4Yw61pKW25RvP2QwuSx9NQknpCFbNie/G8CPfWMa+euGOmUIp7+xz1nRw3VnN30B
+	v/d0Z1+r0v0MSZ5tf8dHN6SeL4tcExKtsZ6NFAZ9FjO1yosVBZZ7PxcdhM4D7dcoVeNViEQAEvRuu
+	+Zvl7PM46u57K1WSjg8VaDtkKl1FLU5eQV7bxdu/bo2ns6kYPe/v8q3ouC9LyC+Tth+hAVlQbf7C/
+	+tPdmIrWbBJ+AcMK0qNhy/zDHHpwGereox/VyDVB9foJrd+LjqJ4qU8n+CMvgtLM/VLti9xJphi6q
+	nvHyKt+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvRbV-00000005HIE-0QeO;
-	Thu, 26 Feb 2026 02:59:53 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1vw1eF-00000008oEw-07Ao;
+	Fri, 27 Feb 2026 17:29:07 +0000
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvRbS-00000005HHp-4BNG
+	id 1vw1eC-00000008oEa-38w5
 	for ath10k@lists.infradead.org;
-	Thu, 26 Feb 2026 02:59:52 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61Q0rS7A2978616
-	for <ath10k@lists.infradead.org>; Thu, 26 Feb 2026 02:59:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	ApDYTBYwmae7TLEHX3umlqwjGpIiVGPq8syu79mqRSw=; b=c+cfxvUjmGc2Xg6S
-	ybaysQ/QD0bOWY1YE5ov2x2pDpFn+VFzygFfTmPUz+izyre0zPNX/A/zhEKGqt4u
-	Hb8C+eFCNh1HIwFTLdHkgn464hxjDyH1uzppB6Tx4JQweMJAjqDRWbPY4Gh+3xbR
-	wpkWgiJm5RNQEZ3kQzeDoWzq/xvyfFQ7C5xovkv2sXWkQLJBsJz2ElY7sE2d5wzM
-	YdM7v/ipjb/FD+2/NPsQXlBHJBwJL7A5NxPlxfRg/PpsNp9XLO8+UEbvV8/cKFqm
-	hWT9gi0dG2GSfnOTs4yhjErUwRHkb2WCwOqT7lqmgk53nydlmUYhaNzUZht4NMc7
-	v0Oscw==
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4cjc0g8a01-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Thu, 26 Feb 2026 02:59:50 +0000 (GMT)
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-358f058973fso253497a91.1
-        for <ath10k@lists.infradead.org>; Wed, 25 Feb 2026 18:59:50 -0800 (PST)
+	Fri, 27 Feb 2026 17:29:06 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-354bc7c2c46so1383152a91.0
+        for <ath10k@lists.infradead.org>; Fri, 27 Feb 2026 09:29:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1772074790; x=1772679590; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
+        d=gmail.com; s=20230601; t=1772213343; x=1772818143; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ApDYTBYwmae7TLEHX3umlqwjGpIiVGPq8syu79mqRSw=;
-        b=eKxh0WE65RfPDvpmgfN2WUIryPLqIKjsYXsPtuxQtsY7C+aFALcHVceFRdTa/5mt9f
-         4FPMNuZzNIhglcm22KehD4nYNR6YtkW80l8n5cCYEc9KWBlAZDe/2fSS/aXd+p5r8uNO
-         3EAnVBuulTw3UtJmLWdC4q5T/3xPIRaOKjt7sp4WXsS0kl7CKPttN9g4ruSKd30R47k6
-         0Fm+soBVGwEkNLohrUCQse43HxaekQn6M74DHOE9Hv2ALLJfoCobLvEglgIMARiEkvUN
-         hY20geiGcHCqEEkeGpXR9dHPB8NZk+UXHrRe9tvWsAhyl7YcaWuLOEnx3GT+8BnN7CpE
-         KqNQ==
+        bh=WVkc6ZPyuoqOkhwVhzdZ8Ion5jcRGNGi3A9fSjWSfmA=;
+        b=TyP2Pti3wzlT0CGO0DuBBcmJrxn2/proRA5/ovmdlsIgJ/S4R7jxcaqQ22EitUL1fh
+         PN7X3XQ3k6oVjp05SIggf+inFaL7+MCZ/lkaQVQDFiApD6dgqUl897+fjQhYJto26y8f
+         2WbfIiiIVCQACbUJuJs5vaopTWTtr7MNqxNiayOgZ6vkH4b1WlGb46Qo1lFnsqmVitLi
+         p6Vg/1ldNLshRzlC/vrExQte0QQlrTUJQdcqsNMK3jIaM8RZ4PpKJxio1p1wbWMagqOp
+         v6ihvL3uw8TjFG+rX7fzGXZ915GinQsNjHYrNKQxLsAyMSEQZLLdgHXg46yDAiZVinxn
+         /1HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772074790; x=1772679590;
-        h=content-transfer-encoding:in-reply-to:content-language:from
+        d=1e100.net; s=20230601; t=1772213343; x=1772818143;
+        h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ApDYTBYwmae7TLEHX3umlqwjGpIiVGPq8syu79mqRSw=;
-        b=JabYdwmadrXANbOZ67/2PctnepgDFyD/y2ArlIq7z0qBXuaYoiRPXbR099dOi91YJW
-         9uv2bX3mASdCDeB1+8SN+7z8d58hk221zXlFzTnsVEa5rzXpEiwcno8/w2c5eHioODOU
-         wCHgqozA3rokhviwGWpOU4CJmP4VWTsp1WP3lf3AMs3ukAl2MDXNIPJ3XGc6D+5Dht0N
-         9nZfbGKBBFWCLq8W0K/rXQ5rDfM2DIkl3ch60xm34PiM+GOeiEoopeeb3qSw+saiSVwO
-         j137HqbnlXcCElCAp7UlnvCSuaRm9crVlv2wdhNODvvZLgexYNy4fKNIhb+F3Tjn6dkJ
-         Yyhw==
-X-Forwarded-Encrypted: i=1; AJvYcCXl0TqnxbL0TwLPZON2tpqI1fpXDbCtYxpUq+lW0Vzuty8zEpXRp+c2TC8FL0shnvWRgFzCay0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwEp0tmqbZQ8KKOX9rBhUae0j03LlAp60LcPaF1DZyFysGhTgOk
-	bTSPWyXAoOVzTqsPmI+brWB+maNvRCr3I7P9/e/DDlqcF+YmMwXBp3VZu/aWgOAKNpJwEredtfM
-	4iTitpHjNU+wyfx2zYI+zU/a14H8CLdDmyNWbCoeBRZls34DGPzjNz8hHv2a966JM
-X-Gm-Gg: ATEYQzxx6l7DiTz0fi7wLEEnCHqQyVgXWsd7M60d/kGydTUCj5BwdHdDKvYspt0QupN
-	oyfYxc+dWDpA8IrCG+y6vXV2pX2EVbzxu1IgI30pnvHduRg4tNdg6Cnb+X6CNEWRgZ9A2W91jyG
-	fJLvT7B8i6LYCdWIpZ9ytKCCQiOWypfKDoQhjnTM1LB/BoemquU52xzfWF6MsrpMtpXH+2JX7c9
-	6GnL/0vBTVXYgYYQaXR3JLVuArug6xILZw/+Wil+/5pVlhhRMVyDb7oU73SUduBcps11DOeE8r9
-	bSfbrpnTgNIEYrUvb4xfgaOaJGkPT8cuwpmcRcCotpSkBtrieK6orp4hZt9kj85TU02FpWD2oEl
-	ELchum2JZwGktqHdtYDLFd8Xuwtl7rhqVhUixiYuo4RVeUgiPurmzP7d8jCbNV6eeaqnAYQV8kN
-	Tka8ei4VxtGVw9pJq8IvQ=
-X-Received: by 2002:a17:90b:3504:b0:34c:aba2:dd95 with SMTP id 98e67ed59e1d1-3593dbf2afdmr811187a91.26.1772074789566;
-        Wed, 25 Feb 2026 18:59:49 -0800 (PST)
-X-Received: by 2002:a17:90b:3504:b0:34c:aba2:dd95 with SMTP id 98e67ed59e1d1-3593dbf2afdmr811166a91.26.1772074789068;
-        Wed, 25 Feb 2026 18:59:49 -0800 (PST)
-Received: from [10.133.33.106] (tpe-colo-wan-fw-bordernet.qualcomm.com. [103.229.16.4])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3593dda5ec8sm443651a91.12.2026.02.25.18.59.47
+        bh=WVkc6ZPyuoqOkhwVhzdZ8Ion5jcRGNGi3A9fSjWSfmA=;
+        b=vBy6vQLG4Du0KOqq9KXWan71bovP5FZNWvJSpndwc68UZbXK8h29PHwd+7hKh/qHfV
+         zUiI8rNsqiNFK475TabIArdGcVW/Wj/ILv0eN8HFSTpMTd19jyXc5vF4hW0pZ6mYu9aR
+         xipWGCc2hjbcz/K2RRG45rnBqN/I4aiBeGFp4vsPCg+PjKEcrq1OdGdpvjKvXPNRYQkw
+         NKu/g8Ni9dTMtyuT4h7+sjqumi2Qo+Che3mve444/QRegBBaLmVqH8kvIuINbQuMO/u9
+         u63IWiWBHhbS0RNJR0bwt1CBmaANd6koaYBoUFb6xEifVxH1w8qq8IuAaHOxLRLXrOnM
+         1/dg==
+X-Forwarded-Encrypted: i=1; AJvYcCUvR5M/mL+9XJpwc0XnVD/coxLl4E/YzTmK4A3qIDTGrYQ056GRAtgxLX8AGq/pTxJYLAdWJb4=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz4a8adrKwABcjJFqGNocaK9slMfmClTliiedfAuD4QLubbDveP
+	9wCKtzO3rY88pHXtqMlvdWSlqR21aB29iVHHWfPSBRISVpFO9oPksoUV
+X-Gm-Gg: ATEYQzzDgKsizQ1MjkXoSilL7pXZ54ozEJH6AGhR7UiwcsgFjfSZpIj5AV5iFIy3jGD
+	ebsxLvDVnteE1q+UiZb08yk69iJYZ5n4zm7EVD4St5GnDVJyVV/Ua1UvDaQnYo/ZMTRpqh4Wjkk
+	V82SG+qdIv7Y/F5QgKi62viL9mICzlEQic8M18chd8kDV8BH4+V6/5py8YSOBDvn1UJ8AYJEBUQ
+	l1s9dAyJT/MImNYzQs0IQseE6LOYnECFDbaftSt50fqCR/Zu0QTonBCcoe95qrUaZvzO5GsNJRC
+	Wx43j9GN/FtXY+h+S9UbTfg8Qlq1vY44PMr0UhcvhrDxbrE2nc/yQJ8+G7jFOx2cqFUxRwxNf42
+	tp4NAZkOTmBvh63OqcqsUeGGnpTWS2UgudSAefHD5uJp6k616lBl5Z7lqz8WkDIGpKdUwyOtC87
+	1ke/KFifSwWEntkv4nuPwbOMWCCHFCa+9uUqAGNpger58tPx1I7VVusqUP
+X-Received: by 2002:a17:90b:1f8a:b0:356:22ef:57b9 with SMTP id 98e67ed59e1d1-35965c280e5mr3850766a91.3.1772213343243;
+        Fri, 27 Feb 2026 09:29:03 -0800 (PST)
+Received: from [10.100.120.15] ([152.193.78.90])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-359019780bfsm9638243a91.8.2026.02.27.09.29.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Feb 2026 18:59:48 -0800 (PST)
-Message-ID: <8b468ad4-39e3-401f-a2f2-7484759137df@oss.qualcomm.com>
-Date: Thu, 26 Feb 2026 10:59:43 +0800
+        Fri, 27 Feb 2026 09:29:02 -0800 (PST)
+Message-ID: <2e2818e5-ec6f-4bd7-8d2a-41f65652593f@gmail.com>
+Date: Fri, 27 Feb 2026 09:28:59 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH 2/2] wifi: ath10k: only wait for response to SET_KEY
-To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
-        James Prestwood <prestwoj@gmail.com>,
-        Richard Acayan <mailingradian@gmail.com>,
-        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Baochen Qiang <baochen.qiang@oss.qualcomm.com>,
+ Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
+ Richard Acayan <mailingradian@gmail.com>, linux-wireless@vger.kernel.org,
+ ath10k@lists.infradead.org
 References: <20260210021249.12132-1-mailingradian@gmail.com>
  <20260210021249.12132-3-mailingradian@gmail.com>
  <dd019903-f8d9-4bd3-a90d-b4d505f489f3@gmail.com>
  <3e1274fd-fe95-420c-94e3-ac34f497b7ae@oss.qualcomm.com>
-From: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
+ <8b468ad4-39e3-401f-a2f2-7484759137df@oss.qualcomm.com>
 Content-Language: en-US
-In-Reply-To: <3e1274fd-fe95-420c-94e3-ac34f497b7ae@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
+From: James Prestwood <prestwoj@gmail.com>
+In-Reply-To: <8b468ad4-39e3-401f-a2f2-7484759137df@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Authority-Analysis: v=2.4 cv=XI49iAhE c=1 sm=1 tr=0 ts=699fb726 cx=c_pps
- a=0uOsjrqzRL749jD1oC5vDA==:117 a=nuhDOHQX5FNHPW3J6Bj6AA==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=eoimf2acIAo5FJnRuUoq:22
- a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=JOXQ_UV0D9vJDna7EiIA:9 a=QEXdDO2ut3YA:10
- a=mQ_c8vxmzFEMiUWkPHU9:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI2MDAyNCBTYWx0ZWRfX3aTDVOgWiLp5
- 8mw61kR/Rm+GPoleuDtbrfeL3M9qiE5bGaa6NL+mK6gHSQbuTRKoMzdppWwsNZl21BXgeLIm02w
- q/QDbS/TFSFuoLlD/opxtzvz7G0mmj+Rm4GL+kiCImXIusExk9iWrosP+20ucH7DDTWjM9L/emu
- 4SqBCPET8C3nUfHA6U4v1PjAf2YiVICz3eimamRZ0nKifHfjM2IKqPBi5iscWewEJt1RNff0/Ss
- 9g2aDP/ZRrXEmHt9RamYLRllLAd/umTz2/2W6vgvfrs0/H/GWgNNSdOgL/gtVu5xMA8aBUu8102
- YUtZun3QGWzfw20hV/oXSnyKJLFHseI0KGPY9RYBkuRxGPm1wANjQ3Lr3yJ5vzggeJzhCOJv8M/
- vi77Ot/DpOBj07U8CXs0BM1MbuZlpvc4SR1wHz/6z3DGTYcg8+Qa0EQAyrn/aers1O3t0rzW77h
- EGwPE+xz0/Dnzyen/hQ==
-X-Proofpoint-ORIG-GUID: MVHHmXFV-XftdM8JFy423iwyIpBhDI86
-X-Proofpoint-GUID: MVHHmXFV-XftdM8JFy423iwyIpBhDI86
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-25_04,2026-02-25_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 suspectscore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0
- clxscore=1015 spamscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2602260024
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260225_185951_044112_5EA72B5F 
-X-CRM114-Status: GOOD (  15.17  )
+X-CRM114-CacheID: sfid-20260227_092904_818158_C44A93CE 
+X-CRM114-Status: GOOD (  18.78  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,36 +106,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
+On 2/25/26 6:59 PM, Baochen Qiang wrote:
+>
+> On 2/13/2026 1:56 AM, Jeff Johnson wrote:
+>> On 2/11/2026 6:11 PM, James Prestwood wrote:
+>>> On 2/9/26 6:12 PM, Richard Acayan wrote:
+>>>> When sending DELETE_KEY, the driver times out waiting for a response
+>>>> that doesn't come. Only wait for a response when sending SET_KEY.
+>>> We've run into the exact same thing on the QCA6174 and have been
+>>> carrying an identical patch to this for at least a year.
+>>>
+>>> https://lore.kernel.org/linux-wireless/b2838a23-ea30-4dee-b513-f5471d486af2@gmail.com/
+>> Baochen,
+>> Were we ever able to reproduce this?
+> unfortunately no
+>
+>> Do we normally always get a response to DELETE_KEY but in some instances it
+>> comes very late (or not at all)?
+> In my tests, I never hit this issue so seems can always get a response.
+>
+>> If we remove the wait, is there any concern that a late arriving DELETE_KEY
+>> response might be processed as a response to a subsequent SET_KEY command?
+> I would suggest not to remove the wait, but instead reduce the timeout to like 1s, just
+> like the patch "[RFC 0/1] wifi: ath10k: improvement on key removal failure".
+>
+Is there a specific reason to require a wait? I would be more ok if the 
+way was sub-second, like 100ms or frankly even less (no idea what a 
+"normal" amount of time is to delete a key). The issue is this effects 
+roaming, and will delay roams by e.g. 1 second which is not ideal. I've 
+also seen a 1 second wait cause issues with configurations that expect a 
+very fast reassociation time. Even 1 second was causing a deauth.
 
-On 2/13/2026 1:56 AM, Jeff Johnson wrote:
-> On 2/11/2026 6:11 PM, James Prestwood wrote:
->> On 2/9/26 6:12 PM, Richard Acayan wrote:
->>> When sending DELETE_KEY, the driver times out waiting for a response
->>> that doesn't come. Only wait for a response when sending SET_KEY.
->>
->> We've run into the exact same thing on the QCA6174 and have been 
->> carrying an identical patch to this for at least a year.
->>
->> https://lore.kernel.org/linux-wireless/b2838a23-ea30-4dee-b513-f5471d486af2@gmail.com/
-> 
-> Baochen,
-> Were we ever able to reproduce this?
+I dropped this patch a long time ago and replaced it with a similar 
+patch being discussed here. So far, no issues, though I realize this is 
+a limited test with specific hardware.
 
-unfortunately no
+Thanks,
 
-> Do we normally always get a response to DELETE_KEY but in some instances it
-> comes very late (or not at all)?
+James
 
-In my tests, I never hit this issue so seems can always get a response.
-
-> If we remove the wait, is there any concern that a late arriving DELETE_KEY
-> response might be processed as a response to a subsequent SET_KEY command?
-
-I would suggest not to remove the wait, but instead reduce the timeout to like 1s, just
-like the patch "[RFC 0/1] wifi: ath10k: improvement on key removal failure".
-
-> 
-> /jeff
-
+>> /jeff
 
