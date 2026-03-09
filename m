@@ -4,104 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5009FCA19D
-	for <ath10k@archiver.kernel.org>; Mon,  9 Mar 2026 23:06:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F853FCA191
+	for <ath10k@archiver.kernel.org>; Mon,  9 Mar 2026 23:06:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4nuiFplGeEPW6F+CQFmrK11Lx/4N6iGgXoWw2lOEPQk=; b=SkRh7urqD8tk/zXKBWtx9iZnxB
-	7jqghtLy0gNPSLEWN69TuwmWBfHrSod0R5QoNg5pfoPGyj85/c8eZPRXb6W2glh5TKV+0v2YjGDCi
-	t1YeqbL33hgs1FveAtE7dv/pmmda0pE7ooDFjIVpiG+SVRoFQSeixubYCSRcviXA9rD1mzb2T1iEJ
-	6/Yy1XlfIX3bSi7aC0WBhiZFKbjSIno2WZ7pO8xf3lUxCm6Oza3kgE7XZ2toCjTW0GGxgqV2jNt3S
-	lGp7b8zw0AJ8KceTSvWuIYh0+je0IYQ+R0fU5Jw6HGwQc+RXU7Bjb5Zo15INqJjVmpxdDSOskursc
-	DAzhXPaQ==;
+	bh=PTfKdHxXDsDBf9qbtcJy20RFKCKAaUi+C0QbWC3j2OY=; b=orewyRCcWG1GgrSl/kYB10fFIc
+	F4YoOHY7ySlmKO+1zIdgugOP2bv5udYP0XcqH3NOgMnndZ7XotF8IgD3jgKAThPQnFQaRV0Laqpew
+	bXzrzYt3g0k5dgNIs6Jb8ieX2LEh9inBMaOeHWnK90AIMJdcCR8+xiVexZhutzx8fq3y0sBj/WcOd
+	omCcnfWuCK37zoMFKxiDgdNtMxA9WjDtLz0gP3Xq2uVG//Y9CA0L5BZk3Dm2W3lo41is0tWOXGwNo
+	aWqZUAYjcMCLjwbPnlw2usglaTdUh7kUfHOZog0gvgTbmNCugGPKNGDFSMLVoZiGnJOKuN/sOUNVm
+	7Mo6+d9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzjfo-00000008Gtf-1dfp;
-	Mon, 09 Mar 2026 23:06:04 +0000
+	id 1vzjfq-00000008GyS-3Wqd;
+	Mon, 09 Mar 2026 23:06:06 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzjfk-00000008Gma-38qS
+	id 1vzjfm-00000008GpY-1VAl
 	for ath10k@bombadil.infradead.org;
-	Mon, 09 Mar 2026 23:06:00 +0000
+	Mon, 09 Mar 2026 23:06:02 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=4nuiFplGeEPW6F+CQFmrK11Lx/4N6iGgXoWw2lOEPQk=; b=Ul5L4/vBf2GH1pordJt4cuVEWo
-	lnsYrf8cFWz5ur7b1paXWwxYoa3G/jGUFGy/d1fGQVso55A4yLBmuWe/EgKgfIWPB0dq7GZfMIIyD
-	kZ5h++F+3wWmtcwJC5cwk5nyaKEsdCqUblBynodHAct4S3mpmOGre3/mhD5gqqmywklaR50BKBgaB
-	2wb+nsvUf3rDAJA49p4kzDYa6tcPWDQShLoyGSBDk3sVB7LLpzESN/DqYN0iIkcpMGQSjcxmFPOUW
-	uqV7EFbfTz/LjJzx/E9G6ltBhOD9CQdl84r8ruemeempMncNgUMhhfdjJu6Hs+daRjmZxOSo6k2aC
-	od1Cwr8A==;
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	bh=PTfKdHxXDsDBf9qbtcJy20RFKCKAaUi+C0QbWC3j2OY=; b=l5L9ER5xiXb9MsP5sbcYjd0Ju1
+	OuynLdL1vZOYIOScp/6/UjnImgHob0Vyc3weZTtzk6LL8oLjcQ3cnNO1cj7edJTXgVBZu/yN5xD48
+	APmrH1ZhFwz9hUYxJSKGxnPMFzv3o1JxeqZ5tiGIvUa/5qoi0Rd/rCwEYRoQ8ZJsbXDzOSSRzD433
+	uZYnJV/r/2nGzcLwfVBLnXcpYZzSK3uznd5dge6e8c6x86JrHOusFDapAIfiYlBusmr3tOh3uhrrf
+	LhLQNoVJQNRxTxJAyMrYdUryhOtgYhwC7tV9ZY5ewaxgOJqJJlSNkqehU34ue+AQamCrAErLyAS/R
+	qD8c75Qg==;
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzjfb-0000000DJnA-0Tgi
+	id 1vzjfc-0000000DJnD-3wDt
 	for ath10k@lists.infradead.org;
-	Mon, 09 Mar 2026 23:05:59 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 629HBr1Z3148264
-	for <ath10k@lists.infradead.org>; Mon, 9 Mar 2026 23:05:49 GMT
+	Mon, 09 Mar 2026 23:06:00 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 629HBpKD1297740
+	for <ath10k@lists.infradead.org>; Mon, 9 Mar 2026 23:05:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=qcppdkim1; bh=4nuiFplGeEP
-	W6F+CQFmrK11Lx/4N6iGgXoWw2lOEPQk=; b=gloHc0jcRhYOoGyz7DgdnhjiojN
-	H9hpeKUd3Kr08GXwo2N3xaErYbMYE0ASu4NTUYcKjZ9ez2A9Ln/ugpg39/yqLKpt
-	mJqC7xYLnB5LKufywMAf1lsUOjU0QpQNbrVZdB+sEyfZQPgeemL8PYJLPvILMPtg
-	J9WFvV+Y+4Xa9nvrlKx47wQN0VDhAsMxk6T9hBaepKW6iyHsUBePHNABli94ozlE
-	2crJCJTHgxTLIb4YTD/Z6PXFQqMxMW/7NsUo2SFXI008JG2dOtvgKhb9qGrKUvGX
-	iIBjRfQLrG1MsJtDR2Pool1dBuNiAgVrmfsr2Hh17M6MiZ/6pAmlisLu84Q==
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com [209.85.219.70])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4csv5uacvc-1
+	:mime-version:references:subject:to; s=qcppdkim1; bh=PTfKdHxXDsD
+	Bf9qbtcJy20RFKCKAaUi+C0QbWC3j2OY=; b=lBfD8/nsjfep7uWpNTtXTTH97LP
+	adqHrnvrTVmVgz0lWbAL5VcrdHrI4FRTSXkiz+u1QcKmurgn/d88hHz/4iBBAoj+
+	SgF0dP66UX7GP3KqmHq4FBR51A54fIi9wNxDZIo/awWFssBbLgEaNe0j8xL0eSu4
+	6ohLKXiqBj9NRM3ztv9YLcdyDch7tWK3LyfdOBKXfoqDRIixooDyqouwjHgLJuOl
+	Z4pMUTPjrfg3DUOyVZm3GPKNXh9IR5fH1JW8M+0dXX3xAhqbHxUTvP+UD3hMdiGU
+	wmJYD7HdlW4rfeiSqQS1ja79m2ZdhWjJOgTQi0iWoF0sex2KenSTQG+ihSQ==
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com [209.85.222.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4csyv19nwn-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Mon, 09 Mar 2026 23:05:48 +0000 (GMT)
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-899edf01747so652049016d6.2
-        for <ath10k@lists.infradead.org>; Mon, 09 Mar 2026 16:05:48 -0700 (PDT)
+	for <ath10k@lists.infradead.org>; Mon, 09 Mar 2026 23:05:50 +0000 (GMT)
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-8cd7d66afceso1295803785a.3
+        for <ath10k@lists.infradead.org>; Mon, 09 Mar 2026 16:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1773097548; x=1773702348; darn=lists.infradead.org;
+        d=oss.qualcomm.com; s=google; t=1773097550; x=1773702350; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4nuiFplGeEPW6F+CQFmrK11Lx/4N6iGgXoWw2lOEPQk=;
-        b=gADvGCnJXsPlYFIOLrc5wEAY3YuYBX5tnO9ZkjKz/veA/zZAGX7lIKYDtJ+yCIMGLf
-         NvXOYIeH+iFo/2GSm8sG/juqDkd8766lrLqOLd/MvSr3xwgqE+jR0Fg1mpqeNiUpa4B2
-         fFmmaSVcBXjS5kNPS/3QWGolg1UAvdEWHjDZexln+rA2IDSimY31efRlpvaFqZ9JonMe
-         MFY/JboedXmGOrv5vvnzen5SHjZXaWtoqxxlHZ9PwyK9KmC0sk5FQwgExMXWaNNY6ipI
-         mv9EhAwI8WX+/UV2MLOEhnHv1GQz56Lw59jzTK8gC7RK8r0z5+OSsdtDV8VAhLVRBFuU
-         MzRg==
+        bh=PTfKdHxXDsDBf9qbtcJy20RFKCKAaUi+C0QbWC3j2OY=;
+        b=kb6k+DbRAGP6XCXyUnnLO0cLUyf35S06hP7k7mSUu+MrE2ruwdw7gNlSSgvtcX5oLG
+         qKOhd1bTUNFBmd41VG0rnsjaz8bZke7842MbQma6DY4zODST/yrv5+PcmjXFJxS+2LWV
+         HotH+TbMVfUSRPqpRcYI0ANuFjfOL3KhcV4xqSQ7v4GTsNz3I/XBd09nfAJwHCJCtfPn
+         +pVxWI8sJ8cCj4+oUTssy1yU99ORV2KYMHOkbDgY77hhqEIpyo2cftDkBPDttPJGbSWr
+         v6ZHhk72qMPvJSlz3qAefareyKf8tUPPka4o4YBzerUsfkPx9pxH1zlNe6Z4PUz2AjWM
+         +peg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773097548; x=1773702348;
+        d=1e100.net; s=20230601; t=1773097550; x=1773702350;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=4nuiFplGeEPW6F+CQFmrK11Lx/4N6iGgXoWw2lOEPQk=;
-        b=jRsovlw9ihjI/0wxcLSQ8LhHonuWg5yIuBnFw65yzLYJo74McozjmCrDo45LcXj06E
-         ii+13AZH6NzGQipWoTMEGGzjA19VeW2bTBKXwUqxvrgys7Dzee0jcm3NHz+lrX87QHzB
-         feEd3xuNKJlAhPH+d78/nStXvaZ+O4MPIgr7I3w9rHZpKN0nGHqbV4lWNmk1D9AQxde4
-         71tfC4vS0euYB7mZ5XL/KcuymoNQI2+SUnmtMwJWHeg5auMptuGb8T3dBc2OTYv5c1Tl
-         FHLe5VX33wMpwo7SMC66uqe54qV9y/9hXcBVrAXq7MY6e7bizjnDS+faUBlSiQHjrgZj
-         AdRA==
-X-Forwarded-Encrypted: i=1; AJvYcCVF0oKkIzxSWnYAXn0oHJSOA1eulstio0r7i1e6jGfLA1Ti0Qc5F0vFA29Iw4ZpFf4+4dHJUBg=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwTFlDqYjbB+cB+3D3RUloKCIWPzKK7pdsGGPIxck/Pbdh4EbJ9
-	73q2TJulrQpOaBW/TtocSrxyfQP8MJRczi7OuTHC8L6j6N4DivSf/S2GyCgY95yv7G42cK3LUe/
-	8seNFw+eO8f+J2+dqlliSPO84a8NfUBFZX3LCx2OJ3lfrkxGpR7mXVDANnVlipyjI
-X-Gm-Gg: ATEYQzx6wqE+KXxBF4cUaYHXLfHBkC8SbdlMUgRhADE4lP8FjUEJAKMY5+D5pJeJTvr
-	d7ZoVmdppITG340oCBxPYrH1ZIB65GHIHWsW0FL3wXDvw8hYt+U6oUh4e14amIqQuOk++tZZX4k
-	yjCqlDgcyxJEwOoKk3Xgypqzt/znAyVIPQxymdUOA+78sv1stJv3lNTDHvmMDbVhG4EjgSEvvNX
-	Iqf8M20sPSSHccwUr5u+WXUlFnPc3KvGcJHXhKZlUbKdL3WXaY6jHZ6fYKDigS+mmNWP1px+eHj
-	7uGMkirD0CObMsDPXcMq0R1mKlM1a2JCORWWqInm1ESKeERGVB+ddcEZMz9JHtNAwMl91Iv80jW
-	F331KoLIQSvNcFfshSnDH1+IRkBGrZs2rM91K/zkQIoBrUBODkw==
-X-Received: by 2002:a05:620a:40d5:b0:8cd:8d4c:aa0c with SMTP id af79cd13be357-8cd8d4cadd9mr467938985a.0.1773097548044;
-        Mon, 09 Mar 2026 16:05:48 -0700 (PDT)
-X-Received: by 2002:a05:620a:40d5:b0:8cd:8d4c:aa0c with SMTP id af79cd13be357-8cd8d4cadd9mr467934285a.0.1773097547515;
-        Mon, 09 Mar 2026 16:05:47 -0700 (PDT)
+        bh=PTfKdHxXDsDBf9qbtcJy20RFKCKAaUi+C0QbWC3j2OY=;
+        b=I4c6aQcwbuNeYiKhxPL0MvNWA0ubFoVTFTzqAcYEqo7Jhx7x09lQHXaLAx5xt0mO04
+         GaiPJJ60bnJYXvCV3Z20U7rEvu0vanpAWkYoO/NfbmrAnPse+g7iwZfiTE79jT5Y9T/x
+         cpLutuIICVzd+e9y6f/zH989QbYKxlV0YkpZzIFyCvtvA2DNm0MWQhZABhyUfNDA5TUz
+         Vcds8grUOLPKSEFURoudtZVXTIyMXlyuW7bTPHL1J0mrSsoTwPclvFf8RJsilyMQqBe/
+         ygaM217wDpCsUKhJaqm6mKgNqNZIS+wG74hD7Zn5jwvPn5BrPjz/Da5/YtprhwB7oRiR
+         /7lw==
+X-Forwarded-Encrypted: i=1; AJvYcCWeCZbe95/NS5v38ctouobHCiJ7dugHFc6F8vTWXNHZR6hMDKKhQbgcnJ8MI/KBUcIHs2bj1s8=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxD3G8AL6rRmbynfZWsoDEAnll7kiAOfwLEOkiLdN/qJKbP64am
+	ht+no6H4m3fDnufmw39oDaLLw5b/3bixB7X3t9jPnjla9Y1VvO3DpFg4kbbieXLYxZhjDKXI6H9
+	QSQvJkPWkfVFyslrZFP/9CQF/DYifQbRv6pOdm8ASnVSoGy2zRED75EZ4X/tHHNxF
+X-Gm-Gg: ATEYQzwsB1cO9FCvHKhEeOByHifQ4cCkZTpxgMO0K7naQ4gHfA8nFmIpG743lsHSFL0
+	ab2lgHPPKdSzJDN5K16IwnuwojA3eeIBUxTE6mw/BkxVH1xWfBRTsNAOVBPxsDE1tcf1X3B9/6L
+	D+kvmnuLyFaqBflA6leF03y0BUOhV205bOwMiHoNuhT7BxnFkfPQ+NIfLkSer0WLyK7QQvKJ9EM
+	yfG1Y0sgsd/bRzTKcWLBf30H44PphySdkl2H0s6Z1IlMfEat01YxHEYy1FwYni8Do7flY9LL7iH
+	mJ1l1Psm02EGWvnr9qGWUnXdlG7Xtm6WgZAw7jNXcq3S9eCZavZpx3GgRt1QJGRkHUOPR+zRI4B
+	n6BWzFFEWRL6ah+Idh92mLQqTW5+tBd4Ktemv5BiF0xFL+Txsxg==
+X-Received: by 2002:a05:620a:4002:b0:8ca:2a02:dfd5 with SMTP id af79cd13be357-8cd6d38f9bemr1747206085a.30.1773097549755;
+        Mon, 09 Mar 2026 16:05:49 -0700 (PDT)
+X-Received: by 2002:a05:620a:4002:b0:8ca:2a02:dfd5 with SMTP id af79cd13be357-8cd6d38f9bemr1747199885a.30.1773097549238;
+        Mon, 09 Mar 2026 16:05:49 -0700 (PDT)
 Received: from mai.box.freepro.com ([2a05:6e02:1041:c10:ae20:597c:99b8:d161])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439dae3d98asm33898478f8f.30.2026.03.09.16.05.46
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439dae3d98asm33898478f8f.30.2026.03.09.16.05.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Mar 2026 16:05:46 -0700 (PDT)
+        Mon, 09 Mar 2026 16:05:48 -0700 (PDT)
 From: Daniel Lezcano <daniel.lezcano@oss.qualcomm.com>
 To: konradybcio@kernel.org, andersson@kernel.org
 Cc: linux-kernel@vger.kernel.org, Alex Elder <elder@kernel.org>,
@@ -120,40 +120,40 @@ Cc: linux-kernel@vger.kernel.org, Alex Elder <elder@kernel.org>,
         ath11k@lists.infradead.org, ath12k@lists.infradead.org,
         linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         linux-sound@vger.kernel.org
-Subject: [PATCH v1 1/8] soc: qcom: qmi: Enumerate the service IDs of QMI
-Date: Tue, 10 Mar 2026 00:03:30 +0100
-Message-ID: <20260309230346.3584252-2-daniel.lezcano@oss.qualcomm.com>
+Subject: [PATCH v1 2/8] net: ipa: Use the unified QMI service ID instead of defining it locally
+Date: Tue, 10 Mar 2026 00:03:31 +0100
+Message-ID: <20260309230346.3584252-3-daniel.lezcano@oss.qualcomm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260309230346.3584252-1-daniel.lezcano@oss.qualcomm.com>
 References: <20260309230346.3584252-1-daniel.lezcano@oss.qualcomm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: OYrJJj2T8o554DpOCuWRf-WjVAkINudH
-X-Proofpoint-ORIG-GUID: OYrJJj2T8o554DpOCuWRf-WjVAkINudH
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzA5MDIwNCBTYWx0ZWRfX6qCTbd37cXCm
- gTNHrUg9IspbHKiHfNoTJkOSzzoI3Ehrpe5XTCWAc7dZeAZVk0WE0fhLr4ZOFI/toff9ChvVzdt
- ftDuw9iMB6Uw8EjgyFtdeVZL5rU64shVzsKNChWkqXoQE3LQ0bI8ys9kU6XuCj30uwcjNe9/+bJ
- FTDZ5xge7k48PUvYOMFahCAuCWn4CJW5V9rjM+nIfDPan1G2tWV1cnkPOXD2bnyO4xeSVUkCDOC
- frJe4yF7LShM1DKtZuQAgAJ26R/Srihvq+mDUXE2b/Ood30tjD1gpcmnTFMDN4wtx0k52VaczA0
- +fQg6g5RZ2x88oyjJv2F42oEssOvmMgEW9V074DSKFTAb/5sRBkfHqebya8JcJAR/UFL7FRWQtB
- /ODWAg7PByeFJNoaBEtFpQX9ZiCxza+EnxaZrPQTtRby2Z/ya4bTmSTSqScz+TlmfhdIS8LtaM1
- SUcXcRWdiqspxN+dOzA==
-X-Authority-Analysis: v=2.4 cv=Xr/3+FF9 c=1 sm=1 tr=0 ts=69af524c cx=c_pps
- a=oc9J++0uMp73DTRD5QyR2A==:117 a=xqWC_Br6kY4A:10 a=Yq5XynenixoA:10
+X-Proofpoint-GUID: b02mo1xa0eDb0f-9c7sYrJBhNYUiUh2e
+X-Proofpoint-ORIG-GUID: b02mo1xa0eDb0f-9c7sYrJBhNYUiUh2e
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzA5MDIwNCBTYWx0ZWRfX0Qu32zodayLc
+ PF6DHYIlcRWc3gQIEYBxJOXQ26P6mvutD7+Fn/EvYIOTETAZ6VXsWPx4XJB0tMTTH2S2s1V6AxC
+ 0Q85LNLc970Mk75LDoZHfkGhPCrgv5LD5/+94LmrNM1UJc3y9Ipkn7oVdwokd5LVNfrfsmWPYSb
+ N/y8GP2+iPn8NqsV/J4xXhHWCtqKe0qIXJeOPOxLvP0ihoIll4pe9UGzAW4wcznMVLRbg1KU33X
+ wVTPk+bw3LN9x0R9pyza/LCvhfmQC2IWhVa+hnrqPHYEHHAh7v+6mVHmtB2WlaADxsglCnqV7SH
+ YeHGbyU6k0EWfzsLqQbJacsSW4JmkZjuBLx1iPdbQp2pyu7oaHuRWyq5PNgLL2QkBSJMqUJKe2M
+ 7kou4OPdx9ewWFjhVJuzEg6MYkAd4YFj3CidL8WoBPjWQSg2TlZ22yhCreTkG2UeYFjLxM6PdqK
+ PRjff6ll4LtRgivFDnA==
+X-Authority-Analysis: v=2.4 cv=Cuays34D c=1 sm=1 tr=0 ts=69af524e cx=c_pps
+ a=qKBjSQ1v91RyAK45QCPf5w==:117 a=xqWC_Br6kY4A:10 a=Yq5XynenixoA:10
  a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
- a=_glEPmIy2e8OvE2BGh3C:22 a=EUspDBNiAAAA:8 a=NWmyY4P_PqWfpxtJLaAA:9
- a=iYH6xdkBrDN1Jqds4HTS:22
+ a=yOCtJkima9RkubShWh1s:22 a=EUspDBNiAAAA:8 a=shTvKy1OFHrmHVGPjj8A:9
+ a=NFOGd7dJGGMPyQGDc5-O:22
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-03-09_06,2026-03-09_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 adultscore=0 spamscore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 clxscore=1011 phishscore=0 priorityscore=1501 bulkscore=0
+ malwarescore=0 clxscore=1011 spamscore=0 adultscore=0 priorityscore=1501
+ phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2603090204
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260309_230552_486943_636B78C4 
-X-CRM114-Status: GOOD (  15.73  )
+X-CRM114-CacheID: sfid-20260309_230554_180889_ED47931F 
+X-CRM114-Status: GOOD (  13.73  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -168,47 +168,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The QMI framework proposes a set of services which are defined by an
-integer identifier. The different QMI client lookup for the services
-via this identifier. Moreover, the function qmi_add_lookup() and
-qmi_add_server() must match the service ID but the code in different
-places set the same value but with a different macro name. These
-macros are spreaded across the different subsystems implementing the
-protocols associated with a service. It would make more sense to
-define them in the QMI header for the sake of consistency and clarity.
-
-This change use an unified naming for the services and enumerate the
-ones implemented in the Linux kernel. More services can come later and
-put the service ID in this same header.
+Instead of defining a local macro with a custom name for the QMI
+service identifier, use the one provided in qmi.h and remove the
+locally defined macro.
 
 Signed-off-by: Daniel Lezcano <daniel.lezcano@oss.qualcomm.com>
 ---
- include/linux/soc/qcom/qmi.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/net/ipa/ipa_qmi.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/soc/qcom/qmi.h b/include/linux/soc/qcom/qmi.h
-index 291cdc7ef49c..b8d07f2c07e7 100644
---- a/include/linux/soc/qcom/qmi.h
-+++ b/include/linux/soc/qcom/qmi.h
-@@ -92,6 +92,18 @@ struct qmi_elem_info {
- #define QMI_ERR_INCOMPATIBLE_STATE_V01		90
- #define QMI_ERR_NOT_SUPPORTED_V01		94
+diff --git a/drivers/net/ipa/ipa_qmi.c b/drivers/net/ipa/ipa_qmi.c
+index d771f3a71f94..37936ad132a2 100644
+--- a/drivers/net/ipa/ipa_qmi.c
++++ b/drivers/net/ipa/ipa_qmi.c
+@@ -66,11 +66,9 @@
+  *   determination of when things are "ready"
+  */
  
-+/*
-+ * Enumerate the IDs of the QMI services
-+ */
-+#define QMI_SERVICE_ID_TEST		0x0F	/*   15 */
-+#define QMI_SERVICE_ID_SSCTL		0x2B	/*   43 */
-+#define QMI_SERVICE_ID_IPA		0x31	/*   49 */
-+#define QMI_SERVICE_ID_SERVREG_LOC	0x40	/*   64 */
-+#define QMI_SERVICE_ID_SERVREG_NOTIF	0x42	/*   66 */
-+#define QMI_SERVICE_ID_WLFW		0x45	/*   69 */
-+#define QMI_SERVICE_ID_SLIMBUS		0x301	/*  769 */
-+#define QMI_SERVICE_ID_USB_AUDIO_STREAM 0x41D	/* 1053 */
-+
- /**
-  * struct qmi_response_type_v01 - common response header (decoded)
-  * @result:	result of the transaction
+-#define IPA_HOST_SERVICE_SVC_ID		0x31
+ #define IPA_HOST_SVC_VERS		1
+ #define IPA_HOST_SERVICE_INS_ID		1
+ 
+-#define IPA_MODEM_SERVICE_SVC_ID	0x31
+ #define IPA_MODEM_SERVICE_INS_ID	2
+ #define IPA_MODEM_SVC_VERS		1
+ 
+@@ -484,7 +482,7 @@ int ipa_qmi_setup(struct ipa *ipa)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = qmi_add_server(&ipa_qmi->server_handle, IPA_HOST_SERVICE_SVC_ID,
++	ret = qmi_add_server(&ipa_qmi->server_handle, QMI_SERVICE_ID_IPA,
+ 			     IPA_HOST_SVC_VERS, IPA_HOST_SERVICE_INS_ID);
+ 	if (ret)
+ 		goto err_server_handle_release;
+@@ -501,7 +499,7 @@ int ipa_qmi_setup(struct ipa *ipa)
+ 	/* We need this ready before the service lookup is added */
+ 	INIT_WORK(&ipa_qmi->init_driver_work, ipa_client_init_driver_work);
+ 
+-	ret = qmi_add_lookup(&ipa_qmi->client_handle, IPA_MODEM_SERVICE_SVC_ID,
++	ret = qmi_add_lookup(&ipa_qmi->client_handle, QMI_SERVICE_ID_IPA,
+ 			     IPA_MODEM_SVC_VERS, IPA_MODEM_SERVICE_INS_ID);
+ 	if (ret)
+ 		goto err_client_handle_release;
 -- 
 2.43.0
 
