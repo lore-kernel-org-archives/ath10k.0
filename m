@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89E5E106703C
-	for <ath10k@archiver.kernel.org>; Thu, 12 Mar 2026 15:30:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B30CA106705A
+	for <ath10k@archiver.kernel.org>; Thu, 12 Mar 2026 15:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=31xCNH0NPJ4aXG051gSCOFBtj0tM4SHLD1M6uCHTK7Q=; b=XxzziOXZEKA00T0nKcloT2eJkk
-	qI7eOJU1+iLi7hbGuY7lf60rKJKkvmYTsza2Xk8c3U8tmMoWZ6A7QZpIuYxMdSjWCESqrr3CH/0sY
-	X0wF4DCgeTWwZWs6TB+q2iJALHc4X7lSt2gzBR8S3x2psc96BKqoNbfUIEh4+QJkfvKCa937rP/rA
-	rF9UijYDCMeu/a4VsRA/2kTT96PIbJdwTjyEeNIo7ng12K4wfS7BLf/iwn9QDQBqyYUtuowKCjkzB
-	irX83JzwQZRUgjzMMz91SPtxLXRyV22ycsAeN86LMKEGRZ0PSeLKb+kbxvKW8WVNbfkJoBOpWUOAP
-	0edjurHQ==;
+	bh=dENGikESfzeW14yxvPrE5oKGvWr70umVUdoluDkP2dc=; b=b8aKaLQykrOCsnsGIxgHQLsmkZ
+	erMbRvmW39kCSS1ND1Hs/RWkrXYuSsRkrCgeCMcrUdh37EoLM/ApQiSt/hySco0kicim0c2c17Vpk
+	Msi32m5y/ro2y2753Aq5Ulk/gynQK6bFcLFfom4eGapyP54DnmV13qHSoCIpxpxJ8ca6/JFtKej77
+	f8mA20Xp6trjJZcDjgFcwadWSQbtgVXb6ohSPLMepNkXVdNhRfpvbhJb+txbbIYYeH9xa/mmbXvsP
+	J2hrlrzo8KXs28H85yzU7DNvcz6JC6qXpikFWSvpzggklVIzz3fglok/jvh5150JkeSiqe2akraH4
+	YJmHxmeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0hz5-0000000ENwe-0pMo;
-	Thu, 12 Mar 2026 15:29:59 +0000
+	id 1w0iC1-0000000EQD1-2Ssh;
+	Thu, 12 Mar 2026 15:43:21 +0000
 Received: from mx3.molgen.mpg.de ([141.14.17.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0hz2-0000000ENvg-2vCX
+	id 1w0iBx-0000000EQAM-1JHr
 	for ath10k@lists.infradead.org;
-	Thu, 12 Mar 2026 15:29:58 +0000
+	Thu, 12 Mar 2026 15:43:20 +0000
 Received: from [141.14.220.42] (g42.guest.molgen.mpg.de [141.14.220.42])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 992294C2C37D45;
-	Thu, 12 Mar 2026 16:29:35 +0100 (CET)
-Message-ID: <f370fc89-81a3-4a77-a053-5404324e4235@molgen.mpg.de>
-Date: Thu, 12 Mar 2026 16:29:35 +0100
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id A06954C2C37D45;
+	Thu, 12 Mar 2026 16:43:04 +0100 (CET)
+Message-ID: <e3ecf652-b29a-4cef-acf9-2e24d05eee99@molgen.mpg.de>
+Date: Thu, 12 Mar 2026 16:43:03 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: qca6174: WARNING: drivers/net/wireless/ath/ath10k/wmi.c:2587
 From: Paul Menzel <pmenzel@molgen.mpg.de>
 To: Jeff Johnson <jjohnson@kernel.org>,
  Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-Cc: ath10k@lists.infradead.org, James Prestwood <prestwoj@gmail.com>,
- Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k@lists.infradead.org, James Prestwood <prestwoj@gmail.com>
 References: <094a8970-b16f-4d0f-8377-04554520071d@molgen.mpg.de>
+ <f370fc89-81a3-4a77-a053-5404324e4235@molgen.mpg.de>
 Content-Language: en-US
-In-Reply-To: <094a8970-b16f-4d0f-8377-04554520071d@molgen.mpg.de>
+In-Reply-To: <f370fc89-81a3-4a77-a053-5404324e4235@molgen.mpg.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_082956_890151_CA08EC8A 
-X-CRM114-Status: GOOD (  16.20  )
+X-CRM114-CacheID: sfid-20260312_084318_933421_5243065F 
+X-CRM114-Status: GOOD (  13.11  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,128 +66,181 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Dear Linux folks,
-
-
-Am 11.03.26 um 18:23 schrieb Paul Menzel:
-
-> On the Intel Kaby Lake laptop Dell XPS 13 9360 with
-> 
->       lspci -nn -s 3a:00.0
->       3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter [168c:003e] (rev 32)
-> 
-> putting the device in promiscuous (monitor(?)) mode with the command 
-> below, results in the Linux warning below:
-> 
->      sudo airmon-ng start wlp58s0
-> 
-> ```
-> [    0.000000] Linux version 7.0.0-rc2-00057-g0031c06807cf (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 15.2.0-14) 15.2.0, GNU ld (GNU Binutils for Debian) 2.46) #216 SMP PREEMPT_DYNAMIC Wed Mar 4 00:07:11 CET 2026
-> [    0.000000] Command line: BOOT_IMAGE=/vmlinuz-7.0.0-rc2-00057-g0031c06807cf root=UUID=32e29882-d94d-4a92-9ee4-4d03002bfa29 ro quiet pci=noaer mem_sleep_default=deep log_buf_len=16M cryptomgr.notests usbcore.quirks=0cf3:e300:e,04f3:2234:e,0c45:670c:e
-> […]
-> [93677.018528] ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
-> […]
-> [93895.712252] ------------[ cut here ]------------
-> [93895.712290] 1
-> [93895.712296] WARNING: drivers/net/wireless/ath/ath10k/wmi.c:2587 at ath10k_wmi_event_mgmt_rx+0x52c/0x560 [ath10k_core], CPU#0: swapper/0/0
-> [93895.712411] Modules linked in: ath10k_pci ath10k_core btusb btrtl btintel btbcm cmac cpuid sctp snd_usb_audio snd_usbmidi_lib snd_rawmidi ccm l2tp_ppp l2tp_netlink l2tp_core ip6_udp_tunnel udp_tunnel pppox ppp_generic slhc sha3 libsha3 jitterentropy_rng drbg df_sp80090a authenc echainiv geniv esp4 xfrm_interface xfrm6_tunnel tunnel6 xfrm_user xfrm_algo sd_mod r8153_ecm cdc_ether usbnet r8152 mii usb_storage scsi_mod scsi_common snd_seq_dummy snd_hrtimer snd_seq snd_seq_device binfmt_misc snd_hda_codec_intelhdmi snd_hda_codec_hdmi uvcvideo videobuf2_vmalloc videobuf2_memops uvc videobuf2_v4l2 videodev 
-> snd_ctl_led videobuf2_common bluetooth usbhid mc ecdh_generic ecc snd_hda_codec_alc269 snd_hda_scodec_component snd_hda_codec_realtek_lib snd_hda_codec_generic snd_hda_intel snd_sof_pci_intel_skl snd_sof_intel_hda_generic snd_soc_acpi_intel_match snd_soc_acpi snd_soc_acpi_intel_sdca_quirks snd_sof_pci snd_sof_xtensa_dsp soundwire_intel soundwire_generic_allocation snd_sof_intel_hda_sdw_bpt snd_sof_intel_hda_common
-> [93895.712754]  snd_soc_hdac_hda snd_sof_intel_hda_mlink snd_sof_intel_hda snd_sof snd_sof_utils soundwire_cadence crc8 
-> snd_soc_sdw_utils soundwire_bus snd_soc_sdca snd_soc_avs snd_soc_hda_codec snd_hda_ext_core x86_pkg_temp_thermal intel_powerclamp snd_hda_codec coretemp nls_ascii snd_hda_core kvm_intel snd_intel_dspcfg nls_cp437 snd_intel_sdw_acpi joydev processor_thermal_device_pci_legacy vfat fat ath snd_soc_core intel_soc_dts_iosf dell_pc i915 hid_multitouch kvm snd_compress processor_thermal_device hid_generic processor_thermal_wt_hint platform_temperature_control mac80211 i2c_algo_bit snd_hwdep processor_thermal_soc_slider irqbypass platform_profile iTCO_wdt ghash_clmulni_intel processor_thermal_rfim drm_buddy rapl intel_pmc_bxt snd_pcm intel_xhci_usb_role_switch intel_cstate intel_gtt dell_laptop libarc4 intel_rapl_msr mei_pxp mei_hdcp mei_wdt dell_smm_hwmon processor_thermal_rapl snd_timer i2c_i801 xhci_pci intel_wmi_thunderbolt intel_uncore wmi_bmof drm_display_helper intel_rapl_common cfg80211 ucsi_acpi
-> [93895.713060]  processor_thermal_wt_req ttm rtsx_pci typec_ucsi xhci_hcd snd roles drm_client_lib i2c_smbus soundcore rfkill processor_thermal_power_floor drm_kms_helper mei_me intel_lpss_pci usbcore i2c_hid_acpi typec i2c_hid intel_lpss processor_thermal_mbox usb_common mei intel_pch_thermal idma64 hid intel_pmc_core pmt_telemetry int3400_thermal pmt_discovery intel_oc_wdt pmt_class soc_button_array intel_vbtn watchdog int3403_thermal int340x_thermal_zone intel_pmc_ssram_telemetry acpi_thermal_rel intel_vsec battery ac acpi_pad parport_pc ppdev lp msr parport drm efi_pstore configfs nfnetlink efivarfs autofs4 ext4 crc16 mbcache jbd2 dm_crypt dm_mod dell_wmi dell_smbios dell_wmi_descriptor evdev dcdbas serio_raw pcspkr nvme nvme_core video intel_hid sparse_keymap wmi button aesni_intel [last unloaded: ath10k_core]
-> [93895.713386] CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Not tainted 7.0.0-rc2-00057-g0031c06807cf #216 PREEMPT(full)
-> [93895.713399] Hardware name: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> [93895.713407] RIP: 0010:ath10k_wmi_event_mgmt_rx+0x52c/0x560 [ath10k_core]
-> [93895.713490] Code: ff ff be 00 01 00 00 48 c7 c2 80 81 a1 c1 48 89 df e8 a8 f2 fd ff 41 0f b6 75 4c 48 6b c6 68 48 05 10 12 00 00 e9 24 fc ff ff <0f> 0b e9 be fd ff ff 48 8b 0c 24 48 c7 c2 a0 81 a1 c1 be 10 00 00
-> [93895.713500] RSP: 0018:ffffd44e00003ca8 EFLAGS: 00010286
-> [93895.713512] RAX: 00000000fffffdfb RBX: ffff8c8ce0ac2060 RCX: 0000000000000000
-> [93895.713521] RDX: ffff8c8fecc451c0 RSI: 0000000000000000 RDI: ffff8c8cb3631458
-> [93895.713528] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
-> [93895.713535] R10: fffff89e44ad3c00 R11: ffff8c8c80042e00 R12: ffffd44e00003cc0
-> [93895.713542] R13: ffff8c8cb3631400 R14: 0000000000000000 R15: 00000000fffffe1f
-> [93895.713550] FS:  0000000000000000(0000) GS:ffff8c9038c5c000(0000) knlGS:0000000000000000
-> [93895.713559] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [93895.713566] CR2: 00007f3770afd000 CR3: 0000000029422001 CR4: 00000000003726f0
-> [93895.713575] Call Trace:
-> [93895.713584]  <IRQ>
-> [93895.713598]  ath10k_htc_rx_completion_handler+0xb4/0x230 [ath10k_core]
-> [93895.713683]  ath10k_pci_process_rx_cb+0x163/0x1f0 [ath10k_pci]
-> [93895.713699]  ? ath10k_htc_send_bundle+0x220/0x220 [ath10k_core]
-> [93895.713770]  ath10k_ce_per_engine_service+0x56/0x80 [ath10k_core]
-> [93895.713850]  ath10k_ce_per_engine_service_any+0x7c/0x90 [ath10k_core]
-> [93895.713918]  ath10k_pci_napi_poll+0x44/0x120 [ath10k_pci]
-> [93895.713934]  __napi_poll+0x2a/0x1f0
-> [93895.713952]  ? skb_defer_free_flush+0x9c/0xb0
-> [93895.713969]  net_rx_action+0x148/0x310
-> [93895.713987]  handle_softirqs+0xc9/0x290
-> [93895.714005]  __irq_exit_rcu+0xac/0xd0
-> [93895.714017]  common_interrupt+0x7d/0xa0
-> [93895.714034]  </IRQ>
-> [93895.714039]  <TASK>
-> [93895.714045]  asm_common_interrupt+0x26/0x40
-> [93895.714056] RIP: 0010:cpuidle_enter_state+0xb5/0x450
-> [93895.714067] Code: 00 00 e8 be 72 4c ff e8 69 f2 ff ff 48 89 c5 0f 1f 44 00 00 31 ff e8 aa 80 4b ff 45 84 ff 0f 85 7c 01 00 00 fb 0f 1f 44 00 00 <45> 85 f6 0f 88 d3 01 00 00 49 63 ce 48 2b 2c 24 48 6b d1 68 48 89
-> [93895.714076] RSP: 0018:ffffffffb3603e20 EFLAGS: 00000246
-> [93895.714088] RAX: ffff8c9038c5c000 RBX: 0000000000000008 RCX: 0000000000000000
-> [93895.714094] RDX: 00005565cc91ac8d RSI: 00005538202fb3a1 RDI: 0000000000000000
-> [93895.714101] RBP: 00005565cc91ac8d R08: 0000000000000002 R09: 000001d1a94a2000
-> [93895.714108] R10: 00005566067ed300 R11: ffffffffffffffff R12: ffff8c8fecc4aec0
-> [93895.714115] R13: ffffffffb37b2220 R14: 0000000000000008 R15: 0000000000000000
-> [93895.714131]  cpuidle_enter+0x31/0x40
-> [93895.714145]  do_idle+0x1de/0x240
-> [93895.714162]  cpu_startup_entry+0x29/0x30
-> [93895.714177]  rest_init+0xcc/0xd0
-> [93895.714187]  start_kernel+0x805/0x810
-> [93895.714206]  x86_64_start_reservations+0x24/0x30
-> [93895.714222]  x86_64_start_kernel+0xda/0xe0
-> [93895.714236]  common_startup_64+0x13e/0x141
-> [93895.714257]  </TASK>
-> [93895.714262] ---[ end trace 0000000000000000 ]---
-> [93913.628227] ath10k_pci 0000:3a:00.0 wlp58s0mon: entered promiscuous mode
-> [93913.628261] ath10k_pci 0000:3a:00.0 wlp58s0mon: entered allmulticast mode
-> ```
-> 
-> Please find the output of `dmesg` attached.
-> 
-> The corresponding code is:
-> 
-> ```
->          /* Hardware can Rx CCK rates on 5GHz. In that case phy_mode is set to
->           * MODE_11B. This means phy_mode is not a reliable source for the band
->           * of mgmt rx.
->           */
->          if (channel >= 1 && channel <= 14) {
->                  status->band = NL80211_BAND_2GHZ;
->          } else if (channel >= 36 && channel <= ATH10K_MAX_5G_CHAN) {
->                  status->band = NL80211_BAND_5GHZ;
->          } else {
->                  /* Shouldn't happen unless list of advertised channels to
->                   * mac80211 has been changed.
->                   */
->                  WARN_ON_ONCE(1);
->                  dev_kfree_skb(skb);
->                  return 0;
->          }
-> ```
-> 
-> So `channel` has the wrong value. Should `channel` and 
-> `ATH10K_MAX_5G_CHAN` be logged?
-Commit 21040bf9cb02 (ath10k: simplify computation of mgmt rx band) [1] 
-introduced the code in 2014.
-
-> ath10k: simplify computation of mgmt rx band
-> 
-> Using global channel won't work with chanctx. Try
-> to determine the channel from the information
-> provided in the wmi event itself alone. This
-> should be sufficient.
-
-
-Kind regards,
-
-Paul
-
-
-[1]: 
-https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=21040bf9cb02eb688cb7f1ddaa568713d9ec3c2e
+W1JlbW92ZSBib3VuY2luZyBNaWNoYWzigJlzIGFkZHJlc3MgYWdhaW4uXQ0KDQpBbSAxMi4w
+My4yNiB1bSAxNjoyOSBzY2hyaWViIFBhdWwgTWVuemVsOg0KPiBEZWFyIExpbnV4IGZvbGtz
+LA0KPiANCj4gDQo+IEFtIDExLjAzLjI2IHVtIDE4OjIzIHNjaHJpZWIgUGF1bCBNZW56ZWw6
+DQo+IA0KPj4gT24gdGhlIEludGVsIEthYnkgTGFrZSBsYXB0b3AgRGVsbCBYUFMgMTMgOTM2
+MCB3aXRoDQo+Pg0KPj4gwqDCoMKgwqDCoCBsc3BjaSAtbm4gLXMgM2E6MDAuMA0KPj4gwqDC
+oMKgwqDCoCAzYTowMC4wIE5ldHdvcmsgY29udHJvbGxlciBbMDI4MF06IFF1YWxjb21tIEF0
+aGVyb3MgUUNBNjE3NCANCj4+IDgwMi4xMWFjIFdpcmVsZXNzIE5ldHdvcmsgQWRhcHRlciBb
+MTY4YzowMDNlXSAocmV2IDMyKQ0KPj4NCj4+IHB1dHRpbmcgdGhlIGRldmljZSBpbiBwcm9t
+aXNjdW91cyAobW9uaXRvcig/KSkgbW9kZSB3aXRoIHRoZSBjb21tYW5kIA0KPj4gYmVsb3cs
+IHJlc3VsdHMgaW4gdGhlIExpbnV4IHdhcm5pbmcgYmVsb3c6DQo+Pg0KPj4gwqDCoMKgwqAg
+c3VkbyBhaXJtb24tbmcgc3RhcnQgd2xwNThzMA0KPj4NCj4+IGBgYA0KPj4gW8KgwqDCoCAw
+LjAwMDAwMF0gTGludXggdmVyc2lvbiA3LjAuMC1yYzItMDAwNTctZzAwMzFjMDY4MDdjZiAo
+YnVpbGRAYm9oZW1pYW5yaGFwc29keS5tb2xnZW4ubXBnLmRlKSAoZ2NjIChEZWJpYW4gMTUu
+Mi4wLTE0KSAxNS4yLjAsIEdOVSBsZCAoR05VIEJpbnV0aWxzIGZvciBEZWJpYW4pIDIuNDYp
+ICMyMTYgU01QIFBSRUVNUFRfRFlOQU1JQyBXZWQgTWFyIDQgMDA6MDc6MTEgQ0VUIDIwMjYN
+Cj4+IFvCoMKgwqAgMC4wMDAwMDBdIENvbW1hbmQgbGluZTogQk9PVF9JTUFHRT0vdm1saW51
+ei03LjAuMC1yYzItMDAwNTctZzAwMzFjMDY4MDdjZiByb290PVVVSUQ9MzJlMjk4ODItZDk0
+ZC00YTkyLTllZTQtNGQwMzAwMmJmYTI5IHJvIHF1aWV0IHBjaT1ub2FlciBtZW1fc2xlZXBf
+ZGVmYXVsdD1kZWVwIGxvZ19idWZfbGVuPTE2TSBjcnlwdG9tZ3Iubm90ZXN0cyB1c2Jjb3Jl
+LnF1aXJrcz0wY2YzOmUzMDA6ZSwwNGYzOjIyMzQ6ZSwwYzQ1OjY3MGM6ZQ0KPj4gW+KApl0N
+Cj4+IFs5MzY3Ny4wMTg1MjhdIGF0aDEwa19wY2kgMDAwMDozYTowMC4wOiBxY2E2MTc0IGh3
+My4yIHRhcmdldCAweDA1MDMwMDAwIGNoaXBfaWQgMHgwMDM0MGFmZiBzdWIgMWE1NjoxNTM1
+DQo+PiBb4oCmXQ0KPj4gWzkzODk1LjcxMjI1Ml0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBd
+LS0tLS0tLS0tLS0tDQo+PiBbOTM4OTUuNzEyMjkwXSAxDQo+PiBbOTM4OTUuNzEyMjk2XSBX
+QVJOSU5HOiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jOjI1ODcgYXQg
+YXRoMTBrX3dtaV9ldmVudF9tZ210X3J4KzB4NTJjLzB4NTYwIFthdGgxMGtfY29yZV0sIENQ
+VSMwOiBzd2FwcGVyLzAvMA0KPj4gWzkzODk1LjcxMjQxMV0gTW9kdWxlcyBsaW5rZWQgaW46
+IGF0aDEwa19wY2kgYXRoMTBrX2NvcmUgYnR1c2IgYnRydGwgYnRpbnRlbCBidGJjbSBjbWFj
+IGNwdWlkIHNjdHAgc25kX3VzYl9hdWRpbyBzbmRfdXNibWlkaV9saWIgc25kX3Jhd21pZGkg
+Y2NtIGwydHBfcHBwIGwydHBfbmV0bGluayBsMnRwX2NvcmUgaXA2X3VkcF90dW5uZWwgdWRw
+X3R1bm5lbCBwcHBveCBwcHBfZ2VuZXJpYyBzbGhjIHNoYTMgbGlic2hhMyBqaXR0ZXJlbnRy
+b3B5X3JuZyBkcmJnIGRmX3NwODAwOTBhIGF1dGhlbmMgZWNoYWluaXYgZ2VuaXYgZXNwNCB4
+ZnJtX2ludGVyZmFjZSB4ZnJtNl90dW5uZWwgdHVubmVsNiB4ZnJtX3VzZXIgeGZybV9hbGdv
+IHNkX21vZCByODE1M19lY20gY2RjX2V0aGVyIHVzYm5ldCByODE1MiBtaWkgdXNiX3N0b3Jh
+Z2Ugc2NzaV9tb2Qgc2NzaV9jb21tb24gc25kX3NlcV9kdW1teSBzbmRfaHJ0aW1lciBzbmRf
+c2VxIHNuZF9zZXFfZGV2aWNlIGJpbmZtdF9taXNjIHNuZF9oZGFfY29kZWNfaW50ZWxoZG1p
+IHNuZF9oZGFfY29kZWNfaGRtaSB1dmN2aWRlbyB2aWRlb2J1ZjJfdm1hbGxvYyB2aWRlb2J1
+ZjJfbWVtb3BzIHV2YyB2aWRlb2J1ZjJfdjRsMiB2aWRlb2RldiBzbmRfY3RsX2xlZCB2aWRl
+b2J1ZjJfY29tbW9uIGJsdWV0b290aCB1c2JoaWQgbWMgZWNkaF9nZW5lcmljIGVjYyBzbmRf
+aGRhX2NvZGVjX2FsYzI2OSBzbmRfaGRhX3Njb2RlY19jb21wb25lbnQgc25kX2hkYV9jb2Rl
+Y19yZWFsdGVrX2xpYiBzbmRfaGRhX2NvZGVjX2dlbmVyaWMgc25kX2hkYV9pbnRlbCBzbmRf
+c29mX3BjaV9pbnRlbF9za2wgc25kX3NvZl9pbnRlbF9oZGFfZ2VuZXJpYyBzbmRfc29jX2Fj
+cGlfaW50ZWxfbWF0Y2ggc25kX3NvY19hY3BpIHNuZF9zb2NfYWNwaV9pbnRlbF9zZGNhX3F1
+aXJrcyBzbmRfc29mX3BjaSBzbmRfc29mX3h0ZW5zYV9kc3Agc291bmR3aXJlX2ludGVsIHNv
+dW5kd2lyZV9nZW5lcmljX2FsbG9jYXRpb24gc25kX3NvZl9pbnRlbF9oZGFfc2R3X2JwdCBz
+bmRfc29mX2ludGVsX2hkYV9jb21tb24NCj4+IFs5Mzg5NS43MTI3NTRdwqAgc25kX3NvY19o
+ZGFjX2hkYSBzbmRfc29mX2ludGVsX2hkYV9tbGluayBzbmRfc29mX2ludGVsX2hkYSBzbmRf
+c29mIHNuZF9zb2ZfdXRpbHMgc291bmR3aXJlX2NhZGVuY2UgY3JjOCBzbmRfc29jX3Nkd191
+dGlscyBzb3VuZHdpcmVfYnVzIHNuZF9zb2Nfc2RjYSBzbmRfc29jX2F2cyBzbmRfc29jX2hk
+YV9jb2RlYyBzbmRfaGRhX2V4dF9jb3JlIHg4Nl9wa2dfdGVtcF90aGVybWFsIGludGVsX3Bv
+d2VyY2xhbXAgc25kX2hkYV9jb2RlYyBjb3JldGVtcCBubHNfYXNjaWkgc25kX2hkYV9jb3Jl
+IGt2bV9pbnRlbCBzbmRfaW50ZWxfZHNwY2ZnIG5sc19jcDQzNyBzbmRfaW50ZWxfc2R3X2Fj
+cGkgam95ZGV2IHByb2Nlc3Nvcl90aGVybWFsX2RldmljZV9wY2lfbGVnYWN5IHZmYXQgZmF0
+IGF0aCBzbmRfc29jX2NvcmUgaW50ZWxfc29jX2R0c19pb3NmIGRlbGxfcGMgaTkxNSBoaWRf
+bXVsdGl0b3VjaCBrdm0gc25kX2NvbXByZXNzIHByb2Nlc3Nvcl90aGVybWFsX2RldmljZSBo
+aWRfZ2VuZXJpYyBwcm9jZXNzb3JfdGhlcm1hbF93dF9oaW50IHBsYXRmb3JtX3RlbXBlcmF0
+dXJlX2NvbnRyb2wgbWFjODAyMTEgaTJjX2FsZ29fYml0IHNuZF9od2RlcCBwcm9jZXNzb3Jf
+dGhlcm1hbF9zb2Nfc2xpZGVyIGlycWJ5cGFzcyBwbGF0Zm9ybV9wcm9maWxlIGlUQ09fd2R0
+IGdoYXNoX2NsbXVsbmlfaW50ZWwgcHJvY2Vzc29yX3RoZXJtYWxfcmZpbSBkcm1fYnVkZHkg
+cmFwbCBpbnRlbF9wbWNfYnh0IHNuZF9wY20gaW50ZWxfeGhjaV91c2Jfcm9sZV9zd2l0Y2gg
+aW50ZWxfY3N0YXRlIGludGVsX2d0dCBkZWxsX2xhcHRvcCBsaWJhcmM0IGludGVsX3JhcGxf
+bXNyIG1laV9weHAgbWVpX2hkY3AgbWVpX3dkdCBkZWxsX3NtbV9od21vbiBwcm9jZXNzb3Jf
+dGhlcm1hbF9yYXBsIHNuZF90aW1lciBpMmNfaTgwMSB4aGNpX3BjaSBpbnRlbF93bWlfdGh1
+bmRlcmJvbHQgaW50ZWxfdW5jb3JlIHdtaV9ibW9mIGRybV9kaXNwbGF5X2hlbHBlciBpbnRl
+bF9yYXBsX2NvbW1vbiBjZmc4MDIxMSB1Y3NpX2FjcGkNCj4+IFs5Mzg5NS43MTMwNjBdwqAg
+cHJvY2Vzc29yX3RoZXJtYWxfd3RfcmVxIHR0bSBydHN4X3BjaSB0eXBlY191Y3NpIHhoY2lf
+aGNkIHNuZCByb2xlcyBkcm1fY2xpZW50X2xpYiBpMmNfc21idXMgc291bmRjb3JlIHJma2ls
+bCANCj4+IHByb2Nlc3Nvcl90aGVybWFsX3Bvd2VyX2Zsb29yIGRybV9rbXNfaGVscGVyIG1l
+aV9tZSBpbnRlbF9scHNzX3BjaSB1c2Jjb3JlIGkyY19oaWRfYWNwaSB0eXBlYyBpMmNfaGlk
+IGludGVsX2xwc3MgcHJvY2Vzc29yX3RoZXJtYWxfbWJveCB1c2JfY29tbW9uIG1laSBpbnRl
+bF9wY2hfdGhlcm1hbCBpZG1hNjQgaGlkIGludGVsX3BtY19jb3JlIHBtdF90ZWxlbWV0cnkg
+aW50MzQwMF90aGVybWFsIHBtdF9kaXNjb3ZlcnkgaW50ZWxfb2Nfd2R0IHBtdF9jbGFzcyBz
+b2NfYnV0dG9uX2FycmF5IGludGVsX3ZidG4gd2F0Y2hkb2cgaW50MzQwM190aGVybWFsIGlu
+dDM0MHhfdGhlcm1hbF96b25lIGludGVsX3BtY19zc3JhbV90ZWxlbWV0cnkgYWNwaV90aGVy
+bWFsX3JlbCBpbnRlbF92c2VjIGJhdHRlcnkgYWMgYWNwaV9wYWQgcGFycG9ydF9wYyBwcGRl
+diBscCBtc3IgcGFycG9ydCBkcm0gZWZpX3BzdG9yZSBjb25maWdmcyBuZm5ldGxpbmsgZWZp
+dmFyZnMgYXV0b2ZzNCBleHQ0IGNyYzE2IG1iY2FjaGUgamJkMiBkbV9jcnlwdCBkbV9tb2Qg
+ZGVsbF93bWkgZGVsbF9zbWJpb3MgZGVsbF93bWlfZGVzY3JpcHRvciBldmRldiBkY2RiYXMg
+c2VyaW9fcmF3IHBjc3BrciBudm1lIG52bWVfY29yZSB2aWRlbyBpbnRlbF9oaWQgc3BhcnNl
+X2tleW1hcCB3bWkgYnV0dG9uIGFlc25pX2ludGVsIFtsYXN0IHVubG9hZGVkOiBhdGgxMGtf
+Y29yZV0NCj4+IFs5Mzg5NS43MTMzODZdIENQVTogMCBVSUQ6IDAgUElEOiAwIENvbW06IHN3
+YXBwZXIvMCBOb3QgdGFpbnRlZCA3LjAuMC1yYzItMDAwNTctZzAwMzFjMDY4MDdjZiAjMjE2
+IFBSRUVNUFQoZnVsbCkNCj4+IFs5Mzg5NS43MTMzOTldIEhhcmR3YXJlIG5hbWU6IERlbGwg
+SW5jLiBYUFMgMTMgOTM2MC8wNTk2S0YsIEJJT1MgMi4yMS4wIDA2LzAyLzIwMjINCj4+IFs5
+Mzg5NS43MTM0MDddIFJJUDogMDAxMDphdGgxMGtfd21pX2V2ZW50X21nbXRfcngrMHg1MmMv
+MHg1NjAgW2F0aDEwa19jb3JlXQ0KPj4gWzkzODk1LjcxMzQ5MF0gQ29kZTogZmYgZmYgYmUg
+MDAgMDEgMDAgMDAgNDggYzcgYzIgODAgODEgYTEgYzEgNDggODkgZGYgZTggYTggZjIgZmQg
+ZmYgNDEgMGYgYjYgNzUgNGMgNDggNmIgYzYgNjggNDggMDUgMTAgMTIgMDAgMDAgZTkgMjQg
+ZmMgZmYgZmYgPDBmPiAwYiBlOSBiZSBmZCBmZiBmZiA0OCA4YiAwYyAyNCA0OCBjNyBjMiBh
+MCA4MSBhMSBjMSBiZSAxMCAwMCAwMA0KPj4gWzkzODk1LjcxMzUwMF0gUlNQOiAwMDE4OmZm
+ZmZkNDRlMDAwMDNjYTggRUZMQUdTOiAwMDAxMDI4Ng0KPj4gWzkzODk1LjcxMzUxMl0gUkFY
+OiAwMDAwMDAwMGZmZmZmZGZiIFJCWDogZmZmZjhjOGNlMGFjMjA2MCBSQ1g6IDAwMDAwMDAw
+MDAwMDAwMDANCj4+IFs5Mzg5NS43MTM1MjFdIFJEWDogZmZmZjhjOGZlY2M0NTFjMCBSU0k6
+IDAwMDAwMDAwMDAwMDAwMDAgUkRJOiBmZmZmOGM4Y2IzNjMxNDU4DQo+PiBbOTM4OTUuNzEz
+NTI4XSBSQlA6IDAwMDAwMDAwMDAwMDAwMDAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTog
+MDAwMDAwMDAwMDAwMDAwMQ0KPj4gWzkzODk1LjcxMzUzNV0gUjEwOiBmZmZmZjg5ZTQ0YWQz
+YzAwIFIxMTogZmZmZjhjOGM4MDA0MmUwMCBSMTI6IGZmZmZkNDRlMDAwMDNjYzANCj4+IFs5
+Mzg5NS43MTM1NDJdIFIxMzogZmZmZjhjOGNiMzYzMTQwMCBSMTQ6IDAwMDAwMDAwMDAwMDAw
+MDAgUjE1OiAwMDAwMDAwMGZmZmZmZTFmDQo+PiBbOTM4OTUuNzEzNTUwXSBGUzrCoCAwMDAw
+MDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY4YzkwMzhjNWMwMDAoMDAwMCkga25sR1M6MDAw
+MDAwMDAwMDAwMDAwMA0KPj4gWzkzODk1LjcxMzU1OV0gQ1M6wqAgMDAxMCBEUzogMDAwMCBF
+UzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCj4+IFs5Mzg5NS43MTM1NjZdIENSMjog
+MDAwMDdmMzc3MGFmZDAwMCBDUjM6IDAwMDAwMDAwMjk0MjIwMDEgQ1I0OiAwMDAwMDAwMDAw
+MzcyNmYwDQo+PiBbOTM4OTUuNzEzNTc1XSBDYWxsIFRyYWNlOg0KPj4gWzkzODk1LjcxMzU4
+NF3CoCA8SVJRPg0KPj4gWzkzODk1LjcxMzU5OF3CoCBhdGgxMGtfaHRjX3J4X2NvbXBsZXRp
+b25faGFuZGxlcisweGI0LzB4MjMwIFthdGgxMGtfY29yZV0NCj4+IFs5Mzg5NS43MTM2ODNd
+wqAgYXRoMTBrX3BjaV9wcm9jZXNzX3J4X2NiKzB4MTYzLzB4MWYwIFthdGgxMGtfcGNpXQ0K
+Pj4gWzkzODk1LjcxMzY5OV3CoCA/IGF0aDEwa19odGNfc2VuZF9idW5kbGUrMHgyMjAvMHgy
+MjAgW2F0aDEwa19jb3JlXQ0KPj4gWzkzODk1LjcxMzc3MF3CoCBhdGgxMGtfY2VfcGVyX2Vu
+Z2luZV9zZXJ2aWNlKzB4NTYvMHg4MCBbYXRoMTBrX2NvcmVdDQo+PiBbOTM4OTUuNzEzODUw
+XcKgIGF0aDEwa19jZV9wZXJfZW5naW5lX3NlcnZpY2VfYW55KzB4N2MvMHg5MCBbYXRoMTBr
+X2NvcmVdDQo+PiBbOTM4OTUuNzEzOTE4XcKgIGF0aDEwa19wY2lfbmFwaV9wb2xsKzB4NDQv
+MHgxMjAgW2F0aDEwa19wY2ldDQo+PiBbOTM4OTUuNzEzOTM0XcKgIF9fbmFwaV9wb2xsKzB4
+MmEvMHgxZjANCj4+IFs5Mzg5NS43MTM5NTJdwqAgPyBza2JfZGVmZXJfZnJlZV9mbHVzaCsw
+eDljLzB4YjANCj4+IFs5Mzg5NS43MTM5NjldwqAgbmV0X3J4X2FjdGlvbisweDE0OC8weDMx
+MA0KPj4gWzkzODk1LjcxMzk4N13CoCBoYW5kbGVfc29mdGlycXMrMHhjOS8weDI5MA0KPj4g
+WzkzODk1LjcxNDAwNV3CoCBfX2lycV9leGl0X3JjdSsweGFjLzB4ZDANCj4+IFs5Mzg5NS43
+MTQwMTddwqAgY29tbW9uX2ludGVycnVwdCsweDdkLzB4YTANCj4+IFs5Mzg5NS43MTQwMzRd
+wqAgPC9JUlE+DQo+PiBbOTM4OTUuNzE0MDM5XcKgIDxUQVNLPg0KPj4gWzkzODk1LjcxNDA0
+NV3CoCBhc21fY29tbW9uX2ludGVycnVwdCsweDI2LzB4NDANCj4+IFs5Mzg5NS43MTQwNTZd
+IFJJUDogMDAxMDpjcHVpZGxlX2VudGVyX3N0YXRlKzB4YjUvMHg0NTANCj4+IFs5Mzg5NS43
+MTQwNjddIENvZGU6IDAwIDAwIGU4IGJlIDcyIDRjIGZmIGU4IDY5IGYyIGZmIGZmIDQ4IDg5
+IGM1IDBmIDFmIDQ0IDAwIDAwIDMxIGZmIGU4IGFhIDgwIDRiIGZmIDQ1IDg0IGZmIDBmIDg1
+IDdjIDAxIDAwIDAwIGZiIDBmIDFmIDQ0IDAwIDAwIDw0NT4gODUgZjYgMGYgODggZDMgMDEg
+MDAgMDAgNDkgNjMgY2UgNDggMmIgMmMgMjQgNDggNmIgZDEgNjggNDggODkNCj4+IFs5Mzg5
+NS43MTQwNzZdIFJTUDogMDAxODpmZmZmZmZmZmIzNjAzZTIwIEVGTEFHUzogMDAwMDAyNDYN
+Cj4+IFs5Mzg5NS43MTQwODhdIFJBWDogZmZmZjhjOTAzOGM1YzAwMCBSQlg6IDAwMDAwMDAw
+MDAwMDAwMDggUkNYOiAwMDAwMDAwMDAwMDAwMDAwDQo+PiBbOTM4OTUuNzE0MDk0XSBSRFg6
+IDAwMDA1NTY1Y2M5MWFjOGQgUlNJOiAwMDAwNTUzODIwMmZiM2ExIFJESTogMDAwMDAwMDAw
+MDAwMDAwMA0KPj4gWzkzODk1LjcxNDEwMV0gUkJQOiAwMDAwNTU2NWNjOTFhYzhkIFIwODog
+MDAwMDAwMDAwMDAwMDAwMiBSMDk6IDAwMDAwMWQxYTk0YTIwMDANCj4+IFs5Mzg5NS43MTQx
+MDhdIFIxMDogMDAwMDU1NjYwNjdlZDMwMCBSMTE6IGZmZmZmZmZmZmZmZmZmZmYgUjEyOiBm
+ZmZmOGM4ZmVjYzRhZWMwDQo+PiBbOTM4OTUuNzE0MTE1XSBSMTM6IGZmZmZmZmZmYjM3YjIy
+MjAgUjE0OiAwMDAwMDAwMDAwMDAwMDA4IFIxNTogMDAwMDAwMDAwMDAwMDAwMA0KPj4gWzkz
+ODk1LjcxNDEzMV3CoCBjcHVpZGxlX2VudGVyKzB4MzEvMHg0MA0KPj4gWzkzODk1LjcxNDE0
+NV3CoCBkb19pZGxlKzB4MWRlLzB4MjQwDQo+PiBbOTM4OTUuNzE0MTYyXcKgIGNwdV9zdGFy
+dHVwX2VudHJ5KzB4MjkvMHgzMA0KPj4gWzkzODk1LjcxNDE3N13CoCByZXN0X2luaXQrMHhj
+Yy8weGQwDQo+PiBbOTM4OTUuNzE0MTg3XcKgIHN0YXJ0X2tlcm5lbCsweDgwNS8weDgxMA0K
+Pj4gWzkzODk1LjcxNDIwNl3CoCB4ODZfNjRfc3RhcnRfcmVzZXJ2YXRpb25zKzB4MjQvMHgz
+MA0KPj4gWzkzODk1LjcxNDIyMl3CoCB4ODZfNjRfc3RhcnRfa2VybmVsKzB4ZGEvMHhlMA0K
+Pj4gWzkzODk1LjcxNDIzNl3CoCBjb21tb25fc3RhcnR1cF82NCsweDEzZS8weDE0MQ0KPj4g
+WzkzODk1LjcxNDI1N13CoCA8L1RBU0s+DQo+PiBbOTM4OTUuNzE0MjYyXSAtLS1bIGVuZCB0
+cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0NCj4+IFs5MzkxMy42MjgyMjddIGF0aDEwa19w
+Y2kgMDAwMDozYTowMC4wIHdscDU4czBtb246IGVudGVyZWQgcHJvbWlzY3VvdXMgbW9kZQ0K
+Pj4gWzkzOTEzLjYyODI2MV0gYXRoMTBrX3BjaSAwMDAwOjNhOjAwLjAgd2xwNThzMG1vbjog
+ZW50ZXJlZCANCj4+IGFsbG11bHRpY2FzdCBtb2RlDQo+PiBgYGANCj4+DQo+PiBQbGVhc2Ug
+ZmluZCB0aGUgb3V0cHV0IG9mIGBkbWVzZ2AgYXR0YWNoZWQuDQo+Pg0KPj4gVGhlIGNvcnJl
+c3BvbmRpbmcgY29kZSBpczoNCj4+DQo+PiBgYGANCj4+IMKgwqDCoMKgwqDCoMKgwqAgLyog
+SGFyZHdhcmUgY2FuIFJ4IENDSyByYXRlcyBvbiA1R0h6LiBJbiB0aGF0IGNhc2UgcGh5X21v
+ZGUgaXMgc2V0IHRvDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgKiBNT0RFXzExQi4gVGhpcyBt
+ZWFucyBwaHlfbW9kZSBpcyBub3QgYSByZWxpYWJsZSBzb3VyY2UgZm9yIHRoZSBiYW5kDQo+
+PiDCoMKgwqDCoMKgwqDCoMKgwqAgKiBvZiBtZ210IHJ4Lg0KPj4gwqDCoMKgwqDCoMKgwqDC
+oMKgICovDQo+PiDCoMKgwqDCoMKgwqDCoMKgIGlmIChjaGFubmVsID49IDEgJiYgY2hhbm5l
+bCA8PSAxNCkgew0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RhdHVz
+LT5iYW5kID0gTkw4MDIxMV9CQU5EXzJHSFo7DQo+PiDCoMKgwqDCoMKgwqDCoMKgIH0gZWxz
+ZSBpZiAoY2hhbm5lbCA+PSAzNiAmJiBjaGFubmVsIDw9IEFUSDEwS19NQVhfNUdfQ0hBTikg
+ew0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RhdHVzLT5iYW5kID0g
+Tkw4MDIxMV9CQU5EXzVHSFo7DQo+PiDCoMKgwqDCoMKgwqDCoMKgIH0gZWxzZSB7DQo+PiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKiBTaG91bGRuJ3QgaGFwcGVuIHVu
+bGVzcyBsaXN0IG9mIGFkdmVydGlzZWQgY2hhbm5lbHMgdG8NCj4+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBtYWM4MDIxMSBoYXMgYmVlbiBjaGFuZ2VkLg0KPj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLw0KPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgV0FSTl9PTl9PTkNFKDEpOw0KPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2X2tmcmVlX3NrYihza2IpOw0KPj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIDA7DQo+PiDCoMKgwqDCoMKgwqDCoMKg
+IH0NCj4+IGBgYA0KPj4NCj4+IFNvIGBjaGFubmVsYCBoYXMgdGhlIHdyb25nIHZhbHVlLiBT
+aG91bGQgYGNoYW5uZWxgIGFuZCANCj4+IGBBVEgxMEtfTUFYXzVHX0NIQU5gIGJlIGxvZ2dl
+ZD8NCj4gQ29tbWl0IDIxMDQwYmY5Y2IwMiAoYXRoMTBrOiBzaW1wbGlmeSBjb21wdXRhdGlv
+biBvZiBtZ210IHJ4IGJhbmQpIFsxXSANCj4gaW50cm9kdWNlZCB0aGUgY29kZSBpbiAyMDE0
+Lg0KPiANCj4+IGF0aDEwazogc2ltcGxpZnkgY29tcHV0YXRpb24gb2YgbWdtdCByeCBiYW5k
+DQo+Pg0KPj4gVXNpbmcgZ2xvYmFsIGNoYW5uZWwgd29uJ3Qgd29yayB3aXRoIGNoYW5jdHgu
+IFRyeQ0KPj4gdG8gZGV0ZXJtaW5lIHRoZSBjaGFubmVsIGZyb20gdGhlIGluZm9ybWF0aW9u
+DQo+PiBwcm92aWRlZCBpbiB0aGUgd21pIGV2ZW50IGl0c2VsZiBhbG9uZS4gVGhpcw0KPj4g
+c2hvdWxkIGJlIHN1ZmZpY2llbnQuDQo+IA0KPiANCj4gS2luZCByZWdhcmRzLA0KPiANCj4g
+UGF1bA0KPiANCj4gDQo+IFsxXTogaHR0cHM6Ly93ZWIuZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
+bS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvP2lkPTIxMDQw
+YmY5Y2IwMmViNjg4Y2I3ZjFkZGFhNTY4NzEzZDllYzNjMmUNCg==
 
