@@ -4,54 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B30CA106705A
-	for <ath10k@archiver.kernel.org>; Thu, 12 Mar 2026 15:43:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6990F30298
+	for <ath10k@archiver.kernel.org>; Mon, 16 Mar 2026 02:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dENGikESfzeW14yxvPrE5oKGvWr70umVUdoluDkP2dc=; b=b8aKaLQykrOCsnsGIxgHQLsmkZ
-	erMbRvmW39kCSS1ND1Hs/RWkrXYuSsRkrCgeCMcrUdh37EoLM/ApQiSt/hySco0kicim0c2c17Vpk
-	Msi32m5y/ro2y2753Aq5Ulk/gynQK6bFcLFfom4eGapyP54DnmV13qHSoCIpxpxJ8ca6/JFtKej77
-	f8mA20Xp6trjJZcDjgFcwadWSQbtgVXb6ohSPLMepNkXVdNhRfpvbhJb+txbbIYYeH9xa/mmbXvsP
-	J2hrlrzo8KXs28H85yzU7DNvcz6JC6qXpikFWSvpzggklVIzz3fglok/jvh5150JkeSiqe2akraH4
-	YJmHxmeQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+t5G4Irv4dhwRSJ9FVhPVUVdEgWEqIjYl8+gDa27gP0=; b=RJcUKTB8We3sXmS2UCr6e6rpba
+	pfEpfCmI89TIoXms5q45m7EuKsdN7AwppT21myx0iIMwa9vIyioo6we2JN9XKns7OheHZDOQD/Z2Y
+	S13ySgiaZrHj2j43chLIo4agRqT93ZNV9GPpJYI71oLrwtK0hPvZx5U7kCo3nC75vbLH4EoZKDBr/
+	qt7rsCaMYHseKycHT5GpF7quGjbSe2cqzlAMxIH42sZBSrXIat/EshRtdouGojU3/7lf2hFVaVGED
+	nd6k7lUzA+glVniqEcl9vtqyqTR/VTeYW3wX+QzaemPI3IJ8l/kA0C5o8UT3DIA0a0tS5y5kwLDmi
+	X2k5mgNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0iC1-0000000EQD1-2Ssh;
-	Thu, 12 Mar 2026 15:43:21 +0000
-Received: from mx3.molgen.mpg.de ([141.14.17.11])
+	id 1w1xHo-000000039nV-0B4i;
+	Mon, 16 Mar 2026 02:02:28 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0iBx-0000000EQAM-1JHr
-	for ath10k@lists.infradead.org;
-	Thu, 12 Mar 2026 15:43:20 +0000
-Received: from [141.14.220.42] (g42.guest.molgen.mpg.de [141.14.220.42])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id A06954C2C37D45;
-	Thu, 12 Mar 2026 16:43:04 +0100 (CET)
-Message-ID: <e3ecf652-b29a-4cef-acf9-2e24d05eee99@molgen.mpg.de>
-Date: Thu, 12 Mar 2026 16:43:03 +0100
+	id 1w1xHn-000000039ms-06O8;
+	Mon, 16 Mar 2026 02:02:27 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 2ACF860008;
+	Mon, 16 Mar 2026 02:02:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24C2DC2BC9E;
+	Mon, 16 Mar 2026 02:02:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773626545;
+	bh=kkXUNwiD69Xpf87E5BcMyOtlNTMPeQ7/lEHjHLgRL+A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PaY9HkVEV6krRsQgLxwkiO7yZMgrlVrPpLXeYQAR7IAx5MDR7TUwQaFz5V5qBSv+A
+	 3YoimJldxSYQPdNcTuf1q8DiCAdq3vsH/5xg42nBbHksinhtYNfrYPZega6m4y/sYo
+	 dSVfROBNQjnwOQiwv2Iv9yfHYtnCcqA+93lxvlHWuuM58XLuXbmq+J2EL7r6iTqBTr
+	 Zn8z8tWJ2xCvEIfT8gIb/4uorPM0rZ/envKWWfSJ/4LQJZFfI5sEgx7a5FPCeNQBPE
+	 96u6lp0SEhMsftM3FyXouu+2DSxMYqsHHr06OStUhqnzmBbQFyHf9bdRGjM036xEQk
+	 f7OGCBrm7fLPg==
+Date: Sun, 15 Mar 2026 21:02:19 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Daniel Lezcano <daniel.lezcano@oss.qualcomm.com>
+Cc: Jeff Johnson <jeff.johnson@oss.qualcomm.com>, konradybcio@kernel.org, 
+	linux-kernel@vger.kernel.org, Alex Elder <elder@kernel.org>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Jeff Johnson <jjohnson@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Srinivas Kandagatla <srini@kernel.org>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kees Cook <kees@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, 
+	Wesley Cheng <quic_wcheng@quicinc.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, ath11k@lists.infradead.org, ath12k@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH v1 0/8] Group QMI service IDs into the QMI header
+Message-ID: <abdkE2qWX5Amf5Jo@baldur>
+References: <20260309230346.3584252-1-daniel.lezcano@oss.qualcomm.com>
+ <9cc7638f-1232-4cb7-b4d7-cdac66a2f4ba@oss.qualcomm.com>
+ <3283cbae-4100-484c-9b00-1d7111c62456@oss.qualcomm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: qca6174: WARNING: drivers/net/wireless/ath/ath10k/wmi.c:2587
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-To: Jeff Johnson <jjohnson@kernel.org>,
- Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-Cc: ath10k@lists.infradead.org, James Prestwood <prestwoj@gmail.com>
-References: <094a8970-b16f-4d0f-8377-04554520071d@molgen.mpg.de>
- <f370fc89-81a3-4a77-a053-5404324e4235@molgen.mpg.de>
-Content-Language: en-US
-In-Reply-To: <f370fc89-81a3-4a77-a053-5404324e4235@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_084318_933421_5243065F 
-X-CRM114-Status: GOOD (  13.11  )
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3283cbae-4100-484c-9b00-1d7111c62456@oss.qualcomm.com>
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,181 +78,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-W1JlbW92ZSBib3VuY2luZyBNaWNoYWzigJlzIGFkZHJlc3MgYWdhaW4uXQ0KDQpBbSAxMi4w
-My4yNiB1bSAxNjoyOSBzY2hyaWViIFBhdWwgTWVuemVsOg0KPiBEZWFyIExpbnV4IGZvbGtz
-LA0KPiANCj4gDQo+IEFtIDExLjAzLjI2IHVtIDE4OjIzIHNjaHJpZWIgUGF1bCBNZW56ZWw6
-DQo+IA0KPj4gT24gdGhlIEludGVsIEthYnkgTGFrZSBsYXB0b3AgRGVsbCBYUFMgMTMgOTM2
-MCB3aXRoDQo+Pg0KPj4gwqDCoMKgwqDCoCBsc3BjaSAtbm4gLXMgM2E6MDAuMA0KPj4gwqDC
-oMKgwqDCoCAzYTowMC4wIE5ldHdvcmsgY29udHJvbGxlciBbMDI4MF06IFF1YWxjb21tIEF0
-aGVyb3MgUUNBNjE3NCANCj4+IDgwMi4xMWFjIFdpcmVsZXNzIE5ldHdvcmsgQWRhcHRlciBb
-MTY4YzowMDNlXSAocmV2IDMyKQ0KPj4NCj4+IHB1dHRpbmcgdGhlIGRldmljZSBpbiBwcm9t
-aXNjdW91cyAobW9uaXRvcig/KSkgbW9kZSB3aXRoIHRoZSBjb21tYW5kIA0KPj4gYmVsb3cs
-IHJlc3VsdHMgaW4gdGhlIExpbnV4IHdhcm5pbmcgYmVsb3c6DQo+Pg0KPj4gwqDCoMKgwqAg
-c3VkbyBhaXJtb24tbmcgc3RhcnQgd2xwNThzMA0KPj4NCj4+IGBgYA0KPj4gW8KgwqDCoCAw
-LjAwMDAwMF0gTGludXggdmVyc2lvbiA3LjAuMC1yYzItMDAwNTctZzAwMzFjMDY4MDdjZiAo
-YnVpbGRAYm9oZW1pYW5yaGFwc29keS5tb2xnZW4ubXBnLmRlKSAoZ2NjIChEZWJpYW4gMTUu
-Mi4wLTE0KSAxNS4yLjAsIEdOVSBsZCAoR05VIEJpbnV0aWxzIGZvciBEZWJpYW4pIDIuNDYp
-ICMyMTYgU01QIFBSRUVNUFRfRFlOQU1JQyBXZWQgTWFyIDQgMDA6MDc6MTEgQ0VUIDIwMjYN
-Cj4+IFvCoMKgwqAgMC4wMDAwMDBdIENvbW1hbmQgbGluZTogQk9PVF9JTUFHRT0vdm1saW51
-ei03LjAuMC1yYzItMDAwNTctZzAwMzFjMDY4MDdjZiByb290PVVVSUQ9MzJlMjk4ODItZDk0
-ZC00YTkyLTllZTQtNGQwMzAwMmJmYTI5IHJvIHF1aWV0IHBjaT1ub2FlciBtZW1fc2xlZXBf
-ZGVmYXVsdD1kZWVwIGxvZ19idWZfbGVuPTE2TSBjcnlwdG9tZ3Iubm90ZXN0cyB1c2Jjb3Jl
-LnF1aXJrcz0wY2YzOmUzMDA6ZSwwNGYzOjIyMzQ6ZSwwYzQ1OjY3MGM6ZQ0KPj4gW+KApl0N
-Cj4+IFs5MzY3Ny4wMTg1MjhdIGF0aDEwa19wY2kgMDAwMDozYTowMC4wOiBxY2E2MTc0IGh3
-My4yIHRhcmdldCAweDA1MDMwMDAwIGNoaXBfaWQgMHgwMDM0MGFmZiBzdWIgMWE1NjoxNTM1
-DQo+PiBb4oCmXQ0KPj4gWzkzODk1LjcxMjI1Ml0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBd
-LS0tLS0tLS0tLS0tDQo+PiBbOTM4OTUuNzEyMjkwXSAxDQo+PiBbOTM4OTUuNzEyMjk2XSBX
-QVJOSU5HOiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jOjI1ODcgYXQg
-YXRoMTBrX3dtaV9ldmVudF9tZ210X3J4KzB4NTJjLzB4NTYwIFthdGgxMGtfY29yZV0sIENQ
-VSMwOiBzd2FwcGVyLzAvMA0KPj4gWzkzODk1LjcxMjQxMV0gTW9kdWxlcyBsaW5rZWQgaW46
-IGF0aDEwa19wY2kgYXRoMTBrX2NvcmUgYnR1c2IgYnRydGwgYnRpbnRlbCBidGJjbSBjbWFj
-IGNwdWlkIHNjdHAgc25kX3VzYl9hdWRpbyBzbmRfdXNibWlkaV9saWIgc25kX3Jhd21pZGkg
-Y2NtIGwydHBfcHBwIGwydHBfbmV0bGluayBsMnRwX2NvcmUgaXA2X3VkcF90dW5uZWwgdWRw
-X3R1bm5lbCBwcHBveCBwcHBfZ2VuZXJpYyBzbGhjIHNoYTMgbGlic2hhMyBqaXR0ZXJlbnRy
-b3B5X3JuZyBkcmJnIGRmX3NwODAwOTBhIGF1dGhlbmMgZWNoYWluaXYgZ2VuaXYgZXNwNCB4
-ZnJtX2ludGVyZmFjZSB4ZnJtNl90dW5uZWwgdHVubmVsNiB4ZnJtX3VzZXIgeGZybV9hbGdv
-IHNkX21vZCByODE1M19lY20gY2RjX2V0aGVyIHVzYm5ldCByODE1MiBtaWkgdXNiX3N0b3Jh
-Z2Ugc2NzaV9tb2Qgc2NzaV9jb21tb24gc25kX3NlcV9kdW1teSBzbmRfaHJ0aW1lciBzbmRf
-c2VxIHNuZF9zZXFfZGV2aWNlIGJpbmZtdF9taXNjIHNuZF9oZGFfY29kZWNfaW50ZWxoZG1p
-IHNuZF9oZGFfY29kZWNfaGRtaSB1dmN2aWRlbyB2aWRlb2J1ZjJfdm1hbGxvYyB2aWRlb2J1
-ZjJfbWVtb3BzIHV2YyB2aWRlb2J1ZjJfdjRsMiB2aWRlb2RldiBzbmRfY3RsX2xlZCB2aWRl
-b2J1ZjJfY29tbW9uIGJsdWV0b290aCB1c2JoaWQgbWMgZWNkaF9nZW5lcmljIGVjYyBzbmRf
-aGRhX2NvZGVjX2FsYzI2OSBzbmRfaGRhX3Njb2RlY19jb21wb25lbnQgc25kX2hkYV9jb2Rl
-Y19yZWFsdGVrX2xpYiBzbmRfaGRhX2NvZGVjX2dlbmVyaWMgc25kX2hkYV9pbnRlbCBzbmRf
-c29mX3BjaV9pbnRlbF9za2wgc25kX3NvZl9pbnRlbF9oZGFfZ2VuZXJpYyBzbmRfc29jX2Fj
-cGlfaW50ZWxfbWF0Y2ggc25kX3NvY19hY3BpIHNuZF9zb2NfYWNwaV9pbnRlbF9zZGNhX3F1
-aXJrcyBzbmRfc29mX3BjaSBzbmRfc29mX3h0ZW5zYV9kc3Agc291bmR3aXJlX2ludGVsIHNv
-dW5kd2lyZV9nZW5lcmljX2FsbG9jYXRpb24gc25kX3NvZl9pbnRlbF9oZGFfc2R3X2JwdCBz
-bmRfc29mX2ludGVsX2hkYV9jb21tb24NCj4+IFs5Mzg5NS43MTI3NTRdwqAgc25kX3NvY19o
-ZGFjX2hkYSBzbmRfc29mX2ludGVsX2hkYV9tbGluayBzbmRfc29mX2ludGVsX2hkYSBzbmRf
-c29mIHNuZF9zb2ZfdXRpbHMgc291bmR3aXJlX2NhZGVuY2UgY3JjOCBzbmRfc29jX3Nkd191
-dGlscyBzb3VuZHdpcmVfYnVzIHNuZF9zb2Nfc2RjYSBzbmRfc29jX2F2cyBzbmRfc29jX2hk
-YV9jb2RlYyBzbmRfaGRhX2V4dF9jb3JlIHg4Nl9wa2dfdGVtcF90aGVybWFsIGludGVsX3Bv
-d2VyY2xhbXAgc25kX2hkYV9jb2RlYyBjb3JldGVtcCBubHNfYXNjaWkgc25kX2hkYV9jb3Jl
-IGt2bV9pbnRlbCBzbmRfaW50ZWxfZHNwY2ZnIG5sc19jcDQzNyBzbmRfaW50ZWxfc2R3X2Fj
-cGkgam95ZGV2IHByb2Nlc3Nvcl90aGVybWFsX2RldmljZV9wY2lfbGVnYWN5IHZmYXQgZmF0
-IGF0aCBzbmRfc29jX2NvcmUgaW50ZWxfc29jX2R0c19pb3NmIGRlbGxfcGMgaTkxNSBoaWRf
-bXVsdGl0b3VjaCBrdm0gc25kX2NvbXByZXNzIHByb2Nlc3Nvcl90aGVybWFsX2RldmljZSBo
-aWRfZ2VuZXJpYyBwcm9jZXNzb3JfdGhlcm1hbF93dF9oaW50IHBsYXRmb3JtX3RlbXBlcmF0
-dXJlX2NvbnRyb2wgbWFjODAyMTEgaTJjX2FsZ29fYml0IHNuZF9od2RlcCBwcm9jZXNzb3Jf
-dGhlcm1hbF9zb2Nfc2xpZGVyIGlycWJ5cGFzcyBwbGF0Zm9ybV9wcm9maWxlIGlUQ09fd2R0
-IGdoYXNoX2NsbXVsbmlfaW50ZWwgcHJvY2Vzc29yX3RoZXJtYWxfcmZpbSBkcm1fYnVkZHkg
-cmFwbCBpbnRlbF9wbWNfYnh0IHNuZF9wY20gaW50ZWxfeGhjaV91c2Jfcm9sZV9zd2l0Y2gg
-aW50ZWxfY3N0YXRlIGludGVsX2d0dCBkZWxsX2xhcHRvcCBsaWJhcmM0IGludGVsX3JhcGxf
-bXNyIG1laV9weHAgbWVpX2hkY3AgbWVpX3dkdCBkZWxsX3NtbV9od21vbiBwcm9jZXNzb3Jf
-dGhlcm1hbF9yYXBsIHNuZF90aW1lciBpMmNfaTgwMSB4aGNpX3BjaSBpbnRlbF93bWlfdGh1
-bmRlcmJvbHQgaW50ZWxfdW5jb3JlIHdtaV9ibW9mIGRybV9kaXNwbGF5X2hlbHBlciBpbnRl
-bF9yYXBsX2NvbW1vbiBjZmc4MDIxMSB1Y3NpX2FjcGkNCj4+IFs5Mzg5NS43MTMwNjBdwqAg
-cHJvY2Vzc29yX3RoZXJtYWxfd3RfcmVxIHR0bSBydHN4X3BjaSB0eXBlY191Y3NpIHhoY2lf
-aGNkIHNuZCByb2xlcyBkcm1fY2xpZW50X2xpYiBpMmNfc21idXMgc291bmRjb3JlIHJma2ls
-bCANCj4+IHByb2Nlc3Nvcl90aGVybWFsX3Bvd2VyX2Zsb29yIGRybV9rbXNfaGVscGVyIG1l
-aV9tZSBpbnRlbF9scHNzX3BjaSB1c2Jjb3JlIGkyY19oaWRfYWNwaSB0eXBlYyBpMmNfaGlk
-IGludGVsX2xwc3MgcHJvY2Vzc29yX3RoZXJtYWxfbWJveCB1c2JfY29tbW9uIG1laSBpbnRl
-bF9wY2hfdGhlcm1hbCBpZG1hNjQgaGlkIGludGVsX3BtY19jb3JlIHBtdF90ZWxlbWV0cnkg
-aW50MzQwMF90aGVybWFsIHBtdF9kaXNjb3ZlcnkgaW50ZWxfb2Nfd2R0IHBtdF9jbGFzcyBz
-b2NfYnV0dG9uX2FycmF5IGludGVsX3ZidG4gd2F0Y2hkb2cgaW50MzQwM190aGVybWFsIGlu
-dDM0MHhfdGhlcm1hbF96b25lIGludGVsX3BtY19zc3JhbV90ZWxlbWV0cnkgYWNwaV90aGVy
-bWFsX3JlbCBpbnRlbF92c2VjIGJhdHRlcnkgYWMgYWNwaV9wYWQgcGFycG9ydF9wYyBwcGRl
-diBscCBtc3IgcGFycG9ydCBkcm0gZWZpX3BzdG9yZSBjb25maWdmcyBuZm5ldGxpbmsgZWZp
-dmFyZnMgYXV0b2ZzNCBleHQ0IGNyYzE2IG1iY2FjaGUgamJkMiBkbV9jcnlwdCBkbV9tb2Qg
-ZGVsbF93bWkgZGVsbF9zbWJpb3MgZGVsbF93bWlfZGVzY3JpcHRvciBldmRldiBkY2RiYXMg
-c2VyaW9fcmF3IHBjc3BrciBudm1lIG52bWVfY29yZSB2aWRlbyBpbnRlbF9oaWQgc3BhcnNl
-X2tleW1hcCB3bWkgYnV0dG9uIGFlc25pX2ludGVsIFtsYXN0IHVubG9hZGVkOiBhdGgxMGtf
-Y29yZV0NCj4+IFs5Mzg5NS43MTMzODZdIENQVTogMCBVSUQ6IDAgUElEOiAwIENvbW06IHN3
-YXBwZXIvMCBOb3QgdGFpbnRlZCA3LjAuMC1yYzItMDAwNTctZzAwMzFjMDY4MDdjZiAjMjE2
-IFBSRUVNUFQoZnVsbCkNCj4+IFs5Mzg5NS43MTMzOTldIEhhcmR3YXJlIG5hbWU6IERlbGwg
-SW5jLiBYUFMgMTMgOTM2MC8wNTk2S0YsIEJJT1MgMi4yMS4wIDA2LzAyLzIwMjINCj4+IFs5
-Mzg5NS43MTM0MDddIFJJUDogMDAxMDphdGgxMGtfd21pX2V2ZW50X21nbXRfcngrMHg1MmMv
-MHg1NjAgW2F0aDEwa19jb3JlXQ0KPj4gWzkzODk1LjcxMzQ5MF0gQ29kZTogZmYgZmYgYmUg
-MDAgMDEgMDAgMDAgNDggYzcgYzIgODAgODEgYTEgYzEgNDggODkgZGYgZTggYTggZjIgZmQg
-ZmYgNDEgMGYgYjYgNzUgNGMgNDggNmIgYzYgNjggNDggMDUgMTAgMTIgMDAgMDAgZTkgMjQg
-ZmMgZmYgZmYgPDBmPiAwYiBlOSBiZSBmZCBmZiBmZiA0OCA4YiAwYyAyNCA0OCBjNyBjMiBh
-MCA4MSBhMSBjMSBiZSAxMCAwMCAwMA0KPj4gWzkzODk1LjcxMzUwMF0gUlNQOiAwMDE4OmZm
-ZmZkNDRlMDAwMDNjYTggRUZMQUdTOiAwMDAxMDI4Ng0KPj4gWzkzODk1LjcxMzUxMl0gUkFY
-OiAwMDAwMDAwMGZmZmZmZGZiIFJCWDogZmZmZjhjOGNlMGFjMjA2MCBSQ1g6IDAwMDAwMDAw
-MDAwMDAwMDANCj4+IFs5Mzg5NS43MTM1MjFdIFJEWDogZmZmZjhjOGZlY2M0NTFjMCBSU0k6
-IDAwMDAwMDAwMDAwMDAwMDAgUkRJOiBmZmZmOGM4Y2IzNjMxNDU4DQo+PiBbOTM4OTUuNzEz
-NTI4XSBSQlA6IDAwMDAwMDAwMDAwMDAwMDAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTog
-MDAwMDAwMDAwMDAwMDAwMQ0KPj4gWzkzODk1LjcxMzUzNV0gUjEwOiBmZmZmZjg5ZTQ0YWQz
-YzAwIFIxMTogZmZmZjhjOGM4MDA0MmUwMCBSMTI6IGZmZmZkNDRlMDAwMDNjYzANCj4+IFs5
-Mzg5NS43MTM1NDJdIFIxMzogZmZmZjhjOGNiMzYzMTQwMCBSMTQ6IDAwMDAwMDAwMDAwMDAw
-MDAgUjE1OiAwMDAwMDAwMGZmZmZmZTFmDQo+PiBbOTM4OTUuNzEzNTUwXSBGUzrCoCAwMDAw
-MDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY4YzkwMzhjNWMwMDAoMDAwMCkga25sR1M6MDAw
-MDAwMDAwMDAwMDAwMA0KPj4gWzkzODk1LjcxMzU1OV0gQ1M6wqAgMDAxMCBEUzogMDAwMCBF
-UzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCj4+IFs5Mzg5NS43MTM1NjZdIENSMjog
-MDAwMDdmMzc3MGFmZDAwMCBDUjM6IDAwMDAwMDAwMjk0MjIwMDEgQ1I0OiAwMDAwMDAwMDAw
-MzcyNmYwDQo+PiBbOTM4OTUuNzEzNTc1XSBDYWxsIFRyYWNlOg0KPj4gWzkzODk1LjcxMzU4
-NF3CoCA8SVJRPg0KPj4gWzkzODk1LjcxMzU5OF3CoCBhdGgxMGtfaHRjX3J4X2NvbXBsZXRp
-b25faGFuZGxlcisweGI0LzB4MjMwIFthdGgxMGtfY29yZV0NCj4+IFs5Mzg5NS43MTM2ODNd
-wqAgYXRoMTBrX3BjaV9wcm9jZXNzX3J4X2NiKzB4MTYzLzB4MWYwIFthdGgxMGtfcGNpXQ0K
-Pj4gWzkzODk1LjcxMzY5OV3CoCA/IGF0aDEwa19odGNfc2VuZF9idW5kbGUrMHgyMjAvMHgy
-MjAgW2F0aDEwa19jb3JlXQ0KPj4gWzkzODk1LjcxMzc3MF3CoCBhdGgxMGtfY2VfcGVyX2Vu
-Z2luZV9zZXJ2aWNlKzB4NTYvMHg4MCBbYXRoMTBrX2NvcmVdDQo+PiBbOTM4OTUuNzEzODUw
-XcKgIGF0aDEwa19jZV9wZXJfZW5naW5lX3NlcnZpY2VfYW55KzB4N2MvMHg5MCBbYXRoMTBr
-X2NvcmVdDQo+PiBbOTM4OTUuNzEzOTE4XcKgIGF0aDEwa19wY2lfbmFwaV9wb2xsKzB4NDQv
-MHgxMjAgW2F0aDEwa19wY2ldDQo+PiBbOTM4OTUuNzEzOTM0XcKgIF9fbmFwaV9wb2xsKzB4
-MmEvMHgxZjANCj4+IFs5Mzg5NS43MTM5NTJdwqAgPyBza2JfZGVmZXJfZnJlZV9mbHVzaCsw
-eDljLzB4YjANCj4+IFs5Mzg5NS43MTM5NjldwqAgbmV0X3J4X2FjdGlvbisweDE0OC8weDMx
-MA0KPj4gWzkzODk1LjcxMzk4N13CoCBoYW5kbGVfc29mdGlycXMrMHhjOS8weDI5MA0KPj4g
-WzkzODk1LjcxNDAwNV3CoCBfX2lycV9leGl0X3JjdSsweGFjLzB4ZDANCj4+IFs5Mzg5NS43
-MTQwMTddwqAgY29tbW9uX2ludGVycnVwdCsweDdkLzB4YTANCj4+IFs5Mzg5NS43MTQwMzRd
-wqAgPC9JUlE+DQo+PiBbOTM4OTUuNzE0MDM5XcKgIDxUQVNLPg0KPj4gWzkzODk1LjcxNDA0
-NV3CoCBhc21fY29tbW9uX2ludGVycnVwdCsweDI2LzB4NDANCj4+IFs5Mzg5NS43MTQwNTZd
-IFJJUDogMDAxMDpjcHVpZGxlX2VudGVyX3N0YXRlKzB4YjUvMHg0NTANCj4+IFs5Mzg5NS43
-MTQwNjddIENvZGU6IDAwIDAwIGU4IGJlIDcyIDRjIGZmIGU4IDY5IGYyIGZmIGZmIDQ4IDg5
-IGM1IDBmIDFmIDQ0IDAwIDAwIDMxIGZmIGU4IGFhIDgwIDRiIGZmIDQ1IDg0IGZmIDBmIDg1
-IDdjIDAxIDAwIDAwIGZiIDBmIDFmIDQ0IDAwIDAwIDw0NT4gODUgZjYgMGYgODggZDMgMDEg
-MDAgMDAgNDkgNjMgY2UgNDggMmIgMmMgMjQgNDggNmIgZDEgNjggNDggODkNCj4+IFs5Mzg5
-NS43MTQwNzZdIFJTUDogMDAxODpmZmZmZmZmZmIzNjAzZTIwIEVGTEFHUzogMDAwMDAyNDYN
-Cj4+IFs5Mzg5NS43MTQwODhdIFJBWDogZmZmZjhjOTAzOGM1YzAwMCBSQlg6IDAwMDAwMDAw
-MDAwMDAwMDggUkNYOiAwMDAwMDAwMDAwMDAwMDAwDQo+PiBbOTM4OTUuNzE0MDk0XSBSRFg6
-IDAwMDA1NTY1Y2M5MWFjOGQgUlNJOiAwMDAwNTUzODIwMmZiM2ExIFJESTogMDAwMDAwMDAw
-MDAwMDAwMA0KPj4gWzkzODk1LjcxNDEwMV0gUkJQOiAwMDAwNTU2NWNjOTFhYzhkIFIwODog
-MDAwMDAwMDAwMDAwMDAwMiBSMDk6IDAwMDAwMWQxYTk0YTIwMDANCj4+IFs5Mzg5NS43MTQx
-MDhdIFIxMDogMDAwMDU1NjYwNjdlZDMwMCBSMTE6IGZmZmZmZmZmZmZmZmZmZmYgUjEyOiBm
-ZmZmOGM4ZmVjYzRhZWMwDQo+PiBbOTM4OTUuNzE0MTE1XSBSMTM6IGZmZmZmZmZmYjM3YjIy
-MjAgUjE0OiAwMDAwMDAwMDAwMDAwMDA4IFIxNTogMDAwMDAwMDAwMDAwMDAwMA0KPj4gWzkz
-ODk1LjcxNDEzMV3CoCBjcHVpZGxlX2VudGVyKzB4MzEvMHg0MA0KPj4gWzkzODk1LjcxNDE0
-NV3CoCBkb19pZGxlKzB4MWRlLzB4MjQwDQo+PiBbOTM4OTUuNzE0MTYyXcKgIGNwdV9zdGFy
-dHVwX2VudHJ5KzB4MjkvMHgzMA0KPj4gWzkzODk1LjcxNDE3N13CoCByZXN0X2luaXQrMHhj
-Yy8weGQwDQo+PiBbOTM4OTUuNzE0MTg3XcKgIHN0YXJ0X2tlcm5lbCsweDgwNS8weDgxMA0K
-Pj4gWzkzODk1LjcxNDIwNl3CoCB4ODZfNjRfc3RhcnRfcmVzZXJ2YXRpb25zKzB4MjQvMHgz
-MA0KPj4gWzkzODk1LjcxNDIyMl3CoCB4ODZfNjRfc3RhcnRfa2VybmVsKzB4ZGEvMHhlMA0K
-Pj4gWzkzODk1LjcxNDIzNl3CoCBjb21tb25fc3RhcnR1cF82NCsweDEzZS8weDE0MQ0KPj4g
-WzkzODk1LjcxNDI1N13CoCA8L1RBU0s+DQo+PiBbOTM4OTUuNzE0MjYyXSAtLS1bIGVuZCB0
-cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0NCj4+IFs5MzkxMy42MjgyMjddIGF0aDEwa19w
-Y2kgMDAwMDozYTowMC4wIHdscDU4czBtb246IGVudGVyZWQgcHJvbWlzY3VvdXMgbW9kZQ0K
-Pj4gWzkzOTEzLjYyODI2MV0gYXRoMTBrX3BjaSAwMDAwOjNhOjAwLjAgd2xwNThzMG1vbjog
-ZW50ZXJlZCANCj4+IGFsbG11bHRpY2FzdCBtb2RlDQo+PiBgYGANCj4+DQo+PiBQbGVhc2Ug
-ZmluZCB0aGUgb3V0cHV0IG9mIGBkbWVzZ2AgYXR0YWNoZWQuDQo+Pg0KPj4gVGhlIGNvcnJl
-c3BvbmRpbmcgY29kZSBpczoNCj4+DQo+PiBgYGANCj4+IMKgwqDCoMKgwqDCoMKgwqAgLyog
-SGFyZHdhcmUgY2FuIFJ4IENDSyByYXRlcyBvbiA1R0h6LiBJbiB0aGF0IGNhc2UgcGh5X21v
-ZGUgaXMgc2V0IHRvDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgKiBNT0RFXzExQi4gVGhpcyBt
-ZWFucyBwaHlfbW9kZSBpcyBub3QgYSByZWxpYWJsZSBzb3VyY2UgZm9yIHRoZSBiYW5kDQo+
-PiDCoMKgwqDCoMKgwqDCoMKgwqAgKiBvZiBtZ210IHJ4Lg0KPj4gwqDCoMKgwqDCoMKgwqDC
-oMKgICovDQo+PiDCoMKgwqDCoMKgwqDCoMKgIGlmIChjaGFubmVsID49IDEgJiYgY2hhbm5l
-bCA8PSAxNCkgew0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RhdHVz
-LT5iYW5kID0gTkw4MDIxMV9CQU5EXzJHSFo7DQo+PiDCoMKgwqDCoMKgwqDCoMKgIH0gZWxz
-ZSBpZiAoY2hhbm5lbCA+PSAzNiAmJiBjaGFubmVsIDw9IEFUSDEwS19NQVhfNUdfQ0hBTikg
-ew0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RhdHVzLT5iYW5kID0g
-Tkw4MDIxMV9CQU5EXzVHSFo7DQo+PiDCoMKgwqDCoMKgwqDCoMKgIH0gZWxzZSB7DQo+PiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKiBTaG91bGRuJ3QgaGFwcGVuIHVu
-bGVzcyBsaXN0IG9mIGFkdmVydGlzZWQgY2hhbm5lbHMgdG8NCj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBtYWM4MDIxMSBoYXMgYmVlbiBjaGFuZ2VkLg0KPj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLw0KPj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgV0FSTl9PTl9PTkNFKDEpOw0KPj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2X2tmcmVlX3NrYihza2IpOw0KPj4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIDA7DQo+PiDCoMKgwqDCoMKgwqDCoMKg
-IH0NCj4+IGBgYA0KPj4NCj4+IFNvIGBjaGFubmVsYCBoYXMgdGhlIHdyb25nIHZhbHVlLiBT
-aG91bGQgYGNoYW5uZWxgIGFuZCANCj4+IGBBVEgxMEtfTUFYXzVHX0NIQU5gIGJlIGxvZ2dl
-ZD8NCj4gQ29tbWl0IDIxMDQwYmY5Y2IwMiAoYXRoMTBrOiBzaW1wbGlmeSBjb21wdXRhdGlv
-biBvZiBtZ210IHJ4IGJhbmQpIFsxXSANCj4gaW50cm9kdWNlZCB0aGUgY29kZSBpbiAyMDE0
-Lg0KPiANCj4+IGF0aDEwazogc2ltcGxpZnkgY29tcHV0YXRpb24gb2YgbWdtdCByeCBiYW5k
-DQo+Pg0KPj4gVXNpbmcgZ2xvYmFsIGNoYW5uZWwgd29uJ3Qgd29yayB3aXRoIGNoYW5jdHgu
-IFRyeQ0KPj4gdG8gZGV0ZXJtaW5lIHRoZSBjaGFubmVsIGZyb20gdGhlIGluZm9ybWF0aW9u
-DQo+PiBwcm92aWRlZCBpbiB0aGUgd21pIGV2ZW50IGl0c2VsZiBhbG9uZS4gVGhpcw0KPj4g
-c2hvdWxkIGJlIHN1ZmZpY2llbnQuDQo+IA0KPiANCj4gS2luZCByZWdhcmRzLA0KPiANCj4g
-UGF1bA0KPiANCj4gDQo+IFsxXTogaHR0cHM6Ly93ZWIuZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
-bS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvP2lkPTIxMDQw
-YmY5Y2IwMmViNjg4Y2I3ZjFkZGFhNTY4NzEzZDllYzNjMmUNCg==
+On Tue, Mar 10, 2026 at 01:09:08AM +0100, Daniel Lezcano wrote:
+> On 3/10/26 00:50, Jeff Johnson wrote:
+> > On 3/9/2026 4:03 PM, Daniel Lezcano wrote:
+> > > The different subsystems implementing the QMI service protocol are
+> > > using their own definition of the service id. It is not a problem but
+> > > it results on having those duplicated with different names but the
+> > > same value and without consistency in their name.
+> > > 
+> > > It makes more sense to unify their names and move the definitions in
+> 
+> [ ... ]
+> 
+> > prefix for wireless drivers is simply wifi: <driver>:
+> > so s/net: drivers: wireless:/wifi:/
+> 
+> Noted, thanks
+> 
+> > >    remoteproc: qcom: Use the unified QMI service ID instead of defining
+> > >      it locally
+> > >    slimbus: qcom-ngd-ctrl: Use the unified QMI service ID instead of
+> > >      defining it locally
+> > >    soc: qcom: pdr: Use the unified QMI service ID instead of defining it
+> > >      locally
+> > >    ALSA: usb-audio: qcom: Use the unified QMI service ID instead of
+> > >      defining it locally
+> > >    samples: qmi: Use the unified QMI service ID instead of defining it
+> > >      locally
+> > > 
+> > >   drivers/net/ipa/ipa_qmi.c                      |  6 ++----
+> > >   drivers/net/wireless/ath/ath10k/qmi.c          |  2 +-
+> > >   drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h |  1 -
+> > >   drivers/net/wireless/ath/ath11k/qmi.c          |  2 +-
+> > >   drivers/net/wireless/ath/ath11k/qmi.h          |  1 -
+> > >   drivers/net/wireless/ath/ath12k/qmi.c          |  2 +-
+> > >   drivers/net/wireless/ath/ath12k/qmi.h          |  1 -
+> > >   drivers/remoteproc/qcom_sysmon.c               |  2 +-
+> > >   drivers/slimbus/qcom-ngd-ctrl.c                |  5 ++---
+> > >   drivers/soc/qcom/pdr_interface.c               |  4 ++--
+> > >   drivers/soc/qcom/pdr_internal.h                |  3 ---
+> > >   drivers/soc/qcom/qcom_pd_mapper.c              |  2 +-
+> > >   include/linux/soc/qcom/qmi.h                   | 12 ++++++++++++
+> > >   samples/qmi/qmi_sample_client.c                |  2 +-
+> > >   sound/usb/qcom/qc_audio_offload.c              |  2 +-
+> > >   sound/usb/qcom/usb_audio_qmi_v01.h             |  1 -
+> > 
+> > You are touching a lot of subsystems with a single series.
+> > How do you plan on having these land?
+> > Do you have a maintainer who will take all of these through their tree?
+> 
+> Yes I thought Bjorn or Konrad would take them with the acked-by from the
+> different subsystems
+
+As we haven't received any such acks, I pulled patch 1 into an immutable
+branch and pushed it here:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git 20260309230346.3584252-2-daniel.lezcano@oss.qualcomm.com
+
+Other maintainers can use this to pull respective changes, or you can
+repost the individual patches with this (or follow up once it's in
+-rc1).
+
+Regards,
+Bjorn
 
