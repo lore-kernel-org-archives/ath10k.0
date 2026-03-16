@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B63EF30295
-	for <ath10k@archiver.kernel.org>; Mon, 16 Mar 2026 02:02:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B78CF30299
+	for <ath10k@archiver.kernel.org>; Mon, 16 Mar 2026 02:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9XgkDsPLcXe6dlGvc0eT9ZTnwP0jpCtNNWKafz5dnAM=; b=Wheplqn1UHpkJKMk2/K5afgigL
-	RrcnA99BzCfpZfRQupq2F1Jh0k3LTUqvPX2TVp1E+EtaLTveiDYaKLVG2wdorbO3I0IZJHcIbDx+F
-	+WXeEyxXeRKXvJRt0kkM3C1x8vxE3m1y+nv/IA65VPTU0lr8Y2LtnV5BRaeoBQzgE4XubYB6DbzIx
-	icalvcwkxhxwRCqUpbTD5xyxlA76Ljqz4t3UDT/CK0qKMDftOYCzmaNYNSN2BKkSV0qiyYv7K/FSq
-	Ov5coOXnd7ueRPaBubBr5vQDx0wB8Xlpn1NmbLDhuKboRTXayzAQBdQrQx4MRhoZ2Hc1hpSBSgEMe
-	dngiObXw==;
+	bh=DuFrXCZqgPWukd7LzkIC2z4Le/HCBNqrm0Se3tYBP1Y=; b=l4Ax7a7UKftu9XfDChj3olFUSG
+	OgwhGPieXYw0TdRiu7L5WPapTg5YmfcR1CEE0lhH3sWbnUTzJy7176/X/ncP93ZnuMguAESlH51YM
+	38bBa8WNaeNvOLc9QgrJXiDYX9fM+iqKmkH6/9rxZzDNIV+fQscIgSXuhX2OfzTMVzVdAzvzgR/Q+
+	ESK4M0kkga5FtLujew5XkRzF+TQq9f6++wlWNQ7sUszx1ZSkoO6MEOV1Zwq8m3U0JrRov5io82ed6
+	rzbMNnnZ0RqZa3GsEG11Npc9jFlYM3KDDaIU3+B/U1b7QKnhRG0KkCFxEDp/ePtFx+O/U0eECa0tb
+	4/DL/s9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w1xI5-000000039um-3uqd;
-	Mon, 16 Mar 2026 02:02:45 +0000
+	id 1w1xPG-00000003Af5-2X6q;
+	Mon, 16 Mar 2026 02:10:10 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w1xI4-000000039tf-08pz;
-	Mon, 16 Mar 2026 02:02:44 +0000
+	id 1w1xPC-00000003AdB-2Q1Q;
+	Mon, 16 Mar 2026 02:10:07 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1F70B600CB;
-	Mon, 16 Mar 2026 02:02:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B57BC19425;
-	Mon, 16 Mar 2026 02:02:39 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id B0DDE60130;
+	Mon, 16 Mar 2026 02:10:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6089C4CEF7;
+	Mon, 16 Mar 2026 02:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773626562;
-	bh=BuOo5vxj1gLbW3Ia7bVSuXN20wkAZTTCpKCe+LqWza0=;
+	s=k20201202; t=1773627005;
+	bh=sed/qnCEK8BKTSNt5bMJKA6V1uhx22zbtT7ew3JC6Vk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=enSqJOGEpCVeo23yF51TwkmQQ1+nVNEIQWHEEohawdzs3ilK8JaMnaRaq/Qs1PMgF
-	 uXcc2B9rR0z9Ks54GvcG1gLFj/p3Zp7A28TZKLScBdaD25yum8C1eUDCzRnNMAADu/
-	 14T1y2Utn3b5V2rvs/yv4/WuJXE12k/wbkoozUEJKeGKiC1IsM3LnQ1e5mQAAbTLIc
-	 aQf7zY78YR6j24QOQFqskpZBSbeGwEuf2J6Uw9cKQENna/aAYO6IT1mJb9QA+Xjwev
-	 ywJXEyks4yfjWW9//wAtWZK0sxfSiRFYsRXdKeBkUnd2LuADBkL6R67wPOc1NloTQL
-	 L3TzwMePPXcSw==
+	b=Nm9Ayc9KSDjebwklqOxZgSSSoD+i8M1cEKIevFRnrIM0Oaa6w3KO3Riyqpu9+IkkS
+	 d/QKBANX9pcyP5gFgibm81V/EyFdc+j9YkODkax3tiq1oYbxMg8V+Du7XSlDs1i3YM
+	 ZVmJYvbvXNiGfIFj+jzobM/jugz2hV20ABPzUhLyiVnVwmN2Z31FwbHmXoVw92sZ2C
+	 xI78x4p+uhHULePySM8KOe7xnlW6Zmu5u4S+kUG6BTD40HZIwL8WHAKq2Yh5T+hbBt
+	 8Ehqmea1WT6vbUni0rRKc7bwTIAHGvGoGCkQCmIY8whdDp2hFOUR0i7nTh3JFwzWzZ
+	 uDSStEtaSMq9g==
 From: Bjorn Andersson <andersson@kernel.org>
 To: konradybcio@kernel.org,
 	Daniel Lezcano <daniel.lezcano@oss.qualcomm.com>
@@ -69,12 +69,12 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	linux-remoteproc@vger.kernel.org,
 	linux-sound@vger.kernel.org
-Subject: Re: (subset) [PATCH v1 0/8] Group QMI service IDs into the QMI header
-Date: Sun, 15 Mar 2026 21:02:27 -0500
-Message-ID: <177362655085.7429.167557193442435410.b4-ty@kernel.org>
+Subject: Re: (subset) [PATCH v1 4/8] remoteproc: qcom: Use the unified QMI service ID instead of defining it locally
+Date: Sun, 15 Mar 2026 21:09:58 -0500
+Message-ID: <177362699063.8490.5627616886098038132.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260309230346.3584252-1-daniel.lezcano@oss.qualcomm.com>
-References: <20260309230346.3584252-1-daniel.lezcano@oss.qualcomm.com>
+In-Reply-To: <20260309230346.3584252-5-daniel.lezcano@oss.qualcomm.com>
+References: <20260309230346.3584252-1-daniel.lezcano@oss.qualcomm.com> <20260309230346.3584252-5-daniel.lezcano@oss.qualcomm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -93,25 +93,17 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 
-On Tue, 10 Mar 2026 00:03:29 +0100, Daniel Lezcano wrote:
-> The different subsystems implementing the QMI service protocol are
-> using their own definition of the service id. It is not a problem but
-> it results on having those duplicated with different names but the
-> same value and without consistency in their name.
+On Tue, 10 Mar 2026 00:03:33 +0100, Daniel Lezcano wrote:
+> Instead of defining a local macro with a custom name for the QMI
+> service identifier, use the one provided in qmi.h and remove the
+> locally defined macro.
 > 
-> It makes more sense to unify their names and move the definitions in
-> the QMI header file providing a consistent way to represent the
-> supported protocols. Consequently the different drivers will use them
-> instead of their own definition of the service id.
 > 
-> [...]
 
 Applied, thanks!
 
-[6/8] soc: qcom: pdr: Use the unified QMI service ID instead of defining it locally
-      commit: 24f80cbe0b8f4c6b27d03c7a7ad707d76c1c4885
-[8/8] samples: qmi: Use the unified QMI service ID instead of defining it locally
-      commit: 8baf6b3b7695849581a91bdaf66af2be68ef32ed
+[4/8] remoteproc: qcom: Use the unified QMI service ID instead of defining it locally
+      commit: 95b6c029e56e4d75e2957ce7ac795da29415865b
 
 Best regards,
 -- 
