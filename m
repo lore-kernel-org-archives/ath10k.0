@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B4A0109446A
-	for <ath10k@archiver.kernel.org>; Sat, 21 Mar 2026 11:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 973F3FC72C4
+	for <ath10k@archiver.kernel.org>; Sun, 22 Mar 2026 13:49:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Ef569JwFdhZArx/omdQP7G4f/QaYGZIypXkoSFlABe0=; b=DFVdy9SjW53zkK4tiky3xJt61X
-	JNyfSROa+njlClyTqVUEslok7oQVm8ccCVBv34bI48KSpJOZJdDxUYKLGqsL1YnEBTzr3FfEEvHod
-	sxcKaqxtO9a4a6FPZEqmQsNB+S2EkA1iZiqHJ5o3dB7QupGgKox5e6baQ3hGQ05ZiD+hUJzcMJALU
-	gCcoK/1PX8J77Pf/7RbXkHLZoRNoSOED6Z4z6cXN/z5Bd/otQ1zuo81zB77Mq2v3AT5Wm9ezmhnoP
-	S1CNDw+Gpub8yKMPNxuiuk5x6FVexORyPHsbxG7j44z/hFpFIuHvneo/exWCtfwMzhTrUk+4cg4hi
-	adhk9t4A==;
+	bh=GsofZZy80LqOViURd0Cth7grp341lX7nawvGMXam0pQ=; b=O9+ZEMxJe+wKgfoT6R97OdU0h1
+	HPCp47yI/5mBeYpFJUq/hGNNPpqIHyTwQ9OpT3qOluo4IzUGXTRZbjCn6xBhZfrpsdwyyaR/sqthY
+	7grePrABkdjqi6+avNN1hBk8a529LYs/3NlwwU6IrOsq5CLkYwE8glMHRSwXzn6VAuf8oWEX+VskU
+	Rd+mWdb3S0zCR52gfQh1jn77CvRAtkMb8OHdvk2UwflV6/XklU+OW4mHrFUHBF9AswtMmyWDjuyW2
+	ayDHO44QuAVFaPrTyD/fL8xtntqr9B4TfaG0oPsLFqp08F47jxZ7VFJt6dNzRoMVnZrrM8dg5AZ+c
+	t3bmtVgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3u4Z-0000000ENgw-3Wzh;
-	Sat, 21 Mar 2026 11:00:51 +0000
-Received: from smtpbg154.qq.com ([15.184.224.54])
+	id 1w4JB5-0000000FNZA-3hMv;
+	Sun, 22 Mar 2026 13:49:15 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3u4W-0000000ENdn-3GZr
+	id 1w4JB3-0000000FNYq-0Zgc
 	for ath10k@lists.infradead.org;
-	Sat, 21 Mar 2026 11:00:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=smail.nju.edu.cn;
-	s=iohv2404; t=1774090815;
-	bh=Ef569JwFdhZArx/omdQP7G4f/QaYGZIypXkoSFlABe0=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version;
-	b=0JZRyT3XpJzW5ZgGg6zAxUmNmBJvyBMWfuTaphJUDAoImu3b2b/BStGq+9B+1Yw64
-	 KKUZfBVGz6ORdOJSlBxV5qA/q800PRjBpZqtB/o93AWbQKNm/dtc31BvfM047UFkeN
-	 iZ0klngPHnLzoPaX/uqd9PgNzX0bSxV9tR9IR3+0=
-X-QQ-mid: zesmtpsz9t1774090813t02798f32
-X-QQ-Originating-IP: 5rdXDJlqFBsdgN+dsz9GeL3hz4oX/Xu8ikpFlPCIiao=
-Received: from localhost.localdomain ( [116.172.93.199])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Sat, 21 Mar 2026 19:00:11 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1672418629744604756
-EX-QQ-RecipientCnt: 9
-From: Kexin Sun <kexinsun@smail.nju.edu.cn>
-To: jjohnson@kernel.org,
-	linux-wireless@vger.kernel.org,
+	Sun, 22 Mar 2026 13:49:14 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-486fb439299so26018555e9.0
+        for <ath10k@lists.infradead.org>; Sun, 22 Mar 2026 06:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1774187351; x=1774792151; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GsofZZy80LqOViURd0Cth7grp341lX7nawvGMXam0pQ=;
+        b=cU9pXSQJkOUe8tZL3g05Qkp22pjjFr6ASOmYxBRlUOb7pqoV8GOn44CscDFV+3SPLr
+         34VqHwf5iMU4SkIysLkhFqZh05usG/cZf+qqR6JxSLREZ6Mudh5mNoZrqzuN8UGwUd6Q
+         KQjbAP6sdLaju2e9BReTxIdI36Udie19HfjzCmNVRe6bwQ91eForvQx6NR8oKhwP3Cye
+         4Kn4HE07NONqAqg2d1ljwMYqa69wcBmBFYdEL/ikHi200FBOCEnqUZZt+0DxuzwHkFvV
+         qvalfVpyFJh2dDEj2gZ0THCCtXEGnptt7sikG1sGSgY/eoFr7ZISC7k74ThBamO39goY
+         o66g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774187351; x=1774792151;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GsofZZy80LqOViURd0Cth7grp341lX7nawvGMXam0pQ=;
+        b=ZgiVjikOsCdC0EJvHXzg1vPPljjp7LQmq6T4ufuoveQ+JHlrZan4yMTowhsHdlIubT
+         cD6QyggpkW26ufyVnhlbhz2pTv4dwOw1EjtJbWRtgex+knM3VeT5/BwxA08RKEiZHHO2
+         fwdyTtqZO66DqmBgR4W/o2WRA4idao4LbOTZ9RXUIwwztyGJ6sq8W+rj67/DMIfNG/Mg
+         TAKpfa4k/8m/aFNw6oOQevV0dL7QX2wjzwBgla2zZ6kM6fOZ58eM7fDRBWmdHCi3JDdv
+         U5wtWLM/0JklJgumdomRwB/qJ8+lZsELWqxY6uKJXo5AuXJF2eeu4f+NwE7HJA2HBIaH
+         AibA==
+X-Forwarded-Encrypted: i=1; AJvYcCWuLne4SaRZ69J4uwN4End5qiR0fYorMRjqOGfePa2FzJvE8KXJNR6Bo4QLJ8RgTjHlStT3EnA=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz/amPyDGX9NxReIZjMpe5SxOvSCUW5xcw94mQfAa/DMBmMS2eB
+	cMis/7aGDjn/0Pr9JFnGN5L19O+znOyUEQ6g+HwiPyqJSDFBe3CZXg0G
+X-Gm-Gg: ATEYQzzK7uC7jiOjFGiszU0vJlG1MLj4nAdbeM/AR4f8PP672SE6hdiQ/t9gSHwJe+h
+	OTkq7RQd1/kXcHy0OW42MPet3Q83/VUyU+WV8fQOCS9VfMb9Ufn6KyJdX6dedQD8oU6ZqeoIHmm
+	aX6VFFk8adbNvq7/cLPdfVvatupSQaAww/HoGDJdiyNgj501SXm6nMqHfq63R/b2GPsnM56ocVM
+	1UXMrXvd/QXjuGNMFL1An3qRe1EAAv5HehrQQf/zM4ATkEjbh/kInkwuFSzDIwv+diITNoyZ5/J
+	NNeAQK66FlYnU/VsHt5RczwKkpWA81MIqGeRiEO57PY8m60qv0uBi8W168DYbh5lBAGuVYXxMK9
+	zeVQzshkrUlKuRJxN69UojLJyLDvUIR9lkv6mr+n3M4kTqxof8Fg/73yeYXyVefQBEJH4L4VE5I
+	KoFpS33GnzK9XDvBnRSfNIVg2HfCvU57amF7JjhsjDHnCUappSFCNVH8KhOiICpucc0RhA+QRuf
+	XeSEsTV3yLd1hjteuCDmyqvMQ==
+X-Received: by 2002:a05:600c:45c5:b0:485:3f41:e113 with SMTP id 5b1f17b1804b1-486febb5d16mr127573655e9.1.1774187350439;
+        Sun, 22 Mar 2026 06:49:10 -0700 (PDT)
+Received: from DA4-DEB.fritz.box (p200300de871aef00290206c667fbb9b3.dip0.t-ipconnect.de. [2003:de:871a:ef00:2902:6c6:67fb:b9b3])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48700658441sm268260335e9.4.2026.03.22.06.49.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Mar 2026 06:49:09 -0700 (PDT)
+From: Malte Schababerle <m.schababerle@gmail.com>
+To: Jeff Johnson <jjohnson@kernel.org>
+Cc: linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: julia.lawall@inria.fr,
-	xutong.ma@inria.fr,
-	kexinsun@smail.nju.edu.cn,
-	yunbolyu@smu.edu.sg,
-	ratnadiraw@smu.edu.sg
-Subject: [PATCH] wifi: ath10k: update outdated comment for renamed ieee80211_tx_status()
-Date: Sat, 21 Mar 2026 19:00:11 +0800
-Message-Id: <20260321110011.8556-1-kexinsun@smail.nju.edu.cn>
-X-Mailer: git-send-email 2.25.1
+	Malte Schababerle <m.schababerle@gmail.com>
+Subject: [PATCH 0/2] ath10k: WCN3990 firmware workarounds for WLAN.HL.3.2
+Date: Sun, 22 Mar 2026 13:48:20 +0100
+Message-ID: <20260322124822.230492-1-m.schababerle@gmail.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpsz:smail.nju.edu.cn:qybglogicsvrgz:qybglogicsvrgz5b-0
-X-QQ-XMAILINFO: MVMn5D3ouL6ClpMhQvg0dsE8alJDF1uZmy0w97vLx37312iOqXMATv0X
-	RCFQSLMMNxXPWy95F+e/2Y0QagQzfVKQmE9uTUdAX7tKH+1/Ng+IDXLA/t/yoDffdoSJb1l
-	BYi+C8763X7DkVJ0h9OjkhBxJK3BqJLL1lETg6uBSkdsD85kzYOA4F/zMcKmoGd50zVaeIx
-	MhWbPOd4hIK/a6nt5f90cD6D9iKmJ/LQahgn+P3PSud1tkdOCtqnbU2MZtdpw/raKKriJih
-	LK/dgNVoA7PmH0KYKE2c2dKnw6G1XT8Nm4PFr//VPhFZbehz3ACzK39vmu+f+bxqvD6A5MO
-	BPQmM0pDGOIjj0XbNK+BA9eZawlc0BeSTQ5Li4kYtT01Xi83AfjyqgkTYEM5i0Mv0VaJ1P7
-	0PnOZcv7p4cr6zise7ODa171BJCTWRdq5TdAdxLtZuGnl5wFm08nuOxIjyo41ve+YwnXieP
-	9d1tWS9tI9pjf9IWYkmJXL3kpUpFgMiXG8b8sWKg36m/c7DDU3fa9SRtdJJnL0ZLsJOx4YZ
-	SGb09nQD9BEM6PC1CLpx85SnEZVX6VXyVWWvwydPYlnxckP7jGBMCjSXqZmVQ1aO+22JDPm
-	I84vK3q4dqEwKn3HuQaoPz7SrzEOZ6WxZBar7i4k6OFfjPbfcjlWluYa5yYtzWkCNIna5ED
-	BH2JRWrrsXD5YHfZAQk+bAmbaAKcgPZ+bqthYezx4SpGvDTFJTRkjHTIsv2Z7qLufEYzyqw
-	GwRKjrlHJUfENc6hMJhR1dr8wjKmCrUDQRuV6OkJmP4uz8PEWiPmRonCuMx0X+YA/mValSQ
-	1FqMZmNllyFzGzyIsluoJPYVCjhXOjpjhV/FbZdn+yHhHQS+V9TzxgqtTSFu9VYV2mu2POJ
-	bnhFYZOmQnBlRqE2bmy0wZvc3HMxvdgX+0bA52Z7qbXW2PfGr2xk9W6Ibo0VNiPuRXabgUJ
-	6ldYl8+csDD0hvNZWbeMzfH7GveXIZyAiqX6nROAwn2Y2T/BggKzqIH4FRbUwEpnZvimY0A
-	+9vD/xR3UrhqWBBjvlzaQYvHuScZo1iZtQbE98073HSNHr2eLdhcxEzAyYrq4vCmiV5MwGb
-	Bwfl4JrVxz3VdZuh2uQhPI=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
-X-QQ-RECHKSPAM: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260321_040049_415976_81D60401 
-X-CRM114-Status: UNSURE (   8.21  )
+X-CRM114-CacheID: sfid-20260322_064913_184074_35E5DF51 
+X-CRM114-Status: UNSURE (   7.21  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -98,32 +98,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The function ieee80211_tx_status() was renamed to
-ieee80211_tx_status_skb() by commit 2703bc851399
-("wifi: mac80211: rename ieee80211_tx_status() to
-ieee80211_tx_status_skb()").  Update the stale reference
-in ath10k_htt_tx_hl().
+Two firmware workarounds for WCN3990 (QCA6174 integrated variant on
+Qualcomm SM8150/SDM845 platforms) running WLAN.HL.3.2 firmware.
 
-Assisted-by: unnamed:deepseek-v3.2 coccinelle
-Signed-off-by: Kexin Sun <kexinsun@smail.nju.edu.cn>
----
- drivers/net/wireless/ath/ath10k/htt_tx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Both issues are firmware bugs where WCN3990 advertises capabilities it
+cannot handle correctly. Tested on OnePlus 7T (SM8150) with
+WLAN.HL.3.2.0.c2-00006 and WLAN.HL.3.2.0.c2-00011.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index d6f1d85ba871..29e99fbf36fd 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -1353,7 +1353,7 @@ static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txm
- 		msdu_id = res;
- 	}
- 
--	/* As msdu is freed by mac80211 (in ieee80211_tx_status()) and by
-+	/* As msdu is freed by mac80211 (in ieee80211_tx_status_skb()) and by
- 	 * ath10k (in ath10k_htt_htc_tx_complete()) we have to increase
- 	 * reference by one to avoid a use-after-free case and a double
- 	 * free.
+Patch 1 fixes a deterministic firmware crash caused by the quiet mode
+WMI command. The existing guard from commit 53884577fbcef relied on
+THERM_THROT not being advertised, but HL3.2 now advertises it despite
+still crashing on the command.
+
+Patch 2 works around a bug where active scan does not tune the radio
+on 5GHz non-DFS channels, making 5GHz networks invisible. Forcing
+passive scan mode restores 5GHz discovery.
+
+Malte Schababerle (2):
+  ath10k: skip quiet mode for WCN3990 to prevent firmware crash
+  ath10k: force passive scan on 5GHz for WCN3990
+
+ drivers/net/wireless/ath/ath10k/mac.c     |  8 ++++++++
+ drivers/net/wireless/ath/ath10k/thermal.c | 10 ++++++++++
+ 2 files changed, 18 insertions(+)
+
 -- 
-2.25.1
+2.47.3
 
 
