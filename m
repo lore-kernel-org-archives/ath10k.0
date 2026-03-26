@@ -4,121 +4,158 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AB65109E52E
-	for <ath10k@archiver.kernel.org>; Thu, 26 Mar 2026 00:02:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D26CE109E535
+	for <ath10k@archiver.kernel.org>; Thu, 26 Mar 2026 01:59:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=R2Ewo+XzkBojo1ZNJfUV1ACLFD16IiiNHPZC2/wPH/E=; b=kYGpBCv06FgrYHLXmEgsIjvD5E
-	3blOWYVRBdNtWxMdeQUxRaictOmcILdVeGWvFiLFAJNemZT6vpEdgxffLBPvPIrf5Uu8naXiq9Mdk
-	I75Vmv+Wg0uVFKzom4iWxRMVeK1lp+GMc0xbydSZsPl8Me6KwUNq3ABgFE3FuU91FBtFzTVbtYEPp
-	rghsgIuVy29iDBPeSXSJN/lRUunfcCNeLnw9TYerV+uDcIjy0C9pIvNCIUCUeShxclPoHkHp8E3sl
-	hN7UZsHqZCa4xoiqXOThr6u3jblJa/v64Ati6ZGRpHETSWfgDoJ9M+Jp/DSp7tEO4lT9qFtzoTzto
-	5mb1USBQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=jPgKrOCs8BV3rkHFf7zJrMHg/ajlW1vtOsuJgIMhY9c=; b=TzXq1Qg8op1gWo3Xal2izS6SLV
+	JDa0syPcR6P6oTnDaJ+J9L7T/Y0GobejdJAszIMZCCKwrsPweyoxetzf/XG05asa+2UvI++sgd9P0
+	miV6zwdObC1juSw70QdsCset7XDNZ1+0C8rVVrTg3W5OQexmDzWnzFezGJhm3ML+njHU0IXfa+u1V
+	AZqlOSyAQWkOSUyR/DMgR28O5K+bU+MWsh+WdTBQ+k4gPhxI1cH03NnPAsAF43TwDUGB7u+tihAcA
+	pdFmAxlEs08Ce2DMmWvaQXMFw8OGXFfIUlnYIcCYdkaV+V9XIPNpu6wqaouzILlmZoESvuq865L5i
+	QB1uIR4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5YB4-00000004SXg-3jSM;
-	Thu, 26 Mar 2026 00:02:22 +0000
-Received: from [2a02:f000:10bd:e301::2] (helo=ixit.cz)
+	id 1w5a0C-00000004YVT-0MZO;
+	Thu, 26 Mar 2026 01:59:16 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5YB1-00000004SXM-1t2j
+	id 1w5a0A-00000004YV6-0DF5
 	for ath10k@lists.infradead.org;
-	Thu, 26 Mar 2026 00:02:21 +0000
-Received: from [IPV6:2a02:f000:10bd:e301::1d7] (unknown [IPv6:2a02:f000:10bd:e301::1d7])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id 916155341243;
-	Thu, 26 Mar 2026 01:02:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1774483334;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=R2Ewo+XzkBojo1ZNJfUV1ACLFD16IiiNHPZC2/wPH/E=;
-	b=CasRDRPXFnnKcJl3cBHPWyMk1NRbraOmFmlhca8LCnGq7hrHDO9IiOc01LzFm4tpZzIQgt
-	zXk+woMJ6pK6Q7ivxqmcl9pJOb4jdGaXt1SlQYgK907NveHcKKgs4SLL7c4yWTZfFmyZXH
-	uIWfG+TbF0vOLRuRAxGu5Fxv4S07660=
-Message-ID: <a75f80bc-d2fa-41f6-91aa-8252fbb415e6@ixit.cz>
-Date: Thu, 26 Mar 2026 01:02:13 +0100
+	Thu, 26 Mar 2026 01:59:15 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62PMIFIO3070106
+	for <ath10k@lists.infradead.org>; Thu, 26 Mar 2026 01:59:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=qcppdkim1; bh=jPgKrOCs8BV3rkHFf7zJrMHg
+	/ajlW1vtOsuJgIMhY9c=; b=WwBkdG+bMNAv1+H4wYjSz+Puf4Hojd60sfYMbVLz
+	6u7s1GcBAeZuf7rFY16XZRNNen6tUahqZmtZfxf58grsNZS90izuJb9GyiJNwA6l
+	jyUtMU9c9gJrXpHrck5QXhLaP9mrc528Jd9uoA8GdtA9jR7E81ExXKHhYrVut73E
+	4cXbuRf7ecmlOPp97UnydVYHUSGS0OAIeX3tJ/pfwMRH6KAgVVPs7d2FLHk+1Ddp
+	FBl4Fp4U4exKCbvqP+V60vrbx6Lk00MyWfKihdu/ceUYWdPEjIB+Btbd/DQ866/+
+	+Xeyo29QlF7hT/ik0vreVZ1XWS/2CHif9EzUZjwWwX9YSA==
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4d4rcn0g9g-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Thu, 26 Mar 2026 01:59:12 +0000 (GMT)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2b0601ff3d9so7254965ad.2
+        for <ath10k@lists.infradead.org>; Wed, 25 Mar 2026 18:59:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774490352; cv=none;
+        d=google.com; s=arc-20240605;
+        b=kCN15HJHOgMDT+AwXUngXp7WWpxxvoTYYEHDHm/hlTMs/wZ/9U5PyJTe5JgZjk2CGA
+         ZW8V/pSu/TTTqqmVBRXtqrkUGN1RTCzGfwWPlpdDRsN/aVdd0qAWGVLbVIUZnHg8PWah
+         m2oLK/gu/8+EmbEvTwMFJ34s62ZkEWKBJIojbR41jhfderSGzdGtXZkvllLjUF4uGxBw
+         nTEVp5DURPxJn3+X1ODdMcIO3I0bYIH1b/GwdIh/XbeDwyVCbmzTyRQQGoOegpvJxNzI
+         oMQ/h5zPUwOKcgZbfIXoist905ktwAaNUQY7drQBWaaEz0tO+T9WakSuDMab1B7wBb/K
+         Ep0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=jPgKrOCs8BV3rkHFf7zJrMHg/ajlW1vtOsuJgIMhY9c=;
+        fh=JSJsB01z7InAOPlnYZL31ocO6tQUN1jWuO96Ri9PY4k=;
+        b=YPlTxGlUjF913GeWuf1QxEA4W0PrTQzAGZZghM7cKWaYd/32t7GiRFUKGzaU9W+6Nn
+         pIKBnE9wQ3UmTuhqeWKXkd6AHhUr031JfdtsyX9MGmZLV6CSxHKdYvEXlk7rhNUbhp+n
+         L1nZ6BVnbz9wEMsg4G4bBtkuZNqkMqtvNr7EYk6wFcMYSE2KZGDRP+ZSOyQvGLMLEQdX
+         zeDJH2ngT9FHPrCPt4RJiThvY3bYuW4wLWSlaslMnXOHixrbUbjJ8qFYfN/pE5xU9FhB
+         nPBcdRhBhitWJdcQm+RIFPNJYGl2mrffohtzekcS3rFbB6WWz+/iTETqRtwDejvi9/vq
+         j1Hw==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1774490352; x=1775095152; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jPgKrOCs8BV3rkHFf7zJrMHg/ajlW1vtOsuJgIMhY9c=;
+        b=TEnbJ6HHITHPH428BYKZ6PG0KzgUZhpenTqR0oLgkHef8vgdIS9dZmklCEi5Zt2txi
+         NRG4YP4QMiBmJpfwV1R9ebvgK7NBQ4wb7N84VLNC6j7a/dqavfq68M6gZgFEppnlQPvO
+         1cR33NyejIMtMawr1X8P+M73KWDtFl2sM2DHEl2iEdY7SHNQQZw+Wn3u1H4Z0zF7KJ4d
+         Jxee/oiOqo+FJQ9gtKfNPRK7dgzTJWOOR4NiJE7PV88pxe8uT6FmH1vMcx7i2DCzQYVJ
+         /Uh2T2ID959O40SnjRo9EgEMfjtUog8hHw5xjOSZdLX+mIhYVNc796NF9MK7a0XTU9jW
+         7SgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774490352; x=1775095152;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jPgKrOCs8BV3rkHFf7zJrMHg/ajlW1vtOsuJgIMhY9c=;
+        b=DLpJgzNxBchpIPVaOzO+vu0ZiI+rUdABwoo/NFLRNrXX6FJdBNlhCU1M6JzwP5caw2
+         NvjSq378krpJUwhhDob8v7mkYDJBpz4aHmZbvBlXojqsMuKwhGD7MAdwnOqIqOMtAJC5
+         2SRctOVZDxS1x7Ao3D6+7jpFeYkJ2UV05IRYjgeASf/TZLSO2gsO+hp1/mN9j2ZaysoW
+         KpLPKFakigJWjV4mpqJDOgs/XiGiV+WPRInNs3I4MUy1y1XtVw566/juokBBd1U57nDY
+         p4Jk5SA3IroM9MlgoNQYdw4UtVcXVv9feF1/u7xZazMB91ao8cIPjetzrIrklQQ+AJuS
+         JdbA==
+X-Forwarded-Encrypted: i=1; AJvYcCVNX3pU9OROuLvszZOe3M1I3OdC1aVIKOTvf41V4hZRfz1WmqQUOD++IjjgyYlcHgidxaT5FWQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzHkSfUnDUkNLnG25/0t3J1HUyJO4CAwU/dOiyDWPh/oaz4GOmZ
+	yRaJWxmQJv0x8CddshuSBOG2p8KTaOkJuEBr6OD0XwQYlZMDkzU2dHytBaISrKyORwO7V/gzs4X
+	S+iXHXcVkIz+Dc3uxQPEYkO+/NxykvwYHFrqlj3IOps7hdfmIDmMx3igeVABzDgmMrt9aJLDLbz
+	Pl5xiiRbnfEt6SRIuGPpN1/AIDqJ5RlKed6Jr9rfM=
+X-Gm-Gg: ATEYQzzBnwvH7EU+tBybl22ynYXjblX1GPIv0rbkTGeVZz6TQt6AzEQBDcyQE5iBaBz
+	tezirODfTsOcwkGkxXyGJhH8hePAB84pljtpW0F5oZuj2cn6DxpDaHDf0op/129tnB+Z4/UuYq2
+	icTOwBW2FjcKamwboinVgzZ+UZvpSx+sYN3dz38u7h+idsPjDHvBeZpt8krE/pjZcnMuFgAyWVa
+	XeOZVQEG4AqxEwlSkEq
+X-Received: by 2002:a17:903:3c47:b0:2b0:6df2:8cd8 with SMTP id d9443c01a7336-2b0b0abe504mr63387335ad.40.1774490351612;
+        Wed, 25 Mar 2026 18:59:11 -0700 (PDT)
+X-Received: by 2002:a17:903:3c47:b0:2b0:6df2:8cd8 with SMTP id
+ d9443c01a7336-2b0b0abe504mr63386895ad.40.1774490351133; Wed, 25 Mar 2026
+ 18:59:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/8] arm64: dts: qcom: sdm845-db845c: describe WiFi/BT
- properly
-To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Rob Herring
- <robh@kernel.org>, linux-bluetooth@vger.kernel.org,
- Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
- Matthias Kaehlcke <mka@chromium.org>, linux-wireless@vger.kernel.org,
- Jeff Johnson <jjohnson@kernel.org>, ath10k@lists.infradead.org,
- linux-pm@vger.kernel.org, Bartosz Golaszewski <brgl@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
- Marcel Holtmann <marcel@holtmann.org>, Conor Dooley <conor+dt@kernel.org>,
- Manivannan Sadhasivam <mani@kernel.org>
 References: <20260119-wcn3990-pwrctl-v3-0-948df19f5ec2@oss.qualcomm.com>
- <20260119-wcn3990-pwrctl-v3-7-948df19f5ec2@oss.qualcomm.com>
-Content-Language: en-US
-From: David Heidelberg <david@ixit.cz>
-Autocrypt: addr=david@ixit.cz; keydata=
- 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
-In-Reply-To: <20260119-wcn3990-pwrctl-v3-7-948df19f5ec2@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <20260119-wcn3990-pwrctl-v3-7-948df19f5ec2@oss.qualcomm.com> <a75f80bc-d2fa-41f6-91aa-8252fbb415e6@ixit.cz>
+In-Reply-To: <a75f80bc-d2fa-41f6-91aa-8252fbb415e6@ixit.cz>
+From: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+Date: Thu, 26 Mar 2026 03:59:00 +0200
+X-Gm-Features: AaiRm515yskxcvd1wtiR9718njLTgP_TuNpDNdd4YtWA6E6jp6B_uzG9KDE4-bM
+Message-ID: <CAO9ioeVLy_Uzn7L9MyET5wg8CMR132+Dda5JzjdAB=6vz2NEMg@mail.gmail.com>
+Subject: Re: [PATCH v3 7/8] arm64: dts: qcom: sdm845-db845c: describe WiFi/BT properly
+To: David Heidelberg <david@ixit.cz>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-bluetooth@vger.kernel.org,
+        Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+        Matthias Kaehlcke <mka@chromium.org>, linux-wireless@vger.kernel.org,
+        Jeff Johnson <jjohnson@kernel.org>, ath10k@lists.infradead.org,
+        linux-pm@vger.kernel.org, Bartosz Golaszewski <brgl@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Authority-Analysis: v=2.4 cv=Vdr6/Vp9 c=1 sm=1 tr=0 ts=69c492f0 cx=c_pps
+ a=MTSHoo12Qbhz2p7MsH1ifg==:117 a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10
+ a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
+ a=gowsoOTTUOVcmtlkKump:22 a=l3dzM3eKOFk7Ec1IfqUA:9 a=QEXdDO2ut3YA:10
+ a=GvdueXVYPmCkWapjIL-Q:22
+X-Proofpoint-ORIG-GUID: 8Ib8I7cqZyDyncrA-qxjs9XQoY5wbMK1
+X-Proofpoint-GUID: 8Ib8I7cqZyDyncrA-qxjs9XQoY5wbMK1
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzI2MDAxMyBTYWx0ZWRfX+cFUdzWNSKD3
+ +V1hEJgMwaLRuYY31KnKc2mhfgMv/uJ/St3i+gwC2k5puYe/+x6OeLeF+Cbn5bZG9SQ9ToZXXRi
+ 9omQnThhgPb3mvELT3z2V7oy6su+v+bpoTgFvBbsPC4bKwifKQuOBHk7G/b+J7tJjkQFj1OExuv
+ QOInrYeqdr1gRCBzAbWKWcKtp/WIVu1V9vBWLAq99NzVmKSwWyjGsBAesCjErf6F6TDdbCe1O76
+ z6L/5/lh38bhvKswrYa7qSmQkrDZe8H4lAyS3gsilA8o0NQZnlbyMUqQw2ZbODEwEyFYgE3Mk1U
+ BYwcp/811q/dOrqJlVgv0TGH7zATSdmHx6pU2uYK9hmCuoESm7tDo4vwgSs4gNK/RlxJkiadbyh
+ WA5DMLC/SEh4gvMCAlsGG8tjJrX7Q4E87xH8Opw+U5atOpqnCcov/52Gp1fZS8Vcfd9L6Eo8eJu
+ Ix8JmrmYGuxTnVK4s/Q==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-26_01,2026-03-24_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 bulkscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1015 adultscore=0 impostorscore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603260013
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260325_170220_005818_F02BDD1A 
-X-CRM114-Status: UNSURE (   8.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260325_185914_208573_67417152 
+X-CRM114-Status: GOOD (  14.05  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,56 +170,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 19/01/2026 18:08, Dmitry Baryshkov wrote:
+On Thu, 26 Mar 2026 at 02:02, David Heidelberg <david@ixit.cz> wrote:
+>
+> On 19/01/2026 18:08, Dmitry Baryshkov wrote:
+>
+> [...]
+>
+> > +     wcn3990-pmu {
+> > +             compatible = "qcom,wcn3990-pmu";
+> > +
+> > +             pinctrl-0 = <&sw_ctrl_default>;
+> > +             pinctrl-names = "default";
+> > +
+> > +             vddio-supply = <&vreg_s4a_1p8>;
+> > +             vddxo-supply = <&vreg_l7a_1p8>;
+> > +             vddrf-supply = <&vreg_l17a_1p3>;
+> > +             vddch0-supply = <&vreg_l25a_3p3>;
+> > +             vddch1-supply = <&vreg_l23a_3p3>;
+> > +
+> > +             swctrl-gpios = <&pm8998_gpios 3 GPIO_ACTIVE_HIGH>;
+>
+> Do you know if the GPIO is common for whole sdm845, or it's only recommended as
+> reference design, or nothing?
+>
+> I did test defaulting to GPIO 3 on Pixel 3 and WiFi works as before, but since
+> previous downstream kernel didn't touched GPIO 3 at all, I'm worried about
+> toggling unrelated GPIO.
 
-[...]
-
-> +	wcn3990-pmu {
-> +		compatible = "qcom,wcn3990-pmu";
-> +
-> +		pinctrl-0 = <&sw_ctrl_default>;
-> +		pinctrl-names = "default";
-> +
-> +		vddio-supply = <&vreg_s4a_1p8>;
-> +		vddxo-supply = <&vreg_l7a_1p8>;
-> +		vddrf-supply = <&vreg_l17a_1p3>;
-> +		vddch0-supply = <&vreg_l25a_3p3>;
-> +		vddch1-supply = <&vreg_l23a_3p3>;
-> +
-> +		swctrl-gpios = <&pm8998_gpios 3 GPIO_ACTIVE_HIGH>;
-
-Do you know if the GPIO is common for whole sdm845, or it's only recommended as 
-reference design, or nothing?
-
-I did test defaulting to GPIO 3 on Pixel 3 and WiFi works as before, but since 
-previous downstream kernel didn't touched GPIO 3 at all, I'm worried about 
-toggling unrelated GPIO.
-
-Thanks!
-David
-
-> +
-> +		regulators {
-> +			vreg_pmu_io: ldo0 {
-> +				regulator-name = "vreg_pmu_io";
-> +			};
-> +
-> +			vreg_pmu_xo: ldo1 {
-> +				regulator-name = "vreg_pmu_xo";
-> +			};
-> +
-> +			vreg_pmu_rf: ldo2 {
-> +				regulator-name = "vreg_pmu_rf";
-> +			};
-> +
-> +			vreg_pmu_ch0: ldo3 {
-> +				regulator-name = "vreg_pmu_ch0";
-> +			};
-> +
-> +			vreg_pmu_ch1: ldo4 {
-> +				regulator-name = "vreg_pmu_ch1";
-> +			};
+It is an input-only GPIO, but nevertheless, if you are not sure, just skip it.
 
 -- 
-David Heidelberg
+With best wishes
+Dmitry
 
