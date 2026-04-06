@@ -4,145 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AC75F46C4E
-	for <ath10k@archiver.kernel.org>; Mon,  6 Apr 2026 15:51:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 554F4FB5166
+	for <ath10k@archiver.kernel.org>; Mon,  6 Apr 2026 22:15:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ukQ6Zlht3NZUUsrPWZJsHdIlUjCDU/cg8ksvGrwiy2Q=; b=LWioH40zknFRbvOjy0PlbMZMmE
-	LWeKqak73AjjXezB90w/Hmzbd7pR6sY2g/th+HsbkdlhKTllISUbHV+FKMGcKM9nkatU+nCftYotL
-	hnuslxucn2Ct1QLR9qCad2wn2etudBx8ezgjXD7+IWFCBbKpNzO3SlJTHFSTi3B3Gb7Se+f8bywqd
-	Vdqalfo6n2ab/ICcWtx4vB1Zde/+onx4/Mft6U942zIypdfZJU3oKVtDOBm/u2b9lbjqv/liNnF7q
-	x+1uGx49x1sbN6A5F+6oQgdqTzV8yYRnQz/bEKV1i7mukzSs+I7boYvx9jRnUlhycaSOdHOnTXcvJ
-	LV0peU7A==;
+	bh=CL6Otb7fYv9uJRXVmeEi/4cfCYC6ndzuwvxSK1wlzXQ=; b=kw2JWvFyOru4Mcf9dEmZSXVOSY
+	yMzRUNRa4Y7iaBa2xYZLQTQQ3BJRLFDq19cX+UCjSiG2zaMS4JYhBV6JvSj/hJcQ2ruTR8nhhrsqp
+	/6uGSRJpp1k04aFNrwiW8SZVEt9Ex5SBGw3oiaYjL3rgx9XhVZREccKwySffcnjgDLxzMW0dX+D82
+	Xls0Hj0/oszQ9z6/aDJN7DT82Rz8VMet6qgvfSZR6VDW02vimEYHDZG8XtSoFNhDJuOqJls9tB8jP
+	HN79fKTTR6GLvAQFfujgUuseqJ2mle0C4yiSfONfMoso4uu53LKgskBPGIJIMAgEj12l/ol8UC3Kc
+	qmjmc+hA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w9mEs-00000005IEN-1oRS;
-	Mon, 06 Apr 2026 15:51:46 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1w9sDw-00000005YzT-0vsQ;
+	Mon, 06 Apr 2026 22:15:12 +0000
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w9mEp-00000005IDp-3KwC
+	id 1w9sDt-00000005Yxr-3vfz
 	for ath10k@lists.infradead.org;
-	Mon, 06 Apr 2026 15:51:45 +0000
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 636F0tjx582233
-	for <ath10k@lists.infradead.org>; Mon, 6 Apr 2026 15:51:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	ukQ6Zlht3NZUUsrPWZJsHdIlUjCDU/cg8ksvGrwiy2Q=; b=J93kyziEVXCaDbwt
-	ZIT0AYP/Y0+O2Lgk/IKQ0H3W06K6bAYtGRhFzD/XVbuvpZuwpBH6MUqdtNwsDJme
-	WouloICu0BfgqnKRoKxAXUdFscYsqt+EzzQAr3mUlPGKWa9Z7g5Vs2bE84XzaaCw
-	SOrQzYu5omCBrrW6wKKaa972ZNQllDgt2bpVHBel4Z4m43XHQAmU1EoqibHgajAY
-	Q4M2Q6kP21cghTLNdd/R8AVtvijc50TVOf5nh9YowLnhNFLjo8+T2wUK3iYDNgxX
-	DGMmbGzJS2N7idyKVqmsQuuOeeXQB216jedwhbFbXct2QhlY5R1P0fM7Sh28eK91
-	GYrzjg==
-Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com [74.125.82.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4dcf3r05dd-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Mon, 06 Apr 2026 15:51:41 +0000 (GMT)
-Received: by mail-dy1-f197.google.com with SMTP id 5a478bee46e88-2ba9a744f7dso5692851eec.0
-        for <ath10k@lists.infradead.org>; Mon, 06 Apr 2026 08:51:41 -0700 (PDT)
+	Mon, 06 Apr 2026 22:15:10 +0000
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4852b81c73aso36138765e9.3
+        for <ath10k@lists.infradead.org>; Mon, 06 Apr 2026 15:15:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1775490700; x=1776095500; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ukQ6Zlht3NZUUsrPWZJsHdIlUjCDU/cg8ksvGrwiy2Q=;
-        b=C0iNUjx5WIV3dODMUVVEO3M22DBAvn7k0v2Ee3gKPVxWu0sYq2kvYGvtYVmV585uzd
-         /oxtzSMcWT9MEmEurXaRw/PupN3005bxnxs5VvU76ID+lCThoAOxnwW2O07lLdTWerZa
-         N7q+U0m9GFq6GYW4lFQR4vyQC6Bj2BIavz+ZZkOGf06cRdXfvz+eAD0WpA4xf338z4U8
-         d3zKrVQID042VNVh/aFBn4GFSp7YuSoO2rcohJp4Gct2KkMEV4Drg/oonHbRQO4OpBFd
-         gHVzD2p1JOeAwBvY0xMbosfciyJbNLsCvSJ7sK4xXc2jLNoochJo59wSTnMG2kjFIOB7
-         IG7g==
+        d=gmail.com; s=20251104; t=1775513708; x=1776118508; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CL6Otb7fYv9uJRXVmeEi/4cfCYC6ndzuwvxSK1wlzXQ=;
+        b=UfA1Wa24B6RCoIZcbO26QvYA9hxS0xcR/a41I9cVnDFfGiBoqY2PY1S7OD54Pg9CqN
+         1JvikpSiERmam6cKqUaN/bj8HNWfJDldRQdYXlRRT/tKdmhbahgb7L7l9mzUCqtNUbd1
+         bC9DCYpLCPLfnPBYMRvlfWYGoPUUHAJb4rmSq2LPPzKfntAiM5+RhArDt7xzpBnf9MZC
+         d8m9n0Jgp0tQGetwi1K/C58kTOwzV096T/zNlL9se+pprWBklVVdvc/0S55y9FXeJO7i
+         XXNcpQ7uO513+8EcxAbIIaD/3/P8UxFfPqNLT7ZLIr5nJWzNE6KPim1p3fdlSMgvNB9Z
+         oxMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775490700; x=1776095500;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ukQ6Zlht3NZUUsrPWZJsHdIlUjCDU/cg8ksvGrwiy2Q=;
-        b=Fe0x0w0hmCwTiqlpKpZ1DZzWbXAW8ngq3aVNYCtHmlT4hxD9q2uvT2ssc0DHxWY53O
-         Wjol5/A17XJ9/LPOQgz9P9F67jN/iHSxbqnI8H95E7Y2PHo6LmdsbxCoIqjM8mHYn08J
-         SZUNbIImLDGbgADRmyXSlxK28uOBTquMwAiwXEtFXk/j75AqRabmkfwaEf6treaKOn3y
-         QJJRP6+mqpVLY0MJwGOh6W1s59K1jZSrh9LpkvyZMZHDku6Q3ORFztOBHX9jNQjAOSBa
-         h/kt56ZolhkshfAaKV2SO7pnF5E+R5lwKBqi3mftUH/GI1+hCJpo/NIn743BVZgydBNW
-         NMOw==
-X-Forwarded-Encrypted: i=1; AJvYcCWz6RIJ3O+XQy3EAS5kleOBPtqSiNslIHwJ9lODxrrqZ+Ra/mWHUFLzr4GA9XFdJlAX4LjVwHk=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy7YEb+Fl4tQW2sUZDDL4trI+7HYY8mf9DlLAPYD2JKEeDg9YMm
-	9/vIllziRsnJ71dQRG4F1kfNy3Szsis82I4ZDwUSlaNAcFkohn7E2o7HLw8lySO/d87uIMeeo9J
-	IkJOgTis2Duj+Jz2fu/S8eT7yaWLTIgHNkG8YYqNEOEQib0B5zrNR9saat6xXEktS
-X-Gm-Gg: AeBDieujZPURsWUvdJ6SragsOc28wryiyjp+FOxVplzjdOUUaqxOMTTpIIL7PrUZ6Aa
-	zkpnK1xng9xRTJM8c8l5uZyN9awWVa2uPocYmt9JnpyF9EMPerU92pZXGbBM9HifGPe5SQxvO/4
-	eT6Xab988pKJyGxIv/J93iwhhoU+XGcoDjXc1YTEcDZx84xaeaSIjLAdNHl6jkOFTYICjddacj/
-	TQMKaRxJBSUXu3WW4FnsNCJSs1lSqAEXGgK2/LTax2+JSVj/IRYt12NLgLH+LLl9ju5AxN+GgE1
-	YbQflpRjsnexbJ3KpSAWgDHvaQdVUFmnqt7OBx2yvV+p8xtQxHK/97mz9e5aMw0B2qsTgxXP62r
-	oUoNvl+JJslvNcAr5iIKsNRhqpT4fmFb0VXpNv+/AJZojGO9aMJiQlgc4tspymACi21YjlPgxyE
-	894ogXmB4SVu/YSQ==
-X-Received: by 2002:a05:7022:62aa:b0:128:cc34:35fc with SMTP id a92af1059eb24-12bfb70ef65mr5780043c88.16.1775490700199;
-        Mon, 06 Apr 2026 08:51:40 -0700 (PDT)
-X-Received: by 2002:a05:7022:62aa:b0:128:cc34:35fc with SMTP id a92af1059eb24-12bfb70ef65mr5780019c88.16.1775490699506;
-        Mon, 06 Apr 2026 08:51:39 -0700 (PDT)
-Received: from [192.168.1.44] (c-24-130-122-79.hsd1.ca.comcast.net. [24.130.122.79])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12bede54ba8sm15701803c88.10.2026.04.06.08.51.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Apr 2026 08:51:38 -0700 (PDT)
-Message-ID: <0cf5e285-b5f0-49ef-97ae-6c04504044ac@oss.qualcomm.com>
-Date: Mon, 6 Apr 2026 08:51:37 -0700
+        d=1e100.net; s=20251104; t=1775513708; x=1776118508;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=CL6Otb7fYv9uJRXVmeEi/4cfCYC6ndzuwvxSK1wlzXQ=;
+        b=NqYN17asfJ3MsF7kLpfrXV6UiM/48oKvajIlfoWAqQ7U7hQ6RqOm9/cKJkRG9pVAJe
+         tr3iwlmeRoRJTeEMFbLKTjYGA9sU3sqhw1EbY6dq8ZwOX/fyZu08feDPBRNE3DAuSRwF
+         ewFFoeKxmXIzL2dw77AdHq+QAgXI37cVSRUGWdJ3K2C5R3p6+3ZpKwJCc6gP1KiUPi17
+         vHNRlSvATZL7V3HJbT2pdyo27I81IYgKyEMOqw9XOoZo1JuH6TgszqQdJ8axQZxuwYnE
+         DltVJ7se+TTJooaS854aBoqoGUzvLDmlifOjl14qSePN62gA3hyMT47iwB0xOcNlqwmq
+         Ciew==
+X-Gm-Message-State: AOJu0YyPyDpcmB6XGMXDqJ/pEqbWHGIgG5Q9ku2GXXG23Vgh7M7vPsbh
+	htP9VN7TkMUdXYOb/1IirxAH8wnQyz4/m4qX8lKOm5p7LKA/Nph5xPKv
+X-Gm-Gg: AeBDiev0fzp0Wg+xQ6Q4G1y3ziPANM/4cPrddcltWEFJKGioA7cDeqQmZRaXO+iO9qp
+	AARWIfes7Qt2hXkfSMAcx32SVdObgg6nhziokMwolIt0olJuOXLDhB0C7oP6t0w9wkKytXO3FmH
+	jl5NZmS8aMPgW9kCLvh8MxQ6MGVrXkGOaoX6+ZYwdrBbqfeAP5Kf3D4ljDXRKUm5Pc1mjxLwiaY
+	jNz+GgSW/ivM6d0EEXi65mnnAgDDVYrXnPI8nUij7EAca/BnDGCY6NiWfAB1QQK+uOnNxLYvvq/
+	5xQB/Mnz8Slzf65nCMmIwmjva/TGGl0Pkw8MFHhUr/5yhuinvNsRYgob0QJYUOvA9pNy2nvi8ZG
+	QGU+OKaZPXSnfJB3ii0Tl6x/A+hFRr7yevNx9i6TfGUMa6z0EG6qQUi/r2vpZtZT0EFYq3a6Lgw
+	bTCJFB2BWQnP3Zj6NZ3mmY9wVl1rzeLCwRZgHFEyJoo/5P/SXop8O87WJePloJo0/Y3pfUsO6wk
+	JMCco4f0+jrvITcuAVf0Dv938QvY0kw
+X-Received: by 2002:a05:600c:3b1e:b0:485:3abe:ab86 with SMTP id 5b1f17b1804b1-488996cd897mr192670285e9.4.1775513707651;
+        Mon, 06 Apr 2026 15:15:07 -0700 (PDT)
+Received: from dev.fritz.box (p200300de87496f006e2b59fffe4271f6.dip0.t-ipconnect.de. [2003:de:8749:6f00:6e2b:59ff:fe42:71f6])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488a9242d63sm174212345e9.13.2026.04.06.15.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2026 15:15:06 -0700 (PDT)
+From: Malte Schababerle <m.schababerle@gmail.com>
+To: baochen.qiang@oss.qualcomm.com
+Cc: ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	Malte Schababerle <m.schababerle@gmail.com>
+Subject: Re: [PATCH] ath10k: skip quiet mode for WCN3990 to prevent firmware crash
+Date: Mon,  6 Apr 2026 22:14:05 +0000
+Message-Id: <20260406221405.201848-1-m.schababerle@gmail.com>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <323b5222-a105-4701-8342-9131660fe803@oss.qualcomm.com>
+References: <323b5222-a105-4701-8342-9131660fe803@oss.qualcomm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/3] dt-bindings: wireless: ath10k: Add quirk to skip
- host cap QMI requests
-To: david@ixit.cz, Johannes Berg <johannes@sipsolutions.net>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Paul Sajna <sajattack@postmarketos.org>
-Cc: Amit Pundir <amit.pundir@linaro.org>, linux-wireless@vger.kernel.org,
-        devicetree@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        phone-devel@vger.kernel.org
-References: <20260325-skip-host-cam-qmi-req-v4-0-bc08538487aa@ixit.cz>
- <20260325-skip-host-cam-qmi-req-v4-1-bc08538487aa@ixit.cz>
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Content-Language: en-US
-In-Reply-To: <20260325-skip-host-cam-qmi-req-v4-1-bc08538487aa@ixit.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: YtipP2FNceU5JFcvjl07DoQ0wxGPjC0l
-X-Authority-Analysis: v=2.4 cv=Us9u9uwB c=1 sm=1 tr=0 ts=69d3d68d cx=c_pps
- a=Uww141gWH0fZj/3QKPojxA==:117 a=Tg7Z00WN3eLgNEO9NLUKUQ==:17
- a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=rJkE3RaqiGZ5pbrm-msn:22
- a=VwQbUJbxAAAA:8 a=Gbw9aFdXAAAA:8 a=KKAkSRfTAAAA:8 a=Jr6ivFuIO4VC9FIHmAQA:9
- a=QEXdDO2ut3YA:10 a=PxkB5W3o20Ba91AHUih5:22 a=9vIz8raoGPyDa4jBFAYH:22
- a=cvBusfyB2V15izCimMoJ:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDA2MDE1NiBTYWx0ZWRfX/v9uFlkEvlUx
- jbLYhkphkTzjsEjibP9LNbw9DebKlVwuaO2ZnzxRqMpFolo7+7i1YGQnumlM11iy2Ul7KGzE26F
- MXthTuHzOjz09quBKlekhYGB2YMWseQz8JpeuKXa67rPQ/cmocpWkYUvo8qmqRuebl41nzAUI74
- kz3COIm/dMCvYIJ8OKoIP/9X9EJkiuc+SXvoQoQkIzfn/jyXzBVzVkqpsRCjDbip3Jw12G8tDkb
- 8ZANnDA8MSFTT4S7N0NLPPspD8fxiQzBf/G/jMCBYcMPP5VuK5UmuNBp6lz6kKwnPO5Jf/N6AKO
- kL6vyawY91rHJ7OhCSMhJchDXRvf/zXugnfC7Ge8PykVMJ2iWJDWG8cQmHHa+wU5a5UpgbMbOqC
- j91xgGxck00qV+L5zI7deugJODooc6kghUbv+jltRtopfozkLbtNT9/AzoUOChxc1EpGHZYUMKn
- 1Gwf2KIEQU9owyegy9A==
-X-Proofpoint-GUID: YtipP2FNceU5JFcvjl07DoQ0wxGPjC0l
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-06_03,2026-04-03_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
- phishscore=0 bulkscore=0 clxscore=1015 adultscore=0 spamscore=0
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
- definitions=main-2604060156
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260406_085143_985866_8F3C44A3 
-X-CRM114-Status: GOOD (  19.59  )
+X-CRM114-CacheID: sfid-20260406_151509_992443_6B43F260 
+X-CRM114-Status: UNSURE (   6.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,45 +100,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 3/25/2026 10:57 AM, David Heidelberg via B4 Relay wrote:
-> From: Amit Pundir <amit.pundir@linaro.org>
-> 
-> Some firmware versions do not support the host-capability QMI request.
-> Since this request occurs before firmware and board files are loaded,
-> the quirk cannot be expressed in the firmware itself and must be described
-> in the device tree.
-> 
-> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
-> index f2440d39b7ebc..5120b3589ab57 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
-> @@ -171,6 +171,12 @@ properties:
->        Quirk specifying that the firmware expects the 8bit version
->        of the host capability QMI request
->  
-> +  qcom,snoc-host-cap-skip-quirk:
-> +    type: boolean
-> +    description:
-> +      Quirk specifying that the firmware wants to skip the host
-> +      capability QMI request
-> +
->    qcom,xo-cal-data:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description:
-> 
+On 3/22/2026, Baochen Qiang wrote:
+> Malte, the firmware team needs firmware dump to understand this issue,
+> would you be able to help collect it?
 
-DT folks, there is a pending DTS series [1] that would like to reference this
-capability. Would like to get an ack so I can get this in the upcoming merge
-window.
+Sure. Attaching the full dmesg from a reproducible test run (kernel
+without the patch, upstream 6.17, postmarketOS on OnePlus 7T / SM8150).
 
-Thanks,
-/jeff
+Firmware: WLAN.HL.3.2.0.c2-00006
 
-[1] https://lore.kernel.org/all/20260401-judyln-dts-v8-0-7677cfafbc78@postmarketos.org/
+The crash triggers deterministically on every boot. Key lines:
+
+  [25.122098] PDM: service 'wlan_process' crash:
+               'EX:wlan_process:0x1:WLAN RT:0x2076:PC=0xb0008e20'
+  [25.283364] ath10k_snoc 18800000.wifi: firmware crashed!
+
+Full crash sequence repeats across subsequent recovery attempts at the
+same PC=0xb0008e20 (see attached dmesg.txt).
+
+Note: I'm running an upstream kernel (6.17) on postmarketOS.
+CONFIG_QCOM_RAMDUMP and WCSS coredump tooling are not available here.
+If the firmware team needs a full Hexagon register dump, please advise
+how to collect it in this environment.
+
+Tested-by: Malte Schababerle <m.schababerle@gmail.com>
+  on OnePlus 7T (SM8150/WCN3990), kernel 6.17, FW WLAN.HL.3.2.0.c2-00006
 
