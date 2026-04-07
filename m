@@ -4,61 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EA7FFB519F
-	for <ath10k@archiver.kernel.org>; Tue,  7 Apr 2026 06:44:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AD57FB519F
+	for <ath10k@archiver.kernel.org>; Tue,  7 Apr 2026 06:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
-	From:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=/VWTz/YHDnA1UUEUWpq8gYgFcbkTJemgSsViv5kZBe8=; b=FsgudUKflemWBAk41DRB0IGfOW
-	N1yWkep77n4IOQSnnRuqnQwp2a8wUlQpgkhJPeg8yRIfb75Ji0VHooulrTWVC+IqrdGQKUOYkibNY
-	0Lh4ZxNbs/kfTjbKqtJ6D/9MQBJPvLZbbpGpnUIKX10noRLay1tGzynXlbyqpgE5ExrBTEGsTH8rW
-	TTWMzcYeavYbA0hdPrf7DNCjRQlxC1HTMqieAhJ/Vax+S/xjgKSCTv7absaKGuMJ3BcKf6B+RQlRF
-	t7c2Q7vho/p6Z7M77GhwR502kzUPQWm8m2kAHkP6aY128fwUecUj2aw+8oZ5SbSC4v0iGcmcfwCT+
-	uEw33Wlw==;
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:
+	References:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Subject:Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=hYOxAp8tbRxwkQLTqS84Ba6qwXcdS1hqKAupfCHXug4=; b=SfyJmsX8N240Rpe7GAl5EvW2E0
+	JITxhxqpruP894af2Uh6NhgdxXpz+M4Z6mlGWkImVZMBgukv8he4EfK9abT/EObxuulafJLGRoqQ0
+	JZbgIWQXR+3hdaKLoRKgbzOGEjmT+O2BU69gYZ6zWFVxp9agc+MWTAk+Vn1tkNWKdoz0ZFEi2e8lY
+	tK+laezYIdZe5yaHvZn49s6ZEthRasDFTC3asVwhDHMH/O8cBkdV6vbNm6qcubS1YB2LRKQ8kx0Lw
+	N8OaxTt54G1zpNKwizBkIkf+3tWgzuUKzq3djO/dRJ+Lh2DM4KOM/+pX/phYtvR/9p5Uahv2P7BQB
+	Ho9Ehuzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wA0AN-000000060nI-1giP;
+	id 1wA0AN-000000060nV-3U9f;
 	Tue, 07 Apr 2026 06:44:03 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wA0AL-000000060mH-3M5f
+	id 1wA0AL-000000060mJ-3jLW
 	for ath10k@lists.infradead.org;
-	Tue, 07 Apr 2026 06:44:01 +0000
+	Tue, 07 Apr 2026 06:44:02 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id D70E06111B;
-	Tue,  7 Apr 2026 06:44:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 852A8C116C6;
+	by tor.source.kernel.org (Postfix) with ESMTP id 35A286133C;
+	Tue,  7 Apr 2026 06:44:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BD69CC19424;
 	Tue,  7 Apr 2026 06:44:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1775544240;
-	bh=U9QnAdkvD3nYzFEe9H4Oehb+Ag2cpOlB5/v/LOfg9tU=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=JNp65DmbVEyb+d8rvvrUwWuzqNVU0D4RW0lHPlql9RcJe5NEKO8dYYFDqdF7tBLEC
-	 wW7jmU1qaMFhm67DrDMU5jcHhRaiOVIGHBwAAoVaOrznJWHVuTs1E1uv3pOIiw8PZk
-	 iXqthscub0WAuX2MvAry1eILMqD5F6xrSgdYoJdONPTwtqazc54PiXnHSI/z/z0SmD
-	 CoD2QQ8eKPTcfuCHdhS7ElTubu5Zt3thHUzPGhrSZDJ9C+muOeCrl6cvpghrjduOYW
-	 GhwFoSsZj2aoUDPytQ9F0qQWgNqwJt4ixS+E7/J9WzVG4bzOn0oomJVrqNuyrywGtN
-	 mb14ApsNioBDA==
+	bh=To0TOgWdk+Eg3vCUJ0MvI1sSRqScB4zFZ3xj+H7iwWk=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=LZjh3z+oKpl3+fFSh3fpCOIeXeEibbIAZ45Tgut4/0L/2VtEpuqkd/hV4xtxpTlOh
+	 cLOataclZiWmnVO3IfQErs9jpIl7IEmDGlk0VHqBQh2aLB/KVkhlwGHQFq1N3ABBy3
+	 TQIEg+oURUJrG2/4PWittvzZEYw+AHGJSiEASktUgCWSA6yTnYNfAgoeUZiH5PBeOB
+	 e8wYJM1toLafK4tHjGT/TASxIqpz4dTOBYeiaqIR2f8sEItLE5m26kFo0Qk6GSmIMp
+	 yW/MdmNbFGrsra4/hHrYIsEOW1tVz1R9U2IrMLDull3Qhv7/+xj6TjSefd+fLTEI+i
+	 DWiXaQ0S530+Q==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74047FB517E;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACE07E9D832;
 	Tue,  7 Apr 2026 06:44:00 +0000 (UTC)
 From: David Heidelberg via B4 Relay <devnull+david.ixit.cz@kernel.org>
-Subject: [PATCH v5 0/3] ath10k: Introduce a devicetree quirk to skip host
- cap QMI requests
-Date: Tue, 07 Apr 2026 08:43:53 +0200
-Message-Id: <20260407-skip-host-cam-qmi-req-v5-0-dfa8a05c6538@ixit.cz>
+Date: Tue, 07 Apr 2026 08:43:56 +0200
+Subject: [PATCH v5 3/3] arm64: dts: qcom: sdm845-xiaomi-beryllium: Enable
+ ath10k host-cap skip quirk
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAKmn1GkC/43OTU7DMBCG4atUXjOVf2LX6ar3QCwcZ5KMaOLUN
- lGhyt1xIiHBAsHG0rfwM++DJYyEiZ0PDxZxoURhKkM/HZgf3NQjUFs2k1xqIQSH9EozDCFl8G6
- E20gQ8QYotDbSYuNVzcrfOWJH9919fim7i2GEPER0uyYMF1xbbQWIujLlhZ4yJJxawNHRFdxI+
- Ti/TS3Fy5UmF8MxxH6jB0o5xPe9eJHbgb/iFgkceOu6ympX25O70L3o/oNtaYv6MgxXUv9mqGI
- 0wijfnRrlrfhpVP8yqs3w3Gplq5LxrWNd10+QucI1iwEAAA==
-X-Change-ID: 20251110-skip-host-cam-qmi-req-e155628ebc39
+Message-Id: <20260407-skip-host-cam-qmi-req-v5-3-dfa8a05c6538@ixit.cz>
+References: <20260407-skip-host-cam-qmi-req-v5-0-dfa8a05c6538@ixit.cz>
+In-Reply-To: <20260407-skip-host-cam-qmi-req-v5-0-dfa8a05c6538@ixit.cz>
 To: Johannes Berg <johannes@sipsolutions.net>, 
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
  Conor Dooley <conor+dt@kernel.org>, Jeff Johnson <jjohnson@kernel.org>, 
@@ -73,21 +69,21 @@ Cc: Baochen Qiang <baochen.qiang@oss.qualcomm.com>,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
  phone-devel@vger.kernel.org, David Heidelberg <david@ixit.cz>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2286; i=david@ixit.cz;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=932; i=david@ixit.cz;
  h=from:subject:message-id;
- bh=U9QnAdkvD3nYzFEe9H4Oehb+Ag2cpOlB5/v/LOfg9tU=;
- b=owEBbQKS/ZANAwAIAWACP8TTSSByAcsmYgBp1Keub60q5mQEpUHGJXTQFQ7qWWULRkCPbdMRK
- eCsbVZvf/mJAjMEAAEIAB0WIQTXegnP7twrvVOnBHRgAj/E00kgcgUCadSnrgAKCRBgAj/E00kg
- cnFlD/9047bYzGRZ3blI36JI4PtmYhXFdOJ/+ywcceqoWf8WuFYetD3CUaD9Wijcw+G9+UiAqQ+
- rPMPZEcj0xKWM2zNNK3r3vmW6wghqi48c1jYWzLQKRwAqwoDPTO0xyk2Nvhhjvs7nznGCWur8RE
- /HiuW5VIK90X59+2kLWhkVWTmttUBA6UiL8PWI+bJchIimJkqj1CFKNgkheUFfnm/M6YSKWrJAM
- 3iPVgPekQ8m8icmm4kd6cX2Lv8OKQKZjfnyIMcGHRP8ecNnB5Tro8pOLVzs3l8Zt14TKJRw+Q6Y
- Bj34uhZGPqxHSx/CIChyr2WSM2YA6AsieZh3L7hxGrV3VatrTK2UAb4Yedekw5bGs681z1D4syk
- RV71v4ar0Ox5vwo9zjRwlmPUF0+O8RshqT87E6noKZmGwDj8uJbCuJuTz4SlV1/IDr8Y9BbSOpu
- 2hR9r1/6R0x+5WexVbPP/yFWrYlG5oBc19FwH0Y2P8bpDrylHJi32kg/wyxS1WbNFTCkTZfX1Hf
- 0ckYAx2nkBntecoTL3UfTDB8+emi1q7bo7AYgkEUwD1hsX6lFAzVRW8/LR8C2WSeSKaSjaaBTWN
- c/gijt6v7F4zAf9YNa4dICd31TKKIa7mKmNTfbAm4iqkBp6HvM6ly4FWwGM8Dbh0V2xPbyQ131A
- +J+u76xZxycuXgw==
+ bh=DU/dXePFyTa55SQv+lhHqY4KIdvjaGH0tSQ5egVr5Ig=;
+ b=kA0DAAgBYAI/xNNJIHIByyZiAGnUp66g1k1G2PXK1XLApKqh8rZQqnP+rM1X6ccdHnoc1CQiZ
+ YkCMwQAAQgAHRYhBNd6Cc/u3Cu9U6cEdGACP8TTSSByBQJp1KeuAAoJEGACP8TTSSByrA0P/3wf
+ qabD5CEeb4B4+PsJgKOZY/BrgJN1A4Zdw5C35f3dwpNPtBQTwOkxEcSCHj5GYoAtZRGeJWCr+0Z
+ 6Za616Xc2FfWBQa3wtnFtArLaTN58RK4j9patgL5m1lOe+iXo9A8ZyowzTRgnLA3jvxqfibnXdU
+ Cab7tJzP2IyopQE4WpkfMYjj6PbA72EmXSMtVqBpPr73FIyYL1rSswZ52gOxhVIGOx6SAaZg+4c
+ KsKnhg03Fzx7Y3UKTFqJ2JYMadV/h+GgmL4PfmYQqcLUtEcMm8BBRPiVFKGproGfkJ6hDA59JFH
+ CVwyIV3QEC8op9GElbGGXsiAq0XbBFo+qvLme+gDcpTakvz1EzLv/bfYG+SPP9K4a1LlklC5Ehl
+ AX+zAk15id1qDONaAxEvMqmb3cGD13a+fh+2UIdFC85hqzpGzUYqUZR1HtQmwu00VcA40aMZ1OC
+ 2YgTBb6/gn82TMc4560FcTrUfrifRtAe1/jzgA1JvZsFhZHb+cCT2TqqduU7OmB4HfUxlWW/dm+
+ 776t78Z0IxeMPAMYeg2sSjUubPOWtuRYWn1A/dpuXxY2+75D6wlD/mukE0f+FzRdqVIQ8zImbK9
+ fxQTk8iTFc8OkBhZ6pTMXKdAKOP5igNOcTaLWDJlAmQ74V63pcGF7c3fFwrZU38fc94/eSp9NM8
+ hmeoN
 X-Developer-Key: i=david@ixit.cz; a=openpgp;
  fpr=D77A09CFEEDC2BBD53A7047460023FC4D3492072
 X-Endpoint-Received: by B4 Relay for david@ixit.cz/default with auth_id=355
@@ -107,61 +103,33 @@ Reply-To: david@ixit.cz
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-This quirk is used so far used on:
- - LG G7 ThinQ
- - Xiaomi Poco F1
+From: Amit Pundir <amit.pundir@linaro.org>
 
-I'm resending it after ~ 4 years since initial send due to Snapdragon
-845 being one of best supported platform for mobile phones running
-Linux, so it would be shame to not have shiny support.
+The Wi-Fi firmware used on Xiaomi Poco F1 (beryllium) phone doesn't
+support the host-capability QMI request, so add a quirk to skip it on
+this device.
 
-Original thread:
-  https://lore.kernel.org/all/b796bfee-b753-479a-a8d6-ba1fe3ee6222@ixit.cz/
-
-I tried the embedding the information inside the firmware, but the
-information is required *before* loading the firmware itself.
-Firmware quirk thread:
-  https://lore.kernel.org/linux-wireless/20251111-xiaomi-beryllium-firmware-v1-0-836b9c51ad86@ixit.cz/
-
-Until merged, available also at:
-  https://codeberg.org/sdm845/linux/commits/branch/b4/skip-host-cam-qmi-req
-
+Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
-Changes in v5:
-- Implement device-tree mutual-exclusion between
-  snoc-host-cap-8bit-quirk and snoc-host-cap-skip-quirk. (Krzysztof)
-- Link to v4: https://lore.kernel.org/r/20260325-skip-host-cam-qmi-req-v4-0-bc08538487aa@ixit.cz
+ arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium-common.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes in v4:
-- Added my own missing SoB. (Dmitry)
-- Improve the commit message. (Dmitry)
-- Link to v3: https://lore.kernel.org/r/20260325-skip-host-cam-qmi-req-v3-0-b163cf7b3c81@ixit.cz
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium-common.dtsi b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium-common.dtsi
+index 1298485c42142..950bbcc3bf91f 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium-common.dtsi
+@@ -661,5 +661,6 @@ &wifi {
+ 	vdd-3.3-ch1-supply = <&vreg_l23a_3p3>;
+ 
+ 	qcom,calibration-variant = "xiaomi_beryllium";
++	qcom,snoc-host-cap-skip-quirk;
+ };
+ 
 
-Changes in v3:
-- Rebased on recent linux-next (next-20260325).
-- Improved motivation and description. (Dmitry)
-- Link to v2: https://lore.kernel.org/r/20251110-skip-host-cam-qmi-req-v2-0-0daf485a987a@ixit.cz
-
----
-Amit Pundir (3):
-      dt-bindings: wireless: ath10k: Add quirk to skip host cap QMI requests
-      ath10k: Add device-tree quirk to skip host cap QMI requests
-      arm64: dts: qcom: sdm845-xiaomi-beryllium: Enable ath10k host-cap skip quirk
-
- .../devicetree/bindings/net/wireless/qcom,ath10k.yaml       | 11 +++++++++++
- .../arm64/boot/dts/qcom/sdm845-xiaomi-beryllium-common.dtsi |  1 +
- drivers/net/wireless/ath/ath10k/qmi.c                       | 13 ++++++++++---
- drivers/net/wireless/ath/ath10k/snoc.c                      |  3 +++
- drivers/net/wireless/ath/ath10k/snoc.h                      |  1 +
- 5 files changed, 26 insertions(+), 3 deletions(-)
----
-base-commit: 816f193dd0d95246f208590924dd962b192def78
-change-id: 20251110-skip-host-cam-qmi-req-e155628ebc39
-
-Best regards,
 -- 
-David Heidelberg <david@ixit.cz>
+2.53.0
 
 
 
