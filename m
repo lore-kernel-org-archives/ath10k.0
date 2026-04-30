@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60AEFFF8875
-	for <ath10k@archiver.kernel.org>; Thu, 30 Apr 2026 09:44:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B3A7FF8875
+	for <ath10k@archiver.kernel.org>; Thu, 30 Apr 2026 09:59:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Eh+lkWpKx/z0IJ5BNsNbbnUci4/0XKjjO5lPZvCQBRQ=; b=45CLGwX0KNAxq6vrVwG+38uj0o
-	x9H04GJckb35M27Gy9A1isPRoXvqbHSsVMJwgqdBJGzO0hO1cEkaUh9NGZZvqTPsj30szKAlLUbOX
-	lrQ2tyCU+l+HK2pX0HN414/iSgAzc+EOZYsCC1GwM+w6/MA/ijry+b9nTMs0tD7I9N5H3z8z+N0/g
-	Efn+5mex+E4nAAnGrqDz/k7ht5yInD1VOsmZeI6I14Oe6J2Yh+s2/a5adS/mrRT9F6njyy+mmAr2K
-	vzlneReHd/RxOkTp5uPCf4LYdJ3AF3rdRgs7A+lUTNozHPX4UcDu3B8684lC+rvJRVE808T6Fl/SM
-	AHjEb/aw==;
+	bh=IWQWNYgylCcWAGLJ5tgpFRpnfW6IcEIa0HLqth+Ilwc=; b=iPIIhibU3FZvLvlB2PcLsOFxzn
+	bKxl0b9bqfrZmVX96LSGBbbSWdrELhcGAbAa5Ab17LdHx+5Mx+5jgr2Ac3zwAiO3vm7WEMkixTIge
+	UmNNqqUM7fmgiJnzW1Rtq2jV6RGMI3k1DXgyEc8PCoAsL9Dt3Eo88voCZCZxZqao2SgrUKhUOEkAl
+	MTV7bUcjtSiEMpF2d5X4Bjz+k50yZjsyqK5pNNtIJ6Gd4NUqQv7uMlTw78yeelQk4b5tSfxYIPSDf
+	BQdtdZfq/+9T9wgcKs7kIn81fw0YYBduoNezQApniQa/8PNi5riLrxMSCvJp1ZI6QFQRjIMYB3IXz
+	B2CVmCgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wINwC-000000056vC-48nq;
-	Thu, 30 Apr 2026 09:44:04 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wIOBG-000000059G7-3WLe;
+	Thu, 30 Apr 2026 09:59:38 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wINwA-000000056ue-0l6p
+	id 1wIOBF-000000059FZ-1LJB
 	for ath10k@lists.infradead.org;
-	Thu, 30 Apr 2026 09:44:03 +0000
+	Thu, 30 Apr 2026 09:59:37 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4811E44122;
-	Thu, 30 Apr 2026 09:44:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92F83C2BCB3;
-	Thu, 30 Apr 2026 09:44:00 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 69A366015B;
+	Thu, 30 Apr 2026 09:59:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 844D9C2BCB3;
+	Thu, 30 Apr 2026 09:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777542241;
-	bh=pjD4a8rJ5wy6WIWFMXc/dMRwPE2lWwOkl+wfhS2cIxg=;
+	s=k20201202; t=1777543176;
+	bh=r5OekOuIfqXKaIzcdDYrquzLVq5admxf1CUW3+qBysU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bplODJU/7ooHDNPIO3jofxmXUudXii8FNNlM4cLlKsg2xa1rzkJtzGIaCQEE5PtlT
-	 k2X2s+mFd8BHQrw+yditg9/oAb2mOFnydZHwRjIeFD0D5um8JnTMBeGiyY0lIqzu8A
-	 1dkEpe7x9CySs76qPyfav4wXZJZ33CEYe0VOX2WxMb4kdeR5izyJ4N7QuOfKzD+DYH
-	 OdTB2zDSzpq/JKsvbnZADUyziLCEVZsv4jiGSpL+Rn0Cub486PPITbtdu63OuNPubA
-	 cOL0/bXqyVZSeTcBqQGrpC11wIezKJWt6LrGGRX7T3O57Xmkl/hs+yrorqRVZFkcrf
-	 jmBwyEe1LL1xQ==
-Date: Thu, 30 Apr 2026 11:43:58 +0200
+	b=cVWSe6fkTBOARjXulhsALwZx0VxGML7gFmK9AkttqSJxT8GozkeUV3NLeGt4ntj0j
+	 VIIYIb8TGgxN06TV9G8Pnasoc8D3Z0mxmfc2O08Zn7e7zA85vy58dQ6ddiBn0FtyP8
+	 hYfs4q+oVeZCdmYKcmn2iyTtRmCTNf8qVZevNHNNvqvFWZX4LndhykI+pILkN1y1eY
+	 R+spRbUuXD04AppQrxySrBSdYd/Wm7S69RAdJ0W+ZoWWxaTtCS6azjPgfwW6Tte/J+
+	 C3S6uyKU3BPuEaVjGJuqHQ7+VQSKd3qOS17kBwu/kG+h9V1kLMNuiLLl8WbPzWjsW5
+	 RWfpE98i9berA==
+Date: Thu, 30 Apr 2026 11:59:33 +0200
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Loic Poulain <loic.poulain@oss.qualcomm.com>
 Cc: Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>, 
@@ -58,18 +58,14 @@ Cc: Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>,
 	linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org, linux-wireless@vger.kernel.org, 
 	ath10k@lists.infradead.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, 
 	daniel@makrotopia.org
-Subject: Re: [PATCH 2/9] arm64: dts: qcom: arduino-imola: Describe boot1
- NVMEM layout
-Message-ID: <20260430-famous-meek-dinosaur-edacc6@quoll>
+Subject: Re: [PATCH 1/9] dt-bindings: mmc: Document support for nvmem-layout
+Message-ID: <20260430-bird-of-sheer-ampleness-744e7f@quoll>
 References: <20260428-block-as-nvmem-v1-0-6ad23e75190a@oss.qualcomm.com>
- <20260428-block-as-nvmem-v1-2-6ad23e75190a@oss.qualcomm.com>
+ <20260428-block-as-nvmem-v1-1-6ad23e75190a@oss.qualcomm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260428-block-as-nvmem-v1-2-6ad23e75190a@oss.qualcomm.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260430_024402_282908_C36D046E 
-X-CRM114-Status: GOOD (  18.66  )
+In-Reply-To: <20260428-block-as-nvmem-v1-1-6ad23e75190a@oss.qualcomm.com>
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,66 +80,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue, Apr 28, 2026 at 04:23:07PM +0200, Loic Poulain wrote:
-> On Arduino Uno-Q, the eMMC boot1 partition is factory provisioned
-> with device-specific information such as the WiFi MAC address
-> and the Bluetooth BD address. This partition can serve as an
-> alternative to additional non-volatile memory, such as a
-> dedicated EEPROM.
-> 
-> The eMMC boot partitions are typically good candidates, as they
-> are realively small, read-only by default (and can be enforced
-> as hardware read-only), and are not affected by board reflashing
-> procedures, which generally target the eMMC user or GP partitions.
-> 
-> Describe the corresponding nvmem-layout for the WiFi and
-> Bluetooth addresses.
-> 
-> Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
-> ---
->  arch/arm64/boot/dts/qcom/qrb2210-arduino-imola.dts | 24 ++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/qrb2210-arduino-imola.dts b/arch/arm64/boot/dts/qcom/qrb2210-arduino-imola.dts
-> index bf088fa9807f040f0c8f405f9111b01790b09377..dc85cf94f71cac8666cab30ccf37cc2d2f8fd941 100644
-> --- a/arch/arm64/boot/dts/qcom/qrb2210-arduino-imola.dts
-> +++ b/arch/arm64/boot/dts/qcom/qrb2210-arduino-imola.dts
-> @@ -409,7 +409,31 @@ &sdhc_1 {
->  	no-sdio;
->  	no-sd;
+On Tue, Apr 28, 2026 at 04:23:06PM +0200, Loic Poulain wrote:
+
+> +                    compatible = "fixed-layout";
+> +
+> +                    #address-cells = <1>;
+> +                    #size-cells = <1>;
+> +
+> +                    mac-addr@4400 {
+> +                        reg = <0x4400 0x6>;
+
+This looks incomplete. Why isn't this mac-base type of entry? And how do
+you address it from NVMEM consumer?
+
+> +                    };
+> +
+> +                    bd-addr@5400 {
+> +                        reg = <0x5400 0x6>;
+> +                    };
+> +                };
+> +            };
+>          };
+>      };
 >  
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
->  	status = "okay";
-> +
-> +	card@0 {
-> +		compatible = "mmc-card";
-> +		reg = <0>;
-
-> +
-> +		partitions-boot1 {
-> +			nvmem-layout {
-
-This should not be a separate patch. You add the layout AND you use it.
-
-> +				compatible = "fixed-layout";
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +
-> +				wifi_mac_addr: mac-addr@4400 {
-> +					reg = <0x4400 0x6>;
-> +				};
-> +
-> +				bd_addr: bd-addr@5400 {
-> +					reg = <0x5400 0x6>;
-> +				};
-> +			};
-> +		};
-> +	};
->  };
->  
->  &spi5 {
 > 
 > -- 
 > 2.34.1
