@@ -4,80 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2B62CD3447
-	for <ath10k@archiver.kernel.org>; Fri,  8 May 2026 13:21:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2504CD37B9
+	for <ath10k@archiver.kernel.org>; Mon, 11 May 2026 10:36:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:Cc:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:References:MIME-Version:In-Reply-To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+/K9wdUmz3zjdDV51Dbfx/b0W9hjJCXihdZTyW/airE=; b=smdqDR1ooEOelFZVtmSBA9JXQ6
-	oM64IaOoKErYTJ1WzSLlYKyaWllrCdgBvw715LyqrzhoDYjikQwZf8CLBuTHaWWAaj/6tzVlU1mLU
-	8Z12d/EOCS5iju5qcYCnCR28UcoVKuOcqOgqRfkP0q3mfRLV4V+8ZjwhVRA478Iyp0/NK0Qz8bx2d
-	iCsSD3Urqx7CsUlNRy0FabVqEZ8lO7gkqdBwkOEHvsYU/7VAoB4qS+bOMZYv/1EDjJt3JngutbNUz
-	Dw4L6ZIj+K0eusCdZdHnQ6X2vrF0bXwJx/3P7pez8CmhNOrNq6+nvdtR2PQzbOEfnordc7DLz01pc
-	bMrEbdKA==;
+	bh=IENORfZd5dSYQkrNitKAXWYKfDtZSTBMvfDRDDw/UDU=; b=IjjLUy7RrIL+JW8L2inhyn+6jZ
+	/+9NgYxZhvbN7Xd8WxEWrsvKa+Hv31KMZq0wmBtaq11h5rfdF1oxQup+qP7RKNkA6aS2HM0P/QKpH
+	am+94gEtKn136OCpjwAUYuF0GAl0CZxZfq/kNHpHxiCL+EaAWMb8sAH+sVu7a3BZ5fzjl1QU/1dPJ
+	1XFZlt45sYEV9qOljSuMCIsWpCwNlrhoeSF12DPuibo5WakF4JP75PZnpeUlP96YSqIwUEy49R3kZ
+	bD3V6b+N//88Bc2Eiv5VPh4ib6KqirJPR9cmSkOqGTnPzI6Qk+6ct90a5b8VRD20etrXpWZ+zzL5v
+	m/A8YvIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wLL8Q-00000006Wwl-2rnd;
-	Fri, 08 May 2026 13:20:54 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wMNzu-0000000D7cE-25or;
+	Mon, 11 May 2026 10:36:26 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wLL8Q-00000006WwT-0K17;
-	Fri, 08 May 2026 13:20:54 +0000
+	id 1wMNzr-0000000D7bq-3Nqh
+	for ath10k@lists.infradead.org;
+	Mon, 11 May 2026 10:36:25 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5DA956024D;
-	Fri,  8 May 2026 13:20:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6C78C2BCB0;
-	Fri,  8 May 2026 13:20:50 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 1747D44514
+	for <ath10k@lists.infradead.org>; Mon, 11 May 2026 10:36:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0611C4AF10
+	for <ath10k@lists.infradead.org>; Mon, 11 May 2026 10:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778246451;
-	bh=nOPD9atbWThJNMmMoHB5sxyB+Zz+gBrCfQ8sDAbxWfs=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=uvCpTpO4REXkncNMBiNLPHMkLEABizVJIybZSKgueZ4IaHUHavnLFzv8P+NLJzgPD
-	 56mAOXlI9nEg2TxsBRdamOk/G6RgaGfgclVMiMBk4VzWSh6B/UAarPqlvWcraWZJXy
-	 jCuzmip8H9tWuqWjWk0hYvRJ3cEuCB+w1yxeHSYw6eamGP8ZuLPDQexOjiAx8jgYsg
-	 GxsXWeadcSEiVfnwQTHBIyBWfSp3POF7V0KIVSt38axnzkQo/Wn9sz/rRMHJ4inVSS
-	 DLv7iX+VtDuDuXZ/g5upJqVAmV0nY7PxLtjLUXfjhjudd6i7+M6Ud41q0VPGIObm/9
-	 TDJJCCo63qNCw==
-Date: Fri, 8 May 2026 08:20:48 -0500
-From: Rob Herring <robh@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>, linux-kernel@vger.kernel.org,
-	linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	linux-usb@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	ath11k@lists.infradead.org, linux-spi@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org, Ulf Hansson <ulfh@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	linux-wireless@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-	linux-sound@vger.kernel.org, linux-i2c@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>, netdev@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>
-Subject: Re: [PATCH v2] dt-bindings: Fix phandle-array constraints, again
-Message-ID: <20260508132048.GA1170714-robh@kernel.org>
-References: <20260507201749.2605365-1-robh@kernel.org>
- <177818942584.2803269.2192622854542354589.robh@kernel.org>
+	s=k20201202; t=1778495782;
+	bh=IENORfZd5dSYQkrNitKAXWYKfDtZSTBMvfDRDDw/UDU=;
+	h=From:In-Reply-To:References:Date:Subject:To:Cc:From;
+	b=UTuAx685dUHhXY1vmr4J20mhBA7yb5/tBU2HA3whjbnByMPWJp90i2ZMTYOSC0EeA
+	 Wwl8i9/vk8aPLtXV1CowQWl6Ut8EyCvV2uU6bPQPmeM9W4L++LuVWNXWs15zLAhMUG
+	 oe00G4W2qZLaXZCVpfV7uH9nxTTUHzoc0M9H72ivRlX/NAn3LVomvj2CJasqtJ1WUm
+	 tPHdaHVYOtydmAMXf3ylAL2/vQdBzceGQOLw5N4QZSIQZSl3MSH3Ei0GcJVr/pOvgN
+	 wiLfPjS7r8jPIGlFPwqqGobTQsXEFTmIUQ8RK3Qa44ZIevkoE2xiv28sEybqbi+4d0
+	 h9EytHNbVCG2w==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5a8721851e2so4395821e87.0
+        for <ath10k@lists.infradead.org>; Mon, 11 May 2026 03:36:22 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ/XjarkIqPd1YU7t+/pA9aELtrn2VFoJ1Poz6lIKGMwJyPEELwTf801OOGWo92VOs87eYTcToc=@lists.infradead.org
+X-Gm-Message-State: AOJu0YznBPGloR4O2Nu91tYv9dPvFQr4zi1Wp/PVS12DRl7F7i/DQ0zr
+	XMz5VbUM24OQbf2j7ud5kFz5Opm0ORYVgVjE+AFmz94plsvyhXX3Yh5YgkKp8yvv21/4hyHPx4f
+	IoA1gf8PtKsHVgkGHZM+oVoX5wacB1QlGizO7srvLPg==
+X-Received: by 2002:a05:6512:3e1c:b0:5a8:b966:7b1f with SMTP id
+ 2adb3069b0e04-5a8b9667b9amr3508208e87.16.1778495781398; Mon, 11 May 2026
+ 03:36:21 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 11 May 2026 03:36:18 -0700
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 11 May 2026 03:36:18 -0700
+From: Bartosz Golaszewski <brgl@kernel.org>
+In-Reply-To: <20260507-block-as-nvmem-v2-5-bf17edd5134e@oss.qualcomm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <177818942584.2803269.2192622854542354589.robh@kernel.org>
+References: <20260507-block-as-nvmem-v2-0-bf17edd5134e@oss.qualcomm.com> <20260507-block-as-nvmem-v2-5-bf17edd5134e@oss.qualcomm.com>
+Date: Mon, 11 May 2026 03:36:18 -0700
+X-Gmail-Original-Message-ID: <CAMRc=Mdi5DuwhewSpaPCJCWWkmw57pLPx3snSyV_gtBN1gWtMw@mail.gmail.com>
+X-Gm-Features: AVHnY4LRJOdRAiXXJAqk3x0LB0U9Hhhkl-SHYK7hw0ni4PNj3Dx_sfKHg57uYFk
+Message-ID: <CAMRc=Mdi5DuwhewSpaPCJCWWkmw57pLPx3snSyV_gtBN1gWtMw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/8] net: of_net: Add of_get_nvmem_eui48() helper for
+ EUI-48 lookup
+To: Loic Poulain <loic.poulain@oss.qualcomm.com>
+Cc: linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, daniel@makrotopia.org, Ulf Hansson <ulfh@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
+	Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, 
+	Jeff Johnson <jjohnson@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>, Rocky Liao <quic_rjliao@quicinc.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Srinivas Kandagatla <srini@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
+	Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	Saravana Kannan <saravanak@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260511_033623_881001_9E1123F0 
+X-CRM114-Status: UNSURE (   7.07  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,59 +101,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 07, 2026 at 04:30:25PM -0500, Rob Herring (Arm) wrote:
-> 
-> On Thu, 07 May 2026 15:16:00 -0500, Rob Herring (Arm) wrote:
-> > The unfortunately named 'phandle-array' property type is really a matrix
-> > with phandle and fixed arg cells entries. A matrix property should have 2
-> > levels of items constraints.
-> > 
-> > Acked-by: Mark Brown <broonie@kernel.org>
-> > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
-> > ---
-> > v2:
-> >  - Add proper descriptions for 'qcom,smem-states'. Thanks Krzysztof!
-> >  - Fix i2c-parent warning
-> >  - Fix extra blank lines
-> > ---
-> >  .../rockchip/rockchip,rk3399-cdn-dp.yaml       |  2 ++
-> >  .../bindings/i2c/i2c-demux-pinctrl.yaml        |  1 +
-> >  .../mmc/hisilicon,hi3798cv200-dw-mshc.yaml     |  7 ++++---
-> >  .../devicetree/bindings/net/qcom,bam-dmux.yaml | 12 ++++++++++++
-> >  .../devicetree/bindings/net/qcom,ipa.yaml      | 12 ++++++++++++
-> >  .../bindings/net/wireless/qcom,ath10k.yaml     |  8 +++++++-
-> >  .../bindings/net/wireless/qcom,ath11k.yaml     |  8 +++++++-
-> >  .../net/wireless/qcom,ipq5332-wifi.yaml        | 18 ++++++++++++++++++
-> >  .../bindings/pci/toshiba,tc9563.yaml           |  5 +++--
-> >  .../remoteproc/qcom,msm8916-mss-pil.yaml       |  6 ++++++
-> >  .../remoteproc/qcom,msm8996-mss-pil.yaml       |  7 +++++++
-> >  .../bindings/remoteproc/qcom,pas-common.yaml   |  6 ++++++
-> >  .../remoteproc/qcom,qcs404-cdsp-pil.yaml       |  6 ++++++
-> >  .../remoteproc/qcom,sc7180-mss-pil.yaml        |  6 ++++++
-> >  .../remoteproc/qcom,sc7280-adsp-pil.yaml       |  6 ++++++
-> >  .../remoteproc/qcom,sc7280-mss-pil.yaml        |  6 ++++++
-> >  .../remoteproc/qcom,sc7280-wpss-pil.yaml       |  6 ++++++
-> >  .../remoteproc/qcom,sdm845-adsp-pil.yaml       |  6 ++++++
-> >  .../bindings/remoteproc/qcom,wcnss-pil.yaml    |  6 ++++++
-> >  .../devicetree/bindings/sound/samsung,tm2.yaml |  8 ++++++--
-> >  .../bindings/spi/st,stm32mp25-ospi.yaml        |  5 +++--
-> >  .../bindings/usb/chipidea,usb2-common.yaml     |  2 ++
-> >  .../devicetree/bindings/usb/ci-hdrc-usb2.yaml  |  7 ++++---
-> >  23 files changed, 142 insertions(+), 14 deletions(-)
-> > 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.example.dtb: i2c-mux3 (i2c-demux-pinctrl): i2c-parent:0: [2, 3, 4] is too long
-> 	from schema $id: http://devicetree.org/schemas/i2c/i2c-demux-pinctrl.yaml
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.example.dtb: i2c-mux3 (i2c-demux-pinctrl): i2c-parent: [[2, 3, 4]] is too short
-> 	from schema $id: http://devicetree.org/schemas/i2c/i2c-demux-pinctrl.yaml
+On Thu, 7 May 2026 17:24:40 +0200, Loic Poulain
+<loic.poulain@oss.qualcomm.com> said:
+> Factor out the common NVMEM EUI-48 retrieval logic from
+> of_get_mac_address_nvmem() into a new of_get_nvmem_eui48() helper that
+> accepts the NVMEM cell name as a parameter. This allows other subsystems
+> (e.g. Bluetooth) to reuse the same lookup-validate-copy pattern with a
+> different cell name, without duplicating code.
+>
+> of_get_mac_address_nvmem() is updated to call of_get_nvmem_eui48() with
+> "mac-address", preserving its existing behavior.
+>
+> Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
+> ---
 
-This needs a fix in dtschema I have not yet pushed out.
-
-Rob
+Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 
