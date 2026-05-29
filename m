@@ -4,127 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BCD5CD5BB1
-	for <ath10k@archiver.kernel.org>; Tue, 26 May 2026 16:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F71ECD4F54
+	for <ath10k@archiver.kernel.org>; Fri, 29 May 2026 13:02:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:From:Subject:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=c0i5VAlmRLgG+rEOSURd6Mt9CnnTszTK9KxsVzAEs4I=; b=Q9Dhqmj59sKHNy8NCSOwWk/lpN
-	ovj0S8W9GC91vhK8fXk57oWAPUIclwY5gFs+t7+FTL56E93pUlPQ6Z6Fk55W0vmGx2mtSULYr/+oh
-	K73kMAMIvx2oRXUmlJibt7jWtCWR84xIy2fgp+7O2scOlN6IP+zzqLbbf9BJY3cg3ou41knYvKtBJ
-	QDlNktz11yBlkEVcTvhuHxyFtfIaTJcKrJC7vBVP+NVmUnRBofvxhQCEslTfANNb5voB+4u/0/Qfl
-	QeLcrqJJxT76tkJP0+HXd8st7Nalncn5TZzflVIP7uoFnIQWKsvwkFDHyvpW4GneGysbohDrWt7TE
-	hASCenjQ==;
+	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=66jwmabnss1wzjbJ/pG7HLmk7a00oOo/dxDfODb4vpU=; b=Mkg5Wh5/oR/XwKQBORCJvaAc4i
+	X3U7eh6METX0Sza/kB2cU4ZdgsWtrWwz9iJ5UCRgmRZi4dQzkcMDW6jNWfEXdQboiqsQNyzy+mPoM
+	SSy/UVlortZ3KKnAKt7lA8adLXoO98lQu5opx1rkvfOVRTQrJxtp2XIJqIefKFQwniBz4Gb43LkZq
+	qJOcFEBPYwtzZlbPP9n/sHTDi9bRhuMm4VH92jnh2URSA/gvdnkmsVz5HFZYZL7OsfMA20RsjKS1r
+	lZrNDT87F+nQ19bXXubRn8bVXjDvjT96AvYRwzuzb0YiUe0icIgy9159O7UyEW0rdyN/2cxqbcg8v
+	TmnokvoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRuad-00000002VLX-2ndm;
-	Tue, 26 May 2026 16:25:11 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1wSwrS-00000007PxI-3s43;
+	Fri, 29 May 2026 13:02:50 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRuaa-00000002VJy-3PhI
-	for ath10k@lists.infradead.org;
-	Tue, 26 May 2026 16:25:11 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64QG0i7w3322264
-	for <ath10k@lists.infradead.org>; Tue, 26 May 2026 16:25:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=qcppdkim1; bh=c0i5VAlmRLgG+rEOSURd6M
-	t9CnnTszTK9KxsVzAEs4I=; b=KuUbKLhnTZoKNWh+Kr7qo6zUp/C7vBmqaCcDmh
-	0olPi26dIgkEz+OXys6OiZvQ800fjClvoDvj54GSogqhL84g15v7yK9N2CJZj7bD
-	Us63pjPNnYW+f8/jS+r7xUYTxU1mGZXQeyStPHHM8aD8eFuwop3suyj6o6bbETYP
-	ZB3alEZmm4GN+9FWZd4vgvNG4aCqKRReNtZ0bW0fD1Hv5lRnQGDr6P6FdkqG4hDA
-	iE+nbe+kKylKPSarOMSA+se67XlrdMnfKEitiie9zejZZfClfWbWofLnUS8sd08u
-	z+YYzt0rDVfk7yGCbqbUgPlUp3qfV26blrrt/kRlN/5J4PPw==
-Received: from mail-dl1-f72.google.com (mail-dl1-f72.google.com [74.125.82.72])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4edentg5g5-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Tue, 26 May 2026 16:25:07 +0000 (GMT)
-Received: by mail-dl1-f72.google.com with SMTP id a92af1059eb24-135405e4035so910159c88.1
-        for <ath10k@lists.infradead.org>; Tue, 26 May 2026 09:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1779812706; x=1780417506; darn=lists.infradead.org;
-        h=content-transfer-encoding:from:content-language:subject:cc:to
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c0i5VAlmRLgG+rEOSURd6Mt9CnnTszTK9KxsVzAEs4I=;
-        b=LKgwK93Wjner4SoAtXIuXFoOTSx9LW9LtfSfIMu0rDj5pDgTmBQ/UPIBowjB6Oo4Sn
-         xBeIpicVzoGN3K2XCPvk2hB+xz+eYl6a8NVj94nahN8GP0a3uW9xEFn8tXueZDuHCvku
-         fWhOjcGd+J7s462yNAoeZzsw9HN920vfsZPhhr56Oah7P1Ey184cEWtaNYOC2ATQQmla
-         K3BZTcGAvaVI90LpIrfWoolY046Snbay/2CGkbUBmoXSkKmmxmOeS6IjCRsV1KFGP8fx
-         f7OvOYNFEm4T+HOE4KR7hzeMATuObzqnhkwuALolv4Wn+k1NuB/dOmLRkmKetbXrmX0f
-         eMGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779812706; x=1780417506;
-        h=content-transfer-encoding:from:content-language:subject:cc:to
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c0i5VAlmRLgG+rEOSURd6Mt9CnnTszTK9KxsVzAEs4I=;
-        b=aDUO199eZxK2+8fe48zvxvPPJYDnKVJ0JC4uXgNTIpd3MSCvJ2JoVV5pzn1KIkRQ1j
-         +SzGx7GpY5U2XsDnaSFeqenwDHCi8oevw1jqCH6R175XfxkyVYiTMClfvjKFC0qILyqe
-         sr0Yg5exZz6yfP4PQt3GntSL4zh8mxu49s3rUBXOhfEUFPxqfy0dRx1Mnb5I7/Ldj30q
-         ur2F+3cmxbHvwlHqlX4KHjcgD4qpVZ7r8y+fH5DDgQa44wTG0titTD3325N0YKaYjSoP
-         BO09XNZKomBncIE+vkUC/4pFtSRJHFzTU43fFltqqBrdpYaw7F0226qJjTPY6CGclbGf
-         te+w==
-X-Gm-Message-State: AOJu0YzfHLdY/Z0TygbtGL6rRun+KLQmp1uBM+OTYXJsDX5NKM16IoVJ
-	h0i6kjsKVidMlH+inKhzjQRbw4dEJt5TthBqPGM+P+3VsGlI8OCpEPOQVMoRNo6/swScme2sCmi
-	c62nGHnWWwMRVyva+dtcKq9NKTWedxvjb1gX7OiMqZAJNyoh53fqvFR9ABZc8Vz8HJFL+Zg8L
-X-Gm-Gg: Acq92OGBrUfwRsR/XM/w4SQjgeIccedNFp/Y745TpWRr+Ox+JLYZUc3TQXkM8ms41Al
-	OAyXqg1QJ7rASQBqYHNxP/aTM6aRo2oEijX9EFreNslBTWWm3gNazQuGUMpXDqYysEFPqwDDiqu
-	qnvHGSKKZx2ibP3D2HCZwU/C17S844nPJW/nwEg71A4TqyQB+C5WJMIFff5GuI1d8Lcrv0/GjMa
-	JLXN8HWmcAiF6DY20TucWXpHVvzeEH0ZLLimQ6Km32Is5KJhCjEgApSQMJaRSJagRZhdxYCu2FM
-	LlkVZEha7YUHUFr0vgslCSKtxflazmK76Qrr3xKh80FXRNW23hs1Ti7vpXhVB7iBpVOd3CaqYYO
-	xvamoT+KP3IeALl2Ych9cXnA7NXDTtEQ8CEQdKXVWUOj+w5Jh09d0Um2rHA==
-X-Received: by 2002:a05:7022:6ba3:b0:11a:3734:3db3 with SMTP id a92af1059eb24-1365fc6d6a9mr7904474c88.32.1779812706430;
-        Tue, 26 May 2026 09:25:06 -0700 (PDT)
-X-Received: by 2002:a05:7022:6ba3:b0:11a:3734:3db3 with SMTP id a92af1059eb24-1365fc6d6a9mr7904454c88.32.1779812705815;
-        Tue, 26 May 2026 09:25:05 -0700 (PDT)
-Received: from [10.81.91.45] (Global_NAT1.qualcomm.com. [129.46.96.20])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-13669c6a2adsm8721944c88.0.2026.05.26.09.25.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2026 09:25:05 -0700 (PDT)
-Message-ID: <4fe17cef-7cc6-41fc-960a-385366861c52@oss.qualcomm.com>
-Date: Tue, 26 May 2026 09:25:04 -0700
+	id 1wSwrQ-00000007Pwb-1lg9;
+	Fri, 29 May 2026 13:02:49 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id C45344006B;
+	Fri, 29 May 2026 13:02:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 757FE1F00893;
+	Fri, 29 May 2026 13:02:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780059767;
+	bh=66jwmabnss1wzjbJ/pG7HLmk7a00oOo/dxDfODb4vpU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=E3HhoUKR/eThbMY+4+yrcHlS/pZyyLblbZn4d5+FNHlnJnEnizR352OFGeJTuCB/1
+	 fPEhuVfPJmr4NEfbWTKB0lHtHEPAjdcvACXXpCx8RwZZRfBH9Xpv2JHt6LoD9t2vyQ
+	 Io2fAnOB/CXyhFowtOqWtinEWkqw5c0UX/yWQw18xPOEGp/Gd0FCB9W66tKyyJWy/1
+	 sK0LuTYiEzwtdlVVDZH5dlH/pOkreTi1ZRDeUqQsJRzzEO8ivUCJK5DZjcWDYOJaym
+	 KFKrbDa46wfJC+p6Ioenp6HPCLM48/ac5dlXEfTJJyrJN1gstWyZUyrvcTU02aRhNh
+	 he+jdftUvhVKg==
+From: Srinivas Kandagatla <srini@kernel.org>
+To: konradybcio@kernel.org, andersson@kernel.org, 
+ Daniel Lezcano <daniel.lezcano@oss.qualcomm.com>
+Cc: linux-kernel@vger.kernel.org, Alex Elder <elder@kernel.org>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Jeff Johnson <jjohnson@kernel.org>, 
+ Mathieu Poirier <mathieu.poirier@linaro.org>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ Kees Cook <kees@kernel.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, 
+ Wesley Cheng <quic_wcheng@quicinc.com>, netdev@vger.kernel.org, 
+ linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
+ ath11k@lists.infradead.org, ath12k@lists.infradead.org, 
+ linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
+ linux-sound@vger.kernel.org
+In-Reply-To: <20260316171419.2619620-1-daniel.lezcano@oss.qualcomm.com>
+References: <20260316171419.2619620-1-daniel.lezcano@oss.qualcomm.com>
+Subject: Re: (subset) [PATCH v2 0/4] Use the QMI service IDs from the QMI
+ header
+Message-Id: <178005976216.10291.3509337895172854457.b4-ty@kernel.org>
+Date: Fri, 29 May 2026 14:02:42 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>
-Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        ath12k@lists.infradead.org, jjohnson@kernel.org
-Subject: pull-request: ath-next-20260526
-Content-Language: en-US
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Authority-Analysis: v=2.4 cv=Ja+Ma0KV c=1 sm=1 tr=0 ts=6a15c963 cx=c_pps
- a=bS7HVuBVfinNPG3f6cIo3Q==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=yx91gb_oNiZeI1HMLzn7:22
- a=VwQbUJbxAAAA:8 a=W5QCRmDefjtvIb0_0ZIA:9 a=QEXdDO2ut3YA:10
- a=vBUdepa8ALXHeOFLBtFW:22
-X-Proofpoint-ORIG-GUID: yZvnmHHsa0-iE7YfRqxxJ3W567vvVStG
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI2MDE0MSBTYWx0ZWRfXz5eY+Hh61TQT
- 5BwzieufnapSMBayQYXSkW3yvowFqKepoexkV7aNd3SN/h1dmkL4Q4qyCiKeNDLkXkpVB6eIzpV
- saqyzaUTWglgU2CPvUf3zVFoTcWOxu9l3OUKEDOzVCrUp8Rb8U/5icIg5Qjp4W6ATGyihkyV4Pf
- PC+kqLGmPcFTemJvZc0PvkwDw/YwW5AyYsCfDZvoxEcWxpbxmncuFZatOqsPOSlyHewWyYBbrK9
- 5GCoqmDhK4Vf4mIozMLfwikIK5tY4GN28Bd/CalCOytRTwiIH73w0j4fPqU8e56OS6L0Kt07tZi
- kCksHfoC18ewZu7iYNT81nyJ5TKHX0e8MvTpFjtjWboaZ9WzVNjgLMJhvtBGXfutvB3DNGa4njk
- VmvcrDBHG4m+TS19K4VAqj5AF6aZVS71NU4+dsYNTCeXnr2Ci98C/23wdum0rf9PtSMvl+0zPzm
- jiNREwiJSlhPDl7CYPg==
-X-Proofpoint-GUID: yZvnmHHsa0-iE7YfRqxxJ3W567vvVStG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-05-26_04,2026-05-26_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 clxscore=1015 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 phishscore=0 impostorscore=0 spamscore=0 suspectscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605130000 definitions=main-2605260141
+X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260526_092508_984659_3AE69652 
-X-CRM114-Status: GOOD (  12.16  )
+X-CRM114-CacheID: sfid-20260529_060248_481083_29BE8F61 
+X-CRM114-Status: GOOD (  10.73  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -139,113 +86,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The following changes since commit 7baf5857e15d722776898510a10546d6b2f18645:
 
-  wifi: brcmsmac: phy_lcn: Remove dead code in wlc_lcnphy_radio_2064_channel_tune_4313() (2026-04-28 10:43:27 +0200)
+On Mon, 16 Mar 2026 18:14:10 +0100, Daniel Lezcano wrote:
+> The different subsystems implementing the QMI service protocol are
+> using their own definition of the service id. It is not a problem but
+> it results on having those duplicated with different names but the
+> same value and without consistency in their name.
+> 
+> The QMI service IDs are defined in the qmi.h header file. Use those
+> instead of defining the IDs in the protocol implementation file. It
+> will result in unifying and providing a consistent way to represent
+> the supported protocols.
+> 
+> [...]
 
-are available in the Git repository at:
+Applied, thanks!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20260526
+[3/4] slimbus: qcom-ngd-ctrl: Use the unified QMI service ID instead of defining it locally
+      commit: 05f3f5984121e1956867b309c76a750c1d4c9682
 
-for you to fetch changes up to d5c336161088c588f85da64f48ba6deead194afd:
+Best regards,
+-- 
+Srinivas Kandagatla <srini@kernel.org>
 
-  wifi: ath12k: fix error unwind on arch_init() failure in PCI probe (2026-05-26 08:54:27 -0700)
-
-----------------------------------------------------------------
-ath.git patches for v7.2 (PR #2)
-
-For ath12k:
-- Add thermal throttling and cooling device support
-- Add support for handling incumbent signal interference in 6 GHz
-- Add support for channel 177 in the 5 GHz band
-
-In addition, a large number of cleanup and minor bug fixing across
-all supported drivers.
-
-----------------------------------------------------------------
-Aishwarya R (2):
-      wifi: ath12k: Add support for handling incumbent signal interference in 6 GHz
-      wifi: ath12k: Add debugfs support to simulate incumbent signal interference
-
-Arnd Bergmann (1):
-      wifi: ath10k: drop gpio_led reference
-
-Daniel Lezcano (2):
-      wifi: ath: Use the unified QMI service ID instead of defining it locally
-      wifi: ath: Fix the license marking
-
-Jose Ignacio Tornos Martinez (1):
-      wifi: ath11k: fix warning when unbinding
-
-Kexin Sun (1):
-      wifi: ath10k: update outdated comment for renamed ieee80211_tx_status()
-
-Krzysztof Kozlowski (1):
-      wifi: ath: Unify user-visible "Qualcomm" name
-
-Maharaja Kennadyrajan (5):
-      wifi: ath12k: handle thermal throttle stats WMI event
-      wifi: ath12k: configure firmware thermal throttling via WMI
-      wifi: ath12k: refactor per-radio thermal hwmon setup and cleanup
-      wifi: ath12k: reorder group start/stop for safe thermal sysfs cleanup
-      wifi: ath12k: add thermal cooling device support
-
-Nicolas Escande (1):
-      wifi: ath12k: unify error handling in some ath12k_wmi_xxx() functions
-
-Ripan Deuri (1):
-      wifi: ath12k: fix error unwind on arch_init() failure in PCI probe
-
-Rosen Penev (4):
-      wifi: ath9k: use non devm for nvmem_cell_get
-      wifi: ath9k: owl: move name into owl_nvmem_probe
-      wifi: ath9k: use kmemdup and kcalloc
-      wifi: ath12k: use kzalloc_flex
-
-Tamizh Chelvam Raja (1):
-      wifi: ath12k: Handle DP_RX_DECAP_TYPE_8023 type in Rx path
-
-Tristan Madani (1):
-      wifi: ath9k: fix OOB access from firmware tx status queue ID
-
-Wei Zhang (1):
-      wifi: ath11k: cancel SSR work items during PCI shutdown
-
-Yingying Tang (1):
-      wifi: ath12k: add channel 177 to the 5 GHz channel list
-
-pengdonglin (1):
-      wifi: ath9k: Remove redundant rcu_read_lock/unlock() in spin_lock
-
- drivers/net/wireless/ath/ath10k/core.h             |   1 -
- drivers/net/wireless/ath/ath10k/htt_tx.c           |   2 +-
- drivers/net/wireless/ath/ath10k/leds.c             |   8 +-
- drivers/net/wireless/ath/ath10k/qmi.c              |   4 +-
- drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h     |   1 -
- drivers/net/wireless/ath/ath11k/Kconfig            |   2 +-
- drivers/net/wireless/ath/ath11k/dp.c               |   1 +
- drivers/net/wireless/ath/ath11k/mhi.c              |   4 +-
- drivers/net/wireless/ath/ath11k/pci.c              |   8 +
- drivers/net/wireless/ath/ath11k/qmi.c              |   3 +-
- drivers/net/wireless/ath/ath11k/qmi.h              |   1 -
- drivers/net/wireless/ath/ath12k/Kconfig            |   6 +-
- drivers/net/wireless/ath/ath12k/core.c             |  50 +-
- drivers/net/wireless/ath/ath12k/core.h             |  12 +-
- drivers/net/wireless/ath/ath12k/debugfs.c          |  46 ++
- drivers/net/wireless/ath/ath12k/dp_rx.c            |  68 ++-
- drivers/net/wireless/ath/ath12k/mac.c              | 110 +++-
- drivers/net/wireless/ath/ath12k/pci.c              |   2 +-
- drivers/net/wireless/ath/ath12k/qmi.c              |   2 +-
- drivers/net/wireless/ath/ath12k/qmi.h              |   1 -
- drivers/net/wireless/ath/ath12k/thermal.c          | 252 +++++++--
- drivers/net/wireless/ath/ath12k/thermal.h          |  35 ++
- drivers/net/wireless/ath/ath12k/wmi.c              | 565 ++++++++++++++++++++-
- drivers/net/wireless/ath/ath12k/wmi.h              | 125 ++++-
- drivers/net/wireless/ath/ath9k/ar9002_hw.c         |   6 +-
- .../net/wireless/ath/ath9k/ath9k_pci_owl_loader.c  |  31 +-
- drivers/net/wireless/ath/ath9k/common-init.c       |   8 +-
- drivers/net/wireless/ath/ath9k/init.c              |  11 +-
- drivers/net/wireless/ath/ath9k/recv.c              |   4 +-
- drivers/net/wireless/ath/ath9k/xmit.c              |   7 +-
- 30 files changed, 1180 insertions(+), 196 deletions(-)
 
