@@ -4,86 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11984CD8CBD
-	for <ath10k@archiver.kernel.org>; Tue,  9 Jun 2026 11:05:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03053CD8CB9
+	for <ath10k@archiver.kernel.org>; Tue,  9 Jun 2026 13:55:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:References:MIME-Version:
-	In-Reply-To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+sX9ATTxluLYTPpyn9xT27ptWmmBF8CPbs0HcxCOGLE=; b=JQkXaznWfc4fNH4m7Mfh/WG56u
-	A+uIEB1kUzPqqJMJKSZ+iclPfc6nYF7trqHo8qbwQPe1gvpV1TNOkVV20z9QmSU7RIakHVGbYgcxh
-	MKg242o8iiXFz0r0qhnFpTcN7I4bpkn9BsrZuYQ70ZZSJIzQna85yqPGCJ4Q5NyHvk5JFF3b5DLUn
-	151Lt/HyBC/e0B4w84JT5J6Sgdu5J0dlsr4LhiNSw0qyeP/SYfyPOu3te6+BNlRrWI1Zjgmjc4dA3
-	BHC1r8Hh2aW/kKjRWYgiwnQciFEIEKFH84XNPcJxqahQQXYTwz2dH7dRohc1ls8gmqO/dNdS4ofMy
-	mEpUFBlw==;
+	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tPUhQU2r01fTv3p26ZiHt/lae2p6AaG41ksdfDwY4IQ=; b=s5Q2HN83nRtiOL1kDdLYCwN/6F
+	Q9q9BeCNxCxtKUQi2+I5C1TR6IV8TfVh2MFFEE9yQE93bT7qa9qb6E9DD6XCNTZv8vW89tPhqiBPb
+	VTy5EgXsGKwL76iayt0XlxdwLt2UxKfUGmiFJ80dg+0lvJI64W81t/8vWBvAwvoEVd8b4MtEa6IPw
+	hl/pkQZCwYAEel+PT0qEvbjtpJEFh9TNign0/wWJ1d2morHBGpPySoJvmNaVgRGKrVA0g0h8yyrLg
+	V0yiHfCQCzpYcZXcxDdzZ92cGGIkzbyhYBalUknq9G766TEMFnCtV2+eAJBhPYjzLOJjxBSk+ubx/
+	2bZSRCpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wWuGh-00000005PMj-2ERO;
-	Tue, 09 Jun 2026 11:05:15 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wWwvD-00000005iFE-2mfW;
+	Tue, 09 Jun 2026 13:55:15 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wWuGg-00000005PMV-10DZ
+	id 1wWwvA-00000005iDa-13fx
 	for ath10k@lists.infradead.org;
-	Tue, 09 Jun 2026 11:05:14 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9FCA9445C4
-	for <ath10k@lists.infradead.org>; Tue,  9 Jun 2026 11:05:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F9E1F008A1
-	for <ath10k@lists.infradead.org>; Tue,  9 Jun 2026 11:05:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781003113;
-	bh=+sX9ATTxluLYTPpyn9xT27ptWmmBF8CPbs0HcxCOGLE=;
-	h=From:In-Reply-To:References:Date:Subject:To:Cc;
-	b=RGDhzDndKBB2dkoo2ExWmstsyWaeZ8qJ18zZpU/Zh0vnaXRYAMzekOdsxjslSMmMP
-	 Zz8+CTH0TaVqx9FQtV3+0bfwMumlGnwVxTC4XbD3pQ9vXv5cjQPwxw+p/urFIYe+M1
-	 23mhKFfJTqrlZpJV745TVZPiLITUlVY6C7d5E8xA1cDZC81W784rbDYRkz7hR5lGZL
-	 64Iy0/HNkiWIMrL9ECwoHOiIF9wCFEfpU8Auj711VfrHHZui/L8EP/HRqjhrowKr2W
-	 OxVlAEX7eB4eXwfcJe6BQDfh51Xjtyo6bbEDsj8hF5jBGM4+Ii4e2FKcVqq3Vj0HgK
-	 9xuzxLAHXn0zA==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5aa6792e7b8so5373068e87.1
-        for <ath10k@lists.infradead.org>; Tue, 09 Jun 2026 04:05:13 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ+KaXcJ3awZQtISM2mXCagyxkD8vddwYdZslERrkmph9IeJoljeCQTKBKLXD3naN027484W+r0=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz/qLRSk3HYo4EGxW1TSKDoIKG+Lul6T7udReD2/eJrG2nLZf00
-	xUYKYoSZbAV5hUXSWvdRJ4Wp6ZQmvn2W6sZsURmVisP2wO4pxCtOEWm/wa+qDCJYJQ3XeTgxUef
-	1aTjJUNlYPbIslZq4AUFMo8YjSh84eQECLF/3H8EYzA==
-X-Received: by 2002:a05:6512:2253:b0:5aa:5c8c:9cf4 with SMTP id
- 2adb3069b0e04-5aa87b5f803mr5428916e87.17.1781003111998; Tue, 09 Jun 2026
- 04:05:11 -0700 (PDT)
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 9 Jun 2026 07:05:10 -0400
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 9 Jun 2026 07:05:10 -0400
-From: Bartosz Golaszewski <brgl@kernel.org>
-In-Reply-To: <CAFEp6-1syMQsvuQ+dLU39bnDeL5Ok7vK1mA7CS0v1m7cjhyMQw@mail.gmail.com>
+	Tue, 09 Jun 2026 13:55:14 +0000
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 659ClL6X2251636
+	for <ath10k@lists.infradead.org>; Tue, 9 Jun 2026 13:55:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	tPUhQU2r01fTv3p26ZiHt/lae2p6AaG41ksdfDwY4IQ=; b=psIJa4hwrjT/9RRi
+	WMl+IQdnpcyeDVvI/i5tCQ18DZxeWQr8JXXopWK1ZjzLlO/wcQzcsWkOk838yIPa
+	QBSVvMQKdUt/BhPJPwTIni1WewXMwj+yGTCAE+lTMS4JjyQGNCVSskgfif6OmnNh
+	SuyoNtAXpfR02A4TnNXrFJAiEom9YzABCttS4NvB86pNx3sPbftTcTalcQNNcH1F
+	WIbRgtPFtVjYCrKeir2EdvRPtNlIO4O8LDQDjk9LeI8B0UxFFN4dkFisdYM+4dWN
+	BMTE/L6NRIfi5bsl8fD/Uc/PI8Ma5gIhUYPt3I4RQVU40iG0myViCpdWQPIOt5mk
+	e8373A==
+Received: from mail-dl1-f70.google.com (mail-dl1-f70.google.com [74.125.82.70])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4epeqghkbp-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Tue, 09 Jun 2026 13:55:11 +0000 (GMT)
+Received: by mail-dl1-f70.google.com with SMTP id a92af1059eb24-13815e0e6baso3346003c88.0
+        for <ath10k@lists.infradead.org>; Tue, 09 Jun 2026 06:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1781013310; x=1781618110; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tPUhQU2r01fTv3p26ZiHt/lae2p6AaG41ksdfDwY4IQ=;
+        b=F2DbvnWk/0ghEawstCY8D0WWhGA3feN4Tui5fRbfTZUwzGpfGC92z8nB5ITbXQSouf
+         d8/6FobBuBhI7J0g/ZRTjKQkk9m70HOYnmo6p05gOVGiu7REKpa7s3qiLHy7ocqookga
+         pD2v4vcoQByAFVL5K1KOeKG3lGTq1+fDPERdxjPdj2iNWfrH9YP4m0t+v1yD9Mu89Mk7
+         vzX6R+mvp9yKOwnV8+AvfHUpI5J7rb1ESrp5JomUAakshou6APNeib6/bmLBEddUp4of
+         3G6L+goF41g7HNlorFOyD/BUAJj3IBwhmVrs4BxtoiHQBJ1Qs5g9g5uKPNsWAs4Y9fRV
+         zJlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781013310; x=1781618110;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=tPUhQU2r01fTv3p26ZiHt/lae2p6AaG41ksdfDwY4IQ=;
+        b=At2PTPzrK2imTbO9xbByjt3adlPjIr5uQ17rgFWJMsV3KVWuGQW3AtWpj4qviTvJ5u
+         D5hgDlzIw/D5r3J61VjOQsVDoWWu6VKe/59fm7zerNJkrWnAYB1aMbB6Nn+rO2zb0e5K
+         ZP99evM6GME/3ic4QD9e/o3RIh4fejDNrkbas4YliaMAYbtGgaB4MzCWAz8sSr9vV60S
+         6EkQxBhA1jsd4piObQ2REDCGXapZG7Sh+P14mLipai4gjSDMuEcoyrNfmFlwUVK7tv+T
+         tWUtF+ehrA52Xf0QAIPqi+LIFwymhbY1OvZAC/u7Vn2VBSYTMgNo+D3dgGPqxet41usu
+         HuTg==
+X-Forwarded-Encrypted: i=1; AFNElJ97NmF7QoB7A+Qc7j3C5lehClmcWLqMZmuOAoj+fwWpWsDjOaVVyajcp4YYJofwEKDbJjpFcUs=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz7Rlm6OPln7AO86kARya1saTOPa2E3ctS/vy2SysCuKezAez13
+	tMN/2Dk8YbFvWgfx5X+w1txWoTIxjjw9WjJvj0S/XkBRzQOhF9g4nnIndRzlky/E5slIYb62zgq
+	irD0SaNr+fFnq4aaFRZFy2G9OPceTqsfZ16E/EUrBK/u+2Lav9Ufhr4lSPe3rKMQdpuyoGtWS
+X-Gm-Gg: Acq92OHFEVXULC2wnPpwyxqrFx7qU8S5JbhnKbqreHEE8xi/7nIc4tMh/19sgiffn1a
+	+04DR1fPiaVFwU398Z0DVqgRg6nDSvpqKjkXxPlZcLRT30jTTWV78NNdywpLrsf/tglv0Hiobk6
+	EDNf0nqkep+HiWazkn9gF6or0Yx8MKU8WDY5zrdqYFaezv0rYUz/qLdx8IWcdhV2RtJcmBUefKo
+	p3tzaXjLsE8HrLwyYeo2IJiaroXUzejNR17MHzpVWcdc05pOxIkPnplHrvIzQANFrCoP72FsYwv
+	aaZerqq8AE5NomlTlZe7RdZ/MPSfINzB042VZ7vhf8I9PQ2/Q5IkYlqoBz/Af/8FBYqdciE75uk
+	rVw55aOOawUHPlUa9vSVfWK0YaJtAH4RgF1P4zuHg0+KEl2jkPWoYcp4zRXsildpTpgtSwNYC5l
+	hkLBdBKGWh1LY=
+X-Received: by 2002:a05:7022:485:b0:12d:ff1b:92f5 with SMTP id a92af1059eb24-1380671c90amr10859160c88.28.1781013310229;
+        Tue, 09 Jun 2026 06:55:10 -0700 (PDT)
+X-Received: by 2002:a05:7022:485:b0:12d:ff1b:92f5 with SMTP id a92af1059eb24-1380671c90amr10859126c88.28.1781013309570;
+        Tue, 09 Jun 2026 06:55:09 -0700 (PDT)
+Received: from hu-jjohnson-lv.qualcomm.com (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-137f54c9c12sm15289555c88.6.2026.06.09.06.55.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2026 06:55:09 -0700 (PDT)
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+To: Jeff Johnson <jjohnson@kernel.org>,
+        Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath12k@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+        ath10k@lists.infradead.org
+In-Reply-To: <20260608-ath12k-copyright-v2-0-37504d70b03c@oss.qualcomm.com>
+References: <20260608-ath12k-copyright-v2-0-37504d70b03c@oss.qualcomm.com>
+Subject: Re: [PATCH ath-next v2 0/4] wifi: ath: Update copyrights
+Message-Id: <178101330879.3249128.7536641999721220001.b4-ty@oss.qualcomm.com>
+Date: Tue, 09 Jun 2026 06:55:08 -0700
 MIME-Version: 1.0
-References: <20260609-block-as-nvmem-v4-0-45712e6b22c6@oss.qualcomm.com>
- <20260609-block-as-nvmem-v4-4-45712e6b22c6@oss.qualcomm.com>
- <CAMRc=MfuiPMkSm=-G6VEJpqKhos0TD_pf0ScBGqfwLHT0uk8yQ@mail.gmail.com> <CAFEp6-1syMQsvuQ+dLU39bnDeL5Ok7vK1mA7CS0v1m7cjhyMQw@mail.gmail.com>
-Date: Tue, 9 Jun 2026 07:05:10 -0400
-X-Gmail-Original-Message-ID: <CAMRc=Mc=-G0+ESPJUUgxd+jJWwuEzBcVXSJyAbAhx6BFkHeimA@mail.gmail.com>
-X-Gm-Features: AVVi8CdBM8fdpM7hiE50yrSmJrPYo7K9sdF-J87b4PfgsolvJ2MbyT4LVehGYdI
-Message-ID: <CAMRc=Mc=-G0+ESPJUUgxd+jJWwuEzBcVXSJyAbAhx6BFkHeimA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/8] block: implement NVMEM provider
-To: Loic Poulain <loic.poulain@oss.qualcomm.com>
-Cc: linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, daniel@makrotopia.org, Ulf Hansson <ulfh@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, 
-	Jeff Johnson <jjohnson@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Balakrishna Godavarthi <quic_bgodavar@quicinc.com>, 
-	Rocky Liao <quic_rjliao@quicinc.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Simon Horman <horms@kernel.org>, Srinivas Kandagatla <srini@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
-	Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	Saravana Kannan <saravanak@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.3
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA5MDEzMiBTYWx0ZWRfXwxqKtMXJHmhU
+ DfEoVxCezIrBHIAPHRfUdv20rUtF91dJvGAwYuqWgsgxeTz5AQMb1qJeH/V+3GV72bjMCisEO3t
+ 2XSqpBsJx6aQVmIGm60+Iaj7nk0dzbDkKwR+Z/efLF2GQnaD3IJnFow9jIIDl5vHeh5OjEe3I0S
+ zhPsSOeqzS/p4saOSG+pGzkbq9UWtwaknnHTqZZJJskAShvPUxd/qOukLjrnQFbqLXFMU24/OrE
+ EFrp3Pko8KiNTOHz+619uQK2t6gnnOAKmLu6PurfbQhjeEDq260M9kAsR+mjtssU00DK5WXLRoK
+ k0jagTwz9rWJVdp6o8h+uYG6nuDbBhFo6yTEeXl+TSp+SXopQWN3qwU6xFE43J7MzugMnLFwHep
+ Ht2CxivtoGu/ne+S2IXMuA8/Yz1i5fe47lAz8bpA7LndYOOlry9Pzq4Cel267OHfw7fS/r1/9j0
+ A/vGLiq9NFfygTo4mig==
+X-Proofpoint-ORIG-GUID: Wkw3bYHAPlOllSvKg1Z6MKUSEpo4ahLK
+X-Authority-Analysis: v=2.4 cv=KdHidwYD c=1 sm=1 tr=0 ts=6a281b3f cx=c_pps
+ a=SvEPeNj+VMjHSW//kvnxuw==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=eoimf2acIAo5FJnRuUoq:22
+ a=EUspDBNiAAAA:8 a=p5YVH5xWJpdpfVUbqF8A:9 a=QEXdDO2ut3YA:10
+ a=Kq8ClHjjuc5pcCNDwlU0:22
+X-Proofpoint-GUID: Wkw3bYHAPlOllSvKg1Z6MKUSEpo4ahLK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-09_03,2026-06-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 adultscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606090132
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260609_065512_313597_337FFEA6 
+X-CRM114-Status: UNSURE (   7.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,89 +146,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue, 9 Jun 2026 12:13:08 +0200, Loic Poulain
-<loic.poulain@oss.qualcomm.com> said:
-> Hi bartosz,
->
 
-...
+On Mon, 08 Jun 2026 06:21:31 -0700, Jeff Johnson wrote:
+> Update the Qualcomm copyrights in the ath wireless drivers that were
+> substantially contributed by Qualcomm using the current guidance from
+> the legal team.
+> 
 
->>
->> On the other hand, we don't want to not provide the block device just be=
-cause
->> someone added a DT property on one that's too big. I'd say: warn, but re=
-turn 0.
->> Does it make sense?
->
-> It=E2=80=99s still technically an error in the sense that we cannot provi=
-de
-> the required nvmem feature. However, it only becomes a real issue if a
-> consumer actually attempts to use it.
-> Also, the block device should still be added, since the return code
-> from add_dev is not checked. In any case, I=E2=80=99m fine with either
-> approach, as long as we emit a warning message.
->
+Applied, thanks!
 
-We don't check the return value now (why?) but if we ever do, the safer opt=
-ion
-is to return 0 IMO.
+[1/4] wifi: ath12k: Update Qualcomm copyrights
+      commit: 1c316d02c399e5efb1279666c078f99b3f72b0ca
+[2/4] wifi: ath11k: Update Qualcomm copyrights
+      commit: 053a93808d4654fae18633b01a747caa7a281aaa
+[3/4] wifi: ath10k: Update Qualcomm copyrights
+      commit: ae667b0f98b80146ea22830a1b53c5758ad742f1
+[4/4] wifi: ath: Update copyright in testmode_i.h
+      commit: 21d83c6e9e45156f4cad8c7cd6fc2d5bbc76f73e
 
->>
->> > +     }
->> > +
->> > +     config.id =3D NVMEM_DEVID_NONE;
->> > +     config.dev =3D dev;
->> > +     config.name =3D dev_name(dev);
->> > +     config.owner =3D THIS_MODULE;
->> > +     config.priv =3D (void *)(uintptr_t)dev->devt;
->> > +     config.reg_read =3D blk_nvmem_reg_read;
->> > +     config.size =3D bdev_nr_bytes(bdev);
->> > +     config.word_size =3D 1;
->> > +     config.stride =3D 1;
->> > +     config.read_only =3D true;
->> > +     config.root_only =3D true;
->> > +     config.ignore_wp =3D true;
->> > +     config.of_node =3D to_of_node(dev->fwnode);
->> > +
->> > +     return PTR_ERR_OR_ZERO(devm_nvmem_register(dev, &config));
->>
->> And that was a wrong suggestion on my part too because I was under the
->> impression that we're in the probe() path, not device_add(). You can't u=
-se
->> devres here as the device at this point is not yet bound and may never b=
-e.
->
-> So I understand The bd_device is purely a class device with no bus, no dr=
-iver.
-> For driverless devices, devres_release_all() is called explicitly
-> within device_del() .
->
+Best regards,
+-- 
+Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 
-Right.
-
->>
->> Which leads me to the second point: this is not the moment to add the nv=
-mem
->> provider. This should happen at or after probe(). Once nvmem_register()
->> returns, you have a visible nvmem resource but nothing backing it in the=
- block
->> layer.
->
-> There is a short window during which a read attempt will 'properly'
-> fail, but this does seem somewhat fragile indeed.
->
->> Either do this in block core when registering a new device or schedule
->> a notifier here for the BUS_NOTIFY_BOUND_DRIVER event and do it in the n=
-otifier
->> callback.
->
-> So in the end, it seems that the simpler and more robust approach is
-> probably to move away from the class_interface driver and instead
-> register/unregister the nvmem directly in add_disk/del_gendisk.
-> If that's ok I will move to this approach in the next version.
->
-
-Yes, I think it's the right approach.
-
-Bart
 
