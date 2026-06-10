@@ -4,129 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AC02CD8CB9
-	for <ath10k@archiver.kernel.org>; Tue,  9 Jun 2026 14:37:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1B3ECD8CB2
+	for <ath10k@archiver.kernel.org>; Wed, 10 Jun 2026 07:16:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:From:Subject:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Yh/qlCI4RSGheI4VM0m2qKRN3/NEqC81qg+NEzqwGBc=; b=c0QBRY3HUh0Tmj3AMd6mIz623O
-	JiFkqVBhwPnyf8Z9t4OBoGrY+OKTTRyDUgybYyzgYdc26Pdo9Y/zOxK8U550j0HnXsVfWg6E9m5Mc
-	d+Zyz9gElaT65AF+3r/F2YLR/rSu2SBUCB/S9MG0CCPOLSirHIe4MBUI46qwLTXCzW8HXQ68zOCir
-	3pxonlJuKJiW0Gdw/JDmhroP+OVUyFiJCHSG5XRFxhfrXFmC3WpjXgoT121MAlhryhaIqHC63hgvc
-	isNpx933ENg5e0WXuHgRhB1/6NW0pvNTylJvyftp30ybw8JnVWhw82zpqsVITqFRvjnVpwlLybGxy
-	9H86FqRw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=f3pyLsJp/Pig7PJGNaXCWFzykMjoyznELiFBpvDKD50=; b=2FMgp/15hGarwatPqBzNu9saXC
+	alVx92d4YWkuHhLqlxJKuEBnGEBdIXJj8xgTNBz3CQN/kjdv17jEROLnuiKZN419x84xbuoobOwK4
+	al7V7+rjm/6figngpPvRAQRYXHEbCSfYb4fi7PNhRGtghjfnpDzRpnuwvfE2WuTCIr+LM5AqsPNxQ
+	0orRcZwLi+wVCXdUu4ZzznGbXUUt11nJjBTXjIUXHlXGGdFOegk8+UtkaW6YZ4IF2LM1VebeL7Dku
+	qV10qMkf9IeubY1Bui3IlWJVXzLe7R+n5C5ybPd88ErPBvqYeXuafb/dxGIZ9+MVrCqu4toVLFmQT
+	TwYM1etw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wWxaJ-00000005nCE-2wCa;
-	Tue, 09 Jun 2026 14:37:43 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1wXDAx-00000006wir-3TqW;
+	Wed, 10 Jun 2026 07:16:35 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wWxaG-00000005nBI-1ais
+	id 1wXDAw-00000006wia-1tYv
 	for ath10k@lists.infradead.org;
-	Tue, 09 Jun 2026 14:37:41 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 659Clavf2247947
-	for <ath10k@lists.infradead.org>; Tue, 9 Jun 2026 14:37:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=qcppdkim1; bh=Yh/qlCI4RSGheI4VM0m2qK
-	RN3/NEqC81qg+NEzqwGBc=; b=ZfgrAb5g3zWFsoWEFyoYMCvs/vrkIJKHzECsPc
-	tx19/cWZ3vzIZBdzaZFGze2cCrRcmEsWW+7QjJHQ8HgGZzLBSYg3Q3jl//b4mn4H
-	pbm5cy/FWBZso6kVYKtQUu2jSsdKzi1VHXo9BTINYJnj1NLEpUQDYKPGaDhRT2Rf
-	djnFcnLKbkclj+KxREWnriJxCUsVzWom8AWBP2cyhmy81sL4uQcUn3T0bCmHZc3Y
-	lbtz6NAcxC9dq99N47mFBQhir85pv9tlsmioV/BAKDsT5qWmRnHsNFkue7fHBETc
-	Hz4W2Mcc1jxgImldhcP6IEiiO3NY73ItlxGUVwbZqqv6+mEw==
-Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com [74.125.82.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4epdeet8ht-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Tue, 09 Jun 2026 14:37:39 +0000 (GMT)
-Received: by mail-dy1-f197.google.com with SMTP id 5a478bee46e88-304e7fc90b1so5597845eec.1
-        for <ath10k@lists.infradead.org>; Tue, 09 Jun 2026 07:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1781015859; x=1781620659; darn=lists.infradead.org;
-        h=content-transfer-encoding:from:content-language:subject:cc:to
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yh/qlCI4RSGheI4VM0m2qKRN3/NEqC81qg+NEzqwGBc=;
-        b=HvDFLcXbrxqKrjWnqkymbDVvgBAre9GK861Cqf90Z1pNeYcfaYvHVO5eyW+G2BVTqP
-         bP6Y7Dge/88P6JdToo2/n8HgTLEbzrFdSKw07Qf+4BalyYnO0iwm14Nq3siwkDj7tVZo
-         OuSOPIZJlDnSw2u4bZ2jYUsYK9vxs3jf0zmpinOXCXHv0XGhBmN/H5s9ykjTaqS645JY
-         n6SvsIEsN6rh+wBCnLFEP0A5gzt6pfc1xQWtrG55y9WOiV7VSjenIEb9BDfUsj3doatE
-         k3s+fGOMDrgPENwaxxaSFm3betycJD7utCpH40I6GqszQfvzPfHvO25eVvt1bcqlxPGg
-         wF1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781015859; x=1781620659;
-        h=content-transfer-encoding:from:content-language:subject:cc:to
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yh/qlCI4RSGheI4VM0m2qKRN3/NEqC81qg+NEzqwGBc=;
-        b=QnHiSxiEN97uwjWSRaubtWzqCL4xIH2rvvF7IbS94XXH2FwCKLEuP5hsHx1wIPmw0E
-         iRBStEjsyKxB2lUAfKeARZXjpD5bnHYtBkR0kuGs7CEMLV5PK64WBWd6GfwoA5jeibiY
-         3LFfBiboDsLHY1IcmWU+1qt1Lbrz7wnkGHjt/bsNSVZ5VOWCCQiKAXjXGLq0qDMQPttp
-         eEyneUPYC/lNBxpsbC/RdOXKVUsbDRK961xuYFBRmnwQrz0swqGB3BCEaOCm2PstLWng
-         tMpgYdCtpLnEsuNKfSYg+fd3s64DrTLF6/9n/nOx9rwZZO7qi4KuhzSmarWO2BIXGXEy
-         ftcw==
-X-Gm-Message-State: AOJu0YziBo4/hyCrPygHotHwrC/HYDkcK9in/XIXlfckdUBJgLj5B+6/
-	/cc9E0SGjdkZxLqVK/YXAUJSl19jIvC6f8HfscfdBp29O/+Q8TmSCRbpxcG7KbTugRJ2zU/AnlP
-	e3opP/NRB5yapyf9xPKqqNPwS6G+D5qCSzEwBIVT1+awyN3sm60zriO7b+Q65Ti0q
-X-Gm-Gg: Acq92OGKLh8nsGCHbSpFSzbzUsJ4cfdG2Gk3rFJ5xhKLaNlH1CMJ7jjlo7g7+IW+Ieh
-	svVP/j2iNFzVh3+cBMwrFwxWq+4eIrY+3wq/BexXiPwk3QRhCo6fs7D3PewVPK2Q8BUtFQXjltA
-	V+MQc8q6uukBLYpVxMo3YtvN/Iui2EB7+UAYny4d1fii06/+MSYrynaK7s8DiAeBSErP+W8AUiR
-	NbW4bHvdrQeTsq/ydXWlNtC+5LRjRDjAFFPWBLpcd3XfmiI7tZbm6nn+4Ad9047zTkmjNYX5flm
-	0mvD1JgAqzA2zHzAsMGDNrP/0UM+kU7knIZc4JQYxoS9trtdRjiJ6PqAwp1SSYAfEPEzpAHxWIn
-	wfD0DTE1g/uo4SWyTe8kyzklXUHy8Ze3jDEJU5kDKMPkwlWfSlUbN8jzeRvpuF3O36PGK
-X-Received: by 2002:a05:693c:37c3:b0:304:de94:1c55 with SMTP id 5a478bee46e88-3077b38e7e4mr14417804eec.35.1781015858806;
-        Tue, 09 Jun 2026 07:37:38 -0700 (PDT)
-X-Received: by 2002:a05:693c:37c3:b0:304:de94:1c55 with SMTP id 5a478bee46e88-3077b38e7e4mr14417728eec.35.1781015857847;
-        Tue, 09 Jun 2026 07:37:37 -0700 (PDT)
-Received: from [10.81.91.45] (Global_NAT1.qualcomm.com. [129.46.96.20])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3074db85f60sm26513545eec.8.2026.06.09.07.37.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jun 2026 07:37:37 -0700 (PDT)
-Message-ID: <a90fba3c-c4c1-470f-b5fa-5cf1fee17163@oss.qualcomm.com>
-Date: Tue, 9 Jun 2026 07:37:36 -0700
+	Wed, 10 Jun 2026 07:16:34 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 631B560052;
+	Wed, 10 Jun 2026 07:16:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E4511F00893;
+	Wed, 10 Jun 2026 07:16:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781075793;
+	bh=f3pyLsJp/Pig7PJGNaXCWFzykMjoyznELiFBpvDKD50=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=kEh5J4MYt6AOcTW92yTfwHs7vsfXTGiCqD9ezn/PNbI3JWrXg4/8tr03WT6qdTNpS
+	 PAtYXXZDgPka9aZwUbI+DBa6wtCiTAIsQGRmXXaBPgcpzA28huYukZQXWGyz0yvVIW
+	 MJU9oHaPP9viU8aSsW6rlLH6xGNGZACpXj7MiV0FtCcymsGKjvyVqZD18HVrh5Eb9c
+	 H0by8hO8bDMIkvcQuscIdnJgzExUBtpjrNV0ge9SvQmhZMxLrkH1RoKe2C0aYinjXB
+	 BQpQmxWyxvNkGUNbqj0qSQ3R2MiTBOBLx5T2FPGE5kaSM8Ii3Iz+GHR5Vp3Kh5qxah
+	 rslGwKgr5JbDw==
+Date: Wed, 10 Jun 2026 09:16:29 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Loic Poulain <loic.poulain@oss.qualcomm.com>
+Cc: Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
+	Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, 
+	Jeff Johnson <jjohnson@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>, Rocky Liao <quic_rjliao@quicinc.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Srinivas Kandagatla <srini@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
+	Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	Saravana Kannan <saravanak@kernel.org>, linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, daniel@makrotopia.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+Subject: Re: [PATCH v4 2/8] dt-bindings: net: wireless: qcom,ath10k: Document
+ NVMEM cells
+Message-ID: <20260610-funny-paper-warthog-25fa0a@quoll>
+References: <20260609-block-as-nvmem-v4-0-45712e6b22c6@oss.qualcomm.com>
+ <20260609-block-as-nvmem-v4-2-45712e6b22c6@oss.qualcomm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>
-Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        ath12k@lists.infradead.org, jjohnson@kernel.org
-Subject: pull-request: ath-next-20260609
-Content-Language: en-US
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authority-Analysis: v=2.4 cv=H+DrBeYi c=1 sm=1 tr=0 ts=6a282533 cx=c_pps
- a=Uww141gWH0fZj/3QKPojxA==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=YMgV9FUhrdKAYTUUvYB2:22
- a=VwQbUJbxAAAA:8 a=Of_zAPQQtSp_xK_LWJsA:9 a=QEXdDO2ut3YA:10
- a=PxkB5W3o20Ba91AHUih5:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA5MDEzOSBTYWx0ZWRfX5FGxoX1Yu35s
- +dD606JpQkhsFWiwDT/ue/t83eN2bgYM09Pq7We585wJrdENYqtBl4wEbG/pwbII/b44rtU4I5a
- uq4CkekKkRroKd7LyWAw1TUKBParx+pOBT575aOlr0lMBUPpigZSkZppM2Vl/29FQi0RZ2G41a8
- +mL0MVeUpi98YF4i2Nn1wh+op8ozSQ8Ii4BYwjgLtddcz953gokV4eB3/F+z6JPAQoU7L2Ds0lc
- XGTMhEdGQCjJgIqiVYgftgI/HnsRlIYgq2C1aX7InsV0jwCjiU85rqQWGKgvzl6SUhn56z9/GyJ
- TOjrlluTNhTsRczZxLYZK3dNBU838ciKsbJuuWGTQR8fG7L/ECQd3p4xH6B1+tMg02FRWgbX5As
- cFt5BsreNjt7P9oNKrlHAToc9S6/7PW7ponsOMl+TCgIEGfdAqt+Pk9EIAmI+yMiTHuoa7XuLBE
- tYj2CgPng0kpbUJmdlw==
-X-Proofpoint-ORIG-GUID: ds5PI6eLwF9SkrKhJnOsjbEteRTlocrW
-X-Proofpoint-GUID: ds5PI6eLwF9SkrKhJnOsjbEteRTlocrW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-09_03,2026-06-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 bulkscore=0 clxscore=1015 adultscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2605210000
- definitions=main-2606090139
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260609_073740_452906_AD7BB918 
-X-CRM114-Status: UNSURE (   8.99  )
-X-CRM114-Notice: Please train this message.
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260609-block-as-nvmem-v4-2-45712e6b22c6@oss.qualcomm.com>
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,155 +84,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The following changes since commit a26c2a22e7e88b2b5afb1349f3994fc564c988b1:
+On Tue, Jun 09, 2026 at 09:52:27AM +0200, Loic Poulain wrote:
+> Document the NVMEM cells supported by the ath10k driver, the
+> mac-address, pre-calibration data, and calibration data.
+> 
+> Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+> Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
+> ---
+>  .../devicetree/bindings/net/wireless/qcom,ath10k.yaml    | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+> index c21d66c7cd558ab792524be9afec8b79272d1c87..7391df5e7071e626af4c64b9919d48c41ac09f1e 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+> @@ -92,6 +92,22 @@ properties:
+>  
+>    ieee80211-freq-limit: true
+>  
+> +  nvmem-cells:
+> +    minItems: 1
+> +    maxItems: 3
+> +    description: |
 
-  Merge tag 'iwlwifi-next-2026-06-03' of https://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/iwlwifi-next (2026-06-04 13:22:11 +0200)
+If there is going to be resend:
+Do not need '|' unless you need to preserve formatting.
 
-are available in the Git repository at:
+> +      References to nvmem cells for MAC address and/or calibration data.
+> +      Supported cell names are mac-address, calibration, and pre-calibration.
+> +
+> +  nvmem-cell-names:
+> +    minItems: 1
+> +    maxItems: 3
+> +    items:
+> +      enum:
+> +        - mac-address
+> +        - calibration
+> +        - pre-calibration
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-next-20260609
+This means you expect random order with variable number of items. Is
+that intentional? If yes, please provide short explanation in the commit
+msg.
 
-for you to fetch changes up to 63abe299b12b317dfee5bcd09037da4668a4431a:
+Best regards,
+Krzysztof
 
-  wifi: ath12k: enable IEEE80211_VHT_EXT_NSS_BW_CAPABLE when NSS ratio is reported (2026-06-09 06:50:29 -0700)
-
-----------------------------------------------------------------
-ath.git patches for v7.2 (PR #4)
-
-An assortment of cleanups and minor bug fixes across wcn36xx, ath9k,
-ath10k, ath11k, and ath12k.
-
-----------------------------------------------------------------
-Baochen Qiang (1):
-      wifi: ath12k: fix EAPOL TX failure caused by stale tcl_metadata bits
-
-Jeff Johnson (4):
-      wifi: ath12k: Update Qualcomm copyrights
-      wifi: ath11k: Update Qualcomm copyrights
-      wifi: ath10k: Update Qualcomm copyrights
-      wifi: ath: Update copyright in testmode_i.h
-
-Rosen Penev (6):
-      wifi: wcn36xx: allocate chan_surveys with main struct
-      wifi: ath9k_htc: use module_usb_driver
-      wifi: ath9k: Clear DMA descriptors without memset
-      wifi: ath9k: remove TX99 power array zero init
-      wifi: ath9k: remove disabling of bands
-      wifi: ath9k_htc: allocate tx_buf and buf together
-
-Stepan Ionichev (1):
-      wifi: wcn36xx: fix spelling mistakes in dxe header comment
-
-Tristan Madani (3):
-      wifi: wcn36xx: fix heap overflow from oversized firmware HAL response
-      wifi: wcn36xx: fix OOB read from firmware count in PRINT_REG_INFO indication
-      wifi: wcn36xx: fix OOB read from short trigger BA firmware response
-
-Wen Gong (1):
-      wifi: ath12k: enable IEEE80211_VHT_EXT_NSS_BW_CAPABLE when NSS ratio is reported
-
- drivers/net/wireless/ath/ath10k/bmi.c              |  1 -
- drivers/net/wireless/ath/ath10k/ce.c               |  1 -
- drivers/net/wireless/ath/ath10k/coredump.c         |  1 -
- drivers/net/wireless/ath/ath10k/coredump.h         |  2 +-
- drivers/net/wireless/ath/ath10k/debug.c            |  1 -
- drivers/net/wireless/ath/ath10k/debugfs_sta.c      |  1 -
- drivers/net/wireless/ath/ath10k/htc.c              |  1 -
- drivers/net/wireless/ath/ath10k/htt.c              |  2 +-
- drivers/net/wireless/ath/ath10k/htt.h              |  2 +-
- drivers/net/wireless/ath/ath10k/htt_rx.c           |  1 -
- drivers/net/wireless/ath/ath10k/htt_tx.c           |  1 -
- drivers/net/wireless/ath/ath10k/hw.c               |  2 +-
- drivers/net/wireless/ath/ath10k/hw.h               |  2 +-
- drivers/net/wireless/ath/ath10k/pci.c              |  1 -
- drivers/net/wireless/ath/ath10k/pci.h              |  2 +-
- drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c     |  2 +-
- drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h     |  2 +-
- drivers/net/wireless/ath/ath10k/rx_desc.h          |  2 +-
- drivers/net/wireless/ath/ath10k/sdio.c             |  2 +-
- drivers/net/wireless/ath/ath10k/thermal.c          |  2 +-
- drivers/net/wireless/ath/ath10k/usb.h              |  2 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.h          |  2 +-
- drivers/net/wireless/ath/ath10k/wow.c              |  2 +-
- drivers/net/wireless/ath/ath11k/ahb.c              |  2 +-
- drivers/net/wireless/ath/ath11k/ahb.h              |  2 +-
- drivers/net/wireless/ath/ath11k/ce.c               |  1 -
- drivers/net/wireless/ath/ath11k/ce.h               |  2 +-
- drivers/net/wireless/ath/ath11k/coredump.c         |  1 -
- drivers/net/wireless/ath/ath11k/coredump.h         |  2 +-
- drivers/net/wireless/ath/ath11k/debug.c            |  1 -
- drivers/net/wireless/ath/ath11k/debugfs.c          |  1 -
- drivers/net/wireless/ath/ath11k/debugfs.h          |  2 +-
- .../net/wireless/ath/ath11k/debugfs_htt_stats.c    |  1 -
- .../net/wireless/ath/ath11k/debugfs_htt_stats.h    |  2 +-
- drivers/net/wireless/ath/ath11k/debugfs_sta.h      |  2 +-
- drivers/net/wireless/ath/ath11k/dp.c               |  1 -
- drivers/net/wireless/ath/ath11k/dp.h               |  2 +-
- drivers/net/wireless/ath/ath11k/dp_rx.h            |  2 +-
- drivers/net/wireless/ath/ath11k/dp_tx.c            |  1 -
- drivers/net/wireless/ath/ath11k/dp_tx.h            |  2 +-
- drivers/net/wireless/ath/ath11k/fw.c               |  1 -
- drivers/net/wireless/ath/ath11k/fw.h               |  2 +-
- drivers/net/wireless/ath/ath11k/hal_desc.h         |  2 +-
- drivers/net/wireless/ath/ath11k/hal_rx.c           |  2 +-
- drivers/net/wireless/ath/ath11k/hal_rx.h           |  2 +-
- drivers/net/wireless/ath/ath11k/hal_tx.c           |  2 +-
- drivers/net/wireless/ath/ath11k/hal_tx.h           |  2 +-
- drivers/net/wireless/ath/ath11k/hif.h              |  2 +-
- drivers/net/wireless/ath/ath11k/htc.c              |  2 +-
- drivers/net/wireless/ath/ath11k/htc.h              |  2 +-
- drivers/net/wireless/ath/ath11k/hw.c               |  2 +-
- drivers/net/wireless/ath/ath11k/mac.h              |  2 +-
- drivers/net/wireless/ath/ath11k/mhi.h              |  2 +-
- drivers/net/wireless/ath/ath11k/p2p.c              |  2 +-
- drivers/net/wireless/ath/ath11k/p2p.h              |  2 +-
- drivers/net/wireless/ath/ath11k/pcic.c             |  1 -
- drivers/net/wireless/ath/ath11k/pcic.h             |  2 +-
- drivers/net/wireless/ath/ath11k/peer.c             |  2 +-
- drivers/net/wireless/ath/ath11k/peer.h             |  2 +-
- drivers/net/wireless/ath/ath11k/qmi.h              |  2 +-
- drivers/net/wireless/ath/ath11k/reg.h              |  2 +-
- drivers/net/wireless/ath/ath11k/rx_desc.h          |  2 +-
- drivers/net/wireless/ath/ath11k/spectral.c         |  1 -
- drivers/net/wireless/ath/ath11k/spectral.h         |  2 +-
- drivers/net/wireless/ath/ath11k/testmode.c         |  2 +-
- drivers/net/wireless/ath/ath11k/testmode.h         |  2 +-
- drivers/net/wireless/ath/ath11k/thermal.c          |  2 +-
- drivers/net/wireless/ath/ath11k/thermal.h          |  2 +-
- drivers/net/wireless/ath/ath11k/trace.h            |  2 +-
- drivers/net/wireless/ath/ath11k/wow.c              |  2 +-
- drivers/net/wireless/ath/ath11k/wow.h              |  2 +-
- drivers/net/wireless/ath/ath12k/acpi.c             |  2 +-
- drivers/net/wireless/ath/ath12k/acpi.h             |  2 +-
- drivers/net/wireless/ath/ath12k/coredump.c         |  2 +-
- drivers/net/wireless/ath/ath12k/coredump.h         |  2 +-
- drivers/net/wireless/ath/ath12k/dbring.h           |  2 +-
- drivers/net/wireless/ath/ath12k/debug.h            |  2 +-
- drivers/net/wireless/ath/ath12k/debugfs.h          |  2 +-
- drivers/net/wireless/ath/ath12k/debugfs_sta.h      |  2 +-
- drivers/net/wireless/ath/ath12k/dp.c               | 10 ++++-----
- drivers/net/wireless/ath/ath12k/hif.h              |  2 +-
- drivers/net/wireless/ath/ath12k/mac.c              |  4 ++++
- drivers/net/wireless/ath/ath12k/p2p.c              |  1 -
- drivers/net/wireless/ath/ath12k/p2p.h              |  2 +-
- drivers/net/wireless/ath/ath12k/reg.c              |  2 +-
- drivers/net/wireless/ath/ath12k/reg.h              |  2 +-
- drivers/net/wireless/ath/ath12k/testmode.h         |  2 +-
- drivers/net/wireless/ath/ath12k/trace.c            |  2 +-
- drivers/net/wireless/ath/ath12k/trace.h            |  2 +-
- drivers/net/wireless/ath/ath12k/wow.h              |  2 +-
- drivers/net/wireless/ath/ath9k/ar9002_mac.c        | 15 +++++++++++++-
- drivers/net/wireless/ath/ath9k/ar9003_mac.c        | 23 +++++++++++++++++----
- drivers/net/wireless/ath/ath9k/ar9003_phy.c        |  4 ++--
- drivers/net/wireless/ath/ath9k/hif_usb.c           | 24 +++-------------------
- drivers/net/wireless/ath/ath9k/hif_usb.h           |  4 +---
- drivers/net/wireless/ath/ath9k/htc_drv_init.c      | 18 ----------------
- drivers/net/wireless/ath/ath9k/hw.c                | 16 ++++-----------
- drivers/net/wireless/ath/ath9k/hw.h                |  2 --
- drivers/net/wireless/ath/testmode_i.h              |  2 +-
- drivers/net/wireless/ath/wcn36xx/dxe.c             |  4 ++--
- drivers/net/wireless/ath/wcn36xx/main.c            | 13 ++----------
- drivers/net/wireless/ath/wcn36xx/smd.c             | 13 ++++++++++++
- drivers/net/wireless/ath/wcn36xx/wcn36xx.h         |  2 +-
- 103 files changed, 139 insertions(+), 171 deletions(-)
 
