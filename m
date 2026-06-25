@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C51A7CDE00D
-	for <ath10k@archiver.kernel.org>; Thu, 25 Jun 2026 14:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC7E5CDE00F
+	for <ath10k@archiver.kernel.org>; Thu, 25 Jun 2026 14:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:
 	References:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:
 	Subject:Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gum5qP+Ui8X43Mju5cSuanjlS1gP9EgphrRK4GFIq+w=; b=h0NML/NJtVLYJ8RILTvy/VavCb
-	km+Vonf/lxInE+3/9iJoMX/QE2gKGP6CmiLYju957xuzCzX2hCnsqRBdJ1USzjQcVQPiHXE1XfJpT
-	Y340qoePVi+NdiRicnw0w5iE7/Av1iovbkLANkMtLRPFqJ6aRLCz6MUS00rIyLbMbjHz/X6/u83x5
-	Lbi5Lsx13eYIDlFCzRqwwpREkQDetkulG7jI0xQwUEnYiGNOyFlX8gchmDbmwARLzLvB3gZe/ZGQv
-	62cxHqXnYXucBYMoko+wpsKPYIiyQ5tavwA4D2RJEibxEnJToqeBWvNL56hmF0DpkQ2U84/Ki1K9A
-	81pK1LQw==;
+	bh=xmbk6DwPVFgEpooDCZ8YO2F4NMRhF8NzbvOxylSUgoI=; b=o8Q80vF8sVCNVxgU/QRlt6QrPq
+	s7iI5oDQ+5Z0dNBqFzeuxKy0DruWGxuuI7FsNJh0iTas2s4w5LUpbFGSnIC4Fl59mGW9kJ8jCDRjg
+	i99iuibNkxj0A9ZYuzWA3aDJvsaWR306YgaF2J3Jf+j1C0s/+ODYlDgJ8470CXdqOrhHoTIEQ5yFd
+	umErL7B7YBy4otlOEG0R4tSUHpDAATg54NLhlKwPfLy99LGZVt6YSzpOqChevxIv3ygSfvPmK7sYc
+	fgocp/9qu+OoW8fqr18an3jo6+Mnccl3AoGtdCmuaJvzd9PLLkNCiQhXfi93o/il6v9mX2/HICbtd
+	8pCGEDJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wckmq-00000009HqN-1tnm;
-	Thu, 25 Jun 2026 14:10:36 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wckmn-00000009HpB-0ghx;
+	Thu, 25 Jun 2026 14:10:33 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wckmm-00000009HoY-2Jhh
+	id 1wckml-00000009Ho9-3DiU
 	for ath10k@lists.infradead.org;
-	Thu, 25 Jun 2026 14:10:32 +0000
+	Thu, 25 Jun 2026 14:10:31 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7448A44507;
+	by sea.source.kernel.org (Postfix) with ESMTP id 300074426C;
 	Thu, 25 Jun 2026 14:10:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 503A5C2BCF5;
-	Thu, 25 Jun 2026 14:10:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F1D23C2BCB7;
+	Thu, 25 Jun 2026 14:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1782396631;
-	bh=iqwClEPhUgl2e2N1C3ej/gGi22JWFRifnH2hlivnuew=;
+	bh=O39ws0iMru9hm8TgXu7rNxCKAIVbTXEq4BlFEP3abHw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=nrEjvZ/PRhbOZ3dk3tSfgjCd2TJTTcy+AtViVdcc19Sga7KtQY7EuEq8eF38RndLZ
-	 rbnSMpRVCJmyg+BdC/yvaAx4bE4uqHdCQ6PSM+62x9PsjQJfnpIxmIR76wgaMvu/94
-	 GJeeIdp43V00v0M0HMERXbAR1HmGEnSBEkVOXDEKOAH4DKJMilF4M4LBXbpedAeszH
-	 2zlkW39m5MVs2Bour1EOXE6yOt2/BiUnpjm5KWsllEvMLqGutstvodgNH1vndr4ffs
-	 cz67EYnnbAa1J8rB7/aqrRsTwF4hqwDpe9Bads8sCGEMqW2CjorBamn398fdFWGicu
-	 H5QSw59LOuhyg==
+	b=M7yi9uvvaw76kuzKhtvRlSvxlIOsDdlcqnEsorvKqYVUMAeaNysO4qRlS3dQINjBm
+	 xN58K8uBBMPOfw33e5meQkXxSb1Vc7ByxkFLlXJ2nzHUUmtsn6ktLSOpwiEDGarjbx
+	 +Uj95jt84ZPxFaC6DOJ6B3GqNGE5PjA+qduv47H/CXVuKeGK4cfc6ChfXA3qNG4cnM
+	 vkNYF0B7z1bCgFmMIlIJ8/HLh1FOMhCVZgVSiUmxupGjA8Uv4nlIwa+5E5y5ts6Dut
+	 7f3p1dWB0JET1p4qlek6OhuklqCE5htWwUS6O/1OMYydsACjOpCFFp02hcWrLXlzTy
+	 h8M4OYaJ4qOYw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42B95CDE001;
-	Thu, 25 Jun 2026 14:10:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8633CDE000;
+	Thu, 25 Jun 2026 14:10:30 +0000 (UTC)
 From: George Moussalem via B4 Relay <devnull+george.moussalem.outlook.com@kernel.org>
-Date: Thu, 25 Jun 2026 18:10:08 +0400
-Subject: [PATCH 4/6] dt-bindings: net: bluetooth: Document Qualcomm IPQ5018
- Bluetooth controller
+Date: Thu, 25 Jun 2026 18:10:05 +0400
+Subject: [PATCH 1/6] dt-bindings: remoteproc: document M0 Bluetooth
+ Subsystem secure PIL
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260625-ipq5018-bluetooth-v1-4-d999be0e04f7@outlook.com>
+Message-Id: <20260625-ipq5018-bluetooth-v1-1-d999be0e04f7@outlook.com>
 References: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
 In-Reply-To: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
 To: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>, 
@@ -80,11 +80,11 @@ Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
  George Moussalem <george.moussalem@outlook.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1782396628; l=2368;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1782396628; l=2405;
  i=george.moussalem@outlook.com; s=20250321; h=from:subject:message-id;
- bh=Ge5kAHyoic4N7ZcyGHKZSb2jC9oyGy8Ofdq47a+3kMI=;
- b=vmBZHTWeLei4T09Ni4tV72gzifaI0DvVFIH+OYzDg89oqZPFcaL9w5m4xf0L2Kzn9R8pDnrOu
- 2gG3foTLHbHAYjmf3HCsHmhVqrjJHCGreBrr3VF4w1SC/0VBFC/BSOD
+ bh=aASt9ShJzJWACzszmUFOYCQKCOgD0FP+gd6rS7LrksI=;
+ b=N1N0fyN6SorxNs2uShNAzctNepCMehbe1sjqld58fbG/kPye64F2aPdTfu+pjaWj+h5Wt5Wr1
+ UkWP3yZildXD0XNWruBonDbZdCY2LJC8qZePwmbFxQjRooTh5BB9aaG
 X-Developer-Key: i=george.moussalem@outlook.com; a=ed25519;
  pk=/PuRTSI9iYiHwcc6Nrde8qF4ZDhJBlUgpHdhsIjnqIk=
 X-Endpoint-Received: by B4 Relay for george.moussalem@outlook.com/20250321
@@ -107,81 +107,92 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 From: George Moussalem <george.moussalem@outlook.com>
 
-Document the Qualcomm IPQ5018 Bluetooth controller.
+Document the M0 Bluetooth Subsystem remote processor core found in the
+Qualcomm IPQ5018 SoC. Firmware loaded is authenticated via TrustZone.
+The firmware running on the M0 core provides bluetooth functionality.
 
 Signed-off-by: George Moussalem <george.moussalem@outlook.com>
 ---
- .../bindings/net/bluetooth/qcom,ipq5018-bt.yaml    | 63 ++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ .../bindings/remoteproc/qcom,m0-btss-pil.yaml      | 72 ++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/bluetooth/qcom,ipq5018-bt.yaml b/Documentation/devicetree/bindings/net/bluetooth/qcom,ipq5018-bt.yaml
+diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,m0-btss-pil.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,m0-btss-pil.yaml
 new file mode 100644
-index 000000000000..afd33f851858
+index 000000000000..397bb6815d71
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/net/bluetooth/qcom,ipq5018-bt.yaml
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++++ b/Documentation/devicetree/bindings/remoteproc/qcom,m0-btss-pil.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/net/bluetooth/qcom,ipq5018-bt.yaml#
++$id: http://devicetree.org/schemas/remoteproc/qcom,m0-btss-pil.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Qualcomm IPQ5018 Bluetooth
++title: Qualcomm M0 BTSS Peripheral Image Loader
 +
 +maintainers:
 +  - George Moussalem <george.moussalem@outlook.com>
 +
++description:
++  Qualcomm M0 BTSS Peripheral Secure Image Loader loads firmware and powers up
++  the M0 BTSS remote processor core on the Qualcomm IPQ5018 SoC.
++
 +properties:
 +  compatible:
 +    enum:
-+      - qcom,ipq5018-bt
++      - qcom,ipq5018-btss-pil
 +
-+  interrupts:
++  firmware-name:
++    maxItems: 1
++    description: Firmware name for the M0 Bluetooth Subsystem core
++
++  clocks:
 +    items:
-+      - description:
-+          Interrupt line from the M0 Bluetooth Subsystem to the host processor
-+          to notify it of events such as re
++      - description: M0 BTSS low power oscillator clock
 +
-+  qcom,ipc:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
++  clock-names:
 +    items:
-+      - items:
-+          - description: phandle to a syscon node representing the APCS registers
-+          - description: u32 representing offset to the register within the syscon
-+          - description: u32 representing the ipc bit within the register
-+    description: |
-+      These entries specify the outgoing IPC bit used for signaling the remote
-+      M0 BTSS core of a host event or for sending an ACK if the remote processor
-+      expects it.
++      - const: btss_lpo_clk
 +
-+  qcom,rproc:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to the remote processor node representing the M0 BTSS core.
++  memory-region:
++    items:
++      - description: M0 BTSS reserved memory carveout
++
++  resets:
++    items:
++      - description: M0 BTSS reset
++
++  reset-names:
++    items:
++      - const: btss_reset
 +
 +required:
 +  - compatible
-+  - interrupts
-+  - qcom,ipc
-+  - qcom,rproc
++  - firmware-name
++  - clocks
++  - clock-names
++  - resets
++  - reset-names
++  - memory-region
 +
-+allOf:
-+  - $ref: bluetooth-controller.yaml#
-+  - $ref: qcom,bluetooth-common.yaml
-+
-+unevaluatedProperties: false
++additionalProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
++    #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
 +
-+    bluetooth: bluetooth {
-+      compatible = "qcom,ipq5018-bt";
++    remoteproc {
++      compatible = "qcom,ipq5018-btss-pil";
 +
-+      qcom,ipc = <&apcs_glb 8 23>;
-+      interrupts = <GIC_SPI 162 IRQ_TYPE_EDGE_RISING>;
++      firmware-name = "qca/bt_fw_patch.mbn";
 +
-+      qcom,rproc = <&m0_btss>;
++      clocks = <&gcc GCC_BTSS_LPO_CLK>;
++      clock-names = "btss_lpo_clk";
++      resets = <&gcc GCC_BTSS_BCR>;
++      reset-names = "btss_reset";
++
++      memory-region = <&btss_region>;
 +    };
 
 -- 
