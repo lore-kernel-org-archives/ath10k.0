@@ -4,59 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 467B2CDB479
-	for <ath10k@archiver.kernel.org>; Thu, 25 Jun 2026 14:10:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74A9FCDE001
+	for <ath10k@archiver.kernel.org>; Thu, 25 Jun 2026 14:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
-	From:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=yNVqgD0HQwURG3L/pS9NJFuRMaddYIaUanf6e10P7Og=; b=2xxJ1AGjqD52uVjrnWpXr5Eqp0
-	l2fO41Jkr6e2Vvp0MVbCsfasDVrJQSzyFtTn8sPANepbj5x+jaYIpERG/snxMyAA6XUBm5OPtbhcb
-	Wg7Qq0MqtyK/IaxXfD0onl8cQ3zpbWuZaMzxAnbCUa6ezYM9cfDLvlKDNI22DdiT+edOhvsM6ZVsY
-	CWZZWUTXlSh92vrHS+01Yz/9uO+i47QXj2L+7sicK6EGAHDdbkJ/H8KT1SogUd9FNAy3V4ceGT25/
-	KfsqOevuxdWQ+JEZ6qjx3PdTOymbIA9tUmT+HFQKq8B7AW024NHne2QGbe8xuminNp2dC8vO5Wgae
-	sWa+vR5A==;
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:
+	References:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Subject:Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=BMxGH6VTnszinuAzCzzzgAIbd1ZOMX19twkjfHBBGkQ=; b=NpYRj5V87bVwUHBvRn1AilHr/E
+	Q3NSAxpHXPcU9Emd/1Tq/jr2SrnPwE6p1JEeowoaHAeK+oYLgYoXYL93knDx0jx71lfjS1fTBiRsl
+	4FcCVfDfrkPAnmW14I0Le8TfGlwvWd3wl/tBAGFQvQyYA+mbWoBroTtU7V+2dKxDrDogtzG+ZOSj3
+	uInf5JCk2ViXMXNzEoLepLU3HnGC/WzetVtWHo5PeiJakuBI83259EVqF3mL8W27YfY15zoB5AltC
+	F4bjIj7pNes6TPQZ0r5LT/FT3zN/F5vQkkWJqBdKjNylYx91PVM/iFvkf4u86LO1Z0LXlP+G2eAV6
+	5KRk1qtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wckmn-00000009HpG-115k;
-	Thu, 25 Jun 2026 14:10:33 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wckmq-00000009Hqy-32Hv;
+	Thu, 25 Jun 2026 14:10:36 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wckml-00000009Ho8-3DiT
+	id 1wckmm-00000009HoY-2uPl
 	for ath10k@lists.infradead.org;
-	Thu, 25 Jun 2026 14:10:31 +0000
+	Thu, 25 Jun 2026 14:10:32 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 17ACD43641;
+	by sea.source.kernel.org (Postfix) with ESMTP id A83664451B;
 	Thu, 25 Jun 2026 14:10:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DFD19C2BCB3;
-	Thu, 25 Jun 2026 14:10:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 878E7C2BCB7;
+	Thu, 25 Jun 2026 14:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1782396631;
-	bh=D6SplHxUa3QnaLv8HkHyckjDvA/Fprxyfd+YMfQx7G8=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=ubJVFQTV+/Y0T9PjEfy0BIHmEqqIZ5iLhuPzgkeMBStfEWlJB970ldJ7/RumWT8hI
-	 zNxpj6Zj20HuZiXZ0SMVJa6B0eG+ZlOKhOEofnmlnntB09dgIbWChXVpJFOx4XvSBD
-	 224CQRtOsHY4d3HDnf6KWfomftv+4ZZx2sx37y5WNlN3MCY8VVDeCjwF+LThs2MjkB
-	 Uwq1qFwSuw5cL0umlvYHmIIWPsH3Fx09cgR5Ld8xz10IQ6l6MF7PFK5UCQNiwPnJKy
-	 TZSN/9+D7vLIPiq5zcxQIMhyrayx6JagYhZpKPZ+JBTGaC2kVtOp7mcisE1TILXtms
-	 HCt9LiTQV99Yg==
+	bh=cGlrzfrVFE1P+AOMseHD4xEMCebg1rxM3TlgaPrOlmI=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=q3CQaR0ECmYMzAv/aPi/BVrstYd6WeM2zEXiYExYNg86sPm4UqraFh1n/0T25mqAw
+	 mEw5tlsPGUi5J8K3Td9gJICJaeiczJAjphybRefGZsD9WGnumFeOhCqKy/gP8lvxD1
+	 QzvXhSY0S+DpRCW2JQFj1grtR8/YHvHXNCJDfdOR4WbbLw8yAiqLmR2ko2icZQIOAO
+	 ZY1MNOYgOXVgnIDcUSUWUr61VPRLdn8pzyCz7mG7JPKzcm8dROOo63T3VitJTspEtV
+	 ySNn3aaz032OLsWDxWky/Bk1wWLCRgkUeGH+Hfz4s7m8UaGK/PTsM08umuOqow/zj9
+	 O7PODHosRHzWw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8ECDCDE001;
-	Thu, 25 Jun 2026 14:10:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C3F8CDE00B;
+	Thu, 25 Jun 2026 14:10:31 +0000 (UTC)
 From: George Moussalem via B4 Relay <devnull+george.moussalem.outlook.com@kernel.org>
-Subject: [PATCH 0/6] Add support for IPQ5018 Bluetooth
-Date: Thu, 25 Jun 2026 18:10:04 +0400
-Message-Id: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
+Date: Thu, 25 Jun 2026 18:10:10 +0400
+Subject: [PATCH 6/6] arm64: dts: qcom: ipq5018: add nodes required for
+ Bluetooth support
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWNQQrCMBREr1Ky9kuammiLiPeQLpL0R4NN0+a3R
- RDvbrSbgTcwb96MMHkk1hRvlnD15OOQodwVzD70cEfwXWYmuFBcCQl+nCQvT2D6BecY5wdw5Zx
- Stu6OsmJ5NyZ0/vV33tqNE05LVs9byQIS6b+6Kc6buRTZGO0TNMGwBgywSuBQS+Sm4s65ml8j0
- X5adG9jCPscl9+b0YTwa/zcFIeu1KYSB2fNkbWfzxfm+j9+3wAAAA==
-X-Change-ID: 20260625-ipq5018-bluetooth-06ff66c9d753
+Message-Id: <20260625-ipq5018-bluetooth-v1-6-d999be0e04f7@outlook.com>
+References: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
+In-Reply-To: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
 To: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>, 
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
  Conor Dooley <conor+dt@kernel.org>, 
@@ -82,11 +80,11 @@ Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
  George Moussalem <george.moussalem@outlook.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1782396628; l=3321;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1782396628; l=1962;
  i=george.moussalem@outlook.com; s=20250321; h=from:subject:message-id;
- bh=D6SplHxUa3QnaLv8HkHyckjDvA/Fprxyfd+YMfQx7G8=;
- b=6MKZWbfvyN9Pd5FoUIlXKVCW9PgXMLB8ekM5lOyqEenPO3HzLmd7aZqmcGLCiB4/V1w9BQ4rO
- W7+WbfMcF11AMEj2N5zJ0b/Tu+DnFmNpy3aZ9Tv7SmbNEM6abwmYVk2
+ bh=ojtleJtDhQce/+XX9j6vq/OyHIn9zWr0G+phOI1scMI=;
+ b=mB7Kl8oo6p9qGG8S83k1i8WmNveVSPly3y06IvufkwdoKbpyKrwO16ajhuW3SA7lgpXy+Ip47
+ WLniTF1QpjgDlYPL6e8t4RQt1S+4CsO7tztDkEfprQ0UCWrbZxiEfmq
 X-Developer-Key: i=george.moussalem@outlook.com; a=ed25519;
  pk=/PuRTSI9iYiHwcc6Nrde8qF4ZDhJBlUgpHdhsIjnqIk=
 X-Endpoint-Received: by B4 Relay for george.moussalem@outlook.com/20250321
@@ -107,73 +105,83 @@ Reply-To: george.moussalem@outlook.com
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello,
+From: George Moussalem <george.moussalem@outlook.com>
 
-This patch series introduces Bluetooth support for IPQ5018.
-
-Bluetooth firmware on the IPQ5018 platform runs on the M0 co-processor.
-The firmware is loaded by the host into a dedicated reserved memory
-carveout and authenticated by TrustZone. A Secure Channel Manager (SCM)
-call safely brings the peripheral core out of reset.
-
-A shared memory ring buffer topology handles runtime data frame
-transport between the host APSS and the M0 core. An outgoing APCS IPC
-bit and an incoming GIC interrupt handle host/guest signaling.
-
-This series has been tested and verified on various IPQ5018 router
-boards utilizing firmware extracted from GPL distributions, using both
-mdt and mbn file formats.
-
-[   14.781511] Bluetooth: hci0: QCA Product ID   :0x00000016
-[   14.781583] Bluetooth: hci0: QCA SOC Version  :0x20180100
-[   14.785926] Bluetooth: hci0: QCA ROM Version  :0x00000100
-[   14.791546] Bluetooth: hci0: QCA Patch Version:0x00003ded
-[   14.796698] Bluetooth: hci0: QCA controller version 0x01000100
-[   14.802217] Bluetooth: hci0: QCA Downloading qca/mpnv10.bin
-[   16.393850] Bluetooth: hci0: QCA Build Info: BTFW.MAPLE.1.0.0-00102-MPL_ROM_PATCHZ-1
-
-Best regards,
-George Moussalem
+Add nodes for the M0 remoteproc, reserved memory carveout, and Bluetooth
+to bring up the M0 core and enable the Bluetooth Subsystem.
 
 Signed-off-by: George Moussalem <george.moussalem@outlook.com>
 ---
-George Moussalem (6):
-      dt-bindings: remoteproc: document M0 Bluetooth Subsystem secure PIL
-      remoteproc: qcom: Add M0 BTSS secure PIL driver
-      Bluetooth: btqca: Add IPQ5018 support
-      dt-bindings: net: bluetooth: Document Qualcomm IPQ5018 Bluetooth controller
-      Bluetooth: Introduce Qualcomm IPQ5018 IPC based HCI driver
-      arm64: dts: qcom: ipq5018: add nodes required for Bluetooth support
+ arch/arm64/boot/dts/qcom/ipq5018.dtsi | 34 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 33 insertions(+), 1 deletion(-)
 
- .../bindings/net/bluetooth/qcom,ipq5018-bt.yaml    |  63 ++
- .../bindings/remoteproc/qcom,m0-btss-pil.yaml      |  72 ++
- arch/arm64/boot/dts/qcom/ipq5018.dtsi              |  34 +-
- drivers/bluetooth/Kconfig                          |  11 +
- drivers/bluetooth/Makefile                         |   1 +
- drivers/bluetooth/btqca.c                          |  16 +
- drivers/bluetooth/btqca.h                          |   3 +
- drivers/bluetooth/btqcomipc.c                      | 939 +++++++++++++++++++++
- drivers/remoteproc/Kconfig                         |  12 +
- drivers/remoteproc/Makefile                        |   1 +
- drivers/remoteproc/qcom_m0_btss_pil.c              | 261 ++++++
- 11 files changed, 1412 insertions(+), 1 deletion(-)
----
-base-commit: 4d1ab324fcb7d20df5a071edb0304461846fdc12
-change-id: 20260625-ipq5018-bluetooth-06ff66c9d753
-prerequisite-message-id: <20260612-block-as-nvmem-v5-0-95e0b30fff90@oss.qualcomm.com>
-prerequisite-patch-id: 6ce8686c1683f468d86b4502f5ec9d19c392a382
-prerequisite-patch-id: e362f7fcbacff716b7ef720e6780786a7d88c013
-prerequisite-patch-id: 9168930e40551e842c8171d5433a6f39ad4b78a4
-prerequisite-patch-id: 64fecfbd1e085d7d2ab0ae23295ca34ec8e14c5e
-prerequisite-patch-id: 566804aaa690ee9aa285d0fd75fd16d94fbadebf
-prerequisite-patch-id: dc18bec338f54b3051f4523f9d1d3c0566a20ccd
-prerequisite-patch-id: b6b3eb46429936ab49423d295433daf47981db0f
-prerequisite-patch-id: 75caa99e3bbcdf41b6462b9f5f703bea1d4a65fa
-prerequisite-patch-id: 35e9968f482f78ca233eb0306d9c5fdbff093175
+diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+index 6f8004a22a1f..4fdf20c87b0a 100644
+--- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+@@ -17,6 +17,17 @@ / {
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
+ 
++	bluetooth: bluetooth {
++		compatible = "qcom,ipq5018-bt";
++
++		qcom,ipc = <&apcs_glb 8 23>;
++		interrupts = <GIC_SPI 162 IRQ_TYPE_EDGE_RISING>;
++
++		qcom,rproc = <&m0_btss>;
++
++		status = "disabled";
++	};
++
+ 	clocks {
+ 		gephy_rx_clk: gephy-rx-clk {
+ 			compatible = "fixed-clock";
+@@ -131,11 +142,31 @@ psci {
+ 		method = "smc";
+ 	};
+ 
++	m0_btss: remoteproc {
++		compatible = "qcom,ipq5018-btss-pil";
++
++		firmware-name = "qca/bt_fw_patch.mbn";
++
++		clocks = <&gcc GCC_BTSS_LPO_CLK>;
++		clock-names = "btss_lpo_clk";
++		resets = <&gcc GCC_BTSS_BCR>;
++		reset-names = "btss_reset";
++
++		memory-region = <&btss_region>;
++
++		status = "disabled";
++	};
++
+ 	reserved-memory {
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		ranges;
+ 
++		btss_region: bluetooth@7000000 {
++			reg = <0x0 0x07000000 0x0 0x58000>;
++			no-map;
++		};
++
+ 		bootloader@4a800000 {
+ 			reg = <0x0 0x4a800000 0x0 0x200000>;
+ 			no-map;
+@@ -647,7 +678,8 @@ watchdog: watchdog@b017000 {
+ 
+ 		apcs_glb: mailbox@b111000 {
+ 			compatible = "qcom,ipq5018-apcs-apps-global",
+-				     "qcom,ipq6018-apcs-apps-global";
++				     "qcom,ipq6018-apcs-apps-global",
++				     "syscon";
+ 			reg = <0x0b111000 0x1000>;
+ 			#clock-cells = <1>;
+ 			clocks = <&a53pll>, <&xo_board_clk>, <&gcc GPLL0>;
 
-Best regards,
 -- 
-George Moussalem <george.moussalem@outlook.com>
+2.53.0
 
 
 
