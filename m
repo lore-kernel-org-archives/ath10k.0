@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC7E5CDE00F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14467CDE00C
 	for <ath10k@archiver.kernel.org>; Thu, 25 Jun 2026 14:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
@@ -12,47 +12,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:
 	Subject:Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xmbk6DwPVFgEpooDCZ8YO2F4NMRhF8NzbvOxylSUgoI=; b=o8Q80vF8sVCNVxgU/QRlt6QrPq
-	s7iI5oDQ+5Z0dNBqFzeuxKy0DruWGxuuI7FsNJh0iTas2s4w5LUpbFGSnIC4Fl59mGW9kJ8jCDRjg
-	i99iuibNkxj0A9ZYuzWA3aDJvsaWR306YgaF2J3Jf+j1C0s/+ODYlDgJ8470CXdqOrhHoTIEQ5yFd
-	umErL7B7YBy4otlOEG0R4tSUHpDAATg54NLhlKwPfLy99LGZVt6YSzpOqChevxIv3ygSfvPmK7sYc
-	fgocp/9qu+OoW8fqr18an3jo6+Mnccl3AoGtdCmuaJvzd9PLLkNCiQhXfi93o/il6v9mX2/HICbtd
-	8pCGEDJg==;
+	bh=N5GvKnPrDImpUGoAzRrcMpXScm40M0AtfTM/wiq2ZLM=; b=mUurtBOro4iWf5SrjobusUbM6b
+	jn1IEO2WTH3PpgOA9qlNPx7aNCbvM/1oDVrqndrm5FOY+7c8rmD1kXHSqQZ6GS1TKivr9p8zl0svK
+	kHESoOgvr16TPEFhSQyk0aTI/DiNjUxm6mjyLGDemQlcq3Z0Mn/SXkagaXgME9OrlX5HZgzvBMUZQ
+	Mej8bl9PlVmroPjJudR/o3IZisBOzd43PGLoawtHqWdXDdG5fwFT/IbikL8S6Bf9zTdy2AK3K9vMb
+	7sVivluyI6odmX6cc9Q2VKGjybx7qt1RoXzn0RT6bmbuc3FEAnUuhShqKXupG2uyIrxwwGb0Crtpq
+	MKwpw4vA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wckmn-00000009HpB-0ghx;
+	id 1wckmn-00000009HpM-1Mek;
 	Thu, 25 Jun 2026 14:10:33 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wckml-00000009Ho9-3DiU
+	id 1wckml-00000009HoF-3TvB
 	for ath10k@lists.infradead.org;
 	Thu, 25 Jun 2026 14:10:31 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 300074426C;
+	by sea.source.kernel.org (Postfix) with ESMTP id 4082B444E9;
 	Thu, 25 Jun 2026 14:10:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F1D23C2BCB7;
-	Thu, 25 Jun 2026 14:10:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0F51FC2BCF4;
+	Thu, 25 Jun 2026 14:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1782396631;
-	bh=O39ws0iMru9hm8TgXu7rNxCKAIVbTXEq4BlFEP3abHw=;
+	bh=ycC+GQix4zQ36UL1Ou2055qToVbPC0zOEtny3bFYU/c=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=M7yi9uvvaw76kuzKhtvRlSvxlIOsDdlcqnEsorvKqYVUMAeaNysO4qRlS3dQINjBm
-	 xN58K8uBBMPOfw33e5meQkXxSb1Vc7ByxkFLlXJ2nzHUUmtsn6ktLSOpwiEDGarjbx
-	 +Uj95jt84ZPxFaC6DOJ6B3GqNGE5PjA+qduv47H/CXVuKeGK4cfc6ChfXA3qNG4cnM
-	 vkNYF0B7z1bCgFmMIlIJ8/HLh1FOMhCVZgVSiUmxupGjA8Uv4nlIwa+5E5y5ts6Dut
-	 7f3p1dWB0JET1p4qlek6OhuklqCE5htWwUS6O/1OMYydsACjOpCFFp02hcWrLXlzTy
-	 h8M4OYaJ4qOYw==
+	b=Dfg3lqISRYsdB1QuAap/8IMQhqIk6dy4vFYBtJJRdUNINYPRItDtIWsmqMjS2VP5L
+	 egt9PpUiXqYddeFnD7hQveFHF4wQmg5xrRjuyuIRMej006U1UCQlCWTUKeWa+VJ1jR
+	 cdaz4xA3t2VXmqWEN7Og/s6kZCmk74hSs6Nx9pSA/I2FD6u3NvJfbO8H27hxlCxD8i
+	 0GJtyIGldKfhBHF+/qq3SZo4xztTay1QM+ZQSVxuGsO6Y0qTMrkMyLKptdCjiPNWAA
+	 CbYtz9lp5e5Cd9VCvTacFnw4oyRA3iXtFXjonT2CUFoGwroh0xtr4uwX2sNtMDXA7d
+	 dfnzTsvhzRlUA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8633CDE000;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3625CDB479;
 	Thu, 25 Jun 2026 14:10:30 +0000 (UTC)
 From: George Moussalem via B4 Relay <devnull+george.moussalem.outlook.com@kernel.org>
-Date: Thu, 25 Jun 2026 18:10:05 +0400
-Subject: [PATCH 1/6] dt-bindings: remoteproc: document M0 Bluetooth
- Subsystem secure PIL
+Date: Thu, 25 Jun 2026 18:10:06 +0400
+Subject: [PATCH 2/6] remoteproc: qcom: Add M0 BTSS secure PIL driver
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260625-ipq5018-bluetooth-v1-1-d999be0e04f7@outlook.com>
+Message-Id: <20260625-ipq5018-bluetooth-v1-2-d999be0e04f7@outlook.com>
 References: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
 In-Reply-To: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
 To: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>, 
@@ -80,11 +79,11 @@ Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
  George Moussalem <george.moussalem@outlook.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1782396628; l=2405;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1782396628; l=8999;
  i=george.moussalem@outlook.com; s=20250321; h=from:subject:message-id;
- bh=aASt9ShJzJWACzszmUFOYCQKCOgD0FP+gd6rS7LrksI=;
- b=N1N0fyN6SorxNs2uShNAzctNepCMehbe1sjqld58fbG/kPye64F2aPdTfu+pjaWj+h5Wt5Wr1
- UkWP3yZildXD0XNWruBonDbZdCY2LJC8qZePwmbFxQjRooTh5BB9aaG
+ bh=DZrXVK9colzil8YwnbWNpyUvIkVtTOuT3yHRPJJIldk=;
+ b=n725LM65DoAVovuOcG8uKJk15Whq6Z31EW4GDb8U1hdzvtIw+Rlvj/+vEjRLDxtR9pzzg8iGn
+ ntT1YRZwizbBdtz2xFBuXctxI3hwoJr0TEoXJuGlQva41nCV38yXvIu
 X-Developer-Key: i=george.moussalem@outlook.com; a=ed25519;
  pk=/PuRTSI9iYiHwcc6Nrde8qF4ZDhJBlUgpHdhsIjnqIk=
 X-Endpoint-Received: by B4 Relay for george.moussalem@outlook.com/20250321
@@ -107,93 +106,322 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 From: George Moussalem <george.moussalem@outlook.com>
 
-Document the M0 Bluetooth Subsystem remote processor core found in the
-Qualcomm IPQ5018 SoC. Firmware loaded is authenticated via TrustZone.
-The firmware running on the M0 core provides bluetooth functionality.
+Add support to bring up the M0 core of the bluetooth subsystem found in
+the IPQ5018 SoC.
+
+The signed firmware loaded is authenticated by TrustZone. If successful,
+the M0 core boots the firmware and the peripheral is taken out of reset
+using a Secure Channel Manager call to TrustZone.
 
 Signed-off-by: George Moussalem <george.moussalem@outlook.com>
 ---
- .../bindings/remoteproc/qcom,m0-btss-pil.yaml      | 72 ++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+ drivers/remoteproc/Kconfig            |  12 ++
+ drivers/remoteproc/Makefile           |   1 +
+ drivers/remoteproc/qcom_m0_btss_pil.c | 261 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 274 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,m0-btss-pil.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,m0-btss-pil.yaml
+diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+index c521c744e7db..6b52f78f1427 100644
+--- a/drivers/remoteproc/Kconfig
++++ b/drivers/remoteproc/Kconfig
+@@ -163,6 +163,18 @@ config PRU_REMOTEPROC
+ 	  processors on various TI SoCs. It's safe to say N here if you're
+ 	  not interested in the PRU or if you are unsure.
+ 
++config QCOM_M0_BTSS_PIL
++	tristate "Qualcomm M0 BTSS Peripheral Image Loader"
++	depends on OF && ARCH_QCOM
++	select QCOM_MDT_LOADER
++	select QCOM_RPROC_COMMON
++	select QCOM_SCM
++	help
++	  Say y here to support the Secure Peripheral Imager Loader for the
++	  Qualcomm Bluetooth Subsystem running on the M0 remote processor found
++	  in the IPQ5018 SoC. The M0 core is started and stopped using a
++	  Secure Channel Manager call to TrustZone.
++
+ config QCOM_PIL_INFO
+ 	tristate
+ 
+diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+index 1c7598b8475d..df80faf8d0df 100644
+--- a/drivers/remoteproc/Makefile
++++ b/drivers/remoteproc/Makefile
+@@ -21,6 +21,7 @@ obj-$(CONFIG_DA8XX_REMOTEPROC)		+= da8xx_remoteproc.o
+ obj-$(CONFIG_KEYSTONE_REMOTEPROC)	+= keystone_remoteproc.o
+ obj-$(CONFIG_MESON_MX_AO_ARC_REMOTEPROC)+= meson_mx_ao_arc.o
+ obj-$(CONFIG_PRU_REMOTEPROC)		+= pru_rproc.o
++obj-$(CONFIG_QCOM_M0_BTSS_PIL)		+= qcom_m0_btss_pil.o
+ obj-$(CONFIG_QCOM_PIL_INFO)		+= qcom_pil_info.o
+ obj-$(CONFIG_QCOM_RPROC_COMMON)		+= qcom_common.o
+ obj-$(CONFIG_QCOM_Q6V5_COMMON)		+= qcom_q6v5.o
+diff --git a/drivers/remoteproc/qcom_m0_btss_pil.c b/drivers/remoteproc/qcom_m0_btss_pil.c
 new file mode 100644
-index 000000000000..397bb6815d71
+index 000000000000..7168e270e4d4
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/remoteproc/qcom,m0-btss-pil.yaml
-@@ -0,0 +1,72 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/remoteproc/qcom,m0-btss-pil.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/remoteproc/qcom_m0_btss_pil.c
+@@ -0,0 +1,261 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2026 The Linux Foundation. All rights reserved.
++ */
 +
-+title: Qualcomm M0 BTSS Peripheral Image Loader
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/elf.h>
++#include <linux/firmware/qcom/qcom_scm.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/of_reserved_mem.h>
++#include <linux/platform_device.h>
++#include <linux/reset.h>
++#include <linux/soc/qcom/mdt_loader.h>
 +
-+maintainers:
-+  - George Moussalem <george.moussalem@outlook.com>
++#include "qcom_common.h"
 +
-+description:
-+  Qualcomm M0 BTSS Peripheral Secure Image Loader loads firmware and powers up
-+  the M0 BTSS remote processor core on the Qualcomm IPQ5018 SoC.
++#define BTSS_PAS_ID	0xc
 +
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,ipq5018-btss-pil
++struct m0_btss {
++	struct device *dev;
++	phys_addr_t mem_phys;
++	phys_addr_t mem_reloc;
++	void __iomem *mem_region;
++	size_t mem_size;
++	struct reset_control *btss_reset;
++};
 +
-+  firmware-name:
-+    maxItems: 1
-+    description: Firmware name for the M0 Bluetooth Subsystem core
++static int m0_btss_start(struct rproc *rproc)
++{
++	int ret;
 +
-+  clocks:
-+    items:
-+      - description: M0 BTSS low power oscillator clock
++	if (!qcom_scm_pas_supported(BTSS_PAS_ID)) {
++		dev_err(rproc->dev.parent,
++			"PAS is not available for peripheral: 0x%x\n",
++			BTSS_PAS_ID);
++		return -ENODEV;
++	}
 +
-+  clock-names:
-+    items:
-+      - const: btss_lpo_clk
++	ret = qcom_scm_pas_auth_and_reset(BTSS_PAS_ID);
++	if (ret) {
++		dev_err(rproc->dev.parent, "Failed to start rproc: %d\n", ret);
++		return ret;
++	}
 +
-+  memory-region:
-+    items:
-+      - description: M0 BTSS reserved memory carveout
++	return 0;
++}
 +
-+  resets:
-+    items:
-+      - description: M0 BTSS reset
++static int m0_btss_stop(struct rproc *rproc)
++{
++	int ret;
 +
-+  reset-names:
-+    items:
-+      - const: btss_reset
++	if (rproc->state == RPROC_RUNNING || rproc->state == RPROC_CRASHED) {
++		ret = qcom_scm_pas_shutdown(BTSS_PAS_ID);
++		if (ret) {
++			dev_err(rproc->dev.parent, "Failed to stop rproc: %d\n",
++				ret);
++			return ret;
++		}
 +
-+required:
-+  - compatible
-+  - firmware-name
-+  - clocks
-+  - clock-names
-+  - resets
-+  - reset-names
-+  - memory-region
++		dev_info(rproc->dev.parent, "Successfully stopped rproc\n");
++	}
 +
-+additionalProperties: false
++	return 0;
++}
 +
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
-+    #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
++static int m0_btss_load(struct rproc *rproc, const struct firmware *fw)
++{
++	struct m0_btss *desc = rproc->priv;
++	const struct elf32_phdr *phdrs;
++	const struct firmware *seg_fw;
++	const struct elf32_phdr *phdr;
++	const struct elf32_hdr *ehdr;
++	void __iomem *metadata;
++	size_t metadata_size;
++	int i, ret;
 +
-+    remoteproc {
-+      compatible = "qcom,ipq5018-btss-pil";
++	ehdr = (const struct elf32_hdr *)fw->data;
++	phdrs = (const struct elf32_phdr *)(ehdr + 1);
 +
-+      firmware-name = "qca/bt_fw_patch.mbn";
++	ret = request_firmware(&fw, rproc->firmware, rproc->dev.parent);
++	if (ret) {
++		dev_err(rproc->dev.parent, "Failed to request firmware: %d\n",
++			ret);
++		return ret;
++	}
 +
-+      clocks = <&gcc GCC_BTSS_LPO_CLK>;
-+      clock-names = "btss_lpo_clk";
-+      resets = <&gcc GCC_BTSS_BCR>;
-+      reset-names = "btss_reset";
++	metadata = qcom_mdt_read_metadata(fw, &metadata_size, rproc->firmware,
++					  rproc->dev.parent);
++	if (IS_ERR(metadata)) {
++		ret = PTR_ERR(metadata);
++		dev_err(rproc->dev.parent,
++			"Failed to read firmware metadata: %d\n", ret);
++		goto release_fw;
++	}
 +
-+      memory-region = <&btss_region>;
-+    };
++	ret = qcom_scm_pas_init_image(BTSS_PAS_ID, metadata,
++				      metadata_size, NULL);
++	if (ret) {
++		dev_err(rproc->dev.parent, "PAS init image failed: %d\n", ret);
++		goto free_metadata;
++	}
++
++	for (i = 0; i < ehdr->e_phnum; i++) {
++		char *seg_name __free(kfree) = kstrdup(rproc->firmware,
++						       GFP_KERNEL);
++		if (!seg_name)
++			return -ENOMEM;
++
++		phdr = &phdrs[i];
++
++		/* Only process valid loadable data segments */
++		if (phdr->p_type != PT_LOAD || !phdr->p_memsz)
++			continue;
++
++		if (phdr->p_vaddr + phdr->p_filesz > desc->mem_size) {
++			dev_err(rproc->dev.parent,
++				"Segment data exceeds the reserved memory area!\n");
++			goto free_metadata;
++		}
++
++		/* Check if firmware is split across multiple segment files */
++		if (phdr->p_offset > fw->size ||
++		    phdr->p_offset + phdr->p_filesz > fw->size) {
++			sprintf(seg_name + strlen(seg_name) - 3, "b%02d", i);
++			ret = request_firmware(&seg_fw, seg_name,
++					       rproc->dev.parent);
++			if (ret) {
++				dev_err(rproc->dev.parent,
++					"Could not find split segment binary: %s\n",
++					seg_name);
++				goto free_metadata;
++			}
++
++			/*
++			 * Use the virtual instead of the physical address as
++			 * the offset
++			 */
++			memcpy_toio(desc->mem_region + phdr->p_vaddr,
++				    seg_fw->data, phdr->p_filesz);
++
++			release_firmware(seg_fw);
++		} else {
++			memcpy_toio(desc->mem_region + phdr->p_vaddr,
++				    fw->data + phdr->p_offset, phdr->p_filesz);
++		}
++	}
++
++	return 0;
++
++free_metadata:
++	kfree(metadata);
++release_fw:
++	release_firmware(fw);
++	return ret;
++}
++
++static const struct rproc_ops m0_btss_ops = {
++	.start = m0_btss_start,
++	.stop = m0_btss_stop,
++	.load = m0_btss_load,
++	.get_boot_addr = rproc_elf_get_boot_addr,
++};
++
++static int m0_btss_alloc_memory_region(struct m0_btss *desc)
++{
++	struct device *dev = desc->dev;
++	struct resource res;
++	int ret;
++
++	ret = of_reserved_mem_region_to_resource(dev->of_node, 0, &res);
++	if (ret) {
++		dev_err(dev, "unable to acquire memory-region resource\n");
++		return ret;
++	}
++
++	desc->mem_phys = res.start;
++	desc->mem_reloc = res.start;
++	desc->mem_size = resource_size(&res);
++	desc->mem_region = devm_ioremap(dev, desc->mem_phys, desc->mem_size);
++	if (!desc->mem_region) {
++		dev_err(dev, "unable to map memory region: %pR\n", &res);
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++static int m0_btss_pil_probe(struct platform_device *pdev)
++{
++	// struct reset_control *btss_reset;
++	struct device *dev = &pdev->dev;
++	const char *fw_name = NULL;
++	struct m0_btss *desc;
++	struct clk *lpo_clk;
++	struct rproc *rproc;
++	int ret;
++
++	ret = of_property_read_string(dev->of_node, "firmware-name",
++				      &fw_name);
++	if (ret < 0)
++		return ret;
++
++	rproc = devm_rproc_alloc(dev, "m0btss", &m0_btss_ops,
++				 fw_name, sizeof(*desc));
++	if (!rproc) {
++		dev_err(dev, "failed to allocate rproc\n");
++		return -ENOMEM;
++	}
++
++	desc = rproc->priv;
++	desc->dev = dev;
++
++	ret = m0_btss_alloc_memory_region(desc);
++	if (ret)
++		return ret;
++
++	lpo_clk = devm_clk_get_enabled(dev, "btss_lpo_clk");
++	if (IS_ERR(lpo_clk))
++		return dev_err_probe(dev, PTR_ERR(lpo_clk),
++				     "Failed to get lpo clock\n");
++
++	desc->btss_reset = devm_reset_control_get(dev, "btss_reset");
++	if (IS_ERR_OR_NULL(desc->btss_reset))
++		return dev_err_probe(dev, PTR_ERR(desc->btss_reset),
++				     "unable to acquire btss_reset\n");
++
++	ret = reset_control_deassert(desc->btss_reset);
++	if (ret)
++		return dev_err_probe(rproc->dev.parent, ret,
++				     "Failed to deassert reset\n");
++
++	rproc->auto_boot = false;
++	ret = devm_rproc_add(dev, rproc);
++	if (ret)
++		return ret;
++
++	platform_set_drvdata(pdev, rproc);
++
++	return 0;
++}
++
++static const struct of_device_id m0_btss_of_match[] = {
++	{ .compatible = "qcom,ipq5018-btss-pil" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, m0_btss_of_match);
++
++static struct platform_driver m0_btss_pil_driver = {
++	.probe = m0_btss_pil_probe,
++	.driver = {
++		.name = "qcom-m0-btss-pil",
++		.of_match_table = m0_btss_of_match,
++	},
++};
++
++module_platform_driver(m0_btss_pil_driver);
++
++MODULE_DESCRIPTION("Qualcomm M0 Bluetooth Subsystem Peripheral Image Loader");
++MODULE_LICENSE("GPL");
 
 -- 
 2.53.0
