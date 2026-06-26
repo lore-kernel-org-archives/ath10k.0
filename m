@@ -4,125 +4,164 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B879BCDE008
-	for <ath10k@archiver.kernel.org>; Fri, 26 Jun 2026 11:16:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9362CD4F26
+	for <ath10k@archiver.kernel.org>; Fri, 26 Jun 2026 11:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+pjkC367Ll/gzzPWQk4yEj/jwA/X88/o2EzLb1kHUUU=; b=jHjOwHvvBIvwtZQeQQOYym4l7S
-	tTULWVxTmE7YyUlH9uOayc/GgeDUPJlXiyY5Bu8j/nRbeGt6STu9pH91f3gCIU8kN/sGFRWTRFTIS
-	R+TV4P88x60WlhkxUAYfx/7sNaCatA8ZNX6dx5AOisYNB1rVQ2ciYlnXcSXk8+3yTA5kQwP0Uv9BX
-	2gJ7o0K0hOiJ5JRv1nq9lORD8yB/Bn6djFcUp1EsSffMS0QZSv03N1ODb58FKZRE0+YRZrRNSVrrd
-	i7+1NDLAVH6rzsfuViHvxaF4C5xFMZxz22UtteM1AlDJTlFyfvOz0enc3DsJy8PxcmjkkP2Gqv4tH
-	7gscoNKQ==;
+	bh=efSmsLNw8E+yGzrU4i9rfMYqOeX4WnsvoEalewcGYnQ=; b=jjmtTFQiSRHeTf7O5qfyKHVFNQ
+	LUg8zp3kBlmdMQ1hvN8jQKXIsgrJZWO+v3BFIe7GQAMhDFmPsTXcFFxRF5FMcaZCYAFUgmVA+DQUw
+	2UF5N9/8p1cba+0SFZ1tZRSG8+plKEtokmKkvRqiMeeYY1Q3iSKcPH+3EVic7zfPkJTi5zK2yENIV
+	s0cQYexklli3J8vAgXb9Dm0/VPDAD6JxBKCg93J9fm/0cBIfMcLz+iVpxHjtyrY+72hY7v96w4+Sj
+	OQQqwfCGk14OQI5KUB6oBJXzs2lHTW8PTOpn7aZsG+tE5SFmfYdBM1vq/Nkzzt4Mrrzv9vA3jKpc4
+	BYX9zReQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wd4Y9-0000000BBy3-0q7H;
-	Fri, 26 Jun 2026 11:16:45 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wd4br-0000000BCuv-2E9l;
+	Fri, 26 Jun 2026 11:20:35 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wd4Y8-0000000BBxw-2MOV
+	id 1wd4bp-0000000BCuP-0OT1
 	for ath10k@lists.infradead.org;
-	Fri, 26 Jun 2026 11:16:44 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3E0E643BF3;
-	Fri, 26 Jun 2026 11:16:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CACB51F000E9;
-	Fri, 26 Jun 2026 11:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782472604;
-	bh=+pjkC367Ll/gzzPWQk4yEj/jwA/X88/o2EzLb1kHUUU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Hc+dtlObmw4fBNFgub/XBvDDJXNpCQzAPPWXVJz2E/6orIM72j7cLM1lK4VyOG58y
-	 EmrdWQG8ywxiR/WlX32oLHNBaoQE8+RIw/DKrhL9C+0UBHQ/R1lWvHFDiZk2bK0l7b
-	 OiKfvy1JKx8neW8R71XN5XBlWoNjVLFLsPG0tk7Zwpwj1zptuxTbEQ5owdJDSFH/f1
-	 XiyIPcm6053bOdFZqEmYk8+Cy7bDs8v2KrkGar1+yo1TdJMQbH/eY53M4b38F4cEzA
-	 WwY7M5DydgLJt4Zp2IxTtknJLHQ8Zvki2QmRmVjP3cLEMXGYrsESPMScfPPUp8y06q
-	 ZZdrA1qC6s36A==
-Message-ID: <4531e20d-13ad-4493-8447-d09b9b91be7f@kernel.org>
-Date: Fri, 26 Jun 2026 13:16:31 +0200
+	Fri, 26 Jun 2026 11:20:34 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 65QAd3h91053620
+	for <ath10k@lists.infradead.org>; Fri, 26 Jun 2026 11:20:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	efSmsLNw8E+yGzrU4i9rfMYqOeX4WnsvoEalewcGYnQ=; b=g1zAlDyz9+fjFEn1
+	eSLwg5hGzrK6g6mloSVh46LugG7GsSngDqO0kgNgdgND6LIRSGZXWL+6k34xsLaa
+	E0GaUP01R6u7FDeAt4tY85T8+QZC9Ph7N8Rei1xnQJsIR4Vaf0ua58e2H44b4Vh6
+	zsRya1YcadyGXUZMluRvvhQ3xB43A6rLUrguZaV8685jFOP9gawXuLDp9oJ8QMW7
+	OZ+84CuflpoD+EzVf5b1tTB+t28WxZTCyyJYKTn0OQHTifpEoRseAGg/nOsISOI3
+	y0d18VYFI12DOixIFrZ37QjG1Eex9Dm9DVSgncvQo/ETUDKXO6Ar3QOaNKB6pKWH
+	lA1LTg==
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com [209.85.217.71])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4f1ngggn6d-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Fri, 26 Jun 2026 11:20:31 +0000 (GMT)
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-734fbe0e6afso30506137.3
+        for <ath10k@lists.infradead.org>; Fri, 26 Jun 2026 04:20:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1782472831; x=1783077631; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=efSmsLNw8E+yGzrU4i9rfMYqOeX4WnsvoEalewcGYnQ=;
+        b=ONzbK0JXVqjBiqZbhA69v815zmkrdQnZnDeFXXkKDYdc33SukqB6Tb+wHcVgQTdCpR
+         /DPgSiZ6EsSCxGNB7AopOlp14ZUYa0/TfDJSvf5GW5RKz6iwp4+K8TDSJwByDEvN0UJI
+         kP6NWgcwahf/c+E+weW8edU2ramH8Sfe/6O8SCeeU7j0GALPd7gMto7B4fTWtvDGzFlB
+         hl4amBmRAhVh/7ENnMy1P1Li7c5MEsX1j06X6bzOZCj4piBni/1+qhzHj8rTnVFqHV/A
+         mp6bFXtvPsx2/ZDfNPo6gSwKdealS2jzRbJo9kVLnG8SF4FNRCihA4YZ7vSK/bA0rqeM
+         k9yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782472831; x=1783077631;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=efSmsLNw8E+yGzrU4i9rfMYqOeX4WnsvoEalewcGYnQ=;
+        b=n85Mnbs6Uq7bO6Sa7eXaQHpnJCisO4WcVm2erfVDjHzjQHsS0YhIkdg1vdhoEgX8zx
+         nYo4zoluIdKZ4gCoN+v01EnqlbGOpnvG4NSe8fCmDVhXcuC7uXX5qPBEOSRs6/Ojeom+
+         yS2G8PP9R1sZYio2V9uh47CiByBTBds+9qZBAuxF6jgWotwDUq3QDd9B4O+GV/G/wpRc
+         sNaFvB12cu5EbI/SSUFEzsj20W6rAY4z9q8jtioD+/WF7rJM1/Y4YCILjpemREsfZLBg
+         bujrbvu0PEBeneomIqeS72P18jEgeTIv+pWwT/GTe/VWl47OU0XRyrQQ/TUip1aRbv77
+         AN8A==
+X-Forwarded-Encrypted: i=1; AHgh+RqRvpXRfYbjDZ2107/o8UbBVl3OB1WufbMs7EuXE7+b0WFLJXGARC4PSQ0xKfobBCcUUevwd58=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzs2c7WRp7IeyAEPW5EHmt51rYCZku4OooOyCnSIpdI75WaA/1e
+	pcn1TsA2ApQPR7uCc362+dnZuQqXCXFqW2dv1TLDvm+zF5cc3XwvoQ+vw+UXqeU1M1Nc6rIo1vZ
+	wuoPODM5MkY8TTlDDfPdPPFdN/0GfhRx9Tfhub2bAvfsn1/NnDjSq0JXKfFemeOVX
+X-Gm-Gg: AfdE7cnki5V2oglhUdce+25U/JfplQttZt7pQY05xYzk7HFDNgoYZoOLcQtzHqPUvA5
+	6vbXJrY2/BbJlSAvngfJlp11BQ3pyPbgIMQosEmbQAT4Q66jII50unGq5jfW8tZ1wRW4HGSBi3f
+	+j0Hh6fzZ9x2+ZZ2a5fjX7SzmOypHIEZNatIrKVy51hol9Ym6l5fLGLzG3FBGinBOckb/LdGnbW
+	ErTbD+M4jTeY4gDXhyMe+H1nED0tXG4AGusaTSPZnNtSsxTcwIdWuLBtgTH+suDHav7ztHtS5K5
+	mtx2kTnyn2IJLEvOz4DiGzyU+arQy+DkMT8KFZ7DPL+V9EQFKFBXblo0L1Ue7A+KkfVz00Oy+ea
+	66AxZsGbpFya4vdkMVgywR3R77GWwtRhuKCc=
+X-Received: by 2002:a05:6102:148e:b0:6c2:7d0d:e09f with SMTP id ada2fe7eead31-73433e3675amr1071156137.1.1782472830788;
+        Fri, 26 Jun 2026 04:20:30 -0700 (PDT)
+X-Received: by 2002:a05:6102:148e:b0:6c2:7d0d:e09f with SMTP id ada2fe7eead31-73433e3675amr1071127137.1.1782472830410;
+        Fri, 26 Jun 2026 04:20:30 -0700 (PDT)
+Received: from [192.168.120.170] ([178.235.128.140])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-697f3ade18esm2731485a12.7.2026.06.26.04.20.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jun 2026 04:20:29 -0700 (PDT)
+Message-ID: <38aceb33-b28e-4994-b277-de070b6dae2b@oss.qualcomm.com>
+Date: Fri, 26 Jun 2026 13:20:25 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: remoteproc: document M0 Bluetooth
- Subsystem secure PIL
-To: George Moussalem <george.moussalem@outlook.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Johannes Berg
- <johannes@sipsolutions.net>, Jeff Johnson <jjohnson@kernel.org>,
- Bartosz Golaszewski <brgl@kernel.org>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
- Rocky Liao <quic_rjliao@quicinc.com>, Saravana Kannan
+Subject: Re: [PATCH 2/6] remoteproc: qcom: Add M0 BTSS secure PIL driver
+To: george.moussalem@outlook.com, Jens Axboe <axboe@kernel.dk>,
+        Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley
+ <conor+dt@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Johnson <jjohnson@kernel.org>,
+        Bartosz Golaszewski <brgl@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+        Rocky Liao <quic_rjliao@quicinc.com>,
+        Saravana Kannan
  <saravanak@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-wireless@vger.kernel.org,
- ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
- linux-remoteproc@vger.kernel.org
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King
+ <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org
 References: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
- <20260625-ipq5018-bluetooth-v1-1-d999be0e04f7@outlook.com>
- <20260626-tiny-warm-jerboa-3ba57a@quoll>
- <SN7PR19MB67364ADE8CDD7C31297AE18D9DEB2@SN7PR19MB6736.namprd19.prod.outlook.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+ <20260625-ipq5018-bluetooth-v1-2-d999be0e04f7@outlook.com>
 Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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
-In-Reply-To: <SN7PR19MB67364ADE8CDD7C31297AE18D9DEB2@SN7PR19MB6736.namprd19.prod.outlook.com>
+From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+In-Reply-To: <20260625-ipq5018-bluetooth-v1-2-d999be0e04f7@outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjI2MDA5MiBTYWx0ZWRfX9WvVdGqn7PJM
+ zdtsGGKygHwiAGN6Ci4yjgfaYwmV/xt2rLT/MffYHcPpZ2xHmK5ei0n81j884d11to7fXC9SXJi
+ eFyCqxXMld/BwJgy8MmmV+8IRJe7l4M7M44pOxbOoAxQUWPNMbUtEpAOv34jCDSCMhPRHdOMuiG
+ 5NgN6lgMh0bNVTI0N4F3U+5BFA2MddARvGhKkRSsVRZ9H02VO21k0pWPZa6X65DAxXXbeq/lGun
+ 18jPTWoVeffRlIE+awidDsJxD5yFoIscVGZoGcNQ1LhTEg/j8QPaF+PNv8oKcwc7gEFiamKypmc
+ ExJ4gmpatye+RCLB9L2LTs7lleciy2iVYV3IJb7u9UZd8nOfk3kFIO5dZIc3DPCAhFF5pHjKN3B
+ SqD4D7KIpe9OaxAF4tvokJTR+TX6H2uE8KdPiqCUFn/DeEfee1WByFCow64/DdUBhALYI3EmU9Y
+ L6miCNWpdFj/hv7YpLw==
+X-Authority-Analysis: v=2.4 cv=KNlqylFo c=1 sm=1 tr=0 ts=6a3e607f cx=c_pps
+ a=P2rfLEam3zuxRRdjJWA2cw==:117 a=PRfkaYvzSr8QmIIGAkY2Sg==:17
+ a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=rJkE3RaqiGZ5pbrm-msn:22
+ a=UqCG9HQmAAAA:8 a=sp8NEORZx8pkfp9qRiAA:9 a=QEXdDO2ut3YA:10
+ a=ODZdjJIeia2B_SHc_B0f:22
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjI2MDA5MiBTYWx0ZWRfX/8c90rmMEG5G
+ ztsbxJhsRhc0iSXbQ70giz9kst0DkxKVwel6j10JRstdPmr0ckMSGAasfyBuDP8iInHchwMrq3q
+ Qfnwsgy2TFIgRM1psDkKvAX6KszeWKU=
+X-Proofpoint-ORIG-GUID: Z6URR9zfnz6Wv5uokl3O2B8HaJmBXyqr
+X-Proofpoint-GUID: Z6URR9zfnz6Wv5uokl3O2B8HaJmBXyqr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-26_03,2026-06-24_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 bulkscore=0 malwarescore=0 spamscore=0 adultscore=0
+ suspectscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ clxscore=1015 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
+ definitions=main-2606260092
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260626_042033_255613_2C6C9F68 
+X-CRM114-Status: GOOD (  10.25  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,21 +176,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 26/06/2026 12:51, George Moussalem wrote:
->>
->> No supplies? no address space? How do you actually trigger remoteproc
->> startup?
+On 6/25/26 4:10 PM, George Moussalem via B4 Relay wrote:
+> From: George Moussalem <george.moussalem@outlook.com>
 > 
-> No supplied and no address space. The core is booted by a
-> qcom_scm_auth_and_reset call to TrustZone which authenticated the
-> firmware, takes it out of reset and boots it.
+> Add support to bring up the M0 core of the bluetooth subsystem found in
+> the IPQ5018 SoC.
+> 
+> The signed firmware loaded is authenticated by TrustZone. If successful,
+> the M0 core boots the firmware and the peripheral is taken out of reset
+> using a Secure Channel Manager call to TrustZone.
+> 
+> Signed-off-by: George Moussalem <george.moussalem@outlook.com>
+> ---
 
-Then commit msg could be improved:
+Can this not fit inside the existing PAS driver?
 
-"Firmware loaded is authenticated via TrustZone." ->
-"Firmware is loaded and authenticated via TrustZone."
-
-
-Best regards,
-Krzysztof
+Konrad
 
