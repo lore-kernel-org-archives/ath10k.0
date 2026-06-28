@@ -4,170 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B4AACD4F26
-	for <ath10k@archiver.kernel.org>; Fri, 26 Jun 2026 11:33:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEFECC43458
+	for <ath10k@archiver.kernel.org>; Sun, 28 Jun 2026 03:07:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:
-	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=corYM7TW74lUq1/Pnz1PBy5eVYnH9WSJF93bXIC6udM=; b=khsesSxCIisdwVULlOGtSLbShQ
-	Cj3s9737ryN5YC5vxy9jiAjSZeH1dVcbAJ3IeH4T5tFluGOBLtCJTD7hlsWOpYyvk1e6qvCx8G5Zc
-	koGC2izP5u5bBvmi9tl6artZ6xtckEjtkO7MKJWAUJtgz6qzFxAdBPPUtu3RPOKgiGtJaJClFuriS
-	6CN3zgkAvP22O4Podxk/0+vrsYPEPMTRenClk6V4XdHMpi+c8ceLGS+wCJJlSLyog6y8UOGC21hQ2
-	sZUM5x7KINWaDpKRJjsbmJTT9tJt3NBfZ0WVJWC4D9DnwsSWH1Et+jGggS0WIK28BT+r8GhL2qrIm
-	SfjToBxA==;
+	bh=vmkXcgYl+w/R1qnunR6PXyn5dCrixKgKvmxDaG58d0g=; b=HhjYs9J7NeuqvMR3Nay1LzdyI2
+	+nOIt6M4eT2Rfo+W40Qi32397Q293pNWiObiFNn5IswOv0bFfJ2NWw0a6TeVIFL3nEuwekqOSnW76
+	ure4wcXoY7jAyBZk5K8CE2HfeuHCjhGy4s16NG06VhjTC9qGHfiMHVXJmgoFenTFvUToMgzAtaG5F
+	awFyG4UctElDM6K1PjHFWgXw/2v+rFiRuhKP5uHvOKrD0yDPAE1Y39RmDYax5T0nycHFxhYYGflNj
+	Dr/qtiVEF6PGo4LKUTtWVL+Ounzza6N/WMXznPTxfFCLQyuha9kdXEJovMC+QRwpEHiKRbSgYmMA2
+	ts56z+qQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wd4oA-0000000BECE-0yOx;
-	Fri, 26 Jun 2026 11:33:18 +0000
-Received: from mail-westusazolkn190100003.outbound.protection.outlook.com ([2a01:111:f403:d001::3] helo=BYAPR05CU005.outbound.protection.outlook.com)
+	id 1wdfrb-0000000CsuN-2GDP;
+	Sun, 28 Jun 2026 03:07:19 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wd4o8-0000000BEBr-1Tz7
+	id 1wdfrZ-0000000CsuF-22Vf
 	for ath10k@lists.infradead.org;
-	Fri, 26 Jun 2026 11:33:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=j0lRCG0aghqf8hZUVQ/uJ4d4C4VIm9FXd8sWIcCcqBkBmJ1fOtLrlmHOWN6vS0u405IMfpNUi9w/vey/HpRqcgFLHYwrwsUXHBkRET1x9L3dUHLy/E+g75ZeLY3SnGpGEgFFVljY9AO5q4L8sGgkY9IS2vENfR93UroQeqWLM9XKmd4gFbYgCrZw63x/Pnh+KB8n+Uy+VKSTw81LpbbqM1hts9eedm9UagLmvCa4T2SdCHOn601Rngxl7aimihFZt6deaK/zjU0hmw52/1EGhxH93IYJQICkE42Od4CdlS5PsuREQgS2mGPtXPECh4tc0MZsrN5E/CWGDkr1bMR1Ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=corYM7TW74lUq1/Pnz1PBy5eVYnH9WSJF93bXIC6udM=;
- b=JcD2k+5YUfneoUlYEujYnOfEr0J9WEvjSyl5KGOeqhuGNP9oyqEVjzfb00i/xIq+gv6rPdXKOP7wvVCtDCUFzXKtSa6UiBGn1uM2nwRUKDhf0KwdeHRsJCLA/PVcQ9q9HVGgDkkUCPX5iZ4RxgHjfkiwuuUXiHxkX+/htaSYpJ1koGgpQyWgnxcPhYTbqXFQKU/zo+LjuGlcVdEPTMWBlP8T8U58vIeBgjO/0ZnFiwLzdVDTiMz4FbgTSO9zCHLDzeU4CU1FBxtJTbqbLK5FUpbAlFvUcK6yWWCWtHV5lI/jD991HmB+gkvuo3hZYFrMPzsUl/8m1WIDGZ7UOVGIXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=corYM7TW74lUq1/Pnz1PBy5eVYnH9WSJF93bXIC6udM=;
- b=YPKA2AjRmW78GCAks6WamGPRHug0hQyeB7FMEmDcF6ovypH6Ob+BkUGtV5yoeaLQskktecko7/9s7vhcqoV3z6zEFx6bDWVINIdK1FUv9dISgLcTwttkdt2Jbb6vMlVFd3+4gpCMsBh08TwtDL+5snlU/03SpQ2Q03tBAelOhtGNUIqe8pzeKUNAEj5LOiJt4ybpO+YYKKhLpGFnL5/zJGxudYOxeKNWJdcsSxkqRAxXY0hoiAsl5eKzOo0b3wuZuQ4BPl4jhkILQK4lPdFx2VdGOUMaqtIgJqXArxEPrtVeyM3SpkZ7P7TW8nMh2PzakNdotMaPhCa5YstCqL+Tbg==
-Received: from SN7PR19MB6736.namprd19.prod.outlook.com (2603:10b6:806:263::12)
- by PH0PR19MB5004.namprd19.prod.outlook.com (2603:10b6:510:93::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.159.16; Fri, 26 Jun
- 2026 11:33:05 +0000
-Received: from SN7PR19MB6736.namprd19.prod.outlook.com
- ([fe80::4b6c:b84f:b71c:d0a]) by SN7PR19MB6736.namprd19.prod.outlook.com
- ([fe80::4b6c:b84f:b71c:d0a%3]) with mapi id 15.21.0159.007; Fri, 26 Jun 2026
- 11:33:05 +0000
-Message-ID: <SN7PR19MB6736CFB46F0B6339026FCAC79DEB2@SN7PR19MB6736.namprd19.prod.outlook.com>
-Date: Fri, 26 Jun 2026 15:32:52 +0400
-User-Agent: Mozilla Thunderbird
+	Sun, 28 Jun 2026 03:07:17 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id DE2BB40086;
+	Sun, 28 Jun 2026 03:07:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 806041F000E9;
+	Sun, 28 Jun 2026 03:07:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782616035;
+	bh=vmkXcgYl+w/R1qnunR6PXyn5dCrixKgKvmxDaG58d0g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Lu0VtDr5h7i8BPVcYGWggTsEN1HWGUyBHpvQ+ivLYx+dwKxxVv5xx7QXxzB57eGKA
+	 tO1DM6iQgNP1tPmAKEpwHtFMU3gtm+J0aiKZ3UeuHb42TPYr/ovLH/J2Ky23SD2BEt
+	 Tfp+B7BWIfCZ1O8HuHB4/TNeCOSm5cErCo4mpcA9Ai7f4l52BGc11+mbvmL56cg+Qx
+	 Ez/bZOyo0/uh8Fgd4oVjho1IWhDtQLJxC7CVJfQhQRWOP9VXl9qjsdBvYdQfqsA7vU
+	 I0yU1daXd/kTOPks4tPmOmVRVq2h2LFqXyl549ZBSDLnNx4ME0H7Am1UDYvRQOg1NV
+	 L5nBys3SveKpw==
+Date: Sat, 27 Jun 2026 22:07:05 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: george.moussalem@outlook.com
+Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Johannes Berg <johannes@sipsolutions.net>, 
+	Jeff Johnson <jjohnson@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>, Rocky Liao <quic_rjliao@quicinc.com>, 
+	Saravana Kannan <saravanak@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
+	Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Konrad Dybcio <konradybcio@kernel.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org
 Subject: Re: [PATCH 2/6] remoteproc: qcom: Add M0 BTSS secure PIL driver
-To: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
- Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Johannes Berg
- <johannes@sipsolutions.net>, Jeff Johnson <jjohnson@kernel.org>,
- Bartosz Golaszewski <brgl@kernel.org>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
- Rocky Liao <quic_rjliao@quicinc.com>, Saravana Kannan
- <saravanak@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org
+Message-ID: <akCOYIIhyl738PC6@baldur>
 References: <20260625-ipq5018-bluetooth-v1-0-d999be0e04f7@outlook.com>
  <20260625-ipq5018-bluetooth-v1-2-d999be0e04f7@outlook.com>
- <38aceb33-b28e-4994-b277-de070b6dae2b@oss.qualcomm.com>
-Content-Language: en-US
-From: George Moussalem <george.moussalem@outlook.com>
-In-Reply-To: <38aceb33-b28e-4994-b277-de070b6dae2b@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MR2P264CA0164.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:1::27) To SN7PR19MB6736.namprd19.prod.outlook.com
- (2603:10b6:806:263::12)
-X-Microsoft-Original-Message-ID: <28eaa516-7c6d-450e-b2cd-e86eb16084bb@outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR19MB6736:EE_|PH0PR19MB5004:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3a90ce2e-bf43-4369-133a-08ded376b043
-X-MS-Exchange-SLBlob-MailProps: znQPCv1HvwUXBahuwteIkQeW30lJPuxOhuXbZtqyYbUxU6oJXY2hc/RJbjo/0cv8NhnZawQgS6oWE/3l/0jusfAXWQDE7tVqCL+Aavr6IfoMCH42EneEJu2hPGoaqakwxzHzdcgq1uyA9PeJF/PnMsJdw6dtwsw4LndOX+LHEdbUdCbho0yJK75nE4TiWtlDK+RaUF8NrWASqYRPUN2eUZwdC+2qyz6jf3ufxPPyyDv4I+3sPGSlydnYP0z+o86T2E93nRhX1bZ8d2kY0GeIPjXYZBG77yA3fAwQHmV7udsuk+v4iGyjWB/ITQbIXFfcQZC6nF29WdepPqdy1MJMKA7lv2H2jg5qbjS0Vao6HBDiXiWm0XLTSAVFYcpLLyLfCcHX+CRkkoWKxICHZ/kRW4cOEcXUzaJ92/sG0oM+lFoKEcQOWEJZgqnK6pxliype3zX4QByraLSc3yg+JV3iX+XaU5KxzLMd7ssVbLwJBy0/KzF8M+J99lwVhgPt2H7wji8YA/ikGkGmhz9gUVJYcPv3h1fdgDuFe6xClHrcymtS0QWNIsoRuHDXKAgtarqS5XGvXxkaBC5XHwyImdLgPcEVLbq+/S5gmEbSR5+mOq7gC7bq4XuCG+XmbPckwJ+CvfXuZ9LDH47jSEcP6QtfsnIgmzL95/L15AAVyoOqfav9CShn294ZUtTA5rAcGiGP/udOYIIjjtdYqq7lZXy7ZDUg5R0mKZbh14ksljd4p6RAMK7W0SLXBNtPxHjLda+47DXqRWFqqvU=
-X-Microsoft-Antispam: BCL:0;ARA:14566002|5072599009|37011999003|2604032031799003|25010399006|24021099003|6090799003|51005399006|16051099003|15080799012|23021999003|41001999006|19110799012|8060799015|440099028|3412199025|40105399003;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?b1lmdm9GblFjanpYNnplL1J2ZkdDUUp0QzFmTXJBV2EyWmJBVXZCd0FMTERq?=
- =?utf-8?B?WnkyNEN5SWhSdjcrQTJFa0ZvbEdEQUJYMUZRdDFpRmw4ekpHcGNBLzRSeXMv?=
- =?utf-8?B?SXd4TVphWDljdC9CamlNN3k1eVhuR05INk5HVVA5VTQvQXZIdktiaTd0Z0Vq?=
- =?utf-8?B?QUtaYUE5ZTBzWURTYTIyOVhweWRDRUFxQnlETVU1WEFoY0VnN0hjb2xwVnh6?=
- =?utf-8?B?clowTEUrYklQVFJoUHZWZlYxdmo0N0hZb3NPaHloTkpvcDMzREIvS3FkVC9x?=
- =?utf-8?B?OElNeU1zQUc1ZjYvd0RCcCtDNkc4d0wrU0VwVGtLOUpZTzhmb0R4VmkvMitk?=
- =?utf-8?B?OXoxM21ydTY5anZ2MzZmaEtDdlBIYld5WEE2UUZsT3JubW5GdU1vTVBlSWtZ?=
- =?utf-8?B?UlF1Unl1S0l1K1UydzhnSERxUVovY0RoazNHWm9rOXVsN2ljNHBCdENWTSs3?=
- =?utf-8?B?b3l1bUdkVDRoczBwbmVTbWVzMzFZdFZGS2g0SFdqVTBhN3ZUL2FvK0U0bmVw?=
- =?utf-8?B?a2s2UlJxaGorTEpmR0ZLdDRvL0gvbVhoM05oTWtXd3lHT01iQi9TRTZTeVkx?=
- =?utf-8?B?eHRrRzlTU0F0Tzc3RnNKcEFCa2hrWlJOOEVHSjFTbWlUSjBLT2NMd2hkSW1Z?=
- =?utf-8?B?YldIb05FeTgvNjVNOWljcno0YllLczIxUzRDWEIvTFV6YjduTGJvS0NlaG9D?=
- =?utf-8?B?Y3l0ZGpVVnk2MjZWaU9RQUhEcForVGtVY3BHcHgwVXNwNnRVZGRENFZNc3Bz?=
- =?utf-8?B?VVZqSmxnMER5SnEveDFzUFllQjRLZ2MxRmxRc241UkVnZEdLQWlmNjNTdThF?=
- =?utf-8?B?Y2pJVzMzUzZKaU9KZFZUS3RHNFIwMHhEQVptVVVNdWdhdy90M0NkdG0yS2dP?=
- =?utf-8?B?Z2JJYWo3YitkKzJxVkZlOGxZSWtoeXFUSXNPOFBKSFltZnRXeEpUM3pzcWUz?=
- =?utf-8?B?U0lFVDhvQzhHWGRub0RJMjlFdzA3UnpONDJLdE1WNlQ0LzBUUE1teUhheTF1?=
- =?utf-8?B?REJoZXBxNUVYSThRMFN4M3pZSnphQk5wV01DVFFDNjhLbVNacGNGMExWN0NL?=
- =?utf-8?B?R09nT2YrNGU5QjYyYVVQWWdpVFpGNGJVUXZsczhXY1JSa0xZK1o3TjBMT2Ja?=
- =?utf-8?B?UUhVanVKeUp1bk9UazVBRTdqSEJTVERRRGFJSnFuVDVPNTNybzBTOTJnRVRR?=
- =?utf-8?B?WUljeWtmelkwMWNsMWdPeEs0T0JhUVVCYlloNk1mNjFRR1lEQ3RYSUpCVGJS?=
- =?utf-8?B?WWJwcGM4WFIyTlNzd0FRODFLbjZHV3lBNzgwUFB0VnpsNW5NNXdISXIxVTg1?=
- =?utf-8?B?a2Q5WWZXR1R5T1g1Wmt5eWhRMTEvZ2NFU3gyMHRoNDZUaTV3dG8wRUdYTkFk?=
- =?utf-8?B?bVJ4OHlUL3I3b3I5aTV0K3V5RVc1SFJxZUlseWhHRDJPVE1YNFhqRFZLOUZs?=
- =?utf-8?B?M0JyUnlPYkRMVzZhSGkzWGNhTVo1QzV3RUcyTUFVR0t5QWZiN1Zzd2xRbEgr?=
- =?utf-8?Q?2m5zPw=3D?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bjk1cnppVHZrdDVIbUp6UnArL29aMUNWTXg2TEVIWXhKOUZvZGR1dExsQlVh?=
- =?utf-8?B?TE5IdmFybVBjZDQrd0NUaVJTK21XeEppTHB1cWowb1dnWTI3SnJZRjJhUXVj?=
- =?utf-8?B?eks5QTdLdjB2RjRmeC9Gc2JXcXNac3Qvbm1XREVwK0lMU2lFcnB1K1hLbkhs?=
- =?utf-8?B?Si9LVWsrOHg3OUVTc2lVWkZsUnRtL3BOMGQ2Wmh5ZUxMTmp2d0Q5Mlc1ZjJo?=
- =?utf-8?B?ekZmLy95bUEyenQ5SXUzcEtrQ1c1cWZmU2M4WVhCZFkwS05kMzZKeTlGK1Ay?=
- =?utf-8?B?Z2dBOTR5VmViazRrSUMycUs0MHZOYWN2VjVGcGJxcnQwc1pEVDVoWGp6bFhM?=
- =?utf-8?B?aGsyMFE2S0hYMjIrRW0wMHhpS2xjNk1hTTkvc1hRNEpLRXFINEp2dVIvaGZz?=
- =?utf-8?B?bFoxS2dISzg4V0dmekRob2JsQm9KeFpFNmVDUE5SaFREOHZOSndRMlA1VVRm?=
- =?utf-8?B?cG1QQ0VaQ2pLRTFQOVhrQmJ2RU9PSlNydWxjT2ZMSHNyY1hncUtOQXd5VGVt?=
- =?utf-8?B?c2xOWXZyQ0x6cWUvWUxhMFBTM0k3OHowQ2lHNVpZSlQzY2s4L1FqWngyYTRC?=
- =?utf-8?B?akFxNHM1THQzWi95anpCMThCTGkxaFdFcncrQ0JlL25UODdtRWlGeFNtcWsv?=
- =?utf-8?B?b09UNllzRW5UN2xUWVJPWTlQYW9FbGUxOEoydS9OcWlpbU95NWpPa0E2ZHk2?=
- =?utf-8?B?WFZmMGhtRWM4MDlBQzdQdW90Y25ocnEwWFBKSGVPQzZqa3VuVlB4bmhYZnNk?=
- =?utf-8?B?Z294Rm5uK2srN1hHNmMxSmpnZlZ0QkU3VlcwUGpSUXh5N3pxRnEyenJPOGVl?=
- =?utf-8?B?LzVWS3dYMTViUEN1TVRIazNTbEFvZkdBYVJOSFI5cC91MFlOaGxQWDFLN0xU?=
- =?utf-8?B?VVNvZHNOYktJbUsvOGlGOEVGRDFUcUdXdUFvcXRDMkc4RVRqSGxCbW9kcmVQ?=
- =?utf-8?B?ZU4rVWdYcStuZUNwSTY4QVhlenFHRy9hZEVTci9Cd0xIZkF5dy9VZjY0T1Mv?=
- =?utf-8?B?WEIrT2pRQXhWQmw1d2JlOGZoRXdRS1RVYUh3U05wTjBYaVdwM1ZhaUIzWTh1?=
- =?utf-8?B?ZUs3Vy8xS082b25qSTNKN1lhdEUyMWcxNU5BQWEyVTRaNmViTUlrcFBRbTBY?=
- =?utf-8?B?aHd4SHEzaVhXaVZaejI4T3BJb095cmI3QjVRVURQeWtjZjdhVWlFQ3Y2eC90?=
- =?utf-8?B?ZE4waVNHeGdoeVlhbWlObERDT1gzU0ZlYUl1QVlIbWV5MHhxMDlxVHJJYy9M?=
- =?utf-8?B?TVhRRG15UE1Edy9Vb2VKakpNV2h6V0t1dURMSkIxS2dON1oydFZiWmJDem5B?=
- =?utf-8?B?eUswSWpndFl4UUtUN2E0d2t3cTZGN2xRczdVWGlzR0lNQi9WWlIrZWhhMHc4?=
- =?utf-8?B?aG1sZGpnRC94M2dYcFRjdTBvNzV5cExOeFc2SU5lTjdHSVVlR05KQm0rSlVa?=
- =?utf-8?B?bCtjY2JDVVJ0ZVU2WnJvZ3A2NFhyM0lIZnpQakVVdkx4cXN0QmNxNDVsanJv?=
- =?utf-8?B?NE1zbnZLNjE2S2lvM0RKa3ZVNWI0ZkFNR2ZieVVNTHdrK0NaTFhMeDRRczRy?=
- =?utf-8?B?Qmw4L1FFYklIRnpTa1didzgycWZMSm9GMVl3M2lnSitTSHdNODUvY2hwMkhz?=
- =?utf-8?B?Y2Z4OUtWb0lib2V2aEtBR2Z5MG9tZDQ0WVNGdHp2QjZkWFVHZmV4QldpSGF1?=
- =?utf-8?B?T2dlaC9PZWJTVW4zVWlzNUkrdEJCL1RQMnkrYmZ5YUlWcTRSWmJNbnBCZkVM?=
- =?utf-8?B?UGh2KzMxT0M2ekNNblY0WjArUEhyZE85bk1QNW11YTlhSFJPRU9YVVdmbldK?=
- =?utf-8?B?T3o1MUdrV3dDcUxQbHVNWXJsZTdlZjZ6cjVxeG1Ram0yT28zWEpmdGFrRFJM?=
- =?utf-8?B?VmtnTXd5VnN4TENDRW5LT0tUMHF0c3NMd25wd1BNMng2NXc9PQ==?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a90ce2e-bf43-4369-133a-08ded376b043
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR19MB6736.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2026 11:33:05.5321
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR19MB5004
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260626_043316_441234_108CD2EA 
-X-CRM114-Status: GOOD (  10.58  )
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260625-ipq5018-bluetooth-v1-2-d999be0e04f7@outlook.com>
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -182,48 +82,347 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 6/26/26 15:20, Konrad Dybcio wrote:
-> On 6/25/26 4:10 PM, George Moussalem via B4 Relay wrote:
->> From: George Moussalem <george.moussalem@outlook.com>
->>
->> Add support to bring up the M0 core of the bluetooth subsystem found in
->> the IPQ5018 SoC.
->>
->> The signed firmware loaded is authenticated by TrustZone. If successful,
->> the M0 core boots the firmware and the peripheral is taken out of reset
->> using a Secure Channel Manager call to TrustZone.
->>
->> Signed-off-by: George Moussalem <george.moussalem@outlook.com>
->> ---
+On Thu, Jun 25, 2026 at 06:10:06PM +0400, George Moussalem via B4 Relay wrote:
+> From: George Moussalem <george.moussalem@outlook.com>
 > 
-> Can this not fit inside the existing PAS driver?
-
-I've tried but there were two issues with that:
-
-1. a custom way to load the firmware into memory is required because the
-loadable segment needs to be offset by the virtual address in the mbn
-file (see 0x20250 below). The standard mdt_loader uses the physical
-addresses.
-
-readelf -l bt_fw_patch.mbn
-
-Elf file type is EXEC (Executable file)
-Entry point 0x20255
-There are 3 program headers, starting at offset 52
-
-Program Headers:
-  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
-  NULL           0x000000 0x00000000 0x00000000 0x00094 0x00000     0
-  NULL           0x001000 0x0001a000 0x0001a000 0x00088 0x01000     0x1000
-  LOAD           0x002000 0x00020250 0x00000000 0x06154 0x190f8 RWE 0x4
-
-2. memory needs to be ioremapped using ioremap, not ioremap_wc, else TZ
-will complain and throw XPU violations due to strict memory alignment
-and non-cache requirements.
-
+> Add support to bring up the M0 core of the bluetooth subsystem found in
+> the IPQ5018 SoC.
 > 
-> Konrad
+> The signed firmware loaded is authenticated by TrustZone. If successful,
+> the M0 core boots the firmware and the peripheral is taken out of reset
+> using a Secure Channel Manager call to TrustZone.
+> 
 
-Cheers,
-George
+The remoteproc framework deals with life cycle management of
+coprocessors, but you don't want that - you want the BT driver to own
+the life cycle.
+
+Further, the fact that you split this in "BT" and "remoteproc", results
+in you having two representations in DeviceTree and in the device model
+for the same hardware.
+
+I know we have examples of this in the kernel already, but they are all
+racy...
+
+Please see if you can embed the firmware loading, authentication and
+PAS calls directly into the BT driver - to have a single entity managing
+the life cycle of your M0 processor.
+
+Regards,
+Bjorn
+
+> Signed-off-by: George Moussalem <george.moussalem@outlook.com>
+> ---
+>  drivers/remoteproc/Kconfig            |  12 ++
+>  drivers/remoteproc/Makefile           |   1 +
+>  drivers/remoteproc/qcom_m0_btss_pil.c | 261 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 274 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index c521c744e7db..6b52f78f1427 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -163,6 +163,18 @@ config PRU_REMOTEPROC
+>  	  processors on various TI SoCs. It's safe to say N here if you're
+>  	  not interested in the PRU or if you are unsure.
+>  
+> +config QCOM_M0_BTSS_PIL
+> +	tristate "Qualcomm M0 BTSS Peripheral Image Loader"
+> +	depends on OF && ARCH_QCOM
+> +	select QCOM_MDT_LOADER
+> +	select QCOM_RPROC_COMMON
+> +	select QCOM_SCM
+> +	help
+> +	  Say y here to support the Secure Peripheral Imager Loader for the
+> +	  Qualcomm Bluetooth Subsystem running on the M0 remote processor found
+> +	  in the IPQ5018 SoC. The M0 core is started and stopped using a
+> +	  Secure Channel Manager call to TrustZone.
+> +
+>  config QCOM_PIL_INFO
+>  	tristate
+>  
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index 1c7598b8475d..df80faf8d0df 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -21,6 +21,7 @@ obj-$(CONFIG_DA8XX_REMOTEPROC)		+= da8xx_remoteproc.o
+>  obj-$(CONFIG_KEYSTONE_REMOTEPROC)	+= keystone_remoteproc.o
+>  obj-$(CONFIG_MESON_MX_AO_ARC_REMOTEPROC)+= meson_mx_ao_arc.o
+>  obj-$(CONFIG_PRU_REMOTEPROC)		+= pru_rproc.o
+> +obj-$(CONFIG_QCOM_M0_BTSS_PIL)		+= qcom_m0_btss_pil.o
+>  obj-$(CONFIG_QCOM_PIL_INFO)		+= qcom_pil_info.o
+>  obj-$(CONFIG_QCOM_RPROC_COMMON)		+= qcom_common.o
+>  obj-$(CONFIG_QCOM_Q6V5_COMMON)		+= qcom_q6v5.o
+> diff --git a/drivers/remoteproc/qcom_m0_btss_pil.c b/drivers/remoteproc/qcom_m0_btss_pil.c
+> new file mode 100644
+> index 000000000000..7168e270e4d4
+> --- /dev/null
+> +++ b/drivers/remoteproc/qcom_m0_btss_pil.c
+> @@ -0,0 +1,261 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2026 The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/elf.h>
+> +#include <linux/firmware/qcom/qcom_scm.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/of_reserved_mem.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reset.h>
+> +#include <linux/soc/qcom/mdt_loader.h>
+> +
+> +#include "qcom_common.h"
+> +
+> +#define BTSS_PAS_ID	0xc
+> +
+> +struct m0_btss {
+> +	struct device *dev;
+> +	phys_addr_t mem_phys;
+> +	phys_addr_t mem_reloc;
+> +	void __iomem *mem_region;
+> +	size_t mem_size;
+> +	struct reset_control *btss_reset;
+> +};
+> +
+> +static int m0_btss_start(struct rproc *rproc)
+> +{
+> +	int ret;
+> +
+> +	if (!qcom_scm_pas_supported(BTSS_PAS_ID)) {
+> +		dev_err(rproc->dev.parent,
+> +			"PAS is not available for peripheral: 0x%x\n",
+> +			BTSS_PAS_ID);
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = qcom_scm_pas_auth_and_reset(BTSS_PAS_ID);
+> +	if (ret) {
+> +		dev_err(rproc->dev.parent, "Failed to start rproc: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int m0_btss_stop(struct rproc *rproc)
+> +{
+> +	int ret;
+> +
+> +	if (rproc->state == RPROC_RUNNING || rproc->state == RPROC_CRASHED) {
+> +		ret = qcom_scm_pas_shutdown(BTSS_PAS_ID);
+> +		if (ret) {
+> +			dev_err(rproc->dev.parent, "Failed to stop rproc: %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +
+> +		dev_info(rproc->dev.parent, "Successfully stopped rproc\n");
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int m0_btss_load(struct rproc *rproc, const struct firmware *fw)
+> +{
+> +	struct m0_btss *desc = rproc->priv;
+> +	const struct elf32_phdr *phdrs;
+> +	const struct firmware *seg_fw;
+> +	const struct elf32_phdr *phdr;
+> +	const struct elf32_hdr *ehdr;
+> +	void __iomem *metadata;
+> +	size_t metadata_size;
+> +	int i, ret;
+> +
+> +	ehdr = (const struct elf32_hdr *)fw->data;
+> +	phdrs = (const struct elf32_phdr *)(ehdr + 1);
+> +
+> +	ret = request_firmware(&fw, rproc->firmware, rproc->dev.parent);
+> +	if (ret) {
+> +		dev_err(rproc->dev.parent, "Failed to request firmware: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	metadata = qcom_mdt_read_metadata(fw, &metadata_size, rproc->firmware,
+> +					  rproc->dev.parent);
+> +	if (IS_ERR(metadata)) {
+> +		ret = PTR_ERR(metadata);
+> +		dev_err(rproc->dev.parent,
+> +			"Failed to read firmware metadata: %d\n", ret);
+> +		goto release_fw;
+> +	}
+> +
+> +	ret = qcom_scm_pas_init_image(BTSS_PAS_ID, metadata,
+> +				      metadata_size, NULL);
+> +	if (ret) {
+> +		dev_err(rproc->dev.parent, "PAS init image failed: %d\n", ret);
+> +		goto free_metadata;
+> +	}
+> +
+> +	for (i = 0; i < ehdr->e_phnum; i++) {
+> +		char *seg_name __free(kfree) = kstrdup(rproc->firmware,
+> +						       GFP_KERNEL);
+> +		if (!seg_name)
+> +			return -ENOMEM;
+> +
+> +		phdr = &phdrs[i];
+> +
+> +		/* Only process valid loadable data segments */
+> +		if (phdr->p_type != PT_LOAD || !phdr->p_memsz)
+> +			continue;
+> +
+> +		if (phdr->p_vaddr + phdr->p_filesz > desc->mem_size) {
+> +			dev_err(rproc->dev.parent,
+> +				"Segment data exceeds the reserved memory area!\n");
+> +			goto free_metadata;
+> +		}
+> +
+> +		/* Check if firmware is split across multiple segment files */
+> +		if (phdr->p_offset > fw->size ||
+> +		    phdr->p_offset + phdr->p_filesz > fw->size) {
+> +			sprintf(seg_name + strlen(seg_name) - 3, "b%02d", i);
+> +			ret = request_firmware(&seg_fw, seg_name,
+> +					       rproc->dev.parent);
+> +			if (ret) {
+> +				dev_err(rproc->dev.parent,
+> +					"Could not find split segment binary: %s\n",
+> +					seg_name);
+> +				goto free_metadata;
+> +			}
+> +
+> +			/*
+> +			 * Use the virtual instead of the physical address as
+> +			 * the offset
+> +			 */
+> +			memcpy_toio(desc->mem_region + phdr->p_vaddr,
+> +				    seg_fw->data, phdr->p_filesz);
+> +
+> +			release_firmware(seg_fw);
+> +		} else {
+> +			memcpy_toio(desc->mem_region + phdr->p_vaddr,
+> +				    fw->data + phdr->p_offset, phdr->p_filesz);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +free_metadata:
+> +	kfree(metadata);
+> +release_fw:
+> +	release_firmware(fw);
+> +	return ret;
+> +}
+> +
+> +static const struct rproc_ops m0_btss_ops = {
+> +	.start = m0_btss_start,
+> +	.stop = m0_btss_stop,
+> +	.load = m0_btss_load,
+> +	.get_boot_addr = rproc_elf_get_boot_addr,
+> +};
+> +
+> +static int m0_btss_alloc_memory_region(struct m0_btss *desc)
+> +{
+> +	struct device *dev = desc->dev;
+> +	struct resource res;
+> +	int ret;
+> +
+> +	ret = of_reserved_mem_region_to_resource(dev->of_node, 0, &res);
+> +	if (ret) {
+> +		dev_err(dev, "unable to acquire memory-region resource\n");
+> +		return ret;
+> +	}
+> +
+> +	desc->mem_phys = res.start;
+> +	desc->mem_reloc = res.start;
+> +	desc->mem_size = resource_size(&res);
+> +	desc->mem_region = devm_ioremap(dev, desc->mem_phys, desc->mem_size);
+> +	if (!desc->mem_region) {
+> +		dev_err(dev, "unable to map memory region: %pR\n", &res);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int m0_btss_pil_probe(struct platform_device *pdev)
+> +{
+> +	// struct reset_control *btss_reset;
+> +	struct device *dev = &pdev->dev;
+> +	const char *fw_name = NULL;
+> +	struct m0_btss *desc;
+> +	struct clk *lpo_clk;
+> +	struct rproc *rproc;
+> +	int ret;
+> +
+> +	ret = of_property_read_string(dev->of_node, "firmware-name",
+> +				      &fw_name);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	rproc = devm_rproc_alloc(dev, "m0btss", &m0_btss_ops,
+> +				 fw_name, sizeof(*desc));
+> +	if (!rproc) {
+> +		dev_err(dev, "failed to allocate rproc\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	desc = rproc->priv;
+> +	desc->dev = dev;
+> +
+> +	ret = m0_btss_alloc_memory_region(desc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	lpo_clk = devm_clk_get_enabled(dev, "btss_lpo_clk");
+> +	if (IS_ERR(lpo_clk))
+> +		return dev_err_probe(dev, PTR_ERR(lpo_clk),
+> +				     "Failed to get lpo clock\n");
+> +
+> +	desc->btss_reset = devm_reset_control_get(dev, "btss_reset");
+> +	if (IS_ERR_OR_NULL(desc->btss_reset))
+> +		return dev_err_probe(dev, PTR_ERR(desc->btss_reset),
+> +				     "unable to acquire btss_reset\n");
+> +
+> +	ret = reset_control_deassert(desc->btss_reset);
+> +	if (ret)
+> +		return dev_err_probe(rproc->dev.parent, ret,
+> +				     "Failed to deassert reset\n");
+> +
+> +	rproc->auto_boot = false;
+> +	ret = devm_rproc_add(dev, rproc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	platform_set_drvdata(pdev, rproc);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id m0_btss_of_match[] = {
+> +	{ .compatible = "qcom,ipq5018-btss-pil" },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, m0_btss_of_match);
+> +
+> +static struct platform_driver m0_btss_pil_driver = {
+> +	.probe = m0_btss_pil_probe,
+> +	.driver = {
+> +		.name = "qcom-m0-btss-pil",
+> +		.of_match_table = m0_btss_of_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(m0_btss_pil_driver);
+> +
+> +MODULE_DESCRIPTION("Qualcomm M0 Bluetooth Subsystem Peripheral Image Loader");
+> +MODULE_LICENSE("GPL");
+> 
+> -- 
+> 2.53.0
+> 
+> 
 
