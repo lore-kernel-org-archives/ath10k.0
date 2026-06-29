@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F118AC43458
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5370C43327
 	for <ath10k@archiver.kernel.org>; Mon, 29 Jun 2026 13:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
@@ -12,47 +12,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:
 	Subject:Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=K1NJgZf9085qZ1ZVOoGHLzLFOhSaY7pm16wwRhCnMyI=; b=EG659tb7ID3XDCAleAJ2gjmYBO
-	yB6drk/oxgoFXBcr2MX1MPexTDwbsqSTjKHGOdYI58TR5AFUBt5+lubxjVHDOYb70EMAY5kv9GwYY
-	VBujs0uqtucZGPPUe/ZFi/whPtvmodmmux6Ni/iIuwaOTcMFWb5n5+3u8yHt3RfI+rFh//TBjEmRj
-	Pmki46bBSJPP0r9DF+ytJmU+DMNARHkwgfXJGogv8YTmrx5duzGZTDbehqC0XjmdZzKk0BvXhAovW
-	25oVUGzRd8FszaHmp0krHqP88N/krz7eTZrm41+vmmYTntT+qkYv7fgbJmHJoCkmP/t75CUbS0sCs
-	m7rlacbw==;
+	bh=EJaEYb3avE0KXlf8SD+LowScDyHgcs8CZg55cOkAv7c=; b=Bnx6CmOxvJCeW5CL21PqhWD3qe
+	yPA1Jty1hdz/UNyr2+2fI6aSZfu9bttFmsEOjxNdmAkGmtvf1QFcAynoATOdr3mPMpflKXZw0+DeG
+	ikCM7EMWrPxlhFGRmvcDR5W3VPaQdKTo0zPFPDbFfTZN0DQ+Ih8RK+jBowZBzs+YlIWAPbQJYrpC4
+	zph4eoEoxaybQpqeTQme7fKKmGcMIfv8852fRce5Cii3hJ5xaAtFyBO7XOTQksmi8fGyaUB6zRvV0
+	u/9X5/zG7P8D4D5jkjNfv7qZGGLsOSEG1L3/uf51z1rdO8sCNu79ahzmATdXeB4Z6dkHAtnczr3+u
+	vUm20+6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weBci-0000000EeIe-2zMl;
-	Mon, 29 Jun 2026 13:02:04 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1weBch-0000000EeHl-0rav;
+	Mon, 29 Jun 2026 13:02:03 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weBcg-0000000EeGt-1AtS
+	id 1weBcf-0000000EeGv-1rJO
 	for ath10k@lists.infradead.org;
-	Mon, 29 Jun 2026 13:02:02 +0000
+	Mon, 29 Jun 2026 13:02:01 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id D086243EC6;
+	by sea.source.kernel.org (Postfix) with ESMTP id 99F2543CAD;
 	Mon, 29 Jun 2026 13:02:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8A6E0C19425;
-	Mon, 29 Jun 2026 13:02:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EB87BC2BCC9;
+	Mon, 29 Jun 2026 13:01:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1782738120;
-	bh=sVfZV5FAtAUUUFWxrC0Zg7CsOdSgFgkDNnZ7Y9T5fBU=;
+	bh=mp2zw6QM51Bf9uwEWNv98NT6Uz24l/Zi/3UavuRce3A=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=L+pzfhh9NATwjEl/MgOmoWhFnhdxeYvwUOjjCY1lXcCCkCC4M0d8chna8Yk+IedPr
-	 qWaHdDrsDhKU/9X34pK1/OANQ4ZVJuos471wzrjYGlw939Zfkv+UR+DbUdo/VUH5L/
-	 3Ghs+YJf5AoJLOvnUBilnqhuZLzL3AhoPWXzfIwBf531VE95EmpbntlWQeVX9iCXJ0
-	 ZcaDXSJdkAOnOVRuf7brPOCIe3eY/8+Z63MTog8F8ER8w8QpD9qQ1tHb+SJtBUWd1K
-	 ZTGZvo9JixsMgMtEApIeHSK5QToVz+Jeq6XmaeKFdBd9MBeeTHnuKquvL4+EEQhD6D
-	 ZUscpYvdft03w==
+	b=ZEw+acYqmxsPDg4tAFyEXzewIRP9z5mTMl/uCjFJM6fJ6c0C5FK7DyRferFWXbEJ5
+	 96IvIYgBu8nU5pTZrhv2BIPbCNF6c4lz3bEfeanBpW5Ai/GpFty5oc4n+rCPpT55Li
+	 BBIADnViwVLTlnRwwO3OzA9dANQzWYqgo++g4JeEjK7xc3ZZma2hA7ikT1f+yKKXNH
+	 yY9E8TmtmsSmKZWqILY8eufGLB0gk25jWCAWOo9Yf+D09e1jXh9R8ESIaP9XhHkwx9
+	 pshYnUoDPcVV3CZ+9wPWsx0T8w5EnI9IVZp05rA4OOLS2RJRYRCb8TFZNMkFBbBTxo
+	 1qY5C6HSRTetA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 763B2C43458;
-	Mon, 29 Jun 2026 13:02:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D17CEC43327;
+	Mon, 29 Jun 2026 13:01:59 +0000 (UTC)
 From: George Moussalem via B4 Relay <devnull+george.moussalem.outlook.com@kernel.org>
-Date: Mon, 29 Jun 2026 17:01:49 +0400
-Subject: [PATCH v2 6/6] MAINTAINERS: Add entry for Qualcomm IPQ5018
- Bluetooth driver
+Date: Mon, 29 Jun 2026 17:01:44 +0400
+Subject: [PATCH v2 1/6] dt-bindings: net: bluetooth: Document Qualcomm
+ IPQ5018 Bluetooth controller
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260629-ipq5018-bluetooth-v2-6-02770f03b6bb@outlook.com>
+Message-Id: <20260629-ipq5018-bluetooth-v2-1-02770f03b6bb@outlook.com>
 References: <20260629-ipq5018-bluetooth-v2-0-02770f03b6bb@outlook.com>
 In-Reply-To: <20260629-ipq5018-bluetooth-v2-0-02770f03b6bb@outlook.com>
 To: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>, 
@@ -80,11 +80,11 @@ Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
  George Moussalem <george.moussalem@outlook.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1782738117; l=906;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1782738117; l=2762;
  i=george.moussalem@outlook.com; s=20250321; h=from:subject:message-id;
- bh=DrQrzkPl3cbWFmYstKvKokgP5FFWzafGXK+cjmpTmUA=;
- b=WHjMybUgY1YmSj4Ea/kchfwjt9e395GAYngQB0uqV2f8fpoxFPAByR3nOPcenEnDMEMZ8Y3yx
- mlGy6okm/1TCDAfx2bhlJTXU7gZa4Ap8w7tJAuCmQsqRCYAJytae/qt
+ bh=YKnhdG7CPmG+0uZVZGdNpApSjclFarkABMgTKFaYoG8=;
+ b=rt+aUHohgoD/gX5hHu3M5/wFqt/E0QOgK6XWCstHy23ovbksclu1j0vkWQUSou3RyLLt06k7m
+ i/R3aQ0x61tAB4bEKicIaVUfAG1JEj3+8svp2H+hdHUyC9JuY7MeF+e
 X-Developer-Key: i=george.moussalem@outlook.com; a=ed25519;
  pk=/PuRTSI9iYiHwcc6Nrde8qF4ZDhJBlUgpHdhsIjnqIk=
 X-Endpoint-Received: by B4 Relay for george.moussalem@outlook.com/20250321
@@ -107,31 +107,105 @@ Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
 From: George Moussalem <george.moussalem@outlook.com>
 
-Add maintainers entry for Qualcomm IPQ5018 Bluetooth driver.
+Document the Qualcomm IPQ5018 Bluetooth controller.
 
 Signed-off-by: George Moussalem <george.moussalem@outlook.com>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../bindings/net/bluetooth/qcom,ipq5018-bt.yaml    | 86 ++++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0b9d7c8276ac..60f7251d1a16 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22289,6 +22289,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
- F:	drivers/regulator/vqmmc-ipq4019-regulator.c
- 
-+QUALCOMM IPQ5018 BLUETOOTH DRIVER
-+M:	George Moussalem <george.moussalem@outlook.com>
-+L:	linux-bluetooth@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/net/bluetooth/qcom,ipq5018-bt.yaml
-+F:	drivers/bluetooth/btqcomipc.c
+diff --git a/Documentation/devicetree/bindings/net/bluetooth/qcom,ipq5018-bt.yaml b/Documentation/devicetree/bindings/net/bluetooth/qcom,ipq5018-bt.yaml
+new file mode 100644
+index 000000000000..2119162994e0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/bluetooth/qcom,ipq5018-bt.yaml
+@@ -0,0 +1,86 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/bluetooth/qcom,ipq5018-bt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- QUALCOMM IRIS VIDEO ACCELERATOR DRIVER
- M:	Vikash Garodia <vikash.garodia@oss.qualcomm.com>
- M:	Dikshita Agarwal <dikshita.agarwal@oss.qualcomm.com>
++title: Qualcomm IPQ5018 Bluetooth
++
++maintainers:
++  - George Moussalem <george.moussalem@outlook.com>
++
++properties:
++  compatible:
++    enum:
++      - qcom,ipq5018-bt
++
++  clocks:
++    items:
++      - description: Bluetooth Subsystem low power oscillator clock
++
++  clock-names:
++    items:
++      - const: lpo
++
++  firmware-name:
++    maxItems: 1
++
++  memory-region:
++    items:
++      - description: |
++          Reserved memory carveout for firmware loading and runtime data
++          transport between the host and the Bluetooth controller.
++
++  interrupts:
++    maxItems: 1
++
++  qcom,ipc:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      - items:
++          - description: syscon node representing the APCS registers
++          - description: offset to the register within the syscon
++          - description: IPC bit within the register
++    description: |
++      The outgoing IPC bit used for signaling the Bluetooth controller of a host
++      event or for sending an ACK if the remote processor expects it.
++
++  resets:
++    items:
++      - description: Bluetooth Subsystem reset
++
++required:
++  - compatible
++  - clocks
++  - clock-names
++  - firmware-name
++  - interrupts
++  - qcom,ipc
++  - resets
++
++allOf:
++  - $ref: bluetooth-controller.yaml#
++  - $ref: qcom,bluetooth-common.yaml
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
++
++    bluetooth {
++      compatible = "qcom,ipq5018-bt";
++
++      firmware-name = "qca/bt_fw_patch.mbn";
++
++      clocks = <&gcc GCC_BTSS_LPO_CLK>;
++      clock-names = "lpo";
++      resets = <&gcc GCC_BTSS_BCR>;
++
++      qcom,ipc = <&apcs_glb 8 23>;
++      interrupts = <GIC_SPI 162 IRQ_TYPE_EDGE_RISING>;
++
++      memory-region = <&btss_region>;
++    };
 
 -- 
 2.53.0
