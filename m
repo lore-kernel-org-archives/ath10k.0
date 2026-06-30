@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21773C43458
-	for <ath10k@archiver.kernel.org>; Tue, 30 Jun 2026 08:20:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C87AC43458
+	for <ath10k@archiver.kernel.org>; Tue, 30 Jun 2026 08:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jDOG0Tq4hyMB1ii8a2ovGt8sulCuiTdXZrvvvjduVfU=; b=YayFJzvxleNwRisT309dKE7MPM
-	4yiUTSimuFy/U1Sj4j25A/Y/Td8S/ZGf9xRXWi+ztvhQfi454BmrADMsWsofikUSTTf/5jOPXOU31
-	rzqovkeHSiDuPYsQRN5gBp7A/wJPxNvNu7VkduJW3wFij+Z6PDVqxXcYCCiwADPutbvDXvlnRY92g
-	O/b1Wf0IPFqbtMYgQrxxmL8oXbnaxMg6WOFFobnDeQu7vWamYtkbWIaXeleuY0tge8tF8UNRAr32I
-	vHIafPx5Et/Kjor9/dbfM1nG6V5GtM+fTGTJBiq5ZWpPb07n0CxdlxqjHdQbn+M0ImYUtcOBMJs/F
-	ihu27nFQ==;
+	bh=4JAFAW6FVXYS68CLkdKFQkBbKQZpE3Z9s68aUV9tocg=; b=Q9l5RFO/fTgIAraLMGWpDn0eii
+	Wbo3oN4PgeNRk5dJu9X6pm6mYCnkEdA5/qrTetdGmhhQxeUgKwPMzUmKPCqB97KGe3Q2EfF/i74w0
+	cCW9swLR3MkURC2keNXX3hcPE7aDWe2i2WzQcsGhXI2v5KyrY4HH2HxYXg7ZdwniLqunMZ6fLK+4u
+	b20rHuJYrw7esiFx7uhMTlQ8CCxVume67k0vM5nTNhNoFWUx3DhBfHjtqPEfpYbh/3U2XpVG/2RAI
+	hDaXia5eYwuaq59YyzkMkQ1fTsMHGrTdOiFrNGQXEW+ZyASiD8soO72ibHgs98QDijWJZJoY3F9QU
+	xXgGpQAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weThb-0000000GFe8-3V31;
-	Tue, 30 Jun 2026 08:20:19 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1weTiK-0000000GFor-099G;
+	Tue, 30 Jun 2026 08:21:04 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weTha-0000000GFdx-0Vua
+	id 1weTiH-0000000GFoH-3fup
 	for ath10k@lists.infradead.org;
-	Tue, 30 Jun 2026 08:20:18 +0000
+	Tue, 30 Jun 2026 08:21:01 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7D20B40706;
-	Tue, 30 Jun 2026 08:20:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EED7F1F000E9;
-	Tue, 30 Jun 2026 08:20:05 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 1C52760008;
+	Tue, 30 Jun 2026 08:21:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 852861F00A3A;
+	Tue, 30 Jun 2026 08:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782807617;
-	bh=jDOG0Tq4hyMB1ii8a2ovGt8sulCuiTdXZrvvvjduVfU=;
+	s=k20260515; t=1782807660;
+	bh=4JAFAW6FVXYS68CLkdKFQkBbKQZpE3Z9s68aUV9tocg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=XaZApvDbzo5Zw0xbTgPllyNQqSwBt2AfnIAlh6BbrCa7hkgryrOnbO0qQkTLVGEIZ
-	 AwXveDp/NkGxp9+kD9nCzvJuJqXR1MC2x0UqlxxQA72IU0Egsso7zJIid6DrgDYVMk
-	 6TsQSBgXT/a7TBG8ab5ZOy3svbMnWMn46LKLE+c1awsMVX11i36Ukmf8Gdyu9GJICq
-	 q/Q6agA4KlA81UIlvt1PuVu5ogJTwH9mq7vyDTh5een+jbGEUQ2vOU2sk/nOMXc+Al
-	 Mry7TDbDWZJv/j9VtVjyRs4+dB1JsOerWl4f3i3IslDXRYLhhK0dM/PG/rLZFxoSZ3
-	 VwOGyYZ7FEBhQ==
-Message-ID: <b4ca30f2-9237-41b4-b091-f7591824e825@kernel.org>
-Date: Tue, 30 Jun 2026 10:20:03 +0200
+	b=VkesCwpFq/7KARxTGOrej0oXJaMRiKASL0h/7MkNwm4hS6BZx24uoQVITcMJzBVku
+	 326zcwrykX4zDoEIXOOlBx34enlXJ6jGBM71rAwPPWGmp/VScAGjjDtZ6yr4Fh1mej
+	 kyaRr+GbF2waXZZWyjNKFR1+B3++ZNdrwaIwmNkhpKDV74bEMjnFjGohFqbTtmpr+D
+	 N7wg3I3aQ+YUXxkRJ5hFWUgydSJ2ez/2asGIa7L63aL9YMezZuYFK1n3K6EYh6b1T9
+	 h3utQBXasD9CoHJ351YxIhidiU3M3t8cMfDijIBuAzW+VjtQywFwav/RZns6hk7IhR
+	 i8VBumX92JjKQ==
+Message-ID: <70661f45-4116-4ec1-8e6f-a2e8caf66dda@kernel.org>
+Date: Tue, 30 Jun 2026 10:20:45 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 1/6] dt-bindings: net: bluetooth: Document Qualcomm
  IPQ5018 Bluetooth controller
-To: George Moussalem <george.moussalem@outlook.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Johannes Berg
- <johannes@sipsolutions.net>, Jeff Johnson <jjohnson@kernel.org>,
- Bartosz Golaszewski <brgl@kernel.org>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+To: george.moussalem@outlook.com, Jens Axboe <axboe@kernel.dk>,
+ Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Johannes Berg <johannes@sipsolutions.net>,
+ Jeff Johnson <jjohnson@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>,
+ Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
  Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
  Rocky Liao <quic_rjliao@quicinc.com>, Saravana Kannan
  <saravanak@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
@@ -65,18 +65,14 @@ Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>,
  Bjorn Andersson <andersson@kernel.org>,
  Konrad Dybcio <konradybcio@kernel.org>,
  Mathieu Poirier <mathieu.poirier@linaro.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-wireless@vger.kernel.org,
- ath10k@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
- linux-remoteproc@vger.kernel.org
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org
 References: <20260629-ipq5018-bluetooth-v2-0-02770f03b6bb@outlook.com>
  <20260629-ipq5018-bluetooth-v2-1-02770f03b6bb@outlook.com>
- <20260630-wondrous-lean-stoat-be0b9a@quoll>
- <SN7PR19MB67361ED99501853D6BD968E69DF72@SN7PR19MB6736.namprd19.prod.outlook.com>
- <ccbd320f-5a17-45f3-96cf-3fa0c9bd1e8f@kernel.org>
- <SN7PR19MB6736BB58C4F6E648CB3910949DF72@SN7PR19MB6736.namprd19.prod.outlook.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -122,7 +118,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  K9bCVaboTA2T77QYkRcRJYSsO1alGX0ome/hMLD1daXlkrNUp1HWa3K4iytLRXjCSIorWiGs
  n+q3krnpXu3TFkA8qtOFZMdnIiFuiq1yLT8hptsV5xh1TA2nsVvSYiaCr3q4s4BKjS/KrLDb
  qoxzw8ISjdUp4pA85vb6YLCmb39NgidD+7PmAr65lBNveIFynTgsja1rRQ4=
-In-Reply-To: <SN7PR19MB6736BB58C4F6E648CB3910949DF72@SN7PR19MB6736.namprd19.prod.outlook.com>
+In-Reply-To: <20260629-ipq5018-bluetooth-v2-1-02770f03b6bb@outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: ath10k@lists.infradead.org
@@ -139,46 +135,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 30/06/2026 09:55, George Moussalem wrote:
-> On 6/30/26 11:40, Krzysztof Kozlowski wrote:
->> On 30/06/2026 09:31, George Moussalem wrote:
->>> On 6/30/26 11:15, Krzysztof Kozlowski wrote:
->>>> On Mon, Jun 29, 2026 at 05:01:44PM +0400, George Moussalem wrote:
->>>>> +unevaluatedProperties: false
->>>>> +
->>>>> +examples:
->>>>> +  - |
->>>>> +    #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
->>>>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->>>>> +    #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
->>>>> +
->>>>> +    bluetooth {
->>>>
->>>> Don't send new versions while discussion is still going. I need to
->>>> repeat my question - what bus does that sit on?
->>>>
->>>> Device nodes represent real devices. Real devices sit on a bus, usually.
->>>> Do you have here a bus?
->>>
->>> I'm afraid I don't have a definitive answer. Again, my understanding
->>> based on downstream code is that the 'controller' is basically a Cortex
->>> M0 processor running Bluetooth firmware connected to an RF. Data
->>> transport is over a shared memory carveout with APPS signaling the
->>> controller through writes to an IPC mailbox register, while the
->>> controller has an interrupt line back to signal APPS.
->>
->> So this looks like should be squashed into remoteproc node. There is no
->> reason or no data to express it as two separate device nodes.
+On 29/06/2026 15:01, George Moussalem via B4 Relay wrote:
+> From: George Moussalem <george.moussalem@outlook.com>
 > 
-> In this version, I've squashed them into one already but as a Bluetooth
-> controller as that's what the 'processor' is dedicated to, also in line
-> with Bjorn's guidance to manage the lifecycle of this processor and all
-> other resources in one. Kindly let me know if this approach is satisfactory.
+> Document the Qualcomm IPQ5018 Bluetooth controller.
 > 
+> Signed-off-by: George Moussalem <george.moussalem@outlook.com>
+> ---
+>  .../bindings/net/bluetooth/qcom,ipq5018-bt.yaml    | 86 ++++++++++++++++++++++
+>  1 file changed, 86 insertions(+)
 
-I read changelog twice and only then found it mentions squashing it. I
-suggest writing concise entries and drop all boiler plate like "As per
-further review comments". I just ignore such paragraphs.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 
 Best regards,
 Krzysztof
