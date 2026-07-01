@@ -4,75 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D23CC43458
-	for <ath10k@archiver.kernel.org>; Wed,  1 Jul 2026 09:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70383C43458
+	for <ath10k@archiver.kernel.org>; Wed,  1 Jul 2026 09:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
 	Message-ID:Date:References:MIME-Version:In-Reply-To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ydO8Ft5Urm5M09KG8cScRhJ3iye6Vu29eRTcwv+lefo=; b=QN4bkI4JAUIQNXRgez/UAEwXQw
-	wLx+O/EVQEftM/60RkNxz0xJY1zg3SaljIWQy3HSbFt2w+34t9PgXl1WZ+pqg8uYL494N+XU+6QNA
-	pBbJEgs33bQb77r4h38hsPO1+4UBVq8ybzsMOnJC4Gj0rbz0yoS6pV8gdAVweX0obW90gjTEiNbsT
-	S6FHXQ8iZ5UISI61kmE0OZ7QBPGCv5B7i4zUls50ozKclA7hdIqCwpgxfcD0Eu3OGn5LVzKDmm3rx
-	aTxYd5Sx86L6Isj67a4BUqRymDE4vaEULcYOKWzuIosnG224A4V++o5Zt8UizBuy75QygXlPhtIjs
-	KtEF92YA==;
+	bh=KW9lh2K1hAahuirGr9kTW9/S1N/x4cAospR02gArHJ0=; b=Bxs/5GsEGhWp/6crLpJMdaIRFo
+	2lsSxAhWhZDBBNRwh2jGlHbKHjliGOrwYY4YZDOzy90L1YBV3U8mG6Fqe60c88s+jTofpv4tQDQv5
+	aoJJDtal5x52Pgx5YPMOwDVfQkVs0ToF1BZpXJNodZMGgg+nfKosrW4z3zIxk//frebMmKm4NjKoX
+	/krd5UONPBWllmknEfoeBvwsJwl8wCVnkwNJIgXzlvJNn3GrRdI+o5eZW10u08+bGb/b9oGqJ93wb
+	DSG+/C5wwGYwKVD2iKSgEDOYo4aDkfa7pwLREtj+L5MWa6PF7nPeWRfzD1HOht1DjCMX1Fo1uFJnu
+	cP9KA/mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weriL-00000001Fqx-007P;
-	Wed, 01 Jul 2026 09:58:41 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1werix-00000001GCx-3PiP;
+	Wed, 01 Jul 2026 09:59:19 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weriJ-00000001Fqo-3pej
+	id 1weriw-00000001GCH-2e9Z
 	for ath10k@lists.infradead.org;
-	Wed, 01 Jul 2026 09:58:39 +0000
+	Wed, 01 Jul 2026 09:59:18 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5F08C44061
-	for <ath10k@lists.infradead.org>; Wed,  1 Jul 2026 09:58:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17E6C1F00ACA
-	for <ath10k@lists.infradead.org>; Wed,  1 Jul 2026 09:58:39 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 1C68A601EE
+	for <ath10k@lists.infradead.org>; Wed,  1 Jul 2026 09:59:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE9EA1F0155E
+	for <ath10k@lists.infradead.org>; Wed,  1 Jul 2026 09:59:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782899919;
-	bh=ydO8Ft5Urm5M09KG8cScRhJ3iye6Vu29eRTcwv+lefo=;
+	s=k20260515; t=1782899957;
+	bh=KW9lh2K1hAahuirGr9kTW9/S1N/x4cAospR02gArHJ0=;
 	h=From:In-Reply-To:References:Date:Subject:To:Cc;
-	b=MaL/yjKM23uRludhdmmZ/pKii3StVcH78bbsWWybDYwbISt2i7e25j9KBm/ltPtyN
-	 XGTqeiB7Ui1fTWOKe6cmbDOaCa0Gh2ukI1Blgh4/JscEquN0V7NidxbWcCsMFv+Jd5
-	 zQ0wlXT1RcXbBR8YbeJ4zQJVuoPwzoSktWAr5ZLETC3SShkGudys8nIebgKuotKHkP
-	 IX/H5FlnXGYAgS4ozo7QnUmxjTPjq8d3Ak552DqwKFVad8dtMolWhL9gdsliRc1QHb
-	 BhmUGZrXTuZoVIIBCLI8L+AAXP/DLxfCSDDCslKePeVul25emIdooLYApll/O+VzH1
-	 yilRymzKctFNQ==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5aec201b582so451494e87.1
-        for <ath10k@lists.infradead.org>; Wed, 01 Jul 2026 02:58:38 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+Rp/538lNPo5osAL9a/xpTNTC8OyTnQdlR1oU+a/T6PsDuZFkGMRfC3mds381c/X3XFi/j2F12I=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyEzMvhI+etOfAFMGAcXeUBTIDLxqUoEq/tO4rlqiGUHCA1bYYB
-	yTQ+ipJjFx5YYdaMGsawMnxWcK+B9Y4VIN83PMyhK6JpCbOkAKNgaasiXKxLEEa1CyZwD/IkWHF
-	jypQr8iY/s06HGo87ozrXVtCQklQGlA3cFuaTjGIxbg==
-X-Received: by 2002:a05:6512:a34d:b0:5ae:b952:6c with SMTP id
- 2adb3069b0e04-5aec6797747mr213198e87.13.1782899917728; Wed, 01 Jul 2026
- 02:58:37 -0700 (PDT)
+	b=bcxMOZy9+wUR0cIUa+U1DVQq23msK1GibupFls02SsSVec7WdoW+TaetCQmXuipta
+	 75k/2KwNSJr7otVAL4jymBh8anWy6sHRyFNjlIDfZmbmDfCTNsStAcOhv31x0ivjQf
+	 ooL1jlEQVfHJR53vjnmqNJ9OthmUgRGXccG1cosaT90q7Jh7xUooxf99keLu2hIfL8
+	 f81yxjgpJIHT0GXG1uSI+WmPQIl4G0Kieunbvsnd2Yy6HVPRSLyxlMOrRUjvg+fVAl
+	 DUAWcbtn/H6ycrJNXoKzsP8lYflD/0GOP+hByBLl57HhPfnuqXzEXLvtq/Y6fM2GAv
+	 eqFtVbdgNSa4w==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5aeb8c19017so560228e87.0
+        for <ath10k@lists.infradead.org>; Wed, 01 Jul 2026 02:59:17 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RqqIEibtF4dKwbaiFojC4OMbb4Qw9R5Sbarp6GTL6BtjVMfVirZLcu34dDzsVyTp0rW44KEeik=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxzehXdlqjNCP4hFg9Abcoa5qLgQj87wZl09v5ajP87y0xhS/EO
+	QqQHGIQN5BXhGrR0H7UVZv9ZeXRoMnFomKC6xBlhLokc927MuO+5mLE5JFl/0mG+/zsT2xXphTh
+	VuvLSLei4BYU8v6YS1L0hoIZ2+UBpunPV5MVQilGI2g==
+X-Received: by 2002:a05:6512:2585:b0:5ae:bcf7:a741 with SMTP id
+ 2adb3069b0e04-5aec67a5104mr254124e87.18.1782899956542; Wed, 01 Jul 2026
+ 02:59:16 -0700 (PDT)
 Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 1 Jul 2026 05:58:36 -0400
+ HTTPREST; Wed, 1 Jul 2026 04:59:14 -0500
 Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 1 Jul 2026 05:58:36 -0400
+ HTTPREST; Wed, 1 Jul 2026 04:59:14 -0500
 From: Bartosz Golaszewski <brgl@kernel.org>
-In-Reply-To: <20260629-ipq5018-bluetooth-v2-3-02770f03b6bb@outlook.com>
+In-Reply-To: <20260629-ipq5018-bluetooth-v2-2-02770f03b6bb@outlook.com>
 MIME-Version: 1.0
-References: <20260629-ipq5018-bluetooth-v2-0-02770f03b6bb@outlook.com> <20260629-ipq5018-bluetooth-v2-3-02770f03b6bb@outlook.com>
-Date: Wed, 1 Jul 2026 05:58:36 -0400
-X-Gmail-Original-Message-ID: <CAMRc=MfTh4-RM7R-Ku=MFjo2EQLoe9dt5-AFBtrMx+zZJRHKLQ@mail.gmail.com>
-X-Gm-Features: AVVi8CcMVsM_VtMs4RD3avK1gS-7SxkMAq-P9mHbEgm5Sdw31SbqOo7iHTS4Zj8
-Message-ID: <CAMRc=MfTh4-RM7R-Ku=MFjo2EQLoe9dt5-AFBtrMx+zZJRHKLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] firmware: qcom: scm: Add support for setting
- Bluetooth power modes
+References: <20260629-ipq5018-bluetooth-v2-0-02770f03b6bb@outlook.com> <20260629-ipq5018-bluetooth-v2-2-02770f03b6bb@outlook.com>
+Date: Wed, 1 Jul 2026 04:59:14 -0500
+X-Gmail-Original-Message-ID: <CAMRc=MejBiWKB74bz9ZD8HWgm+ZGG1ed7rRJsoaPFZcRWzC-kA@mail.gmail.com>
+X-Gm-Features: AVVi8CeyT1GrSjfr-2uV0qlk0nwk3b4g-mFQbPvHBLEEqLDXk1SdAU72dFgl0qQ
+Message-ID: <CAMRc=MejBiWKB74bz9ZD8HWgm+ZGG1ed7rRJsoaPFZcRWzC-kA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] Bluetooth: btqca: Add IPQ5018 support
 To: george.moussalem@outlook.com
-Cc: George Moussalem via B4 Relay <devnull+george.moussalem.outlook.com@kernel.org>, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
-	Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>, 
+Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>, 
 	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
 	Johannes Berg <johannes@sipsolutions.net>, Jeff Johnson <jjohnson@kernel.org>, 
 	Bartosz Golaszewski <brgl@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
@@ -83,7 +76,13 @@ Cc: George Moussalem via B4 Relay <devnull+george.moussalem.outlook.com@kernel.o
 	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
 	Simon Horman <horms@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
 	Konrad Dybcio <konradybcio@kernel.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>
+	Philipp Zabel <p.zabel@pengutronix.de>, 
+	George Moussalem via B4 Relay <devnull+george.moussalem.outlook.com@kernel.org>, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -99,18 +98,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, 29 Jun 2026 15:01:46 +0200, George Moussalem via B4 Relay
+On Mon, 29 Jun 2026 15:01:45 +0200, George Moussalem via B4 Relay
 <devnull+george.moussalem.outlook.com@kernel.org> said:
 > From: George Moussalem <george.moussalem@outlook.com>
 >
-> The Bluetooth subsystem (BTSS) on the IPQ5018 SoC supports setting power
-> modes which are required to be configured through a Secure Channel
-> Manager (SCM) call to TrustZone. However, not all Trusted Execution
-> Environment (QSEE) images support this call, so first check if the call
-> is available.
+> Add the IPQ5018 SoC type and support for loading its firmware.
+>
+> The firmware tested has been taken from GPL sources of various router
+> boards. Firmware files needed are:
+> - qca/bt_fw_patch.mbn
+> - qca/mpnv10.bin
 >
 > Signed-off-by: George Moussalem <george.moussalem@outlook.com>
 > ---
 
-Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 
