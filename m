@@ -4,85 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E0F7C43458
-	for <ath10k@archiver.kernel.org>; Wed,  8 Jul 2026 14:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A49EEC43458
+	for <ath10k@archiver.kernel.org>; Thu,  9 Jul 2026 14:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=42ISsQ2LfeJ/+sIasgc5RJsaVZbCRQ5q3efrGZd3Wr4=; b=4NdwoVFgAx0OV6H4RyaUN1/idE
-	OMDEYQ8V+dpw/8sE1u/t1/fdAy537dNHfAXwPMTwhkIDE/5Mk/jumsL4qM7HZIBlvNSRS/ozTH0FQ
-	nu1XuVZ8kiJKP2smSgP3V+a1cXR2DlHLwe3qlF1iWtRAZ6m6zbVEXxDIxmZgYnkuzxxPZRkRsLvVV
-	syBeopixk78eaFCvczeQLYPiEJ6XSWeXKfpQU1eNkNYNd94je1M8c8yj5YB4bAiWhzmYbQokOR72O
-	rDof8u0+PdjteM1F0uCd7V8//3M/oaKII2MJ+K+VeNmaqx2Cli7IngjCgE1rDraNT/+BiLstGGQC/
-	ox4tVeQA==;
+	bh=sTtNQqjhetqqm9GWeBDN1s3Bjp7OhmjhD8pX1Q9Zqgk=; b=NvSkIGkxx5AThdCMGek1KPG/rt
+	o2KvmtN1dM1rsPgZibNS+XDGJ60tc/D3GlPS1vWX1l/5LTA0fDH81YaFbQOlPJMqqtMFo/8/ImDvO
+	P3moEGZSRS/DEknO0UreZeuQe1/TsfGOFRRN1mJJUeXFhVAkG8OnMseuWHR2NPzKIXY77djtDg+SJ
+	qcPjEwFzFZSULlj/xEftZxIdK83UUViJ9qaLVIpeJM9uS1KNtHQYV8u/OwRCRCCFO/LKB0mFjLVp4
+	0wKMcI9wd3vKheCR2Zxb8Q4EkmEqrSsby5rUR43FCgwCMIg0odip7pG1+KGK+XkFs+WM1okvRvf/B
+	kAGK2h+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whTI6-0000000HK4o-3bO9;
-	Wed, 08 Jul 2026 14:30:22 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1whq4Y-00000002paE-2r38;
+	Thu, 09 Jul 2026 14:49:54 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whTI5-0000000HK2z-3ZXO;
-	Wed, 08 Jul 2026 14:30:21 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2CAA443EDC;
-	Wed,  8 Jul 2026 14:30:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 038E0C2BCB3;
-	Wed,  8 Jul 2026 14:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1783521021;
-	bh=TmLrFj8hFi2S6bgLQ4ZFE8c9fZx37+p1hBxYmJWj/yg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=rsESOzX6vSmqdYlEZOM+bVRFqmZfd9GZ+rJAW8+lF02rXUE1LKMAgOXUQM461Zd4Q
-	 yXOdgHLD2VFgNXkZ3H0cxGLH1n8Xs7HklfOvKt4mHb9WXkFBGRwUXqlzjlugyX0WJx
-	 U6b7CLTFdfK1DgjhtBgd96Fqcx4Kjb5HizE4I/HXfh7H8Qlw6orHAXEcP+42bqZ9gg
-	 rRi/BBvIpSpsdM6PdTB9X4sBwbM2rrNrAE6vQQpDi21GJBZ8ASkHhfxIy+HKmew/zK
-	 SWriGf5pkTMnPCMPE46pXy3+MydqomO7NnLZ1RlHsozGYZRnoH70iuWn/79btSITzf
-	 5IlYVBto1j7iA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D60C5C44501;
-	Wed,  8 Jul 2026 14:30:20 +0000 (UTC)
-From: Manivannan Sadhasivam <mani@kernel.org>
-Date: Wed, 08 Jul 2026 16:30:15 +0200
-Subject: [PATCH v3 1/8] PCI/ASPM: Always disable ASPM when driver requests
- it
+	id 1whq4W-00000002pYy-1iWh
+	for ath10k@lists.infradead.org;
+	Thu, 09 Jul 2026 14:49:53 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 669Dw6pA2012995
+	for <ath10k@lists.infradead.org>; Thu, 9 Jul 2026 14:49:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	sTtNQqjhetqqm9GWeBDN1s3Bjp7OhmjhD8pX1Q9Zqgk=; b=c/QNLJ3DEmUr123P
+	GOxqVCx6sXevhkMjObzoor32Aa0ElQW1qK8lVlG0+/NCAxwM2VIDw+VSN16OYW50
+	s8hr3Qgk5MlfkVvDBmec6/5YpzoQcQXLUEwi43bjdZ8JZY33x8gvO5i4yiiB1nbQ
+	lgLTjYdeNfbtbS8rEH+d4QfFRiEDkfpS+GRcHCFl9UpcfbdbSGn2KC9EgebMO8N6
+	h1qmx3jadzG7XleyzzOAP85XxWxVddxywSGapSbuGrr3vC7HY34BKyTF2Ysi8Px3
+	EZFdod/My1isp3SqwXKycnIQmxUskeufSfQnjuhvo72x3k0uc/kSt1dhPSctnvzN
+	eKC3MA==
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com [209.85.128.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fa418jsvb-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Thu, 09 Jul 2026 14:49:51 +0000 (GMT)
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-81aea53d559so18188977b3.0
+        for <ath10k@lists.infradead.org>; Thu, 09 Jul 2026 07:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1783608591; x=1784213391; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id
+         :subject:references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=sTtNQqjhetqqm9GWeBDN1s3Bjp7OhmjhD8pX1Q9Zqgk=;
+        b=FfgSYJpung9zkCpEmASyPbWG31B6ncgGGonyrUvVeZE/ee4uiU9AtuJaN1tQH4ZT7Q
+         blGg65quN6w+rNm53Od/mUKrTKixxo32St5TM47+/UlX0gL5iwkS45jJzA4rg+HuRUNL
+         PBYay5wzfbBWSnovuO/QTclsErlloYRIpJO9owNkoa1W+oPCyiush06A8cDCVMpcgtT8
+         HSDTwZagfiREii2yiP7siuYaBeeU2rHTo5Shd7ocTaF9T902lbe3KTp00KD8cvOxI5pm
+         FyuQnYxb0LUSfHidRP5JErRfexFaccOaRKg+3ZfHKmYm2ISrlPiLK6ehsfwlo4+NFTQu
+         cfMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783608591; x=1784213391;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id
+         :subject:references:in-reply-to:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=sTtNQqjhetqqm9GWeBDN1s3Bjp7OhmjhD8pX1Q9Zqgk=;
+        b=Ip7ybrkCSHkfRiUp5yCDgjNYkrHxTYPuJuAFQ9wXvLo3tZYTW+x3xJq7Yq0hDy2gju
+         xyNkXxaEDvigryaMemq7GZ1fTUdQQNxGXk0ywS7mTEB+cE2Qj3nFuR9ZA7L5zMs/++nN
+         8kq+wF8b7/yiJaDPt8DBMRUeRBCdpAJy1SdBPStvYgL5mtj7i6rgDTzdVZ60ZuKSt9fo
+         +AEvI99pfGnDRQ4q+3V9BbyRstGQPQOovZTpGcmATV19ighYrB4gZRCkm4dH7edLC/2W
+         li3aGl9f6Q8npoFfvF6NZuA+ZESWFNqVUJTGYWDzZeidhOKclmMy/SYoXrO9IEihOVgO
+         nedg==
+X-Gm-Message-State: AOJu0Yxlw5RbMaFhEuMEULX6y2c2FCkub8r7op/ESX76m80OC0D+DBJP
+	f1Zm5cZ9192dqg3/q4y7kfYbvMpX3uuwZ+x8B0/T22TbWEtEtI+jpR4t/vJfMKxMr4eRpauBTE1
+	31ph+Hs+Fmb120KPkUoAMnuhOvWzRvrBmavGiXpukwcfKCPdBFvUlvqn+lOwZFrp/ZF8jqEeP
+X-Gm-Gg: AfdE7ckZcuo0SOKglf+1ZheopzJ7zKPgcuq1WjbhbpGKYvWyuC7xsND2FA5qS9dCcAQ
+	fW/P9qak+MtCAGGYnC1bwBi7B8AtK1HMWFnz1Da0qHm9AiWda0eLbnGkkFuTzZRQ+EaGe4b+/Vk
+	0xNuKzgSv3Ro/r0RW+KSoQR42mIb9nVCB2zOb0zHhSx1x4nvkPP+05TK3vkMXmhwrIyrRnPFm8V
+	6uix7b2cbTEgl1hOBjYat/X4X9539UdhpQ0N+iNKqsChA+ftIerqf2uYwmim58sUTNkcfUGCpvb
+	lrssQubBjkAyDqH87P56II0tQBcARd94/K7kv76x9I1sPYbufm06kdXoz6zeHNzzUOCruuWbHNO
+	9dtJwiV8U7Fz2irhbw2wWs6FevUkjtCeNslmktomdomRp0L2g1JYIgUDIVT9HG+ysWQ==
+X-Received: by 2002:a05:690c:c357:b0:81d:d43d:d358 with SMTP id 00721157ae682-81dd43de3b3mr47084607b3.66.1783608590933;
+        Thu, 09 Jul 2026 07:49:50 -0700 (PDT)
+X-Received: by 2002:a05:690c:c357:b0:81d:d43d:d358 with SMTP id 00721157ae682-81dd43de3b3mr47084467b3.66.1783608590606;
+        Thu, 09 Jul 2026 07:49:50 -0700 (PDT)
+Received: from hu-jjohnson-lv.qualcomm.com (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-81e7795988dsm4989277b3.26.2026.07.09.07.49.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2026 07:49:48 -0700 (PDT)
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+To: ath10k@lists.infradead.org,
+        Manikanta Pubbisetty <manikanta.pubbisetty@oss.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org
+In-Reply-To: <20260623064355.1876743-1-manikanta.pubbisetty@oss.qualcomm.com>
+References: <20260623064355.1876743-1-manikanta.pubbisetty@oss.qualcomm.com>
+Subject: Re: [PATCH ath-next] wifi: ath10k: fix skb leak on incomplete msdu
+ during rx pop
+Message-Id: <178360858829.1031194.14199001499185167674.b4-ty@oss.qualcomm.com>
+Date: Thu, 09 Jul 2026 07:49:48 -0700
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20260708-pci-aspm-fix-v3-1-6bd72451746e@kernel.org>
-References: <20260708-pci-aspm-fix-v3-0-6bd72451746e@kernel.org>
-In-Reply-To: <20260708-pci-aspm-fix-v3-0-6bd72451746e@kernel.org>
-To: Bjorn Helgaas <bhelgaas@google.com>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kwilczynski@kernel.org>, 
- Rob Herring <robh@kernel.org>, Nirmal Patel <nirmal.patel@linux.intel.com>, 
- Jonathan Derrick <jonathan.derrick@linux.dev>, 
- Jeff Johnson <jjohnson@kernel.org>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, 
- ath12k@lists.infradead.org, ath11k@lists.infradead.org, 
- ath10k@lists.infradead.org, 
- Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>, 
- Qiang Yu <qiang.yu@oss.qualcomm.com>, mani@kernel.org, 
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4353; i=mani@kernel.org;
- h=from:subject:message-id;
- bh=D4w9YT637FWLwgGnXYf3ez0AiW99miyOiPTxsYowQUw=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBqTl73FnTd3FyCB9aJRYE2UOKhmwqdo19Kc5ziJ
- 7sAwr/kAXSJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCak5e9wAKCRBVnxHm/pHO
- 9f50B/92ojehwpKQmD7fMrpHqUlkMXlLamTGMqdbknwGUnu/SaSgOmRdv6pQPrzr5EGUI3MBTIr
- mZ+pcC9qimhjXzkzAfuMJaLtNLW1bM2Fyk/sTbPnG7cG3dkWx1Lo2UuCHZcppRdOjocDScSjuup
- X7voUBR4odulK89JVh+URt2I2Dn/NF0mcrlU/dOVo7mS1tglGAHXlMSKZpLl+LiaSSQ7taZHfiH
- TtYuOD03UTxXhCOoWYlkkVjM/fobA6tiE1aF4aDv/up2b1smVe/0V5xfF8RhOR2nm4DQY8whvho
- ZF0E9epv6ByhHnflSnJuKlByNi4Ky1tPc0IltsOr9dYJl3t0
-X-Developer-Key: i=mani@kernel.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
-X-Endpoint-Received: by B4 Relay for mani@kernel.org/default with
- auth_id=787
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.3
+X-Authority-Analysis: v=2.4 cv=UI3t2ify c=1 sm=1 tr=0 ts=6a4fb50f cx=c_pps
+ a=NMvoxGxYzVyQPkMeJjVPKg==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=yOCtJkima9RkubShWh1s:22
+ a=EUspDBNiAAAA:8 a=PSAErUXHYyYb-UPQJNEA:9 a=QEXdDO2ut3YA:10
+ a=kLokIza1BN8a-hAJ3hfR:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA5MDE0NiBTYWx0ZWRfX1oTo6UaWvTfS
+ ds4eV5l/M8dl/jFGyjQuf8QYaAEFhlWCA0YcZNvAXeuxSRHKYT1uAOpV624rdooykf+KtI4fjvU
+ SsXWm1DeKg8NBMEC1VPba58Sp+POBmDmE231rVmmO50ev5q8yH40B3vvvNGGPgWEsrdEzfMakr3
+ mDF87O+rSxk93cJbB54RG/kOlW9kviYvSVEOnly+TasK/Jd2WdgS7hAa019Vagh9wvxXwPjiZga
+ EWhBISNoPb4OxGFA0rufyeKeTlWAmyWsyA/AEoYfHBudaNEhTZEi8JUBZYFJrw6EWxOK8BoOxXG
+ O5YI1CdR7B6qlKSmbFF44qVhxw3AUNkAIAjcRKtPtv0yz/TQld7ZSm9OgE4w9HRiEHV6XaTKUsy
+ kaCGGqPAP+nuUg5Fi4MlN2Sp+XvHrZ7DqBUI4vTVffM4AWCHHbRUK2YeiHfH3ov5KFkYvP5qXBz
+ XNK2ToNATB+40B5hauA==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA5MDE0NiBTYWx0ZWRfX/5PUDioZgCAn
+ Pg47C/adgrwjfBXwlmHZE5a0N910h/XjkLvTE/5oqbBEUBrf+RqCZVR7WZbJo1CJ2qgjEIRyT49
+ E1xDdARgFO/ihn0WlmaMiBbmBUaliRE=
+X-Proofpoint-GUID: AjpiYH-brUz9yPJ4Evb2kLa24bkNu7PE
+X-Proofpoint-ORIG-GUID: AjpiYH-brUz9yPJ4Evb2kLa24bkNu7PE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-09_03,2026-07-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 suspectscore=0 spamscore=0 malwarescore=0 bulkscore=0
+ adultscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607090146
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260709_074952_461559_E767BFCD 
+X-CRM114-Status: GOOD (  10.55  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,104 +146,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-PCI core/ASPM service driver allows controlling ASPM state through
-pci_disable_link_state() API. It was decided earlier (see the Link
-below), to not allow ASPM changes when OS does not have control over it
-but only log a warning about the problem 'commit 2add0ec14c25 ("PCI/ASPM:
-Warn when driver asks to disable ASPM, but we can't do it")'.
+On Tue, 23 Jun 2026 12:13:55 +0530, Manikanta Pubbisetty wrote:
+> When ath10k_htt_rx_pop_paddr32_list() or
+> ath10k_htt_rx_pop_paddr64_list() encounters an incomplete frame
+> (RX_ATTENTION_FLAGS_MSDU_DONE not set), it returns -EIO without
+> purging the skb list built up so far, leaking any skbs already
+> queued in the list.
+> 
+> Other early-exit paths within these same functions already call
+> __skb_queue_purge() before returning an error. Add it before the
+> -EIO return as well to be consistent and prevent the leak.
+> 
+> [...]
 
-A number of drivers have added workarounds to force ASPM off with own
-writes into the Link Control Register (some even with comments
-explaining why PCI core does not disable it under some circumstances).
-According to the comments, some drivers require ASPM to be off for
-reliable operation.
+Applied, thanks!
 
-Having custom ASPM handling in drivers is problematic because the state
-kept in the ASPM service driver is not updated by the changes made
-outside the link state management API.
+[1/1] wifi: ath10k: fix skb leak on incomplete msdu during rx pop
+      commit: 7393878255e492515858f751ba4c260f248fb108
 
-As the first step to address this issue, make pci_disable_link_state()
-to unconditionally disable ASPM so the motivation for drivers to come
-up with custom ASPM handling code is eliminated.
-
-To fully take advantage of the ASPM handling core provides, the drivers
-that need to quirk ASPM have to be altered depend on PCIEASPM and the
-custom ASPM code is removed. This is to be done separately. As PCIEASPM
-is already behind EXPERT, it should be no problem to limit disabling it
-for configurations that do not require touching ASPM.
-
-Make pci_disable_link_state() function comment to comply kerneldoc
-formatting while changing the description.
-
-Link: https://lore.kernel.org/all/CANUX_P3F5YhbZX3WGU-j1AGpbXb_T9Bis2ErhvKkFMtDvzatVQ@mail.gmail.com/
-Link: https://lore.kernel.org/all/20230511131441.45704-1-ilpo.jarvinen@linux.intel.com/
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-[mani: commit message fixup]
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
----
- drivers/pci/pcie/aspm.c | 33 ++++++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index 172783e7f519..1c15a14718e8 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -1449,16 +1449,23 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool locked
- 		return -EINVAL;
- 	/*
- 	 * A driver requested that ASPM be disabled on this device, but
--	 * if we don't have permission to manage ASPM (e.g., on ACPI
-+	 * if we might not have permission to manage ASPM (e.g., on ACPI
- 	 * systems we have to observe the FADT ACPI_FADT_NO_ASPM bit and
--	 * the _OSC method), we can't honor that request.  Windows has
--	 * a similar mechanism using "PciASPMOptOut", which is also
--	 * ignored in this situation.
-+	 * the _OSC method), previously we chose to not honor disable
-+	 * request in that case. Windows has a similar mechanism using
-+	 * "PciASPMOptOut", which is also ignored in this situation.
-+	 *
-+	 * Not honoring the requests to disable ASPM, however, led to
-+	 * drivers forcing ASPM off on their own. As such changes of ASPM
-+	 * state are not tracked by this service driver, the state kept here
-+	 * became out of sync.
-+	 *
-+	 * Therefore, honor ASPM disable requests even when OS does not have
-+	 * ASPM control. Plain disable for ASPM is assumed to be slightly
-+	 * safer than fully managing it.
- 	 */
--	if (aspm_disabled) {
--		pci_warn(pdev, "can't disable ASPM; OS doesn't have ASPM control\n");
--		return -EPERM;
--	}
-+	if (aspm_disabled)
-+		pci_warn(pdev, "OS doesn't have ASPM control, disabling ASPM anyway\n");
- 
- 	if (!locked)
- 		down_read(&pci_bus_sem);
-@@ -1485,13 +1492,13 @@ int pci_disable_link_state_locked(struct pci_dev *pdev, int state)
- EXPORT_SYMBOL(pci_disable_link_state_locked);
- 
- /**
-- * pci_disable_link_state - Disable device's link state, so the link will
-- * never enter specific states.  Note that if the BIOS didn't grant ASPM
-- * control to the OS, this does nothing because we can't touch the LNKCTL
-- * register. Returns 0 or a negative errno.
-- *
-+ * pci_disable_link_state - Disable device's link state
-  * @pdev: PCI device
-  * @state: ASPM link state to disable
-+ *
-+ * Disable device's link state so the link will never enter specific states.
-+ *
-+ * Return: 0 or a negative errno
-  */
- int pci_disable_link_state(struct pci_dev *pdev, int state)
- {
-
+Best regards,
 -- 
-2.43.0
-
+Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 
 
