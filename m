@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B3E9C44512
-	for <ath10k@archiver.kernel.org>; Sun, 19 Jul 2026 21:49:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10133C44529
+	for <ath10k@archiver.kernel.org>; Tue, 21 Jul 2026 10:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pUwe/xIvBPSOTh2M+Y7RnYjfVPZL6jmwE1bbVp5RsPs=; b=CHa+5FiALu9XbhZ/uuqEYcSSve
-	EJ9akN2DHiaw2kjX+KZubg4Kmhc59+8vwpFQPg2wJs8pjeDJGEUgfDDD47MmN5nZ4wyV2KoVquGI4
-	9G0hkSIls5+e16//DE1dNHr3cX9hpkYPTNOc5CNnqKeX3z+r79ZRyYtTvTX6YyKxxOu+GMuiyuV37
-	mjRNn80TRYsbpauOQW8UMOSFpuApJeSMOrf7o6O7dvyq36XAlGZtlOsfYZAiAtuuC04OofijmEBTd
-	mF0YRVJi9WHQw240aA6MvvUkCfaEb58mX/o57d0LihvdWSBWtGTQHkcxqzVVwb7q0ymkfzle5cYFs
-	xovpaVbA==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=6R52rk6QYa9/i37aNodQp6F1XVJRiGVvf+hFyxj9CVw=; b=hoE2K4k0EZblmaz7GvV7hXdwRs
+	8EcYBoR9mNdQTDOx9blXkvlRt58q8xMs56Cx+5nnvJt1BU+QIG44O5Orr7JhY7CDiEqaM4hxEJd5Q
+	aHMCN+CyZ3po1pQYwPv9grfPSqlFYGORWx1aCCuaX8EnmTvZudHCNjeZmy4GHskOBajy+iBjE1j55
+	GSzbYxcUc9546jpJgIHgxLJfjUOWSSTLw/ZwxxspVHhkCDgzkXVu290rmx06XPdxnnApvhGobRqzZ
+	n1hHKE10ZEoV9nrH9Kb19PDcKgvc5qmvwJQYtusRogQXsso4tGJr/zHgVm+mA1FJa2eHIYDORtAA+
+	JgD8/YlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlZNy-00000005Oal-3uT9;
-	Sun, 19 Jul 2026 21:49:22 +0000
+	id 1wm7sy-00000009ENF-3xUb;
+	Tue, 21 Jul 2026 10:39:40 +0000
 Received: from ixit.cz ([185.100.197.86])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlZNv-00000005OaJ-3r7V
+	id 1wm7sv-00000009ELX-1vnk
 	for ath10k@lists.infradead.org;
-	Sun, 19 Jul 2026 21:49:21 +0000
-Received: from [192.168.1.182] (ip-62-24-73-79.bb.vodafone.cz [62.24.73.79])
+	Tue, 21 Jul 2026 10:39:39 +0000
+Received: from [172.16.124.192] (ip-78-44-13-22.bb.vodafone.cz [78.44.13.22])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id C0AD15340238;
-	Sun, 19 Jul 2026 23:49:07 +0200 (CEST)
+	by ixit.cz (Postfix) with ESMTPSA id 5A66A53401EE;
+	Tue, 21 Jul 2026 12:39:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1784497748;
+	t=1784630368;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=pUwe/xIvBPSOTh2M+Y7RnYjfVPZL6jmwE1bbVp5RsPs=;
-	b=F0w9DH4XpgvFu5cE48a1KrT9sw4TT61YMpD+1M7EYbE/EosDoCAFQhIvAPMPKaXa2diLPj
-	yS8iZeH3yR4DeJ69i0Hsl5+119HcKIK0naiJn1DrugMYjusKrJ2L7+8aAplqPvbxrvGWhH
-	wqkISJFqcwrReHwCN2pHLZZ/LD+V0tg=
-Message-ID: <16920e37-1c3f-4d1f-933e-9efa70292bea@ixit.cz>
-Date: Sun, 19 Jul 2026 23:49:06 +0200
+	bh=6R52rk6QYa9/i37aNodQp6F1XVJRiGVvf+hFyxj9CVw=;
+	b=DX7JhZaz1SRw4Ruhbd4cbyRW+VU82m45YResZHI4RJZg3fpJX+8oxmaaU8ih5zXQT7kE/r
+	lkddF5IajhUG+sCiwIHtUmFsr+ofYQlCJKXVH0vAjQI/gdzJ2n0LZLsvrJzCz9RDzNu+BP
+	cR2TBDDhubsx0iSi9rtgFe1Ap4ekqCs=
+Message-ID: <16c23505-cd3d-42b7-aec2-52f9b7492028@ixit.cz>
+Date: Tue, 21 Jul 2026 12:39:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/2] wifi: ath10k: make in-order rx amsdu buffers
+Subject: Re: [PATCH RFC v2] wifi: ath10k: make in-order rx amsdu buffers
  persistent
-To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
- Richard Acayan <mailingradian@gmail.com>, Jeff Johnson
- <jjohnson@kernel.org>, linux-wireless@vger.kernel.org,
- ath10k@lists.infradead.org
-References: <20260210021249.12132-1-mailingradian@gmail.com>
- <20260210021249.12132-2-mailingradian@gmail.com>
- <c7646164-134d-49c4-a1dc-0396876455e4@oss.qualcomm.com>
+To: Jeff Johnson <jjohnson@kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>,
+ Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ phone-devel@vger.kernel.org, Richard Acayan <mailingradian@gmail.com>
+References: <20260719-ath10k-a-msdu-v2-1-f479bb9d1217@ixit.cz>
 Content-Language: en-US
 From: David Heidelberg <david@ixit.cz>
 Autocrypt: addr=david@ixit.cz; keydata=
@@ -101,12 +100,12 @@ Autocrypt: addr=david@ixit.cz; keydata=
  zRKcgRumz2Tc1ouHj6qINlzEe3a5ldctIn/dvR1l2Ko7GBTG+VGp9U5NOAEkGpxHG9yg6eeY
  fFYnMme51H/HKiyUlFiE3yd5LSmv8Dhbf+vsI4x6BOOOq4Iyop/Exavj1owGxW0hpdUGcCl1
  ovlwVPO/6l/XLAmSGwdnGqok5eGZQzSst0tj9RC9O0dXO1TZocOsf0tJ8dR2egX4kxM=
-In-Reply-To: <c7646164-134d-49c4-a1dc-0396876455e4@oss.qualcomm.com>
+In-Reply-To: <20260719-ath10k-a-msdu-v2-1-f479bb9d1217@ixit.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260719_144920_249381_FC34A546 
-X-CRM114-Status: GOOD (  15.78  )
+X-CRM114-CacheID: sfid-20260721_033937_796606_15C8463E 
+X-CRM114-Status: GOOD (  16.69  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,53 +120,88 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 12/02/2026 18:38, Jeff Johnson wrote:
-> On 2/9/2026 6:12 PM, Richard Acayan wrote:
-> 
-> some nits from my tooling...
-> 
->> @@ -3299,16 +3302,32 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
->>   		return -EINVAL;
->>   	}
->>   
->> +	if (!skb_queue_empty(&htt->rx_in_ord_split)) {
->> +		/* It might still be possible to handle this case if there is
-> 
-> note that networking code no longer has a special block comment style, so all
-> new block comments should use the standard style which has the opening "/*" on
-> a line by itself.
-> 
->> +		 * only one peer that splits at each given moment. We are
->> +		 * bailing out because we should have a test case for this
->> +		 * before trying to fix it.
->> +		 */
->> +		if (tid != htt->rx_in_ord_split_tid
->> +		 || peer_id != htt->rx_in_ord_split_peer_id
->> +		 || offload) {
-> 
-> checkpatch complains:
-> LOGICAL_CONTINUATIONS: Logical continuations should be on the previous line
-> LOGICAL_CONTINUATIONS: Logical continuations should be on the previous line
-> 
->> +			ath10k_warn(ar, "split amsdu did not resume immediately\n");
->> +			htt->rx_confused = true;
->> +			return -EIO;
->> +		}
->> +	}
->> +
-> Just wanted to get those out of the way before I look at the real content of
-> the patch.
+Sharing Sashiko review, at the first part of it was something I wondered before 
+resending the v2.
 
-Hello Jeff,
+I'm not sure what exactly is achieved with the msdu & rxd assignment, as it 
+seems to be really immediately discarded.
 
-followup is here:
+Please excuse my lack of knowledge in the wireless field, it's just patch which 
+we carry for long time and it seems helps others projects using WCN3990 too
 
-https://lore.kernel.org/ath10k/20260719-ath10k-a-msdu-v2-1-f479bb9d1217@ixit.cz/
+ > - 0016: WCN3990 splits A-MSDUs across multiple HTT in-order
+ >   indications; mainline dropped them ("failed to extract amsdu: -11",
+ >   rx_confused), collapsing TCP under load (49 kB/s). Persist the
+ >   in-order MSDU list in driver state.
+https://github.com/commaai/vamOS/commit/12d80d09e61188895e90d9e4245d513ad4d07f25
 
-Thank you
+Thanks
 David
 
-> 
-> /jeff
-> 
+--- Patch [1]: [PATCH RFC v2] wifi: ath10k: make in-order rx amsdu buffers 
+persistent ---
+commit 10e41b4de22d818aaaa807183134d42a4da09825
+Author: Richard Acayan <mailingradian@gmail.com>
+
+wifi: ath10k: make in-order rx amsdu buffers persistent
+
+This commit moves the list tracking unprocessed MSDUs to the driver state,
+allowing it to handle MPDUs that are split among multiple in-order
+indications.
+
+Link: 
+https://lore.kernel.org/linux-wireless/20260210021249.12132-2-mailingradian@gmail.com/
+
+ > diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c 
+b/drivers/net/wireless/ath/ath10k/htt_rx.c
+ > index ab2d373b4750d..732bd3a2f9992 100644
+ > --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+ > +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+
+[ ... ]
+
+ > @@ -3161,6 +3165,10 @@ static int ath10k_htt_rx_extract_amsdu(struct 
+ath10k_hw_params *hw,
+ >  	if (WARN_ON(!skb_queue_empty(amsdu)))
+ >  		return -EINVAL;
+ >
+ > +	msdu = skb_peek(list);
+ > +	rxd = HTT_RX_BUF_TO_RX_DESC(hw,
+ > +				    (void *)msdu->data - hw->rx_desc_ops->rx_desc_size);
+ > +
+
+This isn't a bug, but are these assignments to msdu and rxd unused?
+
+They appear to be unconditionally overwritten in the while loop condition and
+the first statement of the loop body without ever being read.
+
+ >  	while ((msdu = __skb_dequeue(list))) {
+ >  		__skb_queue_tail(amsdu, msdu);
+
+[ ... ]
+
+ > @@ -3339,12 +3364,15 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k 
+*ar, struct sk_buff *skb)
+ >  			ath10k_htt_rx_h_enqueue(ar, &amsdu, status);
+ >  			break;
+ >  		case -EAGAIN:
+ > -			fallthrough;
+ > +			htt->rx_in_ord_split_tid = tid;
+ > +			htt->rx_in_ord_split_peer_id = peer_id;
+ > +
+ > +			return -EIO;
+
+Will returning -EIO here prematurely abort the NAPI polling loop?
+
+When a split AMSDU is received from the hardware and
+ath10k_htt_rx_extract_amsdu() returns -EAGAIN, this -EIO return value is
+propagated up to ath10k_htt_txrx_compl_task(), which interprets it as a
+signal to abort the rx_in_ord_compl_q loop and reschedule NAPI.
+
+This seems to leave any subsequent queued packets, potentially including the
+remainder of the split AMSDU, unprocessed until the next NAPI poll.
+
+ >  		default:
+ >  			/* Should not happen. */
+ >  			ath10k_warn(ar, "failed to extract amsdu: %d\n", ret);
 
