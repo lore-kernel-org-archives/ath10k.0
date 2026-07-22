@@ -4,66 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D9B6C4452D
-	for <ath10k@archiver.kernel.org>; Wed, 22 Jul 2026 04:20:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EC7AC44536
+	for <ath10k@archiver.kernel.org>; Wed, 22 Jul 2026 13:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=v7jlNpgCL4VC9po9fNair8UQN+ZNADjCXbNKJW+QkzM=; b=31EdMqs7A7GCM4xlNpAut7EkwO
-	P9w1bzdXzCOEru6efNjYkh56ommGRMu9jmnEi1xU+HIqafvasmlTjhF7NMk+9CzNJtSH4gf/zowvP
-	EBatLYf/9GycmYiy+iF+EZC1OI4trrD15GONeG9YumJqcS9gFM0c5pRLmKNTnR76DNKhxYAiUJy8Z
-	pqLf0LbhnYSIC+Lg7mBvDr5C980J1gr8WX7rxcfO7seGAh7Lsu+X89kBrfyFZEPezS7tfaclLFWJR
-	WmRhClVFz4lWVrzhA1UHMQv679YB4pfCS4kR9CNIWxpCp5fPw8S+45DYEO9IXsXsqv5cUR1Ljh0rD
-	w7eFDfHA==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bAMC1tEWuW8aUIkhFhHZeU0Otkfs+pd7Gd9KHfl9tMc=; b=BmZphmFCu7i2kWa2rpUCr6SJRJ
+	mfv3VOFMHvdXayXv/j90VcBK1KQ7H7YgBcXZ+LmJof0M59uD881rhJRZJdv3aKPKX7v0hqcXIBBPb
+	1apVUx5TLHpTYBR40mTNz/527tqFz9/IBTkjszWeRJ2p5dNU/O10bnazGYiacQbLO9eoUvjp+mDBd
+	UT1shezvOIkv0L7xD9sB/mDONl3klSrOJHh3mx7CKDKgXlfPCB2h0KdU/AcAWpfKNy/PDUvlzKqYm
+	W7yi0eqRLBWm958k2kJYUtmMoKrH4mT9VJbajSp0vq0tstkMepU5RHa//MvJjfIhmnyN/0HcZaiJu
+	ZhBINa6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmORe-0000000AsF7-213O;
-	Wed, 22 Jul 2026 04:20:34 +0000
-Received: from smtp25.cstnet.cn ([159.226.251.25] helo=cstnet.cn)
+	id 1wmX6A-0000000Bv7B-3l9C;
+	Wed, 22 Jul 2026 13:34:58 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmORc-0000000AsEY-0qeS
+	id 1wmX68-0000000Bv6P-1pA1
 	for ath10k@lists.infradead.org;
-	Wed, 22 Jul 2026 04:20:33 +0000
-Received: from localhost.localdomain (unknown [111.196.245.140])
-	by APP-05 (Coremail) with SMTP id zQCowAB35T8NRWBqQ0W7AA--.34153S2;
-	Wed, 22 Jul 2026 12:20:29 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: Jeff Johnson <jjohnson@kernel.org>
-Cc: linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>
-Subject: [PATCH] wifi: ath10k: validate WMI header before reading it
-Date: Wed, 22 Jul 2026 12:20:29 +0800
-Message-ID: <20260722042029.36066-1-pengpeng@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1
+	Wed, 22 Jul 2026 13:34:57 +0000
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66MDWOkP1155208
+	for <ath10k@lists.infradead.org>; Wed, 22 Jul 2026 13:34:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	bAMC1tEWuW8aUIkhFhHZeU0Otkfs+pd7Gd9KHfl9tMc=; b=egJp5n+Z2iJ/qrQa
+	ePIE5rzfZcfL/K4Pw/4v9nh5DhfLs40/CtFfi/HTea9ecA4rRyiho7ltyeXMsrB/
+	rhKjJGjxCVhuTwOEZHNIBWcRILG8OcNDsN/pNWwmtfoY2WAx6x3kkma4aCrXXyY+
+	Uqr2z0lzOgHW8XFfPw3GEtxzepKKdI8eIt5v2ddyhYdK7YLgZXuYLn//Hu50XGkF
+	ZPPa8TRGErrNejPNhIwdAS2CUYrS2Pl57bXbglZWIX5sBCRTMERfjroJ9nPd6R4b
+	fbHS8ByNgh8bsOLuSVbEuKr6/q+9k7u7zPnWgZ0e/3NihBS4OqiZPaGx3vAM+9c2
+	v8m8Yw==
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fjrtt1n7y-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Wed, 22 Jul 2026 13:34:55 +0000 (GMT)
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-907c59bd73bso3216546d6.3
+        for <ath10k@lists.infradead.org>; Wed, 22 Jul 2026 06:34:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1784727295; x=1785332095; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=bAMC1tEWuW8aUIkhFhHZeU0Otkfs+pd7Gd9KHfl9tMc=;
+        b=CrZxNbALvNjZjWKxTKgEWWqOIWFv7toXQIN47lB53JrdfknEYLVjuNQmWQL74D7FrF
+         NmcAWRdIZTW+0EnpUCTQq3UZdjrO1I3FAfwjGxLNUXDtNp6vJV+2NlO2exHJYgei9pBI
+         xTwriof2sxcWusQsR1O+NcqreAKg0NnjC8w2YrtyaHawwNF3LSfz6w81caul+XWdfoaZ
+         40kN6rsCq5aGSPAptrXf3mdZ8dz3t31DK5uB9PeOx7Id7g7KJPsTfYGkzG7SPxzB40Ao
+         cnzWGLZgUMA59mLrqJISj2BxNhiapkW49XryUjh3TP5oapO64ZZVeLegV5jWdHX44EYL
+         4fGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784727295; x=1785332095;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=bAMC1tEWuW8aUIkhFhHZeU0Otkfs+pd7Gd9KHfl9tMc=;
+        b=SDs786VMLRo1o2jtMilUuQ9fGQ4thqZF91g1pzGHSbcRh+0UBUvLnpfB+0cg4XYONi
+         r8NCUaM9QvtzcOtR3nELelUJ3DgihQOmdg7ILUxP1bjQVRTPnWj7Zreo1mvz8yaDRN2i
+         0ZvuRRzwGzkWyYk7zGJCwqKRAbJBoHyi/tAqlZ5rCsHDs+eXrqGbs9ym2lRUdnITJ4im
+         MbyW1ppQUk6Fv6k4m96I5PGft6tXR1IawH+mUb6PH6HZRRYFS3jGkRI15NXMsw551y4G
+         22nGM0/CqLsEQWcfaA41S+np+fJo1VLgmKqgLdf7vV0McFC/0IKhcOOxuFaipyUVfKCy
+         Fa/Q==
+X-Forwarded-Encrypted: i=1; AHgh+RrpBPItCKCK+jPtaMNXu5x7ttkfIlCoraNjgSZFNqOz6Sb0hqvGOHdVt4ZDbWdRoK1aNmsq4is=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzOg5TgOlWZ8L8KYBSm3JnRgMF7hQm6+eGXh35vsh4ItfrzL566
+	g1Mrt4yZMVTi5pnUBzHHyEmNF4HBpSrMyl+j9Kdc/IHPcxLhG015DPMM6lMt7V9aZVmD0ul3wTc
+	SVd74eSSoBmk5tXc8IPc6nqeru9FqdIu/kEV8ZFG1qJqKbT/TD0bT4V/8VQ9W2JbKLG3/Xajc
+X-Gm-Gg: AR+sD10IGhscrd6Z9ZcmaXgmgtctdNoJDLpiKrpV6lcKkRXGObJOOUnrDiDKtuQ/sTq
+	EQsTZCQlZaRObVR5VlBgzjD3dzmyTHVaGzzibU2q2gqmkuK6diiI+JWq9jCSBcgOBBNa+/TILBv
+	v1h+N4AWfV3mAq3LF+Nv5PCAU9I8EQPv0wzHA4ejqhHXXT8oWyo1wGoAvJzNaGErG+LRXTxJC9C
+	HfWR/42Gxp5iNYsZPtpdlCuu2qaP2mfAt2dwAHnzs3XJcOTSWGue59KF4L+dLDofnHWxsvnu/2j
+	rLm1cR49xa2cCWaiC+8RkFXv9EJdk0U58mW81fs0oX5nMtMcGMAV/NPYP4RcTfWXbHEwRzhOjyE
+	O0e69J9OiXbbdrzlOFzliIYmDKWm/drLX5riv1w2VAMFMtwjPlITJa1/8Rzi3
+X-Received: by 2002:a0c:e084:0:10b0:8f1:ae38:1beb with SMTP id 6a1803df08f44-907783a0557mr191584916d6.32.1784727294624;
+        Wed, 22 Jul 2026 06:34:54 -0700 (PDT)
+X-Received: by 2002:a0c:e084:0:10b0:8f1:ae38:1beb with SMTP id 6a1803df08f44-907783a0557mr191584546d6.32.1784727294127;
+        Wed, 22 Jul 2026 06:34:54 -0700 (PDT)
+Received: from [10.227.110.203] (i-global254.qualcomm.com. [199.106.103.254])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-907baa0b7absm21266636d6.37.2026.07.22.06.34.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2026 06:34:53 -0700 (PDT)
+Message-ID: <95e9a73a-c076-4bdc-9f1b-ba8a811f4711@oss.qualcomm.com>
+Date: Wed, 22 Jul 2026 06:34:48 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowAB35T8NRWBqQ0W7AA--.34153S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF47Jw1fXr15Cw4UAryDGFg_yoW7Cr45pF
-	1Uur1xXFWkur4Uur1UZF4kCws0qa4kJ3sIkFyUKw4fZF1vvr1FgFs0gayUJrZIyF13Gr12
-	va1jyFW7Grn7t3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F
-	4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-	7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
-	1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AK
-	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-	U2Q6JUUUUU=
-X-Originating-IP: [111.196.245.140]
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: ath10k: validate WMI header before reading it
+To: Pengpeng Hou <pengpeng@iscas.ac.cn>, Jeff Johnson <jjohnson@kernel.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20260722042029.36066-1-pengpeng@iscas.ac.cn>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20260722042029.36066-1-pengpeng@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: Uqv0cIw5wCr5JDyqV9f_LgBoSc-SJ7r7
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzIyMDEzMiBTYWx0ZWRfXz07IqRknMgnu
+ V2AxgXlPh527a4XU3RpGUbXI8MexBxM/YONNkPneUTHpuiCFNRkmSBdlV1RZoLHSbhzOkYb2eIZ
+ 1Q0YXjx2gQInlTs3GYhs508MDjSGIRc4fCEab9igRDAUck7ESSDAtDd2753q5iDPlawWrlY+1xk
+ wdUrT0n+ZO5NLVUKNueFwhCIw1R8HEFl/PPeX1LkPLHROj5swBNtqMmcl7NJX5ZZjbIExuOK6sP
+ Uy8iKqizm1frEztFOchW4/XEBCMpIjTz9ayfLX6BDftMjIlT2sCoR5iA1iX8LWZ6A+NnNvYs2ai
+ nhplflUrBi0sw7Y32IEc/ouMyCCiRS+6JcA2b6JhjaiEb0NLV+ZXzXIo16VmV57LqHkNlsdxV8o
+ rLOGnWjHjN6LTsTzaGNAhjO/K6xHvvSDGBpbYQ0zYXQ0KVfRaBSA6uXGi+7lleo88I2I2fNI9aB
+ WrWyRLsE8sNRiII4ujA==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzIyMDEzMiBTYWx0ZWRfXwEL1S4SVH7PB
+ EfDatYR4VE7yWmC1KeAIwF+c544l+nYOjyf0yWEd+6M5v5Y0z2fTEWF5RdqOm/2Y/aI2qYP+dSu
+ ZTFbgRVZZ9enE4+let0yUnZ61YCfiKQ=
+X-Proofpoint-GUID: Uqv0cIw5wCr5JDyqV9f_LgBoSc-SJ7r7
+X-Authority-Analysis: v=2.4 cv=V8lNF+ni c=1 sm=1 tr=0 ts=6a60c700 cx=c_pps
+ a=wEM5vcRIz55oU/E2lInRtA==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+ a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=Um2Pa8k9VHT-vaBCBUpS:22
+ a=bC-a23v3AAAA:8 a=EUspDBNiAAAA:8 a=PdpW-wIJrJljDUDkzOgA:9 a=QEXdDO2ut3YA:10
+ a=OIgjcC2v60KrkQgK7BGD:22 a=FO4_E8m0qiDe52t0p3_H:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-22_04,2026-07-22_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ adultscore=0 priorityscore=1501 malwarescore=0 clxscore=1015 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607220132
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260721_212032_618142_AEA63E20 
-X-CRM114-Status: GOOD (  10.71  )
+X-CRM114-CacheID: sfid-20260722_063456_484330_E5048B83 
+X-CRM114-Status: GOOD (  13.09  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,159 +147,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The WMI receive handlers read cmd_id from skb->data before checking that
-the skb contains a complete struct wmi_cmd_hdr. The outer HTC payload
-check does not establish the nested WMI header length.
+On 7/21/2026 9:20 PM, Pengpeng Hou wrote:
 
-Centralize current-item header validation with pskb_may_pull() and use it
-in every WMI receive variant before parsing cmd_id.
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index e57588c19c80..5b64b5f9bff7 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -5873,16 +5873,28 @@ static inline void ath10k_wmi_queue_set_coverage_class_work(struct ath10k *ar)
+>  	}
+>  }
+>  
+> +bool ath10k_wmi_pull_cmd_hdr(struct sk_buff *skb, u32 *cmd_id)
+> +{
+> +	const struct wmi_cmd_hdr *cmd_hdr;
+> +
+> +	if (!pskb_may_pull(skb, sizeof(*cmd_hdr)))
+> +		return false;
+> +
+> +	cmd_hdr = (const void *)skb->data;
+> +	*cmd_id = __le32_to_cpu(cmd_hdr->cmd_id);
+> +	skb_pull(skb, sizeof(*cmd_hdr));
 
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  8 ++--
- drivers/net/wireless/ath/ath10k/wmi.c     | 46 +++++++++++++----------
- drivers/net/wireless/ath/ath10k/wmi.h     |  2 +
- 3 files changed, 31 insertions(+), 25 deletions(-)
+consider following the pattern from my ath12k patch instead:
+https://patch.msgid.link/20260716-ath12k_wmi_op_rx-overread-v1-1-327a4b1c2372@oss.qualcomm.com
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 01f2d1fa9d7d..345401b97ffb 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -638,15 +638,13 @@ static int ath10k_wmi_tlv_event_peer_delete_resp(struct ath10k *ar,
- 
- static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
--	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_tlv_event_id id;
- 	bool consumed;
-+	u32 cmd_id;
- 
--	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
--	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
--
--	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
-+	if (!ath10k_wmi_pull_cmd_hdr(skb, &cmd_id))
- 		goto out;
-+	id = MS(cmd_id, WMI_CMD_HDR_CMD_ID);
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index e57588c19c80..5b64b5f9bff7 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5873,16 +5873,28 @@ static inline void ath10k_wmi_queue_set_coverage_class_work(struct ath10k *ar)
- 	}
- }
- 
-+bool ath10k_wmi_pull_cmd_hdr(struct sk_buff *skb, u32 *cmd_id)
-+{
-+	const struct wmi_cmd_hdr *cmd_hdr;
-+
-+	if (!pskb_may_pull(skb, sizeof(*cmd_hdr)))
-+		return false;
-+
-+	cmd_hdr = (const void *)skb->data;
-+	*cmd_id = __le32_to_cpu(cmd_hdr->cmd_id);
-+	skb_pull(skb, sizeof(*cmd_hdr));
-+
-+	return true;
-+}
-+
- static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
--	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_event_id id;
-+	u32 cmd_id;
- 
--	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
--	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
--
--	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
-+	if (!ath10k_wmi_pull_cmd_hdr(skb, &cmd_id))
- 		goto out;
-+	id = MS(cmd_id, WMI_CMD_HDR_CMD_ID);
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-@@ -6002,15 +6014,13 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 
- static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
--	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_10x_event_id id;
- 	bool consumed;
-+	u32 cmd_id;
- 
--	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
--	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
--
--	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
-+	if (!ath10k_wmi_pull_cmd_hdr(skb, &cmd_id))
- 		goto out;
-+	id = MS(cmd_id, WMI_CMD_HDR_CMD_ID);
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-@@ -6133,15 +6143,13 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 
- static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
--	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_10_2_event_id id;
- 	bool consumed;
-+	u32 cmd_id;
- 
--	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
--	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
--
--	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
-+	if (!ath10k_wmi_pull_cmd_hdr(skb, &cmd_id))
- 		goto out;
-+	id = MS(cmd_id, WMI_CMD_HDR_CMD_ID);
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-@@ -6282,15 +6290,13 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 
- static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
--	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_10_4_event_id id;
- 	bool consumed;
-+	u32 cmd_id;
- 
--	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
--	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
--
--	if (!skb_pull(skb, sizeof(struct wmi_cmd_hdr)))
-+	if (!ath10k_wmi_pull_cmd_hdr(skb, &cmd_id))
- 		goto out;
-+	id = MS(cmd_id, WMI_CMD_HDR_CMD_ID);
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 7f50a1de6b97..7c787173b187 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -7440,6 +7440,7 @@ struct ath10k_vif;
- struct ath10k_fw_stats_pdev;
- struct ath10k_fw_stats_peer;
- struct ath10k_fw_stats;
-+struct sk_buff;
- 
- int ath10k_wmi_attach(struct ath10k *ar);
- void ath10k_wmi_detach(struct ath10k *ar);
-@@ -7449,6 +7450,7 @@ int ath10k_wmi_wait_for_unified_ready(struct ath10k *ar);
- 
- struct sk_buff *ath10k_wmi_alloc_skb(struct ath10k *ar, u32 len);
- int ath10k_wmi_connect(struct ath10k *ar);
-+bool ath10k_wmi_pull_cmd_hdr(struct sk_buff *skb, u32 *cmd_id);
- 
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
- int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
--- 
-2.43.0
+use skb_pull_data() instead of pskb_may_pull() + skb_pull()
+consider masking out the id here instead of in each of the callers
+(if all of the caller have the same masking)
 
+> +
+> +	return true;
+> +}
 
