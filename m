@@ -4,98 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83605C531CC
-	for <ath10k@archiver.kernel.org>; Sun, 26 Jul 2026 06:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FA92C531F9
+	for <ath10k@archiver.kernel.org>; Sun, 26 Jul 2026 16:23:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:MIME-Version:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=vDSJsguHP3GZC2s9QaNxRVXRfaZ1bkde77LcEfAefD8=; b=utqszTpyFtqawbSVrWMKp3qAYU
-	j4x2cfITo/zOMLVD2U0FauJqxUza5z4q9k32yA7wCR45w+qIBa0B1+egxEXJUe5uX7T1MRiFGmvG7
-	PXuZCJNqOlyYSYh/QNLnI7M+Xm4dQZn9UymDHmWKE/GRTaqup1ZHNrInLGcduGqFw2mvifBYovSSi
-	LC5jLgFbTi2kmkD7IrlczluZRYSu5E4iU2rGiOHRI7KelRInbVc41cljOaIhe6A6KHuRScouGLmrv
-	T4deG+AD3gH7jHFC1A/GfNtridlgKDXhxvkfqQwwZqRcVDEuFB2MK9BvDbJT0++puep9cgkydR/UM
-	dXJyH2+w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=51vmDrktPBGTNCh4AcFVLZUucqSwI0YeAMB1vtDo7JI=; b=cQqC7FhP+z9nT6Ie3LJ5ScymKN
+	qMlvVqqa8qf4ySbdy1+PGzKQJNDNiXVYxdHSflN7KVhsFTCEcD/jNDKQoF+T5f7rqimhOfQ33/I5g
+	J0dAmcAM7WIWWyLjhvKBHX416hpOiKjasfVvwK6Ixp9LQT4IGzAqdOYf19sKG0y8M3YArEz49Td4I
+	adDVeoDbFGLit8nwZ7N0Iza3qJm46xmDdfprruDQ3XeuaX7+pc7vi4tKtau1Tpxhcwg6d8JKclrhX
+	eVootBNbZ9rKl+qmS6wPehd1CTo9TSqaOHteDBoE0k/+Gf8lwHqaBmohz+Ande9FazcUJAdEq8jQx
+	Gwh4JY8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnsKb-00000000xAJ-3glj;
-	Sun, 26 Jul 2026 06:27:25 +0000
-Received: from mail-ot1-x332.google.com ([2607:f8b0:4864:20::332])
+	id 1wo1dY-00000001NPf-1XcX;
+	Sun, 26 Jul 2026 16:23:36 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnsKZ-00000000xA0-2Awd
+	id 1wo1dV-00000001NOP-1aDT
 	for ath10k@lists.infradead.org;
-	Sun, 26 Jul 2026 06:27:24 +0000
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-7ec58fa3e01so787099a34.1
-        for <ath10k@lists.infradead.org>; Sat, 25 Jul 2026 23:27:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1785047242; cv=none;
-        d=google.com; s=arc-20260327;
-        b=G0qWkbWkIgoqfP+DPOyhifAFWckiFg/7xOa+vlw5b9CcSV4qri6p/7o9GxUZFUOULT
-         SWALXvD6Hkir7XGliIk5N2jDx3roAzmD6OTH3M6fZYErEshjaIESxMcko1cI4uCUqnCj
-         NiQs3q+9EonIYX+5CesdnruYuw50vAubj8am1DzJQEFhQQqZVnwx1/EbUIqQQ1DD7mDu
-         o2pQ+kaAvG/Q08XgPueeCIXRiX4KjzehE0+xSCNyBCClJ/mHRpookJYPQjH77zip/w0O
-         4qd9I13qw0zecYvsE3MIyuL5gJCBHl/q3eyTKtD8UjeAhvAT6nLLTq2iFDksC6B6pPcQ
-         Vw5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=vDSJsguHP3GZC2s9QaNxRVXRfaZ1bkde77LcEfAefD8=;
-        fh=KbH3UBjZ8QomLCl0k9G6sVubiiph/RoE0MOW28u+q3s=;
-        b=EC6qHQu+OC+/JuZjvc7STh6DMlKtQfPZPNZdXzrucKMrw0pDFgH8ZTz3K6SxT5dDdQ
-         hEoj5cw5KUZPHRhW6mI64r4WYWviggwn9myrgTb8Gze68CvMJdZHtumwOwhSvtPStGEj
-         azyXvbfFAkLkyWVvuKcV//KomWfXVML5u+d8WqVkSQ8XeIraTTO5TxiXyLMHLaAt584/
-         65Mf+EepPy3hrutYd7C+WpT25eqL/GTmezgbdUOnCt8gC0CZlVdDWFk4HNYeFgSdLNM+
-         M2ijb/h73+mbTZlistiEW7CiVY4zE+/JfjRSGkj494Q3j6104dkWD32OvlAoEu12tW1J
-         /xtA==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	Sun, 26 Jul 2026 16:23:34 +0000
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66QE2tOk1145879
+	for <ath10k@lists.infradead.org>; Sun, 26 Jul 2026 16:23:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	51vmDrktPBGTNCh4AcFVLZUucqSwI0YeAMB1vtDo7JI=; b=WtbwgMT3A/dZVayN
+	rfyM6nEuwyqo6d9IJqjkPpFWB9HEj6ujF52wOAsGeVCXpVfcz6nKk5ijld3bBfYO
+	RLFcpFqHnU/0h90XJ6L8P9+RwEVPU+aNqegeJKulL4RNAxjZYLAO+5Dhpwe2kP5d
+	RBkK84384BTSKZTlC78w6HgxK62lyO6qukRSA3GBYDsw0TVUlFyC3oH2NVRi09vS
+	h/bm+DIttKGT7S8X4wiK/sP9e0gFWSTGLPFyBLlkO4B3p1/gjYSrSi8wnbl58TbT
+	tK8L//NYw0VO9NfbW2IjpQ6C5c4crN9FuKsFgfp/PKqP4SfvTDteSvMY6oXPoVbj
+	+z7W/Q==
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fmm3sbdh4-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Sun, 26 Jul 2026 16:23:32 +0000 (GMT)
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-84a67b16217so3330833b3a.3
+        for <ath10k@lists.infradead.org>; Sun, 26 Jul 2026 09:23:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1785047242; x=1785652042; darn=lists.infradead.org;
-        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=vDSJsguHP3GZC2s9QaNxRVXRfaZ1bkde77LcEfAefD8=;
-        b=D+QQ8kEbOC+hZA3iKXKT4tZ+YkO7EtOEtwclaOwRzJE3+5eAXZX10P6XZ7vi251s/Y
-         r+CgT9iWGo5gIZjQjNMNuDN4UF99/qkuk/t2dwORrcO8+NdKVMM2kk+qtaGP/Zh/Eydg
-         ETvVjiMVmTA3TWE+ZUEa8/1PpdlrzN/HxH5/EmiItywUL7WJ/PEVPV0By2v9zjvKtPc5
-         9/ZYJszWWgxvVbNSTJSC2eB/+PPBKmYx8Y3dbsW8iSOn8gKaSWCveZbpN+FWJBG9wYM7
-         Q4pv9Mm2pXEEpitHI9elzytp5mmQyqrKedwVJ8GwZd+De8tME/eVJ/chJgeJWYPLhtWC
-         fDoQ==
+        d=oss.qualcomm.com; s=google; t=1785083012; x=1785687812; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=51vmDrktPBGTNCh4AcFVLZUucqSwI0YeAMB1vtDo7JI=;
+        b=PEvVP7JtfQGvW3oPBHNx8gfk0pT55rZV49s1dMffR/hq1fUZyAyUCEHxG8p34gKZDJ
+         byBRgRq0F1cwnI/h0aUpulmtvX35IZZKhPjkhyb7pNHgprSAnYhy+RUWGqN7nrMj3tpf
+         fUuyXQLRhCL92Um5D1nb6XXIrGSv3yVCj98N1S3k8cEC3p7YNyRxrTjM9DqhzwtscYMy
+         svN7sVnJgwnFNUQsXhBGsIkppBc/3O7MXghAGn4GN46PVsGEpkqYXa0tSniHvhMgrewv
+         f8NHC1MxqHQbt2RkeUnNfKnLZo5GiRi/oWrKRqCMJ72xRS3Xpt/PhPcRc/soP658dfU3
+         I7qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785047242; x=1785652042;
-        h=content-type:cc:to:subject:message-id:date:from:mime-version
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=vDSJsguHP3GZC2s9QaNxRVXRfaZ1bkde77LcEfAefD8=;
-        b=Omadz/lr2EV+VupyCctYJqvWPjowckbxnYwCjXOeZC4IhuWpUJiU4VFqeyJG1d8gYF
-         W24pM6U0RYel2hurKb1ELlACeBg1udxd38fLdTHYjw5AOPUGlWCoff5+qgYka3veg5VC
-         XmIp+KJS2dGrO1KIBnicGnlolGhdyXttbBaknD/kNG87UYeIuhOfn8l5QE28Vufui203
-         DzXeQe0x0pGeGqd2ZfiZEuw0NwnkxJicbX3Hzxl+SlFauxGZ+MIJkb7UOAa62gsTwaZA
-         6PlFC7VtoCpq5YEqLOoyWtyRXx48KFjeQEPDdhVWkmXjUMFRgM4dI20lcnxGca+oXs3v
-         Ekbg==
-X-Gm-Message-State: AOJu0YztbdH8XO5YnPkDAo05K47EUzcgir3hUxqJQfFMvhrVTbekojgo
-	iSK7VjaaH235MY0rk2iJR1NTAieFNPIiG0ktOg/KCEF8FWEziUlRYrMn3VUJxlzn05YRRZfQMQN
-	StN9pS5g2L+jooa8jBgHI7Lt0xnAC6v0=
-X-Gm-Gg: AR+sD12mqCp6Bpdso7MqUpkkxO4H5jXwoSiBenbaP8O0ywe8Gkr/s4C0KVHRW2kzEhi
-	4vcc/ePm6cr9X5XufLnmmElhLwXEhqXc+XFgcBLi2H/VzCY4wdJOin13Ziw3Lirh4oww2xfoxQY
-	6hxjGObUiq70kncvFGqzvFfMm6frftoh3+K2B6RdWYlBXKeNvCz1+TyZxZIn3WZUZLDrYGMFRJN
-	HHaGmuEQdNlQNNuzKQFqwuv/PjKMxFM8BsSvU188SqyNZmLTMX7LD2iC3k36A==
-X-Received: by 2002:a05:6820:168d:b0:6aa:e854:d03b with SMTP id
- 006d021491bc7-6aaff861424mr3019938eaf.2.1785047241836; Sat, 25 Jul 2026
- 23:27:21 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1785083012; x=1785687812;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=51vmDrktPBGTNCh4AcFVLZUucqSwI0YeAMB1vtDo7JI=;
+        b=LSWPIe+Q1/UmInVjxoOteSb75TtIovtlWWkkuWU5qFLn4zF3J+uAfT9FqK+VnWDpxQ
+         HmpV7LyZLytzu2E3+n4namYJHUjFFb/3tiaq/ILmyyvCIhcOLIrHQOBxVoG8tpg94XXP
+         F2y58IRvd+4E8A88FPb3Zjef+WcCDHWZgrwaoDGFwjElRJIDNsbUg7oUTIShq/yzZ8bO
+         l0ZsMPTndAtzQVVfIXhLXr4GhBhKP9AJmwgprtdZmqhnMX35alwGGze71McTQ0YMHwEE
+         3vdKYX1IGQHYNR1Q5scT7ZeFJp/bE/lQBIMoYOzwUaeIWiiHgWRwbU3VcxVQp+1dpAdd
+         8Usg==
+X-Gm-Message-State: AOJu0Yx0Gg82q7F2QUhz1D7u5+yU9l0iOhFsSU5ZTKiXdj72hdPRoqld
+	u0s/5ig9S9L5ns+p/e656ZCY4Ph118qyUZ1/xykaHl1Zg/zXeRYDZP8yQCUr9yWl+dTUjHnpcnH
+	UjjG1IWeflfnrVpWGSrYqR8+NB1yc3VCCnRTusI7e8SZnoQyam0ESRZq2GA7Jf+5+
+X-Gm-Gg: AR+sD10aEM1VgenELjtZDHxA5UDWHD3Zemx7zZgVM4FOmV+NS0e06K8kFJYh1oqBQxF
+	VrZtDOPIyw9ucrY7AXJg6xMx78vPIHoU+BHbkJIvCDSmE4pTxpz/KFg83bkS2NzLRmwtAgLnE/L
+	vwc2arRRVkwoGAmGJRVQgB54Wo/Ch4yT/NuZzvA1YUhqxbxe93NXj0aQ9BjPmlJr50NrxKRQ3Bb
+	KfsvdFU4afNf62335M/T26MZpWX3tvb4JdG9JPc7NnMxSro3LTkWuxt87VCZVOeH0c+wFdUKinO
+	/oqA0fjWCtbm8P6FXcTTCc7+WJSe9FIe2zhJMeaXrj3j+Ed1DW7CE6VCbq4L4lZrCADHI+IhEeg
+	SS7l5zvXMqpBNHrCAsaTSClCOXjC1GhARCqIXcmLTBDSkWfqlVLv4GJ8QNQ==
+X-Received: by 2002:a05:6a21:68c:b0:3bf:c49d:9183 with SMTP id adf61e73a8af0-3c67df7c5f2mr5035441637.50.1785083011970;
+        Sun, 26 Jul 2026 09:23:31 -0700 (PDT)
+X-Received: by 2002:a05:6a21:68c:b0:3bf:c49d:9183 with SMTP id adf61e73a8af0-3c67df7c5f2mr5035424637.50.1785083011520;
+        Sun, 26 Jul 2026 09:23:31 -0700 (PDT)
+Received: from [192.168.1.11] (15.sub-75-218-246.myvzw.com. [75.218.246.15])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-314bc419e3asm22046515eec.11.2026.07.26.09.23.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Jul 2026 09:23:30 -0700 (PDT)
+Message-ID: <83a55e81-bfb0-42bd-9c01-6b225db25492@oss.qualcomm.com>
+Date: Sun, 26 Jul 2026 09:23:29 -0700
 MIME-Version: 1.0
-From: Rakesh <alasyamrakesh77@gmail.com>
-Date: Sun, 26 Jul 2026 11:57:09 +0530
-X-Gm-Features: AUfX_mwVESciFjrQOYAwjGdza-1UBWJjl4OKsNkk0jI3qgxj35yF7YD3Wx5CaIY
-Message-ID: <CAMizObmsJkvUJ07YpY7r7FNXSfvEiKjDNkPEq7mxVhrytejkBg@mail.gmail.com>
-Subject: [BUG] ath10k_pci: QCA9377 reports recurring PCIe AER RxErr/BadDLLP
- errors with ASPM enabled
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org, jjohnson@kernel.org, johannes@sipsolutions.net, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] ath10k_pci: QCA9377 reports recurring PCIe AER
+ RxErr/BadDLLP errors with ASPM enabled
+To: Rakesh <alasyamrakesh77@gmail.com>
+Cc: ath10k@lists.infradead.org, Baochen Qiang <baochen.qiang@oss.qualcomm.com>
+References: <CAMizObmsJkvUJ07YpY7r7FNXSfvEiKjDNkPEq7mxVhrytejkBg@mail.gmail.com>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <CAMizObmsJkvUJ07YpY7r7FNXSfvEiKjDNkPEq7mxVhrytejkBg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzI2MDE2NiBTYWx0ZWRfX2Bt9VxouWUqI
+ rY6I8mHNMaeScxM1yi2zKlhmFfxomTXIeW3VFUouAvrS74ndz9DVXOjCHMk2ytBn8/S2WleTlfi
+ c7+puDWwQsz5tNbXslnlGR30vaPWv9q01tV6Pw+eUBalGbcVpV+79uMV2t/idpf3tex4OMBTRbM
+ 629+eyE+kkyVYDJ5muWxL/LJBrjHuVMEC8fa7GZl/KonEz1vlLQd3m0Py8bmcnzXOTYfE83WQrG
+ DLaWjDUoHEJdrWt5e7e4cxHoVX0ofYWwND6sUIXmCBZjA+kCBmMKcAtRM3NQEbrh0lhR+lifIf9
+ MVpgxvDbqn3Ty5niEtZUGs8TkF4gmX1rFIHRTU7P5S+2MTJ3cX2tOK+PC5wOsLtE+8W9RamjppN
+ AXdeWXwRPKeethPgSYtWhomitwbMCI8Q76/5/nFnXjLU+Xvkn9uzhrjvYgVpWkq188kPkgA/DLS
+ by/pZ5gY8JoPLBZHHjQ==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzI2MDE2NiBTYWx0ZWRfX91et+OmghJXU
+ y7ceCZTSZTBxhrlC0/4RCfsu+G2b841FcUebfsgsDfdTvh20TEqIKb/XPV07a8gJ3irrbBpPq+4
+ xg8rT9htib71Dvos+HQc2ccOw6CO9hY=
+X-Proofpoint-ORIG-GUID: VaWRvjBqtrFOjnlpto7XA65GtTo4N2MN
+X-Proofpoint-GUID: VaWRvjBqtrFOjnlpto7XA65GtTo4N2MN
+X-Authority-Analysis: v=2.4 cv=KanidwYD c=1 sm=1 tr=0 ts=6a663484 cx=c_pps
+ a=mDZGXZTwRPZaeRUbqKGCBw==:117 a=6VQYfvmiyQ8t40WkS/mQdw==:17
+ a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=Um2Pa8k9VHT-vaBCBUpS:22
+ a=VwQbUJbxAAAA:8 a=8GHABLV0PJXXbqG_lnwA:9 a=QEXdDO2ut3YA:10
+ a=zc0IvFSfCIW2DFIPzwfm:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-26_04,2026-07-24_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 suspectscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ bulkscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607260166
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260725_232723_570270_C3F612E7 
-X-CRM114-Status: UNSURE (   5.85  )
+X-CRM114-CacheID: sfid-20260726_092333_431770_71F3C60D 
+X-CRM114-Status: UNSURE (   9.63  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -111,63 +147,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-Hello,
+On 7/25/2026 11:27 PM, Rakesh wrote:
+> Hello,
+> 
+> I am reporting what appears to be a reproducible ASPM-related issue
+> affecting the Qualcomm Atheros QCA9377 (ath10k_pci) wireless adapter.
+> 
+> I initially reported this to the PCI subsystem in Kernel Bugzilla:
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=221784
+> 
+> The report was reviewed, and I was advised to report it to the
+> ath10k/linux-wireless maintainers since the PCI subsystem itself
+> appears to be functioning correctly.
 
-I am reporting what appears to be a reproducible ASPM-related issue
-affecting the Qualcomm Atheros QCA9377 (ath10k_pci) wireless adapter.
+I've reopened that bug and assigned it to Baochen. He'll work with you on this.
 
-I initially reported this to the PCI subsystem in Kernel Bugzilla:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=221784
-
-The report was reviewed, and I was advised to report it to the
-ath10k/linux-wireless maintainers since the PCI subsystem itself
-appears to be functioning correctly.
-
-Hardware:
-
-Dell Latitude 3500
-BIOS 1.37.0
-Intel PCIe Root Port: 8086:9db1
-Qualcomm Atheros QCA9377 (168c:0042), subsystem 1028:1810
-Driver: ath10k_pci
-
-Kernels tested:
-
-Ubuntu 20.04 (Linux 5.15.x)
-Ubuntu development release (Linux 7.0.0-14)
-
-Observed behavior:
-With ASPM enabled, the system continuously reports PCIe AER
-Correctable Errors, primarily RxErr and BadDLLP, while the wireless
-device is active. The issue is consistently reproducible.
-
-Workaround:
-Booting with:
-
-pcie_aspm=off
-
-completely eliminates the AER errors.
-
-Additional observations:
-
-ASPM L1 is enabled on the PCIe link.
-L1.1/L1.2 substates are enabled on both the Root Port and the endpoint.
-During initialization, ath10k_pci temporarily disables ASPM and later
-restores it.
-I was unable to find an existing device-specific ASPM/AER quirk for the QCA9377.
-
-The Bugzilla report contains the complete investigation, hardware
-information, lspci output, dmesg logs, and supporting diagnostics:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=221784
-
-If additional diagnostics, testing, or patches would be helpful, I
-would be happy to assist.
-
-Thank you for your time.
-
-Best regards,
-
-Alasyam Rakesh
+/jeff
 
