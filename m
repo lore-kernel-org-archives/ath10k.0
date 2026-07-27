@@ -4,78 +4,155 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E6F0C531C9
-	for <ath10k@archiver.kernel.org>; Mon, 27 Jul 2026 16:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33F5BC531D0
+	for <ath10k@archiver.kernel.org>; Mon, 27 Jul 2026 20:28:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	Content-Transfer-Encoding:Content-Type:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WwYnBh+DQWz7yd3XTRZ3hAvsHctHjST+5NaaG5iiKMo=; b=jfQ5N2sQ/g2TdY
-	mmVNEc9XISf9YdEoFmKmn8nOmEhV++0oEg3MGY02dcKYN8bII8xUPsqRyABJpA5319aypXB1w9JYO
-	wRVfktgavh0YqKQSt3J8MTryY4lmDpcj6pqIGGnnNAzTD12dSWhP1qO8iTuciVnG958Lvcij26LsM
-	im/UGkvjjAGAkkflNUDGdT0T2GdmAVG0h5xI0jb+yW84AyPCe9yhCT4wGK2rqlZ/Sx1OYsp0tnWAN
-	NPU8RhSaA4xyL728ST08xsraafBLR/bHPwj1PXlqBkcnyxrleDhTK8TAIqyVAbahieOZ5wZIv5PA+
-	gjwBQi30MnwoM9s2EnbQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=dfnDuv+8RUeh/cKuM0y6F6+wWcdFDiaIhkznAKbe9dw=; b=ogF88uZYGfNX+KGYpa0LKdoQxF
+	IR49a8KlK5A8n2WBKn0Yz4c8ikEM44gssM+ZB7jSrSTr5pgef6GtYjKrNFfi9HQvieQbRX+QSNc96
+	+RdMIL1WspC51ViYPA682yV0vyzCLBeMe5s1A4uQ+Mg/8oItva147/9ok7aga561xEHojRDyYi1pq
+	SVj7w1/soZ215xdNy62EspX4ADiWV7+ykxTjrQdSHg+EoPS7c20CHTl96KzO+4HJzprmznelMHqgR
+	Ztlxc04N9aYI7/6ZDj41R7hyvW6XaP5L6j/skv7bYsWHRWMfXPIfvRxQ/Blwzd8ssk1Sxyfz/aG/9
+	5edL+O2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woOA7-00000003Jd9-09Wq;
-	Mon, 27 Jul 2026 16:26:43 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1woRwI-00000003pvJ-0WWB;
+	Mon, 27 Jul 2026 20:28:42 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woOA5-00000003Jcp-3hgc
+	id 1woRwF-00000003puF-0DQh
 	for ath10k@lists.infradead.org;
-	Mon, 27 Jul 2026 16:26:41 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3E44F44EE4
-	for <ath10k@lists.infradead.org>; Mon, 27 Jul 2026 16:26:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0865B1F00ADF
-	for <ath10k@lists.infradead.org>; Mon, 27 Jul 2026 16:26:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785169601;
-	bh=WwYnBh+DQWz7yd3XTRZ3hAvsHctHjST+5NaaG5iiKMo=;
-	h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc;
-	b=mLBy3gtzr7Db3/4jqopgQAcfTVai776HJ2y6V8SRZI5dcotB6m6R+OUDLYgVT1xL4
-	 nB8SnInLyyMtwlTNwiCedpzTV+xAuAC+cajJSzHK52lxX5lsrzQ3EdkZNyul4misO4
-	 alxelxc3EG4f+dJT4C4o9gjiiqnKsAIwHntMx84y9aU4KWI4GwGcJvrOnZ2Zh8LnLz
-	 q3lVtiCUX0mL0/UB3LeN2zAusC38GQGBcWUpnOL599pK23qo9N7hSjgnlgdAbB7F8X
-	 BWSBz9pHNk875cvCO1sM8n/bOG6lD70OpOvl5Emo3u3g+PXPG1dbRO9YqiTLQ1J+AR
-	 SmSu4Z1D0dnvw==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5b01146b205so1715281e87.2
-        for <ath10k@lists.infradead.org>; Mon, 27 Jul 2026 09:26:40 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RpvDM3vxGMLCUDGT6n7HQuQ4xmWuQtUoR+5mlsWGHdOmHbvQFbC+xoyeVUP0V7NVYcbHrTr4s0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwR5E8KR68ikHiz70QA6IZwjCK++MjBNLM/ZKtfSOAOqWqG4+ib
-	QqsRelitVgj3wbTWBNNSRswHdYhpDN7uk9yd4qnPe2nkDvrxQw+jENAwq+6bSUsYhUCwb793VTa
-	bRwpUvWXuebLgI8KDL1sCuMoChey+HUI=
-X-Received: by 2002:a05:6512:1390:b0:5b1:5ee0:6662 with SMTP id
- 2adb3069b0e04-5b2c1b6973fmr1721285e87.51.1785169599045; Mon, 27 Jul 2026
- 09:26:39 -0700 (PDT)
+	Mon, 27 Jul 2026 20:28:40 +0000
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66RIC4vj649345
+	for <ath10k@lists.infradead.org>; Mon, 27 Jul 2026 20:28:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	dfnDuv+8RUeh/cKuM0y6F6+wWcdFDiaIhkznAKbe9dw=; b=lQgu4Lr0xnH06IRI
+	8zn/Xfh2RSw6Y2xrKOK/boi9q03xKJDIMEu4BiJQW9kFn0BHicPZICCusB+Gu/Ua
+	zblKX42Ds9JlYXKQxDxpmTzHmcSfDb6wdfmZgo0YWTq21mS23Lx5y5Vf7HHxqeVx
+	c9tCCKnn8OQ2cmAJTQS4OYxhJyEPZZy3g6NVWZl5cY3tjpzqya7b199Bygab10Cj
+	7/FI5S2eCF0SziDa1c1qykRbWn3PeLig5PF1+lhdws9QifCOPwJxrBIoG85tJtYU
+	L5zVjtiSmajiwhbtstdcX0M/UXqenVnUEHtOOpu4qpjjboZANFpXImTNySUeVZs/
+	FeaHHA==
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fp4c62yvy-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Mon, 27 Jul 2026 20:28:38 +0000 (GMT)
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-cb11535e6a1so2283574a12.0
+        for <ath10k@lists.infradead.org>; Mon, 27 Jul 2026 13:28:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1785184118; x=1785788918; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=dfnDuv+8RUeh/cKuM0y6F6+wWcdFDiaIhkznAKbe9dw=;
+        b=cwJmmdB3nPQqYumybdec488+FLllym8f/TMVb8UgAYLAPd8CfoT0Z4o4mrID9w1IYt
+         hVFeKaPoXnuL12WukrlnaZxTTVCwqbY19O46OYZQWlbClHWRwVJKFFjWyiUiY0oRBaVN
+         ew2uA+DpiwRBrR1F42kbid+Yu3yPV4Xgtm2lTp+K9dxippIK8I6f1qWQ9SUrhV9XnJFE
+         e3GqAPe8Z7bq+FVepljhbwSkEy1JLPmLrT85HrGhqtFq+WOX8dvuNkfFXDNq4gdPa7Nu
+         ajTlYym+o53pzChebGsmfb7ri9wqKyk7W6Wp+ikOh1v3IJ/6Cf740d0KCIbqPrNleCFj
+         jOBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785184118; x=1785788918;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=dfnDuv+8RUeh/cKuM0y6F6+wWcdFDiaIhkznAKbe9dw=;
+        b=RQFBHNqJkj8NIP1k5hCKvYkTfE38fCWGo/bCLHWCYjXjLZSZ6Cj3tUQM4lqMrNttMr
+         nQmeBFzZZSLrhBDhVNIF6Pd1UJuHOk51jM/Rf+lMsR4r+py7DiLYKnIVnzRwmMSv8plw
+         9UBP5uEDdfhsvZGooZemKCLHbSJ+9u4MUc8NGjTFHkfXlNkXRqAnEr2sQKlQ4pnAnTwP
+         y1VHediRYJnpRfDt+VO2lFUKelYmFSXlowmPsjxJhw4GlbJEP7LJ81Kbojj/iOK3yjZL
+         qwaLoLtStPm27ELz58awhdGSRUuqr1jo5dbaGgoB1qkYWH92h1ljMM0GAourNcyCjqaV
+         jKLA==
+X-Forwarded-Encrypted: i=1; AHgh+RozgXJfdBibYIZ2/UmWbKqOqdyPVWQLBIOFljoSALULCIB/ZJJV7gMXhwrD3cbN6thtVxf0xMw=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyNbTucboa09h9AB5u8ITu7bvhQyjBHKSL12PqG04SbhO2HOxlC
+	0YB4VsnrUnSOkhTTbq4WoSN2MP9Z5lZNECyPOnsR7f/qobU2aUwII2rI/BONjxDDa51X8MqPHJL
+	jEGuG9adFR0UBhhjuI1sOHxpm7I2z1EK/fg2Aqs0EE1UEw6FZ6SnNyA6VcF4FDdJX
+X-Gm-Gg: AR+sD10IhuIkCd16BpBNj9n6l4rivtCipG/GF+lZ6eoLhUBxrl43b0rJrB/FEikYghp
+	mReP9OjOrvGR4rz0G9TLikwDN8he1Tvbq3nLezg0uIRTlnVq+W9O78oiHRFKRXhNW8Swpp1dyjn
+	vFKhcQoDBNH90FajWgDkQPbBgVWBMFk9dXewIVU4D9ZRuAon2Dl5UcVJlWMYknMp0yNHS9GYXXN
+	XkWnIYZKItf92+Qk2Ls7AjfA9v1RYM4FgOIdHj4iDzVQHSQ3ItM4GZl+CwuJs23Y8iam72LGj3c
+	1FrIQb8lKfdXvYndPfQp14dpAV/drdSilR5rf6gixIx7wlZ4oaQDijABZJzDebq7LZzI7gbm+Fl
+	Mbj3Bu1l2J0SSvpXgwhm9efS24b4r9NG47V4x0SqKaDLlre7Bzau4hAsnmg==
+X-Received: by 2002:a05:6a20:6a21:b0:3b4:e4f6:4f15 with SMTP id adf61e73a8af0-3c6c7b3d0a0mr1108975637.5.1785184117721;
+        Mon, 27 Jul 2026 13:28:37 -0700 (PDT)
+X-Received: by 2002:a05:6a20:6a21:b0:3b4:e4f6:4f15 with SMTP id adf61e73a8af0-3c6c7b3d0a0mr1108941637.5.1785184117159;
+        Mon, 27 Jul 2026 13:28:37 -0700 (PDT)
+Received: from [192.168.1.11] (15.sub-75-218-246.myvzw.com. [75.218.246.15])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-314bc415eafsm35949179eec.7.2026.07.27.13.28.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jul 2026 13:28:36 -0700 (PDT)
+Message-ID: <477e6f55-d6d7-4a30-af28-dcee185cfbc2@oss.qualcomm.com>
+Date: Mon, 27 Jul 2026 13:28:33 -0700
 MIME-Version: 1.0
-References: <20260727-pwrseq-vote-rename-v1-1-a2029aeeac65@oss.qualcomm.com> <20260727161435.GA1219282@bhelgaas>
-In-Reply-To: <20260727161435.GA1219282@bhelgaas>
-From: Chen-Yu Tsai <wens@kernel.org>
-Date: Tue, 28 Jul 2026 00:26:25 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64bNJzZZHLSZ=V7JMS1Upc_auZvta25eUT1OtOeqm89=w@mail.gmail.com>
-X-Gm-Features: AUfX_my2FjvcDS2i0AF7Douri0W9L3qZfrCbAWmWFsGmJE0fiT2hixE90BRy7QQ
-Message-ID: <CAGb2v64bNJzZZHLSZ=V7JMS1Upc_auZvta25eUT1OtOeqm89=w@mail.gmail.com>
-Subject: Re: [PATCH RFC] power: sequencing: rename pwrseq_power_on/off() to pwrseq_vote_on/off()
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Cc: Bjorn Helgaas <helgaas@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Alessio Belle <alessio.belle@imgtec.com>, Luigi Santivetti <luigi.santivetti@imgtec.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Jeff Johnson <jjohnson@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Loic Poulain <loic.poulain@oss.qualcomm.com>, 
-	linux-pm@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-bluetooth@vger.kernel.org, imagination@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC] power: sequencing: rename pwrseq_power_on/off() to
+ pwrseq_vote_on/off()
+To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
+        Bartosz Golaszewski <brgl@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marcel Holtmann
+ <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Alessio Belle <alessio.belle@imgtec.com>,
+        Luigi Santivetti <luigi.santivetti@imgtec.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+        Jeff Johnson <jjohnson@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, Chen-Yu Tsai <wens@kernel.org>,
+        Loic Poulain <loic.poulain@oss.qualcomm.com>
+Cc: linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, imagination@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-wireless@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-pci@vger.kernel.org
+References: <20260727-pwrseq-vote-rename-v1-1-a2029aeeac65@oss.qualcomm.com>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20260727-pwrseq-vote-rename-v1-1-a2029aeeac65@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Authority-Analysis: v=2.4 cv=eYQNubEH c=1 sm=1 tr=0 ts=6a67bf76 cx=c_pps
+ a=rz3CxIlbcmazkYymdCej/Q==:117 a=6VQYfvmiyQ8t40WkS/mQdw==:17
+ a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=Um2Pa8k9VHT-vaBCBUpS:22
+ a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=EUspDBNiAAAA:8 a=u4B4c_klvyXDgThYlB4A:9
+ a=QEXdDO2ut3YA:10 a=bFCP_H2QrGi7Okbo017w:22
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzI3MDE4MyBTYWx0ZWRfX2gaWtA/pyUex
+ vtYXXPDRz0rBAFqzKVKDNOtAE+HTBEH5HYQpxAgeNV+tdO78yzAYEmwyEswqOY6lhief+p3oQUh
+ W/e52vKhxYfR7wANL7vafXYNV1e2Zuc=
+X-Proofpoint-ORIG-GUID: GJNOrJoA9qKhOUgmOte2tz7xMMTlQ9Jm
+X-Proofpoint-GUID: GJNOrJoA9qKhOUgmOte2tz7xMMTlQ9Jm
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzI3MDE4MyBTYWx0ZWRfXz0QHnuK2pp3O
+ wvNfkxXbsftsAmBOAG6tYGQsLcslKAK4NrLDMaar4nn23Hfg492+zgTU+S1wui8FxT+OtiZ4n9G
+ silT4cb4bv5iV1HZwUIq9BFgqFS9EBaYa1U0rROnkZUTPMBAzujM8lTKqeBru4y9vIMPvM3UaTc
+ z9B4giWjgangIa9A9heBdwZQewiugvFJtz/VSJnghqcHHkYZwic/LSwkeB7sc/7h1RZc5AXxqm1
+ RlgQd46z2g2ait4PqL/cqkaXOwzXtGJEAkTveSE8qiPrl0aK+Xo8MJiiplITxaUACaUV3JPuiJ+
+ oARqkXvL+8SxdLhKEYMrMe4T7woe+O5SW3MBpKR1FGAI4GluKfldF0YSbVIepuNMKNprGtFjE6i
+ t0Qhlce/bO9LlYIzhBcqYZrbnozJsR4wqqOyqgn43PXPO8hG3syal0BJq+VC+hs5MFWmBYjKman
+ BFh2pcjFN78WoyFfOkg==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-27_05,2026-07-27_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 suspectscore=0 spamscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607270183
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260727_132839_105427_799A56F7 
+X-CRM114-Status: GOOD (  23.25  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,373 +164,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: wens@kernel.org
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 28, 2026 at 12:14=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org>=
- wrote:
->
-> On Mon, Jul 27, 2026 at 11:57:38AM +0200, Bartosz Golaszewski wrote:
-> > The way power sequencing works means that a call to pwrseq_power_on()
-> > does not necessarily result in the pwrseq target being powered-on at
-> > that time: it may have already been powered on before. Similarly: a cal=
-l
-> > to pwrseq_power_off() does not have to result in an actual powering off
-> > of resources: there may still be other users that requested a power-on
-> > before.
-> >
-> > We will also introduce the concept of "non-controllable" pwrseq targets
-> > soon which further increases the disconnect between the naming
-> > convention and the actual semantics.
-> >
-> > What consumers of pwrseq descriptors actually do is: they *vote* for a
-> > powering on of a given target or retract that vote. These operations
-> > could be called get/put in line with runtime PM but this could become
-> > confusing since we already provide pwrseq_get/put() for a different
-> > purpose.
->
-> I see the possible confusion with get/put interfaces, but "vote"
-> doesn't seem exactly right because it really is refcounting, not a
-> majority vote thing.
->
-> Maybe enable/disable is a possibility, since regulator_enable() and
-> regulator_disable() have the same kind of refcount behavior?
+On 7/27/2026 2:57 AM, Bartosz Golaszewski wrote:
+> The way power sequencing works means that a call to pwrseq_power_on()
+> does not necessarily result in the pwrseq target being powered-on at
+> that time: it may have already been powered on before. Similarly: a call
+> to pwrseq_power_off() does not have to result in an actual powering off
+> of resources: there may still be other users that requested a power-on
+> before.
+> 
+> We will also introduce the concept of "non-controllable" pwrseq targets
+> soon which further increases the disconnect between the naming
+> convention and the actual semantics.
+> 
+> What consumers of pwrseq descriptors actually do is: they *vote* for a
+> powering on of a given target or retract that vote. These operations
+> could be called get/put in line with runtime PM but this could become
+> confusing since we already provide pwrseq_get/put() for a different
+> purpose.
+> 
+> Change the name of the two functions to pwrseq_vote_on/off() which
+> better reflects their purpose and semantics. No functional change
+> intended.
+> 
+> If at any point users need to know *when* the exact power event happens,
+> we can provide that information in the form of a notifier.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+> ---
+> I've floated the idea to rename the two pwrseq functions from "power
+> on/off" to "vote on/off". Here's a concrete proposal.
+> 
+> I'm sending it as an RFC but if there's agreement, I can queue it as is.
+> 
+> I'm doing it in a single commit that should go through the pwrseq tree
+> with Acks from subsystem maintainers.
+> 
+> [1] https://lore.kernel.org/all/CAMRc=Mefxn81d0VUwmQgwFtffkL1=Er_1VQZCbC1Sa-Qph4t1w@mail.gmail.com/
+> ---
+>  Documentation/driver-api/pwrseq.rst      |  4 ++--
+>  drivers/bluetooth/hci_qca.c              |  4 ++--
+>  drivers/gpu/drm/imagination/pvr_power.c  |  4 ++--
+>  drivers/net/wireless/ath/ath10k/snoc.c   |  6 +++---
 
-I agree with this. clk_prepare_enable() / clk_disable_unprepare() have
-the same naming scheme. There's no absolute control unless the consumer
-has exclusive access, and even then there are limitations.
+I approve of the concept but am not tied to any specific naming.
+So whatever names you end up with...
 
-I think having the same naming convention across the multiple kinds of
-hardware resources would help developers align their expectations. That
-is to say, they are refcounting within the kernel, subject to hardware
-limitations (always-on regulators, clks controlled by hardware that
-could still run despite the kernel turning it off, etc.).
+Acked-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com> # ath10k
 
-
-ChenYu
-
-
-
-> Whatever you end up with:
->
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>   # drivers/pci
->
-> > Change the name of the two functions to pwrseq_vote_on/off() which
-> > better reflects their purpose and semantics. No functional change
-> > intended.
-> >
-> > If at any point users need to know *when* the exact power event happens=
-,
-> > we can provide that information in the form of a notifier.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.co=
-m>
-> > ---
-> > I've floated the idea to rename the two pwrseq functions from "power
-> > on/off" to "vote on/off". Here's a concrete proposal.
-> >
-> > I'm sending it as an RFC but if there's agreement, I can queue it as is=
-.
-> >
-> > I'm doing it in a single commit that should go through the pwrseq tree
-> > with Acks from subsystem maintainers.
-> >
-> > [1] https://lore.kernel.org/all/CAMRc=3DMefxn81d0VUwmQgwFtffkL1=3DEr_1V=
-QZCbC1Sa-Qph4t1w@mail.gmail.com/
-> > ---
-> >  Documentation/driver-api/pwrseq.rst      |  4 ++--
-> >  drivers/bluetooth/hci_qca.c              |  4 ++--
-> >  drivers/gpu/drm/imagination/pvr_power.c  |  4 ++--
-> >  drivers/net/wireless/ath/ath10k/snoc.c   |  6 +++---
-> >  drivers/pci/pwrctrl/generic.c            |  4 ++--
-> >  drivers/pci/pwrctrl/pci-pwrctrl-pwrseq.c |  4 ++--
-> >  drivers/power/sequencing/core.c          | 16 ++++++++--------
-> >  include/linux/pwrseq/consumer.h          |  8 ++++----
-> >  8 files changed, 25 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/Documentation/driver-api/pwrseq.rst b/Documentation/driver=
--api/pwrseq.rst
-> > index ad18b2326b689a41471216f3889480b11768ca82..faba5a8e3337e878c6dac0c=
-c91d23b3577cab6fd 100644
-> > --- a/Documentation/driver-api/pwrseq.rst
-> > +++ b/Documentation/driver-api/pwrseq.rst
-> > @@ -50,9 +50,9 @@ Consumer interface
-> >  The consumer API is aimed to be as simple as possible. The driver inte=
-rested in
-> >  getting a descriptor from the power sequencer should call pwrseq_get()=
- and
-> >  specify the name of the target it wants to reach in the sequence after=
- calling
-> > -pwrseq_power_up(). The descriptor can be released by calling pwrseq_pu=
-t() and
-> > +pwrseq_vote_on(). The descriptor can be released by calling pwrseq_put=
-() and
-> >  the consumer can request the powering down of its target with
-> > -pwrseq_power_off(). Note that there is no guarantee that pwrseq_power_=
-off()
-> > +pwrseq_vote_off(). Note that there is no guarantee that pwrseq_vote_of=
-f()
-> >  will have any effect as there may be multiple users of the underlying =
-resources
-> >  who may keep them active.
-> >
-> > diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> > index e6d107f67759f54eee2647d92bb8bfd4e68c9358..5aaabc9fb1b66eb6b24da25=
-f77158690a2f03c84 100644
-> > --- a/drivers/bluetooth/hci_qca.c
-> > +++ b/drivers/bluetooth/hci_qca.c
-> > @@ -2259,7 +2259,7 @@ static void qca_power_off(struct hci_uart *hu)
-> >       }
-> >
-> >       if (power && power->pwrseq) {
-> > -             pwrseq_power_off(power->pwrseq);
-> > +             pwrseq_vote_off(power->pwrseq);
-> >               set_bit(QCA_BT_OFF, &qca->flags);
-> >               return;
-> >          }
-> > @@ -2319,7 +2319,7 @@ static int qca_regulator_enable(struct qca_serdev=
- *qcadev)
-> >       int ret;
-> >
-> >       if (power->pwrseq)
-> > -             return pwrseq_power_on(power->pwrseq);
-> > +             return pwrseq_vote_on(power->pwrseq);
-> >
-> >       /* Already enabled */
-> >       if (power->vregs_on)
-> > diff --git a/drivers/gpu/drm/imagination/pvr_power.c b/drivers/gpu/drm/=
-imagination/pvr_power.c
-> > index a71d5b35601e7b996428312028a4c0542a5b1350..c6dfa2685ee64086c53281d=
-06563e6169109c00f 100644
-> > --- a/drivers/gpu/drm/imagination/pvr_power.c
-> > +++ b/drivers/gpu/drm/imagination/pvr_power.c
-> > @@ -352,12 +352,12 @@ static int pvr_power_init_pwrseq(struct pvr_devic=
-e *pvr_dev)
-> >
-> >  static int pvr_power_on_sequence_pwrseq(struct pvr_device *pvr_dev)
-> >  {
-> > -     return pwrseq_power_on(pvr_dev->pwrseq);
-> > +     return pwrseq_vote_on(pvr_dev->pwrseq);
-> >  }
-> >
-> >  static int pvr_power_off_sequence_pwrseq(struct pvr_device *pvr_dev)
-> >  {
-> > -     return pwrseq_power_off(pvr_dev->pwrseq);
-> > +     return pwrseq_vote_off(pvr_dev->pwrseq);
-> >  }
-> >
-> >  const struct pvr_power_sequence_ops pvr_power_sequence_ops_pwrseq =3D =
-{
-> > diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wirel=
-ess/ath/ath10k/snoc.c
-> > index 3106502275781d32d17a45a661362206144df6b3..f87e56576e29124902dccd1=
-a21600fd3407b2922 100644
-> > --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> > +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> > @@ -1025,7 +1025,7 @@ static int ath10k_hw_power_on(struct ath10k *ar)
-> >
-> >       ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power on\n");
-> >
-> > -     ret =3D pwrseq_power_on(ar_snoc->pwrseq);
-> > +     ret =3D pwrseq_vote_on(ar_snoc->pwrseq);
-> >       if (ret)
-> >               return ret;
-> >
-> > @@ -1042,7 +1042,7 @@ static int ath10k_hw_power_on(struct ath10k *ar)
-> >  vreg_off:
-> >       regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
-> >  pwrseq_off:
-> > -     pwrseq_power_off(ar_snoc->pwrseq);
-> > +     pwrseq_vote_off(ar_snoc->pwrseq);
-> >
-> >       return ret;
-> >  }
-> > @@ -1060,7 +1060,7 @@ static int ath10k_hw_power_off(struct ath10k *ar)
-> >       ret_vreg =3D regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->=
-vregs);
-> >
-> >       if (ar_snoc->pwrseq)
-> > -             ret_seq =3D pwrseq_power_off(ar_snoc->pwrseq);
-> > +             ret_seq =3D pwrseq_vote_off(ar_snoc->pwrseq);
-> >
-> >       return ret_vreg ? : ret_seq;
-> >  }
-> > diff --git a/drivers/pci/pwrctrl/generic.c b/drivers/pci/pwrctrl/generi=
-c.c
-> > index a7e599d841e6289db161b19a93ba5a61d9e0ab1c..8872f6501352d7273a9b4f2=
-0589c2f74d6accc65 100644
-> > --- a/drivers/pci/pwrctrl/generic.c
-> > +++ b/drivers/pci/pwrctrl/generic.c
-> > @@ -29,7 +29,7 @@ static int slot_pwrctrl_power_on(struct pci_pwrctrl *=
-pwrctrl)
-> >       int ret;
-> >
-> >       if (slot->pwrseq) {
-> > -             pwrseq_power_on(slot->pwrseq);
-> > +             pwrseq_vote_on(slot->pwrseq);
-> >               return 0;
-> >       }
-> >
-> > @@ -48,7 +48,7 @@ static int slot_pwrctrl_power_off(struct pci_pwrctrl =
-*pwrctrl)
-> >                                               struct slot_pwrctrl, pwrc=
-trl);
-> >
-> >       if (slot->pwrseq) {
-> > -             pwrseq_power_off(slot->pwrseq);
-> > +             pwrseq_vote_off(slot->pwrseq);
-> >               return 0;
-> >       }
-> >
-> > diff --git a/drivers/pci/pwrctrl/pci-pwrctrl-pwrseq.c b/drivers/pci/pwr=
-ctrl/pci-pwrctrl-pwrseq.c
-> > index a308bf4b5fc01d23b75db4cd396201c3ba3fe695..86822f0f645eb757455f575=
-000f81122bce82e60 100644
-> > --- a/drivers/pci/pwrctrl/pci-pwrctrl-pwrseq.c
-> > +++ b/drivers/pci/pwrctrl/pci-pwrctrl-pwrseq.c
-> > @@ -56,7 +56,7 @@ static int pwrseq_pwrctrl_power_on(struct pci_pwrctrl=
- *pwrctrl)
-> >       struct pwrseq_pwrctrl *pwrseq =3D container_of(pwrctrl,
-> >                                          struct pwrseq_pwrctrl, pwrctrl=
-);
-> >
-> > -     return pwrseq_power_on(pwrseq->pwrseq);
-> > +     return pwrseq_vote_on(pwrseq->pwrseq);
-> >  }
-> >
-> >  static int pwrseq_pwrctrl_power_off(struct pci_pwrctrl *pwrctrl)
-> > @@ -64,7 +64,7 @@ static int pwrseq_pwrctrl_power_off(struct pci_pwrctr=
-l *pwrctrl)
-> >       struct pwrseq_pwrctrl *pwrseq =3D container_of(pwrctrl,
-> >                                          struct pwrseq_pwrctrl, pwrctrl=
-);
-> >
-> > -     return pwrseq_power_off(pwrseq->pwrseq);
-> > +     return pwrseq_vote_off(pwrseq->pwrseq);
-> >  }
-> >
-> >  static int pwrseq_pwrctrl_probe(struct platform_device *pdev)
-> > diff --git a/drivers/power/sequencing/core.c b/drivers/power/sequencing=
-/core.c
-> > index 02f42da915985339d3de507fc36dd158b0035a99..c630b14f6f2c478f05e4b28=
-93b386aab0cddaaf5 100644
-> > --- a/drivers/power/sequencing/core.c
-> > +++ b/drivers/power/sequencing/core.c
-> > @@ -708,7 +708,7 @@ void pwrseq_put(struct pwrseq_desc *desc)
-> >       pwrseq =3D desc->pwrseq;
-> >
-> >       if (desc->powered_on)
-> > -             pwrseq_power_off(desc);
-> > +             pwrseq_vote_off(desc);
-> >
-> >       kfree(desc);
-> >       module_put(pwrseq->owner);
-> > @@ -874,7 +874,7 @@ static int pwrseq_unit_disable(struct pwrseq_device=
- *pwrseq,
-> >  }
-> >
-> >  /**
-> > - * pwrseq_power_on() - Issue a power-on request on behalf of the consu=
-mer
-> > + * pwrseq_vote_on() - Issue a power-on request on behalf of the consum=
-er
-> >   *                     device.
-> >   * @desc: Descriptor referencing the power sequencer.
-> >   *
-> > @@ -887,7 +887,7 @@ static int pwrseq_unit_disable(struct pwrseq_device=
- *pwrseq,
-> >   * Returns:
-> >   * 0 on success, negative error number on failure.
-> >   */
-> > -int pwrseq_power_on(struct pwrseq_desc *desc)
-> > +int pwrseq_vote_on(struct pwrseq_desc *desc)
-> >  {
-> >       struct pwrseq_device *pwrseq;
-> >       struct pwrseq_target *target;
-> > @@ -925,14 +925,14 @@ int pwrseq_power_on(struct pwrseq_desc *desc)
-> >
-> >       return ret;
-> >  }
-> > -EXPORT_SYMBOL_GPL(pwrseq_power_on);
-> > +EXPORT_SYMBOL_GPL(pwrseq_vote_on);
-> >
-> >  /**
-> > - * pwrseq_power_off() - Issue a power-off request on behalf of the con=
-sumer
-> > + * pwrseq_vote_off() - Issue a power-off request on behalf of the cons=
-umer
-> >   *                      device.
-> >   * @desc: Descriptor referencing the power sequencer.
-> >   *
-> > - * This undoes the effects of pwrseq_power_on(). It issues a power-off=
- request
-> > + * This undoes the effects of pwrseq_vote_on(). It issues a power-off =
-request
-> >   * on behalf of the consumer and when the last remaining user does so,=
- the
-> >   * power-down sequence will be started. If one is in progress, the fun=
-ction
-> >   * will block until it's complete and then return.
-> > @@ -940,7 +940,7 @@ EXPORT_SYMBOL_GPL(pwrseq_power_on);
-> >   * Returns:
-> >   * 0 on success, negative error number on failure.
-> >   */
-> > -int pwrseq_power_off(struct pwrseq_desc *desc)
-> > +int pwrseq_vote_off(struct pwrseq_desc *desc)
-> >  {
-> >       struct pwrseq_device *pwrseq;
-> >       struct pwrseq_unit *unit;
-> > @@ -966,7 +966,7 @@ int pwrseq_power_off(struct pwrseq_desc *desc)
-> >
-> >       return ret;
-> >  }
-> > -EXPORT_SYMBOL_GPL(pwrseq_power_off);
-> > +EXPORT_SYMBOL_GPL(pwrseq_vote_off);
-> >
-> >  /**
-> >   * pwrseq_to_device() - Get the pwrseq device pointer from a descripto=
-r.
-> > diff --git a/include/linux/pwrseq/consumer.h b/include/linux/pwrseq/con=
-sumer.h
-> > index 3c907c9e1885dc2958043a9a733fbe20bdf95f6e..e4d2cb321354f0cb7e1d1d7=
-2e6b5a96b94129da3 100644
-> > --- a/include/linux/pwrseq/consumer.h
-> > +++ b/include/linux/pwrseq/consumer.h
-> > @@ -20,8 +20,8 @@ void pwrseq_put(struct pwrseq_desc *desc);
-> >  struct pwrseq_desc * __must_check
-> >  devm_pwrseq_get(struct device *dev, const char *target);
-> >
-> > -int pwrseq_power_on(struct pwrseq_desc *desc);
-> > -int pwrseq_power_off(struct pwrseq_desc *desc);
-> > +int pwrseq_vote_on(struct pwrseq_desc *desc);
-> > +int pwrseq_vote_off(struct pwrseq_desc *desc);
-> >
-> >  struct device *pwrseq_to_device(struct pwrseq_desc *desc);
-> >
-> > @@ -43,12 +43,12 @@ devm_pwrseq_get(struct device *dev, const char *tar=
-get)
-> >       return ERR_PTR(-ENOSYS);
-> >  }
-> >
-> > -static inline int pwrseq_power_on(struct pwrseq_desc *desc)
-> > +static inline int pwrseq_vote_on(struct pwrseq_desc *desc)
-> >  {
-> >       return -ENOSYS;
-> >  }
-> >
-> > -static inline int pwrseq_power_off(struct pwrseq_desc *desc)
-> > +static inline int pwrseq_vote_off(struct pwrseq_desc *desc)
-> >  {
-> >       return -ENOSYS;
-> >  }
-> >
-> > ---
-> > base-commit: c5e32e86ca02b003f86e095d379b38148999293d
-> > change-id: 20260727-pwrseq-vote-rename-b7cd21032668
-> >
-> > Best regards,
-> > --
-> > Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-> >
 
