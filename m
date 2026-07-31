@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A787C55167
-	for <ath10k@archiver.kernel.org>; Fri, 31 Jul 2026 08:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AE62C5516D
+	for <ath10k@archiver.kernel.org>; Fri, 31 Jul 2026 08:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
 	Message-ID:Date:References:MIME-Version:In-Reply-To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9twirzm5nktw8mCQZKCsisWF22u3KfRsBskDwndW4Kk=; b=wUK3vJjPgyZz/Cqf96xoUVoHfI
-	WCQGZhZGzxikWGx1x6IGlJzUHgllRCUjxPzJWF1s2xky+UgdUwv0M78SsCBfU1ddQzThMXUIWycQ3
-	ExLOIByfoHC4FaE5oXyA85uRQSAybcGFl0YIKKZ8w6YsYLixSOgXhOoZMEj4op4CeTedsq7Go2qwN
-	vqKpM5l7Zcha1yMbxuwWaT4LD6iKyx7pAYuXMG6iyBOxosB7ErbVl5aglHZWw2vYBOZ9Xxe3UlhJ/
-	AFriph/Qt3Ej8ygREvw6c0rPDOkHMYVGEQHCRrDmT1yG2WFSOg2BK3yeaon1Mu+yxkpzdaH3Sd3wi
-	OHIleMcg==;
+	bh=xQJfCIYx7YtBoHGSdPxLID9UpP7U21GdSDr2MFYu7TQ=; b=IaeMGvPPha0DLA4198RzL1pDXu
+	Sv0FLEoRaUuSAH2Dvd6mUwpXkrHiu8wvbhSkvdf+JiMHbzDPmDqLv6t7PLECVhM/Hty2VoGShzh9O
+	SLT4I/G14oK9Qetz7yvjLdwvJySmmE5XIIcZa9z3bf/Xux2cWOTiWLjlboymtaNZLtCPtWYvEOBY1
+	hCxmZUQQN4s5O3UqjncRkmWCjsWoZdRiAlJhuFM08tR+Se7u5AxLP+nE2f/mGf8TONfmMzaWtEn61
+	MIjMBi8sh994bOlw35bdGm+jRdaqPwBJAFTcHos/sD5zT0rRBnb5lzrTPoifoG4oiniB+8t1+sFT1
+	/7Jxx1QQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpim3-0000000C599-3yLF;
-	Fri, 31 Jul 2026 08:39:23 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wpinV-0000000C5ON-1nl7;
+	Fri, 31 Jul 2026 08:40:53 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpim2-0000000C58s-3sUI
+	id 1wpinU-0000000C5OC-0IKh
 	for ath10k@lists.infradead.org;
-	Fri, 31 Jul 2026 08:39:23 +0000
+	Fri, 31 Jul 2026 08:40:52 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0B7FA60A7A
-	for <ath10k@lists.infradead.org>; Fri, 31 Jul 2026 08:39:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B67201F00A3E
-	for <ath10k@lists.infradead.org>; Fri, 31 Jul 2026 08:39:21 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 85F9540555
+	for <ath10k@lists.infradead.org>; Fri, 31 Jul 2026 08:40:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A7E01F00A3A
+	for <ath10k@lists.infradead.org>; Fri, 31 Jul 2026 08:40:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785487161;
-	bh=9twirzm5nktw8mCQZKCsisWF22u3KfRsBskDwndW4Kk=;
+	s=k20260515; t=1785487251;
+	bh=xQJfCIYx7YtBoHGSdPxLID9UpP7U21GdSDr2MFYu7TQ=;
 	h=From:In-Reply-To:References:Date:Subject:To:Cc;
-	b=cjb/dd+51J8KLsvFQz1XCBr/Eh1elTDHf+94E8yxXnjPA5Myp3+d9527UZ63cP7DX
-	 A/uoKegoL+ZNdNCEWYYyIKjekXBIQn+ciLwfj17ngQElOo0YP1TstGOhIa3UwLRfij
-	 9RJ5sDQoLVxRcS5HEXowRGtJAUGRaCfTfuhjwJsOXK0kqIdRBuIAJRXaWOELobG7+p
-	 RFrL3UjoS19yoc2drI2021i472x/CxOXQCElYIFZVtqMoP3Fu9NjZ8nKxH1sK1CCXA
-	 ST31OZhhFcckXXFUZ5hsL05RIUGw79RMw7GKySri7MEgHiUGOWpmg/P+5Kc+w9jyAU
-	 FyHv+39gTplaw==
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-39c7ac9b8c3so6373651fa.0
-        for <ath10k@lists.infradead.org>; Fri, 31 Jul 2026 01:39:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RrLMHn8JhNHLwLT5WskU0WZpQb1LlHWCK7X97zRYGiwhAKTNExUgHH1ZV/FajRysi1UB3xJcI8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxHwOKYdla2onwsiDjDoieQoElfCUXiNoVJ74w8EKJjujDIszLZ
-	nsqhcXx5M9GvFPg7Z6afwL3SGRL6+SuZ40nHRKWbMFDUaHEffsKClQ9tHeFCN7hjNO5in/dFkac
-	7DhscHYTz5pAUA81zTiZGsQvcNhkL3ADk6Ou6Modkuw==
-X-Received: by 2002:a2e:a806:0:b0:39a:fec6:efd0 with SMTP id
- 38308e7fff4ca-39f7e3b70e1mr2581091fa.23.1785487160524; Fri, 31 Jul 2026
- 01:39:20 -0700 (PDT)
+	b=aU7b6+lGFkvei3Qenni7Ts3ynzCIDnFCIEEq2DDi9fPD5q7FO86BbwGtuzu3sk+eI
+	 fcApUNn7PlABHixqudHKWCU9e05d+voFJKxFZwMuU/KGnXQtQJMiQHkMZyGekWf6qB
+	 6OJOEoLCTxZRR4lWfM+kAw4WmC50cAEGH0XlcIIxr0m9nSodeIjaHh8UbvsQ2w89t4
+	 gvkurEsAFZuvDllBjDhfmkuH7ibapIBD8I9+h7cBLjxtrrIiVCIwYrVk6KLrqDDEQO
+	 2rryHmYhquV5/ydU4cOEjxQz57WxQFYFkfbZhIp9tZRf2JxqSvEesNE7HW+RvuzNwx
+	 3xzWVqM/YBguA==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-39c7ac9b8c3so6382581fa.0
+        for <ath10k@lists.infradead.org>; Fri, 31 Jul 2026 01:40:51 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+Ro+ePMoCVXIkb3EeMopBbwAs9/3EfMPfZt4B2P0zdndzY2f8vOJk1An1QxDWO670C7zekKKFfE=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz4fTmfggZcK3lawlH52kh1+sg+Qgh3E/Y33VCjyP9Wo8+2eEKN
+	cT8Xw9QJ+6+RAXDW8fG1znuYArhGrGphtio1o3+rwoqTkxqKcQDj6AUIknDBfNbiGbOmTFrz3E4
+	EeCd9/dAaEi8aKcTYfhrO7Uh6M0v5dIy2HP650i1sfg==
+X-Received: by 2002:a05:651c:a20d:20b0:39c:650c:454e with SMTP id
+ 38308e7fff4ca-39f7e352fbcmr1943041fa.13.1785487250229; Fri, 31 Jul 2026
+ 01:40:50 -0700 (PDT)
 Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 31 Jul 2026 01:39:17 -0700
+ HTTPREST; Fri, 31 Jul 2026 01:40:48 -0700
 Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 31 Jul 2026 01:39:17 -0700
+ HTTPREST; Fri, 31 Jul 2026 01:40:48 -0700
 From: Bartosz Golaszewski <brgl@kernel.org>
-In-Reply-To: <20260730-block-as-nvmem-v9-1-f72935817dbf@oss.qualcomm.com>
+In-Reply-To: <20260730-block-as-nvmem-v9-5-f72935817dbf@oss.qualcomm.com>
 MIME-Version: 1.0
-References: <20260730-block-as-nvmem-v9-0-f72935817dbf@oss.qualcomm.com> <20260730-block-as-nvmem-v9-1-f72935817dbf@oss.qualcomm.com>
-Date: Fri, 31 Jul 2026 01:39:17 -0700
-X-Gmail-Original-Message-ID: <CAMRc=MdRd-FgAa+NMf-GZLi05G8PrGjD9LB2h7dQ=9iXiLh9sw@mail.gmail.com>
-X-Gm-Features: AUfX_myHE9QF2TZrMuCq1Fl8GoUB-sokgcKRRxyeNwASqhiRSWL8Z59R0TWE-vo
-Message-ID: <CAMRc=MdRd-FgAa+NMf-GZLi05G8PrGjD9LB2h7dQ=9iXiLh9sw@mail.gmail.com>
-Subject: Re: [PATCH v9 01/10] dt-bindings: mmc: Document fixed-layout NVMEM
- provider support
+References: <20260730-block-as-nvmem-v9-0-f72935817dbf@oss.qualcomm.com> <20260730-block-as-nvmem-v9-5-f72935817dbf@oss.qualcomm.com>
+Date: Fri, 31 Jul 2026 01:40:48 -0700
+X-Gmail-Original-Message-ID: <CAMRc=MdXFDFw_oHSGk5=RgLJAfTixuUNYTY62Dpcdb4nqcg7ig@mail.gmail.com>
+X-Gm-Features: AUfX_my0BSuN_dmw9PAQ3RKVVzPb03vWf8SlnwYWcd8wsPsuOu4arihpRTxh5pc
+Message-ID: <CAMRc=MdXFDFw_oHSGk5=RgLJAfTixuUNYTY62Dpcdb4nqcg7ig@mail.gmail.com>
+Subject: Re: [PATCH v9 05/10] block: partitions: of: Attach partition fwnode
+ to the block device
 To: Loic Poulain <loic.poulain@oss.qualcomm.com>
 Cc: linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
@@ -97,21 +97,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Thu, 30 Jul 2026 18:00:31 +0200, Loic Poulain
+On Thu, 30 Jul 2026 18:00:35 +0200, Loic Poulain
 <loic.poulain@oss.qualcomm.com> said:
-> Allow an eMMC hardware partition node to describe an NVMEM layout so the
-> partition can be exposed as an NVMEM provider. This lets a partition
-> (e.g. an eMMC boot partition) store device-specific information such as a
-> WiFi MAC address or a Bluetooth BD address and reference it through NVMEM
-> cells.
+> The OF partition parser reads offset, size and label from each
+> "fixed-partitions" child node but does not associate that node with the
+> resulting partition block device. As a result a partition has no
+> of_node, unlike the whole-disk device which gets its firmware node via
+> add_disk_fwnode().
 >
-> Accept "fixed-layout" as the partition node compatible, in addition to
-> "fixed-partitions", so the layout can be described directly on the
-> partition node.
+> Carry the partition's device tree node through the parser and attach it
+> to the partition's block device with device_set_node(), mirroring the
+> whole-disk case. This lets consumers describe per-partition properties
+> in the device tree (for example an NVMEM layout on a partition node) and
+> look them up through the partition device.
 >
-> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+> No functional change for existing users, partitions without a matching
+> device tree node simply get a NULL fwnode.
+>
 > Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
 > ---
+
+Makes sense.
 
 Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 
