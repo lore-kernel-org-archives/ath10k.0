@@ -4,113 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E746CC5516F
-	for <ath10k@archiver.kernel.org>; Fri, 31 Jul 2026 15:04:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96972C55172
+	for <ath10k@archiver.kernel.org>; Sat,  1 Aug 2026 15:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=v3d7xI0CjFFJOqab8LewGaimYwRvxrurh7X0EHPLrDQ=; b=S6WH38go6rgKUJdCWBc7s11cpU
-	a+45O6D1ZyvcrpBafO2+GHbJg8RHtR2rmkW1p2mO8mTLwBnt/q6ux7U9WkNLQq7gkNjyH0voxrsEM
-	0n3YoS7GbpsZcFfGbw+TQHdDGRU9nlsDbPtEIjK2sfK0Yu+AbYonBj1yePcaXXT6pu8/xeOIRg/ui
-	eAPdF+lKqO9n3mNA73//4eXkevwS04FFtPG9RP8wvjnSnkLnqeh6gl1oLxGHvTXkpytvJztFJrAxY
-	QJwUBWDSdKeFuLfi0NXt9cN9gZF/lTn5E0oGIHUt3SJWIsZgUwliSzLTaQp0OVo6K4yi86sJwbzzE
-	3xCfUr/Q==;
+	bh=fCu7aUSRdclcGJwFqNfq0oOCaCdjqcE/IxeaapxTTOQ=; b=OYtlrm5o1Xw8rtWu9az1cTxvNd
+	1viY10VNe7ulRQQEg8RW516zTXWD54RMoJYxVDkwRw+QPbk7D79Zm/ayoS9bEES71kO/znIR1zzGf
+	PKF7iSsJx9UqaK8a2UG2n8DS5GCDukCM/VSlprq8suaKIFOtKu5YrcVp2PmgSiznN/MlsiVfFhxLH
+	JcIDtyIPhR2dhumIgaFKVlSClZ2v6e1ekzn6mapzb1WwFRscZWeavVJ1hz+UvBHefJn51JPXzBF+b
+	h9827fNaVek5rUYxatoGBnUKn5u632yxqbFyv/RISCjxv0tFphp1+JCx5ui4MWYLnR13HaFX0UwUK
+	eqD25sow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpomT-0000000CrvS-1Bxe;
-	Fri, 31 Jul 2026 15:04:13 +0000
-Received: from static-84-42-129-46.bb.vodafone.cz ([84.42.129.46] helo=ixit.cz)
+	id 1wqC3s-0000000EpmT-1fNm;
+	Sat, 01 Aug 2026 15:55:44 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpomP-0000000CrsE-101V
+	id 1wqC3q-0000000EplU-0zLv
 	for ath10k@lists.infradead.org;
-	Fri, 31 Jul 2026 15:04:10 +0000
-Received: from [10.0.0.182] (unknown [10.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id B87D953409A8;
-	Fri, 31 Jul 2026 16:55:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1785509720;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=v3d7xI0CjFFJOqab8LewGaimYwRvxrurh7X0EHPLrDQ=;
-	b=Ff8M9PqL2mY0paKBhrbVWNzzi07z6eD6q4DlklqT3nXZ5pHg8HsrsRnVJhlqIqBnJ+n8SV
-	oUSHbUQsEeF8jCtpgS5JAXennVPt7DAHdaQdoKt9/TjkYMP1RrAMSemttOdG3S1f5q4B3q
-	pOTVITIZH20UTc7fNGgqU6kq0kHXepc=
-Message-ID: <d8d818fa-dac3-4200-a8bb-e6d664725783@ixit.cz>
-Date: Fri, 31 Jul 2026 16:55:20 +0200
+	Sat, 01 Aug 2026 15:55:43 +0000
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 671FahDc2762756
+	for <ath10k@lists.infradead.org>; Sat, 1 Aug 2026 15:55:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	fCu7aUSRdclcGJwFqNfq0oOCaCdjqcE/IxeaapxTTOQ=; b=VVwvU/d69V4MTpzh
+	xMr0XCHveHrzI5nBCgLlzDrC9X8Lmdyot5eWWJRTps0BvQp72WB0FZe1NwaEkXDs
+	G/e8FKm3pmoinyfbVLA/hdvslBaa28tZLkOgxXAWQu7pEANzjAY8W5JgpNFL3/2O
+	JQy/a0iVxaUE2tSg33krCclDm7AMBgqUtcl9YiygAaMqj+OFCDU/BGs7JF6XbaiA
+	LGlGZMpMn+MeF2bc0xNe//S6kUpgc6VYH3AGrJAjafg0grfX3mpvjw+Hc3oJ3cVO
+	hY/pYSdg5iEzxaR/ThmiTYaIcdQgFgq23ZL62rDpPVbE9neEYxqIP5jqFSd4R24v
+	NlSr6A==
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fs9ygh19n-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Sat, 01 Aug 2026 15:55:39 +0000 (GMT)
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2cea6a46766so34527115ad.0
+        for <ath10k@lists.infradead.org>; Sat, 01 Aug 2026 08:55:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1785599738; x=1786204538; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id
+         :subject:references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=fCu7aUSRdclcGJwFqNfq0oOCaCdjqcE/IxeaapxTTOQ=;
+        b=Bd9NGDBd5c5AVLP1L//O0WZI4nuCJx1QznwSicLAa4RcorqNDPL1krsl8LAqRTu79o
+         ABWxvnw1fop2m+KuHiRNs8Iot3CyRIyhB8QhHqs0rDlhqfYQUu6MScR7Um0+dKxrZECS
+         oaIbFuw2pe5ofXjS+7knmLcR1UsiJZrkU4bEoXMqtAT1QdaTZBgnaHiSTTT1sPUwhQGO
+         DlfdqWnTdwDVSJR3xOUJ64BKmJHocXBbdmYqTLlaTwzRUxJOXbXYRKaPvmdi4hZrp31n
+         dh370uWH1yicnZ2QYso8ANAKHVt4oppKqH/3QM5pTP4G9nmwjQ0dGYE0Yr4GxYAT579l
+         NMMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785599738; x=1786204538;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id
+         :subject:references:in-reply-to:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=fCu7aUSRdclcGJwFqNfq0oOCaCdjqcE/IxeaapxTTOQ=;
+        b=pWzYW25BX2Y6TAaQu9XnCa6dn78MF55RDU04QtuQUK0wBj7EmODDU7vOaD1U2MlMjo
+         gaTzq2aCvF9lZpRmcjO9MQNsmQvQvlw6nK6dfQjCuFhEbX8JdIY5OQyAAIXUPz8G5JnN
+         buOKR3ZXnjc7S5vkWf1zEQjK9/9/muHXhAT4X5uqLFT0bUy1eUM/621q85ddxagxaG2f
+         QsOvHilXdNJIigWQT7gPwfwWcCaQv8Lc2WLA8rKQ+kr37eDZ0xqwL82Ph/Gy8XpOfBAr
+         0d1nj4b5YzXmn3u1lyS7jJ/ClfCjPAN+/ff19vnIZHy7yfvwwHKcat6+tztCi6iAmTOI
+         1SoQ==
+X-Gm-Message-State: AOJu0YxsPc+vZbXkYLxDVvSkfF7ZQJPZgpNIOMEW1oU7FG1ij5A/YPkX
+	FZe+/wbcEYFcBGdbkI2RLvJ3/otTvQllmzZHy3AByvMntAU5L/o2Rp/u8D6N6pUQn7asFEFoeyS
+	sMYhPVlzS6IDoZFp4mnWXeaAC/mfNMbRyFUBaXtmQahSPYNWveTDU2yWclMCHzjQL
+X-Gm-Gg: AR+sD11WHuvRWfl3bKDdImkQ9NcHb2RY3nwPVnTDIgmT8E4yNKu4aYrj6yhqRJwF9P1
+	6C/xZKYdB1spY6BHWqDZDs4B3ivVvfRQYdMPI7dHsiwffBoEd5j+nLEeq7hnqSm/Bq+DpHGw2WP
+	5pFAhW0mRsMR2/2MqwzgAop2occxzjkKq+WeIKr4m73Q2/f5AHD96KtKRivrgC2lhqXyOwm89dw
+	IXM36CXQiYP957cK3QTYlnkDO00HL48c8erIrXLRks3KS8dEckAXRzxTyJ1AVIZ0lGwT7MHzYI+
+	6ocCjX74Vo5psBQDwDUNLXkKYx59lnMi9IDO5LfRdAaM2dl1w0g6q/RFxw4sATf1mk7gQyKI/tg
+	952x6ALW/X6HDW5fgJEaUT/bgWzM/jAGL5n/ImdAPYzNdfkrHE/7gnTE=
+X-Received: by 2002:a17:902:f542:b0:2ce:88d7:a233 with SMTP id d9443c01a7336-2d052428c82mr36192845ad.33.1785599737834;
+        Sat, 01 Aug 2026 08:55:37 -0700 (PDT)
+X-Received: by 2002:a17:902:f542:b0:2ce:88d7:a233 with SMTP id d9443c01a7336-2d052428c82mr36192665ad.33.1785599737383;
+        Sat, 01 Aug 2026 08:55:37 -0700 (PDT)
+Received: from hu-jjohnson-lv.qualcomm.com (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3153dd4e5b0sm17110636eec.1.2026.08.01.08.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Aug 2026 08:55:36 -0700 (PDT)
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+To: ath10k@lists.infradead.org, Linghui Wu <linghui.wu@oss.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, jjohnson@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20260727072629.2297208-1-linghui.wu@oss.qualcomm.com>
+References: <20260727072629.2297208-1-linghui.wu@oss.qualcomm.com>
+Subject: Re: [PATCH ath-next] wifi: ath10k: snoc: use memcpy_fromio() for
+ MSA ramdump
+Message-Id: <178559973596.3865089.1821995582192910761.b4-ty@oss.qualcomm.com>
+Date: Sat, 01 Aug 2026 08:55:35 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2] wifi: ath10k: make in-order rx amsdu buffers
- persistent
-To: Richard Acayan <mailingradian@gmail.com>,
- Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Cc: Jeff Johnson <jjohnson@kernel.org>,
- Johannes Berg <johannes.berg@intel.com>, Kalle Valo
- <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>,
- linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- phone-devel@vger.kernel.org
-References: <20260719-ath10k-a-msdu-v2-1-f479bb9d1217@ixit.cz>
- <0b9f80bf-73e8-4e9d-9726-b8816c9a364b@oss.qualcomm.com>
- <amyzhVgSeYO6MptG@rdacayan>
-Content-Language: en-US
-From: David Heidelberg <david@ixit.cz>
-Autocrypt: addr=david@ixit.cz; keydata=
- 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
-In-Reply-To: <amyzhVgSeYO6MptG@rdacayan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.3
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODAxMDEyOCBTYWx0ZWRfXz48eLOOikJph
+ ObRPPEL/o1l9xhB6/SOHn3a1aHFVtN3kzUoryN+ylZmPqoOudfPdwBkiBcWbEyPIrxiAv+uG+uU
+ gDKxuBQNMVMdMeGX8tBdSTPLus3ctMo=
+X-Proofpoint-GUID: coZijU9bcYC1zD7MZIey8HwImtCJGzFC
+X-Authority-Analysis: v=2.4 cv=Gu5yPE1C c=1 sm=1 tr=0 ts=6a6e16fb cx=c_pps
+ a=JL+w9abYAAE89/QcEU+0QA==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=Sv0fKeRqtYgA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=DJpcGTmdVt4CTyJn9g5Z:22
+ a=EUspDBNiAAAA:8 a=js4kd28HrUIP1rAYZOcA:9 a=QEXdDO2ut3YA:10
+ a=324X-CrmTo6CU4MGRt3R:22
+X-Proofpoint-ORIG-GUID: coZijU9bcYC1zD7MZIey8HwImtCJGzFC
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODAxMDEyOCBTYWx0ZWRfX1JbUGYE4KQ8Q
+ 5mr6QIXBzpqRL5cjIczTyCJDefZpVNKipasZFTR9fLJBt1DvxkuevQyEmUYDXL8GAz7B6G6EsWm
+ cP2c3YJEh5XqB6tricUjiugw6gR3hyrz37hmcWncuTRDkKaJNeWUKgN9MjMOG7TeRtmxbPNxVY7
+ RfYKVwb43vZZJsodx1kkhE5R3Gb6MezxRdjxW3Nv60M8o/ijbwsGURx/Hs3Ggq0eKBhUrbVXXXJ
+ wIXscpwg/PYaF9ruUK/XoCK1mdfdTsPacTaOXGkg9H3PNZvxvDk3s6K+K/ZskVjxYMnFpf92Wgo
+ 4yW/EOkIcBhN6SjIvrV7eegIgsnzzonBPg4caV7JsYiBgTWdfjXREb4LrXyRhCwNfj26azdB/Yq
+ nZHdPaXWHnIwYgLZz6PYJCE/efaQihCz/bZGS+FfHYP8ERsqCUveb7okR9YEYgOzdY6z3DhKySR
+ gSwEh00+jiLwvmiY84A==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-01_02,2026-07-30_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 bulkscore=0 clxscore=1015 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 malwarescore=0 adultscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608010128
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260731_080409_565939_95708034 
-X-CRM114-Status: UNSURE (   5.92  )
+X-CRM114-CacheID: sfid-20260801_085542_312261_D5658F9D 
+X-CRM114-Status: UNSURE (   8.97  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -126,32 +147,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 31/07/2026 16:39, Richard Acayan wrote:
-[...]
 
->>>   
->>> +	msdu = skb_peek(list);
->>> +	rxd = HTT_RX_BUF_TO_RX_DESC(hw,
->>> +				    (void *)msdu->data - hw->rx_desc_ops->rx_desc_size);
->>
->> Dead rxd computation before the loop — VALID, MINOR
->>
->> Lines 3168–3170 compute rxd via skb_peek(), but the while loop at 3172
->> immediately dequeues the same SKB and unconditionally recomputes rxd at lines
->> 3175–3177. The pre-loop assignment is never read. It's dead code. The original
->> patch must have introduced this when restructuring (the pre-existing code
->> likely used rxd from before the loop). It should be removed.
+On Mon, 27 Jul 2026 12:56:29 +0530, Linghui Wu wrote:
+> On WCN3990/SNOC the MSA region is mapped with devm_memremap(MEMREMAP_WT).
+> On arm64 such a mapping is not Normal-cacheable, so unaligned accesses to
+> it are not permitted. ath10k_msa_dump_memory() copies the region with a
+> plain memcpy(), whose optimized __pi_memcpy_generic implementation issues
+> wide/unaligned loads. This triggers an alignment fault (FSC=0x21) Oops in
+> ath10k_snoc_fw_crashed_dump() while collecting the devcoredump:
 > 
-> This was removed on 20 January 2026 before v1 was submitted. It seems
-> this v2 is based on applying the commits to the pre-2026 patch.
+> [...]
 
-I checked against what Comma.AI uses, and it's also gone there, so we've been 
-using pre-v1 in sdm845-next.
+Applied, thanks!
 
-Dropping it definitely make sense, and since Comma.AI already tested, I assume 
-no regression.
+[1/1] wifi: ath10k: snoc: use memcpy_fromio() for MSA ramdump
+      commit: 4f25071afe9218aaae1c63fbf75e229aa6405319
 
-Will be addressed in v3.
+Best regards,
+-- 
+Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 
-David
 
