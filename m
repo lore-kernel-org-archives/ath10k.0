@@ -4,106 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D035EC88E73
-	for <ath10k@archiver.kernel.org>; Tue, 15 Sep 2026 08:11:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9AAEC88E7F
+	for <ath10k@archiver.kernel.org>; Tue, 15 Sep 2026 14:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5REm5S6zcIznrQIDmtk32/NCP2kRm/zm57f0UbZR8EM=; b=qTjMsWT4+MQQGdRRFjapKrOR2x
-	+LBvgTbz4BZtda62W/J565/FhlYI1KKIWsBf2xNKdatao7XbKnXYYvU+JETubq92sanM6/skUKwI8
-	9Ampf9XgyWl17tjwRNLPYZx+XZIwMcs0E+6k6BfX8PNyrr0DZoKJRh45bQRrKYYSwu86zq6unmhcH
-	s8aeNVv9gL/bAd65Xui0UWdXD6FpbdZL4tBQchFDw6H+xh6xnpBpiBEnw1KkqsoItHP9mxxGqpvU1
-	fRwUr3RFwGSFlK4h0uOGn7quYUM6qsbFAnPbousJRHz/WtQX7Vm+Wv/n9qlNCun3VcYgGeQzbh6dd
-	qfdB+94g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=pre5/60EdsoFZkP5TOwGJVFWOlszP98LTb5epi2ki04=; b=PYwaA4++/jgch+Mww4IBk7gF4i
+	Io7WDqb7e35vevkSAf3clDDOzicad1n93VqT5uX8mAi6WfjBkekccZ11pIVrd1XdyTSbhfnjW73is
+	bTVT0wrynrRvAxpuK+vmIdb2ERH5y6qijNzsksW56N/TJCrBM9AF4wCGbti4GMplG/4uImfPurJjN
+	SWlX4CRpmab+yXZjrHC8ofuLQNu4AnIZnDlSPlW8rFw05DLm0kgc3RaX74Etlq4DPIIcHLHgHh9TZ
+	U0pTu1L8sf2OR95LLAT8HeB437+wHWyjA/qw+e95OuJYeD8KXCnsoubW8ksCw/JiLhsDV0puw+yRA
+	Q1Tc36PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6OG5-00000005aGY-0tdf;
-	Tue, 15 Sep 2026 08:11:17 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1x6UGz-00000006xm5-414y;
+	Tue, 15 Sep 2026 14:36:37 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6OG3-00000005aGE-3FYV;
-	Tue, 15 Sep 2026 08:11:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description;
-	bh=5REm5S6zcIznrQIDmtk32/NCP2kRm/zm57f0UbZR8EM=; b=Snr/rU6nt8U2f9ZJNylG5FnDlC
-	Q4FB+5FKeppASyv1jTHvc/N7xi3Hgh5HcSFcUcEf6B9C9kFxIYj9ALazGL3F5RxpvEnzvVHtQajyX
-	TlNw1kchtEQ1wCSkWze/DY4jCvCYyC58on23Xh/vhHUlSGZluhmK3TXOrcO2gcDJlJ9edfire4EFn
-	gHyAFmLb02kfwwq1x89SHGx6xKvP/KQr1WX+o8RLeu5yBe2PeQqKyNQ0/qgjLzL2MoAG6hK3BjE90
-	W1/DVUh5wInW0T8feCSssT7UT0iwmdnE+ladvXHqXNtCRp1pHLafi5u42TzNw/G6YasuXQdl1YsJa
-	8r7+oozQ==;
-Received: from bali.collaboradmins.com ([148.251.105.195])
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1x6OG0-00000006PiX-1kyg;
-	Tue, 15 Sep 2026 08:11:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1789459870;
-	bh=73uxHy1r6MDxkVonn+dnL6V76W/WjmgP/tDb7X6NpH0=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=SNehmjn60lFlzv7E5Awg/TFLz5X6IXjV7ICJJ1yoSOLR6Z7ZmKSaEVaZbkI7T5ar7
-	 T7/N7K8G2pf+FKgQ8+zn13SXIfQTdmdRLPU3TiLAlRAngPiymIcIbrZcH2bXoOMrSq
-	 WMW6vd959bdeeZlPVCxdwlOu0E1A2kpbNEiapKipIgs8+K0rkeSL/MzqTF5cXMBeVo
-	 iYMHGGUscFnJ/3Mvvkgv51WTqut/My1F0QAQTs51yswrFD1OrM24mQeB9xpi5FZ2x5
-	 6DVh0NkOzQIEoSOm7SvmFcRiNL3e9u4chIxOHgm6Px9Ty62UQ8o0Wjy+iHXJbQazPj
-	 ty0MMTMnTr57g==
-Received: from [100.64.1.21] (unknown [100.64.1.21])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange x25519)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id 2E50D17E0A27;
-	Tue, 15 Sep 2026 10:11:07 +0200 (CEST)
-Message-ID: <b81258a5-bc38-40f9-acef-4109aeb94d56@collabora.com>
-Date: Tue, 15 Sep 2026 10:11:06 +0200
+	id 1x6UGw-00000006xlq-3nOO
+	for ath10k@lists.infradead.org;
+	Tue, 15 Sep 2026 14:36:34 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 26D66600C8;
+	Tue, 15 Sep 2026 14:36:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 674CF1F000FF;
+	Tue, 15 Sep 2026 14:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789482993;
+	bh=pre5/60EdsoFZkP5TOwGJVFWOlszP98LTb5epi2ki04=;
+	h=Date:From:To:Cc:Subject;
+	b=j8ElJrB5V+9o+LZcYFz4zqm0Tq8+hnUpzLAhp/feErZU4vzNP9M10cnoEwNFH/kS3
+	 TO0PObhPGpzA0M1WeWvLVgTEH/yy4IXNeJ9dMiFULZyJMOW/qjYNOdTIQqGdw1FaAs
+	 HkbTS5vOqbZIZgRacvcZx1m4pUJUqWe+DvNqpL2ywvgPyBaMMk8ehfpqrnMwSHUEMs
+	 8CFtmk0PZg7I5AzqZFdBsrajrIf+iOjyxbgeIM1sn1QuGSrSts9yJb+8k/dhyVeQib
+	 GVF1vRmfIuUx3QuBsAJzmxrMX038nUg9dY6PWnuJNeu45wNgiucPb/VTw09iNMbJyu
+	 05GNL1qZUZ+tg==
+Date: Tue, 15 Sep 2026 15:36:29 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Jeff Johnson <jjohnson@kernel.org>,
+	Ath10k List <ath10k@lists.infradead.org>
+Cc: Aaradhana Sahu <aaradhana.sahu@oss.qualcomm.com>,
+	Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the ath-next tree with the wireless tree
+Message-ID: <aqlX7ecTiq6x0uMh@sirena.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 net-next] dt-bindings: net: Use consistent indentation
- in the example
-To: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
- Justin Chen <justin.chen@broadcom.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Hans Ulli Kroll <ulli.kroll@googlemail.com>,
- Linus Walleij <linusw@kernel.org>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?=
- <clement.leger@bootlin.com>, Vladimir Oltean <olteanv@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Felix Fietkau <nbd@nbd.name>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>,
- Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Matthias Brugger <matthias.bgg@gmail.com>, Jeff Johnson
- <jjohnson@kernel.org>, Richard Cochran <richardcochran@gmail.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Magnus Damm <magnus.damm@gmail.com>,
- "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
- Claudiu Manoil <claudiu.manoil@nxp.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Alex Elder <elder@kernel.org>, Siddharth Vadapalli <s-vadapalli@ti.com>,
- Roger Quadros <rogerq@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
- ath10k@lists.infradead.org
-References: <20260914155645.112508-2-krzysztof.kozlowski@oss.qualcomm.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20260914155645.112508-2-krzysztof.kozlowski@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260915_091113_045652_F0BCDD9D 
-X-CRM114-Status: UNSURE (   9.65  )
-X-CRM114-Notice: Please train this message.
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oVy3I7wzxgJhHRU8"
+Content-Disposition: inline
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,18 +71,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 9/14/26 17:56, Krzysztof Kozlowski wrote:
-> Correct indentation in the examples to consistent 2- or 4-spaces
-> indentation to fix dt-check-style warnings ("example 0
-> [indent-consistent] indent mismatch ...").  Preferred is 4-spaces, but
-> re-indenting entire example just for that is too much churn.
-> 
-> In cortina,gemini-ethernet.yaml also drop the wrongly indented mdio bus,
-> because it is not necessary for the example.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-> 
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+--oVy3I7wzxgJhHRU8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+Today's linux-next merge of the ath-next tree got a conflict in:
+
+  drivers/net/wireless/ath/ath12k/wifi7/ahb.c
+
+between commit:
+
+  ce9d5197d651c ("wifi: ath12k: ahb: Revert undocumented ABI and dead code")
+
+=66rom the wireless tree and commit:
+
+  c3bace8584ca7 ("wifi: ath12k: add support to load shared firmware on mult=
+iPD")
+
+=66rom the ath-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+diff --cc drivers/net/wireless/ath/ath12k/wifi7/ahb.c
+index 6e9e9034cba1a,a8f5cf8cc2a63..0000000000000
+--- a/drivers/net/wireless/ath/ath12k/wifi7/ahb.c
++++ b/drivers/net/wireless/ath/ath12k/wifi7/ahb.c
+@@@ -57,7 -108,8 +59,8 @@@ static int ath12k_wifi7_ahb_probe(struc
+  	ab->hw_rev =3D desc->hw_rev;
+  	ab->hif.ops =3D desc->ops;
+  	ab_ahb->scm_auth_enabled =3D desc->auth_enabled;
++ 	ab_ahb->supports_multipd =3D desc->supports_multipd;
+ -	ab_ahb->userpd_id =3D ath12k_wifi7_ahb_get_userpd_id(ab);
+ +	ab_ahb->userpd_id =3D ATH12K_AHB_USERPD_ID_0;
+  	if (!ab_ahb->userpd_id)
+  		return -EOPNOTSUPP;
+ =20
+
+--oVy3I7wzxgJhHRU8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmqpV+0ACgkQJNaLcl1U
+h9DDPgf8CyjNTnzKVU1HignMgbwOc6nJKVE5GLApSRoQAB7dSjYGmMuPjABH6zvY
+5PPjQfI/wXzyEeFWaMO6QgbnQhNZtOVe9LZoo5knWGYlb+P5JVRu+n1OZN/yfzrn
+/Or4RiE0RR2TNF0Wyp9wpjgFGUxHwvOAotkkYSoN6BapjnfKR794nsrfVm4rxtUy
+pG7ptYMIsgiBRadZD59Kv0NUryxEFZBSKV11t+XirVdFw6MQDKCJh72v2sXnivjC
+lFdtNjy0ZDNpHBj7xsKpUZDos/skbGQTyRVfk5Xo05m1BpEQSfhkBtfsdXBeDVpl
+9rkZfih1FWYbuqlVvp2RM2vEDG39ng==
+=SBvH
+-----END PGP SIGNATURE-----
+
+--oVy3I7wzxgJhHRU8--
 
