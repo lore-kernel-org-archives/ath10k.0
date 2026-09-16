@@ -4,89 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EACDC88E75
-	for <ath10k@archiver.kernel.org>; Tue, 15 Sep 2026 17:26:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E26FC88E75
+	for <ath10k@archiver.kernel.org>; Wed, 16 Sep 2026 00:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IqiqAKtP9jwo6b7c6fPqWn0LoPHF2A3cHgQdurIrJGg=; b=DNyCm0jREDY2JgPyNB4hBDp14V
-	aFmkZo2Uo6Tb2iIGRgA6uwfyZVKAQW7Bhl9Gc4XUdrnxNe9GXXCb8upGa4JD87Uq5ApI8ZWEAiSN7
-	mH9Q249Cw6OQxmR2fi6q3GgNoYyUXFmRH6XZ2DBMB9cl5gltLv7PbVvIYsVA3A8pvEtJQ5LRVAjmd
-	rbnMm/wQ5VrdULQ4+CMauVzVgm05hWYw4CzcP93TZTvcnWDSWellpYjnDSZqFT1IEwArA6zMqezRa
-	RR7stMBmuiYTuQDH1oHPJKK5tVs8tJ06JjcGfQtZBplzy1CVkIxOnp2mAERoLUD5oA0QmPrMdDCqe
-	u7K37uxA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Date:Message-Id:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=h0jvqgC79bdg0pdzTtOyCEQHgcIpzw+yLTKCSTLmEGk=; b=h99CBcA/iBMinBfF9E4XyR9AjN
+	quOekcpi9CJiszE+0YYukavf1F7BpVnsszvYKnzZlK/9WvcSCnDSIVMFTAmyf2ZDx3hhXWriSwXv/
+	rMO5sf9ml0gB0kiDUdOb5GEPS72YKScyCjaKVg4t9fgGPY2mvjeSwlCTy1TXVC+S4URyHsmqzayiM
+	8w1ATxOsZ4/CW2JOffb0P/3j2OeOojkXjQVJs99TuOsOyzUsSJiNjLUsvRr5iIdAZPf6ozsqXx+xB
+	gmwihzccEWV/KfvO0KZqsbvCzDfTqOVNmkzvY7R2Ypchqo8zJ7PVJDaGun4BP0RBXvyqvBGfiHlDL
+	MK0IW1PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6WvW-00000007aH8-2PC7;
-	Tue, 15 Sep 2026 17:26:38 +0000
-Received: from mail-pj2-x10.google.com ([2607:f8b0:4864:39::10])
+	id 1x6dFD-000000085vq-2yU5;
+	Wed, 16 Sep 2026 00:11:23 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6WvT-00000007aGS-3XsF
-	for ath10k@lists.infradead.org;
-	Tue, 15 Sep 2026 17:26:36 +0000
-Received: by mail-pj2-x10.google.com with SMTP id 98e67ed59e1d1-398cb5615deso564116a91.3
-        for <ath10k@lists.infradead.org>; Tue, 15 Sep 2026 10:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1789493193; x=1790097993; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=IqiqAKtP9jwo6b7c6fPqWn0LoPHF2A3cHgQdurIrJGg=;
-        b=bGbFjg98bHVHtXpuQmSRl7iafu7zhAUHr5TqwMK0WnkfkhgaJhkSH6OmQIqpAM640p
-         0ipnXuV3ZPlR/CXzmZymMiog1yNnT8W1+5d3JsLn5KdvQFkCwLn+aX81TGdBoYTEZyOg
-         0uxVrghbgUZsuYkPXxeUqQPAPluhxGvCwvkjs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789493193; x=1790097993;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=IqiqAKtP9jwo6b7c6fPqWn0LoPHF2A3cHgQdurIrJGg=;
-        b=IoRxRuvN2suXPjRhS/0DiNuMMZPM5xgdLne2/8EcGV3Km7ICXFpBEtWWKC8I5SBLIw
-         B+vcpa7XeGkcxJlJ2QZTXbbP9PIBW3qLuOS2GesYAyjAbDe1mD/WDlW+61LbJTIoFVWx
-         GPVKWdng8uHpzJgUTjZEy9AqdahbpkSZOwMZJulBc51XrcPWfU343vKcFDMs+Zj9uV3n
-         Il5kct2/Z5l75ILdF+c5RfkDpYb/VAWjx3MUGIMhBnDzb6MdrJjO0jms2fFlycC1jw9f
-         kC50T3dRvOKpkKorwYgjAYkEabjKG+K4gXITH1YoNSflU0/1UZhOVhL8CtnV8TCKC+7Y
-         Kwxg==
-X-Forwarded-Encrypted: i=1; AKwUvBxR75wdBaq36veFvKUul7yXgiKMGyOmc4yNBBYRQeQby8eNNO4yqcz7To3JK/810l7xzsowslk=@lists.infradead.org
-X-Gm-Message-State: AFuF++lohX1GKXBX+7w3FlNZ4IjzrlxNLmdOBW3lHYAR4AQVZ7M8XIUW
-	B/VCQgtBb9rR0yljfXbzU2np8T665xHOg5/GGrOBUrVM5iU4xtKYJWsWzs7U33XTbA==
-X-Gm-Gg: AYBFou1VDFUE0Kn2nxTvfkKJZOcgdzHBFeeOkjFmNyvPi3pWPja96Tw0Vbku43fc7T2
-	GMM7+e8McxdevmobvXqWVLbr7kXogW4ypeowBRZOJzC/SWASm0JIh0hDQzVoamcQgUNzXG93k3w
-	P0Il2RuQf+rEUJAagTfhtickT4M5P26IIohy83DxYp9PbzgsLG5d9TVe5gKaRnAUADjEW6sSlV4
-	jHVKOagTg1lcqZIyeOMmwbQ/gSf7goUqBaF/cse/WB4CIfe69dmyqT/WFv5NtzDhrhKLbVUAVNY
-	0xQj1gU36wkhDgZI4h4grS9RoOgV4/zZZpFx7u7zAKI4JF0j1OFR5R9iKoTGn+vE/cnSVd9gU47
-	r49iqFzuOnXXoUHotQs1gMQXgwpXCTjpvhKO/vSWodauGe6+Fm3CLTTrsIYY3WNEOhP6JhJcuQh
-	QB5e4NoKy3avVVGcnHlLRgEVX/x08DGHCxfrUJIS5iKIi+x96BKwwNXreOyAgdzkPeTN1CDmPkv
-	4sKtHlyjgFGpUIV73sPzm9fXIMHgO17o3ktvA==
-X-Received: by 2002:a17:90b:17cd:b0:39d:e75d:f33 with SMTP id 98e67ed59e1d1-39e110961c1mr3185168a91.19.1789493193520;
-        Tue, 15 Sep 2026 10:26:33 -0700 (PDT)
-Received: from localhost ([2a00:79e0:2e7c:8:60c4:eed3:a48a:b9f4])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-39dfdd0ba9bsm6560457a91.7.2026.09.15.10.26.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2026 10:26:32 -0700 (PDT)
-Date: Tue, 15 Sep 2026 10:26:31 -0700
-From: Brian Norris <briannorris@chromium.org>
-To: Albert Esteve <aesteve@redhat.com>
-Cc: Jeff Johnson <jjohnson@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Govind Singh <govinds@codeaurora.org>,
-	Niklas Cassel <niklas.cassel@linaro.org>,
-	linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ath10k: clear QMI if failed during init
-Message-ID: <aql_xwEy5POcVmyU@google.com>
-References: <20260914-fix-ath10k-dangling-v1-1-15c5089682b1@redhat.com>
+	id 1x6dFA-000000085vM-3hFJ;
+	Wed, 16 Sep 2026 00:11:22 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 2360D444FB;
+	Wed, 16 Sep 2026 00:11:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF13C1F000FF;
+	Wed, 16 Sep 2026 00:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789517480;
+	bh=h0jvqgC79bdg0pdzTtOyCEQHgcIpzw+yLTKCSTLmEGk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=Ybu/t1Q5PHjEuRAqiE1/J148VOgeQo8iYgqqmzI/3iXvFuos5aSOQOLpHXOliNZRG
+	 V9Ceo1ZveZADvGVvuNzgK5B1vAG3A8BKupH2AYbFtcjypMJxLkxlUqlkwf6iViIytd
+	 GhpJmSiPUMs/MIlh7tEKA0PA/atih+k/ElG0HkfPddeCqXsw+r5zrbAVoHvYCcQfa/
+	 R6hmDwp/R+8U8lMOJU+RNqgFudRZYhGogexXbCNTotX/AZ+bQ4OE5EV4HSHEOn/VEE
+	 +HCxUaB912DLsy3MjZZFOKUHd6jzEsmNUXZtGlUx9xEUbJ1j9sIUnDmpIBoIiTilzG
+	 cMLcWkbhcAlHw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 939E7392706C;
+	Wed, 16 Sep 2026 00:10:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260914-fix-ath10k-dangling-v1-1-15c5089682b1@redhat.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260915_102635_915406_0057E63E 
-X-CRM114-Status: GOOD (  20.06  )
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net-next] dt-bindings: net: Use consistent indentation
+ in
+ the example
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: <178951741413.2328807.13052906737611774655.git-patchwork-notify@kernel.org>
+Date: Wed, 16 Sep 2026 00:10:14 +0000
+References: <20260914155645.112508-2-krzysztof.kozlowski@oss.qualcomm.com>
+In-Reply-To: <20260914155645.112508-2-krzysztof.kozlowski@oss.qualcomm.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+Cc: justin.chen@broadcom.com, florian.fainelli@broadcom.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, ulli.kroll@googlemail.com, linusw@kernel.org,
+ clement.leger@bootlin.com, olteanv@gmail.com, hkallweit1@gmail.com,
+ linux@armlinux.org.uk, hayashi.kunihiko@socionext.com, mhiramat@kernel.org,
+ nbd@nbd.name, lorenzo@kernel.org, ryder.lee@mediatek.com,
+ shayne.chen@mediatek.com, sean.wang@mediatek.com, johannes@sipsolutions.net,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+ jjohnson@kernel.org, richardcochran@gmail.com, geert+renesas@glider.be,
+ magnus.damm@gmail.com, vineetha.g.jaya.kumaran@intel.com,
+ claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com, elder@kernel.org,
+ s-vadapalli@ti.com, rogerq@kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ ath10k@lists.infradead.org
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,49 +88,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 14, 2026 at 03:05:19PM +0200, Albert Esteve wrote:
-> A failed ath10k_qmi_init() left a dangling
-> pointer (ar_snoc->qmi) in the cleanup path.
-> Clear the pointer on the way out for hygiene
-> and consistency with deinit().
-> 
-> Fixes: ba94c753ccb4 ("ath10k: add QMI message handshake for wcn3990 client")
+Hello:
 
-It's all going away (probe failure / removal) if we get here anyway, so
-this hardly qualifies as a "fix". In fact, in a cursory check of the
-driver, it seems the NULL-ability of the ar_snoc->qmi field is totally
-irrelevant to this driver -- it never is actually checked.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I suppose you can still call it "hygiene" though, and it's probably
-reasonable to do the same here as we do in deinit().
+On Mon, 14 Sep 2026 17:56:46 +0200 you wrote:
+> Correct indentation in the examples to consistent 2- or 4-spaces
+> indentation to fix dt-check-style warnings ("example 0
+> [indent-consistent] indent mismatch ...").  Preferred is 4-spaces, but
+> re-indenting entire example just for that is too much churn.
+> 
+> In cortina,gemini-ethernet.yaml also drop the wrongly indented mdio bus,
+> because it is not necessary for the example.
+> 
+> [...]
 
-> Signed-off-by: Albert Esteve <aesteve@redhat.com>
+Here is the summary with links:
+  - [v2,net-next] dt-bindings: net: Use consistent indentation in the example
+    https://git.kernel.org/netdev/net-next/c/032ef43b9dab
 
-Reviewed-by: Brian Norris <briannorris@chromium.org>
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> ---
->  drivers/net/wireless/ath/ath10k/qmi.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-> index 0d74548a5f34..08a64f737fb4 100644
-> --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> @@ -1128,6 +1128,7 @@ int ath10k_qmi_init(struct ath10k *ar, u32 msa_size)
->  
->  err:
->  	kfree(qmi);
-> +	ar_snoc->qmi = NULL;
->  	return ret;
->  }
->  
-> 
-> ---
-> base-commit: bc35965f6940a9bf834d54187b6088b8eb09206d
-> change-id: 20260914-fix-ath10k-dangling-15676d427cbb
-> 
-> Best regards,
-> -- 
-> Albert Esteve <aesteve@redhat.com>
-> 
+
 
