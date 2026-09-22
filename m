@@ -4,132 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F2BAC982FC
-	for <ath10k@archiver.kernel.org>; Tue, 22 Sep 2026 01:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82F89C982FA
+	for <ath10k@archiver.kernel.org>; Tue, 22 Sep 2026 20:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:From:Subject:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:MIME-Version:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=v66LYWtKI8kl0sQYCAEnWhcI4TUzobxM+G7V+VWy7YA=; b=g/d+IuiBlfLTdqSr+MwUfoLfNg
-	8sAQ0VUd21rtNiVcX/CxFEDDVNeGWMjbpUqOCbrwf8PmxmNGIWpcoiAg3YqGpJN/WMyypU44wCFbI
-	JFINh5zkiWIOC+XSmVhA/hatBpNXdX5dFk3hrzfEKzFiXcjgPuJr/9NjvN+9lPHTNFv3vnV9gs5gw
-	xrV+Hnhb1fUYfge/yUIflphBfRk3+6Cc9pxzgt1/0crWCwhFnAZq4loTwipjm3C5Mb2r8gUcNtH9f
-	WCcNkdsnA5zGMiXuqLC0RcGPvl/hM9VuFNy6oQSCrSuHvvZbldaU3ZKCUklIRgTBKNWU8uvFXaqj8
-	gAaxRZeQ==;
+	bh=8LKk+1yCqqSBPwtpjm5MjX+FdXoGXWtVvIQvMys3AHQ=; b=HqcaUKRogebKPTQoVlGa0Y9F6L
+	ZXK58oP1Pv+mL/tx+8iNY3oX2dRN6jkuZmxDoYfDVQaABqTLjhg1ex9w4Y75iLwnpl2pHVxMvw3Qw
+	ILOnXlCvsSHaZPR3M/s84S8XskGhhrv/0mMtu75vl/xGAYVmZGEtXBrgKOq2GV8ZYQ4RrFmf15rX+
+	61Jc8DsMaqx4G+FT78tB7OgBXiJz+pHtRv4UzpvnBEfJ/fWCCQnP3aboqh7pg+FmCK8SfMWl2wQro
+	UtSacjvkpgdxGK6Y7JL9XyO3H8vDvOFR1KThslEnAXKc+oJMfERS2HjB950lJuPmwzCZHm9WENwT8
+	Y0zBqiDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8pG6-00000003stq-21oQ;
-	Tue, 22 Sep 2026 01:25:22 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1x97Hi-00000006YLg-3ag0;
+	Tue, 22 Sep 2026 20:40:14 +0000
+Received: from mail-yx2-x10.google.com ([2607:f8b0:4864:41::10])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8pG3-00000003st5-0ZpB
+	id 1x97Hg-00000006YL3-3Tf4
 	for ath10k@lists.infradead.org;
-	Tue, 22 Sep 2026 01:25:20 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68M00JYB2578884
-	for <ath10k@lists.infradead.org>; Tue, 22 Sep 2026 01:25:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=qcppdkim1; bh=v66LYWtKI8kl0sQYCAEnWh
-	cI4TUzobxM+G7V+VWy7YA=; b=IfZgR2ujMWGQcEz/UR6Zju4tHgRvaYK9eBrWXF
-	oHAMfFV0V5DSpCNoka8lw+n99HXDBDL7Yp56o1ynk92YQ2kUZceFTsXONB9T303v
-	pTWsuZ1H515EL+ZYW2M4JF+SmKHGLnMB7h/js0OYKqvF7n1i2yErUEKd866tC9zJ
-	3fxgaL5sOWUqIJgZviyNCr6fXLmlnFTxjfHWseIYmflxFdaheziu7SsMbT2MNu0S
-	GipnThY+3kT5wxatjNFwKUi/QvgbXuXAyQYvvzrix6TJeUVDVUk/dM97v2QJeMtq
-	R0Td3CZXjcLyxR/JXGHO5WUMUCB+lPxMK5v3gLRpcuQ8vxNg==
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4gub32901d-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Tue, 22 Sep 2026 01:25:18 +0000 (GMT)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-cc1b6f65dacso3125786a12.1
-        for <ath10k@lists.infradead.org>; Mon, 21 Sep 2026 18:25:17 -0700 (PDT)
+	Tue, 22 Sep 2026 20:40:13 +0000
+Received: by mail-yx2-x10.google.com with SMTP id 956f58d0204a3-66e4ab20a33so340052d50.1
+        for <ath10k@lists.infradead.org>; Tue, 22 Sep 2026 13:40:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1790109611; cv=none;
+        d=google.com; s=arc-20260327;
+        b=ldWyKluYv6is3OHxlLJv7mQl6+CYU9jOP9VEceJTgqwhfTOiyk6RKLcMaxmGUCgLGX
+         u9X5tY0HE6pH5PP8yXyfgfz+DauQ1of8LBJZAmCpqHFhZ5Dz8TkwQS/G5DPJ1KwTf+lz
+         yAPIRKVeSHBItXD2iDSkSEMzeXIU8bGPHfV2xVf+Y24tc0fqW4hT8exbHEL0xSTCCT9E
+         R0nghEttJtYs9S+6mfbXtiynkLP2NBsOhUsdIOPaJs3tnr6jhi5uF0g0n1U7jAhs0bao
+         caqpg9bs+sFwQ1KeasQA27KHQxZjHYxrKX/5MtgmY7qz+6CdAMWjrPbycPY/sEfQOLZd
+         zULg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=8LKk+1yCqqSBPwtpjm5MjX+FdXoGXWtVvIQvMys3AHQ=;
+        fh=257NU1k7yWpMtvADl0QXIxasDlKNfhRrsESSisMuHik=;
+        b=bF4XgP+OeFCPbZorSMoKpwJyu4KncAA/9Z9XMKj7fC2VnBVv/CHu6yAyACfFwrgvqw
+         18teZN6yklXHLTFAMSqk587iCD7oDiGA1GuchHtTGIOLUUzZBW2h+hzrvP816159MuBC
+         pOHmEVCXBoPGwZir1s6EUeKnVDH4/kEsLi1waqVxU6QARalaMWoqeyxc2jXQmzennt0H
+         FawoV4qiXTkNY7WjdtuKI5tlnYC/C+7J+9Jlq+iq2rbUtBgAaLCa4bmUhVYS+bpAYyma
+         ElGji6x+7TvRXxB/NMOmssChlWML+gLFrXjx38XS28GuuVTrx6v3qks2p61aCnZ/VRaE
+         hvSw==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1790040317; x=1790645117; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:from:content-language
-         :subject:cc:to:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=v66LYWtKI8kl0sQYCAEnWhcI4TUzobxM+G7V+VWy7YA=;
-        b=RonEnZFP4PFq0ggkiJdTm4lgScUE6Z5DKhuOI8Te+JzGbhY0tUueDXd+IRmq6DCpFp
-         J8+XsHYE2ud0T1iPo131NyAwhEMp7bW+r/IeXLJmKEG4/xQOvwHss+3G6iBNNkPSNFpW
-         babS5A5j9s4JkRXxnZnafWP3jXep9WrvOj2imvMWzfLFgD32rbKP3m5iYGwvT57508uH
-         QdF2R9ZZSfhuxripKp4in4q3Moxx9d6KdmR1Q7Vu158d/kVZPcE2tTnIer/3OuCQNszG
-         VnDlLdMHfIrzpMgE5k3Vg0QYKNwKtIGaeg2qMZYef+S3rF9PzhCj1DsZ4pCaSvLCNXB1
-         fstA==
+        d=gmail.com; s=20251104; t=1790109611; x=1790714411; darn=lists.infradead.org;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=8LKk+1yCqqSBPwtpjm5MjX+FdXoGXWtVvIQvMys3AHQ=;
+        b=sJcdXR6LehaLG5LBxvRsWSqQtjJlLD3mZglAXWWnLgnxbR9bMg2RlfDAk3vfrmpHk3
+         vytRdoHEVuuvmdIarDfqXNyRFd8Jn86QhHrkBRR7tZNuPWU3nxYqlEU+eptDOpgqdUi9
+         cc2nzLS2hwC2V7KLY7cu2A/pi9qORkt9lUGDa8ddRQEG+6uI7x01JlDCrqudz+FO+LKI
+         fO56CryXLEZil/+vsrFDrr0TCuv574zzQ38nsshFML/8fDbAs4oKizgwUY692xVxAtlE
+         7lsh5EYBravbAMRANGJoByKrHN+b+LFc5cEmdFyscTJOr87TdjFi3bVsWHBkgZC6DN9j
+         nfNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790040317; x=1790645117;
-        h=content-transfer-encoding:content-type:from:content-language
-         :subject:cc:to:user-agent:mime-version:date:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=v66LYWtKI8kl0sQYCAEnWhcI4TUzobxM+G7V+VWy7YA=;
-        b=0SMCmZC1TDaDNRjKRXd/eEQhNYzuku+cRvCwFEvl51vuSsyOyyDi4v6w7Jaj4r1ip0
-         5HzuwjQnHijAmyIQNKTFlbo0AY9hs9sVgOU+opWqkutwuUjfszeH/Aia1T6ZQS20IfgC
-         T2yWZQz+BUT/fZiOIYHi2329ibHEkS/aCA7ACe8c8sMXpvG/LjO8V5c3NbpFOkemB+43
-         FgGBOQTik2xmO7tALXsTfOLtwTFM2S/r6NSWDEPkrjBeZWbO1XDiFAsQk9iL1mZEtOr/
-         3b01vWR5Kuq8mPk0wFoETdcSvqcrGbMtsQtdQOn7XLQqm8rhpBkprm5w6RejnQMGY3UA
-         lzvQ==
-X-Gm-Message-State: AFuF++m6G6yMFImOxWQLvyc8cU4X4PWAV6eBNbcXd0C1eFaBlXMeN4kB
-	MVb1fMoJj5jvBhhdgBaHq0fGu3lTsknq5cRSVIQaBRgAWOHdd29o+kXPVuMbcYcYD5fQngjLiwW
-	Qi70JSudtzEMCHNRbuvvT1yg/NrjO+PkjIAonhW53K+CudOSzO9ewSPioF+QHhlu+
-X-Gm-Gg: AYBFou38qU5x5YBnQ9BBdDh6talwspYKijRRu/n2V18ChFSEktiwuJzrt7LKR7pr48I
-	6dYJ6ohYcNYq3FrweF/eeGPYVXtCby1wKxW5zm9LbFjK4meAYiAxiFekxWX+SmTU9f78bcFq1k/
-	GZaQNKXVx5Cume4erZ4USACXpGPfimKKA82iK9WvVu/QCPpzBicnQCtFQMwmsHezDzXeTSJz7sC
-	6LRC23XhWt2j7Bq3/Ri7+QWDFceRBxkeciCHeEPYo2gE/p792Rj/E1agIbujA0d5AU+wkYI5i+9
-	35R3vWoNd+U/p9zlfcTVO31I7CQIEPeW8LQiRMvCwsdhz/BS9jOLRmfVdEZbAkSx7N3KSANp6dK
-	s/xYdwcPII9jg/Z1RDbeU0dXoUikr7OPt0gA=
-X-Received: by 2002:a05:6a21:390:b0:3c3:bbe6:95de with SMTP id adf61e73a8af0-3dd8c3d18afmr21360145637.6.1790040317019;
-        Mon, 21 Sep 2026 18:25:17 -0700 (PDT)
-X-Received: by 2002:a05:6a21:390:b0:3c3:bbe6:95de with SMTP id adf61e73a8af0-3dd8c3d18afmr21360124637.6.1790040316540;
-        Mon, 21 Sep 2026 18:25:16 -0700 (PDT)
-Received: from [10.81.91.45] (Global_NAT1.qualcomm.com. [129.46.96.20])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33e613014aasm781214eec.22.2026.09.21.18.25.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2026 18:25:16 -0700 (PDT)
-Message-ID: <e142b46e-4cfd-4531-8611-717612e329af@oss.qualcomm.com>
-Date: Mon, 21 Sep 2026 18:25:14 -0700
+        d=1e100.net; s=20260707; t=1790109611; x=1790714411;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=8LKk+1yCqqSBPwtpjm5MjX+FdXoGXWtVvIQvMys3AHQ=;
+        b=h5grU4vv+WfxT1dhSmUKtttz7bFmMoSOL3/7S+qJvGF704lRBddDfXsdcws3HAtRAA
+         tScxG4EvNfv3S5xdBFd8MdGc+cXsjYxgv24HwNFZnB2ApPdR4OXBn2DOnlMfrroschwS
+         MyuxfTfCozZ+YVPtF/bdk+KBWaKaj82UPhILi3UKS8ZgnMQLteVY94dHA7fFd9toDIlq
+         Zeoc6cAfaQqkY7ZUbsSz8CQcT8yQUS4MTLqcuIYXz4GcRCmXBh7GCoS5B/txceAqDcfS
+         y9+bXAntFHiizwqR/JwWEGRDCAju03lU6Cgsca3HJLGis+lCYMOcpAhLQe1RDQ75I9sz
+         CD5w==
+X-Gm-Message-State: AFuF++lVkqIY1liawFLtfBv/hQaU06rDME+vdUfQS/U/Qfaf/G3vCtlv
+	sLNuF+n74C/iPqfqzR4adSAKCgqmZvyohf2YA1Fm2H6dcdkExnyI4S04A9/AiKYsMnxfj0ySn7/
+	3lpRHffU3mus4X5CbeEMiQto77QCJm4VdJWtK
+X-Gm-Gg: AYBFou2VcOmIAAX7Vi2+1Zb4dVIBbrPkCvmrvaSdzkmuFyRmQ6fIRIXZWTs6XtFIlBA
+	0GJ4nKyADNDzTDJtJwCj+loq8sCyhjrmyf2c456FiWH9JL73TnO/aDV1lLgvaQ81h2stMkEefEm
+	VWYVDtiiGvSQ6xTJIQXxmXcJSxeUrYTd+mIQvQlrPjXo7jfFfVZPQA3uT5kzXa+q4QMueKN+yEd
+	3Fb0BNIkfG16HpdiolJuUhjz7/NxGR/CyJiDFDel/+n85FvUu7WOD22mPcwkQvRSHdEL/bQxerH
+	jWlntnpCqd3OcJ698oulL4OQjtfSLX44QVkyyPNQkBWKT0aZBRgLY3vF687HEaJQkZMGHsPkzOe
+	a2hb9tl+D+csKj6U=
+X-Received: by 2002:a05:690e:1343:b0:66c:c7f5:df48 with SMTP id
+ 956f58d0204a3-672d5737312mr369236d50.1.1790109610569; Tue, 22 Sep 2026
+ 13:40:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>
-Cc: ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        ath12k@lists.infradead.org, jjohnson@kernel.org
-Subject: pull-request: ath-current-20260921
-Content-Language: en-US
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authority-Analysis: v=2.4 cv=B8ssQ+tM c=1 sm=1 tr=0 ts=6ab1d8fe cx=c_pps
- a=rz3CxIlbcmazkYymdCej/Q==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=IkcTkHD0fZMA:10 a=VdqzKS8jKosA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=ZpdpYltYx_vBUK5n70dp:22
- a=VwQbUJbxAAAA:8 a=915--R92nBw2hSefkU4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=bFCP_H2QrGi7Okbo017w:22
-X-Proofpoint-ORIG-GUID: MKpAvMxCW0nA2Fkp5b0JSiaVxPM9Vsl6
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTIyMDAxNyBTYWx0ZWRfX1uJnJeypVfMi
- U1ryj7vfnG5eDjOjdbejiLdLN6XCm6ONlX5OjKAG0wcg49CfkGu0dElZy03QB/f+cmU49qaS0kb
- 9sfULynj8/+DVDiHn3rFBTGPEn9zu4E7eHFggufV6LaZeIxpwOPGiLPWKaw3J/aQ97/F9sMzHfq
- ddLFDBZiM79ZaQ+BnOuckJghqHCsac1w/zVd9c6+/0jb2yKTukDlquBpgDC0aeRO4Edgxa/5KMs
- mIB115DRvzswGwE+siwWlaXcim3pvakjXcWJDoft8KaaRjctTaBdg9hDnFERlzwYJw4jYY4pIaN
- kplsWxQRYuggTKd2mKxdGLpUI84A9dO11f42adg4VWlkLh4Pc2om+sdGTf6OIL/c8GwwNW9UWHP
- 7+8SdoiMLdhNlyWMdGXNAXb7fO/doIRpZkkwAUJk9vEaYGCbd7q9R5JtQP4HwQ4dAyq/1jeBycO
- Eum1oT41E5KcddBHfwA==
-X-Proofpoint-GUID: MKpAvMxCW0nA2Fkp5b0JSiaVxPM9Vsl6
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTIyMDAxNyBTYWx0ZWRfXzRRcNHv1XRmm
- yeeoV1gfMaEFHcsiYVd2hWchqSGZ54t7QKBcw8ha46nIqQarhWd2hpl0A/l3QsrsBWKL//lEUvq
- c7Raa966D1HxPocyFGJqwI4VhNrd2vw=
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-09-21_07,2026-09-21_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 suspectscore=0 spamscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 malwarescore=0
- clxscore=1015 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2609040000
- definitions=main-2609220017
+From: Tom Janssens <herrwaldo@gmail.com>
+Date: Tue, 22 Sep 2026 22:39:58 +0200
+X-Gm-Features: AclHuK88cmyEFXyd_rMshdRCilgjP8259GdegHuH_NG85VY0dAA4AfLbB3s-qcc
+Message-ID: <CAAsBusP02gPx6=i6rYqGr71xkUuCzpkG9ujE=DfuG2Y9qmPfXQ@mail.gmail.com>
+Subject: ath10k: QCA6174 hw3.2 DMAR write fault on RX of 802.11k Beacon
+ Request (fw WLAN.RM.4.4.1-00309)
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260921_182519_339624_5A9103E9 
-X-CRM114-Status: UNSURE (   8.10  )
+X-CRM114-CacheID: sfid-20260922_134012_886681_FF532BC6 
+X-CRM114-Status: UNSURE (   9.61  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -145,46 +112,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The following changes since commit fefaac1176bf3cf002a8dc83339d6ed6a369941a:
+Hi,
 
-  Merge tag 'wireless-2026-09-16' of https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless (2026-09-16 15:54:56 -0700)
+I'm seeing a reproducible IOMMU (VT-d) DMA write fault from a QCA6174
+that is triggered by received 802.11k Beacon Request frames.
 
-are available in the Git repository at:
+Client (laptop)
+- Dell XPS 13 9380
+- 02:00.0 Qualcomm Atheros QCA6174 [168c:003e] rev 32, subsystem Rivet
+Networks Killer 1435 [1a56:143a]
+- ath10k_pci: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:143a
+- firmware ver WLAN.RM.4.4.1-00309- api 6 features
+wowlan,ignore-otp,mfp crc32 0793bcf2
+- board_file api 2 crc32 d2863f91
+- htt-ver 3.87 wmi-op 4 htt-op 3
+- Kernel 7.0.0-31-generic (Ubuntu), intel_iommu enabled (default
+DMA/DMA-FQ domain)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath.git tags/ath-current-20260921
+Access point
+- Xiaomi Mi Router AX3000T (mediatek/filogic), OpenWrt 25.12.4 r32933-4ccb782af7
+- wpad-openssl 2025.08.26~ca266cc2-r1, dawn 2025.11.07~7414c34a-r1
+- DAWN: update_beacon_reports=20, rrm_mode=pat (source of the 20 s
+beacon requests)
+- 5 GHz, ch 36, 802.11k enabled, PMF active (requests have the
+Protected bit set)
 
-for you to fetch changes up to aeaca27c1db3106967ffbb2b517d98c835f6d500:
+Symptom
+While associated, the following appears every ~20 s:
 
-  wifi: ath9k_htc: bound TX aggregation to MAX_TX_BUF_SIZE (2026-09-21 10:58:00 -0700)
+  DMAR: DRHD: handling fault status reg 2
+  DMAR: [DMA Write NO_PASID] Request device [02:00.0] fault addr
+0xfc2d1000 [fault reason 0x05] PTE Write access is not set
 
-----------------------------------------------------------------
-ath.git update for v7.3-rc5
+The fault address is different every time. There are no ath10k
+warnings, firmware crashes or restarts, and connectivity is not
+visibly affected.
 
-In ath9k, harden the firmware interface and correctly handle a flood of
-large frames.
+Trigger
+An AP-side monitor capture shows that DAWN makes hostapd send the
+client two Radio Measurement Requests every 20 s, 5 s apart:
 
-In ath11k, fix an accounting error that eventually prevents clients from
-connecting.
+- Beacon Request, op class 129, ch 36, BSSID = the associated AP,
+passive, duration 0.
+  The client answers within 1-2 ms with a Radio Measurement Report,
+mode 0x04 (refused).
+  Body starts: 05 00 67 00 00 26 1d 01 00 05 81 24 00 00 00 00 00 a4
+a9 30 c8 5e 5f 00 ...
+  Reply body:  05 01 67 27 03 01 04 05
+- Beacon Request, op class 129, ch 116, BSSID = a second AP. The
+client sends no reply.
 
-----------------------------------------------------------------
-Georgios Karantzas (1):
-      wifi: ath9k_htc: bound TX aggregation to MAX_TX_BUF_SIZE
+Using the ath10k tracepoints, each fault precedes the ath10k_wmi_event
+for the ch 36 request (id 0x7001 / mgmt rx, len 152) by a constant 76
+ms (+/- <1 ms) over several cycles. The 5 s / 15 s interleaving of the
+two requests matches the fault/no-fault pattern.
 
-Nicolas Escande (1):
-      wifi: ath11k: reset ar->num_stations on hardware start
+What changes it
+- Stopping DAWN on the AP (no more beacon requests): periodic faults stop.
+- Client disconnected but interface up: faults stop.
 
-Pengpeng Hou (1):
-      wifi: ath9k: reject short WMI command responses
+No effect
+- AP width 160 -> 80 MHz : faults continue.
+- Disabling ASPM L1 (incl. L1.1/L1.2) on 02:00.0 via sysfs: faults continue.
+- Wi-Fi power save off: faults continue.
+- Continuous traffic: faults continue.
+- Runtime PM: not active (power/control = on), so not a factor.
 
-Toke Høiland-Jørgensen (1):
-      wifi: ath9k: Clean up device initialisation guards
+Additionally, even with DAWN stopped, a single fault appears once
+after each (re)association. I haven't confirmed whether that is also
+RRM-related.
 
- drivers/net/wireless/ath/ath11k/mac.c         |  1 +
- drivers/net/wireless/ath/ath9k/hif_usb.c      | 19 +++++++++---------
- drivers/net/wireless/ath/ath9k/htc.h          |  1 -
- drivers/net/wireless/ath/ath9k/htc_drv_init.c |  7 +++----
- drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |  8 ++------
- drivers/net/wireless/ath/ath9k/wmi.c          | 28 +++++++++++++++++++--------
- drivers/net/wireless/ath/ath9k/wmi.h          |  1 +
- 7 files changed, 36 insertions(+), 29 deletions(-)
+It looks like the firmware writes to a stale or unmapped host buffer
+when it handles an incoming (protected) RRM Beacon Request. I can
+provide the full dmesg, the ath10k trace and the AP-side pcap, and I'm
+happy to test patches or collect more debug data.
+
+Thanks,
+Waldo Janssens
 
