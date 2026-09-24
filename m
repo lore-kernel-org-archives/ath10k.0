@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C0AFC9830E
-	for <ath10k@archiver.kernel.org>; Thu, 24 Sep 2026 15:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 220E5C9830E
+	for <ath10k@archiver.kernel.org>; Thu, 24 Sep 2026 15:42:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YKTy1DV5Z8HP/0nQigR4wkQdWVD6m+LzXDtQhSwKE3c=; b=opkcO0hU7lXOEwWNuYm9ncZT/3
-	wGdn2fUNrb11YihQn7adLoNwLFv51JI72UwEcLHyZCTwK7r6cVjzv1Xpe/AuEc8HSQTyN7tHyZFR2
-	Vp96y8zzXuqBjfuuaWCsv31fooJ/hlhNubjKuU9yRQ43r6mmzyLdK3t8uJsk3MgNgQ+1Xphdt5BGG
-	JKsTUxGY+XzdhTZyr+zrIcZKOjU6Y8tD1/FDIzj8bgzN6sSLSzpgYYtiFrm88yMhYQzGZDfnQhQJD
-	57rdFukj7cNMd/BzZADmMcTC9O6LIOhd7Njc0p1HAIXA/TeVuKaNzdGnnscUaMZpOwdqlCbe7yefZ
-	T3iBSqtw==;
+	bh=/64YUvNMf9EIe8aZXp3DzyY+LbONkg5uQf4LZYgGwC0=; b=v4DYJNCkTnTFmNmzjQGqU4qU90
+	eRush/lgx6rXKvQXyyvgt4AbjLVnM6u00NvwZBFKUkiX6IFiQ2VQZb2j7wNLfoHhKW77pCMqJ2AL+
+	FMJDsGsVeHUegYtNckfr6c/+ENCQ4bYifEAQyQJ9lpvFzIgBRnqtWncK4guSGhyC7sHhXfk3IckDI
+	rC5ul4MQ29u/LjGUWlFNUxgsIQ78Lp8B4Hhx7ze+cx1pNIERk4W74EK2/1w3JjcKmnx45wd1r8tq8
+	t5MCvGw/JxU/p0Qp5bjZ7QVtFMnBeJYUgGmNH/kN2+4xLOQ7CnBwXxwZoHu2AHFHLGQvPD6MHBURa
+	dy09k7jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9kwN-0000000BKFo-34MF;
-	Thu, 24 Sep 2026 15:00:51 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1x9lac-0000000BScH-4115;
+	Thu, 24 Sep 2026 15:42:26 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9kwJ-0000000BKEX-2oTt
+	id 1x9laY-0000000BSaY-3EBX
 	for ath10k@lists.infradead.org;
-	Thu, 24 Sep 2026 15:00:50 +0000
+	Thu, 24 Sep 2026 15:42:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1790262044;
+	s=mimecast20190719; t=1790264541;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YKTy1DV5Z8HP/0nQigR4wkQdWVD6m+LzXDtQhSwKE3c=;
-	b=TLHqpmOP/v8DhuvblEffEV93YjOTJxSFZLEs+RwfgB+NxVdTz/ygl97ONXzAbvTGfZCPgk
-	eMTv6y8GtvNgLa1EC7HTLUxt2chtIVfXhXdkx5XXP8YyvZ+mePv41vBysotpRqobDBQjc/
-	7FHbD5YMNAz4EW9ZRjZ3QSnNM9+xHRo=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=/64YUvNMf9EIe8aZXp3DzyY+LbONkg5uQf4LZYgGwC0=;
+	b=N5nJqjG+CCqiKOUMIy+cAq9Ow0QOH/g8y7qkqripLHY+xA52Ulvj6QjC4UgfhNAE8f/NTQ
+	ERP4l6jY5/34bDLO8j/YOXLeTbisjpqVsIkISSyPKLuKvnUmIF7dbd50s+oyMss6RvkYIO
+	Gvg68S8FqYiBPUh24USVfCB6mx3/9Ew=
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
+ [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-518-DXz9IZapONyBtPV4whWV8Q-1; Thu, 24 Sep 2026 11:00:40 -0400
-X-MC-Unique: DXz9IZapONyBtPV4whWV8Q-1
-X-Mimecast-MFC-AGG-ID: DXz9IZapONyBtPV4whWV8Q_1790262040
-Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-837aaa9a3f6so21866837b3.0
-        for <ath10k@lists.infradead.org>; Thu, 24 Sep 2026 08:00:40 -0700 (PDT)
+ us-mta-307-w4Bj7TkEM7W1AqgbWaawYg-1; Thu, 24 Sep 2026 11:42:19 -0400
+X-MC-Unique: w4Bj7TkEM7W1AqgbWaawYg-1
+X-Mimecast-MFC-AGG-ID: w4Bj7TkEM7W1AqgbWaawYg_1790264539
+Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-85da2b96c35so44321817b3.2
+        for <ath10k@lists.infradead.org>; Thu, 24 Sep 2026 08:42:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790262040; x=1790866840;
+        d=1e100.net; s=20260707; t=1790264539; x=1790869339;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=YKTy1DV5Z8HP/0nQigR4wkQdWVD6m+LzXDtQhSwKE3c=;
-        b=VDeqYu2v5WMTskjANu8JD4cD1SEgZMeF3MCiwPi3nTCo06StjoSGdpnlUNmXvpqs6K
-         K7vmjXaSjTxUG48261uru6oFFzlQA2o9Ep/wxML1oVqBLxhTeJj+jqpXiCV79uGP4jaK
-         Yh9mvwCxN6JWNC4dggs6tDQMEYiKPv2PIdxcloBjjzhAqc71GmUaU2igBU9/R5jipmSj
-         scL/mEae8PXem6h9N2Kcx4BfPwgWCYUbWI7zt/PwsTIPV1yrqVh5uCEj5A42sMBx2c8A
-         FXaeBiR95rBE5sBkX64FJbu9xhb+SwLs0Qto+lGLqf4XP3RZPpsonhpCPzna0gToXy0T
-         JABw==
-X-Forwarded-Encrypted: i=1; AKwUvBwTC9NzmgMg3+Xv0x5Rc+yZwvRBI+1G5U3vdfZz456vjrZnox7X4xXPWTGeSZReS9oes/nppZE=@lists.infradead.org
-X-Gm-Message-State: AFuF++mPbu8wdyV8sdA3NhLrTobIC5nikH7AI9uWkjc/AcrijBRHHmNR
-	v6O4nAFheQ2DNMI1DBhUEHXlp+4noenM6BZsqOfAsa2jod24hmtIFAOvoj4hYRTwemDCmWCQlTC
-	dAOgwGUlETw7z2qXSv/cf5FJajAmdnKbM39/bL903kqFo0XRoXJho2WfmRz0mwtOl02um4GEI71
-	RHTR+8a9uItMO9Gb+A+O9yXe7ZmEhdX6SM42OO/w==
-X-Gm-Gg: AYBFou3mqdTTy/mJ2+/87B+NOljUFMjqMbLWXFrsAJTaS9p73I+z+0DQJbcLJqQ+fM1
-	1rnaetMr/XYF1GUEocaGdXBy+g+5oGiJ7CfqRVmn1r4JvtxjcDeUe2/zGGox5gT5kgB21Ddy8DA
-	SIxGrl7Ustbfvu/vErloDQkGfC0iF5K9BUpi0HF1LShw/Gb+3FLrI++g==
-X-Received: by 2002:a05:690c:f04:b0:8a4:af43:6941 with SMTP id 00721157ae682-8a64e5d7328mr16132027b3.20.1790262039518;
-        Thu, 24 Sep 2026 08:00:39 -0700 (PDT)
-X-Received: by 2002:a05:690c:f04:b0:8a4:af43:6941 with SMTP id
- 00721157ae682-8a64e5d7328mr16131377b3.20.1790262038827; Thu, 24 Sep 2026
- 08:00:38 -0700 (PDT)
+        bh=/64YUvNMf9EIe8aZXp3DzyY+LbONkg5uQf4LZYgGwC0=;
+        b=OXFrwoK3p+i2Be81rm07igaMDl6NHQQSkv1+BuKtjKlyCPJU+I4HZhyvGOkoedM/+f
+         lKVxGWCEOwyJ27nIJCtRoivEQLx6HEv3NcVZhZ8SdUQKkdhtZ+2whJK1vKaeNnVWGM8B
+         NRpcg54TD8U2ujB0ItFee/fx3kINaZPg5JU5TVGk9Ai7d3yUKH0yNAGlSVvnYjkhm8BI
+         ebKDCXOpwZICW7crJ+AIdyHeXZ6VGffk2BAApaoVoGev8jszvaqQVvQI20ooPhRiV3sa
+         RnAAyp/tfG72uwuo4VptQFUgXZcxWgQV4bO4GYxT9Yieab3rdETq4SQENYs/7uyNHLp5
+         gi6A==
+X-Forwarded-Encrypted: i=1; AKwUvBzYkdjjvfQ+IhgjPiCcIZ4XbBnF3luBQ+zeoRdo9/NkAp4FA1JSevopB+8JNloGX0Ox2UhQDRQ=@lists.infradead.org
+X-Gm-Message-State: AFuF++k+kp/sRn/ku5bv9c8BfsVFYCn+fGlH8TM793c1IWazKRk0AFh2
+	rPEaIdax4FHIJv+CYplWkmHoj3sXtTxzT9FgwfeigV6LKBzU5ediIF5FNtdZkRF7LL/33Q8LmKG
+	DUmd/KHDyo/KIFfir2ym6xMi7AcWGDJWK1o+ykTUBFZ8VIixvnFsLB+eZYUIOFyGsY7OYGQt3X8
+	Yw/q6w47gq0yGfEsBrLACjnjDC7bWIA3MbNjQHiw==
+X-Gm-Gg: AYBFou3oJIn140KfH4XC7X/ongk88c5qLKiDm7JZfO3QkO2MaJkpcYmKdiqkBnYiIcY
+	d8xZUycaqlhb1ouBfACDln0BiWxJrxAgBmpOxUHofn9RO2kCQGuyUcqwEiR6FYIdN8X4I4h+eVe
+	dQHSw/z85Dk9B7hq54VUuS1WI6s84wExdzbpSH0GDNsD4mh48b+FcNVg==
+X-Received: by 2002:a05:690c:6e87:b0:8a7:91f8:1e8d with SMTP id 00721157ae682-8a791f82a3bmr9357527b3.53.1790264538927;
+        Thu, 24 Sep 2026 08:42:18 -0700 (PDT)
+X-Received: by 2002:a05:690c:6e87:b0:8a7:91f8:1e8d with SMTP id
+ 00721157ae682-8a791f82a3bmr9357067b3.53.1790264538368; Thu, 24 Sep 2026
+ 08:42:18 -0700 (PDT)
 MIME-Version: 1.0
 References: <20260914-scm-device-api-v1-0-3573e2596c51@redhat.com>
- <EKwbCgCnxbNX4p95qJ3xoytzeNBBLc2L_HOVWr-S-y8n7pNOIToj37TyoXRcLyIK1gjq_IvbreQ331gw6jIK9Q==@protonmail.internalid>
- <20260914-scm-device-api-v1-1-3573e2596c51@redhat.com> <b1340496-1ff3-4ad7-87c3-36d2162efbfa@kernel.org>
-In-Reply-To: <b1340496-1ff3-4ad7-87c3-36d2162efbfa@kernel.org>
+ <bRb6NzJiFvNGB0X3BeiVytgZNlRv88LFlcaBwwFIFa3GtVZhn5bh9EoRRDliRtgsnlQNMddvcIPK-5HK9x7z9Q==@protonmail.internalid>
+ <20260914-scm-device-api-v1-2-3573e2596c51@redhat.com> <49153dff-b4e0-43ac-aa82-15175fea6445@kernel.org>
+In-Reply-To: <49153dff-b4e0-43ac-aa82-15175fea6445@kernel.org>
 From: Albert Esteve <aesteve@redhat.com>
-Date: Thu, 24 Sep 2026 17:00:27 +0200
-X-Gm-Features: AclHuK_S1nrFMWot6v8DC6klfULfaNk07isgmJtfP7BYAekyrR84kzWx2Uw9qhE
-Message-ID: <CADSE00JhFYhDV2cuVxZwVTX6LTe8zH0-BR=-Fhv+6UXeFxq_Zw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] firmware: qcom: scm: pass qcom_scm to internal helpers
+Date: Thu, 24 Sep 2026 17:42:05 +0200
+X-Gm-Features: AclHuK8NibWpN40MLtS8tk1TsaU8ZJKSI8cLr02zuHOUyaXDRMTCkw3xFezOa38
+Message-ID: <CADSE00JcFOY0r6doD1Qpc0xtZ6HKsa4kFGsV0_FsNbb+yemmKg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] firmware: qcom: scm: pass qcom_scm through the
+ exported API
 To: "Bryan O'Donoghue" <bod@kernel.org>
 Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
 	Philipp Zabel <p.zabel@pengutronix.de>, Russell King <linux@armlinux.org.uk>, 
@@ -113,13 +114,13 @@ Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.or
 	linux-remoteproc@vger.kernel.org, op-tee@lists.trustedfirmware.org, 
 	Maxime Ripard <mripard@kernel.org>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: slTKDmW9l5vMMbpHOkQBMK2gSb0jK6NDFpW7mkBOVSM_1790262040
+X-Mimecast-MFC-PROC-ID: 6T2rENw8m1Lg4sHd9jK-GjBN0Y6VQ9U3W2GrsJVciPk_1790264539
 X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260924_080047_798238_2D93F5E9 
-X-CRM114-Status: GOOD (  16.12  )
+X-CRM114-CacheID: sfid-20260924_084222_883113_0220B07C 
+X-CRM114-Status: GOOD (  24.71  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,29 +135,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 23, 2026 at 11:00=E2=80=AFPM Bryan O'Donoghue <bod@kernel.org> =
+On Wed, Sep 23, 2026 at 11:08=E2=80=AFPM Bryan O'Donoghue <bod@kernel.org> =
 wrote:
 >
 > On 14/09/2026 13:41, Albert Esteve wrote:
-> >   int qcom_scm_pas_auth_and_reset(u32 pas_id)
+> >   static int spm_cpuidle_drv_probe(struct platform_device *pdev)
 > >   {
-> > -     return __qcom_scm_pas_auth_and_reset(__scm->dev, pas_id);
-> > +     struct qcom_scm *scm =3D __scm;
-> > +
-> > +     return __qcom_scm_pas_auth_and_reset(scm->dev, pas_id);
-> >   }
-> >   EXPORT_SYMBOL_GPL(qcom_scm_pas_auth_and_reset);
+> > +     struct qcom_scm *scm =3D qcom_scm_get();
+> >       int cpu, ret;
+> >
+> > -     if (!qcom_scm_is_available())
+> > +     if (!scm)
+> >               return -EPROBE_DEFER;
 >
-> Why make this change at all though ?
+> Is this equivalent code ?
 >
-> It takes a pointer to the file static _scm
->
-> The reset of the patch looks straight-forward to me but this change
-> caught my eye.
+> Its also a bit confusing to me that the next patch adds a .available
+> field to the qcom_scm struct.
 
-Yeah, this change isn't useful. I aimed to avoid passing __scm to
-function calls but it does nothing in this patch, it'd be better to
-change it directly in the next patch that changes the signature.
+I can see how this can be confusing. The problem with
+qcom_scm_is_available(scm) is that callers did not have an SCM handle
+yet. So drivers needed to search for it beforehand. Once I had to
+repeat that a few times, I instead added qcom_scm_get(), which looks
+up the bound instance and returns NULL if it is not ready (and still
+uses qcom_scm_is_available() internally). So, !scm is the same check
+as before, while we obtain the pointer for the following calls.
+
+scm->available in the following patch replaces the __scm publication
+flag when the global is removed. Until then, readiness is still based
+on the static __scm validity.
+
+>
+> I see where you do get drvdata but I haven't managed to find in the
+> series where the data gets set - haven't asked an LLM either - I think
+> the logic to associate the scm pointer and get it should live together
+> in one patch so that the logic is easier to find and reason about.
+
+platform_set_drvdata() is already in qcom_scm_probe(); this series
+only adds the dev_get_drvdata() / qcom_scm_get() lookups. I can
+clarify this in the commit message so the set/get pairing is more
+obvious.
 
 BR,
 Albert
