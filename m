@@ -4,57 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9414C9830E
-	for <ath10k@archiver.kernel.org>; Thu, 24 Sep 2026 13:30:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C0AFC9830E
+	for <ath10k@archiver.kernel.org>; Thu, 24 Sep 2026 15:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:
-	From:Content-Transfer-Encoding:Content-Type:Date:MIME-Version:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=kFpyIM0+JpOSMto08ZABVfDp8Af4KU3Fqp5Uzx6h1b0=; b=DCDXrJrvPC+XJ2tiVm+TGaH2MA
-	VF2608DtHD0p8idwaL/1YSu64a/qeSQxtKK8wdGvnNSQQq2YSi6bXt90BwYDd3ViH8SFfk1nM34oP
-	8Zslhz9JCyE6Ioc5y3pE7gUnC23fqQxQFmRUAkaXBd8krgVO2MI7R9JPmiYHYW4zGfkWPbr1c//Jx
-	DcVu19+8WC0JGnUIOL7vOWwnTyMC4jUw/m9qBWfJwDe4UCX7888k97C3Cs6Ao+f1I5LpbtheNxs/O
-	tOpoy2KolQYsxVNZYbA8EXkN6KIvh6DeQBbvOnoAnvDwQUjcOeyU9hpegF/iWM/JKrxtzwMOMQjoi
-	Zcad9Rmw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=YKTy1DV5Z8HP/0nQigR4wkQdWVD6m+LzXDtQhSwKE3c=; b=opkcO0hU7lXOEwWNuYm9ncZT/3
+	wGdn2fUNrb11YihQn7adLoNwLFv51JI72UwEcLHyZCTwK7r6cVjzv1Xpe/AuEc8HSQTyN7tHyZFR2
+	Vp96y8zzXuqBjfuuaWCsv31fooJ/hlhNubjKuU9yRQ43r6mmzyLdK3t8uJsk3MgNgQ+1Xphdt5BGG
+	JKsTUxGY+XzdhTZyr+zrIcZKOjU6Y8tD1/FDIzj8bgzN6sSLSzpgYYtiFrm88yMhYQzGZDfnQhQJD
+	57rdFukj7cNMd/BzZADmMcTC9O6LIOhd7Njc0p1HAIXA/TeVuKaNzdGnnscUaMZpOwdqlCbe7yefZ
+	T3iBSqtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9jWW-0000000B5hn-0bcj;
-	Thu, 24 Sep 2026 13:30:04 +0000
-Received: from out-29.mta1.migadu.com ([95.215.58.29] helo=mta1.migadu.com)
+	id 1x9kwN-0000000BKFo-34MF;
+	Thu, 24 Sep 2026 15:00:51 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9jWS-0000000B5gp-1mWx
+	id 1x9kwJ-0000000BKEX-2oTt
 	for ath10k@lists.infradead.org;
-	Thu, 24 Sep 2026 13:30:02 +0000
-X-Envelope-To: ath10k@lists.infradead.org
-DKIM-Signature: a=rsa-sha256; bh=Q7yicSputjqRAaiSihpg7uwoEulKD0sbMOpWliDD7xU=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1790256598; v=1; x=1790861398;
- b=Qbuyc4H392b8HeErCDtSJJgQWIXyXyc2iJ0VPsIa4YveN9IQmeTArwuLq8n4bNKkzcobtAGg
- tyAqFUTc7CiF5PVmAMKh/2Er/qhMt/Iq4iG3DUlKcwcamv7eYzow8KNkD6ZTkC4XC3I+IL+tw7Z
- 7uU8RzfJzc+6zjV/4Z7Sj5DQ=
-X-Envelope-To: ath10k@lists.infradead.org
-Received: by smtp.migadu.com with ESMTPS id f5b068c74c8d52c8;
-	Thu, 24 Sep 2026 13:29:58 +0000
-X-Mizu-Trace-ID: f5b068c74c8d52c8
-X-Migadu-Flow: FLOW_OUT
+	Thu, 24 Sep 2026 15:00:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1790262044;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YKTy1DV5Z8HP/0nQigR4wkQdWVD6m+LzXDtQhSwKE3c=;
+	b=TLHqpmOP/v8DhuvblEffEV93YjOTJxSFZLEs+RwfgB+NxVdTz/ygl97ONXzAbvTGfZCPgk
+	eMTv6y8GtvNgLa1EC7HTLUxt2chtIVfXhXdkx5XXP8YyvZ+mePv41vBysotpRqobDBQjc/
+	7FHbD5YMNAz4EW9ZRjZ3QSnNM9+xHRo=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-DXz9IZapONyBtPV4whWV8Q-1; Thu, 24 Sep 2026 11:00:40 -0400
+X-MC-Unique: DXz9IZapONyBtPV4whWV8Q-1
+X-Mimecast-MFC-AGG-ID: DXz9IZapONyBtPV4whWV8Q_1790262040
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-837aaa9a3f6so21866837b3.0
+        for <ath10k@lists.infradead.org>; Thu, 24 Sep 2026 08:00:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790262040; x=1790866840;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=YKTy1DV5Z8HP/0nQigR4wkQdWVD6m+LzXDtQhSwKE3c=;
+        b=VDeqYu2v5WMTskjANu8JD4cD1SEgZMeF3MCiwPi3nTCo06StjoSGdpnlUNmXvpqs6K
+         K7vmjXaSjTxUG48261uru6oFFzlQA2o9Ep/wxML1oVqBLxhTeJj+jqpXiCV79uGP4jaK
+         Yh9mvwCxN6JWNC4dggs6tDQMEYiKPv2PIdxcloBjjzhAqc71GmUaU2igBU9/R5jipmSj
+         scL/mEae8PXem6h9N2Kcx4BfPwgWCYUbWI7zt/PwsTIPV1yrqVh5uCEj5A42sMBx2c8A
+         FXaeBiR95rBE5sBkX64FJbu9xhb+SwLs0Qto+lGLqf4XP3RZPpsonhpCPzna0gToXy0T
+         JABw==
+X-Forwarded-Encrypted: i=1; AKwUvBwTC9NzmgMg3+Xv0x5Rc+yZwvRBI+1G5U3vdfZz456vjrZnox7X4xXPWTGeSZReS9oes/nppZE=@lists.infradead.org
+X-Gm-Message-State: AFuF++mPbu8wdyV8sdA3NhLrTobIC5nikH7AI9uWkjc/AcrijBRHHmNR
+	v6O4nAFheQ2DNMI1DBhUEHXlp+4noenM6BZsqOfAsa2jod24hmtIFAOvoj4hYRTwemDCmWCQlTC
+	dAOgwGUlETw7z2qXSv/cf5FJajAmdnKbM39/bL903kqFo0XRoXJho2WfmRz0mwtOl02um4GEI71
+	RHTR+8a9uItMO9Gb+A+O9yXe7ZmEhdX6SM42OO/w==
+X-Gm-Gg: AYBFou3mqdTTy/mJ2+/87B+NOljUFMjqMbLWXFrsAJTaS9p73I+z+0DQJbcLJqQ+fM1
+	1rnaetMr/XYF1GUEocaGdXBy+g+5oGiJ7CfqRVmn1r4JvtxjcDeUe2/zGGox5gT5kgB21Ddy8DA
+	SIxGrl7Ustbfvu/vErloDQkGfC0iF5K9BUpi0HF1LShw/Gb+3FLrI++g==
+X-Received: by 2002:a05:690c:f04:b0:8a4:af43:6941 with SMTP id 00721157ae682-8a64e5d7328mr16132027b3.20.1790262039518;
+        Thu, 24 Sep 2026 08:00:39 -0700 (PDT)
+X-Received: by 2002:a05:690c:f04:b0:8a4:af43:6941 with SMTP id
+ 00721157ae682-8a64e5d7328mr16131377b3.20.1790262038827; Thu, 24 Sep 2026
+ 08:00:38 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 24 Sep 2026 13:29:58 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <20260914-scm-device-api-v1-0-3573e2596c51@redhat.com>
+ <EKwbCgCnxbNX4p95qJ3xoytzeNBBLc2L_HOVWr-S-y8n7pNOIToj37TyoXRcLyIK1gjq_IvbreQ331gw6jIK9Q==@protonmail.internalid>
+ <20260914-scm-device-api-v1-1-3573e2596c51@redhat.com> <b1340496-1ff3-4ad7-87c3-36d2162efbfa@kernel.org>
+In-Reply-To: <b1340496-1ff3-4ad7-87c3-36d2162efbfa@kernel.org>
+From: Albert Esteve <aesteve@redhat.com>
+Date: Thu, 24 Sep 2026 17:00:27 +0200
+X-Gm-Features: AclHuK_S1nrFMWot6v8DC6klfULfaNk07isgmJtfP7BYAekyrR84kzWx2Uw9qhE
+Message-ID: <CADSE00JhFYhDV2cuVxZwVTX6LTe8zH0-BR=-Fhv+6UXeFxq_Zw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] firmware: qcom: scm: pass qcom_scm to internal helpers
+To: "Bryan O'Donoghue" <bod@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Russell King <linux@armlinux.org.uk>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>, 
+	Christian Loehle <christian.loehle@arm.com>, Maximilian Luz <luzmaximilian@gmail.com>, 
+	Bartosz Golaszewski <brgl@kernel.org>, Rob Clark <robin.clark@oss.qualcomm.com>, 
+	Sean Paul <sean@poorly.run>, Akhil P Oommen <akhilpo@oss.qualcomm.com>, 
+	Dmitry Baryshkov <lumag@kernel.org>, Abhinav Kumar <abhinav.kumar@linux.dev>, 
+	Jessica Zhang <jesszhan0024@gmail.com>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Will Deacon <will@kernel.org>, 
+	Robin Murphy <robin.murphy@arm.com>, "Joerg Roedel (AMD)" <joro@8bytes.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>, 
+	Vikash Garodia <vikash.garodia@oss.qualcomm.com>, 
+	Dikshita Agarwal <dikshita.agarwal@oss.qualcomm.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Srinivas Kandagatla <srini@kernel.org>, 
+	Ekansh Gupta <ekansh.gupta@oss.qualcomm.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jeff Johnson <jjohnson@kernel.org>, 
+	Linus Walleij <linusw@kernel.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, 
+	Amirreza Zarrabi <amirreza.zarrabi@oss.qualcomm.com>, Jens Wiklander <jenswi@kernel.org>, 
+	Sumit Garg <sumit.garg@kernel.org>, Amit Kucheria <amitk@kernel.org>, 
+	Thara Gopinath <thara.gopinath@gmail.com>, Zhang Rui <rui.zhang@intel.com>, 
+	Lukasz Luba <lukasz.luba@arm.com>, Brian Norris <briannorris@chromium.org>, 
+	Govind Singh <govinds@codeaurora.org>, Niklas Cassel <niklas.cassel@linaro.org>, 
+	Kalle Valo <kvalo@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, iommu@lists.linux.dev, 
+	linux-media@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, linux-gpio@vger.kernel.org, 
+	linux-remoteproc@vger.kernel.org, op-tee@lists.trustedfirmware.org, 
+	Maxime Ripard <mripard@kernel.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: slTKDmW9l5vMMbpHOkQBMK2gSb0jK6NDFpW7mkBOVSM_1790262040
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-From: "Tianchu Chen" <tianchu.chen@linux.dev>
-Message-ID: <441ed914aa1db14a140e6263243579f952d5805b@linux.dev>
-TLS-Required: No
-Subject: [PATCH] wifi: ath10k: fix OOB write from unbounded SDIO RX bundle
- count
-To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- jjohnson@kernel.org
-Cc: alagusankar@silex-india.com, quic_wgong@quicinc.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260924_063000_616381_C74B413B 
-X-CRM114-Status: GOOD (  13.03  )
+X-CRM114-CacheID: sfid-20260924_080047_798238_2D93F5E9 
+X-CRM114-Status: GOOD (  16.12  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,90 +134,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-From: Tianchu Chen <flynnnchen@tencent.com>
+On Wed, Sep 23, 2026 at 11:00=E2=80=AFPM Bryan O'Donoghue <bod@kernel.org> =
+wrote:
+>
+> On 14/09/2026 13:41, Albert Esteve wrote:
+> >   int qcom_scm_pas_auth_and_reset(u32 pas_id)
+> >   {
+> > -     return __qcom_scm_pas_auth_and_reset(__scm->dev, pas_id);
+> > +     struct qcom_scm *scm =3D __scm;
+> > +
+> > +     return __qcom_scm_pas_auth_and_reset(scm->dev, pas_id);
+> >   }
+> >   EXPORT_SYMBOL_GPL(qcom_scm_pas_auth_and_reset);
+>
+> Why make this change at all though ?
+>
+> It takes a pointer to the file static _scm
+>
+> The reset of the patch looks straight-forward to me but this change
+> caught my eye.
 
-An RX event here is one invocation of
-ath10k_sdio_mbox_rxmsg_pending_handler(), triggered by the mailbox
-"RX pending" interrupt.  During such an event the device announces
-pending packets through lookaheads, the first one read from the
-HTC register table, the following ones carried in the trailers of
-the packets just fetched.  ath10k_sdio_mbox_rx_alloc()
-pre-allocates one rx_pkts[] slot per announced packet, after which
-the device transfers exactly that many packets over SDIO.
+Yeah, this change isn't useful. I aimed to avoid passing __scm to
+function calls but it does nothing in this patch, it'd be better to
+change it directly in the next patch that changes the signature.
 
-A lookahead whose HTC header carries a bundle count K stands for
-K+1 packets.  However, only the raw lookahead count is checked
-against ATH10K_SDIO_MAX_RX_MSGS; the expanded total pkt_cnt is
-never compared against the size of ar_sdio->rx_pkts[] (64 entries),
-the index is simply advanced and written to.  With up to 32
-lookaheads per round (the trailer record limit) each claiming
-K=3D32, the loop stores up to 32 * 33 =3D 1056 struct
-ath10k_sdio_rx_data entries into the 64-entry array, i.e. 992
-entries (~31KB) past its end, overwriting the members that follow
-it in struct ath10k_sdio.
+BR,
+Albert
 
-Add the missing comparison: the current lookahead and its bundled
-packets must fit into the remaining rx_pkts[] slots before any of
-them is allocated.
+>
+> ---
+> bod
+>
 
-This is expected to keep behavior unchanged on most cases: The new
-check drops exactly when the old code would have written past
-the array and corrupt the driver state.
-
-Discovered by Atuin - Automated Vulnerability Discovery Engine.
-
-Fixes: 8d985555ddaa ("ath10k: enable RX bundle receive for sdio")
-Cc: stable@vger.kernel.org
-Assisted-by: LLM
-Signed-off-by: Tianchu Chen <flynnnchen@tencent.com>
----
- drivers/net/wireless/ath/ath10k/sdio.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireles=
-s/ath/ath10k/sdio.c
-index 65e941b527517..5dc2ad432b099 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -540,7 +540,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *a=
-r,
- {
- 	struct ath10k_sdio *ar_sdio =3D ath10k_sdio_priv(ar);
- 	struct ath10k_htc_hdr *htc_hdr;
--	size_t full_len, act_len;
-+	size_t full_len, act_len, bndl_cnt;
- 	bool last_in_bundle;
- 	int ret, i;
- 	int pkt_cnt =3D 0;
-@@ -579,14 +579,23 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k =
-*ar,
- 			goto err;
- 		}
-=20
--=09	if (ath10k_htc_get_bundle_count(
--			ar->htc.max_msgs_per_htc_bundle, htc_hdr->flags)) {
-+		bndl_cnt =3D ath10k_htc_get_bundle_count(
-+			ar->htc.max_msgs_per_htc_bundle, htc_hdr->flags);
-+
-+		/* One rx_pkts[] slot per lookahead plus one per bundled packet */
-+		if (bndl_cnt + 1 > ATH10K_SDIO_MAX_RX_MSGS - pkt_cnt) {
-+			ath10k_warn(ar,
-+				    "rx bundle count %zu exceeds remaining pkt slots\n",
-+				    bndl_cnt);
-+			ret =3D -ENOMEM;
-+			goto err;
-+		}
-+
-+		if (bndl_cnt) {
- 			/* HTC header indicates that every packet to follow
- 			 * has the same padded length so that it can be
- 			 * optimally fetched as a full bundle.
- 			 */
--			size_t bndl_cnt;
--
- 			ret =3D ath10k_sdio_mbox_alloc_bundle(ar,
- 							    &ar_sdio->rx_pkts[pkt_cnt],
- 							    htc_hdr,
---=20
-2.51.0
 
