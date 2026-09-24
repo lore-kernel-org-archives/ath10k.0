@@ -4,96 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49CFAC98304
-	for <ath10k@archiver.kernel.org>; Wed, 23 Sep 2026 21:08:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9414C9830E
+	for <ath10k@archiver.kernel.org>; Thu, 24 Sep 2026 13:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oYRyYQ7jGFmso8AY6dUwDwpqY0QEPIOZBmqP3y/+Wjw=; b=JPjxu+d6m/7K7t3iRmAMUMpKFr
-	H3+GumOnBq4MO0obs2lM+8Tmhaoflntk+ttfG5YBUh92HUHStg6bTSR5G4Oyb0q2AUjmtWdFDCO+E
-	6WMsBb2e4VNmdmYlA/qWPCausYSuWXG9zPFeeg0V1GIBhRiytHvdmsBHhi1rBDrN9BVVc90RA4E6k
-	c1tuDal4+HRBJG02qEPWQW0O58lqt+wfTF9eTBJuFZgrZ84zi3YHYvUEcJ6DJY+EhwI4PTyKBcy+2
-	++Ig25jagUPyTx4qLNw+GJki2NwiuGI0RmFstMLF+Jkr0oB0AOJ7BZvKIK9WJerPoEXmKWNPq1XpE
-	F/i/1ydQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:
+	From:Content-Transfer-Encoding:Content-Type:Date:MIME-Version:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=kFpyIM0+JpOSMto08ZABVfDp8Af4KU3Fqp5Uzx6h1b0=; b=DCDXrJrvPC+XJ2tiVm+TGaH2MA
+	VF2608DtHD0p8idwaL/1YSu64a/qeSQxtKK8wdGvnNSQQq2YSi6bXt90BwYDd3ViH8SFfk1nM34oP
+	8Zslhz9JCyE6Ioc5y3pE7gUnC23fqQxQFmRUAkaXBd8krgVO2MI7R9JPmiYHYW4zGfkWPbr1c//Jx
+	DcVu19+8WC0JGnUIOL7vOWwnTyMC4jUw/m9qBWfJwDe4UCX7888k97C3Cs6Ao+f1I5LpbtheNxs/O
+	tOpoy2KolQYsxVNZYbA8EXkN6KIvh6DeQBbvOnoAnvDwQUjcOeyU9hpegF/iWM/JKrxtzwMOMQjoi
+	Zcad9Rmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9UCh-00000009Xhw-0if3;
-	Wed, 23 Sep 2026 21:08:35 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1x9jWW-0000000B5hn-0bcj;
+	Thu, 24 Sep 2026 13:30:04 +0000
+Received: from out-29.mta1.migadu.com ([95.215.58.29] helo=mta1.migadu.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9UCf-00000009Xhj-3MsK;
-	Wed, 23 Sep 2026 21:08:33 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id C2D3D600AA;
-	Wed, 23 Sep 2026 21:08:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A16721F00893;
-	Wed, 23 Sep 2026 21:08:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790197711;
-	bh=oYRyYQ7jGFmso8AY6dUwDwpqY0QEPIOZBmqP3y/+Wjw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=IFfLk5F+vPh8IZNhqF0jC6aiB53HDZvSF2VK2z8f7otoMhT2JY81X0DRgu4kSZy1c
-	 joRyiJr0iXdIujrsXvmcilGrrlkhEL9YLIUEvmzKixvjEeFJ8vxgxkwXlAMImcgbz5
-	 ObT2M39E9XWkmhhoICbrZZTEJIdLs70sQZ7CLs85nDdlrYvQI58UEG0MV2Zli3ORfN
-	 qEGaY7uobvyPgkqQYN9MxRINi7FLvSkgqHtmHbwFsTDaPMYxN2sV8xdrPRQjkvGaFE
-	 AUROK5OvdNxX5Jpjfb4/VhakF9Jk6w7yYiqjrfNKsr4mXgTRJosRSZ3QC2bAL67QYd
-	 6F00ow4Wk2EBQ==
-Message-ID: <49153dff-b4e0-43ac-aa82-15175fea6445@kernel.org>
-Date: Wed, 23 Sep 2026 22:08:19 +0100
+	id 1x9jWS-0000000B5gp-1mWx
+	for ath10k@lists.infradead.org;
+	Thu, 24 Sep 2026 13:30:02 +0000
+X-Envelope-To: ath10k@lists.infradead.org
+DKIM-Signature: a=rsa-sha256; bh=Q7yicSputjqRAaiSihpg7uwoEulKD0sbMOpWliDD7xU=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1790256598; v=1; x=1790861398;
+ b=Qbuyc4H392b8HeErCDtSJJgQWIXyXyc2iJ0VPsIa4YveN9IQmeTArwuLq8n4bNKkzcobtAGg
+ tyAqFUTc7CiF5PVmAMKh/2Er/qhMt/Iq4iG3DUlKcwcamv7eYzow8KNkD6ZTkC4XC3I+IL+tw7Z
+ 7uU8RzfJzc+6zjV/4Z7Sj5DQ=
+X-Envelope-To: ath10k@lists.infradead.org
+Received: by smtp.migadu.com with ESMTPS id f5b068c74c8d52c8;
+	Thu, 24 Sep 2026 13:29:58 +0000
+X-Mizu-Trace-ID: f5b068c74c8d52c8
+X-Migadu-Flow: FLOW_OUT
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] firmware: qcom: scm: pass qcom_scm through the
- exported API
-To: Albert Esteve <aesteve@redhat.com>, Bjorn Andersson
- <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Russell King
- <linux@armlinux.org.uk>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@kernel.org>,
- Christian Loehle <christian.loehle@arm.com>,
- Maximilian Luz <luzmaximilian@gmail.com>,
- Bartosz Golaszewski <brgl@kernel.org>,
- Rob Clark <robin.clark@oss.qualcomm.com>, Sean Paul <sean@poorly.run>,
- Akhil P Oommen <akhilpo@oss.qualcomm.com>,
- Dmitry Baryshkov <lumag@kernel.org>, Abhinav Kumar
- <abhinav.kumar@linux.dev>, Jessica Zhang <jesszhan0024@gmail.com>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- "Joerg Roedel (AMD)" <joro@8bytes.org>, Thomas Gleixner <tglx@kernel.org>,
- Radu Rendec <radu@rendec.net>,
- Vikash Garodia <vikash.garodia@oss.qualcomm.com>,
- Dikshita Agarwal <dikshita.agarwal@oss.qualcomm.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Srinivas Kandagatla <srini@kernel.org>,
- Ekansh Gupta <ekansh.gupta@oss.qualcomm.com>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jeff Johnson <jjohnson@kernel.org>, Linus Walleij <linusw@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Amirreza Zarrabi <amirreza.zarrabi@oss.qualcomm.com>,
- Jens Wiklander <jenswi@kernel.org>, Sumit Garg <sumit.garg@kernel.org>,
- Amit Kucheria <amitk@kernel.org>, Thara Gopinath <thara.gopinath@gmail.com>,
- Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
- Brian Norris <briannorris@chromium.org>,
- Govind Singh <govinds@codeaurora.org>,
- Niklas Cassel <niklas.cassel@linaro.org>, Kalle Valo <kvalo@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
- dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
- iommu@lists.linux.dev, linux-media@vger.kernel.org,
- linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- linux-gpio@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- op-tee@lists.trustedfirmware.org, Maxime Ripard <mripard@kernel.org>
-References: <20260914-scm-device-api-v1-0-3573e2596c51@redhat.com>
- <bRb6NzJiFvNGB0X3BeiVytgZNlRv88LFlcaBwwFIFa3GtVZhn5bh9EoRRDliRtgsnlQNMddvcIPK-5HK9x7z9Q==@protonmail.internalid>
- <20260914-scm-device-api-v1-2-3573e2596c51@redhat.com>
-From: Bryan O'Donoghue <bod@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20260914-scm-device-api-v1-2-3573e2596c51@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Date: Thu, 24 Sep 2026 13:29:58 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+From: "Tianchu Chen" <tianchu.chen@linux.dev>
+Message-ID: <441ed914aa1db14a140e6263243579f952d5805b@linux.dev>
+TLS-Required: No
+Subject: [PATCH] wifi: ath10k: fix OOB write from unbounded SDIO RX bundle
+ count
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ jjohnson@kernel.org
+Cc: alagusankar@silex-india.com, quic_wgong@quicinc.com
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260924_063000_616381_C74B413B 
+X-CRM114-Status: GOOD (  13.03  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,26 +69,90 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On 14/09/2026 13:41, Albert Esteve wrote:
->   static int spm_cpuidle_drv_probe(struct platform_device *pdev)
->   {
-> +	struct qcom_scm *scm = qcom_scm_get();
->   	int cpu, ret;
-> 
-> -	if (!qcom_scm_is_available())
-> +	if (!scm)
->   		return -EPROBE_DEFER;
+From: Tianchu Chen <flynnnchen@tencent.com>
 
-Is this equivalent code ?
+An RX event here is one invocation of
+ath10k_sdio_mbox_rxmsg_pending_handler(), triggered by the mailbox
+"RX pending" interrupt.  During such an event the device announces
+pending packets through lookaheads, the first one read from the
+HTC register table, the following ones carried in the trailers of
+the packets just fetched.  ath10k_sdio_mbox_rx_alloc()
+pre-allocates one rx_pkts[] slot per announced packet, after which
+the device transfers exactly that many packets over SDIO.
 
-Its also a bit confusing to me that the next patch adds a .available 
-field to the qcom_scm struct.
+A lookahead whose HTC header carries a bundle count K stands for
+K+1 packets.  However, only the raw lookahead count is checked
+against ATH10K_SDIO_MAX_RX_MSGS; the expanded total pkt_cnt is
+never compared against the size of ar_sdio->rx_pkts[] (64 entries),
+the index is simply advanced and written to.  With up to 32
+lookaheads per round (the trailer record limit) each claiming
+K=3D32, the loop stores up to 32 * 33 =3D 1056 struct
+ath10k_sdio_rx_data entries into the 64-entry array, i.e. 992
+entries (~31KB) past its end, overwriting the members that follow
+it in struct ath10k_sdio.
 
-I see where you do get drvdata but I haven't managed to find in the 
-series where the data gets set - haven't asked an LLM either - I think 
-the logic to associate the scm pointer and get it should live together 
-in one patch so that the logic is easier to find and reason about.
+Add the missing comparison: the current lookahead and its bundled
+packets must fit into the remaining rx_pkts[] slots before any of
+them is allocated.
 
+This is expected to keep behavior unchanged on most cases: The new
+check drops exactly when the old code would have written past
+the array and corrupt the driver state.
+
+Discovered by Atuin - Automated Vulnerability Discovery Engine.
+
+Fixes: 8d985555ddaa ("ath10k: enable RX bundle receive for sdio")
+Cc: stable@vger.kernel.org
+Assisted-by: LLM
+Signed-off-by: Tianchu Chen <flynnnchen@tencent.com>
 ---
-bod
+ drivers/net/wireless/ath/ath10k/sdio.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireles=
+s/ath/ath10k/sdio.c
+index 65e941b527517..5dc2ad432b099 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -540,7 +540,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *a=
+r,
+ {
+ 	struct ath10k_sdio *ar_sdio =3D ath10k_sdio_priv(ar);
+ 	struct ath10k_htc_hdr *htc_hdr;
+-	size_t full_len, act_len;
++	size_t full_len, act_len, bndl_cnt;
+ 	bool last_in_bundle;
+ 	int ret, i;
+ 	int pkt_cnt =3D 0;
+@@ -579,14 +579,23 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k =
+*ar,
+ 			goto err;
+ 		}
+=20
+-=09	if (ath10k_htc_get_bundle_count(
+-			ar->htc.max_msgs_per_htc_bundle, htc_hdr->flags)) {
++		bndl_cnt =3D ath10k_htc_get_bundle_count(
++			ar->htc.max_msgs_per_htc_bundle, htc_hdr->flags);
++
++		/* One rx_pkts[] slot per lookahead plus one per bundled packet */
++		if (bndl_cnt + 1 > ATH10K_SDIO_MAX_RX_MSGS - pkt_cnt) {
++			ath10k_warn(ar,
++				    "rx bundle count %zu exceeds remaining pkt slots\n",
++				    bndl_cnt);
++			ret =3D -ENOMEM;
++			goto err;
++		}
++
++		if (bndl_cnt) {
+ 			/* HTC header indicates that every packet to follow
+ 			 * has the same padded length so that it can be
+ 			 * optimally fetched as a full bundle.
+ 			 */
+-			size_t bndl_cnt;
+-
+ 			ret =3D ath10k_sdio_mbox_alloc_bundle(ar,
+ 							    &ar_sdio->rx_pkts[pkt_cnt],
+ 							    htc_hdr,
+--=20
+2.51.0
 
