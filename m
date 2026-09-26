@@ -4,85 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59C70C9833F
-	for <ath10k@archiver.kernel.org>; Sat, 26 Sep 2026 15:49:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA70AC98338
+	for <ath10k@archiver.kernel.org>; Sat, 26 Sep 2026 15:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=N90PVcEBaJjmtFZtExELpFQU0K3QU2o0KNqwUaSuAI8=; b=2V7Mg8tMxJ55aND50Tex32/86m
-	YRrKpiXP8cxOuJjHvr3+2GoBAhPiLT7upN0Qo8WOAheIXOZ+Kndt9XiBxXsmtn+hRI052rc0i8OiB
-	9SAmDsjCmiaTwpJc+2+q0pJgVVEw9Tke6p0mS8L32lLDiO04+Jp04hCy5+GsWAMmLu6/0plBiohDC
-	jZDeFOajfE0+fXNQB8PfG81lAHZnlWRrexsyNuoH76HTENpXBaHmX5ZHVK/J7iAHFHVQe2qQNeXzf
-	NTHpaCL0lZdXVHzl9tNxF0Rvyv6IjJ0DBB1Rd3lCUaOh6rND+wdn7EnVIq3XuIgnQmd0UjgDExSs/
-	kOvMpZBw==;
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=hQSBijeCpBYLcmXHo8ZBtBfG17pFXPWD63/WDXYEp+k=; b=CuPz5DhKVcBmZ3DFuCvoEYR4xM
+	pv3YL+V+Tghc87dlZYMiq4enw0YPTNH/wViu0hn4gXbwhGmEoRg7k3O2IyvxWMbmyQsY6yZa/6TMB
+	INslMPdC0zpuW62jCRRft9yzzn/IXdI/efmPECxADpVruOaVoJeI2r3OGEO3skXb1bjyYrAAuaYpv
+	YRZ4WRftXSFKtXJxuAZhpylOhZoSOHH5MufPWpHjTJ2ChOQkN11btVAI6XOCdpbOQ0zdKMZrx5PdO
+	rGJAfxTQtW/sqUrIa4nxPANNRbf0uBMbWBAKplTULJOkfY1EmTzVdUsvJsEJU1ZBKbSSZaptNFYs8
+	39nhoXnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAUe7-0000000Fbgu-0aq4;
+	id 1xAUe7-0000000Fbh4-14GS;
 	Sat, 26 Sep 2026 15:49:03 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAUe5-0000000Fbfk-34xQ;
+	id 1xAUe5-0000000Fbfi-31M1
+	for ath10k@bombadil.infradead.org;
 	Sat, 26 Sep 2026 15:49:01 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=N90PVcEBaJjmtFZtExELpFQU0K3QU2o0KNqwUaSuAI8=; b=OLDDT7CVu1OiodaFd0cXqIu8iN
-	y7Vm+xbUMC7kNkUO76YPpVpkEkXfjrbcOc0rvJOZCA5VPE9LY9K5nmfe2bYcZBZCAZCIWIUmLFO9G
-	UdD8RdyV3ohrgyqA/CCJVM+3FBv7919vdoPZUvFS1/Z7tiKG8vS/3eJotxHST09KVoXB0px6z5m4f
-	WveBRlXhdsKE5Puio58VrnZnGvBSxwrRQNFIC2daZAnAvkB7Bm/BZMwuEmHtQrOlehJW6Xi7WJfkE
-	Z/wcGuZh5XkNcIjyvsinm0MIrXOLU48oSD1hGscQXLKFt5lUkAzQP+Fu8EKmKvt1CYf5IwNEDuj6p
-	LvycDkSQ==;
-Received: from m16.mail.163.com ([220.197.31.4])
+	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=hQSBijeCpBYLcmXHo8ZBtBfG17pFXPWD63/WDXYEp+k=; b=QEPujL1YmWyYgn5VAh0SZoeaFE
+	DfdlITdSZVdNe5wNR12ChG/jCohyUnVNo2mgWitb98jZpQZc3eFjoqbLj9cEVdHxRPnHqszG6Kuyw
+	+Bq49OUwabgzK456gksc9ImkEH3QIQ4RPgb5pUESbAda4C94cDzYxVyDlvmj1mnssab1Ko9LVNzMt
+	d0ngiJYdvsyJyfxGknd2MxaOPqJ8kfsIEMmRAbKyl26ETF7bZmsq8Et+LJB89ugtLc3aSCPuAJO7D
+	rH3aNKfo/CJrMgD+5qMZXsNrgsTeRFOi6+/OnrJJJuOk9fb6uEY8AzWZ0+D36VmmGs0e39gQEo5Vy
+	DSWyNQMg==;
+Received: from m16.mail.163.com ([117.135.210.2])
 	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1xAUe1-00000000GIC-2tq9;
+	id 1xAUe1-00000000GIM-2mpO
+	for ath10k@lists.infradead.org;
 	Sat, 26 Sep 2026 15:49:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=N9
-	0PVcEBaJjmtFZtExELpFQU0K3QU2o0KNqwUaSuAI8=; b=EiLm0ZvCe5CBHYTiLl
-	W9lY7Yjk1P4AVlRDElfr5VxaNsuCIdp9fzP1fEqz04TBwVk6hZ5GXKIQGXX+4Wyn
-	C4yc6fvzAohOPPB4N1S9lXUQ+V9Vx1zqEhQrk4z+mLvkKpoDR2HmQ6xFCMg1CvlF
-	BE4qimdsMkxwrF31lecIHr7UA=
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=hQ
+	SBijeCpBYLcmXHo8ZBtBfG17pFXPWD63/WDXYEp+k=; b=Ygh9xE04CCBs0hCRY6
+	JuiFqoojNAsotCc8qxvUCesaXXFHh2wYpGewVDFhmj7kpOglz6F2GfSN3HsLHcXp
+	Be2OHqsmhdNlyHWsuYAlInbDj5L1WIilNYtFC/Aqdz/Ime1tdGJLIbBJFybkayrO
+	/upgxUPdoqFzw62a4C/HDycDI=
 Received: from pc.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wD3F4pL6bdqlpIIBA--.11355S2;
-	Sat, 26 Sep 2026 23:48:28 +0800 (CST)
+	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wD3F4pL6bdqlpIIBA--.11355S3;
+	Sat, 26 Sep 2026 23:48:29 +0800 (CST)
 From: Jiale Yao <yaojiale02@163.com>
 To: Jeff Johnson <jjohnson@kernel.org>,
-	Michal Kazior <michal.kazior@tieto.com>,
 	Kalle Valo <kvalo@qca.qualcomm.com>,
-	Manikanta Pubbisetty <quic_mpubbise@quicinc.com>,
-	Sathishkumar Muruganandam <quic_murugana@quicinc.com>,
-	Maharaja Kennadyrajan <quic_mkenna@quicinc.com>,
-	Karthikeyan Periyasamy <quic_periyasa@quicinc.com>,
-	Anilkumar Kolli <quic_akolli@quicinc.com>,
-	Baochen Qiang <quic_bqiang@quicinc.com>,
-	Bhagavathi Perumal S <bperumal@codeaurora.org>,
-	Sriram R <quic_srirrama@quicinc.com>,
-	Balamurugan Selvarajan <quic_bselvara@quicinc.com>,
+	Michal Kazior <michal.kazior@tieto.com>,
 	linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	ath11k@lists.infradead.org,
-	ath12k@lists.infradead.org
+	linux-kernel@vger.kernel.org
 Cc: Jiale Yao <yaojiale02@163.com>
-Subject: [PATCH 0/5] wifi: ath: avoid IDR mutation while iterating
-Date: Sat, 26 Sep 2026 23:48:19 +0800
-Message-Id: <20260926154824.75224-1-yaojiale02@163.com>
+Subject: [PATCH 1/5] wifi: ath10k: avoid IDR mutation during TX cleanup
+Date: Sat, 26 Sep 2026 23:48:20 +0800
+Message-Id: <20260926154824.75224-2-yaojiale02@163.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260926154824.75224-1-yaojiale02@163.com>
+References: <20260926154824.75224-1-yaojiale02@163.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD3F4pL6bdqlpIIBA--.11355S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWrKr4xur4kGr1xCw4xXr4UXFb_yoW8JF15pr
-	4fu3W3uF1xZr97tFnxJa18WF1rWFn3CF4jgrZFk3WrWrn5CF18tF98tF1fZFy7GFWfJw12
-	93yUtr1fCryDA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piY9akUUUUU=
-X-CM-SenderInfo: x1dryxhdohiji6rwjhhfrp/xtbCzQwWUGq36Uz7GgAA3e
+X-CM-TRANSID: _____wD3F4pL6bdqlpIIBA--.11355S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Cr13ZF1xGF15AF1DtFy5urg_yoW8Wr1UpF
+	W8uwsFvFy8Ar17Zr48J3WxGFn8Xan3Gw4a9rWDua4rKr1rCr10gFW5Kas0qrWUtFW5C3W7
+	uF4Ut3srGw1ktFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piiiSXUUUUU=
+X-CM-SenderInfo: x1dryxhdohiji6rwjhhfrp/xtbCzg0WUGq36U0gjwAA3T
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260926_164858_261360_2E2A9732 
-X-CRM114-Status: UNSURE (   3.74  )
+X-CRM114-CacheID: sfid-20260926_164858_173336_668E2325 
+X-CRM114-Status: UNSURE (   8.44  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -98,31 +91,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-The ath10k, ath11k, and ath12k cleanup paths walk an IDR while their
-callbacks remove the current entry. idr_for_each() retains radix-tree
-iterator state across the callback, so that removal can invalidate the
-walk.
+ath10k_htt_flush_tx_queue() walks pending_tx with idr_for_each().
+Its callback calls ath10k_txrx_tx_unref(), which removes the current
+entry from pending_tx through ath10k_htt_tx_free_msdu_id().
 
-For ath11k and ath12k full teardown, keep the callback limited to
-releasing the supplied skb and leave IDR teardown to the following
-idr_destroy(), matching the established SCMI fix. For selective per-vif
-cleanup, use idr_for_each_entry() so each iteration starts with a fresh
-lookup before removing a matching entry. ath10k also uses
-idr_for_each_entry() because its shared TX completion helper must retain
-the per-entry removal.
+idr_for_each() keeps radix-tree iterator state across the callback.
+Removing the current entry can therefore invalidate that state and
+make the remaining walk unsafe.
 
-Jiale Yao (5):
-  wifi: ath10k: avoid IDR mutation during TX cleanup
-  wifi: ath11k: avoid IDR mutation during pending mgmt TX cleanup
-  wifi: ath11k: avoid IDR mutation during vif mgmt TX cleanup
-  wifi: ath12k: avoid IDR mutation during pending mgmt TX cleanup
-  wifi: ath12k: avoid IDR mutation during vif mgmt TX cleanup
+Use idr_for_each_entry(), which starts a fresh lookup after each
+callback.  The current entry can then be removed safely, while the
+following idr_destroy() continues to release the IDR itself.
 
- drivers/net/wireless/ath/ath10k/htt_tx.c |  7 +++-
- drivers/net/wireless/ath/ath11k/mac.c    | 46 +++++++++++++-----------
- drivers/net/wireless/ath/ath12k/mac.c    | 46 +++++++++++++-----------
- 3 files changed, 58 insertions(+), 41 deletions(-)
+Fixes: 89d6d83565e9 ("ath10k: use idr api for msdu_ids")
+Signed-off-by: Jiale Yao <yaojiale02@163.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index e46f579d745d..9993c5a2f96c 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -535,8 +535,13 @@ void ath10k_htt_tx_destroy(struct ath10k_htt *htt)
+ 
+ static void ath10k_htt_flush_tx_queue(struct ath10k_htt *htt)
+ {
++	struct sk_buff *msdu;
++	int msdu_id;
++
+ 	ath10k_htc_stop_hl(htt->ar);
+-	idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
++
++	idr_for_each_entry(&htt->pending_tx, msdu, msdu_id)
++		ath10k_htt_tx_clean_up_pending(msdu_id, msdu, htt->ar);
+ }
+ 
+ void ath10k_htt_tx_stop(struct ath10k_htt *htt)
 -- 
 2.34.1
 
