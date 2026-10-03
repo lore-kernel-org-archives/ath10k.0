@@ -4,68 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B73F6CA5FE6
-	for <ath10k@archiver.kernel.org>; Fri,  2 Oct 2026 22:55:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A97DCA5FDD
+	for <ath10k@archiver.kernel.org>; Sat,  3 Oct 2026 09:21:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=XOjEC8uyWbqD359x8ka20z4mQO4Yg0kZahphsxZmvs0=; b=oCLjTqcoLjAXWS
-	1y3in05nHBsG0HMQBy8ZAhnRk4gFAZxL2jZhiRN8dezKeE8GioRrphqvDLdL6BUv0pykDDf3LsuCN
-	ry2LP2HvSrLdcKHaQVqgxh2pr82XEK3aCNCXosyPJEY8Ig1e4DbTQNvwwhwC/cnBFsKGJxZfOYY+8
-	6a3NHN3MbRxAWjipxHpk6JofxuekwK/sM3uERUPU0X7dGQ3HPSPGCW1VmPI73yWeQm+rmGz/egVbN
-	GbkxXshbvZymrKVjp0wRlLtIqki2ut9Q+nGLk+dHvbjzxJGx5I12Jw2uJzWAhgvNDmd96fDb60r/Q
-	45za9imvTz4erF29QW3A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=AFojHjA+4FDN4JhFb5+uFEMCc+xZ9O93LXDyh2k/6GM=; b=AkEIur4zHNprUEpe3+gTyVaq7r
+	Be+3GDG+lFolgM2HXHbA1ViUYHni5wTeCaOjT3vTDKV293Wqof2GTNqeZB84Fi4teBrCViEHMDuPA
+	boiQEJdVVtIa/oHqsh7oCx50RWnWX1UITkhMRFtXPjsBboUPCkg1JEGB4WUieaL53O48RqDqlUl9G
+	wZhu+mjtGWS96oKHjbtVO7SShQS/BseYfpP/vJpSw0AWhB7Pu0PgjIsUHPnaaFwGVc3cKvSoaEkVL
+	1cPd7ZiLykRCneT90dextBr3yQk8KuNQ2GTBD/N9itFHuRyeNCq97jkCzpxbJ28t4iAl9E0mNML8w
+	hj8Qng1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCmAO-0000000CeL1-2WtJ;
-	Fri, 02 Oct 2026 22:55:48 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xCvvr-0000000DG0R-1LHG;
+	Sat, 03 Oct 2026 09:21:27 +0000
+Received: from m16.mail.163.com ([220.197.31.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCmAM-0000000CeKo-3Qjb;
-	Fri, 02 Oct 2026 22:55:47 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id AEFA960214;
-	Fri,  2 Oct 2026 22:55:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3799E1F000FF;
-	Fri,  2 Oct 2026 22:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790981745;
-	bh=XOjEC8uyWbqD359x8ka20z4mQO4Yg0kZahphsxZmvs0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To;
-	b=R7mgiFXKy++R6GgEPFPaHrS51wx6MPgzAu9gjhXmJ4d/e1U+MjoTrh0NpZE1EkFyj
-	 imZ0ybz654P4TN9chsmB/dCfngz7OhRtayg6AXwa7ttfz5qedYZa1CUk4Yx076Kz5y
-	 hmKgjatvC26TgqA06C4agSG/nst5p1BE/oYd1f6irNeKim+f5JMUtT+OcB9Fws/z1m
-	 zx2CsEfThX2ApsWeQk3OBIPOLBXvTjfNIfzSuMhQS0Xdwtk0AYpvKfCS/jztMJxQZ7
-	 ynXIU/igwz9woyKegxKuXY1W9WhzDa17uDQyCMgX5p4sYag9fJ357B92ynt6AiOzkV
-	 7abl2rK/wmwaA==
-Date: Fri, 2 Oct 2026 17:55:43 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-wireless@vger.kernel.org, ath12k@lists.infradead.org,
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
-	Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>,
-	Qiang Yu <qiang.yu@oss.qualcomm.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v3 3/8] PCI/ASPM: Transition the device to D0 (if
- required) when enabling ASPM link states
-Message-ID: <20261002225543.GA374513@bhelgaas>
+	id 1xCvvo-0000000DFyn-06c1;
+	Sat, 03 Oct 2026 09:21:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=AF
+	ojHjA+4FDN4JhFb5+uFEMCc+xZ9O93LXDyh2k/6GM=; b=NbGJkTcVNbx9d34ixE
+	FIMoN7zt/+04JJqHuln4jZqRxm6xwFd41lIBUgKlbaVfCrefiJc5D8PgIEQ2Qvk7
+	Rb84NX0YrHwe/wvCYoIsu6cCkZwR0A9nCWJ1q9lorRETwhArejV7XgCADevC2uCU
+	rTIei32CLCWzd07tRBnM6YyJY=
+Received: from pc.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3n1YCycBqC7WjCQ--.62376S2;
+	Sat, 03 Oct 2026 17:21:07 +0800 (CST)
+From: Jiale Yao <yaojiale02@163.com>
+To: Jeff Johnson <jjohnson@kernel.org>,
+	Kalle Valo <kvalo@qca.qualcomm.com>,
+	Michal Kazior <michal.kazior@tieto.com>,
+	Shashidhar Lakkavalli <slakkavalli@datto.com>,
+	Bhagavathi Perumal S <bperumal@codeaurora.org>,
+	Karthikeyan Periyasamy <quic_periyasa@quicinc.com>,
+	Govindaraj Saminathan <quic_gsamin@quicinc.com>,
+	Sriram R <quic_srirrama@quicinc.com>,
+	Carl Huang <quic_cjhuang@quicinc.com>,
+	Vasanthakumar Thiagarajan <quic_vthiagar@quicinc.com>,
+	Wen Gong <quic_wgong@quicinc.com>,
+	Ramya Gnanasekar <quic_rgnanase@quicinc.com>,
+	linux-wireless@vger.kernel.org,
+	ath10k@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	ath11k@lists.infradead.org,
+	ath12k@lists.infradead.org
+Cc: Jiale Yao <yaojiale02@163.com>
+Subject: [PATCH v2 0/5] wifi: ath: avoid IDR mutation while iterating
+Date: Sat,  3 Oct 2026 17:20:57 +0800
+Message-Id: <20261003092104.520135-1-yaojiale02@163.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260708-pci-aspm-fix-v3-3-6bd72451746e@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wD3n1YCycBqC7WjCQ--.62376S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJrWxAw4kuF1kKryUKrW3KFg_yoW8WFyDpF
+	4fu3Wa9F1xZrsrtr1fJw4xJFyrWan3CF1YgrZrCa4ruF4rCF1rtF1Yq3WfXFyUAFWxG3W2
+	93yUtr1fCr92y3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piY9akUUUUU=
+X-CM-SenderInfo: x1dryxhdohiji6rwjhhfrp/xtbCzgQ+eGrAyQShsQAA37
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261003_022124_694072_0472816C 
+X-CRM114-Status: UNSURE (   7.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,133 +84,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-[+cc Rafael because I'm not a power management user]
+The ath10k, ath11k, and ath12k cleanup paths walk an IDR while removing
+the current entry. idr_for_each() retains radix-tree iterator state across
+the callback, so that removal can invalidate the walk.
 
-On Wed, Jul 08, 2026 at 04:30:17PM +0200, Manivannan Sadhasivam wrote:
-> From: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
-> 
-> Per PCIe spec r6.0, sec 5.5.4:
-> 
-> "If setting either or both of the enable bits for PCI-PM L1 PM Substates,
-> both ports must be configured as described in this section while in D0."
-> 
-> Currently, the callers of pci_enable_link_state_locked() (vmd, pcie-qcom)
-> transition the device to D0 themselves before enabling the link state. But
-> this is easy to get wrong and has to be duplicated by every caller.
-> 
-> Move the D0 transition into the shared __pci_enable_link_state() helper so
-> that all three APIs pci_enable_link_state(), pci_enable_link_state_locked()
-> and pci_force_enable_link_state() perform it, and only when the PCI-PM L1
-> PM Substates are getting enabled.
-> 
-> Now that the helper handles the transition, drop the redundant D0 transition
-> from the vmd and pcie-qcom callers.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c |  5 -----
->  drivers/pci/controller/vmd.c           |  5 -----
->  drivers/pci/pcie/aspm.c                | 23 +++++++++++++++++------
->  3 files changed, 17 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index d8eb52857f69..45f4caeb0814 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -1085,11 +1085,6 @@ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->  
->  static int qcom_pcie_enable_aspm(struct pci_dev *pdev, void *userdata)
->  {
-> -	/*
-> -	 * Downstream devices need to be in D0 state before enabling PCI PM
-> -	 * substates.
-> -	 */
-> -	pci_set_power_state_locked(pdev, PCI_D0);
->  	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
->  
->  	return 0;
-> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-> index d4ae250d4bc6..20597d2cf66e 100644
-> --- a/drivers/pci/controller/vmd.c
-> +++ b/drivers/pci/controller/vmd.c
-> @@ -762,11 +762,6 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
->  	pci_info(pdev, "VMD: Default LTR value set by driver\n");
->  
->  out_state_change:
-> -	/*
-> -	 * Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
-> -	 * PCIe r6.0, sec 5.5.4.
-> -	 */
-> -	pci_set_power_state_locked(pdev, PCI_D0);
->  	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
->  	return 0;
->  }
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index c04fb71de91c..6d6862fd2ebb 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1524,6 +1524,17 @@ static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked,
->  		return -EPERM;
->  	}
->  
-> +	/*
-> +	 * Ensure the device is in D0 before enabling PCI-PM L1 PM Substates, per
-> +	 * PCIe r6.0, sec 5.5.4.
-> +	 */
-> +	if (state & PCIE_LINK_STATE_L1_SS_PCIPM) {
-> +		if (locked)
-> +			pci_set_power_state_locked(pdev, PCI_D0);
-> +		else
-> +			pci_set_power_state(pdev, PCI_D0);
-> +	}
+Use idr_for_each_entry() in each cleanup path. It performs a fresh
+idr_get_next() lookup for every iteration, allowing the current entry to
+be removed safely before its skb is released. Keeping the existing locked
+removal helpers also ensures that a concurrent TX completion cannot find
+an IDR entry which points to an already freed skb.
 
-I think it's a great thing to get the power state management out of
-the callers of pci_enable_link_state().
+Changes in v2:
+- Rework the ath11k and ath12k pending management TX cleanup patches to
+  remove each IDR entry before freeing its skb, as pointed out by
+  Rameshkumar and Jeff.
+- Use idr_for_each_entry() for the pending cleanup callers instead of
+  leaving freed skb pointers in the IDR until idr_destroy().
 
-But shouldn't we really have done this with pm_runtime_get_sync() and
-a corresponding pci_runtime_put()?  Setting the power state with
-pci_set_power_state() feels like it's too low-level and possibly racy
-for use like this.
+Jiale Yao (5):
+  wifi: ath10k: avoid IDR mutation during TX cleanup
+  wifi: ath11k: avoid IDR mutation during pending mgmt TX cleanup
+  wifi: ath11k: avoid IDR mutation during vif mgmt TX cleanup
+  wifi: ath12k: avoid IDR mutation during pending mgmt TX cleanup
+  wifi: ath12k: avoid IDR mutation during vif mgmt TX cleanup
 
->  	if (!locked)
->  		down_read(&pci_bus_sem);
->  	mutex_lock(&aspm_lock);
-> @@ -1550,8 +1561,8 @@ static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked,
->   * touch the LNKCTL register. Also note that this does not enable states
->   * disabled by pci_disable_link_state(). Return 0 or a negative errno.
->   *
-> - * Note: Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
-> - * PCIe r6.0, sec 5.5.4.
-> + * Note: The device will be transitioned to D0 state if the PCI-PM L1 Substates
-> + * are getting enabled.
->   *
->   * @pdev: PCI device
->   * @state: Mask of ASPM link states to enable
-> @@ -1569,8 +1580,8 @@ EXPORT_SYMBOL(pci_enable_link_state);
->   * can't touch the LNKCTL register. Also note that this does not enable states
->   * disabled by pci_disable_link_state(). Return 0 or a negative errno.
->   *
-> - * Note: Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
-> - * PCIe r6.0, sec 5.5.4.
-> + * Note: The device will be transitioned to D0 state if the PCI-PM L1 Substates
-> + * are getting enabled.
->   *
->   * @pdev: PCI device
->   * @state: Mask of ASPM link states to enable
-> @@ -1600,8 +1611,8 @@ EXPORT_SYMBOL(pci_enable_link_state_locked);
->   * Note that if the BIOS didn't grant ASPM control to the OS, this does nothing
->   * because we can't touch the LNKCTL register.
->   *
-> - * Note: Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
-> - * PCIe r6.0, sec 5.5.4.
-> + * Note: The device will be transitioned to D0 state if the PCI-PM L1 Substates
-> + * are getting enabled.
->   *
->   * Return: 0 on success, a negative errno otherwise.
->   */
-> 
-> -- 
-> 2.43.0
-> 
-> 
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  7 ++++-
+ drivers/net/wireless/ath/ath11k/core.c   |  3 +--
+ drivers/net/wireless/ath/ath11k/mac.c    | 33 ++++++++++++------------
+ drivers/net/wireless/ath/ath11k/mac.h    |  2 +-
+ drivers/net/wireless/ath/ath12k/core.c   |  3 +--
+ drivers/net/wireless/ath/ath12k/mac.c    | 33 ++++++++++++------------
+ drivers/net/wireless/ath/ath12k/mac.h    |  2 +-
+ 7 files changed, 44 insertions(+), 39 deletions(-)
+
+-- 
+2.34.1
+
 
