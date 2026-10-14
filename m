@@ -4,95 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38B10CC6B12
-	for <ath10k@archiver.kernel.org>; Tue, 13 Oct 2026 17:43:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0025CC6B2C
+	for <ath10k@archiver.kernel.org>; Wed, 14 Oct 2026 20:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-ID:Content-Type:
-	MIME-Version:References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:
-	Reply-To:Content-Transfer-Encoding:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1O0KLeyaFXllNGRnpC1Xqx3pX+eLegIhSJZ5rqgCAnI=; b=NWp6u9J0kalGCJlGjzVZFJaQhR
-	fcxYQ6szQluRZ3JrETcWXXfvClurag029DrxaqZOgxijs+lCZ0Zhm8s3G/Pa/sE71mDziIlmxlZf4
-	YmzvdDIyrFou/qQGdl9YZMs2Io5TLxEOb3qK/+erBWGutKX35OgO5BLV0AphJOrozPgI1yIXX/lvw
-	gxQ4btMVEdEMhD4PupY42TMoBWZ51MRETyGwhq1CpJA/tNNCM0FX3qTqO8Cn7h26FC1BXztxb+gzr
-	gPayg0lyIKAg/K9Iu7bqHUfOjTCO/niKHV9j/ZBHd7yuNCBJcbfVaXcvoRYG5oU/HPJMnMYuXqNlZ
-	Sgka+xWQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
+	bh=sr+m1LBFmL3abttFSdfmitCgd/MxEt7eWX87V5LweSg=; b=OtzJ02itBEjiu5fwGEt5SvxPYU
+	BcXPVnJaYaYr9058uRhjlZxQJHH+zGHnjarmDeGF/a8Mo3yTLXEzKW4nuX5weEei8/dtKRajchXwq
+	lDZLnNl5f9v6d3yND9IGSBiZxkNspgaZIJFnOvWbSFwh2O4Kl+oQYD1Padr0Y0GauAWqtQd0540by
+	1FhEsFVyh2x55OEiKZ2WGp7fMnKzUrWcOfOKg2+wxdj5TnDhR9jXqlJf8fwgKtGPQdODKgJn5ZQaB
+	N4KEOARp1Z/YoZlEf/SxjPs/sLlhNfI9dU4aTIWljUVODMKWj+GlQissqKJNmBD+PRQY3CNsNLVbc
+	q23CmI3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGgWu-0000000DjWW-1mv1;
-	Tue, 13 Oct 2026 17:43:12 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1xH5wY-0000000GId6-45rq;
+	Wed, 14 Oct 2026 20:51:22 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGgWq-0000000DjVh-2tOA;
-	Tue, 13 Oct 2026 17:43:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-ID:Content-Type:MIME-Version:
-	References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-Description;
-	bh=1O0KLeyaFXllNGRnpC1Xqx3pX+eLegIhSJZ5rqgCAnI=; b=Ja3sdlGNVQEp9OD4P+0vx0n7qL
-	vwLVfAIxWLmjmSxGj61R5u82wL2v7oa68ch8bUtR5fBkHAfxMXG0u6/6N4vb4KBeChNsdEhzHU5hA
-	KOQTlHo3NvJ/2P/DPi1r33o44decm9SKetoCNXWHyXcYJ1kNsS+MG08DDEw7cC3xZh3kD5xxGbMN2
-	HANGQAM/xob+o4wgfTpd/nbhPqfyuVBnKLv8kR0iGTvFNTr2GSSximetcgUumQmWf84eZfhJiFohO
-	rkCUHZb5fRNgx699xZ61DJUyqOkG/e+zHgDO7pw6n8OYf2/27lWCGphWbJ9cIldE0qm+msb/cCYrq
-	5tH8mUzQ==;
-Received: from mgamail.intel.com ([198.175.65.21])
-	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xGgWn-0000000FsFk-1UWf;
-	Tue, 13 Oct 2026 17:43:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1791913385; x=1823449385;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=OFAfkLArIISQMtIBXs88GvQjJ68ib8glSTZMngiiQEQ=;
-  b=CuBcNVmg6Fr9lsIzD9oPWR29ipz6MJGhqveM/t9CWcy4rZDxncsLRPIM
-   DUbu7PI2zVj+CDay8SzCLJAaLJFwTBqROKyQrgP8q2hsV5sjA5rPykrpX
-   Zts9qgYxBQIcmAnNX9uA13WZIr5HdopulkDWGncI7Qzb7bZtUL5HrGmDJ
-   lgkUSuviHQ6jsUds57cxQPLqA2dpnPIwXIAz/zgtgNG7clM0tLASqz25f
-   rcUb7ksOpbvBSwwLmUo10b8eT7jiDZK+3u3IlUD00L1WlENC8WXsESeH2
-   WoqG9uTUEMII3H9E6on/FH9t5KYWbPa7W9lAMlthauUr7eSnKrhFVdMG6
-   g==;
-X-CSE-ConnectionGUID: hwMnIxmbRwqqynnl3+E9mw==
-X-CSE-MsgGUID: K4WQaz2vTEyyX5qmhfFEeQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11934"; a="743340"
-X-IronPort-AV: E=Sophos;i="6.27,156,1787036400"; 
-   d="scan'208";a="743340"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2026 10:42:59 -0700
-X-CSE-ConnectionGUID: mJakSm3RTfqxHKqqjVFQSA==
-X-CSE-MsgGUID: yytLjkP+Ssuq5WYE6NXFSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,156,1787036400"; 
-   d="scan'208";a="1581795"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.106])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2026 10:42:54 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 13 Oct 2026 20:42:51 +0300 (EEST)
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: Manivannan Sadhasivam <mani@kernel.org>, 
-    Bjorn Helgaas <bhelgaas@google.com>, 
-    Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kwilczynski@kernel.org>, 
-    Rob Herring <robh@kernel.org>, Nirmal Patel <nirmal.patel@linux.intel.com>, 
-    Jonathan Derrick <jonathan.derrick@linux.dev>, 
-    Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, linux-arm-msm@vger.kernel.org, 
-    linux-wireless@vger.kernel.org, ath12k@lists.infradead.org, 
-    ath11k@lists.infradead.org, ath10k@lists.infradead.org, 
-    Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>, 
-    Qiang Yu <qiang.yu@oss.qualcomm.com>, 
-    Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
-Subject: Re: [PATCH v3 2/8] PCI/ASPM: Add pci_force_enable_link_state() API
-In-Reply-To: <20261013163107.GA1522779@bhelgaas>
-Message-ID: <2517d322-9e5d-5b81-aa67-56705879be74@linux.intel.com>
-References: <20261013163107.GA1522779@bhelgaas>
+	id 1xH5wX-0000000GIco-1Pqw;
+	Wed, 14 Oct 2026 20:51:21 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 18B036020C;
+	Wed, 14 Oct 2026 20:51:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 954581F000C4;
+	Wed, 14 Oct 2026 20:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792011078;
+	bh=sr+m1LBFmL3abttFSdfmitCgd/MxEt7eWX87V5LweSg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To;
+	b=k8K+1tFPZoXGs5NKvloT7Y4Xiwz1g4WNa6qoMQXu6T1aefH+iXTkGiHZesJLjtYXs
+	 PrasAkZ9p/smMGEE+/Y1//znxm1U9cLU+eNMsjF0TOxPjg5OST/Ce+U7Xlws6Hd05s
+	 on+n74IZGprxa1FXPlgbc+u9II6o0d7kTkgarvWE3g1ZcVvz3tgFH+ddZiQx1UFO1e
+	 qhXmMgAfsD01e5pZcHEHZcnJXDakpS9Rd+u+DGYA+0hNueiNBb/FgZXWVDoS9BrYkk
+	 Yc6JPsQ5g3sGtB2nQ/BPDxVCaNA1lx4uGJqXrtE364fXrRady0YOtrCCQq3zl+CFOE
+	 TkLPy7IWt4KFQ==
+Date: Wed, 14 Oct 2026 15:51:17 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-wireless@vger.kernel.org, ath12k@lists.infradead.org,
+	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
+	Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>,
+	Qiang Yu <qiang.yu@oss.qualcomm.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>,
+	Emmanuel Grumbach <egrumbach@gmail.com>,
+	Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: [PATCH v3 0/8] PCI/ASPM: Add pci_force_enable_link_state() API
+ and convert Atheros drivers
+Message-ID: <20261014205117.GA1665327@bhelgaas>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-2133506109-1791910896=:21507"
-Content-ID: <26a95089-31f0-9c7c-e696-b88359198360@linux.intel.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_184305_908375_060987BF 
-X-CRM114-Status: GOOD (  49.32  )
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260708-pci-aspm-fix-v3-0-6bd72451746e@kernel.org>
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,174 +82,136 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+[+cc Emmanuel, Matthew]
 
---8323328-2133506109-1791910896=:21507
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <c9ae739a-d76a-a4da-d400-ab79af0b37d5@linux.intel.com>
+On Wed, Jul 08, 2026 at 04:30:14PM +0200, Manivannan Sadhasivam wrote:
+> Hi,
+> 
+> This series converts the atheros WLAN drivers (ath10k/ath11k/ath12k) to
+> use the PCI core ASPM APIs for enabling/disabling ASPM instead of writing
+> to the LNKCTL register directly. Touching LNKCTL behind the PCI core's
+> back leaves the ASPM service driver's view of the link state out of sync
+> with the hardware, which is not nice.
+> 
+> The catch is that these drivers save the currently enabled ASPM states,
+> disable ASPM before firmware download, and restore the saved states
+> afterwards. pci_enable_link_state() cannot restore states that were
+> disabled via pci_disable_link_state() or blacklisted during init (like
+> the pre-1.1 device blacklist, which is only meant to be overridden with
+> pcie_aspm=force), and that is intentional. So the save/restore sequence
+> cannot be expressed with the existing APIs.
+> 
+> In v2 I tried to fix this by making pci_enable_link_state*() symmetric
+> with the disable APIs, but as pointed out during review, that also ends
+> up overriding the init-time blacklist for every caller (including VMD),
+> which is not something we want. So instead, this version adds a separate
+> pci_force_enable_link_state() API (patch 2) that re-enables the requested
+> states unconditionally. The caller is responsible for only asking for
+> states the device actually supports, and the ath drivers do this by
+> restoring exactly what pcie_aspm_enabled() reported earlier.
+> 
+> The first five patches touch the PCI core: patch 1 (from Ilpo) makes
+> pci_disable_link_state() disable ASPM unconditionally, patch 2 adds the
+> new API, patch 3 moves the D0 transition needed before enabling PCI-PM
+> L1 PM Substates (PCIe r6.0, sec 5.5.4) into the shared helper and drops
+> it from the vmd and pcie-qcom callers, patch 4 cleans up the kernel-doc,
+> and patch 5 makes pcie_aspm_enabled() return the enabled state mask so it
+> can be used for save/restore. The last three patches convert the ath
+> drivers.
+> 
+> Testing
+> =======
+> 
+> I've tested this series on a Lenovo Thinkpad T14s with WCN7850 (so that's
+> just the ath12k driver). Rest of the drivers are compile tested only.
+> 
+> Merging Strategy
+> ================
+> 
+> Even though there is no build dependency between the PCI core and atheros
+> patches, there is a functional dependency. So I'd recommend creating an
+> immutable branch with the PCI patches and merging that branch into both
+> the PCI and linux-wireless trees, and finally merging the atheros patches
+> into the linux-wireless tree.
+> 
+> If the immutable branch seems like a hassle, then the PCI core patches
+> could get merged first and the atheros patches can wait for the next
+> cycle.
+> 
+> - Mani
+> 
+> Changes in v3:
+> * Dropped the change that made pci_enable_link_state*() symmetric with the
+>   disable APIs. Instead added a new pci_force_enable_link_state() API used
+>   only by the ath drivers, so the init-time blacklist stays overridable
+>   only via pcie_aspm=force and existing callers like VMD are left
+>   untouched.
+> * Fixed the locked path to use pci_set_power_state_locked() for the D0
+>   transition. The previous version called the non-locked variant, which
+>   re-acquires pci_bus_sem.
+> * ath drivers now disable PCIE_LINK_STATE_ASPM_ALL instead of
+>   PCIE_LINK_STATE_ALL so that CLKPM is preserved and can be restored
+>   (pcie_aspm_enabled() doesn't report CLKPM).
+> * Reworked the kernel-doc patch to cover both the enable and disable APIs
+>   and reference the new API.
+> * Rebased on top of v7.2-rc1.
+> 
+> Changes in v2:
+> * Reworked the pcie_aspm_enabled() API to return the enabled states
+>   instead of bool and used it to save/restore the ASPM states in ath
+>   drivers.
+> * Added a patch from Ilpo to disable ASPM even if BIOS didn't grant
+>   permission.
+> * Added the CONFIG_PCIEASPM dependency to ath{10/11/12}k drivers.
+> * Rebased on top of v6.17-rc1.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
+> ---
+> Ilpo Järvinen (1):
+>       PCI/ASPM: Always disable ASPM when driver requests it
 
-On Tue, 13 Oct 2026, Bjorn Helgaas wrote:
-> On Tue, Oct 13, 2026 at 02:41:32PM +0300, Ilpo J=E4rvinen wrote:
-> > On Mon, 12 Oct 2026, Bjorn Helgaas wrote:
-> > > On Wed, Jul 08, 2026 at 04:30:16PM +0200, Manivannan Sadhasivam wrote=
-:
-> > > > From: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com=
->
-> > > >=20
-> > > > pci_enable_link_state() and pci_enable_link_state_locked() APIs onl=
-y enable
-> > > > the ASPM states that were not previously disabled via
-> > > > pci_disable_link_state*() API or blacklisted during init (e.g. the =
-pre-1.1
-> > > > device blacklist, which is only meant to be overridden with
-> > > > 'pcie_aspm=3Dforce'). This is an intentional behavior as these APIs=
- must not
-> > > > silently re-enable states that were deliberately disabled, since do=
-ing so
-> > > > could enable ASPM on a link where it is known to be unsafe.
-> > >=20
-> > > I think this is saying that many uses of pci_disable_link_state() are
-> > > to avoid hardware errata, i.e., these are basically quirks, and we
-> > > should *never* enable those ASPM states.
-> > >=20
-> > > > However, some drivers (e.g. the atheros WLAN drivers) save the curr=
-ently
-> > > > enabled ASPM states, disable all ASPM states before firmware downlo=
-ad, and
-> > > > then try to restore exactly the states that were enabled before. Re=
-storing
-> > > > those states requires re-enabling states that were just disabled vi=
-a
-> > > > pci_disable_link_state() API. But, this cannot be achieved using th=
-e
-> > > > existing APIs.
-> > >=20
-> > > This sounds like it's also for hardware errata: if ASPM works
-> > > correctly, there's no need to disable it during firmware download.  I
-> > > think this is *only* the atheros drivers, isn't it?  I didn't see any
-> > > others.
-> >=20
-> > There are more that should use disable/enable API. In addition ath*, I =
-had=20
-> > also these in my unfinished series:
-> >=20
-> >   brcmfmac
-> >   ib-hfi1
-> >   rtlwifi
-> >   rtsx
-> >   r8169
->=20
-> Thanks for those pointers!
->=20
-> > > > Hence, add pci_force_enable_link_state() API for such callers. Unli=
-ke
-> > > > pci_enable_link_state(), it re-enables the requested states even if=
- they
-> > > > were previously disabled via pci_disable_link_state() or disabled d=
-uring
-> > > > init. The caller is therefore responsible for only enabling states =
-the
-> > > > device actually supports, typically the ones previously reported by
-> > > > pcie_aspm_enabled().
-> > >=20
-> > > The problem is that pci_enable_link_state() cannot enable things that
-> > > were disabled by pci_disable_link_state().  They're not symmetric,
-> > > which violates the caller's expectation.
-> >=20
-> > Yes.
-> >=20
-> > This patch seems to come with my Suggested-by but what I suggested (and=
-=20
-> > had a patch for) was to make disable/enable proper symmetric pairs beca=
-use=20
-> > it is very trappy otherwise. If something else is needed in addition, t=
-hat=20
-> > should be named differently like Bjorn also seems to suggest (however s=
-ee=20
-> > my alternative suggestion below).
-> >=20
-> > I renamed the current pci_enable_link_state() to=20
-> > pci_set_default_link_state() in my own attempt to get room for adding t=
-he=20
-> > symmetric pair.
->=20
-> We might need new names for pci_enable_link_state(),
-> pci_disable_link_state(), and the quirk thing.  If we keep the same
-> names, I think it will be pretty complicated to manage the changing
-> semantics when backporting driver changes that use them.
+I put this first patch on pci/aspm for v7.4 because there seems to be
+a consensus that it's better to have the ASPM core disable things even
+if it doesn't technically have control of ASPM, because the
+alternative is that drivers just do it themselves, also ignoring ASPM
+ownership concerns.  Having the drivers do it just means the PCI core
+ASPM support doesn't know what's happening.
 
-I'm not good at picking names, but yes, reusing a name in the same=20
-kernel cycle using the same signature is asking for trouble.
+I think we should defer the rest of these because I think there's a
+little room to make the enable/disable/force-enable dance more
+intuitive for the drivers.  As far as I know, the rest of the series
+is definite cleanups but doesn't fix any actual functional issues.
 
-> > > Instead of adding pci_force_enable_link_state(), I think we should ad=
-d
-> > > a new interface for the *quirk* behavior that permanently disables
-> > > states.  Then pci_enable_link_state() and pci_disable_link_state()
-> > > could be made symmetric.
-> >=20
-> > My suggestion is to make the disables/enables counted per state which=
-=20
-> > would allow parallel sources of disables to function without clashing.
->=20
-> By parallel sources, are you thinking of sysfs and driver calls?  If
-> locking would be sufficient I think that would end up being simpler.
->
-> But maybe the issue is these devices where we think ASPM breakage only
-> happens in certain circumstances, e.g., firmware download, so we want
-> to keep states disabled for that period.  Then I guess locking inside
-> the enable/disable doesn't prevent sysfs from enabling those states
-> during that period.
-
-There are (at least) these sources:
-
-- quirks (disable only)
-- hw has ASPM related problem at certain phase of operation
-- sysfs
-- lane margining (the proposed patch)
-
-I don't think locks can really solve this well as the sources seem largely=
-=20
-independent from each other and are not necessarily short-lived periods=20
-(one could perhaps say some cases occur early enough the other sources don'=
-t=20
-matter but there are still enough sources even with that considered so=20
-that disable/enable pair could overlap, potentially leading to unwanted=20
-enable of a state).
-
-IIRC, L0p was also incompatible with ASPM states. But it could be HW is=20
-fine with both being configure at the same point of time (I've not checked=
-=20
-the spec with that in mind).
-
-> > Disable quirks could simply not have the pairing enable, no special=20
-> > interface needed.
->=20
-> I'm not sure what this looks like to the caller.  A parameter that
-> says whether to count the disable?
-
-A quirk would just makes pci_disable_link_state(pdev, PCIE_LINK_STATE_L1)=
-=20
-call (or whatever that ends up being called if a new name is selected),=20
-which increases disabled counter for L1 state. As there's no pairing=20
-enable, L1 cannot be enabled anymore by anything.
-
-Only if the particular state disable counter is 0, the ASPM driver allows=
-=20
-enabling that state or the other states depending on that state.
-
-
-Sysfs accessors need to keep an additional bit per state to not request=20
-multiple disables/enables for a single state. The rest of the sources have=
-=20
-it naturally from their operation and pairing disable/enable calls.
-
-> I think having a different function name would be helpfully
-> descriptive because permanently removing an advertised capability is
-> different from temporarily disabling a feature.
-
---=20
- i.
---8323328-2133506109-1791910896=:21507--
+> Manivannan Sadhasivam (7):
+>       PCI/ASPM: Add pci_force_enable_link_state() API
+>       PCI/ASPM: Transition the device to D0 (if required) when enabling ASPM link states
+>       PCI/ASPM: Improve the kernel-doc for pci_{enable,disable}_link_state*() APIs
+>       PCI/ASPM: Return enabled ASPM states from pcie_aspm_enabled() API
+>       wifi: ath12k: Use pci_{enable/disable}_link_state() APIs to enable/disable ASPM states
+>       wifi: ath11k: Use pci_{enable/disable}_link_state() APIs to enable/disable ASPM states
+>       wifi: ath10k: Use pci_{enable/disable}_link_state() APIs to enable/disable ASPM states
+> 
+>  drivers/net/wireless/ath/ath10k/Kconfig |   2 +-
+>  drivers/net/wireless/ath/ath10k/pci.c   |  11 +--
+>  drivers/net/wireless/ath/ath10k/pci.h   |   5 +-
+>  drivers/net/wireless/ath/ath11k/Kconfig |   2 +-
+>  drivers/net/wireless/ath/ath11k/pci.c   |  19 +----
+>  drivers/net/wireless/ath/ath11k/pci.h   |   3 +-
+>  drivers/net/wireless/ath/ath12k/Kconfig |   2 +-
+>  drivers/net/wireless/ath/ath12k/pci.c   |  19 +----
+>  drivers/net/wireless/ath/ath12k/pci.h   |   4 +-
+>  drivers/pci/controller/dwc/pcie-qcom.c  |   5 --
+>  drivers/pci/controller/vmd.c            |   5 --
+>  drivers/pci/pcie/aspm.c                 | 140 ++++++++++++++++++++++++--------
+>  include/linux/pci.h                     |   7 +-
+>  13 files changed, 129 insertions(+), 95 deletions(-)
+> ---
+> base-commit: dc59e4fea9d83f03bad6bddf3fa2e52491777482
+> change-id: 20260708-pci-aspm-fix-331826a2cb5d
+> 
+> Best regards,
+> --  
+> மணிவண்ணன் சதாசிவம்
+> 
+> 
 
