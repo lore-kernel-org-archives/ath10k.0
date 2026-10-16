@@ -4,96 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 042BACCA48B
-	for <ath10k@archiver.kernel.org>; Fri, 16 Oct 2026 10:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB29ACC6B38
+	for <ath10k@archiver.kernel.org>; Fri, 16 Oct 2026 14:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-ID:Content-Type:
-	MIME-Version:References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:
-	Reply-To:Content-Transfer-Encoding:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fBxJgJydMbR6d/He/Hf4JfILqV8iwU4WxvgxTrXuAF0=; b=2CUvYkB3kljyLcQR0Hgi223bd2
-	sh3rGLUaRFlP5cMf+P6UGp82fePLElFKBWmMFEu2L5rwrFDoA37ZC0P6pBSvltba/L6qgODj/ttgy
-	Rlrry8qZjD7UYYot5xN+BJso+E75FObSII710oxEadVrX2uZnv4PYHxZXvkAo0Ky1PKRnXplIZb+Z
-	HpRQ4FoirZ+iL6vf8A4mg4uq0q1gIH2IbMNSqTmjLJKpIs4/dLq2JtKnd6WNvnajTWxX3jwfXXDrF
-	6QNUf1ehp5W/JP35DPD+xYkNcVCWuTHaaQYXAr68FKoGgyyim10pAioDDet3J/p/W1PRO21zvMiBA
-	S3o4jmxg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=KGl0xn96Tc2EEaoKMCvnPTGqKsWYtdwEFfVL1zKeloY=; b=x3FsadNiqgvkiFd3oMFS7uCm4j
+	QPWZ2DibYpy8e+HKEZb9MeJCgG/jD/2p2WG5nwMqoYySzVf9o/8CvneA8vh5y9XpuVzIxjBeoM5l1
+	8BJM1SERlw36s8guEhXaOOUvFbva47l9p/6Cr3BmDvxVYUKkynB/nbPujjEPDAHNx5hA8JdJmCnrH
+	NrkcN5/nNYQEA5Nv9qDkqnD5yI0ZktW95fisGzNO3R0Apdoyv9B5xBBBiOlRqsnLQGtofO3lGDPp+
+	78Ebdgymu6hH6IndJcTz3VjJ3E6yZVtFAtELfQtM7v91BtP7ZM9FtoLv5C8tee2GIgQmaw+9JaTOh
+	B6mBgqeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHf0b-00000002ahs-46dU;
-	Fri, 16 Oct 2026 10:17:53 +0000
+	id 1xHjDz-00000003CFJ-10Ml;
+	Fri, 16 Oct 2026 14:47:59 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHf0a-00000002ahL-0ycE;
-	Fri, 16 Oct 2026 10:17:52 +0000
+	id 1xHjDx-00000003CEU-0H5n
+	for ath10k@bombadil.infradead.org;
+	Fri, 16 Oct 2026 14:47:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-ID:Content-Type:MIME-Version:
-	References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-Description;
-	bh=fBxJgJydMbR6d/He/Hf4JfILqV8iwU4WxvgxTrXuAF0=; b=YIrdiXppU4vwYjTt5cHhX3u07o
-	cFixqikdEQafcPHYfFYh2xOXke2Bsnkmv5+uBRuAv+C2ElTxeoC6W9tzes+Vmv71jYDQ/Gq5OspYC
-	31zAjgRsamokW9sy0Kj+5UoBnG6u28H2an82SWIiLtaOv5Ti7/8SgmSKm/2KDGLCe3wzh9nOf0LtQ
-	H0BTkE2ZL+s34JvYC30Z4Ac7Quw/nDb3OrZIf1JVIRZOBjx1mef4Ec0F3hk1N6dmW4qjEQ6A+JU77
-	+tJ6yfvtLZb41J5hQsvz/tayrJ7HCQVgXoJbybZPYfNSnNM8fYerxCQXWgjOZGxCRe7r4aSQTGVGo
-	9yRq9/hg==;
-Received: from mgamail.intel.com ([192.198.163.18])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=KGl0xn96Tc2EEaoKMCvnPTGqKsWYtdwEFfVL1zKeloY=; b=ihSBoav3TCka3PE5Q4dIrPghx4
+	ag0cqYGTOun8ag4KqO/ajVXExrDNUtdKOmIdXLu/jobHpami3c5X8U/XpMDFF/4H8RkvUFVIQ11fX
+	ANYgTI+U1BbazbCcFZiV36TqadzdejtMp9ItPAfNe7WfEaIDH3uTb3AVZlnA1dJjGsrBHh/gKrdCV
+	xtVq3L/4M865wdA1WKEvAaOe8M0ahMEjBsZb2x3ITeGIJfF9AXsKjgAO1M0AjPzEXE/uD5VlngNpY
+	97sFvNbOqCQJF+drweky2GMGr0cWxQXqMWTVYvps6B1744gbBfDTvuJwWWMDkFcHMLd+jTbtAJWMN
+	n3QAkRdQ==;
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xHf0W-00000001Mnh-3bnX;
-	Fri, 16 Oct 2026 10:17:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1792145870; x=1823681870;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=ps4odQHHb7l/wiRUo9dzB8hrI0RD41hOHQAtb2vg9yU=;
-  b=Pv8PyXf4rFpiMr4s/7tvRowOOGCV2fLM2fUMrSp8M07tKbTBwWzItoKn
-   UT3/Vc5UNkCNF6Rbhvf34YqZqRzOAqAWsTTqB+rjvscm98TeY4ALljMLG
-   yE3qy4ZFM9Cjh9Z3yorYGpu5E/KbSEDLOWMkGaaja/13PDGgEcBFS6dHU
-   NTnu3GalxiCHpWQYd6XW5YrTScpiysKJHOKhqzfIgBUfnd/kZUWaaji19
-   AyM0WlTk+pb2dJPW7jxc6MaL/E7kOqYY1S8DTcl+HfL2x7tjZKBwaV6xR
-   bVXtn5oPlKs0LPm9UI634f5Ip5wMrVY8B6q1iRM5GNYFJyTwmSESzMjga
-   g==;
-X-CSE-ConnectionGUID: 9ZuKqfV/QPOAQ0Bd5VvDAA==
-X-CSE-MsgGUID: o8S6Y6QqSCSoA1VpU6+YgA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11936"; a="947803"
-X-IronPort-AV: E=Sophos;i="6.27,161,1787036400"; 
-   d="scan'208";a="947803"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2026 03:17:42 -0700
-X-CSE-ConnectionGUID: HJbJ4n/iS9mI5RPiq2hT8g==
-X-CSE-MsgGUID: L52WigXOQAKc7nd3wTm9HQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,161,1787036400"; 
-   d="scan'208";a="1892016"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.34])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2026 03:17:35 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 16 Oct 2026 13:17:29 +0300 (EEST)
-To: Manivannan Sadhasivam <mani@kernel.org>
-cc: Bjorn Helgaas <helgaas@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-    Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kwilczynski@kernel.org>, 
-    Rob Herring <robh@kernel.org>, Nirmal Patel <nirmal.patel@linux.intel.com>, 
-    Jonathan Derrick <jonathan.derrick@linux.dev>, 
-    Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, linux-arm-msm@vger.kernel.org, 
-    linux-wireless@vger.kernel.org, ath12k@lists.infradead.org, 
-    ath11k@lists.infradead.org, ath10k@lists.infradead.org, 
-    Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>, 
-    Qiang Yu <qiang.yu@oss.qualcomm.com>, 
-    Emmanuel Grumbach <egrumbach@gmail.com>, 
-    Matthew Garrett <mjg59@srcf.ucam.org>
-Subject: Re: [PATCH v3 0/8] PCI/ASPM: Add pci_force_enable_link_state() API
- and convert Atheros drivers
-In-Reply-To: <atG61oicHbsLKiib@debian>
-Message-ID: <8ceaf259-ae07-efa1-911f-4cc86a2710c2@linux.intel.com>
-References: <20260708-pci-aspm-fix-v3-0-6bd72451746e@kernel.org> <20261014205117.GA1665327@bhelgaas> <atG61oicHbsLKiib@debian>
+	id 1xHjDs-00000001clx-2pf5
+	for ath10k@lists.infradead.org;
+	Fri, 16 Oct 2026 14:47:56 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69GE65Jj2302180
+	for <ath10k@lists.infradead.org>; Fri, 16 Oct 2026 14:47:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	KGl0xn96Tc2EEaoKMCvnPTGqKsWYtdwEFfVL1zKeloY=; b=JNYyJN1xbbTUsV4B
+	omIpO2ajXQbmKYVPNe3eleOKNePbhfgE724k7TNqaBhVJ++JJY1hJy8WGS8YrsxP
+	JOFbyPbEYmxyhgmrjs/vZDhDUvIu7JlIV3ywaKkxl3mBPMsIaD5FYScGMx0IZqLr
+	suQBOayj9rfFKYLzAjOMgA+Z8dFxX8J6rmRi6k8vj9l/CkPr9bG5eoCCUqRcvO4c
+	YQ23K5jrI0zWi6wyKG+JESLeWReD0i9dWRt1oL7IowkqGBt7fNY6kdy+qm9C8ZQH
+	d/mCO3FjzjoxMRUAcIqBV32/+mTuis0IP9vYCtaV/fZlfA96tOIbzulx5V/96WvV
+	06xb1Q==
+Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com [74.125.82.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hb3sev6yy-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <ath10k@lists.infradead.org>; Fri, 16 Oct 2026 14:47:48 +0000 (GMT)
+Received: by mail-dy1-f197.google.com with SMTP id 5a478bee46e88-341eff9e381so18058187eec.1
+        for <ath10k@lists.infradead.org>; Fri, 16 Oct 2026 07:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1792162067; x=1792766867; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=KGl0xn96Tc2EEaoKMCvnPTGqKsWYtdwEFfVL1zKeloY=;
+        b=V3/CAb3y+aYnffyemC98cnxECuez8OAg2hEyqhXLDw50/mXC/7FcvtLdd7FYMk+68B
+         E1q51fHDSNQKChav2PHTLXTCwzZ2KqebzbiUgoWMplYw4DEoIVuRDnymFd8q45MnXTFy
+         E9dtCzCn1G+bCMF6xD9wqBqk7+Al6HK7CfH66aO3xdCa51W9zhmPPuqDp5ZWMnaiH38P
+         irBl5K30It4avokDJ6/ifq9qfHioJ7iAxsTwsDONwuK3yClUsLF1fMS7gENCWMX4GqbV
+         g+1EPrh0mpq6VwjZLfHhOsUqKPqUnk60r+BukKLDWHKfyy8UznNHjl3v+rPhweZs/chm
+         KgWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792162067; x=1792766867;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=KGl0xn96Tc2EEaoKMCvnPTGqKsWYtdwEFfVL1zKeloY=;
+        b=qVA+ZLV0vLJmFNkLyMzdI4LtNVnm1D2DLNWBlADICrOWTK2krV6JgoRORUTjt30I4Z
+         cKy7O47LUqYamPo2wwbY13J261F0DBuJxVuMnC0fz9OwbJ/FcAKLReZiF+fDNg/mu3yn
+         wSri1Q6AvxmL2jznl1DMcXlJQolPLDNDeKGYtQ/EouznANX4JrcDApAs+eFKsRaomdBp
+         i5SfFji09vhnUTFEB3Ih+jPWFntNAccAKuYdOVjr9eODdd/yc5LZFkMVY9bawFSOv2hX
+         v+QGa4juRzty9blBv+bvcWh37sB2Vos/RkDScMGLih+I2Lv5Gcc9PYd8zOqNJ/vAR4Z6
+         AWSw==
+X-Forwarded-Encrypted: i=1; AKwUvBzhhDMd65hpMMs24mAJK8GiZtN0aRB1Wh7Up0+Hl46EqhEs65m7xHy7Dd2Veg9y7m2aq01jifY=@lists.infradead.org
+X-Gm-Message-State: AFq9FYIfaxXePFnImLtGN3DV1s24hyGn3b37eCq9XYF7cq7NU2zQgv1p
+	0SOETaMmnBr3zq4doiigwaOJG5TfPfsNmWj0sDa74B4bALBBpOp1wWfUdY13qXnRu3sD/RoUOW2
+	Kz9RU2IghpkHQsv9W55+omuk0ZIja0Zz5A9HYCnYUmodVOEU0aRQZYydBGuzEfqiL
+X-Gm-Gg: AYBFou3S9uyePhGBEXeSlwPgV70HIpc/JMJHRH9jYyO0NK7gNB25WpF+LRFFwVqpxTT
+	704mv//ZXqBhCtekPVrWIL5fqPf3IailQEgB+e9IrM9AMThyGV3yps5x4Nq0ATaQdIk3TYqgCL5
+	llweD7AKrPCHIPuYnHD2QfRj3bzzKk7lGUWOkq/EslfHFoNBbYD0C6d+kXLSRgF6chEd4Ogs5TD
+	b+PPe0i78g/AWVz7ND9JKqvxsj8D7yf3Y8VhWOTqSnKVGGDUNu+I04mrD8jY5BBrpuhrX3GtC2a
+	Etbv4CR8+zJSjMfkqpbydjFEi9iS48xgu/3KYfcaARMwtS+R/vq6+QXTtLOo07icGpCpdmdHCLv
+	ieSQecYb9eXGXWWOWZzsJzyvnk6Tb5VSCM2rzjQZOh09A5bVomX65CRkXbnA=
+X-Received: by 2002:a05:7301:4305:b0:35f:227b:f8bc with SMTP id 5a478bee46e88-361a1465355mr44208eec.11.1792162067052;
+        Fri, 16 Oct 2026 07:47:47 -0700 (PDT)
+X-Received: by 2002:a05:7301:4305:b0:35f:227b:f8bc with SMTP id 5a478bee46e88-361a1465355mr44160eec.11.1792162065731;
+        Fri, 16 Oct 2026 07:47:45 -0700 (PDT)
+Received: from [10.227.105.111] (i-global254.qualcomm.com. [199.106.103.254])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3608297f4f7sm7670706eec.23.2026.10.16.07.47.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2026 07:47:45 -0700 (PDT)
+Message-ID: <5495071c-8255-4ff4-80d7-9d9f221935c5@oss.qualcomm.com>
+Date: Fri, 16 Oct 2026 07:47:44 -0700
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-1775956960-1792142584=:1180"
-Content-ID: <0d2502b4-10fe-3dd3-f6d5-e547a5ecd889@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH ath-next 5/8] wifi: ath10k: check the recovery deadline on
+ its own timeline
+To: Kang Yang <kang.yang@oss.qualcomm.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+References: <20260925-10k-sdio-crash-v1-0-14baf913df94@oss.qualcomm.com>
+ <20260925-10k-sdio-crash-v1-5-14baf913df94@oss.qualcomm.com>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20260925-10k-sdio-crash-v1-5-14baf913df94@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: qMRsmnXRR7FHBIc4DmhXRoYkhJ-sEfDA
+X-Proofpoint-GUID: qMRsmnXRR7FHBIc4DmhXRoYkhJ-sEfDA
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE2MDA1OCBTYWx0ZWRfX/L+cXu3Nv0KR
+ R4EVUaK0FdvG4/OLMTF+/rPCqbPJZ9YEIkon8b3IL0XlUi7t19fF5EwVahuiuybQQSWDSCpIoWn
+ pwJbNIEG0CAIC21VJJKjQHrj/Ev4GEE=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE2MDA1OCBTYWx0ZWRfXy1XRU0U/q1aJ
+ rZYNWIH0FWEci2LBS77V/abxsKE+R9+0+yKEtMtst1BMAztBsYULRvT38Hm5suSL6XyRnOiphbN
+ hBz23xEB4m03drghfTJrwU5UIWCRBY32CdpyWb0LhHAW4Avgt7GdpGnsuN4Q7MS8/zL/VZTBpeI
+ geJxArmzikwql62F58+NUYqgYqMPuIzopJmITkn7iHvgjuopzIo9eQDHLRCRYeapieBmggAM16X
+ 1HogzqtMsd8zMJuF92NO8c9nvsO0twrTX8xBAEmyMSzjpYedwgGqbHEwC3TocV3DkDs3dE5KBHr
+ vrUmFuugSdU9LyIHTrjdg2TW8MnUcf/Fwg9yhOz105MmCS89qRPx9FsTe/5yppXEp2nIoYkIZ1N
+ 3K9Dr7KDjyv/B3hq9Jh4qX1PV3vhxl63dtNyfF2PsC463o43xX6PXL/WNHiL8jAGutWqoCJWcHL
+ GuCN/6yjbkpN3vXrwXg==
+X-Authority-Analysis: v=2.4 cv=Se1i5fRu c=1 sm=1 tr=0 ts=6ad23914 cx=c_pps
+ a=Uww141gWH0fZj/3QKPojxA==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+ a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=rJkE3RaqiGZ5pbrm-msn:22
+ a=KqLv8SHy1QZmO2OOx6gA:9 a=QEXdDO2ut3YA:10 a=PxkB5W3o20Ba91AHUih5:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-10-16_02,2026-10-14_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 adultscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ phishscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2610080000 definitions=main-2610160058
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_111749_393339_040D0FF4 
-X-CRM114-Status: GOOD (  53.26  )
+X-CRM114-CacheID: sfid-20261016_154752_980773_C14991C2 
+X-CRM114-Status: GOOD (  11.46  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,176 +162,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 9/25/2026 5:26 AM, Kang Yang wrote:
+> @@ -2536,8 +2537,11 @@ static void ath10k_core_recovery_check_work(struct work_struct *work)
+>  	if (!atomic_read(&ar->pending_recovery))
+>  		return;
+>  
+> -	if (!time_after(jiffies, recovery_start + ATH10K_RECOVERY_TIMEOUT_HZ))
+> +	if (!time_after(jiffies, recovery_start + ATH10K_RECOVERY_TIMEOUT_HZ)) {
+> +		queue_delayed_work(ar->workqueue_aux, &ar->recovery_check_work,
+> +				   ATH10K_RECOVERY_TIMEOUT_HZ);
+>  		return;
+> +	}
 
---8323328-1775956960-1792142584=:1180
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <391745ff-eb7c-bf57-36a4-00b885c75592@linux.intel.com>
+Even with the help of two different review agents I don't understand the above
+logic. Under what condition do you expect the above test to succeed? And
+if/when it does succeed, why not delay for just the time left between jiffies
+and recovery_start + ATH10K_RECOVERY_TIMEOUT_HZ?
 
-On Fri, 16 Oct 2026, Manivannan Sadhasivam wrote:
+Or as one agent writes:
+The early re-arm path is only reachable on the first monitor firing, at the
+strict time_after() boundary. Re-arming for a full
+ATH10K_RECOVERY_TIMEOUT_HZ there creates timing-dependent recovery behavior:
+a worker that runs exactly on the expiry jiffy delays failure accounting by
+another 5s, while one that runs a jiffy later accounts immediately. Use
+time_after_eq()/remove the branch, or rearm only for the remaining time/1
+jiffy if early execution is genuinely possible.
 
-> On Wed, Oct 14, 2026 at 03:51:17PM -0500, Bjorn Helgaas wrote:
-> > [+cc Emmanuel, Matthew]
-> >=20
-> > On Wed, Jul 08, 2026 at 04:30:14PM +0200, Manivannan Sadhasivam wrote:
-> > > Hi,
-> > >=20
-> > > This series converts the atheros WLAN drivers (ath10k/ath11k/ath12k) =
-to
-> > > use the PCI core ASPM APIs for enabling/disabling ASPM instead of wri=
-ting
-> > > to the LNKCTL register directly. Touching LNKCTL behind the PCI core'=
-s
-> > > back leaves the ASPM service driver's view of the link state out of s=
-ync
-> > > with the hardware, which is not nice.
-> > >=20
-> > > The catch is that these drivers save the currently enabled ASPM state=
-s,
-> > > disable ASPM before firmware download, and restore the saved states
-> > > afterwards. pci_enable_link_state() cannot restore states that were
-> > > disabled via pci_disable_link_state() or blacklisted during init (lik=
-e
-> > > the pre-1.1 device blacklist, which is only meant to be overridden wi=
-th
-> > > pcie_aspm=3Dforce), and that is intentional. So the save/restore sequ=
-ence
-> > > cannot be expressed with the existing APIs.
-> > >=20
-> > > In v2 I tried to fix this by making pci_enable_link_state*() symmetri=
-c
-> > > with the disable APIs, but as pointed out during review, that also en=
-ds
-> > > up overriding the init-time blacklist for every caller (including VMD=
-),
-> > > which is not something we want. So instead, this version adds a separ=
-ate
-> > > pci_force_enable_link_state() API (patch 2) that re-enables the reque=
-sted
-> > > states unconditionally. The caller is responsible for only asking for
-> > > states the device actually supports, and the ath drivers do this by
-> > > restoring exactly what pcie_aspm_enabled() reported earlier.
-> > >=20
-> > > The first five patches touch the PCI core: patch 1 (from Ilpo) makes
-> > > pci_disable_link_state() disable ASPM unconditionally, patch 2 adds t=
-he
-> > > new API, patch 3 moves the D0 transition needed before enabling PCI-P=
-M
-> > > L1 PM Substates (PCIe r6.0, sec 5.5.4) into the shared helper and dro=
-ps
-> > > it from the vmd and pcie-qcom callers, patch 4 cleans up the kernel-d=
-oc,
-> > > and patch 5 makes pcie_aspm_enabled() return the enabled state mask s=
-o it
-> > > can be used for save/restore. The last three patches convert the ath
-> > > drivers.
-> > >=20
-> > > Testing
-> > > =3D=3D=3D=3D=3D=3D=3D
-> > >=20
-> > > I've tested this series on a Lenovo Thinkpad T14s with WCN7850 (so th=
-at's
-> > > just the ath12k driver). Rest of the drivers are compile tested only.
-> > >=20
-> > > Merging Strategy
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >=20
-> > > Even though there is no build dependency between the PCI core and ath=
-eros
-> > > patches, there is a functional dependency. So I'd recommend creating =
-an
-> > > immutable branch with the PCI patches and merging that branch into bo=
-th
-> > > the PCI and linux-wireless trees, and finally merging the atheros pat=
-ches
-> > > into the linux-wireless tree.
-> > >=20
-> > > If the immutable branch seems like a hassle, then the PCI core patche=
-s
-> > > could get merged first and the atheros patches can wait for the next
-> > > cycle.
-> > >=20
-> > > - Mani
-> > >=20
-> > > Changes in v3:
-> > > * Dropped the change that made pci_enable_link_state*() symmetric wit=
-h the
-> > >   disable APIs. Instead added a new pci_force_enable_link_state() API=
- used
-> > >   only by the ath drivers, so the init-time blacklist stays overridab=
-le
-> > >   only via pcie_aspm=3Dforce and existing callers like VMD are left
-> > >   untouched.
-> > > * Fixed the locked path to use pci_set_power_state_locked() for the D=
-0
-> > >   transition. The previous version called the non-locked variant, whi=
-ch
-> > >   re-acquires pci_bus_sem.
-> > > * ath drivers now disable PCIE_LINK_STATE_ASPM_ALL instead of
-> > >   PCIE_LINK_STATE_ALL so that CLKPM is preserved and can be restored
-> > >   (pcie_aspm_enabled() doesn't report CLKPM).
-> > > * Reworked the kernel-doc patch to cover both the enable and disable =
-APIs
-> > >   and reference the new API.
-> > > * Rebased on top of v7.2-rc1.
-> > >=20
-> > > Changes in v2:
-> > > * Reworked the pcie_aspm_enabled() API to return the enabled states
-> > >   instead of bool and used it to save/restore the ASPM states in ath
-> > >   drivers.
-> > > * Added a patch from Ilpo to disable ASPM even if BIOS didn't grant
-> > >   permission.
-> > > * Added the CONFIG_PCIEASPM dependency to ath{10/11/12}k drivers.
-> > > * Rebased on top of v6.17-rc1.
-> > >=20
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualc=
-omm.com>
-> > > ---
-> > > Ilpo J=E4rvinen (1):
-> > >       PCI/ASPM: Always disable ASPM when driver requests it
-> >=20
-> > I put this first patch on pci/aspm for v7.4 because there seems to be
-> > a consensus that it's better to have the ASPM core disable things even
-> > if it doesn't technically have control of ASPM, because the
-> > alternative is that drivers just do it themselves, also ignoring ASPM
-> > ownership concerns.  Having the drivers do it just means the PCI core
-> > ASPM support doesn't know what's happening.
-> >=20
-> > I think we should defer the rest of these because I think there's a
-> > little room to make the enable/disable/force-enable dance more
-> > intuitive for the drivers.  As far as I know, the rest of the series
-> > is definite cleanups but doesn't fix any actual functional issues.
-> >=20
->=20
-> I wouldn't just categorize the rest of the patches as mere cleanups. They=
- are
-> indeed fixing an obvious race between PCI core and the driver doing ASPM =
-dance
-> at the same time.
-
-Agreed.
-
-> But for sure, even after these patches, one can trigger the
-> same race between sysfs 'config' and the driver/PCI core, but that's more=
- of an
-> user trying to perform an action to trigger a race vs race happening with=
-in the
-> kernel without user intervention (which is too bad).
-
-Which is why I suggested moving to a counter based approach so we could=20
-arbitrarily overlap any number of disable/enable pairs for a state in=20
-arbitrary order, no matter what's the source.
-
-> I'd really like to see a way forward for these patches, even with a new A=
-PI and
-> not let them fall through the cracks.
-
-Me too. The needs have simply outgrown the old API (which was never good=20
-anyway due to its asymmetry caveat).
-
---=20
- i.
---8323328-1775956960-1792142584=:1180--
+/jeff
 
