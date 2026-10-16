@@ -4,139 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7406CCA464
-	for <ath10k@archiver.kernel.org>; Fri, 16 Oct 2026 08:45:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 042BACCA48B
+	for <ath10k@archiver.kernel.org>; Fri, 16 Oct 2026 10:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=R92Hgshg0R8xysfps3KhIh1Ju04mP4QjU7m2262gaOc=; b=aFa87tEQLpAf1N2r2pr3wQYYL3
-	SwQMmFQBICKblylFD5VXFa4OAYnZq+SJ3kc8PfEFSpVnf+eZk3/JnYqwIuLDotLRAA1OoVV5DAh1r
-	IJld716NCPjwFiIr+zVtwbFhmQSRRpa2bTBGPM9Cg8cPsZ3Lq0TxaKHhluVAJQneRbnOYeeZyo+mA
-	rYwuZKgFOxQtDQNusfocG2L+sAj36QB4R8ihjDt+TCKDRUtCx66AAjJQlUqfhpoAvJXD0fYPg+VcK
-	E48gMVNqe6AwIu6E7aan5PJb171lq7H+fDQTzkwppHoJIeLX9Dtoqq3Fm8RmKNd60ilFcR+wKK5jv
-	AXptnGXQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-ID:Content-Type:
+	MIME-Version:References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:
+	Reply-To:Content-Transfer-Encoding:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=fBxJgJydMbR6d/He/Hf4JfILqV8iwU4WxvgxTrXuAF0=; b=2CUvYkB3kljyLcQR0Hgi223bd2
+	sh3rGLUaRFlP5cMf+P6UGp82fePLElFKBWmMFEu2L5rwrFDoA37ZC0P6pBSvltba/L6qgODj/ttgy
+	Rlrry8qZjD7UYYot5xN+BJso+E75FObSII710oxEadVrX2uZnv4PYHxZXvkAo0Ky1PKRnXplIZb+Z
+	HpRQ4FoirZ+iL6vf8A4mg4uq0q1gIH2IbMNSqTmjLJKpIs4/dLq2JtKnd6WNvnajTWxX3jwfXXDrF
+	6QNUf1ehp5W/JP35DPD+xYkNcVCWuTHaaQYXAr68FKoGgyyim10pAioDDet3J/p/W1PRO21zvMiBA
+	S3o4jmxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHdYo-00000002MVi-0Zl8;
-	Fri, 16 Oct 2026 08:45:06 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1xHf0b-00000002ahs-46dU;
+	Fri, 16 Oct 2026 10:17:53 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHdYm-00000002MV0-16kn
-	for ath10k@lists.infradead.org;
-	Fri, 16 Oct 2026 08:45:05 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69G7HEgn1635430
-	for <ath10k@lists.infradead.org>; Fri, 16 Oct 2026 08:45:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	R92Hgshg0R8xysfps3KhIh1Ju04mP4QjU7m2262gaOc=; b=jA4GxnUtkr5VlKEw
-	Z9HgNWJb7ihY86KYDcbXu90722ThYb8uPSiBLcUXDdf91UKXDS5iSxfQdErQMyYW
-	GlS6tBMT9bl108KAo57kxJvAWiiQ1s+fPf2d/MlU2fbOPlui3dnGVuoQFZW6XqxO
-	Pgn2VriCxhqL7jAYka3/0HPal/5Qu5N0kGInBnMch8fDaSSj+aRB3zitbsFui9G/
-	XR+ryinq6R9dOgLhQCKAPYsw5ybcU/raJNnrX+aPqacu7uUXQGD5ohWA5FzGP+q/
-	7+6P8dunKmwb9W79IwS4dcMJ3XRczuIS31DOlvm+B+ouAWYrVNCKrkiFw+um1stZ
-	mvaT3g==
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hb8r11qn8-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Fri, 16 Oct 2026 08:45:03 +0000 (GMT)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-cc4ac5feaa4so4211857a12.1
-        for <ath10k@lists.infradead.org>; Fri, 16 Oct 2026 01:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1792140303; x=1792745103; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=R92Hgshg0R8xysfps3KhIh1Ju04mP4QjU7m2262gaOc=;
-        b=COtJqTyXL5BX0kf/XsWe5KPTtCZO199bL4hrl+0H98ADfUQI4R7HBesVtDawSArK4j
-         FPAINsVOpzfGOXfrvkt38ejqT09jVzZ4ZtAwso+qWvYSHQPf/Gzm44zUXY0BEtJBEh1A
-         LjxHcsRn8K5czXUJoTE+KfVJTW6zIpSYGPy+O6HrSfk4ZSmOm591TYKMNadCHOR9gTD6
-         AjpUXNz7M9h7Kig7e0u0XZRxCg5r+H6MI93NPqPP49jc5YEi9timkktR54ekeno9xZ4z
-         bf8lSRxB+SDnfPK4J7/jUl+E4U+Gz7ATkdo3g8TM2J8wr43T0/Tb2o993RQhO4km5wI1
-         78cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792140303; x=1792745103;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=R92Hgshg0R8xysfps3KhIh1Ju04mP4QjU7m2262gaOc=;
-        b=pE+C+ET0PM6pOW11R2crNJTPYk/MsjQuS49jIGPL8cF0ww8+OyVYpTGqkT/+ZlbVDc
-         x+dxqhjmF/vaqxrKfkagoe+B4eozRaxSzyY2clYtOaSzw9KGqKmVeuWy1KvqfO01tNWL
-         VuUGbeLIfqyANccnUfg6/nCgpJQnk4rX5txd4zgORE0FIYB9iztjuVLZ0Ze/BLMYQgms
-         1hUs+OSVljUrKlf5FlV1f6BQQQh+K4kB8KCUzSqkejPhjubXWpMZ7vl/1RYu8Eo/4HI9
-         F5vLJCFeFaZK0rHu5vZJQbqZsyf/Z05Xi7kkiXGtzKJYVqgY79y7MWxSRlzHVsTKq8zZ
-         6PxA==
-X-Forwarded-Encrypted: i=1; AKwUvBw1hFevjMFOyX+Z3zXQEd5BnegIW5H/lToBF+uKDAvV4w7uJJdQY6l731ARu1eTcPMm+GmrXRc=@lists.infradead.org
-X-Gm-Message-State: AFq9FYJI5kyotbFz8rUxXxqgJGOdo5JjjmM0QtNpKk6TFnuipNKxpkgc
-	pI3HvIfrM9/JFPpZdE9Pd8ARrxV+604dUKQFrXbvp5aFEhFyBKupSz+tnHsL4yU/nbGS/wLSlfV
-	OdE5+vt6tfL2G+5TfpKAOZP9Iflf9iMe6tzzVHOcygi8PIqgO2uAlR9WtF/73XQj+
-X-Gm-Gg: AYBFou2FybBvZJPUW41rxTTweME/wobfjlpV9u6SsbyejyMHrj5GIuIJlZsQFGbb5Bi
-	bryMI2bZsb+WM2wi/zCphQfx9Yc3UUOZwnRJ+f7EgSv3xgKqNxd+ilrNnG/3Hk9tdB4T3BWUjVY
-	Qg5j2ymvRuMqVa+UeckX9nhQceYYLU87Q6yCOi5N8zOHJ7Bh/JfR3cwWbCPORZqZBnkWyhheY1n
-	lwYU40KasKHFkbBWQs5TcZ0TG2CPUcfe8FHs2WE0dYDZOZqxJiVWYx8/1w/7b1cCMu8t52ViOjR
-	84UyXAb3iLPFjd4ULJzsbeeFQcpp0khv4TOfZO+vFLSw75Y6zGMU5D0YfeWZinOYN4rTsmSH8dp
-	mo8xO/VMbQnqroPeT5Pr5imS0aG7Jh2w/JYc/7OVi/jPcYOMeDQp6xuj+sl8xJJoWr3M=
-X-Received: by 2002:a17:90b:5343:b0:3a8:a98c:ea07 with SMTP id 98e67ed59e1d1-3ab3a94f288mr17450778a91.13.1792140303023;
-        Fri, 16 Oct 2026 01:45:03 -0700 (PDT)
-X-Received: by 2002:a17:90b:5343:b0:3a8:a98c:ea07 with SMTP id 98e67ed59e1d1-3ab3a94f288mr17450767a91.13.1792140302515;
-        Fri, 16 Oct 2026 01:45:02 -0700 (PDT)
-Received: from [10.133.33.246] (tpe-colo-wan-fw-bordernet.qualcomm.com. [103.229.16.4])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3acd9c4b4eesm1029557a91.2.2026.10.16.01.45.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2026 01:45:02 -0700 (PDT)
-Message-ID: <b8554d8b-6671-4fcd-a455-b5f92cd31300@oss.qualcomm.com>
-Date: Fri, 16 Oct 2026 16:44:59 +0800
+	id 1xHf0a-00000002ahL-0ycE;
+	Fri, 16 Oct 2026 10:17:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-ID:Content-Type:MIME-Version:
+	References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-Description;
+	bh=fBxJgJydMbR6d/He/Hf4JfILqV8iwU4WxvgxTrXuAF0=; b=YIrdiXppU4vwYjTt5cHhX3u07o
+	cFixqikdEQafcPHYfFYh2xOXke2Bsnkmv5+uBRuAv+C2ElTxeoC6W9tzes+Vmv71jYDQ/Gq5OspYC
+	31zAjgRsamokW9sy0Kj+5UoBnG6u28H2an82SWIiLtaOv5Ti7/8SgmSKm/2KDGLCe3wzh9nOf0LtQ
+	H0BTkE2ZL+s34JvYC30Z4Ac7Quw/nDb3OrZIf1JVIRZOBjx1mef4Ec0F3hk1N6dmW4qjEQ6A+JU77
+	+tJ6yfvtLZb41J5hQsvz/tayrJ7HCQVgXoJbybZPYfNSnNM8fYerxCQXWgjOZGxCRe7r4aSQTGVGo
+	9yRq9/hg==;
+Received: from mgamail.intel.com ([192.198.163.18])
+	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
+	id 1xHf0W-00000001Mnh-3bnX;
+	Fri, 16 Oct 2026 10:17:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1792145870; x=1823681870;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=ps4odQHHb7l/wiRUo9dzB8hrI0RD41hOHQAtb2vg9yU=;
+  b=Pv8PyXf4rFpiMr4s/7tvRowOOGCV2fLM2fUMrSp8M07tKbTBwWzItoKn
+   UT3/Vc5UNkCNF6Rbhvf34YqZqRzOAqAWsTTqB+rjvscm98TeY4ALljMLG
+   yE3qy4ZFM9Cjh9Z3yorYGpu5E/KbSEDLOWMkGaaja/13PDGgEcBFS6dHU
+   NTnu3GalxiCHpWQYd6XW5YrTScpiysKJHOKhqzfIgBUfnd/kZUWaaji19
+   AyM0WlTk+pb2dJPW7jxc6MaL/E7kOqYY1S8DTcl+HfL2x7tjZKBwaV6xR
+   bVXtn5oPlKs0LPm9UI634f5Ip5wMrVY8B6q1iRM5GNYFJyTwmSESzMjga
+   g==;
+X-CSE-ConnectionGUID: 9ZuKqfV/QPOAQ0Bd5VvDAA==
+X-CSE-MsgGUID: o8S6Y6QqSCSoA1VpU6+YgA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11936"; a="947803"
+X-IronPort-AV: E=Sophos;i="6.27,161,1787036400"; 
+   d="scan'208";a="947803"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2026 03:17:42 -0700
+X-CSE-ConnectionGUID: HJbJ4n/iS9mI5RPiq2hT8g==
+X-CSE-MsgGUID: L52WigXOQAKc7nd3wTm9HQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,161,1787036400"; 
+   d="scan'208";a="1892016"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.34])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2026 03:17:35 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 16 Oct 2026 13:17:29 +0300 (EEST)
+To: Manivannan Sadhasivam <mani@kernel.org>
+cc: Bjorn Helgaas <helgaas@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+    Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kwilczynski@kernel.org>, 
+    Rob Herring <robh@kernel.org>, Nirmal Patel <nirmal.patel@linux.intel.com>, 
+    Jonathan Derrick <jonathan.derrick@linux.dev>, 
+    Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, linux-arm-msm@vger.kernel.org, 
+    linux-wireless@vger.kernel.org, ath12k@lists.infradead.org, 
+    ath11k@lists.infradead.org, ath10k@lists.infradead.org, 
+    Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>, 
+    Qiang Yu <qiang.yu@oss.qualcomm.com>, 
+    Emmanuel Grumbach <egrumbach@gmail.com>, 
+    Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: [PATCH v3 0/8] PCI/ASPM: Add pci_force_enable_link_state() API
+ and convert Atheros drivers
+In-Reply-To: <atG61oicHbsLKiib@debian>
+Message-ID: <8ceaf259-ae07-efa1-911f-4cc86a2710c2@linux.intel.com>
+References: <20260708-pci-aspm-fix-v3-0-6bd72451746e@kernel.org> <20261014205117.GA1665327@bhelgaas> <atG61oicHbsLKiib@debian>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH ath-next 1/8] wifi: ath10k: fix SDIO aux workqueue
- starvation in recovery detection
-To: Vasanthakumar Thiagarajan <vasanthakumar.thiagarajan@oss.qualcomm.com>,
-        ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
-References: <20260925-10k-sdio-crash-v1-0-14baf913df94@oss.qualcomm.com>
- <20260925-10k-sdio-crash-v1-1-14baf913df94@oss.qualcomm.com>
- <b0f4fc0b-3c42-4fde-a4a6-9263695b0325@oss.qualcomm.com>
-Content-Language: en-US
-From: Kang Yang <kang.yang@oss.qualcomm.com>
-In-Reply-To: <b0f4fc0b-3c42-4fde-a4a6-9263695b0325@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: _q54v3eNxZXfkkUIo_uVcDTQUxiRX-Yh
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE2MDAzNCBTYWx0ZWRfX/nEfK3tCMYyv
- ij83IsIfLnGk+eFwTGMyKXTUsKv83LyX+L21YezQv3p1ZFCv+O9VxrI1eiueWP9/6QQMVbjqolb
- YzezDmVwLdbDuonnsbbSTevkJuOdvuI=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE2MDAzNCBTYWx0ZWRfX2V4r6gqHYFFP
- 3AisHJd4GJeqpDBY6rHGlY0Tx8ce6SUMaDaBwBT2UefHoaQupUyEY0ULci8nmO8nPyyH4UtWsfE
- myDAHjxkcyp+rI6ZPIBW1cl3QPQ3JRSUw79xu9PbQwR/Yi1q8bx9Uu7yfE50VQQHf8IQcehSvqc
- X/dJJZELiTSmYi7IbYMl+ExpUkHzlsidWRi/97Pwm5nbz7fYhOoxwVfjIH31JIXX1tZXA8nhpSd
- nPy90khc2LWRRprLj2c4mnoUFmiRDFeFEkeXfOAcRI5s1z8xSSOPZC+dx9+ibybSp7xkpTovubA
- Ob6bfw0R92UxgEvhtvqQFeS26aVjaTx2+gWQGFUsb3Z4iXb3fSFC7e9vi4H4YjUxwnvaJd44fjG
- Ku/2fn++/lNsZlRknYZslwI5hSqVe6s1pAj6q2+bqk/RwZNKQu1NV/v1PCghz1h7Ur34ELcXZ/l
- Bi6a7SAFEE6jzlIxJDQ==
-X-Proofpoint-GUID: _q54v3eNxZXfkkUIo_uVcDTQUxiRX-Yh
-X-Authority-Analysis: v=2.4 cv=L/CI0OT8 c=1 sm=1 tr=0 ts=6ad1e40f cx=c_pps
- a=rz3CxIlbcmazkYymdCej/Q==:117 a=nuhDOHQX5FNHPW3J6Bj6AA==:17
- a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=Um2Pa8k9VHT-vaBCBUpS:22
- a=0p70_H8JvZq-mLLo2zkA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=bFCP_H2QrGi7Okbo017w:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-10-14_01,2026-10-14_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 clxscore=1015 malwarescore=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2610080000 definitions=main-2610160034
+Content-Type: multipart/mixed; BOUNDARY="8323328-1775956960-1792142584=:1180"
+Content-ID: <0d2502b4-10fe-3dd3-f6d5-e547a5ecd889@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_014504_302376_CD3A736E 
-X-CRM114-Status: GOOD (  11.09  )
+X-CRM114-CacheID: sfid-20261016_111749_393339_040D0FF4 
+X-CRM114-Status: GOOD (  53.26  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -151,42 +108,176 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--8323328-1775956960-1792142584=:1180
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <391745ff-eb7c-bf57-36a4-00b885c75592@linux.intel.com>
 
-On 10/16/2026 3:34 PM, Vasanthakumar Thiagarajan wrote:
-> 
-> On 25-09-2026 17:56, Kang Yang wrote:
->> Recovery monitoring runs on workqueue_aux, which is also
->> used by SDIO RX dispatch and WMI SERVICE_READY handling.
->>
->> A single firmware crash may generate multiple recovery
->> triggers. Recovery detection currently handles each one by
->> waiting for recovery completion on workqueue_aux. On SDIO,
->> this blocks the same workqueue needed to deliver recovery
->> traffic, preventing recovery from completing.
->>
->> As a result, otherwise recoverable firmware crashes fail
->> with:
->>    ctl_resp never came in (-110)
->>
->> Treat duplicate recovery triggers as part of a single
->> recovery attempt by gating recovery startup in
->> ath10k_core_start_recovery() with an atomic_cmpxchg() on
->> pending_recovery, and by making the monitor path check the
->> elapsed time since the attempt started instead of blocking
->> on a completion.
->>
->> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00288-QCARMSWPZ-1
-> 
-> Since the issue is described from SDIO point-of-view, it makes sense to add
-> SDIO hardware details as well in the Tested-on tag?
+On Fri, 16 Oct 2026, Manivannan Sadhasivam wrote:
 
+> On Wed, Oct 14, 2026 at 03:51:17PM -0500, Bjorn Helgaas wrote:
+> > [+cc Emmanuel, Matthew]
+> >=20
+> > On Wed, Jul 08, 2026 at 04:30:14PM +0200, Manivannan Sadhasivam wrote:
+> > > Hi,
+> > >=20
+> > > This series converts the atheros WLAN drivers (ath10k/ath11k/ath12k) =
+to
+> > > use the PCI core ASPM APIs for enabling/disabling ASPM instead of wri=
+ting
+> > > to the LNKCTL register directly. Touching LNKCTL behind the PCI core'=
+s
+> > > back leaves the ASPM service driver's view of the link state out of s=
+ync
+> > > with the hardware, which is not nice.
+> > >=20
+> > > The catch is that these drivers save the currently enabled ASPM state=
+s,
+> > > disable ASPM before firmware download, and restore the saved states
+> > > afterwards. pci_enable_link_state() cannot restore states that were
+> > > disabled via pci_disable_link_state() or blacklisted during init (lik=
+e
+> > > the pre-1.1 device blacklist, which is only meant to be overridden wi=
+th
+> > > pcie_aspm=3Dforce), and that is intentional. So the save/restore sequ=
+ence
+> > > cannot be expressed with the existing APIs.
+> > >=20
+> > > In v2 I tried to fix this by making pci_enable_link_state*() symmetri=
+c
+> > > with the disable APIs, but as pointed out during review, that also en=
+ds
+> > > up overriding the init-time blacklist for every caller (including VMD=
+),
+> > > which is not something we want. So instead, this version adds a separ=
+ate
+> > > pci_force_enable_link_state() API (patch 2) that re-enables the reque=
+sted
+> > > states unconditionally. The caller is responsible for only asking for
+> > > states the device actually supports, and the ath drivers do this by
+> > > restoring exactly what pcie_aspm_enabled() reported earlier.
+> > >=20
+> > > The first five patches touch the PCI core: patch 1 (from Ilpo) makes
+> > > pci_disable_link_state() disable ASPM unconditionally, patch 2 adds t=
+he
+> > > new API, patch 3 moves the D0 transition needed before enabling PCI-P=
+M
+> > > L1 PM Substates (PCIe r6.0, sec 5.5.4) into the shared helper and dro=
+ps
+> > > it from the vmd and pcie-qcom callers, patch 4 cleans up the kernel-d=
+oc,
+> > > and patch 5 makes pcie_aspm_enabled() return the enabled state mask s=
+o it
+> > > can be used for save/restore. The last three patches convert the ath
+> > > drivers.
+> > >=20
+> > > Testing
+> > > =3D=3D=3D=3D=3D=3D=3D
+> > >=20
+> > > I've tested this series on a Lenovo Thinkpad T14s with WCN7850 (so th=
+at's
+> > > just the ath12k driver). Rest of the drivers are compile tested only.
+> > >=20
+> > > Merging Strategy
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > >=20
+> > > Even though there is no build dependency between the PCI core and ath=
+eros
+> > > patches, there is a functional dependency. So I'd recommend creating =
+an
+> > > immutable branch with the PCI patches and merging that branch into bo=
+th
+> > > the PCI and linux-wireless trees, and finally merging the atheros pat=
+ches
+> > > into the linux-wireless tree.
+> > >=20
+> > > If the immutable branch seems like a hassle, then the PCI core patche=
+s
+> > > could get merged first and the atheros patches can wait for the next
+> > > cycle.
+> > >=20
+> > > - Mani
+> > >=20
+> > > Changes in v3:
+> > > * Dropped the change that made pci_enable_link_state*() symmetric wit=
+h the
+> > >   disable APIs. Instead added a new pci_force_enable_link_state() API=
+ used
+> > >   only by the ath drivers, so the init-time blacklist stays overridab=
+le
+> > >   only via pcie_aspm=3Dforce and existing callers like VMD are left
+> > >   untouched.
+> > > * Fixed the locked path to use pci_set_power_state_locked() for the D=
+0
+> > >   transition. The previous version called the non-locked variant, whi=
+ch
+> > >   re-acquires pci_bus_sem.
+> > > * ath drivers now disable PCIE_LINK_STATE_ASPM_ALL instead of
+> > >   PCIE_LINK_STATE_ALL so that CLKPM is preserved and can be restored
+> > >   (pcie_aspm_enabled() doesn't report CLKPM).
+> > > * Reworked the kernel-doc patch to cover both the enable and disable =
+APIs
+> > >   and reference the new API.
+> > > * Rebased on top of v7.2-rc1.
+> > >=20
+> > > Changes in v2:
+> > > * Reworked the pcie_aspm_enabled() API to return the enabled states
+> > >   instead of bool and used it to save/restore the ASPM states in ath
+> > >   drivers.
+> > > * Added a patch from Ilpo to disable ASPM even if BIOS didn't grant
+> > >   permission.
+> > > * Added the CONFIG_PCIEASPM dependency to ath{10/11/12}k drivers.
+> > > * Rebased on top of v6.17-rc1.
+> > >=20
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualc=
+omm.com>
+> > > ---
+> > > Ilpo J=E4rvinen (1):
+> > >       PCI/ASPM: Always disable ASPM when driver requests it
+> >=20
+> > I put this first patch on pci/aspm for v7.4 because there seems to be
+> > a consensus that it's better to have the ASPM core disable things even
+> > if it doesn't technically have control of ASPM, because the
+> > alternative is that drivers just do it themselves, also ignoring ASPM
+> > ownership concerns.  Having the drivers do it just means the PCI core
+> > ASPM support doesn't know what's happening.
+> >=20
+> > I think we should defer the rest of these because I think there's a
+> > little room to make the enable/disable/force-enable dance more
+> > intuitive for the drivers.  As far as I know, the rest of the series
+> > is definite cleanups but doesn't fix any actual functional issues.
+> >=20
+>=20
+> I wouldn't just categorize the rest of the patches as mere cleanups. They=
+ are
+> indeed fixing an obvious race between PCI core and the driver doing ASPM =
+dance
+> at the same time.
 
-Google is doing detail test on all platforms, will add test on tag after 
-that.
+Agreed.
 
+> But for sure, even after these patches, one can trigger the
+> same race between sysfs 'config' and the driver/PCI core, but that's more=
+ of an
+> user trying to perform an action to trigger a race vs race happening with=
+in the
+> kernel without user intervention (which is too bad).
 
-> 
-> Vasanth
+Which is why I suggested moving to a counter based approach so we could=20
+arbitrarily overlap any number of disable/enable pairs for a state in=20
+arbitrary order, no matter what's the source.
 
+> I'd really like to see a way forward for these patches, even with a new A=
+PI and
+> not let them fall through the cracks.
+
+Me too. The needs have simply outgrown the old API (which was never good=20
+anyway due to its asymmetry caveat).
+
+--=20
+ i.
+--8323328-1775956960-1792142584=:1180--
 
