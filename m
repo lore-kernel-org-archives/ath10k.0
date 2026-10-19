@@ -4,69 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13017CCA490
-	for <ath10k@archiver.kernel.org>; Fri, 16 Oct 2026 22:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3742CCF2DB
+	for <ath10k@archiver.kernel.org>; Mon, 19 Oct 2026 13:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	bh=N+IfVEDNy7weUr9N7uxvL6jLCprKtx2WdtJneeQTuEA=; b=IuJxegkHGNK20Vfuhd7i+20RoM
-	n9dckX/g1vczkFnRODhLPKKWFyC5P9uKa286RiSMv5wGfY49OBuB34ugNlqAytjLGfT+gAMMKOy2U
-	7NNwgsMI18622BOjcpiI7qvO+xe/jcJkCoCLSNZmfLamDTFDSeBSs46Z8xRMp5Qd3nL+j8NW5vl70
-	AEXsIAEpU4WMl/W1rUWieUXcZaWdzKlXQ4UMRormtnxg3MiHftMUrYulBNQ/GKhXxCoLYI2YrQayv
-	m09+OV2gStoV/BA+TK3VLZChlcBh6VirjvYUm1wYAQET3QgZaXgLE6LYgY5ujN3i+9hklE9Wub9ky
-	mRu40vAw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=gT7565n3cY+YDTERB3uQ8khKJFfspA8uXPmSUyaFk3g=; b=e3GMd3cpivpxzG1+fJYl+dqubZ
+	apbw0uGvudixHUJ8VSjjLZJU68PyJO6Qe8GUPO8JPfX78OMBaAwHR3+uYtzBSd69wMsHiLz+8WuVM
+	v8XWiEhp+OaeBm4qLgZdD1HrbamO1q4zleC1qjicmRMxDu4K1Jt2osJt24KBWY702gtoR1Af+3xEv
+	Bt/iGOGNBHjf2HYmndUsC0Eem2tbgEzogfGqLRjrItHKMtyROp1OWYgF86jek/VMiY05/LFqsoQhq
+	y/ugXeSFXyHU1JDVnJ1TUU0EzBBK4bwspV1eBiTcWy+tn5QfOUdI9d4qTKoH7FMqLTyQYNDb6QVbY
+	yzFlfQDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHq6r-0000000492Z-43ZX;
-	Fri, 16 Oct 2026 22:09:05 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xInA3-00000007UKX-1wvr;
+	Mon, 19 Oct 2026 13:12:19 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHq6q-0000000492E-2ymt;
-	Fri, 16 Oct 2026 22:09:04 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id AE2C36022E;
-	Fri, 16 Oct 2026 22:09:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DCA71F000C4;
-	Fri, 16 Oct 2026 22:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792188542;
-	bh=N+IfVEDNy7weUr9N7uxvL6jLCprKtx2WdtJneeQTuEA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To;
-	b=EojSRKfdAM9oDuZ9jF49SMiBF3zj2wdWEu49eIsy3J6zDbtd5vPg2v/7x6ZxGZLnr
-	 M19eONTst4yrehj4leYPBDh/0lSll7/t5ZLf4sN5sCARPjoFdCe22YtDn3o0ux2ImM
-	 6wRzpjWENrr5zssGC8fwJ/t3RTxGutllXA7KxfBobVmcxIPmDtuA48p0xITxIMuV/q
-	 q5WBy1j/xLSy/sDeH16G5ErFv8zmjbftYoLSj0V9IZF2Zr9vx2clPHCDnK/qru0FQN
-	 2YdalWq3HyVVbzfalQuO1mSwrNVrhywb0ANPS53LvRbNfQUztrTkzcrnuesvkYiXa7
-	 /CAlgq5HndODw==
-Date: Fri, 16 Oct 2026 17:09:00 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	Jeff Johnson <jjohnson@kernel.org>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-wireless@vger.kernel.org, ath12k@lists.infradead.org,
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
-	Krishna Chaitanya Chundru <krishna.chundru@oss.qualcomm.com>,
-	Qiang Yu <qiang.yu@oss.qualcomm.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Emmanuel Grumbach <egrumbach@gmail.com>,
-	Matthew Garrett <mjg59@srcf.ucam.org>
-Subject: Re: [PATCH v3 0/8] PCI/ASPM: Add pci_force_enable_link_state() API
- and convert Atheros drivers
-Message-ID: <20261016220900.GA2020355@bhelgaas>
+	id 1xInA0-00000007UK0-2fcj
+	for ath10k@lists.infradead.org;
+	Mon, 19 Oct 2026 13:12:18 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2e812e2b31bso10655945ad.3
+        for <ath10k@lists.infradead.org>; Mon, 19 Oct 2026 06:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792415535; x=1793020335; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=gT7565n3cY+YDTERB3uQ8khKJFfspA8uXPmSUyaFk3g=;
+        b=QPuDEnD16lKTJUkd7npizesK1HSXaOknnWZSGh8NIq/GxgJRrezUgA2zy7vWSV3r12
+         dSjHH/mimiORkQofiAdB+BLMNg07OYCXDOjT/jK9ic6k3QLQqHkcsrefg0uE/6b2qgU+
+         3gh2HPcrwGfUTLf8RhDPLU2wzO7yo27+pc2VpVA6TiwwsdYkFH7KTb8s/RztWVPgfHoC
+         nEUW0PgvWsk1CBqhonpQ5VvDcJxfOahbmccsK74tSI3hQlBj5vmQA+8dJzZ/kl8463kf
+         2RWLWrPdUVAsyI4KQWkaqks6Bj9mLxrlzVfQVh9Rm+wwp6+3LE1QDQTIlZ0lSRM7acmg
+         8ydw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792415535; x=1793020335;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=gT7565n3cY+YDTERB3uQ8khKJFfspA8uXPmSUyaFk3g=;
+        b=LnMzMhPhMdy0KfpR1VXmB8efaPFAlpKUqOv3vDm+7+Di1l/ux4+zseD9deZt3MnZb1
+         7aR17ln/X9wQx8AhsGp8bmbfm8WnkfoSAT7KsIY+y6CA9dodhTf2oFb7Muh5jtH1ayYI
+         UkL0zff5AmezYfccC8bv+hWXWMBiQCbFdr00Pei5tA0XtgOZHE7DjNLhO32LJwGA09OR
+         KVZrOMyl+P4lXNiaeADIQbwGjnkyTuPbwiJ91MRTPLlXvr33Axi1x1iiDsZfcybRhUap
+         kKNaNrdNZiQB6pUrJuSnLVuAQZS/6YWxxdu8TPOgbFvAx0j/RiFo7W+rSjD8Mk5Ffxgn
+         PmKw==
+X-Forwarded-Encrypted: i=1; AKwUvBwEpCwjMeiq9O04OIv1AdNyN7Qm6DzMhX+KiFNO4s0WnsfoIuPpyNaVdiCPhVrjE7xOAb91ABk=@lists.infradead.org
+X-Gm-Message-State: AFq9FYLkcPM6SAfktW9/Hy5QG4cgNYJqlo9diM3mFOIepRHolk5MKKCC
+	gc5DRRzc2ifKug6Ek2LtVI2EbvwSglKds7NxRL4IyelHuXAGrKpfwZwV
+X-Gm-Gg: AYBFou2Qlshu9WVO9hfbIbWd5JScdn2J0fbjUIRbXlFt0JnbLs4M6IyvDFnSvMwUCgc
+	5GNAFNe7sNrt+kvGfmmFNLz6SMQi7zDuCA8MktANZ3bKi1Y8RZaj+9yjHrwrianijxfXSqo05PC
+	gnXdyU4wrHk+5Zyy0qamR4FKXwJXO2rCWJ2tlT2+Z69EVnp4cj0PqJWuBHOc2iU0SISYDmj8CWd
+	dKKQ0Y4VCy/1P5VWnFRSzmeAWGWj8i02VleVIXs3b/mINF4iyWd5nOaKy3iiIeTOBCz3VcvDtx4
+	g6m/8wsxuAENikKb8nIP+hSxc3MDXqYwPhOdVeNZZ1hZ/B3ehvPZrDmFEMXNgS7W+LD1Umr+Pz1
+	Yve3aq8q64ZrI+YRnHHnNWOlH/POaF/fObsM9FhgKwFrwQnWcj6X7aP1CWtBvf8lbIS7Nbw4DpJ
+	X878cg3t48r44cgTqB9PMAERWQIidkfbdgmpvnb8tuVWf4bffsFkqwIxNY6KdqHy1OlADlSscRl
+	9Ka7AhP/sREfgEXCw1LfJrLpXi3an4cAt6tBIgh8ruPSJTSIJSimzF0L4mEFuxuRz5QtKHLa1yj
+	X/SGqM1d
+X-Received: by 2002:a17:902:e84c:b0:2e9:6b5b:3db6 with SMTP id d9443c01a7336-2e9a69e93d4mr70486035ad.30.1792415535050;
+        Mon, 19 Oct 2026 06:12:15 -0700 (PDT)
+Received: from [192.168.1.164] (h69-130-12-20.bendor.broadband.dynamic.tds.net. [69.130.12.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ea1517e895sm430215ad.57.2026.10.19.06.12.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2026 06:12:12 -0700 (PDT)
+Message-ID: <61207966-c403-441d-9019-583702833a7f@gmail.com>
+Date: Mon, 19 Oct 2026 06:12:11 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <atG61oicHbsLKiib@debian>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH ath-next 3/3] wifi: ath10k: bring down a station vdev that
+ never came up
+To: shunsuke@nagashi.ma, Jeff Johnson <jjohnson@kernel.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+ Fabricio Akio <fabricioakio@gmail.com>
+References: <20261016-ath10k-series-v1-send-v1-0-c847697b3558@nagashi.ma>
+ <20261016-ath10k-series-v1-send-v1-3-c847697b3558@nagashi.ma>
+Content-Language: en-US
+From: James Prestwood <prestwoj@gmail.com>
+In-Reply-To: <20261016-ath10k-series-v1-send-v1-3-c847697b3558@nagashi.ma>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261019_061216_681170_E70F0315 
+X-CRM114-Status: GOOD (  14.62  )
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,130 +107,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 16, 2026 at 11:28:03AM +0530, Manivannan Sadhasivam wrote:
-> On Wed, Oct 14, 2026 at 03:51:17PM -0500, Bjorn Helgaas wrote:
-> > [+cc Emmanuel, Matthew]
-> > 
-> > On Wed, Jul 08, 2026 at 04:30:14PM +0200, Manivannan Sadhasivam wrote:
-> > > Hi,
-> > > 
-> > > This series converts the atheros WLAN drivers (ath10k/ath11k/ath12k) to
-> > > use the PCI core ASPM APIs for enabling/disabling ASPM instead of writing
-> > > to the LNKCTL register directly. Touching LNKCTL behind the PCI core's
-> > > back leaves the ASPM service driver's view of the link state out of sync
-> > > with the hardware, which is not nice.
-> > > 
-> > > The catch is that these drivers save the currently enabled ASPM states,
-> > > disable ASPM before firmware download, and restore the saved states
-> > > afterwards. pci_enable_link_state() cannot restore states that were
-> > > disabled via pci_disable_link_state() or blacklisted during init (like
-> > > the pre-1.1 device blacklist, which is only meant to be overridden with
-> > > pcie_aspm=force), and that is intentional. So the save/restore sequence
-> > > cannot be expressed with the existing APIs.
-> > > 
-> > > In v2 I tried to fix this by making pci_enable_link_state*() symmetric
-> > > with the disable APIs, but as pointed out during review, that also ends
-> > > up overriding the init-time blacklist for every caller (including VMD),
-> > > which is not something we want. So instead, this version adds a separate
-> > > pci_force_enable_link_state() API (patch 2) that re-enables the requested
-> > > states unconditionally. The caller is responsible for only asking for
-> > > states the device actually supports, and the ath drivers do this by
-> > > restoring exactly what pcie_aspm_enabled() reported earlier.
-> > > 
-> > > The first five patches touch the PCI core: patch 1 (from Ilpo) makes
-> > > pci_disable_link_state() disable ASPM unconditionally, patch 2 adds the
-> > > new API, patch 3 moves the D0 transition needed before enabling PCI-PM
-> > > L1 PM Substates (PCIe r6.0, sec 5.5.4) into the shared helper and drops
-> > > it from the vmd and pcie-qcom callers, patch 4 cleans up the kernel-doc,
-> > > and patch 5 makes pcie_aspm_enabled() return the enabled state mask so it
-> > > can be used for save/restore. The last three patches convert the ath
-> > > drivers.
-> > > 
-> > > Testing
-> > > =======
-> > > 
-> > > I've tested this series on a Lenovo Thinkpad T14s with WCN7850 (so that's
-> > > just the ath12k driver). Rest of the drivers are compile tested only.
-> > > 
-> > > Merging Strategy
-> > > ================
-> > > 
-> > > Even though there is no build dependency between the PCI core and atheros
-> > > patches, there is a functional dependency. So I'd recommend creating an
-> > > immutable branch with the PCI patches and merging that branch into both
-> > > the PCI and linux-wireless trees, and finally merging the atheros patches
-> > > into the linux-wireless tree.
-> > > 
-> > > If the immutable branch seems like a hassle, then the PCI core patches
-> > > could get merged first and the atheros patches can wait for the next
-> > > cycle.
-> > > 
-> > > - Mani
-> > > 
-> > > Changes in v3:
-> > > * Dropped the change that made pci_enable_link_state*() symmetric with the
-> > >   disable APIs. Instead added a new pci_force_enable_link_state() API used
-> > >   only by the ath drivers, so the init-time blacklist stays overridable
-> > >   only via pcie_aspm=force and existing callers like VMD are left
-> > >   untouched.
-> > > * Fixed the locked path to use pci_set_power_state_locked() for the D0
-> > >   transition. The previous version called the non-locked variant, which
-> > >   re-acquires pci_bus_sem.
-> > > * ath drivers now disable PCIE_LINK_STATE_ASPM_ALL instead of
-> > >   PCIE_LINK_STATE_ALL so that CLKPM is preserved and can be restored
-> > >   (pcie_aspm_enabled() doesn't report CLKPM).
-> > > * Reworked the kernel-doc patch to cover both the enable and disable APIs
-> > >   and reference the new API.
-> > > * Rebased on top of v7.2-rc1.
-> > > 
-> > > Changes in v2:
-> > > * Reworked the pcie_aspm_enabled() API to return the enabled states
-> > >   instead of bool and used it to save/restore the ASPM states in ath
-> > >   drivers.
-> > > * Added a patch from Ilpo to disable ASPM even if BIOS didn't grant
-> > >   permission.
-> > > * Added the CONFIG_PCIEASPM dependency to ath{10/11/12}k drivers.
-> > > * Rebased on top of v6.17-rc1.
-> > > 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
-> > > ---
-> > > Ilpo Järvinen (1):
-> > >       PCI/ASPM: Always disable ASPM when driver requests it
-> > 
-> > I put this first patch on pci/aspm for v7.4 because there seems to
-> > be a consensus that it's better to have the ASPM core disable
-> > things even if it doesn't technically have control of ASPM,
-> > because the alternative is that drivers just do it themselves,
-> > also ignoring ASPM ownership concerns.  Having the drivers do it
-> > just means the PCI core ASPM support doesn't know what's
-> > happening.
-> > 
-> > I think we should defer the rest of these because I think there's
-> > a little room to make the enable/disable/force-enable dance more
-> > intuitive for the drivers.  As far as I know, the rest of the
-> > series is definite cleanups but doesn't fix any actual functional
-> > issues.
-> 
-> I wouldn't just categorize the rest of the patches as mere cleanups.
-> They are indeed fixing an obvious race between PCI core and the
-> driver doing ASPM dance at the same time. But for sure, even after
-> these patches, one can trigger the same race between sysfs 'config'
-> and the driver/PCI core, but that's more of an user trying to
-> perform an action to trigger a race vs race happening within the
-> kernel without user intervention (which is too bad).
+Hi Shunsuke,
 
-You're right, using "cleanup" glosses over important fixes.  It's a
-significant consistency problem for PCI core ASPM code as well as
-racing.
+On 10/15/26 5:17 PM, Shunsuke Nagashima via B4 Relay wrote:
+> From: Shunsuke Nagashima <shunsuke@nagashi.ma>
+>
+> When a connection attempt fails before the station vdev is brought up
+> (authentication timeout, SAE failure, association rejected, or an Auth
+> burst the AP never acknowledged), mac80211 removes the AP station and
+> unassigns the channel context. ath10k deletes the peer and sends
+> WMI_VDEV_STOP, but no WMI_VDEV_DOWN: for a station vdev that never came
+> up, the down would only come from ath10k_bss_disassoc(), which a failed
+> connection attempt never reaches.
+>
+> On WCN3990 firmware WLAN.HL.2.0.c10-00459 and c10-00236, the Auth frames
+> of the next attempt on the same vdev are then not transmitted
+> (management tx completion status "discard") until about 20 s after the
+> first Auth frame of the failed attempt. In sniffer captures, 241 such
+> holds ended 19.94-20.03 s after that frame. Some lasted longer (in one
+> overnight run, 29 of 226 had not ended when the cycle ended), for
+> example when user space gave up on the attempt during the hold. Probe
+> requests still go out. The state belongs to the vdev: an attempt to
+> another network (another BSS on the same AP) on the same vdev was held
+> too (2 of 2), and re-creating the vdev cleared it (2 of 2). This happens
+> on WPA2 networks as well as WPA3. An older firmware build,
+> WLAN.HL.2.0-01387, did not hold the frames (0 of 7 reconnects after
+> status 30).
 
-Although I'm not sure there is actually a race between the driver and
-the PCI core *except* for sysfs.  In what non-sysfs case might the
-core ASPM code touch the device at the same time as the driver?  I
-guess maybe lane margining and bwctrl?  Can those happen autonomously,
-without being kicked via sysfs?
+This seems similar to an issue we see on the QCA6174's. I don't see a 20 
+second delay, but sometimes after an auth/assoc timeout we get a spam of 
+failed connections with NL80211_TIMEOUT_UNSPECIFIED. I've mentioned this 
+quite some time ago [1]. Do you think it has any relation to whats being 
+fixed here?
 
-> I'd really like to see a way forward for these patches, even with a
-> new API and not let them fall through the cracks.
+Thanks,
 
-Absolutely!
+James
+
+[1] 
+https://lore.kernel.org/linux-wireless/441e9883-1efc-498b-ba33-6a4f12443f3b@gmail.com/
+
 
