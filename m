@@ -1,510 +1,195 @@
-Return-Path: <ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org>
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B696CCF2E3
-	for <ath10k@archiver.kernel.org>; Mon, 19 Oct 2026 13:57:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B07606A31A
+	for <ath10k@archiver.kernel.org>; Mon, 19 Oct 2026 22:56:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=dHBH1poE;
+	dkim=pass (2048-bit key, unprotected) header.d=nagashi.ma header.i=@nagashi.ma header.a=rsa-sha256 header.s=ggle-ngsma header.b=DVkFHjYU
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bs6aoZXnd5UwjNLgDzr9Pe3S4ulbOQWFZpgOL2xcaMk=; b=zCD0+w496tjjwjlil9EVxRclb2
-	qfIBRKEYlz2ehGQv0fodoUhI3jQ3y5nZyJKm96JQWtaK7bLnMAkoGgjH4YbH/t6qn4tF2unsl8H/m
-	ru32cMMk0Od9wxMhEKFYvY3n7DHJOvb4kGxORIHKJjBABYIOLoyn2r2FGZquP+f9kFBxAa3xw1QU7
-	3aer1HlFsCkIZMPUx3rJGi1Pao0FHNKDVueQoXYIHBXQZi0y9Wket64hy05EdEGWEvnHTO8+R7WJv
-	ADP0KqiRnr3iiaHeRfk1U9i+pxXV+CQhKnbiWw57Sd7Wg7/9Cs8Dyu+DltEn9jXqkd1SJIJO2jN+j
-	vEiRfv0w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=REE29c8UBh0TXGI809b1Z+iw+yDqToJ7DYkOaz/LGnU=; b=dHBH1poEMNN3IU0eVrC0hXS7AL
+	1AJecTJPPn1JM6QTtC/baqrA5Ivll0GiW8a+8+lJ4U3b5VRhGdU4WUNcsS5wlIPQRDdeBbyQukl8/
+	CYa7IZlDQvt4F7PFNY3zDjAZbtTWDvh51p+E0PcMTogLL5XEl6Az2Ffs/xR98IIhAhWpwnJjWMd5J
+	uJE9OKf+m5quLe7FENrDlaIFy5OArzn8ZMAk97Cn7sbSKmiahzje1v9G6Ptvwax8kjg0BDHfISQhO
+	lzmtxELDEkHsWlrcy/JW32ErISofY33ao2wm2jMruwzo9+UsUadfMWcdh9WvaDuKqVoTPnHovEYN+
+	bWPtcYag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xInrN-00000007au5-363D;
-	Mon, 19 Oct 2026 13:57:05 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xIwHg-00000008Vnj-1Ocw;
+	Mon, 19 Oct 2026 22:56:48 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xInrM-00000007atE-1cDE
+	id 1xIwHd-00000008Vn4-2KZP
 	for ath10k@lists.infradead.org;
-	Mon, 19 Oct 2026 13:57:04 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 245B54390A;
-	Mon, 19 Oct 2026 13:57:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF8CD1F000C6;
-	Mon, 19 Oct 2026 13:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792418224;
-	bh=bs6aoZXnd5UwjNLgDzr9Pe3S4ulbOQWFZpgOL2xcaMk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=jFcUA9YBU/F4AFQSJuygeGZ2enrNHPBNUXgJ5tNDpMwiUyMjTkgmONQi0rek2+PdL
-	 F5xRMTNIdOLSUjpa/+OEnqoyvXU8AyJlOzDDLJPV66iJ/dSBK8lwmSUE6zAdHviRJW
-	 Mpszar0wP/TmODBd7sKXoaXv/lz94zESOWqbWFPnU6b5oxAIQkET6rQwcjf2n9pshw
-	 V2DcEgnTUsCROMFBYO9DjgSDjXnlBlGF9kZDTQumuzrO47HgTRqjN8oLxShjC1PLrV
-	 VvBYqN0frRFKttfxi+i1E0H/NOe2T3uzqE4mn39PHxzSBuIEvGfzsHjxk87Tea/bl/
-	 X1BIoHoNU8H5g==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Manikanta Pubbisetty <manikanta.pubbisetty@oss.qualcomm.com>,
-	Rameshkumar Sundaram <rameshkumar.sundaram@oss.qualcomm.com>,
-	Baochen Qiang <baochen.qiang@oss.qualcomm.com>,
-	Jeff Johnson <jeff.johnson@oss.qualcomm.com>,
-	Sasha Levin <sashal@kernel.org>,
-	jjohnson@kernel.org,
-	linux-wireless@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-5.10] wifi: ath10k: trigger hardware recovery upon rx failures
-Date: Mon, 19 Oct 2026 09:46:31 -0400
-Message-ID: <20261019135441.1420968-100-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261019135441.1420968-1-sashal@kernel.org>
-References: <20261019135441.1420968-1-sashal@kernel.org>
+	Mon, 19 Oct 2026 22:56:46 +0000
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-6a642495d81so3543215a12.2
+        for <ath10k@lists.infradead.org>; Mon, 19 Oct 2026 15:56:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792450603; cv=none;
+        d=google.com; s=arc-20260327;
+        b=h4ZNJrjAQN1hEtmU9T5+yrQym2bORflo6W/vYQkxlhuwZdC0ovC/OvriuatxhzjaKI
+         W5T4Jqk6ASQxKarE8t9Ij/rT0Dz43w2ZrjOlwAk5VJNna3/QBt3o07khf/mCcDGvMPx2
+         lcoW8MsvSEERp11kLz1uflFeiRrV17bsYP53xCaKQctxEFMSmqb/lKHcW0ycTtmtwt+G
+         IeUWh/y6QJrga6NqeJNJRqwiTd9GJ+uxLYJcOgoQoA7A33UoDremYTiF27vjenE/1+ZQ
+         f7d8zK0U5dIp6S4lSLO9oBGSuuWUH+X5NMzfm5JUGspcsht46kp64iJmc/cGm70We5JA
+         lfWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=REE29c8UBh0TXGI809b1Z+iw+yDqToJ7DYkOaz/LGnU=;
+        fh=dqQuGYeP4sJTsKzvo36enlvsR6BxFYIi7w31+DsbNvg=;
+        b=fj8RXLNgKjC4XOda68PRT+CWmJZRp+AsQahCt6cX+qNycnLc9QBO/+0HBh4eRdlg+p
+         wgvy5/SsvSgy9lPGvqSRkhuKm1zC8IUIi8bdCk+IDgcdBWi6q6VgEOwAtI98k1rQmfTj
+         XPXyyF29NNyJ7PIUVT+HrQlzHYDtHsFMfYBYyxCSyhA8qEc/hwvBn9hzeNI3nq1OGm6a
+         guY7vRumU/Cn5Ug2We1bhw6yQNbaNJw2qNuLnefnm+7abuEcfU3+jlsRH+jZ/40L66N+
+         3N5Wyybb74GBVAgFFJSZU+UpanyEYo/m2PykTZ7ul4PE+YxKXbWKZ45MFppjl3uPyw/Q
+         cidQ==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nagashi.ma; s=ggle-ngsma; t=1792450603; x=1793055403; darn=lists.infradead.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=REE29c8UBh0TXGI809b1Z+iw+yDqToJ7DYkOaz/LGnU=;
+        b=DVkFHjYU+fIIufM/u5eBJR+tKZHLs3UDSLXoZwSqQID6oahJfbxbQLUA7prd+Z7JGj
+         MF+aNKnq3NogM4en/2zUtBQvzZG589A1dkcRpdcuBo09/p5A+OUFZ38PVypYpATMxC8N
+         hbN/hSrYnbo2hSJ/olnTuA9NosjOg77BAkXv8wZxZ0HBbzbT5miW0Dz191KUAnGJoSJ5
+         FeeM1SOBgAgcAcjxBVwgf5qIug3Oy+/yxMDYq4CfeflNXOiJAXsS53cV7eQ+7htRpNWd
+         NShy0oalxt8XnrobnWiIhYWZ7O/2ZC6qnBLJWCa50PbpGydUoEdGax1l7fgaV8IbccBd
+         G5wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792450603; x=1793055403;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=REE29c8UBh0TXGI809b1Z+iw+yDqToJ7DYkOaz/LGnU=;
+        b=ON31JF4UiL3kNWWATlCQJA9fDYpliUDnI5VJmyR66n6Xlg9wriXEiSoN2QWHK36C0E
+         e9Zk45mrW4ATC2qs0MZDeEHAzx1gyMVPnpLBP5P2EcciiZwoQ0/Gpd1RlMce8uJ32r//
+         Gq+YOgo2MWZS23YiXtN+UOLdNEUqsNHpZK1wKVrBriw7QHpVtwikuhsTdgxhDQ3QIv7d
+         QuJ81dJJYqgQWsz4+c4k9XUHTciJ7h4l9/L/UNge0IIHidimHXjxsNvREod5rlQZ6awY
+         ZoT5dXEusJkWOtRXic/jSs+IRRWn0ah8jQuxqIxvraoUm1LgGX5eRx5N/5tcUwt3d8rm
+         b1wA==
+X-Forwarded-Encrypted: i=1; AKwUvBzXsjbeaHKoEjeyjRrUmsTLwmOylkyefJZEEZSy0tSCSQkaqLcFi0oCsPymwjpaBgrtNTIXQfU=@lists.infradead.org
+X-Gm-Message-State: AFq9FYJH5P7eJof327FR2eOfVCdfF9zOjAqvx/0Z6JkPPJEyhdegsnqv
+	aFAB6+aKoOy6kx5gRV3KOG9pFCdBqnANnI5QSUy4mSfm9HxO41up3hUJ+kp3zUtnPzW0ZdCSMgk
+	u+/GuKLH3RTcZ3PYoHdRIZcygSD9DYsxqO8laCI6+
+X-Gm-Gg: AYBFou0NNgB4ULBZMnPUi5hKj/Ejmx6TBMWGQ8PrpVbIpGyhfAQi6UCQZTfeOy1cxUi
+	9lxEMD7b37pEVxyHec5BxtUODBZ1yIx73rFlUoa9wsjt5utd9qZ/8wjODTstRtdEiUDw7dAIQJA
+	4rfmLMq2DN9tOtwret/+QrygPYn6ygo7qvw4iZIGVGZmm2eqEF+soJwqlzpP4brjSk4QfBaTYPD
+	dxShi6DD6lVo3rwhdai/h/kjxm5b3PgSbMyVKg77MYwLNfWalKMeX6JGGyO/xBoAfzZ1nZ++nbo
+	NbuCVVqRmI0yI83hYQrb9EK+Ej+1hTIJDq6t2DxvzzdxMoC67xEigjDgS4ai+lSXadaBoY52XI9
+	TW0dga5758w==
+X-Received: by 2002:a05:6402:4403:b0:6b1:e361:5550 with SMTP id
+ 4fb4d7f45d1cf-6b3a81657c1mr5897174a12.17.1792450603223; Mon, 19 Oct 2026
+ 15:56:43 -0700 (PDT)
+X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.57
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20261016-ath10k-series-v1-send-v1-0-c847697b3558@nagashi.ma>
+ <20261016-ath10k-series-v1-send-v1-3-c847697b3558@nagashi.ma> <61207966-c403-441d-9019-583702833a7f@gmail.com>
+In-Reply-To: <61207966-c403-441d-9019-583702833a7f@gmail.com>
+From: "Nagashima, Shunsuke" <shunsuke@nagashi.ma>
+Date: Tue, 20 Oct 2026 07:56:16 +0900
+X-Gm-Features: AclHuK9QItXkR2B2Q98NX99AOaM5Tsth9CYzCO-Xtn0rwNKADE_0wzaV0-bDX4g
+Message-ID: <CACB3TCKJN8ou4qa8BKJZYGgv1RRH0awt-eu07YRDwPkppuLQJg@mail.gmail.com>
+Subject: Re: [PATCH ath-next 3/3] wifi: ath10k: bring down a station vdev that
+ never came up
+To: James Prestwood <prestwoj@gmail.com>
+Cc: Jeff Johnson <jjohnson@kernel.org>, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	David Heidelberg <david@ixit.cz>, Fabricio Akio <fabricioakio@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261019_155645_637772_662F55E2 
+X-CRM114-Status: GOOD (  21.18  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
 List-Id: <ath10k.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
- <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/ath10k/>
 List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
-Errors-To: ath10k-bounces+ath10k=archiver.kernel.org@lists.infradead.org
-
-From: Manikanta Pubbisetty <manikanta.pubbisetty@oss.qualcomm.com>
-
-[ Upstream commit f78210dd4bea09090b828adc2733cad4b9916306 ]
-
-When an error occurs during RX packet processing (e.g., MSDU done
-failure), the driver sets rx_confused and drops all subsequent RX
-packets until a Wi-Fi ON/OFF cycle clears the flag. This can leave
-the device in a bad state where it cannot process RX data traffic.
-
-Instead of leaving the device in such a state, trigger hardware
-recovery so that such an error state can be reset and the device
-can function again normally.
-
-Tested-on: WCN3990 hw1.0 WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00288-QCARMSWPZ-1
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00189
-
-Signed-off-by: Manikanta Pubbisetty <manikanta.pubbisetty@oss.qualcomm.com>
-Reviewed-by: Rameshkumar Sundaram <rameshkumar.sundaram@oss.qualcomm.com>
-Reviewed-by: Baochen Qiang <baochen.qiang@oss.qualcomm.com>
-Link: https://patch.msgid.link/20260710060406.3323260-1-manikanta.pubbisetty@oss.qualcomm.com
-Signed-off-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-The local tree is **Linux 7.3-rc4** (`v7.3-rc4-27-gf0100363d8c37`). The
-surrounding ath10k RX and recovery code is present, and this is a small,
-real device-hang fix.
-
----
-
-## PHASE 1: COMMIT MESSAGE FORENSICS
-
-**Step 1.1: PARSE THE SUBJECT LINE**
-Record: **[wifi/ath10k] [trigger] [start hardware recovery when RX
-processing fails instead of leaving the device stuck]**
-
-**Step 1.2: PARSE ALL COMMIT MESSAGE TAGS**
-Record:
-- **Fixes:** none (expected)
-- **Reported-by:** none
-- **Tested-on:** WCN3990 hw1.0; QCA6174 hw3.2 PCI; QCA6174 hw3.2 SDIO
-  (three hardware/firmware combinations)
-- **Reviewed-by:** Rameshkumar Sundaram, Baochen Qiang (Qualcomm ath
-  reviewers)
-- **Acked-by:** none
-- **Link:** https://patch.msgid.link/20260710060406.3323260-1-
-  manikanta.pubbisetty@oss.qualcomm.com
-- **Cc: stable:** none (expected)
-- **Signed-off-by:** Manikanta Pubbisetty (author); Jeff Johnson (ath
-  maintainer). Ignoring Sasha Levin SOB if present in pipeline copies;
-  the tree copy has none.
-
-**Step 1.3: ANALYZE THE COMMIT BODY TEXT**
-Record:
-- **Bug:** On RX processing errors (e.g. MSDU_DONE not set), the driver
-  sets `htt->rx_confused` and then drops all further RX until a Wi-Fi
-  ON/OFF cycle.
-- **Symptom:** Device stays in a bad state and cannot process RX data
-  traffic; connectivity is dead until the user toggles the interface.
-- **Version info:** none in the message. The FIXME this removes dates to
-  2014 (`e0bd7513bbc85`, v3.19-rc1).
-- **Root cause:** Error paths mark the ring confused but never reset
-  hardware, so the device stays inoperable.
-
-**Step 1.4: DETECT HIDDEN BUG FIXES**
-Record: Not a disguised cleanup. It is an explicit functional fix:
-replace “leave device inoperable” with the existing recovery path. The
-removed FIXME said the same thing since 2014.
-
----
-
-## PHASE 2: DIFF ANALYSIS
-
-**Step 2.1: INVENTORY THE CHANGES**
-Record:
-- File: `drivers/net/wireless/ath/ath10k/htt_rx.c` — **3 insertions, 3
-  deletions** (`git show --stat`: 6 lines changed).
-- Functions: `ath10k_htt_rx_handle_amsdu()`,
-  `ath10k_htt_rx_in_ord_ind()` (two sites).
-- Scope: single-file surgical error-path change.
-
-**Step 2.2: UNDERSTAND THE CODE FLOW CHANGE**
-Record:
-1. `ath10k_htt_rx_handle_amsdu()` when `ath10k_htt_rx_amsdu_pop()`
-   returns `< 0`: previously purged skbs, set `rx_confused`, returned.
-   Now also calls `ath10k_core_start_recovery(ar)`. FIXME removed.
-2. `ath10k_htt_rx_in_ord_ind()` when pop-paddr-list fails: same recovery
-   call after `rx_confused = true`.
-3. Same function when `ath10k_htt_rx_extract_amsdu()` fails: same
-   recovery call after purge + `rx_confused`.
-
-All three are **error paths only**. Normal RX is unchanged.
-
-**Step 2.3: IDENTIFY THE BUG MECHANISM**
-Record: **Logic / hardware-stuck recovery.** After RX ring corruption
-the driver permanently refuses RX (`if (htt->rx_confused) return -EIO`).
-Recovery queues `restart_work` → `ath10k_halt()` →
-`ieee80211_restart_hw()` → `ath10k_start()` → `ath10k_core_start()` →
-`ath10k_htt_rx_alloc()`, which sets `htt->rx_confused = false`. That is
-the same recovery used on firmware crash and WMI timeout.
-
-**Step 2.4: ASSESS THE FIX QUALITY**
-Record: Obviously correct and minimal. `ath10k_core_start_recovery()`
-only queues work (`queue_work(ar->workqueue_aux,
-&ar->recovery_check_work)` in this tree), so it is safe from NAPI.
-Existing consecutive-failure logic can WEDGE the device, so this does
-not create an infinite restart loop. Risk is a brief firmware restart on
-a path that was already dead. No API or data-structure changes.
-
----
-
-## PHASE 3: GIT HISTORY INVESTIGATION
-
-**Step 3.1: BLAME THE CHANGED LINES**
-Record:
-- Confused-without-reboot behavior introduced in **`e0bd7513bbc85`**
-  (“ath10k: refactor htt->rx_confused”, 2014-11-20), first in
-  **v3.19-rc1**.
-- `handle_amsdu` error path from **`18235664e7f9a`** (Rajkumar
-  Manoharan, 2016).
-- In-order pop/extract error paths from **`c545070e404bf`** (“ath10k:
-  implement rx reorder support”, 2015), v4.1 era.
-- Recovery calls added by this commit **`f78210dd4bea0`**.
-
-**Step 3.2: FOLLOW THE FIXES: TAG**
-Record: No `Fixes:` tag. Historical introducer is `e0bd7513bbc85`
-(ancestor of HEAD). `git merge-base --is-ancestor e0bd7513bbc85 HEAD` is
-true.
-
-**Step 3.3: CHECK FILE HISTORY**
-Record: Related but independent: `7393878255e49` (skb leak on incomplete
-MSDU pop) is a different patch/date/msgid. This commit is standalone
-`1/1`. No prerequisite refactor in htt_rx.c.
-
-**Step 3.4: CHECK THE AUTHOR'S OTHER COMMITS**
-Record: Manikanta Pubbisetty is a Qualcomm ath10k contributor (leak fix
-on the same file shortly before). Not the listed maintainer; maintainer
-Jeff Johnson applied it.
-
-**Step 3.5: CHECK FOR DEPENDENT/PREREQUISITE COMMITS**
-Record:
-- `ath10k_core_start_recovery()` exists since **`5dadbe4e3718`**
-  (v5.11-rc1) — ancestor of HEAD.
-- Current implementation from **`f35a07a4842a8`** (Oct 2025) — ancestor
-  of HEAD; queues work, does not block in the caller.
-- Can apply standalone on this tree: the function, `rx_confused`, and
-  both RX handlers exist.
-
----
-
-## PHASE 4: MAILING LIST AND EXTERNAL RESEARCH
-
-**Step 4.1: FIND THE ORIGINAL PATCH DISCUSSION**
-Record:
-- Lore/msgid: https://patch.msgid.link/20260710060406.3323260-1-
-  manikanta.pubbisetty@oss.qualcomm.com
-- `b4 dig -a`: **v1 only**, single patch, no v2/v3.
-- Reviews: Baochen Qiang Reviewed-by; Rameshkumar Sundaram “Actual
-  change looks fine” + Reviewed-by. No NAKs, no stable nomination, no
-  risk flags.
-- Jeff Johnson: “Applied, thanks!” (`da5d73e12af2` in ath.git; mainline
-  sha `f78210dd4bea0`).
-
-**Step 4.2: CHECK WHO REVIEWED THE PATCH**
-Record: `b4 dig -w` original To/Cc: author,
-`ath10k@lists.infradead.org`, `linux-wireless@vger.kernel.org`. Applied
-by **Jeff Johnson**, listed ATH10K maintainer.
-
-**Step 4.3: SEARCH FOR THE BUG REPORT**
-Record: No syzbot/bugzilla. Qualcomm Tested-on on three chipsets implies
-they hit RX-stuck in product testing, not a theoretical FIXME-only
-cleanup.
-
-**Step 4.4: CHECK FOR RELATED PATCHES AND SERIES**
-Record: Standalone `[ath-next] 1/1`. The earlier skb-leak patch is not
-required for this change.
-
-**Step 4.5: CHECK STABLE MAILING LIST HISTORY**
-Record: lore.kernel.org HTTP fetch returned 403. `b4 dig` thread has no
-stable discussion. **UNVERIFIED** whether linux-stable ever discussed
-this specific patch; no evidence it was rejected.
-
----
-
-## PHASE 5: CODE SEMANTIC ANALYSIS
-
-**Step 5.1: KEY FUNCTIONS**
-Record: `ath10k_htt_rx_handle_amsdu`, `ath10k_htt_rx_in_ord_ind`; callee
-`ath10k_core_start_recovery`.
-
-**Step 5.2: TRACE CALLERS**
-Record: Both called from `ath10k_htt_txrx_compl_task()` (NAPI poll): in-
-order queue then `num_mpdus_ready` loop. On `-EIO` it stops processing.
-That is the normal data RX completion path, not init-only.
-
-**Step 5.3: TRACE CALLEES**
-Record: `ath10k_core_start_recovery()` → `queue_work(workqueue_aux,
-recovery_check_work)` → may `queue_work(workqueue, restart_work)` → halt
-+ `ieee80211_restart_hw()`. No lock taken in `start_recovery`.
-`in_ord_ind` holds `rx_ring.lock` while queuing work; that is safe.
-
-**Step 5.4: FOLLOW THE CALL CHAIN**
-Record: Userspace/network RX → mac80211 → NAPI → htt_rx. Reachable on
-any associated ath10k interface when firmware/DMA delivers a bad MSDU or
-corrupted ring. Unprivileged traffic can contribute; the actual trigger
-is firmware/hardware RX error, not a crafted syscall.
-
-**Step 5.5: SEARCH FOR SIMILAR PATTERNS**
-Record: Same `ath10k_core_start_recovery()` already used in `pci.c`
-(firmware crash), `wmi.c` (command timeout), `sdio.c`/`snoc.c`,
-`debug.c`. This patch extends that pattern to RX ring failure. All
-`rx_confused = true` sites in htt_rx.c are covered.
-
----
-
-## PHASE 6: CROSS-REFERENCING AGAINST THE LOCAL TREE
-
-**Step 6.1: DOES THE BUGGY CODE EXIST IN THIS TREE?**
-Record:
-- `git describe HEAD` / `make kernelversion`: **7.3.0-rc4**.
-- File and functions exist. `rx_confused` still used. Recovery API
-  present.
-- Bug introduced v3.19; long present in this lineage.
-- Working tree already contains `f78210dd4bea0` (`git merge-base --is-
-  ancestor` exit 0). That is the mainline commit under review, not a
-  reason to treat the bug as absent from this series’ code.
-
-**Step 6.2: CHECK FOR BACKPORT COMPLICATIONS**
-Record: Hunks match this tree’s htt_rx.c. Recovery is the non-blocking
-workqueue form. Expected apply: **clean** on a 7.3-era tree that still
-has the pre-image; current HEAD is already post-image.
-
-**Step 6.3: CHECK IF RELATED FIXES ARE ALREADY HERE**
-Record: No earlier alternative fix for “reboot on rx_confused”.
-`51fc7d74ce4a1` only clears the flag on load. This is the fix that
-actually starts recovery.
-
----
-
-## PHASE 7: SUBSYSTEM AND MAINTAINER CONTEXT
-
-**Step 7.1: SUBSYSTEM AND CRITICALITY**
-Record: **drivers/net/wireless/ath/ath10k** — **IMPORTANT** (not core
-mm/fs, but QCA6174/WCN3990 are common laptop/phone Wi-Fi). Status in
-MAINTAINERS: Supported; maintainer Jeff Johnson.
-
-**Step 7.2: SUBSYSTEM ACTIVITY**
-Record: Actively maintained (Qualcomm patches through 2026). The stuck-
-RX behavior itself is old; the recovery helper is mature.
-
----
-
-## PHASE 8: IMPACT AND RISK ASSESSMENT
-
-**Step 8.1: WHO IS AFFECTED**
-Record: **Driver-specific**, `CONFIG_ATH10K*`. QCA6174 is widely used in
-PCs; WCN3990 on Qualcomm platforms.
-
-**Step 8.2: TRIGGER CONDITIONS**
-Record: RX ring pop/extract failure (incomplete MSDU, corrupted ring).
-Not every packet; when it hits, RX stays dead until iface toggle. Not a
-userspace exploit path.
-
-**Step 8.3: FAILURE MODE SEVERITY**
-Record: **Wi-Fi RX permanently stopped** until ON/OFF. Not a panic/UAF,
-but the device is inoperable — the 2014 FIXME called it that. Severity
-**HIGH** (driver hang / loss of connectivity). Consecutive recovery
-failures can WEDGE, which is existing policy, not new.
-
-**Step 8.4: RISK-BENEFIT RATIO**
-Record:
-- **Benefit:** Restores Wi-Fi after RX ring confusion without a manual
-  toggle; uses the same recovery as firmware crash.
-- **Risk:** Very low (3 calls to an existing queue_work helper; error
-  paths only). Worst case is a restart of an already-dead radio.
-- **Ratio:** Strongly favors taking the fix.
-
----
-
-## PHASE 9: FINAL SYNTHESIS
-
-**Step 9.1: COMPILE THE EVIDENCE**
-
-FOR:
-- Real user-visible bug: all RX dropped until Wi-Fi toggle.
-- Acknowledged since 2014 in-tree FIXME.
-- Small (3 calls, one file), obviously correct.
-- Uses existing, NAPI-safe recovery.
-- Tested on three chip/bus combinations.
-- Reviewed and applied by ath maintainers; no NAKs.
-- All `rx_confused = true` sites updated.
-- Code and `ath10k_core_start_recovery()` exist in this 7.3-rc4 tree.
-
-AGAINST:
-- Not a crash, UAF, or security bug; workaround exists (iface bounce).
-- Trigger is firmware/hardware RX error, not every boot.
-- No `Fixes:`/`Cc: stable` (not a negative per the rules).
-
-UNRESOLVED:
-- lore.kernel.org WebFetch 403; thread recovered via `b4 dig -m`.
-- No independent end-user bugzilla; product Tested-on only.
-
-**Step 9.2: STABLE RULES CHECKLIST**
-1. Obviously correct and tested? **PASS** — three Tested-on lines, two
-   Reviewed-by, maintainer applied.
-2. Fixes a real bug that affects users? **PASS** — RX stays dead until
-   ON/OFF.
-3. Important issue? **PASS** — device inoperable / connectivity hang,
-   HIGH.
-4. Small and contained? **PASS** — 3/3 lines, one file.
-5. No new features or APIs? **PASS** — only calls existing recovery.
-6. Can apply to the local tree? **PASS** — htt_rx.c and
-   `ath10k_core_start_recovery()` match; this tree is 7.3-rc4.
-
-**Step 9.3: EXCEPTION CATEGORIES**
-Record: None (not a device ID/quirk/DT/build/doc). Qualifies as a normal
-bugfix.
-
-**Step 9.4: DECISION**
-This tree has the ath10k RX confused paths and the recovery helper.
-Leaving `rx_confused` set without restart makes the radio unusable;
-kicking `ath10k_core_start_recovery()` is the same response already used
-for firmware crash and is safe from NAPI. That is a contained, tested
-hang fix appropriate for this tree.
-
----
-
-## What the commit solves for this tree
-
-When htt RX pop/extract fails, ath10k previously set `rx_confused` and
-discarded all later RX until a full Wi-Fi cycle. Users see a dead
-receive path. The patch queues the existing hardware restart so
-`ath10k_htt_rx_alloc()` clears the flag and the device can RX again.
-
-It meets stable rules: obviously correct, real hang, ~3 lines, no new
-API. Benefit is restoring Wi-Fi after ring confusion; risk is a restart
-of an already-stuck device.
-
----
-
-## Verification
-
-- **[Phase 1]** Tags: Tested-on ×3, Reviewed-by ×2, Link msgid; no
-  Fixes/Reported-by/Cc:stable.
-- **[Phase 2]** `git show --stat f78210dd4bea0`: htt_rx.c +3/-3; three
-  `ath10k_core_start_recovery()` calls on error paths; FIXME removed.
-- **[Phase 2]** Read `ath10k_core_start_recovery()` at core.c:2534 —
-  `queue_work` only.
-- **[Phase 2]** Read restart path: `ath10k_core_restart` →
-  `ieee80211_restart_hw` → `ath10k_start` → `ath10k_core_start` →
-  `ath10k_htt_rx_alloc()` sets `rx_confused = false` (htt_rx.c:796).
-- **[Phase 3]** `git log -S` / `git describe --contains e0bd7513bbc85`:
-  FIXME from v3.19-rc1.
-- **[Phase 3]** `ath10k_core_start_recovery` added in `5dadbe4e3718`
-  (v5.11-rc1); ancestor of HEAD.
-- **[Phase 3]** `git merge-base --is-ancestor` for f35a07a4842a8,
-  5dadbe4e3718, c545070e404bf, e0bd7513bbc85: all 0.
-- **[Phase 3]** Related leak commit `7393878255e49` is a separate patch,
-  not a prerequisite.
-- **[Phase 4]** `b4 dig -c f78210dd4bea0`: msgid
-  20260710060406.3323260-1.
-- **[Phase 4]** `b4 dig -a`: v1 only.
-- **[Phase 4]** `b4 dig -w`: linux-wireless + ath10k lists.
-- **[Phase 4]** `b4 dig -m`: Baochen/Rameshkumar Reviewed-by; Jeff
-  Johnson applied; no NAK; no Cc:stable in thread.
-- **[Phase 4]** WebFetch lore.kernel.org: 403. UNVERIFIED via HTTP;
-  thread obtained via b4.
-- **[Phase 5]** Callers: `ath10k_htt_txrx_compl_task`
-  (htt_rx.c:4382–4395).
-- **[Phase 5]** Grep: all three `rx_confused = true` sites got recovery;
-  other start_recovery users are pci/wmi/sdio/snoc/debug.
-- **[Phase 6]** `git describe HEAD`: v7.3-rc4-27-gf0100363d8c37; `make
-  kernelversion`: 7.3.0-rc4.
-- **[Phase 6]** `git merge-base --is-ancestor f78210dd4bea0 HEAD`: 0
-  (commit is in this tree’s history).
-- **[Phase 7]** MAINTAINERS: ATH10K Supported, Jeff Johnson.
-- **[Phase 8]** Failure mode: RX hung until iface toggle; recovery
-  already rate-limited to WEDGED.
-- **UNVERIFIED:** linux-stable mailing list (HTTP 403); no public non-
-  Qualcomm reproducer.
-
-The fix is small, surgical, and meets the stable criteria for this
-7.3-rc4 tree.
-
-**YES**
-
- drivers/net/wireless/ath/ath10k/htt_rx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index d7e429041065a..e4162d2faae66 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2345,10 +2345,8 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
- 	if (ret < 0) {
- 		ath10k_warn(ar, "rx ring became corrupted: %d\n", ret);
- 		__skb_queue_purge(&amsdu);
--		/* FIXME: It's probably a good idea to reboot the
--		 * device instead of leaving it inoperable.
--		 */
- 		htt->rx_confused = true;
-+		ath10k_core_start_recovery(ar);
- 		return ret;
- 	}
- 
-@@ -3313,6 +3311,7 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 	if (ret < 0) {
- 		ath10k_warn(ar, "failed to pop paddr list: %d\n", ret);
- 		htt->rx_confused = true;
-+		ath10k_core_start_recovery(ar);
- 		return -EIO;
- 	}
- 
-@@ -3346,6 +3345,7 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 			ath10k_warn(ar, "failed to extract amsdu: %d\n", ret);
- 			htt->rx_confused = true;
- 			__skb_queue_purge(&list);
-+			ath10k_core_start_recovery(ar);
- 			return -EIO;
- 		}
- 	}
--- 
-2.53.0
-
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
+	aws-us-west-2-korg-listserv-alma10-1
+
+Hi James,
+
+Sorry, I am resending this as plain text. My first reply went out as
+HTML by mistake, so it did not reach the lists. James, you may get it
+twice. Sorry for the noise.
+
+On 10/19/26 6:12 AM, James Prestwood wrote:
+> This seems similar to an issue we see on the QCA6174's. I don't see a 20
+> second delay, but sometimes after an auth/assoc timeout we get a spam of
+> failed connections with NL80211_TIMEOUT_UNSPECIFIED. I've mentioned this
+> quite some time ago [1]. Do you think it has any relation to whats being
+> fixed here?
+
+Thanks for the pointer. I read both of your mails in that thread. I
+can't say for sure, but I don't think it is the same problem. I only
+have WCN3990 here, so this comes from comparing logs, not from a test
+on QCA6174.
+
+Why I think it is different:
+
+- In our case the failed attempt gets to the Auth stage. mac80211
+ hands the Auth frames to the driver ("send auth to ... (try 1/3)" in
+ the kernel log), the firmware completes them with status "discard",
+ and the attempt ends with "authentication with ... timed out". In
+ your trace, the attempts that fail with NL80211_TIMEOUT_UNSPECIFIED
+ never get that far: each one is a short scan by cfg80211 that finds
+ nothing from the target BSS, and the first rdev_auth in the trace
+ comes only after a scan that did find its BSS. That matches what you
+ found in March, that the BSS was missing from the kernel's BSS list.
+
+- During our hold, probe requests still go out on the air. Only the
+ Auth frames on that vdev are held.
+
+- Our hold always ran for about 20 s, and only on two newer WCN3990
+ firmware builds (c10-00459 and c10-00236). An older build,
+ WLAN.HL.2.0-01387, did not show it.
+
+- The missing VDEV_DOWN goes back to commit 077efc8c42e8 (v3.19), so
+ 5.15 has the same path. If your problem started between 5.15 and
+ 6.2 on the same firmware, this path alone would not explain that.
+
+- You also see it on ath11k, and this patch only changes ath10k.
+
+There is one overlap: your first case starts with an association
+timeout, which is one of the failures after which ath10k stops the
+station vdev without a down. If you want to rule it out, the patch is
+small. With it, a failed attempt gets a VDEV_DOWN after the VDEV_STOP
+(ATH10K_DBG_MAC prints "mac vdev N down (never up)"). If the
+NL80211_TIMEOUT_UNSPECIFIED runs still happen on QCA6174 with the
+patch, it is something else.
+
+On ath11k, only as a pointer: I have not tested anything there and
+have no ath11k hardware, so this is from reading the code (ath-next)
+only. ath11k looks the same. A station vdev is stopped with
+WMI_VDEV_STOP in ath11k_mac_op_unassign_vif_chanctx(), or in
+ath11k_mac_stop_vdev_early() at station removal on chips with
+vdev_start_delay, and the only VDEV_DOWN for a station vdev is in
+ath11k_bss_disassoc(). So a station vdev that never came up would be
+stopped without a down there too. I don't know whether ath11k firmware
+cares about that.
+
+I worked through this together with Claude (AI). English is hard for
+me, so the English was written with AI help. The WCN3990 results come
+from my own device tests on my comma four.
+
+Thanks,
+Shunsuke
 
