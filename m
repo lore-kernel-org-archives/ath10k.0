@@ -2,112 +2,79 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B07606A31A
-	for <ath10k@archiver.kernel.org>; Mon, 19 Oct 2026 22:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357EB606A319
+	for <ath10k@archiver.kernel.org>; Mon, 19 Oct 2026 23:04:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=dHBH1poE;
-	dkim=pass (2048-bit key, unprotected) header.d=nagashi.ma header.i=@nagashi.ma header.a=rsa-sha256 header.s=ggle-ngsma header.b=DVkFHjYU
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ulAEMYi+;
+	dkim=pass (2048-bit key, unprotected) header.d=gmx.de header.i=aleksei.kharlamov@gmx.de header.a=rsa-sha256 header.s=s31663417 header.b=W1FTMsW/
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=REE29c8UBh0TXGI809b1Z+iw+yDqToJ7DYkOaz/LGnU=; b=dHBH1poEMNN3IU0eVrC0hXS7AL
-	1AJecTJPPn1JM6QTtC/baqrA5Ivll0GiW8a+8+lJ4U3b5VRhGdU4WUNcsS5wlIPQRDdeBbyQukl8/
-	CYa7IZlDQvt4F7PFNY3zDjAZbtTWDvh51p+E0PcMTogLL5XEl6Az2Ffs/xR98IIhAhWpwnJjWMd5J
-	uJE9OKf+m5quLe7FENrDlaIFy5OArzn8ZMAk97Cn7sbSKmiahzje1v9G6Ptvwax8kjg0BDHfISQhO
-	lzmtxELDEkHsWlrcy/JW32ErISofY33ao2wm2jMruwzo9+UsUadfMWcdh9WvaDuKqVoTPnHovEYN+
-	bWPtcYag==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:References:Cc:To:Subject:From:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ejzvlhIFW6GmHno4CqHvsMU5kkN5COxKCaAbK5ak6W8=; b=ulAEMYi+ZsaxVXp4TM8qLaNy2B
+	Mhdd/yP1+Z3PM1iu0opT5B+q1ROUzrh03oXHWEIwdcvEtbB2tKAGyrs8V0ZFSSTW+Loo15XXdTgXq
+	gfFEaA8r6A/Fu4OEbeSdmK+fABHiZSDeTaQZMT9TiuLQ0huXeFs0iICqiywTcHHMz8jeQNnKcJ3uU
+	GIqSTRbTHLy0TWzp582PFAAH8I2GcaowELoBMPtooYdDm++QH2id4aoISzStxmZSeAa+pZimsv8uo
+	p/ldWqztTzCC3l7OX+myF+PqXcMmq3LYgZ5dc0iAOYsDXaILEsbYC2GydMrWn4S8/wfN7n24i/49A
+	XIy5WPFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xIwHg-00000008Vnj-1Ocw;
-	Mon, 19 Oct 2026 22:56:48 +0000
-Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
+	id 1xIwP0-00000008WJh-0Hz9;
+	Mon, 19 Oct 2026 23:04:22 +0000
+Received: from mout.gmx.net ([212.227.15.15])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xIwHd-00000008Vn4-2KZP
+	id 1xIwOw-00000008WJF-2YOB
 	for ath10k@lists.infradead.org;
-	Mon, 19 Oct 2026 22:56:46 +0000
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-6a642495d81so3543215a12.2
-        for <ath10k@lists.infradead.org>; Mon, 19 Oct 2026 15:56:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1792450603; cv=none;
-        d=google.com; s=arc-20260327;
-        b=h4ZNJrjAQN1hEtmU9T5+yrQym2bORflo6W/vYQkxlhuwZdC0ovC/OvriuatxhzjaKI
-         W5T4Jqk6ASQxKarE8t9Ij/rT0Dz43w2ZrjOlwAk5VJNna3/QBt3o07khf/mCcDGvMPx2
-         lcoW8MsvSEERp11kLz1uflFeiRrV17bsYP53xCaKQctxEFMSmqb/lKHcW0ycTtmtwt+G
-         IeUWh/y6QJrga6NqeJNJRqwiTd9GJ+uxLYJcOgoQoA7A33UoDremYTiF27vjenE/1+ZQ
-         f7d8zK0U5dIp6S4lSLO9oBGSuuWUH+X5NMzfm5JUGspcsht46kp64iJmc/cGm70We5JA
-         lfWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=REE29c8UBh0TXGI809b1Z+iw+yDqToJ7DYkOaz/LGnU=;
-        fh=dqQuGYeP4sJTsKzvo36enlvsR6BxFYIi7w31+DsbNvg=;
-        b=fj8RXLNgKjC4XOda68PRT+CWmJZRp+AsQahCt6cX+qNycnLc9QBO/+0HBh4eRdlg+p
-         wgvy5/SsvSgy9lPGvqSRkhuKm1zC8IUIi8bdCk+IDgcdBWi6q6VgEOwAtI98k1rQmfTj
-         XPXyyF29NNyJ7PIUVT+HrQlzHYDtHsFMfYBYyxCSyhA8qEc/hwvBn9hzeNI3nq1OGm6a
-         guY7vRumU/Cn5Ug2We1bhw6yQNbaNJw2qNuLnefnm+7abuEcfU3+jlsRH+jZ/40L66N+
-         3N5Wyybb74GBVAgFFJSZU+UpanyEYo/m2PykTZ7ul4PE+YxKXbWKZ45MFppjl3uPyw/Q
-         cidQ==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nagashi.ma; s=ggle-ngsma; t=1792450603; x=1793055403; darn=lists.infradead.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=REE29c8UBh0TXGI809b1Z+iw+yDqToJ7DYkOaz/LGnU=;
-        b=DVkFHjYU+fIIufM/u5eBJR+tKZHLs3UDSLXoZwSqQID6oahJfbxbQLUA7prd+Z7JGj
-         MF+aNKnq3NogM4en/2zUtBQvzZG589A1dkcRpdcuBo09/p5A+OUFZ38PVypYpATMxC8N
-         hbN/hSrYnbo2hSJ/olnTuA9NosjOg77BAkXv8wZxZ0HBbzbT5miW0Dz191KUAnGJoSJ5
-         FeeM1SOBgAgcAcjxBVwgf5qIug3Oy+/yxMDYq4CfeflNXOiJAXsS53cV7eQ+7htRpNWd
-         NShy0oalxt8XnrobnWiIhYWZ7O/2ZC6qnBLJWCa50PbpGydUoEdGax1l7fgaV8IbccBd
-         G5wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792450603; x=1793055403;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=REE29c8UBh0TXGI809b1Z+iw+yDqToJ7DYkOaz/LGnU=;
-        b=ON31JF4UiL3kNWWATlCQJA9fDYpliUDnI5VJmyR66n6Xlg9wriXEiSoN2QWHK36C0E
-         e9Zk45mrW4ATC2qs0MZDeEHAzx1gyMVPnpLBP5P2EcciiZwoQ0/Gpd1RlMce8uJ32r//
-         Gq+YOgo2MWZS23YiXtN+UOLdNEUqsNHpZK1wKVrBriw7QHpVtwikuhsTdgxhDQ3QIv7d
-         QuJ81dJJYqgQWsz4+c4k9XUHTciJ7h4l9/L/UNge0IIHidimHXjxsNvREod5rlQZ6awY
-         ZoT5dXEusJkWOtRXic/jSs+IRRWn0ah8jQuxqIxvraoUm1LgGX5eRx5N/5tcUwt3d8rm
-         b1wA==
-X-Forwarded-Encrypted: i=1; AKwUvBzXsjbeaHKoEjeyjRrUmsTLwmOylkyefJZEEZSy0tSCSQkaqLcFi0oCsPymwjpaBgrtNTIXQfU=@lists.infradead.org
-X-Gm-Message-State: AFq9FYJH5P7eJof327FR2eOfVCdfF9zOjAqvx/0Z6JkPPJEyhdegsnqv
-	aFAB6+aKoOy6kx5gRV3KOG9pFCdBqnANnI5QSUy4mSfm9HxO41up3hUJ+kp3zUtnPzW0ZdCSMgk
-	u+/GuKLH3RTcZ3PYoHdRIZcygSD9DYsxqO8laCI6+
-X-Gm-Gg: AYBFou0NNgB4ULBZMnPUi5hKj/Ejmx6TBMWGQ8PrpVbIpGyhfAQi6UCQZTfeOy1cxUi
-	9lxEMD7b37pEVxyHec5BxtUODBZ1yIx73rFlUoa9wsjt5utd9qZ/8wjODTstRtdEiUDw7dAIQJA
-	4rfmLMq2DN9tOtwret/+QrygPYn6ygo7qvw4iZIGVGZmm2eqEF+soJwqlzpP4brjSk4QfBaTYPD
-	dxShi6DD6lVo3rwhdai/h/kjxm5b3PgSbMyVKg77MYwLNfWalKMeX6JGGyO/xBoAfzZ1nZ++nbo
-	NbuCVVqRmI0yI83hYQrb9EK+Ej+1hTIJDq6t2DxvzzdxMoC67xEigjDgS4ai+lSXadaBoY52XI9
-	TW0dga5758w==
-X-Received: by 2002:a05:6402:4403:b0:6b1:e361:5550 with SMTP id
- 4fb4d7f45d1cf-6b3a81657c1mr5897174a12.17.1792450603223; Mon, 19 Oct 2026
- 15:56:43 -0700 (PDT)
+	Mon, 19 Oct 2026 23:04:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1792451050; x=1793055850;
+	i=aleksei.kharlamov@gmx.de;
+	bh=ejzvlhIFW6GmHno4CqHvsMU5kkN5COxKCaAbK5ak6W8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:From:Subject:To:
+	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=W1FTMsW/+Q61bw3cZ4sLNkap0vJBaVzpt92Oa51EUHqvhoG5WJjQZhxwdrnGoi8G
+	 2FWvJtyQV6p0RFw6ISIDLs/54ZqhAt8gj+G+YUviCUnQWhiISu7V0HqIRFYf8ON0T
+	 0GsyozUi18MZfmCiAJGRfE49P+0q6JiuIlN+Td/qylc16f+K8xFbarkNfGVmOExy3
+	 0XCnFBDtexLEPN3ThYM5LKkQTQ020BMxs+LIKN22XgONSl00mhQbXHDbzT64JuF9b
+	 DyPlxhbbPtOBw4X2EPtyICX6P6ChBNhV2ZRETYQWzoyRRN+V82aQv3eIYcU3DDqj7
+	 jrVkkPGvK1UO8A8K3g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MHGCo-1xNK702EGe-005YOh; Tue, 20
+ Oct 2026 01:04:10 +0200
+Message-ID: <a523eda4-5708-4427-a044-a61c0386e5a9@gmx.de>
+Date: Tue, 20 Oct 2026 01:04:08 +0200
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Aleksei Kharlamov <aleksei.kharlamov@gmx.de>
+Subject: Re: [PATCH ath-next 1/3] wifi: ath10k: set the PMF peer flag on
+ WCN3990
+To: shunsuke@nagashi.ma, Jeff Johnson <jjohnson@kernel.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+ Fabricio Akio <fabricioakio@gmail.com>
 References: <20261016-ath10k-series-v1-send-v1-0-c847697b3558@nagashi.ma>
- <20261016-ath10k-series-v1-send-v1-3-c847697b3558@nagashi.ma> <61207966-c403-441d-9019-583702833a7f@gmail.com>
-In-Reply-To: <61207966-c403-441d-9019-583702833a7f@gmail.com>
-From: "Nagashima, Shunsuke" <shunsuke@nagashi.ma>
-Date: Tue, 20 Oct 2026 07:56:16 +0900
-X-Gm-Features: AclHuK9QItXkR2B2Q98NX99AOaM5Tsth9CYzCO-Xtn0rwNKADE_0wzaV0-bDX4g
-Message-ID: <CACB3TCKJN8ou4qa8BKJZYGgv1RRH0awt-eu07YRDwPkppuLQJg@mail.gmail.com>
-Subject: Re: [PATCH ath-next 3/3] wifi: ath10k: bring down a station vdev that
- never came up
-To: James Prestwood <prestwoj@gmail.com>
-Cc: Jeff Johnson <jjohnson@kernel.org>, linux-wireless@vger.kernel.org, 
-	ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	David Heidelberg <david@ixit.cz>, Fabricio Akio <fabricioakio@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+ <20261016-ath10k-series-v1-send-v1-1-c847697b3558@nagashi.ma>
+Content-Language: en-US
+In-Reply-To: <20261016-ath10k-series-v1-send-v1-1-c847697b3558@nagashi.ma>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NcJY6hCX6NYQjKCxOjG5wFSMCYSGsvU+nEIsc2QdzR3+uecdzbX
+ oGbBlvmKcI3MIop7YaNwoHkxDRmWVQynXJ/OFfMf5taTH/XLKDO6afEEl+3aSI8ZUVCS+Or
+ l09ylevafSaVzuodOhRsxAulrwiQqkhcA5iWmltls3znxdvjrzS/G3gLL4qoVoP/bphJEYb
+ 2q/ViXG5+OnrgWKADpI5A==
+UI-OutboundReport: notjunk:1;M01:P0:WXqY/D80R8Q=;NJdp5Z8bTLuDrxtJD+bv4Dfs4b9 FOtBr1DCIKAv64F6DUjSFufbHbmCxRsJdlJAYfS1a22+IBbSl+9x4ZeVtUQ9tJ28IQbCFbKki o63wcG52g5oacK3se8/HvyZaadNHO/M/oeic7UdbgOTyqmHde8iI/8LoiAW8k6HTf+xpAE+av aA1YZ+j2+88UAZXfUxQ1GCtUaFLTpzCwBES77c9XMRvpnIvx1GA3KsNF28M8+QI0s8yQsTmHS TBR0K0nlt/UF/7nuuqAYmn4V6ZeZUSOkH+DTGgr2EF8KspMH/N9X3ZwMA9YXulknDBERv2rSn GjXKoppFw1bAjUdq//MljAYuHVumdAM0gWxqJ+K/nI0KovflAHnP+yWLiWMjJoPxLrrzFIldp JpnUnrWOoP6yV8FcrObitZg5a4AAvHgopMwFW+7GRHPJg+of7uDUSqOLkCNwO+MliepHsyenS UbtABMYV+jOhKsLxfQ6ROP8Ply0ZQa1vuLQhpL5uizXRtArXvht4W7s0m9GD4nOnpP/E0/wiB Hlo45hUhkGE7h21gEMdn1atB5J91VpPsO/7uwTdC2zgAs6qhcnV5cDs74/tac2m0ghSgBH7U5 dvGSNTTz6VkU6xE3GUWDucnAqNtTcap1mkvyFOEEJ90gf/wSesMjXd82wLzGwCAGwJomTwovH m1bxYB7256HHA5idpMwtJqJpD8YCxuGfTPzaHKIrpB514zUTOY4vkGgsKd5IUkg4baxHg6Juk RACXot1HucKXii6/T1M2q5swZ/7jcVoPoDMaJtzRQMMbNDNBu+zDfy2Msydb5om+0yUlPat/g KnP7XppvugEo6A+eH2iqwdgTKJZfZZeSddAYp/oQIfCayjNQuRRpnnwj6iLQbp+3giCoFpzw2 OuohMQVg83xWpgrQwv2aUQCJZcPEsOUR2Iku2hAbpZyeNA9YBFJzmaQRLbLGs0BmOzh3tMCJx GB8ETJ95uyX4+AAfvCmk+sI1VIlLznMjCHRqLKZaCPm8sxdHs6Lk2YFGEfMBADhX33kXGXoXD eEVb9CKO2QHGieabip5eriJNlqnHAWg7mLKjSb8nfPLVmuxEuLIovPvM4US4w1NGutkkBPVQ6 uzHEiNvKKmj9C6qpHbTamWzRr1i1jHZ648g71jSgkYo0raoyj1D+iLH0JKHa8J2+bjBSqEvyG bzdSRXDCXPhoMOc/rIqs756IDbEghbr0V/3B0LsXDWVC4FoHNwwOsXIBeHZbZTGLtS6OJw0Mc sQtBOVYneOwy/1Qk+cAUxbelQIpr3+7J+GoMTepHc8Rim2IMTFC+pw0Fv3kipgSyH9Owjsvtk uVJE6GnWtRpGjV5f2h/8iZ2GPoTwGMVE/3dotYqMtetsexxGLNbtis65fV2vgqs78XKS8NDTd s8vLvH/PmqzH7rRBsV8DClQ0msBJ7oxuomXY6QYQVIO0d48X52+mFhdJgwbs4hmq3MQHF9V0W pFr88tc1tNptj94O4oC05joxxzYMMacHg5ZtAzrjaXrSWeN6HR1JT0xwaR0xzfR88WCRSw5pz JpeKX929mo4e5bb5XTF4F+AgZa9rJQkonBng4xM/iYnYEHcZv02O53ePQ3yyHWQctwaY1r8BI oAixmrUOByllSeEXP5mKQzYHXsKy39HYvdxz4bbcbUtypHUXt1Efw2bjDCRy7ddOWORLkRPQa JjigGRlYOriM/A+d2ZKLcdcR0j6N4xlckVC+viM311v0X1fjKJKMKdcu7uEpHeAGTixjAgOmI PXVa7/HdUMHKqHa3m0nAXKCApm2FuWXG2kC7msuqg3NAO32fRJO+vSO6B8fxcUvX45sL0E28X LGfeE3ygOWXL7pDg9zVAOnlyb4YK21HOEKtJsD4UEjd5Vjl1wh7fmKv//QOo6wadanPmH1k9h wY1gVkgQaPi2Zcoc5YGtsFIk+oBnaY9zgofKbGLTZ/S7fQRuQQAeJDKlH0HcLtlKaOAxzHjPN gOntNmgOMpqptRP8NFKeXUzsGesWtbyFQxrfrp/5IzwqwdMHRmKjb+i6A7gvSC+hPsdY7wg/F XNIGmbZNGVCj//Sr75HZds2YeDyoXQ8CqoMfXR76qI5PGuRrW3fXdqYCX9+9M6s5Grup/FewW 71PYExA9UDYA3pqoHaDkGtl58PTuGkyKahnwBu7pocclWVyGCK9lotnRTepTO6KK1vkI2CfhG W8OlT/YRPu2IonyCipuLFaYCcewTOo4zxEVuVc6mD++KKJaRP6HnfO/YRl0D8vHVcAUwrWzDA VYlfPiHdx+6ib2HUHV2LdHBZRLCFTURRAjbBSDrzkWJ3V1Nezh2sqrf4VsnMEbtuKH93mpcvY P37GEy5RN2xg3F5CgZ33IKlhZHnJ6rh3Q77FI6GSlPoaCgWemfb3TooWYWU4kgSWjLA8lLB5F TERdRdJuKBQS9H81GvJje28VD4zztYbz44lV0kJHYnQoYJLe0BSUjLVmMI9EMVB0t8i9xK5gP 6YpWcRAvkpZa6CrtG2SSqrc9D84nR9DcxWh8R7ZYZfjBHWbRphUISZHRFWM3JYBebubi4A733 g/DEiDhYQM4sLdvhyozXlIHyd03h8JzFOVBHTDHBfqBRsP472J3nmjsiJo9XCelctV8XyPu4X MfVs4mc5w6o+BbKzWrFglMMJNZ3v4FqgxzXMMH4/lXNaIi9p9/TKONpeRYsjzV7ucNyS5VU4a eP3DbQIHoKMxwGwIUvbcpeHjdTIhe820Vb3biHAj/0FKDjmol6tSqvZe69ATrlyND4v/36bVR +aYc+4yK7GEw+hIPJESR0B/fb06vzMHGRGjrWG+AaasxRS5vuxh4EpYypWDsJtIKizNrzDgCn /pVwDqbZbChuY0ZIoO0L0/+twNAhv8OaLF50RiD4UoJ9iioQw5COfJsoXO0Xn//GBEPCALkWF x5A7CdHj9Dn2XZKlZ0QWTjNFqEb2LnnEU8fHidmQ/3ODKA8I5YINBm8cQ2YzImGhw7lkKfQBb tXmM55d+dy3CzWXlHGDKZHj8ZxpvF3FzLx2BvrzVEBtgtCFqxnu/GBvsO+JMJZCwrUIETB1cC oxBji25An0FaHirEc7I59EvVDtDBuwq3ZEv5kZGAs9rbJoXmQhL/zDCYH7C9yznvq/wF1K4VQ FPiGkRgYD9FHcraEhG6Y+kA+vghU3p467fUQmsbyO4uWFyfXrHEoy7BUUei6EE55n/O8XdBr1 POFe0ZwItyOn8BMeq7D4KoKEdO0ZwFUWgvY+0xl3mUZ1d+aFZEnzbXkj8jhEADY4i6NS3Lti9 t5Xf5sHXgnrJ95z3IpibzCD71bPmyKJjUmiWiCILMn56a6QY8MrFM5kVjRUUd9/624LHI+CcS 5tnQ1HXM/w0dP/8qRxL9NpunkFGPTO0lg6ndR1UAHnmsEoBu8BcGG5FZrpCW2mWeXtX/NAbQj jA5s/GcPVawHxjBlyAdcdt2Lzz0Po43ZUz/ydC2dMGZfTpn0BQ9vat2pTzu3PdXtDknFWntC9 HhHZ+hryYUOQcCxUg1urqGzPkmAkL9jm7EjbBQoF6k9FYc6rkx2yn5MyzUWs1FRmINdhPXS8S NKfBLqS6MzNqLK4coKc0Ps9tykmo9kTonp8aaTFqH0JhIWcNOr1SQIwMD8qXyIAMSL3R/bNaN O/rw2jMBACkUcs0zvl16FVLFquWpin5/vwEt+y024UR+d0cMqftF2cHktDzhpn2Dy943MwroF jKBuERE/AFm1RPgeYo/u1eci1tDK2vHwGG2fMmfb2sIxOKJ5rSWTCFTFN91oN3DFzftt7wDo2 O9YxQzuHSK55GYFURxeI4n+z+MoLy+hkGK9UiMwipL9Avs3z8s8uewmU++Bf77xVolt6j3mGF RFU29FXBFX39IxgPOpHDVNUnAYmvtqPKsa+6kVg7U9dZPnJ1o96/Z9FGYjUBOANR+5MZA7ppb
+ W4neJEXsXWj75nDiaUKnPPYYtch6XeIKu0G5bwgU8ypgmE+cMcKTq2piV27E1mkhkSlqoKaxh zWiECEj4SMOih3AVfOFQurzeavh7gcjjwvPwv7bQpx0fIFKKo8/fo+aQ3KozTof5scQvFAskq fEbEvoONcY4KDnXKSa+o7RkfM7aYXeCksw+RpjCkeUeLZ/CZQX+BFMb7QPHI8pbAibwVSx8w8 Eu9z267NMHvgqI++LePb7YLqCkGRSvlUrof26eBjWXAiX5HeoQvv8js8sqvHVfmeL5wN/tmYb K0YC+DoQYkrVcP9fX/SSr8lkTFGogJw1MfCvd2imCwe1eF3IHB+FEMwOCO/KSnLBhY2xhS8NI HtJjFxL+buNDGYuO0ipWYqkKWKu5kKnrdzHBgJtn40R7em12D+k0lAYIhGsM9qMJahlBFzHj3 rpakgVn2haTuIHP2R/LdvW0Q3u7rCbijB0oSV6S2tDb+btArcr8gjXjzqrAElw2U6Z4P+07S0 fLEf2nFzxcoKpe6MeaV/18jn35Ub0T232dlgjHjG5EyFEJCHhJ9SVR1B44ON54AJOj0VcQ+SF 0eyOYfdAEcmklXbmBXQmjoXfX18Rbm7CVVW4ug7uXm5uCfrbjARkIYev886OSbvp+LQ3NsTCl o/eGVdSkSauNC8aPfjhjTCk4F/DeCPjGy2y07UyR7jT64v9hy3T31Es6qRjlMKZ27eDzGhHpC eJty1ydg2TyTyHH2LfGrV0vgmNVlNsBPMCcB6BZ2rIJc1mdWrWTGHNpeOBDCRDCJUkXAwoUtq MJlSP9TtluxgXI4iqpEqXwxYhYHc5MNgcOZ0l2wIxgPqRu0l9bceDQoD2XXGffH5sP6Qu1ocK 15i/Q7iIxIRBvzykObwyn/o6oIP35iHwViDiETqYiruIfRRuD0t/kQpiAaYsjDN827awpELO/ ycsTVNWhFWONC/drnMFCD8gvh8FzQ3vwxktfasjT4EIupYVN78sSgp9N6J20M0u+NXw5Ime2T vEoPuMwkiGWbrh7kXnXOIsayUo8Q3stNfZ407fPqdL7TClFFlwBFEl3UqRTUJwicNBN0N+vQr 5bgXMRiLfXtP50hMtI4ZNfQNGgYLI0E+pPc84tlNAwwoN31r9VZRkkbvQjp4QSsuygPVAm0w+ u8PiS/oApoK3pK4/FofXnleqMq7b3LLooboQvFUtwYDIQkKX/oxhvQwibs6X/ifxXxx02Zkwk PNuwdb+LRjzfXSGyEuvjEf3rPDYWs7Cv+I/K4MdN6EqvevvbnfGltwGIwvaDlQxUX58l0t63Z vVjlWfSNpx7qLnCwXZGmsTXdULbWaw2u9DXU+1spr4+V5NHY8e0knEOX8e7FtJrTf92L+X86g Zm3JuZBvsVi5ocsJFH3xPMngbNwDbzCWNKjq9LXqhf/V7gL+JPAYNVLFUZYCIOmFNBGsVW85U QS+rqFwmMDF3M/jmjHAiV8NU8Q8ErJAROaGrq4FwYU2NRLmAE23dS0P1zCRHhUaeHz3eLj0XO n2NQbuBKplKwBUD/BY/HOc/nC8v91ZF+cyCr4yl4gf1ewR3KYtoNQtgqZcgI81EVeosT8/Kn1 5AFHkI94bqHxFghFJdix76ZozQkqpElp/zjpLNcsEiQxNUgQ3DOiKCV99tADhV9KF8vsEUcav mN2eob9fhfWw5oX0jKm2Ui5MyCC/RQGEDM/q+vIjWNGlgvCioM+bii80l+oEGcKCQGtxfyWBs 8StzSRT19rBi+efDtEZjxXzqA9OHLNHbxd4P0KzXgooqFTrHO9c7/wFfhHHk4zeIq//bBnh4f nLLOOWq0abxXhdyTF0Yayjn+vARavpENoUlfWAU8BOGStkB60fZc6wb+AULUswuUlHic2pz/E 4iKWLonr0a39JRWppTgqYwTnsN9BKA8V2PUE+4wJ4TYtierh7yEDUaXlhZB9C2UxJZkM7AmK+ tf/UrJRNxuDo2kDtCZ2BNKIH2hI/3P/mmr7m+NCLAp9fxGWBqLkX9YZXRkK4MGHUlLFfnxnbZ mwowcBHwBAEvZleLfutOd38oDyG+hrStYUkGqsclLvUF1cqOy/igJ7EQuVxMeA3DXkkHXz5x8 GGly299y5Ow6Bu9ahytIdHmr2fBh964UP3YfV6jRIpqjxlmQ75FL7yIHXq19UqNZl44MsRIDV lhFR2FtyOZjYGMy+nxzkM6Qjg7jpMLkYNDAhrJSzo0ORgIDiUsnyMoTCsGCoYgjquddRmrxju tvnx7hZr4HVYw4MWwXWceojNMESzBpiLl21QiIaQ76471tEGm5PFdx7JCe5z8qWmeQDkqYdlf /DTRY6ce3H78cJhw+g8T2Q/4FXm873UKSoseqhF0HSSdPodUFSPE50TpyH5AysHIpA/n5tj08 gG/WH7FZ1CeDTiR0wohoe+2h8Z0G/dEeuxDFZoA3UZDqdJ5HqIqmKA79lXev36eQLosZ2SnyB UDok3+GZWviLzJ9LKVkyFz+icF8M1zuxry52dxy3gPA4sFptPxRyrlgOh2y4muC77Zb8qKd1Q +9cYqaY2dtKJ+HmNwHI6u5iz/FJfEtel+2iStLEm1iDcEsKCvI6HvZ5gkmQkEKItwUTG59dt7 ofwyWzlVYRMA7Uoh+o6ZfYR8xk0SXysSVfQuovm3dAVjDYkUKtP8xC40pdp2x+/RMNF5i269Y tcFxgZ4SlZpg3wnG8WM7A5X6IYptRmRvTP11qdYkzO3SCJ+G/ulVDByK2iYGjzUp69BN2GLA= =
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261019_155645_637772_662F55E2 
-X-CRM114-Status: GOOD (  21.18  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261019_160418_941544_B5C0572E 
+X-CRM114-Status: UNSURE (   8.69  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -2.8 (--)
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,78 +85,37 @@ List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hi James,
+Hello,
 
-Sorry, I am resending this as plain text. My first reply went out as
-HTML by mistake, so it did not reach the lists. James, you may get it
-twice. Sorry for the noise.
+On 10/16/26 02:17, Shunsuke Nagashima via B4 Relay wrote:
+ > ath10k sets the PMF flag in the peer assoc command only when the
+ > firmware file advertises ATH10K_FW_FEATURE_MFP_SUPPORT. That check came
+ > with commit 90eceb3b5fb0 ("ath10k: set peer MFP flag in peer assoc
+ > command"), because at that time "only firmwares 10.1.561 and above have
+ > support for MFP". The WCN3990 firmware-5.bin files in linux-firmware do
+ > not set that feature bit, so the flag is never sent on WCN3990, althoug=
+h
+ > mac80211 negotiates PMF with the AP. ath11k and ath12k set the flag for
+ > every MFP station.
 
-On 10/19/26 6:12 AM, James Prestwood wrote:
-> This seems similar to an issue we see on the QCA6174's. I don't see a 20
-> second delay, but sometimes after an auth/assoc timeout we get a spam of
-> failed connections with NL80211_TIMEOUT_UNSPECIFIED. I've mentioned this
-> quite some time ago [1]. Do you think it has any relation to whats being
-> fixed here?
+I independently found the same issue while investigating connectivity=20
+issues on fairphone 4 (WCN3988, qcom,wcn3990-wifi, slightly patched=20
+kernel v7.2.0-sm6350, firmware WLAN.HL.3.3.1-01704-QCAHLSWMTPLZ-1).
 
-Thanks for the pointer. I read both of your mails in that thread. I
-can't say for sure, but I don't think it is the same problem. I only
-have WCN3990 here, so this comes from comparing logs, not from a test
-on QCA6174.
-
-Why I think it is different:
-
-- In our case the failed attempt gets to the Auth stage. mac80211
- hands the Auth frames to the driver ("send auth to ... (try 1/3)" in
- the kernel log), the firmware completes them with status "discard",
- and the attempt ends with "authentication with ... timed out". In
- your trace, the attempts that fail with NL80211_TIMEOUT_UNSPECIFIED
- never get that far: each one is a short scan by cfg80211 that finds
- nothing from the target BSS, and the first rdev_auth in the trace
- comes only after a scan that did find its BSS. That matches what you
- found in March, that the BSS was missing from the kernel's BSS list.
-
-- During our hold, probe requests still go out on the air. Only the
- Auth frames on that vdev are held.
-
-- Our hold always ran for about 20 s, and only on two newer WCN3990
- firmware builds (c10-00459 and c10-00236). An older build,
- WLAN.HL.2.0-01387, did not show it.
-
-- The missing VDEV_DOWN goes back to commit 077efc8c42e8 (v3.19), so
- 5.15 has the same path. If your problem started between 5.15 and
- 6.2 on the same firmware, this path alone would not explain that.
-
-- You also see it on ath11k, and this patch only changes ath10k.
-
-There is one overlap: your first case starts with an association
-timeout, which is one of the failures after which ath10k stops the
-station vdev without a down. If you want to rule it out, the patch is
-small. With it, a failed attempt gets a VDEV_DOWN after the VDEV_STOP
-(ATH10K_DBG_MAC prints "mac vdev N down (never up)"). If the
-NL80211_TIMEOUT_UNSPECIFIED runs still happen on QCA6174 with the
-patch, it is something else.
-
-On ath11k, only as a pointer: I have not tested anything there and
-have no ath11k hardware, so this is from reading the code (ath-next)
-only. ath11k looks the same. A station vdev is stopped with
-WMI_VDEV_STOP in ath11k_mac_op_unassign_vif_chanctx(), or in
-ath11k_mac_stop_vdev_early() at station removal on chips with
-vdev_start_delay, and the only VDEV_DOWN for a station vdev is in
-ath11k_bss_disassoc(). So a station vdev that never came up would be
-stopped without a down there too. I don't know whether ath11k firmware
-cares about that.
-
-I worked through this together with Claude (AI). English is hard for
-me, so the English was written with AI help. The WCN3990 results come
-from my own device tests on my comma four.
+Setting PMF peer flag (my patch is crude and very similar to yours)=20
+significantly improves the connection performance (please keep in mind=20
+that fp4 seems to currently have multiple other issues, such as missing=20
+a correct "board" file). I only tested station mode.
 
 Thanks,
-Shunsuke
+Aleksei
+
 
