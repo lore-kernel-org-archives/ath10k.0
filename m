@@ -2,111 +2,103 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD72606A31A
-	for <ath10k@archiver.kernel.org>; Tue, 20 Oct 2026 19:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33432606A31D
+	for <ath10k@archiver.kernel.org>; Tue, 20 Oct 2026 19:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=pdxFX+Kd;
-	dkim=pass (1024-bit key, unprotected) header.d=ixit.cz header.i=@ixit.cz header.a=rsa-sha256 header.s=dkim header.b=F5BWplZD
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=IuzYZ8cm;
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=s+Qv9Z+y
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=y3oc0N552fH43ATGj4dRhIJ5VZELJgPpuDPjWuSNw44=; b=pdxFX+KdvKflSvU/91rjkT7LXG
-	mC+NSqtSic/ZI5gH1oSDL2xmex804Q9a273WiKsVbrkcgVwnmAEIWO0YmpM65tOFu81hNiQ/xbHTt
-	M9PK+IYlpgw2JSo3693jjV2hZhrL+t2nLC/Cnx5RSfCVvSG+R7WSvqwVaOa2s1HzlHNNhRq6G6Fj6
-	fGR4I1bU7ulDEmoa0lzfePpQhpr02ePJAVQqccsOz5GN9XuG8Xgjnam29w5/ALzvClNRfJlwZJyMR
-	QfvWce5c+91h4UxCCt34gD5YCRtnJPilmKouV4/5dE4Okklg10jFvpzO1Bn4lpKAmEcBHB6ypnWOR
-	Br6/sG3Q==;
+	bh=hPa4PG254yePdehpmJWqML5hqKXw+sws5WB7y+lwM98=; b=IuzYZ8cmdDjHn4yMhOdXdIrxzH
+	UzTbl82WvjYFzyoj6tRqYeDSNqYMNppgHSQxpNLXIZVFzI4FWhm/k6JGuMSsThnnTtErOsQIu4vSC
+	PgZm5RQ7hCZyJ0xaQHm+BrSYTrHo6j7ig2D2ens8oiQWo1F4FGl652AgnMt5ueHIi6XXr/r3brJ1F
+	iwD2+5kPDX+pVWnRkub65xpxoP9L2CV+GapbsdX+ALEwERw5Gmd2zoIyIPylOypQSjKoilygvO4No
+	sB7taRvta24PPF0WuisLor3U5lPi1IrEf9WbT0CxxfPcUdBj6nOdUu6BaNa5CvH71JeIE50oy5lhW
+	jx59J8pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJFfg-0000000AY4y-18La;
-	Tue, 20 Oct 2026 19:38:52 +0000
-Received: from ixit.cz ([84.42.129.46])
+	id 1xJFqy-0000000AYqM-0oNa;
+	Tue, 20 Oct 2026 19:50:32 +0000
+Received: from mail-lf1-x131.google.com ([2a00:1450:4864:20::131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJFfe-0000000AY4Y-1H3B
+	id 1xJFqv-0000000AYpu-3gje
 	for ath10k@lists.infradead.org;
-	Tue, 20 Oct 2026 19:38:51 +0000
-Received: from [IPV6:2a02:830a:f787:8f00:d622:eaa3:3dd6:8f5e] (unknown [IPv6:2a02:830a:f787:8f00:d622:eaa3:3dd6:8f5e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id AC0BF534098B;
-	Tue, 20 Oct 2026 21:38:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1792525105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=y3oc0N552fH43ATGj4dRhIJ5VZELJgPpuDPjWuSNw44=;
-	b=F5BWplZDBBPiCPe7Psv3d2lqQ5sQI5mWrNkQu0L6Ai7r1JTfQO1GOKjQIh4Y8Kphi8m05i
-	rplpux6Oe5GDfARJ9xhdS2JkX6PCjhgA1mu5c9hZzqXto9c/exQEgLFXjykT7sEm9pHGSw
-	wsH7Ofazd0uYsaCAv9wJdVucED9icqc=
-Message-ID: <b5a06692-59f9-4b51-bbbf-71af39ad1f14@ixit.cz>
-Date: Tue, 20 Oct 2026 21:38:25 +0200
+	Tue, 20 Oct 2026 19:50:31 +0000
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5be3d5927ceso2951885e87.3
+        for <ath10k@lists.infradead.org>; Tue, 20 Oct 2026 12:50:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792525827; x=1793130627; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=hPa4PG254yePdehpmJWqML5hqKXw+sws5WB7y+lwM98=;
+        b=s+Qv9Z+yhFY8tl0GVWb/RZw4ehoUDRwRcwckcDIi9yQnhg+H3ij4SRf4sipfk6+JGI
+         qlKcwL+qgLU5pTUSyxJvkZJY29AyhFOKyEcgaTVkvtLWX0yrDmmMUmlDQu/CSGXWYMi7
+         eJkejrb8PjCMwY6HPt8q9UFaNxSp1f1wKPUWljdjIDiBWviPeUTWH8+2aRqGmTKavNhC
+         HqfEInz/gQxcAjX4DFnviJ9Dv1CXZMsl/CyQ3BIRLkoJQVE5ObrLxUcBE7amjASYPRHw
+         xgjQjbZphxXcnZF9YzhWkSNt7aFkcSRry0bBDVDrZlJki7vlOawFIR/aYAh7lTuIdTMU
+         UK7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792525827; x=1793130627;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=hPa4PG254yePdehpmJWqML5hqKXw+sws5WB7y+lwM98=;
+        b=vfENvMmaRMVYTGuP096UOSeAf6X2HrDHoBgiPgVR58agQnB4xeiqEsImnsWo2W0IYD
+         vkmvO0V+xjTuAg/mBbISmoiaU76r7ayxpJ5ACyPgGIE7LayI7aAQFYpRiMAAWxvtu4zH
+         q8Jo4wUYHV6eXTi2d9ERNjZePXUmAJ3uQlhNIEwYiSRTiZUr40ke8NH0WXTtRK+0Hl5H
+         gk+BYWVLLWJXWD8H5HjO7gnBjhd7rRStq6Alo5YX3Ga6pA57UHxRYUsavosvR5KXDheg
+         fOiYgBsrMB/5WJSYqQi1vwNgKc1YV/SU1ND2TXWWfOa8Fi/W0CYkfLLMkE6bqFwDRR3E
+         9erA==
+X-Forwarded-Encrypted: i=1; AKwUvBz5iuZQHD82paZCqE4QVC5ZM2UCVgoT6DgoJHBDgMsu4NKFY3/wONAba/fCrDMXPBE49Dl4fPY=@lists.infradead.org
+X-Gm-Message-State: AFq9FYLNaBAguQiK5M1S1kQAcf+Dk7+tU9tSxjw3r9NVIjLgNO4UmxYT
+	XlBqb6vxNndMg6QJCAogLKkyMY655eFmXe7fQmTd6b0iPsd4zHtQTSwR
+X-Gm-Gg: AYBFou2qwJjvhRIj9hP0QiDaPir5F0BL9HrxFMkgcde0sKi2AodcuAD3wiMoy6j7uDZ
+	D0gq/AB83bvzxCmuRchbNbC+stq3WXYwPqt7Qoy0EDII2FXi/BOMGL30bg4zX0YI2zBXkvbvmA6
+	z+K1TjBre5nc9/5sooOIBU8MS/YDGxsEdlgIYGY2HYTdoFxB1N5mT8X3F1xoeOMb3AUewagUQSX
+	8oCbcrz5pzaC0Z/zcSbYLdNLXnfHs8euiKkIvcWq92xTdp9SgYFVeENbRvoOSzFiZEKbPre2H0c
+	2YYHbzTVHEZa0u3D/TwOfrbgeGDFz/KBbhkopkIPiCHcGmkABF2KMb3jdTQT1YvmT9Muyc46rc9
+	nXdTJ/+i6otO7+oGCGKZWn7wJq1UFp4G8CvukZ99gKls+6RhDDqhy/r9dxFhNLXfr7zadgGHKMV
+	PsHA5ODiPkd6r4MRyiDHcfmG8g74S/zBD+YcjC2EXekdy5CrNk8vsfi6E7ngd2pJHZPhJvB2kB0
+	tbpBxR/KCisnZ75GQJzR79ouKqYyxRZvtnNVc9cB/jVaRj5SS4gmEp6sdnggT7UxrfSnXvjNgFO
+	expe095ypSwbdJkxioNgOEb3BwxdbfTnzV7Zs6QhT1VW0ZmMuBwpUQszSwMwecthBM6ukcThFIm
+	O1Q==
+X-Received: by 2002:a05:6512:3a8a:b0:5b8:bc5e:b57f with SMTP id 2adb3069b0e04-5bfa1c1fb76mr4379e87.55.1792525826617;
+        Tue, 20 Oct 2026 12:50:26 -0700 (PDT)
+Received: from kompukter-Systems ([83.142.235.16])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5bfa11a8caesm75345e87.5.2026.10.20.12.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2026 12:50:26 -0700 (PDT)
+From: Andrey Derkach <gabin278@gmail.com>
+To: David Heidelberg <david@ixit.cz>
+Cc: Jeff Johnson <jjohnson@kernel.org>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Kalle Valo <kvalo@qca.qualcomm.com>,
+	Michal Kazior <michal.kazior@tieto.com>,
+	Richard Acayan <mailingradian@gmail.com>,
+	linux-wireless@vger.kernel.org,
+	ath10k@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	phone-devel@vger.kernel.org
+Subject: Re: [PATCH v4] wifi: ath10k: make in-order rx amsdu buffers persistent
+Date: Tue, 20 Oct 2026 22:50:20 +0300
+Message-ID: <20261020195021.1133728-1-gabin278@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261020-ath10k-a-msdu-v4-1-670b69d39059@ixit.cz>
+References: <20261020-ath10k-a-msdu-v4-1-670b69d39059@ixit.cz>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH ath-next] wifi: ath10k: fix status of bundled mgmt tx
- completions
-To: shunsuke@nagashi.ma, Jeff Johnson <jjohnson@kernel.org>
-Cc: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
- ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20260927-ath10k-bundle-status-v1-1-a1eea048ada9@nagashi.ma>
-Content-Language: en-US, cs-CZ
-From: David Heidelberg <david@ixit.cz>
-Autocrypt: addr=david@ixit.cz; keydata=
- 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
-In-Reply-To: <20260927-ath10k-bundle-status-v1-1-a1eea048ada9@nagashi.ma>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261020_123850_494706_B2E37A57 
-X-CRM114-Status: GOOD (  30.65  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261020_125029_933612_E50DEF8C 
+X-CRM114-Status: UNSURE (   9.51  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -1.9 (-)
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,106 +109,33 @@ List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-17.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 27/09/2026 14:10, Shunsuke Nagashima via B4 Relay wrote:
-> From: Shunsuke Nagashima <shunsuke@nagashi.ma>
-> 
-> ath10k_wmi_event_mgmt_tx_bundle_compl() takes the completion status of
-> each report from desc_ids[i] instead of status[i]. Any non-zero status
-> is handled as "not acked", so a bundled report is marked as acked if
-> and only if its descriptor id is 0, whatever status the firmware
-> returned.
-> 
-> The bundle handler read status[i] when it was added in
-> commit cc123fac978f ("ath10k: Handle bundled tx completion for
-> management frames"). The commit named in the Fixes tag replaced it
-> with desc_ids[i].
-> 
-> Seen on WCN3990 in station mode with a WPA3-SAE AP. This firmware
-> advertises mgmt-tx-by-reference and completes some management frames
-> in bundles. A debug build printed status[] for each bundled report and
-> could switch between the old and the fixed line. A sniffer watched the
-> AP channel. The firmware status[] matched the capture in all 39
-> bundled reports (15 with the old line, 24 with the fixed one): the 30
-> frames with status[] 1 were never seen on that channel, and the 9
-> frames with status[] 0 were acked.
-> 
-> With the old line, 6 of the 15 reports gave mac80211 the wrong ack
-> result:
-> 
->   - 4 frames that were never seen on the air were reported as acked.
->     Each report arrived after mac80211 had already timed out the
->     authentication, so they had no visible effect in these runs.
->   - 2 SAE commit frames that were acked on the air were reported as not
->     acked. They were the second and third of three tries. mac80211 gave
->     up on the authentication 239 us after the last report, although the
->     AP's SAE replies came about 5 to 8 ms later, so that connection
->     attempt failed.
-> 
-> Take the status from status[i].
-> 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.2.0.c10-00459-QCAHLSWMTPLZ-1
-> 
-> Fixes: 4b816f170b1f ("ath10k: add support for ack rssi value of management tx packets")
-> Cc: stable@vger.kernel.org
-> Assisted-by: LLM sparse
-> Signed-off-by: Shunsuke Nagashima <shunsuke@nagashi.ma>
-> ---
-> Tested on a comma four (WCN3990) with a v7.2-based kernel
-> (7.2.0-vamos-7626c37). It also carries three out-of-tree ath10k
-> patches (MAC address, in-order rx A-MSDU, SET_KEY wait); none of
-> them touch wmi.c or wmi-tlv.c.
-> 
-> - Debug build that prints status[] per bundled report and can switch
->    between the old and the fixed line, with a sniffer on the AP
->    channel: 6 connect/reconnect runs (5 WPA3-SAE, 1 WPA2-PSK),
->    39 bundled reports.
-> - Build with only this patch: 6 connect/reconnect runs (5 WPA3-SAE,
->    1 WPA2-PSK), no debug output. No warnings, no firmware crashes.
->    One first connect failed and one reconnect was slow, for a
->    different reason that was also seen with the old line: the AP did
->    not ack, and the firmware held back some Auth frames.
-> 
-> Not tested: status 2 or 3 inside a bundle (only 0 and 1 were seen),
-> AP mode, other chips and firmware versions.
-> 
-> I worked on this with Claude (claude-opus-5-5) and Codex
-> (gpt-6-astra). They helped go through the logs and sniffer captures,
-> write the debug build, and write the English of this changelog. I ran
-> the tests on the device and reviewed the change myself.
-> ---
->   drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, 20 Oct 2026 20:52:07 +0200, David Heidelberg wrote:
+> The WCN3990 firmware may split an A-MSDU across multiple HTT "in-order"
+> indications. Mainline drops these ("failed to extract amsdu: -11",
+> rx_confused, recovery), collapsing throughput under load on affected
+> devices. Stash the MSDUs of an incomplete MPDU in the driver state so
+> it can be completed by the next indication instead of being dropped.
 
-Reviewed-by: David Heidelberg <david@ixit.cz>
+Tested on a Lenovo S5 Pro (SDM636) with a 7.2.3-based tree, on top of
+"wifi: ath10k: trigger hardware recovery upon rx failures", replacing
+the older out-of-tree version of this patch we carried before.
 
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index e57588c19..67be6e817 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -2512,7 +2512,7 @@ int ath10k_wmi_event_mgmt_tx_bundle_compl(struct ath10k *ar, struct sk_buff *skb
->   	for (i = 0; i < num_reports; i++) {
->   		memset(&param, 0, sizeof(struct mgmt_tx_compl_params));
->   		param.desc_id = __le32_to_cpu(arg.desc_ids[i]);
-> -		param.status = __le32_to_cpu(arg.desc_ids[i]);
-> +		param.status = __le32_to_cpu(arg.status[i]);
->   
->   		if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map))
->   			param.ack_rssi = __le32_to_cpu(arg.ack_rssi[i]);
-> 
-> ---
-> base-commit: 753baa59527f8e606c49eac25692b8b08918a3a9
-> change-id: 20260927-ath10k-bundle-status-24113117b683
-> 
-> Best regards,
-> --
-> Shunsuke Nagashima <shunsuke@nagashi.ma>
+During TCP downloads the firmware split an A-MSDU across two in-order
+indications (once in about 39,000 indications so far, counted with
+kprobes on the stash and resume paths). The patch stashed the MSDUs and
+the next indication completed the MPDU, with no warning and no
+recovery. Throughput is the same as with the old version, about
+60 Mbit/s here.
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.1.0.1.c2-00455-QCAHLSWMTPLZ-1
+
+Tested-by: Andrey Derkach <gabin278@gmail.com>
 
