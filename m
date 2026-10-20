@@ -2,117 +2,111 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CFB606A31A
-	for <ath10k@archiver.kernel.org>; Tue, 20 Oct 2026 18:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD72606A31A
+	for <ath10k@archiver.kernel.org>; Tue, 20 Oct 2026 19:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RraUwX+J;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6AueGKS
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=pdxFX+Kd;
+	dkim=pass (1024-bit key, unprotected) header.d=ixit.cz header.i=@ixit.cz header.a=rsa-sha256 header.s=dkim header.b=F5BWplZD
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	Content-Transfer-Encoding:Cc:To:Message-Id:Content-Type:MIME-Version:Subject:
-	Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YuY3cwzrzJ39Xj2ivbjbr7ZIHX1dHSJHypQZUABcYHY=; b=RraUwX+JYz6ISb
-	0FpzxlNL0+2+w2UQOIC6Hz6rhdDpmemViCfvxIjj9bwj6bHMEJME2o1x+phXirHbAiZ3i+kNn7dym
-	RTbFUeRGJjLnzEt3/tGazGQidhyizh6moOfK7lceC24VOH/0modW34N/kYvEg8RYpXT0XyUK4Lk7X
-	FxEPLkwKOPkzCZ6hkvGA0ykp9T7Vz07uDbd8GUSUF86i8beDt+w9DkCROyBBcoFrgxFHDPXls6JHT
-	eC70efVuGogZ0FZHvmveFJ64blLAxYKWNChRWxY5+jKFyjn8oux6fb9ReeAqyR9JiKaPEX/xq9Ur0
-	i3ZN15ytJWZHNGdqs67Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=y3oc0N552fH43ATGj4dRhIJ5VZELJgPpuDPjWuSNw44=; b=pdxFX+KdvKflSvU/91rjkT7LXG
+	mC+NSqtSic/ZI5gH1oSDL2xmex804Q9a273WiKsVbrkcgVwnmAEIWO0YmpM65tOFu81hNiQ/xbHTt
+	M9PK+IYlpgw2JSo3693jjV2hZhrL+t2nLC/Cnx5RSfCVvSG+R7WSvqwVaOa2s1HzlHNNhRq6G6Fj6
+	fGR4I1bU7ulDEmoa0lzfePpQhpr02ePJAVQqccsOz5GN9XuG8Xgjnam29w5/ALzvClNRfJlwZJyMR
+	QfvWce5c+91h4UxCCt34gD5YCRtnJPilmKouV4/5dE4Okklg10jFvpzO1Bn4lpKAmEcBHB6ypnWOR
+	Br6/sG3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJEwW-0000000AUBu-2fNo;
-	Tue, 20 Oct 2026 18:52:12 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xJFfg-0000000AY4y-18La;
+	Tue, 20 Oct 2026 19:38:52 +0000
+Received: from ixit.cz ([84.42.129.46])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJEwV-0000000AUBi-0eBm
+	id 1xJFfe-0000000AY4Y-1H3B
 	for ath10k@lists.infradead.org;
-	Tue, 20 Oct 2026 18:52:11 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2641360136;
-	Tue, 20 Oct 2026 18:52:10 +0000 (UTC)
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1792522329;
-	b=3KQeYFAigmOm/GegDZrq84aRC9SUnHHRi+8EsOmMyy4ywt8ODbb68550lz560apFoMEk
-	 bytKaiAczUtWyP1oPsWr9HaLBGxDCm5jPIvG7opdgrs9HdNG8jR9FtkKUEAsqoPW6bmTA
-	 07mePeCYn5yLo2dh3kXXoRaZIQbohsL5QH6O48+YuGS36wPihZwdUdnY9aeQGWX0t72cI
-	 iZvLw3pAg4d/jzGE8VIs9w0a8kl26fbUAJxqMhXmLzpVqKDhlFfyK9Ydv3HcoHBobKvd3
-	 KCPyv5dgdYl2OF/PBY7I+ESHvE6sqCN9XhJGQn/dn2wutBFMlGfcE37XWIpUssy0Bhg==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1792522329;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=YuY3cwzrzJ39Xj2ivbjbr7ZIHX1dHSJHypQZUABcYHY=;
-	b=PjpHHqNZgkMMGGji8vdyCS0C+faz9FQodmCBO6EUi3GVn+9Eccbjhh1CrpzRvv9mlTqy
-	 s+Xd3uWdykI1lLuA6ZIueLtHASrVEthCo4AXepHTIpQMcQedMlLTymGMFP/4oWsl7qyHP
-	 beQ551DPZBePFNxDcfEk8BEPt93bkx+XXGu7+bPWOPo2MjbMpu6bRda9w5nxhZ36ZVqA0
-	 0t5ssvYsyeytV3tWPlowgf6NXGpE3MAVMsXrqze9LqQH6mtK6bDXyjo2fwH6X7Nn5ySdN
-	 vhzU+98/kgKmyE4DuVbQv5C/8xklhUCW9ZLxWIfgiNnUXHsqUaKJa09J91bQNPvLLVA==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	Tue, 20 Oct 2026 19:38:51 +0000
+Received: from [IPV6:2a02:830a:f787:8f00:d622:eaa3:3dd6:8f5e] (unknown [IPv6:2a02:830a:f787:8f00:d622:eaa3:3dd6:8f5e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 216521F000C9;
-	Tue, 20 Oct 2026 18:52:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792522329;
-	bh=YuY3cwzrzJ39Xj2ivbjbr7ZIHX1dHSJHypQZUABcYHY=;
-	h=From:Date:Subject:To:Cc:Reply-To;
-	b=J6AueGKSBy9QOLntaGPP28GSFQLIvuRfbdiXD5g732kWDjWIV/T7VhMgdgrczm+q7
-	 Dw/gDtHMuQlRAwcLSxo/FxWahwquqq289+fC253poXFnVoDU540LuFC39fumUMPqz+
-	 YjXFz3At7TNCvwDmdyyi4b/vUB1R1Aopz510HG620WQQT5kVWMfsuF+qFWV/v9ceVI
-	 mcKZqd1n1bpih0gGavRChwwNAoQapxHy+CEQAvjyyvLk+lr3+/khMh66A764H1iwqv
-	 4Mcc5H1UKA+H84bCIBH8mzCsmlf0HedwHlkecsY8jT3vyk0YNb31Kl+JVQgwVXjmnl
-	 Gn/vCukyjegjA==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 7645643224;
-	Tue, 20 Oct 2026 18:52:08 +0000 (UTC)
-From: David Heidelberg via B4 Relay <devnull+david.ixit.cz@kernel.org>
-Date: Tue, 20 Oct 2026 20:52:07 +0200
-Subject: [PATCH v4] wifi: ath10k: make in-order rx amsdu buffers persistent
+	by ixit.cz (Postfix) with ESMTPSA id AC0BF534098B;
+	Tue, 20 Oct 2026 21:38:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+	t=1792525105;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=y3oc0N552fH43ATGj4dRhIJ5VZELJgPpuDPjWuSNw44=;
+	b=F5BWplZDBBPiCPe7Psv3d2lqQ5sQI5mWrNkQu0L6Ai7r1JTfQO1GOKjQIh4Y8Kphi8m05i
+	rplpux6Oe5GDfARJ9xhdS2JkX6PCjhgA1mu5c9hZzqXto9c/exQEgLFXjykT7sEm9pHGSw
+	wsH7Ofazd0uYsaCAv9wJdVucED9icqc=
+Message-ID: <b5a06692-59f9-4b51-bbbf-71af39ad1f14@ixit.cz>
+Date: Tue, 20 Oct 2026 21:38:25 +0200
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261020-ath10k-a-msdu-v4-1-670b69d39059@ixit.cz>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/3WMywrCMBBFf6VkbSQzCda48j/ERZqHHcRWkhqqp
- f9u2k1BEO7mXDhnYslH8omdqolFnylR3xVQu4rZ1nQ3z8kVZijwIGrQ3AwtiDs3/JHci1ulpVS
- +ERocK84z+kDj2rtcC7eUhj6+13zG5f1XysiBB1XrptEOEOozjTTs7YctnSw39yjkryuLawKWg
- cUAenPnef4Cv4YipuQAAAA=
-X-Change-ID: 20260719-ath10k-a-msdu-c49334eb091d
-To: Jeff Johnson <jjohnson@kernel.org>, 
- Johannes Berg <johannes.berg@intel.com>, 
- Kalle Valo <kvalo@qca.qualcomm.com>, 
- Michal Kazior <michal.kazior@tieto.com>
-Cc: Richard Acayan <mailingradian@gmail.com>, 
- linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- phone-devel@vger.kernel.org, David Heidelberg <david@ixit.cz>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8397; i=david@ixit.cz;
- h=from:subject:message-id;
- bh=e4K4YjSYToXwYpmvfTzP+xwda4abWoMi8YvjPXpxLNg=;
- b=owEBbQKS/ZANAwAIAWACP8TTSSByAcsmYgBq17hXWRrK944FsnppAgJ2SH5pW7Jp1Ut+j7W03
- 646u+8LrnyJAjMEAAEIAB0WIQTXegnP7twrvVOnBHRgAj/E00kgcgUCate4VwAKCRBgAj/E00kg
- cqmIEACQCFP23uK7tlaRO5Ki26cKWFF0BbXEDIr1sreeN5f0OltJ3A86xfrJP5tXf6c0ceCsvlc
- TSeMy+oX99csAWPP9ZfMIrLQMGpgjcIph6uryUM+S659jsm3R7TDEQxIUlA71+69d4ceJPeGt3o
- jCz9taJ5XinmLtmKx9vgG/mCutkOvTACoCfuZ/g/xVBmd5Tqprs/VL0yTSSQkwSUidE4Pdnjk6q
- uKrBu+batXFbKUq1I9kXHu89JkeG6WsTXPXNyt7DLhW//twCOSVf/C6blQlv/iBItgB+BtWKazz
- ZGdpNQV0Oe31eaMsGkcvg269ad7ePvx02YoYPSZKu+ABZbaK+1b2FfRclTHUXBFGCvMKEa7BhpY
- RbpLhSxTVobW3SJnDDxf70vJB160x3VEysxlR4ZmBblRbgj5jEq8Us/zb49ZnixL7nnT2ywyYF+
- uwKGn7V6cFuQBZGyxrH0ottKsPytt19nFwjIel2QomUD7uGgwFkl3IhsF7k8pMf6cEUs0wVfsOM
- D9o0yGayqtUgdpNzudccmID3beasQwNEsEiR/U9QUTPxQLvOBMUje45vU3glmmFRK7KVuS89cOH
- 173MZUzLG4MKumarKaY7lx50XNy3q42ANemEhplsP6sxTNKfZVIGvH34p4XxexNb3KkaWh+8s58
- KJoypJbjEIPsmYw==
-X-Developer-Key: i=david@ixit.cz; a=openpgp;
- fpr=D77A09CFEEDC2BBD53A7047460023FC4D3492072
-X-Endpoint-Received: by B4 Relay for david@ixit.cz/default with auth_id=355
-X-Original-From: David Heidelberg <david@ixit.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH ath-next] wifi: ath10k: fix status of bundled mgmt tx
+ completions
+To: shunsuke@nagashi.ma, Jeff Johnson <jjohnson@kernel.org>
+Cc: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+ ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20260927-ath10k-bundle-status-v1-1-a1eea048ada9@nagashi.ma>
+Content-Language: en-US, cs-CZ
+From: David Heidelberg <david@ixit.cz>
+Autocrypt: addr=david@ixit.cz; keydata=
+ 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
+In-Reply-To: <20260927-ath10k-bundle-status-v1-1-a1eea048ada9@nagashi.ma>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261020_123850_494706_B2E37A57 
+X-CRM114-Status: GOOD (  30.65  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,235 +116,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: david@ixit.cz
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: David Heidelberg <david@ixit.cz>
+On 27/09/2026 14:10, Shunsuke Nagashima via B4 Relay wrote:
+> From: Shunsuke Nagashima <shunsuke@nagashi.ma>
+> 
+> ath10k_wmi_event_mgmt_tx_bundle_compl() takes the completion status of
+> each report from desc_ids[i] instead of status[i]. Any non-zero status
+> is handled as "not acked", so a bundled report is marked as acked if
+> and only if its descriptor id is 0, whatever status the firmware
+> returned.
+> 
+> The bundle handler read status[i] when it was added in
+> commit cc123fac978f ("ath10k: Handle bundled tx completion for
+> management frames"). The commit named in the Fixes tag replaced it
+> with desc_ids[i].
+> 
+> Seen on WCN3990 in station mode with a WPA3-SAE AP. This firmware
+> advertises mgmt-tx-by-reference and completes some management frames
+> in bundles. A debug build printed status[] for each bundled report and
+> could switch between the old and the fixed line. A sniffer watched the
+> AP channel. The firmware status[] matched the capture in all 39
+> bundled reports (15 with the old line, 24 with the fixed one): the 30
+> frames with status[] 1 were never seen on that channel, and the 9
+> frames with status[] 0 were acked.
+> 
+> With the old line, 6 of the 15 reports gave mac80211 the wrong ack
+> result:
+> 
+>   - 4 frames that were never seen on the air were reported as acked.
+>     Each report arrived after mac80211 had already timed out the
+>     authentication, so they had no visible effect in these runs.
+>   - 2 SAE commit frames that were acked on the air were reported as not
+>     acked. They were the second and third of three tries. mac80211 gave
+>     up on the authentication 239 us after the last report, although the
+>     AP's SAE replies came about 5 to 8 ms later, so that connection
+>     attempt failed.
+> 
+> Take the status from status[i].
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.2.0.c10-00459-QCAHLSWMTPLZ-1
+> 
+> Fixes: 4b816f170b1f ("ath10k: add support for ack rssi value of management tx packets")
+> Cc: stable@vger.kernel.org
+> Assisted-by: LLM sparse
+> Signed-off-by: Shunsuke Nagashima <shunsuke@nagashi.ma>
+> ---
+> Tested on a comma four (WCN3990) with a v7.2-based kernel
+> (7.2.0-vamos-7626c37). It also carries three out-of-tree ath10k
+> patches (MAC address, in-order rx A-MSDU, SET_KEY wait); none of
+> them touch wmi.c or wmi-tlv.c.
+> 
+> - Debug build that prints status[] per bundled report and can switch
+>    between the old and the fixed line, with a sniffer on the AP
+>    channel: 6 connect/reconnect runs (5 WPA3-SAE, 1 WPA2-PSK),
+>    39 bundled reports.
+> - Build with only this patch: 6 connect/reconnect runs (5 WPA3-SAE,
+>    1 WPA2-PSK), no debug output. No warnings, no firmware crashes.
+>    One first connect failed and one reconnect was slow, for a
+>    different reason that was also seen with the old line: the AP did
+>    not ack, and the firmware held back some Auth frames.
+> 
+> Not tested: status 2 or 3 inside a bundle (only 0 and 1 were seen),
+> AP mode, other chips and firmware versions.
+> 
+> I worked on this with Claude (claude-opus-5-5) and Codex
+> (gpt-6-astra). They helped go through the logs and sniffer captures,
+> write the debug build, and write the English of this changelog. I ran
+> the tests on the device and reviewed the change myself.
+> ---
+>   drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 
-The WCN3990 might split MSDUs among multiple "in-order" indications.
-The driver needs information from previous indications to handle MPDUs
-that are not started by the same indications that complete them. Stash
-the MSDUs of an incomplete MPDU in the driver state, together with the
-peer id, tid and frag flag identifying it, and prepend them to the MSDU
-list of the next indication so the MPDU can be completed instead of
-being dropped and confusing the driver.
+Reviewed-by: David Heidelberg <david@ixit.cz>
 
-Keeping the actual buffers around is required, not just metadata: the
-stashed MSDUs are the payload of the incomplete MPDU, which can only be
-processed and delivered once the buffer flagged as the last MSDU
-arrives. If the next indication does not continue the pending MPDU
-(different peer id, tid or frag flag, or an offload indication), bail
-out to recovery as before, since no firmware is known to do this. Cap
-the stash at the rx ring size and bail out the same way if the last MSDU
-never arrives, so a firmware that stops mid MPDU cannot grow it without
-bound.
-
-Based on effort of Richard Acayan.
-
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-The WCN3990 firmware may split an A-MSDU across multiple HTT "in-order"
-indications. Mainline drops these ("failed to extract amsdu: -11",
-rx_confused, recovery), collapsing throughput under load on affected
-devices. Stash the MSDUs of an incomplete MPDU in the driver state so
-it can be completed by the next indication instead of being dropped.
-
-Similar patch has been carried out-of-tree (sdm845 mainline, Comma.AI
-vamOS) for a long time.
-
-Changes in v4:
-- Dropped RFC, rebased on top of next-20261016.
-- Link to v3: https://patch.msgid.link/20260803-ath10k-a-msdu-v3-1-af2af21c2f19@ixit.cz
-
-Changes in v3:
-- Rework: keep the per-indication MSDU list on the stack and stash only
-  the MSDUs of an incomplete MPDU between indications; processing and
-  error paths are otherwise unchanged from mainline (Johannes)
-- Track the frag flag of the pending MPDU and bail out to recovery if
-  the continuing indication disagrees (Jeff's review agent)
-- Drop the unused msdu/rxd assignments before the extract loop, a stale
-  pre-v1 leftover (Richard)
-- Return 0 when stashing an incomplete MPDU, waiting for the
-  continuation is not an error
-- Explain in the commit message why the buffers themselves must be
-  kept, not just metadata (Johannes)
-- Link to v2: https://lore.kernel.org/r/20260719-ath10k-a-msdu-v2-1-f479bb9d1217@ixit.cz
-
-Changes in v2:
-- checkpatch & style. (Jeff)
-- Improve comments.
-- Link to v1: https://lore.kernel.org/linux-wireless/20260210021249.12132-2-mailingradian@gmail.com/
----
- drivers/net/wireless/ath/ath10k/htt.h    | 10 +++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c | 48 +++++++++++++++++++++++++++++++-
- 2 files changed, 57 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 25c6b2e2f81c8..0a3998bdc34fd 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1924,16 +1924,26 @@ struct ath10k_htt {
- 
- 	bool tx_mem_allocated;
- 	const struct ath10k_htt_tx_ops *tx_ops;
- 	const struct ath10k_htt_rx_ops *rx_ops;
- 	bool disable_tx_comp;
- 	bool bundle_tx;
- 	struct sk_buff_head tx_req_head;
- 	struct sk_buff_head tx_complete_head;
-+
-+	/* MSDUs of an MPDU left incomplete by an in-order indication, waiting
-+	 * for the next indication to continue it
-+	 */
-+	struct {
-+		u8 tid;
-+		u16 peer_id;
-+		bool frag;
-+		struct sk_buff_head msdus;
-+	} rx_in_ord_split;
- };
- 
- struct ath10k_htt_tx_ops {
- 	int (*htt_send_rx_ring_cfg)(struct ath10k_htt *htt);
- 	int (*htt_send_frag_desc_bank_cfg)(struct ath10k_htt *htt);
- 	int (*htt_alloc_frag_desc)(struct ath10k_htt *htt);
- 	void (*htt_free_frag_desc)(struct ath10k_htt *htt);
- 	int (*htt_tx)(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index ab2d373b4750d..40fdde280a6f1 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -291,16 +291,18 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
- 		return;
- 
- 	timer_delete_sync(&htt->rx_ring.refill_retry_timer);
- 
- 	skb_queue_purge(&htt->rx_msdus_q);
- 	skb_queue_purge(&htt->rx_in_ord_compl_q);
- 	skb_queue_purge(&htt->tx_fetch_ind_q);
- 
-+	skb_queue_purge(&htt->rx_in_ord_split.msdus);
-+
- 	spin_lock_bh(&htt->rx_ring.lock);
- 	ath10k_htt_rx_ring_free(htt);
- 	spin_unlock_bh(&htt->rx_ring.lock);
- 
- 	dma_free_coherent(htt->ar->dev,
- 			  ath10k_htt_get_rx_ring_size(htt),
- 			  ath10k_htt_get_vaddr_ring(htt),
- 			  htt->rx_ring.base_paddr);
-@@ -841,16 +843,18 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
- 	htt->rx_ring.sw_rd_idx.msdu_payld = 0;
- 	hash_init(htt->rx_ring.skb_table);
- 
- 	skb_queue_head_init(&htt->rx_msdus_q);
- 	skb_queue_head_init(&htt->rx_in_ord_compl_q);
- 	skb_queue_head_init(&htt->tx_fetch_ind_q);
- 	atomic_set(&htt->num_mpdus_ready, 0);
- 
-+	skb_queue_head_init(&htt->rx_in_ord_split.msdus);
-+
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt rx ring size %d fill_level %d\n",
- 		   htt->rx_ring.size, htt->rx_ring.fill_level);
- 	return 0;
- 
- err_dma_idx:
- 	dma_free_coherent(htt->ar->dev,
- 			  ath10k_htt_get_rx_ring_size(htt),
- 			  vaddr_ring,
-@@ -3296,16 +3300,38 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 		ath10k_warn(ar, "dropping invalid in order rx indication\n");
- 		return -EINVAL;
- 	}
- 
- 	/* The event can deliver more than 1 A-MSDU. Each A-MSDU is later
- 	 * extracted and processed.
- 	 */
- 	__skb_queue_head_init(&list);
-+
-+	if (!skb_queue_empty(&htt->rx_in_ord_split.msdus)) {
-+		/* An MPDU left incomplete by a previous indication is
-+		 * pending. It might still be possible to handle indications
-+		 * that do not continue it if there is only one peer that
-+		 * splits at each given moment. We are bailing out because we
-+		 * should have a test case for this before trying to fix it.
-+		 */
-+		if (tid != htt->rx_in_ord_split.tid ||
-+		    peer_id != htt->rx_in_ord_split.peer_id ||
-+		    frag != htt->rx_in_ord_split.frag ||
-+		    offload) {
-+			ath10k_warn(ar, "split amsdu did not resume immediately\n");
-+			htt->rx_confused = true;
-+			__skb_queue_purge(&htt->rx_in_ord_split.msdus);
-+			ath10k_core_start_recovery(ar);
-+			return -EIO;
-+		}
-+
-+		skb_queue_splice_init(&htt->rx_in_ord_split.msdus, &list);
-+	}
-+
- 	if (ar->hw_params.target_64bit)
- 		ret = ath10k_htt_rx_pop_paddr64_list(htt, &resp->rx_in_ord_ind,
- 						     &list);
- 	else
- 		ret = ath10k_htt_rx_pop_paddr32_list(htt, &resp->rx_in_ord_ind,
- 						     &list);
- 
- 	if (ret < 0) {
-@@ -3334,17 +3360,37 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 			 */
- 			ath10k_htt_rx_h_ppdu(ar, &amsdu, status, vdev_id);
- 			ath10k_htt_rx_h_filter(ar, &amsdu, status, NULL);
- 			ath10k_htt_rx_h_mpdu(ar, &amsdu, status, false, NULL,
- 					     NULL, peer_id, frag);
- 			ath10k_htt_rx_h_enqueue(ar, &amsdu, status);
- 			break;
- 		case -EAGAIN:
--			fallthrough;
-+			/* The MPDU is incomplete. Stash the remaining MSDUs
-+			 * and wait for the next indication to continue it.
-+			 * A last MSDU that never arrives would otherwise keep
-+			 * growing the stash on every indication, so give up
-+			 * once it cannot plausibly be an A-MSDU any more.
-+			 */
-+			if (skb_queue_len(&list) > HTT_RX_RING_SIZE) {
-+				ath10k_warn(ar, "split amsdu exceeds %d msdus\n",
-+					    HTT_RX_RING_SIZE);
-+				htt->rx_confused = true;
-+				__skb_queue_purge(&list);
-+				ath10k_core_start_recovery(ar);
-+				return -EIO;
-+			}
-+
-+			htt->rx_in_ord_split.tid = tid;
-+			htt->rx_in_ord_split.peer_id = peer_id;
-+			htt->rx_in_ord_split.frag = frag;
-+			skb_queue_splice_init(&list,
-+					      &htt->rx_in_ord_split.msdus);
-+			return 0;
- 		default:
- 			/* Should not happen. */
- 			ath10k_warn(ar, "failed to extract amsdu: %d\n", ret);
- 			htt->rx_confused = true;
- 			__skb_queue_purge(&list);
- 			ath10k_core_start_recovery(ar);
- 			return -EIO;
- 		}
-
----
-base-commit: 2efb7a11f1aa4d2dc285fe2680cca22cb9f72f64
-change-id: 20260719-ath10k-a-msdu-c49334eb091d
-
-Best regards,
---  
-David Heidelberg <david@ixit.cz>
-
-
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index e57588c19..67be6e817 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -2512,7 +2512,7 @@ int ath10k_wmi_event_mgmt_tx_bundle_compl(struct ath10k *ar, struct sk_buff *skb
+>   	for (i = 0; i < num_reports; i++) {
+>   		memset(&param, 0, sizeof(struct mgmt_tx_compl_params));
+>   		param.desc_id = __le32_to_cpu(arg.desc_ids[i]);
+> -		param.status = __le32_to_cpu(arg.desc_ids[i]);
+> +		param.status = __le32_to_cpu(arg.status[i]);
+>   
+>   		if (test_bit(WMI_SERVICE_TX_DATA_ACK_RSSI, ar->wmi.svc_map))
+>   			param.ack_rssi = __le32_to_cpu(arg.ack_rssi[i]);
+> 
+> ---
+> base-commit: 753baa59527f8e606c49eac25692b8b08918a3a9
+> change-id: 20260927-ath10k-bundle-status-24113117b683
+> 
+> Best regards,
+> --
+> Shunsuke Nagashima <shunsuke@nagashi.ma>
 
