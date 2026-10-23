@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E9A606A319
-	for <ath10k@archiver.kernel.org>; Fri, 23 Oct 2026 05:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295B9606A319
+	for <ath10k@archiver.kernel.org>; Fri, 23 Oct 2026 05:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gYHB9y3t;
-	dkim=pass (2048-bit key, unprotected) header.d=stroker-net.20251104.gappssmtp.com header.i=@stroker-net.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=tVw4HGbk
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=jS+Rtba0;
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=l1mtGPna
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:Subject:
@@ -14,91 +14,91 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Xwl+yUTqcOV9btjtNc+6nPFULHeVwYmYXpKPcDN78Ds=; b=gYHB9y3tTndI6qjYuv4JYgzOqF
-	sLB0ryBZlAClsG5DrBoyvj/JVSeRgzAHIy6m4nZXOa4DB/NnqQPv6UCdHztZ9pqCERsYR7Ft1xioH
-	WXOalY4Yhbx0h/Qzx/xqXWMgdKwT2HLOaCCjwFSyjQpMe0wPsOc+zTcaeE7fghKCA+nw3N01EdcTF
-	7SxhL86c6ZFJQKc7Y8w8KKIqpl6/x7XhEDhpCjo8aLY0X5tFRSCBBZU6Wkl85Zqmy7zydh506Yzxi
-	7D7g8IJDMl7y4wa6YU6A2ljZwQ71dj1vAEF/3dbAjARpEFhqD+6SE+XGhz9bDWjRmqsG5ewv7Qy6n
-	f2zhV55w==;
+	bh=5WX64lJ0AojJ/cA0YpP2j1odd01m5oTVzpjdq8X80A0=; b=jS+Rtba0Oqq1Ue0VCYgumkeDgv
+	JhyupqseE2qDIMwbXw47iD9x7lMWyHPXV3hXhdYcSCTuG+QWxpxiOuc0VJt9VfV9iEsaBYx5Fui4d
+	Xs7S7+qlvM3IjpAZWwURB8tL37G16YHz45AFkjDhJ43vKoF4+m0ldzH3ts9Phq69P8YK/61sEjmfZ
+	TlTYJ6cJ9MXPPTy26g7gCpBfOhdRPOgiYTj6NDGgGGlRXuV18GdqumBu7dj/ti4/ZjmSI2RYALkGb
+	FQvFwgDHkgRPuFyak58MgjKfjzdr+1BtcWTfq4W/Ie+ofTtyaVl626W2reFbda2s2EiNdDNTK6nW1
+	+JXDW5WA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xK7YQ-0000000FViC-3jHV;
-	Fri, 23 Oct 2026 05:10:58 +0000
-Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
+	id 1xK7eD-0000000FW5b-49AK;
+	Fri, 23 Oct 2026 05:16:57 +0000
+Received: from mail-vk1-xa35.google.com ([2607:f8b0:4864:20::a35])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xK7YO-0000000FVhq-3Xhi
+	id 1xK7eA-0000000FW5B-3o6H
 	for ath10k@lists.infradead.org;
-	Fri, 23 Oct 2026 05:10:58 +0000
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-6b1b13e09ffso561953a12.3
-        for <ath10k@lists.infradead.org>; Thu, 22 Oct 2026 22:10:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1792732254; cv=none;
+	Fri, 23 Oct 2026 05:16:56 +0000
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-5c9e7731b34so421564e0c.2
+        for <ath10k@lists.infradead.org>; Thu, 22 Oct 2026 22:16:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792732613; cv=none;
         d=google.com; s=arc-20260327;
-        b=ZgTLuoUwmxfG9H+OJ4oFpVqbDaVFTwPjjEDIGYdi+2DpH4YcpL9A7szUnj2RrNLJdo
-         u00ykAMnlns0oUv6ZIkSZ5dpHMN+P0yFwm1KFMpFPEaI0H4N0fiJtrsqwq+Wj19XORfB
-         84mjz/TYtNonmcjmKkOcmx9x1Bi7M68HK6RFWym8U99yosR+j2HbUlzzLu+2z1yBkSJD
-         eJ7XY4yTajd5UwAW+NieJtFsFIERKZ2d8Fef5dhMkuNR5RMmj0ii1vtb1GzWnHGSIa6Y
-         +hOhtljJEfiA16POJy8K4y3Sr6c13bk56KujTu9VpDruOXdw6i4SmMXIJE3P4oNrV2Jr
-         t1Tw==
+        b=Agr8xuv+8gEeFi+uIPc7kfryfyNSBA/I8y6qt5czoqrHxP6HmG6DL6snn9/wN+MWi+
+         dNZ5Ggkxtm4rDmryDAazo/pDETPLIKm2NRVmzeFUOqvGZ+CymKNKQ4QI2wGGk6L9uYXk
+         OSTDjMFkqnce5e6iVnWcwV3u6SuJpxvQGYBEw8R/S8jxyEBnw9eKZvrOSo34eL1PDnmi
+         l6Zl3kOoaNfuKg4uIit3m8XRuFPbRYQy7dbQaDgG9WVXxr7JqEqu8K0n7YKgie7SzFtW
+         se9xg2N7YV9odOTuBRV86uhAwfnKD3qToNCFhhKusQTu0tl6IG0qIIXslr5V2OpJ3CWa
+         f1nQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=Xwl+yUTqcOV9btjtNc+6nPFULHeVwYmYXpKPcDN78Ds=;
+        bh=5WX64lJ0AojJ/cA0YpP2j1odd01m5oTVzpjdq8X80A0=;
         fh=1VIYtGFf30dJYJLkM6/GimrrcyPdEjtwrXjb0BDfp48=;
-        b=lk3pY/FlaQ6D+OyTP1NnQfSLF6B81mIL4hPxFNoGU6YDF4yP6abCxbm30hdUTvSegS
-         ht1/cZK30LvfhDgWt+hTwymlxOZA7ZRavy0P5hqgJ/yC22gK/7uJmfo94hRxpnFn3eGC
-         6fBpaxC9VZ/s2SptbTqVFYOS8kXpSGKarYSwhuHRAt775v6UXKHas4V5427i5SRWwnts
-         NzFJUlQJNtEkEDCEsyGN51xeBtmmJ4AN4KU22ceaiCmueNMb1Q1fFoMkmtm3J66T7Siy
-         q/222xVJoGgJ3myz8pzxPWcpwjYabCCBWZo/IsxLd//cvFlhzCfXPdM4EE64cwzC2198
-         v3Qg==;
+        b=BI4XDj7YR0h65H4pY5LX+PveRDcTp+QGr+X1sVMjoDmmSlOKNzC3T2XSjsMY1N7hxH
+         QcJDNJUrngq49Le5vQvmvI2Ql6ORaloWEsVPJWJdFqyoLAtILxDhkr2kZK+EcfqgvLn3
+         TqhwjISo3waAzcl3SZ0xvCo4FW4IDjQ71pjleMaubT0PL+NFX3LqABRRQzLvAKv6GZNU
+         x7WxE/hS37aUhXFcYpORCATr52qUz1L7vuzeFcXU1ius4XyOV4NyfW0c0KoblOs4gCnc
+         Be8leGCdPHPGXCYDiJQQNbIfdGy1HgHSP5bgZ+sJmfMKVZYkjnAunORatXqa4Q0Kas9N
+         UpbQ==;
         darn=lists.infradead.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=stroker-net.20251104.gappssmtp.com; s=20251104; t=1792732254; x=1793337054; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1792732613; x=1793337413; darn=lists.infradead.org;
         h=content-type:to:subject:message-id:date:from:mime-version:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=Xwl+yUTqcOV9btjtNc+6nPFULHeVwYmYXpKPcDN78Ds=;
-        b=tVw4HGbk5bXbWypHwblczmAyuloM7ln44Nz5lp0K/zfWTLbMJ/6E+D1PfmGZ1fyVTr
-         gDFCEa/Y6y1/+kTqnj9H7/7Ny3V6HFx8XZUDuQ8prhgpBeB+40/c7SPBrNhlQ/eNno+e
-         PtQW4zj1gc6I2JtDjiw9Gh+GIqPqu+PrFNGdGqVVPumx+n3mDCIRxe66qyR05m+i1wg4
-         MKG3gKeyn0qntR8oOO9ybrhSbDdbuq4J0aQtrbJ7rNeAUCCZaaWwHI4Vd0S+6Y6AzJ7q
-         yodJyWxck20OSwDK6QbxVE1TwWIJH+BegESeBWqp6XEVcNcq31CLBsgV75lTnMLRdZFw
-         ZU2w==
+        bh=5WX64lJ0AojJ/cA0YpP2j1odd01m5oTVzpjdq8X80A0=;
+        b=l1mtGPnawRVZOZ8jJhK1Tt9F9OlvifSpfJwfuP9vMdJ67G8u/Va6FwvgDw4BNfAn+K
+         pgiIvg3/2DSt6xO6tBUQubnT1Fg3vb9dMWTbI6eSaNnfC4Gef8OZWfna5rWZzt1rKsvy
+         IAA069KXvwYGRA2tJD5Hr1ONcl3scJAkgeBAnKgExe8OvJkPqLJ1fbUnDQrwu//Xwjfh
+         jSm0hGftMU64+RE/0ui39YnCcuaH4H9vJoI8/Q5LQUQJvhY4ANcIK1ryAmOIZJs1dvXX
+         ENUQpgYusyMSns8L7a3p/+4EG/A+QCFZmRCzVt2mqw2yAMpINz5kYaUBuavQAhNUqqH4
+         xAmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792732254; x=1793337054;
+        d=1e100.net; s=20260707; t=1792732613; x=1793337413;
         h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=Xwl+yUTqcOV9btjtNc+6nPFULHeVwYmYXpKPcDN78Ds=;
-        b=I/t4y+qvk/I9+NMBLDN1t6h/dRhMf354EvX2NlmHRr5qtLHt2xj+kFsSQN9ypBTTmI
-         VBYFgsNRaAN8PRxwE/fGmUVpktB+8WLJ1Amr485YpUxJjxMxcwXU3/xus9DduvEFGext
-         TaQkYjKa4JfOtfrzAhXT87sLDTrL0vHDCKAq9gEN0cdNr9xqzGhxI73XBlEgOWXGd+JJ
-         +g0p5y26b+nAGldLRYxwK8PHFpQGBMQn0d9NIw/PfiOZsWhLFla9BvZC9mhpDQxX1o5c
-         p0yvcbQbQ6Dv2X2dniUfbAjqwy5GwVcsikiHr4WCUv96ZWhnTgiFW5i2gZVr2MHW+cAK
-         YGpQ==
-X-Gm-Message-State: AFq9FYI8M287e0LYwcDWtKvi2XgvFPOLTeK8L8ZX/pz5/FfNMN0rvg0i
-	ZPJ4oBCff1s9RmW/UbxZ+xwe8wlGOPAuArMe0RI97pcpkp0g6UtjbuggOu69AvVeFaB8Klnsl9w
-	BwgPIU11JjToxBC4ANFVZVffURpXB2sTcmfD/Q31R7Zl6/H1b4I1V
-X-Gm-Gg: AYBFou0kS5ZI18oeQlNpFvNtSjGc3SRtD9CBNGLj/k/esvj3dc2Ru2wO8ceE3IQZweX
-	HD0Ln+DMRWTFoHjJICLdP/Tc3nJg0CnLTlE4p7ZFAgnSoIjXuXejok3JZUz62CeXgTcYUbSnR8P
-	jcIQeskCaYYQR93YrMZn/EIr9agsuySpiMnIQGCWpzVEpWoyrFrdwQ/4SJ0aZ3NpMBCWG35L/Bx
-	p+z5pS1DGKrrTfGhwjRhWzHSjMSaSYU0Cp69AtWkiT45QRX6ixbaJH5wxm81Bt3wogWMsRCvhUA
-	JQxdvEkAJP0Mbda/Q6IfdXk7k7SZFwed2ovtrogpTxkTUeKebDs7PbJ+KwAXiJUQAcvxU0Ri3Fs
-	fQhWKvS/rChbZZMTqkdwXDlk5Z2H+jvuWEqPZzeMc/mAU01e3/fb/K9X8aRXRcGpQYrP0ydrij+
-	71a04qQt2k9iJD6Rm3qsQVGEhk0wkepNymmhbHJ7mpnDzuEfHBKQ==
-X-Received: by 2002:a05:6402:886:b0:6aa:a040:cbd3 with SMTP id
- 4fb4d7f45d1cf-6b432b21ddfmr1404219a12.3.1792732253797; Thu, 22 Oct 2026
- 22:10:53 -0700 (PDT)
+        bh=5WX64lJ0AojJ/cA0YpP2j1odd01m5oTVzpjdq8X80A0=;
+        b=AF7GgYnF3S78mnrWlxWzny0RPprsWM26OKkOc1YgCRD+Ysj1rol/Wan1LDupynXqnD
+         vCWJqzaWY7Nf+WaHZP0W6IZ8pBT2my7e6rLxH1iquMB7qbCJdtx9xUzf8QcBBjOAPtGh
+         W5lwaky1P25g2ILlXyAXAiGJiAeeN/HKj03PoRTgWncEhtKF+svHO/3bmzizu3emwivR
+         sL/KnSLE0u2FauuTs90Jf1KBU+heICPDA/FzSigsgUocoGwU/g5Hqk5F79wmOC7OZK4O
+         N2rFYKnrTTW/3yTKLf9Ig/FaP1iKRRnNWxUAb/E8Hh4xzMFthEqwFCq/ZZc1p0RevwY0
+         3e7w==
+X-Gm-Message-State: AFq9FYIbTl/zNX4BjamvoccQc5lOmlxQLWQ20R00Z44z/B2ZQ2b0jTtH
+	AR82IlEEEKaz8uhRGCSDQj8B/14/6egSsnl8Vivz7jdEjUrQrHenGC5baU0SYLqc1DY1R++Surw
+	XcYsmqy+5zMDr0SV+LMZGrbkm8KmaG/Wz3w==
+X-Gm-Gg: AYBFou090CxHxgB3qy+OoCJDITTtolBXTIl2H5M8MWM536cGBxtMx2D76UhbkU3sNUI
+	a3C9Z/cA8Mdb/zMkhK5I1HG3pbWYyZEmB2c5vo6h+Jl2okqgtTuN6TS0Zo1IkP+qYY+iIh8hpa2
+	AnCMwbV+PC8RO8nWSf0lj6UasfB1uyHFKAzteTQ+h8tQbp8iTZsrL9EA3oNBUNMeLhxGRpf+dG9
+	V89cYWWTbXIuJuBXKiFO6RPf9dcftzgHImFlnGpc5HU1HPd4RpIrnCpmVVKMeg0Gq/an6iSyoXb
+	/M14XEhimPMPgCxNAF4kIqaloDv0wG4dUr7SG3GjHtdzJyDXzW6J9vUBs+/ZtN1osZUuOGzxJIV
+	9NaANxv/xJtK2KUBEXlhpBj8LYgtjTlNZ1PvCh/fWFb4vgXo7p2N2g5Hk2D57dxM+P1vfeCqT3F
+	rrbFLKQTa/fXY/AEJeqQ==
+X-Received: by 2002:a05:6122:c24d:b0:5ea:d0b0:e6f1 with SMTP id
+ 71dfb90a1353d-5ec14a70357mr284317e0c.6.1792732612732; Thu, 22 Oct 2026
+ 22:16:52 -0700 (PDT)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-From: Chris Griffin <cgriffin@stroker.net>
-Date: Fri, 23 Oct 2026 00:10:42 -0500
-X-Gm-Features: AclHuK9XEXUnbrVwKZZ79vuhHbWzt1x-Iuo5qtyizpgsb7FW6dsul0H3Og76jlU
-Message-ID: <CAAdbHm_XJe+O2eaxXMrU81aWSAvxeVzXJ8tfZTi7bHVyGPhNUQ@mail.gmail.com>
+From: Christopher Griffin <christophergriffin05@gmail.com>
+Date: Fri, 23 Oct 2026 00:16:41 -0500
+X-Gm-Features: AclHuK_P6aYxSlrKs3Ob23N8Z_4GiQzwRY5xCSvquQNZlwNyxvmkiHhls1J_D8U
+Message-ID: <CAKobHXDJT+A3x=hV98T7d4EuB=ddmpGwk8DJ=n=WRZJ7ntfL6Q@mail.gmail.com>
 Subject: ath10k-firmware: QCA4019 hw1.0: Add Arista W-118 specific BDFs
 To: ath10k@lists.infradead.org
-Content-Type: multipart/mixed; boundary="0000000000002a9bb3065e7b01da"
+Content-Type: multipart/mixed; boundary="0000000000008f4ac8065e7b163e"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261022_221057_321438_30A2DCD6 
-X-CRM114-Status: UNSURE (   4.12  )
+X-CRM114-CacheID: sfid-20261022_221655_080113_52027894 
+X-CRM114-Status: UNSURE (   4.40  )
 X-CRM114-Notice: Please train this message.
 X-Spam-Score: -1.9 (-)
 X-BeenThere: ath10k@lists.infradead.org
@@ -111,15 +111,18 @@ List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
---0000000000002a9bb3065e7b01da
+--0000000000008f4ac8065e7b163e
 Content-Type: text/plain; charset="UTF-8"
+
+This replaces my mail of earlier today (05:10 UTC), sent from the wrong
+address; please use this one.
 
 Hello,
 
@@ -142,14 +145,14 @@ IDs: the radios report board IDs 20 and 21 (from the calibration data at
 ART 0x1020 and 0x5020). The device tree sets
 qcom,ath10k-calibration-variant = "Arista-W118", so ath10k requests:
 
-bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Arista-W118 (2.4 GHz)
-bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Arista-W118 (5 GHz)
+  bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Arista-W118  (2.4 GHz)
+  bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Arista-W118  (5 GHz)
 
 md5sums:
 
-ff636d18bf9c6fd848009860b90ec460
+  ff636d18bf9c6fd848009860b90ec460
 bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Arista-W118.bin
-a40c4aabb1c79887a343dafe3bd731da
+  a40c4aabb1c79887a343dafe3bd731da
 bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Arista-W118.bin
 
 Tested on a W-118 with OpenWrt main (kernel 6.18.55, ath10k-ct): ath10k
@@ -160,14 +163,14 @@ are in openwrt/firmware_qca-wireless#179).
 Thanks,
 Christopher Griffin
 
---0000000000002a9bb3065e7b01da
+--0000000000008f4ac8065e7b163e
 Content-Type: application/octet-stream; 
 	name="bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Arista-W118.bin"
 Content-Disposition: attachment; 
 	filename="bus=ahb,bmi-chip-id=0,bmi-board-id=20,variant=Arista-W118.bin"
 Content-Transfer-Encoding: base64
-Content-ID: <f_mvkie9850>
-X-Attachment-Id: f_mvkie9850
+Content-ID: <f_mvkimz2f0>
+X-Attachment-Id: f_mvkimz2f0
 
 IC+JCQEBAAN/EjRWAAAAACqgAAAAYAAACgcQAAAAAAAUAAAOMwAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAACkpIgEAAAAAADMzM/Ty8gE8FAYA+OOPP/jjjz/4448/AxQAAAAAAAAAAAAAAAAAAAAA
@@ -381,14 +384,14 @@ NhE+ElqaWppamjw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---0000000000002a9bb3065e7b01da
+--0000000000008f4ac8065e7b163e
 Content-Type: application/octet-stream; 
 	name="bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Arista-W118.bin"
 Content-Disposition: attachment; 
 	filename="bus=ahb,bmi-chip-id=0,bmi-board-id=21,variant=Arista-W118.bin"
 Content-Transfer-Encoding: base64
-Content-ID: <f_mvkie98e1>
-X-Attachment-Id: f_mvkie98e1
+Content-ID: <f_mvkimz2o1>
+X-Attachment-Id: f_mvkimz2o1
 
 IC9nkgEBEjRWeJASAAAAABWgAAAAYAAAFQcAAAAAAAAVAAAOMwAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAClZIgEAAAAAADMzM/Ty8gE8FAYA+OOPP/jjjz/4448/AxQAAAAAAAAAAAAAAAAAAAAA
@@ -602,5 +605,5 @@ NhE+ElqaWppamjw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---0000000000002a9bb3065e7b01da--
+--0000000000008f4ac8065e7b163e--
 
