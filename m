@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2CD606D802
-	for <ath10k@archiver.kernel.org>; Thu,  5 Nov 2026 18:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70285606A332
+	for <ath10k@archiver.kernel.org>; Thu,  5 Nov 2026 18:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=HN983E9v;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Uvsj/Kzd
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=EqGqgzR/;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SIDCbA0p
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
@@ -14,72 +14,72 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Type:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=h8r1VGcPDNnPxIY04XIKG5IMdGlTDl1N3L8FqBps7F4=; b=HN983E9vCHW5gTnMCvhq1hE7Lt
-	eiJrOsCfvc3eMi/kimPJ0PO8oKOttz4a1RCIJbttFeiKOOFjhPddXyU0ZFSXCpDEqQLAorVjpF9Hf
-	cITcCNVI6fC0I1arSrqY4kKQaoMBL0kElmFBOknEbWU6pQMcKW0oWDMKCrfdzuLNwrxbVFGpyh+FI
-	tzVxvYXHzx3KYcsRhj4uscJA9yuYNJQ2MwNsWJ4bOAbiBJvjJSN3v7bY0ech3jMql07/9QW+Cg7GB
-	6sB2qVH5hF1R7gyC43GiHU2GRdIdnuoGKP8OZ+oHCZXPQC8BnEz9LC3oFupa/hAnMQp+A0GN36oOy
-	Pjk60vFA==;
+	bh=c+tJig5xb24t0XVZzwp57K8cfpDhjN9MmR0cfzYiA9k=; b=EqGqgzR/V5jSEux4d4h1AEYbzO
+	/niPpPnoTfA4wS3VYBU8yZ/dWn2R+DBNEwyicamJ8sQCwpK7rDkU04hZdnF7W/nuYtF18hLYnxXj0
+	egoLgA2H86K6ffPXWrQqgkPk4XrF5uzIEIJdLwjC/Qcg4uwEHHOXTqCar7xPMF0CIhfiu+2ivNvRc
+	lPqjqm5oVWZ4Pr0gN6K/5oeWS8OLU3s6M1cp9IGFJvevcvTT4kdWnOfNQsmepce2m+54Wh6rrJqYn
+	CzbiVDSkv6mvz3/boZJwLvoxD8pt+q5xui8nlFcxVR7Pf0CTIT5xrZM9o4mrHo5aJR4tw515f3iMM
+	I+didOcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP1wF-0000000A56j-1zLK;
+	id 1xP1wF-0000000A56a-0EI0;
 	Thu, 05 Nov 2026 18:11:51 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP1w5-0000000A55G-3RdF;
+	id 1xP1w6-0000000A55L-2VVY;
 	Thu, 05 Nov 2026 18:11:46 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8A4F343EB4;
-	Thu,  5 Nov 2026 18:11:41 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 5C8DB40E1C;
+	Thu,  5 Nov 2026 18:11:42 +0000 (UTC)
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1793902301;
-	b=YTiMvr/pkIpMzNIF3iPhfW3zs2v2YHIgzomcwe/WAsHz/fPgbXN204H6LYufhenTUR5p
-	 6QsBW60nmF+KP4lfe3S6QiFx061k5Bk0EtO8D5ebTcfE//elvsbAdfig7NIl+OD29QfE5
-	 buIIANXbLCGMLHtja9r4Szh9QcP3cwW4593Y1dgXtk9vWo+Wum6f7VCLwLUZSWqbDxfeC
-	 gy95l+oerH3P6+ftDg4gPzfbkLH9rUoc4I3Ax+CvkQ5OO//6kISUZoekTYZFRyi1rhs3i
-	 plxCfqRIZXFf7N/rFgBPS1pFSXNLY8wV37XbJVtqOWDS+i5cWyDYjZUiwDFKyppBztg==
+	t=1793902302;
+	b=Ny0Gf+M8GbBe/xXqw9sIekWEVUxvxJO3pJ7MQT7igT+F9XQr3GXokyaUn4KJVge/FMRg
+	 d8slm06BqsHEJ5c8Gx2pSrvnlnn05PEQ1vQsKa8MaZe121xTXkJJ+ttCeJFpFsZP7QvjV
+	 /wrjaTIV0xbGpJTgTYVHX6isIy0Ljbx2FACGejr4ItVByiK1O1WcIhZDPPkkHVnmXqoCj
+	 nikzB8cf3O3w5d1DELkWaH0DI8DH68p0BeTnSazcZnbXJACSLPn0nlmY+2AprwsOu0OIA
+	 Sftd7CmpWmw/lZGsSUH1EkB/MR9TLD3ueMZQBipV/F6TDwBRumUF8vnH8KrBj85s1Xg==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1793902301;
+	c=relaxed/relaxed; t=1793902302;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=h8r1VGcPDNnPxIY04XIKG5IMdGlTDl1N3L8FqBps7F4=;
-	b=mHgf+EbL7hAjt8lFSq2/DkT1sX3lpzWmOE7NjTQQ+iUOAJy6GeW/bi+rjxA4IqEu/tLv
-	 2lgr385g9a71TISxmBlXqWo4XNWOx+w7FKDkYegqUJoEXA0a4kJDxXTfIN5Uwh/gXBZyZ
-	 173hAhdtbqxWCfYurTfIDFMev3NWn1G9EWJ4hW78C43M2UrpH7Hm9bI4h+MeyXn/f5DII
-	 ue+Mr58cQmbOIM7DLJK0sR/lWU/IjpWm3bG5fc/MNhx/lVoCs5h2TD6E5C029z6MusLG0
-	 NxfbtV/vWNWw2Uw+qXL932qfW+DQWZLkJS1CmwX+VhLwPUkyX0PhjKTQRqOsdeFX0dQ==
+	bh=c+tJig5xb24t0XVZzwp57K8cfpDhjN9MmR0cfzYiA9k=;
+	b=hHcuopev3WfpZa+97zWm1z2GrBULr/cWyjd7uIRGU2Jl2h8HBYTkLEAvevjgppyylxWb
+	 RAPbHeoB6ZY17rV6W0D+bOvYrSqgzLYI46brFNjEgW1UuientEYi6cxjKCIok1/YW7Nxc
+	 eZbiqX6SDXmTrcY35PMXe9DLicKSddKAgiD2G/9hW9mdOlGDxHZ6lLQLFvqLdgDtR4oiD
+	 3Bp9e9xztfQMTdPtZXSKwe4rCUz2pxdBDwtGm2FBz+x0EJer5oxCvFAA2IvptMRXJ9A+t
+	 U6EgCLNy2Q6ySBte8mN/t+P1gTxKKN+iCqUyxY1Aa0oNZPGt2aSGN1+LBau5ZH6HOHQ==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 8C47C1F000C1;
+	by smtp.kernel.org (Postfix) with ESMTPS id 946A61F00A02;
 	Thu,  5 Nov 2026 18:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793902301;
-	bh=h8r1VGcPDNnPxIY04XIKG5IMdGlTDl1N3L8FqBps7F4=;
+	s=k20260515; t=1793902302;
+	bh=c+tJig5xb24t0XVZzwp57K8cfpDhjN9MmR0cfzYiA9k=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=Uvsj/Kzdo1x0SW5964/3jHesWe+iIPd3iLlKc5n7cgq4rRCYXPzz63TgfGjpq+SwW
-	 CEXfjkx+B0b/ky/enmhSXg3GQKZ+scRVdw1tD9LCQAEvLsQgTtGdGboNc6UEtNXFMo
-	 1T7uN8mnpDw9Lroqq1MyjEdD3HngIgvfuCQMVODMmfzG4gJCG0lwDoWfbQrZuYv0vX
-	 /W0r5E0/0CUe8X2Q+u0evSRQp88ZNdZsf0gPOdvG6faDdsZAdUH1sjH2OFv8TQQ22u
-	 lIjL4XlS34JZy9ba4r/NAnTeqJNzcAJFHg4eNoOigiAY6yICFEr9ySgQU8EfYFwjCQ
-	 h/fCAjJVPWOaw==
+	b=SIDCbA0p3X4cLq3yGm5Ey8gn21t9YRlBbC2r1LrD96kWZNolqLBAqYQLcRQ30zMWQ
+	 c7tcbd8G/MMIteCnmG77hQOlUs2SSCgR1BJuNMsiAfSaNAGguh4RDzrqjuyoVj3EkX
+	 53aLDeeoSBqe/LSNNhpX6mdd4jyXYsX1YA2qf5oGBL7005RZujqIvVjvqnsA2V6u99
+	 T+OmVBIAniiSFPa3CXubQnLCNEMTbAKGAenfw1wGS7dwdJJzQitr6L4f11pxy18EaR
+	 BPh0fqc+JMJtl9HEtnVIYmQZa3iaRo4cvmp6RSNuJtMkT8czQCcNYlBULpG+izW8SE
+	 08ayAVxWpq5ow==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 107FE473B9;
+	by lkml.kernel.org (Postfix) with ESMTP id 20A8F473BD;
 	Thu,  5 Nov 2026 18:11:40 +0000 (UTC)
 From: Christopher Griffin via B4 Relay <devnull+christophergriffin05.gmail.com@kernel.org>
-Date: Thu, 05 Nov 2026 12:11:37 -0600
-Subject: [PATCH 2/3] wifi: ath11k: don't arm the scan timeout for a scan
+Date: Thu, 05 Nov 2026 12:11:38 -0600
+Subject: [PATCH 3/3] wifi: ath10k: don't arm the scan timeout for a scan
  that did not start
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261105-ath-recovery-scan-timeout-v1-2-99a70d89e114@gmail.com>
+Message-Id: <20261105-ath-recovery-scan-timeout-v1-3-99a70d89e114@gmail.com>
 References: <20261105-ath-recovery-scan-timeout-v1-0-99a70d89e114@gmail.com>
 In-Reply-To: <20261105-ath-recovery-scan-timeout-v1-0-99a70d89e114@gmail.com>
 To: Jeff Johnson <jjohnson@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
@@ -96,11 +96,11 @@ Cc: linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
  Wen Gong <quic_wgong@quicinc.com>, 
  Christopher Griffin <christophergriffin05@gmail.com>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1793902298; l=1793;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1793902298; l=1474;
  i=christophergriffin05@gmail.com; s=20261024; h=from:subject:message-id;
- bh=BE7ZZiDwoQohf3HNv1LT97zdlpVPS1QyfAViwcyIEvw=;
- b=4AlrQNqA3KWa7YCP1sXjptaRVGnoAzA5IAx2wXQGw1d0U8pJn0rz7yoO1o0HcMCcSHAIBt146
- 5szc68Ym6OzDfsmxpQFIzXVq0IwLJFtMi5uuaZ3c2HvXsATbt0BpG5/
+ bh=8zbD+lVnCTk/jEl5MxoVBJ8ccaebPXe50Jkz06PSJ0A=;
+ b=93y/2nl2YnFu6ut5Bipi9DZVLRdNz+4uwAG5tLNRkc+9yVtXFwKW2evOomIGBWZaD28W8JsoP
+ soM4m5afM/6A/qZsSUC5/VBfZMLOzbkzBho8GVpxty70WnYk0VTebWq
 X-Developer-Key: i=christophergriffin05@gmail.com; a=ed25519;
  pk=oa9tkTNpiGoFWdGvpDHXLSobApmsh9BfrJRJrRJAvWA=
 X-Endpoint-Received: by B4 Relay for
@@ -122,45 +122,42 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	FREEMAIL_REPLYTO_END_DIGIT,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
 From: Christopher Griffin <christophergriffin05@gmail.com>
 
-When ath11k_start_scan() fails, ath11k_mac_op_hw_scan() sets the scan
-state back to idle and returns the error to mac80211, but first still
-queues ar->scan.timeout. The timeout then stays pending for the full
-scan time (20 s by default) although no scan is running. A scan started
-within that time gets no timeout of its own, as the work is already
-pending, and the stale one aborts it early.
-
-The stale timeout can also outlive the radio. On a QCN9074 whose
-firmware crashed during a scan, recovery failed and the driver was
-unbound and bound again; the failed scan's timeout then fired from the
-freed ath11k:
-
-  [  145.937344] ath11k_pci 0001:01:00.0: failed to start hw scan: -110
-  [  166.251148] workqueue: cannot queue ath11k_scan_timeout_work [ath11k] on wq D@\x7f\xff \x05\xb6...
-  [  166.254814] WARNING: CPU: 2 PID: 0 at kernel/workqueue.c:2292 __queue_work+0x3c4/0x4d8
+When ath10k_start_scan() fails, ath10k_hw_scan() sets the scan state
+back to idle and returns the error to mac80211, but first still queues
+ar->scan.timeout. The timeout then stays pending for the full scan time
+(20 s by default) although no scan is running. A scan started within
+that time gets no timeout of its own, as the work is already pending,
+and the stale one aborts it early.
 
 Don't queue the timeout when the scan did not start, as
-ath11k_mac_op_remain_on_channel() and ath12k already do.
+ath10k_remain_on_channel() already does. Until commit 634349bae0b2
+("ath10k: move hw_scan worker queuing") ath10k_start_scan() queued it,
+on success only.
 
-Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
+ath11k has the same code; there, a QCN9074 firmware crash during a scan
+left such a timeout pending.
+
+Fixes: 634349bae0b2 ("ath10k: move hw_scan worker queuing")
 Assisted-by: Claude:claude-opus-5-5
 Signed-off-by: Christopher Griffin <christophergriffin05@gmail.com>
 ---
- drivers/net/wireless/ath/ath11k/mac.c | 1 +
+ drivers/net/wireless/ath/ath10k/mac.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-index 5e4bb0ad057dd..291077c551476 100644
---- a/drivers/net/wireless/ath/ath11k/mac.c
-+++ b/drivers/net/wireless/ath/ath11k/mac.c
-@@ -4335,6 +4335,7 @@ static int ath11k_mac_op_hw_scan(struct ieee80211_hw *hw,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 8e604697d6c20..2fded15b61721 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6491,6 +6491,7 @@ static int ath10k_hw_scan(struct ieee80211_hw *hw,
  		spin_lock_bh(&ar->data_lock);
- 		ar->scan.state = ATH11K_SCAN_IDLE;
+ 		ar->scan.state = ATH10K_SCAN_IDLE;
  		spin_unlock_bh(&ar->data_lock);
 +		goto exit;
  	}
