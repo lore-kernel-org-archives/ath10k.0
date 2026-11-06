@@ -2,141 +2,181 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0EE606A32F
-	for <ath10k@archiver.kernel.org>; Fri,  6 Nov 2026 15:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ADEB606A32C
+	for <ath10k@archiver.kernel.org>; Fri,  6 Nov 2026 18:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=QQJtNmqg;
-	dkim=pass (2048-bit key, unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=W8d6mgj9;
-	dkim=pass (2048-bit key, unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=abexYlKX
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=SHiO4QFh;
+	dkim=pass (2048-bit key, unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=c7OqdLX3;
+	dkim=pass (2048-bit key, unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=HXgHm6ai
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:To:
-	From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=Atjmq9rxdzHFbWBN1PM5pyNQLuI2w6lEpnu8PnoiDPs=; b=QQJtNmqg63a4GI
-	HI3PklhNVTTjKBfNNRU39NPia3YDiM7paKPeaXAmeqn+4S+595JBxdNH4reZ2+8r8FTUKi4EaN2kL
-	81w706+hUW/a0h40cT/H4uVXQMR7fFsVjzxjBJ1hmefdURC8sfqDDGL4U5LcLD3DLqMy5/C8F3v+G
-	zKf7xAbdj+P180aJUNp3QdazWjT0jxWYcNEEAqZHuu8Z5GC583x0Hch/ll3BzRgyZqXIV0myiuLx4
-	h4T/Utsm/0y/QdpomVdXARt0yw6UThYYGy/rCmabvJ513AWqMa9TZ30KnkoYcNo65e0QDhzxtzTDo
-	UpCUI0htndZfYxlDJpjg==;
+	List-Owner; bh=CUMcAVyOirUSnIO4z8+9Oid/43N5zWiqbL31INqDBvs=; b=SHiO4QFhc8Ntku
+	fwaxP/J/a2iIAZRUQ4kmwjwlVX0n8Vmqd7EreYtKuE2UZmDnaPTaqurmd9Yaaa/nNll+q7NRi0KrY
+	NhA959TdQctrivZS8GYzeqbmdQ1g2zCyRTGev+HYUz+gRfm9PXdb2v1H0x7UoqzJLYpU35uWvcMmP
+	GMXqLapCNaRK5kq0M86BCM6tVxZqIlY4w/6yAPK/kMyZgZd8KY+yNmUE2BK1D2eiDVfJialgRf4LD
+	UQfegsX0Almbdbzjmtj4+FJIFJKVHZO4aawIHZttGCoYsOr6AD8nbjqtwmJzY2zo0+fBuTwpAc3Xl
+	k1t93UfkCJoAy8pXuI6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPM36-0000000Crr5-16Jr;
-	Fri, 06 Nov 2026 15:40:16 +0000
+	id 1xPOsg-0000000DQVP-3FX5;
+	Fri, 06 Nov 2026 18:41:42 +0000
 Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPM33-0000000Crq0-0ygs
+	id 1xPOsc-0000000DQUb-2EXb
 	for ath10k@lists.infradead.org;
-	Fri, 06 Nov 2026 15:40:14 +0000
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6A6F0kGC710236
-	for <ath10k@lists.infradead.org>; Fri, 6 Nov 2026 15:40:12 GMT
+	Fri, 06 Nov 2026 18:41:39 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6A6HtFcu489656
+	for <ath10k@lists.infradead.org>; Fri, 6 Nov 2026 18:41:37 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	Atjmq9rxdzHFbWBN1PM5pyNQLuI2w6lEpnu8PnoiDPs=; b=W8d6mgj9Xkbvou5B
-	6zbyfM/9FG1ErD3c9jAku8uNrC6wEFv+bHfvgA4d5+9vKUFJIBS96tuHZ+oy+V4o
-	f2o4R5MEtmhWyh6FFgOTGBjpLyYjnX4geVw+il2sKKbBqUwxmzsl0zgPFokayAp+
-	JS0nUzYOrHdsuGszqCLJ2N7uoCwgBp9X070z7bvn5ZFT4VZCmAYJnICAKrA39mTz
-	8rCmqeC8WeDgCPHPN0oPs7omo94oiBMHetrJmAoB0JncSuI4H3txlAtgmH5Or1Bf
-	aHWDGjcrvr8IEQ+vyGOMmpRvYOXvnhjojK569ggLkIDwV6kfvMwcBHOwU5/ppKwn
-	0pYfOQ==
-Received: from mail-dy1-f200.google.com (mail-dy1-f200.google.com [74.125.82.200])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hs3paue8w-1
+	CUMcAVyOirUSnIO4z8+9Oid/43N5zWiqbL31INqDBvs=; b=c7OqdLX3Uj+TBpdC
+	oqL865Tb2uVszHJk3qkJYH6kLQvGw/yVPe6PI9eIRv15udAcLLqG6UR0v9x34VPd
+	rqOFHoWdX+ilvD3r5k7pEYe1VI5n7B3aAYZKqLOE6Up552R/UgXhV6aSMi9iR0yA
+	yXzoSy3dAHKYFyDGYsjF0bFbKFzX4bSWKc4hAqH+2ALaFsFQFLjcpV1DtQ72eo+9
+	qTjYx7a+EgbYBZorVurnW67Rzb+RnfTxqD2C91mr/i5oAQvuO5qVl3Xc774QSeV5
+	+Vgo10VEpHJG4XtK3CxlUVQaishxG9jh3seF7r1am1bVcchbbT5EwlshXAn8bfsy
+	ytBfMA==
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hs3pa485c-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <ath10k@lists.infradead.org>; Fri, 06 Nov 2026 15:40:12 +0000 (GMT)
-Received: by mail-dy1-f200.google.com with SMTP id 5a478bee46e88-36fa5673fccso795461eec.1
-        for <ath10k@lists.infradead.org>; Fri, 06 Nov 2026 07:40:12 -0800 (PST)
+	for <ath10k@lists.infradead.org>; Fri, 06 Nov 2026 18:41:37 +0000 (GMT)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-8a06da65d92so714002b3a.0
+        for <ath10k@lists.infradead.org>; Fri, 06 Nov 2026 10:41:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1793990496; cv=none;
+        d=google.com; s=arc-20260327;
+        b=si+o3o2GnVZJW0I7iZWjbYadkCqlfxQC3S9WeZjeCNGLaiuUSdjsRLQZPbpUULQtec
+         7jBiypEZmF0mKE4CCDHcLe7eSs+zQ0xlpoeATFpIGSrOZd/QVOM2MbchEEwH86NH95gP
+         7VdZ9xgbR0C4i7g0Z8vGDTqIwmqwBuoyLBOd1Bnjvm8EaUXxcKINGOyhxlHOAe5PLK4u
+         ZM4+Ii4k/ZTOwrT7dVhbujtOf9iouBuiWjauyx+DyMV1TKS3Rf4QO6hRiGjBhkIUTTlj
+         m+dRVwDyQlbeX7hQnNBW9oj6PIKzyhrWoHVCxABVARk77DLGIkKnGCaNPCGhniHup1Dv
+         3lNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=CUMcAVyOirUSnIO4z8+9Oid/43N5zWiqbL31INqDBvs=;
+        fh=LlrjCx4snE7mAlivXsIXL6cA5l+qldgps3i9BDENtsU=;
+        b=cQ/R61eUDrzaV24MPFh+QMWDhK1+r1lKc8oxNSesKdAv6T31udNapUEEvMDzidNi9d
+         RWWAyttnbN5+IMleHx1IJSLBhOAJhHSGlzKLJTW9aqG+S9yoW9WzcigraFiVg+zm0KoZ
+         YdIilKNkRzPcWXz1kgA6oAAZs/1Ri/6Tg83r1giiX7ReFNptR7cn8eZ+ujYNrLVtkHQw
+         zie8q3ZzaWhtS1b0Dm6ploTTolw7VxFb824e7OJ2nhGYooDHWMT8wvwb24hl292toWvO
+         GE+gk62siis32AKP76wXE7LN0Yl4KVRxSLCWR6c1QqQ6NlBziOG8GTXU0GgOcCl7YXGl
+         aexw==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1793979611; x=1794584411; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:mime-version:date:message-id
-         :subject:references:in-reply-to:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Atjmq9rxdzHFbWBN1PM5pyNQLuI2w6lEpnu8PnoiDPs=;
-        b=abexYlKX3jsY0VPCMzZmwR+O5KsZ0yX68fWd0STAMttZpQNnVJU5dU3PkDN3yJ1VVX
-         pZPUJ8f36qncYPyeahPTGxI2efRYKYksOTOb3IFjeiQwaucQ6xFULuN5NiMJAjUY7coW
-         QNgtUAO+kSnn6z0AhAQSFMMPl7kCx4CrkZqCc8mqyTilfdh5MZDfYXzbi9aPYJSvOnwp
-         DDd2uvfMq3K6j6qIIpGN7wh8uFfh7UsrdB4k3KIrVNgqOUeKG60MaYaVQydhVkdBtpw3
-         caJefO4eHAujYoTeFrLe7JMpjPr9GdEFCT06ddUgQwEbPSG+GXvhoNSdoeaufSbyg7b/
-         1ZMg==
+        d=oss.qualcomm.com; s=google; t=1793990496; x=1794595296; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=CUMcAVyOirUSnIO4z8+9Oid/43N5zWiqbL31INqDBvs=;
+        b=HXgHm6ai5JQTHE0MQs9S89kjoYIj9ffTn8kUF15ywuYRkW5+qklIXHuOYqa0NHYkHW
+         3LNlW+uEQRaEHx+7mRVgMDIeenhTnQO1gdPY7j407KBAso+vo0Zor3V5K0JdQ8A030DL
+         Y7pLtGiyuo0JPHyyrKIQsP463sb5ibPaq1HmpM0pYA131XJDQwfaRYbQyHEzbGjXMIl4
+         JiLaSLiyVssRUz0sKw12Yhd3yamkCBRfoUnODjYcWRS/htvlFHaZz7/2M12WFUr6BizP
+         5viB8QY9XGWkJjLd6trNyiRy7h9/TXZKfB9q/jHGcp5ysv7vBpSlN71Y8L7U2GoAaRYK
+         wglg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793979611; x=1794584411;
-        h=content-transfer-encoding:content-type:mime-version:date:message-id
-         :subject:references:in-reply-to:to:from:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Atjmq9rxdzHFbWBN1PM5pyNQLuI2w6lEpnu8PnoiDPs=;
-        b=Xqo6oalPeAJn3IbL4yoKDPUCPbq9ix6LcmCEXi9zqZbp2ead1kyAx2dRQdE75UTQek
-         dR+ou0F1D6t3Ycjum1g2ehvjQMNluQRjU33wD9mXjMKo7xVoe6VdCMp/pTWkpsh3TlVl
-         ykqGSdBzfSyjUONlprquWOuUDMVx2xwbzdCh+5lxgEes3qjf66cOCmXfwmUhmA4krHTt
-         M1WmWCQhLMEoKX4ov8AZ6Ujg4CU6FLSoxGP6U97zZFO8vwvNDCl/ldcRM6VEF2Rz/KSg
-         IWPM2u+PJcNdi8X3YIiQWLcCj/BvQtv43BdS+Y6ui/na+Jnzxsa/qv8Wt9wLnEHNlG7z
-         JWXg==
-X-Forwarded-Encrypted: i=1; AL+hErGFPN8QO7x6CtT8jxpiiw6C2b9Ql5RAThgbH1dz7/Ngp1rY62QiltVhWlrgrKC10fQ401fXUQE=@lists.infradead.org
-X-Gm-Message-State: APuU4Z8xJmIXISHoQynJKR6egonEjcjJmmG49lITbR0qrw6GOEKbkCaa
-	4JloFnKsB3IIGH+RBm2GeW0xvQ2aMjg4ZSBCkl9jolvlfxSOwaJ10gnuJ1TJRYBCN7oR0JYAOjL
-	5ZJfpcUV8dpABqBnAhgqb2yvGDO+hU3++xdi2lkU3Csy574RVFDcNCTeQMiy9a4kfRXOLLpzv
-X-Gm-Gg: AYBFou3GQRMlJILgAXMtT+la1jx1/a5ot50VILEshpplJNv+0pgOmUiajSwDXtM4tte
-	v33HpgmsaGd57aW7pZW416ud1qW+5S1oeYR3Di8kyma+P/0hogFgQvcssCDV5iShtfVZY3Jd2Sc
-	U7Ew0vNWtr3qfbpPIApvfqjEizcoWs51nNlxT5aRFjOX69g6VsOrVAuHgnPAtB/s9WI5liwBAQe
-	qqAP7nbMj3g6cckcGdeGzsCuAT8nHnJ8S5OfPgipHft8rHd72xTcXLY/JL7cPJ5kPZD7q/PivEn
-	i4HdVLvbjW4vVgvJWvakbKc4csTCcZ7NzbFOqXX8T/0sWBuoB9Xlj5B/gddHrt2A83sA6wi6uhh
-	kqi1kjGuMLc0MikgJR/TZFIwHG0XGJhUMI7p04sBxVC9at32D3KNNkrDLdrNdY/b7XoadX8Cvyj
-	jlLipETdc0bB1J835ifP4Suz/Zifc=
-X-Received: by 2002:a05:693c:68c3:b0:36e:2626:4ace with SMTP id 5a478bee46e88-36f7398b906mr3825472eec.5.1793979611088;
-        Fri, 06 Nov 2026 07:40:11 -0800 (PST)
-X-Received: by 2002:a05:693c:68c3:b0:36e:2626:4ace with SMTP id 5a478bee46e88-36f7398b906mr3825418eec.5.1793979610314;
-        Fri, 06 Nov 2026 07:40:10 -0800 (PST)
-Received: from hu-jjohnson-lv.qualcomm.com (Global_NAT1.qualcomm.com. [129.46.96.20])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36fa97fbb54sm9851246eec.13.2026.11.06.07.40.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2026 07:40:09 -0800 (PST)
-From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-To: Jeff Johnson <jjohnson@kernel.org>, linux-wireless@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-In-Reply-To: <20261030071912.107577-2-krzysztof.kozlowski@oss.qualcomm.com>
-References: <20261030071912.107577-2-krzysztof.kozlowski@oss.qualcomm.com>
-Subject: Re: [PATCH] wifi: ath10k: Drop unused qmi_elem_info arrays
-Message-Id: <179397960950.1195422.2420449019221399402.b4-ty@b4>
-Date: Fri, 06 Nov 2026 07:40:09 -0800
+        d=1e100.net; s=20260707; t=1793990496; x=1794595296;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=CUMcAVyOirUSnIO4z8+9Oid/43N5zWiqbL31INqDBvs=;
+        b=LLooyKWosK4K+25KAI2oU/IbIwEBd1cE2WJAbb7V34VD7qTtQ9B7D8K4++E1edqi/s
+         2IxhrF/RrHKL9OE70b+t5QZCIOf0CdbPKXL8liRTySgQ8Oi+2cgUpm9h0FLlSLCx7otV
+         fSiUCVoAAnrpMzftMCPEX/vfoMJnaDcxyJDZbeYNwpxtGOGE8Mzv252fH1BoxaNNj7H5
+         Vaaq0+kpFUUf0HgmHXHKyQUnuHmFqgtwaoxcYzW6nl9NBucwFA+ik30YKtRpJK6ftxH/
+         EOFtWtmVn7DcXnu34IkVLIFcQ6iNps1YL/IQpmUchnZGwon/3+KGUipS+oBF4kWcBUPw
+         ZABg==
+X-Forwarded-Encrypted: i=1; AKwUvBxFbfDQ8kkGZLG35XDN8U6eeMb9oViTNV5IlkqhMbWO0I0KgDR4gPxA+qkWRm1qisqImJRKohc=@lists.infradead.org
+X-Gm-Message-State: APuU4Z+YT7TGTwW5Qxwv3de9nDgwWboF+mq8mV8AUZhjFsDUQK4p4jxs
+	9ovLv/zTBxDY0EzLrpecykUfxtA/A06rl1hdZq7PPTBKG5NFZWjpxr6W8fayahddkIERIYAfZTK
+	za3agegaIIwTtjhLjRklbshhlU/NuLS2vIqgWLia1SRWqqXCP31SsvuHVjQnvoTX0F2tceRARP5
+	m0D444D5Vgstr8m4vddA0Cc0T1/8Dfp9vkYRmBURY=
+X-Gm-Gg: AYBFou204v7pQTlxnHjb8pIGa67FdAbq4xxPLR2L5dbgGxcrl2KzI5P+67Du6rSjKuq
+	ghn7MUzpCP2njccRAh/yBHCNLp51IKlQBUMZkVvsY8FBGCvl4GfMgpj3V4KJUAg+S8keqJNTnVq
+	UZpMmiilw0/v/5WZSVONvHkeFJ15GCSlbFbBQfN0gglEli6d/VThDBf4AVNQ==
+X-Received: by 2002:a05:6a00:3d0b:b0:881:9f52:ca00 with SMTP id d2e1a72fcca58-8b37bd5461emr2936019b3a.42.1793990496147;
+        Fri, 06 Nov 2026 10:41:36 -0800 (PST)
+X-Received: by 2002:a05:6a00:3d0b:b0:881:9f52:ca00 with SMTP id
+ d2e1a72fcca58-8b37bd5461emr2935994b3a.42.1793990495661; Fri, 06 Nov 2026
+ 10:41:35 -0800 (PST)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.16.0
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTA2MDA2MiBTYWx0ZWRfXw5pEnnyEmQqP
- DpAMiJf5NEGyg7Pabf0JprS2V1B9aTI+TkI7Dk3l8FsyY4Adn5VvEslLMQY0/KCPzW1jwnJqxVm
- gtMJlem/brZULkV5wDHTvYyx53g4PGDxDo3KlCraaSuYi4SpXb0FG40ICUKh7A7/sYznHKcezPO
- QvFsvqODF3oGG6j850Utc2ytZWM1mQ61CQgmr2YlTZHYYPIt0arNQl1810yLmgO7Hm0YSZRJmq2
- btgINIp5rCJ962DoYyRItP7N4yQltnQEyHX7RkM3O78a6HTwJH9JPgQZl4I6ZcoN0/eom690W5i
- +/c5qBtFKHaroGeFdH46RiYxjuGO8LyR51ihCjXjEgS32Ez78jLx8Sezx4NxmAT4Xv3sNOFicr5
- xR9F/+U5PAE7YJQAyvRfloL+fSpWMoESKNG5DcAVowIwfKzh102vz6EljntU0jv3QUi3npfYIrX
- UpAwb3/UFqotbfkTgLw==
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMTA2MDA2MiBTYWx0ZWRfX7hf9VsQ3vA/7
- Kds2f7sqto4uoqA1qvGqNjJ9CFHAJlXM+P/iLrKGIp6h3iyTLzn/nudfJKhKmSY0F/KlxCtHjOO
- dpLFZCNj59gQVFZImTB64X8E2DIcLDY=
-X-Proofpoint-GUID: ac4OJcrArt4kJqdxLN9M0NrGXkTfxKxR
-X-Authority-Analysis: v=2.4 cv=P4ivFSAu c=1 sm=1 tr=0 ts=6aedf4dc cx=c_pps
- a=PfFC4Oe2JQzmKTvty2cRDw==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=IkcTkHD0fZMA:10 a=zJRp6_cAMcgA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=3WHJM1ZQz_JShphwDgj5:22
- a=EUspDBNiAAAA:8 a=ZoQ-0plOPn13Fw6eG44A:9 a=QEXdDO2ut3YA:10
- a=6Ab_bkdmUrQuMsNx7PHu:22
-X-Proofpoint-ORIG-GUID: ac4OJcrArt4kJqdxLN9M0NrGXkTfxKxR
+References: <20261102-block-as-nvmem-v12-0-f4a2a681087d@oss.qualcomm.com> <20261102-block-as-nvmem-v12-1-f4a2a681087d@oss.qualcomm.com>
+In-Reply-To: <20261102-block-as-nvmem-v12-1-f4a2a681087d@oss.qualcomm.com>
+From: Ulf Hansson <ulf.hansson@oss.qualcomm.com>
+Date: Fri, 6 Nov 2026 19:41:24 +0100
+X-Gm-Features: AclHuK9emUwSj3_sGAuhi1FbbmSEvMQZ92eVANQc1PZljiIDDYIawbYL0H56MVQ
+Message-ID: <CAPx+jO9Hwqn__vdZn_2yCAy9nuMHR2=8shjjQdWQ4S9JWUknQQ@mail.gmail.com>
+Subject: Re: [PATCH v12 1/2] block: partitions: of: Attach partition fwnode to
+ the block device
+To: Loic Poulain <loic.poulain@oss.qualcomm.com>
+Cc: Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Johnson <jjohnson@kernel.org>,
+        Bartosz Golaszewski <brgl@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+        Rocky Liao <quic_rjliao@quicinc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Simon Horman <horms@kernel.org>,
+        Srinivas Kandagatla <srini@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saravana Kannan <saravanak@kernel.org>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Eric Dumazet <edumazet@kernel.org>, Abel Vesa <abelvesa@kernel.org>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-wireless@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-bluetooth@vger.kernel.org,
+        netdev@vger.kernel.org, daniel@makrotopia.org,
+        Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTA2MDA3NCBTYWx0ZWRfX3tSIDOAt+SXw
+ 3q458yUE9Ufkh1OfKIz7YknXxWm60YiJMs6epuYB0D7VYy2gEDJ//lhwpRJywJnGZ3wkPgX/lUJ
+ 8VDPmjelfsguNaQpJqxQoHPhkfeaJ4zM7wSRBfCZN//0c7mfFs3iUuf1PifTHDtyg0E0kAeRnm7
+ zNUVwKwMOk4mS/xDk/wEMnRYTZAOMTxFB/K0jr4oEgD6ZueWdd2ygHBo4KcP+MFetknryXODzif
+ gVkW6u3HFeCuDpX2E7EwRuQLjvCP2+iXXR4OT0ncCY1pl8jBveGINChmLZhUbZxDdqOuGHQJgN8
+ PkSaa0I2TujahCAvTWRLbpf9ZhU88aJ7avOBoX8rK28enWotePWVMirplzQAopz3wAysSDI14I9
+ FegRsFs22hY7iHizxXGfEi2IRyRfciJZCq4SENLcr2A8AW21bHJ8p701g635QxfrYmskIBRO1cr
+ x1CVj6BEkVoaLyAFTog==
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMTA2MDA3NCBTYWx0ZWRfXy/S5r7s9jmTH
+ NtCOtDNuemH/3dQhLXTog4PRnAQQCy8gsuq+rnbdAR9gz+XgPoipPZagKZueBURhAf/KLN2eK7n
+ Gpi0IbdbJpPRw8nedXsDzGxiX87fZFc=
+X-Proofpoint-ORIG-GUID: 1HI2hV8Zus0SMvWAjS0H5IJb4vXe985b
+X-Authority-Analysis: v=2.4 cv=GpzXaU1C c=1 sm=1 tr=0 ts=6aee1f61 cx=c_pps
+ a=m5Vt/hrsBiPMCU0y4gIsQw==:117 a=IkcTkHD0fZMA:10 a=zJRp6_cAMcgA:10
+ a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
+ a=gowsoOTTUOVcmtlkKump:22 a=EUspDBNiAAAA:8 a=VwQbUJbxAAAA:8
+ a=YqnSXwVskR_DcSjeyREA:9 a=QEXdDO2ut3YA:10 a=IoOABgeZipijB_acs4fv:22
+X-Proofpoint-GUID: 1HI2hV8Zus0SMvWAjS0H5IJb4vXe985b
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
- definitions=2026-11-06_05,2026-11-06_01,2025-10-01_01
+ definitions=2026-11-06_06,2026-11-06_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 clxscore=1015 spamscore=0 phishscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2611040001
- definitions=main-2611060062
+ spamscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0 malwarescore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1011 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2611040001 definitions=main-2611060074
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261106_074013_414911_1D398B9E 
-X-CRM114-Status: UNSURE (   8.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261106_104138_692335_1E65EFAD 
+X-CRM114-Status: GOOD (  28.80  )
 X-Spam-Score: -2.8 (--)
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -148,27 +188,180 @@ List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
+On Mon, Nov 2, 2026 at 5:27=E2=80=AFPM Loic Poulain
+<loic.poulain@oss.qualcomm.com> wrote:
+>
+> The OF partition parser reads offset, size and label from each
+> "fixed-partitions" child node but does not associate that node with the
+> resulting partition block device. As a result a partition has no
+> of_node, unlike the whole-disk device which gets its firmware node via
+> add_disk_fwnode().
+>
+> Carry the partition's device tree node through the parser and attach it
+> to the partition's block device with device_set_node(), mirroring the
+> whole-disk case. This lets consumers describe per-partition properties
+> in the device tree (for example an NVMEM layout on a partition node) and
+> look them up through the partition device.
+>
+> No functional change for existing users, partitions without a matching
+> device tree node simply get a NULL fwnode.
+>
+> Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Loic Poulain <loic.poulain@oss.qualcomm.com>
 
-On Fri, 30 Oct 2026 08:19:13 +0100, Krzysztof Kozlowski wrote:
-> 'wlfw_pin_connect_result_ind_msg_v01_ei' and
-> 'wlfw_initiate_cal_download_ind_msg_v01_ei' are not used anywhere.
-> Dropping them allows to remove bunch of other code referenced purely by
-> these ararys.
+Reviewed-by: Ulf Hansson <ulfh@kernel.org>
 
-Applied, thanks!
+Kind regards
+Uffe
 
-[1/1] wifi: ath10k: Drop unused qmi_elem_info arrays
-      commit: d866eeb11be24c7bd6fabfd7da158ca8c16bbbab
-
-Best regards,
--- 
-Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-
+> ---
+>  block/partitions/check.h |  1 +
+>  block/partitions/core.c  | 20 +++++++++++++++++---
+>  block/partitions/of.c    |  3 +++
+>  3 files changed, 21 insertions(+), 3 deletions(-)
+>
+> diff --git a/block/partitions/check.h b/block/partitions/check.h
+> index b0997467b61a54a8a621b9c155c8329289649460..326081499d9a6be730dbd659c=
+110449cfa06921f 100644
+> --- a/block/partitions/check.h
+> +++ b/block/partitions/check.h
+> @@ -17,6 +17,7 @@ struct parsed_partitions {
+>                 int flags;
+>                 bool has_info;
+>                 struct partition_meta_info info;
+> +               struct fwnode_handle *fwnode;
+>         } *parts;
+>         int next;
+>         int limit;
+> diff --git a/block/partitions/core.c b/block/partitions/core.c
+> index b5c59b79ca7cbb28d4d93478ee1c80908f76ee9f..eee954df1ac6ef7dd4f02ad5c=
+9d49aed778bf015 100644
+> --- a/block/partitions/core.c
+> +++ b/block/partitions/core.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/sysfs.h>
+>  #include <linux/ctype.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/property.h>
+>  #include <linux/raid/detect.h>
+>  #include "check.h"
+>
+> @@ -110,8 +111,17 @@ static struct parsed_partitions *allocate_partitions=
+(struct gendisk *hd)
+>         return state;
+>  }
+>
+> +static void drop_partitions_fwnodes(struct parsed_partitions *state)
+> +{
+> +       for (int i =3D 0; i < state->limit; i++) {
+> +               fwnode_handle_put(state->parts[i].fwnode);
+> +               state->parts[i].fwnode =3D NULL;
+> +       }
+> +}
+> +
+>  static void free_partitions(struct parsed_partitions *state)
+>  {
+> +       drop_partitions_fwnodes(state);
+>         vfree(state->parts);
+>         kfree(state);
+>  }
+> @@ -139,6 +149,7 @@ static struct parsed_partitions *check_partition(stru=
+ct gendisk *hd)
+>
+>         i =3D res =3D err =3D 0;
+>         while (!res && check_part[i]) {
+> +               drop_partitions_fwnodes(state);
+>                 memset(state->parts, 0, state->limit * sizeof(state->part=
+s[0]));
+>                 res =3D check_part[i++](state);
+>                 if (res < 0) {
+> @@ -247,6 +258,7 @@ static const struct attribute_group *part_attr_groups=
+[] =3D {
+>
+>  static void part_release(struct device *dev)
+>  {
+> +       fwnode_handle_put(dev_fwnode(dev));
+>         put_disk(dev_to_bdev(dev)->bd_disk);
+>         bdev_drop(dev_to_bdev(dev));
+>  }
+> @@ -294,7 +306,8 @@ static const DEVICE_ATTR(whole_disk, 0444, whole_disk=
+_show, NULL);
+>   */
+>  static struct block_device *add_partition(struct gendisk *disk, int part=
+no,
+>                                 sector_t start, sector_t len, int flags,
+> -                               struct partition_meta_info *info)
+> +                               struct partition_meta_info *info,
+> +                               struct fwnode_handle *fwnode)
+>  {
+>         dev_t devt =3D MKDEV(0, 0);
+>         struct device *ddev =3D disk_to_dev(disk);
+> @@ -343,6 +356,7 @@ static struct block_device *add_partition(struct gend=
+isk *disk, int partno,
+>         pdev->class =3D &block_class;
+>         pdev->type =3D &part_type;
+>         pdev->parent =3D ddev;
+> +       device_set_node(pdev, fwnode_handle_get(fwnode));
+>
+>         /* in consecutive minor range? */
+>         if (bdev_partno(bdev) < disk->minors) {
+> @@ -449,7 +463,7 @@ int bdev_add_partition(struct gendisk *disk, int part=
+no, sector_t start,
+>         }
+>
+>         part =3D add_partition(disk, partno, start, length,
+> -                       ADDPART_FLAG_NONE, NULL);
+> +                       ADDPART_FLAG_NONE, NULL, NULL);
+>         ret =3D PTR_ERR_OR_ZERO(part);
+>  out:
+>         mutex_unlock(&disk->open_mutex);
+> @@ -564,7 +578,7 @@ static bool blk_add_partition(struct gendisk *disk,
+>         }
+>
+>         part =3D add_partition(disk, p, from, size, state->parts[p].flags=
+,
+> -                            &state->parts[p].info);
+> +                            &state->parts[p].info, state->parts[p].fwnod=
+e);
+>         if (IS_ERR(part)) {
+>                 if (PTR_ERR(part) !=3D -ENXIO) {
+>                         printk(KERN_ERR " %s: p%d could not be added: %pe=
+\n",
+> diff --git a/block/partitions/of.c b/block/partitions/of.c
+> index 53664ea06b6540e3d1155141adaafac7286f2d21..4fc7c80c407de42b2b31be2c8=
+2e0e6bc2a30c9e3 100644
+> --- a/block/partitions/of.c
+> +++ b/block/partitions/of.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/blkdev.h>
+>  #include <linux/major.h>
+>  #include <linux/of.h>
+> +#include <linux/property.h>
+>  #include <linux/string.h>
+>  #include "check.h"
+>
+> @@ -62,6 +63,8 @@ static void add_of_partition(struct parsed_partitions *=
+state, int slot,
+>                 partname =3D of_get_property(np, "name", &len);
+>         strscpy(info->volname, partname, sizeof(info->volname));
+>
+> +       state->parts[slot].fwnode =3D fwnode_handle_get(of_fwnode_handle(=
+np));
+> +
+>         seq_buf_printf(&state->pp_buf, "(%s)", info->volname);
+>  }
+>
+>
+> --
+> 2.34.1
+>
 
