@@ -2,69 +2,67 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BED9606A323
-	for <ath10k@archiver.kernel.org>; Sat, 14 Nov 2026 09:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B480D606A32D
+	for <ath10k@archiver.kernel.org>; Sat, 14 Nov 2026 09:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=iHFLdXkY;
-	dkim=pass (2048-bit key, unprotected) header.d=email.cz header.i=@email.cz header.a=rsa-sha256 header.s=szn1 header.b=VKv2f4mV
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=zlexFJE1;
+	dkim=pass (2048-bit key, unprotected) header.d=email.cz header.i=@email.cz header.a=rsa-sha256 header.s=szn1 header.b=S+k7IcPu
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=UH8hxzi4C8oZWJminUZ8a/ZbhQf9xoNwmkwO/tH++ak=; b=iHFLdXkYZhSOI/
-	Xs1vF/5Cz4g10pHSvFoEfab40oBcCdszKgmEYw8/cqTNFlrNKcsxSDTaNaIknHH4WZUf/M4t0QcXQ
-	zsq+7pyxxDdn8QcVt9UrV5ceDFP5pAriX1tqt3ozVYxNTSV5n20YiOrsvu+/0hpoTwrf7SpQbK589
-	/AYAbOqC7+SY9kHyF+jIom6bIvQI/XtaMnqxHrvlzryeldOoe9J88eI5qHY38D53Sl5q2kb2pQavJ
-	FXEeNv6mWwOc2fIWyyxky/vOllAqtk/GAPjl87FtEtUNaOL8mN/9g/mvy5w825SboAU6L5vWzrATB
-	6Go5uER4GOeDwJndqBVA==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Unsubscribe-Post:List-Owner;
+	bh=Fc1AMHFjZdJOsY6HvXjnpsl4FGY8JOTpErhRwf0EaXY=; b=zlexFJE1gV31qOoeyWLjRbZ+Bu
+	QH0LieSjyxVaXD8TGXppyouUSUWSuKMrUhy6OTcoYT49SWpoSj1sXGKcN71dbv8gYuBJmTQu3YWjC
+	9LDWBykxA1cXDm3SaUN/OTzdMK8LBbYHMwmqGKKF9bb7KdqanPU58huWBzgtoHDh8KW9iBOHEKAeY
+	7A8STNQ730f3PajVpuJEoM4uGvanQ2zhZzS5grvbwXHH/Qv5lbF/wTgJjw6Jvb1gAdKInbxM7tcMn
+	a4h9BLHd0TrgMmcr36ogELAXZbpl+fgUYAAJLhRVX9Pp9ja4DMTSPe34qftVCV2S0FLMSCcRfoAHK
+	6Xu9yjgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xS9lD-0000000Fcu7-3hT1;
-	Sat, 14 Nov 2026 09:09:23 +0000
-Received: from mxd-1-a3b.seznam.cz ([2a02:598:128:8a00::1000:a3b])
-	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xS9kE-0000000Fcle-2gtG
-	for ath10k@lists.infradead.org;
+	id 1xS9lB-0000000FcsS-2Omu;
 	Sat, 14 Nov 2026 09:09:21 +0000
+Received: from mxd-2-a36.seznam.cz ([2a02:598:64:8a00::1000:a36])
+	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xS9kE-0000000Fclc-3RLU
+	for ath10k@lists.infradead.org;
+	Sat, 14 Nov 2026 09:09:19 +0000
 Received: from email.seznam.cz
-	by smtpc-mxd-5f46658f7f-chpkt
-	(smtpc-mxd-5f46658f7f-chpkt [2a02:598:128:8a00::1000:a3b])
-	id 44752039ba81929344fbae21;
-	Sat, 14 Nov 2026 10:08:05 +0100 (CET)
+	by smtpc-mxd-5f46658f7f-dlhcx
+	(smtpc-mxd-5f46658f7f-dlhcx [2a02:598:64:8a00::1000:a36])
+	id 739ceef58d685c5f731260ed;
+	Sat, 14 Nov 2026 10:08:10 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz; s=szn1;
-	t=1794647285; bh=UH8hxzi4C8oZWJminUZ8a/ZbhQf9xoNwmkwO/tH++ak=;
+	t=1794647290; bh=Fc1AMHFjZdJOsY6HvXjnpsl4FGY8JOTpErhRwf0EaXY=;
 	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
 	 Content-Transfer-Encoding;
-	b=VKv2f4mV3hVA/EqFuqkxH7a67DG8Qcyl5NskSx5h2tZQ8rYf6ITjAW0vIbn+rbill
-	 wSfFL+v90aqb4E4k5GiMYLEXifag8BEktj71PNk1xVKiHw//PCj+UAorR91GkPT/Te
-	 nU7Jg9WkRkBu//omM6uVKzanp8Lh6C7wuSIcvOsmSgBjoNfzS1Loiu/Nv5GymBG7D6
-	 webYB9dsMqJsj4z0VS2kAxe0ipJCW0E1CxpZjaLM0uBEldLpIYpmM0lBeG/Xo0I1zJ
-	 UqAv1UtbenfR7nWHkLT2ImZr+CUhgtBffEcbfYDhYbNVs5ATu6vikkCi+cgDjYfmZg
-	 tX6GIkErLw7CQ==
+	b=S+k7IcPuNUB9+a39pQvvkqsBSy85gB1SvnUcLSHqOJz2FUUjvhRqY7ipSvAYpigID
+	 9bzGkrGnaqEfhqsooWXoLW3BTOGv4dRwX87PLFS2DSapXp+kxkoOMiO/wmSfLBGrcy
+	 ixSjVnL02xnvyZ226MrRReOxtFafn/DQQZDlYMJ+K4sH4WSrkLYQTEYC4BvAyiXikR
+	 NeHnbJlbtl9ql1b7JMKjjZang90bLUUuV8qzkS2MflHdd9Sby6Mox4keA/08R+uOLR
+	 u1Y+8x74tybR8s4+OHQoS7kSzeVWSPbXE+h1FCWxqPR0V2P/0t7zubB+aEZZOu7qIr
+	 yETwjSTgnOCag==
 Received: from localhost.localdomain (184-143.ktuo.cz [82.144.143.184])
 	by smtpd-relay-5bf55fdf87-n6z6s (szn-email-smtpd/2.0.97) with ESMTPA
-	id a59e3d33-0aa5-43cb-a79f-d4cde359230a;
+	id a5e4434c-3865-4159-b907-7de5041a54e6;
 	Sat, 14 Nov 2026 10:08:02 +0100
 From: Tomas Paukrt <tomaspaukrt@email.cz>
 To: jjohnson@kernel.org
 Cc: linux-wireless@vger.kernel.org,
 	ath10k@lists.infradead.org,
 	Tomas Paukrt <tomaspaukrt@email.cz>
-Subject: [PATCH ath-next 2/6] wifi: ath10k: usb: set soft_unbind
-Date: Sat, 14 Nov 2026 10:07:33 +0100
-Message-ID: <20261114090737.64348-3-tomaspaukrt@email.cz>
+Subject: [PATCH ath-next 0/6] wifi: ath10k: make USB support work for QCA9377
+Date: Sat, 14 Nov 2026 10:07:31 +0100
+Message-ID: <20261114090737.64348-1-tomaspaukrt@email.cz>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261114090737.64348-1-tomaspaukrt@email.cz>
-References: <20261114090737.64348-1-tomaspaukrt@email.cz>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261114_010823_448590_ED720940 
-X-CRM114-Status: UNSURE (   7.27  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261114_010823_457997_C5FAC033 
+X-CRM114-Status: GOOD (  11.30  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: ath10k@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,44 +74,57 @@ List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The USB core disables the endpoints of an interface before it calls the
-disconnect callback, unless the driver sets soft_unbind. ath10k still
-sends WMI commands at that time, because mac80211 removes the interfaces
-during the unregistration, and these commands fail when the driver is
-unloaded:
+The ath10k USB support has been marked as experimental and incomplete
+since it was added. This series makes it work for modules based on the
+Atheros QCA9377-7 chipset like 8devices Blue Bean or SparkLAN
+WUBQ-159ACN.
 
-  usb 1-1.1: failed to delete WMI vdev 0: -22
-  usb 1-1.1: could not suspend target (-22)
+The main obstacle is that the firmware of a QCA9377 USB target can be
+started only once. It does not accept BMI commands while running, and
+the only way back to the boot loader is a cold reset, which makes the
+target leave the bus and enumerate again as a new device. Patch 3 keeps
+the firmware started during the registration running until the device
+is unregistered and resets the target instead of restarting the
+firmware in place.
 
-Set soft_unbind to keep the endpoints enabled until the disconnect
-callback returns.
+Patches 1 and 2 fix a timeout during the installation of group keys and
+WMI command failures during the driver unload. They do not depend on
+the rest of the series.
 
-Tested-on: QCA9377 hw1.1 USB 0.0.0.111
-Signed-off-by: Tomas Paukrt <tomaspaukrt@email.cz>
----
- drivers/net/wireless/ath/ath10k/usb.c | 1 +
- 1 file changed, 1 insertion(+)
+Patches 4 and 5 add the hw_params and the USB device ID for QCA9377-7
+and patch 6 removes the experimental status.
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index 987d57a01ddf..c1ba30a1437d 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -1116,6 +1116,7 @@ static struct usb_driver ath10k_usb_driver = {
- 	.disconnect = ath10k_usb_disconnect,
- 	.id_table = ath10k_usb_ids,
- 	.supports_autosuspend = true,
-+	.soft_unbind = 1,
- 	.disable_hub_initiated_lpm = 1,
- };
- 
+Tested on QCA9377 hw1.1 USB with the firmware version 0.0.0.111.
+
+Tomas Paukrt (6):
+  wifi: ath10k: usb: fix group key installation
+  wifi: ath10k: usb: set soft_unbind
+  wifi: ath10k: usb: start the firmware only once
+  wifi: ath10k: usb: add hw_params for Atheros QCA9377-7
+  wifi: ath10k: usb: add device ID for Atheros QCA9377-7
+  wifi: ath10k: usb: remove the experimental status
+
+ drivers/net/wireless/ath/ath10k/Kconfig    |  5 +-
+ drivers/net/wireless/ath/ath10k/core.c     | 77 +++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/core.h     |  5 ++
+ drivers/net/wireless/ath/ath10k/hw.h       |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c      | 12 +++-
+ drivers/net/wireless/ath/ath10k/testmode.c |  6 ++
+ drivers/net/wireless/ath/ath10k/usb.c      | 60 ++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/usb.h      |  1 +
+ drivers/net/wireless/ath/ath10k/wmi.c      |  4 ++
+ 9 files changed, 161 insertions(+), 10 deletions(-)
+
+
+base-commit: 5dbf2415ca9821a611d09308e3b29d2c37e7cd77
 -- 
 2.43.0
 
